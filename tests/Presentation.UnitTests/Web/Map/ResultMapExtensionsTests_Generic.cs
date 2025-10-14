@@ -325,4 +325,26 @@ public class ResultMapExtensionsGenericTests
         // Cleanup
         ResultMapErrorHandlerRegistry.ClearHandlers();
     }
+
+    [Fact]
+    public void MapCreated_ValidationError_ReturnsProblemWithValidationDetails()
+    {
+        // Arrange
+        var result = Result<PersonStub>.Failure().WithError(new ValidationError("Invalid person data"));
+
+        // Act
+        var response = result.MapHttpCreated("/api/people/1", this.logger);
+
+        // Assert
+        response.ShouldBeOfType<Results<Created<PersonStub>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
+        var innerResult = response.Result;
+        innerResult.ShouldBeOfType<ProblemHttpResult>();
+        var problemResult = (ProblemHttpResult)innerResult;
+        problemResult.StatusCode.ShouldBe(400);
+        problemResult.ProblemDetails.Title.ShouldBe("Validation Error");
+        problemResult.ProblemDetails.Extensions["validations"].ShouldBeOfType<Dictionary<string, string[]>>();
+        var messages = (Dictionary<string, string[]>)problemResult.ProblemDetails.Extensions["validations"];
+        messages.ShouldContainKey(string.Empty);
+        messages[string.Empty].ShouldContain("Invalid person data");
+    }
 }

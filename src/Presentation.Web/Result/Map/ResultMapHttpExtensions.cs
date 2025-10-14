@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
@@ -434,7 +435,7 @@ public static class ResultMapHttpExtensions
             { IsSuccess: true } => TypedResults.NoContent(),
             { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<NotFound>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<BadRequest>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
@@ -514,7 +515,7 @@ public static class ResultMapHttpExtensions
             { IsSuccess: true } => TypedResults.Ok(result.Value),
             { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<NotFound>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<BadRequest>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
@@ -586,7 +587,7 @@ public static class ResultMapHttpExtensions
             { IsSuccess: true } => TypedResults.Ok(),
             { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<NotFound>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<BadRequest>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
@@ -663,7 +664,7 @@ public static class ResultMapHttpExtensions
         {
             { IsSuccess: true } => TypedResults.Ok(result.Value),
             { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<BadRequest>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
@@ -710,12 +711,6 @@ public static class ResultMapHttpExtensions
             throw new ArgumentException("URI cannot be null or empty", nameof(uri));
         }
 
-        //if (result.Value == null)
-        //{
-        //    throw new InvalidOperationException($"Result.Value is null for type {typeof(T).Name}");
-        //}
-
-        // Check for custom handlers first
         if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
         {
             switch (customResult)
@@ -748,7 +743,7 @@ public static class ResultMapHttpExtensions
         {
             { IsSuccess: true } => TypedResults.Created(uri, result.Value),
             { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<BadRequest>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
@@ -808,7 +803,7 @@ public static class ResultMapHttpExtensions
         {
             { IsSuccess: true } => TypedResults.Accepted(location),
             { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<BadRequest>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
@@ -875,7 +870,7 @@ public static class ResultMapHttpExtensions
         {
             { IsSuccess: true } => TypedResults.Accepted(location, result.Value),
             { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<BadRequest>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
@@ -966,7 +961,7 @@ public static class ResultMapHttpExtensions
         {
             { IsSuccess: true } => TypedResults.Ok(ToPagedResponse(result)),
             { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<BadRequest>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
@@ -1049,7 +1044,7 @@ public static class ResultMapHttpExtensions
 
             { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<NotFound>(logger, result),
-            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<BadRequest>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<DomainPolicyError>() => MapDomainPolicyError<ProblemHttpResult>(logger, result),
@@ -1147,52 +1142,89 @@ public static class ResultMapHttpExtensions
                 return badRequestResult;
             }
 
-            // Log a warning if the custom handler returned an incompatible type
-            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
-                typeof(TBadRequest).Name, customResult.GetType().Name);
+            logger?.LogWarning(
+                "Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
+                typeof(TBadRequest).Name,
+                customResult.GetType().Name);
         }
 
         logger?.LogWarning("result - bad request error occurred: {Error}", result.ToString());
 
         if (result.Errors.Has<ValidationError>() || result.Errors.Has<FluentValidationError>())
         {
-            return MapValidationErrors<TBadRequest>(result);
+            return MapValidationErrors<TBadRequest>(result, logger);
         }
 
-        return (TBadRequest)(IResult)TypedResults.BadRequest(/*result.ToString()*/);
-
-        static TResult MapValidationErrors<TResult>(Result result) where TResult : IResult
+        if (typeof(TBadRequest) == typeof(BadRequest))
         {
-            var validationErrors = new List<(string PropertyName, string Message)>();
+            return (TBadRequest)(IResult)TypedResults.BadRequest();
+        }
 
-            foreach (var error in result.Errors)
+        // Fallback to ProblemHttpResult for other TBadRequest types
+        logger?.LogWarning("Cannot map to {BadRequestType} for non-validation errors. Falling back to ProblemHttpResult.", typeof(TBadRequest).Name);
+        return (TBadRequest)(IResult)TypedResults.Problem(
+            detail: result.ToString(),
+            statusCode: StatusCodes.Status400BadRequest,
+            title: "Bad Request",
+            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400");
+    }
+
+    private static TResult MapValidationErrors<TResult>(Result result, ILogger logger)
+        where TResult : IResult
+    {
+        var validationErrors = new List<(string PropertyName, string Message)>();
+
+        foreach (var error in result.Errors)
+        {
+            if (error is ValidationError ve)
             {
-                if (error is ValidationError ve)
+                validationErrors.Add((
+                    string.IsNullOrWhiteSpace(ve.PropertyName) ? string.Empty : ve.PropertyName, ve.Message));
+            }
+            else if (error is FluentValidationError fve)
+            {
+                foreach (var failure in fve.Errors)
                 {
-                    validationErrors.Add((string.IsNullOrWhiteSpace(ve.PropertyName) ? string.Empty : ve.PropertyName, ve.Message));
-                }
-                else if (error is FluentValidationError fve)
-                {
-                    foreach (var failure in fve.Errors)
-                    {
-                        validationErrors.Add((string.IsNullOrWhiteSpace(failure.PropertyName) ? string.Empty : failure.PropertyName, failure.ErrorMessage));
-                    }
+                    validationErrors.Add((
+                        string.IsNullOrWhiteSpace(failure.PropertyName) ? string.Empty : failure.PropertyName, failure.ErrorMessage));
                 }
             }
-
-            var errors = validationErrors
-                .GroupBy(e => e.PropertyName)
-                .ToDictionary(g => g.Key, g => g.Select(e => e.Message).ToArray());
-
-            return (TResult)(IResult)TypedResults.BadRequest(
-                new HttpValidationProblemDetails(errors)
-                {
-                    Title = "Validation Error",
-                    Status = StatusCodes.Status400BadRequest,
-                    Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-                    Detail = result.ToString()
-                });
         }
+
+        var validations = validationErrors
+            .GroupBy(e => e.PropertyName)
+            .ToDictionary(
+                g => g.Key,
+                g => g.Select(e => e.Message).ToArray());
+
+        var problemDetails = new ProblemDetails
+        {
+            Title = "Validation Error",
+            Status = StatusCodes.Status400BadRequest,
+            Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+            Detail = result.ToString(),
+            Extensions = new Dictionary<string, object>
+            {
+                ["validations"] = validations
+            }
+        };
+
+        // Always return ProblemHttpResult, as it's compatible with most result unions
+        if (typeof(TResult) == typeof(ProblemHttpResult))
+        {
+            return (TResult)(IResult)TypedResults.Problem(problemDetails);
+        }
+
+        // If TResult is BadRequest, return a plain BadRequest with the problem details in the log
+        if (typeof(TResult) == typeof(BadRequest))
+        {
+            logger?.LogWarning("Validation errors mapped to plain BadRequest due to type constraint.");
+            return (TResult)(IResult)TypedResults.BadRequest();
+        }
+
+        // Fallback for other TResult types
+        logger?.LogWarning("Cannot map validation errors to {ResultType}. Falling back to ProblemHttpResult.", typeof(TResult).Name);
+        return (TResult)(IResult)TypedResults.Problem(problemDetails);
     }
 
     public static TProblem MapConflictError<TProblem>(ILogger logger, Result result)
@@ -1231,9 +1263,7 @@ public static class ResultMapHttpExtensions
             }
 
             // Log a warning if the custom handler returned an incompatible type
-            logger?.LogWarning("Custom error handler returned incompatible type. " +
-                             "Expected {ExpectedType}, got {ActualType}. Falling back to default handling.",
-                typeof(TProblem).Name, customResult.GetType().Name);
+            logger?.LogWarning("Custom error handler returned incompatible type. Expected {ExpectedType}, got {ActualType}. Falling back to default handling.", typeof(TProblem).Name, customResult.GetType().Name);
         }
 
         logger?.LogWarning("result - concurrency error occurred: {Error}", result.ToString());

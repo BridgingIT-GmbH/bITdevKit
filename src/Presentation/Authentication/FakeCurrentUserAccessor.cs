@@ -20,6 +20,15 @@ public class FakeCurrentUserAccessor : ICurrentUserAccessor
         }
     }
 
+    public FakeCurrentUserAccessor(FakeUser[] users)
+    {
+        UserStore.Clear();
+        foreach (var user in users.SafeNull())
+        {
+            UserStore[user.Id] = user;
+        }
+    }
+
     public FakeCurrentUserAccessor(string userId = null)
     {
         var user = GetUser(userId);

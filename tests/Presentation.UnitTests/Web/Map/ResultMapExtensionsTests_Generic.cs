@@ -307,7 +307,8 @@ public class ResultMapExtensionsGenericTests
     {
         // Arrange
         ResultMapErrorHandlerRegistry.RegisterHandler<ValidationError>((logger, r) => new CustomHttpResult($"Custom validation: {r.Errors.First().Message}"));
-        var result = Result<PersonStub>.Failure().WithError(new ValidationError("Invalid person data"));
+        var result = Result<PersonStub>.Failure()
+            .WithError(new ValidationError("Invalid person data"));
 
         // Act
         var response = result.MapHttp<Ok<PersonStub>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult, PersonStub>(person => TypedResults.Ok(person), this.logger);
@@ -328,7 +329,8 @@ public class ResultMapExtensionsGenericTests
     public void Map_GenericWithValue_ValidationError_ReturnsProblemWithValidationDetails()
     {
         // Arrange
-        var result = Result<PersonStub>.Failure().WithError(new ValidationError("Invalid person data"));
+        var result = Result<PersonStub>.Failure()
+            .WithError(new ValidationError("Invalid person data"));
 
         // Act
         var response = result.MapHttpCreated("/api/people/1", this.logger);
@@ -350,7 +352,8 @@ public class ResultMapExtensionsGenericTests
     public void Map_GenericWithValue_ValidationError2_ReturnsProblemWithValidationDetails()
     {
         // Arrange
-        var result = Result<PersonStub>.Failure().WithError(new ValidationError("Invalid firstname", "FirstName", "___"));
+        var result = Result<PersonStub>.Failure()
+            .WithError(new ValidationError("Invalid firstname", "FirstName", "___"));
 
         // Act
         var response = result.MapHttpCreated("/api/people/1", this.logger);

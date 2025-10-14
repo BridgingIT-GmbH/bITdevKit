@@ -342,10 +342,10 @@ public class ResultMapExtensionsGenericTests
         var problemResult = (ProblemHttpResult)innerResult;
         problemResult.StatusCode.ShouldBe(400);
         problemResult.ProblemDetails.Title.ShouldBe("Validation Error");
-        problemResult.ProblemDetails.Extensions["validations"].ShouldBeOfType<Dictionary<string, string[]>>();
-        var messages = (Dictionary<string, string[]>)problemResult.ProblemDetails.Extensions["validations"];
-        messages.ShouldContainKey(string.Empty);
-        messages[string.Empty].ShouldContain("Invalid person data");
+        problemResult.ProblemDetails.Extensions["errors"].ShouldBeOfType<Dictionary<string, string[]>>();
+        var messages = (Dictionary<string, string[]>)problemResult.ProblemDetails.Extensions["errors"];
+        messages.ShouldContainKey("validation");
+        messages["validation"].ShouldContain("Invalid person data");
     }
 
     [Fact]
@@ -365,8 +365,8 @@ public class ResultMapExtensionsGenericTests
         var problemResult = (ProblemHttpResult)innerResult;
         problemResult.StatusCode.ShouldBe(400);
         problemResult.ProblemDetails.Title.ShouldBe("Validation Error");
-        problemResult.ProblemDetails.Extensions["validations"].ShouldBeOfType<Dictionary<string, string[]>>();
-        var messages = (Dictionary<string, string[]>)problemResult.ProblemDetails.Extensions["validations"];
+        problemResult.ProblemDetails.Extensions["errors"].ShouldBeOfType<Dictionary<string, string[]>>();
+        var messages = (Dictionary<string, string[]>)problemResult.ProblemDetails.Extensions["errors"];
         messages.ShouldContainKey("FirstName");
         messages["FirstName"].ShouldContain("Invalid firstname");
     }

@@ -1428,10 +1428,10 @@ public static class ResultMapHttpExtensions
             }
         }
 
-        var validations = validationErrors
+        var errors = validationErrors
             .GroupBy(e => e.PropertyName)
             .ToDictionary(
-                g => g.Key,
+                g => g.Key.EmptyToNull() ?? "validation",
                 g => g.Select(e => e.Message).ToArray());
 
         var problemDetails = new ProblemDetails
@@ -1442,7 +1442,7 @@ public static class ResultMapHttpExtensions
             Detail = result.ToString(),
             Extensions = new Dictionary<string, object>
             {
-                ["validations"] = validations
+                ["errors"] = errors
             }
         };
 

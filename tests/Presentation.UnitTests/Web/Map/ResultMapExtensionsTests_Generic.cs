@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 
-using System;
-using System.Linq;
 using Bogus;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
@@ -15,6 +13,8 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Shouldly;
+using System;
+using System.Linq;
 using Xunit;
 
 public class ResultMapExtensionsGenericTests
@@ -310,9 +310,7 @@ public class ResultMapExtensionsGenericTests
         var result = Result<PersonStub>.Failure().WithError(new ValidationError("Invalid person data"));
 
         // Act
-        var response = result.MapHttp<Ok<PersonStub>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult, PersonStub>(
-            person => TypedResults.Ok(person),
-            this.logger);
+        var response = result.MapHttp<Ok<PersonStub>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult, PersonStub>(person => TypedResults.Ok(person), this.logger);
 
         // Assert
         response.ShouldBeOfType<Results<Ok<PersonStub>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
@@ -327,7 +325,7 @@ public class ResultMapExtensionsGenericTests
     }
 
     [Fact]
-    public void MapCreated_ValidationError_ReturnsProblemWithValidationDetails()
+    public void Map_GenericWithValue_ValidationError_ReturnsProblemWithValidationDetails()
     {
         // Arrange
         var result = Result<PersonStub>.Failure().WithError(new ValidationError("Invalid person data"));
@@ -346,5 +344,27 @@ public class ResultMapExtensionsGenericTests
         var messages = (Dictionary<string, string[]>)problemResult.ProblemDetails.Extensions["validations"];
         messages.ShouldContainKey(string.Empty);
         messages[string.Empty].ShouldContain("Invalid person data");
+    }
+
+    [Fact]
+    public void Map_GenericWithValue_ValidationError2_ReturnsProblemWithValidationDetails()
+    {
+        // Arrange
+        var result = Result<PersonStub>.Failure().WithError(new ValidationError("Invalid firstname", "FirstName", "___"));
+
+        // Act
+        var response = result.MapHttpCreated("/api/people/1", this.logger);
+
+        // Assert
+        response.ShouldBeOfType<Results<Created<PersonStub>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
+        var innerResult = response.Result;
+        innerResult.ShouldBeOfType<ProblemHttpResult>();
+        var problemResult = (ProblemHttpResult)innerResult;
+        problemResult.StatusCode.ShouldBe(400);
+        problemResult.ProblemDetails.Title.ShouldBe("Validation Error");
+        problemResult.ProblemDetails.Extensions["validations"].ShouldBeOfType<Dictionary<string, string[]>>();
+        var messages = (Dictionary<string, string[]>)problemResult.ProblemDetails.Extensions["validations"];
+        messages.ShouldContainKey("FirstName");
+        messages["FirstName"].ShouldContain("Invalid firstname");
     }
 }

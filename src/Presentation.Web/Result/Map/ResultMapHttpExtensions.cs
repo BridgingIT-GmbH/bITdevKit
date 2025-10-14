@@ -1392,6 +1392,36 @@ public static class ResultMapHttpExtensions
             type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500");
     }
 
+    ///// <summary>
+    ///// Maps an unexpected Result failure to a Problem response, including details.
+    ///// </summary>
+    ///// <typeparam name="TResult">HTTP result type to return (e.g., ProblemHttpResult).</typeparam>
+    ///// <param name="logger">Logger for structured diagnostics (optional).</param>
+    ///// <param name="result">The failed result to map.</param>
+    ///// <returns>A Problem HTTP result typed as <typeparamref name="TResult"/>.</returns>
+    //public static TResult MapError<TResult>(ILogger logger, Result result)
+    //    where TResult : IResult
+    //{
+    //    // Collect structured fields
+    //    var messages = result.Messages ?? [];
+    //    var errorTypes = result.Errors?.Select(e => e.GetType().Name).ToArray() ?? [];
+    //    var instanceId = Guid.NewGuid().ToString();
+
+    //    logger?.LogError("result - unexpected error occurred: IsSuccess={IsSuccess} Messages={MessagesCount} Errors={ErrorsCount} ErrorTypes={ErrorTypes} Instance={InstanceId}", result.IsSuccess, messages.Count, result.Errors?.Count ?? 0, errorTypes, instanceId);
+
+    //    // Build Problem with extensions
+    //    var problem = TypedResults.Problem(
+    //        detail: string.Join("; ", messages.DefaultIfEmpty("Unexpected error occurred.")),
+    //        instance: Guid.NewGuid().ToString(),
+    //        statusCode: 500,
+    //        title: "Unexpected Error",
+    //        type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500");
+    //    problem.ProblemDetails.Extensions["errors"] = errorTypes;
+    //    problem.ProblemDetails.Extensions["result"] = result.ToString();
+
+    //    return (TResult)(IResult)problem;
+    //}
+
     private static TResult MapValidationErrors<TResult>(Result result, ILogger logger)
         where TResult : IResult
     {

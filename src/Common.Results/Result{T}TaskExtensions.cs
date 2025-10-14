@@ -608,6 +608,92 @@ public static partial class ResultTTaskExtensions
     }
 
     /// <summary>
+    /// Logs an awaited Task&lt;Result&lt;T&gt;&gt; using structured logging, allowing callers to include
+    /// additional info derived from the resulting value. Uses default levels (Debug on success, Warning on failure).
+    /// </summary>
+    /// <typeparam name="T">The type of the success value contained in the result.</typeparam>
+    /// <typeparam name="TInfo">The type of the additional info to log.</typeparam>
+    /// <param name="resultTask">The task returning a result to log.</param>
+    /// <param name="logger">The logger to write to. If null, the method is a no-op.</param>
+    /// <param name="infoSelector">
+    /// A function that extracts safe, optional info from the awaited result for logging.
+    /// </param>
+    /// <param name="messageTemplate">
+    /// Optional message template for structured logging (e.g., "Pipeline completed for {Id}").
+    /// </param>
+    /// <param name="args">Optional arguments for <paramref name="messageTemplate"/>.</param>
+    /// <remarks>
+    /// Awaits <paramref name="resultTask"/> and delegates to the synchronous overload.
+    /// </remarks>
+    /// <returns>The awaited result, unchanged.</returns>
+    /// <example>
+    /// <code>
+    /// var final = await pipeline.Log(
+    ///     logger,
+    ///     r =&gt; r.Errors?.FirstOrDefault()?.Message,
+    ///     "Handled {Command} for {Email}",
+    ///     "CreateCustomer",
+    ///     email);
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> Log<T, TInfo>(
+        this Task<Result<T>> resultTask,
+        ILogger logger,
+        Func<Result<T>, TInfo> infoSelector,
+        string messageTemplate = null,
+        params object[] args)
+    {
+        var result = await resultTask.ConfigureAwait(false);
+        return result.Log(logger, infoSelector, messageTemplate, args);
+    }
+
+    /// <summary>
+    /// Logs an awaited Task&lt;Result&lt;T&gt;&gt; using structured logging with custom levels
+    /// and an info selector to include additional info derived from the resulting value.
+    /// </summary>
+    /// <typeparam name="T">The type of the success value contained in the result.</typeparam>
+    /// <typeparam name="TInfo">The type of the additional info to log.</typeparam>
+    /// <param name="resultTask">The task returning a result to log.</param>
+    /// <param name="logger">The logger to write to. If null, the method is a no-op.</param>
+    /// <param name="infoSelector">
+    /// A function that extracts safe, optional info from the awaited result for logging.
+    /// </param>
+    /// <param name="messageTemplate">
+    /// Optional message template for structured logging (e.g., "Persisted {Entity} with Id {Id}").
+    /// </param>
+    /// <param name="successLevel">Log level when the result indicates success.</param>
+    /// <param name="failureLevel">Log level when the result indicates failure.</param>
+    /// <param name="args">Optional arguments for <paramref name="messageTemplate"/>.</param>
+    /// <remarks>
+    /// Awaits <paramref name="resultTask"/> and delegates to the synchronous overload.
+    /// </remarks>
+    /// <returns>The awaited result, unchanged.</returns>
+    /// <example>
+    /// <code>
+    /// var final = await pipeline.Log(
+    ///     logger,
+    ///     r =&gt; r.Errors?.FirstOrDefault()?.Message,
+    ///     "Created {Entity} with Id {Id}",
+    ///     LogLevel.Information,
+    ///     LogLevel.Error,
+    ///     "Customer",
+    ///     customerId);
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> Log<T, TInfo>(
+        this Task<Result<T>> resultTask,
+        ILogger logger,
+        Func<Result<T>, TInfo> infoSelector,
+        string messageTemplate,
+        LogLevel successLevel,
+        LogLevel failureLevel,
+        params object[] args)
+    {
+        var result = await resultTask.ConfigureAwait(false);
+        return result.Log(logger, infoSelector, messageTemplate, successLevel, failureLevel, args);
+    }
+
+    /// <summary>
     ///     Executes an async action with the successful value without changing the Result task.
     /// </summary>
     /// <typeparam name="T">The type of the value.</typeparam>

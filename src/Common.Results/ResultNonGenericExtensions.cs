@@ -778,6 +778,151 @@ public static class ResultNonGenericExtensions
     }
 
     /// <summary>
+    /// Logs a non-generic Result using structured logging, allowing callers to include
+    /// additional, caller-selected information derived from the current result
+    /// (e.g., first error message).
+    /// Uses default levels: Debug on success, Warning on failure.
+    /// </summary>
+    /// <typeparam name="TInfo">The type of the additional info to log.</typeparam>
+    /// <param name="result">The Result instance to log.</param>
+    /// <param name="logger">The logger to write to. If null, the method is a no-op.</param>
+    /// <param name="infoSelector">
+    /// A function that extracts safe, optional info from the current <paramref name="result"/>
+    /// for logging (e.g., r =&gt; r.Errors?.FirstOrDefault()?.Message). If null, no extra info is included.
+    /// </param>
+    /// <param name="messageTemplate">
+    /// Optional message template for structured logging (e.g., "Finished operation {Operation}").
+    /// </param>
+    /// <param name="args">Optional arguments for <paramref name="messageTemplate"/>.</param>
+    /// <remarks>
+    /// - Never alters the business outcome or throws.
+    /// - Always logs: LogKey, Messages (count), Errors (count), and for failures, ErrorTypes.
+    /// - Adds Info={Info} when <paramref name="infoSelector"/> is provided.
+    /// - Default levels: Debug (success), Warning (failure).
+    /// </remarks>
+    /// <returns>The original <paramref name="result"/> unchanged.</returns>
+    /// <example>
+    /// <code>
+    /// result.Log(logger, r =&gt; r.Errors?.FirstOrDefault()?.Message, "Completed {Operation}", "DeleteCustomer");
+    /// </code>
+    /// </example>
+    public static Result Log<TInfo>(
+        this Result result,
+        ILogger logger,
+        Func<Result, TInfo> infoSelector,
+        string messageTemplate = null,
+        params object[] args)
+    {
+        return result.Log(
+            logger,
+            infoSelector,
+            messageTemplate,
+            successLevel: LogLevel.Debug,
+            failureLevel: LogLevel.Warning,
+            args);
+    }
+
+    /// <summary>
+    /// Logs a non-generic Result using structured logging with custom levels
+    /// and an info selector to include additional, caller-selected information.
+    /// </summary>
+    /// <typeparam name="TInfo">The type of the additional info to log.</typeparam>
+    /// <param name="result">The Result instance to log.</param>
+    /// <param name="logger">The logger to write to. If null, the method is a no-op.</param>
+    /// <param name="infoSelector">
+    /// A function that extracts safe, optional info from the current <paramref name="result"/>
+    /// for logging (e.g., r =&gt; r.Errors?.FirstOrDefault()?.Message). If null, no extra info is included.
+    /// </param>
+    /// <param name="messageTemplate">
+    /// Optional message template for structured logging (e.g., "Handled {Operation}").
+    /// </param>
+    /// <param name="successLevel">Log level when the result indicates success.</param>
+    /// <param name="failureLevel">Log level when the result indicates failure.</param>
+    /// <param name="args">Optional arguments for <paramref name="messageTemplate"/>.</param>
+    /// <remarks>
+    /// - Swallows logging exceptions; never impacts the returned <see cref="Result"/>.
+    /// - Logs: LogKey, Messages (count), Errors (count), ErrorTypes (for failures), and Info if provided.
+    /// </remarks>
+    /// <returns>The original <paramref name="result"/> unchanged.</returns>
+    /// <example>
+    /// <code>
+    /// result.Log(
+    ///     logger,
+    ///     r =&gt; r.Errors?.FirstOrDefault()?.Message,
+    ///     "Archived {Entity}",
+    ///     LogLevel.Information,
+    ///     LogLevel.Error,
+    ///     "Customer");
+    /// </code>
+    /// </example>
+    public static Result Log<TInfo>(
+        this Result result,
+        ILogger logger,
+        Func<Result, TInfo> infoSelector,
+        string messageTemplate,
+        LogLevel successLevel,
+        LogLevel failureLevel,
+        params object[] args)
+    {
+        if (logger is null)
+            return result;
+
+        try
+        {
+            var isSuccess = result.IsSuccess;
+            var messagesCount = result.Messages?.Count ?? 0;
+            var errorsCount = result.Errors?.Count ?? 0;
+            var errorTypes = result.Errors?.Select(e => e.GetType().Name).ToArray() ?? [];
+            var info = infoSelector is not null ? infoSelector(result) : default;
+
+            if (isSuccess)
+            {
+                if (!string.IsNullOrWhiteSpace(messageTemplate))
+                {
+                    logger.Log(
+                        successLevel,
+                        ResultLogEvent,
+                        "Result Success {LogKey} Messages={Messages} Errors={Errors} Info={Info} | " + messageTemplate,
+                        "RES", messagesCount, errorsCount, info, args);
+                }
+                else
+                {
+                    logger.Log(
+                        successLevel,
+                        ResultLogEvent,
+                        "Result Success {LogKey} Messages={Messages} Errors={Errors} Info={Info}",
+                        "RES", messagesCount, errorsCount, info);
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrWhiteSpace(messageTemplate))
+                {
+                    logger.Log(
+                        failureLevel,
+                        ResultLogEvent,
+                        "Result Failure {LogKey} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} Info={Info} | " + messageTemplate,
+                        "RES", messagesCount, errorsCount, errorTypes, info, args);
+                }
+                else
+                {
+                    logger.Log(
+                        failureLevel,
+                        ResultLogEvent,
+                        "Result Failure {LogKey} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} Info={Info}",
+                        "RES", messagesCount, errorsCount, errorTypes, info);
+                }
+            }
+
+            return result;
+        }
+        catch
+        {
+            return result; // never alter business outcome due to logging issues
+        }
+    }
+
+    /// <summary>
     /// Maps a success value while performing a side effect.
     /// </summary>
     /// <param name="result">The Result to map.</param>

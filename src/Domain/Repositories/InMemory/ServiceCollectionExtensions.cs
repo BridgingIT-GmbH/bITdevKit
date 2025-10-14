@@ -6,6 +6,8 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Domain.Repositories;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -77,4 +79,84 @@ public static partial class ServiceCollectionExtensions
 
         return new InMemoryRepositoryBuilderContext<TEntity, TContext>(services, lifetime);
     }
+
+    public static InMemoryRepositoryBuilderContext<TEntity, TContext>
+        WithSequenceNumberGenerator<TEntity, TContext>(
+            this InMemoryRepositoryBuilderContext<TEntity, TContext> context,
+            string sequenceName,
+            long startValue = 1,
+            int increment = 1,
+            long minValue = 1,
+            long maxValue = long.MaxValue,
+            bool isCyclic = false,
+            string schema = null,
+            ServiceLifetime lifetime = ServiceLifetime.Scoped)
+        where TEntity : class, IEntity
+        where TContext : InMemoryContext<TEntity>
+    {
+        if (string.IsNullOrWhiteSpace(sequenceName))
+        {
+            throw new ArgumentException("sequenceName is required", nameof(sequenceName));
+        }
+
+        ArgumentOutOfRangeException.ThrowIfZero(increment);
+        ArgumentOutOfRangeException.ThrowIfGreaterThan(minValue, maxValue);
+
+        if (startValue < minValue || startValue > maxValue)
+        {
+            throw new ArgumentOutOfRangeException(nameof(startValue));
+        }
+
+        // accumulate configurations
+        context.Services.AddSingleton(new ConfigureSequenceRegistration(
+            sequenceName, startValue, increment, minValue, maxValue, isCyclic, schema
+        ));
+
+        // ensure generator is only registered once; apply all configurations when constructed
+        switch (lifetime)
+        {
+            case ServiceLifetime.Singleton:
+                context.Services.TryAddSingleton<ISequenceNumberGenerator>(sp =>
+                {
+                    var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+                    var instance = new InMemorySequenceNumberGenerator(loggerFactory);
+                    ApplyAllConfigurations(sp, instance);
+                    return instance;
+                });
+                break;
+
+            case ServiceLifetime.Transient:
+                // not typical for sequences, but if needed, apply all configs each resolve
+                context.Services.TryAddTransient<ISequenceNumberGenerator>(sp =>
+                {
+                    var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+                    var instance = new InMemorySequenceNumberGenerator(loggerFactory);
+                    ApplyAllConfigurations(sp, instance);
+                    return instance;
+                });
+                break;
+
+            default: // Scoped
+                context.Services.TryAddScoped<ISequenceNumberGenerator>(sp =>
+                {
+                    var loggerFactory = sp.GetRequiredService<ILoggerFactory>();
+                    var instance = new InMemorySequenceNumberGenerator(loggerFactory);
+                    ApplyAllConfigurations(sp, instance);
+                    return instance;
+                });
+                break;
+        }
+
+        return context;
+
+        static void ApplyAllConfigurations(IServiceProvider sp, InMemorySequenceNumberGenerator gen)
+        {
+            foreach (var cfg in sp.GetServices<ConfigureSequenceRegistration>())
+            {
+                gen.ConfigureSequence(cfg.SequenceName, cfg.StartValue, cfg.Increment, cfg.MinValue, cfg.MaxValue, cfg.IsCyclic, cfg.Schema);
+            }
+        }
+    }
+
+    public sealed record ConfigureSequenceRegistration(string SequenceName, long StartValue, int Increment, long MinValue, long MaxValue, bool IsCyclic, string Schema);
 }

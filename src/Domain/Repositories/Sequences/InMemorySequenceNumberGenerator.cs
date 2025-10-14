@@ -37,7 +37,7 @@ public class InMemorySequenceNumberGenerator(
     /// <param name="maxValue">The maximum value.</param>
     /// <param name="isCyclic">Whether the sequence cycles.</param>
     /// <param name="schema">The schema (optional).</param>
-    public void ConfigureSequence(
+    public ISequenceNumberGenerator ConfigureSequence(
         string sequenceName,
         long startValue = 1,
         int increment = 1,
@@ -50,13 +50,15 @@ public class InMemorySequenceNumberGenerator(
         this.sequences[key] = new SequenceState
         {
             Name = sequenceName,
-            Schema = schema ?? "default",
+            Schema = schema,
             CurrentValue = startValue - increment,
             MinValue = minValue,
             MaxValue = maxValue,
             Increment = increment,
             IsCyclic = isCyclic
         };
+
+        return this;
     }
 
     public async Task<Result<long>> GetNextAsync(
@@ -70,7 +72,7 @@ public class InMemorySequenceNumberGenerator(
         if (!this.sequences.TryGetValue(key, out var foundState))
         {
             return Result<long>.Failure()
-                    .WithError(new SequenceNotFoundError(sequenceName, schema ?? "default"));
+                    .WithError(new SequenceNotFoundError(sequenceName, schema));
         }
 
         await semaphore.WaitAsync(cancellationToken);
@@ -80,7 +82,7 @@ public class InMemorySequenceNumberGenerator(
             var state = this.sequences.GetOrAdd(key, _ => new SequenceState
             {
                 Name = sequenceName,
-                Schema = schema ?? "default",
+                Schema = schema,
                 CurrentValue = 0,
                 MinValue = 1,
                 MaxValue = long.MaxValue,
@@ -104,10 +106,7 @@ public class InMemorySequenceNumberGenerator(
 
             state.CurrentValue = nextValue;
 
-            logger?.LogDebug(
-                "Generated in-memory sequence value {Value} for {Sequence}",
-                nextValue,
-                key);
+            this.logger?.LogDebug("Generated in-memory sequence value {Value} for {Sequence}", nextValue, key);
 
             return Result<long>.Success(nextValue);
         }
@@ -169,7 +168,7 @@ public class InMemorySequenceNumberGenerator(
         {
             return Task.FromResult(
                 Result<SequenceInfo>.Failure()
-                    .WithError(new SequenceNotFoundError(sequenceName, schema ?? "default")));
+                    .WithError(new SequenceNotFoundError(sequenceName, schema)));
         }
 
         var info = new SequenceInfo
@@ -199,7 +198,7 @@ public class InMemorySequenceNumberGenerator(
                 Result<long>.Failure()
                     .WithError(new SequenceNotFoundError(
                         sequenceName,
-                        schema ?? "default")));
+                        schema)));
         }
 
         return Task.FromResult(Result<long>.Success(state.CurrentValue));
@@ -219,12 +218,12 @@ public class InMemorySequenceNumberGenerator(
                 Result.Failure()
                     .WithError(new SequenceNotFoundError(
                         sequenceName,
-                        schema ?? "default")));
+                        schema)));
         }
 
         state.CurrentValue = startValue - state.Increment;
 
-        logger?.LogDebug(
+        this.logger?.LogDebug(
             "Reset in-memory sequence {Sequence} to {Value}",
             key,
             startValue);

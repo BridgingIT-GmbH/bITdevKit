@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System.Diagnostics;
 using Xunit.Abstractions;
 
 /// <summary>
@@ -16,6 +16,8 @@ using Xunit.Abstractions;
 /// </summary>
 public abstract class TestsBase : IDisposable
 {
+    private bool disposed;
+
     /// <summary>
     /// An abstract base class for test classes, utilized to provide common functionality
     /// and setup for unit tests. This includes configuring dependency injection and logging.
@@ -24,7 +26,9 @@ public abstract class TestsBase : IDisposable
     {
         this.Output = output;
         this.Services.AddLogging(c => c.AddProvider(new XunitLoggerProvider(output)));
+
         services?.Invoke(this.Services);
+
         this.ServiceProvider = this.Services.BuildServiceProvider();
     }
 
@@ -33,11 +37,13 @@ public abstract class TestsBase : IDisposable
     /// </summary>
     protected ITestOutputHelper Output { get; }
 
+    /// <summary>
     /// Gets the IServiceCollection instance used to configure dependency injection services.
     /// This collection is used to register and configure dependencies for the test cases.
     /// By default, it includes a logging provider that integrates with xUnit's output.
     /// Additional services can be registered by providing an Action<IServiceCollection> instance
-    /// to the TestsBase constructor.
+    /// to the TestsBase constructor or by calling AddServices.
+    /// </summary>
     protected IServiceCollection Services { get; } = new ServiceCollection();
 
     /// <summary>
@@ -46,7 +52,19 @@ public abstract class TestsBase : IDisposable
     /// into test classes, enabling the testing of application's behavior in an environment that closely
     /// resembles the real runtime scenario.
     /// </summary>
-    protected ServiceProvider ServiceProvider { get; }
+    protected ServiceProvider ServiceProvider { get; private set; }
+
+    /// <summary>
+    /// Adds additional services to the IServiceCollection and rebuilds the ServiceProvider.
+    /// </summary>
+    /// <param name="services">An action to configure additional services.</param>
+    protected void RegisterServices(Action<IServiceCollection> services)
+    {
+        services?.Invoke(this.Services);
+
+        this.ServiceProvider?.Dispose(); // Dispose the old ServiceProvider
+        this.ServiceProvider = this.Services.BuildServiceProvider();
+    }
 
     /// <summary>
     /// Disposes the resources used by the <see cref="TestsBase"/> class.
@@ -58,7 +76,25 @@ public abstract class TestsBase : IDisposable
     /// </remarks>
     public void Dispose()
     {
-        this.ServiceProvider.Dispose();
+        this.Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    /// <summary>
+    /// Disposes the resources used by the <see cref="TestsBase"/> class.
+    /// </summary>
+    /// <param name="disposing">Indicates whether to dispose managed resources.</param>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (!this.disposed)
+        {
+            if (disposing)
+            {
+                this.ServiceProvider?.Dispose();
+            }
+
+            this.disposed = true;
+        }
     }
 
     /// <summary>
@@ -102,9 +138,7 @@ public abstract class TestsBase : IDisposable
         }
 
         sw.Stop();
-        this.Output?.WriteLine(
-            $"Benchmark: Execution with #{iterations} iterations took: {sw.Elapsed.TotalMilliseconds}ms\r\n  - Gen-0: {GC.CollectionCount(0)}, Gen-1: {GC.CollectionCount(1)}, Gen-2: {GC.CollectionCount(2)}",
-            sw.ElapsedMilliseconds);
+        this.Output?.WriteLine($"Benchmark: Execution with #{iterations} iterations took: {sw.Elapsed.TotalMilliseconds}ms\r\n  - Gen-0: {GC.CollectionCount(0)}, Gen-1: {GC.CollectionCount(1)}, Gen-2: {GC.CollectionCount(2)}", sw.ElapsedMilliseconds);
 
         return sw.ElapsedMilliseconds;
     }

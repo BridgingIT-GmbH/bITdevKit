@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging;
 /// </summary>
 public static class ResultPagedExtensions
 {
+    private static readonly EventId ResultLogEvent = new(10001, "Result");
+
     /// <summary>
     /// Throws a <see cref="ResultException"/> if the current result is a failure.
     /// </summary>
@@ -667,33 +669,147 @@ public static class ResultPagedExtensions
         }
     }
 
-    public static ResultPaged<T> Log<T>(this ResultPaged<T> result, ILogger logger, string message = null, LogLevel logLevel = LogLevel.Trace)
+    /// <summary>
+    /// Logs a <see cref="ResultPaged{T}"/> using structured logging with default levels
+    /// (Debug on success, Warning on failure).
+    /// </summary>
+    /// <typeparam name="T">The type of the paged items.</typeparam>
+    /// <param name="result">The paged result instance to log.</param>
+    /// <param name="logger">
+    /// The logger to write to. If null, the method is a no-op and returns the original result.
+    /// </param>
+    /// <param name="messageTemplate">
+    /// Optional message template for structured logging (e.g., "Fetched page {Page} of products").
+    /// </param>
+    /// <param name="args">
+    /// Optional structured logging arguments corresponding to <paramref name="messageTemplate"/>.
+    /// </param>
+    /// <remarks>
+    /// This method never alters the business outcome or throws.
+    /// It emits consistent fields: LogKey, Page, PageSize, TotalCount, TotalPages, HasNextPage,
+    /// HasPreviousPage, Messages (count), Errors (count), and ErrorTypes for failures.
+    /// </remarks>
+    /// <returns>The original <paramref name="result"/> unchanged.</returns>
+    /// <example>
+    /// <code>
+    /// result.Log(logger, "Fetched {Entity} page {Page}", "Product", result.CurrentPage);
+    /// </code>
+    /// </example>
+    public static ResultPaged<T> Log<T>(
+        this ResultPaged<T> result,
+        ILogger logger,
+        string messageTemplate = null,
+        params object[] args)
+    {
+        return result.Log(
+            logger,
+            messageTemplate,
+            successLevel: LogLevel.Debug,
+            failureLevel: LogLevel.Warning,
+            args);
+    }
+
+    /// <summary>
+    /// Logs a <see cref="ResultPaged{T}"/> using structured logging with custom levels.
+    /// </summary>
+    /// <typeparam name="T">The type of the paged items.</typeparam>
+    /// <param name="result">The paged result instance to log.</param>
+    /// <param name="logger">
+    /// The logger to write to. If null, the method is a no-op and returns the original result.
+    /// </param>
+    /// <param name="messageTemplate">
+    /// Optional message template for structured logging (e.g., "Searched {Entity} page {Page}").
+    /// </param>
+    /// <param name="successLevel">The log level used when the result indicates success.</param>
+    /// <param name="failureLevel">The log level used when the result indicates failure.</param>
+    /// <param name="args">
+    /// Optional structured logging arguments corresponding to <paramref name="messageTemplate"/>.
+    /// </param>
+    /// <remarks>
+    /// Logging exceptions are swallowed and do not affect the returned <see cref="ResultPaged{T}"/>.
+    /// </remarks>
+    /// <returns>The original <paramref name="result"/> unchanged.</returns>
+    /// <example>
+    /// <code>
+    /// result.Log(logger,
+    ///     "Queried {Entity} page {Page} (size {Size})",
+    ///     LogLevel.Information,
+    ///     LogLevel.Error,
+    ///     "Order",
+    ///     result.CurrentPage,
+    ///     result.PageSize);
+    /// </code>
+    /// </example>
+    public static ResultPaged<T> Log<T>(
+        this ResultPaged<T> result,
+        ILogger logger,
+        string messageTemplate,
+        LogLevel successLevel,
+        LogLevel failureLevel,
+        params object[] args)
     {
         if (logger is null)
-        {
-            return ResultPaged<T>.Failure()
-                .WithError(new Error("Logger cannot be null"));
-        }
+            return result;
 
         try
         {
-            if (result.IsSuccess)
+            var isSuccess = result.IsSuccess;
+            var messagesCount = result.Messages?.Count ?? 0;
+            var errorsCount = result.Errors?.Count ?? 0;
+            var errorTypes = result.Errors?.Select(e => e.GetType().Name).ToArray() ?? [];
+
+            var page = result.CurrentPage;
+            var pageSize = result.PageSize;
+            var total = result.TotalCount;
+            var totalPages = result.TotalPages;
+            var hasNext = result.HasNextPage;
+            var hasPrev = result.HasPreviousPage;
+
+            if (isSuccess)
             {
-                logger.Log(logLevel, $"{{LogKey}} {result.ToString(message)}", "RES");
+                if (!string.IsNullOrWhiteSpace(messageTemplate))
+                {
+                    logger.Log(
+                        successLevel,
+                        ResultLogEvent,
+                        "ResultPaged Success {LogKey} Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} | " + messageTemplate,
+                        "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, args);
+                }
+                else
+                {
+                    logger.Log(
+                        successLevel,
+                        ResultLogEvent,
+                        "ResultPaged Success {LogKey} Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors}",
+                        "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount);
+                }
             }
             else
             {
-                logger.LogError($"{{LogKey}} {result.ToString(message)}", "RES");
+                if (!string.IsNullOrWhiteSpace(messageTemplate))
+                {
+                    logger.Log(
+                        failureLevel,
+                        ResultLogEvent,
+                        "ResultPaged Failure {LogKey} Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
+                        "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, errorTypes, args);
+                }
+                else
+                {
+                    logger.Log(
+                        failureLevel,
+                        ResultLogEvent,
+                        "ResultPaged Failure {LogKey} Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
+                        "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, errorTypes);
+                }
             }
 
             return result;
         }
-        catch (Exception ex)
+        catch
         {
-            return ResultPaged<T>.Failure()
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            // Never alter business outcome due to logging issues.
+            return result;
         }
     }
 

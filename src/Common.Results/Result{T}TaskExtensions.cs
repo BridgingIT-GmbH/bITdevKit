@@ -526,35 +526,85 @@ public static partial class ResultTTaskExtensions
         }
     }
 
+    /// <summary>
+    /// Logs an awaited Task&lt;Result&lt;T&gt;&gt; using structured logging with default levels
+    /// (Debug on success, Warning on failure).
+    /// </summary>
+    /// <typeparam name="T">The type of the success value contained in the result.</typeparam>
+    /// <param name="resultTask">The task returning a result to log.</param>
+    /// <param name="logger">
+    /// The logger to write to. If null, the method awaits and returns the original result.
+    /// </param>
+    /// <param name="messageTemplate">
+    /// Optional message template for structured logging (e.g., "Pipeline completed for {Id}").
+    /// </param>
+    /// <param name="args">
+    /// Optional structured logging arguments corresponding to <paramref name="messageTemplate"/>.
+    /// </param>
+    /// <remarks>
+    /// This method awaits <paramref name="resultTask"/> and delegates to the synchronous overload.
+    /// </remarks>
+    /// <returns>
+    /// The awaited <see cref="Result{T}"/> from <paramref name="resultTask"/>, unchanged.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// var final = await pipeline.Log(logger, "Handled {Command} for {Email}", "CreateCustomer", email);
+    /// </code>
+    /// </example>
     public static async Task<Result<T>> Log<T>(
-        this Task<Result<T>> resultTask, ILogger logger, string message = null, LogLevel logLevel = LogLevel.Trace)
+        this Task<Result<T>> resultTask,
+        ILogger logger,
+        string messageTemplate = null,
+        params object[] args)
     {
-        if (logger is null)
-        {
-            return Result<T>.Failure()
-                .WithError(new Error("Logger cannot be null"));
-        }
+        var result = await resultTask.ConfigureAwait(false);
+        return result.Log(logger, messageTemplate, args);
+    }
 
-        try
-        {
-            var result = await resultTask;
-            if (result.IsSuccess)
-            {
-                logger.Log(logLevel, $"{{LogKey}} {result.ToString(message)}", "RES");
-            }
-            else
-            {
-                logger.LogError($"{{LogKey}} {result.ToString(message)}", "RES");
-            }
-            return result;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error while logging Result");
-            return Result<T>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message);
-        }
+    /// <summary>
+    /// Logs an awaited Task&lt;Result&lt;T&gt;&gt; using structured logging with custom levels.
+    /// </summary>
+    /// <typeparam name="T">The type of the success value contained in the result.</typeparam>
+    /// <param name="resultTask">The task returning a result to log.</param>
+    /// <param name="logger">
+    /// The logger to write to. If null, the method awaits and returns the original result.
+    /// </param>
+    /// <param name="messageTemplate">
+    /// Optional message template for structured logging (e.g., "Persisted {Entity} with Id {Id}").
+    /// </param>
+    /// <param name="successLevel">The log level used when the result indicates success.</param>
+    /// <param name="failureLevel">The log level used when the result indicates failure.</param>
+    /// <param name="args">
+    /// Optional structured logging arguments corresponding to <paramref name="messageTemplate"/>.
+    /// </param>
+    /// <remarks>
+    /// This method awaits <paramref name="resultTask"/> and delegates to the synchronous overload.
+    /// </remarks>
+    /// <returns>
+    /// The awaited <see cref="Result{T}"/> from <paramref name="resultTask"/>, unchanged.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// var final = await pipeline.Log(
+    ///     logger,
+    ///     "Created {Entity} with Id {Id}",
+    ///     LogLevel.Information,
+    ///     LogLevel.Error,
+    ///     "Customer",
+    ///     customerId);
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> Log<T>(
+        this Task<Result<T>> resultTask,
+        ILogger logger,
+        string messageTemplate,
+        LogLevel successLevel,
+        LogLevel failureLevel,
+        params object[] args)
+    {
+        var result = await resultTask.ConfigureAwait(false);
+        return result.Log(logger, messageTemplate, successLevel, failureLevel, args);
     }
 
     /// <summary>

@@ -7,6 +7,8 @@ using Microsoft.Extensions.Logging;
 /// </summary>
 public static class ResultNonGenericExtensions
 {
+    private static readonly EventId ResultLogEvent = new(10001, "Result");
+
     /// <summary>
     /// Throws an exception if the result indicates failure.
     /// </summary>
@@ -646,33 +648,132 @@ public static class ResultNonGenericExtensions
         }
     }
 
-    public static Result Log(this Result result, ILogger logger, string message = null, LogLevel logLevel = LogLevel.Trace)
+    /// <summary>
+    /// Logs a non-generic <see cref="Result"/> using structured logging with default levels
+    /// (Debug on success, Warning on failure).
+    /// </summary>
+    /// <param name="result">The result instance to log.</param>
+    /// <param name="logger">
+    /// The logger to write to. If null, the method is a no-op and returns the original result.
+    /// </param>
+    /// <param name="messageTemplate">
+    /// Optional message template for structured logging (e.g., "Finished operation {Operation}").
+    /// </param>
+    /// <param name="args">
+    /// Optional structured logging arguments corresponding to <paramref name="messageTemplate"/>.
+    /// </param>
+    /// <remarks>
+    /// This method never alters the business outcome or throws.
+    /// It emits consistent fields: LogKey, Messages (count), Errors (count),
+    /// and for failures, ErrorTypes (array of error type names).
+    /// </remarks>
+    /// <returns>The original <paramref name="result"/> unchanged.</returns>
+    /// <example>
+    /// <code>
+    /// result.Log(logger, "Completed {Operation}", "DeleteCustomer");
+    /// </code>
+    /// </example>
+    public static Result Log(
+        this Result result,
+        ILogger logger,
+        string messageTemplate = null,
+        params object[] args)
+    {
+        return result.Log(
+            logger,
+            messageTemplate,
+            successLevel: LogLevel.Debug,
+            failureLevel: LogLevel.Warning,
+            args);
+    }
+
+    /// <summary>
+    /// Logs a non-generic <see cref="Result"/> using structured logging with custom levels.
+    /// </summary>
+    /// <param name="result">The result instance to log.</param>
+    /// <param name="logger">
+    /// The logger to write to. If null, the method is a no-op and returns the original result.
+    /// </param>
+    /// <param name="messageTemplate">
+    /// Optional message template for structured logging (e.g., "Handled {Operation}").
+    /// </param>
+    /// <param name="successLevel">The log level used when the result indicates success.</param>
+    /// <param name="failureLevel">The log level used when the result indicates failure.</param>
+    /// <param name="args">
+    /// Optional structured logging arguments corresponding to <paramref name="messageTemplate"/>.
+    /// </param>
+    /// <remarks>
+    /// Logging exceptions are swallowed and do not affect the returned <see cref="Result"/>.
+    /// </remarks>
+    /// <returns>The original <paramref name="result"/> unchanged.</returns>
+    /// <example>
+    /// <code>
+    /// result.Log(logger, "Archived {Entity}", LogLevel.Information, LogLevel.Error, "Customer");
+    /// </code>
+    /// </example>
+    public static Result Log(
+        this Result result,
+        ILogger logger,
+        string messageTemplate,
+        LogLevel successLevel,
+        LogLevel failureLevel,
+        params object[] args)
     {
         if (logger is null)
-        {
-            return Result.Failure()
-                .WithError(new Error("Logger cannot be null"));
-        }
+            return result;
 
         try
         {
-            if (result.IsSuccess)
+            var isSuccess = result.IsSuccess;
+            var messagesCount = result.Messages?.Count ?? 0;
+            var errorsCount = result.Errors?.Count ?? 0;
+            var errorTypes = result.Errors?.Select(e => e.GetType().Name).ToArray() ?? [];
+
+            if (isSuccess)
             {
-                logger.Log(logLevel, $"{{LogKey}} {result.ToString(message)}", "RES");
+                if (!string.IsNullOrWhiteSpace(messageTemplate))
+                {
+                    logger.Log(
+                        successLevel,
+                        ResultLogEvent,
+                        "Result Success {LogKey} Messages={Messages} Errors={Errors} | " + messageTemplate,
+                        "RES", messagesCount, errorsCount, args);
+                }
+                else
+                {
+                    logger.Log(
+                        successLevel,
+                        ResultLogEvent,
+                        "Result Success {LogKey} Messages={Messages} Errors={Errors}",
+                        "RES", messagesCount, errorsCount);
+                }
             }
             else
             {
-                logger.LogError($"{{LogKey}} {result.ToString(message)}", "RES");
+                if (!string.IsNullOrWhiteSpace(messageTemplate))
+                {
+                    logger.Log(
+                        failureLevel,
+                        ResultLogEvent,
+                        "Result Failure {LogKey} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
+                        "RES", messagesCount, errorsCount, errorTypes, args);
+                }
+                else
+                {
+                    logger.Log(
+                        failureLevel,
+                        ResultLogEvent,
+                        "Result Failure {LogKey} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
+                        "RES", messagesCount, errorsCount, errorTypes);
+                }
             }
 
             return result;
         }
-        catch (Exception ex)
+        catch
         {
-            return Result.Failure()
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            // Never alter business outcome due to logging issues.
+            return result;
         }
     }
 

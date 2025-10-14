@@ -1574,35 +1574,82 @@ public static partial class ResultPagedFunctionTaskExtensions
         }
     }
 
+    /// <summary>
+    /// Logs an awaited <see cref="Task{ResultPaged}"/> using structured logging with default levels
+    /// (Debug on success, Warning on failure).
+    /// </summary>
+    /// <typeparam name="T">The type of the paged items.</typeparam>
+    /// <param name="resultTask">The task returning a paged result to log.</param>
+    /// <param name="logger">
+    /// The logger to write to. If null, the method awaits and returns the original result.
+    /// </param>
+    /// <param name="messageTemplate">
+    /// Optional message template for structured logging (e.g., "Fetched page {Page} of {Entity}").
+    /// </param>
+    /// <param name="args">
+    /// Optional structured logging arguments corresponding to <paramref name="messageTemplate"/>.
+    /// </param>
+    /// <remarks>
+    /// This method awaits <paramref name="resultTask"/> and delegates to the synchronous overload.
+    /// </remarks>
+    /// <returns>The awaited <see cref="ResultPaged{T}"/> unchanged.</returns>
+    /// <example>
+    /// <code>
+    /// var paged = await service.GetPagedAsync(q).Log(logger, "Fetched {Entity} page {Page}", "Product", q.Page);
+    /// </code>
+    /// </example>
     public static async Task<ResultPaged<T>> Log<T>(
-        this Task<ResultPaged<T>> resultTask, ILogger logger, string message = null, LogLevel logLevel = LogLevel.Trace)
+        this Task<ResultPaged<T>> resultTask,
+        ILogger logger,
+        string messageTemplate = null,
+        params object[] args)
     {
-        if (logger is null)
-        {
-            return ResultPaged<T>.Failure()
-                .WithError(new Error("Logger cannot be null"));
-        }
+        var result = await resultTask.ConfigureAwait(false);
+        return result.Log(logger, messageTemplate, args);
+    }
 
-        try
-        {
-            var result = await resultTask;
-            if (result.IsSuccess)
-            {
-                logger.Log(logLevel, $"{{LogKey}} {result.ToString(message)}", "RES");
-            }
-            else
-            {
-                logger.LogError($"{{LogKey}} {result.ToString(message)}", "RES");
-            }
-            return result;
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Error while logging Result");
-            return ResultPaged<T>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message);
-        }
+    /// <summary>
+    /// Logs an awaited <see cref="Task{ResultPaged}"/> using structured logging with custom levels.
+    /// </summary>
+    /// <typeparam name="T">The type of the paged items.</typeparam>
+    /// <param name="resultTask">The task returning a paged result to log.</param>
+    /// <param name="logger">
+    /// The logger to write to. If null, the method awaits and returns the original result.
+    /// </param>
+    /// <param name="messageTemplate">
+    /// Optional message template for structured logging (e.g., "Searched {Entity} page {Page}").
+    /// </param>
+    /// <param name="successLevel">The log level used when the result indicates success.</param>
+    /// <param name="failureLevel">The log level used when the result indicates failure.</param>
+    /// <param name="args">
+    /// Optional structured logging arguments corresponding to <paramref name="messageTemplate"/>.
+    /// </param>
+    /// <remarks>
+    /// This method awaits <paramref name="resultTask"/> and delegates to the synchronous overload.
+    /// </remarks>
+    /// <returns>The awaited <see cref="ResultPaged{T}"/> unchanged.</returns>
+    /// <example>
+    /// <code>
+    /// var paged = await query.RunAsync().Log(
+    ///     logger,
+    ///     "Listed {Entity} page {Page} size {Size}",
+    ///     LogLevel.Information,
+    ///     LogLevel.Warning,
+    ///     "User",
+    ///     page,
+    ///     size);
+    /// </code>
+    /// </example>
+    public static async Task<ResultPaged<T>> Log<T>(
+        this Task<ResultPaged<T>> resultTask,
+        ILogger logger,
+        string messageTemplate,
+        LogLevel successLevel,
+        LogLevel failureLevel,
+        params object[] args)
+    {
+        var result = await resultTask.ConfigureAwait(false);
+        return result.Log(logger, messageTemplate, successLevel, failureLevel, args);
     }
 
     /// <summary>

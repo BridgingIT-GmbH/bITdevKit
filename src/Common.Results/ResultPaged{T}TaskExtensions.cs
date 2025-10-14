@@ -1653,90 +1653,49 @@ public static partial class ResultPagedFunctionTaskExtensions
     }
 
     /// <summary>
-    /// Logs an awaited Task&lt;ResultPaged&lt;T&gt;&gt; using structured logging, allowing callers to include
-    /// additional info derived from the resulting value. Uses default levels (Debug/Warning).
+    /// Logs an awaited Task&lt;ResultPaged&lt;T&gt;&gt; using structured logging with default levels
+    /// (Debug/Warning). The arguments for the message template are produced from the awaited paged
+    /// result via <paramref name="argsFactory"/>.
     /// </summary>
     /// <typeparam name="T">The type of the paged items.</typeparam>
-    /// <typeparam name="TInfo">The type of the additional info to log.</typeparam>
     /// <param name="resultTask">The task returning a paged result to log.</param>
     /// <param name="logger">The logger to write to. If null, the method is a no-op.</param>
-    /// <param name="infoSelector">
-    /// A function that extracts safe, optional info from the awaited result for logging.
-    /// </param>
-    /// <param name="messageTemplate">
-    /// Optional message template for structured logging (e.g., "Fetched {Entity} page {Page}").
-    /// </param>
-    /// <param name="args">Optional arguments for <paramref name="messageTemplate"/>.</param>
-    /// <remarks>
-    /// Awaits <paramref name="resultTask"/> and delegates to the synchronous overload.
-    /// </remarks>
+    /// <param name="messageTemplate">The structured message template to log.</param>
+    /// <param name="argsFactory">Factory building arguments from the awaited paged result.</param>
     /// <returns>The awaited paged result, unchanged.</returns>
-    /// <example>
-    /// <code>
-    /// var paged = await query.RunAsync().Log(
-    ///     logger,
-    ///     r =&gt; r.Value?.Count,
-    ///     "Fetched {Entity} page {Page}",
-    ///     "Order",
-    ///     page);
-    /// </code>
-    /// </example>
-    public static async Task<ResultPaged<T>> Log<T, TInfo>(
+    public static async Task<ResultPaged<T>> Log<T>(
         this Task<ResultPaged<T>> resultTask,
         ILogger logger,
-        Func<ResultPaged<T>, TInfo> infoSelector,
-        string messageTemplate = null,
-        params object[] args)
+        string messageTemplate,
+        Func<ResultPaged<T>, object[]> argsFactory)
     {
         var result = await resultTask.ConfigureAwait(false);
-        return result.Log(logger, infoSelector, messageTemplate, args);
+        return result.Log(logger, messageTemplate, argsFactory);
     }
 
     /// <summary>
-    /// Logs an awaited Task&lt;ResultPaged&lt;T&gt;&gt; using structured logging with custom levels
-    /// and an info selector to include additional info derived from the awaited result.
+    /// Logs an awaited Task&lt;ResultPaged&lt;T&gt;&gt; using structured logging with custom levels.
+    /// The arguments for the message template are produced from the awaited paged result via
+    /// <paramref name="argsFactory"/>.
     /// </summary>
     /// <typeparam name="T">The type of the paged items.</typeparam>
-    /// <typeparam name="TInfo">The type of the additional info to log.</typeparam>
     /// <param name="resultTask">The task returning a paged result to log.</param>
     /// <param name="logger">The logger to write to. If null, the method is a no-op.</param>
-    /// <param name="infoSelector">
-    /// A function that extracts safe, optional info from the awaited result for logging.
-    /// </param>
-    /// <param name="messageTemplate">
-    /// Optional message template for structured logging (e.g., "Searched {Entity} page {Page}").
-    /// </param>
-    /// <param name="successLevel">Log level when the result indicates success.</param>
-    /// <param name="failureLevel">Log level when the result indicates failure.</param>
-    /// <param name="args">Optional arguments for <paramref name="messageTemplate"/>.</param>
-    /// <remarks>
-    /// Awaits <paramref name="resultTask"/> and delegates to the synchronous overload.
-    /// </remarks>
+    /// <param name="messageTemplate">The structured message template to log.</param>
+    /// <param name="argsFactory">Factory building arguments from the awaited paged result.</param>
+    /// <param name="successLevel">Log level on success.</param>
+    /// <param name="failureLevel">Log level on failure.</param>
     /// <returns>The awaited paged result, unchanged.</returns>
-    /// <example>
-    /// <code>
-    /// var paged = await service.GetPagedAsync(q).Log(
-    ///     logger,
-    ///     r =&gt; r.Value?.Count,
-    ///     "Listed {Entity} page {Page} size {Size}",
-    ///     LogLevel.Information,
-    ///     LogLevel.Warning,
-    ///     "User",
-    ///     q.Page,
-    ///     q.PageSize);
-    /// </code>
-    /// </example>
-    public static async Task<ResultPaged<T>> Log<T, TInfo>(
+    public static async Task<ResultPaged<T>> Log<T>(
         this Task<ResultPaged<T>> resultTask,
         ILogger logger,
-        Func<ResultPaged<T>, TInfo> infoSelector,
         string messageTemplate,
+        Func<ResultPaged<T>, object[]> argsFactory,
         LogLevel successLevel,
-        LogLevel failureLevel,
-        params object[] args)
+        LogLevel failureLevel)
     {
         var result = await resultTask.ConfigureAwait(false);
-        return result.Log(logger, infoSelector, messageTemplate, successLevel, failureLevel, args);
+        return result.Log(logger, messageTemplate, argsFactory, successLevel, failureLevel);
     }
 
     /// <summary>

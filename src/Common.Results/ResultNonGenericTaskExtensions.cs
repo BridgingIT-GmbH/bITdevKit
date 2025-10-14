@@ -834,81 +834,47 @@ public static partial class ResultNonGenericTaskExtensions
     }
 
     /// <summary>
-    /// Logs an awaited Task&lt;Result&gt; using structured logging, allowing callers to include
-    /// additional info derived from the resulting value. Uses default levels (Debug/Warning).
+    /// Logs an awaited Task&lt;Result&gt; using structured logging with default levels
+    /// (Debug/Warning). The arguments for the message template are produced from the
+    /// awaited result via <paramref name="argsFactory"/>.
     /// </summary>
-    /// <typeparam name="TInfo">The type of the additional info to log.</typeparam>
     /// <param name="resultTask">The task returning a result to log.</param>
     /// <param name="logger">The logger to write to. If null, the method is a no-op.</param>
-    /// <param name="infoSelector">
-    /// A function that extracts safe, optional info from the awaited result for logging.
-    /// </param>
-    /// <param name="messageTemplate">
-    /// Optional message template for structured logging (e.g., "Executed {Operation}").
-    /// </param>
-    /// <param name="args">Optional arguments for <paramref name="messageTemplate"/>.</param>
-    /// <remarks>
-    /// Awaits <paramref name="resultTask"/> and delegates to the synchronous overload.
-    /// </remarks>
+    /// <param name="messageTemplate">The message template to log.</param>
+    /// <param name="argsFactory">Factory building arguments from the awaited result.</param>
     /// <returns>The awaited result, unchanged.</returns>
-    /// <example>
-    /// <code>
-    /// var final = await task.Log(logger, r =&gt; r.Errors?.FirstOrDefault()?.Message, "Ran {Job}", jobName);
-    /// </code>
-    /// </example>
-    public static async Task<Result> Log<TInfo>(
+    public static async Task<Result> Log(
         this Task<Result> resultTask,
         ILogger logger,
-        Func<Result, TInfo> infoSelector,
-        string messageTemplate = null,
-        params object[] args)
+        string messageTemplate,
+        Func<Result, object[]> argsFactory)
     {
         var result = await resultTask.ConfigureAwait(false);
-        return result.Log(logger, infoSelector, messageTemplate, args);
+        return result.Log(logger, messageTemplate, argsFactory);
     }
 
     /// <summary>
-    /// Logs an awaited Task&lt;Result&gt; using structured logging with custom levels
-    /// and an info selector to include additional info derived from the awaited result.
+    /// Logs an awaited Task&lt;Result&gt; using structured logging with custom levels.
+    /// The arguments for the message template are produced from the awaited result via
+    /// <paramref name="argsFactory"/>.
     /// </summary>
-    /// <typeparam name="TInfo">The type of the additional info to log.</typeparam>
     /// <param name="resultTask">The task returning a result to log.</param>
     /// <param name="logger">The logger to write to. If null, the method is a no-op.</param>
-    /// <param name="infoSelector">
-    /// A function that extracts safe, optional info from the awaited result for logging.
-    /// </param>
-    /// <param name="messageTemplate">
-    /// Optional message template for structured logging (e.g., "Handled {Operation}").
-    /// </param>
-    /// <param name="successLevel">Log level when the result indicates success.</param>
-    /// <param name="failureLevel">Log level when the result indicates failure.</param>
-    /// <param name="args">Optional arguments for <paramref name="messageTemplate"/>.</param>
-    /// <remarks>
-    /// Awaits <paramref name="resultTask"/> and delegates to the synchronous overload.
-    /// </remarks>
+    /// <param name="messageTemplate">The message template to log.</param>
+    /// <param name="argsFactory">Factory building arguments from the awaited result.</param>
+    /// <param name="successLevel">Log level on success.</param>
+    /// <param name="failureLevel">Log level on failure.</param>
     /// <returns>The awaited result, unchanged.</returns>
-    /// <example>
-    /// <code>
-    /// var final = await task.Log(
-    ///     logger,
-    ///     r =&gt; r.Errors?.FirstOrDefault()?.Message,
-    ///     "Operation {Name} finished",
-    ///     LogLevel.Information,
-    ///     LogLevel.Error,
-    ///     opName);
-    /// </code>
-    /// </example>
-    public static async Task<Result> Log<TInfo>(
+    public static async Task<Result> Log(
         this Task<Result> resultTask,
         ILogger logger,
-        Func<Result, TInfo> infoSelector,
         string messageTemplate,
+        Func<Result, object[]> argsFactory,
         LogLevel successLevel,
-        LogLevel failureLevel,
-        params object[] args)
+        LogLevel failureLevel)
     {
         var result = await resultTask.ConfigureAwait(false);
-        return result.Log(logger, infoSelector, messageTemplate, successLevel, failureLevel, args);
+        return result.Log(logger, messageTemplate, argsFactory, successLevel, failureLevel);
     }
 
     /// <summary>

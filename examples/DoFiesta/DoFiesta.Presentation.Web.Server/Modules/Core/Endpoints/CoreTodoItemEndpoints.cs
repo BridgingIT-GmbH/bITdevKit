@@ -60,7 +60,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .WithName("Core.TodoItems.Create")
             .Produces<TodoItemModel>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status500InternalServerError);
 
         group.MapPost("/actions/completeall", TodoCompleteAll)
@@ -78,7 +78,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .Produces<TodoItemModel>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status500InternalServerError);
 
         // DELETE TodoItem

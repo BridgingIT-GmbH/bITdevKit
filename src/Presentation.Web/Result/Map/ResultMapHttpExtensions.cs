@@ -637,7 +637,7 @@ public static class ResultMapHttpExtensions
             {
                 case Ok<T> okResult:
                     return okResult;
-               case UnauthorizedHttpResult unauthorizedResult:
+                case UnauthorizedHttpResult unauthorizedResult:
                     return unauthorizedResult;
                 case BadRequest badRequestResult:
                     return badRequestResult;
@@ -1153,7 +1153,46 @@ public static class ResultMapHttpExtensions
         }
 
         logger?.LogWarning("result - bad request error occurred: {Error}", result.ToString());
+
+        if (result.Errors.Has<ValidationError>() || result.Errors.Has<FluentValidationError>())
+        {
+            return MapValidationErrors<TBadRequest>(result);
+        }
+
         return (TBadRequest)(IResult)TypedResults.BadRequest(/*result.ToString()*/);
+
+        static TResult MapValidationErrors<TResult>(Result result) where TResult : IResult
+        {
+            var validationErrors = new List<(string PropertyName, string Message)>();
+
+            foreach (var error in result.Errors)
+            {
+                if (error is ValidationError ve)
+                {
+                    validationErrors.Add((string.IsNullOrWhiteSpace(ve.PropertyName) ? string.Empty : ve.PropertyName, ve.Message));
+                }
+                else if (error is FluentValidationError fve)
+                {
+                    foreach (var failure in fve.Errors)
+                    {
+                        validationErrors.Add((string.IsNullOrWhiteSpace(failure.PropertyName) ? string.Empty : failure.PropertyName, failure.ErrorMessage));
+                    }
+                }
+            }
+
+            var errors = validationErrors
+                .GroupBy(e => e.PropertyName)
+                .ToDictionary(g => g.Key, g => g.Select(e => e.Message).ToArray());
+
+            return (TResult)(IResult)TypedResults.BadRequest(
+                new HttpValidationProblemDetails(errors)
+                {
+                    Title = "Validation Error",
+                    Status = StatusCodes.Status400BadRequest,
+                    Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+                    Detail = result.ToString()
+                });
+        }
     }
 
     public static TProblem MapConflictError<TProblem>(ILogger logger, Result result)

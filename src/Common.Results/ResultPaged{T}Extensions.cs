@@ -772,7 +772,7 @@ public static class ResultPagedExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "ResultPaged Success {LogKey} Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} | " + messageTemplate,
+                        "{LogKey} Success - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} | " + messageTemplate,
                         "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, args);
                 }
                 else
@@ -780,7 +780,7 @@ public static class ResultPagedExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "ResultPaged Success {LogKey} Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors}",
+                        "{LogKey} Success - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors}",
                         "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount);
                 }
             }
@@ -791,7 +791,7 @@ public static class ResultPagedExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "ResultPaged Failure {LogKey} Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
+                        "{LogKey} Failure - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
                         "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, errorTypes, args);
                 }
                 else
@@ -799,7 +799,7 @@ public static class ResultPagedExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "ResultPaged Failure {LogKey} Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
+                        "{LogKey} Failure - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
                         "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, errorTypes);
                 }
             }
@@ -933,7 +933,7 @@ public static class ResultPagedExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "ResultPaged Success {LogKey} Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} Info={Info} | " + messageTemplate,
+                        "{LogKey} Success - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} Info={Info} | " + messageTemplate,
                         "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, info, args);
                 }
                 else
@@ -941,7 +941,7 @@ public static class ResultPagedExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "ResultPaged Success {LogKey} Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} Info={Info}",
+                        "{LogKey} Success - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} Info={Info}",
                         "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, info);
                 }
             }
@@ -952,7 +952,7 @@ public static class ResultPagedExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "ResultPaged Failure {LogKey} Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} Info={Info} | " + messageTemplate,
+                        "{LogKey} Failure - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} Info={Info} | " + messageTemplate,
                         "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, errorTypes, info, args);
                 }
                 else
@@ -960,7 +960,7 @@ public static class ResultPagedExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "ResultPaged Failure {LogKey} Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} Info={Info}",
+                        "{LogKey} Failure - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} Info={Info}",
                         "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, errorTypes, info);
                 }
             }

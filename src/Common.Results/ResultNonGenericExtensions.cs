@@ -736,7 +736,7 @@ public static class ResultNonGenericExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "Result Success {LogKey} Messages={Messages} Errors={Errors} | " + messageTemplate,
+                        "{LogKey} Success - Messages={Messages} Errors={Errors} | " + messageTemplate,
                         "RES", messagesCount, errorsCount, args);
                 }
                 else
@@ -744,7 +744,7 @@ public static class ResultNonGenericExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "Result Success {LogKey} Messages={Messages} Errors={Errors}",
+                        "{LogKey} Success - Messages={Messages} Errors={Errors}",
                         "RES", messagesCount, errorsCount);
                 }
             }
@@ -755,7 +755,7 @@ public static class ResultNonGenericExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "Result Failure {LogKey} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
+                        "{LogKey} Failure - Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
                         "RES", messagesCount, errorsCount, errorTypes, args);
                 }
                 else
@@ -763,7 +763,7 @@ public static class ResultNonGenericExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "Result Failure {LogKey} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
+                        "{LogKey} Failure - Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
                         "RES", messagesCount, errorsCount, errorTypes);
                 }
             }
@@ -882,7 +882,7 @@ public static class ResultNonGenericExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "Result Success {LogKey} Messages={Messages} Errors={Errors} Info={Info} | " + messageTemplate,
+                        "{LogKey} Success - Messages={Messages} Errors={Errors} Info={Info} | " + messageTemplate,
                         "RES", messagesCount, errorsCount, info, args);
                 }
                 else
@@ -890,7 +890,7 @@ public static class ResultNonGenericExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "Result Success {LogKey} Messages={Messages} Errors={Errors} Info={Info}",
+                        "{LogKey} Success - Messages={Messages} Errors={Errors} Info={Info}",
                         "RES", messagesCount, errorsCount, info);
                 }
             }
@@ -901,7 +901,7 @@ public static class ResultNonGenericExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "Result Failure {LogKey} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} Info={Info} | " + messageTemplate,
+                        "{LogKey} Failure - Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} Info={Info} | " + messageTemplate,
                         "RES", messagesCount, errorsCount, errorTypes, info, args);
                 }
                 else
@@ -909,7 +909,7 @@ public static class ResultNonGenericExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "Result Failure {LogKey} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} Info={Info}",
+                        "{LogKey} Failure - Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} Info={Info}",
                         "RES", messagesCount, errorsCount, errorTypes, info);
                 }
             }

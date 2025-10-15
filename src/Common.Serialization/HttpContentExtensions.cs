@@ -14,7 +14,7 @@ public static class HttpContentExtensions
         using var stream = await content.ReadAsStreamAsync(cancellationToken);
 
         return await JsonSerializer.DeserializeAsync<T>(stream,
-            DefaultSystemTextJsonSerializerOptions.Create(),
+            DefaultJsonSerializerOptions.Create(),
             cancellationToken);
     }
 
@@ -26,7 +26,7 @@ public static class HttpContentExtensions
         using var stream = await content.ReadAsStreamAsync(cancellationToken);
 
         return await JsonSerializer.DeserializeAsync<T>(stream,
-            options ?? DefaultSystemTextJsonSerializerOptions.Create(),
+            options ?? DefaultJsonSerializerOptions.Create(),
             cancellationToken);
     }
 }

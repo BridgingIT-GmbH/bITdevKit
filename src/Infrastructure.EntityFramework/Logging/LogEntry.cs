@@ -131,9 +131,9 @@ public class LogEntry
     {
         get => this.LogEvents.IsNullOrEmpty()
             ? null
-            : JsonSerializer.Serialize(this.LogEvents, DefaultSystemTextJsonSerializerOptions.Create());
+            : JsonSerializer.Serialize(this.LogEvents, DefaultJsonSerializerOptions.Create());
         set => this.LogEvents = value.IsNullOrEmpty()
             ? []
-            : JsonSerializer.Deserialize<Dictionary<string, object>>(value, DefaultSystemTextJsonSerializerOptions.Create());
+            : JsonSerializer.Deserialize<Dictionary<string, object>>(value, DefaultJsonSerializerOptions.Create());
     }
 }

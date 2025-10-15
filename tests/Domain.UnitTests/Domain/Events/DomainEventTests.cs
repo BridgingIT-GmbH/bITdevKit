@@ -14,7 +14,7 @@ public class DomainEventTests
 
     public DomainEventTests()
     {
-        this.options = DefaultSystemTextJsonSerializerOptions.Create();
+        this.options = DefaultJsonSerializerOptions.Create();
     }
 
     [Fact]

@@ -190,13 +190,13 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
                 RetryCount = message.RetryCount,
                 CreatedAt = message.CreatedAt,
                 SentAt = message.SentAt,
-                To = message.To == null ? null : JsonSerializer.Serialize(message.To, DefaultSystemTextJsonSerializerOptions.Create()),
-                CC = message.CC == null ? null : JsonSerializer.Serialize(message.CC, DefaultSystemTextJsonSerializerOptions.Create()),
-                BCC = message.BCC == null ? null : JsonSerializer.Serialize(message.BCC, DefaultSystemTextJsonSerializerOptions.Create()),
-                From = message.From == null ? null : JsonSerializer.Serialize(message.From, DefaultSystemTextJsonSerializerOptions.Create()),
-                ReplyTo = message.ReplyTo == null ? null : JsonSerializer.Serialize(message.ReplyTo, DefaultSystemTextJsonSerializerOptions.Create()),
-                Headers = message.Headers == null ? null : JsonSerializer.Serialize(message.Headers, DefaultSystemTextJsonSerializerOptions.Create()),
-                PropertiesJson = message.Properties == null ? null : JsonSerializer.Serialize(message.Properties, DefaultSystemTextJsonSerializerOptions.Create()),
+                To = message.To == null ? null : JsonSerializer.Serialize(message.To, DefaultJsonSerializerOptions.Create()),
+                CC = message.CC == null ? null : JsonSerializer.Serialize(message.CC, DefaultJsonSerializerOptions.Create()),
+                BCC = message.BCC == null ? null : JsonSerializer.Serialize(message.BCC, DefaultJsonSerializerOptions.Create()),
+                From = message.From == null ? null : JsonSerializer.Serialize(message.From, DefaultJsonSerializerOptions.Create()),
+                ReplyTo = message.ReplyTo == null ? null : JsonSerializer.Serialize(message.ReplyTo, DefaultJsonSerializerOptions.Create()),
+                Headers = message.Headers == null ? null : JsonSerializer.Serialize(message.Headers, DefaultJsonSerializerOptions.Create()),
+                PropertiesJson = message.Properties == null ? null : JsonSerializer.Serialize(message.Properties, DefaultJsonSerializerOptions.Create()),
                 Attachments = message.Attachments?.ConvertAll(e =>
                     new EmailMessageAttachmentEntity
                     {
@@ -226,13 +226,13 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
         entity.RetryCount = message.RetryCount;
         entity.CreatedAt = message.CreatedAt;
         entity.SentAt = message.SentAt;
-        entity.To = message.To.IsNullOrEmpty() ? null : JsonSerializer.Serialize(message.To, DefaultSystemTextJsonSerializerOptions.Create());
-        entity.CC = message.CC.IsNullOrEmpty() ? null : JsonSerializer.Serialize(message.CC, DefaultSystemTextJsonSerializerOptions.Create());
-        entity.BCC = message.BCC.IsNullOrEmpty() ? null : JsonSerializer.Serialize(message.BCC, DefaultSystemTextJsonSerializerOptions.Create());
-        entity.From = message.From == null ? null : JsonSerializer.Serialize(message.From, DefaultSystemTextJsonSerializerOptions.Create());
-        entity.ReplyTo = message.ReplyTo == null ? null : message.ReplyTo == null ? null : JsonSerializer.Serialize(message.ReplyTo, DefaultSystemTextJsonSerializerOptions.Create());
-        entity.Headers = message.Headers == null ? null : JsonSerializer.Serialize(message.Headers, DefaultSystemTextJsonSerializerOptions.Create());
-        entity.PropertiesJson = message.Properties == null ? null : JsonSerializer.Serialize(message.Properties, DefaultSystemTextJsonSerializerOptions.Create());
+        entity.To = message.To.IsNullOrEmpty() ? null : JsonSerializer.Serialize(message.To, DefaultJsonSerializerOptions.Create());
+        entity.CC = message.CC.IsNullOrEmpty() ? null : JsonSerializer.Serialize(message.CC, DefaultJsonSerializerOptions.Create());
+        entity.BCC = message.BCC.IsNullOrEmpty() ? null : JsonSerializer.Serialize(message.BCC, DefaultJsonSerializerOptions.Create());
+        entity.From = message.From == null ? null : JsonSerializer.Serialize(message.From, DefaultJsonSerializerOptions.Create());
+        entity.ReplyTo = message.ReplyTo == null ? null : message.ReplyTo == null ? null : JsonSerializer.Serialize(message.ReplyTo, DefaultJsonSerializerOptions.Create());
+        entity.Headers = message.Headers == null ? null : JsonSerializer.Serialize(message.Headers, DefaultJsonSerializerOptions.Create());
+        entity.PropertiesJson = message.Properties == null ? null : JsonSerializer.Serialize(message.Properties, DefaultJsonSerializerOptions.Create());
         entity.Attachments.Clear();
         entity.Attachments.AddRange(message.Attachments?.Select(e =>
             new EmailMessageAttachmentEntity
@@ -254,16 +254,16 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
             : new EmailMessage
             {
                 Id = entity.Id,
-                To = entity.To.IsNullOrEmpty() ? [] : JsonSerializer.Deserialize<List<string>>(entity.To, DefaultSystemTextJsonSerializerOptions.Create()),
-                CC = entity.CC.IsNullOrEmpty() ? [] : JsonSerializer.Deserialize<List<string>>(entity.CC, DefaultSystemTextJsonSerializerOptions.Create()),
-                BCC = entity.BCC.IsNullOrEmpty() ? [] : JsonSerializer.Deserialize<List<string>>(entity.BCC, DefaultSystemTextJsonSerializerOptions.Create()),
-                From = entity.From.IsNullOrEmpty() ? null : JsonSerializer.Deserialize<EmailAddress>(entity.From, DefaultSystemTextJsonSerializerOptions.Create()),
-                ReplyTo = entity.ReplyTo.IsNullOrEmpty() ? null : JsonSerializer.Deserialize<EmailAddress>(entity.ReplyTo, DefaultSystemTextJsonSerializerOptions.Create()),
+                To = entity.To.IsNullOrEmpty() ? [] : JsonSerializer.Deserialize<List<string>>(entity.To, DefaultJsonSerializerOptions.Create()),
+                CC = entity.CC.IsNullOrEmpty() ? [] : JsonSerializer.Deserialize<List<string>>(entity.CC, DefaultJsonSerializerOptions.Create()),
+                BCC = entity.BCC.IsNullOrEmpty() ? [] : JsonSerializer.Deserialize<List<string>>(entity.BCC, DefaultJsonSerializerOptions.Create()),
+                From = entity.From.IsNullOrEmpty() ? null : JsonSerializer.Deserialize<EmailAddress>(entity.From, DefaultJsonSerializerOptions.Create()),
+                ReplyTo = entity.ReplyTo.IsNullOrEmpty() ? null : JsonSerializer.Deserialize<EmailAddress>(entity.ReplyTo, DefaultJsonSerializerOptions.Create()),
                 Subject = entity.Subject,
                 Body = entity.Body,
                 IsHtml = entity.IsHtml,
-                Headers = entity.Headers.IsNullOrEmpty() ? [] : JsonSerializer.Deserialize<Dictionary<string, string>>(entity.Headers, DefaultSystemTextJsonSerializerOptions.Create()),
-                Properties = entity.PropertiesJson.IsNullOrEmpty() ? [] : JsonSerializer.Deserialize<Dictionary<string, object>>(entity.PropertiesJson, DefaultSystemTextJsonSerializerOptions.Create()),
+                Headers = entity.Headers.IsNullOrEmpty() ? [] : JsonSerializer.Deserialize<Dictionary<string, string>>(entity.Headers, DefaultJsonSerializerOptions.Create()),
+                Properties = entity.PropertiesJson.IsNullOrEmpty() ? [] : JsonSerializer.Deserialize<Dictionary<string, object>>(entity.PropertiesJson, DefaultJsonSerializerOptions.Create()),
                 Priority = entity.Priority,
                 Status = entity.Status,
                 RetryCount = entity.RetryCount,

@@ -96,12 +96,12 @@ public class FileEventEntity
         get =>
             this.Properties.IsNullOrEmpty()
                 ? null
-                : JsonSerializer.Serialize(this.Properties, DefaultSystemTextJsonSerializerOptions.Create());
+                : JsonSerializer.Serialize(this.Properties, DefaultJsonSerializerOptions.Create());
         set =>
             this.Properties = value.IsNullOrEmpty()
                 ? []
                 : JsonSerializer.Deserialize<Dictionary<string, object>>(value,
-                    DefaultSystemTextJsonSerializerOptions.Create());
+                    DefaultJsonSerializerOptions.Create());
     }
 
     /// <summary>

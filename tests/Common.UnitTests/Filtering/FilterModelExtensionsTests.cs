@@ -177,8 +177,8 @@ public class FilterModelExtensionsTests
         var result = source.Clear();
 
         // Assert
-        result.Page.ShouldBe(1);
-        result.PageSize.ShouldBe(10);
+        result.Page.ShouldBe(0);
+        result.PageSize.ShouldBe(0);
         result.NoTracking.ShouldBeTrue();
         result.Orderings.ShouldBeEmpty();
         result.Filters.ShouldBeEmpty();

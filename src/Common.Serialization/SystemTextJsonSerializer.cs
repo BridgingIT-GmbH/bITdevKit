@@ -9,7 +9,7 @@ using System.Text.Json;
 
 public class SystemTextJsonSerializer(JsonSerializerOptions options = null) : ISerializer, ITextSerializer
 {
-    private readonly JsonSerializerOptions options = options ?? DefaultSystemTextJsonSerializerOptions.Create();
+    private readonly JsonSerializerOptions options = options ?? DefaultJsonSerializerOptions.Create();
 
     /// <summary>
     ///     Serializes the specified value.

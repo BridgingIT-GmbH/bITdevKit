@@ -1698,13 +1698,6 @@
         }
       },
       "EntityPermissionModel": {
-        "required": [
-          "entityType",
-          "entityId",
-          "permission",
-          "source",
-          "hasAccess"
-        ],
         "type": "object",
         "properties": {
           "entityType": {
@@ -1802,6 +1795,9 @@
             }
           }
         }
+      },
+      "IDictionaryOfstringAndObject": {
+        "nullable": true
       },
       "JobInfo": {
         "type": "object",
@@ -1928,8 +1924,7 @@
             "nullable": true
           },
           "data": {
-            "type": "object",
-            "nullable": true
+            "$ref": "#/components/schemas/IDictionaryOfstringAndObject"
           },
           "instanceName": {
             "type": "string",
@@ -2024,8 +2019,7 @@
             "nullable": true
           },
           "data": {
-            "type": "object",
-            "nullable": true
+            "$ref": "#/components/schemas/IDictionaryOfstringAndObject"
           },
           "instanceName": {
             "type": "string",
@@ -2142,11 +2136,6 @@
         }
       },
       "PermissionRequestModel": {
-        "required": [
-          "entityType",
-          "entityId",
-          "permission"
-        ],
         "type": "object",
         "properties": {
           "entityType": {
@@ -2233,17 +2222,6 @@
         }
       },
       "SubscriptionPlanDetails": {
-        "required": [
-          "name",
-          "pricePerMonth",
-          "maxTodos",
-          "maxUsersPerTodo",
-          "allowsRecurring",
-          "allowsAttachments",
-          "allowsTemplates",
-          "maxProjects",
-          "allowsComments"
-        ],
         "type": "object",
         "properties": {
           "name": {

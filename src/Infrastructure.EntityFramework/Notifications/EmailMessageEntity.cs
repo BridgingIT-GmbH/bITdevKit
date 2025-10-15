@@ -26,37 +26,37 @@ public class EmailMessageEntity
     [Required]
     public string To
     {
-        get => JsonSerializer.Serialize(this.to, DefaultSystemTextJsonSerializerOptions.Create());
-        set => this.to = value == null ? null : JsonSerializer.Deserialize<List<string>>(value, DefaultSystemTextJsonSerializerOptions.Create());
+        get => JsonSerializer.Serialize(this.to, DefaultJsonSerializerOptions.Create());
+        set => this.to = value == null ? null : JsonSerializer.Deserialize<List<string>>(value, DefaultJsonSerializerOptions.Create());
     }
     private List<string> to = [];
 
     public string CC
     {
-        get => JsonSerializer.Serialize(this.cc, DefaultSystemTextJsonSerializerOptions.Create());
-        set => this.cc = value == null ? null : JsonSerializer.Deserialize<List<string>>(value, DefaultSystemTextJsonSerializerOptions.Create());
+        get => JsonSerializer.Serialize(this.cc, DefaultJsonSerializerOptions.Create());
+        set => this.cc = value == null ? null : JsonSerializer.Deserialize<List<string>>(value, DefaultJsonSerializerOptions.Create());
     }
     private List<string> cc = [];
 
     public string BCC
     {
-        get => JsonSerializer.Serialize(this.bcc, DefaultSystemTextJsonSerializerOptions.Create());
-        set => this.bcc = value == null ? null : JsonSerializer.Deserialize<List<string>>(value, DefaultSystemTextJsonSerializerOptions.Create());
+        get => JsonSerializer.Serialize(this.bcc, DefaultJsonSerializerOptions.Create());
+        set => this.bcc = value == null ? null : JsonSerializer.Deserialize<List<string>>(value, DefaultJsonSerializerOptions.Create());
     }
     private List<string> bcc = [];
 
     [Required]
     public string From
     {
-        get => JsonSerializer.Serialize(this.from, DefaultSystemTextJsonSerializerOptions.Create());
-        set => this.from = value == null ? null : JsonSerializer.Deserialize<EmailAddress>(value, DefaultSystemTextJsonSerializerOptions.Create());
+        get => JsonSerializer.Serialize(this.from, DefaultJsonSerializerOptions.Create());
+        set => this.from = value == null ? null : JsonSerializer.Deserialize<EmailAddress>(value, DefaultJsonSerializerOptions.Create());
     }
     private EmailAddress from;
 
     public string ReplyTo
     {
-        get => this.replyTo == null ? null : JsonSerializer.Serialize(this.replyTo, DefaultSystemTextJsonSerializerOptions.Create());
-        set => this.replyTo = value == null ? null : JsonSerializer.Deserialize<EmailAddress>(value, DefaultSystemTextJsonSerializerOptions.Create());
+        get => this.replyTo == null ? null : JsonSerializer.Serialize(this.replyTo, DefaultJsonSerializerOptions.Create());
+        set => this.replyTo = value == null ? null : JsonSerializer.Deserialize<EmailAddress>(value, DefaultJsonSerializerOptions.Create());
     }
     private EmailAddress replyTo;
 
@@ -71,16 +71,16 @@ public class EmailMessageEntity
 
     public string Headers
     {
-        get => JsonSerializer.Serialize(this.headers, DefaultSystemTextJsonSerializerOptions.Create());
-        set => this.headers = value == null ? null : JsonSerializer.Deserialize<Dictionary<string, string>>(value, DefaultSystemTextJsonSerializerOptions.Create());
+        get => JsonSerializer.Serialize(this.headers, DefaultJsonSerializerOptions.Create());
+        set => this.headers = value == null ? null : JsonSerializer.Deserialize<Dictionary<string, string>>(value, DefaultJsonSerializerOptions.Create());
     }
     private Dictionary<string, string> headers = [];
 
     [Column("Properties")]
     public string PropertiesJson
     {
-        get => this.properties.IsNullOrEmpty() ? null : JsonSerializer.Serialize(this.properties, DefaultSystemTextJsonSerializerOptions.Create());
-        set => this.properties = value.IsNullOrEmpty() ? [] : JsonSerializer.Deserialize<Dictionary<string, object>>(value, DefaultSystemTextJsonSerializerOptions.Create());
+        get => this.properties.IsNullOrEmpty() ? null : JsonSerializer.Serialize(this.properties, DefaultJsonSerializerOptions.Create());
+        set => this.properties = value.IsNullOrEmpty() ? [] : JsonSerializer.Deserialize<Dictionary<string, object>>(value, DefaultJsonSerializerOptions.Create());
     }
     private Dictionary<string, object> properties = [];
 

@@ -95,7 +95,7 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
             UserId = Guid.NewGuid().ToString("N")
         };
         var content = new StringContent(
-            JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
+            JsonSerializer.Serialize(model, DefaultJsonSerializerOptions.Create()),
             Encoding.UTF8,
             MediaTypeNames.Application.Json);
 
@@ -124,7 +124,7 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
         model.FirstName += "changed";
         model.LastName += "changed";
         var content = new StringContent(
-            JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
+            JsonSerializer.Serialize(model, DefaultJsonSerializerOptions.Create()),
             Encoding.UTF8,
             MediaTypeNames.Application.Json);
 
@@ -157,7 +157,7 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
             UserId = entity.UserId.ToString()
         };
         var content = new StringContent(
-            JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
+            JsonSerializer.Serialize(model, DefaultJsonSerializerOptions.Create()),
             Encoding.UTF8,
             MediaTypeNames.Application.Json);
 
@@ -183,7 +183,7 @@ public class HostEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
             UserId = entity.UserId.ToString()
         };
         var content = new StringContent(
-            JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
+            JsonSerializer.Serialize(model, DefaultJsonSerializerOptions.Create()),
             Encoding.UTF8,
             MediaTypeNames.Application.Json);
         var response = await this.fixture.CreateClient()

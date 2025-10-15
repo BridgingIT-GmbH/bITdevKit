@@ -436,7 +436,7 @@ public class EnumConverterTests
     public EnumConverterTests()
     {
         this.faker = new Faker();
-        this.options = DefaultSystemTextJsonSerializerOptions.Create();
+        this.options = DefaultJsonSerializerOptions.Create();
         this.options.Converters.Insert(0, new EnumConverter<TestEnum>());
         this.serializer = new SystemTextJsonSerializer(this.options);
     }

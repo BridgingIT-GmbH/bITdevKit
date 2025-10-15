@@ -3,14 +3,12 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.DoFiesta.Infrastructure;
-using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client.Pages;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Components;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client.Layout;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation;
@@ -31,12 +29,7 @@ builder.Host.ConfigureAppConfiguration();
 builder.Services.AddModules(builder.Configuration, builder.Environment)
     .WithModule<CoreModule>()
     .WithModuleContextAccessors()
-    .WithRequestModuleContextAccessors()
-    .WithModuleControllers(c =>
-        c.AddJsonOptions(ConfigureJsonOptions)); // alternative: WithModuleFeatureProvider(c => ...)
-
-builder.Services.Configure<JsonOptions>(ConfigureJsonOptions); // configure json for minimal apis
-builder.Services.AddHttpContextAccessor();
+    .WithRequestModuleContextAccessors();
 
 // ===============================================================================================
 // Configure the services
@@ -107,8 +100,11 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
         "https://localhost:5001/openapi/oauth2-redirect.html", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/openapi/oauth2-redirect.html") // swaggerui authorize
     .EnableLoginCard(false));
 
+builder.Services.ConfigureJson();
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddControllers(); // needed for openapi gen, even with no controllers
 builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
 builder.Services.AddOpenApi();
 
@@ -166,24 +162,15 @@ app.MapEndpoints();
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     //.AddInteractiveServerRenderMode()
-    .AddAdditionalAssemblies(typeof(Counter).Assembly);
+    .AddAdditionalAssemblies(typeof(MainLayout).Assembly);
 
 app.MapHub<NotificationHub>("/signalrhub");
 
 app.Run();
 
-void ConfiguraApiBehavior(ApiBehaviorOptions options)
+static void ConfiguraApiBehavior(ApiBehaviorOptions options)
 {
     options.SuppressModelStateInvalidFilter = true;
-}
-
-void ConfigureJsonOptions(JsonOptions options)
-{
-    options.JsonSerializerOptions.WriteIndented = true;
-    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
-    options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
 }
 
 //void ConfigureOpenApiDocument(AspNetCoreOpenApiDocumentGeneratorSettings settings)

@@ -346,7 +346,7 @@ public class EnumerationTests
     public void Json_Serialize_StubStatus_ShouldContainExpectedFields()
     {
         // Arrange
-        var options = DefaultSystemTextJsonSerializerOptions.Create();
+        var options = DefaultJsonSerializerOptions.Create();
         var sut = StubStatus.Stub02;
 
         // Act
@@ -365,7 +365,7 @@ public class EnumerationTests
     public void Json_Deserialize_KnownId_MinimalJson_ShouldEqualStaticInstanceAndLeaveMissingPropsNull()
     {
         // Arrange
-        var options = DefaultSystemTextJsonSerializerOptions.Create();
+        var options = DefaultJsonSerializerOptions.Create();
         var json = """{"id":3,"value":"Stub03"}"""; // minimal JSON
 
         // Act
@@ -385,7 +385,7 @@ public class EnumerationTests
     public void Json_Deserialize_FullJson_KnownId_ShouldPopulatePrivateSetProperties()
     {
         // Arrange
-        var options = DefaultSystemTextJsonSerializerOptions.Create();
+        var options = DefaultJsonSerializerOptions.Create();
         var json = """{"id":1,"value":"Stub01","code":"S1","description":"Lorem Ipsum X"}""";
 
         // Act
@@ -404,7 +404,7 @@ public class EnumerationTests
     public void Json_Roundtrip_List_ShouldPreserveIds()
     {
         // Arrange
-        var options = DefaultSystemTextJsonSerializerOptions.Create();
+        var options = DefaultJsonSerializerOptions.Create();
         var list = new[] { StubStatus.Stub01, StubStatus.Stub03 };
 
         // Act
@@ -424,7 +424,7 @@ public class EnumerationTests
     public void Json_Deserialize_UnknownId_ShouldCreateDistinctInstance()
     {
         // Arrange
-        var options = DefaultSystemTextJsonSerializerOptions.Create();
+        var options = DefaultJsonSerializerOptions.Create();
         var json = """{"id":99,"value":"Custom"}""";
 
         // Act

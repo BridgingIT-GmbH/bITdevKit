@@ -3,17 +3,15 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Presentation.Web;
+namespace Microsoft.Extensions.DependencyInjection;
 
 using System.Security;
-using Common;
-using Domain;
+using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-//using Microsoft.Extensions.DependencyInjection;
 using MvcProblemDetails = Microsoft.AspNetCore.Mvc.ProblemDetails;
 using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOptions;
 

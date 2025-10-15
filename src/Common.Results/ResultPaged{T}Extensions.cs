@@ -1,3 +1,8 @@
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
 namespace BridgingIT.DevKit.Common;
 
 using FluentValidation;
@@ -876,25 +881,25 @@ public static class ResultPagedExtensions
             var hasNext = result.HasNextPage;
             var hasPrev = result.HasPreviousPage;
 
-            var args = argsFactory?.Invoke(result) ?? [];
+            var userArgs = argsFactory?.Invoke(result) ?? [];
 
             if (!string.IsNullOrWhiteSpace(messageTemplate))
             {
                 if (isSuccess)
                 {
-                    logger.Log(
-                        successLevel,
-                        ResultLogEvent,
-                        "{LogKey} Success - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} | " + messageTemplate,
-                        "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, args);
+                    const string prefixTemplate = "{LogKey} Success - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} | ";
+                    var prefixArgs = new object[] { "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount };
+                    var allArgs = prefixArgs.ConcatArgs(userArgs);
+
+                    logger.Log(successLevel, ResultLogEvent, prefixTemplate + messageTemplate, allArgs);
                 }
                 else
                 {
-                    logger.Log(
-                        failureLevel,
-                        ResultLogEvent,
-                        "{LogKey} Failure - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
-                        "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, errorTypes, args);
+                    const string prefixTemplate = "{LogKey} Failure - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | ";
+                    var prefixArgs = new object[] { "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, errorTypes };
+                    var allArgs = prefixArgs.ConcatArgs(userArgs);
+
+                    logger.Log(failureLevel, ResultLogEvent, prefixTemplate + messageTemplate, allArgs);
                 }
             }
             else

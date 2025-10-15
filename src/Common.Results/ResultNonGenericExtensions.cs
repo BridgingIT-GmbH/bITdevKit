@@ -1,4 +1,9 @@
-﻿namespace BridgingIT.DevKit.Common;
+﻿// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Common;
 
 using Microsoft.Extensions.Logging;
 
@@ -832,25 +837,25 @@ public static class ResultNonGenericExtensions
             var messagesCount = result.Messages?.Count ?? 0;
             var errorsCount = result.Errors?.Count ?? 0;
             var errorTypes = result.Errors?.Select(e => e.GetType().Name).ToArray() ?? [];
-            var args = argsFactory?.Invoke(result) ?? [];
+            var userArgs = argsFactory?.Invoke(result) ?? [];
 
             if (!string.IsNullOrWhiteSpace(messageTemplate))
             {
                 if (isSuccess)
                 {
-                    logger.Log(
-                        successLevel,
-                        ResultLogEvent,
-                        "{LogKey} Success - Messages={Messages} Errors={Errors} | " + messageTemplate,
-                        "RES", messagesCount, errorsCount, args);
+                    const string prefixTemplate = "{LogKey} Success - Messages={Messages} Errors={Errors} | ";
+                    var prefixArgs = new object[] { "RES", messagesCount, errorsCount };
+                    var allArgs = prefixArgs.ConcatArgs(userArgs);
+
+                    logger.Log(successLevel, ResultLogEvent, prefixTemplate + messageTemplate, allArgs);
                 }
                 else
                 {
-                    logger.Log(
-                        failureLevel,
-                        ResultLogEvent,
-                        "{LogKey} Failure - Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
-                        "RES", messagesCount, errorsCount, errorTypes, args);
+                    const string prefixTemplate = "{LogKey} Failure - Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | ";
+                    var prefixArgs = new object[] { "RES", messagesCount, errorsCount, errorTypes };
+                    var allArgs = prefixArgs.ConcatArgs(userArgs);
+
+                    logger.Log(failureLevel, ResultLogEvent, prefixTemplate + messageTemplate, allArgs);
                 }
             }
             else

@@ -647,7 +647,7 @@ public static class ResultTExtensions
     /// result.Log(
     ///     logger,
     ///     "AUDIT - Customer {Id} created for {Email}",
-    ///     r =&gt; new object?[] { r.Value.Entity.Id, r.Value.Entity.Email },
+    ///     r => new object?[] { r.Value.Entity.Id, r.Value.Entity.Email },
     ///     LogLevel.Information,
     ///     LogLevel.Error);
     /// </code>
@@ -670,25 +670,25 @@ public static class ResultTExtensions
             var errorsCount = result.Errors?.Count ?? 0;
             var errorTypes = result.Errors?.Select(e => e.GetType().Name).ToArray() ?? [];
             var valueType = typeof(T).Name;
-            var args = argsFactory?.Invoke(result) ?? [];
+            var userArgs = argsFactory?.Invoke(result) ?? [];
 
             if (!string.IsNullOrWhiteSpace(messageTemplate))
             {
                 if (isSuccess)
                 {
-                    logger.Log(
-                        successLevel,
-                        ResultLogEvent,
-                        "{LogKey} Success - {ValueType} Messages={Messages} Errors={Errors} | " + messageTemplate,
-                        "RES", valueType, messagesCount, errorsCount, args);
+                    const string prefixTemplate = "{LogKey} Success - {ValueType} Messages={Messages} Errors={Errors} | ";
+                    var prefixArgs = new object[] { "RES", valueType, messagesCount, errorsCount };
+                    var allArgs = prefixArgs.ConcatArgs(userArgs);
+
+                    logger.Log(successLevel, ResultLogEvent, prefixTemplate + messageTemplate, allArgs);
                 }
                 else
                 {
-                    logger.Log(
-                        failureLevel,
-                        ResultLogEvent,
-                        "{LogKey} Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
-                        "RES", valueType, messagesCount, errorsCount, errorTypes, args);
+                    const string prefixTemplate = "{LogKey} Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | ";
+                    var prefixArgs = new object[] { "RES", valueType, messagesCount, errorsCount, errorTypes };
+                    var allArgs = prefixArgs.ConcatArgs(userArgs);
+
+                    logger.Log(failureLevel, ResultLogEvent, prefixTemplate + messageTemplate, allArgs);
                 }
             }
             else

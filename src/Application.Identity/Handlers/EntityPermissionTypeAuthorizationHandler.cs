@@ -5,17 +5,17 @@
 
 namespace BridgingIT.DevKit.Application.Identity;
 
-using System.Threading.Tasks;
 using BridgingIT.DevKit.Domain.Model;
 using Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
+using System.Threading.Tasks;
 
 public partial class EntityPermissionTypeAuthorizationHandler<TEntity>(
     ILoggerFactory loggerFactory,
     ICurrentUserAccessor userAccessor,
     IEntityPermissionEvaluator<TEntity> evaluator)
-    : AuthorizationHandler<EntityPermissionRequirement, Type>
+    : AuthorizationHandler<EntityPermissionRequirement, Type>, IAuthorizationRequirement
     where TEntity : class, IEntity
 {
     private readonly ILogger<EntityPermissionTypeAuthorizationHandler<TEntity>> logger =
@@ -23,6 +23,8 @@ public partial class EntityPermissionTypeAuthorizationHandler<TEntity>(
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, EntityPermissionRequirement requirement, Type entityType)
     {
+        logger.LogInformation("------------------------------------ Authorization handler invoked for permissions: {@Permissions} ------------------------------------", requirement?.Permissions);
+
         TypedLogger.LogAuthHandler(this.logger, Constants.LogKey, requirement?.Permissions);
 
         var userId = userAccessor.UserId;

@@ -6,6 +6,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Identity;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -13,12 +14,40 @@ using Microsoft.AspNetCore.Routing;
 
 public static class AuthorizationExtensions
 {
+    ///// <summary>
+    ///// Requires entity-level permission for the specified entity type.
+    ///// </summary>
+    ///// <typeparam name="TEntity">The type of entity to evaluate permissions for.</typeparam>
+    ///// <param name="builder">The route handler builder.</param>
+    ///// <param name="permission">The permission to require (e.g., "Read", "Write", "List").</param>
+    ///// <example>
+    ///// Requiring List permission for the Customer entity in a minimal API endpoint:
+    ///// <code>
+    ///// app.MapGet("/api/customers", async (IMediator mediator) =>
+    ///// {
+    /////     var result = await mediator.Send(new GetCitiesQuery());
+    /////     return Results.Ok(result);
+    ///// })
+    ///// .RequireEntityPermission&lt;Customer&gt;(Permission.List);
+    ///// </code>
+    ///// </example>
+    //public static RouteHandlerBuilder RequireEntityPermission<TEntity>(
+    //    this RouteHandlerBuilder builder,
+    //    string permission)
+    //    where TEntity : class, IEntity
+    //{
+    //    return builder.RequireAuthorization(new AuthorizeAttribute
+    //    {
+    //        Policy = $"{nameof(EntityPermissionRequirement)}_{typeof(TEntity).FullName}_{permission}"
+    //    });
+    //}
+
     /// <summary>
     /// Requires entity-level permission for the specified entity type.
     /// </summary>
     /// <typeparam name="TEntity">The type of entity to evaluate permissions for.</typeparam>
     /// <param name="builder">The route handler builder.</param>
-    /// <param name="permission">The permission to require (e.g., "Read", "Write", "List").</param>
+    /// <param name="permissions">The permissions to require (e.g., "Read", "Write", "List").</param>
     /// <example>
     /// Requiring List permission for the Customer entity in a minimal API endpoint:
     /// <code>
@@ -32,14 +61,42 @@ public static class AuthorizationExtensions
     /// </example>
     public static RouteHandlerBuilder RequireEntityPermission<TEntity>(
         this RouteHandlerBuilder builder,
-        string permission)
+        params string[] permissions)
         where TEntity : class, IEntity
     {
-        return builder.RequireAuthorization(new AuthorizeAttribute
+        var type = typeof(TEntity);
+        foreach (var permission in permissions.SafeNull())
         {
-            Policy = $"{nameof(EntityPermissionRequirement)}_{typeof(TEntity).FullName}_{permission}"
-        });
+            builder.RequireAuthorization(policy => policy.AddEntityRequirementPermission(type, permission));
+        }
+
+        return builder;
     }
+
+    public static void AddEntityRequirementPermission(
+        this AuthorizationPolicyBuilder builder,
+        Type entityType,
+        params string[] permissions)
+    {
+        foreach(var permission in permissions.SafeNull())
+        {
+            builder.AddRequirements(
+                new EntityPermissionAuthorizationRequirement(entityType, permission));
+        }
+    }
+
+    //public static void RequireEntityPermission(
+    //    this AuthorizationPolicyBuilder builder,
+    //    Type entityType,
+    //    params string[] permissions)
+    //{
+    //    builder.AddRequirements(
+    //        new EntityPermissionTypeAuthorizationHandler( // handler ctor
+    //            builder.Services.GetRequiredService<ILoggerFactory>(),
+    //            builder.Services.GetRequiredService<ICurrentUserAccessor>(),
+    //            builder.Services.GetRequiredService<IEntityPermissionEvaluator>()),
+    //            entityType, permissions)); // arguments for the handler
+    //}
 
     /// <summary>
     /// Requires entity-level permission for the specified entity type on a group of endpoints.

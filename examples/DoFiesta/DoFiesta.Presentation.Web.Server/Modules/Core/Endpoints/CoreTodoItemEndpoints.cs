@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Co
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
+using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -26,8 +27,9 @@ public class CoreTodoItemEndpoints : EndpointsBase
 
         // GET single TodoItem
         group.MapGet("/{id:guid}", TodoItemFindOne)
-            //.RequireEntityPermission<TodoItem>(Permission.Read)
             .WithName("Core.TodoItems.GetById")
+            .RequireEntityPermission<TodoItem>(Permission.Read)
+            //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Read))
             .Produces<TodoItemModel>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
@@ -36,8 +38,9 @@ public class CoreTodoItemEndpoints : EndpointsBase
 
         // GET all TodoItems
         group.MapGet("", TodoItemFindAll)
-            //.RequireEntityPermission<TodoItem>(Permission.List)
             .WithName("Core.TodoItems.GetAll")
+            .RequireEntityPermission<TodoItem>(Permission.List)
+            //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.List))
             .WithFilterSchema()
             .Produces<IEnumerable<TodoItemModel>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)
@@ -46,8 +49,9 @@ public class CoreTodoItemEndpoints : EndpointsBase
 
         // GET sarch TodoItems
         group.MapPost("search", TodoItemSearch)
-            //.RequireEntityPermission<TodoItem>(Permission.List)
             .WithName("Core.TodoItems.Search")
+            .RequireEntityPermission<TodoItem>(Permission.List)
+            //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.List))
             .WithFilterSchema(true)
             .Produces<IEnumerable<TodoItemModel>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)
@@ -56,16 +60,18 @@ public class CoreTodoItemEndpoints : EndpointsBase
 
         // POST new TodoItem
         group.MapPost("", TodoItemCreate)
-            //.RequireEntityPermission<TodoItem>(Permission.Write)
             .WithName("Core.TodoItems.Create")
+            .RequireEntityPermission<TodoItem>(Permission.Write)
+            //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Write))
             .Produces<TodoItemModel>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status500InternalServerError);
 
         group.MapPost("/actions/completeall", TodoCompleteAll)
-            //.RequireEntityPermission<TodoItem>(Permission.Write)
             .WithName("Core.TodoItems.CompleteAll")
+            .RequireEntityPermission<TodoItem>(Permission.Write)
+            //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Write))
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesProblem(StatusCodes.Status400BadRequest)
@@ -73,8 +79,9 @@ public class CoreTodoItemEndpoints : EndpointsBase
 
         // PUT update TodoItem
         group.MapPut("/{id:guid}", TodoItemUpdate)
-            //.RequireEntityPermission<TodoItem>(Permission.Write)
             .WithName("Core.TodoItems.Update")
+            .RequireEntityPermission<TodoItem>(Permission.Write)
+            //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Write))
             .Produces<TodoItemModel>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
@@ -83,8 +90,9 @@ public class CoreTodoItemEndpoints : EndpointsBase
 
         // DELETE TodoItem
         group.MapDelete("/{id:guid}", TodoItemDelete)
-            //.RequireEntityPermission<TodoItem>(Permission.Delete)
             .WithName("Core.TodoItems.Delete")
+            .RequireEntityPermission<TodoItem>(Permission.Delete)
+            //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Delete))
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)

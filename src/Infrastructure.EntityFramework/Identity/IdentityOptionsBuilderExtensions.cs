@@ -222,18 +222,22 @@ public class EntityPermissionOptionsBuilder<TContext>(IServiceCollection service
         // Register core services
         services.AddSingleton(options);
         services.AddScoped<IEntityPermissionProvider, EntityFrameworkPermissionProvider<TContext>>();
+        //services.AddScoped<IAuthorizationHandler, EntityPermissionAuthorizationRequirementHandler>(); // handler for the entity level permission handler
 
         // Register AuthorizationHandler and its Evaluator for each configured entity type
         foreach (var entityConfig in options.EntityConfigurations)
         {
+            // =======================================================================================
+            // TODO: this handler registration is not needed anymore due to the new requirement handler (EntityPermissionAuthorizationRequirementHandler)
             // Register the authorization handler
-            var handlerType1 = typeof(EntityPermissionInstanceAuthorizationHandler<>)
-                .MakeGenericType(entityConfig.EntityType);
-            services.AddScoped(typeof(IAuthorizationHandler), handlerType1);
+            //var handlerType1 = typeof(EntityPermissionInstanceAuthorizationHandler<>)
+            //    .MakeGenericType(entityConfig.EntityType);
+            //services.AddScoped(typeof(IAuthorizationHandler), handlerType1);
 
-            var handlerType2 = typeof(EntityPermissionTypeAuthorizationHandler<>)
+            var handlerType2 = typeof(EntityPermissionAuthorizationRequirementHandler<>)
                 .MakeGenericType(entityConfig.EntityType);
             services.AddScoped(typeof(IAuthorizationHandler), handlerType2);
+            // =======================================================================================
 
             // Register the evaluator
             var evaluatorInterface = typeof(IEntityPermissionEvaluator<>)

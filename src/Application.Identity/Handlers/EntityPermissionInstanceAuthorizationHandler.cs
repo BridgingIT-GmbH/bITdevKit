@@ -25,7 +25,7 @@ public partial class EntityPermissionInstanceAuthorizationHandler<TEntity>( // T
     ILoggerFactory loggerFactory,
     ICurrentUserAccessor userAccessor,
     IEntityPermissionEvaluator<TEntity> evaluator) // TODO: move to Presentation.Web because dependend on ASP.NET Core IDENTITY
-    : AuthorizationHandler<EntityPermissionRequirement, TEntity>
+    : AuthorizationHandler<EntityPermissionRequirement, TEntity>, IAuthorizationRequirement
     where TEntity : class, IEntity
 {
     private readonly ILogger<EntityPermissionInstanceAuthorizationHandler<TEntity>> logger =
@@ -40,6 +40,7 @@ public partial class EntityPermissionInstanceAuthorizationHandler<TEntity>( // T
     /// <returns>A task representing the authorization operation.</returns>
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, EntityPermissionRequirement requirement, TEntity entity)
     {
+        logger.LogInformation("------------------------------------ Authorization handler invoked for permissions: {@Permissions} ------------------------------------", requirement?.Permissions);
         TypedLogger.LogAuthHandler(this.logger, Constants.LogKey, requirement?.Permissions);
 
         var userId = userAccessor.UserId;

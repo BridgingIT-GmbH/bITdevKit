@@ -227,9 +227,6 @@ public class EntityPermissionOptionsBuilder<TContext>(IServiceCollection service
         // Register AuthorizationHandler and its Evaluator for each configured entity type
         foreach (var entityConfig in options.EntityConfigurations)
         {
-            // =======================================================================================
-            // TODO: this handler registration is not needed anymore due to the new requirement handler (EntityPermissionAuthorizationRequirementHandler)
-            // Register the authorization handler
             //var handlerType1 = typeof(EntityPermissionInstanceAuthorizationHandler<>)
             //    .MakeGenericType(entityConfig.EntityType);
             //services.AddScoped(typeof(IAuthorizationHandler), handlerType1);

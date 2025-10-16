@@ -7,6 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using EntityFrameworkCore;
 using EntityFrameworkCore.Database.Command;
@@ -133,6 +134,42 @@ public static class ServiceCollectionExtensions
             lifetime,
             connectionString: connectionString,
             provider: Provider.Sqlite);
+    }
+
+    public static SqliteDbContextBuilderContext<TContext> WithSequenceNumberGenerator<TContext>(
+        this SqliteDbContextBuilderContext<TContext> context,
+        SequenceNumberGeneratorOptions options = null,
+        ServiceLifetime lifetime = ServiceLifetime.Scoped)
+        where TContext : DbContext
+    {
+        switch (lifetime)
+        {
+            case ServiceLifetime.Singleton:
+                context.Services.AddSingleton<ISequenceNumberGenerator>(sp =>
+                    new SqliteSequenceNumberGenerator<TContext>(
+                        sp.GetRequiredService<ILoggerFactory>(),
+                        sp.GetRequiredService<IServiceProvider>(),
+                        options));
+                break;
+
+            case ServiceLifetime.Transient:
+                context.Services.AddTransient<ISequenceNumberGenerator>(sp =>
+                    new SqliteSequenceNumberGenerator<TContext>(
+                        sp.GetRequiredService<ILoggerFactory>(),
+                        sp.GetRequiredService<IServiceProvider>(),
+                        options));
+                break;
+
+            default:
+                context.Services.AddScoped<ISequenceNumberGenerator>(sp =>
+                    new SqliteSequenceNumberGenerator<TContext>(
+                        sp.GetRequiredService<ILoggerFactory>(),
+                        sp.GetRequiredService<IServiceProvider>(),
+                        options));
+                break;
+        }
+
+        return context;
     }
 
     /// <summary>

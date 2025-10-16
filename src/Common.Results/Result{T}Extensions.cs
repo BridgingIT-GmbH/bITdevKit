@@ -12,6 +12,8 @@ using System.Threading;
 
 public static class ResultTExtensions
 {
+    private static readonly EventId ResultLogEvent = new(10001, "Result");
+
     /// <summary>
     /// Throws a <see cref="ResultException"/> if the current result is a failure.
     /// </summary>
@@ -433,33 +435,287 @@ public static class ResultTExtensions
         }
     }
 
-    public static Result<T> Log<T>(this Result<T> result, ILogger logger, string message = null, LogLevel logLevel = LogLevel.Trace)
+    /// <summary>
+    /// Logs a Result using structured logging with default levels
+    /// (Debug on success, Warning on failure).
+    /// </summary>
+    /// <typeparam name="T">The type of the success value contained in the result.</typeparam>
+    /// <param name="result">The result instance to log.</param>
+    /// <param name="logger">
+    /// The logger to write to. If null, the method is a no-op and returns the original result.
+    /// </param>
+    /// <param name="messageTemplate">
+    /// Optional message template for structured logging (e.g., "Finished handler for {Email}").
+    /// </param>
+    /// <param name="args">
+    /// Optional structured logging arguments corresponding to <paramref name="messageTemplate"/>.
+    /// </param>
+    /// <remarks>
+    /// - This method never alters the business outcome or throws.
+    /// - It emits consistent fields: LogKey, ValueType, Messages (count), Errors (count),
+    ///   and for failures, ErrorTypes (array of error type names).
+    /// </remarks>
+    /// <returns>
+    /// The original <paramref name="result"/> instance, unchanged.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// result.Log(logger, "Create customer finished for {Email}", email);
+    /// </code>
+    /// </example>
+    public static Result<T> Log<T>(
+        this Result<T> result,
+        ILogger logger,
+        string messageTemplate = null,
+        params object[] args)
+    {
+        return result.Log(
+            logger,
+            messageTemplate,
+            successLevel: LogLevel.Debug,
+            failureLevel: LogLevel.Warning,
+            args);
+    }
+
+    /// <summary>
+    /// Logs a Result using structured logging with custom levels for success and failure.
+    /// </summary>
+    /// <typeparam name="T">The type of the success value contained in the result.</typeparam>
+    /// <param name="result">The result instance to log.</param>
+    /// <param name="logger">
+    /// The logger to write to. If null, the method is a no-op and returns the original result.
+    /// </param>
+    /// <param name="messageTemplate">
+    /// Optional message template for structured logging (e.g., "Handled {Command} for {Email}").
+    /// </param>
+    /// <param name="successLevel">The log level used when the result indicates success.</param>
+    /// <param name="failureLevel">The log level used when the result indicates failure.</param>
+    /// <param name="args">
+    /// Optional structured logging arguments corresponding to <paramref name="messageTemplate"/>.
+    /// </param>
+    /// <remarks>
+    /// - Logging should not impact control flow; exceptions during logging are swallowed.
+    /// - Consistent fields included: LogKey, ValueType, Messages (count), Errors (count), and ErrorTypes for failures.
+    /// </remarks>
+    /// <returns>
+    /// The original <paramref name="result"/> instance, unchanged.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// result.Log(
+    ///     logger,
+    ///     "Persisted {Entity} with Id {Id}",
+    ///     LogLevel.Information,
+    ///     LogLevel.Error,
+    ///     "Customer",
+    ///     customerId);
+    /// </code>
+    /// </example>
+    public static Result<T> Log<T>(
+        this Result<T> result,
+        ILogger logger,
+        string messageTemplate,
+        LogLevel successLevel,
+        LogLevel failureLevel,
+        params object[] args)
     {
         if (logger is null)
-        {
-            return Result<T>.Failure()
-                .WithError(new Error("Logger cannot be null"));
-        }
+            return result;
 
         try
         {
-            if (result.IsSuccess)
+            var isSuccess = result.IsSuccess;
+            var messagesCount = result.Messages?.Count ?? 0;
+            var errorsCount = result.Errors?.Count ?? 0;
+            var errorTypes = result.Errors?.Select(e => e.GetType().Name).ToArray() ?? [];
+            var valueType = typeof(T).Name;
+
+            if (isSuccess)
             {
-                logger.Log(logLevel, $"{{LogKey}} {result.ToString(message)}", "RES");
+                if (!string.IsNullOrWhiteSpace(messageTemplate))
+                {
+                    logger.Log(
+                        successLevel,
+                        ResultLogEvent,
+                        "{LogKey} Success - {ValueType} Messages={Messages} Errors={Errors} | " + messageTemplate,
+                        "RES", valueType, messagesCount, errorsCount, args);
+                }
+                else
+                {
+                    logger.Log(
+                        successLevel,
+                        ResultLogEvent,
+                        "{LogKey} Success - {ValueType} Messages={Messages} Errors={Errors}",
+                        "RES", valueType, messagesCount, errorsCount);
+                }
             }
             else
             {
-                logger.LogError($"{{LogKey}} {result.ToString(message)}", "RES");
+                if (!string.IsNullOrWhiteSpace(messageTemplate))
+                {
+                    logger.Log(
+                        failureLevel,
+                        ResultLogEvent,
+                        "{LogKey} Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
+                        "RES", valueType, messagesCount, errorsCount, errorTypes, args);
+                }
+                else
+                {
+                    logger.Log(
+                        failureLevel,
+                        ResultLogEvent,
+                        "{LogKey} Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
+                        "RES", valueType, messagesCount, errorsCount, errorTypes);
+                }
             }
 
             return result;
         }
-        catch (Exception ex)
+        catch
         {
-            return Result<T>.Failure()
-                .WithErrors(result.Errors)
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(result.Messages);
+            // Swallow logging exceptions; never change business outcome because logging failed.
+            return result;
+        }
+    }
+
+    /// <summary>
+    /// Logs a Result&lt;T&gt; using structured logging with default levels
+    /// (Debug on success, Warning on failure). The arguments for the message template are
+    /// produced from the current result via <paramref name="argsFactory"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the success value contained in the result.</typeparam>
+    /// <param name="result">The result instance to log.</param>
+    /// <param name="logger">The logger to write to. If null, the method is a no-op.</param>
+    /// <param name="messageTemplate">
+    /// The structured logging template (e.g., "AUDIT - Customer {Id} created for {Email}").
+    /// </param>
+    /// <param name="argsFactory">
+    /// A function that receives the current <paramref name="result"/> and returns the
+    /// structured logging arguments for <paramref name="messageTemplate"/>.
+    /// </param>
+    /// <remarks>
+    /// - This method never alters the business outcome or throws.
+    /// - It emits consistent fields: LogKey, ValueType, Messages (count), Errors (count),
+    ///   and for failures, ErrorTypes (array of error type names).
+    /// </remarks>
+    /// <returns>The original <paramref name="result"/> unchanged.</returns>
+    /// <example>
+    /// <code>
+    /// result.Log(
+    ///     logger,
+    ///     "AUDIT - Customer {Id} created for {Email}",
+    ///     r =&gt; new object?[] { r.Value.Entity.Id, r.Value.Entity.Email });
+    /// </code>
+    /// </example>
+    public static Result<T> Log<T>(
+        this Result<T> result,
+        ILogger logger,
+        string messageTemplate,
+        Func<Result<T>, object[]> argsFactory)
+    {
+        return result.Log(
+            logger,
+            messageTemplate,
+            argsFactory,
+            successLevel: LogLevel.Debug,
+            failureLevel: LogLevel.Warning);
+    }
+
+    /// <summary>
+    /// Logs a Result&lt;T&gt; using structured logging with custom levels. The arguments for the
+    /// message template are produced from the current result via <paramref name="argsFactory"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the success value contained in the result.</typeparam>
+    /// <param name="result">The result instance to log.</param>
+    /// <param name="logger">The logger to write to. If null, the method is a no-op.</param>
+    /// <param name="messageTemplate">
+    /// The structured logging template (e.g., "AUDIT - Customer {Id} created for {Email}").
+    /// </param>
+    /// <param name="argsFactory">
+    /// A function that receives the current <paramref name="result"/> and returns the
+    /// structured logging arguments for <paramref name="messageTemplate"/>.
+    /// </param>
+    /// <param name="successLevel">Log level used when <paramref name="result"/> indicates success.</param>
+    /// <param name="failureLevel">Log level used when <paramref name="result"/> indicates failure.</param>
+    /// <remarks>
+    /// - Logging must not impact control flow; exceptions during logging are swallowed.
+    /// - Consistent fields included: LogKey, ValueType, Messages (count), Errors (count), and ErrorTypes for failures.
+    /// </remarks>
+    /// <returns>The original <paramref name="result"/> unchanged.</returns>
+    /// <example>
+    /// <code>
+    /// result.Log(
+    ///     logger,
+    ///     "AUDIT - Customer {Id} created for {Email}",
+    ///     r => new object?[] { r.Value.Entity.Id, r.Value.Entity.Email },
+    ///     LogLevel.Information,
+    ///     LogLevel.Error);
+    /// </code>
+    /// </example>
+    public static Result<T> Log<T>(
+        this Result<T> result,
+        ILogger logger,
+        string messageTemplate,
+        Func<Result<T>, object[]> argsFactory,
+        LogLevel successLevel,
+        LogLevel failureLevel)
+    {
+        if (logger is null)
+            return result;
+
+        try
+        {
+            var isSuccess = result.IsSuccess;
+            var messagesCount = result.Messages?.Count ?? 0;
+            var errorsCount = result.Errors?.Count ?? 0;
+            var errorTypes = result.Errors?.Select(e => e.GetType().Name).ToArray() ?? [];
+            var valueType = typeof(T).Name;
+            var userArgs = argsFactory?.Invoke(result) ?? [];
+
+            if (!string.IsNullOrWhiteSpace(messageTemplate))
+            {
+                if (isSuccess)
+                {
+                    const string prefixTemplate = "{LogKey} Success - {ValueType} Messages={Messages} Errors={Errors} | ";
+                    var prefixArgs = new object[] { "RES", valueType, messagesCount, errorsCount };
+                    var allArgs = prefixArgs.ConcatArgs(userArgs);
+
+                    logger.Log(successLevel, ResultLogEvent, prefixTemplate + messageTemplate, allArgs);
+                }
+                else
+                {
+                    const string prefixTemplate = "{LogKey} Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | ";
+                    var prefixArgs = new object[] { "RES", valueType, messagesCount, errorsCount, errorTypes };
+                    var allArgs = prefixArgs.ConcatArgs(userArgs);
+
+                    logger.Log(failureLevel, ResultLogEvent, prefixTemplate + messageTemplate, allArgs);
+                }
+            }
+            else
+            {
+                if (isSuccess)
+                {
+                    logger.Log(
+                        successLevel,
+                        ResultLogEvent,
+                        "{LogKey} Success - {ValueType} Messages={Messages} Errors={Errors}",
+                        "RES", valueType, messagesCount, errorsCount);
+                }
+                else
+                {
+                    logger.Log(
+                        failureLevel,
+                        ResultLogEvent,
+                        "{LogKey} Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
+                        "RES", valueType, messagesCount, errorsCount, errorTypes);
+                }
+            }
+
+            return result;
+        }
+        catch
+        {
+            return result;
         }
     }
 

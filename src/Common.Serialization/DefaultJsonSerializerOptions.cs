@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using BridgingIT.DevKit.Common.Converters;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using BridgingIT.DevKit.Common.Converters;
 
-public static class DefaultSystemTextJsonSerializerOptions
+public static class DefaultJsonSerializerOptions
 {
     public static JsonSerializerOptions Create()
     {
@@ -18,6 +18,8 @@ public static class DefaultSystemTextJsonSerializerOptions
             WriteIndented = true,
             PropertyNameCaseInsensitive = true,
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            TypeInfoResolver = new UniversalContractResolver(), // allow deserialization of types with only private constructors
             Converters =
             {
                 new EnumMemberConverter<FilterOperator>(),
@@ -31,9 +33,8 @@ public static class DefaultSystemTextJsonSerializerOptions
                 new ResultJsonConverter(),
                 new ResultValueJsonConverterFactory(),
                 new ResultPagedJsonConverterFactory(),
-                new JsonStringEnumConverter(),
+                new JsonStringEnumConverter(), // read/write enums as strings
             },
-            TypeInfoResolver = new UniversalContractResolver() // allow deserialization of types with only private constructors
             //IncludeFields = true,
             //PreferredObjectCreationHandling = JsonObjectCreationHandling.Populate // TODO: .NET8 https://devblogs.microsoft.com/dotnet/system-text-json-in-dotnet-8/#populate-read-only-members
         };

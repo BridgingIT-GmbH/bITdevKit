@@ -355,9 +355,34 @@ For applications requiring durable job storage—such as preserving schedules an
 
    The `JobSchedulingSqlServerSeederStartupTask` initializes Quartz.NET tables if persistence is enabled.
 
-### Generated SQL Tables
+### Generate Quartz Tables
 
-The `JobSchedulingSqlServerSeederStartupTask` creates tables like `QRTZ_JOB_DETAILS`, `QRTZ_TRIGGERS`, and `QRTZ_JOURNAL_TRIGGERS` for job and trigger data persistence (full list in original).
+The `JobSchedulingSqlServerSeederStartupTask` creates tables like `QRTZ_JOB_DETAILS`, `QRTZ_TRIGGERS`, and `QRTZ_JOURNAL_TRIGGERS` for job and trigger data persistence (full list in original). Preferred approach: create the Quartz tables via an EF Core migration. This manages schema changes automaticly, versioned and repeatable.
+
+Steps:
+1. Add a new empty migration (e.g., dotnet ef migrations add AddQuartzTables).
+2. Replace the generated migration body with:
+
+```csharp
+public partial class AddQuartzTables : Migration
+{
+    protected override void Up(MigrationBuilder migrationBuilder)
+    {
+        SqlServerJobStoreMigrationHelper.CreateQuartzTables(migrationBuilder);
+        //SqliteJobStoreMigrationHelper.CreateQuartzTables(migrationBuilder);
+        //PostgresJobStoreMigrationHelper.CreateQuartzTables(migrationBuilder);
+    }
+
+    protected override void Down(MigrationBuilder migrationBuilder)
+    {
+        SqlServerJobStoreMigrationHelper.DropQuartzTables(migrationBuilder);
+        //SqliteJobStoreMigrationHelper.DropQuartzTables(migrationBuilder);
+        //PostgresJobStoreMigrationHelper.DropQuartzTables(migrationBuilder);
+    }
+}
+```
+
+3. Apply it (dotnet ef database update) to create all required Quartz persistence tables or use the `DatabaseMigratorService` or `DatabaseCreatorService` during application startup.
 
 ### Validation
 

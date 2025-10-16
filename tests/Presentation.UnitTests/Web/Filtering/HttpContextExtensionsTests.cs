@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 
-using System.Text;
-using BridgingIT.DevKit.Common;
 using Bogus;
+using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using NSubstitute;
 using Shouldly;
+using System.Text;
 using Xunit;
 
 public class HttpContextExtensionsTests
@@ -26,6 +26,20 @@ public class HttpContextExtensionsTests
 
         // Act
         var result = await context.FromQueryFilterAsync();
+
+        // Assert
+        result.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void FromQueryFilter_JsonDirect_Deserializes()
+    {
+        // Arrange
+        const string json = "{\"page\":1,\"pageSize\":1000,\"noTracking\":false,\"filters\":[{\"field\":\"inVerwendung\",\"operator\":\"eq\",\"value\":true}]}";
+        var serializer = new SystemTextJsonSerializer();
+
+        // Act
+        var result = serializer.Deserialize<FilterModel>(json);
 
         // Assert
         result.ShouldNotBeNull();

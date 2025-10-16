@@ -160,4 +160,33 @@ public static partial class ServiceCollectionExtensions
 
         return new DbContextBuilderContext<TContext>(services, lifetime, provider: Provider.InMemory);
     }
+
+    public static DbContextBuilderContext<TContext> WithSequenceNumberGenerator<TContext>(
+        this DbContextBuilderContext<TContext> context,
+        ServiceLifetime lifetime = ServiceLifetime.Scoped)
+        where TContext : DbContext
+    {
+        switch (lifetime)
+        {
+            case ServiceLifetime.Singleton:
+                context.Services.AddSingleton<ISequenceNumberGenerator>(sp =>
+                    new InMemorySequenceNumberGenerator(
+                        sp.GetRequiredService<ILoggerFactory>()));
+                break;
+
+            case ServiceLifetime.Transient:
+                context.Services.AddTransient<ISequenceNumberGenerator>(sp =>
+                    new InMemorySequenceNumberGenerator(
+                        sp.GetRequiredService<ILoggerFactory>()));
+                break;
+
+            default:
+                context.Services.AddScoped<ISequenceNumberGenerator>(sp =>
+                    new InMemorySequenceNumberGenerator(
+                        sp.GetRequiredService<ILoggerFactory>()));
+                break;
+        }
+
+        return context;
+    }
 }

@@ -26,9 +26,6 @@ public static class HttpContextExtensions
     ///       return Results.Ok(filterModel);
     ///   });
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="queryParameter"></param>
-    /// <returns></returns>
     public static async Task<FilterModel> FromQueryFilterAsync(this HttpContext context, string queryParameter = "filter")
     {
         if (context == null)
@@ -43,10 +40,10 @@ public static class HttpContextExtensions
         {
             return string.IsNullOrEmpty(query) ? default : Serializer.Deserialize<FilterModel>(query);
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
             context.Response.StatusCode = 400;
-            await context.Response.WriteAsync("Invalid JSON format for filter model.");
+            await context.Response.WriteAsync($"Invalid JSON format for filter model: {ex.Message}");
 
             return default;
         }
@@ -65,9 +62,6 @@ public static class HttpContextExtensions
     ///       return Results.Ok(filterModel);
     ///   });
     /// </summary>
-    /// <param name="context"></param>
-    /// <param name="enableBuffering"></param>
-    /// <returns></returns>
     public static async Task<FilterModel> FromBodyFilterAsync(this HttpContext context, bool enableBuffering = false)
     {
         if (context == null)
@@ -98,10 +92,10 @@ public static class HttpContextExtensions
 
             return Serializer.Deserialize<FilterModel>(body);
         }
-        catch (JsonException)
+        catch (JsonException ex)
         {
             context.Response.StatusCode = 400;
-            await context.Response.WriteAsync("Invalid JSON format for filter model.");
+            await context.Response.WriteAsync($"Invalid JSON format for filter model: {ex.Message}");
 
             return default;
         }

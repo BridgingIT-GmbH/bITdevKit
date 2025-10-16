@@ -1366,7 +1366,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
                 }
               }
             }
@@ -1510,7 +1510,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/HttpValidationProblemDetails"
                 }
               }
             }
@@ -1698,13 +1698,6 @@
         }
       },
       "EntityPermissionModel": {
-        "required": [
-          "entityType",
-          "entityId",
-          "permission",
-          "source",
-          "hasAccess"
-        ],
         "type": "object",
         "properties": {
           "entityType": {
@@ -1767,6 +1760,44 @@
             "nullable": true
           }
         }
+      },
+      "HttpValidationProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "IDictionaryOfstringAndObject": {
+        "nullable": true
       },
       "JobInfo": {
         "type": "object",
@@ -1893,8 +1924,7 @@
             "nullable": true
           },
           "data": {
-            "type": "object",
-            "nullable": true
+            "$ref": "#/components/schemas/IDictionaryOfstringAndObject"
           },
           "instanceName": {
             "type": "string",
@@ -1989,8 +2019,7 @@
             "nullable": true
           },
           "data": {
-            "type": "object",
-            "nullable": true
+            "$ref": "#/components/schemas/IDictionaryOfstringAndObject"
           },
           "instanceName": {
             "type": "string",
@@ -2107,11 +2136,6 @@
         }
       },
       "PermissionRequestModel": {
-        "required": [
-          "entityType",
-          "entityId",
-          "permission"
-        ],
         "type": "object",
         "properties": {
           "entityType": {
@@ -2198,17 +2222,6 @@
         }
       },
       "SubscriptionPlanDetails": {
-        "required": [
-          "name",
-          "pricePerMonth",
-          "maxTodos",
-          "maxUsersPerTodo",
-          "allowsRecurring",
-          "allowsAttachments",
-          "allowsTemplates",
-          "maxProjects",
-          "allowsComments"
-        ],
         "type": "object",
         "properties": {
           "name": {
@@ -2276,6 +2289,10 @@
           "userId": {
             "type": "string",
             "nullable": true
+          },
+          "number": {
+            "type": "integer",
+            "format": "int64"
           },
           "title": {
             "type": "string",

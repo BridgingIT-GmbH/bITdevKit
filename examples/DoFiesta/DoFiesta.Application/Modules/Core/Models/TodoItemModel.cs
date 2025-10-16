@@ -11,6 +11,8 @@ public class TodoItemModel
 
     public string UserId { get; set; }
 
+    public long Number { get; set; }
+
     public string Title { get; set; }
 
     public string Description { get; set; }

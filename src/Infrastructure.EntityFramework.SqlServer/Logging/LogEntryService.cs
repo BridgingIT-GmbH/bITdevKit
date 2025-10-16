@@ -531,7 +531,7 @@ public class LogEntryService<TContext>(
 
                         logs?.ForEach(e => e.LogEvents.Clear(), cancellationToken: cancellationToken);
 
-                        await JsonSerializer.SerializeAsync(writer.BaseStream, logs, DefaultSystemTextJsonSerializerOptions.Create(), cancellationToken);
+                        await JsonSerializer.SerializeAsync(writer.BaseStream, logs, DefaultJsonSerializerOptions.Create(), cancellationToken);
                         break;
                     case LogEntryExportFormat.Txt:
                         const string indentSpaces = "                         ";

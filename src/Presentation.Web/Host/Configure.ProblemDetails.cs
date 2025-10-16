@@ -3,18 +3,15 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Presentation.Web;
+namespace Microsoft.Extensions.DependencyInjection;
 
 using System.Security;
-using Common;
-using Domain;
+using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-//using Microsoft.Extensions.DependencyInjection;
-using MvcProblemDetails = Microsoft.AspNetCore.Mvc.ProblemDetails;
 using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOptions;
 
 //public static class ServiceCollectionExtensions
@@ -36,7 +33,7 @@ public static class Configure
     public static void ProblemDetails(
         ProblemDetailsOptions options,
         bool includeExceptionDetails = false,
-        IEnumerable<Func<Exception, MvcProblemDetails>> mappings = null,
+        IEnumerable<Func<Exception, ProblemDetails>> mappings = null,
         IEnumerable<string> allowedHeaderNames = null)
     {
         //options.IncludeExceptionDetails = (ctx, ex) => includeExceptionDetails;  //ctx.RequestServices.GetRequiredService<IHostEnvironment>().IsDevelopment();
@@ -76,7 +73,7 @@ public static class Configure
 
         options.Map<RuleException>(ex =>
         {
-            return new MvcProblemDetails
+            return new ProblemDetails
             {
                 Title = "Bad Request",
                 Status = StatusCodes.Status400BadRequest,
@@ -87,7 +84,7 @@ public static class Configure
 
         options.Map<DomainPolicyException>(ex =>
         {
-            return new MvcProblemDetails
+            return new ProblemDetails
             {
                 Title = "Bad Request",
                 Status = StatusCodes.Status400BadRequest,
@@ -98,7 +95,7 @@ public static class Configure
 
         options.Map<SecurityException>(ex =>
         {
-            return new MvcProblemDetails
+            return new ProblemDetails
             {
                 Title = "Unauthorized",
                 Status = StatusCodes.Status401Unauthorized,
@@ -109,7 +106,7 @@ public static class Configure
 
         options.Map<ModuleNotEnabledException>(ex =>
         {
-            return new MvcProblemDetails
+            return new ProblemDetails
             {
                 Title = "Module Not Enabled",
                 Status = StatusCodes.Status503ServiceUnavailable,
@@ -120,7 +117,7 @@ public static class Configure
 
         options.Map<AggregateNotFoundException>(ex =>
         {
-            return new MvcProblemDetails
+            return new ProblemDetails
             {
                 Title = "Aggregate Not Found",
                 Status = StatusCodes.Status404NotFound,
@@ -131,7 +128,7 @@ public static class Configure
 
         options.Map<EntityNotFoundException>(ex =>
         {
-            return new MvcProblemDetails
+            return new ProblemDetails
             {
                 Title = "Entity Not Found",
                 Status = StatusCodes.Status404NotFound,

@@ -263,7 +263,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                     pollingInterval,
                     cancellationToken))
                 {
-                    await JsonSerializer.SerializeAsync(stream, log, options: DefaultSystemTextJsonSerializerOptions.Create(), cancellationToken: cancellationToken);
+                    await JsonSerializer.SerializeAsync(stream, log, options: DefaultJsonSerializerOptions.Create(), cancellationToken: cancellationToken);
                     await stream.WriteAsync(Encoding.UTF8.GetBytes("\n"), cancellationToken);
                 }
             }, contentType: "application/x-ndjson");

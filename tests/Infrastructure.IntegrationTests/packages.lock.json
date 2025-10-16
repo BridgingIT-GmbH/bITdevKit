@@ -171,6 +171,15 @@
           "Testcontainers": "4.7.0"
         }
       },
+      "Testcontainers.PostgreSql": {
+        "type": "Direct",
+        "requested": "[4.7.0, )",
+        "resolved": "4.7.0",
+        "contentHash": "RwR8cZIWaZLFYtXtIlwjMbGwUcbdQqcJj6zuUNN+RQooDmkbAlrp5WpPwVkMDSdNTi4BF3wiMnsw62j20OI6FA==",
+        "dependencies": {
+          "Testcontainers": "4.7.0"
+        }
+      },
       "Testcontainers.RabbitMq": {
         "type": "Direct",
         "requested": "[4.7.0, )",
@@ -778,6 +787,14 @@
           "System.Threading.Timer": "4.3.0",
           "System.Xml.ReaderWriter": "4.3.0",
           "System.Xml.XDocument": "4.3.0"
+        }
+      },
+      "Npgsql": {
+        "type": "Transitive",
+        "resolved": "9.0.3",
+        "contentHash": "tPvY61CxOAWxNsKLEBg+oR646X4Bc8UmyQ/tJszL/7mEmIXQnnBhVJZrZEEUv0Bstu0mEsHZD5At3EO8zQRAYw==",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.2"
         }
       },
       "Polly.Core": {
@@ -2273,6 +2290,26 @@
           "Ensure.That": "[10.1.0, )"
         }
       },
+      "BridgingIT.DevKit.Infrastructure.EntityFramework.Postgres": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.JobScheduling": "[1.0.0, )",
+          "BridgingIT.DevKit.Infrastructure.EntityFramework": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Data.SqlClient": "[6.1.2, )",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "[9.0.4, )"
+        }
+      },
+      "BridgingIT.DevKit.Infrastructure.EntityFramework.Sqlite": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.JobScheduling": "[1.0.0, )",
+          "BridgingIT.DevKit.Infrastructure.EntityFramework": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.EntityFrameworkCore.Sqlite": "[9.0.9, )",
+          "System.Data.SQLite": "[2.0.2, )"
+        }
+      },
       "BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer": {
         "type": "Project",
         "dependencies": {
@@ -2808,6 +2845,17 @@
         "resolved": "13.0.4",
         "contentHash": "pdgNNMai3zv51W5aq268sujXUyx7SNdE2bj1wZcWjAQrKMFZV260lbqYop1d2GM67JI1huLRwxo9ZqnfF/lC6A=="
       },
+      "Npgsql.EntityFrameworkCore.PostgreSQL": {
+        "type": "CentralTransitive",
+        "requested": "[9.0.4, )",
+        "resolved": "9.0.4",
+        "contentHash": "mw5vcY2IEc7L+IeGrxpp/J5OSnCcjkjAgJYCm/eD52wpZze8zsSifdqV7zXslSMmfJG2iIUGZyo3KuDtEFKwMQ==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "[9.0.1, 10.0.0)",
+          "Microsoft.EntityFrameworkCore.Relational": "[9.0.1, 10.0.0)",
+          "Npgsql": "9.0.3"
+        }
+      },
       "Polly": {
         "type": "CentralTransitive",
         "requested": "[8.6.4, )",
@@ -2906,6 +2954,12 @@
           "System.Buffers": "4.6.0",
           "ZstdSharp.Port": "0.8.5"
         }
+      },
+      "System.Data.SQLite": {
+        "type": "CentralTransitive",
+        "requested": "[2.0.2, )",
+        "resolved": "2.0.2",
+        "contentHash": "yAwxkraZf1PazyLg1sqMAlh4KEtaa2L8zieLicd9oWBybrb3SoPph+WVIyUTFWwtTVhNX/jNsDew6tbB8bw2xQ=="
       },
       "System.Diagnostics.DiagnosticSource": {
         "type": "CentralTransitive",

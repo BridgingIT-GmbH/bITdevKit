@@ -1,72 +1,75 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <AssemblyName>BridgingIT.DevKit.Infrastructure.IntegrationTests</AssemblyName>
-    <RootNamespace>BridgingIT.DevKit.Infrastructure.IntegrationTests</RootNamespace>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <AssemblyName>BridgingIT.DevKit.Infrastructure.IntegrationTests</AssemblyName>
+        <RootNamespace>BridgingIT.DevKit.Infrastructure.IntegrationTests</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <Using Include="BridgingIT.DevKit.Common" />
-    <Using Include="Bogus" />
-    <Using Include="Bogus.DataSets" />
-    <!-- <Using Include="Microsoft.Extensions.DependencyInjection"/> -->
-    <Using Include="NSubstitute" />
-    <Using Include="Shouldly" />
-    <Using Include="Xunit" />
-    <Using Include="Xunit.Abstractions" />
-  </ItemGroup>
+    <ItemGroup>
+        <Using Include="BridgingIT.DevKit.Common" />
+        <Using Include="Bogus" />
+        <Using Include="Bogus.DataSets" />
+        <!-- <Using Include="Microsoft.Extensions.DependencyInjection"/> -->
+        <Using Include="NSubstitute" />
+        <Using Include="Shouldly" />
+        <Using Include="Xunit" />
+        <Using Include="Xunit.Abstractions" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Bogus" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" />
-    <PackageReference Include="NBuilder" />
-    <PackageReference Include="NSubstitute" />
-    <PackageReference Include="Shouldly" />
-    <PackageReference Include="Testcontainers.Azurite" />
-    <PackageReference Include="Testcontainers.CosmosDb" />
-    <PackageReference Include="Testcontainers.MsSql" />
-    <PackageReference Include="Testcontainers.RabbitMq" />
-    <PackageReference Include="xunit" />
-    <PackageReference Include="xunit.runner.visualstudio">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="coverlet.collector">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Xunit.SkippableFact" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Bogus" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Cosmos" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="NBuilder" />
+        <PackageReference Include="NSubstitute" />
+        <PackageReference Include="Shouldly" />
+        <PackageReference Include="Testcontainers.Azurite" />
+        <PackageReference Include="Testcontainers.CosmosDb" />
+        <PackageReference Include="Testcontainers.MsSql" />
+        <PackageReference Include="Testcontainers.RabbitMq" />
+        <PackageReference Include="Testcontainers.PostgreSql" />
+        <PackageReference Include="xunit" />
+        <PackageReference Include="xunit.runner.visualstudio">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="coverlet.collector">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
+        <PackageReference Include="Xunit.SkippableFact" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\Application.Identity\Application.Identity.csproj" />
-    <ProjectReference Include="..\..\src\Common.Extensions\Common.Extensions.csproj" />
-    <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
-    <ProjectReference Include="..\..\src\Domain.CodeGen\Domain.CodeGen.csproj" OutputItemType="Analyzer" />
-    <ProjectReference Include="..\..\src\Domain.Mediator\Domain.Mediator.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.Azure.Cosmos\Infrastructure.Azure.Cosmos.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.Azure.ServiceBus\Infrastructure.Azure.ServiceBus.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.Azure.Storage\Infrastructure.Azure.Storage.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.EventSourcing.SqlServer\Infrastructure.EntityFramework.EventSourcing.SqlServer.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.EventSourcing\Infrastructure.EntityFramework.EventSourcing.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.Outbox\Infrastructure.EntityFramework.Outbox.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.EventSourcing\Infrastructure.EventSourcing.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.LiteDB\Infrastructure.LiteDB.csproj" />
-    <ProjectReference Include="..\..\src\Infrastructure.RabbitMQ\Infrastructure.RabbitMQ.csproj" />
-    <ProjectReference Include="..\Application.IntegrationTests\Application.IntegrationTests.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\Application.Identity\Application.Identity.csproj" />
+        <ProjectReference Include="..\..\src\Common.Extensions\Common.Extensions.csproj" />
+        <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
+        <ProjectReference Include="..\..\src\Domain.CodeGen\Domain.CodeGen.csproj" OutputItemType="Analyzer" />
+        <ProjectReference Include="..\..\src\Domain.Mediator\Domain.Mediator.csproj" />
+        <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj" />
+        <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.Sqlite\Infrastructure.EntityFramework.Sqlite.csproj" />
+        <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.Postgres\Infrastructure.EntityFramework.Postgres.csproj" />
+        <ProjectReference Include="..\..\src\Infrastructure.Azure.Cosmos\Infrastructure.Azure.Cosmos.csproj" />
+        <ProjectReference Include="..\..\src\Infrastructure.Azure.ServiceBus\Infrastructure.Azure.ServiceBus.csproj" />
+        <ProjectReference Include="..\..\src\Infrastructure.Azure.Storage\Infrastructure.Azure.Storage.csproj" />
+        <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.EventSourcing.SqlServer\Infrastructure.EntityFramework.EventSourcing.SqlServer.csproj" />
+        <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.EventSourcing\Infrastructure.EntityFramework.EventSourcing.csproj" />
+        <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.Outbox\Infrastructure.EntityFramework.Outbox.csproj" />
+        <ProjectReference Include="..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
+        <ProjectReference Include="..\..\src\Infrastructure.EventSourcing\Infrastructure.EventSourcing.csproj" />
+        <ProjectReference Include="..\..\src\Infrastructure.LiteDB\Infrastructure.LiteDB.csproj" />
+        <ProjectReference Include="..\..\src\Infrastructure.RabbitMQ\Infrastructure.RabbitMQ.csproj" />
+        <ProjectReference Include="..\Application.IntegrationTests\Application.IntegrationTests.csproj" />
+    </ItemGroup>
 
 </Project>

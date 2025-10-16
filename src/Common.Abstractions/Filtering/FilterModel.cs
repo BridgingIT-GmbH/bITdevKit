@@ -11,7 +11,7 @@ using System.Runtime.Serialization;
 /// Represents a model for building filter criteria for data queries.
 /// Contains properties for pagination, ordering, filtering, and including related entities.
 /// </summary>
-public class FilterModel
+public partial class FilterModel
 {
     public static FilterModel FromQueryString(string queryString)
     {

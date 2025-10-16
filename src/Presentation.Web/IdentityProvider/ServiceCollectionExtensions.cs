@@ -3,18 +3,15 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Presentation.Web;
+namespace Microsoft.Extensions.DependencyInjection;
 
-using Microsoft.Extensions.DependencyInjection;
+using BridgingIT.DevKit.Presentation.Web;
 
-public static class ServiceCollectionExtensions
+public static partial class ServiceCollectionExtensions
 {
     /// <summary>
     /// Add the fake identity provider middlewar to the service collection.
     /// </summary>
-    /// <param name="services"></param>
-    /// <param name="configure"></param>
-    /// <returns></returns>
     public static IServiceCollection AddFakeIdentityProvider(
         this IServiceCollection services,
         Action<FakeIdentityProviderEndpointsOptionsBuilder> configure)
@@ -78,7 +75,7 @@ public static class ServiceCollectionExtensions
         // Register CORS policies
         services.AddCors(corsOptions =>
         {
-            corsOptions.AddPolicy(nameof(IdentityProvider), policy =>
+            corsOptions.AddPolicy(nameof(BridgingIT.DevKit.Presentation.Web.IdentityProvider), policy =>
             {
                 policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
             });

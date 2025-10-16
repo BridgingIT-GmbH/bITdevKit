@@ -113,13 +113,37 @@ public class FilterCriteriaJsonConverter : JsonConverter<FilterCriteria>
                                 {
                                     var id = idProp.GetInt32();
                                     var fromIdMethod = type.GetMethod("FromId", new[] { typeof(int) });
-                                    filterCriteria.Value = fromIdMethod.Invoke(null, new object[] { id });
+                                    var getByIdMethod = type.GetMethod("GetById", new[] { typeof(int) });
+                                    if (fromIdMethod != null)
+                                    {
+                                        filterCriteria.Value = fromIdMethod.Invoke(null, new object[] { id });
+                                    }
+                                    else if (getByIdMethod != null)
+                                    {
+                                        filterCriteria.Value = getByIdMethod.Invoke(null, new object[] { id });
+                                    }
+                                    else
+                                    {
+                                        throw new JsonException($"Type {type.FullName} does not have FromId or GetById method.");
+                                    }
                                 }
                                 else if (root.TryGetProperty("Value", out var valueProp) && valueProp.ValueKind == JsonValueKind.String)
                                 {
                                     var value = valueProp.GetString();
                                     var fromValueMethod = type.GetMethod("FromValue", new[] { typeof(string) });
-                                    filterCriteria.Value = fromValueMethod.Invoke(null, new object[] { value });
+                                    var getByValueMethod = type.GetMethod("GetByValue", new[] { typeof(string) });
+                                    if (fromValueMethod != null)
+                                    {
+                                        filterCriteria.Value = fromValueMethod.Invoke(null, new object[] { value });
+                                    }
+                                    else if (getByValueMethod != null)
+                                    {
+                                        filterCriteria.Value = getByValueMethod.Invoke(null, new object[] { value });
+                                    }
+                                    else
+                                    {
+                                        throw new JsonException($"Type {type.FullName} does not have FromValue or GetByValue method.");
+                                    }
                                 }
                                 else
                                 {

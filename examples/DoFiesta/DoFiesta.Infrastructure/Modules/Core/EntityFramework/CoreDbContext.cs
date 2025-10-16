@@ -27,4 +27,12 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     public DbSet<FileEventEntity> FileEvents { get; set; }
 
     public DbSet<LogEntry> LogEntries { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.HasSequence<int>("TodoItemSequence")
+            .StartsAt(1).IncrementsBy(1);
+
+        base.OnModelCreating(modelBuilder);
+    }
 }

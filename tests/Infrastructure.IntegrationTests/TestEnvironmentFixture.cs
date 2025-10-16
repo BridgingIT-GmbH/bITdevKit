@@ -19,6 +19,7 @@ using Testcontainers.Azurite;
 using Testcontainers.CosmosDb;
 using Testcontainers.MsSql;
 using Testcontainers.RabbitMq;
+using Testcontainers.PostgreSql;
 using CosmosClientOptions = Microsoft.Azure.Cosmos.CosmosClientOptions;
 
 public class TestEnvironmentFixture : IAsyncLifetime
@@ -41,6 +42,15 @@ public class TestEnvironmentFixture : IAsyncLifetime
             .WithExposedPort(1433)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(1433))
             .Build();
+
+        this.PostgresContainer = new PostgreSqlBuilder()
+             .WithImage("postgres:16-alpine")
+             .WithDatabase("testdb")
+             .WithUsername("postgres")
+             .WithPassword("postgres")
+             .WithNetworkAliases(this.NetworkName)
+             .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(5432))
+             .Build();
 
         this.CosmosContainer = new CosmosDbBuilder() // INFO: remove docker image when container fails with 'The evaluation period has expired.' https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/60
             .WithNetworkAliases(this.NetworkName)
@@ -89,6 +99,10 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
     public string SqlConnectionString => this.SqlContainer.GetConnectionString();
 
+    public string PostgresConnectionString => this.PostgresContainer.GetConnectionString();
+
+    public string SqliteConnectionString => $"Data Source=.\\_tests_{nameof(StubDbContext)}_sqlite.db";
+
     public string AzuriteConnectionString => this.AzuriteContainer.GetConnectionString();
 
     public string CosmosConnectionString => this.CosmosContainer.GetConnectionString();
@@ -98,6 +112,8 @@ public class TestEnvironmentFixture : IAsyncLifetime
     public INetwork Network { get; }
 
     public MsSqlContainer SqlContainer { get; }
+
+    public PostgreSqlContainer PostgresContainer { get; }
 
     public CosmosDbContainer CosmosContainer { get; }
 
@@ -116,6 +132,8 @@ public class TestEnvironmentFixture : IAsyncLifetime
     }
 
     public StubDbContext SqlServerDbContext { get; set; }
+
+    public StubDbContext PostgresDbContext { get; private set; }
 
     public StubDbContext SqliteDbContext { get; set; }
 
@@ -141,6 +159,8 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
         await this.SqlContainer.StartAsync().AnyContext();
 
+        await this.PostgresContainer.StartAsync().AnyContext();
+
         if (!IsCIEnvironment) // the cosmos docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.
         {
             //await this.CosmosContainer.StartAsync().AnyContext(); // not started due to issues with the typedid cosmos tests
@@ -156,6 +176,8 @@ public class TestEnvironmentFixture : IAsyncLifetime
         //this.Context?.Dispose();
 
         await this.SqlContainer.DisposeAsync().AnyContext();
+
+        await this.PostgresContainer.DisposeAsync().AnyContext();
 
         await this.CosmosContainer.DisposeAsync().AnyContext();
 
@@ -194,6 +216,34 @@ public class TestEnvironmentFixture : IAsyncLifetime
         return this.SqlServerDbContext;
     }
 
+    public StubDbContext EnsurePostgresDbContext(ITestOutputHelper output = null, bool forceNew = false)
+    {
+        if (this.PostgresDbContext is null || forceNew)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<StubDbContext>();
+
+            //if (output is not null)
+            //{
+            //    optionsBuilder = new DbContextOptionsBuilder<StubDbContext>()
+            //        .LogTo(output.WriteLine);
+            //}
+
+            optionsBuilder.UseNpgsql(this.PostgresConnectionString);
+            var context = new StubDbContext(optionsBuilder.Options);
+            //context.Database.Migrate();
+            context.Database.EnsureCreated();
+
+            if (forceNew)
+            {
+                return context;
+            }
+
+            this.PostgresDbContext = context;
+        }
+
+        return this.PostgresDbContext;
+    }
+
     public StubDbContext EnsureSqliteDbContext(ITestOutputHelper output = null, bool forceNew = false)
     {
         if (this.SqliteDbContext is null || forceNew)
@@ -207,8 +257,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
             //}
 
             // TODO: remove file if exists?
-            optionsBuilder.UseSqlite(
-                $"Data Source=.\\_tests_{nameof(StubDbContext)}_sqlite.db"); // _{DateOnly.FromDateTime(DateTime.Now)}
+            optionsBuilder.UseSqlite(this.SqliteConnectionString); // _{DateOnly.FromDateTime(DateTime.Now)}
             var context = new StubDbContext(optionsBuilder.Options);
             context.Database.EnsureCreated();
 

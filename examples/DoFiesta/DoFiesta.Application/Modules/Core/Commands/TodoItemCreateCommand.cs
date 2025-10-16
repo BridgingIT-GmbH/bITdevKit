@@ -32,12 +32,18 @@ public class TodoItemCreateCommandHandler(
     IMapper mapper,
     IGenericRepository<TodoItem> repository,
     IEntityPermissionProvider permissionProvider,
+    ISequenceNumberGenerator numberGenerator,
     ICurrentUserAccessor currentUserAccessor) : RequestHandlerBase<TodoItemCreateCommand, TodoItemModel>
 {
     protected override async Task<Result<TodoItemModel>> HandleAsync(TodoItemCreateCommand request, SendOptions options, CancellationToken cancellationToken) =>
         await Result.Success()
             .Map(mapper.Map<TodoItemModel, TodoItem>(request.Model))
             .Tap(e => e.UserId = currentUserAccessor.UserId)
+            .TapAsync(async (e, ct) =>
+            {
+                var seqResult = await numberGenerator.GetNextAsync("TodoItemSequence", "core", cancellationToken: ct);
+                e.Number = seqResult.IsSuccess ? (int)seqResult.Value : 0;
+            }, cancellationToken: cancellationToken)
             .UnlessAsync(async (e, ct) => await Rule // check rules
                 .Add(RuleSet.IsNotEmpty(e.Title))
                 .Add(RuleSet.NotEqual(e.Title, "todo"))

@@ -122,7 +122,7 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
             }
         };
         var content = new StringContent(
-            JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
+            JsonSerializer.Serialize(model, DefaultJsonSerializerOptions.Create()),
             Encoding.UTF8,
             MediaTypeNames.Application.Json);
 
@@ -158,7 +158,7 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
             Description = entity.Description
         };
         var content = new StringContent(
-            JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
+            JsonSerializer.Serialize(model, DefaultJsonSerializerOptions.Create()),
             Encoding.UTF8,
             MediaTypeNames.Application.Json);
 
@@ -204,7 +204,7 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
             }
         };
         var content = new StringContent(
-            JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
+            JsonSerializer.Serialize(model, DefaultJsonSerializerOptions.Create()),
             Encoding.UTF8,
             MediaTypeNames.Application.Json);
         var response = await this.fixture.CreateClient()
@@ -219,7 +219,7 @@ public class DinnerEndpointTests(ITestOutputHelper output, CustomWebApplicationF
         var entity = Stubs.Menus(DateTime.UtcNow.Ticks).First();
         var model = new MenuModel { HostId = entity.HostId, Name = entity.Name, Description = entity.Description };
         var content = new StringContent(
-            JsonSerializer.Serialize(model, DefaultSystemTextJsonSerializerOptions.Create()),
+            JsonSerializer.Serialize(model, DefaultJsonSerializerOptions.Create()),
             Encoding.UTF8,
             MediaTypeNames.Application.Json);
         var response = await this.fixture.CreateClient()

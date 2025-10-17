@@ -945,7 +945,8 @@ public static class FileStorageProviderCompressionExtensions
         {
             writerOptions = new ZipWriterOptions(GetCompressionType(archiveType))
             {
-                DeflateCompressionLevel = (SharpCompress.Compressors.Deflate.CompressionLevel)options.CompressionLevel,
+                //DeflateCompressionLevel = (SharpCompress.Compressors.Deflate.CompressionLevel)options.CompressionLevel,
+                CompressionLevel = /*(int)(SharpCompress.Compressors.Deflate.CompressionLevel)*/options.CompressionLevel,
                 UseZip64 = options.UseZip64,
                 //ArchiveComment = "Compressed using SharpCompress",
                 //Password = password,
@@ -956,7 +957,7 @@ public static class FileStorageProviderCompressionExtensions
         {
             writerOptions = new GZipWriterOptions()
             {
-                CompressionLevel = (SharpCompress.Compressors.Deflate.CompressionLevel)options.CompressionLevel,
+                CompressionLevel = /*(int)(SharpCompress.Compressors.Deflate.CompressionLevel)*/options.CompressionLevel,
                 //ArchiveComment = "Compressed using SharpCompress",
                 //Password = password,
                 //Encryption = ZipEncryptionMethod.WinZipAes256

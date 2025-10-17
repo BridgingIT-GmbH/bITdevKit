@@ -27,7 +27,7 @@ public static class DefaultJsonSerializerOptions
                 new EnumMemberConverter<FilterCustomType>(),
                 new EnumMemberConverter<OrderDirection>(),
                 new EnumMemberConverter<PageSize>(),
-                new DictionaryConverter(),
+                //new DictionaryConverter(), // causes issues with deserializing dictionaries in the problem details (data), loosing the data property
                 new FilterCriteriaJsonConverter(),
                 new FilterSpecificationNodeConverter(),
                 new ResultJsonConverter(),

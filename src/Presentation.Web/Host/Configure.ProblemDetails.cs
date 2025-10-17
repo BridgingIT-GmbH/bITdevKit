@@ -138,7 +138,43 @@ public static class Configure
                 Detail = $"[{ex.GetType().Name}] {ex.Message}",
                 Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404",
                 Extensions = new Dictionary<string, object>() { ["data"] = new { } }
-    };
+            };
+        });
+
+        options.Map<Exception>(ex =>
+        {
+            object data = null;
+            if (includeExceptionDetails)
+            {
+                data = new
+                {
+                    errors = new[]
+                    {
+                        new
+                        {
+                            type = ex.GetType().FullName,
+                            message = ex.GetFullMessage(),
+                            stackTrace = ex.StackTrace
+                        }
+                    }
+                };
+            }
+            else
+            {
+                data = new { };
+            }
+
+            return new ProblemDetails
+            {
+                Title = "Internal Server Error",
+                Status = StatusCodes.Status500InternalServerError,
+                Detail = $"[{ex.GetType().Name}] {ex.Message}",
+                Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500",
+                Extensions = new Dictionary<string, object>()
+                {
+                    ["data"] = data
+                }
+            };
         });
 
         foreach (var mapping in mappings.SafeNull())
@@ -148,7 +184,7 @@ public static class Configure
 
         options.MapToStatusCode<NotImplementedException>(StatusCodes.Status501NotImplemented);
         options.MapToStatusCode<HttpRequestException>(StatusCodes.Status503ServiceUnavailable);
-        options.MapToStatusCode<Exception>(StatusCodes.Status500InternalServerError);
+        //options.MapToStatusCode<Exception>(StatusCodes.Status500InternalServerError);
         options.Rethrow<NotSupportedException>();
     }
 }

@@ -13,8 +13,3 @@ public class FileSystemError(string message, string path = null, Exception inner
     public string Path { get; } = path;
     public Exception InnerException { get; } = innerException;
 }
-
-public class ArgumentError(string argument = null) : ResultErrorBase(argument ?? "Argument error")
-{
-    public string Argument { get; } = argument;
-}

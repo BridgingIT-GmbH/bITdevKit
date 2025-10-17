@@ -12,5 +12,5 @@ public class FileSystemPermissionError(string message, string path, Exception in
 {
     public string Path { get; } = path;
 
-    public Exception InnerException { get; } = innerException;
+    public string Details { get; } = innerException?.Message;
 }

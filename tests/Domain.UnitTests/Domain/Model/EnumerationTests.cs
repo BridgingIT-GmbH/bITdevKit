@@ -463,7 +463,7 @@ public partial class StubStatus : Enumeration
     public static StubStatus GetByCode(string code)
     {
         return GetAll()
-            .FirstOrDefault(e => e.Code == code) ?? throw new ArgumentException($"No StubStatus exists with Code {code}", nameof(code));
+            .FirstOrDefault(e => e.Code == code);
     }
 }
 

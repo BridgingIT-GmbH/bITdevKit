@@ -342,8 +342,14 @@ public class ResultMapExtensionsGenericTests
         var problemResult = (ProblemHttpResult)innerResult;
         problemResult.StatusCode.ShouldBe(400);
         problemResult.ProblemDetails.Title.ShouldBe("Validation Error");
-        problemResult.ProblemDetails.Extensions["errors"].ShouldBeOfType<Dictionary<string, string[]>>();
-        var messages = (Dictionary<string, string[]>)problemResult.ProblemDetails.Extensions["errors"];
+
+        // Validation errors are stored inside the anonymous 'data' extension under its 'errors' property.
+        problemResult.ProblemDetails.Extensions.ContainsKey("data").ShouldBeTrue();
+        var data = problemResult.ProblemDetails.Extensions["data"];
+        data.ShouldNotBeNull();
+        var errorsProperty = data.GetType().GetProperty("errors");
+        errorsProperty.ShouldNotBeNull();
+        var messages = (Dictionary<string, string[]>)errorsProperty.GetValue(data);
         messages.ShouldContainKey("validation");
         messages["validation"].ShouldContain("Invalid person data");
     }
@@ -365,8 +371,12 @@ public class ResultMapExtensionsGenericTests
         var problemResult = (ProblemHttpResult)innerResult;
         problemResult.StatusCode.ShouldBe(400);
         problemResult.ProblemDetails.Title.ShouldBe("Validation Error");
-        problemResult.ProblemDetails.Extensions["errors"].ShouldBeOfType<Dictionary<string, string[]>>();
-        var messages = (Dictionary<string, string[]>)problemResult.ProblemDetails.Extensions["errors"];
+        problemResult.ProblemDetails.Extensions.ContainsKey("data").ShouldBeTrue();
+        var data = problemResult.ProblemDetails.Extensions["data"];
+        data.ShouldNotBeNull();
+        var errorsProperty = data.GetType().GetProperty("errors");
+        errorsProperty.ShouldNotBeNull();
+        var messages = (Dictionary<string, string[]>)errorsProperty.GetValue(data);
         messages.ShouldContainKey("FirstName");
         messages["FirstName"].ShouldContain("Invalid firstname");
     }

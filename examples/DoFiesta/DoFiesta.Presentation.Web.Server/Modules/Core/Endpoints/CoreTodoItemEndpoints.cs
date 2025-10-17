@@ -65,7 +65,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
             //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Write))
             .Produces<TodoItemModel>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status401Unauthorized)
-            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status500InternalServerError);
 
         group.MapPost("/actions/completeall", TodoCompleteAll)
@@ -85,7 +85,8 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .Produces<TodoItemModel>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
-            .ProducesValidationProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status409Conflict)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status500InternalServerError);
 
         // DELETE TodoItem

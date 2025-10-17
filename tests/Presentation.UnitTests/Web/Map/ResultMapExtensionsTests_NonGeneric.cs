@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 
 using System;
 using System.Linq;
+using System.Collections.Generic;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.AspNetCore.Http;
@@ -150,7 +151,7 @@ public class ResultMapExtensionsNonGenericTests
     }
 
     [Fact]
-    public void MapHttpNoContent_DefaultValidationError_ReturnsBadRequest()
+    public void MapHttpNoContent_DefaultValidationError_ReturnsProblemWithStatus400AndValidationErrors()
     {
         // Arrange
         var result = Result.Failure().WithError(new ValidationError("Invalid input"));
@@ -161,7 +162,17 @@ public class ResultMapExtensionsNonGenericTests
         // Assert
         response.ShouldBeOfType<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
         var innerResult = ((Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
-        innerResult.ShouldBeOfType<BadRequest>();
+        innerResult.ShouldBeOfType<ProblemHttpResult>();
+        var problemResult = (ProblemHttpResult)innerResult;
+        problemResult.StatusCode.ShouldBe(400);
+        problemResult.ProblemDetails.Title.ShouldBe("Validation Error");
+        problemResult.ProblemDetails.Extensions.ContainsKey("data").ShouldBeTrue();
+        var data = problemResult.ProblemDetails.Extensions["data"];
+        var errorsProperty = data.GetType().GetProperty("errors");
+        errorsProperty.ShouldNotBeNull();
+        var errors = (Dictionary<string, string[]>)errorsProperty.GetValue(data);
+        errors.ShouldContainKey("validation");
+        errors["validation"].ShouldContain("Invalid input");
     }
 
     [Fact]
@@ -225,7 +236,17 @@ public class ResultMapExtensionsNonGenericTests
         // Assert
         response.ShouldBeOfType<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
         var innerResult = ((Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
-        innerResult.ShouldBeOfType<BadRequest>(); // Back to default
+        innerResult.ShouldBeOfType<ProblemHttpResult>();
+        var problemResult = (ProblemHttpResult)innerResult;
+        problemResult.StatusCode.ShouldBe(400);
+        problemResult.ProblemDetails.Title.ShouldBe("Validation Error");
+        problemResult.ProblemDetails.Extensions.ContainsKey("data").ShouldBeTrue();
+        var data = problemResult.ProblemDetails.Extensions["data"];
+        var errorsProperty = data.GetType().GetProperty("errors");
+        errorsProperty.ShouldNotBeNull();
+        var errors = (Dictionary<string, string[]>)errorsProperty.GetValue(data);
+        errors.ShouldContainKey("validation");
+        errors["validation"].ShouldContain("Invalid input");
 
         // Cleanup
         ResultMapErrorHandlerRegistry.ClearHandlers();

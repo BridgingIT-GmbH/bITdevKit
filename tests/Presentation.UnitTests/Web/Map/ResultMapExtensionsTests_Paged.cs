@@ -97,7 +97,17 @@ public class ResultMapExtensionsPagedTests
         // Assert
         response.ShouldBeOfType<Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
         var innerResult = ((Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
-        innerResult.ShouldBeOfType<BadRequest>();
+        innerResult.ShouldBeOfType<ProblemHttpResult>();
+        var problemResult = (ProblemHttpResult)innerResult;
+        problemResult.StatusCode.ShouldBe(400);
+        problemResult.ProblemDetails.Title.ShouldBe("Validation Error");
+        problemResult.ProblemDetails.Extensions.ContainsKey("data").ShouldBeTrue();
+        var data = problemResult.ProblemDetails.Extensions["data"];
+        var errorsProperty = data.GetType().GetProperty("errors");
+        errorsProperty.ShouldNotBeNull();
+        var errors = (Dictionary<string, string[]>)errorsProperty.GetValue(data);
+        errors.ShouldContainKey("validation");
+        errors["validation"].ShouldContain("Page number must be positive");
     }
 
     [Fact]

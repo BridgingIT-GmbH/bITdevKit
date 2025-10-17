@@ -5,7 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
+using BridgingIT.DevKit.Common.Converters;
 using Humanizer;
+using System.Text.Json.Serialization;
 
 public class JobRun
 {
@@ -41,6 +43,7 @@ public class JobRun
 
     public string ErrorMessage { get; set; }
 
+    //[JsonConverter(typeof(DictionaryConverter))]
     public IDictionary<string, object> Data { get; set; }
 
     public string InstanceName { get; set; }

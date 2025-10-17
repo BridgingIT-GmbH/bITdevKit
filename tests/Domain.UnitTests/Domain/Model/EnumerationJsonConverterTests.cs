@@ -54,7 +54,7 @@ public class EnumerationJsonConverterTests
         person.Age.ShouldBe(25);
         person.Status.ShouldBe(StubStatus.Stub03);
         person.Status.Code.ShouldBe("S3");
-        person.Status.Description.ShouldBe("Lorem Ipsum");
+        person.Status.Description.ShouldBe("Lorem Ipsum03");
     }
 
     [Fact]

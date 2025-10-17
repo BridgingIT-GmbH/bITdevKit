@@ -10,12 +10,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 public static class ResultMapHttpExtensions
 {
-    private static JsonSerializerOptions jsonOptions = new(JsonSerializerDefaults.Web);
     /// <summary>
     /// Registers a custom error handler for a specific error type.
     /// </summary>
@@ -1161,15 +1159,13 @@ public static class ResultMapHttpExtensions
 
         // Fallback to ProblemHttpResult for other TBadRequest types
         logger?.LogWarning("Cannot map to {BadRequestType} for non-validation errors. Falling back to ProblemHttpResult.", typeof(TResult).Name);
-        var dataElement = JsonSerializer.SerializeToElement(new { result }, jsonOptions);
-
         return (TResult)(IResult)TypedResults.Problem(
             detail: result.ToString(),
             instance: null,
-            statusCode: StatusCodes.Status400BadRequest,
+            statusCode: 400, // Bad Request
             title: "Bad Request",
             type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-            extensions: new Dictionary<string, object> { ["data"] = dataElement });
+            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
     public static TResult MapConflictError<TResult>(ILogger logger, Result result)
@@ -1213,18 +1209,13 @@ public static class ResultMapHttpExtensions
         }
 
         logger?.LogWarning("result - concurrency error occurred: {Error}", result.ToString());
-        var dataElement = JsonSerializer.SerializeToElement(new { result }, jsonOptions);
-
         return (TResult)(IResult)TypedResults.Problem(
             detail: result.ToString(),
             instance: null,
-            statusCode: StatusCodes.Status409Conflict,
+            statusCode: 409, // Conflict
             title: "Concurrency Error",
             type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409",
-            extensions: new Dictionary<string, object>
-            {
-                ["data"] = dataElement
-            });
+            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
     public static TResult MapDomainPolicyError<TResult>(ILogger logger, Result result)
@@ -1429,7 +1420,7 @@ public static class ResultMapHttpExtensions
     //}
 
     private static TResult MapValidationErrors<TResult>(Result result, ILogger logger)
-    where TResult : IResult
+        where TResult : IResult
     {
         var validationErrors = new List<(string PropertyName, string Message)>();
 
@@ -1438,16 +1429,14 @@ public static class ResultMapHttpExtensions
             if (error is ValidationError ve)
             {
                 validationErrors.Add((
-                    string.IsNullOrWhiteSpace(ve.PropertyName) ? string.Empty : ve.PropertyName,
-                    ve.Message));
+                    string.IsNullOrWhiteSpace(ve.PropertyName) ? string.Empty : ve.PropertyName, ve.Message));
             }
             else if (error is FluentValidationError fve)
             {
                 foreach (var failure in fve.Errors)
                 {
                     validationErrors.Add((
-                        string.IsNullOrWhiteSpace(failure.PropertyName) ? string.Empty : failure.PropertyName,
-                        failure.ErrorMessage));
+                        string.IsNullOrWhiteSpace(failure.PropertyName) ? string.Empty : failure.PropertyName, failure.ErrorMessage));
                 }
             }
         }
@@ -1458,8 +1447,6 @@ public static class ResultMapHttpExtensions
                 g => g.Key.EmptyToNull() ?? "validation",
                 g => g.Select(e => e.Message).ToArray());
 
-        // Serialize the data payload to JsonElement to bypass the DictionaryConverter
-        var dataElement = JsonSerializer.SerializeToElement(new { result, errors }, jsonOptions);
         var problemDetails = new ProblemDetails
         {
             Title = "Validation Error",
@@ -1468,7 +1455,7 @@ public static class ResultMapHttpExtensions
             Detail = result.ToString(),
             Extensions = new Dictionary<string, object>
             {
-                ["data"] = dataElement
+                ["data"] = new { result, errors }
             }
         };
 
@@ -1478,31 +1465,21 @@ public static class ResultMapHttpExtensions
             return (TResult)(IResult)TypedResults.Problem(problemDetails);
         }
 
-        // If TResult is BadRequest, return a plain BadRequest or a Problem fallback
+        // If TResult is BadRequest, return a plain BadRequest with the problem details in the log
         if (typeof(TResult) == typeof(BadRequest))
         {
             logger?.LogWarning("Validation errors mapped to plain BadRequest due to type constraint.");
-
-            // Keep consistent payload under 'data' for consumers
-            var badRequestData = JsonSerializer.SerializeToElement(new { result, errors }, jsonOptions);
-
             return (TResult)(IResult)TypedResults.Problem(
                 detail: result.ToString(),
                 instance: null,
-                statusCode: StatusCodes.Status400BadRequest,
+                statusCode: 400, // Bad Request
                 title: "Bad Request",
                 type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-                extensions: new Dictionary<string, object>
-                {
-                    ["data"] = badRequestData
-                });
+                extensions: new Dictionary<string, object>() { ["data"] = new { result } });
         }
 
         // Fallback for other TResult types
-        logger?.LogWarning(
-            "Cannot map validation errors to {ResultType}. Falling back to ProblemHttpResult.",
-            typeof(TResult).Name);
-
+        logger?.LogWarning("Cannot map validation errors to {ResultType}. Falling back to ProblemHttpResult.", typeof(TResult).Name);
         return (TResult)(IResult)TypedResults.Problem(problemDetails);
     }
 }

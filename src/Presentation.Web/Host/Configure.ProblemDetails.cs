@@ -5,13 +5,14 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using System.Security;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
+using System.Security;
 using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOptions;
 
 //public static class ServiceCollectionExtensions
@@ -60,14 +61,11 @@ public static class Configure
                 Title = "Bad Request",
                 Status = StatusCodes.Status400BadRequest,
                 Detail = $"[{nameof(ValidationException)}] A model validation error has occurred while executing the request",
-                Type = "https://httpstatuses.com/400",
+                Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
                 Errors = ex.Errors?.OrderBy(v => v.PropertyName)
-                        .GroupBy(v => v.PropertyName.Replace("Entity.", string.Empty, StringComparison.OrdinalIgnoreCase),
-                            v => v.ErrorMessage)
-#pragma warning disable SA1010 // Opening square brackets should be spaced correctly
-                        .ToDictionary(g => g.Key, g => g.ToArray()) ??
-                    []
-#pragma warning restore SA1010 // Opening square brackets should be spaced correctly
+                        .GroupBy(v => v.PropertyName.Replace("Entity.", string.Empty, StringComparison.OrdinalIgnoreCase), v => v.ErrorMessage)
+                        .ToDictionary(g => g.Key, g => g.ToArray()) ?? [],
+                Extensions = new Dictionary<string, object>() { ["data"] = new { } }
             };
         });
 
@@ -78,7 +76,8 @@ public static class Configure
                 Title = "Bad Request",
                 Status = StatusCodes.Status400BadRequest,
                 Detail = $"[{ex.GetType().Name}] {ex.Message}",
-                Type = "https://httpstatuses.com/400"
+                Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+                Extensions = new Dictionary<string, object>() { ["data"] = new { } }
             };
         });
 
@@ -89,7 +88,8 @@ public static class Configure
                 Title = "Bad Request",
                 Status = StatusCodes.Status400BadRequest,
                 Detail = $"[{ex.GetType().Name}] {ex}",
-                Type = "https://httpstatuses.com/400"
+                Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+                Extensions = new Dictionary<string, object>() { ["data"] = new { } }
             };
         });
 
@@ -100,7 +100,8 @@ public static class Configure
                 Title = "Unauthorized",
                 Status = StatusCodes.Status401Unauthorized,
                 Detail = $"[{ex.GetType().Name}] {ex.Message}",
-                Type = "https://httpstatuses.com/401"
+                Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401",
+                Extensions = new Dictionary<string, object>() { ["data"] = new { } }
             };
         });
 
@@ -111,7 +112,8 @@ public static class Configure
                 Title = "Module Not Enabled",
                 Status = StatusCodes.Status503ServiceUnavailable,
                 Detail = $"[{ex.GetType().Name}] {ex.Message}",
-                Type = "https://httpstatuses.com/503"
+                Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503",
+                Extensions = new Dictionary<string, object>() { ["data"] = new { } }
             };
         });
 
@@ -122,7 +124,8 @@ public static class Configure
                 Title = "Aggregate Not Found",
                 Status = StatusCodes.Status404NotFound,
                 Detail = $"[{ex.GetType().Name}] {ex.Message}",
-                Type = "https://httpstatuses.com/404"
+                Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404",
+                Extensions = new Dictionary<string, object>() { ["data"] = new { } }
             };
         });
 
@@ -133,8 +136,9 @@ public static class Configure
                 Title = "Entity Not Found",
                 Status = StatusCodes.Status404NotFound,
                 Detail = $"[{ex.GetType().Name}] {ex.Message}",
-                Type = "https://httpstatuses.com/404"
-            };
+                Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404",
+                Extensions = new Dictionary<string, object>() { ["data"] = new { } }
+    };
         });
 
         foreach (var mapping in mappings.SafeNull())

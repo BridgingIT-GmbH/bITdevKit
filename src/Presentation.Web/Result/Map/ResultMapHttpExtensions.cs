@@ -1161,9 +1161,11 @@ public static class ResultMapHttpExtensions
         logger?.LogWarning("Cannot map to {BadRequestType} for non-validation errors. Falling back to ProblemHttpResult.", typeof(TResult).Name);
         return (TResult)(IResult)TypedResults.Problem(
             detail: result.ToString(),
-            statusCode: StatusCodes.Status400BadRequest,
+            instance: null,
+            statusCode: 400, // Bad Request
             title: "Bad Request",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400");
+            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
     public static TResult MapConflictError<TResult>(ILogger logger, Result result)
@@ -1184,9 +1186,11 @@ public static class ResultMapHttpExtensions
         logger?.LogWarning("result - conflict error occurred: {Error}", result.ToString());
         return (TResult)(IResult)TypedResults.Problem(
             detail: result.ToString(),
+            instance: null,
             statusCode: 409, // Conflict
-            title: "Conflict Error",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409");
+            title: "Conflict",
+            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409",
+            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
     public static TResult MapConcurrencyError<TResult>(ILogger logger, Result result)
@@ -1207,9 +1211,11 @@ public static class ResultMapHttpExtensions
         logger?.LogWarning("result - concurrency error occurred: {Error}", result.ToString());
         return (TResult)(IResult)TypedResults.Problem(
             detail: result.ToString(),
+            instance: null,
             statusCode: 409, // Conflict
             title: "Concurrency Error",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409");
+            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/409",
+            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
     public static TResult MapDomainPolicyError<TResult>(ILogger logger, Result result)
@@ -1232,7 +1238,8 @@ public static class ResultMapHttpExtensions
             detail: result.ToString(),
             statusCode: 400, // Bad Request
             title: "Domain Policy Error",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400");
+            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
     public static TResult MapOperationCancelledError<TResult>(ILogger logger, Result result)
@@ -1255,7 +1262,8 @@ public static class ResultMapHttpExtensions
             detail: result.ToString(),
             statusCode: 499, // Client Closed Request (custom or unofficial, often used for cancellations)
             title: "Operation Cancelled",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/499");
+            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/499",
+            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
     public static TResult MapTimeoutError<TResult>(ILogger logger, Result result)
@@ -1278,7 +1286,8 @@ public static class ResultMapHttpExtensions
             detail: result.ToString(),
             statusCode: 504, // Gateway Timeout
             title: "Timeout Error",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504");
+            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504",
+            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
     public static TResult MapExceptionError<TResult>(ILogger logger, Result result)
@@ -1301,7 +1310,8 @@ public static class ResultMapHttpExtensions
             detail: result.ToString(),
             statusCode: 500, // Internal Server Error
             title: "Exception Error",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500");
+            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500",
+            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
     public static TResult MapRuleError<TResult>(ILogger logger, Result result)
@@ -1324,7 +1334,8 @@ public static class ResultMapHttpExtensions
             detail: result.ToString(),
             statusCode: 500, // Bad Request
             title: "Rule Error",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500");
+            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500",
+            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
     public static TResult MapRuleExceptionError<TResult>(ILogger logger, Result result)
@@ -1347,7 +1358,8 @@ public static class ResultMapHttpExtensions
             detail: result.ToString(),
             statusCode: 500, // Internal Server Error
             title: "Rule Exception Error",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500");
+            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500",
+            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
     public static TResult MapError<TResult>(ILogger logger, Result result)
@@ -1373,7 +1385,8 @@ public static class ResultMapHttpExtensions
             instance: Guid.NewGuid().ToString(),
             statusCode: 500,
             title: "Unexpected Error",
-            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500");
+            type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500",
+            extensions: new Dictionary<string, object>() { ["data"] = new { result } });
     }
 
     ///// <summary>
@@ -1442,7 +1455,7 @@ public static class ResultMapHttpExtensions
             Detail = result.ToString(),
             Extensions = new Dictionary<string, object>
             {
-                ["errors"] = errors
+                ["data"] = new { result, errors }
             }
         };
 
@@ -1456,7 +1469,13 @@ public static class ResultMapHttpExtensions
         if (typeof(TResult) == typeof(BadRequest))
         {
             logger?.LogWarning("Validation errors mapped to plain BadRequest due to type constraint.");
-            return (TResult)(IResult)TypedResults.BadRequest();
+            return (TResult)(IResult)TypedResults.Problem(
+                detail: result.ToString(),
+                instance: null,
+                statusCode: 400, // Bad Request
+                title: "Bad Request",
+                type: "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
+                extensions: new Dictionary<string, object>() { ["data"] = new { result } });
         }
 
         // Fallback for other TResult types

@@ -44,6 +44,7 @@ public static class Configure
 
             return includeExceptionDetails || env.IsDevelopment() || env.IsStaging();
         };
+
         //options.ShouldLogUnhandledException = (ctx, e, d) => d.Status >= 500;
         options.AllowedHeaderNames.Add("CorrelationId");
         options.AllowedHeaderNames.Add("FlowId");
@@ -56,16 +57,17 @@ public static class Configure
 
         options.Map<ValidationException>(ex =>
         {
-            return new ValidationProblemDetails
+            var errors = ex.Errors?.OrderBy(v => v.PropertyName)
+                .GroupBy(v => v.PropertyName.Replace("Entity.", string.Empty, StringComparison.OrdinalIgnoreCase), v => v.ErrorMessage)
+                .ToDictionary(g => g.Key, g => g.ToArray()) ?? new Dictionary<string, string[]>(StringComparer.Ordinal);
+
+            return new ProblemDetails
             {
-                Title = "Bad Request",
+                Title = "Validation Error",
                 Status = StatusCodes.Status400BadRequest,
-                Detail = $"[{nameof(ValidationException)}] A model validation error has occurred while executing the request",
+                Detail = "[ValidationException] A validation error has occurred",
                 Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
-                Errors = ex.Errors?.OrderBy(v => v.PropertyName)
-                        .GroupBy(v => v.PropertyName.Replace("Entity.", string.Empty, StringComparison.OrdinalIgnoreCase), v => v.ErrorMessage)
-                        .ToDictionary(g => g.Key, g => g.ToArray()) ?? [],
-                Extensions = new Dictionary<string, object>() { ["data"] = new { } }
+                Extensions = new Dictionary<string, object> { ["data"] = new { errors } }
             };
         });
 
@@ -87,7 +89,7 @@ public static class Configure
             {
                 Title = "Bad Request",
                 Status = StatusCodes.Status400BadRequest,
-                Detail = $"[{ex.GetType().Name}] {ex}",
+                Detail = $"[{ex.GetType().Name}] {ex.Message}",
                 Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
                 Extensions = new Dictionary<string, object>() { ["data"] = new { } }
             };

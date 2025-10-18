@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 
 /// <summary>
@@ -20,6 +18,13 @@ public class ResultProblemDetails : ProblemDetails
     /// Additional contextual data attached to this problem.
     /// </summary>
     public ResultProblemData Data { get; set; } = new ResultProblemData();
+
+    ///// <summary>
+    ///// Holds arbitrary extension members that are not explicitly declared.
+    ///// </summary>
+    //[JsonExtensionData]
+    //public IDictionary<string, object> ExtensionData1 { get; set; } =
+    //    new Dictionary<string, object>();
 }
 
 /// <summary>
@@ -37,6 +42,11 @@ public class ResultProblemData
     /// </summary>
     //public string Errors { get; set; } = string.Empty;
     public IEnumerable<ProblemError> Errors { get; set; } = [];
+
+    /// <summary>
+    /// Arbitrary extension properties for this data object.
+    /// </summary>
+    //public IDictionary<string, object> Extra { get; set; } = new Dictionary<string, object>();
 }
 
 /// <summary>
@@ -59,6 +69,8 @@ public class ResultProblemResult
     /// and optional additional data fields.
     /// </summary>
     public IEnumerable<ResultProblemError> Errors { get; set; } = [];
+
+    //public IDictionary<string, object> Extra { get; set; } = new Dictionary<string, object>();
 }
 
 /// <summary>
@@ -71,20 +83,7 @@ public class ResultProblemError
     /// </summary>
     public string Message { get; set; } = string.Empty;
 
-    /// <summary>
-    /// Extra properties providing additional context for the error.
-    /// </summary>
-    public string AdditionalProp1 { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Extra properties providing additional context for the error.
-    /// </summary>
-    public string AdditionalProp2 { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Extra properties providing additional context for the error.
-    /// </summary>
-    public string AdditionalProp3 { get; set; } = string.Empty;
+    //public IDictionary<string, object> Extra { get; set; } = new Dictionary<string, object>();
 }
 
 /// <summary>
@@ -92,18 +91,5 @@ public class ResultProblemError
 /// </summary>
 public class ProblemError
 {
-    /// <summary>
-    /// Extra properties providing additional context for the error.
-    /// </summary>
-    public string AdditionalProp1 { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Extra properties providing additional context for the error.
-    /// </summary>
-    public string AdditionalProp2 { get; set; } = string.Empty;
-
-    /// <summary>
-    /// Extra properties providing additional context for the error.
-    /// </summary>
-    public string AdditionalProp3 { get; set; } = string.Empty;
+    //public IDictionary<string, object> Extra { get; set; } = new Dictionary<string, object>();
 }

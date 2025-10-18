@@ -29,19 +29,19 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
         var group = this.MapGroup(app, this.options);
 
         // User Permission Management
-        group.MapPost("/users/{userId}", this.GrantUserPermission)
+        group.MapPost("/users/{userId}/grant", this.GrantUserPermission)
             .WithDescription("Grants a specific permission to a user for a specific entity.")
             .Produces((int)HttpStatusCode.NoContent)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
-        group.MapDelete("/users/{userId}", this.RevokeUserPermission)
+        group.MapPost("/users/{userId}/revoke", this.RevokeUserPermission)
             .WithDescription("Revokes a specific permission from a user for a specific entity.")
             .Produces((int)HttpStatusCode.NoContent)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
-        group.MapDelete("/users/{userId}/all", this.RevokeAllUserPermissions)
+        group.MapPost("/users/{userId}/revoke/all", this.RevokeAllUserPermissions)
             .WithDescription("Revokes all permissions from a user.")
             .Produces((int)HttpStatusCode.NoContent)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
@@ -60,19 +60,19 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         // Role Permission Management
-        group.MapPost("/roles/{role}", this.GrantRolePermission)
+        group.MapPost("/roles/{role}/grant", this.GrantRolePermission)
             .WithDescription("Grants a specific permission to a role for a specific entity.")
             .Produces((int)HttpStatusCode.NoContent)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
-        group.MapDelete("/roles/{role}", this.RevokeRolePermission)
+        group.MapPost("/roles/{role}/revoke", this.RevokeRolePermission)
             .WithDescription("Revokes a specific permission from a role for a specific entity.")
             .Produces((int)HttpStatusCode.NoContent)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
-        group.MapDelete("/roles/{role}/all", this.RevokeAllRolePermissions)
+        group.MapPost("/roles/{role}/revoke/all", this.RevokeAllRolePermissions)
             .WithDescription("Revokes all permissions from a role.")
             .Produces((int)HttpStatusCode.NoContent)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)

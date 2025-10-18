@@ -25,9 +25,14 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .MapGroup("api/core/todoitems").RequireAuthorization()
             .WithTags("Core.TodoItems");
 
+        app.MapGet("/_schema/probe", () => Results.NoContent())
+           .ExcludeFromDescription()
+           .Produces<ResultProblemDetails>(StatusCodes.Status200OK, "application/problem+json");
+
         // GET single TodoItem
         group.MapGet("/{id:guid}", TodoItemFindOne)
             .WithName("Core.TodoItems.GetById")
+            .WithDescription("Gets a single TodoItem by its unique identifier.")
             .RequireEntityPermission<TodoItem>(Permission.Read)
             //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Read))
             .Produces<TodoItemModel>(StatusCodes.Status200OK)
@@ -39,6 +44,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
         // GET all TodoItems
         group.MapGet("", TodoItemFindAll)
             .WithName("Core.TodoItems.GetAll")
+            .WithDescription("Gets all TodoItems matching the specified filter criteria.")
             .RequireEntityPermission<TodoItem>(Permission.List)
             //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.List))
             .WithFilterSchema()
@@ -50,6 +56,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
         // GET sarch TodoItems
         group.MapPost("search", TodoItemSearch)
             .WithName("Core.TodoItems.Search")
+            .WithDescription("Searches for TodoItems matching the specified filter criteria.")
             .RequireEntityPermission<TodoItem>(Permission.List)
             //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.List))
             .WithFilterSchema(true)
@@ -61,6 +68,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
         // POST new TodoItem
         group.MapPost("", TodoItemCreate)
             .WithName("Core.TodoItems.Create")
+            .WithDescription("Creates a new TodoItem with the specified details.")
             .RequireEntityPermission<TodoItem>(Permission.Write)
             //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Write))
             .Produces<TodoItemModel>(StatusCodes.Status201Created)
@@ -70,6 +78,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
 
         group.MapPost("/actions/completeall", TodoCompleteAll)
             .WithName("Core.TodoItems.CompleteAll")
+            .WithDescription("Marks all TodoItems as completed.")
             .RequireEntityPermission<TodoItem>(Permission.Write)
             //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Write))
             .Produces(StatusCodes.Status200OK)
@@ -80,6 +89,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
         // PUT update TodoItem
         group.MapPut("/{id:guid}", TodoItemUpdate)
             .WithName("Core.TodoItems.Update")
+            .WithDescription("Updates an existing TodoItem with the specified details.")
             .RequireEntityPermission<TodoItem>(Permission.Write)
             //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Write))
             .Produces<TodoItemModel>(StatusCodes.Status200OK)
@@ -92,6 +102,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
         // DELETE TodoItem
         group.MapDelete("/{id:guid}", TodoItemDelete)
             .WithName("Core.TodoItems.Delete")
+            .WithDescription("Deletes the specified TodoItem.")
             .RequireEntityPermission<TodoItem>(Permission.Delete)
             //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Delete))
             .Produces(StatusCodes.Status204NoContent)

@@ -33,8 +33,8 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .Produces<TodoItemModel>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status500InternalServerError);
+            .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
         // GET all TodoItems
         group.MapGet("", TodoItemFindAll)
@@ -44,8 +44,8 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .WithFilterSchema()
             .Produces<IEnumerable<TodoItemModel>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status500InternalServerError);
+            .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
         // GET sarch TodoItems
         group.MapPost("search", TodoItemSearch)
@@ -55,8 +55,8 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .WithFilterSchema(true)
             .Produces<IEnumerable<TodoItemModel>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status500InternalServerError);
+            .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
         // POST new TodoItem
         group.MapPost("", TodoItemCreate)
@@ -65,8 +65,8 @@ public class CoreTodoItemEndpoints : EndpointsBase
             //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Write))
             .Produces<TodoItemModel>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status500InternalServerError);
+            .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
         group.MapPost("/actions/completeall", TodoCompleteAll)
             .WithName("Core.TodoItems.CompleteAll")
@@ -74,8 +74,8 @@ public class CoreTodoItemEndpoints : EndpointsBase
             //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Write))
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status500InternalServerError);
+            .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
         // PUT update TodoItem
         group.MapPut("/{id:guid}", TodoItemUpdate)
@@ -85,9 +85,9 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .Produces<TodoItemModel>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status409Conflict)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status500InternalServerError);
+            .ProducesResultProblem(StatusCodes.Status409Conflict)
+            .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
         // DELETE TodoItem
         group.MapDelete("/{id:guid}", TodoItemDelete)
@@ -97,8 +97,8 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status500InternalServerError);
+            .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
     }
 
     private static async Task<Results<Ok<TodoItemModel>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> TodoItemFindOne(

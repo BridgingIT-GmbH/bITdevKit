@@ -28,8 +28,8 @@ public class CoreEnumerationEndpoints : EndpointsBase
             .Produces<EnumerationModel>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
-            .ProducesProblem(StatusCodes.Status400BadRequest)
-            .ProducesProblem(StatusCodes.Status500InternalServerError);
+            .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
     }
 
     private static Results<Ok<EnumerationModel>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> EnumerationsFindAll(

@@ -1302,7 +1302,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1315,7 +1315,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1366,7 +1366,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1379,7 +1379,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1389,7 +1389,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1424,7 +1424,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1437,7 +1437,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1470,7 +1470,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1483,7 +1483,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1520,7 +1520,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1533,7 +1533,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1566,7 +1566,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1579,7 +1579,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1605,7 +1605,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1621,7 +1621,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1654,7 +1654,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -1667,7 +1667,7 @@
             "content": {
               "application/problem+json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
+                  "$ref": "#/components/schemas/ResultProblemDetails"
                 }
               }
             }
@@ -2151,6 +2151,112 @@
             "nullable": true
           }
         }
+      },
+      "ProblemError": {
+        "type": "object",
+        "properties": {
+          "additionalProp1": {
+            "type": "string",
+            "nullable": true
+          },
+          "additionalProp2": {
+            "type": "string",
+            "nullable": true
+          },
+          "additionalProp3": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ResultProblemData": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "$ref": "#/components/schemas/ResultProblemResult"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProblemError"
+            },
+            "nullable": true
+          }
+        },
+        "nullable": true
+      },
+      "ResultProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          },
+          "data": {
+            "$ref": "#/components/schemas/ResultProblemData"
+          }
+        }
+      },
+      "ResultProblemError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "nullable": true
+          },
+          "additionalProp1": {
+            "type": "string",
+            "nullable": true
+          },
+          "additionalProp2": {
+            "type": "string",
+            "nullable": true
+          },
+          "additionalProp3": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ResultProblemResult": {
+        "type": "object",
+        "properties": {
+          "isSuccess": {
+            "type": "boolean"
+          },
+          "messages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResultProblemError"
+            },
+            "nullable": true
+          }
+        },
+        "nullable": true
       },
       "SubscriptionBillingCycle": {
         "type": "object",

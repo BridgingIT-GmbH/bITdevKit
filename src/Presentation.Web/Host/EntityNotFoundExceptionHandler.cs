@@ -37,7 +37,7 @@ public class EntityNotFoundExceptionHandler(
             Title = "Domain Entity Not Found",
             Status = StatusCodes.Status404NotFound,
             Detail = options.IncludeExceptionDetails ? $"[{ex.GetType().Name}] {ex.Message}" : null,
-            Type = "https://httpstatuses.com/404"
+            Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404"
         };
 
         httpContext.Response.StatusCode = problemDetails.Status.Value;

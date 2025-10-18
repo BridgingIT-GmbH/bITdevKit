@@ -1128,66 +1128,96 @@ public readonly partial struct Result : IResult
     public static implicit operator bool(Result result) => result.IsSuccess;
 
     /// <summary>
-    /// Returns a string representation of the Result.
+    /// Returns a compact, single-line string representation of this result,
+    /// including distinct messages and errors when present.
     /// </summary>
+    /// <remarks>
+    /// - No newlines are included.
+    /// - Messages are deduplicated (ordinal).
+    /// - Errors are formatted as "[Type] Message" and deduplicated.
+    /// - Sections "messages" and "errors" appear only if non-empty.
+    /// </remarks>
     /// <example>
-    /// var result = Result.Success("Operation completed")
-    ///     .WithError(new ValidationError("Invalid input"));
-    /// Console.WriteLine(result.ToResultString());
-    /// // Output:
-    /// // Success: False
-    /// // Messages:
-    /// // - Operation completed
-    /// // Errors:
-    /// // - [ValidationError] Invalid input
+    /// var result = Result.Failure()
+    ///     .WithMessage("Operation completed with warnings")
+    ///     .WithMessage("First step ok")
+    ///     .WithMessage("First step ok") // duplicate, will be removed
+    ///     .WithError(new ValidationError("Invalid input"))
+    ///     .WithError(new ExceptionError(new InvalidOperationException("Invalid op")));
+    ///
+    /// Console.WriteLine(result.ToString());
+    /// // Output (single line):
+    /// // Result failed ✗ | messages: Operation completed with warnings; First step ok | errors: [ValidationError] Invalid input; [InvalidOperationException] Invalid op
     /// </example>
     public override string ToString() => this.ToString(string.Empty);
 
+    /// <summary>
+    /// Builds a single-line, dense summary of this result.
+    /// </summary>
+    /// <param name="message">
+    /// An optional message to include. If non-empty, it is merged with the
+    /// result's own messages. Duplicates are removed.
+    /// </param>
+    /// <returns>
+    /// A compact, single-line string that starts with the success/failure marker,
+    /// followed by distinct messages and errors (if present).
+    /// Example:
+    /// Result failed ✗ | messages: First step ok; Cleanup done | errors: [ValidationError] Email is required
+    /// </returns>
+    /// <remarks>
+    /// - No newlines are included in the output.
+    /// - Messages are deduplicated (case-sensitive, ordinal comparison).
+    /// - Errors are rendered as "[Type] Message" and deduplicated.
+    /// - Sections "messages" and "errors" are included only when non-empty.
+    /// </remarks>
     public string ToString(string message)
     {
-        var sb = new StringBuilder();
-
-        // Append success or failure message
-        if (this.IsSuccess)
+        // Collect distinct messages (input + result messages)
+        var messageSet = new HashSet<string>(StringComparer.Ordinal);
+        if (!string.IsNullOrWhiteSpace(message))
         {
-            sb.Append("Result succeeded ✓");
-        }
-        else
-        {
-            sb.Append("Result failed ✗");
+            messageSet.Add(message.Trim());
         }
 
-        // Append message only if not null or empty
-        if (!string.IsNullOrEmpty(message))
-        {
-            sb.Append(' ').Append(message);
-        }
-
-        // Remove trailing spaces and add a single newline
-        while (sb.Length > 0 && sb[^1] == ' ')
-        {
-            sb.Length--;
-        }
-        sb.AppendLine();
-
-        // Append messages if any
         if (!this.messages.IsEmpty)
         {
-            sb.AppendLine("  messages:");
             foreach (var m in this.messages.AsEnumerable())
             {
-                sb.Append("  - ").AppendLine(m);
+                if (!string.IsNullOrWhiteSpace(m))
+                {
+                    messageSet.Add(m.Trim());
+                }
             }
         }
 
-        // Append errors if any
+        // Collect distinct error strings as "[Type] Message"
+        var errorSet = new HashSet<string>(StringComparer.Ordinal);
         if (!this.errors.IsEmpty)
         {
-            sb.AppendLine("  errors:");
             foreach (var e in this.errors.AsEnumerable())
             {
-                sb.Append("  - [").Append(e.GetType().Name).Append("] ").AppendLine(e.Message);
+                var errorType = e?.GetType().Name ?? "Error";
+                var msg = (e?.Message ?? string.Empty).Trim();
+                var composed = string.IsNullOrEmpty(msg) ? $"[{errorType}]" : $"[{errorType}] {msg}";
+                if (!string.IsNullOrWhiteSpace(composed))
+                {
+                    errorSet.Add(composed);
+                }
             }
+        }
+
+        // Build single-line output
+        var sb = new StringBuilder();
+        sb.Append(this.IsSuccess ? "Result succeeded" : "Result failed");
+
+        if (messageSet.Count > 0)
+        {
+            sb.Append(" - messages: ").Append(string.Join("; ", messageSet));
+        }
+
+        if (errorSet.Count > 0)
+        {
+            sb.Append(" - errors: ").Append(string.Join("; ", errorSet));
         }
 
         return sb.ToString();

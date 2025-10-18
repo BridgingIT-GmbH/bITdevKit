@@ -505,7 +505,7 @@ public class DefaultActionResultMapper : IActionResultMapper
                     ["Messages"] = string.Join(Environment.NewLine, result.Messages),
                     ["Errors"] = string.Join(Environment.NewLine, result.Errors.SelectMany(e => e.Message)),
                 },
-                Type = "https://httpstatuses.com/400"
+                Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
             })
             { StatusCode = 400 };
         }
@@ -536,7 +536,7 @@ public class DefaultActionResultMapper : IActionResultMapper
                 ["Messages"] = string.Join(Environment.NewLine, result.Messages),
                 ["Errors"] = string.Join(Environment.NewLine, result.Errors.SelectMany(e => e.Message))
             },
-            Type = "https://httpstatuses.com/500"
+            Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500"
         })
         { StatusCode = 500 }; // unhandled
     }

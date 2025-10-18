@@ -37,7 +37,7 @@ public class SecurityExceptionHandler(
             Title = "Unauthorized",
             Status = StatusCodes.Status401Unauthorized,
             Detail = options.IncludeExceptionDetails ? $"[{ex.GetType().Name}] {ex.Message}" : null,
-            Type = "https://httpstatuses.com/401"
+            Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401"
         };
 
         httpContext.Response.StatusCode = problemDetails.Status.Value;

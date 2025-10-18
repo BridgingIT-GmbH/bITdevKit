@@ -39,7 +39,7 @@ public class ValidationExceptionHandler(
             Detail = options.IncludeExceptionDetails
                 ? $"[{nameof(ValidationException)}] A model validation error has occurred while executing the request"
                 : null,
-            Type = "https://httpstatuses.com/400",
+            Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400",
             Errors = ex.Errors?.OrderBy(v => v.PropertyName)
                     .GroupBy(v => v.PropertyName.Replace("Entity.", string.Empty, StringComparison.OrdinalIgnoreCase),
                         v => v.ErrorMessage)

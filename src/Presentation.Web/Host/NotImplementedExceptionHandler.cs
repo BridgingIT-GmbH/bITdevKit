@@ -36,7 +36,7 @@ public class NotImplementedExceptionHandler(
             Title = "Not Implemented",
             Status = StatusCodes.Status501NotImplemented,
             Detail = options.IncludeExceptionDetails ? $"[{ex.GetType().Name}] {ex.Message}" : null,
-            Type = "https://httpstatuses.com/501"
+            Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/501"
         };
 
         httpContext.Response.StatusCode = problemDetails.Status.Value;

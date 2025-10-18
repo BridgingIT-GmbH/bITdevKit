@@ -24,7 +24,8 @@ using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOp
 //    }
 //}
 
-public static class Configure
+[Obsolete("Use the new GlobalExceptionHandler")]
+public static class Configure // TODO: this should be replace by the GlobalExceptionHandler (Presentation.Web.Middleware)
 {
     public static void ProblemDetails(ProblemDetailsOptions options)
     {
@@ -156,7 +157,7 @@ public static class Configure
                         {
                             type = ex.GetType().FullName,
                             message = ex.GetFullMessage(),
-                            stackTrace = ex.StackTrace
+                            stackTrace = ex.StackTrace.Trim()
                         }
                     }
                 };

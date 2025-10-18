@@ -37,7 +37,7 @@ public class DomainRuleExceptionHandler(
             Title = "Bad Request",
             Status = StatusCodes.Status400BadRequest,
             Detail = $"[{ex.GetType().Name}] {ex.Message}",
-            Type = "https://httpstatuses.com/400"
+            Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400"
         };
 
         httpContext.Response.StatusCode = problemDetails.Status.Value;

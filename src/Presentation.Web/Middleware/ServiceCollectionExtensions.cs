@@ -8,7 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Host;
 
-public static partial class ServiceCollectionExtensions
+public static partial class ServiceCollectionExtensions // TODO: this should replace the Hellang.Middleware.ProblemDetails usage
 {
     public static IServiceCollection AddExceptionHandler(this IServiceCollection services)
     {

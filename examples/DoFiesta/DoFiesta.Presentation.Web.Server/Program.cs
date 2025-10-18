@@ -105,7 +105,9 @@ builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers(); // needed for openapi gen, even with no controllers
+#pragma warning disable CS0618 // Type or member is obsolete
 builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
+#pragma warning restore CS0618 // Type or member is obsolete
 builder.Services.AddOpenApi();
 
 // Add services to the container.

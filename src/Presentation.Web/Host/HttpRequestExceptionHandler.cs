@@ -36,7 +36,7 @@ public class HttpRequestExceptionHandler(
             Title = "Service Unavailable",
             Status = StatusCodes.Status503ServiceUnavailable,
             Detail = options.IncludeExceptionDetails ? $"[{ex.GetType().Name}] {ex.Message}" : null,
-            Type = "https://httpstatuses.com/503"
+            Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503"
         };
 
         httpContext.Response.StatusCode = problemDetails.Status.Value;

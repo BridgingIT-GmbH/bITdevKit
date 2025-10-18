@@ -49,7 +49,7 @@ public class ExceptionError : IResultError
     /// <summary>
     /// Gets the stack trace of the encapsulated exception.
     /// </summary>
-    public string StackTrace => this.Exception?.StackTrace;
+    public string StackTrace => this.Exception?.StackTrace?.Trim();
 
     /// <summary>
     /// Gets the original exception that was encapsulated.

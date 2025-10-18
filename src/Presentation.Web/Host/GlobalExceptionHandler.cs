@@ -36,7 +36,7 @@ public class GlobalExceptionHandler(
             Title = "Internal Server Error",
             Status = StatusCodes.Status500InternalServerError,
             Detail = options.IncludeExceptionDetails ? $"[{ex.GetType().Name}] {ex.Message}" : null,
-            Type = "https://httpstatuses.com/500"
+            Type = "https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500"
         };
 
         httpContext.Response.StatusCode = problemDetails.Status.Value;

@@ -9,7 +9,8 @@ using FluentValidation;
 using FluentValidation.Results;
 
 public class FluentValidationError(ValidationResult validationResult)
-    : ResultErrorBase($"{string.Join(Environment.NewLine, validationResult.Errors.Select(e => e.ErrorMessage))}")
+    //: ResultErrorBase($"{string.Join(Environment.NewLine, validationResult.Errors.Select(e => e.ErrorMessage))}")
+    : ResultErrorBase("Validation not satisfied, see errors for details")
 {
     public List<ValidationFailure> Errors { get; } = validationResult.Errors;
 

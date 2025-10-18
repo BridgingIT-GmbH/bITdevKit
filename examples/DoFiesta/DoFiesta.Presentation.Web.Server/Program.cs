@@ -113,7 +113,7 @@ builder.Services.AddOpenApi(o =>
 {
     o.AddDocumentTransformer<DiagnosticDocumentTransformer>();
     o.AddSchemaTransformer<DiagnosticSchemaTransformer>();
-    o.AddSchemaTransformer<AdditionalPropertiesSchemaTransformer>();
+    o.AddSchemaTransformer<ResultProblemDetailsSchemaTransformer>();
 });
 
 // Add services to the container.

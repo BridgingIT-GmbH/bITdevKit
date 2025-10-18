@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
 using System.Collections.Concurrent;
 
-public class AdditionalPropertiesSchemaTransformer : IOpenApiSchemaTransformer
+public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
 {
     // Thread-safe collection for distinct type names logged
     private static readonly ConcurrentDictionary<string, bool> AdjustedSchemas = new();

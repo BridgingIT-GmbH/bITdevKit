@@ -20,7 +20,6 @@ public static partial class ServiceCollectionExtensions
         configure(builder); // Use the builder instead of directly configuring the options
 
         var options = builder.Build(); // Build the final options object
-
         if (!options.Enabled)
         {
             return services;

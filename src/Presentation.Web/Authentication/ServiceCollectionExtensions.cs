@@ -103,7 +103,7 @@ public static partial class ServiceCollectionExtensions
             {
                 var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerHandler>>();
 
-                logger.LogWarning("JwtAuthentication - Authentication challenge issued for request to {Path}", context.Request.Path);
+                logger.LogInformation("JwtAuthentication - Authentication challenge issued for request to {Path}", context.Request.Path);
                 return Task.CompletedTask;
             },
 

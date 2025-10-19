@@ -23,6 +23,7 @@
 <PackageReference Include="BridgingIT.DevKit.Presentation.Web" Version="x.y.z" />
 ```
 
+```csharp
 builder.Services.AddFakeIdentityProvider(options => {
    options.Enabled(builder.Environment.IsDevelopment())
           .WithIssuer("https://localhost:5001")
@@ -65,6 +66,7 @@ builder.Services.AddFakeIdentityProvider(options => {
               "Swagger UI",
               "https://localhost:5001/swagger/oauth2-redirect.html");
 });
+```
 
 ### 3. Define Users
 ```csharp

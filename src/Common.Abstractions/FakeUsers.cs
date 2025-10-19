@@ -5,11 +5,9 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Diagnostics;
-
-public static class Fakes
+public static class FakeUsers
 {
-    public static readonly FakeUser[] UsersStarwars =
+    public static readonly FakeUser[] Starwars =
     [
         new(
             "luke.skywalker@starwars.com",
@@ -231,7 +229,7 @@ public static class Fakes
         //    })
     ];
 
-    public static readonly FakeUser[] UsersGerman =
+    public static readonly FakeUser[] German =
     [
         new(
             "johannes.schmidt@example.de",
@@ -261,7 +259,7 @@ public static class Fakes
             "passwort")
     ];
 
-    public static readonly FakeUser[] UsersEnglish =
+    public static readonly FakeUser[] English =
     [
        new(
             "john.smith@example.com",
@@ -290,38 +288,241 @@ public static class Fakes
             [Role.Users, Role.Readers],
             "password")
    ];
-}
 
-[DebuggerDisplay("Id={Id}, Email={Email}")]
-public class FakeUser(string email, string name, string[] roles = null, string password = null, Dictionary<string, string> claims = null, bool isDefault = false)
-{
-    public string Id { get; } = GenerateDeterministicGuid(email);
-
-    public bool IsEnabled { get; } = true;
-
-    public bool IsDefault { get; } = isDefault;
-
-    public string Email { get; } = email;
-
-    public string Name { get; } = name;
-
-    public string Password { get; } = password;
-
-    public string[] Roles { get; } = roles;
-
-    public IReadOnlyDictionary<string, string> Claims { get; } = claims ?? [];
-
-    //private const string DefaultAvatar = """
-    //    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-    //        <circle cx="12" cy="8" r="5"/>
-    //        <path d="M3 21v-2a7 7 0 0 1 7-7h4a7 7 0 0 1 7 7v2"/>
-    //    </svg>
-    //    """;
-
-    private static string GenerateDeterministicGuid(string value
-)
-    {
-        var hash = System.Security.Cryptography.MD5.HashData(Encoding.UTF8.GetBytes(value));
-        return new Guid(hash).ToString("N");
-    }
+    public static readonly FakeUser[] Fantasy =
+    [
+        new(
+            "clever.dragon@example.com",
+            "Clever Dragon",
+            [Role.Administrators, Role.Users, Role.Readers, Role.Writers, Role.Contributors],
+            "fantasy",
+            new Dictionary<string, string>
+            {
+                {
+                    "avatar",
+                    """
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 3L4 9v2h16V9L12 3z"/>
+                        <path d="M4 11v10h16V11"/>
+                        <path d="M8 15l4-2 4 2"/>
+                        <circle cx="12" cy="17" r="2"/>
+                    </svg>
+                    """
+                }
+            },
+            isDefault: true),
+        new(
+            "happy.phoenix@example.com",
+            "Happy Phoenix",
+            [Role.Administrators, Role.Writers, Role.Contributors],
+            "fantasy",
+            new Dictionary<string, string>
+            {
+                {
+                    "avatar",
+                    """
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 3l4 4-4 4-4-4 4-4z"/>
+                        <path d="M12 11v10"/>
+                        <path d="M8 17l4 4 4-4"/>
+                    </svg>
+                    """
+                }
+            }),
+        new(
+            "eager.unicorn@example.com",
+            "Eager Unicorn",
+            [Role.Users, Role.Readers],
+            "fantasy",
+            new Dictionary<string, string>
+            {
+                {
+                    "avatar",
+                    """
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="8" r="4"/>
+                        <path d="M12 4v4"/>
+                        <path d="M12 12v9"/>
+                        <path d="M8 17l4 4 4-4"/>
+                    </svg>
+                    """
+                }
+            }),
+        new(
+            "brave.griffin@example.com",
+            "Brave Griffin",
+            [Role.Writers, Role.Contributors],
+            "fantasy",
+            new Dictionary<string, string>
+            {
+                {
+                    "avatar",
+                    """
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 3l6 6-6 6-6-6 6-6z"/>
+                        <path d="M12 15v6"/>
+                        <path d="M6 15l6 6 6-6"/>
+                    </svg>
+                    """
+                }
+            }),
+        new(
+            "jolly.wizard@example.com",
+            "Jolly Wizard",
+            [Role.Administrators, Role.Users],
+            "fantasy",
+            new Dictionary<string, string>
+            {
+                {
+                    "avatar",
+                    """
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 3l-3 6h6l-3-6z"/>
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 15v6"/>
+                        <path d="M9 18h6"/>
+                    </svg>
+                    """
+                }
+            }),
+        new(
+            "peaceful.kraken@example.com",
+            "Peaceful Kraken",
+            [Role.Readers, Role.Contributors],
+            "fantasy",
+            new Dictionary<string, string>
+            {
+                {
+                    "avatar",
+                    """
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="8" r="5"/>
+                        <path d="M8 13v8"/>
+                        <path d="M12 13v8"/>
+                        <path d="M16 13v8"/>
+                        <path d="M6 17l2 2"/>
+                        <path d="M18 17l-2 2"/>
+                    </svg>
+                    """
+                }
+            }),
+        new(
+            "sleepy.sphinx@example.com",
+            "Sleepy Sphinx",
+            [Role.Readers],
+            "fantasy",
+            new Dictionary<string, string>
+            {
+                {
+                    "avatar",
+                    """
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 3a5 5 0 0 0-5 5v2h10V8a5 5 0 0 0-5-5z"/>
+                        <rect x="7" y="10" width="10" height="11" rx="2"/>
+                        <path d="M10 14h4"/>
+                        <path d="M10 17h4"/>
+                    </svg>
+                    """
+                }
+            }),
+        new(
+            "quirky.gargoyle@example.com",
+            "Quirky Gargoyle",
+            [Role.Users, Role.Writers],
+            "fantasy",
+            new Dictionary<string, string>
+            {
+                {
+                    "avatar",
+                    """
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 3L4 9v2h16V9L12 3z"/>
+                        <path d="M4 11v10h16V11"/>
+                        <circle cx="9" cy="14" r="1" fill="currentColor"/>
+                        <circle cx="15" cy="14" r="1" fill="currentColor"/>
+                        <path d="M9 18h6"/>
+                    </svg>
+                    """
+                }
+            }),
+        new(
+            "witty.centaur@example.com",
+            "Witty Centaur",
+            [Role.Contributors],
+            "fantasy",
+            new Dictionary<string, string>
+            {
+                {
+                    "avatar",
+                    """
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="7" r="4"/>
+                        <path d="M12 11v4"/>
+                        <path d="M7 15h10"/>
+                        <path d="M8 15v6"/>
+                        <path d="M16 15v6"/>
+                    </svg>
+                    """
+                }
+            }),
+        new(
+            "noble.pegasus@example.com",
+            "Noble Pegasus",
+            [Role.Guests],
+            "fantasy",
+            new Dictionary<string, string>
+            {
+                {
+                    "avatar",
+                    """
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="8" r="3"/>
+                        <path d="M12 11v10"/>
+                        <path d="M8 15l4 4 4-4"/>
+                        <path d="M6 8l6-5"/>
+                        <path d="M18 8l-6-5"/>
+                    </svg>
+                    """
+                }
+            }),
+        new(
+            "mighty.basilisk@example.com",
+            "Mighty Basilisk",
+            [Role.Administrators, Role.Readers],
+            "fantasy",
+            new Dictionary<string, string>
+            {
+                {
+                    "avatar",
+                    """
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 3c-3 0-5 2-5 5v3h10V8c0-3-2-5-5-5z"/>
+                        <path d="M7 11v10h10V11"/>
+                        <circle cx="10" cy="8" r="1" fill="currentColor"/>
+                        <circle cx="14" cy="8" r="1" fill="currentColor"/>
+                    </svg>
+                    """
+                }
+            }),
+        new(
+            "swift.manticore@example.com",
+            "Swift Manticore",
+            [Role.Users, Role.Contributors],
+            "fantasy",
+            new Dictionary<string, string>
+            {
+                {
+                    "avatar",
+                    """
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="7" r="4"/>
+                        <path d="M12 11v6"/>
+                        <path d="M8 17l4 4 4-4"/>
+                        <path d="M12 17l-4-2"/>
+                        <path d="M12 17l4-2"/>
+                    </svg>
+                    """
+                }
+            })
+    ];
 }

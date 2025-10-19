@@ -16,7 +16,6 @@ using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.OpenApi.Any;
 using MudBlazor.Services;
 
 // ===============================================================================================
@@ -56,7 +55,7 @@ builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopme
 builder.Services.AddStartupTasks(o => o
         .Enabled().StartupDelay(builder.Configuration["StartupTasks:StartupDelay"]))
     .WithTask<JobSchedulingSqlServerSeederStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:00")) // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
-    //.WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
+                                                                                                                                     //.WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
     .WithBehavior<ModuleScopeStartupTaskBehavior>();
 
 //builder.Services.AddJobScheduling(o => o
@@ -88,18 +87,16 @@ builder.Services.AddJwtAuthentication(builder.Configuration)
 builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth identity provider with its endpoints and signin page
     .Enabled(builder.Environment.IsDevelopment())
     //.WithIssuer("https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net") // host should match Authority (appsettings.json:Authentication:Authority)
-    .WithIssuer("https://localhost:5001")
-    .WithUsers(Fakes.UsersStarwars)
-    .WithTokenLifetimes(
-        accessToken: TimeSpan.FromHours(24),
-        refreshToken: TimeSpan.FromDays(14))
+    .WithIssuer("https://localhost:5001") // default
+    .WithUsers(FakeUsers.Starwars)
+    .WithTokenLifetimes(accessToken: TimeSpan.FromHours(48), refreshToken: TimeSpan.FromDays(14)) // default x2
     .WithClient( // optional client configuration
         "Blazor WASM Frontend",
         "blazor-wasm",
         "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/authentication/login-callback", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/authentication/logout-callback",
         "https://localhost:5001/authentication/login-callback", "https://localhost:5001/authentication/logout-callback",
         "https://localhost:5001/openapi/oauth2-redirect.html", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/openapi/oauth2-redirect.html") // swaggerui authorize
-    .EnableLoginCard(false));
+    .EnableLoginCard(false)); // defautl
 
 builder.Services.ConfigureJson();
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);

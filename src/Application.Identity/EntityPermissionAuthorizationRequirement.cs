@@ -15,15 +15,16 @@ using Microsoft.AspNetCore.Authorization;
 /// <remarks>
 /// Initializes a new instance of the <see cref="EntityPermissionRequirement"/> class.
 /// </remarks>
-[DebuggerDisplay("Permissions={Permissions}")]
-public class EntityPermissionRequirement : IAuthorizationRequirement
+[DebuggerDisplay("Type={EntityType.Name}, Permissions={Permissions}")]
+public class EntityPermissionAuthorizationRequirement : IAuthorizationRequirement
 {
     /// <summary>
     /// Initializes a new instance of the <see cref="EntityPermissionRequirement"/> class.
     /// </summary>
     /// <param name="permission">The permission value that is required for authorization.</param>
-    public EntityPermissionRequirement(string permission)
+    public EntityPermissionAuthorizationRequirement(Type entityType, string permission)
     {
+        this.EntityType = entityType;
         this.Permissions = [permission];
     }
 
@@ -31,11 +32,11 @@ public class EntityPermissionRequirement : IAuthorizationRequirement
     /// Initializes a new instance of the <see cref="EntityPermissionRequirement"/> class.
     /// </summary>
     /// <param name="permissions">The permission value that is required for authorization.</param>
-    public EntityPermissionRequirement(string[] permissions)
+    public EntityPermissionAuthorizationRequirement(Type entityType, string[] permissions)
     {
+        this.EntityType = entityType;
         this.Permissions = permissions;
     }
-
     /// <summary>
     /// Gets the permissions that any of is required for authorization.
     /// </summary>
@@ -43,4 +44,8 @@ public class EntityPermissionRequirement : IAuthorizationRequirement
     /// A string representing any of the required permissions.
     /// </value>
     public string[] Permissions { get; init; }
+
+    public string Permission { get; }
+
+    public Type EntityType { get; }
 }

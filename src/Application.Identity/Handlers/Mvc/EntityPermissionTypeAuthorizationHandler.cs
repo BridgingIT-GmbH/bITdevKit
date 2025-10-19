@@ -18,13 +18,13 @@ public partial class EntityPermissionTypeAuthorizationHandler<TEntity>(
     : AuthorizationHandler<EntityPermissionRequirement, Type>, IAuthorizationRequirement
     where TEntity : class, IEntity
 {
+    // HANDLER NOT USED IN MINIMAL API SCENARIO (RequireEntityPermission)
     private readonly ILogger<EntityPermissionTypeAuthorizationHandler<TEntity>> logger =
         loggerFactory.CreateLogger<EntityPermissionTypeAuthorizationHandler<TEntity>>();
 
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, EntityPermissionRequirement requirement, Type entityType)
     {
-        logger.LogInformation("------------------------------------ Authorization handler invoked for permissions: {@Permissions} ------------------------------------", requirement?.Permissions);
-
+        //logger.LogInformation("------------------------------------ Authorization handler invoked for permissions: {@Permissions} ------------------------------------", requirement?.Permissions);
         TypedLogger.LogAuthHandler(this.logger, Constants.LogKey, requirement?.Permissions);
 
         var userId = userAccessor.UserId;
@@ -59,7 +59,7 @@ public partial class EntityPermissionTypeAuthorizationHandler<TEntity>(
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(EventId = 0, Level = LogLevel.Warning, Message = "{LogKey} auth handler (type) - check permission requirement: permissions={Permissions}")]
+        [LoggerMessage(EventId = 0, Level = LogLevel.Information, Message = "{LogKey} auth handler (type) - check permission requirement: permissions={Permissions}")]
         public static partial void LogAuthHandler(ILogger logger, string logKey, string[] permissions);
 
         [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "{LogKey} auth handler - no user identified for type permission check")]

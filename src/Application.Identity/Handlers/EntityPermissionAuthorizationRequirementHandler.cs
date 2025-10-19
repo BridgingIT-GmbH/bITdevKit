@@ -10,59 +10,62 @@ using BridgingIT.DevKit.Domain.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
 
-public class EntityPermissionAuthorizationRequirement : IAuthorizationRequirement
-{
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EntityPermissionRequirement"/> class.
-    /// </summary>
-    /// <param name="permission">The permission value that is required for authorization.</param>
-    public EntityPermissionAuthorizationRequirement(Type entityType, string permission)
-    {
-        this.EntityType = entityType;
-        this.Permissions = [permission];
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="EntityPermissionRequirement"/> class.
-    /// </summary>
-    /// <param name="permissions">The permission value that is required for authorization.</param>
-    public EntityPermissionAuthorizationRequirement(Type entityType, string[] permissions)
-    {
-        this.EntityType = entityType;
-        this.Permissions = permissions;
-    }
-
-    /// <summary>
-    /// Gets the permissions that any of is required for authorization.
-    /// </summary>
-    /// <value>
-    /// A string representing any of the required permissions.
-    /// </value>
-    public string[] Permissions { get; init; }
-
-    public string Permission { get; }
-
-    public Type EntityType { get; }
-}
-
-public class EntityPermissionAuthorizationRequirementHandler<TEntity>(
-        ILoggerFactory loggerFactory)
-        //ICurrentUserAccessor userAccessor,
-        //IEntityPermissionEvaluator<TEntity> evaluator)
+public partial class EntityPermissionAuthorizationRequirementHandler<TEntity>(
+        ILoggerFactory loggerFactory,
+        ICurrentUserAccessor userAccessor,
+        IEntityPermissionEvaluator<TEntity> evaluator)
         : AuthorizationHandler<EntityPermissionAuthorizationRequirement>
     where TEntity : class, IEntity
 {
     private readonly ILogger<EntityPermissionAuthorizationRequirementHandler<TEntity>> logger =
         loggerFactory.CreateLogger<EntityPermissionAuthorizationRequirementHandler<TEntity>>();
 
-    protected override Task HandleRequirementAsync(
+    protected override async Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         EntityPermissionAuthorizationRequirement requirement)
     {
-        logger.LogInformation("++++++++++++++++++++++++++++++++++ Authorization handler invoked for permissions: {@Permissions} ++++++++++++++++++++++++++++++++++", requirement?.Permissions);
+        //his.logger.LogInformation("++++++++++++++++++++++++++++++++++ Authorization handler invoked for permissions: {@Permissions} ++++++++++++++++++++++++++++++++++", requirement?.Permissions);
+        TypedLogger.LogAuthHandler(this.logger, Constants.LogKey, requirement?.Permissions);
 
-        context.Succeed(requirement);
+        var userId = userAccessor.UserId;
+        if (string.IsNullOrEmpty(userId))
+        {
+            TypedLogger.LogNoUserIdentified(this.logger, Constants.LogKey);
+            return;
+        }
 
-        return Task.CompletedTask;
+        if (requirement == null)
+        {
+            TypedLogger.LogNoRequirement(this.logger, Constants.LogKey);
+            return;
+        }
+
+        if (requirement.EntityType == null)
+        {
+            return;
+        }
+
+        if (requirement.EntityType != typeof(TEntity))
+        {
+            return;
+        }
+
+        // Call the type-wide permission check
+        if (await evaluator.HasPermissionAsync(userAccessor, requirement.Permissions))
+        {
+            context.Succeed(requirement);
+        }
+    }
+
+    public static partial class TypedLogger
+    {
+        [LoggerMessage(EventId = 0, Level = LogLevel.Information, Message = "{LogKey} auth handler (type) - check permission requirement: permissions={Permissions}")]
+        public static partial void LogAuthHandler(ILogger logger, string logKey, string[] permissions);
+
+        [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "{LogKey} auth handler - no user identified for type permission check")]
+        public static partial void LogNoUserIdentified(ILogger logger, string logKey);
+
+        [LoggerMessage(EventId = 2, Level = LogLevel.Warning, Message = "{LogKey} auth handler - no requirement specified for type permission check")]
+        public static partial void LogNoRequirement(ILogger logger, string logKey);
     }
 }

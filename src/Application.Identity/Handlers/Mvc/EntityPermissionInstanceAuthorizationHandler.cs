@@ -28,6 +28,7 @@ public partial class EntityPermissionInstanceAuthorizationHandler<TEntity>( // T
     : AuthorizationHandler<EntityPermissionRequirement, TEntity>, IAuthorizationRequirement
     where TEntity : class, IEntity
 {
+    // HANDLER NOT USED IN MINIMAL API SCENARIO (RequireEntityPermission)
     private readonly ILogger<EntityPermissionInstanceAuthorizationHandler<TEntity>> logger =
         loggerFactory.CreateLogger<EntityPermissionInstanceAuthorizationHandler<TEntity>>();
 
@@ -72,7 +73,7 @@ public partial class EntityPermissionInstanceAuthorizationHandler<TEntity>( // T
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(EventId = 0, Level = LogLevel.Warning, Message = "{LogKey} auth handler (instance) - check permission requirement: permissions={Permissions}")]
+        [LoggerMessage(EventId = 0, Level = LogLevel.Information, Message = "{LogKey} auth handler (instance) - check permission requirement: permissions={Permissions}")]
         public static partial void LogAuthHandler(ILogger logger, string logKey, string[] permissions);
 
         [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "{LogKey} auth handler - no user identified for permission requirement check")]

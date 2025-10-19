@@ -11,9 +11,9 @@ public static class CoreSeedEntities
 {
     private static readonly string[] UserIds =
     [
-        Fakes.UsersStarwars[0].Id, // luke skywalker
-        Fakes.UsersStarwars[1].Id, // yoda
-        Fakes.UsersStarwars[2].Id, // obi wan
+        FakeUsers.Starwars[0].Id, // luke skywalker
+        FakeUsers.Starwars[1].Id, // yoda
+        FakeUsers.Starwars[2].Id, // obi wan
     ];
 
     public static class TodoItems

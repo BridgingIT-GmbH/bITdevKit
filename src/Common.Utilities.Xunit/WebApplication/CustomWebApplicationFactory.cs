@@ -67,7 +67,7 @@ public class CustomWebApplicationFactory<TEntryPoint>(
 
             if (this.fakeAuthenticationEnabled)
             {
-                services.AddFakeAuthentication(Fakes.UsersStarwars);
+                services.AddFakeAuthentication(FakeUsers.Starwars);
             }
         });
 

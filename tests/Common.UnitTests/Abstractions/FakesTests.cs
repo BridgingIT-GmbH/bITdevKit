@@ -9,7 +9,7 @@ public class FakesTests(ITestOutputHelper output)
     [Fact]
     public void Fakes_PrintUserIdsAndEmails()
     {
-        foreach (var user in Fakes.UsersStarwars)
+        foreach (var user in FakeUsers.Starwars)
         {
             output.WriteLine($"Id: {user.Id}, Email: {user.Email}");
         }
@@ -18,7 +18,7 @@ public class FakesTests(ITestOutputHelper output)
     [Fact]
     public void Fakes_ValidateUserIdsAndEmails()
     {
-        foreach (var user in Fakes.UsersStarwars)
+        foreach (var user in FakeUsers.Starwars)
         {
             Assert.False(string.IsNullOrEmpty(user.Id), $"User ID should not be null or empty for {user.Email}");
             Assert.False(string.IsNullOrEmpty(user.Email), $"User Email should not be null or empty for {user.Id}");

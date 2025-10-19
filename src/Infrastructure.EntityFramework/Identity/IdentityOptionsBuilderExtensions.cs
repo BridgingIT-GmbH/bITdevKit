@@ -8,6 +8,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Application.Identity;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 public static class IdentityOptionsBuilderExtensions
 {
@@ -220,6 +221,7 @@ public class EntityPermissionOptionsBuilder<TContext>(IServiceCollection service
     private static void ConfigureServices(IServiceCollection services, EntityPermissionOptions options)
     {
         // Register core services
+        var registeredHandlerTypes = new HashSet<Type>();
         services.AddSingleton(options);
         services.AddScoped<IEntityPermissionProvider, EntityFrameworkPermissionProvider<TContext>>();
         //services.AddScoped<IAuthorizationHandler, EntityPermissionAuthorizationRequirementHandler>(); // handler for the entity level permission handler
@@ -231,10 +233,13 @@ public class EntityPermissionOptionsBuilder<TContext>(IServiceCollection service
             //    .MakeGenericType(entityConfig.EntityType);
             //services.AddScoped(typeof(IAuthorizationHandler), handlerType1);
 
+            // Register the auth handler
             var handlerType2 = typeof(EntityPermissionAuthorizationRequirementHandler<>)
                 .MakeGenericType(entityConfig.EntityType);
-            services.AddScoped(typeof(IAuthorizationHandler), handlerType2);
-            // =======================================================================================
+            if (registeredHandlerTypes.Add(handlerType2)) // Only register handler if not already registered
+            {
+                services.AddScoped(typeof(IAuthorizationHandler), handlerType2);
+            }
 
             // Register the evaluator
             var evaluatorInterface = typeof(IEntityPermissionEvaluator<>)

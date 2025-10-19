@@ -17,12 +17,12 @@ public class FakeIdentityProviderEndpointsOptions : EndpointsOptionsBase
         this.RequireAuthorization = false;
         this.Issuer = "https://localhost:5001"; // should match Client Authority  "https://localhost:5001/api/_system/identity/connect"
         this.EndpointPaths = new FakeIdentityProviderEndpointPaths(); // Default endpoint paths
-        this.AccessTokenLifetime = TimeSpan.FromMinutes(30);    // 30 minutes
-        this.RefreshTokenLifetime = TimeSpan.FromDays(1);       // 24 hours
+        this.AccessTokenLifetime = TimeSpan.FromHours(24);
+        this.RefreshTokenLifetime = TimeSpan.FromDays(7);
         this.SigningKey = string.Empty; // "your-256-bit-secret-your-256-bit-secret-your-256-bit-secret";
     }
 
-    public IReadOnlyList<FakeUser> Users { get; set; } = [];
+    public IReadOnlyList<FakeUser> Users { get; set; } = FakeUsers.Fantasy;
 
     public string Issuer { get; set; }
 
@@ -40,7 +40,7 @@ public class FakeIdentityProviderEndpointsOptions : EndpointsOptionsBase
 
     public bool EnableUserCards { get; set; } = true;
 
-    public bool EnableLoginCard { get; set; } = true;
+    public bool EnableLoginCard { get; set; }
 
     public TokenProvider TokenProvider { get; set; } = TokenProvider.Default;
 

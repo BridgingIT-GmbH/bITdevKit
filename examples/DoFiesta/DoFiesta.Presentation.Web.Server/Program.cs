@@ -149,6 +149,7 @@ app.UseRequestModuleContext();
 app.UseRequestLogging();
 app.UseSwagger("blazor-wasm");
 
+app.UseCors();
 app.UseStaticFiles();
 app.UseAntiforgery();
 
@@ -159,7 +160,6 @@ app.UseAuthorization();
 
 app.UseCurrentUserLogging();
 
-app.UseCors();
 app.MapModules();
 app.MapControllers();
 app.MapEndpoints();

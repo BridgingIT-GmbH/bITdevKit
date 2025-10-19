@@ -95,7 +95,8 @@ public static partial class ServiceCollectionExtensions
             {
                 var logger = context.HttpContext.RequestServices.GetRequiredService<ILogger<JwtBearerHandler>>();
 
-                logger.LogInformation("JwtAuthentication - Token validated successfully for user: {Name}", context.Principal?.Identity?.Name);
+                //logger.LogInformation("JwtAuthentication - Token validated successfully for user: {Name}", context.Principal?.Identity?.Name);
+                logger.LogInformation("JwtAuthentication - Token validated successfully");
                 return Task.CompletedTask;
             },
 

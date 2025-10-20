@@ -45,7 +45,7 @@ public class CoreModule : WebModuleBase
                 .WithData(DataKeys.DelayPerFile, "00:00:00:100")
                 .WithData(DataKeys.FileFilter, "*.*")
                 .WithData(DataKeys.FileBlackListFilter, "*.tmp;*.log")
-                .RegisterScoped()
+                .RegisterScoped();
             //.WithJob<EchoJob>()
             //    .Cron(CronExpressions.EveryMinute)
             //    .Named("firstecho")
@@ -63,7 +63,7 @@ public class CoreModule : WebModuleBase
             //    .WithData("message", "Third echo")
             //    .Enabled(environment?.IsDevelopment() == true)
             //    .RegisterScoped()
-            .AddEndpoints();
+            //.AddEndpoints();
 
         // filter
         SpecificationResolver.Register<TodoItem, TodoItemIsNotDeletedSpecification>("TodoItemIsNotDeleted");
@@ -101,8 +101,8 @@ public class CoreModule : WebModuleBase
                     .UseDefaultPermissionProvider<Subscription>();
             });
 
-            o.EnableEvaluationEndpoints(o => o.RequireAuthorization = false);
-            o.EnableManagementEndpoints(o => o.RequireAuthorization = false/*o => o.RequireRoles = [Role.Administrators]*/);
+            //o.EnableEvaluationEndpoints(o => o.RequireAuthorization = false);
+            //o.EnableManagementEndpoints(o => o.RequireAuthorization = false/*o => o.RequireRoles = [Role.Administrators]*/);
         });
 
         // file monitoring

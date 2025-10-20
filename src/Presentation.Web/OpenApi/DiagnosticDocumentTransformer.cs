@@ -39,7 +39,6 @@ public class DiagnosticDocumentTransformer : IOpenApiDocumentTransformer
             {
                 var pathKey = path.Key;
                 var pathItem = path.Value;
-
                 var operations = new List<string>();
 
                 if (pathItem.Operations != null)

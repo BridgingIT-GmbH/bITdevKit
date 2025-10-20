@@ -49,7 +49,7 @@ if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
 {
     builder.Services.AddHostedService<LogEntryMaintenanceService<CoreDbContext>>();
 }
-builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopment());
+//builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopment());
 
 // logging services and endpoints
 
@@ -118,8 +118,8 @@ builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddMudServices();
 builder.Services.AddSignalR();
-builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
-builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
+//builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
+//builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
 
 // ===============================================================================================
 // Configure the HTTP request pipeline

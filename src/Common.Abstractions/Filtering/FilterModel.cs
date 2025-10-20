@@ -155,7 +155,7 @@ public class FilterCriteria
     /// <summary>
     /// Gets or sets the nested filters to apply.
     /// </summary>
-    public List<FilterCriteria> Filters { get; set; } = [];
+    public List<FilterCriteria> Filters { get; set; } = []; // self referencing
 
     /// <summary>
     /// Gets or sets the custom filter type.
@@ -375,7 +375,7 @@ public class SpecificationGroup : SpecificationNode
     /// <summary>
     /// Gets or sets the list of nodes in the specification group.
     /// </summary>
-    public List<SpecificationNode> Nodes { get; set; } = [];
+    public List<SpecificationNode> Nodes { get; set; } = []; // recursion
 }
 
 /// <summary>

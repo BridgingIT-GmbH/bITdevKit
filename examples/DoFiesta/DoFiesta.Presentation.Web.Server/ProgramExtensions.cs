@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server;
 
 using BridgingIT.DevKit.Presentation.Web;
+//using BridgingIT.DevKit.Presentation.Web.OpenApi;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi.Models;
@@ -22,6 +23,7 @@ public static class ProgramExtensions
             o.AddDocumentTransformer<DiagnosticDocumentTransformer>()
              .AddSchemaTransformer<DiagnosticSchemaTransformer>()
              .AddSchemaTransformer<ResultProblemDetailsSchemaTransformer>()
+             .AddSchemaTransformer<FilterModelSchemaTransformer>()
              .AddDocumentTransformer<FakeIdentityProviderDocumentTransformer>();
         });
     }

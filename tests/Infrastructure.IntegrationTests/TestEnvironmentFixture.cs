@@ -376,7 +376,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
                         //        PropertyNameCaseInsensitive = true,
                         //        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                         //    }),
-                        Serializer = new CosmosJsonNetSerializer(DefaultJsonNetSerializerSettings.Create())
+                        Serializer = new CosmosJsonNetSerializer(DefaultNewtonsoftSerializerSettings.Create())
                         //SerializerOptions = new CosmosSerializationOptions
                         //{
                         //    Indented = true,
@@ -403,7 +403,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
                         //        PropertyNameCaseInsensitive = true,
                         //        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                         //    }),
-                        Serializer = new CosmosJsonNetSerializer(DefaultJsonNetSerializerSettings.Create())
+                        Serializer = new CosmosJsonNetSerializer(DefaultNewtonsoftSerializerSettings.Create())
                         //SerializerOptions = new CosmosSerializationOptions
                         //{
                         //    Indented = true,

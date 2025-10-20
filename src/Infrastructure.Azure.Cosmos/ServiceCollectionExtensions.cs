@@ -47,7 +47,7 @@ public static partial class ServiceCollectionExtensions
             //        PropertyNameCaseInsensitive = true,
             //        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             //    })
-            Serializer = new CosmosJsonNetSerializer(DefaultJsonNetSerializerSettings.Create())
+            Serializer = new CosmosJsonNetSerializer(DefaultNewtonsoftSerializerSettings.Create())
             //SerializerOptions = new CosmosSerializationOptions
             //{
             //    Indented = true,

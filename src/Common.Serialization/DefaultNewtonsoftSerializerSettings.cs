@@ -11,7 +11,7 @@ using Newtonsoft.Json.Serialization;
 
 // TODO: get rid of Newtonsoft dependency
 
-public static class DefaultJsonNetSerializerSettings
+public static class DefaultNewtonsoftSerializerSettings
 {
     public static JsonSerializerSettings Create()
     {

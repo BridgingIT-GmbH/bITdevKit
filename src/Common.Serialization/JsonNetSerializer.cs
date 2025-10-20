@@ -14,7 +14,7 @@ using Newtonsoft.Json.Serialization;
 public class JsonNetSerializer(JsonSerializerSettings settings = null) : ISerializer, ITextSerializer
 {
     private readonly JsonSerializer serializer =
-        JsonSerializer.Create(settings ?? DefaultJsonNetSerializerSettings.Create());
+        JsonSerializer.Create(settings ?? DefaultNewtonsoftSerializerSettings.Create());
 
     /// <summary>
     ///     Serializes the specified value.

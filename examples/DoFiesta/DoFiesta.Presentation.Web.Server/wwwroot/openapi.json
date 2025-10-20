@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.4",
+  "openapi": "3.0.1",
   "info": {
     "title": "BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server | v1",
     "version": "1.0.0"
@@ -1287,8 +1287,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             }
           }
         ],
@@ -1343,8 +1342,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             }
           }
         ],
@@ -1418,8 +1416,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string",
-              "format": "uuid"
+              "type": "string"
             }
           }
         ],
@@ -1461,8 +1458,17 @@
         "tags": [
           "Core.TodoItems"
         ],
-        "description": "Gets all TodoItems matching the specified filter criteria.",
-        "operationId": "Core.TodoItems.GetAll",
+        "description": "Gets all items matching the specified filter criteria.",
+        "operationId": "CoreModule.TodoItems.GetAll",
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/FilterModel"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1559,8 +1565,17 @@
         "tags": [
           "Core.TodoItems"
         ],
-        "description": "Searches for TodoItems matching the specified filter criteria.",
-        "operationId": "Core.TodoItems.Search",
+        "description": "Searches for items matching the specified filter criteria.",
+        "operationId": "CoreModule.TodoItems.Search",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FilterModel"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -1783,6 +1798,60 @@
               "$ref": "#/components/schemas/SubscriptionBillingCycle"
             },
             "nullable": true
+          }
+        }
+      },
+      "FilterModel": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pageSize": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "noTracking": {
+            "type": "boolean"
+          },
+          "orderings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FilterOrderCriteria"
+            },
+            "nullable": true
+          },
+          "filters": {
+            "type": "array",
+            "nullable": true
+          },
+          "includes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "hierarchy": {
+            "type": "string",
+            "nullable": true
+          },
+          "hierarchyMaxDepth": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "FilterOrderCriteria": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "nullable": true
+          },
+          "direction": {
+            "$ref": "#/components/schemas/OrderDirection"
           }
         }
       },
@@ -2124,6 +2193,7 @@
           }
         }
       },
+      "OrderDirection": { },
       "PermissionRequestModel": {
         "type": "object",
         "properties": {
@@ -2521,8 +2591,18 @@
           }
         }
       }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "oauth2"
+      }
     }
   },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ],
   "tags": [
     {
       "name": "_system/jobs"

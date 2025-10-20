@@ -16,10 +16,10 @@
     <!-- OpenAPI build-time generation configuration -->
     <PropertyGroup>
         <OpenApiGenerateDocuments>true</OpenApiGenerateDocuments>
-        <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)</OpenApiDocumentsDirectory>
+        <OpenApiDocumentsDirectory>$(MSBuildProjectDirectory)/wwwroot</OpenApiDocumentsDirectory>
         <OpenApiGenerateDocumentsOptions>--file-name openapi</OpenApiGenerateDocumentsOptions>
     </PropertyGroup>
-    <!-- Generate OpenAPI document after build -->
+    <!-- OpenAPI generate document after build -->
     <Target Name="GenerateOpenApiAfterBuild" AfterTargets="Build" DependsOnTargets="GenerateOpenApiDocuments" />
 
     <ItemGroup>
@@ -41,6 +41,7 @@
         <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" />
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
         <PackageReference Include="MudBlazor" />
+        <PackageReference Include="Scalar.AspNetCore" />
         <PackageReference Include="Serilog.AspNetCore" />
         <PackageReference Include="Serilog.Enrichers.Environment" />
         <PackageReference Include="Serilog.Enrichers.ShortTypeName" />
@@ -50,7 +51,6 @@
         <PackageReference Include="Serilog.Sinks.MSSqlServer" />
         <PackageReference Include="Serilog.Sinks.Seq" />
         <PackageReference Include="Serilog.Sinks.Trace" />
-        <PackageReference Include="Swashbuckle.AspNetCore" />
         <PackageReference Include="Quartz.Serialization.Json" />
     </ItemGroup>
 

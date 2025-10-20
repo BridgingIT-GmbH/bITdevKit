@@ -22,7 +22,7 @@ public class FakeIdentityProviderEndpointsOptions : EndpointsOptionsBase
         this.SigningKey = string.Empty; // "your-256-bit-secret-your-256-bit-secret-your-256-bit-secret";
     }
 
-    public IReadOnlyList<FakeUser> Users { get; set; } = FakeUsers.Fantasy;
+    public IReadOnlyList<FakeUser> Users { get; set; } = [];//= FakeUsers.Fantasy;
 
     public string Issuer { get; set; }
 

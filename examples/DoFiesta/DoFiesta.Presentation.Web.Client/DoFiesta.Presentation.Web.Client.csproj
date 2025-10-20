@@ -12,7 +12,7 @@
   <!-- API Client generation (openapi2csclient) -->
   <PropertyGroup>
     <ApiSpecGenerate>true</ApiSpecGenerate> <!--$(BuildingInsideVisualStudio)-->
-    <ApiSpecLocation>..\DoFiesta.Presentation.Web.Server\wwwroot\swagger.json</ApiSpecLocation>
+    <ApiSpecLocation>..\DoFiesta.Presentation.Web.Server\wwwroot\openapi.json</ApiSpecLocation>
     <ApiClientClassName>ApiClient</ApiClientClassName>
     <ApiClientNamespace>BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client</ApiClientNamespace>
     <ApiClientOutputDirectory>./</ApiClientOutputDirectory>
@@ -21,6 +21,9 @@
     <OpenApiReference Include="$(ApiSpecLocation)" CodeGenerator="NSwagCSharp" ClassName="$(ApiClientClassName)" OutputPath="$(ApiClientClassName).g.cs" Namespace="$(ApiClientNamespace)">
       <Options>/GenerateBaseUrlProperty:False /UseBaseUrl:False /GenerateClientInterfaces:true /ResponseClass:ApiResponse /ExceptionClass:ApiException /GenerateResponseClasses:true /WrapResponses:true /OperationGenerationMode:SingleClientFromOperationId /ClassStyle:Poco /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.ICollection /ClientBaseClass:BridgingIT.DevKit.Presentation.Web.Client.ApiClientBase /DateTimeType:System.DateTime</Options>
     </OpenApiReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Pages\TodoItemIndex.razor" />
   </ItemGroup>
   <!--<Target Name="GenerateApiClient" BeforeTargets="CoreCompile" Inputs="$(ApiSpecLocation)" Outputs="$(ApiClientClassName).cs" Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
     <Exec Command="$(NSwagExe) openapi2csclient /input:$(ApiSpecLocation) /classname:ApiClient /namespace:$(RootNamespace) /output:$(ApiClientClassName).cs /GenerateClientInterfaces:true /ResponseClass:ApiResponse /ExceptionClass:ApiException /GenerateResponseClasses:true /WrapResponses:true /OperationGenerationMode:SingleClientFromOperationId /ClassStyle:Poco /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.IEnumerable /UseBaseUrl:True /ClientBaseClass:BridgingIT.DevKit.Presentation.Web.Client.ApiClientBase" ConsoleToMSBuild="true" ContinueOnError="WarnAndContinue">

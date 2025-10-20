@@ -30,7 +30,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
            .Produces<ResultProblemDetails>(StatusCodes.Status200OK, "application/problem+json");
 
         // GET single TodoItem
-        group.MapGet("/{id:guid}", TodoItemFindOne)
+        group.MapGet("/{id}", TodoItemFindOne)
             .WithName("Core.TodoItems.GetById")
             .WithDescription("Gets a single TodoItem by its unique identifier.")
             .RequireEntityPermission<TodoItem>(Permission.Read)
@@ -41,26 +41,56 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
+        //// GET all TodoItems
+        //group.MapGet("", TodoItemFindAll)
+        //    .WithName("Core.TodoItems.GetAll")
+        //    .WithDescription("Gets all TodoItems matching the specified filter criteria.")
+        //    .RequireEntityPermission<TodoItem>(Permission.List)
+        //    //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.List))
+        //    .WithFilterSchema()
+        //    .Produces<IEnumerable<TodoItemModel>>(StatusCodes.Status200OK)
+        //    .Produces(StatusCodes.Status401Unauthorized)
+        //    .ProducesResultProblem(StatusCodes.Status400BadRequest)
+        //    .ProducesResultProblem(StatusCodes.Status500InternalServerError);
+
+        //// GET sarch TodoItems
+        //group.MapPost("search", TodoItemSearch)
+        //    .WithName("Core.TodoItems.Search")
+        //    .WithDescription("Searches for TodoItems matching the specified filter criteria.")
+        //    .RequireEntityPermission<TodoItem>(Permission.List)
+        //    //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.List))
+        //    .WithFilterSchema(true)
+        //    .Produces<IEnumerable<TodoItemModel>>(StatusCodes.Status200OK)
+        //    .Produces(StatusCodes.Status401Unauthorized)
+        //    .ProducesResultProblem(StatusCodes.Status400BadRequest)
+        //    .ProducesResultProblem(StatusCodes.Status500InternalServerError);
+
         // GET all TodoItems
-        group.MapGet("", TodoItemFindAll)
-            .WithName("Core.TodoItems.GetAll")
-            .WithDescription("Gets all TodoItems matching the specified filter criteria.")
-            .RequireEntityPermission<TodoItem>(Permission.List)
-            //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.List))
-            .WithFilterSchema()
-            .Produces<IEnumerable<TodoItemModel>>(StatusCodes.Status200OK)
+        group.MapGet("",
+            async (HttpContext context,
+                   [FromServices] IRequester requester,
+                   [FromQuery] FilterModel filter, CancellationToken ct)
+                   => (await requester
+                    .SendAsync(new TodoItemFindAllQuery { Filter = filter }, cancellationToken: ct))
+                    .MapHttpOkAll())
+            .WithName("CoreModule.TodoItems.GetAll")
+            .WithDescription("Gets all items matching the specified filter criteria.")
+            //.WithFilterSchema()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
-        // GET sarch TodoItems
-        group.MapPost("search", TodoItemSearch)
-            .WithName("Core.TodoItems.Search")
-            .WithDescription("Searches for TodoItems matching the specified filter criteria.")
-            .RequireEntityPermission<TodoItem>(Permission.List)
-            //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.List))
-            .WithFilterSchema(true)
-            .Produces<IEnumerable<TodoItemModel>>(StatusCodes.Status200OK)
+        // POST search TodoItems
+        group.MapPost("search",
+            async (HttpContext context,
+                   [FromServices] IRequester requester,
+                   [FromBody] FilterModel filter, CancellationToken ct)
+                   => (await requester
+                    .SendAsync(new TodoItemFindAllQuery { Filter = filter }, cancellationToken: ct))
+                    .MapHttpOkAll())
+            .WithName("CoreModule.TodoItems.Search")
+            .WithDescription("Searches for items matching the specified filter criteria.")
+            //.WithFilterSchema()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
@@ -87,7 +117,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
         // PUT update TodoItem
-        group.MapPut("/{id:guid}", TodoItemUpdate)
+        group.MapPut("/{id}", TodoItemUpdate)
             .WithName("Core.TodoItems.Update")
             .WithDescription("Updates an existing TodoItem with the specified details.")
             .RequireEntityPermission<TodoItem>(Permission.Write)
@@ -100,7 +130,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
         // DELETE TodoItem
-        group.MapDelete("/{id:guid}", TodoItemDelete)
+        group.MapDelete("/{id}", TodoItemDelete)
             .WithName("Core.TodoItems.Delete")
             .WithDescription("Deletes the specified TodoItem.")
             .RequireEntityPermission<TodoItem>(Permission.Delete)

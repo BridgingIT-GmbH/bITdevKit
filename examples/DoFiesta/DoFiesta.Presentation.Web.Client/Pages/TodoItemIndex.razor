@@ -185,48 +185,49 @@
                 .AddFilter(p => p.Status, Common.FilterOperator.Equal, filterStatusId.Value)
                 .Build(); *@
 
-            var filter = new Client.Body2() { Filters = new List<Client.Filters>(), Orderings = new List<Client.Orderings>() };
-            if (filterStatusId.HasValue)
-            {
-                filter.Filters.Add(
-                    new Client.Filters
-                        {
-                            Field = "Status",
-                            Operator = Client.FiltersOperator.Equal,
-                            Value = filterStatusId.Value
-                        });
-            }
+			// TODO: re-implement filtering when supported in the API (schema fix!)
+            // var filter = new Client.Body2() { Filters = new List<Client.Filters>(), Orderings = new List<Client.Orderings>() };
+            // if (filterStatusId.HasValue)
+            // {
+            //     filter.Filters.Add(
+            //         new Client.Filters
+            //             {
+            //                 Field = "Status",
+            //                 Operator = Client.FiltersOperator.Equal,
+            //                 Value = filterStatusId.Value
+            //             });
+            // }
 
-            if (filterPriorityId.HasValue)
-            {
-                filter.Filters.Add(
-                    new Client.Filters
-                        {
-                            Field = "Priority",
-                            Operator = Client.FiltersOperator.Greaterthanorequal,
-                            Value = filterPriorityId.Value
-                        });
-            }
+            // if (filterPriorityId.HasValue)
+            // {
+            //     filter.Filters.Add(
+            //         new Client.Filters
+            //             {
+            //                 Field = "Priority",
+            //                 Operator = Client.FiltersOperator.Greaterthanorequal,
+            //                 Value = filterPriorityId.Value
+            //             });
+            // }
 
-            if (!string.IsNullOrWhiteSpace(filterTitle))
-            {
-                filter.Filters.Add(
-                    new Client.Filters
-                        {
-                            Field = "Title",
-                        Operator = Client.FiltersOperator.Contains,
-                            Value = filterTitle
-                        });
-            }
+            // if (!string.IsNullOrWhiteSpace(filterTitle))
+            // {
+            //     filter.Filters.Add(
+            //         new Client.Filters
+            //             {
+            //                 Field = "Title",
+            //             Operator = Client.FiltersOperator.Contains,
+            //                 Value = filterTitle
+            //             });
+            // }
 
-            // set ordering
-            filter.Orderings.Add(new Client.Orderings
-                {
-                    Field = "DueDate",
-                    Direction = currentSortDirection == SortDirection.Ascending
-                                    ? Client.OrderingsDirection.Ascending
-                                    : Client.OrderingsDirection.Descending
-                });
+            // // set ordering
+            // filter.Orderings.Add(new Client.Orderings
+            //     {
+            //         Field = "DueDate",
+            //         Direction = currentSortDirection == SortDirection.Ascending
+            //                         ? Client.OrderingsDirection.Ascending
+            //                         : Client.OrderingsDirection.Descending
+            //     });
 
             // filter.Filters.Add(
             //     new FilterCriteria
@@ -236,7 +237,7 @@
             //         });
 
             //var response = await ApiClient.TodoItem_GetAllAsync(filter); // filtermodel is not serialized on querystring by nswag apiclient
-            var response = await ApiClient.Core_TodoItems_SearchAsync(filter);
+            var response = await ApiClient.CoreModule_TodoItems_SearchAsync(null/* filter */);
             items = response.Result;
         }
         catch (ApiException ex)

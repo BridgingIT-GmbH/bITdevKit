@@ -15,8 +15,10 @@ using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 using Hellang.Middleware.ProblemDetails;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using MudBlazor.Services;
+using Scalar.AspNetCore;
 
 // ===============================================================================================
 // Create the webhost
@@ -87,7 +89,7 @@ builder.Services.AddJwtAuthentication(builder.Configuration)
 builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth identity provider with its endpoints and signin page
     .Enabled(builder.Environment.IsDevelopment())
     //.WithIssuer("https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net") // host should match Authority (appsettings.json:Authentication:Authority)
-    .WithIssuer("https://localhost:5001") // default
+    //.WithIssuer("https://localhost:5001") // default
     .WithUsers(FakeUsers.Starwars)
     .WithTokenLifetimes(accessToken: TimeSpan.FromHours(48), refreshToken: TimeSpan.FromDays(14)) // default x2
     .WithClient( // optional client configuration
@@ -96,7 +98,10 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
         "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/authentication/login-callback", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/authentication/logout-callback",
         "https://localhost:5001/authentication/login-callback", "https://localhost:5001/authentication/logout-callback",
         "https://localhost:5001/openapi/oauth2-redirect.html", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/openapi/oauth2-redirect.html") // swaggerui authorize
-    .EnableLoginCard(false)); // defautl
+    .WithClient(
+        "Scalar",
+        "scalar",
+        $"{builder.Configuration["Authentication:Authority"]}/scalar/")); // trailing slash is needed for login popup to close!?
 
 builder.Services.ConfigureJson();
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
@@ -106,12 +111,7 @@ builder.Services.AddControllers(); // needed for openapi gen, even with no contr
 #pragma warning disable CS0618 // Type or member is obsolete
 builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
 #pragma warning restore CS0618 // Type or member is obsolete
-builder.Services.AddOpenApi(o =>
-{
-    o.AddDocumentTransformer<DiagnosticDocumentTransformer>();
-    o.AddSchemaTransformer<DiagnosticSchemaTransformer>();
-    o.AddSchemaTransformer<ResultProblemDetailsSchemaTransformer>();
-});
+builder.Services.AddAppOpenApi();
 
 // Add services to the container.
 builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
@@ -120,7 +120,6 @@ builder.Services.AddMudServices();
 builder.Services.AddSignalR();
 builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
 builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
-builder.Services.AddSwagger(builder.Configuration);
 
 // ===============================================================================================
 // Configure the HTTP request pipeline
@@ -129,6 +128,24 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseWebAssemblyDebugging();
+
+    app.MapOpenApi();
+    app.MapScalarApiReference(o =>
+    {
+        o.OpenApiRoutePattern = "/openapi.json";
+        o.WithTitle("Web API")
+         .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient)
+         .AddPreferredSecuritySchemes(JwtBearerDefaults.AuthenticationScheme)
+         .AddAuthorizationCodeFlow(JwtBearerDefaults.AuthenticationScheme, flow =>
+         {
+             var idpOptions = app.Services.GetService<FakeIdentityProviderEndpointsOptions>();
+             var idpClient = idpOptions?.Clients?.FirstOrDefault(c => c.Name.SafeEquals("Scalar"));
+             flow.ClientId = idpClient?.ClientId;
+             flow.AuthorizationUrl = $"{idpOptions?.Issuer}/api/_system/identity/connect/authorize";
+             flow.TokenUrl = $"{idpOptions?.Issuer}/api/_system/identity/connect/token";
+             flow.RedirectUri = idpClient?.RedirectUris?.FirstOrDefault();
+         });
+    });
 }
 else
 {
@@ -144,13 +161,12 @@ app.UseHttpsRedirection();
 app.UseProblemDetails();
 //app.UseExceptionHandler();
 
+app.UseStaticFiles();
 app.UseRequestCorrelation();
 app.UseRequestModuleContext();
 app.UseRequestLogging();
-app.UseSwagger("blazor-wasm");
 
 app.UseCors();
-app.UseStaticFiles();
 app.UseAntiforgery();
 
 app.UseModules();

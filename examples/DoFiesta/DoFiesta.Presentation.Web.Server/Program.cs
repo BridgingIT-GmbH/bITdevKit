@@ -74,7 +74,7 @@ builder.Services.AddStartupTasks(o => o
 builder.Services.AddScoped<ICurrentUserAccessor, HttpCurrentUserAccessor>();
 //builder.Services.AddFakeAuthentication(Fakes.Users, builder.Environment.IsDevelopment());
 builder.Services
-    .AddJwtAuthentication(builder.Configuration)
+    .AddJwtBearerAuthentication(builder.Configuration)
     .AddCookieAuthentication();
 
 //

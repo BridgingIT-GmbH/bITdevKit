@@ -53,7 +53,7 @@ public static partial class ServiceCollectionExtensions
     /// </code>
     /// </para>
     /// </remarks>
-    public static AspNetCore.Authentication.AuthenticationBuilder AddJwtAuthentication(
+    public static AspNetCore.Authentication.AuthenticationBuilder AddJwtBearerAuthentication(
         this IServiceCollection services,
         IConfiguration configuration)
     {
@@ -61,7 +61,7 @@ public static partial class ServiceCollectionExtensions
         var authOptions = new AuthenticationOptions();
         configuration.GetSection("Authentication")?.Bind(authOptions);
 
-        return services.AddJwtAuthentication(authOptions);
+        return services.AddJwtBearerAuthentication(authOptions);
     }
 
     /// <summary>
@@ -98,7 +98,7 @@ public static partial class ServiceCollectionExtensions
     /// </list>
     /// </para>
     /// </remarks>
-    public static AspNetCore.Authentication.AuthenticationBuilder AddJwtAuthentication(this IServiceCollection services, AuthenticationOptions authOptions)
+    public static AspNetCore.Authentication.AuthenticationBuilder AddJwtBearerAuthentication(this IServiceCollection services, AuthenticationOptions authOptions)
     {
         if (authOptions == null)
         {

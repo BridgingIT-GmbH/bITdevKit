@@ -131,7 +131,7 @@ ConfigureHealth(builder.Services);
 builder.Services.AddScoped<ICurrentUserAccessor, HttpCurrentUserAccessor>();
 //builder.Services.AddFakeAuthentication(Fakes.Users, builder.Environment.IsDevelopment());
 
-builder.Services.AddJwtAuthentication(builder.Configuration)
+builder.Services.AddJwtBearerAuthentication(builder.Configuration)
     .AddCookie(options => // needed for EnablePersistentRefreshTokens which signs in users with a cookie containing the refresh-token
     {
         options.Cookie.Name = ".AspNetCore.Identity"; //.{HashHelper.Compute("authOptions.Authority")}

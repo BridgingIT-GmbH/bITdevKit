@@ -70,22 +70,15 @@ builder.Services.AddStartupTasks(o => o
 //    .WithSqlServerStore(builder.Configuration["Modules:Core:ConnectionStrings:Default"])
 //    .AddEndpoints(/*new JobSchedulingEndpointsOptions { RequireAuthorization = true }, */builder.Environment.IsDevelopment());
 
+// Configure Authentication ==============================
 builder.Services.AddScoped<ICurrentUserAccessor, HttpCurrentUserAccessor>();
 //builder.Services.AddFakeAuthentication(Fakes.Users, builder.Environment.IsDevelopment());
-
-builder.Services.AddJwtAuthentication(builder.Configuration)
-    .AddCookie(options => // needed for EnablePersistentRefreshTokens which signs in users with a cookie containing the refresh-token
-    {
-        options.Cookie.Name = ".AspNetCore.Identity"; //.{HashHelper.Compute("authOptions.Authority")}
-        options.Cookie.HttpOnly = true;
-        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        options.ExpireTimeSpan = TimeSpan.FromDays(30);
-    });
+builder.Services
+    .AddJwtAuthentication(builder.Configuration)
+    .AddCookieAuthentication();
 
 //
 // Identity Provider Middleware ==============================
-//
-
 builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth identity provider with its endpoints and signin page
     .Enabled(builder.Environment.IsDevelopment())
     //.WithIssuer("https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net") // host should match Authority (appsettings.json:Authentication:Authority)

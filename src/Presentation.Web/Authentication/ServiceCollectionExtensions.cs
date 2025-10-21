@@ -7,7 +7,9 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -128,6 +130,80 @@ public static partial class ServiceCollectionExtensions
             SetOptions(options, authOptions);
             SetEventLogging(options);
         });
+    }
+
+    /// <summary>
+    /// Adds cookie-based authentication to the authentication builder with sensible defaults.
+    /// </summary>
+    /// <param name="builder">The authentication builder to add cookie authentication to.</param>
+    /// <param name="configureOptions">
+    /// Optional custom configuration for cookie authentication options.
+    /// If not provided, a default configuration is applied.
+    /// </param>
+    /// <returns>
+    /// The authentication builder for method chaining and further configuration.
+    /// </returns>
+    /// <remarks>
+    /// <para>
+    /// This extension method adds ASP.NET Core cookie authentication with secure defaults.
+    /// It is particularly useful when implementing persistent refresh token functionality,
+    /// which requires signing in users with a cookie containing the refresh token.
+    /// </para>
+    /// <para>
+    /// Default configuration applied when no custom options are provided:
+    /// <list type="bullet">
+    /// <item>Cookie name: ".AspNetCore.Identity"</item>
+    /// <item>HttpOnly: true (prevents JavaScript access, protecting against XSS attacks)</item>
+    /// <item>SecurePolicy: Always (enforces HTTPS transmission)</item>
+    /// <item>Expiration: 30 days (supports "remember me" functionality)</item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// Security considerations:
+    /// <list type="bullet">
+    /// <item>HttpOnly flag prevents client-side script access to the cookie</item>
+    /// <item>SecurePolicy ensures cookies are only transmitted over HTTPS</item>
+    /// <item>SameSite policy should be configured at the application level to prevent CSRF attacks</item>
+    /// <item>The 30-day expiration assumes a refresh token rotation strategy</item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// Usage examples:
+    /// </para>
+    /// <para>
+    /// Using default configuration:
+    /// <code>
+    /// services
+    ///     .AddJwtAuthentication(/* ... */)
+    ///     .AddCookieAuthentication();
+    /// </code>
+    /// </para>
+    /// <para>
+    /// Using custom configuration:
+    /// <code>
+    /// services
+    ///     .AddJwtAuthentication(/* ... */)
+    ///     .AddCookieAuthentication(options =>
+    ///     {
+    ///         options.Cookie.Name = ".MyApp.Auth";
+    ///         options.ExpireTimeSpan = TimeSpan.FromDays(7);
+    ///         options.LoginPath = "/login";
+    ///         options.LogoutPath = "/logout";
+    ///     });
+    /// </code>
+    /// </para>
+    /// </remarks>
+    public static AspNetCore.Authentication.AuthenticationBuilder AddCookieAuthentication(this AspNetCore.Authentication.AuthenticationBuilder builder, Action<CookieAuthenticationOptions> configureOptions = null)
+    {
+        configureOptions ??= options => // needed for EnablePersistentRefreshTokens which signs in users with a cookie containing the refresh-token
+        {
+            options.Cookie.Name = ".AspNetCore.Identity"; //.{HashHelper.Compute("authOptions.Authority")}
+            options.Cookie.HttpOnly = true;
+            options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+            options.ExpireTimeSpan = TimeSpan.FromDays(30); // For "remember me"
+        };
+
+        return builder.AddCookie(configureOptions);
     }
 
     private static void SetOptions(JwtBearerOptions options, AuthenticationOptions authOptions)

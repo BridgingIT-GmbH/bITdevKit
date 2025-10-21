@@ -13,8 +13,44 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
+/// <summary>
+/// Extension methods for adding JWT Bearer authentication to the dependency injection container.
+/// </summary>
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds JWT Bearer authentication to the service collection using configuration from the application configuration.
+    /// </summary>
+    /// <param name="services">The service collection to add authentication to.</param>
+    /// <param name="configuration">The application configuration containing the "Authentication" section with JWT settings.</param>
+    /// <returns>An <see cref="AspNetCore.Authentication.AuthenticationBuilder"/> for further authentication configuration.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when the "Authentication" section is missing or when required settings like Authority are not configured.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// This method reads JWT authentication settings from the application configuration under the "Authentication" section.
+    /// It then configures the authentication pipeline with JWT Bearer token validation.
+    /// </para>
+    /// <para>
+    /// Expected configuration structure:
+    /// <code>
+    /// {
+    ///   "Authentication": {
+    ///     "Authority": "https://your-auth-server.com",
+    ///     "RequireHttpsMetadata": true,
+    ///     "SaveToken": true,
+    ///     "ValidateIssuer": true,
+    ///     "ValidateAudience": true,
+    ///     "ValidateLifetime": true,
+    ///     "ValidateSigningKey": true,
+    ///     "ValidIssuer": "your-issuer",
+    ///     "ValidAudience": "your-audience"
+    ///   }
+    /// }
+    /// </code>
+    /// </para>
+    /// </remarks>
     public static AspNetCore.Authentication.AuthenticationBuilder AddJwtAuthentication(
         this IServiceCollection services,
         IConfiguration configuration)
@@ -26,6 +62,40 @@ public static partial class ServiceCollectionExtensions
         return services.AddJwtAuthentication(authOptions);
     }
 
+    /// <summary>
+    /// Adds JWT Bearer authentication to the service collection using the provided authentication options.
+    /// </summary>
+    /// <param name="services">The service collection to add authentication to.</param>
+    /// <param name="authOptions">The authentication options containing JWT configuration settings.</param>
+    /// <returns>An <see cref="AspNetCore.Authentication.AuthenticationBuilder"/> for further authentication configuration.</returns>
+    /// <exception cref="ArgumentException">
+    /// Thrown when <paramref name="authOptions"/> is null or when the Authority property is not set.
+    /// </exception>
+    /// <remarks>
+    /// <para>
+    /// This method configures the ASP.NET Core authentication pipeline with JWT Bearer token validation.
+    /// It sets up all authentication schemes to use JWT Bearer by default and configures token validation parameters.
+    /// </para>
+    /// <para>
+    /// Configuration includes:
+    /// <list type="bullet">
+    /// <item>Token issuer validation</item>
+    /// <item>Audience validation</item>
+    /// <item>Token lifetime validation with 5-minute clock skew tolerance</item>
+    /// <item>Signing key validation</item>
+    /// <item>Event logging for authentication operations</item>
+    /// </list>
+    /// </para>
+    /// <para>
+    /// The method also configures event handlers that log authentication events for debugging and monitoring:
+    /// <list type="bullet">
+    /// <item>OnAuthenticationFailed - Logs when token validation fails</item>
+    /// <item>OnTokenValidated - Logs successful token validation</item>
+    /// <item>OnChallenge - Logs authentication challenges (e.g., missing/invalid credentials)</item>
+    /// <item>OnMessageReceived - Logs when tokens are received</item>
+    /// </list>
+    /// </para>
+    /// </remarks>
     public static AspNetCore.Authentication.AuthenticationBuilder AddJwtAuthentication(this IServiceCollection services, AuthenticationOptions authOptions)
     {
         if (authOptions == null)

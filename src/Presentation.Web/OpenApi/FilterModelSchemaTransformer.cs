@@ -92,11 +92,38 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     private void CompleteFilterModelSchema(OpenApiSchema schema)
     {
         schema.Type = "object";
-
-        if (schema.Properties == null)
+        schema.Description = "Represents a complete filter model for querying data with pagination, sorting, and filtering";
+        schema.Example = new Microsoft.OpenApi.Any.OpenApiObject
         {
-            schema.Properties = new Dictionary<string, OpenApiSchema>();
-        }
+            ["page"] = new Microsoft.OpenApi.Any.OpenApiInteger(1),
+            ["pageSize"] = new Microsoft.OpenApi.Any.OpenApiInteger(150),
+            //["noTracking"] = new Microsoft.OpenApi.Any.OpenApiBoolean(true),
+            ["orderings"] = new Microsoft.OpenApi.Any.OpenApiArray
+            {
+                new Microsoft.OpenApi.Any.OpenApiObject
+                {
+                    ["field"] = new Microsoft.OpenApi.Any.OpenApiString("CreatedDate"),
+                    ["direction"] = new Microsoft.OpenApi.Any.OpenApiString("desc")
+                }
+            },
+            ["filters"] = new Microsoft.OpenApi.Any.OpenApiArray
+            {
+                new Microsoft.OpenApi.Any.OpenApiObject
+                {
+                    ["field"] = new Microsoft.OpenApi.Any.OpenApiString("Status"),
+                    ["operator"] = new Microsoft.OpenApi.Any.OpenApiString("eq"),
+                    ["value"] = new Microsoft.OpenApi.Any.OpenApiString("active")
+                }
+            },
+            ["includes"] = new Microsoft.OpenApi.Any.OpenApiArray
+            {
+                new Microsoft.OpenApi.Any.OpenApiString("relatedEntity")
+            }
+            //["hierarchy"] = new Microsoft.OpenApi.Any.OpenApiString("children"),
+            //["hierarchyMaxDepth"] = new Microsoft.OpenApi.Any.OpenApiInteger(3)
+        };
+
+        schema.Properties ??= new Dictionary<string, OpenApiSchema>();
 
         // Remove the dummy schema discovery properties
         //schema.Properties.Remove("_FilterCriteriaSchema");
@@ -167,6 +194,14 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     private void CompleteFilterCriteriaSchema(OpenApiSchema schema)
     {
         schema.Type = "object";
+        schema.Description = "Represents a single filter criterion for filtering query results";
+        schema.Example = new Microsoft.OpenApi.Any.OpenApiObject
+        {
+            ["field"] = new Microsoft.OpenApi.Any.OpenApiString("status"),
+            ["operator"] = new Microsoft.OpenApi.Any.OpenApiString("eq"),
+            ["value"] = new Microsoft.OpenApi.Any.OpenApiString("active"),
+            ["logic"] = new Microsoft.OpenApi.Any.OpenApiString("and")
+        };
         schema.Properties = new Dictionary<string, OpenApiSchema>
         {
             ["field"] = new()
@@ -178,8 +213,8 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
             ["operator"] = new()
             {
                 Type = "string",
-                Enum = new List<Microsoft.OpenApi.Any.IOpenApiAny>
-                {
+                Enum =
+                [
                     new Microsoft.OpenApi.Any.OpenApiString("eq"),
                     new Microsoft.OpenApi.Any.OpenApiString("neq"),
                     new Microsoft.OpenApi.Any.OpenApiString("isnull"),
@@ -199,7 +234,7 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
                     new Microsoft.OpenApi.Any.OpenApiString("any"),
                     new Microsoft.OpenApi.Any.OpenApiString("all"),
                     new Microsoft.OpenApi.Any.OpenApiString("none")
-                },
+                ],
                 Description = "The operator to use for filtering"
             },
             ["value"] = new()
@@ -221,11 +256,11 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
             ["logic"] = new()
             {
                 Type = "string",
-                Enum = new List<Microsoft.OpenApi.Any.IOpenApiAny>
-                {
+                Enum =
+                [
                     new Microsoft.OpenApi.Any.OpenApiString("and"),
                     new Microsoft.OpenApi.Any.OpenApiString("or")
-                },
+                ],
                 Default = new Microsoft.OpenApi.Any.OpenApiString("and"),
                 Description = "Logic operator for combining nested filters"
             },
@@ -246,8 +281,8 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
             ["customType"] = new()
             {
                 Type = "string",
-                Enum = new List<Microsoft.OpenApi.Any.IOpenApiAny>
-                {
+                Enum =
+                [
                     new Microsoft.OpenApi.Any.OpenApiString("none"),
                     new Microsoft.OpenApi.Any.OpenApiString("fulltextsearch"),
                     new Microsoft.OpenApi.Any.OpenApiString("daterange"),
@@ -264,7 +299,7 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
                     new Microsoft.OpenApi.Any.OpenApiString("numericnotin"),
                     new Microsoft.OpenApi.Any.OpenApiString("namedspecification"),
                     new Microsoft.OpenApi.Any.OpenApiString("compositespecification")
-                },
+                ],
                 Default = new Microsoft.OpenApi.Any.OpenApiString("none"),
                 Description = "Custom filter type"
             },
@@ -308,11 +343,13 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     private void CompleteOrderDirectionSchema(OpenApiSchema schema)
     {
         schema.Type = "string";
-        schema.Enum = new List<Microsoft.OpenApi.Any.IOpenApiAny>
-        {
+        schema.Description = "Sort direction for ordering query results";
+        schema.Example = new Microsoft.OpenApi.Any.OpenApiString("asc");
+        schema.Enum =
+        [
             new Microsoft.OpenApi.Any.OpenApiString("asc"),
             new Microsoft.OpenApi.Any.OpenApiString("desc")
-        };
+        ];
         schema.Description = "Order direction";
     }
 
@@ -327,6 +364,7 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     private void CompleteCompositeSpecificationSchema(OpenApiSchema schema)
     {
         schema.Type = "object";
+        schema.Description = "A tree structure containing specification nodes for complex filtering logic";
         schema.Properties = new Dictionary<string, OpenApiSchema>
         {
             ["nodes"] = new()
@@ -357,26 +395,8 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     /// </remarks>
     private void CompleteSpecificationNodeSchema(OpenApiSchema schema)
     {
-        schema.OneOf = new List<OpenApiSchema>
-        {
-            //new()
-            //{
-            //    Reference = new OpenApiReference
-            //    {
-            //        Type = ReferenceType.Schema,
-            //        Id = "SpecificationLeaf"
-            //    }
-            //},
-            //new()
-            //{
-            //    Reference = new OpenApiReference
-            //    {
-            //        Type = ReferenceType.Schema,
-            //        Id = "SpecificationGroup"
-            //    }
-            //}
-        };
-        schema.Description = "Base specification node (polymorphic): SpecificationLeaf or SpecificationGroup";
+        schema.OneOf = [];
+        schema.Description = "Polymorphic specification node: either a leaf (named specification) or group (combining multiple nodes)";
     }
 
     /// <summary>
@@ -390,15 +410,22 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     private void CompleteSpecificationLeafSchema(OpenApiSchema schema)
     {
         schema.Type = "object";
+        schema.Description = "A terminal specification node that references a named specification";
+        schema.Example = new Microsoft.OpenApi.Any.OpenApiObject
+        {
+            ["type"] = new Microsoft.OpenApi.Any.OpenApiString("SpecificationLeaf"),
+            ["name"] = new Microsoft.OpenApi.Any.OpenApiString("ActiveUserSpecification"),
+            ["arguments"] = new Microsoft.OpenApi.Any.OpenApiArray()
+        };
         schema.Properties = new Dictionary<string, OpenApiSchema>
         {
             ["type"] = new()
             {
                 Type = "string",
-                Enum = new List<Microsoft.OpenApi.Any.IOpenApiAny>
-                {
+                Enum =
+                [
                     new Microsoft.OpenApi.Any.OpenApiString("SpecificationLeaf")
-                },
+                ],
                 Description = "Discriminator for specification leaf"
             },
             ["name"] = new()
@@ -429,24 +456,31 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     private void CompleteSpecificationGroupSchema(OpenApiSchema schema)
     {
         schema.Type = "object";
+        schema.Description = "A composite specification group combining multiple child nodes with a logical operator";
+        schema.Example = new Microsoft.OpenApi.Any.OpenApiObject
+        {
+            ["type"] = new Microsoft.OpenApi.Any.OpenApiString("SpecificationGroup"),
+            ["logic"] = new Microsoft.OpenApi.Any.OpenApiString("and"),
+            ["nodes"] = new Microsoft.OpenApi.Any.OpenApiArray()
+        };
         schema.Properties = new Dictionary<string, OpenApiSchema>
         {
             ["type"] = new()
             {
                 Type = "string",
-                Enum = new List<Microsoft.OpenApi.Any.IOpenApiAny>
-                {
+                Enum =
+                [
                     new Microsoft.OpenApi.Any.OpenApiString("SpecificationGroup")
-                }
+                ]
             },
             ["logic"] = new()
             {
                 Type = "string",
-                Enum = new List<Microsoft.OpenApi.Any.IOpenApiAny>
-                {
+                Enum =
+                [
                     new Microsoft.OpenApi.Any.OpenApiString("and"),
                     new Microsoft.OpenApi.Any.OpenApiString("or")
-                },
+                ],
                 Description = "Logic operator for combining nodes (serialized as string)"
             },
             ["nodes"] = new()

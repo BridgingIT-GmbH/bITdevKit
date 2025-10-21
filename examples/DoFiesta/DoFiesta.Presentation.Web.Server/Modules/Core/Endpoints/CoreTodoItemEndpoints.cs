@@ -30,40 +30,20 @@ public class CoreTodoItemEndpoints : EndpointsBase
            .Produces<ResultProblemDetails>(StatusCodes.Status200OK, "application/problem+json");
 
         // GET single TodoItem
-        group.MapGet("/{id}", TodoItemFindOne)
+        group.MapGet("/{id}",
+            async ([FromServices] IRequester requester,
+                   [FromRoute] string id, CancellationToken ct)
+                   => (await requester
+                    .SendAsync(new TodoItemFindOneQuery(id), cancellationToken: ct))
+                    .MapHttpOk())
             .WithName("Core.TodoItems.GetById")
             .WithDescription("Gets a single TodoItem by its unique identifier.")
             .RequireEntityPermission<TodoItem>(Permission.Read)
-            //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Read))
             .Produces<TodoItemModel>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
-
-        //// GET all TodoItems
-        //group.MapGet("", TodoItemFindAll)
-        //    .WithName("Core.TodoItems.GetAll")
-        //    .WithDescription("Gets all TodoItems matching the specified filter criteria.")
-        //    .RequireEntityPermission<TodoItem>(Permission.List)
-        //    //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.List))
-        //    .WithFilterSchema()
-        //    .Produces<IEnumerable<TodoItemModel>>(StatusCodes.Status200OK)
-        //    .Produces(StatusCodes.Status401Unauthorized)
-        //    .ProducesResultProblem(StatusCodes.Status400BadRequest)
-        //    .ProducesResultProblem(StatusCodes.Status500InternalServerError);
-
-        //// GET sarch TodoItems
-        //group.MapPost("search", TodoItemSearch)
-        //    .WithName("Core.TodoItems.Search")
-        //    .WithDescription("Searches for TodoItems matching the specified filter criteria.")
-        //    .RequireEntityPermission<TodoItem>(Permission.List)
-        //    //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.List))
-        //    .WithFilterSchema(true)
-        //    .Produces<IEnumerable<TodoItemModel>>(StatusCodes.Status200OK)
-        //    .Produces(StatusCodes.Status401Unauthorized)
-        //    .ProducesResultProblem(StatusCodes.Status400BadRequest)
-        //    .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
         // GET all TodoItems
         group.MapGet("",
@@ -75,7 +55,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
                     .MapHttpOkAll())
             .WithName("CoreModule.TodoItems.GetAll")
             .WithDescription("Gets all items matching the specified filter criteria.")
-            //.WithFilterSchema()
+            .RequireEntityPermission<TodoItem>(Permission.List)
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
@@ -90,38 +70,51 @@ public class CoreTodoItemEndpoints : EndpointsBase
                     .MapHttpOkAll())
             .WithName("CoreModule.TodoItems.Search")
             .WithDescription("Searches for items matching the specified filter criteria.")
-            //.WithFilterSchema()
+            .RequireEntityPermission<TodoItem>(Permission.List)
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
         // POST new TodoItem
-        group.MapPost("", TodoItemCreate)
+        group.MapPost("",
+            async ([FromServices] IRequester requester,
+                   [FromBody] TodoItemModel model, CancellationToken ct)
+                   => (await requester
+                    .SendAsync(new TodoItemCreateCommand { Model = model }, cancellationToken: ct))
+                    .MapHttpCreated(value => $"/api/core/assets/{value.Id}"))
             .WithName("Core.TodoItems.Create")
             .WithDescription("Creates a new TodoItem with the specified details.")
             .RequireEntityPermission<TodoItem>(Permission.Write)
-            //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Write))
             .Produces<TodoItemModel>(StatusCodes.Status201Created)
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
-        group.MapPost("/actions/completeall", TodoCompleteAll)
+        group.MapPost("/actions/completeall",
+            async ([FromServices] IRequester requester,
+                   CancellationToken ct)
+                   => (await requester
+                    .SendAsync(new TodoItemCompleteAllCommand(), cancellationToken: ct))
+                    .MapHttpNoContent())
             .WithName("Core.TodoItems.CompleteAll")
             .WithDescription("Marks all TodoItems as completed.")
             .RequireEntityPermission<TodoItem>(Permission.Write)
-            //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Write))
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
         // PUT update TodoItem
-        group.MapPut("/{id}", TodoItemUpdate)
+        group.MapPut("/{id}",
+            async ([FromServices] IRequester requester,
+                   [FromRoute] string id,
+                   [FromBody] TodoItemModel model, CancellationToken ct)
+                   => (await requester
+                    .SendAsync(new TodoItemUpdateCommand { Model = model }, cancellationToken: ct))
+                    .MapHttpOk())
             .WithName("Core.TodoItems.Update")
             .WithDescription("Updates an existing TodoItem with the specified details.")
             .RequireEntityPermission<TodoItem>(Permission.Write)
-            //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Write))
             .Produces<TodoItemModel>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
@@ -130,85 +123,19 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
         // DELETE TodoItem
-        group.MapDelete("/{id}", TodoItemDelete)
+        group.MapDelete("/{id}",
+            async ([FromServices] IRequester requester,
+                   [FromRoute] string id, CancellationToken ct)
+                   => (await requester
+                    .SendAsync(new TodoItemDeleteCommand(id), cancellationToken: ct))
+                    .MapHttpNoContent())
             .WithName("Core.TodoItems.Delete")
             .WithDescription("Deletes the specified TodoItem.")
             .RequireEntityPermission<TodoItem>(Permission.Delete)
-            //.RequireAuthorization(policy => policy.RequireEntityPermission(typeof(TodoItem), Permission.Delete))
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
-    }
-
-    private static async Task<Results<Ok<TodoItemModel>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> TodoItemFindOne(
-        [FromServices] IRequester requester,
-        [FromRoute] string id,
-        CancellationToken cancellationToken = default)
-    {
-        return (await requester.SendAsync(
-            new TodoItemFindOneQuery(id), cancellationToken: cancellationToken))
-            .MapHttpOk();
-    }
-
-    private static async Task<Results<Ok<IEnumerable<TodoItemModel>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> TodoItemFindAll(
-        HttpContext context,
-        [FromServices] IRequester requester,
-        CancellationToken cancellationToken = default)
-    {
-        return (await requester.SendAsync(
-            new TodoItemFindAllQuery { Filter = await context.FromQueryFilterAsync() }, cancellationToken: cancellationToken))
-            .MapHttpOkAll();
-    }
-
-    private static async Task<Results<Ok<IEnumerable<TodoItemModel>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> TodoItemSearch(
-        HttpContext context,
-        [FromServices] IRequester requester,
-        CancellationToken cancellationToken = default)
-    {
-        return (await requester.SendAsync(
-            new TodoItemFindAllQuery { Filter = await context.FromBodyFilterAsync() }, cancellationToken: cancellationToken))
-            .MapHttpOkAll();
-    }
-
-    private static async Task<Results<Created<TodoItemModel>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> TodoItemCreate(
-        [FromServices] IRequester requester,
-        [FromBody] TodoItemModel model,
-        CancellationToken cancellationToken = default)
-    {
-        return (await requester.SendAsync(
-            new TodoItemCreateCommand { Model = model }, cancellationToken: cancellationToken))
-            .MapHttpCreated(value => $"/api/core/assets/{value.Id}");
-    }
-
-    private static async Task<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> TodoCompleteAll(
-        [FromServices] IRequester requester,
-        CancellationToken cancellationToken = default)
-    {
-        return (await requester.SendAsync(
-            new TodoItemCompleteAllCommand(), cancellationToken: cancellationToken))
-            .MapHttpNoContent();
-    }
-
-    private static async Task<Results<Ok<TodoItemModel>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> TodoItemUpdate(
-        [FromServices] IRequester requester,
-        [FromRoute] string id,
-        [FromBody] TodoItemModel model,
-        CancellationToken cancellationToken = default)
-    {
-        return (await requester.SendAsync(
-            new TodoItemUpdateCommand { Model = model }, cancellationToken: cancellationToken))
-            .MapHttpOk();
-    }
-
-    private static async Task<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> TodoItemDelete(
-        [FromServices] IRequester requester,
-        [FromRoute] string id,
-        CancellationToken cancellationToken = default)
-    {
-        return (await requester.SendAsync(
-            new TodoItemDeleteCommand(id), cancellationToken: cancellationToken))
-            .MapHttpNoContent();
     }
 }

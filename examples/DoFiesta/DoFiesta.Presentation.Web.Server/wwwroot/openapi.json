@@ -451,6 +451,7 @@
             "nullable": true
           }
         },
+        "description": "A tree structure containing specification nodes for complex filtering logic",
         "nullable": true
       },
       "EnumerationModel": {
@@ -591,7 +592,14 @@
             "$ref": "#/components/schemas/CompositeSpecification"
           }
         },
-        "nullable": true
+        "description": "Represents a single filter criterion for filtering query results",
+        "nullable": true,
+        "example": {
+          "field": "status",
+          "operator": "eq",
+          "value": "active",
+          "logic": "and"
+        }
       },
       "FilterModel": {
         "type": "object",
@@ -653,6 +661,27 @@
           "_SpecificationNodeSchema": {
             "$ref": "#/components/schemas/SpecificationNode"
           }
+        },
+        "description": "Represents a complete filter model for querying data with pagination, sorting, and filtering",
+        "example": {
+          "page": 1,
+          "pageSize": 150,
+          "orderings": [
+            {
+              "field": "CreatedDate",
+              "direction": "desc"
+            }
+          ],
+          "filters": [
+            {
+              "field": "Status",
+              "operator": "eq",
+              "value": "active"
+            }
+          ],
+          "includes": [
+            "relatedEntity"
+          ]
         }
       },
       "FilterOrderCriteria": {
@@ -673,11 +702,13 @@
           "desc"
         ],
         "type": "string",
-        "description": "Order direction"
+        "description": "Order direction",
+        "example": "asc"
       },
       "ProblemError": {
         "type": "object",
-        "additionalProperties": { }
+        "additionalProperties": { },
+        "description": "Represents an individual error entry with flexible structure for additional data"
       },
       "ResultProblemData": {
         "type": "object",
@@ -690,10 +721,12 @@
             "items": {
               "$ref": "#/components/schemas/ProblemError"
             },
+            "description": "Collection of additional errors outside the result object",
             "nullable": true
           }
         },
         "additionalProperties": { },
+        "description": "Data section included within a problem details response",
         "nullable": true
       },
       "ResultProblemDetails": {
@@ -701,52 +734,62 @@
         "properties": {
           "type": {
             "type": "string",
+            "description": "A URI reference that identifies the problem type",
             "nullable": true
           },
           "title": {
             "type": "string",
+            "description": "A short, human-readable summary of the problem",
             "nullable": true
           },
           "status": {
             "type": "integer",
+            "description": "The HTTP status code",
             "format": "int32",
             "nullable": true
           },
           "detail": {
             "type": "string",
+            "description": "A human-readable explanation specific to this occurrence",
             "nullable": true
           },
           "instance": {
             "type": "string",
+            "description": "A URI reference that identifies the specific occurrence of the problem",
             "nullable": true
           },
           "data": {
             "$ref": "#/components/schemas/ResultProblemData"
           }
         },
-        "additionalProperties": { }
+        "additionalProperties": { },
+        "description": "A Problem Details response containing result information and contextual data (RFC 7807)"
       },
       "ResultProblemError": {
         "type": "object",
         "properties": {
           "message": {
             "type": "string",
+            "description": "Human-readable error message",
             "nullable": true
           }
         },
-        "additionalProperties": { }
+        "additionalProperties": { },
+        "description": "Represents an individual error entry with a message and optional metadata"
       },
       "ResultProblemResult": {
         "type": "object",
         "properties": {
           "isSuccess": {
-            "type": "boolean"
+            "type": "boolean",
+            "description": "Indicates whether the operation completed successfully"
           },
           "messages": {
             "type": "array",
             "items": {
               "type": "string"
             },
+            "description": "Collection of informational or diagnostic messages from the operation",
             "nullable": true
           },
           "errors": {
@@ -754,13 +797,16 @@
             "items": {
               "$ref": "#/components/schemas/ResultProblemError"
             },
+            "description": "Collection of domain or technical errors encountered during the operation",
             "nullable": true
           }
         },
+        "additionalProperties": { },
+        "description": "Represents the operation outcome with success status, messages, and errors",
         "nullable": true
       },
       "SpecificationNode": {
-        "description": "Base specification node (polymorphic): SpecificationLeaf or SpecificationGroup",
+        "description": "Polymorphic specification node: either a leaf (named specification) or group (combining multiple nodes)",
         "nullable": true
       },
       "SubscriptionBillingCycle": {

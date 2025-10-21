@@ -206,16 +206,17 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
             {
                 Nullable = true,
                 Description = "The value to compare against (any type)",
-                OneOf = new List<OpenApiSchema>
-                {
-                    new() { Type = "string" },
-                    new() { Type = "number" },
-                    new() { Type = "integer" },
-                    new() { Type = "boolean" },
-                    //new() { Type = "null" },
-                    new() { Type = "array", Items = new OpenApiSchema() },
-                    new() { Type = "object", AdditionalPropertiesAllowed = true }
-                }
+                Type = "object"
+                //OneOf = new List<OpenApiSchema>
+                //{
+                //    new() { Type = "string" },
+                //    new() { Type = "number" },
+                //    new() { Type = "integer" },
+                //    new() { Type = "boolean" },
+                //    //new() { Type = "null" },
+                //    new() { Type = "array", Items = new OpenApiSchema() },
+                //    new() { Type = "object", AdditionalPropertiesAllowed = true }
+                //}
             },
             ["logic"] = new()
             {

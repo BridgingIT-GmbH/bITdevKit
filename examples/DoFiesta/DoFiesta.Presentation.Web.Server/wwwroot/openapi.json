@@ -527,27 +527,7 @@
             "description": "The operator to use for filtering"
           },
           "value": {
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              },
-              {
-                "type": "integer"
-              },
-              {
-                "type": "boolean"
-              },
-              {
-                "type": "array",
-                "items": { }
-              },
-              {
-                "type": "object"
-              }
-            ],
+            "type": "object",
             "description": "The value to compare against (any type)",
             "nullable": true
           },

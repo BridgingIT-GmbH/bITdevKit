@@ -21,6 +21,9 @@ public static class ProgramExtensions
         return services.AddOpenApi(o =>
         {
             o.AddDocumentTransformer<DiagnosticDocumentTransformer>()
+             .AddOperationTransformer<OperationNameToSummaryTransformer>()
+             //.AddOperationTransformer<OperationSummaryDocumentTransformer>()
+             //.AddOperationTransformer<DeprecatedOperationTransformer>()
              .AddSchemaTransformer<DiagnosticSchemaTransformer>()
              .AddSchemaTransformer<ResultProblemDetailsSchemaTransformer>()
              .AddSchemaTransformer<FilterModelSchemaTransformer>()

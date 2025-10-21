@@ -8,8 +8,9 @@
     "/api/core/todoitems/{id}": {
       "get": {
         "tags": [
-          "Core.TodoItems"
+          "CoreModule.TodoItems"
         ],
+        "summary": "Core.TodoItems.GetById",
         "description": "Gets a single TodoItem by its unique identifier.",
         "operationId": "Core.TodoItems.GetById",
         "parameters": [
@@ -63,8 +64,9 @@
       },
       "put": {
         "tags": [
-          "Core.TodoItems"
+          "CoreModule.TodoItems"
         ],
+        "summary": "Core.TodoItems.Update",
         "description": "Updates an existing TodoItem with the specified details.",
         "operationId": "Core.TodoItems.Update",
         "parameters": [
@@ -137,8 +139,9 @@
       },
       "delete": {
         "tags": [
-          "Core.TodoItems"
+          "CoreModule.TodoItems"
         ],
+        "summary": "Core.TodoItems.Delete",
         "description": "Deletes the specified TodoItem.",
         "operationId": "Core.TodoItems.Delete",
         "parameters": [
@@ -187,8 +190,9 @@
     "/api/core/todoitems": {
       "get": {
         "tags": [
-          "Core.TodoItems"
+          "CoreModule.TodoItems"
         ],
+        "summary": "CoreModule.TodoItems.GetAll",
         "description": "Gets all items matching the specified filter criteria.",
         "operationId": "CoreModule.TodoItems.GetAll",
         "parameters": [
@@ -241,8 +245,9 @@
       },
       "post": {
         "tags": [
-          "Core.TodoItems"
+          "CoreModule.TodoItems"
         ],
+        "summary": "Core.TodoItems.Create",
         "description": "Creates a new TodoItem with the specified details.",
         "operationId": "Core.TodoItems.Create",
         "requestBody": {
@@ -294,8 +299,9 @@
     "/api/core/todoitems/search": {
       "post": {
         "tags": [
-          "Core.TodoItems"
+          "CoreModule.TodoItems"
         ],
+        "summary": "CoreModule.TodoItems.Search",
         "description": "Searches for items matching the specified filter criteria.",
         "operationId": "CoreModule.TodoItems.Search",
         "requestBody": {
@@ -350,8 +356,9 @@
     "/api/core/todoitems/actions/completeall": {
       "post": {
         "tags": [
-          "Core.TodoItems"
+          "CoreModule.TodoItems"
         ],
+        "summary": "Core.TodoItems.CompleteAll",
         "description": "Marks all TodoItems as completed.",
         "operationId": "Core.TodoItems.CompleteAll",
         "responses": {
@@ -395,6 +402,7 @@
         "tags": [
           "Core.Enumerations"
         ],
+        "summary": "Core.Enumerations.GetAll",
         "operationId": "Core.Enumerations.GetAll",
         "responses": {
           "200": {
@@ -1050,7 +1058,7 @@
   ],
   "tags": [
     {
-      "name": "Core.TodoItems"
+      "name": "CoreModule.TodoItems"
     },
     {
       "name": "Core.Enumerations"

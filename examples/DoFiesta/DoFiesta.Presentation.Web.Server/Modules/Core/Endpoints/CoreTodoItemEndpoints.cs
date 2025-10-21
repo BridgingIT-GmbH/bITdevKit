@@ -8,9 +8,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Co
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
-using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 public class CoreTodoItemEndpoints : EndpointsBase
@@ -23,7 +21,7 @@ public class CoreTodoItemEndpoints : EndpointsBase
     {
         var group = app
             .MapGroup("api/core/todoitems").RequireAuthorization()
-            .WithTags("Core.TodoItems");
+            .WithTags("CoreModule.TodoItems");
 
         app.MapGet("/_schema/probe", () => Results.NoContent())
            .ExcludeFromDescription()

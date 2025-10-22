@@ -90,11 +90,11 @@ public static partial class ServiceCollectionExtensions
             long maxValue = long.MaxValue,
             bool isCyclic = false,
             string schema = null,
-            ServiceLifetime lifetime = ServiceLifetime.Scoped)
+            ServiceLifetime lifetime = ServiceLifetime.Singleton)
         where TEntity : class, IEntity
         where TContext : InMemoryContext<TEntity>
     {
-        if (string.IsNullOrWhiteSpace(sequenceName))
+        if (string.IsNullOrEmpty(sequenceName))
         {
             throw new ArgumentException("sequenceName is required", nameof(sequenceName));
         }
@@ -108,7 +108,7 @@ public static partial class ServiceCollectionExtensions
         }
 
         // accumulate configurations
-        context.Services.AddSingleton(new ConfigureSequenceRegistration(
+        context.Services.AddSingleton(new InMemorySequenceNumberGeneratorConfiguration(
             sequenceName, startValue, increment, minValue, maxValue, isCyclic, schema
         ));
 
@@ -149,14 +149,14 @@ public static partial class ServiceCollectionExtensions
 
         return context;
 
-        static void ApplyAllConfigurations(IServiceProvider sp, InMemorySequenceNumberGenerator gen)
+        static void ApplyAllConfigurations(IServiceProvider sp, InMemorySequenceNumberGenerator instance)
         {
-            foreach (var cfg in sp.GetServices<ConfigureSequenceRegistration>())
+            foreach (var configuration in sp.GetServices<InMemorySequenceNumberGeneratorConfiguration>())
             {
-                gen.ConfigureSequence(cfg.SequenceName, cfg.StartValue, cfg.Increment, cfg.MinValue, cfg.MaxValue, cfg.IsCyclic, cfg.Schema);
+                instance.ConfigureSequence(configuration.SequenceName, configuration.StartValue, configuration.Increment, configuration.MinValue, configuration.MaxValue, configuration.IsCyclic, configuration.Schema);
             }
         }
     }
 
-    public sealed record ConfigureSequenceRegistration(string SequenceName, long StartValue, int Increment, long MinValue, long MaxValue, bool IsCyclic, string Schema);
+    public sealed record InMemorySequenceNumberGeneratorConfiguration(string SequenceName, long StartValue, int Increment, long MinValue, long MaxValue, bool IsCyclic, string Schema);
 }

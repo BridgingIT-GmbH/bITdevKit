@@ -196,9 +196,7 @@ public class InMemorySequenceNumberGenerator(
         {
             return Task.FromResult(
                 Result<long>.Failure()
-                    .WithError(new SequenceNotFoundError(
-                        sequenceName,
-                        schema)));
+                    .WithError(new SequenceNotFoundError(sequenceName, schema)));
         }
 
         return Task.FromResult(Result<long>.Success(state.CurrentValue));

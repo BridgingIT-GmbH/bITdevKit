@@ -1,5 +1,6 @@
 ﻿@page "/todos"
 @using Microsoft.AspNetCore.Authorization
+@inject BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.BackendApiClient Api
 @inject IStringLocalizer<Global> localizer
 @inject IApiClient ApiClient
 @inject ISnackbar Snackbar
@@ -185,7 +186,7 @@
                 .AddFilter(p => p.Status, Common.FilterOperator.Equal, filterStatusId.Value)
                 .Build(); *@
 
-			// TODO: re-implement filtering when supported in the API (schema fix!)
+            // TODO: re-implement filtering when supported in the API (schema fix!)
             var filter = new Client.FilterModel() { Filters = new List<Client.FilterCriteria>(), Orderings = new List<Client.FilterOrderCriteria>() };
             if (filterStatusId.HasValue)
             {
@@ -215,7 +216,7 @@
                     new Client.FilterCriteria
                         {
                             Field = "Title",
-							Operator = Client.FilterCriteriaOperator.Contains,
+                            Operator = Client.FilterCriteriaOperator.Contains,
                             Value = filterTitle
                         });
             }

@@ -4,13 +4,17 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 #pragma warning disable SA1200 // Using directives should be placed correctly
-using System.Net.Http.Headers;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Kiota.Abstractions;
+using Microsoft.Kiota.Abstractions.Authentication;
+using Microsoft.Kiota.Http.HttpClientLibrary;
 using MudBlazor;
 using MudBlazor.Services;
 using Polly;
+using System.Net.Http.Headers;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 #pragma warning restore SA1200 // Using directives should be placed correctly
@@ -37,6 +41,25 @@ builder.Services.AddHttpClient("backend-api",
     })
     .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(30)));
 builder.Services.AddScoped(sp => HttpClientFactory(sp, configuration));
+
+// Kiota: use the named client "backend-api" (has OIDC AuthorizationMessageHandler)
+builder.Services.AddScoped<IRequestAdapter>(sp =>
+{
+    var factory = sp.GetRequiredService<IHttpClientFactory>();
+    var http = factory.CreateClient("backend-api"); // token-bearing client
+    var adapter = new HttpClientRequestAdapter(
+        new AnonymousAuthenticationProvider(), // auth header already added by AuthorizationMessageHandler
+        httpClient: http);
+
+    // Point to your API base URL. If your backend is not the SPA origin, read from config.
+    // If it IS the same origin, HostEnvironment.BaseAddress is fine.
+    adapter.BaseUrl = builder.HostEnvironment.BaseAddress;
+    return adapter;
+});
+
+// Expose the generated Kiota client
+builder.Services.AddScoped(sp =>
+    new BackendApiClient(sp.GetRequiredService<IRequestAdapter>()));
 
 //builder.Services.AddScoped<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 builder.Services.AddOidcAuthentication(options =>

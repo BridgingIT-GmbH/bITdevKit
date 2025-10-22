@@ -15,6 +15,13 @@
         "dotnet-openapi"
       ],
       "rollForward": false
+    },
+    "microsoft.openapi.kiota": {
+      "version": "1.28.0",
+      "commands": [
+        "kiota"
+      ],
+      "rollForward": false
     }
   }
 }

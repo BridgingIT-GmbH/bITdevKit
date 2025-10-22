@@ -59,22 +59,18 @@ stages:
               performMultiLevelLookup: true
               includePreviewVersions: false
 
-          - bash: |
-              export ASPNETCORE_ENVIRONMENT=Development
-              whereis dotnet
-              /usr/bin/dotnet --info
+          - pwsh: |
+              $env:ASPNETCORE_ENVIRONMENT = 'Development'
+              dotnet --info
+              Get-ChildItem Env: | Sort-Object Name | Format-Table -AutoSize
             displayName: Inspect environment
             condition: succeeded()
 
-          - task: DotNetCoreCLI@2
-            displayName: 'Install version tool'
-            inputs:
-              command: 'custom'
-              custom: 'tool'
-              arguments: 'install --global minver-cli --version 4.3.0'
+          - script: dotnet tool restore
+            displayName: Restore .NET tools
 
           - powershell: |
-              $version = $(minver -v d) # https://github.com/adamralph/minver#options
+              $version = $(dotnet minver -v d) # https://github.com/adamralph/minver#options
               $buildName = "$version" # + "_" + $env:BUILD_SOURCEBRANCHNAME
               Write-Host "##vso[build.updatebuildnumber]$buildName"
               Write-Host "##vso[task.setvariable variable=BUILD_VERSION;isOutput=true]$buildName"
@@ -117,8 +113,11 @@ stages:
             displayName: Inspect environment
             condition: succeeded()
 
+          - script: dotnet tool restore
+            displayName: Restore .NET tools
+
           - task: NuGetToolInstaller@1
-            displayName: 'Install nuget tool'
+            displayName: Install nuget tool
 
           - task: Cache@2 # https://learn.microsoft.com/en-us/azure/devops/pipelines/artifacts/caching-nuget?view=azure-devops#cache-nuget-packages-1
             displayName: Dotnet cache (nuget)
@@ -207,6 +206,9 @@ stages:
               performMultiLevelLookup: true
               includePreviewVersions: false
 
+          - script: dotnet tool restore
+            displayName: Restore .NET tools
+
           - bash: |
               docker compose up -d
             displayName: Docker start containers
@@ -268,6 +270,9 @@ stages:
               version: $(dotnetVersion)
               performMultiLevelLookup: true
               includePreviewVersions: false
+
+          - script: dotnet tool restore
+            displayName: Restore .NET tools
 
           - powershell: |
               $currentBranch = "$(Build.SourceBranch)".Replace('refs/heads/', '')

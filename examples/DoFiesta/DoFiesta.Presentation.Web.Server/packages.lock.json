@@ -259,16 +259,15 @@
       },
       "Serilog.Sinks.MSSqlServer": {
         "type": "Direct",
-        "requested": "[8.2.2, )",
-        "resolved": "8.2.2",
-        "contentHash": "cBX0fYgCvntQC9/uL9coPFEuIYLdPLpTYncKqjA11hY1VGxh80v1ecvivqPq7/207YXsEs54KO8vA3I0sXOKRA==",
+        "requested": "[9.0.1, )",
+        "resolved": "9.0.1",
+        "contentHash": "TjQAZMlzwGIHO1zWRt/T1KcW6GHALe86UOqy9HHq5ZVEIC2E+1f/bQ2P3pi12MRTJpUYff8CGRgPOtauS5US/A==",
         "dependencies": {
-          "Microsoft.Data.SqlClient": "5.2.3",
+          "Microsoft.Data.SqlClient": "6.1.1",
           "Microsoft.Extensions.Configuration": "8.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "8.0.0",
-          "Microsoft.Identity.Client": "4.73.1",
-          "Serilog": "4.1.0",
-          "System.Configuration.ConfigurationManager": "8.0.1"
+          "Serilog": "4.3.0",
+          "System.Configuration.ConfigurationManager": "9.0.10"
         }
       },
       "Serilog.Sinks.Seq": {

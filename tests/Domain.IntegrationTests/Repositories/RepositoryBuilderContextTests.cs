@@ -69,6 +69,22 @@ public class RepositoryBuilderContextTests(ITestOutputHelper output) : TestsBase
         nextValue.ShouldBeFailure();
         nextValue.HasError<SequenceNotFoundError>().ShouldBeTrue();
     }
+
+    [Fact]
+    public async Task SequenceNumberGenerator_UnknownSchemaFailes()
+    {
+        // Arrange
+        var sut = this.ServiceProvider.GetService<ISequenceNumberGenerator>();
+        sut.ShouldNotBeNull();
+
+        // Act
+        var nextValue = await sut.GetNextAsync("TestSequence", "UnknownSchema");
+
+        // Assert
+
+        nextValue.ShouldBeFailure();
+        nextValue.HasError<SequenceNotFoundError>().ShouldBeTrue();
+    }
 }
 
 [IntegrationTest("Infrastructure")]

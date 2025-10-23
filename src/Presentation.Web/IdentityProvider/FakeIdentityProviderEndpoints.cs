@@ -38,45 +38,54 @@ public class FakeIdentityProviderEndpoints(
         var paths = options.EndpointPaths;
 
         group.MapGet("/", this.HandleIndex)
+            .WithName("System.IdentityProvider.Index")
             .WithDescription("Shows the dashboard index page.")
             .Produces<string>((int)HttpStatusCode.OK)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest).ExcludeFromDescription();
 
         group.MapGet(paths.WellKnownConfiguration, this.GetConfiguration)
+            .WithName("System.IdentityProvider.WellKnownConfiguration")
             .WithDescription("Returns the OpenID Connect discovery document.")
             .Produces<OpenIdConfiguration>().AllowAnonymous();
 
         app.MapGet(paths.WellKnownConfiguration, this.GetConfiguration)
+            .WithName("System.IdentityProvider.WellKnownConfiguration.Root")
             .WithDescription("Returns the OpenID Connect discovery document (root level).")
             .Produces<OpenIdConfiguration>().AllowAnonymous().ExcludeFromDescription();
 
         group.MapGet(paths.Authorize, this.HandleAuthorize)
+            .WithName("System.IdentityProvider.Authorize")
             .WithDescription("Shows the signin page for user selection.")
             .Produces<string>((int)HttpStatusCode.OK)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest);
 
         group.MapGet(paths.AuthorizeCallback, this.HandleAuthorizeCallBack)
+            .WithName("System.IdentityProvider.AuthorizeCallback")
             .WithDescription("Handles the user selection and generates authorization code.")
             .Produces((int)HttpStatusCode.Redirect)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest);
 
         group.MapPost(paths.Token, this.HandleTokenRequest)
+            .WithName("System.IdentityProvider.Token")
             .WithDescription("Issues tokens for various grant types.")
             .Accepts<IFormCollection>("application/x-www-form-urlencoded")
             .Produces<TokenResponse>()
             .Produces<OAuth2Error>((int)HttpStatusCode.BadRequest);
 
         group.MapGet(paths.UserInfo, this.GetUserInfo)
+            .WithName("System.IdentityProvider.UserInfo")
             .WithDescription("Returns information about the authenticated user.")
             .Produces<UserInfoResponse>()
             .Produces<ProblemDetails>((int)HttpStatusCode.Unauthorized);
 
         group.MapGet(paths.Logout, this.HandleLogout)
+            .WithName("System.IdentityProvider.Logout")
             .WithDescription("Handles user logout.")
             .Produces((int)HttpStatusCode.OK)
             .Produces((int)HttpStatusCode.Redirect);
 
         group.MapGet(paths.DebugInfo, this.GetDebugInfo)
+            .WithName("System.IdentityProvider.DebugInfo")
             .WithDescription("Returns debug information about the identity provider configuration.")
             .Produces<DebugInfoResponse>();
     }

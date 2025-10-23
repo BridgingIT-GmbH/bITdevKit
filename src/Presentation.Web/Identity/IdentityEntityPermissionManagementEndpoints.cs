@@ -30,30 +30,35 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
 
         // User Permission Management
         group.MapPost("/users/{userId}/grant", this.GrantUserPermission)
+            .WithName("System.GrantUserPermission")
             .WithDescription("Grants a specific permission to a user for a specific entity.")
             .Produces((int)HttpStatusCode.NoContent)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         group.MapPost("/users/{userId}/revoke", this.RevokeUserPermission)
+            .WithName("System.RevokeUserPermission")
             .WithDescription("Revokes a specific permission from a user for a specific entity.")
             .Produces((int)HttpStatusCode.NoContent)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         group.MapPost("/users/{userId}/revoke/all", this.RevokeAllUserPermissions)
+            .WithName("System.RevokeAllUserPermissions")
             .WithDescription("Revokes all permissions from a user.")
             .Produces((int)HttpStatusCode.NoContent)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         group.MapGet("/users/{userId}", this.GetUserGrantedPermissions)
+            .WithName("System.GetUserGrantedPermissions")
             .WithDescription("Retrieves all granted permissions for a user for a specific entity.") // does not take the defaults into account
             .Produces<IReadOnlyCollection<string>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         group.MapGet("/users", this.GetUsersGrantedPermissions)
+            .WithName("System.GetUsersGrantedPermissions")
             .WithDescription("Retrieves all granted permissions for all users for a specific entity.") // does not take the defaults into account
             .Produces<IReadOnlyCollection<EntityPermissionInfo>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
@@ -61,30 +66,35 @@ public class IdentityEntityPermissionManagementEndpoints(IdentityEntityPermissio
 
         // Role Permission Management
         group.MapPost("/roles/{role}/grant", this.GrantRolePermission)
+            .WithName("System.GrantRolePermission")
             .WithDescription("Grants a specific permission to a role for a specific entity.")
             .Produces((int)HttpStatusCode.NoContent)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         group.MapPost("/roles/{role}/revoke", this.RevokeRolePermission)
+            .WithName("System.RevokeRolePermission")
             .WithDescription("Revokes a specific permission from a role for a specific entity.")
             .Produces((int)HttpStatusCode.NoContent)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         group.MapPost("/roles/{role}/revoke/all", this.RevokeAllRolePermissions)
+            .WithName("System.RevokeAllRolePermissions")
             .WithDescription("Revokes all permissions from a role.")
             .Produces((int)HttpStatusCode.NoContent)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         group.MapGet("/roles/{role}", this.GetRoleGrantedPermissions)
+            .WithName("System.GetRoleGrantedPermissions")
             .WithDescription("Retrieves all granted permissions for a role for a specific entity.") // does not take the defaults into account
             .Produces<IReadOnlyCollection<string>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         group.MapGet("/roles", this.GetRolesGrantedPermissions)
+            .WithName("System.GetRolesGrantedPermissions")
             .WithDescription("Retrieves all granted permissions for all roles for a specific entity.") // does not take the defaults into account
             .Produces<IReadOnlyCollection<EntityPermissionInfo>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)

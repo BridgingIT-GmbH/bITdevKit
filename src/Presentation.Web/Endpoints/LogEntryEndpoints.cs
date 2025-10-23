@@ -41,28 +41,28 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             .Produces<LogEntryQueryResponse>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("GetLogEntries")
+            .WithName("System.GetLogEntries")
             .WithDescription("Retrieves a paged list of log entries with optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
 
         group.MapGet("stream", this.StreamLogEntries)
             .Produces<IEnumerable<LogEntryModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("StreamLogEntries")
+            .WithName("System.StreamLogEntries")
             .WithDescription("Streams log entries in real-time based on optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
 
         group.MapDelete("", this.CleanupLogEntries)
             .Produces<string>((int)HttpStatusCode.Accepted)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("CleanupLogEntries")
+            .WithName("System.CleanupLogEntries")
             .WithDescription("Queues a maintenance operation for log entries older than a specified date or age, with options to archive, set batch size, and delay interval. Date must be in ISO 8601 format (e.g., 2025-04-01T00:00:00Z).");
 
         group.MapGet("stats", this.GetLogEntriesStatistics)
             .Produces<LogEntryStatisticsModel>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("GetLogEntriesStatistics")
+            .WithName("System.GetLogEntriesStatistics")
             .WithDescription("Retrieves aggregated statistics for log entries, grouped by time intervals. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
 
         group.MapGet("export", this.ExportLogEntries)
@@ -71,7 +71,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             //.Produces("text/plain")
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("ExportLogEntries")
+            .WithName("System.ExportLogEntries")
             .WithDescription("Exports log entries as a downloadable file in the specified format (csv, json, txt). Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
     }
 

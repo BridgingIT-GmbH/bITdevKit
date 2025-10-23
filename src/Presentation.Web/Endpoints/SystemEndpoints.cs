@@ -33,12 +33,14 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
         var group = this.MapGroup(app, this.options);
 
         group.MapGet(string.Empty, this.GetSystem)
+            .WithName("System.Get")
             .Produces<Dictionary<string, string>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         if (this.options.EchoEnabled)
         {
             group.MapGet("echo", this.GetEcho)
+                .WithName("System.GetEcho")
                 .Produces<string>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
@@ -46,6 +48,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
         if (this.options.InfoEnabled)
         {
             group.MapGet("info", this.GetInfo)
+                .WithName("System.GetInfo")
                 .Produces<SystemInfo>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
@@ -53,6 +56,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
         if (this.options.ModulesEnabled)
         {
             group.MapGet("modules", this.GetModules)
+                .WithName("System.GetModules")
                 .Produces<IEnumerable<SystemModule>>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }

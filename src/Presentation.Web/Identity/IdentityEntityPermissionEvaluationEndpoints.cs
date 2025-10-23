@@ -28,11 +28,13 @@ public class IdentityEntityPermissionEvaluationEndpoints(IdentityEntityPermissio
         var group = this.MapGroup(app, this.options);
 
         group.MapGet("/{permission}", this.HasRequiredPermission)
+            .WithName("System.HasRequiredPermission")
             .WithDescription("Checks if the current user has the required permission for the entity type.")
             .Produces<EntityPermissionModel>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         group.MapGet(string.Empty, this.GetEffectivePermissions)
+            .WithName("System.GetEffectivePermissions")
             .WithDescription("Gets all effective permissions for the current user and the entity type.")
             .Produces<EntityPermissionModel>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);

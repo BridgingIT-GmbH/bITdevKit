@@ -106,10 +106,10 @@ stages:
               performMultiLevelLookup: true
               includePreviewVersions: false
 
-          - bash: |
-              export ASPNETCORE_ENVIRONMENT=Development
-              whereis dotnet
-              /usr/bin/dotnet --info
+          - pwsh: |
+              $env:ASPNETCORE_ENVIRONMENT = 'Development'
+              dotnet --info
+              Get-ChildItem Env: | Sort-Object Name | Format-Table -AutoSize
             displayName: Inspect environment
             condition: succeeded()
 

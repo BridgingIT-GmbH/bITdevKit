@@ -665,19 +665,22 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         if (type == typeof(Guid))
         {
             var v = CoerceGuid(value);
-            return isNullable ? new Guid?[] { v } : new Guid[] { v };
+            //return isNullable ? new Guid?[] { v } : new Guid[] { v };
+            return new Guid[] { v };
         }
 
         if (type == typeof(int))
         {
             var v = CoerceInt(value);
-            return isNullable ? new int?[] { v } : new int[] { v };
+            //return isNullable ? new int?[] { v } : new int[] { v };
+            return new int[] { v };
         }
 
         if (type == typeof(long))
         {
             var v = CoerceLong(value);
-            return isNullable ? new long?[] { v } : new long[] { v };
+            //return isNullable ? new long?[] { v } : new long[] { v };
+            return new long[] { v };
         }
 
         // Fallback: unsupported key type → let EF parameterize as object[]

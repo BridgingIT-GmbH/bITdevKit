@@ -5,13 +5,14 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using System.Collections;
-using System.Reflection;
 using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Collections;
+using System.Globalization;
+using System.Reflection;
 
 /// <summary>
 /// Provides entity permission functionality using Entity Framework Core as the storage mechanism.
@@ -228,11 +229,12 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         }
 
         // Use the same type as the entity ID for the query
-        var idType = entityConfiguration.ParentIdProperty.PropertyType; // Guid? (optional)
+        var idType = entityConfiguration.ParentIdProperty.PropertyType;
+        var typedParams = BuildEntityIdSqlParams(idType, entityId); // Build a strongly-typed array matching idType for the entityType
         var method = typeof(RelationalDatabaseFacadeExtensions).GetMethod(nameof(RelationalDatabaseFacadeExtensions.SqlQueryRaw)).MakeGenericMethod(idType);
 
         // Execute the query and return the list of parent IDs
-        var queryResult = method.Invoke(context.Database, [context.Database, query, new object[] { entityId }]);
+        var queryResult = method.Invoke(context.Database, [context.Database, query, typedParams]);
         var parentIds = (((IEnumerable)queryResult)?.Cast<object>()?.AsEnumerable() ?? []).ToList();
 
         TypedLogger.LogFoundHierarchyPath(this.logger, "AUT", entityType.Name, entityId?.ToString(), parentIds.Count);
@@ -653,6 +655,72 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         }
 
         return path;
+    }
+
+    private static object BuildEntityIdSqlParams(Type idType, object value)
+    {
+        var type = Nullable.GetUnderlyingType(idType) ?? idType;
+        var isNullable = idType.IsGenericType && idType.GetGenericTypeDefinition() == typeof(Nullable<>);
+
+        if (type == typeof(Guid))
+        {
+            var v = CoerceGuid(value);
+            return isNullable ? new Guid?[] { v } : new Guid[] { v };
+        }
+
+        if (type == typeof(int))
+        {
+            var v = CoerceInt(value);
+            return isNullable ? new int?[] { v } : new int[] { v };
+        }
+
+        if (type == typeof(long))
+        {
+            var v = CoerceLong(value);
+            return isNullable ? new long?[] { v } : new long[] { v };
+        }
+
+        // Fallback: unsupported key type → let EF parameterize as object[]
+        return new object[] { value! };
+
+        Guid CoerceGuid(object v) =>
+            v switch
+            {
+                Guid g => g,
+                string s when Guid.TryParse(s, out var p) => p,
+                null => throw new ArgumentNullException(nameof(v), "Id cannot be null."),
+                _ => throw new FormatException("Expected Guid or parsable Guid string.")
+            };
+
+        int CoerceInt(object v) =>
+            v switch
+            {
+                int i => i,
+                string s when int.TryParse(
+                    s,
+                    NumberStyles.Integer,
+                    CultureInfo.InvariantCulture,
+                    out var p
+                ) => p,
+                IConvertible c => Convert.ToInt32(c, CultureInfo.InvariantCulture),
+                null => throw new ArgumentNullException(nameof(v), "Id cannot be null."),
+                _ => throw new FormatException("Expected int or parsable int.")
+            };
+
+        long CoerceLong(object v) =>
+            v switch
+            {
+                long l => l,
+                string s when long.TryParse(
+                    s,
+                    NumberStyles.Integer,
+                    CultureInfo.InvariantCulture,
+                    out var p
+                ) => p,
+                IConvertible c => Convert.ToInt64(c, CultureInfo.InvariantCulture),
+                null => throw new ArgumentNullException(nameof(v), "Id cannot be null."),
+                _ => throw new FormatException("Expected long or parsable long.")
+            };
     }
 
     public static partial class TypedLogger

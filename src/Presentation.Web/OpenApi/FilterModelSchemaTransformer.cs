@@ -51,31 +51,31 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
 
         if (type == typeof(FilterModel))
         {
-            CompleteFilterModelSchema(schema);
+            this.CompleteFilterModelSchema(schema);
         }
         else if (type == typeof(FilterCriteria))
         {
-            CompleteFilterCriteriaSchema(schema);
+            this.CompleteFilterCriteriaSchema(schema);
         }
         else if (type == typeof(OrderDirection))
         {
-            CompleteOrderDirectionSchema(schema);
+            this.CompleteOrderDirectionSchema(schema);
         }
         else if (type == typeof(CompositeSpecification))
         {
-            CompleteCompositeSpecificationSchema(schema);
+            this.CompleteCompositeSpecificationSchema(schema);
         }
         else if (type == typeof(SpecificationNode))
         {
-            CompleteSpecificationNodeSchema(schema);
+            this.CompleteSpecificationNodeSchema(schema);
         }
         else if (type == typeof(SpecificationLeaf))
         {
-            CompleteSpecificationLeafSchema(schema);
+            this.CompleteSpecificationLeafSchema(schema);
         }
         else if (type == typeof(SpecificationGroup))
         {
-            CompleteSpecificationGroupSchema(schema);
+            this.CompleteSpecificationGroupSchema(schema);
         }
 
         return Task.CompletedTask;

@@ -58,23 +58,23 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
 
         if (type == typeof(ResultProblemDetails))
         {
-            TransformResultProblemDetailsSchema(schema);
+            this.TransformResultProblemDetailsSchema(schema);
         }
         else if (type == typeof(ResultProblemData))
         {
-            TransformResultProblemDataSchema(schema);
+            this.TransformResultProblemDataSchema(schema);
         }
         else if (type == typeof(ResultProblemResult))
         {
-            TransformResultProblemResultSchema(schema);
+            this.TransformResultProblemResultSchema(schema);
         }
         else if (type == typeof(ResultProblemError))
         {
-            TransformResultProblemErrorSchema(schema);
+            this.TransformResultProblemErrorSchema(schema);
         }
         else if (type == typeof(ProblemError))
         {
-            TransformProblemErrorSchema(schema);
+            this.TransformProblemErrorSchema(schema);
         }
 
         return Task.CompletedTask;
@@ -129,7 +129,7 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
             }
         }
 
-        LogAdjustment(nameof(ResultProblemDetails));
+        this.LogAdjustment(nameof(ResultProblemDetails));
     }
 
     /// <summary>
@@ -159,7 +159,7 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
             }
         }
 
-        LogAdjustment(nameof(ResultProblemData));
+        this.LogAdjustment(nameof(ResultProblemData));
     }
 
     /// <summary>
@@ -194,7 +194,7 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
             }
         }
 
-        LogAdjustment(nameof(ResultProblemResult));
+        this.LogAdjustment(nameof(ResultProblemResult));
     }
 
     /// <summary>
@@ -219,7 +219,7 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
             }
         }
 
-        LogAdjustment(nameof(ResultProblemError));
+        this.LogAdjustment(nameof(ResultProblemError));
     }
 
     /// <summary>
@@ -236,7 +236,7 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
         schema.AdditionalProperties = new OpenApiSchema();
         schema.Description = "Represents an individual error entry with flexible structure for additional data";
 
-        LogAdjustment(nameof(ProblemError));
+        this.LogAdjustment(nameof(ProblemError));
     }
 
     /// <summary>

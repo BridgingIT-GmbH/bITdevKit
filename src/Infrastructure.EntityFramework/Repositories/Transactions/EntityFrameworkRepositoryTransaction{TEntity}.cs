@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
+using Microsoft.EntityFrameworkCore.Storage;
+
 public class EntityFrameworkTransactionWrapper<TEntity, TContext>(TContext context)
     : EntityFrameworkRepositoryTransaction<TEntity>(context)
     where TEntity : class, IEntity
@@ -37,5 +39,24 @@ public class EntityFrameworkRepositoryTransaction<TEntity> : IRepositoryTransact
 
         return await ResilientTransaction.Create(this.context)
             .ExecuteAsync(async () => await action().AnyContext(), cancellationToken).AnyContext();
+    }
+
+    public async Task<IRepositoryTransactionScope> BeginTransactionAsync(CancellationToken cancellationToken = default)
+    {
+        var transaction = await this.context.Database.BeginTransactionAsync(cancellationToken);
+        return new EntityFrameworkRepositoryTransactionScope(transaction);
+    }
+}
+
+internal class EntityFrameworkRepositoryTransactionScope(IDbContextTransaction transaction) : IRepositoryTransactionScope
+{
+    public async Task CommitAsync(CancellationToken cancellationToken = default)
+    {
+        await transaction.CommitAsync(cancellationToken);
+    }
+
+    public async Task RollbackAsync(CancellationToken cancellationToken = default)
+    {
+        await transaction.RollbackAsync(cancellationToken);
     }
 }

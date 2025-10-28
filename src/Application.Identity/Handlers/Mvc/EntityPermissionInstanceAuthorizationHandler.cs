@@ -41,7 +41,7 @@ public partial class EntityPermissionInstanceAuthorizationHandler<TEntity>( // T
     /// <returns>A task representing the authorization operation.</returns>
     protected override async Task HandleRequirementAsync(AuthorizationHandlerContext context, EntityPermissionRequirement requirement, TEntity entity)
     {
-        logger.LogInformation("------------------------------------ Authorization handler invoked for permissions: {@Permissions} ------------------------------------", requirement?.Permissions);
+        this.logger.LogInformation("------------------------------------ Authorization handler invoked for permissions: {@Permissions} ------------------------------------", requirement?.Permissions);
         TypedLogger.LogAuthHandler(this.logger, Constants.LogKey, requirement?.Permissions);
 
         var userId = userAccessor.UserId;

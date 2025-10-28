@@ -5,13 +5,14 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using System.Collections;
-using System.Reflection;
 using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using System.Collections;
+using System.Globalization;
+using System.Reflection;
 
 /// <summary>
 /// Provides entity permission functionality using Entity Framework Core as the storage mechanism.
@@ -200,8 +201,9 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         var schema = efEntityType.GetSchema() ?? "dbo";
         var idColumn = efEntityType.FindProperty(nameof(IEntity.Id)).GetColumnName();
         var parentIdColumn = efEntityType.FindProperty(entityConfiguration.ParentIdProperty.Name).GetColumnName();
+        var idType = entityConfiguration.ParentIdProperty.PropertyType; // Guid? (optional)
 
-        var query = this.queryProvider.CreatePathQuery(schema, tableName, idColumn, parentIdColumn);
+        var query = this.queryProvider.CreatePathQuery(schema, tableName, idColumn, parentIdColumn, idType);
 
         TypedLogger.LogGettingHierarchyPath(this.logger, "AUT", entityType.Name, entityId?.ToString());
 
@@ -228,11 +230,11 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         }
 
         // Use the same type as the entity ID for the query
-        var idType = entityConfiguration.ParentIdProperty.PropertyType; // Guid? (optional)
+        var typedParams = BuildEntityIdSqlParams(idType, entityId); // Returns object[]
         var method = typeof(RelationalDatabaseFacadeExtensions).GetMethod(nameof(RelationalDatabaseFacadeExtensions.SqlQueryRaw)).MakeGenericMethod(idType);
 
         // Execute the query and return the list of parent IDs
-        var queryResult = method.Invoke(context.Database, [context.Database, query, new object[] { entityId }]);
+        var queryResult = method.Invoke(null, [context.Database, query, typedParams]);
         var parentIds = (((IEnumerable)queryResult)?.Cast<object>()?.AsEnumerable() ?? []).ToList();
 
         TypedLogger.LogFoundHierarchyPath(this.logger, "AUT", entityType.Name, entityId?.ToString(), parentIds.Count);
@@ -565,10 +567,9 @@ public partial class EntityFrameworkPermissionProvider<TContext>
             "Microsoft.EntityFrameworkCore.InMemory" => new InMemoryHierarchyQueryProvider(),
             "Microsoft.EntityFrameworkCore.SqlServer" => new SqlServerHierarchyQueryProvider(),
             "Microsoft.EntityFrameworkCore.Sqlite" => new SqliteHierarchyQueryProvider(),
-            "Npgsql.EntityFrameworkCore.PostgreSQL" => new PostgreSqlHierarchyQueryProvider(),
+            "Npgsql.EntityFrameworkCore.PostgreSQL" => new PostgresHierarchyQueryProvider(),
             _ => throw new NotSupportedException(
-                $"Database provider {providerName} is not supported for hierarchical queries. " +
-                $"Supported providers are: SQL Server, PostgreSQL, SQLite, and InMemory")
+                $"Database provider {providerName} is not supported for hierarchical queries. Supported providers are: SQL Server, PostgreSQL, SQLite, and InMemory")
         };
     }
 
@@ -643,7 +644,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
             }
 
             var parentId = parentIdProperty.GetValue(entity);
-            if (parentId == null || parentId.Equals(default))
+            if (parentId?.Equals(default) != false)
             {
                 break;
             }
@@ -653,6 +654,67 @@ public partial class EntityFrameworkPermissionProvider<TContext>
         }
 
         return path;
+    }
+
+    private static object[] BuildEntityIdSqlParams(Type idType, object value)
+    {
+        var type = Nullable.GetUnderlyingType(idType) ?? idType;
+
+        if (value == null)
+        {
+            return [DBNull.Value]; // Handle null values
+        }
+
+        if (type == typeof(Guid))
+        {
+            return [CoerceGuid(value)];
+        }
+
+        if (type == typeof(int))
+        {
+            return [CoerceInt(value)];
+        }
+
+        if (type == typeof(long))
+        {
+            return [CoerceLong(value)];
+        }
+
+        if (type == typeof(string))
+        {
+            return [value.ToString()];
+        }
+
+        throw new ArgumentException($"Unsupported ID type: {type.FullName}");
+
+        Guid CoerceGuid(object v) =>
+            v switch
+            {
+                Guid g => g,
+                string s when Guid.TryParse(s, out var p) => p,
+                null => throw new ArgumentNullException(nameof(v), "Id cannot be null."),
+                _ => throw new FormatException("Expected Guid or parsable Guid string.")
+            };
+
+        int CoerceInt(object v) =>
+            v switch
+            {
+                int i => i,
+                string s when int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out var p) => p,
+                IConvertible c => Convert.ToInt32(c, CultureInfo.InvariantCulture),
+                null => throw new ArgumentNullException(nameof(v), "Id cannot be null."),
+                _ => throw new FormatException("Expected int or parsable int.")
+            };
+
+        long CoerceLong(object v) =>
+            v switch
+            {
+                long l => l,
+                string s when long.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out var p) => p,
+                IConvertible c => Convert.ToInt64(c, CultureInfo.InvariantCulture),
+                null => throw new ArgumentNullException(nameof(v), "Id cannot be null."),
+                _ => throw new FormatException("Expected long or parsable long.")
+            };
     }
 
     public static partial class TypedLogger

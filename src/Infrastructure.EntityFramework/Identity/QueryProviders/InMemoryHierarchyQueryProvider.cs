@@ -4,15 +4,12 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
+
 public class InMemoryHierarchyQueryProvider : IHierarchyQueryProvider
 {
-    public string CreatePathQuery(
-        string schema,
-        string tableName,
-        string idColumn,
-        string parentColumn)
+    public string CreatePathQuery(string schema, string tableName, string idColumn, string parentIdColumn, Type idType)
     {
-        // InMemory provider cant do sql queries (SqlQueryRaw) -> 'Relational-specific methods can only be used when the context is using a relational database provider.'
+        // InMemory provider can't do SQL queries (SqlQueryRaw) -> 'Relational-specific methods can only be used when the context is using a relational database provider.'
         return string.Empty;
     }
 }

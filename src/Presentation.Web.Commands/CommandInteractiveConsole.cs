@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console;
 using System.Diagnostics;
+using System.Runtime;
+using System.Runtime.InteropServices;
 
 /// <summary>
 /// Provides an interactive command-based console that runs inside a locally hosted Kestrel <see cref="WebApplication"/>.
@@ -40,7 +42,10 @@ public static class CommandInteractiveConsole
         services.AddTransient<IInteractiveCommand, ClearInteractiveCommand>();
         services.AddTransient<IInteractiveCommand, HelpInteractiveCommand>();
         services.AddTransient<IInteractiveCommand, QuitInteractiveCommand>();
-        services.AddTransient<IInteractiveCommand, MetricsInteractiveCommand>(); // metrics dump command
+        services.AddTransient<IInteractiveCommand, MetricsInteractiveCommand>();
+        services.AddTransient<IInteractiveCommand, InfoInteractiveCommand>();
+        services.AddTransient<IInteractiveCommand, GcCollectInteractiveCommand>();
+        services.AddTransient<IInteractiveCommand, ThreadsInteractiveCommand>();
 
         // external fluent registrations
         if (configure is not null)
@@ -517,3 +522,117 @@ public static class CommandInteractiveConsoleMiddlewareExtensions
         return app;
     }
 }
+
+/// <summary>
+/// Provides detailed runtime information (.NET, process, GC, configuration).
+/// </summary>
+sealed class InfoInteractiveCommand : InteractiveCommandBase
+{
+    public InfoInteractiveCommand() : base("info", ".NET runtime & process info") { }
+    public override Task ExecuteAsync(string[] args, IAnsiConsole console, IServiceProvider services)
+    {
+        var proc = Process.GetCurrentProcess();
+        var gcMode = GCSettings.IsServerGC ? "Server" : "Workstation";
+        var latency = GCSettings.LatencyMode;
+        var framework = RuntimeInformation.FrameworkDescription;
+        var os = RuntimeInformation.OSDescription;
+        var arch = RuntimeInformation.ProcessArchitecture.ToString();
+        var pid = proc.Id.ToString();
+        var config = GetBuildConfiguration();
+        var table = new Table().Border(TableBorder.Minimal).Title("[bold cyan]Info[/]");
+        table.AddColumn("Key"); table.AddColumn("Value");
+        table.AddRow("Framework", framework);
+        table.AddRow("OS", os);
+        table.AddRow("Architecture", arch);
+        table.AddRow("ProcessId", pid);
+        table.AddRow("GC.Mode", gcMode);
+        table.AddRow("GC.Latency", latency.ToString());
+        table.AddRow("Build.Config", config);
+        table.AddRow("WorkingSetMB", (proc.WorkingSet64 / (1024 * 1024.0)).ToString("F2"));
+        table.AddRow("StartTime", proc.StartTime.ToString("u"));
+        console.Write(table);
+        return Task.CompletedTask;
+
+        static string GetBuildConfiguration()
+        {
+#if DEBUG
+            return "Debug";
+#elif RELEASE
+            return "Release";
+#else
+            return "Unknown";
+#endif
+        }
+    }
+}
+
+/// <summary>
+/// Forces a full GC collection and reports reclaimed memory.
+/// </summary>
+sealed class GcCollectInteractiveCommand : InteractiveCommandBase
+{
+    public GcCollectInteractiveCommand() : base("gc", "Force GC collect and show freed memory", "collect") { }
+    public override Task ExecuteAsync(string[] args, IAnsiConsole console, IServiceProvider services)
+    {
+        var before = GC.GetTotalMemory(false);
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
+        var after = GC.GetTotalMemory(true);
+        var freedMb = (before - after) / (1024 * 1024.0);
+        var table = new Table().Border(TableBorder.Minimal).Title("[bold cyan]GC Collect[/]");
+        table.AddColumn("Metric"); table.AddColumn("Value");
+        table.AddRow("Before.ManagedMB", (before / (1024 * 1024.0)).ToString("F2"));
+        table.AddRow("After.ManagedMB", (after / (1024 * 1024.0)).ToString("F2"));
+        table.AddRow("FreedMB", freedMb.ToString("F2"));
+        table.AddRow("Gen0", GC.CollectionCount(0).ToString());
+        table.AddRow("Gen1", GC.CollectionCount(1).ToString());
+        table.AddRow("Gen2", GC.CollectionCount(2).ToString());
+        console.Write(table);
+        return Task.CompletedTask;
+    }
+}
+
+/// <summary>
+/// Displays thread pool statistics (available/used/min/max/pending work items).
+/// </summary>
+sealed class ThreadsInteractiveCommand : InteractiveCommandBase
+{
+    public ThreadsInteractiveCommand() : base("threads", "Thread pool statistics") { }
+    public override Task ExecuteAsync(string[] args, IAnsiConsole console, IServiceProvider services)
+    {
+        ThreadPool.GetAvailableThreads(out var workerAvail, out var ioAvail);
+        ThreadPool.GetMaxThreads(out var workerMax, out var ioMax);
+        ThreadPool.GetMinThreads(out var workerMin, out var ioMin);
+        var workerUsed = workerMax - workerAvail;
+        var ioUsed = ioMax - ioAvail;
+        var pending = GetPendingWorkItemCountSafe();
+        var table = new Table().Border(TableBorder.Minimal).Title("[bold cyan]ThreadPool[/]");
+        table.AddColumn("Metric"); table.AddColumn("Value");
+        table.AddRow("Worker.Max", workerMax.ToString());
+        table.AddRow("Worker.Min", workerMin.ToString());
+        table.AddRow("Worker.Available", workerAvail.ToString());
+        table.AddRow("Worker.Used", workerUsed.ToString());
+        table.AddRow("IO.Max", ioMax.ToString());
+        table.AddRow("IO.Min", ioMin.ToString());
+        table.AddRow("IO.Available", ioAvail.ToString());
+        table.AddRow("IO.Used", ioUsed.ToString());
+        table.AddRow("PendingWorkItems", pending.ToString());
+        console.Write(table);
+        return Task.CompletedTask;
+
+        static long GetPendingWorkItemCountSafe()
+        {
+            try
+            {
+                return ThreadPool.PendingWorkItemCount; // .NET6+
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+    }
+}
+
+// ...remaining existing command and middleware classes unchanged...

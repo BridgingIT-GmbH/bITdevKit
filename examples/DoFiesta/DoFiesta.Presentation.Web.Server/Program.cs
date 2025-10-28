@@ -111,7 +111,7 @@ builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddMudServices();
 builder.Services.AddSignalR();
-builder.Services.AddInteractiveConsole();
+builder.Services.AddConsoleCommandsInteractive();
 //builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
 //builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
 
@@ -182,7 +182,7 @@ app.MapRazorComponents<App>()
 app.MapHub<NotificationHub>("/signalrhub");
 
 app.UseCommandInteractiveStats();
-app.UseInteractiveConsole();
+app.UseConsoleCommandsInteractive();
 
 app.Run();
 

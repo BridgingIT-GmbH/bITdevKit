@@ -55,6 +55,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{16A3992B-4AAB-482C-AF16-A3434D9716A8}"
 	ProjectSection(SolutionItems) = preProject
 		docs\features-application-commands-queries.md = docs\features-application-commands-queries.md
+		docs\features-consolecommands.md = docs\features-consolecommands.md
 		docs\features-documentstorage.md = docs\features-documentstorage.md
 		docs\features-domain-activeentity-design.md = docs\features-domain-activeentity-design.md
 		docs\features-domain-activeentity.md = docs\features-domain-activeentity.md

@@ -12,7 +12,6 @@
     <!-- API Client generation (openapi2csclient) -->
     <PropertyGroup>
         <ApiSpecGenerate>true</ApiSpecGenerate>
-        <!--$(BuildingInsideVisualStudio)-->
         <ApiSpecLocation>..\DoFiesta.Presentation.Web.Server\wwwroot\openapi.json</ApiSpecLocation>
         <ApiClientClassName>ApiClient</ApiClientClassName>
         <ApiClientNamespace>BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client</ApiClientNamespace>

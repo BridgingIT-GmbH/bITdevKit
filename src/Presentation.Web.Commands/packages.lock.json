@@ -26,12 +26,6 @@
         "resolved": "0.53.0",
         "contentHash": "m2iv8Egfywp7FaNLKCmCFHbSf36D4ctzZKvlAK9NXMyGLh6L+CnrZWK8o+LOYsoAS1jtoHn0W1BT0W8vuq/FUw=="
       },
-      "System.CommandLine": {
-        "type": "Direct",
-        "requested": "[2.0.0-rc.2.25502.107, )",
-        "resolved": "2.0.0-rc.2.25502.107",
-        "contentHash": "l2myq5KMDP78bweagWfubIvINvqW22qHTXGxBNH2mMbBBod6v0LNU4/cc8iU3IrFjeCtRtKgW8mw7vy2q482Fw=="
-      },
       "MessagePack.Annotations": {
         "type": "Transitive",
         "resolved": "3.1.4",

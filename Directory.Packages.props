@@ -116,7 +116,6 @@
     <PackageVersion Include="Spectre.Console" Version="0.53.0" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.6" />
-    <PackageVersion Include="System.CommandLine" Version="2.0.0-rc.2.25502.107" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageVersion Include="System.Data.SQLite" Version="2.0.2" />
     <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="9.0.10" />

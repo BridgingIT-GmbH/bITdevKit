@@ -46,6 +46,7 @@ public static class CommandInteractiveConsole
         services.AddTransient<IInteractiveCommand, InfoInteractiveCommand>();
         services.AddTransient<IInteractiveCommand, GcCollectInteractiveCommand>();
         services.AddTransient<IInteractiveCommand, ThreadsInteractiveCommand>();
+        services.AddTransient<IInteractiveCommand, RestartInteractiveCommand>(); // restart (dev only)
 
         // external fluent registrations
         if (configure is not null)
@@ -74,7 +75,14 @@ public static class CommandInteractiveConsole
         {
             _ = Task.Run(async () =>
             {
-                if (startupDelay.HasValue && startupDelay.Value.TotalMilliseconds > 0)
+                const string restartMarkerVar = "BITDEVKIT_RESTARTING";
+                // If this instance was spawned by a restart, clear the marker so future restarts are allowed.
+                if (Environment.GetEnvironmentVariable(restartMarkerVar) == "1")
+                {
+                    Environment.SetEnvironmentVariable(restartMarkerVar, null);
+                }
+
+                if (startupDelay.HasValue && startupDelay.Value.TotalMilliseconds >0)
                 {
                     await Task.Delay(startupDelay.Value);
                 }
@@ -635,4 +643,65 @@ sealed class ThreadsInteractiveCommand : InteractiveCommandBase
     }
 }
 
-// ...remaining existing command and middleware classes unchanged...
+/// <summary>
+/// Self-spawn restart (development only). Spawns a new process instance then stops current.
+/// </summary>
+sealed class RestartInteractiveCommand : InteractiveCommandBase
+{
+    public RestartInteractiveCommand() : base("restart", "Restart the application (development only)", "re", "reload") { }
+    public override Task ExecuteAsync(string[] args, IAnsiConsole console, IServiceProvider services)
+    {
+        var env = services.GetRequiredService<IWebHostEnvironment>();
+        if (!env.IsDevelopment())
+        {
+            console.MarkupLine("[red]Restart denied: not a development environment.[/]");
+            return Task.CompletedTask;
+        }
+
+        // Prevent rapid restart loops using an environment marker.
+        const string markerVar = "BITDEVKIT_RESTARTING";
+        var alreadyRestarting = Environment.GetEnvironmentVariable(markerVar) == "1";
+        if (alreadyRestarting)
+        {
+            console.MarkupLine("[yellow]Restart already in progress.[/]");
+            return Task.CompletedTask;
+        }
+        Environment.SetEnvironmentVariable(markerVar, "1");
+
+        var exe = Environment.ProcessPath;
+        if (string.IsNullOrWhiteSpace(exe))
+        {
+            console.MarkupLine("[red]Cannot determine executable path.[/]");
+            return Task.CompletedTask;
+        }
+
+        // Reconstruct arguments (skip first which is exe path). Quote arguments with spaces.
+        var argList = Environment.GetCommandLineArgs().Skip(1)
+            .Select(a => a.Contains(' ') ? $"\"{a}\"" : a);
+        var argsLine = string.Join(' ', argList);
+
+        try
+        {
+            console.MarkupLine("[yellow]Spawning new instance...[/]");
+            var startInfo = new ProcessStartInfo(exe, argsLine)
+            {
+                UseShellExecute = false,
+                RedirectStandardOutput = false,
+                RedirectStandardError = false,
+            };
+            Process.Start(startInfo);
+        }
+        catch (Exception ex)
+        {
+            console.MarkupLine("[red]Failed to spawn new instance:[/] " + ex.Message);
+            // Clear marker so user can retry.
+            Environment.SetEnvironmentVariable(markerVar, null);
+            return Task.CompletedTask;
+        }
+
+        // Small delay to allow new instance to begin starting before shutting down current.
+        console.MarkupLine("[grey]Stopping current instance...[/]");
+        services.GetRequiredService<IHostApplicationLifetime>().StopApplication();
+        return Task.CompletedTask;
+    }
+}

@@ -1385,14 +1385,6 @@
         "resolved": "1.4.2",
         "contentHash": "yjj+3zgz8zgXpiiC3ZdF/iyTBbz2fFvMxZFEBPUcwZjIvXOf37Ylm+K58hqMfIBt5JgU/Z2uoUS67JmTLe973A=="
       },
-      "Spectre.Console": {
-        "type": "Transitive",
-        "resolved": "0.48.0",
-        "contentHash": "4Mc1UT7Azgtyb8FyNwK5FZmoZbKuT5PmY7ZwaKUytjD5kGFMNBACpOZTwYtkuY377YkYtZYBeDDTJUwTW86QXw==",
-        "dependencies": {
-          "System.Memory": "4.5.5"
-        }
-      },
       "SQLitePCLRaw.bundle_e_sqlite3": {
         "type": "Transitive",
         "resolved": "2.1.10",
@@ -3315,6 +3307,12 @@
           "System.Buffers": "4.6.0",
           "ZstdSharp.Port": "0.8.6"
         }
+      },
+      "Spectre.Console": {
+        "type": "CentralTransitive",
+        "requested": "[0.53.0, )",
+        "resolved": "0.53.0",
+        "contentHash": "m2iv8Egfywp7FaNLKCmCFHbSf36D4ctzZKvlAK9NXMyGLh6L+CnrZWK8o+LOYsoAS1jtoHn0W1BT0W8vuq/FUw=="
       },
       "System.ComponentModel.Annotations": {
         "type": "CentralTransitive",

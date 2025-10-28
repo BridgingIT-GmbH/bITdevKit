@@ -1856,6 +1856,16 @@
           "System.IdentityModel.Tokens.Jwt": "[8.14.0, )"
         }
       },
+      "BridgingIT.DevKit.Presentation.Web.Commands": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
+          "BridgingIT.DevKit.Presentation": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Spectre.Console": "[0.53.0, )",
+          "System.CommandLine": "[2.0.0-rc.2.25502.107, )"
+        }
+      },
       "BridgingIT.DevKit.Presentation.Web.JobScheduling": {
         "type": "Project",
         "dependencies": {
@@ -2641,6 +2651,18 @@
           "System.Buffers": "4.6.0",
           "ZstdSharp.Port": "0.8.6"
         }
+      },
+      "Spectre.Console": {
+        "type": "CentralTransitive",
+        "requested": "[0.53.0, )",
+        "resolved": "0.53.0",
+        "contentHash": "m2iv8Egfywp7FaNLKCmCFHbSf36D4ctzZKvlAK9NXMyGLh6L+CnrZWK8o+LOYsoAS1jtoHn0W1BT0W8vuq/FUw=="
+      },
+      "System.CommandLine": {
+        "type": "CentralTransitive",
+        "requested": "[2.0.0-rc.2.25502.107, )",
+        "resolved": "2.0.0-rc.2.25502.107",
+        "contentHash": "l2myq5KMDP78bweagWfubIvINvqW22qHTXGxBNH2mMbBBod6v0LNU4/cc8iU3IrFjeCtRtKgW8mw7vy2q482Fw=="
       },
       "System.ComponentModel.Annotations": {
         "type": "CentralTransitive",

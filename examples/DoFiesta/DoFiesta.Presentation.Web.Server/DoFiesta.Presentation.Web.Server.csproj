@@ -63,6 +63,7 @@
         <ProjectReference Include="..\..\..\src\Common.Extensions\Common.Extensions.csproj" />
         <ProjectReference Include="..\..\..\src\Presentation.Configuration\Presentation.Configuration.csproj" />
         <ProjectReference Include="..\..\..\src\Presentation.Serilog\Presentation.Serilog.csproj" />
+        <ProjectReference Include="..\..\..\src\Presentation.Web.Commands\Presentation.Web.Commands.csproj" />
         <ProjectReference Include="..\..\..\src\Presentation.Web.JobScheduling\Presentation.Web.JobScheduling.csproj" />
         <ProjectReference Include="..\..\..\src\Presentation.Web\Presentation.Web.csproj" />
         <ProjectReference Include="..\DoFiesta.Application\DoFiesta.Application.csproj" />

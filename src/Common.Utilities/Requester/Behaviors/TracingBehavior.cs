@@ -11,7 +11,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 
-public class ActivityBehavior<TRequest, TResponse>(
+public class TracingBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
     ActivitySource activitySource = null) : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class

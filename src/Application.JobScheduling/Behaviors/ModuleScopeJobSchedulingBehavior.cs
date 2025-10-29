@@ -30,7 +30,7 @@ public class ModuleScopeJobSchedulingBehavior(
             }
 
             var jobId = context.JobDetail.JobDataMap?.GetString(Constants.JobIdKey) ?? context.FireInstanceId;
-            var jobTypeName = context.JobDetail.JobType.FullName;
+            var jobTypeName = context.JobDetail.JobType.Name;
             var correlationId = context.Get(Constants.CorrelationIdKey) as string;
             var flowId = context.Get(Constants.FlowIdKey) as string;
 
@@ -43,7 +43,7 @@ public class ModuleScopeJobSchedulingBehavior(
                             [Constants.TraceIdKey] = a.TraceId.ToString()
                         }))
                         {
-                            await Activity.Current.StartActvity($"JOB_EXECUTE {jobTypeName} [{moduleName}]",
+                            await Activity.Current.StartActvity($"JOB Execute {jobTypeName}",
                                     async (a, c) => await next().AnyContext(),
                                     ActivityKind.Producer,
                                     tags: new Dictionary<string, string>

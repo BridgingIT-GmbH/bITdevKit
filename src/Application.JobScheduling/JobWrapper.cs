@@ -42,9 +42,7 @@ public class JobWrapper(
             try
             {
                 var behaviors = this.serviceProvider?.GetServices<IJobSchedulingBehavior>();
-                logger?.LogDebug(
-                    $"{{LogKey}} behaviors: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute",
-                    Constants.LogKey);
+                logger?.LogDebug($"{{LogKey}} behaviors: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute", Constants.LogKey);
                 // Activity.Current?.AddEvent(new($"behaviours: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute"));
 
                 context.Put("ModuleContextAccessors", this.ModuleAccessors);
@@ -57,12 +55,7 @@ public class JobWrapper(
             }
             catch (Exception ex)
             {
-                logger?.LogError(ex,
-                    "{LogKey} processing error (type={JobType}, id={JobId}): {ErrorMessage}",
-                    Constants.LogKey,
-                    jobTypeName,
-                    jobId,
-                    ex.Message);
+                logger?.LogError(ex, "{LogKey} processing error (type={JobType}, id={JobId}): {ErrorMessage}", Constants.LogKey, jobTypeName, jobId, ex.Message);
             }
         }
     }

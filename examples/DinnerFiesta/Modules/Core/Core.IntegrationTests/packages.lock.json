@@ -2247,7 +2247,8 @@
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "Microsoft.Extensions.Hosting.Abstractions": "[9.0.10, )"
+          "Microsoft.Extensions.Hosting.Abstractions": "[9.0.10, )",
+          "Spectre.Console": "[0.53.0, )"
         }
       },
       "BridgingIT.DevKit.Presentation.Configuration": {
@@ -2294,6 +2295,7 @@
           "NSwag.AspNetCore": "[14.6.1, )",
           "RazorSlices": "[0.9.5, )",
           "Serilog.Extensions.Hosting": "[9.0.0, )",
+          "Spectre.Console": "[0.53.0, )",
           "System.IdentityModel.Tokens.Jwt": "[8.14.0, )"
         }
       },

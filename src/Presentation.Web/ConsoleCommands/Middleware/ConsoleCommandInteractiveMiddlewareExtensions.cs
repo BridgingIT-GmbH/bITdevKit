@@ -19,7 +19,7 @@ public static class ConsoleCommandInteractiveMiddlewareExtensions
     /// </summary>
     /// <param name="app">The application builder.</param>
     /// <returns>The configured <see cref="WebApplication"/>.</returns>
-    public static WebApplication UseCommandInteractiveStats(this WebApplication app)
+    public static WebApplication UseConsoleCommandsInteractiveStats(this WebApplication app)
     {
         var stats = app.Services.GetRequiredService<ConsoleCommandInteractiveRuntimeStats>();
         app.Use(async (ctx, next) =>

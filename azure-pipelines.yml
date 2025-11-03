@@ -4,7 +4,7 @@ variables:
   - name: dotnetVersion
     value: '9.0.306'
   - name: solution
-    value: "**/*.sln"
+    value: "**/*.slnx"
   - name: buildConfiguration
     value: 'Release'
   - name: publishableBranches

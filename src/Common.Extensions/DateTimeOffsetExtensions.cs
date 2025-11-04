@@ -104,4 +104,27 @@ public static class DateTimeOffsetExtensions
     {
         return source.StartOfYear().AddYears(1).AddSeconds(-1);
     }
+
+    /// <summary>
+    /// Converts a <see cref="DateTimeOffset"/> value to a <see cref="DateOnly"/>, preserving only the calendar date (in the source's local time) and discarding the time and offset components.
+    /// </summary>
+    /// <param name="source">The source <see cref="DateTimeOffset"/> value.</param>
+    /// <returns>A <see cref="DateOnly"/> representing the date portion of the original <see cref="DateTimeOffset"/>.</returns>
+    [DebuggerStepThrough]
+    public static DateOnly ToDateOnly(this DateTimeOffset source)
+    {
+        return DateOnly.FromDateTime(source.LocalDateTime);
+    }
+
+    /// <summary>
+    /// Converts a <see cref="DateTimeOffset"/> value to a <see cref="TimeOnly"/>, preserving only the time-of-day component in the source's local time and discarding the date and offset components.
+    /// </summary>
+    /// <param name="source">The source <see cref="DateTimeOffset"/> value.</param>
+    /// <returns>A <see cref="TimeOnly"/> representing the time portion of the original <see cref="DateTimeOffset"/>.</returns>
+    [DebuggerStepThrough]
+    public static TimeOnly ToTimeOnly(this DateTimeOffset source)
+    {
+        return TimeOnly.FromDateTime(source.LocalDateTime);
+    }
+
 }

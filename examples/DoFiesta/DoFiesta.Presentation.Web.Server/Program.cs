@@ -181,7 +181,7 @@ app.MapRazorComponents<App>()
 
 app.MapHub<NotificationHub>("/signalrhub");
 
-app.UseCommandInteractiveStats();
+app.UseConsoleCommandsInteractiveStats();
 app.UseConsoleCommandsInteractive();
 
 app.Run();

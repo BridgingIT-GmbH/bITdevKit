@@ -66,12 +66,7 @@
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.10" />
     <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.10" />
     <PackageVersion Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.7.0" />
-    <PackageVersion Include="Microsoft.Kiota.Bundle" Version="1.20.1" />
-    <PackageVersion Include="Microsoft.Kiota.Http.HttpClientLibrary" Version="1.20.1" />
-    <PackageVersion Include="Microsoft.Kiota.Serialization.Form" Version="1.20.1" />
-    <PackageVersion Include="Microsoft.Kiota.Serialization.Json" Version="1.20.1" />
-    <PackageVersion Include="Microsoft.Kiota.Serialization.Multipart" Version="1.20.1" />
-    <PackageVersion Include="Microsoft.Kiota.Serialization.Text" Version="1.20.1" />
+    <PackageVersion Include="Microsoft.Kiota.Bundle" Version="1.21.0" />
     <PackageVersion Include="MudBlazor" Version="8.13.0" />
     <PackageVersion Include="NewId" Version="4.0.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
@@ -79,20 +74,20 @@
     <PackageVersion Include="NSwag.ApiDescription.Client" Version="14.6.1" />
     <PackageVersion Include="NSwag.AspNetCore" Version="14.6.1" />
     <PackageVersion Include="NSwag.MSBuild" Version="14.6.1" />
-    <PackageVersion Include="OpenTelemetry" Version="1.12.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.12.0" />
+    <PackageVersion Include="OpenTelemetry" Version="1.13.1" />
+    <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.13.1" />
     <PackageVersion Include="OpenTelemetry.Exporter.Jaeger" Version="1.5.1" />
     <PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.9.0-beta.2" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.12.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.12.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.12.0" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.12.0" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.13.1" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.13.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.13.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.13.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.SqlClient" Version="1.9.0-beta.1" />
     <PackageVersion Include="Polly" Version="8.6.4" />
     <PackageVersion Include="Polly.Contrib.Simmy" Version="0.3.0" />
-    <PackageVersion Include="Quartz" Version="3.15.0" />
-    <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="3.15.0" />
-    <PackageVersion Include="Quartz.Serialization.Json" Version="3.15.0" />
+    <PackageVersion Include="Quartz" Version="3.15.1" />
+    <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="3.15.1" />
+    <PackageVersion Include="Quartz.Serialization.Json" Version="3.15.1" />
     <PackageVersion Include="RabbitMQ.Client" Version="[6.8.1,7.0.0)" />
     <PackageVersion Include="RazorSlices" Version="0.9.5" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.9.0" />
@@ -126,7 +121,7 @@
   </ItemGroup>
   <ItemGroup Label="test dependencies">
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.4" />
-    <PackageVersion Include="Bogus" Version="35.6.4" />
+    <PackageVersion Include="Bogus" Version="35.6.5" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />
     <PackageVersion Include="Dumpify" Version="0.6.6" />
     <PackageVersion Include="FluentAssertions.Web" Version="1.9.5" />

@@ -170,7 +170,7 @@ public class EnumerationPartialGenerator : ISourceGenerator
 
     private class EnumerationSyntaxReceiver : ISyntaxReceiver
     {
-        public List<ClassDeclarationSyntax> CandidateClasses { get; } = new();
+        public List<ClassDeclarationSyntax> CandidateClasses { get; } = [];
 
         public void OnVisitSyntaxNode(SyntaxNode syntaxNode)
         {

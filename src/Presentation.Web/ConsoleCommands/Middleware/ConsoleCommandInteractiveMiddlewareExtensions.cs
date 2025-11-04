@@ -3,9 +3,10 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace BridgingIT.DevKit.Presentation.Web;
 
 using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 
 /// <summary>
@@ -18,7 +19,7 @@ public static class ConsoleCommandInteractiveMiddlewareExtensions
     /// </summary>
     /// <param name="app">The application builder.</param>
     /// <returns>The configured <see cref="WebApplication"/>.</returns>
-    public static WebApplication UseCommandInteractiveStats(this WebApplication app)
+    public static WebApplication UseConsoleCommandsInteractiveStats(this WebApplication app)
     {
         var stats = app.Services.GetRequiredService<ConsoleCommandInteractiveRuntimeStats>();
         app.Use(async (ctx, next) =>

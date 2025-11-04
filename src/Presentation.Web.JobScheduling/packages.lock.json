@@ -428,8 +428,8 @@
           "Humanizer.Core": "[2.14.1, )",
           "Polly": "[8.6.4, )",
           "Polly.Contrib.Simmy": "[0.3.0, )",
-          "Quartz": "[3.15.0, )",
-          "Quartz.Extensions.DependencyInjection": "[3.15.0, )"
+          "Quartz": "[3.15.1, )",
+          "Quartz.Extensions.DependencyInjection": "[3.15.1, )"
         }
       },
       "BridgingIT.DevKit.Application.Utilities": {
@@ -582,7 +582,8 @@
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "Microsoft.Extensions.Hosting.Abstractions": "[9.0.10, )"
+          "Microsoft.Extensions.Hosting.Abstractions": "[9.0.10, )",
+          "Spectre.Console": "[0.53.0, )"
         }
       },
       "BridgingIT.DevKit.Presentation.Web": {
@@ -603,6 +604,7 @@
           "NSwag.AspNetCore": "[14.6.1, )",
           "RazorSlices": "[0.9.5, )",
           "Serilog.Extensions.Hosting": "[9.0.0, )",
+          "Spectre.Console": "[0.53.0, )",
           "System.IdentityModel.Tokens.Jwt": "[8.14.0, )"
         }
       },
@@ -898,22 +900,22 @@
       },
       "Quartz": {
         "type": "CentralTransitive",
-        "requested": "[3.15.0, )",
-        "resolved": "3.15.0",
-        "contentHash": "seV76VI/OW9xdsEHJlfErciicfMmmU8lcGde2SJIYxVK+k4smAaBkm0FY8a4AiVb6MMpjTvH252438ol/OOUwQ==",
+        "requested": "[3.15.1, )",
+        "resolved": "3.15.1",
+        "contentHash": "XIbhzUAKSm3xdl1ORLPnK7mc5XANP3cuvYQhCtuX/8888IN41e9OXJak4R9OlmAGRnyAMqHE40yojVa89NS1wg==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "2.1.1"
         }
       },
       "Quartz.Extensions.DependencyInjection": {
         "type": "CentralTransitive",
-        "requested": "[3.15.0, )",
-        "resolved": "3.15.0",
-        "contentHash": "4g+QSG84cHlffLXoiHC7I/zkw223GUtdj0ZYrY+sxYq45Dd3Rti4uKIn0dWeotyEiJZNpn028bspf8njSJdnUg==",
+        "requested": "[3.15.1, )",
+        "resolved": "3.15.1",
+        "contentHash": "LinB9z54aPn49C/DGM1v3OflX2nosrEo4zNz10vfYqcCndFJ8MNU9k++Ap9T7vxeZc355WStPDggpX60TYj1Lg==",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Abstractions": "9.0.0",
           "Microsoft.Extensions.Options": "9.0.0",
-          "Quartz": "3.15.0"
+          "Quartz": "3.15.1"
         }
       },
       "RazorSlices": {
@@ -950,6 +952,12 @@
           "Serilog": "4.2.0",
           "Serilog.Extensions.Logging": "9.0.0"
         }
+      },
+      "Spectre.Console": {
+        "type": "CentralTransitive",
+        "requested": "[0.53.0, )",
+        "resolved": "0.53.0",
+        "contentHash": "m2iv8Egfywp7FaNLKCmCFHbSf36D4ctzZKvlAK9NXMyGLh6L+CnrZWK8o+LOYsoAS1jtoHn0W1BT0W8vuq/FUw=="
       },
       "System.Diagnostics.DiagnosticSource": {
         "type": "CentralTransitive",

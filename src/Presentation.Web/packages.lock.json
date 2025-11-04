@@ -77,6 +77,12 @@
           "Serilog.Extensions.Logging": "9.0.0"
         }
       },
+      "Spectre.Console": {
+        "type": "Direct",
+        "requested": "[0.53.0, )",
+        "resolved": "0.53.0",
+        "contentHash": "m2iv8Egfywp7FaNLKCmCFHbSf36D4ctzZKvlAK9NXMyGLh6L+CnrZWK8o+LOYsoAS1jtoHn0W1BT0W8vuq/FUw=="
+      },
       "System.IdentityModel.Tokens.Jwt": {
         "type": "Direct",
         "requested": "[8.14.0, )",
@@ -633,7 +639,8 @@
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "Microsoft.Extensions.Hosting.Abstractions": "[9.0.10, )"
+          "Microsoft.Extensions.Hosting.Abstractions": "[9.0.10, )",
+          "Spectre.Console": "[0.53.0, )"
         }
       },
       "CsvHelper": {

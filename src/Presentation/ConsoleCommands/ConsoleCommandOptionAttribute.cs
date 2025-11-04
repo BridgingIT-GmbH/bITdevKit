@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace BridgingIT.DevKit.Presentation;
 
 /// <summary>
 /// Attribute to mark an option (named --key) for a command.

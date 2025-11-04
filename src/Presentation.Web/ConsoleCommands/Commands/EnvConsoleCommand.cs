@@ -3,9 +3,10 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace BridgingIT.DevKit.Presentation.Web;
 
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 
 public class EnvConsoleCommand : ConsoleCommandBase

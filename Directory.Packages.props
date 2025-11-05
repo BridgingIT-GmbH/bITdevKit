@@ -65,6 +65,7 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.10" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="9.0.10" />
     <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.10" />
+    <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="9.10.0" />
     <PackageVersion Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.7.0" />
     <PackageVersion Include="Microsoft.Kiota.Bundle" Version="1.21.0" />
     <PackageVersion Include="MudBlazor" Version="8.13.0" />

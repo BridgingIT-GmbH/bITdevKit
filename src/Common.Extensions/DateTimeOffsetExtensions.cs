@@ -126,5 +126,4 @@ public static class DateTimeOffsetExtensions
     {
         return TimeOnly.FromDateTime(source.LocalDateTime);
     }
-
 }

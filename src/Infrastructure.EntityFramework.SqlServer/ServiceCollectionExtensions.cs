@@ -15,6 +15,7 @@ using EntityFrameworkCore.Diagnostics;
 using EntityFrameworkCore.Infrastructure;
 using Extensions;
 using Logging;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Quartz;
 
 public static class ServiceCollectionExtensions
@@ -89,7 +90,11 @@ public static class ServiceCollectionExtensions
                 }
 
                 o.UseSqlServer(options.ConnectionString, sqlServerOptionsBuilder);
-                //o.UseExceptionProcessor();
+
+                if (options.IdempotentMigrationsEnabled)
+                {
+                    o.ReplaceService<IMigrationsSqlGenerator, SqlServerIdempotentMigrationsSqlGenerator>();
+                }
 
                 if (options.LoggerEnabled)
                 {

@@ -20,6 +20,7 @@ public class SqliteOptions : OptionsBase
     public virtual string MigrationsAssemblyName { get; set; }
 
     public virtual bool LoggerEnabled { get; set; }
+    public virtual bool IdempotentMigrationsEnabled { get; set; } = true;
 
     public virtual bool CommandLoggerEnabled { get; set; }
 

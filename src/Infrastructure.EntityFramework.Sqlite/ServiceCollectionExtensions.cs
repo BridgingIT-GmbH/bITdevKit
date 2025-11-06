@@ -15,6 +15,7 @@ using EntityFrameworkCore.Diagnostics;
 using EntityFrameworkCore.Infrastructure;
 using Extensions;
 using Logging;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Quartz;
 
 public static class ServiceCollectionExtensions
@@ -93,6 +94,11 @@ public static class ServiceCollectionExtensions
 
                 o.UseSqlite(options.ConnectionString, sqliteOptionsBuilder);
                 //o.UseExceptionProcessor();
+
+                if (options.IdempotentMigrationsEnabled)
+                {
+                    o.ReplaceService<IMigrationsSqlGenerator, SqliteIdempotentMigrationsSqlGenerator>();
+                }
 
                 if (options.LoggerEnabled)
                 {

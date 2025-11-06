@@ -9,7 +9,7 @@ using FluentValidation;
 
 public class CoreModuleConfiguration
 {
-    public IReadOnlyDictionary<string, string> ConnectionStrings { get; set; }
+    public IReadOnlyDictionary<string, string> ConnectionStrings { get; set; } // SafeReadOnlyDictionary
 
     public string SeederTaskStartupDelay { get; set; } = "00:00:05";
 

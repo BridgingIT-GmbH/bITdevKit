@@ -39,6 +39,12 @@ public class PostgresOptionsBuilder : OptionsBuilderBase<PostgresOptions, Postgr
         return this;
     }
 
+    public PostgresOptionsBuilder UseIdempotentMigrations(bool value = true)
+    {
+        this.Target.IdempotentMigrationsEnabled = value;
+        return this;
+    }
+
     public PostgresOptionsBuilder UseCommandLogger(bool value = true)
     {
         this.Target.CommandLoggerEnabled = value;

@@ -36,7 +36,7 @@ public class CoreModule : WebModuleBase
         // jobs
         services.AddJobScheduling(o => o
             .Enabled().StartupDelay(configuration["JobScheduling:StartupDelay"]), configuration)
-            .WithSqlServerStore(configuration["Modules:Core:ConnectionStrings:Default"])
+            .WithSqlServerStore(moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default"))
             .WithJob<FileMonitoringLocationScanJob>()
                 .Cron(CronExpressions.Every5Minutes)
                 .Named("scan_inbound")
@@ -69,7 +69,7 @@ public class CoreModule : WebModuleBase
 
         // dbcontext
         services.AddSqlServerDbContext<CoreDbContext>(o => o
-                .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
+                .UseConnectionString(moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default"))
                 .UseLogger()/*.UseSimpleLogger()*/)
             .WithSequenceNumberGenerator()
             .WithDatabaseCreatorService(o => o

@@ -3,10 +3,9 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Common;
+namespace System.Collections.Generic;
 
 using System.Collections;
-using System.Collections.Generic;
 
 /// <summary>
 /// A mutable dictionary that provides safe (non-throwing)

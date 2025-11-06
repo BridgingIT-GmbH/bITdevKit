@@ -1198,6 +1198,7 @@ public class EntityFrameworkActiveEntityTests(ITestOutputHelper output, TestEnvi
         // Act: Use the static finder (FindAllByLastNameAsync)
         var does = await Customer.FindAllByLastNameCustomAsync("Doe", ct);   // inline static
         var johns = await Customer.FindAllByFirstNameCustomAsync("John", ct); // static forwarder, source generated
+        var mrs = await Customer.FindAllByTitleAsync("Mr.", null, ct); // static extension, source generated
 
         // Assert 1: LastName finder
         does.ShouldBeSuccess();
@@ -1208,6 +1209,11 @@ public class EntityFrameworkActiveEntityTests(ITestOutputHelper output, TestEnvi
         johns.ShouldBeSuccess();
         johns.Value.ShouldNotBeEmpty();
         johns.Value.ShouldAllBe(c => c.FirstName == "John");
+
+        // Assert 2: Title finder
+        mrs.ShouldBeSuccess();
+        mrs.Value.ShouldNotBeEmpty();
+        mrs.Value.ShouldAllBe(c => c.Title == "Mr.");
     }
 
     [Fact]
@@ -1780,8 +1786,8 @@ public class EntityFrameworkActiveEntityTests(ITestOutputHelper output, TestEnvi
         var customer = customersResult.Value.Last();
 
         // Act
-        var findAllResult1 = await Order.FindAllForAsync(customer);
-        var findAllResult2 = await Order.FindAllForAsync(OrderStatus.Shipped);
+        var findAllResult1 = await Order.FindAllForAsync(customer);            // static forwarder, source generated
+        var findAllResult2 = await Order.FindAllForAsync(OrderStatus.Shipped); // static forwarder, source generated
 
         // Assert
         findAllResult1.ShouldBeSuccess();

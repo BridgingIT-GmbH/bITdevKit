@@ -11,7 +11,7 @@ using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Common;
 using Extensions;
 
-public static class ServiceCollectionExtensions
+public static partial class ServiceCollectionExtensions
 {
     private static StartupTaskServiceOptions contextOptions;
 

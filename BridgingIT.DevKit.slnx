@@ -215,7 +215,6 @@
     <Project Path="src/Presentation.Configuration/Presentation.Configuration.csproj" />
     <Project Path="src/Presentation.Serilog/Presentation.Serilog.csproj" />
     <Project Path="src/Presentation.Web.Client/Presentation.Web.Client.csproj" />
-    <Project Path="src/Presentation.Web.Commands/Presentation.Web.Commands.csproj" />
     <Project Path="src/Presentation.Web.JobScheduling/Presentation.Web.JobScheduling.csproj" />
     <Project Path="src/Presentation.Web/Presentation.Web.csproj" />
     <Project Path="src/Presentation/Presentation.csproj" />

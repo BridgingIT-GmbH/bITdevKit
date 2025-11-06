@@ -303,10 +303,26 @@ public static class DateTimeExtensions
         return target - date;
     }
 
+    /// <summary>
+    /// Converts a <see cref="DateTime"/> value to a <see cref="DateOnly"/> preserving the calendar date and discarding the time component.
+    /// </summary>
+    /// <param name="source">The source <see cref="DateTime"/> value.</param>
+    /// <returns>A <see cref="DateOnly"/> representing the date portion of the original <see cref="DateTime"/>.</returns>
     [DebuggerStepThrough]
-    private static DateTime ToDateTime(this DateOnly date, TimeOnly time)
+    public static DateOnly ToDateOnly(this DateTime source)
     {
-        return date.ToDateTime(time);
+        return DateOnly.FromDateTime(source);
+    }
+
+    /// <summary>
+    /// Converts a <see cref="DateTime"/> value to a <see cref="TimeOnly"/> preserving only the time-of-day component and discarding the date component.
+    /// </summary>
+    /// <param name="source">The source <see cref="DateTime"/> value.</param>
+    /// <returns>A <see cref="TimeOnly"/> representing the time portion of the original <see cref="DateTime"/>.</returns>
+    [DebuggerStepThrough]
+    public static TimeOnly ToTimeOnly(this DateTime source)
+    {
+        return TimeOnly.FromDateTime(source);
     }
 
     [DebuggerStepThrough]

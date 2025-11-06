@@ -51,6 +51,9 @@ public class PostgresIdempotentMigrationsSqlGenerator(
         IModel model,
         MigrationCommandListBuilder builder)
     {
+        builder.AppendLine("-- Ensure Schema");
+        builder.AppendLine();
+
         var schema = operation.Name;
         if (string.Equals(schema, "public", StringComparison.OrdinalIgnoreCase))
             return;
@@ -64,11 +67,14 @@ public class PostgresIdempotentMigrationsSqlGenerator(
 
     /// <inheritdoc />
     protected override void Generate(
-    CreateTableOperation operation,
-    IModel model,
-    MigrationCommandListBuilder builder,
-    bool terminate = true)
+        CreateTableOperation operation,
+        IModel model,
+        MigrationCommandListBuilder builder,
+        bool terminate = true)
     {
+        builder.AppendLine("-- Create Table");
+        builder.AppendLine();
+
         var schema = operation.Schema ?? "public";
         var table = operation.Name;
 
@@ -80,7 +86,6 @@ public class PostgresIdempotentMigrationsSqlGenerator(
                .AppendLine(") THEN")
                .IncrementIndent();
 
-        // direct base call (do not capture)
         base.Generate(operation, model, builder, terminate: false);
 
         builder.DecrementIndent()
@@ -97,6 +102,9 @@ public class PostgresIdempotentMigrationsSqlGenerator(
         MigrationCommandListBuilder builder,
         bool terminate = true)
     {
+        builder.AppendLine("-- Drop Table");
+        builder.AppendLine();
+
         var schema = operation.Schema ?? "public";
         var table = operation.Name;
 
@@ -108,7 +116,6 @@ public class PostgresIdempotentMigrationsSqlGenerator(
                .AppendLine(") THEN")
                .IncrementIndent();
 
-        // direct base call (do not capture)
         base.Generate(operation, model, builder, terminate: false);
 
         builder.DecrementIndent()
@@ -125,8 +132,11 @@ public class PostgresIdempotentMigrationsSqlGenerator(
         CreateIndexOperation operation,
         IModel model,
         MigrationCommandListBuilder builder,
-    bool terminate = true)
+        bool terminate = true)
     {
+        builder.AppendLine("-- Create Index");
+        builder.AppendLine();
+
         var schema = operation.Schema ?? "public";
         var table = operation.Table;
         var index = operation.Name;
@@ -139,7 +149,6 @@ public class PostgresIdempotentMigrationsSqlGenerator(
                .AppendLine(") THEN")
                .IncrementIndent();
 
-        // direct base call (do not capture)
         base.Generate(operation, model, builder, terminate: false);
 
         builder.DecrementIndent()
@@ -156,6 +165,9 @@ public class PostgresIdempotentMigrationsSqlGenerator(
         MigrationCommandListBuilder builder,
         bool terminate = true)
     {
+        builder.AppendLine("-- Drop Index");
+        builder.AppendLine();
+
         var schema = operation.Schema ?? "public";
         var index = operation.Name;
 
@@ -167,7 +179,6 @@ public class PostgresIdempotentMigrationsSqlGenerator(
                .AppendLine(") THEN")
                .IncrementIndent();
 
-        // direct base call (do not capture)
         base.Generate(operation, model, builder, terminate: false);
 
         builder.DecrementIndent()
@@ -182,11 +193,14 @@ public class PostgresIdempotentMigrationsSqlGenerator(
     /// <inheritdoc />
     protected override void Generate(CreateSequenceOperation operation, IModel model, MigrationCommandListBuilder builder)
     {
+        builder.AppendLine("-- Create Sequence");
+        builder.AppendLine();
+
         builder.Append("CREATE SEQUENCE IF NOT EXISTS ")
                .Append(this.Dependencies.SqlGenerationHelper.DelimitIdentifier(operation.Name, operation.Schema));
 
         var mapping = this.Dependencies.TypeMappingSource.FindMapping(operation.ClrType)
-                     ?? this.Dependencies.TypeMappingSource.FindMapping(typeof(long));
+                         ?? this.Dependencies.TypeMappingSource.FindMapping(typeof(long));
 
         builder.Append(" START WITH ")
                .Append(mapping?.GenerateSqlLiteral(operation.StartValue) ?? operation.StartValue.ToString());
@@ -199,6 +213,9 @@ public class PostgresIdempotentMigrationsSqlGenerator(
     /// <inheritdoc />
     protected override void Generate(DropSequenceOperation operation, IModel model, MigrationCommandListBuilder builder)
     {
+        builder.AppendLine("-- Drop Sequence");
+        builder.AppendLine();
+
         builder.Append("DROP SEQUENCE IF EXISTS ")
                .Append(this.Dependencies.SqlGenerationHelper.DelimitIdentifier(operation.Name, operation.Schema))
                .AppendLine(this.Dependencies.SqlGenerationHelper.StatementTerminator);
@@ -210,6 +227,9 @@ public class PostgresIdempotentMigrationsSqlGenerator(
     /// <inheritdoc />
     protected override void Generate(AddPrimaryKeyOperation operation, IModel model, MigrationCommandListBuilder builder, bool terminate = true)
     {
+        builder.AppendLine("-- Add Primary Key");
+        builder.AppendLine();
+
         var schema = operation.Schema ?? "public";
         var name = operation.Name;
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i, terminate: false));
@@ -229,6 +249,9 @@ public class PostgresIdempotentMigrationsSqlGenerator(
     /// <inheritdoc />
     protected override void Generate(DropPrimaryKeyOperation operation, IModel model, MigrationCommandListBuilder builder, bool terminate = true)
     {
+        builder.AppendLine("-- Drop Primary Key");
+        builder.AppendLine();
+
         var schema = operation.Schema ?? "public";
         var name = operation.Name;
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i, terminate: false));
@@ -248,6 +271,9 @@ public class PostgresIdempotentMigrationsSqlGenerator(
     /// <inheritdoc />
     protected override void Generate(AddForeignKeyOperation operation, IModel model, MigrationCommandListBuilder builder, bool terminate = true)
     {
+        builder.AppendLine("-- Add Foreign Key");
+        builder.AppendLine();
+
         var schema = operation.Schema ?? "public";
         var name = operation.Name;
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i, terminate: false));
@@ -267,6 +293,9 @@ public class PostgresIdempotentMigrationsSqlGenerator(
     /// <inheritdoc />
     protected override void Generate(DropForeignKeyOperation operation, IModel model, MigrationCommandListBuilder builder, bool terminate = true)
     {
+        builder.AppendLine("-- Drop Foreign Key");
+        builder.AppendLine();
+
         var schema = operation.Schema ?? "public";
         var name = operation.Name;
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i, terminate: false));
@@ -286,6 +315,9 @@ public class PostgresIdempotentMigrationsSqlGenerator(
     /// <inheritdoc />
     protected override void Generate(AddUniqueConstraintOperation operation, IModel model, MigrationCommandListBuilder builder)
     {
+        builder.AppendLine("-- Add Unique Constraint");
+        builder.AppendLine();
+
         var schema = operation.Schema ?? "public";
         var name = operation.Name;
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i));
@@ -303,6 +335,9 @@ public class PostgresIdempotentMigrationsSqlGenerator(
     /// <inheritdoc />
     protected override void Generate(DropUniqueConstraintOperation operation, IModel model, MigrationCommandListBuilder builder)
     {
+        builder.AppendLine("-- Drop Unique Constraint");
+        builder.AppendLine();
+
         var schema = operation.Schema ?? "public";
         var name = operation.Name;
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i));
@@ -320,6 +355,9 @@ public class PostgresIdempotentMigrationsSqlGenerator(
     /// <inheritdoc />
     protected override void Generate(AddCheckConstraintOperation operation, IModel model, MigrationCommandListBuilder builder)
     {
+        builder.AppendLine("-- Add Check Constraint");
+        builder.AppendLine();
+
         var schema = operation.Schema ?? "public";
         var name = operation.Name;
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i));
@@ -337,6 +375,9 @@ public class PostgresIdempotentMigrationsSqlGenerator(
     /// <inheritdoc />
     protected override void Generate(DropCheckConstraintOperation operation, IModel model, MigrationCommandListBuilder builder)
     {
+        builder.AppendLine("-- Drop Check Constraint");
+        builder.AppendLine();
+
         var schema = operation.Schema ?? "public";
         var name = operation.Name;
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i));

@@ -246,7 +246,7 @@ public class SqlServerIdempotentMigrationsSqlGenerator(
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i, terminate: false));
 
         builder
-               .AppendLine("-- Add PrimaryKey")
+               .AppendLine("-- Add Primary Key")
                .AppendLine("IF NOT EXISTS (")
                .AppendLine("    SELECT 1 FROM sys.key_constraints kc")
                .AppendLine("    JOIN sys.schemas s ON s.schema_id = kc.schema_id")
@@ -269,7 +269,7 @@ public class SqlServerIdempotentMigrationsSqlGenerator(
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i, terminate: false));
 
         builder
-               .AppendLine("-- Drop PrimaryKey")
+               .AppendLine("-- Drop Primary Key")
                .AppendLine("IF EXISTS (")
                .AppendLine("    SELECT 1 FROM sys.key_constraints kc")
                .AppendLine("    JOIN sys.schemas s ON s.schema_id = kc.schema_id")
@@ -293,7 +293,7 @@ public class SqlServerIdempotentMigrationsSqlGenerator(
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i, terminate: false));
 
         builder
-               .AppendLine("-- Add ForeignKey")
+               .AppendLine("-- Add Foreign Key")
                .AppendLine("IF NOT EXISTS (")
                .AppendLine("    SELECT 1 FROM sys.foreign_keys fk")
                .AppendLine("    JOIN sys.tables t ON t.object_id = fk.parent_object_id")
@@ -318,7 +318,7 @@ public class SqlServerIdempotentMigrationsSqlGenerator(
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i, terminate: false));
 
         builder
-               .AppendLine("-- Drop ForeignKey")
+               .AppendLine("-- Drop Foreign Key")
                .AppendLine("IF EXISTS (")
                .AppendLine("    SELECT 1 FROM sys.foreign_keys fk")
                .AppendLine("    JOIN sys.tables t ON t.object_id = fk.parent_object_id")
@@ -343,7 +343,7 @@ public class SqlServerIdempotentMigrationsSqlGenerator(
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i));
 
         builder
-               .AppendLine("-- Add CheckConstraint")
+               .AppendLine("-- Add Check Constraint")
                .AppendLine("IF NOT EXISTS (")
                .AppendLine("    SELECT 1 FROM sys.check_constraints cc")
                .AppendLine("    JOIN sys.tables t ON t.object_id = cc.parent_object_id")
@@ -368,7 +368,7 @@ public class SqlServerIdempotentMigrationsSqlGenerator(
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i));
 
         builder
-               .AppendLine("-- Drop CheckConstraint")
+               .AppendLine("-- Drop Check Constraint")
                .AppendLine("IF EXISTS (")
                .AppendLine("    SELECT 1 FROM sys.check_constraints cc")
                .AppendLine("    JOIN sys.tables t ON t.object_id = cc.parent_object_id")
@@ -393,7 +393,7 @@ public class SqlServerIdempotentMigrationsSqlGenerator(
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i));
 
         builder
-               .AppendLine("-- Add UniqueConstraint")
+               .AppendLine("-- Add Unique Constraint")
                .AppendLine("IF NOT EXISTS (")
                .AppendLine("    SELECT 1 FROM sys.key_constraints kc")
                .AppendLine("    JOIN sys.tables t ON t.object_id = kc.parent_object_id")
@@ -418,7 +418,7 @@ public class SqlServerIdempotentMigrationsSqlGenerator(
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i));
 
         builder
-               .AppendLine("-- Drop UniqueConstraint")
+               .AppendLine("-- Drop Unique Constraint")
                .AppendLine("IF EXISTS (")
                .AppendLine("    SELECT 1 FROM sys.key_constraints kc")
                .AppendLine("    JOIN sys.tables t ON t.object_id = kc.parent_object_id")

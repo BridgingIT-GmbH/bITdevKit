@@ -26,6 +26,5 @@ public class CoreDbContextFactory : SqlServerModuleDbContextFactory<CoreDbContex
                 builder.UseSqlServer(
                     connectionString,
                     sqlOptions => sqlOptions.MigrationsAssembly(typeof(CoreDbContext).Assembly.GetName().Name)))
-    {
-    }
+    { }
 }

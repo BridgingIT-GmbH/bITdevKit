@@ -11,7 +11,6 @@ using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 using BridgingIT.DevKit.Presentation;
 using Common;
 using DevKit.Domain.Repositories;

@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Common;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Configuration;
 
-public static class ConfigurationExtensions
+public static class ConfExtensions // name deliberately chosen to avoid conflict with ConfigurationExtensions
 {
     /// <summary>
     ///     Retrieves a configuration section by the given key.

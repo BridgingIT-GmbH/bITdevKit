@@ -5,14 +5,14 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using System.Diagnostics;
-using System.Reflection;
 using AspNetCore.Builder;
 using AspNetCore.Hosting;
 using BridgingIT.DevKit.Common;
 using Configuration;
 using FluentValidation;
 using Serilog;
+using System.Diagnostics;
+using System.Reflection;
 
 public static class ModuleExtensions
 {
@@ -45,12 +45,7 @@ public static class ModuleExtensions
 
             if (module?.IsRegistered == false)
             {
-                Log.Logger.Information(
-                    "{LogKey} register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ",
-                    ModuleConstants.LogKey,
-                    module.Name,
-                    module.Enabled,
-                    module.Priority);
+                Log.Logger.Information("{LogKey} register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
                 services.AddSingleton(module);
                 services.AddSingleton(new ActivitySource(module.Name));
 
@@ -103,12 +98,7 @@ public static class ModuleExtensions
 
         if (module?.IsRegistered == false)
         {
-            Log.Logger.Information(
-                "{LogKey} register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ",
-                ModuleConstants.LogKey,
-                module.Name,
-                module.Enabled,
-                module.Priority);
+            Log.Logger.Information("{LogKey} register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
             context.Services.AddSingleton(module);
             context.Services.AddSingleton(new ActivitySource(module.Name));
 
@@ -126,12 +116,7 @@ public static class ModuleExtensions
         var module = modules.SafeNull().FirstOrDefault(m => m.IsOfType(type));
         if (module?.IsRegistered == false)
         {
-            Log.Logger.Information(
-                "{LogKey} register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ",
-                ModuleConstants.LogKey,
-                module.Name,
-                module.Enabled,
-                module.Priority);
+            Log.Logger.Information("{LogKey} register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
             context.Services.AddSingleton(module);
             context.Services.AddSingleton(new ActivitySource(module.Name));
 
@@ -154,12 +139,7 @@ public static class ModuleExtensions
 
         foreach (var module in modules.SafeNull()) // TODO: only load enabled modules
         {
-            Log.Logger.Information(
-                "{LogKey} use (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ",
-                ModuleConstants.LogKey,
-                module.Name,
-                module.Enabled,
-                module.Priority);
+            Log.Logger.Information("{LogKey} use (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
             module.Use(app, configuration, environment);
         }
 
@@ -208,6 +188,11 @@ public static class ModuleExtensions
         if (configuration is null || services is null)
         {
             return default;
+        }
+
+        if (IsBuildTimeOpenApiGeneration()) // dont use validator when generating OpenAPI docs at build time
+        {
+            return services.Configure<TOptions>(configuration, module, validateOnStart);
         }
 
         return services.Configure<TOptions, TValidator>(configuration, module, validateOnStart);
@@ -270,13 +255,7 @@ public static class ModuleExtensions
                     return;
                 }
 
-                Log.Logger.Verbose(
-                    "{LogKey} started activity: {ActivityOperationName} {ActivityDisplayName} (module={ModuleName}, status={ActivityStatus})",
-                    "TRC",
-                    a.OperationName,
-                    a.DisplayName,
-                    a.Source.Name,
-                    a.Status);
+                Log.Logger.Verbose("{LogKey} started activity: {ActivityOperationName} {ActivityDisplayName} (module={ModuleName}, status={ActivityStatus})", "TRC", a.OperationName, a.DisplayName, a.Source.Name, a.Status);
             },
             ActivityStopped = a =>
             {
@@ -285,17 +264,21 @@ public static class ModuleExtensions
                     return;
                 }
 
-                Log.Logger.Verbose(
-                    "{LogKey} finished activity: {ActivityOperationName} {ActivityDisplayName} (module={ModuleName}, status={ActivityStatus}) -> took {TimeElapsed:0.0000} ms",
-                    "TRC",
-                    a.OperationName,
-                    a.DisplayName,
-                    a.Source.Name,
-                    a.Status,
-                    a.Duration.TotalMilliseconds);
+                Log.Logger.Verbose("{LogKey} finished activity: {ActivityOperationName} {ActivityDisplayName} (module={ModuleName}, status={ActivityStatus}) -> took {TimeElapsed:0.0000} ms", "TRC", a.OperationName, a.DisplayName, a.Source.Name, a.Status, a.Duration.TotalMilliseconds);
             },
             ShouldListenTo = s => true,
             Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData
         });
     }
+
+    /// <summary>
+    /// Detects when the app is running under **OpenAPI build-time document generation**
+    /// (special case for Swagger in .NET 9, see official docs).
+    /// </summary>
+    /// <remarks>
+    /// This checks whether the entry assembly name is <c>GetDocument.Insider</c>,
+    /// which is used by the tooling when generating OpenAPI docs at build time.
+    /// </remarks>
+    private static bool IsBuildTimeOpenApiGeneration() =>
+        Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
 }

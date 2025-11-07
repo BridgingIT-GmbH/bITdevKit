@@ -5,15 +5,7 @@
     }
   ],
   "settings": {
-    "dotnet.defaultSolution": "BridgingIT.DevKit.sln",
-    "github.copilot.chat.codeGeneration.instructions": [
-      {
-        "file": ".github/.copilot-instructions.md"
-      },
-      {
-        "file": "CODE-STYLE.md"
-      }
-    ],
+    "dotnet.defaultSolution": "bITdevKit.slnx",
     "workbench.colorCustomizations": {
         "activityBar.activeBackground": "#1a48ca",
         "activityBar.activeBorder": "#e9567c",
@@ -34,6 +26,14 @@
         "titleBar.inactiveForeground": "#e7e7e799",
         "commandCenter.border": "#e7e7e799"
     },
-    "peacock.color": "#14389d"
+    "peacock.color": "#14389d",
+    "github.copilot.chat.codeGeneration.instructions": [
+      {
+        "file": ".github/.copilot-instructions.md"
+      },
+      {
+        "file": "CODE-STYLE.md"
+      }
+    ],
   }
 }

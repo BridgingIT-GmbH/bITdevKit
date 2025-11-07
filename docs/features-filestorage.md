@@ -6,7 +6,7 @@
 
 Managing file storage presents challenges due to inconsistent APIs across storage systems, complex requirements for secure file handling, the need for progress reporting during long operations, robust error handling, thread safety concerns, and the demand for extensibility to support new providers or custom functionality.
 
-The BridgingIT DevKit�s `FileStorage` feature addresses these through the `IFileStorageProvider` interface for abstracting file operations, a fluent DI setup with `AddFileStorage`, and the `Result` pattern for error handling and messaging. It supports progress reporting via `IProgress<FileProgress>` and metadata management with `FileMetadata`. The feature is designed to be extensible, allowing developers to implement custom providers or extend functionality with behaviors. Additionally, it supports notifications for real-time monitoring (used by `FileMonitoring`) through the `SupportsNotifications` property.
+The bITdevKit�s `FileStorage` feature addresses these through the `IFileStorageProvider` interface for abstracting file operations, a fluent DI setup with `AddFileStorage`, and the `Result` pattern for error handling and messaging. It supports progress reporting via `IProgress<FileProgress>` and metadata management with `FileMetadata`. The feature is designed to be extensible, allowing developers to implement custom providers or extend functionality with behaviors. Additionally, it supports notifications for real-time monitoring (used by `FileMonitoring`) through the `SupportsNotifications` property.
 
 ### Architecture
 

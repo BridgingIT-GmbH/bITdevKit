@@ -20,5 +20,5 @@
     "commandCenter.border": "#e7e7e799"
 },
   "peacock.color": "#14389d",
-  "dotnet.defaultSolution": "BridgingIT.DevKit.sln"
+  "dotnet.defaultSolution": "bITdevKit.slnx"
 }

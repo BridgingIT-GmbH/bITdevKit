@@ -1,4 +1,4 @@
-## Release 3.0.1 [25.04.24]
+## Release 9.0.0 [25.04.24]
 
 - [N] Initial release
 

@@ -42,6 +42,7 @@
     <File Path="docs/features-messaging.md" />
     <File Path="docs/features-modules.md" />
     <File Path="docs/features-presentation-appstate.md" />
+    <File Path="docs/features-presentation-cors.md" />
     <File Path="docs/features-requester-notifier.md" />
     <File Path="docs/features-results.md" />
     <File Path="docs/features-rules.md" />
@@ -120,7 +121,7 @@
     <Project Path="examples/DoFiesta/DoFiesta.Domain/DoFiesta.Domain.csproj" />
     <Project Path="examples/DoFiesta/DoFiesta.Infrastructure/DoFiesta.Infrastructure.csproj" />
     <Project Path="examples/DoFiesta/DoFiesta.Presentation.Web.Client/DoFiesta.Presentation.Web.Client.csproj" />
-    <Project Path="examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj" DefaultStartup="true"/>
+    <Project Path="examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj" />
   </Folder>
   <Folder Name="/examples/EventSourcingDemo/" />
   <Folder Name="/examples/EventSourcingDemo/assets/">

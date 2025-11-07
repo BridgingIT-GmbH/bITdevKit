@@ -19,7 +19,7 @@ using System.Reflection;
 /// <summary>
 /// Provides an interactive command-based console that runs inside a locally hosted Kestrel <see cref="WebApplication"/>.
 /// </summary>
-public static class ApplicationBuilderExtensions
+public static partial class ApplicationBuilderExtensions
 {
     /// <summary>
     /// Enables the interactive console loop in a web application when running locally.

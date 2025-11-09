@@ -17,6 +17,16 @@ using Microsoft.AspNetCore.Http;
 public class HttpCurrentUserAccessor(IHttpContextAccessor httpContextAccessor) : ICurrentUserAccessor
 {
     /// <summary>
+    ///     Gets the ClaimsPrincipal representing the current user.
+    /// </summary>
+    public ClaimsPrincipal Principal => httpContextAccessor.HttpContext?.User ?? new ClaimsPrincipal();
+
+    /// <summary>
+    ///     Gets a value indicating whether the current user is authenticated.
+    /// </summary>
+    public bool IsAuthenticated => httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
+
+    /// <summary>
     ///     Gets the User ID of the current user.
     /// </summary>
     /// <value>

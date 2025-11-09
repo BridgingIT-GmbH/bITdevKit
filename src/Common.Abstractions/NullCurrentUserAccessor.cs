@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Security.Claims;
+
 /// <summary>
 ///     The NullCurrentUserAccessor class is an implementation of the ICurrentUserAccessor interface that provides
 ///     access to user details with all properties returning null. This implementation is typically used when there
@@ -12,6 +14,18 @@ namespace BridgingIT.DevKit.Common;
 /// </summary>
 public class NullCurrentUserAccessor : ICurrentUserAccessor
 {
+    /// <summary>
+    ///     Gets the principal representing the current user.
+    ///     Returns null if there is no current user context.
+    /// </summary>
+    public ClaimsPrincipal Principal => null;
+
+    /// <summary>
+    ///     Gets a value indicating whether the current user is authenticated.
+    ///     Returns false as there is no current user context.
+    /// </summary>
+    public bool IsAuthenticated => false;
+
     /// <summary>
     ///     Gets the unique identifier for the current user.
     ///     Returns null if there is no current user or the identifier is unavailable.

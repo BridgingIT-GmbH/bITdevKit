@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using System.Security.Claims;
 using Common;
 
 public class FakeCurrentUserAccessor : ICurrentUserAccessor
@@ -37,6 +38,30 @@ public class FakeCurrentUserAccessor : ICurrentUserAccessor
         this.Email = user.Email;
         this.Roles = user.Roles;
     }
+
+    public ClaimsPrincipal Principal
+    {
+        get
+        {
+            var claims = new List<Claim>
+            {
+                new(ClaimTypes.NameIdentifier, this.UserId ?? string.Empty),
+                new(ClaimTypes.Name, this.UserName ?? string.Empty),
+                new(ClaimTypes.Email, this.Email ?? string.Empty)
+            };
+
+            if (this.Roles != null)
+            {
+                claims.AddRange(this.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
+            }
+
+            var identity = new ClaimsIdentity(claims, "Fake");
+
+            return new ClaimsPrincipal(identity);
+        }
+    }
+
+    public bool IsAuthenticated => !string.IsNullOrEmpty(this.UserId);
 
     public string UserId { get; }
 

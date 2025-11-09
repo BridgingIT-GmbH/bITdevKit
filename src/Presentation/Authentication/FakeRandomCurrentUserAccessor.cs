@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation;
 
 using Common;
+using System.Security.Claims;
 
 public class FakeRandomCurrentUserAccessor : ICurrentUserAccessor
 {
@@ -27,7 +28,12 @@ public class FakeRandomCurrentUserAccessor : ICurrentUserAccessor
         this.UserName = user.Value.Name;
         this.Email = user.Value.Email;
         this.Roles = user.Value.Roles;
+        this.Principal = CreatePrincipal(user.Value);
     }
+
+    public ClaimsPrincipal Principal { get; }
+
+    public bool IsAuthenticated => !string.IsNullOrEmpty(this.UserId);
 
     public string UserId { get; }
 
@@ -42,5 +48,29 @@ public class FakeRandomCurrentUserAccessor : ICurrentUserAccessor
         var index = Random.Next(UserStore.Count);
 
         return UserStore.ElementAt(index);
+    }
+
+    private static ClaimsPrincipal CreatePrincipal(FakeUser user)
+    {
+        var claims = new List<Claim>
+        {
+            new(ClaimTypes.NameIdentifier, user.Id),
+            new(ClaimTypes.Name, user.Name),
+            new(ClaimTypes.Email, user.Email)
+        };
+
+        if (user.Roles is not null)
+        {
+            claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
+        }
+
+        if (user.Claims is not null)
+        {
+            claims.AddRange(user.Claims.Select(c => new Claim(c.Key, c.Value)));
+        }
+
+        var identity = new ClaimsIdentity(claims, "Fake");
+
+        return new ClaimsPrincipal(identity);
     }
 }

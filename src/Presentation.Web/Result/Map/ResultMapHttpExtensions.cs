@@ -168,7 +168,7 @@ public static class ResultMapHttpExtensions
         return result switch
         {
             { IsSuccess: true } => successFunc(result.Value),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<TUnauthorized>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<TUnauthorized>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<TNotFound>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<TBadRequest>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<TProblem>(logger, result),
@@ -267,7 +267,7 @@ public static class ResultMapHttpExtensions
         return result switch
         {
             { IsSuccess: true } => successFunc(),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<TUnauthorized>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<TUnauthorized>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<TNotFound>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<TBadRequest>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<TProblem>(logger, result),
@@ -362,7 +362,7 @@ public static class ResultMapHttpExtensions
         return result switch
         {
             { IsSuccess: true } => successFunc(),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<TUnauthorized>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<TUnauthorized>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<TBadRequest>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<TProblem>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<TProblem>(logger, result),
@@ -433,7 +433,7 @@ public static class ResultMapHttpExtensions
         return result switch
         {
             { IsSuccess: true } => TypedResults.NoContent(),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<NotFound>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
@@ -513,7 +513,7 @@ public static class ResultMapHttpExtensions
         return result switch
         {
             { IsSuccess: true } => TypedResults.Ok(result.Value),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<NotFound>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
@@ -585,7 +585,7 @@ public static class ResultMapHttpExtensions
         return result switch
         {
             { IsSuccess: true } => TypedResults.Ok(),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<NotFound>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
@@ -663,7 +663,7 @@ public static class ResultMapHttpExtensions
         return result switch
         {
             { IsSuccess: true } => TypedResults.Ok(result.Value),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
@@ -742,7 +742,7 @@ public static class ResultMapHttpExtensions
         return result switch
         {
             { IsSuccess: true } => TypedResults.Created(uri, result.Value),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
@@ -802,7 +802,7 @@ public static class ResultMapHttpExtensions
         return result switch
         {
             { IsSuccess: true } => TypedResults.Accepted(location),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
@@ -869,7 +869,7 @@ public static class ResultMapHttpExtensions
         return result switch
         {
             { IsSuccess: true } => TypedResults.Accepted(location, result.Value),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
@@ -960,7 +960,7 @@ public static class ResultMapHttpExtensions
         return result switch
         {
             { IsSuccess: true } => TypedResults.Ok(ToPagedResponse(result)),
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConcurrencyError>() => MapConcurrencyError<ProblemHttpResult>(logger, result),
@@ -1042,7 +1042,7 @@ public static class ResultMapHttpExtensions
                 lastModified: fileContent.LastModified,
                 entityTag: fileContent.EntityTag),
 
-            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
+            { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<NotFound>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ValidationError>() || errors.Has<FluentValidationError>() || errors.Has<CollectionValidationError>() => MapBadRequestError<ProblemHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<ConflictError>() => MapConflictError<ProblemHttpResult>(logger, result),

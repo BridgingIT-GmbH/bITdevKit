@@ -11,6 +11,16 @@ namespace BridgingIT.DevKit.Common;
 public class PolicyConfig
 {
     /// <summary>
+    /// Gets or sets the authorization policy attribute for the handler.
+    /// </summary>
+    public HandlerAuthorizePolicyAttribute AuthorizePolicy { get; set; }
+
+    /// <summary>
+    /// Gets or sets the authorization roles attribute for the handler.
+    /// </summary>
+    public HandlerAuthorizeRolesAttribute AuthorizeRoles { get; set; }
+
+    /// <summary>
     /// Gets or sets the retry policy attribute for the handler.
     /// </summary>
     public HandlerRetryAttribute Retry { get; set; }

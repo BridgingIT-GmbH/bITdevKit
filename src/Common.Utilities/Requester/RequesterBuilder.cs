@@ -97,6 +97,8 @@ public class RequesterBuilder
                     this.handlerCache.TryAdd(typeof(IRequestHandler<,>).MakeGenericType(requestType, valueType), type);
                     this.policyCache.TryAdd(type, new PolicyConfig
                     {
+                        AuthorizePolicy = type.GetCustomAttribute<HandlerAuthorizePolicyAttribute>(),
+                        AuthorizeRoles = type.GetCustomAttribute<HandlerAuthorizeRolesAttribute>(),
                         Retry = type.GetCustomAttribute<HandlerRetryAttribute>(),
                         Timeout = type.GetCustomAttribute<HandlerTimeoutAttribute>(),
                         Chaos = type.GetCustomAttribute<HandlerChaosAttribute>(),
@@ -154,6 +156,8 @@ public class RequesterBuilder
 
         this.policyCache.TryAdd(handlerType, new PolicyConfig
         {
+            AuthorizePolicy = handlerType.GetCustomAttribute<HandlerAuthorizePolicyAttribute>(),
+            AuthorizeRoles = handlerType.GetCustomAttribute<HandlerAuthorizeRolesAttribute>(),
             Retry = handlerType.GetCustomAttribute<HandlerRetryAttribute>(),
             Timeout = handlerType.GetCustomAttribute<HandlerTimeoutAttribute>(),
             Chaos = handlerType.GetCustomAttribute<HandlerChaosAttribute>(),
@@ -228,6 +232,8 @@ public class RequesterBuilder
             this.handlerCache.TryAdd(closedHandlerInterface, closedHandlerType);
             this.policyCache.TryAdd(closedHandlerType, new PolicyConfig
             {
+                AuthorizePolicy = closedHandlerType.GetCustomAttribute<HandlerAuthorizePolicyAttribute>(),
+                AuthorizeRoles = closedHandlerType.GetCustomAttribute<HandlerAuthorizeRolesAttribute>(),
                 Retry = closedHandlerType.GetCustomAttribute<HandlerRetryAttribute>(),
                 Timeout = closedHandlerType.GetCustomAttribute<HandlerTimeoutAttribute>(),
                 Chaos = closedHandlerType.GetCustomAttribute<HandlerChaosAttribute>(),
@@ -369,6 +375,8 @@ public class RequesterBuilder
                 this.handlerCache.TryAdd(closedHandlerInterface, closedHandlerType);
                 this.policyCache.TryAdd(closedHandlerType, new PolicyConfig
                 {
+                    AuthorizePolicy = closedHandlerType.GetCustomAttribute<HandlerAuthorizePolicyAttribute>(),
+                    AuthorizeRoles = closedHandlerType.GetCustomAttribute<HandlerAuthorizeRolesAttribute>(),
                     Retry = closedHandlerType.GetCustomAttribute<HandlerRetryAttribute>(),
                     Timeout = closedHandlerType.GetCustomAttribute<HandlerTimeoutAttribute>(),
                     Chaos = closedHandlerType.GetCustomAttribute<HandlerChaosAttribute>(),

@@ -5,9 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public class UnauthorizedError(string message = null) : ResultErrorBase(message ?? "Unauthorized") // 401
+public class ForbiddenError(string message = null) : ResultErrorBase(message ?? "Forbidden") // 403
 {
-    public UnauthorizedError() : this(null)
-    {
-    }
+    public ForbiddenError() : this(null) { }
 }

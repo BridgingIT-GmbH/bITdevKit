@@ -55,7 +55,7 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
 
         try
         {
-            var result = await next();
+            var result = await next(); // Proceed to the next behavior/handler
 
             await transaction.CommitAsync(cancellationToken);
             this.Logger.LogDebug("{LogKey} transaction behavior committed (requestId={RequestId}, type={BehaviorType})", LogKey, requestId, this.GetType().Name);

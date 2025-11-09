@@ -90,7 +90,8 @@ public sealed class AuthorizationPolicyPipelineBehavior<TRequest, TResponse>(
             var result = await this.authorizationService.AuthorizeAsync(principal, resource: null, policy);
             if (!result.Succeeded)
             {
-                return (TResponse)(object)Result.Failure(new ForbiddenError($"Policy '{policy}' not satisfied."));
+                return (TResponse)(object)Result.Failure(
+                    new ForbiddenError($"Policy '{policy}' not satisfied."));
             }
         }
 

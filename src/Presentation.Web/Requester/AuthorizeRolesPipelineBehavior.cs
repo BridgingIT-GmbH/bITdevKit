@@ -86,7 +86,8 @@ public sealed class AuthorizationRolesPipelineBehavior<TRequest, TResponse>(
         var hasAnyRole = cfg.AuthorizeRoles.Roles.Any(principal.IsInRole);
         if (!hasAnyRole)
         {
-            return (TResponse)(object)Result.Failure(new ForbiddenError("Required role not present."));
+            return (TResponse)(object)Result.Failure(
+                new ForbiddenError("Required role not present."));
         }
 
         return await next();

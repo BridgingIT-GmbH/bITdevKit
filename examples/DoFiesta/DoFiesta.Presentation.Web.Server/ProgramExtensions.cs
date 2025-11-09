@@ -24,10 +24,10 @@ public static class ProgramExtensions
              .AddOperationTransformer<OperationNameToSummaryTransformer>()
              .AddDocumentTransformer(
                 new DocumentInfoTransformer(new DocumentInfoOptions
-                 {
-                     Title = "DoFiesta API",
-                     Description = "API for DoFiesta application.",
-                 }))
+                {
+                    Title = "DoFiesta API",
+                    Description = "API for DoFiesta application.",
+                }))
              //.AddOperationTransformer<OperationSummaryDocumentTransformer>()
              //.AddOperationTransformer<DeprecatedOperationTransformer>()
              .AddSchemaTransformer<DiagnosticSchemaTransformer>()

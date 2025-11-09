@@ -204,5 +204,5 @@ public static class RouteHandlerExtensions
 
                 return operation;
             });
-        }
+    }
 }

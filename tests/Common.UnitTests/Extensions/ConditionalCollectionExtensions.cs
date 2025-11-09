@@ -215,7 +215,7 @@ public class ConditionalCollectionExtensionsTests
         var person = new PersonStub("John", "Doe", "john.doe@example.com", 30);
 
         // Act
-        people.AddIfAll(person, null); 
+        people.AddIfAll(person, null);
 
         // Assert
         people.ShouldNotBeEmpty();

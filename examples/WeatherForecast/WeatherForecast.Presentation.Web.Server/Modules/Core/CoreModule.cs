@@ -76,7 +76,7 @@ public class CoreModule : WebModuleBase
                 .UseLogger().UseSimpleLogger())
             //.WithHealthChecks()
             .WithDatabaseCreatorService(o => o.Enabled().DeleteOnStartup(false));
-            //.WithDatabaseMigratorService();
+        //.WithDatabaseMigratorService();
 
         services.AddEntityAuthorization(o => // TODO: rename AddEntityAuthorization
         {

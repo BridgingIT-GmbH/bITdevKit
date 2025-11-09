@@ -3,6 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 namespace BridgingIT.DevKit.Common;
+
 using System.Collections.Concurrent;
 using System.Data;
 using System.Reflection;

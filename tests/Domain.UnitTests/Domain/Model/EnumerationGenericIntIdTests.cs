@@ -4,6 +4,7 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
+
 [UnitTest("Domain")]
 [Trait("Category", "Domain")]
 public class EnumerationGenericIntIdTests

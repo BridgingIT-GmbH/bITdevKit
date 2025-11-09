@@ -176,51 +176,51 @@ public class ResultMapExtensionsNonGenericTests
     }
 
     [Fact]
-        public void MapNoContent_CustomValidationErrorHandler_ReturnsProblemWithCustomStatus()
-        {
-            // Arrange
-            ResultMapErrorHandlerRegistry.RegisterHandler<ValidationError>((logger, r) => new CustomHttpResult($"Validation failed: {r.Errors.First().Message}"));
-            var result = Result.Failure().WithError(new ValidationError("Invalid operation"));
+    public void MapNoContent_CustomValidationErrorHandler_ReturnsProblemWithCustomStatus()
+    {
+        // Arrange
+        ResultMapErrorHandlerRegistry.RegisterHandler<ValidationError>((logger, r) => new CustomHttpResult($"Validation failed: {r.Errors.First().Message}"));
+        var result = Result.Failure().WithError(new ValidationError("Invalid operation"));
 
-            // Act
-            var response = result.MapHttpNoContent(this.logger);
+        // Act
+        var response = result.MapHttpNoContent(this.logger);
 
-            // Assert
-            response.ShouldBeOfType<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-            var innerResult = ((Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
-            innerResult.ShouldBeOfType<ProblemHttpResult>();
-            var problemResult = (ProblemHttpResult)innerResult;
-            problemResult.StatusCode.ShouldBe(418); // CustomHttpResult status preserved
-            problemResult.ProblemDetails.Detail.ShouldContain("A custom error handler was executed");
-            problemResult.ProblemDetails.Extensions["customResultType"].ShouldBe("CustomHttpResult");
+        // Assert
+        response.ShouldBeOfType<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
+        var innerResult = ((Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        innerResult.ShouldBeOfType<ProblemHttpResult>();
+        var problemResult = (ProblemHttpResult)innerResult;
+        problemResult.StatusCode.ShouldBe(418); // CustomHttpResult status preserved
+        problemResult.ProblemDetails.Detail.ShouldContain("A custom error handler was executed");
+        problemResult.ProblemDetails.Extensions["customResultType"].ShouldBe("CustomHttpResult");
 
-            // Cleanup
-            ResultMapErrorHandlerRegistry.ClearHandlers();
-        }
+        // Cleanup
+        ResultMapErrorHandlerRegistry.ClearHandlers();
+    }
 
-        [Fact]
-        public void Map_GenericNonGeneric_CustomValidationErrorHandler_ReturnsTProblem()
-        {
-            // Arrange
-            ResultMapErrorHandlerRegistry.RegisterHandler<ValidationError>((logger, r) => new CustomHttpResult($"Validation failed: {r.Errors.First().Message}"));
-            var result = Result.Failure().WithError(new ValidationError("Invalid operation"));
+    [Fact]
+    public void Map_GenericNonGeneric_CustomValidationErrorHandler_ReturnsTProblem()
+    {
+        // Arrange
+        ResultMapErrorHandlerRegistry.RegisterHandler<ValidationError>((logger, r) => new CustomHttpResult($"Validation failed: {r.Errors.First().Message}"));
+        var result = Result.Failure().WithError(new ValidationError("Invalid operation"));
 
-            // Act
-            var response = result.MapHttp<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>(
-                () => TypedResults.NoContent(),
-                this.logger);
+        // Act
+        var response = result.MapHttp<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>(
+            () => TypedResults.NoContent(),
+            this.logger);
 
-            // Assert
-            response.ShouldBeOfType<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-            var innerResult = ((Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
-            innerResult.ShouldBeOfType<ProblemHttpResult>(); // MapError<TProblem> returns ProblemHttpResult
-            var problemResult = (ProblemHttpResult)innerResult;
-            problemResult.StatusCode.ShouldBe(500); // MapError defaults to 500, not 418
-            problemResult.ProblemDetails.Detail.ShouldContain("Invalid operation");
+        // Assert
+        response.ShouldBeOfType<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
+        var innerResult = ((Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        innerResult.ShouldBeOfType<ProblemHttpResult>(); // MapError<TProblem> returns ProblemHttpResult
+        var problemResult = (ProblemHttpResult)innerResult;
+        problemResult.StatusCode.ShouldBe(500); // MapError defaults to 500, not 418
+        problemResult.ProblemDetails.Detail.ShouldContain("Invalid operation");
 
-            // Cleanup
-            ResultMapErrorHandlerRegistry.ClearHandlers();
-        }
+        // Cleanup
+        ResultMapErrorHandlerRegistry.ClearHandlers();
+    }
 
     [Fact]
     public void MapHttpNoContent_RemoveHandler_RevertsToDefault()

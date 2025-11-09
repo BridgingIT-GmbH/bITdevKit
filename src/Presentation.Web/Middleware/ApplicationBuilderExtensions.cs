@@ -86,7 +86,7 @@ public static class ApplicationBuilderExtensions
     {
         EnsureArg.IsNotNull(app, nameof(app));
 
-        if(enabled)
+        if (enabled)
         {
             app.UseMiddleware<CurrentUserLoggingMiddleware>();
         }

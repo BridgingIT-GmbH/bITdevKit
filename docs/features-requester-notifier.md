@@ -195,6 +195,8 @@ classDiagram
   - Updating caches in a fire-and-forget manner after data changes.
   - Broadcasting system events to multiple subscribers (e.g., audit logging, metrics collection).
 
+---
+
 ## Part 1: Requester
 
 ### Basic Usage
@@ -529,6 +531,8 @@ else
 }
 ```
 
+---
+
 ## Part 2: Notifier
 
 ### Overview
@@ -853,6 +857,8 @@ var result = await notifier.PublishAsync(new CacheUpdateNotification
 Console.WriteLine("Notification dispatched in fire-and-forget mode.");
 ```
 
+---
+
 ## Part 3: Pipeline Behaviors
 
 ### Basic Usage
@@ -943,7 +949,7 @@ var options = new SendOptions
 var result = await requester.SendAsync(new LongRunningCommand(), options);
 ```
 
-#### TransactionPipelineBehavior
+#### DatabaseTransactionPipelineBehavior
 
 - Wraps message handling in a database transaction to ensure data consistency.
 - Configured with `HandlerDatabaseTransactionAttribute` to specify isolation level, rollback behavior, and the `DbContext` type.
@@ -1071,6 +1077,62 @@ services.AddRequester()
     .WithBehavior<CacheInvalidatePipelineBehavior<,>>();
 ```
 
+#### AuthorizationPolicyPipelineBehavior
+
+- Enforces named authorization policies before handler execution.
+- Configured with `HandlerAuthorizePolicyAttribute` on the handler class; all listed policies must succeed.
+
+```csharp
+// Require both policies to pass before executing the handler
+[HandlerAuthorizePolicy("Customers.Write", "Audited")]
+public class CreateCustomerCommandHandler
+    : RequestHandlerBase<CreateCustomerCommand, Unit>
+{
+    protected override async Task<Result<Unit>> HandleAsync(
+        CreateCustomerCommand request,
+        SendOptions options,
+        CancellationToken cancellationToken)
+    {
+        // Handler logic only runs if policies succeed
+        return Result<Unit>.Success(Unit.Value);
+    }
+}
+
+// Register the behavior early (before retry/timeout)
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior<AuthorizationPolicyPipelineBehavior<,>>()
+```
+
+#### AuthorizationRolesPipelineBehavior
+
+- Enforces role-based authorization (OR semantics) before handler execution.
+- Configured with `HandlerAuthorizeRolesAttribute` on the handler class; user must be in at least one of the specified roles.
+
+```csharp
+// Allow either Admin or Manager to execute the handler
+[HandlerAuthorizeRoles("Admin", "Manager")]
+public class DeleteCustomerCommandHandler
+    : RequestHandlerBase<DeleteCustomerCommand, Unit>
+{
+    protected override async Task<Result<Unit>> HandleAsync(
+        DeleteCustomerCommand request,
+        SendOptions options,
+        CancellationToken cancellationToken)
+    {
+        // Handler logic only runs if the user has one of the roles
+        return Result<Unit>.Success(Unit.Value);
+    }
+}
+
+// Register the behavior early (before retry/timeout)
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior<AuthorizationRolesPipelineBehavior<,>>()
+```
+
+---
+
 ## Appendix A: CQS Pattern
 
 The Command-Query Separation (CQS) pattern is a design principle that separates operations into two distinct categories: commands and queries. Introduced by Bertrand Meyer as part of his work on the Eiffel programming language, CQS aims to improve code clarity, maintainability, and predictability by enforcing a clear distinction between operations that modify state and those that retrieve data.
@@ -1106,6 +1168,8 @@ This alignment offers several benefits:
 
 By using the `Requester` feature, you can enforce CQS principles, ensuring a clean and predictable request-handling architecture. For example, pipeline behaviors like `ValidationPipelineBehavior` can be applied to both commands and queries, while `RetryPipelineBehavior` might be more relevant for commands that interact with external systems.
 
+---
+
 ## Appendix B: Comparison with MediatR
 
 The `Requester` and `Notifier` systems share similarities with the popular **MediatR** library but offer distinct features tailored to specific needs:
@@ -1120,6 +1184,8 @@ The `Requester` and `Notifier` systems share similarities with the popular **Med
   - **Built-in Behaviors**: `Requester` and `Notifier` provide pre-built behaviors (e.g., retry, timeout, chaos injection) via attributes, whereas MediatR requires custom implementation of such features.
   - **Result Type**: `Requester` uses `Result<TValue>` and `Notifier` uses `Result` for consistent error handling, while MediatR allows handlers to return any type, leaving error handling to the user.
   - **Metadata**: `RequestBase<TValue>` and `NotificationBase` include built-in metadata (`RequestId`, `NotificationId`, timestamps), which MediatR lacks by default.
+
+---
 
 # Appendix C: Generic Handlers in Requester and Notifier
 

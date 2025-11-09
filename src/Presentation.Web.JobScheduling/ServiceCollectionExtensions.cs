@@ -4,6 +4,7 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace Microsoft.Extensions.DependencyInjection;
+
 using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 

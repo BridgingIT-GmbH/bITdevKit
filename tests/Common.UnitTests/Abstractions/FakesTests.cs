@@ -4,6 +4,7 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Common.UnitTests.Abstractions;
+
 public class FakesTests(ITestOutputHelper output)
 {
     [Fact]

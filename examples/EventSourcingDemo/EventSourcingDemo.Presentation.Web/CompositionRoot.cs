@@ -37,7 +37,7 @@ public static class CompositionRoot
 
         // application composition root
         // tag::MapperSetup[]
-            services.AddMapping().WithMapster(); // finds all IRegister for mapster
+        services.AddMapping().WithMapster(); // finds all IRegister for mapster
         // end::MapperSetup[]
 
         // tag::EventStoreConfiguration[]

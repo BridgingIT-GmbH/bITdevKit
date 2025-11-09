@@ -144,18 +144,18 @@ builder.Services.AddJwtBearerAuthentication(builder.Configuration)
 builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth identity provider with its endpoints and signin page
     .Enabled(builder.Environment.IsDevelopment())
     .WithIssuer("https://localhost:5001") // host should match Authority (appsettings.json:Authentication:Authority)
-    // default tokens are unsigned, set a key for signed tokens. when signed also set thje key in the server appsettings.json "Authentication.SigningKey"
-    //.WithSigningKey("your-256-bit-secret-your-256-bit-secret-your-256-bit-secret")
-    //.WithClientId("client-id")
-    //.UseEntraIdV2Provider("test-tenant")
-    //.UseAdfsProvider("blazor-wasm")
-    //.UseKeyCloakProvider("test-realm")
-    //.WithPaths(paths => paths // EntraId v2.0 endpoint paths
-    //    .WellKnownConfigurationPath("/.well-known/openid-configuration/v2.0")
-    //    .AuthorizePath("/oauth2/v2.0/authorize")
-    //    .TokenPath("/oauth2/v2.0/token")
-    //    .UserInfoPath("/oidc/userinfo")
-    //    .LogoutPath("/oauth2/v2.0/logout"))
+                                          // default tokens are unsigned, set a key for signed tokens. when signed also set thje key in the server appsettings.json "Authentication.SigningKey"
+                                          //.WithSigningKey("your-256-bit-secret-your-256-bit-secret-your-256-bit-secret")
+                                          //.WithClientId("client-id")
+                                          //.UseEntraIdV2Provider("test-tenant")
+                                          //.UseAdfsProvider("blazor-wasm")
+                                          //.UseKeyCloakProvider("test-realm")
+                                          //.WithPaths(paths => paths // EntraId v2.0 endpoint paths
+                                          //    .WellKnownConfigurationPath("/.well-known/openid-configuration/v2.0")
+                                          //    .AuthorizePath("/oauth2/v2.0/authorize")
+                                          //    .TokenPath("/oauth2/v2.0/token")
+                                          //    .UserInfoPath("/oidc/userinfo")
+                                          //    .LogoutPath("/oauth2/v2.0/logout"))
     .WithUsers(FakeUsers.Starwars)
     //.WithUserProvider() // TODO: use a provider model for the users, should support password validation, user creation, get user by id, get user by username
     .WithTokenLifetimes(
@@ -205,9 +205,9 @@ builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 #pragma warning disable CS0618 // Type or member is obsolete
 builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
 #pragma warning restore CS0618 // Type or member is obsolete
-                              //builder.Services.AddProblemDetails(Configure.ProblemDetails); // TODO: replace this with the new .NET8 error handling with IExceptionHandler https://www.milanjovanovic.tech/blog/global-error-handling-in-aspnetcore-8 and AddProblemDetails https://youtu.be/4NfflZilTvk?t=596
-                              //builder.Services.AddExceptionHandler();
-                              //builder.Services.AddProblemDetails();
+//builder.Services.AddProblemDetails(Configure.ProblemDetails); // TODO: replace this with the new .NET8 error handling with IExceptionHandler https://www.milanjovanovic.tech/blog/global-error-handling-in-aspnetcore-8 and AddProblemDetails https://youtu.be/4NfflZilTvk?t=596
+//builder.Services.AddExceptionHandler();
+//builder.Services.AddProblemDetails();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

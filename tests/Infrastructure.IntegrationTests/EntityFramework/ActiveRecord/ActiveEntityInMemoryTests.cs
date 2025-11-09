@@ -46,8 +46,8 @@ public class ActiveEntityInMemoryTests(ITestOutputHelper output, TestEnvironment
             .UseInMemoryProvider()
             .AddLoggingBehavior()
             .AddDomainEventPublishingBehavior(new ActiveEntityDomainEventPublishingBehaviorOptions { PublishBefore = false });
-            //.AddDomainEventOutboxPublishingBehavior<Order, OrderId, ActiveEntityDbContext>()
-            //.AddDomainEventOutboxPublishingBehavior(o => o.UseContext<ActiveEntityDbContext>())
+        //.AddDomainEventOutboxPublishingBehavior<Order, OrderId, ActiveEntityDbContext>()
+        //.AddDomainEventOutboxPublishingBehavior(o => o.UseContext<ActiveEntityDbContext>())
 
         cfg.For<Book, Guid>()
             .UseInMemoryProvider()

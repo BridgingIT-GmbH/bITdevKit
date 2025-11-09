@@ -4,6 +4,7 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Application.Utilities;
+
 using System;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;

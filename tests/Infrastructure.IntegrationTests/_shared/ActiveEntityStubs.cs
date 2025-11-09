@@ -101,7 +101,7 @@ public partial class Customer2 : ActiveEntity<Customer2, Guid> // non TypedId
     public string Title { get; set; }
 }
 
- [DebuggerDisplay("Id={Id}, FirstName={FirstName}, LastName={LastName}")]
+[DebuggerDisplay("Id={Id}, FirstName={FirstName}, LastName={LastName}")]
 [TypedEntityId<Guid>] // code generates a typedId called CustomerId
 [ActiveEntityFeatures(ActiveEntityFeatures.Forwarders | ActiveEntityFeatures.Specifications | ActiveEntityFeatures.QueryDsl | ActiveEntityFeatures.ConventionFinders)] // triggers the source generator to enable extra features
 public partial class Customer : ActiveEntity<Customer, CustomerId>, IAuditable, IConcurrency

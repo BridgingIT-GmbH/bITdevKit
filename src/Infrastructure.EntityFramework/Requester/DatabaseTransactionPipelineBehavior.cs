@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Reflection;
@@ -50,9 +49,10 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
         }
 
         var requestId = request is IRequest req ? req.RequestId.ToString() : string.Empty;
-        this.Logger.LogInformation("{LogKey} transaction pipeline behavior starting (contextId={DbContextId}, isolationLevel={IsolationLevel}, requestId={RequestId}, type={BehaviorType})", LogKey, dbContext.ContextId, attribute.IsolationLevel, requestId, this.GetType().Name);
+        var isolationLevel = this.MapIsolationLevel(attribute.IsolationLevel);
 
-        await using var transaction = await dbContext.Database.BeginTransactionAsync(attribute.IsolationLevel, cancellationToken);
+        this.Logger.LogInformation("{LogKey} transaction pipeline behavior starting (context={DbContextType}/{DbContextId}, isolationLevel={IsolationLevel}, requestId={RequestId}, type={BehaviorType})", LogKey, dbContext.GetType().Name, dbContext.ContextId, isolationLevel, requestId, this.GetType().Name);
+        await using var transaction = await dbContext.Database.BeginTransactionAsync(isolationLevel, cancellationToken);
 
         try
         {
@@ -77,5 +77,23 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
 
             throw; // Rethrow to let the Requester handle the exception based on HandleExceptionsAsResultError
         }
+    }
+
+    /// <summary>
+    /// Maps custom isolation enum values to System.Data.IsolationLevel for EF Core transactions.
+    /// </summary>
+    private System.Data.IsolationLevel MapIsolationLevel(DatabaseTransactionIsolationLevel level)
+    {
+        return level switch
+        {
+            DatabaseTransactionIsolationLevel.Unspecified => System.Data.IsolationLevel.Unspecified,
+            DatabaseTransactionIsolationLevel.Chaos => System.Data.IsolationLevel.Chaos,
+            DatabaseTransactionIsolationLevel.ReadUncommitted => System.Data.IsolationLevel.ReadUncommitted,
+            DatabaseTransactionIsolationLevel.ReadCommitted => System.Data.IsolationLevel.ReadCommitted,
+            DatabaseTransactionIsolationLevel.RepeatableRead => System.Data.IsolationLevel.RepeatableRead,
+            DatabaseTransactionIsolationLevel.Serializable => System.Data.IsolationLevel.Serializable,
+            DatabaseTransactionIsolationLevel.Snapshot => System.Data.IsolationLevel.Snapshot,
+            _ => System.Data.IsolationLevel.Unspecified
+        };
     }
 }

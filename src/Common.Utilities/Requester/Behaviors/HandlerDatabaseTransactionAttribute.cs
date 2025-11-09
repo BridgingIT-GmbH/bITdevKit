@@ -3,11 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
-
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Data;
+namespace BridgingIT.DevKit.Common;
 
 /// <summary>
 /// Specifies that handlers within the attributed class should execute within a database transaction using the provided
@@ -23,13 +19,13 @@ using System.Data;
 /// <param name="rollbackOnFailure">Indicates whether the transaction should be automatically rolled back if an operation fails. When <see
 /// langword="true"/>, changes made during the transaction are reverted on failure. Defaults to <see langword="true"/>.</param>
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-public class HandlerDatabaseTransactionAttribute<TDBcontext>(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, bool rollbackOnFailure = true) : Attribute
-    where TDBcontext : DbContext
+public class HandlerDatabaseTransactionAttribute<TDBcontext>(DatabaseTransactionIsolationLevel isolationLevel = DatabaseTransactionIsolationLevel.ReadCommitted, bool rollbackOnFailure = true) : Attribute
+    //where TDBcontext : DbContext
 {
     /// <summary>
     /// Gets the isolation level for the database transaction.
     /// </summary>
-    public IsolationLevel IsolationLevel { get; } = isolationLevel;
+    public DatabaseTransactionIsolationLevel IsolationLevel { get; } = isolationLevel;
 
     /// <summary>
     /// Gets a value indicating whether operations are automatically rolled back if a failure occurs.
@@ -43,4 +39,54 @@ public class HandlerDatabaseTransactionAttribute<TDBcontext>(IsolationLevel isol
     /// Gets the type of the DbContext to use for the transaction.
     /// </summary>
     public Type DbContextType { get; } = typeof(TDBcontext);
+}
+
+/// <summary>
+/// Specifies the transaction isolation level used for database operations.
+/// Matches values commonly used by ADO.NET providers.
+/// </summary>
+public enum DatabaseTransactionIsolationLevel
+{
+    /// <summary>
+    /// A different isolation level than the one specified is being used,
+    /// but the level cannot be determined.
+    /// </summary>
+    Unspecified = -1,
+
+    /// <summary>
+    /// The pending changes from more highly isolated transactions cannot be overwritten.
+    /// </summary>
+    Chaos = 16,
+
+    /// <summary>
+    /// A dirty read is possible, meaning that no shared locks are issued and
+    /// no exclusive locks are honored.
+    /// </summary>
+    ReadUncommitted = 256,
+
+    /// <summary>
+    /// Shared locks are held while the data is being read to avoid dirty reads,
+    /// but the data can be changed before the end of the transaction, resulting
+    /// in non-repeatable reads or phantom data.
+    /// </summary>
+    ReadCommitted = 4096,
+
+    /// <summary>
+    /// Locks are placed on all data that is used in a query, preventing other users
+    /// from updating the data. Prevents non-repeatable reads but phantom rows are still possible.
+    /// </summary>
+    RepeatableRead = 65536,
+
+    /// <summary>
+    /// A range lock is placed on the dataset, preventing other users from updating
+    /// or inserting rows into the dataset until the transaction is complete.
+    /// </summary>
+    Serializable = 1048576,
+
+    /// <summary>
+    /// Reduces blocking by storing a version of data that one application can read
+    /// while another is modifying the same data. Indicates that from one transaction
+    /// you cannot see changes made in other transactions, even if you requery.
+    /// </summary>
+    Snapshot = 16777216
 }

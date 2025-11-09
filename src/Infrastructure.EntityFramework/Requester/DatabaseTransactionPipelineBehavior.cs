@@ -36,7 +36,7 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
         CancellationToken cancellationToken)
     {
         var attribute = handlerType.GetCustomAttribute<HandlerDatabaseTransactionAttribute<DbContext>>();
-        if (attribute == null)
+        if (attribute == null || attribute.DbContextType == null)
         {
             return await next();
         }
@@ -45,12 +45,12 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
         var dbContextType = attribute.DbContextType;
         if (this.serviceProvider.GetService(dbContextType) is not DbContext dbContext)
         {
-            this.Logger.LogError("{LogKey} transaction pipeline behavior failed: DbContext type {DbContextType} is not registered in the service provider (type={BehaviorType})", LogKey, dbContextType.FullName, this.GetType().Name);
+            this.Logger.LogError("{LogKey} transaction pipeline behavior failed: DbContext type {DbContextType} is not registered in the service provider (type={BehaviorType})", LogKey, dbContextType.Name, this.GetType().Name);
             throw new InvalidOperationException($"DbContext type {dbContextType.FullName} is not registered in the service provider.");
         }
 
         var requestId = request is IRequest req ? req.RequestId.ToString() : string.Empty;
-        this.Logger.LogDebug("{LogKey} transaction pipeline behavior starting (contextId={DbContextId}, isolationLevel={IsolationLevel}, requestId={RequestId}, type={BehaviorType})", LogKey, dbContext.ContextId, attribute.IsolationLevel, requestId, this.GetType().Name);
+        this.Logger.LogInformation("{LogKey} transaction pipeline behavior starting (contextId={DbContextId}, isolationLevel={IsolationLevel}, requestId={RequestId}, type={BehaviorType})", LogKey, dbContext.ContextId, attribute.IsolationLevel, requestId, this.GetType().Name);
 
         await using var transaction = await dbContext.Database.BeginTransactionAsync(attribute.IsolationLevel, cancellationToken);
 
@@ -59,7 +59,7 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
             var result = await next(); // Proceed to the next behavior/handler
 
             await transaction.CommitAsync(cancellationToken);
-            this.Logger.LogDebug("{LogKey} transaction pipeline behavior committed (contextId={DbContextId}, requestId={RequestId}, type={BehaviorType})", LogKey, dbContext.ContextId, requestId, this.GetType().Name);
+            this.Logger.LogInformation("{LogKey} transaction pipeline behavior committed (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType})", LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name);
 
             return result;
         }
@@ -68,11 +68,11 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
             if (attribute.RollbackOnFailure)
             {
                 await transaction.RollbackAsync(cancellationToken);
-                this.Logger.LogWarning("{LogKey} transaction pipeline behavior rolled back due to exception (contextId={DbContextId}, requestId={RequestId}, type={BehaviorType}): {ExceptionMessage}", LogKey, dbContext.ContextId, requestId, this.GetType().Name, ex.Message);
+                this.Logger.LogWarning("{LogKey} transaction pipeline behavior rolled back due to exception (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}): {ExceptionMessage}", LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, ex.Message);
             }
             else
             {
-                this.Logger.LogWarning("{LogKey} transaction pipeline behavior did not rollback (RollbackOnFailure=false) despite exception (contextId={DbContextId}, requestId={RequestId}, type={BehaviorType}): {ExceptionMessage}", LogKey, dbContext.ContextId, requestId, this.GetType().Name, ex.Message);
+                this.Logger.LogWarning("{LogKey} transaction pipeline behavior did not rollback (RollbackOnFailure=false) despite exception (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}): {ExceptionMessage}", LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, ex.Message);
             }
 
             throw; // Rethrow to let the Requester handle the exception based on HandleExceptionsAsResultError

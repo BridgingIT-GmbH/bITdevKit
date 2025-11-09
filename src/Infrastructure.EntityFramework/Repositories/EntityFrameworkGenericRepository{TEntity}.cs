@@ -129,7 +129,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
 
         void HandleInsert()
         {
-            TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "insert", this.Options.DbContext.ContextId.ToString(), typeof(TEntity).Name, entity.Id, false);
+            TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "insert", this.Options.DbContext.GetType().Name, this.Options.DbContext.ContextId.ToString(), typeof(TEntity).Name, entity.Id, false);
 
             if (entity is IConcurrency concurrencyEntity) // Set initial version before attaching
             {
@@ -142,7 +142,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
         void HandleUpdate()
         {
             var isTracked = this.Options.DbContext.ChangeTracker.Entries<TEntity>().Any(e => e.Entity.Id.Equals(entity.Id));
-            TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "update", this.Options.DbContext.ContextId.ToString(), typeof(TEntity).Name, entity.Id, isTracked);
+            TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "update", this.Options.DbContext.GetType().Name, this.Options.DbContext.ContextId.ToString(), typeof(TEntity).Name, entity.Id, isTracked);
 
             if (entity is IConcurrency concurrencyEntity && this.Options.EnableOptimisticConcurrency)
             {
@@ -190,7 +190,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
             return RepositoryActionResult.None;
         }
 
-        TypedLogger.LogDelete(this.Logger, Constants.LogKey, this.Options.DbContext.ContextId.ToString(), typeof(TEntity).Name, id);
+        TypedLogger.LogDelete(this.Logger, Constants.LogKey, this.Options.DbContext.ContextId.ToString(), this.Options.DbContext.GetType().Name, typeof(TEntity).Name, id);
         var existingEntity = await this.FindOneAsync(id, cancellationToken: cancellationToken).AnyContext();
         if (existingEntity is not null)
         {
@@ -265,11 +265,11 @@ public partial class EntityFrameworkGenericRepository<TEntity>
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Debug, "{LogKey} repository: upsert - {EntityUpsertType} (contextId={DbContextId}, type={EntityType}, id={EntityId}, tracked={EntityTracked})")]
-        public static partial void LogUpsert(ILogger logger, string logKey, string entityUpsertType, string dbContextId, string entityType, object entityId, bool entityTracked);
+        [LoggerMessage(0, LogLevel.Debug, "{LogKey} repository: upsert - {EntityUpsertType} (context={DbContextType}/{DbContextId}, type={EntityType}, id={EntityId}, tracked={EntityTracked})")]
+        public static partial void LogUpsert(ILogger logger, string logKey, string entityUpsertType, string dbContextType, string dbContextId, string entityType, object entityId, bool entityTracked);
 
-        [LoggerMessage(1, LogLevel.Debug, "{LogKey} repository: delete (contextId={DbContextId}, type={EntityType}, id={EntityId})")]
-        public static partial void LogDelete(ILogger logger, string logKey, string dbContextId, string entityType, object entityId);
+        [LoggerMessage(1, LogLevel.Debug, "{LogKey} repository: delete (context={DbContextType}/{DbContextId}, type={EntityType}, id={EntityId})")]
+        public static partial void LogDelete(ILogger logger, string logKey, string dbContextType, string dbContextId, string entityType, object entityId);
 
         [LoggerMessage(2, LogLevel.Trace, "{LogKey} dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
         public static partial void LogEntityState(ILogger logger, string logKey, string entityType, bool entityKeySet, EntityState entityEntryState);

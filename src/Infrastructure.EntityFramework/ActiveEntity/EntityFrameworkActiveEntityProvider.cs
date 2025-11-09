@@ -317,6 +317,8 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
 
         try
         {
+            TypedLogger.LogDelete(this.Logger, Constants.LogKey, this.context.ContextId.ToString(), this.context.GetType().Name, typeof(TEntity).Name, entity.Id);
+
             if (callbacks?.BeforeDeleteAsync != null)
             {
                 var cbResult = await callbacks.BeforeDeleteAsync(this, cancellationToken).AnyContext();
@@ -365,6 +367,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
 
         try
         {
+            TypedLogger.LogDelete(this.Logger, Constants.LogKey, this.context.ContextId.ToString(), this.context.GetType().Name, typeof(TEntity).Name, id);
             var entity = await this.context.FindAsync(this.ConvertEntityId(id), new FindOptions<TEntity> { NoTracking = true }, cancellationToken).AnyContext();
             if (entity is null)
             {
@@ -1245,7 +1248,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
 
     private Task HandleInsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "insert", typeof(TEntity).Name, entity.Id, false);
+        TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "insert", this.context.GetType().Name, this.context.ContextId.ToString(), typeof(TEntity).Name, entity.Id, false);
 
         if (entity is IConcurrency concurrencyEntity)
         {
@@ -1262,7 +1265,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     {
         var isTracked = this.context.ChangeTracker.Entries<TEntity>().Any(e => Equals(e.Entity.Id, entity.Id));
 
-        TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "update", typeof(TEntity).Name, entity.Id, isTracked);
+        TypedLogger.LogUpsert(this.Logger, Constants.LogKey, "update", this.context.GetType().Name, this.context.ContextId.ToString(), typeof(TEntity).Name, entity.Id, isTracked);
 
         if (this.options.MergeStrategy != null)
         {
@@ -1398,8 +1401,11 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Debug, "{LogKey} active entity: upsert - {EntityUpsertType} (type={EntityType}, id={EntityId}, tracked={EntityTracked})")]
-        public static partial void LogUpsert(ILogger logger, string logKey, string entityUpsertType, string entityType, object entityId, bool entityTracked);
+        [LoggerMessage(0, LogLevel.Debug, "{LogKey} active entity: upsert - {EntityUpsertType} (context={DbContextType}/{DbContextId}, type={EntityType}, id={EntityId}, tracked={EntityTracked})")]
+        public static partial void LogUpsert(ILogger logger, string logKey, string entityUpsertType, string dbContextType, string dbContextId, string entityType, object entityId, bool entityTracked);
+
+        [LoggerMessage(1, LogLevel.Debug, "{LogKey} active entity: delete (context={DbContextType}/{DbContextId}, type={EntityType}, id={EntityId})")]
+        public static partial void LogDelete(ILogger logger, string logKey, string dbContextType, string dbContextId, string entityType, object entityId);
 
         [LoggerMessage(2, LogLevel.Trace, "{LogKey} dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
         public static partial void LogEntityState(ILogger logger, string logKey, string entityType, bool entityKeySet, EntityState entityEntryState);

@@ -92,13 +92,13 @@ public static class ActiveEntityProviderConfiguratorExtensions
     /// </example>
     public static ActiveEntityConfigurator<TEntity, TId> UseEntityFrameworkProvider<TEntity, TId>(
         this ActiveEntityConfigurator<TEntity, TId> configurator,
-        Action<ActiveRecordEntityFrameworkProviderBuilder<TEntity, TId>> builder)
+        Action<ActiveEntityFrameworkProviderBuilder<TEntity, TId>> builder)
         where TEntity : class, IEntity
     {
         ArgumentNullException.ThrowIfNull(configurator);
         ArgumentNullException.ThrowIfNull(builder);
 
-        var providerBuilder = new ActiveRecordEntityFrameworkProviderBuilder<TEntity, TId>(configurator.Services);
+        var providerBuilder = new ActiveEntityFrameworkProviderBuilder<TEntity, TId>(configurator.Services);
         builder(providerBuilder);
         providerBuilder.Build(configurator);
 
@@ -115,7 +115,7 @@ public static class ActiveEntityProviderConfiguratorExtensions
 /// Initializes a new instance of the ActiveRecordEntityFrameworkProviderBuilder class.
 /// </remarks>
 /// <param name="services">The service collection for dependency injection.</param>
-public class ActiveRecordEntityFrameworkProviderBuilder<TEntity, TId>(IServiceCollection services)
+public class ActiveEntityFrameworkProviderBuilder<TEntity, TId>(IServiceCollection services)
     where TEntity : class, IEntity
 {
     private readonly IServiceCollection services = services ?? throw new ArgumentNullException(nameof(services));
@@ -134,7 +134,7 @@ public class ActiveRecordEntityFrameworkProviderBuilder<TEntity, TId>(IServiceCo
     /// .UseEntityFrameworkProvider(o => o.UseContext&lt;ActiveRecordDbContext&gt;())
     /// </code>
     /// </example>
-    public ActiveRecordEntityFrameworkProviderBuilder<TEntity, TId> Context<TContext>()
+    public ActiveEntityFrameworkProviderBuilder<TEntity, TId> Context<TContext>()
         where TContext : DbContext
     {
         this.contextType = typeof(TContext);
@@ -156,7 +156,7 @@ public class ActiveRecordEntityFrameworkProviderBuilder<TEntity, TId>(IServiceCo
     ///         sp.GetRequiredService&lt;ILoggerFactory&gt;()) { EnableOptimisticConcurrency = true }))
     /// </code>
     /// </example>
-    public ActiveRecordEntityFrameworkProviderBuilder<TEntity, TId> Options<TContext>(Func<IServiceProvider, EntityFrameworkActiveEntityProviderOptions<TContext, TEntity>> optionsFactory)
+    public ActiveEntityFrameworkProviderBuilder<TEntity, TId> Options<TContext>(Func<IServiceProvider, EntityFrameworkActiveEntityProviderOptions<TContext, TEntity>> optionsFactory)
         where TContext : DbContext
     {
         //if (this.contextType == null || this.contextType != typeof(TContext))
@@ -170,7 +170,7 @@ public class ActiveRecordEntityFrameworkProviderBuilder<TEntity, TId>(IServiceCo
         return this;
     }
 
-    public ActiveRecordEntityFrameworkProviderBuilder<TEntity, TId> Options<TContext>(Builder<EntityFrameworkActiveEntityProviderOptionsBuilder<TContext, TEntity>, EntityFrameworkActiveEntityProviderOptions<TContext, TEntity>> optionsBuilder)
+    public ActiveEntityFrameworkProviderBuilder<TEntity, TId> Options<TContext>(Builder<EntityFrameworkActiveEntityProviderOptionsBuilder<TContext, TEntity>, EntityFrameworkActiveEntityProviderOptions<TContext, TEntity>> optionsBuilder)
         where TContext : DbContext
     {
         //if (this.contextType == null || this.contextType != typeof(TContext))

@@ -35,9 +35,21 @@ builder.Services.AddModules(builder.Configuration, builder.Environment)
 // ===============================================================================================
 // Configure the services
 builder.Services.AddRequester()
-    .AddHandlers().WithBehavior(typeof(ModuleScopeBehavior<,>));
+    .AddHandlers()
+    .WithBehavior(typeof(TracingBehavior<,>))
+    .WithBehavior(typeof(ModuleScopeBehavior<,>))
+    .WithBehavior(typeof(DatabaseTransactionPipelineBehavior<,>))
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>))
+    .WithBehavior(typeof(RetryPipelineBehavior<,>))
+    .WithBehavior(typeof(TimeoutPipelineBehavior<,>));
 builder.Services.AddNotifier()
-    .AddHandlers().WithBehavior(typeof(ModuleScopeBehavior<,>));
+    .AddHandlers()
+    .WithBehavior(typeof(TracingBehavior<,>))
+    .WithBehavior(typeof(ModuleScopeBehavior<,>))
+    .WithBehavior(typeof(DatabaseTransactionPipelineBehavior<,>))
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>))
+    .WithBehavior(typeof(RetryPipelineBehavior<,>))
+    .WithBehavior(typeof(TimeoutPipelineBehavior<,>));
 
 builder.Services.AddMapping().WithMapster();
 

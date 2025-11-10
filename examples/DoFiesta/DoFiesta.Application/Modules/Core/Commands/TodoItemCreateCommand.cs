@@ -28,6 +28,7 @@ public class TodoItemCreateCommand : RequestBase<TodoItemModel>
 
 [HandlerRetry(2, 100)]
 [HandlerTimeout(500)]
+[HandlerDatabaseTransaction(contextName: "Core")]
 public class TodoItemCreateCommandHandler(
     IMapper mapper,
     IGenericRepository<TodoItem> repository,
@@ -50,9 +51,19 @@ public class TodoItemCreateCommandHandler(
                 .Add(new TitleShouldBeUniqueRule(e.Title, repository))
                 .CheckAsync(cancellationToken), cancellationToken: cancellationToken)
             .Tap(e => e.DomainEvents.Register(new TodoItemCreatedDomainEvent(e)))
+            .Tap(e => e.Title += " (ADD)")
             .BindAsync(async (e, ct) =>
                 await repository.InsertResultAsync(e, cancellationToken), cancellationToken: cancellationToken)
-            .Tap(e =>
+            .Tap(e => e.Title += " (UPD1)")
+            .BindAsync(async (e, ct) =>
+                await repository.UpdateResultAsync(e, cancellationToken), cancellationToken: cancellationToken) // test for same contextId (transactions)
+            .Tap(e => e.Title += " (UPD2)")
+            .BindAsync(async (e, ct) =>
+                await repository.UpdateResultAsync(e, cancellationToken), cancellationToken: cancellationToken) // test for same contextId (transactions)
+            //.Tap(e => e.Title = null) // test for transaction fail/rollback
+            //.BindAsync(async (e, ct) =>
+            //    await repository.UpdateResultAsync(e, cancellationToken), cancellationToken: cancellationToken) // test for same contextId (transactions)
+            .Tap(e => // will not be called if any above are failing (IsFailure result)
                 new EntityPermissionProviderBuilder(permissionProvider) // set permissions
                     .ForUser(e.UserId)
                         .WithPermission<TodoItem>(e.Id, Permission.Read)

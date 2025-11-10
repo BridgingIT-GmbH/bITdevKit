@@ -110,9 +110,9 @@
       },
       "MudBlazor": {
         "type": "Direct",
-        "requested": "[8.13.0, )",
-        "resolved": "8.13.0",
-        "contentHash": "Y6JW93zf8tiVhMSkkL0mZ3ruqjOTNftvVoX3sik6NEnIye+Gs0FXI8rhXfrH2LU79Mw/fOtT5ms3L/Q4TKx2kA==",
+        "requested": "[8.14.0, )",
+        "resolved": "8.14.0",
+        "contentHash": "cYqG3YvVZxYl0MtLaivYI2ilgd88Rv2noiVR/l6rkH71cBMtOOOD/zYxvF8haf5KAEjc/RGYJ0EpnV9rQn7MXw==",
         "dependencies": {
           "Microsoft.AspNetCore.Components": "9.0.1",
           "Microsoft.AspNetCore.Components.Web": "9.0.1",
@@ -127,12 +127,12 @@
       },
       "NSwag.ApiDescription.Client": {
         "type": "Direct",
-        "requested": "[14.6.1, )",
-        "resolved": "14.6.1",
-        "contentHash": "4dDkphY4ssasFxMuaj8Jxa9dzsxUxGJfgEMwB37OdccpkpUnlYf2hSKmEJxOeZA/TibKeXCVtawUe4t42slY3g==",
+        "requested": "[14.6.2, )",
+        "resolved": "14.6.2",
+        "contentHash": "XZzs6GQTjqLyxu8ro5WGhig1J4KwVGJhWhY4/ov4JsyAF13DQXlzeqv+GZya4F+Knbescar8I4H2ou2NlIRA/w==",
         "dependencies": {
           "Microsoft.Extensions.ApiDescription.Client": "8.0.14",
-          "NSwag.MSBuild": "14.6.1"
+          "NSwag.MSBuild": "14.6.2"
         }
       },
       "System.ComponentModel.Annotations": {
@@ -623,9 +623,9 @@
       },
       "NSwag.MSBuild": {
         "type": "CentralTransitive",
-        "requested": "[14.6.1, )",
-        "resolved": "14.6.1",
-        "contentHash": "x3Nz/cMQG8HU+yYb+58SDrXAWddEk/J4kbl4pSupN3Rx2qyB5DPVimlny+33VNKivD0opejDhuWmQkEAEwr23g=="
+        "requested": "[14.6.2, )",
+        "resolved": "14.6.2",
+        "contentHash": "1SK1T867gys3Ntx9RjqtwyopwXoiGZjFJ0qIB4fO9vRw9MMuyiqRNAgcvzdUJOaz6Hfbd6zI+d+c6pcC58HuKg=="
       },
       "Polly": {
         "type": "CentralTransitive",

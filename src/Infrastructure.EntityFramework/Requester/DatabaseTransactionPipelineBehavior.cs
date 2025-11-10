@@ -8,12 +8,15 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Data;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
 /// <summary>
 /// A pipeline behavior that manages database transactions for handlers
+/// and executes the whole unit of work via EF Core's execution strategy
+/// (no-op if retries are not enabled).
 /// </summary>
 public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
@@ -21,7 +24,8 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
     where TRequest : class
     where TResponse : IResult
 {
-    private readonly IServiceProvider serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
+    private readonly IServiceProvider serviceProvider =
+        serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
@@ -40,60 +44,96 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
             return await next();
         }
 
-        // Resolve the DbContext dynamically
         var dbContextType = attribute.DbContextType;
+        if (!typeof(DbContext).IsAssignableFrom(dbContextType))
+        {
+            this.Logger.LogError("{LogKey} transaction pipeline behavior failed: Type {DbContextType} is not a DbContext (type={BehaviorType})", LogKey, dbContextType.Name, this.GetType().Name);
+            throw new InvalidOperationException($"Type {dbContextType.FullName} is not a DbContext.");
+        }
+
         if (this.serviceProvider.GetService(dbContextType) is not DbContext dbContext)
         {
-            this.Logger.LogError("{LogKey} transaction pipeline behavior failed: DbContext type {DbContextType} is not registered in the service provider (type={BehaviorType})", LogKey, dbContextType.Name, this.GetType().Name);
+            this.Logger.LogError("{LogKey} transaction pipeline behavior failed: DbContext type {DbContextType} is not registered (type={BehaviorType})", LogKey, dbContextType.Name, this.GetType().Name);
             throw new InvalidOperationException($"DbContext type {dbContextType.FullName} is not registered in the service provider.");
         }
 
         var requestId = request is IRequest req ? req.RequestId.ToString() : string.Empty;
         var isolationLevel = this.MapIsolationLevel(attribute.IsolationLevel);
 
-        this.Logger.LogInformation("{LogKey} transaction pipeline behavior starting (context={DbContextType}/{DbContextId}, isolationLevel={IsolationLevel}, requestId={RequestId}, type={BehaviorType})", LogKey, dbContext.GetType().Name, dbContext.ContextId, isolationLevel, requestId, this.GetType().Name);
-        await using var transaction = await dbContext.Database.BeginTransactionAsync(isolationLevel, cancellationToken);
+        // Obtain the provider’s execution strategy (no-op if retries are not enabled).
+        var strategy = dbContext.Database.CreateExecutionStrategy();
 
-        try
+        // Execute the entire transactional unit within the strategy.
+        return await strategy.ExecuteAsync(async () =>
         {
-            var result = await next(); // Proceed to the next behavior/handler
+            this.Logger.LogInformation("{LogKey} transaction pipeline behavior starting (context={DbContextType}/{DbContextId}, isolationLevel={IsolationLevel}, requestId={RequestId}, type={BehaviorType})", LogKey, dbContext.GetType().Name, dbContext.ContextId, isolationLevel, requestId, this.GetType().Name);
 
-            await transaction.CommitAsync(cancellationToken);
-            this.Logger.LogInformation("{LogKey} transaction pipeline behavior committed (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType})", LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name);
+            // If a transaction already exists, avoid nesting unless you explicitly want savepoints.
+            if (dbContext.Database.CurrentTransaction is not null)
+            {
+                // Reuse existing transaction scope.
+                var resultNoNewTx = await next(); // execute next handler in pipeline
 
-            return result;
-        }
-        catch (Exception ex)
-        {
-            if (attribute.RollbackOnFailure)
-            {
-                await transaction.RollbackAsync(cancellationToken);
-                this.Logger.LogWarning("{LogKey} transaction pipeline behavior rolled back due to exception (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}): {ExceptionMessage}", LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, ex.Message);
-            }
-            else
-            {
-                this.Logger.LogWarning("{LogKey} transaction pipeline behavior did not rollback (RollbackOnFailure=false) despite exception (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}): {ExceptionMessage}", LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, ex.Message);
+                this.Logger.LogInformation("{LogKey} transaction pipeline behavior reused existing transaction (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType})", LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name);
+                return resultNoNewTx;
             }
 
-            throw; // Rethrow to let the Requester handle the exception based on HandleExceptionsAsResultError
-        }
+            await using var transaction = await dbContext.Database.BeginTransactionAsync(isolationLevel, cancellationToken);
+            try
+            {
+                var result = await next(); // execute next handler in pipeline
+
+                await transaction.CommitAsync(cancellationToken);
+                this.Logger.LogInformation("{LogKey} transaction pipeline behavior committed (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType})", LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name);
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                if (attribute.RollbackOnFailure)
+                {
+                    try
+                    {
+                        await transaction.RollbackAsync(cancellationToken);
+                        this.Logger.LogWarning(
+                            "{LogKey} transaction pipeline behavior rolled back due to exception (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}): {ExceptionMessage}",
+                            LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, ex.Message);
+                    }
+                    catch (Exception rbEx)
+                    {
+                        this.Logger.LogError(
+                            rbEx,
+                            "{LogKey} rollback failed (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType})",
+                            LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name);
+                    }
+                }
+                else
+                {
+                    this.Logger.LogWarning(
+                        "{LogKey} transaction pipeline behavior did not rollback (RollbackOnFailure=false) despite exception (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}): {ExceptionMessage}",
+                        LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, ex.Message);
+                }
+
+                throw; // Let Requester decide based on HandleExceptionsAsResultError
+            }
+        });
     }
 
     /// <summary>
     /// Maps custom isolation enum values to System.Data.IsolationLevel for EF Core transactions.
     /// </summary>
-    private System.Data.IsolationLevel MapIsolationLevel(DatabaseTransactionIsolationLevel level)
+    private IsolationLevel MapIsolationLevel(DatabaseTransactionIsolationLevel level)
     {
         return level switch
         {
-            DatabaseTransactionIsolationLevel.Unspecified => System.Data.IsolationLevel.Unspecified,
-            DatabaseTransactionIsolationLevel.Chaos => System.Data.IsolationLevel.Chaos,
-            DatabaseTransactionIsolationLevel.ReadUncommitted => System.Data.IsolationLevel.ReadUncommitted,
-            DatabaseTransactionIsolationLevel.ReadCommitted => System.Data.IsolationLevel.ReadCommitted,
-            DatabaseTransactionIsolationLevel.RepeatableRead => System.Data.IsolationLevel.RepeatableRead,
-            DatabaseTransactionIsolationLevel.Serializable => System.Data.IsolationLevel.Serializable,
-            DatabaseTransactionIsolationLevel.Snapshot => System.Data.IsolationLevel.Snapshot,
-            _ => System.Data.IsolationLevel.Unspecified
+            DatabaseTransactionIsolationLevel.Unspecified => IsolationLevel.Unspecified,
+            DatabaseTransactionIsolationLevel.Chaos => IsolationLevel.Chaos,
+            DatabaseTransactionIsolationLevel.ReadUncommitted => IsolationLevel.ReadUncommitted,
+            DatabaseTransactionIsolationLevel.ReadCommitted => IsolationLevel.ReadCommitted,
+            DatabaseTransactionIsolationLevel.RepeatableRead => IsolationLevel.RepeatableRead,
+            DatabaseTransactionIsolationLevel.Serializable => IsolationLevel.Serializable,
+            DatabaseTransactionIsolationLevel.Snapshot => IsolationLevel.Snapshot,
+            _ => IsolationLevel.Unspecified
         };
     }
 }

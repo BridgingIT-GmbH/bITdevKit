@@ -955,6 +955,13 @@ var result = await requester.SendAsync(new LongRunningCommand(), options);
 - Configured with `HandlerDatabaseTransactionAttribute` to specify isolation level, rollback behavior, and the `DbContext` type.
 
 ```csharp
+// Register the behavior
+builder.Services.AddRequester()
+    .AddHandlers()
+    .WithBehavior(typeof(DatabaseTransactionPipelineBehavior<,>));
+```
+
+```csharp
 // Command to update a user
 public class UpdateUserCommand : RequestBase<Unit>
 {
@@ -971,7 +978,8 @@ public class UpdateUserCommand : RequestBase<Unit>
     }
 }
 
-[HandlerDatabaseTransactionAttribute<MyDbContext>(IsolationLevel.ReadCommitted, true)]
+[HandlerDatabaseTransaction(contextName: "Core")]   // Uses "Core" DbContext
+// or [HandlerDatabaseTransaction<CoreDbContext>()] // Often not usable as Application layer does not know about DbContext types in the Infrastructure layer
 public class UpdateUserCommandHandler : RequestHandlerBase<UpdateUserCommand, Unit>
 {
     private readonly IGenericRepository<User> userRepository;

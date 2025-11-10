@@ -20,7 +20,7 @@ namespace BridgingIT.DevKit.Common;
 /// langword="true"/>, changes made during the transaction are reverted on failure. Defaults to <see langword="true"/>.</param>
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
 public class HandlerDatabaseTransactionAttribute<TDBcontext>(DatabaseTransactionIsolationLevel isolationLevel = DatabaseTransactionIsolationLevel.ReadCommitted, bool rollbackOnFailure = true) : Attribute
-    //where TDBcontext : DbContext
+//where TDBcontext : DbContext
 {
     /// <summary>
     /// Gets the isolation level for the database transaction.
@@ -39,6 +39,39 @@ public class HandlerDatabaseTransactionAttribute<TDBcontext>(DatabaseTransaction
     /// Gets the type of the DbContext to use for the transaction.
     /// </summary>
     public Type DbContextType { get; } = typeof(TDBcontext);
+}
+
+/// <summary>
+/// Declares that a handler should execute within a database transaction using
+/// the DbContext identified by <see cref="ContextName"/>. This attribute is
+/// infrastructure-agnostic and can be used from the application layer.
+/// </summary>
+[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+public sealed class HandlerDatabaseTransactionAttribute : Attribute
+{
+    /// <summary>
+    /// Initializes a new instance of the attribute.
+    /// </summary>
+    /// <param name="isolationLevel">Desired transaction isolation level.</param>
+    /// <param name="rollbackOnFailure">Whether to rollback on exception.</param>
+    /// <param name="contextName">
+    /// Logical DbContext name; may omit the "DbContext" suffix (e.g., "Core" or "CoreDbContext").
+    /// </param>
+    public HandlerDatabaseTransactionAttribute(
+        DatabaseTransactionIsolationLevel isolationLevel = DatabaseTransactionIsolationLevel.ReadCommitted,
+        bool rollbackOnFailure = true,
+        string contextName = null)
+    {
+        this.IsolationLevel = isolationLevel;
+        this.RollbackOnFailure = rollbackOnFailure;
+        this.ContextName = contextName;
+    }
+
+    public DatabaseTransactionIsolationLevel IsolationLevel { get; }
+
+    public bool RollbackOnFailure { get; }
+
+    public string ContextName { get; }
 }
 
 /// <summary>

@@ -52,7 +52,7 @@ dotnet add package BridgingIT.DevKit.Common.Results
 
 ## Basic Usage
 
-### Simple Transaction Example
+### Simple Transaction Example (Using Simplified API)
 
 ```csharp
 var result = await Result<User>.Success(user)
@@ -71,14 +71,11 @@ var result = await Result<User>.Success(user)
     // Update in database (within transaction)
     .BindAsync(async (u, ct) =>
         await repository.UpdateResultAsync(u, ct), cancellationToken)
-    // End transaction (commit on success, rollback on failure)
-    .EndOperationAsync(
-        commitAsync: async (tx, ct) => await tx.CommitAsync(ct),
-        rollbackAsync: async (tx, ex, ct) => await tx.RollbackAsync(ct),
-        cancellationToken);
+    // End transaction (commit on success, rollback on failure) - Simplified!
+    .EndOperationAsync(cancellationToken);
 ```
 
-### Complex Example: TodoItem Creation with Transaction
+### Complex Example: TodoItem Creation with Transaction (Using Simplified API)
 
 ```csharp
 protected override async Task<Result<TodoItemModel>> HandleAsync(
@@ -117,11 +114,8 @@ protected override async Task<Result<TodoItemModel>> HandleAsync(
                 .Build())
         // Audit logging
         .Tap(e => Console.WriteLine("AUDIT"))
-        // End transaction (commit on success, rollback on failure)
-        .EndOperationAsync(
-            commitAsync: async (tx, ct) => await tx.CommitAsync(ct),
-            rollbackAsync: async (tx, ex, ct) => await tx.RollbackAsync(ct),
-            cancellationToken)
+        // End transaction (commit on success, rollback on failure) - Simplified!
+        .EndOperationAsync(cancellationToken)
         // Map entity back to model
         .Map(mapper.Map<TodoItem, TodoItemModel>);
 ```
@@ -156,6 +150,26 @@ All standard Result operations are available within the scope:
 
 ### Ending an Operation Scope
 
+#### Simplified API (Recommended for IOperationScope implementations)
+
+```csharp
+public async Task<Result<T>> EndOperationAsync(
+    CancellationToken cancellationToken = default)
+    where TOperation : IOperationScope
+```
+
+Use this overload when your operation implements `IOperationScope`. It automatically calls `CommitAsync()` on success or `RollbackAsync()` on failure/exception.
+
+**Example:**
+```csharp
+var result = await Result<User>.Success(user)
+    .StartOperation(async ct => await transaction.BeginTransactionAsync(ct))
+    .BindAsync(async (u, ct) => await repository.UpdateResultAsync(u, ct), cancellationToken)
+    .EndOperationAsync(cancellationToken); // Clean and simple!
+```
+
+#### Delegate-Based API (For custom operations or legacy code)
+
 ```csharp
 public async Task<Result<T>> EndOperationAsync(
     Func<TOperation, CancellationToken, Task> commitAsync,
@@ -163,11 +177,55 @@ public async Task<Result<T>> EndOperationAsync(
     CancellationToken cancellationToken = default)
 ```
 
+Use this overload for operations that don't implement `IOperationScope` or when you need custom commit/rollback logic.
+
 - **commitAsync**: Function called when Result is successful
 - **rollbackAsync**: Optional function called when Result fails or exception occurs
 - Returns the unwrapped `Result<T>`
 
-## Transaction Interfaces
+**Example:**
+```csharp
+var result = await Result<User>.Success(user)
+    .StartOperation(async ct => await customOperation.StartAsync(ct))
+    .BindAsync(async (u, ct) => await repository.UpdateResultAsync(u, ct), cancellationToken)
+    .EndOperationAsync(
+        commitAsync: async (op, ct) => await op.CommitAsync(ct),
+        rollbackAsync: async (op, ex, ct) => await op.RollbackAsync(ct),
+        cancellationToken);
+```
+
+## Operation Scope Interfaces
+
+### IOperationScope (Base Interface)
+
+The `IOperationScope` interface is the foundation for all scoped operations in the Result pattern. Any operation implementing this interface can be used with the simplified `EndOperationAsync` API.
+
+```csharp
+/// <summary>
+///     Represents a scoped operation that can be committed or rolled back.
+///     This is the base interface for all operation scopes used with ResultOperationScope.
+/// </summary>
+public interface IOperationScope
+{
+    /// <summary>
+    ///     Commits the operation, finalizing all changes.
+    ///     Called when the Result chain completes successfully.
+    /// </summary>
+    Task CommitAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Rolls back the operation, undoing all changes and cleaning up resources.
+    ///     Called when the Result chain fails or an exception occurs.
+    /// </summary>
+    Task RollbackAsync(CancellationToken cancellationToken = default);
+}
+```
+
+**Key Benefits:**
+- **Simplified API**: Operations implementing `IOperationScope` can use the cleaner `EndOperationAsync(cancellationToken)` overload
+- **Type Safety**: Interface contract ensures all required methods are implemented
+- **Discoverability**: All scopes follow the same pattern
+- **Testability**: Easy to mock with standard mocking frameworks
 
 ### IRepositoryTransaction<TEntity>
 
@@ -187,10 +245,9 @@ public interface IRepositoryTransaction<TEntity>
 ### IRepositoryTransactionScope
 
 ```csharp
-public interface IRepositoryTransactionScope
+public interface IRepositoryTransactionScope : IOperationScope
 {
-    Task CommitAsync(CancellationToken cancellationToken = default);
-    Task RollbackAsync(CancellationToken cancellationToken = default);
+    // Inherits CommitAsync and RollbackAsync from IOperationScope
 }
 ```
 
@@ -598,13 +655,7 @@ While `ResultOperationScope` is commonly demonstrated with database transactions
 **Scenario**: Create multiple files atomically - if any operation fails, cleanup all created files.
 
 ```csharp
-public interface IFileSystemScope
-{
-    Task CommitAsync(CancellationToken cancellationToken = default);
-    Task RollbackAsync(CancellationToken cancellationToken = default);
-}
-
-public class FileSystemScope : IFileSystemScope
+public class FileSystemScope : IOperationScope
 {
     private readonly List<string> createdFiles = new();
     private readonly List<string> createdDirectories = new();
@@ -639,7 +690,7 @@ public class FileSystemScope : IFileSystemScope
 
 // Usage
 var result = await Result<ExportData>.Success(exportData)
-    .StartOperation(ct => Task.FromResult<IFileSystemScope>(new FileSystemScope()))
+    .StartOperation(ct => Task.FromResult<IOperationScope>(new FileSystemScope()))
     .Tap(data =>
     {
         var tempDir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
@@ -653,10 +704,7 @@ var result = await Result<ExportData>.Success(exportData)
         await File.WriteAllTextAsync(dataFile, JsonSerializer.Serialize(data), ct);
         fileScope.TrackFile(dataFile);
     }, cancellationToken)
-    .EndOperationAsync(
-        commitAsync: async (fs, ct) => await fs.CommitAsync(ct),
-        rollbackAsync: async (fs, ex, ct) => await fs.RollbackAsync(ct),
-        cancellationToken);
+    .EndOperationAsync(cancellationToken); // Simplified!
 ```
 
 **Benefits**: All files created atomically, automatic cleanup on failure, no orphaned temp files
@@ -668,11 +716,9 @@ var result = await Result<ExportData>.Success(exportData)
 **Scenario**: Acquire distributed lock, perform work, release lock on success or failure.
 
 ```csharp
-public interface IDistributedLockScope
+public interface IDistributedLockScope : IOperationScope
 {
     string LockId { get; }
-    Task CommitAsync(CancellationToken cancellationToken = default);
-    Task RollbackAsync(CancellationToken cancellationToken = default);
 }
 
 // Usage: Process order with distributed lock
@@ -699,11 +745,8 @@ var result = await Result<Order>.Success(order)
         await inventoryService.ReserveItemsAsync(o.Items, ct), cancellationToken)
     .BindAsync(async (o, ct) =>
         await paymentService.ProcessPaymentAsync(o.Payment, ct), cancellationToken)
-    // Lock is automatically released on success or failure
-    .EndOperationAsync(
-        commitAsync: async (lock, ct) => await lock.CommitAsync(ct),
-        rollbackAsync: async (lock, ex, ct) => await lock.RollbackAsync(ct),
-        cancellationToken);
+    // Lock is automatically released on success or failure - Simplified!
+    .EndOperationAsync(cancellationToken);
 ```
 
 **Benefits**: Guaranteed lock release (no deadlocks), prevents concurrent processing, clean error handling
@@ -715,11 +758,9 @@ var result = await Result<Order>.Success(order)
 **Scenario**: Publish multiple messages as a batch - commit batch on success, discard on failure.
 
 ```csharp
-public interface IMessageBatchScope
+public interface IMessageBatchScope : IOperationScope
 {
     void AddMessage(Message message);
-    Task CommitAsync(CancellationToken cancellationToken = default);
-    Task RollbackAsync(CancellationToken cancellationToken = default);
 }
 
 // Usage: Publish order events
@@ -729,11 +770,8 @@ var result = await Result<Order>.Success(order)
     .Tap(o => batch.AddMessage(new OrderCreatedEvent(o.Id, o.CustomerId)))
     .Tap(o => batch.AddMessage(new InventoryReservedEvent(o.Id, o.Items)))
     .Tap(o => batch.AddMessage(new PaymentProcessedEvent(o.Id, o.Payment.Amount)))
-    // Publish all messages atomically (or discard all on failure)
-    .EndOperationAsync(
-        commitAsync: async (batch, ct) => await batch.CommitAsync(ct),
-        rollbackAsync: async (batch, ex, ct) => await batch.RollbackAsync(ct),
-        cancellationToken);
+    // Publish all messages atomically (or discard all on failure) - Simplified!
+    .EndOperationAsync(cancellationToken);
 ```
 
 **Benefits**: All messages published atomically, no partial message publishing, better performance with batching
@@ -979,20 +1017,12 @@ var result = await Result<Employee>.Success(employee)
 
 ## Creating Custom Scopes
 
-### Step 1: Define Interface
+### Step 1: Implement IOperationScope (Recommended)
+
+For the cleanest API, implement `IOperationScope` directly:
 
 ```csharp
-public interface IMyCustomScope
-{
-    Task CommitAsync(CancellationToken cancellationToken = default);
-    Task RollbackAsync(CancellationToken cancellationToken = default);
-}
-```
-
-### Step 2: Implement Scope
-
-```csharp
-public class MyCustomScope : IMyCustomScope
+public class MyCustomScope : IOperationScope
 {
     // Track state and resources
     private readonly List<IDisposable> resources = new();
@@ -1021,16 +1051,55 @@ public class MyCustomScope : IMyCustomScope
 }
 ```
 
-### Step 3: Use with ResultOperationScope
+### Step 2: Use with Simplified API
+
+```csharp
+var result = await Result<MyData>.Success(data)
+    .StartOperation(ct => Task.FromResult<IOperationScope>(new MyCustomScope()))
+    .TapAsync(async (d, ct) => /* operations */, cancellationToken)
+    .EndOperationAsync(cancellationToken); // Simplified!
+```
+
+### Alternative: Define Custom Interface (Optional)
+
+If you need additional methods beyond commit/rollback, create a custom interface that extends `IOperationScope`:
+
+```csharp
+public interface IMyCustomScope : IOperationScope
+{
+    void Track(IDisposable resource);
+    // Additional custom methods...
+}
+
+public class MyCustomScope : IMyCustomScope
+{
+    private readonly List<IDisposable> resources = new();
+
+    public void Track(IDisposable resource) => resources.Add(resource);
+
+    public async Task CommitAsync(CancellationToken cancellationToken = default)
+    {
+        await FinalizeAsync(cancellationToken);
+        foreach (var resource in resources)
+            resource.Dispose();
+    }
+
+    public async Task RollbackAsync(CancellationToken cancellationToken = default)
+    {
+        await UndoChangesAsync(cancellationToken);
+        foreach (var resource in resources)
+            resource.Dispose();
+    }
+}
+```
+
+Usage remains clean with the simplified API:
 
 ```csharp
 var result = await Result<MyData>.Success(data)
     .StartOperation(ct => Task.FromResult<IMyCustomScope>(new MyCustomScope()))
     .TapAsync(async (d, ct) => /* operations */, cancellationToken)
-    .EndOperationAsync(
-        commitAsync: async (scope, ct) => await scope.CommitAsync(ct),
-        rollbackAsync: async (scope, ex, ct) => await scope.RollbackAsync(ct),
-        cancellationToken);
+    .EndOperationAsync(cancellationToken);
 ```
 
 ---

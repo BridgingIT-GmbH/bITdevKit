@@ -10,23 +10,18 @@ namespace BridgingIT.DevKit.Common;
 ///     like database transactions around a result chain.
 /// </summary>
 /// <typeparam name="T">The type of the result value.</typeparam>
-/// <typeparam name="TOperation">The type of the operation (e.g., IDbContextTransaction).</typeparam>
+/// <typeparam name="TOperation">The type of the operation, must implement IOperationScope.</typeparam>
 /// <example>
 /// <code>
-/// var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
 /// await Result{Unit}.Success()
-///     .StartOperation(() => transaction)
+///     .StartOperation(async ct => await transaction.BeginTransactionAsync(ct))
 ///     .EnsureAsync(async (e, ct) => await CheckPermissionsAsync())
 ///     .BindAsync(async (e, ct) => await repository.DeleteAsync(id))
-///     .EndOperationAsync(
-///         async (tx, ct) => await tx.CommitAsync(ct),
-///         async (tx, ex, ct) => await tx.RollbackAsync(ct),
-///         cancellationToken
-///     );
+///     .EndOperationAsync(cancellationToken); // Simplified API
 /// </code>
 /// </example>
 public sealed class ResultOperationScope<T, TOperation>
-    where TOperation : class
+    where TOperation : class, IOperationScope
 {
     private readonly Result<T> result;
     private readonly Func<CancellationToken, Task<TOperation>> startAsync;
@@ -219,6 +214,56 @@ public sealed class ResultOperationScope<T, TOperation>
 
     /// <summary>
     ///     Ends the operation scope by committing on success or rolling back on failure.
+    ///     Uses the IOperationScope interface methods for commit and rollback.
+    /// </summary>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The final Result{T}.</returns>
+    /// <example>
+    /// <code>
+    /// await scope.EndOperationAsync(cancellationToken); // Simplified API
+    /// </code>
+    /// </example>
+    public async Task<Result<T>> EndOperationAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            await this.EnsureOperationStartedAsync(cancellationToken);
+
+            if (this.result.IsSuccess)
+            {
+                await this.operation.CommitAsync(cancellationToken);
+            }
+            else
+            {
+                await this.operation.RollbackAsync(cancellationToken);
+            }
+
+            return this.result;
+        }
+        catch (Exception ex)
+        {
+            if (this.operation is not null)
+            {
+                try
+                {
+                    await this.operation.RollbackAsync(cancellationToken);
+                }
+                catch
+                {
+                    // Swallow rollback exceptions to preserve the original exception
+                }
+            }
+
+            return Result<T>.Failure()
+                .WithErrors(this.result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(this.result.Messages);
+        }
+    }
+
+    /// <summary>
+    ///     Ends the operation scope by committing on success or rolling back on failure.
+    ///     This overload allows custom commit/rollback logic via delegates.
     /// </summary>
     /// <param name="commitAsync">The function to commit the operation.</param>
     /// <param name="rollbackAsync">The optional function to rollback the operation on failure or exception.</param>

@@ -70,10 +70,7 @@ public class TodoItemCreateCommandHandler(
             // Audit logging
             .Tap(e => Console.WriteLine("AUDIT"))
             // End transaction (commit on success, rollback on failure)
-            .EndOperationAsync(
-                commitAsync: async (tx, ct) => await tx.CommitAsync(ct),
-                rollbackAsync: async (tx, ex, ct) => await tx.RollbackAsync(ct),
-                cancellationToken: cancellationToken)
+            .EndOperationAsync(cancellationToken: cancellationToken)
             // Map entity back to model
             .Map(mapper.Map<TodoItem, TodoItemModel>);
 }

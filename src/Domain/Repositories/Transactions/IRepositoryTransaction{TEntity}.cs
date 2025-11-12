@@ -20,11 +20,10 @@ public interface IRepositoryTransaction<TEntity>
 }
 
 /// <summary>
-///     Represents a transaction scope with explicit commit/rollback control.
+///     Represents a repository transaction scope with explicit commit/rollback control.
+///     Implements IOperationScope for use with ResultOperationScope.
 /// </summary>
-public interface IRepositoryTransactionScope
+public interface IRepositoryTransactionScope : IOperationScope
 {
-    Task CommitAsync(CancellationToken cancellationToken = default);
-
-    Task RollbackAsync(CancellationToken cancellationToken = default);
+    // Inherits CommitAsync and RollbackAsync from IOperationScope
 }

@@ -16,7 +16,7 @@ public static class ResultOperationScopeTaskExtensions
     public static async Task<ResultOperationScope<T, TOperation>> Tap<T, TOperation>(
         this Task<ResultOperationScope<T, TOperation>> scopeTask,
         Action<T> operation)
-        where TOperation : class
+        where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
         return scope.Tap(operation);
@@ -29,7 +29,7 @@ public static class ResultOperationScopeTaskExtensions
         this Task<ResultOperationScope<T, TOperation>> scopeTask,
         Func<T, CancellationToken, Task> operation,
         CancellationToken cancellationToken = default)
-        where TOperation : class
+        where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
         return await scope.TapAsync(operation, cancellationToken);
@@ -41,7 +41,7 @@ public static class ResultOperationScopeTaskExtensions
     public static async Task<ResultOperationScope<TNew, TOperation>> Map<T, TNew, TOperation>(
         this Task<ResultOperationScope<T, TOperation>> scopeTask,
         Func<T, TNew> mapper)
-        where TOperation : class
+        where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
         return scope.Map(mapper);
@@ -54,7 +54,7 @@ public static class ResultOperationScopeTaskExtensions
         this Task<ResultOperationScope<T, TOperation>> scopeTask,
         Func<T, CancellationToken, Task<TNew>> mapper,
         CancellationToken cancellationToken = default)
-        where TOperation : class
+        where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
         return await scope.MapAsync(mapper, cancellationToken);
@@ -66,7 +66,7 @@ public static class ResultOperationScopeTaskExtensions
     public static async Task<ResultOperationScope<TNew, TOperation>> Bind<T, TNew, TOperation>(
         this Task<ResultOperationScope<T, TOperation>> scopeTask,
         Func<T, Result<TNew>> binder)
-        where TOperation : class
+        where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
         return scope.Bind(binder);
@@ -79,7 +79,7 @@ public static class ResultOperationScopeTaskExtensions
         this Task<ResultOperationScope<T, TOperation>> scopeTask,
         Func<T, CancellationToken, Task<Result<TNew>>> binder,
         CancellationToken cancellationToken = default)
-        where TOperation : class
+        where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
         return await scope.BindAsync(binder, cancellationToken);
@@ -92,7 +92,7 @@ public static class ResultOperationScopeTaskExtensions
         this Task<ResultOperationScope<T, TOperation>> scopeTask,
         Func<T, bool> predicate,
         IResultError error)
-        where TOperation : class
+        where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
         return scope.Ensure(predicate, error);
@@ -106,7 +106,7 @@ public static class ResultOperationScopeTaskExtensions
         Func<T, CancellationToken, Task<bool>> predicate,
         IResultError error,
         CancellationToken cancellationToken = default)
-        where TOperation : class
+        where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
         return await scope.EnsureAsync(predicate, error, cancellationToken);
@@ -121,7 +121,7 @@ public static class ResultOperationScopeTaskExtensions
         Func<T, CancellationToken, Task<bool>> predicate,
         IResultError error,
         CancellationToken cancellationToken = default)
-        where TOperation : class
+        where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
         return await scope.UnlessAsync(predicate, error, cancellationToken);
@@ -135,7 +135,7 @@ public static class ResultOperationScopeTaskExtensions
         this Task<ResultOperationScope<T, TOperation>> scopeTask,
         Func<T, CancellationToken, Task<Result>> operation,
         CancellationToken cancellationToken = default)
-        where TOperation : class
+        where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
         return await scope.UnlessAsync(operation, cancellationToken);
@@ -143,13 +143,27 @@ public static class ResultOperationScopeTaskExtensions
 
     /// <summary>
     ///     Ends the operation scope by committing on success or rolling back on failure.
+    ///     Uses the IOperationScope interface methods for commit and rollback.
+    /// </summary>
+    public static async Task<Result<T>> EndOperationAsync<T, TOperation>(
+        this Task<ResultOperationScope<T, TOperation>> scopeTask,
+        CancellationToken cancellationToken = default)
+        where TOperation : class, IOperationScope
+    {
+        var scope = await scopeTask;
+        return await scope.EndOperationAsync(cancellationToken);
+    }
+
+    /// <summary>
+    ///     Ends the operation scope by committing on success or rolling back on failure.
+    ///     This overload allows custom commit/rollback logic via delegates.
     /// </summary>
     public static async Task<Result<T>> EndOperationAsync<T, TOperation>(
         this Task<ResultOperationScope<T, TOperation>> scopeTask,
         Func<TOperation, CancellationToken, Task> commitAsync,
         Func<TOperation, Exception, CancellationToken, Task> rollbackAsync = null,
         CancellationToken cancellationToken = default)
-        where TOperation : class
+        where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
         return await scope.EndOperationAsync(commitAsync, rollbackAsync, cancellationToken);

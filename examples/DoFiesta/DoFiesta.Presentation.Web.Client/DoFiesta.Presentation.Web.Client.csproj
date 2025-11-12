@@ -1,96 +1,96 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
-    <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
-        <AssemblyName>BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client</AssemblyName>
-        <RootNamespace>BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client</RootNamespace>
-        <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
-        <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
-        <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client</RootNamespace>
+    <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+    <StaticWebAssetProjectMode>Default</StaticWebAssetProjectMode>
+    <BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
+  </PropertyGroup>
 
-    <!-- API Client generation (openapi2csclient) -->
-    <PropertyGroup>
-        <ApiSpecGenerate>true</ApiSpecGenerate>
-        <ApiSpecLocation>..\DoFiesta.Presentation.Web.Server\wwwroot\openapi.json</ApiSpecLocation>
-        <ApiClientClassName>ApiClient</ApiClientClassName>
-        <ApiClientNamespace>BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client</ApiClientNamespace>
-        <ApiClientOutputDirectory>./</ApiClientOutputDirectory>
-    </PropertyGroup>
-    <ItemGroup Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
-        <OpenApiReference Include="$(ApiSpecLocation)" CodeGenerator="NSwagCSharp" ClassName="$(ApiClientClassName)" OutputPath="$(ApiClientClassName).g.cs" Namespace="$(ApiClientNamespace)">
-            <Options>/GenerateBaseUrlProperty:False /UseBaseUrl:False /GenerateClientInterfaces:true /ResponseClass:ApiResponse /ExceptionClass:ApiException /GenerateResponseClasses:true /WrapResponses:true /OperationGenerationMode:SingleClientFromOperationId /ClassStyle:Poco /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.ICollection /ClientBaseClass:BridgingIT.DevKit.Presentation.Web.Client.ApiClientBase /DateTimeType:System.DateTime</Options>
-        </OpenApiReference>
-    </ItemGroup>
+  <!-- API Client generation (openapi2csclient) -->
+  <PropertyGroup>
+    <ApiSpecGenerate>true</ApiSpecGenerate>
+    <ApiSpecLocation>..\DoFiesta.Presentation.Web.Server\wwwroot\openapi.json</ApiSpecLocation>
+    <ApiClientClassName>ApiClient</ApiClientClassName>
+    <ApiClientNamespace>BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client</ApiClientNamespace>
+    <ApiClientOutputDirectory>./</ApiClientOutputDirectory>
+  </PropertyGroup>
+  <ItemGroup Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
+    <OpenApiReference Include="$(ApiSpecLocation)" CodeGenerator="NSwagCSharp" ClassName="$(ApiClientClassName)" OutputPath="$(ApiClientClassName).g.cs" Namespace="$(ApiClientNamespace)">
+      <Options>/GenerateBaseUrlProperty:False /UseBaseUrl:False /GenerateClientInterfaces:true /ResponseClass:ApiResponse /ExceptionClass:ApiException /GenerateResponseClasses:true /WrapResponses:true /OperationGenerationMode:SingleClientFromOperationId /ClassStyle:Poco /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.ICollection /ClientBaseClass:BridgingIT.DevKit.Presentation.Web.Client.ApiClientBase /DateTimeType:System.DateTime</Options>
+    </OpenApiReference>
+  </ItemGroup>
 
-    <PropertyGroup>
-        <KiotaLanguage>csharp</KiotaLanguage>
-        <KiotaNamespace>BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen</KiotaNamespace>
-        <KiotaClientName>BackendApiClient</KiotaClientName>
-        <KiotaOutDir>ApiClient</KiotaOutDir>
-        <OpenApiJson>..\DoFiesta.Presentation.Web.Server\wwwroot\openapi.json</OpenApiJson>
-    </PropertyGroup>
+  <PropertyGroup>
+    <KiotaLanguage>csharp</KiotaLanguage>
+    <KiotaNamespace>BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen</KiotaNamespace>
+    <KiotaClientName>BackendApiClient</KiotaClientName>
+    <KiotaOutDir>ApiClient</KiotaOutDir>
+    <OpenApiJson>..\DoFiesta.Presentation.Web.Server\wwwroot\openapi.json</OpenApiJson>
+  </PropertyGroup>
 
-    <Target Name="KiotaGenerate" BeforeTargets="Compile">
-        <Message Text="Generating Kiota client from $(OpenApiJson)" Importance="high" />
-        <!-- tools part of manifest -->
-        <Exec Command="dotnet tool restore" />
-        <Exec Command="dotnet kiota generate --log-level Error --language $(KiotaLanguage) --openapi $(OpenApiJson) --output $(KiotaOutDir) --namespace-name $(KiotaNamespace) --class-name $(KiotaClientName)" />
-        <ItemGroup>
-            <Compile Include="$(KiotaOutDir)\**\*.cs" />
-        </ItemGroup>
-    </Target>
-
+  <Target Name="KiotaGenerate" BeforeTargets="Compile">
+    <Message Text="Generating Kiota client from $(OpenApiJson)" Importance="high" />
+    <!-- tools part of manifest -->
+    <Exec Command="dotnet tool restore" ContinueOnError="WarnAndContinue" />
+    <Exec Command="dotnet kiota generate --log-level Error --language $(KiotaLanguage) --openapi $(OpenApiJson) --output $(KiotaOutDir) --namespace-name $(KiotaNamespace) --class-name $(KiotaClientName)" ContinueOnError="WarnAndContinue" />
     <ItemGroup>
-      <Content Remove="ApiClient\kiota-lock.json" />
-      <Content Remove="ApiClient\.kiota.log" />
+      <Compile Include="$(KiotaOutDir)\**\*.cs" />
     </ItemGroup>
+  </Target>
 
-    <!--<Target Name="GenerateApiClient" BeforeTargets="CoreCompile" Inputs="$(ApiSpecLocation)" Outputs="$(ApiClientClassName).cs" Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
+  <ItemGroup>
+    <Content Remove="**\kiota-lock.json" />
+    <Content Remove="**\.kiota.log" />
+  </ItemGroup>
+
+  <!--<Target Name="GenerateApiClient" BeforeTargets="CoreCompile" Inputs="$(ApiSpecLocation)" Outputs="$(ApiClientClassName).cs" Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
     <Exec Command="$(NSwagExe) openapi2csclient /input:$(ApiSpecLocation) /classname:ApiClient /namespace:$(RootNamespace) /output:$(ApiClientClassName).cs /GenerateClientInterfaces:true /ResponseClass:ApiResponse /ExceptionClass:ApiException /GenerateResponseClasses:true /WrapResponses:true /OperationGenerationMode:SingleClientFromOperationId /ClassStyle:Poco /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.IEnumerable /UseBaseUrl:True /ClientBaseClass:BridgingIT.DevKit.Presentation.Web.Client.ApiClientBase" ConsoleToMSBuild="true" ContinueOnError="WarnAndContinue">
       <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec" />
     </Exec>
   </Target>-->
 
-    <ItemGroup>
-        <PackageReference Include="Humanizer.Core" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
-        <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
-        <PackageReference Include="Microsoft.Extensions.Http" />
-        <PackageReference Include="Microsoft.Extensions.Http.Polly" />
-        <PackageReference Include="Microsoft.Extensions.Localization" />
-        <PackageReference Include="Microsoft.Kiota.Bundle" />
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
-        <PackageReference Include="MudBlazor" />
-        <PackageReference Include="Newtonsoft.Json" />
-        <PackageReference Include="NSwag.ApiDescription.Client">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="System.ComponentModel.Annotations" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Humanizer.Core" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" />
+    <PackageReference Include="Microsoft.Extensions.Localization" />
+    <PackageReference Include="Microsoft.Kiota.Bundle" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+    <PackageReference Include="MudBlazor" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="NSwag.ApiDescription.Client">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.ComponentModel.Annotations" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\..\..\src\Application.Storage\Application.Storage.csproj" />
-        <ProjectReference Include="..\..\..\src\Common.Abstractions\Common.Abstractions.csproj" />
-        <ProjectReference Include="..\..\..\src\Common.Extensions\Common.Extensions.csproj" />
-        <ProjectReference Include="..\..\..\src\Presentation.Web.Client\Presentation.Web.Client.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Application.Storage\Application.Storage.csproj" />
+    <ProjectReference Include="..\..\..\src\Common.Abstractions\Common.Abstractions.csproj" />
+    <ProjectReference Include="..\..\..\src\Common.Extensions\Common.Extensions.csproj" />
+    <ProjectReference Include="..\..\..\src\Presentation.Web.Client\Presentation.Web.Client.csproj" />
+  </ItemGroup>
 
-    <ItemGroup>
-        <Compile Update="Resources\Global.Designer.cs">
-            <DependentUpon>Global.resx</DependentUpon>
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-        </Compile>
-    </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resources\Global.Designer.cs">
+      <DependentUpon>Global.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+  </ItemGroup>
 
-    <ItemGroup>
-        <EmbeddedResource Update="Resources\Global.resx">
-            <LastGenOutput>Global.Designer.cs</LastGenOutput>
-            <Generator>PublicResXFileCodeGenerator</Generator>
-        </EmbeddedResource>
-    </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Global.resx">
+      <LastGenOutput>Global.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
 
 </Project>

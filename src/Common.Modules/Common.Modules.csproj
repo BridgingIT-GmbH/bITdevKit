@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Common.Modules</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Common</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -14,11 +14,6 @@
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" />
-    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
-    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" />
     <PackageReference Include="Scrutor" />
     <PackageReference Include="Serilog" />
   </ItemGroup>

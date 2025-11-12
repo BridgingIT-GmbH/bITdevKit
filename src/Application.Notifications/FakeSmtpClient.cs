@@ -34,6 +34,7 @@ using System.Threading.Tasks;
 /// Initializes a new instance of the <see cref="FakeSmtpClient"/> class.
 /// </remarks>
 /// <param name="logger">The logger instance to use for logging activities.</param>
+#pragma warning disable SYSLIB0058 // Type or member is obsolete
 public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOptions options = null) : ISmtpClient
 {
     private readonly ILogger<FakeSmtpClient> logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -579,3 +580,4 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     {
     }
 }
+#pragma warning restore SYSLIB0058 // Type or member is obsolete

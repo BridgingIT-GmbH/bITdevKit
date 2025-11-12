@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Common.Utilities</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Common</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -14,7 +14,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="NewId" />
-    <PackageReference Include="System.Diagnostics.DiagnosticSource" />
     <PackageReference Include="Polly" />
     <PackageReference Include="Polly.Contrib.Simmy" />
   </ItemGroup>

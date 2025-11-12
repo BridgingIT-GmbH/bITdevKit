@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Presentation.Web</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Presentation.Web</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>

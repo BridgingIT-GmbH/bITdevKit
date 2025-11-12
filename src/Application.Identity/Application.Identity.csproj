@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Application.Identity</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Application.Identity</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>

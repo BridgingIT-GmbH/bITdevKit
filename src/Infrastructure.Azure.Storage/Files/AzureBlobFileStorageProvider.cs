@@ -57,8 +57,8 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
     /// <summary>
     /// Initializes a new instance of AzureBlobStorageProvider with a pre-configured BlobServiceClient.
     /// </summary>
-    /// <param name="client">A pre-configured Azure Blob Service client.</param>
     /// <param name="containerName">The name of the blob container.</param>
+    /// <param name="client">A pre-configured Azure Blob Service client.</param>
     /// <param name="locationName">The logical name of this storage location.</param>
     /// <param name="ensureContainer">Whether to create the container if it doesn't exist.</param>
     public AzureBlobFileStorageProvider(

@@ -9,17 +9,17 @@ using System.Runtime.CompilerServices;
 
 public static class AsyncEnumerableExtensions
 {
-    public static async ValueTask<bool> AnyAsync<T>(
-        this IAsyncEnumerable<T> source,
-        CancellationToken cancellationToken = default)
-    {
-        await foreach (var item in source.WithCancellation(cancellationToken).ConfigureAwait(false))
-        {
-            return true;
-        }
+    //public static async ValueTask<bool> AnyAsync<T>(
+    //    this IAsyncEnumerable<T> source,
+    //    CancellationToken cancellationToken = default)
+    //{
+    //    await foreach (var item in source.WithCancellation(cancellationToken).ConfigureAwait(false))
+    //    {
+    //        return true;
+    //    }
 
-        return false;
-    }
+    //    return false;
+    //}
 
     public static async ValueTask<bool> AnyAsync<T>(
         this IAsyncEnumerable<T> source,
@@ -185,12 +185,12 @@ public static class AsyncEnumerableExtensions
         throw new InvalidOperationException("The source sequence is empty");
     }
 
-    public static ValueTask<T> FirstOrDefaultAsync<T>(
-        this IAsyncEnumerable<T> source,
-        CancellationToken cancellationToken = default)
-    {
-        return FirstOrDefaultAsync(source, _ => true, cancellationToken);
-    }
+    //public static ValueTask<T> FirstOrDefaultAsync<T>(
+    //    this IAsyncEnumerable<T> source,
+    //    CancellationToken cancellationToken = default)
+    //{
+    //    return FirstOrDefaultAsync(source, _ => true, cancellationToken);
+    //}
 
     public static async ValueTask<T> FirstOrDefaultAsync<T>(
         this IAsyncEnumerable<T> enumerable,
@@ -330,19 +330,19 @@ public static class AsyncEnumerableExtensions
         }
     }
 
-    public static async ValueTask<List<T>> ToListAsync<T>(
-        this IAsyncEnumerable<T> source,
-        CancellationToken cancellationToken = default)
-    {
-        var result = new List<T>();
+    //public static async ValueTask<List<T>> ToListAsync<T>(
+    //    this IAsyncEnumerable<T> source,
+    //    CancellationToken cancellationToken = default)
+    //{
+    //    var result = new List<T>();
 
-        await foreach (var item in source.WithCancellation(cancellationToken).ConfigureAwait(false))
-        {
-            result.Add(item);
-        }
+    //    await foreach (var item in source.WithCancellation(cancellationToken).ConfigureAwait(false))
+    //    {
+    //        result.Add(item);
+    //    }
 
-        return result;
-    }
+    //    return result;
+    //}
 
     public static async IAsyncEnumerable<T> WhereAsync<T>(
         this IAsyncEnumerable<T> source,

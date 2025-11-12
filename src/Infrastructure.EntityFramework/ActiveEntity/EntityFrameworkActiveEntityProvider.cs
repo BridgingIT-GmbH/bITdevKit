@@ -166,24 +166,17 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
 
         try
         {
-            var updateBuilder = new EntityFrameworkEntityUpdateSet<TEntity>(); // Build the update set using the provided builder action
+            var updateBuilder = new EntityFrameworkEntityUpdateSet<TEntity>();
             set(updateBuilder);
 
             var query = this.BuildQuery(this.context.Set<TEntity>(), options, specifications);
 
-            // Create a parameter expression representing "setters"
-            var parameter = Expression.Parameter(typeof(SetPropertyCalls<TEntity>), "setters"); // DOTNET10 https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-10.0/breaking-changes#mitigations-2
-            Expression body = parameter;
-
-            // Apply each assignment (chained SetProperty calls)
-            foreach (var apply in updateBuilder.Assignments)
+            // EF Core 10: ExecuteUpdateAsync now accepts Action instead of Expression
+            // The setters parameter is an opaque object that exposes SetProperty methods
+            var affected = await query.ExecuteUpdateAsync(s =>
             {
-                body = apply(body);
-            }
-
-            // Build the final lambda expression: setters => setters.SetProperty(...).SetProperty(...).SetProperty(...)
-            var lambda = Expression.Lambda<Func<SetPropertyCalls<TEntity>, SetPropertyCalls<TEntity>>>(body, parameter);
-            var affected = await query.ExecuteUpdateAsync(lambda, cancellationToken);
+                updateBuilder.ApplyTo(s);
+            }, cancellationToken);
 
             return Result<long>.Success(affected);
         }

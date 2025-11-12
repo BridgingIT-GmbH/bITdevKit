@@ -6,7 +6,7 @@
 
 ## Overview
 
-The Filtering feature provides a flexible and powerful way to filter, sort, and paginate data through API requests. It allows clients to construct complex queries using a JSON-based filter model that gets translated into domain specifications and FindOptions on the server side. The translated filter model can easily be handled by the DevKit repositories.
+The Filtering feature provides a flexible and powerful way to filter, sort, and paginate data through API requests. It allows clients to construct complex queries using a JSON-based filter model that gets translated into domain specifications and FindOptions on the server side. The translated filter model can easily be handled by the bITdevKit repositories.
 
 ```mermaid
 graph LR
@@ -1553,7 +1553,7 @@ It is not intended to replace or compete with comprehensive query technologies l
 
 ## When to Use the Filtering Feature
 
-- When already using the DevKit ecosystem, providing seamless integration with its repository
+- When already using the bITdevKit ecosystem, providing seamless integration with its repository
   and specification patterns
 - For REST APIs needing structured filtering
 - When requiring a balance between flexibility and simplicity
@@ -1563,8 +1563,8 @@ It is not intended to replace or compete with comprehensive query technologies l
 If the application requires complex schema definitions, introspection, or full query language
 capabilities, consider using GraphQL or OData instead. The Filtering feature focuses on providing a
 straightforward, typed approach to common filtering scenarios while maintaining REST principles and
-leveraging DevKit features.
+leveraging DevbITdevKitKit features.
 
 Remember: Choose the simplest tool that meets your requirements. The feature provides a
 lightweight, code-based approach to handle filtering, while staying consistent with
-the DevKit's philosophy of simple, effective solutions to common development problems.
+the bITdevKit philosophy of simple, effective solutions to common development problems.

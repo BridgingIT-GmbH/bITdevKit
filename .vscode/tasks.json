@@ -7,7 +7,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/BridgingIT.DevKit.sln",
+        "${workspaceFolder}/bITdevKit.slnx",
         "--nologo",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"

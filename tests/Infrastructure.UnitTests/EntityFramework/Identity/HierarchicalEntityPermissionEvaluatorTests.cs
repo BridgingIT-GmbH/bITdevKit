@@ -4,6 +4,7 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Identity;
+
 using System;
 using System.Linq;
 using System.Threading.Tasks;

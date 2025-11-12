@@ -39,6 +39,30 @@ public static class ConfigurationExtensions
         IModule module,
         bool skipPlaceholders = false)
     {
-        return source.GetSection($"Modules:{module?.Name}", skipPlaceholders);
+        var key = $"Modules:{module?.Name}";
+        if (!source.SectionExists(key))
+        {
+            throw new KeyNotFoundException($"Configuration section '{key}' was not found.");
+        }
+
+        return source.GetSection(key, skipPlaceholders);
+    }
+
+    public static bool SectionExists(this IConfiguration configuration, string key)
+    {
+        var section = configuration.GetSection(key);
+        if (section == null)
+        {
+            return false;
+        }
+
+        // Scalar value present
+        if (section.Value != null)
+        {
+            return true;
+        }
+
+        // Object/array present
+        return section.GetChildren().Any();
     }
 }

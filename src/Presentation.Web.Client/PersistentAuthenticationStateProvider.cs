@@ -4,6 +4,7 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Presentation.Web.Client;
+
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;

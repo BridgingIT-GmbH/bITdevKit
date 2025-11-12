@@ -4,6 +4,7 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Common;
+
 using System.Data;
 using FluentValidation;
 using Microsoft.Extensions.Logging;

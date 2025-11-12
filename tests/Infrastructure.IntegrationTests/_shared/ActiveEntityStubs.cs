@@ -101,7 +101,7 @@ public partial class Customer2 : ActiveEntity<Customer2, Guid> // non TypedId
     public string Title { get; set; }
 }
 
- [DebuggerDisplay("Id={Id}, FirstName={FirstName}, LastName={LastName}")]
+[DebuggerDisplay("Id={Id}, FirstName={FirstName}, LastName={LastName}")]
 [TypedEntityId<Guid>] // code generates a typedId called CustomerId
 [ActiveEntityFeatures(ActiveEntityFeatures.Forwarders | ActiveEntityFeatures.Specifications | ActiveEntityFeatures.QueryDsl | ActiveEntityFeatures.ConventionFinders)] // triggers the source generator to enable extra features
 public partial class Customer : ActiveEntity<Customer, CustomerId>, IAuditable, IConcurrency
@@ -125,6 +125,7 @@ public partial class Customer : ActiveEntity<Customer, CustomerId>, IAuditable, 
     /// Finds the customers by last name.
     /// </summary>
     /// <param name="name">the name</param>
+    /// <param name="cancellationToken"></param>
     public static Task<Result<IEnumerable<Customer>>> FindAllByLastNameCustomAsync(string name, CancellationToken cancellationToken = default) =>
         WithContextAsync(async (context) =>
             await context.Provider.FindAllAsync(new Specification<Customer>(c => c.LastName == name), null, cancellationToken));
@@ -174,9 +175,11 @@ public static class CustomerQueryExtensions
     /// <summary>
     /// Finds the customers by first name.
     /// </summary>
+    /// <param name="customer"></param>
     /// <param name="name">the name</param>
-    public static Task<Result<IEnumerable<Customer>>> FindAllByFirstNameCustomAsync( // triggers the soure generator and adds a static query forwarder (auto) in Customer
-        this ActiveEntity<Customer, CustomerId> _, string name, CancellationToken cancellationToken = default)
+    /// <param name="cancellationToken"></param>
+    public static Task<Result<IEnumerable<Customer>>> FindAllByFirstNameCustomAsync( // triggers the source generator and adds a static query forwarder (auto) in Customer
+        this ActiveEntity<Customer, CustomerId> customer, string name, CancellationToken cancellationToken = default)
     {
         return Customer.WithContextAsync(context =>
             context.Provider.FindAllAsync(new Specification<Customer>(c => c.FirstName == name), null, cancellationToken));
@@ -186,7 +189,7 @@ public static class CustomerQueryExtensions
     /// Finds the customers by title
     /// </summary>
     /// <param name="title">the title</param>
-    public static Task<Result<IEnumerable<Customer>>> FindAllByTitleCustomAsync( // triggers the soure generator and adds a static query forwarder (auto) in Customer
+    public static Task<Result<IEnumerable<Customer>>> FindAllByTitleCustomAsync( // triggers the source generator and adds a static query forwarder (auto) in Customer
         this ActiveEntity<Customer, CustomerId> _, string title)
     {
         return Customer.WithContextAsync(context =>
@@ -256,9 +259,10 @@ public static class OrderQueryExtensions
     /// <summary>
     /// Finds the orders for the customer.
     /// </summary>
+    /// <param name="order"></param>
     /// <param name="customer">the customer</param>
-    public static Task<Result<IEnumerable<Order>>> FindAllForAsync( // triggers the soure generator and adds a static query forwarder (auto) in Order
-        this ActiveEntity<Order, OrderId> _, Customer customer)
+    public static Task<Result<IEnumerable<Order>>> FindAllForAsync( // triggers the source generator and adds a static query forwarder (auto) in Order
+        this ActiveEntity<Order, OrderId> order, Customer customer)
     {
         ArgumentNullException.ThrowIfNull(customer);
 
@@ -269,9 +273,10 @@ public static class OrderQueryExtensions
     /// <summary>
     /// Finds the orders for the customer.
     /// </summary>
+    /// <param name="order"></param>
     /// <param name="status">the status</param>
-    public static Task<Result<IEnumerable<Order>>> FindAllForAsync( // triggers the soure generator and adds a static query forwarder (auto) in Order
-        this ActiveEntity<Order, OrderId> _, OrderStatus status)
+    public static Task<Result<IEnumerable<Order>>> FindAllForAsync( // triggers the source generator and adds a static query forwarder (auto) in Order
+        this ActiveEntity<Order, OrderId> order, OrderStatus status)
     {
         ArgumentNullException.ThrowIfNull(status);
 

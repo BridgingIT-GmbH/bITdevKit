@@ -13,7 +13,6 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
-using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -36,9 +35,21 @@ builder.Services.AddModules(builder.Configuration, builder.Environment)
 // ===============================================================================================
 // Configure the services
 builder.Services.AddRequester()
-    .AddHandlers().WithBehavior(typeof(ModuleScopeBehavior<,>));
+    .AddHandlers()
+    .WithBehavior(typeof(TracingBehavior<,>))
+    .WithBehavior(typeof(ModuleScopeBehavior<,>))
+    .WithBehavior(typeof(DatabaseTransactionPipelineBehavior<,>))
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>))
+    .WithBehavior(typeof(RetryPipelineBehavior<,>))
+    .WithBehavior(typeof(TimeoutPipelineBehavior<,>));
 builder.Services.AddNotifier()
-    .AddHandlers().WithBehavior(typeof(ModuleScopeBehavior<,>));
+    .AddHandlers()
+    .WithBehavior(typeof(TracingBehavior<,>))
+    .WithBehavior(typeof(ModuleScopeBehavior<,>))
+    .WithBehavior(typeof(DatabaseTransactionPipelineBehavior<,>))
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>))
+    .WithBehavior(typeof(RetryPipelineBehavior<,>))
+    .WithBehavior(typeof(TimeoutPipelineBehavior<,>));
 
 builder.Services.AddMapping().WithMapster();
 
@@ -91,10 +102,7 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
         "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/authentication/login-callback", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/authentication/logout-callback",
         "https://localhost:5001/authentication/login-callback", "https://localhost:5001/authentication/logout-callback",
         "https://localhost:5001/openapi/oauth2-redirect.html", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/openapi/oauth2-redirect.html") // swaggerui authorize
-    .WithClient(
-        "Scalar",
-        "scalar",
-        $"{builder.Configuration["Authentication:Authority"]}/scalar/")); // trailing slash is needed for login popup to close!?
+    .WithClient("Scalar", "scalar", $"{builder.Configuration["Authentication:Authority"]}/scalar/")); // trailing slash is needed for login popup to close!?
 
 builder.Services.ConfigureJson();
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
@@ -111,7 +119,7 @@ builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddMudServices();
 builder.Services.AddSignalR();
-builder.Services.AddInteractiveConsole();
+builder.Services.AddConsoleCommandsInteractive();
 //builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
 //builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
 
@@ -181,8 +189,8 @@ app.MapRazorComponents<App>()
 
 app.MapHub<NotificationHub>("/signalrhub");
 
-app.UseCommandInteractiveStats();
-app.UseInteractiveConsole();
+app.UseConsoleCommandsInteractiveStats();
+app.UseConsoleCommandsInteractive();
 
 app.Run();
 

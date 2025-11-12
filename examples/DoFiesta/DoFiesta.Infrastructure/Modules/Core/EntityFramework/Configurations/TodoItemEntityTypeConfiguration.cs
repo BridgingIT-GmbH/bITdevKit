@@ -46,7 +46,7 @@ public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem
             .IsRequired();
 
         builder.Property(x => x.DueDate);
-            //.HasColumnType("datetimeoffset");
+        //.HasColumnType("datetimeoffset");
 
         builder.Property(x => x.OrderIndex)
             .IsRequired()

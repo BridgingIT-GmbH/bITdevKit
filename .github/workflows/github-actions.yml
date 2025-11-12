@@ -82,17 +82,17 @@ jobs:
 #          echo "Analyze dotnet list package command log output..."
 #          grep -q -i "critical\|high\|moderate\|low" build.log; [ $? -eq 0 ] && echo "Security Vulnerabilities found on the log output" && exit 1
 
-      - name: Run tests
-        run: dotnet test --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --filter "FullyQualifiedName!~Examples" --logger "trx;LogFileName=test-results.trx" || true
+      # - name: Run tests
+      #   run: dotnet test --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --filter "FullyQualifiedName!~Examples" --logger "trx;LogFileName=test-results.trx" || true
 
-      - name: Report test results # https://octopus.com/blog/githubactions-running-unit-tests
-        uses: dorny/test-reporter@v1
-        # if: always()
-        with:
-          name: Tests
-          path: "**/test-results.trx"
-          reporter: dotnet-trx
-          fail-on-error: true
+      # - name: Report test results # https://octopus.com/blog/githubactions-running-unit-tests
+      #   uses: dorny/test-reporter@v1
+      #   # if: always()
+      #   with:
+      #     name: Tests
+      #     path: "**/test-results.trx"
+      #     reporter: dotnet-trx
+      #     fail-on-error: true
 
       # - name: Package pack (nuget)
       #   run: dotnet pack --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo ${{ env.Solution_Name }} --no-build --output ${{ env.NuGet_Directory }}

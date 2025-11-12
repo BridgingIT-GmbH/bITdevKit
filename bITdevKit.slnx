@@ -1,0 +1,242 @@
+<Solution>
+  <Configurations>
+    <Platform Name="Any CPU" />
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Folder Name="/assets/">
+    <File Path=".config/dotnet-tools.json" />
+    <File Path=".editorconfig" />
+    <File Path=".github/copilot-instructions.md" />
+    <File Path=".github/workflows/github-actions.yml" />
+    <File Path=".github/workflows/sonarcloud.yml" />
+    <File Path=".gitignore" />
+    <File Path="azure-pipelines.yml" />
+    <File Path="CODE-OF-CONDUCT.md" />
+    <File Path="CONTRIBUTION.md" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="docker-compose.yml" />
+    <File Path="global.json" />
+    <File Path="LICENSE" />
+    <File Path="nuget.config" />
+    <File Path="README.md" />
+    <File Path="RELEASES.md" />
+  </Folder>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/Common.Benchmarks/Common.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/docs/">
+    <File Path="docs/features-application-commands-queries.md" />
+    <File Path="docs/features-consolecommands.md" />
+    <File Path="docs/features-documentstorage.md" />
+    <File Path="docs/features-domain-activeentity-design.md" />
+    <File Path="docs/features-domain-activeentity.md" />
+    <File Path="docs/features-domain-repositories.md" />
+    <File Path="docs/features-domain.md" />
+    <File Path="docs/features-entitypermissions.md" />
+    <File Path="docs/features-filestorage.md" />
+    <File Path="docs/features-filtering.md" />
+    <File Path="docs/features-identityprovider.md" />
+    <File Path="docs/features-jobscheduling.md" />
+    <File Path="docs/features-messaging.md" />
+    <File Path="docs/features-modules.md" />
+    <File Path="docs/features-presentation-appstate.md" />
+    <File Path="docs/features-presentation-cors.md" />
+    <File Path="docs/features-requester-notifier.md" />
+    <File Path="docs/features-results.md" />
+    <File Path="docs/features-rules.md" />
+    <File Path="docs/features-startuptasks.md" />
+    <File Path="docs/features-utilities.md" />
+    <File Path="README.md" />
+  </Folder>
+  <Folder Name="/docs/assets/">
+    <File Path="docs/assets/bITDevKit_Icon.png" />
+    <File Path="docs/assets/bITDevKit_Icon.svg" />
+    <File Path="docs/assets/bITDevKit_Icon_variants.svg" />
+    <File Path="docs/assets/bITDevKit_Logo.png" />
+    <File Path="docs/assets/bITDevKit_Logo.svg" />
+    <File Path="docs/assets/bITDevKit_Logo_variant.svg" />
+    <File Path="docs/assets/bITDevKit_Logo_white.svg" />
+    <File Path="docs/assets/bITDevKit_Logo_whiteblue.svg" />
+    <File Path="docs/assets/bITDevKit_Text.svg" />
+    <File Path="docs/assets/bITDevKit_Text_variants.svg" />
+  </Folder>
+  <Folder Name="/examples/">
+    <File Path="examples/Directory.Build.props" />
+  </Folder>
+  <Folder Name="/examples/DinnerFiesta/">
+    <Project Path="examples/DinnerFiesta/Presentation.Web.Client/DinnerFiesta.Presentation.Web.Client.csproj" />
+    <Project Path="examples/DinnerFiesta/Presentation.Web.Server/DinnerFiesta.Presentation.Web.Server.csproj" />
+  </Folder>
+  <Folder Name="/examples/DinnerFiesta/assets/">
+    <File Path="examples/DinnerFiesta/DinnerFiesta-Domain-Overview.png" />
+    <File Path="examples/DinnerFiesta/DinnerFiesta-README.md" />
+  </Folder>
+  <Folder Name="/examples/DinnerFiesta/Modules/">
+    <File Path="examples/DinnerFiesta/Modules/Directory.Build.props" />
+  </Folder>
+  <Folder Name="/examples/DinnerFiesta/Modules/Core/">
+    <Project Path="examples/DinnerFiesta/Modules/Core/Core.Application/DinnerFiesta.Core.Application.csproj" />
+    <Project Path="examples/DinnerFiesta/Modules/Core/Core.Domain/DinnerFiesta.Core.Domain.csproj" />
+    <Project Path="examples/DinnerFiesta/Modules/Core/Core.Infrastructure/DinnerFiesta.Core.Infrastructure.csproj" />
+    <Project Path="examples/DinnerFiesta/Modules/Core/Core.Presentation.Web.Client/DinnerFiesta.Core.Presentation.Web.Client.csproj" />
+    <Project Path="examples/DinnerFiesta/Modules/Core/Core.Presentation/DinnerFiesta.Core.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/examples/DinnerFiesta/Modules/Core/assets/">
+    <File Path="examples/DinnerFiesta/Modules/Core/Core-API.http" />
+    <File Path="examples/DinnerFiesta/Modules/Core/Core-OpenAPI.yaml" />
+    <File Path="examples/DinnerFiesta/Modules/Core/Core-Overview-Domain.drawio.png" />
+    <File Path="examples/DinnerFiesta/Modules/Core/Core-README.md" />
+  </Folder>
+  <Folder Name="/examples/DinnerFiesta/Modules/Core/tests/">
+    <Project Path="examples/DinnerFiesta/Modules/Core/Core.EndToEndTests/DinnerFiesta.Core.EndToEndTests.csproj" />
+    <Project Path="examples/DinnerFiesta/Modules/Core/Core.IntegrationTests/DinnerFiesta.Core.IntegrationTests.csproj" />
+    <Project Path="examples/DinnerFiesta/Modules/Core/Core.UnitTests/DinnerFiesta.Core.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/examples/DinnerFiesta/Modules/Identity/" />
+  <Folder Name="/examples/DinnerFiesta/Modules/Identity/assets/">
+    <File Path="examples/DinnerFiesta/Modules/Identity/Identity-OpenAPI.yaml" />
+  </Folder>
+  <Folder Name="/examples/DinnerFiesta/Modules/Marketing/">
+    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.Application/DinnerFiesta.Marketing.Application.csproj" />
+    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.Domain/DinnerFiesta.Marketing.Domain.csproj" />
+    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.Infrastructure/DinnerFiesta.Marketing.Infrastructure.csproj" />
+    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.Presentation.Web.Client/DinnerFiesta.Marketing.Presentation.Web.Client.csproj" />
+    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.Presentation/DinnerFiesta.Marketing.Presentation.csproj" />
+  </Folder>
+  <Folder Name="/examples/DinnerFiesta/Modules/Marketing/assets/">
+    <File Path="examples/DinnerFiesta/Modules/Marketing/Marketing-API.http" />
+    <File Path="examples/DinnerFiesta/Modules/Marketing/Marketing-OpenAPI.yaml" />
+    <File Path="examples/DinnerFiesta/Modules/Marketing/Marketing-Overview-Domain.drawio.png" />
+    <File Path="examples/DinnerFiesta/Modules/Marketing/Marketing-README.md" />
+  </Folder>
+  <Folder Name="/examples/DinnerFiesta/Modules/Marketing/tests/">
+    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.EndToEndTests/DinnerFiesta.Marketing.EndToEndTests.csproj" />
+    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.IntegrationTests/DinnerFiesta.Marketing.IntegrationTests.csproj" />
+    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.UnitTests/DinnerFiesta.Marketing.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/examples/DoFiesta/">
+    <Project Path="examples/DoFiesta/DoFiesta.Application/DoFiesta.Application.csproj" />
+    <Project Path="examples/DoFiesta/DoFiesta.Domain/DoFiesta.Domain.csproj" />
+    <Project Path="examples/DoFiesta/DoFiesta.Infrastructure/DoFiesta.Infrastructure.csproj" />
+    <Project Path="examples/DoFiesta/DoFiesta.Presentation.Web.Client/DoFiesta.Presentation.Web.Client.csproj" />
+    <Project Path="examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj" />
+  </Folder>
+  <Folder Name="/examples/EventSourcingDemo/" />
+  <Folder Name="/examples/EventSourcingDemo/assets/">
+    <File Path="examples/EventSourcingDemo/EventSourcingDemo-README.md" />
+    <File Path="examples/EventSourcingDemo/EventSourcingDemo-REST.http" />
+  </Folder>
+  <Folder Name="/examples/EventSourcingDemo/src/">
+    <Project Path="examples/EventSourcingDemo/EventSourcingDemo.Application/EventSourcingDemo.Application.csproj" />
+    <Project Path="examples/EventSourcingDemo/EventSourcingDemo.Domain/EventSourcingDemo.Domain.csproj" />
+    <Project Path="examples/EventSourcingDemo/EventSourcingDemo.Infrastructure/EventSourcingDemo.Infrastructure.csproj" />
+    <Project Path="examples/EventSourcingDemo/EventSourcingDemo.Presentation.Web/EventSourcingDemo.Presentation.Web.csproj" />
+  </Folder>
+  <Folder Name="/examples/EventSourcingDemo/tests/">
+    <Project Path="examples/EventSourcingDemo/tests/EventSourcingDemo.Integration.Tests/EventSourcing.IntegrationTests.csproj" />
+  </Folder>
+  <Folder Name="/examples/WeatherForecast/" />
+  <Folder Name="/examples/WeatherForecast/assets/">
+    <File Path="examples/WeatherForecast/WeatherForecast-README.md" />
+    <File Path="examples/WeatherForecast/WeatherForecast-REST.http" />
+  </Folder>
+  <Folder Name="/examples/WeatherForecast/src/">
+    <Project Path="examples/WeatherForecast/WeatherForecast.Application/WeatherForecast.Application.csproj" />
+    <Project Path="examples/WeatherForecast/WeatherForecast.Domain/WeatherForecast.Domain.csproj" />
+    <Project Path="examples/WeatherForecast/WeatherForecast.Infrastructure/WeatherForecast.Infrastructure.csproj" />
+    <Project Path="examples/WeatherForecast/WeatherForecast.Presentation.Web.Client/WeatherForecast.Presentation.Web.Client.csproj" />
+    <Project Path="examples/WeatherForecast/WeatherForecast.Presentation.Web.Server/WeatherForecast.Presentation.Web.Server.csproj" />
+  </Folder>
+  <Folder Name="/examples/WeatherForecast/tests/">
+    <Project Path="examples/WeatherForecast/WeatherForecast.EndToEndTests/WeatherForecast.EndToEndTests.csproj" />
+    <Project Path="examples/WeatherForecast/WeatherForecast.IntegrationTests/WeatherForecast.IntegrationTests.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <File Path="src/Directory.Build.props" />
+  </Folder>
+  <Folder Name="/src/0. Common/">
+    <Project Path="src/Common.Abstractions/Common.Abstractions.csproj" />
+    <Project Path="src/Common.Caching/Common.Caching.csproj" />
+    <Project Path="src/Common.Extensions.Web/Common.Extensions.Web.csproj" />
+    <Project Path="src/Common.Extensions/Common.Extensions.csproj" />
+    <Project Path="src/Common.Mapping/Common.Mapping.csproj" />
+    <Project Path="src/Common.Modules/Common.Modules.csproj" />
+    <Project Path="src/Common.Options/Common.Options.csproj" />
+    <Project Path="src/Common.Results/Common.Results.csproj" />
+    <Project Path="src/Common.Rules/Common.Rules.csproj" />
+    <Project Path="src/Common.Serialization/Common.Serialization.csproj" />
+    <Project Path="src/Common.Utilities.Tracing/Common.Utilities.Tracing.csproj" />
+    <Project Path="src/Common.Utilities.Xunit/Common.Utilities.Xunit.csproj" />
+    <Project Path="src/Common.Utilities/Common.Utilities.csproj" />
+  </Folder>
+  <Folder Name="/src/1. Application/">
+    <Project Path="src/Application.Commands.EventSourcing/Application.Commands.EventSourcing.csproj" />
+    <Project Path="src/Application.Commands.Outbox/Application.Commands.Outbox.csproj" />
+    <Project Path="src/Application.Commands/Application.Commands.csproj" />
+    <Project Path="src/Application.Entities.Messaging/Application.Entities.Messaging.csproj" />
+    <Project Path="src/Application.Entities/Application.Entities.csproj" />
+    <Project Path="src/Application.Identity/Application.Identity.csproj" />
+    <Project Path="src/Application.JobScheduling/Application.JobScheduling.csproj" />
+    <Project Path="src/Application.Messaging/Application.Messaging.csproj" />
+    <Project Path="src/Application.Notifications/Application.Notifications.csproj" />
+    <Project Path="src/Application.Queries/Application.Queries.csproj" />
+    <Project Path="src/Application.Storage.Jobs/Application.Storage.Jobs.csproj" />
+    <Project Path="src/Application.Storage/Application.Storage.csproj" />
+    <Project Path="src/Application.Utilities/Application.Utilities.csproj" />
+  </Folder>
+  <Folder Name="/src/2. Domain/">
+    <Project Path="src/Domain.CodeGen/Domain.CodeGen.csproj" />
+    <Project Path="src/Domain.EventSourcing.Mediator/Domain.EventSourcing.Mediator.csproj" />
+    <Project Path="src/Domain.EventSourcing.Outbox/Domain.EventSourcing.Outbox.csproj" />
+    <Project Path="src/Domain.EventSourcing/Domain.EventSourcing.csproj" />
+    <Project Path="src/Domain.Mediator/Domain.Mediator.csproj" />
+    <Project Path="src/Domain.Outbox/Domain.Outbox.csproj" />
+    <Project Path="src/Domain/Domain.csproj" />
+  </Folder>
+  <Folder Name="/src/3. Infrastructure/">
+    <Project Path="src/Infrastructure.Azure.Cosmos/Infrastructure.Azure.Cosmos.csproj" />
+    <Project Path="src/Infrastructure.Azure.ServiceBus/Infrastructure.Azure.ServiceBus.csproj" />
+    <Project Path="src/Infrastructure.Azure.Storage/Infrastructure.Azure.Storage.csproj" />
+    <Project Path="src/Infrastructure.EntityFramework.Cosmos/Infrastructure.EntityFramework.Cosmos.csproj" />
+    <Project Path="src/Infrastructure.EntityFramework.EventSourcing.SqlServer/Infrastructure.EntityFramework.EventSourcing.SqlServer.csproj" />
+    <Project Path="src/Infrastructure.EntityFramework.EventSourcing/Infrastructure.EntityFramework.EventSourcing.csproj" />
+    <Project Path="src/Infrastructure.EntityFramework.Outbox/Infrastructure.EntityFramework.Outbox.csproj" />
+    <Project Path="src/Infrastructure.EntityFramework.Postgres/Infrastructure.EntityFramework.Postgres.csproj" />
+    <Project Path="src/Infrastructure.EntityFramework.Sqlite/Infrastructure.EntityFramework.Sqlite.csproj" />
+    <Project Path="src/Infrastructure.EntityFramework.SqlServer/Infrastructure.EntityFramework.SqlServer.csproj" />
+    <Project Path="src/Infrastructure.EntityFramework/Infrastructure.EntityFramework.csproj" />
+    <Project Path="src/Infrastructure.EventSourcing/Infrastructure.EventSourcing.csproj" />
+    <Project Path="src/Infrastructure.LiteDB/Infrastructure.LiteDB.csproj" />
+    <Project Path="src/Infrastructure.RabbitMQ/Infrastructure.RabbitMQ.csproj" />
+    <Project Path="src/Infrastructure.Windows/Infrastructure.Windows.csproj" />
+  </Folder>
+  <Folder Name="/src/4. Presentation/">
+    <Project Path="src/Presentation.Configuration/Presentation.Configuration.csproj" />
+    <Project Path="src/Presentation.Serilog/Presentation.Serilog.csproj" />
+    <Project Path="src/Presentation.Web.Client/Presentation.Web.Client.csproj" />
+    <Project Path="src/Presentation.Web.JobScheduling/Presentation.Web.JobScheduling.csproj" />
+    <Project Path="src/Presentation.Web/Presentation.Web.csproj" />
+    <Project Path="src/Presentation/Presentation.csproj" />
+  </Folder>
+  <Folder Name="/tests/" />
+  <Folder Name="/tests/0. Common/">
+    <Project Path="tests/Common.UnitTests/Common.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/1. Application/">
+    <Project Path="tests/Application.IntegrationTests/Application.IntegrationTests.csproj" />
+    <Project Path="tests/Application.UnitTests/Application.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/2. Domain/">
+    <Project Path="tests/Domain.IntegrationTests/Domain.IntegrationTests.csproj" />
+    <Project Path="tests/Domain.UnitTests/Domain.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/3. Infrastructure/">
+    <Project Path="tests/Infrastructure.IntegrationTests/Infrastructure.IntegrationTests.csproj" />
+    <Project Path="tests/Infrastructure.UnitTests/Infrastructure.UnitTests.csproj" />
+  </Folder>
+  <Folder Name="/tests/4. Presentation/">
+    <Project Path="tests/Presentation.UnitTests/Presentation.UnitTests.csproj" />
+  </Folder>
+</Solution>

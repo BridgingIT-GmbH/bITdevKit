@@ -78,7 +78,7 @@ public static class AuthorizationExtensions
         Type entityType,
         params string[] permissions)
     {
-        foreach(var permission in permissions.SafeNull())
+        foreach (var permission in permissions.SafeNull())
         {
             builder.AddRequirements(
                 new EntityPermissionAuthorizationRequirement(entityType, permission));

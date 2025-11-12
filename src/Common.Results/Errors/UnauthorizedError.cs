@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public class UnauthorizedError(string message = null) : ResultErrorBase(message ?? "Unauthorized")
+public class UnauthorizedError(string message = null) : ResultErrorBase(message ?? "Unauthorized") // 401
 {
     public UnauthorizedError() : this(null)
     {

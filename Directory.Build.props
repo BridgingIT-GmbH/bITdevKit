@@ -5,27 +5,33 @@
         <!--package-->
         <Authors>BridgingIT GmbH</Authors>
         <Description>
-            BridgingIT DevKit: Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles. Our goal is to empower developers by offering modular components that can be easily integrated into your projects. Whether you're working with repositories, commands, queries, or other components, the bITDevKit provides flexible solutions that can adapt to your specific needs.
+            bITdevKit: Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles. Our goal is to empower developers by offering modular components that can be easily integrated into your projects. Whether you're working with repositories, commands, queries, or other components, the bITDevKit provides flexible solutions that can adapt to your specific needs.
         </Description>
-        <Copyright>Copyright 2024 (c) BridgingIT GmbH. All rights reserved.</Copyright>
-        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <Copyright>Copyright 2025 (c) BridgingIT GmbH. All rights reserved.</Copyright>
+        <PackageTags>bridgingit;devkit;bitdevkit;dotnet;clean-architecture;solution;cqrs;ddd</PackageTags>
+        <RepositoryUrl>https://github.com/BridgingIT-GmbH/bITdevKit</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/BridgingIT-GmbH/bITdevKit</PackageProjectUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+
         <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
         <SourceRevisionId>build$([System.DateTime]::UtcNow.ToString("yyyyMMddHHmmss"))</SourceRevisionId>
         <DebugType>embedded</DebugType>
         <EmbedAllSources>true</EmbedAllSources>
         <AccelerateBuildsInVisualStudio>true</AccelerateBuildsInVisualStudio>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-        <!--https://learn.microsoft.com/en-us/azure/devops/pipelines/artifacts/caching-nuget?view=azure-devops#lock-dependencies-->
+    <!--https://learn.microsoft.com/en-us/azure/devops/pipelines/artifacts/caching-nuget?view=azure-devops#lock-dependencies-->
         <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
         <MinVerDefaultPreReleaseIdentifiers>preview.0</MinVerDefaultPreReleaseIdentifiers>
         <NoWarn>NU1903</NoWarn>
     </PropertyGroup>
 
-    <!--<PropertyGroup Condition="$(MSBuildProjectDirectory.Contains('src'))">
+  <!--<PropertyGroup Condition="$(MSBuildProjectDirectory.Contains('src'))">
     <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../../RELEASES.md"))</PackageReleaseNotes>
   </PropertyGroup>-->
 
-    <!--<ItemGroup>
+  <!--<ItemGroup>
     <None Include="../../README.md" Pack="true" PackagePath="\"/>
   </ItemGroup>-->
 
@@ -37,9 +43,9 @@
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <WarningsAsErrors>true</WarningsAsErrors>
 
-        <!--    <CodeAnalysisRuleSet></CodeAnalysisRuleSet>-->
-        <!--<UseSharedCompilation>true</UseSharedCompilation>-->
-        <!--roslyn build speed-->
+    <!--    <CodeAnalysisRuleSet></CodeAnalysisRuleSet>-->
+    <!--<UseSharedCompilation>true</UseSharedCompilation>-->
+    <!--roslyn build speed-->
     </PropertyGroup>
 
     <ItemGroup>
@@ -53,7 +59,7 @@
         <None Remove="**\*.lock.json" Visible="false"/>
     </ItemGroup>
 
-    <!--<ItemGroup>
+  <!--<ItemGroup>
     <Compile Include="..\..\GlobalSuppressions.cs" Link="GlobalSuppressions.cs" />
   </ItemGroup>-->
 
@@ -68,7 +74,7 @@
     </ItemGroup>
 
     <Target Name="CheckPackageVersion" BeforeTargets="Build"> <!-- prevent some unwanted package upgrades due to licensing -->
-        <Error Condition="'%(PackageVersion.Identity)' == 'AutoMapper' AND '%(PackageVersion.Version)' != '[14.0.0]'" Text="Invalid package version for AutoMapper. Expected: 14.0.0." />
+        <!-- <Error Condition="'%(PackageVersion.Identity)' == 'AutoMapper' AND '%(PackageVersion.Version)' != '[14.0.0]'" Text="Invalid package version for AutoMapper. Expected: 14.0.0." /> -->
         <Error Condition="'%(PackageVersion.Identity)' == 'MediatR' AND '%(PackageVersion.Version)' != '[12.5.0]'" Text="Invalid package version for MediatR. Expected: 12.5.0." />
     </Target>
 

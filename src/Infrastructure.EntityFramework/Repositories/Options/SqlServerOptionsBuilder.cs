@@ -39,6 +39,12 @@ public class SqlServerOptionsBuilder : OptionsBuilderBase<SqlServerOptions, SqlS
         return this;
     }
 
+    public SqlServerOptionsBuilder UseIdempotentMigrations(bool value = true)
+    {
+        this.Target.IdempotentMigrationsEnabled = value;
+        return this;
+    }
+
     public SqlServerOptionsBuilder UseCommandLogger(bool value = true)
     {
         this.Target.CommandLoggerEnabled = value;

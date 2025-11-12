@@ -11,7 +11,6 @@ using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
-using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 using BridgingIT.DevKit.Presentation;
 using Common;
 using DevKit.Domain.Repositories;
@@ -37,7 +36,7 @@ public class CoreModule : WebModuleBase
         // jobs
         services.AddJobScheduling(o => o
             .Enabled().StartupDelay(configuration["JobScheduling:StartupDelay"]), configuration)
-            .WithSqlServerStore(configuration["Modules:Core:ConnectionStrings:Default"])
+            .WithSqlServerStore(moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default"))
             .WithJob<FileMonitoringLocationScanJob>()
                 .Cron(CronExpressions.Every5Minutes)
                 .Named("scan_inbound")
@@ -46,31 +45,31 @@ public class CoreModule : WebModuleBase
                 .WithData(DataKeys.FileFilter, "*.*")
                 .WithData(DataKeys.FileBlackListFilter, "*.tmp;*.log")
                 .RegisterScoped();
-            //.WithJob<EchoJob>()
-            //    .Cron(CronExpressions.EveryMinute)
-            //    .Named("firstecho")
-            //    .WithData("message", "First echo")
-            //    .RegisterScoped()
-            //.WithJob<EchoJob>()
-            //    .Cron(CronExpressions.Every5Seconds)
-            //    .Named("secondecho")
-            //    .WithData("message", "Second echo")
-            //    .Enabled(environment?.IsDevelopment() == true)
-            //    .RegisterScoped()
-            //.WithJob<EchoJob>()
-            //    .Cron(b => b.DayOfMonth(1).AtTime(23, 59).Build()) // "0 59 23 1 * ?"
-            //    .Named("thirdecho")
-            //    .WithData("message", "Third echo")
-            //    .Enabled(environment?.IsDevelopment() == true)
-            //    .RegisterScoped()
-            //.AddEndpoints();
+        //.WithJob<EchoJob>()
+        //    .Cron(CronExpressions.EveryMinute)
+        //    .Named("firstecho")
+        //    .WithData("message", "First echo")
+        //    .RegisterScoped()
+        //.WithJob<EchoJob>()
+        //    .Cron(CronExpressions.Every5Seconds)
+        //    .Named("secondecho")
+        //    .WithData("message", "Second echo")
+        //    .Enabled(environment?.IsDevelopment() == true)
+        //    .RegisterScoped()
+        //.WithJob<EchoJob>()
+        //    .Cron(b => b.DayOfMonth(1).AtTime(23, 59).Build()) // "0 59 23 1 * ?"
+        //    .Named("thirdecho")
+        //    .WithData("message", "Third echo")
+        //    .Enabled(environment?.IsDevelopment() == true)
+        //    .RegisterScoped()
+        //.AddEndpoints();
 
         // filter
         SpecificationResolver.Register<TodoItem, TodoItemIsNotDeletedSpecification>("TodoItemIsNotDeleted");
 
         // dbcontext
         services.AddSqlServerDbContext<CoreDbContext>(o => o
-                .UseConnectionString(moduleConfiguration.ConnectionStrings["Default"])
+                .UseConnectionString(moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default"))
                 .UseLogger()/*.UseSimpleLogger()*/)
             .WithSequenceNumberGenerator()
             .WithDatabaseCreatorService(o => o
@@ -93,7 +92,7 @@ public class CoreModule : WebModuleBase
             {
                 // Register entities that need permission checks + auth policies
                 o.AddEntity<TodoItem>(Permission.Read, Permission.Write, Permission.List, Permission.Delete) // allowed permissions -> auth policies
-                    //.AddDefaultPermissions<TodoItem>(Permission.Read, Permission.List) // default permissions if user/group has no grants
+                                                                                                             //.AddDefaultPermissions<TodoItem>(Permission.Read, Permission.List) // default permissions if user/group has no grants
                     .UseDefaultPermissionProvider<TodoItem>();
 
                 o.AddEntity<Subscription>(Permission.Read, Permission.Write, Permission.List, Permission.Delete) // allowed permissions -> auth policies
@@ -124,14 +123,14 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryLoggingBehavior<TodoItem>>()
             .WithBehavior<RepositoryAuditStateBehavior<TodoItem>>()
             .WithBehavior<RepositoryOutboxDomainEventBehavior<TodoItem, CoreDbContext>>();
-            //.WithBehavior<RepositoryDomainEventPublisherBehavior<TodoItem>>();
+        //.WithBehavior<RepositoryDomainEventPublisherBehavior<TodoItem>>();
 
         services.AddEntityFrameworkRepository<Subscription, CoreDbContext>()
             .WithBehavior<RepositoryTracingBehavior<Subscription>>()
             .WithBehavior<RepositoryLoggingBehavior<Subscription>>()
             .WithBehavior<RepositoryAuditStateBehavior<Subscription>>()
             .WithBehavior<RepositoryOutboxDomainEventBehavior<Subscription, CoreDbContext>>();
-            //.WithBehavior<RepositoryDomainEventPublisherBehavior<Subscription>>();
+        //.WithBehavior<RepositoryDomainEventPublisherBehavior<Subscription>>();
 
         // endpoints
         services.AddEndpoints<CoreTodoItemEndpoints>();

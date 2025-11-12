@@ -374,7 +374,7 @@ public interface IRequestBehaviorsProvider
 public class RequestBehaviorsProvider(IReadOnlyList<Type> pipelineBehaviorTypes) : IRequestBehaviorsProvider
 {
     private readonly IReadOnlyList<Type> pipelineBehaviorTypes = pipelineBehaviorTypes ?? throw new ArgumentNullException(nameof(pipelineBehaviorTypes));
-    private readonly Dictionary<Type, object> behaviorCache = []; // Scoped cache per provider instance
+    //private readonly Dictionary<Type, object> behaviorCache = []; // Scoped cache per provider instance
 
     public IReadOnlyList<IPipelineBehavior<TRequest, IResult<TValue>>> GetBehaviors<TRequest, TValue>(IServiceProvider serviceProvider)
         where TRequest : class, IRequest<TValue>
@@ -385,10 +385,10 @@ public class RequestBehaviorsProvider(IReadOnlyList<Type> pipelineBehaviorTypes)
         }
 
         var behaviorType = typeof(IPipelineBehavior<TRequest, IResult<TValue>>);
-        if (this.behaviorCache.TryGetValue(behaviorType, out var cachedBehaviors))
-        {
-            return (IReadOnlyList<IPipelineBehavior<TRequest, IResult<TValue>>>)cachedBehaviors;
-        }
+        //if (this.behaviorCache.TryGetValue(behaviorType, out var cachedBehaviors)) // WARN: causes issues with scoped services in behaviors
+        //{
+        //    return (IReadOnlyList<IPipelineBehavior<TRequest, IResult<TValue>>>)cachedBehaviors;
+        //}
 
         var allBehaviors = serviceProvider.GetServices(behaviorType).Cast<IPipelineBehavior<TRequest, IResult<TValue>>>().ToArray();
         if (allBehaviors.Length == 0 && this.pipelineBehaviorTypes.Count > 0)
@@ -417,7 +417,7 @@ public class RequestBehaviorsProvider(IReadOnlyList<Type> pipelineBehaviorTypes)
         }
 
         var finalBehaviors = index < orderedBehaviors.Length ? orderedBehaviors.AsSpan(0, index).ToArray() : orderedBehaviors;
-        this.behaviorCache[behaviorType] = finalBehaviors; // Cache for scope lifetime
+        //this.behaviorCache[behaviorType] = finalBehaviors; // Cache for scope lifetime // WARN: causes issues with scoped services in behaviors
         return finalBehaviors;
     }
 }
@@ -601,13 +601,26 @@ public partial class Requester(
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();
-                var result = await next().ConfigureAwait(false);
-                TypedLogger.LogProcessed(this.logger, RequestLogKey, requestTypeName, requestIdString, Environment.TickCount64 - startTicks);
-                return (Result<TValue>)result;
+                var handlerResult = await next().ConfigureAwait(false);
+
+                if (handlerResult.IsSuccess)
+                {
+                    TypedLogger.LogSuccess(this.logger, RequestLogKey, requestTypeName, requestIdString, Environment.TickCount64 - startTicks);
+
+                    return (Result<TValue>)handlerResult;
+                }
+                else
+                {
+                    TypedLogger.LogFailed(this.logger, RequestLogKey, requestTypeName, requestIdString, Environment.TickCount64 - startTicks);
+                    this.logger.LogError("{LogKey} request failed with errors: {Errors}", RequestLogKey, string.Join("; ", handlerResult.Errors.Select(e => e.Message)));
+                }
+
+                return (Result<TValue>)handlerResult;
             }
             catch (Exception ex) when (options.HandleExceptionsAsResultError)
             {
-                TypedLogger.LogError(this.logger, ex, requestTypeName, requestIdString);
+                TypedLogger.LogError(this.logger, RequestLogKey, ex, requestTypeName, requestIdString);
+
                 return Result<TValue>.Failure().WithError(new ExceptionError(ex));
             }
         }
@@ -728,10 +741,8 @@ public partial class Requester(
 
         var information = new RegistrationInformation(handlerMappings, behaviorTypes);
 
-        this.logger.LogDebug("Registered Request Handlers: {HandlerMappings}",
-            string.Join("; ", handlerMappings.Select(kvp => $"{kvp.Key}: [{string.Join(", ", kvp.Value)}]")));
-        this.logger.LogDebug("Registered Request Behaviors: {BehaviorTypes}",
-            string.Join(", ", behaviorTypes));
+        this.logger.LogDebug("Registered Request Handlers: {HandlerMappings}", string.Join("; ", handlerMappings.Select(kvp => $"{kvp.Key}: [{string.Join(", ", kvp.Value)}]")));
+        this.logger.LogDebug("Registered Request Behaviors: {BehaviorTypes}", string.Join(", ", behaviorTypes));
 
         return information;
     }
@@ -741,14 +752,17 @@ public partial class Requester(
     /// </summary>
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} processing (type={RequestType}, id={RequestId})")]
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} request processing (type={RequestType}, id={RequestId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string requestType, string requestId);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} processed (type={RequestType}, id={RequestId}) -> took {TimeElapsed} ms")]
-        public static partial void LogProcessed(ILogger logger, string logKey, string requestType, string requestId, long timeElapsed);
+        [LoggerMessage(1, LogLevel.Information, "{LogKey} request success (type={RequestType}, id={RequestId}) -> took {TimeElapsed} ms")]
+        public static partial void LogSuccess(ILogger logger, string logKey, string requestType, string requestId, long timeElapsed);
 
-        [LoggerMessage(2, LogLevel.Error, "Request processing failed for {RequestType} ({RequestId})")]
-        public static partial void LogError(ILogger logger, Exception ex, string requestType, string requestId);
+        [LoggerMessage(2, LogLevel.Error, "{LogKey} request failed (type={RequestType}, id={RequestId}) -> took {TimeElapsed} ms")]
+        public static partial void LogFailed(ILogger logger, string logKey, string requestType, string requestId, long timeElapsed);
+
+        [LoggerMessage(3, LogLevel.Error, "{LogKey} request processing failed for {RequestType} ({RequestId})")]
+        public static partial void LogError(ILogger logger, string logKey, Exception ex, string requestType, string requestId);
     }
 }
 

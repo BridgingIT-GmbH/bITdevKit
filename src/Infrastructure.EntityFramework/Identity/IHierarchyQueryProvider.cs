@@ -13,5 +13,5 @@ public interface IHierarchyQueryProvider
     /// <summary>
     /// Creates a SQL query to get the hierarchy path for an entity.
     /// </summary>
-    string CreatePathQuery(string schema, string tableName, string idColumn, string parentIdColumn);
+    string CreatePathQuery(string schema, string tableName, string idColumn, string parentIdColumn, Type idType);
 }

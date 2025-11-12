@@ -4,6 +4,7 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Application.IntegrationTests.Storage;
+
 using System;
 using System.Linq;
 using System.Threading.Tasks;

@@ -128,6 +128,19 @@
             padding-top: .5rem;
             padding-bottom: .5rem;
             height: 3.5rem;
+            font-size: 1.2rem;
+            max-width: 440px; /* truncation width on small screens */
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        @@media (min-width: 768px) { /* allow full name from md breakpoint upward */
+            .navbar-brand {
+                max-width: none;
+                overflow: visible;
+                text-overflow: clip;
+                white-space: normal; /* allow wrapping if needed */
+            }
         }
 
         .sidebar {
@@ -304,7 +317,7 @@
 
 <body>
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">@Model.ProductName</a>
+        <a class="navbar-brand me-0 px-3" href="#" title="@Model.ProductName">@Model.ProductName</a>
         <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>

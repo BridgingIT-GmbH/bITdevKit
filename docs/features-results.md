@@ -842,7 +842,7 @@ This example demonstrates:
 
 ## Appendix A: Repository Extensions
 
-> The DevKit provides extension methods for repositories that don't natively support the Result
+> The bITdevKit provides extension methods for repositories that don't natively support the Result
 > pattern. These extensions wrap standard repository operations in Result objects, providing
 > consistent error handling and operation results across your application.
 

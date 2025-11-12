@@ -366,7 +366,7 @@ public interface INotificationBehaviorsProvider
 public class NotificationBehaviorsProvider(IReadOnlyList<Type> pipelineBehaviorTypes) : INotificationBehaviorsProvider
 {
     private readonly IReadOnlyList<Type> pipelineBehaviorTypes = pipelineBehaviorTypes ?? throw new ArgumentNullException(nameof(pipelineBehaviorTypes));
-    private readonly Dictionary<Type, object> behaviorCache = []; // Scoped cache per provider instance
+    //private readonly Dictionary<Type, object> behaviorCache = []; // Scoped cache per provider instance
 
     /// <summary>
     /// Resolves the pipeline behaviors for a specific notification type.
@@ -383,10 +383,10 @@ public class NotificationBehaviorsProvider(IReadOnlyList<Type> pipelineBehaviorT
         }
 
         var behaviorType = typeof(IPipelineBehavior<TNotification, IResult>);
-        if (this.behaviorCache.TryGetValue(behaviorType, out var cachedBehaviors))
-        {
-            return (IReadOnlyList<IPipelineBehavior<TNotification, IResult>>)cachedBehaviors;
-        }
+        //if (this.behaviorCache.TryGetValue(behaviorType, out var cachedBehaviors)) // WARN: causes issues with scoped services in behaviors
+        //{
+        //    return (IReadOnlyList<IPipelineBehavior<TNotification, IResult>>)cachedBehaviors;
+        //}
 
         var allBehaviors = serviceProvider.GetServices(behaviorType).Cast<IPipelineBehavior<TNotification, IResult>>().ToArray();
         if (allBehaviors.Length == 0 && this.pipelineBehaviorTypes.Count > 0)
@@ -415,7 +415,7 @@ public class NotificationBehaviorsProvider(IReadOnlyList<Type> pipelineBehaviorT
         }
 
         var finalBehaviors = index < orderedBehaviors.Length ? orderedBehaviors.AsSpan(0, index).ToArray() : orderedBehaviors;
-        this.behaviorCache[behaviorType] = finalBehaviors; // Cache for scope lifetime
+        //this.behaviorCache[behaviorType] = finalBehaviors; // Cache for scope lifetime // WARN: causes issues with scoped services in behaviors
         return finalBehaviors;
     }
 }
@@ -561,7 +561,7 @@ public partial class Notifier(
 
             Func<Task<IResult>> next = async () =>
             {
-                var results = new List<IResult>();
+                var handlerResults = new List<IResult>();
                 if (options.ExecutionMode == ExecutionMode.FireAndForget)
                 {
                     // Fire-and-forget: Dispatch handlers without awaiting
@@ -587,6 +587,7 @@ public partial class Notifier(
 
                         _ = Task.Run(() => handlerNext(), cancellationToken);
                     }
+
                     return Result.Success();
                 }
                 else if (options.ExecutionMode == ExecutionMode.Concurrent)
@@ -618,7 +619,7 @@ public partial class Notifier(
                         tasks[i] = handlerNext();
                     }
 
-                    results.AddRange(await Task.WhenAll(tasks));
+                    handlerResults.AddRange(await Task.WhenAll(tasks));
                 }
                 else
                 {
@@ -640,27 +641,41 @@ public partial class Notifier(
                             {
                                 var result = await behavior.HandleAsync(notification, options, handlerType, currentNext, cancellationToken);
                                 //TypedLogger.LogProcessed(this.logger, behaviorTypeName, notificationTypeName, notificationIdString, Environment.TickCount64 - behaviorStartTicks);
+
                                 return result;
                             };
                         }
 
                         var handlerResult = await handlerNext();
-                        results.Add((Result)handlerResult);
+                        handlerResults.Add((Result)handlerResult);
+
                         if (handlerResult.IsFailure)
                         {
+                            TypedLogger.LogFailed(this.logger, RequestLogKey, notificationTypeName, notificationIdString, Environment.TickCount64 - startTicks);
+                            this.logger.LogError("{LogKey} notification failed with errors: {Errors}", RequestLogKey, string.Join("; ", handlerResult.Errors.Select(e => e.Message)));
+
                             break;
                         }
+
+                        TypedLogger.LogSuccess(this.logger, RequestLogKey, notificationTypeName, notificationIdString, Environment.TickCount64 - startTicks);
                     }
                 }
 
                 // Aggregate results
-                if (results.All(r => r.IsSuccess))
+                if (handlerResults.All(r => r.IsSuccess))
                 {
+                    TypedLogger.LogSuccess(this.logger, RequestLogKey, notificationTypeName, notificationIdString, Environment.TickCount64 - startTicks);
+
                     return Result.Success();
                 }
 
-                var errors = results.SelectMany(r => r.Errors).ToList();
-                var messages = results.SelectMany(r => r.Messages).ToList();
+                var errors = handlerResults.SelectMany(r => r.Errors).ToList();
+                var messages = handlerResults.SelectMany(r => r.Messages).ToList();
+                TypedLogger.LogFailed(this.logger, RequestLogKey, notificationTypeName, notificationIdString, Environment.TickCount64 - startTicks);
+                foreach(var handlerResult in handlerResults)
+                {
+                    this.logger.LogError("{LogKey} notification failed with errors: {Errors}", RequestLogKey, string.Join("; ", handlerResult.Errors.Select(e => e.Message)));
+                }
 
                 return Result.Failure(messages, errors);
             };
@@ -686,12 +701,22 @@ public partial class Notifier(
 
                 cancellationToken.ThrowIfCancellationRequested();
                 var result = await next().ConfigureAwait(false);
-                TypedLogger.LogProcessed(this.logger, RequestLogKey, notificationTypeName, notificationIdString, Environment.TickCount64 - startTicks);
+
+                if (result.IsSuccess)
+                {
+                    TypedLogger.LogSuccess(this.logger, RequestLogKey, notificationTypeName, notificationIdString, Environment.TickCount64 - startTicks);
+                }
+                else
+                {
+                    TypedLogger.LogFailed(this.logger, RequestLogKey, notificationTypeName, notificationIdString, Environment.TickCount64 - startTicks);
+                }
+
                 return result;
             }
             catch (Exception ex) when (options.HandleExceptionsAsResultError)
             {
                 TypedLogger.LogError(this.logger, RequestLogKey, ex, notificationTypeName, notificationIdString);
+
                 return Result.Failure().WithError(new ExceptionError(ex));
             }
         }
@@ -749,13 +774,16 @@ public partial class Notifier(
     /// </summary>
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} processing notification (type={NotificationType}, id={NotificationId})")]
+        [LoggerMessage(0, LogLevel.Information, "{LogKey} notification processing (type={NotificationType}, id={NotificationId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string notificationType, string notificationId);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} processed notification (type={NotificationType}, id={NotificationId}) -> took {TimeElapsed} ms")]
-        public static partial void LogProcessed(ILogger logger, string logKey, string notificationType, string notificationId, long timeElapsed);
+        [LoggerMessage(1, LogLevel.Information, "{LogKey} notification success (type={NotificationType}, id={NotificationId}) -> took {TimeElapsed} ms")]
+        public static partial void LogSuccess(ILogger logger, string logKey, string notificationType, string notificationId, long timeElapsed);
 
-        [LoggerMessage(2, LogLevel.Error, "{LogKey} processing notification failed for {NotificationType} ({NotificationId})")]
+        [LoggerMessage(1, LogLevel.Error, "{LogKey} notification failed (type={NotificationType}, id={NotificationId}) -> took {TimeElapsed} ms")]
+        public static partial void LogFailed(ILogger logger, string logKey, string notificationType, string notificationId, long timeElapsed);
+
+        [LoggerMessage(3, LogLevel.Error, "{LogKey} notification processing failed for {NotificationType} ({NotificationId})")]
         public static partial void LogError(ILogger logger, string logKey, Exception ex, string notificationType, string notificationId);
     }
 }

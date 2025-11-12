@@ -4,7 +4,7 @@
 
 ## Overview
 
-The ActiveEntity feature in the bITDevKit reimagines the classic [Active Record pattern](https://en.wikipedia.org/wiki/Active_record_pattern), for .NET developers. This modern take embeds CRUD operations and queries directly into entity classes, providing a streamlined data access solution. Unlike its traditional form, it is persistence-neutral, relying on pluggable providers that can integrate with Entity Framework Core (EF Core), in-memory stores or custom data sources, configurable per entity. Entities inherit from `ActiveEntity<TEntity, TId>`, extending the `Entity<TId>` base class for ID handling, equality and transient checks, while employing the `Result` pattern for consistent operation outcomes (success/failure with messages and errors). Tailored for developers building CRUD-heavy or domain-rich applications, it complements complex query needs with repository patterns when necessary, aligning with the DevKit's commitment to modular, effective solutions.
+The ActiveEntity feature in the bITDevKit reimagines the classic [Active Record pattern](https://en.wikipedia.org/wiki/Active_record_pattern), for .NET developers. This modern take embeds CRUD operations and queries directly into entity classes, providing a streamlined data access solution. Unlike its traditional form, it is persistence-neutral, relying on pluggable providers that can integrate with Entity Framework Core (EF Core), in-memory stores or custom data sources, configurable per entity. Entities inherit from `ActiveEntity<TEntity, TId>`, extending the `Entity<TId>` base class for ID handling, equality and transient checks, while employing the `Result` pattern for consistent operation outcomes (success/failure with messages and errors). Tailored for developers building CRUD-heavy or domain-rich applications, it complements complex query needs with repository patterns when necessary, aligning with the bITdevKit commitment to modular, effective solutions.
 
 ## Challenges
 
@@ -32,7 +32,7 @@ The [Active Record pattern is described by Martin Fowler](https://www.martinfowl
 
 ### Components
 
-The feature centers on `ActiveEntity<TEntity, TId>`, which embeds persistence logic and delegates to an `IActiveEntityEntityProvider<TEntity, TId>` for data access. Behaviors, implementing `IActiveEntityEntityBehavior<T>`, intercept operations to manage concerns like logging or auditing, executed in registration order. The global service provider, configured via `ActiveEntityConfigurator`, resolves these components at runtime, ensuring flexibility and testability.  
+The feature centers on `ActiveEntity<TEntity, TId>`, which embeds persistence logic and delegates to an `IActiveEntityEntityProvider<TEntity, TId>` for data access. Behaviors, implementing `IActiveEntityEntityBehavior<T>`, intercept operations to manage concerns like logging or auditing, executed in registration order. The global service provider, configured via `ActiveEntityConfigurator`, resolves these components at runtime, ensuring flexibility and testability.
 The **`ActiveEntityContext<TEntity, TId>`** is a lightweight object that bundles the `IActiveEntityEntityProvider` and its associated `IActiveEntityEntityBehavior` instances, ensuring that all components within a given operation share the same underlying DI scope and transactional context, simplifying complex scenarios.
 
 ```mermaid
@@ -114,7 +114,7 @@ classDiagram
         +AfterFindOneAsync(id, options, entity, success, ct) Task~Result~
         // ... other Before/After hooks for FindAll, Count, Exists, Project
     }
-    
+
     class ActiveEntityContext~TEntity, TId~ {
         +IActiveEntityEntityProvider~TEntity, TId~ Provider
         +IReadOnlyCollection~IActiveEntityEntityBehavior~T~~ Behaviors
@@ -241,7 +241,7 @@ var customer = new Customer
     LastName = "Doe",
     Title = "Mr."
 };
-var insertResult = await customer.InsertAsync(); 
+var insertResult = await customer.InsertAsync();
 
 if (insertResult.IsSuccess)
 {
@@ -257,7 +257,7 @@ var results = await Customer.InsertAsync(
 [
     new() { FirstName = "John", LastName = "Doe", Email = EmailAddressStub.Create("john.doe@example.com"), Title = "Mr." },
     new() { FirstName = "Jane", LastName = "Doe", Email = EmailAddressStub.Create("jane.doe@example.com"), Title = "Ms." }
-]); 
+]);
 
 foreach (var result in results)
 {
@@ -273,7 +273,7 @@ First, load the entity, modify it and then call `UpdateAsync`.
 ```csharp
 var customer = (await Customer.FindOneAsync(customerId)).Value;
 customer.FirstName = "Janet";
-var updateResult = await customer.UpdateAsync(); 
+var updateResult = await customer.UpdateAsync();
 
 if (updateResult.IsSuccess)
 {
@@ -292,7 +292,7 @@ var customer2 = (await Customer.FindOneAsync(customerId2)).Value;
 customer1.FirstName = "Janet";
 customer2.FirstName = "Johnu";
 
-await Customer.UpdateAsync([customer1, customer2]); 
+await Customer.UpdateAsync([customer1, customer2]);
 ```
 
 ### Update existing entity properties directly
@@ -301,7 +301,7 @@ For an entity instance only specific properties are updated using a fluent synta
 
 ```csharp
 var customer = (await Customer.FindOneAsync(customerId)).Value;
-var updateResult = await customer.UpdateAsync(u => u 
+var updateResult = await customer.UpdateAsync(u => u
     .Set(c => c.FirstName, "Janet")              // constant assignment
     .Set(c => c.Visits, c => c.Visits + 1)       // computed assignment
     .Set(c => c.Title, _ => "Archived"));        // dynamic constant
@@ -337,7 +337,7 @@ First, load the entity and then call `DeleteAsync`.
 
 ```csharp
 var customer = (await Customer.FindOneAsync(customerId)).Value;
-var deleteResult = await customer.DeleteAsync(); 
+var deleteResult = await customer.DeleteAsync();
 
 if (deleteResult.IsSuccess)
 {
@@ -353,7 +353,7 @@ First, load the entities and then call `DeleteAsync` with a collection.
 var customer1 = (await Customer.FindOneAsync(customerId1)).Value;
 var customer2 = (await Customer.FindOneAsync(customerId2)).Value;
 
-await Customer.DeleteAsync([customer1, customer2]); 
+await Customer.DeleteAsync([customer1, customer2]);
 ```
 
 ### Delete multiple existing entities by ID
@@ -387,7 +387,7 @@ if (deleteResult.IsSuccess)
 Find an entity by its ID.
 
 ```csharp
-var findResult = await Customer.FindOneAsync(customerId); 
+var findResult = await Customer.FindOneAsync(customerId);
 if (findResult.IsSuccess)
 {
     var customer = findResult.Value;
@@ -398,7 +398,7 @@ if (findResult.IsSuccess)
 ### Find multiple entities (unfiltered)
 
 ```csharp
-var findAllResult = await Customer.FindAllAsync(); 
+var findAllResult = await Customer.FindAllAsync();
 if (findAllResult.IsSuccess)
 {
     var customers = findAllResult.Value;
@@ -412,7 +412,7 @@ if (findAllResult.IsSuccess)
 ### Find multiple entities (filtered)
 
 ```csharp
-var findAllResult = await Customer.FindAllAsync(e => e.LastName == "Doe"); 
+var findAllResult = await Customer.FindAllAsync(e => e.LastName == "Doe");
 if (findAllResult.IsSuccess)
 {
     var customers = findAllResult.Value;
@@ -427,7 +427,7 @@ if (findAllResult.IsSuccess)
 
 ```csharp
 var options = new FindOptions<Customer> { Skip = 0, Take = 10 };
-var pagedResult = await Customer.FindAllPagedAsync(options); 
+var pagedResult = await Customer.FindAllPagedAsync(options);
 if (pagedResult.IsSuccess)
 {
     var customers = pagedResult.Value.Items;
@@ -464,7 +464,7 @@ public static class CustomerService
             {
                 // Example: custom logging behavior specific to this service's logic
                 // You might need to adjust the behavior interface to accept additional arguments
-                // await behavior.LogSomethingAsync(updatedCustomer, ct); 
+                // await behavior.LogSomethingAsync(updatedCustomer, ct);
             }
 
             return Result.Success();
@@ -493,13 +493,13 @@ var customer = new Customer
 var transactionResult = await Customer.WithTransactionAsync(async ctx => // ctx contains provider and behaviors
 {
     // All CRUD operations within this block must use the provided 'ctx'
-    var insertResult = await customer.InsertAsync(ctx); 
+    var insertResult = await customer.InsertAsync(ctx);
     if (insertResult.IsFailure) return Result.Failure(insertResult.Errors); // propagate failure, will trigger rollback
 
     // Perform another operation in the same transaction
     var updatedCustomer = (await ctx.Provider.FindOneAsync(customer.Id)).Value;
     if (updatedCustomer == null) return Result.Failure("Customer not found in transaction.");
-    
+
     updatedCustomer.Title = "Sir";
     var updateResult = await updatedCustomer.UpdateAsync(ctx); // use ctx to ensure it's part of the same transaction
     if (updateResult.IsFailure) return Result.Failure(updateResult.Errors); // propagate failure, will trigger rollback
@@ -900,7 +900,7 @@ public static class CustomerQueryExtensions
     {
         var thirtyDaysAgo = DateTimeOffset.UtcNow.AddDays(-30);
         var spec = new Specification<Customer>(c => c.Orders.Any(o => o.DateSubmitted >= thirtyDaysAgo));
-        return Customer.FindAllAsync(spec, null, ct); 
+        return Customer.FindAllAsync(spec, null, ct);
     }
 }
 ```
@@ -951,13 +951,13 @@ While powerful, callbacks should be used sparingly for logic that is truly intri
 
 ## Appendix A: Disclaimer
 
-The ActiveEntity feature provides a modern, entity-embedded approach to data access, ideal for CRUD-heavy applications within the bITDevKit ecosystem. It is not a replacement for comprehensive ORM frameworks or repository patterns in scenarios requiring complex queries, high-performance batch operations or multi-database support. Entity configurations are standard EF Core configurations, defined in `OnModelCreating` using the fluent API, ensuring compatibility with existing EF Core workflows. For advanced use cases, consider integrating with repositories or using EF Core directly. This feature prioritizes simplicity and alignment with DevKit principles, allowing developers to choose the simplest tool that meets their needs.
+The ActiveEntity feature provides a modern, entity-embedded approach to data access, ideal for CRUD-heavy applications within the bITDevKit ecosystem. It is not a replacement for comprehensive ORM frameworks or repository patterns in scenarios requiring complex queries, high-performance batch operations or multi-database support. Entity configurations are standard EF Core configurations, defined in `OnModelCreating` using the fluent API, ensuring compatibility with existing EF Core workflows. For advanced use cases, consider integrating with repositories or using EF Core directly. This feature prioritizes simplicity and alignment with bITdevKit principles, allowing developers to choose the simplest tool that meets their needs.
 
 ## Appendix B: Comparison with Repository Pattern
 
 ### Overview
 
-The Active Record (AR) pattern embeds data access and domain logic directly into entities, making them responsible for their own persistence. The Repository pattern, a common alternative in the bITDevKit, abstracts persistence behind a repository interface, treating entities as plain data objects and separating data access from domain logic. Both patterns are supported within the DevKit, with AR offering a modern twist through per-entity providers and behaviors, while Repository provides a traditional abstraction layer.
+The Active Record (AR) pattern embeds data access and domain logic directly into entities, making them responsible for their own persistence. The Repository pattern, a common alternative in the bITDevKit, abstracts persistence behind a repository interface, treating entities as plain data objects and separating data access from domain logic. Both patterns are supported within the bITdevKit, with AR offering a modern twist through per-entity providers and behaviors, while Repository provides a traditional abstraction layer.
 
 ### Characteristics of Each Pattern
 

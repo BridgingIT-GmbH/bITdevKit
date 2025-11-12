@@ -625,8 +625,8 @@ rule compilation, consider exploring specialized solutions.
 
 The feature excels through its low barrier to entry, requiring minimal setup and working out of the
 box. Since it's part of your application code with no external dependencies, it integrates
-seamlessly with your existing codebase and other DevKit features.
+seamlessly with your existing codebase and other bITdevKit features.
 
 Remember: Choose the simplest tool that meets your requirements. The feature provides a
 lightweight, code-based approach to handling business rules, while staying consistent with
-the DevKit's philosophy of simple, effective solutions to common development problems.
+the bITdevKit philosophy of simple, effective solutions to common development problems.

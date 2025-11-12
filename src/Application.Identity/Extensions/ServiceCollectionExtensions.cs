@@ -4,6 +4,7 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace Microsoft.Extensions.DependencyInjection;
+
 using Microsoft.Extensions.Configuration;
 
 /// <summary>

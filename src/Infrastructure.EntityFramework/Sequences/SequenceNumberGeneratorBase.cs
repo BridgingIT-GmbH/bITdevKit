@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -53,11 +52,11 @@ public abstract partial class SequenceNumberGeneratorBase<TContext> : ISequenceN
         var semaphore = this.sequenceLocks.GetOrAdd(lockKey, _ => new SemaphoreSlim(1, 1));
         var lockTimeout = this.GetLockTimeout(sequenceName);
 
-        TypedLogger.LogSequenceGenerationStarted(this.logger, sequenceName, schema ?? "default", this.contextTypeName);
+        TypedLogger.LogSequenceGeneration(this.logger, Constants.LogKey, sequenceName, schema ?? "default", this.contextTypeName);
 
         if (!await semaphore.WaitAsync(lockTimeout, cancellationToken))
         {
-            TypedLogger.LogSequenceLockTimeout(this.logger, sequenceName, lockTimeout.TotalSeconds);
+            TypedLogger.LogSequenceLockTimeout(this.logger, Constants.LogKey, sequenceName, lockTimeout.TotalSeconds);
 
             return Result<long>.Failure()
                 .WithError(new SequenceLockTimeoutError(sequenceName, lockTimeout));
@@ -71,11 +70,11 @@ public abstract partial class SequenceNumberGeneratorBase<TContext> : ISequenceN
             var result = await this.GetNextInternalAsync(context, sequenceName, schema, cancellationToken);
             if (result.IsSuccess)
             {
-                TypedLogger.LogSequenceGenerated(this.logger, result.Value, sequenceName, schema ?? "default", this.contextTypeName);
+                TypedLogger.LogSequenceGenerated(this.logger, Constants.LogKey, result.Value, sequenceName, schema ?? "default", this.contextTypeName, context.ContextId.ToString());
             }
             else
             {
-                TypedLogger.LogSequenceGenerationFailed(this.logger, sequenceName, schema ?? "default", this.contextTypeName);
+                TypedLogger.LogSequenceGenerationFailed(this.logger, Constants.LogKey, sequenceName, schema ?? "default", this.contextTypeName, context.ContextId.ToString(), result.ToString());
             }
 
             return result;
@@ -97,7 +96,7 @@ public abstract partial class SequenceNumberGeneratorBase<TContext> : ISequenceN
             return Result<Dictionary<string, long>>.Success([]);
         }
 
-        TypedLogger.LogMultipleSequenceGenerationStarted(this.logger, names.Count, schema ?? "default", this.contextTypeName);
+        TypedLogger.LogMultipleSequenceGeneration(this.logger, Constants.LogKey, names.Count, schema ?? "default", this.contextTypeName);
 
         var results = new Dictionary<string, long>();
         var errors = new List<IResultError>();
@@ -121,8 +120,6 @@ public abstract partial class SequenceNumberGeneratorBase<TContext> : ISequenceN
                 .WithErrors(errors);
         }
 
-        TypedLogger.LogMultipleSequenceGenerated(this.logger, names.Count, this.contextTypeName);
-
         return Result<Dictionary<string, long>>.Success(results);
     }
 
@@ -134,7 +131,7 @@ public abstract partial class SequenceNumberGeneratorBase<TContext> : ISequenceN
         var entityName = typeof(TEntity).Name;
         var sequenceName = $"{entityName}Sequence";
 
-        TypedLogger.LogEntitySequenceGeneration(this.logger, entityName, sequenceName);
+        TypedLogger.LogEntitySequenceGeneration(this.logger, Constants.LogKey, entityName, sequenceName);
 
         return this.GetNextAsync(sequenceName, schema, cancellationToken);
     }
@@ -194,7 +191,7 @@ public abstract partial class SequenceNumberGeneratorBase<TContext> : ISequenceN
         var semaphore = this.sequenceLocks.GetOrAdd(lockKey, _ => new SemaphoreSlim(1, 1));
         var lockTimeout = this.GetLockTimeout(sequenceName);
 
-        TypedLogger.LogSequenceResetStarted(this.logger, sequenceName, startValue, this.contextTypeName);
+        TypedLogger.LogSequenceReset(this.logger, Constants.LogKey, sequenceName, startValue, this.contextTypeName);
 
         if (!await semaphore.WaitAsync(lockTimeout, cancellationToken))
         {
@@ -213,11 +210,6 @@ public abstract partial class SequenceNumberGeneratorBase<TContext> : ISequenceN
                 startValue,
                 schema,
                 cancellationToken);
-
-            if (result.IsSuccess)
-            {
-                TypedLogger.LogSequenceReset(this.logger, sequenceName, startValue, this.contextTypeName);
-            }
 
             return result;
         }
@@ -278,49 +270,25 @@ public abstract partial class SequenceNumberGeneratorBase<TContext> : ISequenceN
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Debug,
-            "Sequence generation started (sequence={SequenceName}, schema={Schema}, context={Context})")]
-        public static partial void LogSequenceGenerationStarted(
-            ILogger logger, string sequenceName, string schema, string context);
+        [LoggerMessage(0, LogLevel.Debug, "{LogKey} sequence number generate: start (sequence={SequenceName}, schema={Schema}, context={DbContextType})")]
+        public static partial void LogSequenceGeneration(ILogger logger, string logKey, string sequenceName, string schema, string dbContextType);
 
-        [LoggerMessage(1, LogLevel.Debug,
-            "Generated sequence value {Value} from {SequenceName} (schema={Schema}, context={Context})")]
-        public static partial void LogSequenceGenerated(
-            ILogger logger, long value, string sequenceName, string schema, string context);
+        [LoggerMessage(1, LogLevel.Debug, "{LogKey} sequence number generate: generated value {Value} from {SequenceName} (schema={Schema}, context={DbContextType}/{DbContextId})")]
+        public static partial void LogSequenceGenerated(ILogger logger, string logKey, long value, string sequenceName, string schema, string dbContextType, string dbContextId);
 
-        [LoggerMessage(2, LogLevel.Error,
-            "Sequence generation failed (sequence={SequenceName}, schema={Schema}, context={Context})")]
-        public static partial void LogSequenceGenerationFailed(
-            ILogger logger, string sequenceName, string schema, string context);
+        [LoggerMessage(2, LogLevel.Error, "{LogKey} sequence number generate: failed (sequence={SequenceName}, schema={Schema}, context={DbContextType}/{DbContextId}) {Message}")]
+        public static partial void LogSequenceGenerationFailed(ILogger logger, string logKey, string sequenceName, string schema, string dbContextType, string dbContextId, string message);
 
-        [LoggerMessage(3, LogLevel.Warning,
-            "Failed to acquire lock for sequence {SequenceName} within {Timeout} seconds")]
-        public static partial void LogSequenceLockTimeout(
-            ILogger logger, string sequenceName, double timeout);
+        [LoggerMessage(3, LogLevel.Warning, "{LogKey} sequence number generate: failed to acquire lock for sequence {SequenceName} within {Timeout} seconds")]
+        public static partial void LogSequenceLockTimeout(ILogger logger, string logKey, string sequenceName, double timeout);
 
-        [LoggerMessage(4, LogLevel.Debug,
-            "Multiple sequence generation started (count={Count}, schema={Schema}, context={Context})")]
-        public static partial void LogMultipleSequenceGenerationStarted(
-            ILogger logger, int count, string schema, string context);
+        [LoggerMessage(4, LogLevel.Debug, "{LogKey} sequence number generate: start multiple (count={Count}, schema={Schema}, context={DbContextType})")]
+        public static partial void LogMultipleSequenceGeneration(ILogger logger, string logKey, int count, string schema, string dbContextType);
 
-        [LoggerMessage(5, LogLevel.Debug,
-            "Multiple sequences generated (count={Count}, context={Context})")]
-        public static partial void LogMultipleSequenceGenerated(
-            ILogger logger, int count, string context);
+        [LoggerMessage(6, LogLevel.Debug, "{LogKey} sequence number generate: start for entity (entity={EntityName}, sequence={SequenceName})")]
+        public static partial void LogEntitySequenceGeneration(ILogger logger, string logKey, string entityName, string sequenceName);
 
-        [LoggerMessage(6, LogLevel.Debug,
-            "Entity sequence generation (entity={EntityName}, sequence={SequenceName})")]
-        public static partial void LogEntitySequenceGeneration(
-            ILogger logger, string entityName, string sequenceName);
-
-        [LoggerMessage(7, LogLevel.Information,
-            "Sequence reset started (sequence={SequenceName}, startValue={StartValue}, context={Context})")]
-        public static partial void LogSequenceResetStarted(
-            ILogger logger, string sequenceName, long startValue, string context);
-
-        [LoggerMessage(8, LogLevel.Information,
-            "Sequence reset completed (sequence={SequenceName}, startValue={StartValue}, context={Context})")]
-        public static partial void LogSequenceReset(
-            ILogger logger, string sequenceName, long startValue, string context);
+        [LoggerMessage(7, LogLevel.Information, "{LogKey} sequence number generate: reset (sequence={SequenceName}, startValue={StartValue}, context={DbContextType})")]
+        public static partial void LogSequenceReset(ILogger logger, string logKey, string sequenceName, long startValue, string dbContextType);
     }
 }

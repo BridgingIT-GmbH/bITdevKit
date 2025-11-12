@@ -20,6 +20,137 @@ I recommend testing the updated examples with a code interpreter or build to ver
 
 [see ./features-startuptasks.md](./features-startuptasks.md)
 
+## Time Providers
+
+### Overview
+
+The **Time Providers** extension introduces a **testable, globally accessible abstraction** over .NET’s **`TimeProvider`**, enabling deterministic time handling in both **production** and **unit/integration tests**.
+
+It **fully leverages the official .NET 8+ `TimeProvider` infrastructure**:
+- `TimeProvider.System` — real system clock
+- `FakeTimeProvider` — built-in fake clock for testing
+- Full support for `ITimer`, `Task.Delay`, `GetTimestamp`, etc.
+
+This allows you to write **time-dependent domain logic** without hardcoding `DateTime.UtcNow` or `TimeProvider.System`.
+
+> **No custom solution** — uses **official Microsoft APIs** from `System` and `Microsoft.Extensions.Time.Testing`.
+
+### Key Components
+
+| Component | Purpose |
+|--------|--------|
+| `TimeProviderAccessor` | Static holder (`AsyncLocal<TimeProvider>`) for accessing the current time provider from anywhere |
+| `AddTimeProvider()` extensions | Register `TimeProvider` in DI **and** sync with global access |
+| `TimeProvider.System` | Official .NET 8+ real-time provider |
+| `FakeTimeProvider` | Official .NET 8+ fake clock (`Microsoft.Extensions.Time.Testing`) |
+
+---
+
+### Registration (DI + Global Sync)
+
+#### Production (Real Time)
+```csharp
+builder.Services.AddTimeProvider(); // Uses TimeProvider.System
+```
+
+#### Tests (Fake Time)
+```csharp
+var services = new ServiceCollection();
+
+services.AddTimeProvider(new DateTimeOffset(2025, 1, 1, 0, 0, 0, TimeSpan.Zero));
+// or
+services.AddTimeProvider(DateTime.SpecifyKind(new DateTime(2025, 1, 1), DateTimeKind.Utc));
+// or
+services.AddTimeProvider(sp => new FakeTimeProvider());
+```
+
+> All overloads:
+> - Register `TimeProvider` **and** `FakeTimeProvider` (concrete type)
+> - **Immediately** set `TimeProviderAccessor.Current`
+> - Support replacement (`services.Replace(...)`)
+
+### Usage in Code
+
+#### 1. **Domain Entities (No DI)**
+```csharp
+public class Customer
+{
+    public Result<Customer> ChangeBirthDate(DateOnly dateOfBirth)
+    {
+        var today = DateOnly.FromDateTime(
+            TimeProviderAccessor.Current.GetUtcNow().DateTime);
+
+        if (dateOfBirth > today)
+            return Result<Customer>.Failure(this, "Birth date cannot be in the future");
+
+        // ...
+    }
+}
+```
+
+> No parameters, no inheritance, no DI  
+> Works in **any** context
+
+#### 2. **Services (DI)**
+```csharp
+public class OrderService
+{
+    private readonly TimeProvider _timeProvider;
+
+    public OrderService(TimeProvider timeProvider)
+    {
+        _timeProvider = timeProvider;
+    }
+
+    public async Task CleanupExpiredAsync()
+    {
+        await Task.Delay(TimeSpan.FromDays(1), _timeProvider);
+        // ...
+    }
+}
+```
+
+### Testing
+
+```csharp
+[Fact]
+public async Task ChangeBirthDate_FutureDate_Fails()
+{
+    // Arrange
+    var services = new ServiceCollection();
+    var fakeStart = new DateTimeOffset(2025, 11, 5, 0, 0, 0, TimeSpan.Zero);
+    services.AddTimeProvider(fakeStart); // Uses official FakeTimeProvider
+
+    var sp = services.BuildServiceProvider();
+    var customer = new Customer(); // or resolve from DI
+
+    // Act
+    var result = customer.ChangeBirthDate(new DateOnly(2025, 11, 6));
+
+    // Assert
+    result.IsFailure.ShouldBeTrue();
+}
+```
+
+> `TimeProvider` is registered and globally synced  
+> Use `.Advance(TimeSpan)` to move time forward:
+> ```csharp:disable-run
+> var timeProvider = sp.GetRequiredService<TimeProvider>();
+> timeProvider.Advance(TimeSpan.FromDays(2));
+> ```
+
+### Best Practices
+
+| Scenario | Recommendation |
+|--------|----------------|
+| **Domain Logic** | Use `TimeProviderAccessor.Current` |
+| **Application Logic** | Inject `TimeProvider` via DI |
+| **Unit Tests** | Use `AddTimeProvider(DateTimeOffset)` or `FakeTimeProvider` |
+| **Integration Tests** | Register once in `WebApplicationFactory` or test setup |
+| **Avoid** | `DateTime.UtcNow`, `TimeProvider.System` directly in logic |
+
+---
+
 ## Resiliency
 
 ### Overview

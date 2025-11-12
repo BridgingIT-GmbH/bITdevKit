@@ -39,6 +39,12 @@ public class SqliteOptionsBuilder : OptionsBuilderBase<SqliteOptions, SqliteOpti
         return this;
     }
 
+    public SqliteOptionsBuilder UseIdempotentMigrations(bool value = true)
+    {
+        this.Target.IdempotentMigrationsEnabled = value;
+        return this;
+    }
+
     public SqliteOptionsBuilder UseCommandLogger(bool value = true)
     {
         this.Target.CommandLoggerEnabled = value;

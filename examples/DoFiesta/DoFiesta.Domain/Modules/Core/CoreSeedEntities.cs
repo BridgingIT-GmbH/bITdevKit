@@ -392,15 +392,15 @@ public static class CoreSeedEntities
                 }
             ];
         }
-}
+    }
 
-public static class Subscriptions
-{
-    public static Subscription[] Create()
+    public static class Subscriptions
     {
-        return
-        [
-            new Subscription
+        public static Subscription[] Create()
+        {
+            return
+            [
+                new Subscription
                 {
                     UserId = UserIds[0],
                     Plan = SubscriptionPlan.Enterprise,
@@ -429,7 +429,7 @@ public static class Subscriptions
                     StartDate = new DateTime(2024, 12, 5, 0, 0, 0),
                     EndDate = null
                 }
-        ];
+            ];
+        }
     }
-}
 }

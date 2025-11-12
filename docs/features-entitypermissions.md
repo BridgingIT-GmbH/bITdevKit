@@ -112,12 +112,12 @@ services.AddEntityAuthorization(o =>
     o.WithEntityPermissions<CoreDbContext>(o =>
     {
         o.AddEntity<Employee>(Permission.Read, Permission.Write, Permission.Delete, Permission.For("Review"))
-            .AddDefaultPermissions<Employee>(Permission.Read)
-            .UseDefaultPermissionProvider<Employee>();
+         .AddDefaultPermissions<Employee>(Permission.Read)
+         .UseDefaultPermissionProvider<Employee>();
 
-        o.EnableEvaluationEndpoints();
-        o.EnableManagementEndpoints(c => c.RequireRoles = [Role.Administrators]);
     });
+    o.EnableEvaluationEndpoints();
+    o.EnableManagementEndpoints(c => c.RequireRoles = [Role.Administrators]);
 });
 ```
 - **`AddEntity`**: Specifies allowed permissions, supporting `Permission` constants and custom strings.
@@ -267,10 +267,11 @@ services.AddEntityAuthorization(o =>
     o.WithEntityPermissions<CoreDbContext>(o =>
     {
         o.AddEntity<Employee>(Permission.Read, Permission.Write, Permission.List, Permission.Delete, Permission.For("Review"))
-            .AddDefaultPermissions<Employee>(Permission.Read)
-            .EnableEvaluationEndpoints()
-            .EnableManagementEndpoints(c => c.RequireRoles = [Role.Administrators]);
-    }));
+         .AddDefaultPermissions<Employee>(Permission.Read)
+    });
+    .EnableEvaluationEndpoints()
+    .EnableManagementEndpoints(c => c.RequireRoles = [Role.Administrators]);
+
 services.AddScoped<ICurrentUserAccessor, HttpCurrentUserAccessor>();
 services.AddHttpContextAccessor();
 services.AddDbContext<CoreDbContext>(options => options.UseSqlServer("Server=.;Database=EmployeeDb;Trusted_Connection=True;"));

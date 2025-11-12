@@ -4,11 +4,11 @@
     "net9.0": {
       "BenchmarkDotNet": {
         "type": "Direct",
-        "requested": "[0.15.4, )",
-        "resolved": "0.15.4",
-        "contentHash": "hGHlCCf0HL5b1LvjXb84ZEAVw45Hl9lt4+0gLxaJ4Ty+GagIE8fH+GnzJc3w5MVscghd5NpTNmvwWub1Qg4foQ==",
+        "requested": "[0.15.6, )",
+        "resolved": "0.15.6",
+        "contentHash": "jqp7RU91mYDAiX1Ju4iBSvsil33JOVwfEReXjHvWXqeQMPxwVS0rPzdHi6qs1qQPBPj+XnsA4fGO4Uk+rN4Vlg==",
         "dependencies": {
-          "BenchmarkDotNet.Annotations": "0.15.4",
+          "BenchmarkDotNet.Annotations": "0.15.6",
           "CommandLineParser": "2.9.1",
           "Gee.External.Capstone": "2.3.0",
           "Iced": "1.21.0",
@@ -16,15 +16,15 @@
           "Microsoft.Diagnostics.Runtime": "3.1.512801",
           "Microsoft.Diagnostics.Tracing.TraceEvent": "3.1.21",
           "Microsoft.DotNet.PlatformAbstractions": "3.1.6",
-          "Perfolizer": "[0.5.3]",
+          "Perfolizer": "[0.6.0]",
           "System.Management": "9.0.5"
         }
       },
       "Bogus": {
         "type": "Direct",
-        "requested": "[35.6.4, )",
-        "resolved": "35.6.4",
-        "contentHash": "9ruy4agpXZ2L3B29IypUZJh61/lq+7Tbs03KyS0Uxrkx7c20JuWB1vMtZ0xBqwnekZGphjBhX7MkhM1nb5BA5g=="
+        "requested": "[35.6.5, )",
+        "resolved": "35.6.5",
+        "contentHash": "2FGZn+aAVHjmCgClgmGkTDBVZk0zkLvAKGaxEf5JL6b3i9JbHTE4wnuY4vHCuzlCmJdU6VZjgDfHwmYkQF8VAA=="
       },
       "coverlet.collector": {
         "type": "Direct",
@@ -109,8 +109,8 @@
       },
       "BenchmarkDotNet.Annotations": {
         "type": "Transitive",
-        "resolved": "0.15.4",
-        "contentHash": "jLwEHO8EfrsVNNH9Lc4dHMmwD8TON8y8mGQLjqUbSZygQoAIjq6xwNz0bYIVNFl0aUhPgAd/1lnSz8uvUFoMPg=="
+        "resolved": "0.15.6",
+        "contentHash": "+yxYe9G/2APXXGOHWMdPYIRiR02JqULnKKztDjoNWS5bBtTQPuFtSdAdGxt67mNGKNbQJJMEEbHUIddn0YUGzQ=="
       },
       "Castle.Core": {
         "type": "Transitive",
@@ -468,30 +468,38 @@
       },
       "OpenTelemetry.Api": {
         "type": "Transitive",
-        "resolved": "1.12.0",
-        "contentHash": "Xt0qldi+iE2szGrM3jAqzEMEJd48YBtqI6mge0+ArXTZg3aTpRmyhL6CKKl3bLioaFSSVbBpEbPin8u6Z46Yrw==",
+        "resolved": "1.13.1",
+        "contentHash": "tieglRERo7Rgu8oE8aamnuXCMPEW5fXIqO5ngTMCNk9pOEXanc0SdQ86ZAD1goNiGcjWHn+P3WMZp0FZSJgCoQ==",
         "dependencies": {
           "System.Diagnostics.DiagnosticSource": "9.0.0"
         }
       },
       "OpenTelemetry.Api.ProviderBuilderExtensions": {
         "type": "Transitive",
-        "resolved": "1.12.0",
-        "contentHash": "t6Vk1143BfiisCWYbRcyzkAuN6Aq5RkYtfOSMoqCIRMvtN9p1e1xzc0nWQ+fccNGOVgHn3aMK5xFn2+iWMcr8A==",
+        "resolved": "1.13.1",
+        "contentHash": "x8QXMsrIyp+XzDUFQAM+C4upAPNbwaBIPjTWEoonziWAav6weS8OxsMKrE4wz7Zly8ATlsoxk0mWZ+PHO3Wg0w==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
-          "OpenTelemetry.Api": "1.12.0"
+          "OpenTelemetry.Api": "1.13.1"
         }
       },
       "Perfolizer": {
         "type": "Transitive",
-        "resolved": "0.5.3",
-        "contentHash": "EhHo0s4y+tHJKhZHgQvPgFWhAhnQpHHuFzutRzfqfv5z763wvhzXh849ZtpVePQNxXWoFafh1Ta2tZgnSIVsYQ=="
+        "resolved": "0.6.0",
+        "contentHash": "mIhFTO23WVG66d2sqr0B0YlIOuTbyZjpaDMFoWPD1FQUwLOrWeMEpZEf8BqN24IDzfplgaSjl67wy+yUmtYaZA==",
+        "dependencies": {
+          "Pragmastat": "3.1.33"
+        }
       },
       "Polly.Core": {
         "type": "Transitive",
         "resolved": "8.6.4",
         "contentHash": "4AWqYnQ2TME0E+Mzovt1Uu+VyvpR84ymUldMcPw7Mbj799Phaag14CKrMtlJGx5jsvYP+S3oR1QmysgmXoD5cw=="
+      },
+      "Pragmastat": {
+        "type": "Transitive",
+        "resolved": "3.1.33",
+        "contentHash": "qADZRnkNg1Emeu2xCnJAOl3ISrH5zfm/TMbk4qPgcvT9sydB+ceK27tdJM89Lycc0MleB/JMWpE9gPUooq7wgA=="
       },
       "Serilog.Extensions.Logging": {
         "type": "Transitive",
@@ -647,6 +655,14 @@
           "xunit.extensibility.core": "[2.9.3]"
         }
       },
+      "BridgingIT.DevKit.Application.Utilities": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )"
+        }
+      },
       "BridgingIT.DevKit.Common.Abstractions": {
         "type": "Project",
         "dependencies": {
@@ -698,7 +714,7 @@
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "FluentValidation": "[12.0.0, )",
+          "FluentValidation": "[12.1.0, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[9.0.10, )",
           "Microsoft.Extensions.Configuration.Binder": "[9.0.10, )",
           "Microsoft.Extensions.Hosting": "[9.0.10, )",
@@ -721,7 +737,7 @@
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "FluentValidation": "[12.0.0, )",
+          "FluentValidation": "[12.1.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[9.0.10, )"
         }
       },
@@ -732,7 +748,7 @@
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "FluentValidation": "[12.0.0, )",
+          "FluentValidation": "[12.1.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[9.0.10, )"
         }
       },
@@ -756,7 +772,7 @@
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "FluentValidation": "[12.0.0, )",
+          "FluentValidation": "[12.1.0, )",
           "Humanizer.Core": "[2.14.1, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[9.0.10, )",
           "Microsoft.Extensions.Logging.Abstractions": "[9.0.10, )",
@@ -770,7 +786,7 @@
         "type": "Project",
         "dependencies": {
           "Ensure.That": "[10.1.0, )",
-          "OpenTelemetry": "[1.12.0, )"
+          "OpenTelemetry": "[1.13.1, )"
         }
       },
       "BridgingIT.DevKit.Common.Utilities.Xunit": {
@@ -783,6 +799,7 @@
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Microsoft.AspNetCore.Mvc.Testing": "[9.0.10, )",
+          "Microsoft.Extensions.TimeProvider.Testing": "[9.10.0, )",
           "Serilog": "[4.3.0, )",
           "Serilog.Extensions.Hosting": "[9.0.0, )",
           "Serilog.Sinks.XUnit": "[3.0.19, )",
@@ -804,7 +821,7 @@
           "MediatR.Contracts": "[2.0.1, 2.0.1]",
           "Microsoft.Extensions.Localization.Abstractions": "[9.0.10, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "System.Linq.Dynamic.Core": "[1.6.9, )"
+          "System.Linq.Dynamic.Core": "[1.6.10, )"
         }
       },
       "BridgingIT.DevKit.Domain.CodeGen": {
@@ -822,9 +839,9 @@
       },
       "FluentValidation": {
         "type": "CentralTransitive",
-        "requested": "[12.0.0, )",
-        "resolved": "12.0.0",
-        "contentHash": "8NVLxtMUXynRHJIX3Hn1ACovaqZIJASufXIIFkD0EUbcd5PmMsL1xUD5h548gCezJ5BzlITaR9CAMrGe29aWpA=="
+        "requested": "[12.1.0, )",
+        "resolved": "12.1.0",
+        "contentHash": "FqWEn8BdbbFEHGanj9K8SVo+LyBeFWy2rolaE+e1TNUbifr8M7Iss+I1AqTSc8kjKtvjl/WN4XIHiRpslh42bA=="
       },
       "Humanizer.Core": {
         "type": "CentralTransitive",
@@ -1070,6 +1087,12 @@
           "Microsoft.Extensions.Options": "9.0.10"
         }
       },
+      "Microsoft.Extensions.TimeProvider.Testing": {
+        "type": "CentralTransitive",
+        "requested": "[9.10.0, )",
+        "resolved": "9.10.0",
+        "contentHash": "hpRMeUOqEz+I5HKu8WXnYr2HYqu2neBX+bgAwQqVLj/UnQxys8JhC6ep4Sp+rPj0mRDxSOiCFASMLxACu0jeRQ=="
+      },
       "NewId": {
         "type": "CentralTransitive",
         "requested": "[4.0.1, )",
@@ -1084,13 +1107,13 @@
       },
       "OpenTelemetry": {
         "type": "CentralTransitive",
-        "requested": "[1.12.0, )",
-        "resolved": "1.12.0",
-        "contentHash": "aIEu2O3xFOdwIVH0AJsIHPIMH1YuX18nzu7BHyaDNQ6NWSk4Zyrs9Pp6y8SATuSbvdtmvue4mj/QZ3838srbwA==",
+        "requested": "[1.13.1, )",
+        "resolved": "1.13.1",
+        "contentHash": "rrM2NlZ0Xla2Ar8zzU09n+HoLFq8b+Kjx7vrmR0tdYfWLYWGNcXHOITXUiyaK8RrFEceMEoF45VBsaf4QPmKcg==",
         "dependencies": {
           "Microsoft.Extensions.Diagnostics.Abstractions": "9.0.0",
           "Microsoft.Extensions.Logging.Configuration": "9.0.0",
-          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.12.0"
+          "OpenTelemetry.Api.ProviderBuilderExtensions": "1.13.1"
         }
       },
       "Polly": {
@@ -1160,9 +1183,9 @@
       },
       "System.Linq.Dynamic.Core": {
         "type": "CentralTransitive",
-        "requested": "[1.6.9, )",
-        "resolved": "1.6.9",
-        "contentHash": "+3M85Vti20gPSo8fObzbmoxbL3bwNwHGl/ViI2FESuVUS+AORy8snrnvDE8jhYbyrTIfs9ge3lj8eOYw9HeY+w=="
+        "requested": "[1.6.10, )",
+        "resolved": "1.6.10",
+        "contentHash": "JTEdrebBsLQkA0JpHgMLgmX34gzCHLrY2zv9V5E7gOBJAb4yYe69JVzUOnxXL7d+vXl/EFodW+6+fJVz9rRwZg=="
       },
       "System.Text.Json": {
         "type": "CentralTransitive",

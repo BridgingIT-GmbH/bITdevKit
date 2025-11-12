@@ -14,6 +14,7 @@ using EntityFrameworkCore.Database.Command;
 using EntityFrameworkCore.Diagnostics;
 using Extensions;
 using Logging;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Infrastructure;
 using Quartz;
@@ -110,6 +111,11 @@ public static class ServiceCollectionExtensions
                     //if (options.MaxPoolSize.HasValue) npg.MaxPoolSize(options.MaxPoolSize.Value);
                     //if (options.ConnectionIdleLifetime.HasValue) npg.ConnectionIdleLifetime(options.ConnectionIdleLifetime.Value);
                 });
+
+                if (options.IdempotentMigrationsEnabled)
+                {
+                    o.ReplaceService<IMigrationsSqlGenerator, PostgresIdempotentMigrationsSqlGenerator>();
+                }
 
                 if (options.LoggerEnabled)
                 {

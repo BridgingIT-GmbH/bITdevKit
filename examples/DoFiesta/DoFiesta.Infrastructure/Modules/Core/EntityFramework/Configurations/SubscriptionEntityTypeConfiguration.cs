@@ -40,10 +40,10 @@ public class SubscriptionEntityTypeConfiguration : IEntityTypeConfiguration<Subs
             .IsRequired();
 
         builder.Property(x => x.StartDate).IsRequired();
-            //.HasColumnType("datetimeoffset");
+        //.HasColumnType("datetimeoffset");
 
         builder.Property(x => x.EndDate);
-            //.HasColumnType("datetimeoffset");
+        //.HasColumnType("datetimeoffset");
 
         builder.HasIndex(x => x.UserId);
         builder.HasIndex(x => x.Status);

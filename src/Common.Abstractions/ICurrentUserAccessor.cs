@@ -5,12 +5,25 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Security.Claims;
+
 /// <summary>
 ///     The ICurrentUserAccessor interface provides mechanisms to access information about the current user.
 ///     Implementing classes will provide access to user details such as user ID, user name, email, and roles.
 /// </summary>
 public interface ICurrentUserAccessor
 {
+    /// <summary>
+    ///     Gets the ClaimsPrincipal representing the current user.
+    /// </summary>
+    ClaimsPrincipal Principal { get; }
+
+    /// <summary>
+    ///     Gets a value indicating whether the current user is authenticated.
+    ///     This property returns true if the user is authenticated; otherwise, false.
+    /// </summary>
+    bool IsAuthenticated { get; }
+
     /// <summary>
     ///     Gets the identifier for the current user.
     /// </summary>

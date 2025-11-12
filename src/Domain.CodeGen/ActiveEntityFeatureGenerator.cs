@@ -204,7 +204,10 @@ public class ConventionFinderFeature : IActiveEntityFeature
 
     public void Generate(SourceProductionContext context, Compilation compilation, INamedTypeSymbol entityType, ActiveEntityFeatures enabledFeatures, FeatureGenerationContext featureContext)
     {
-        if (!enabledFeatures.HasFlag(this.Features)) return;
+        if (!enabledFeatures.HasFlag(this.Features))
+        {
+            return;
+        }
 
         var ns = entityType.ContainingNamespace.ToDisplayString();
         var entityName = entityType.Name;
@@ -324,7 +327,10 @@ namespace {ns}
 
     private bool InheritsFrom(ITypeSymbol type, INamedTypeSymbol baseTypeSymbol)
     {
-        if (baseTypeSymbol == null) return false;
+        if (baseTypeSymbol == null)
+        {
+            return false;
+        }
 
         var current = type;
         while (current != null)

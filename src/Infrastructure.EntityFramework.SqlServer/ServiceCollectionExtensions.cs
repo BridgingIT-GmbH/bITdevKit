@@ -15,6 +15,7 @@ using EntityFrameworkCore.Diagnostics;
 using EntityFrameworkCore.Infrastructure;
 using Extensions;
 using Logging;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Quartz;
 
 public static class ServiceCollectionExtensions
@@ -49,6 +50,7 @@ public static class ServiceCollectionExtensions
         RegisterInterceptors(services, options, lifetime);
 
         services.AddDbContext<TContext>(ConfigureDbContext(services, options, sqlServerOptionsBuilder), lifetime);
+        services.AddScoped<IDbContextResolver, DbContextResolver>(); // needed for DatabaseTransactionPipelineBehavior to resolve DbContext by name (e.g., "Core" or "CoreDbContext")
 
         return new SqlServerDbContextBuilderContext<TContext>(services,
             lifetime,
@@ -89,7 +91,11 @@ public static class ServiceCollectionExtensions
                 }
 
                 o.UseSqlServer(options.ConnectionString, sqlServerOptionsBuilder);
-                //o.UseExceptionProcessor();
+
+                if (options.IdempotentMigrationsEnabled)
+                {
+                    o.ReplaceService<IMigrationsSqlGenerator, SqlServerIdempotentMigrationsSqlGenerator>();
+                }
 
                 if (options.LoggerEnabled)
                 {

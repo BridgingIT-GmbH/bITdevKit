@@ -9,7 +9,6 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 using System.Security;

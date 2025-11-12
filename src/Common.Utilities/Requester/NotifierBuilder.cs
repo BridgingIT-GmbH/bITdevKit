@@ -3,6 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 namespace BridgingIT.DevKit.Common;
+
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -101,6 +102,8 @@ public class NotifierBuilder
                         this.handlerCache.TryAdd(handlerInterface, type);
                         this.policyCache.TryAdd(type, new PolicyConfig
                         {
+                            AuthorizePolicy = type.GetCustomAttribute<HandlerAuthorizePolicyAttribute>(),
+                            AuthorizeRoles = type.GetCustomAttribute<HandlerAuthorizeRolesAttribute>(),
                             Retry = type.GetCustomAttribute<HandlerRetryAttribute>(),
                             Timeout = type.GetCustomAttribute<HandlerTimeoutAttribute>(),
                             Chaos = type.GetCustomAttribute<HandlerChaosAttribute>(),
@@ -161,6 +164,8 @@ public class NotifierBuilder
 
         this.policyCache.TryAdd(handlerType, new PolicyConfig
         {
+            AuthorizePolicy = handlerType.GetCustomAttribute<HandlerAuthorizePolicyAttribute>(),
+            AuthorizeRoles = handlerType.GetCustomAttribute<HandlerAuthorizeRolesAttribute>(),
             Retry = handlerType.GetCustomAttribute<HandlerRetryAttribute>(),
             Timeout = handlerType.GetCustomAttribute<HandlerTimeoutAttribute>(),
             Chaos = handlerType.GetCustomAttribute<HandlerChaosAttribute>(),
@@ -235,6 +240,8 @@ public class NotifierBuilder
             this.handlerCache.TryAdd(closedHandlerInterface, closedHandlerType);
             this.policyCache.TryAdd(closedHandlerType, new PolicyConfig
             {
+                AuthorizePolicy = closedHandlerType.GetCustomAttribute<HandlerAuthorizePolicyAttribute>(),
+                AuthorizeRoles = closedHandlerType.GetCustomAttribute<HandlerAuthorizeRolesAttribute>(),
                 Retry = closedHandlerType.GetCustomAttribute<HandlerRetryAttribute>(),
                 Timeout = closedHandlerType.GetCustomAttribute<HandlerTimeoutAttribute>(),
                 Chaos = closedHandlerType.GetCustomAttribute<HandlerChaosAttribute>(),
@@ -379,6 +386,8 @@ public class NotifierBuilder
                 this.handlerCache.TryAdd(closedHandlerInterface, closedHandlerType);
                 this.policyCache.TryAdd(closedHandlerType, new PolicyConfig
                 {
+                    AuthorizePolicy = closedHandlerType.GetCustomAttribute<HandlerAuthorizePolicyAttribute>(),
+                    AuthorizeRoles = closedHandlerType.GetCustomAttribute<HandlerAuthorizeRolesAttribute>(),
                     Retry = closedHandlerType.GetCustomAttribute<HandlerRetryAttribute>(),
                     Timeout = closedHandlerType.GetCustomAttribute<HandlerTimeoutAttribute>(),
                     Chaos = closedHandlerType.GetCustomAttribute<HandlerChaosAttribute>(),

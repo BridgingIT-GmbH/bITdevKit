@@ -5,9 +5,11 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Pages;
 
+using System.Reflection;
+
 public class LayoutModel
 {
-    public string ProductName { get; set; } = "bITdevKit";
+    public string ProductName { get; set; } = Assembly.GetEntryAssembly()?.GetName().Name;
 
     public string Title { get; set; } = "";
 

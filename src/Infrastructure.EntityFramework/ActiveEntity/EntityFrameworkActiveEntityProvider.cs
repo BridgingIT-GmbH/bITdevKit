@@ -172,7 +172,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
             var query = this.BuildQuery(this.context.Set<TEntity>(), options, specifications);
 
             // Create a parameter expression representing "setters"
-            var parameter = Expression.Parameter(typeof(SetPropertyCalls<TEntity>), "setters");
+            var parameter = Expression.Parameter(typeof(SetPropertyCalls<TEntity>), "setters"); // DOTNET10 https://learn.microsoft.com/en-us/ef/core/what-is-new/ef-core-10.0/breaking-changes#mitigations-2
             Expression body = parameter;
 
             // Apply each assignment (chained SetProperty calls)

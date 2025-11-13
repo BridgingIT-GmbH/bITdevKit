@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 /// <summary>
 /// An OpenAPI document transformer that logs diagnostic information about the generated OpenAPI document.

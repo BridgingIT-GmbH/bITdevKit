@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using System.Collections.Concurrent;
 
 /// <summary>
@@ -58,23 +58,23 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
 
         if (type == typeof(ResultProblemDetails))
         {
-            TransformResultProblemDetailsSchema(schema);
+            this.TransformResultProblemDetailsSchema(schema);
         }
         else if (type == typeof(ResultProblemData))
         {
-            TransformResultProblemDataSchema(schema);
+            this.TransformResultProblemDataSchema(schema);
         }
         else if (type == typeof(ResultProblemResult))
         {
-            TransformResultProblemResultSchema(schema);
+            this.TransformResultProblemResultSchema(schema);
         }
         else if (type == typeof(ResultProblemError))
         {
-            TransformResultProblemErrorSchema(schema);
+            this.TransformResultProblemErrorSchema(schema);
         }
         else if (type == typeof(ProblemError))
         {
-            TransformProblemErrorSchema(schema);
+            this.TransformProblemErrorSchema(schema);
         }
 
         return Task.CompletedTask;
@@ -89,7 +89,7 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
     /// </remarks>
     private void TransformResultProblemDetailsSchema(OpenApiSchema schema)
     {
-        schema.Type = "object";
+        schema.Type = JsonSchemaType.Object;
         schema.AdditionalPropertiesAllowed = true;
         schema.AdditionalProperties = new OpenApiSchema();
         schema.Description = "A Problem Details response containing result information and contextual data (RFC 7807)";
@@ -129,7 +129,7 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
             }
         }
 
-        LogAdjustment(nameof(ResultProblemDetails));
+        this.LogAdjustment(nameof(ResultProblemDetails));
     }
 
     /// <summary>
@@ -141,7 +141,7 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
     /// </remarks>
     private void TransformResultProblemDataSchema(OpenApiSchema schema)
     {
-        schema.Type = "object";
+        schema.Type = JsonSchemaType.Object;
         schema.AdditionalPropertiesAllowed = true;
         schema.AdditionalProperties = new OpenApiSchema();
         schema.Description = "Data section included within a problem details response";
@@ -159,7 +159,7 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
             }
         }
 
-        LogAdjustment(nameof(ResultProblemData));
+        this.LogAdjustment(nameof(ResultProblemData));
     }
 
     /// <summary>
@@ -171,7 +171,7 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
     /// </remarks>
     private void TransformResultProblemResultSchema(OpenApiSchema schema)
     {
-        schema.Type = "object";
+        schema.Type = JsonSchemaType.Object ;
         schema.AdditionalPropertiesAllowed = true;
         schema.AdditionalProperties = new OpenApiSchema();
         schema.Description = "Represents the operation outcome with success status, messages, and errors";
@@ -194,7 +194,7 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
             }
         }
 
-        LogAdjustment(nameof(ResultProblemResult));
+        this.LogAdjustment(nameof(ResultProblemResult));
     }
 
     /// <summary>
@@ -206,7 +206,7 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
     /// </remarks>
     private void TransformResultProblemErrorSchema(OpenApiSchema schema)
     {
-        schema.Type = "object";
+        schema.Type = JsonSchemaType.Object;
         schema.AdditionalPropertiesAllowed = true;
         schema.AdditionalProperties = new OpenApiSchema();
         schema.Description = "Represents an individual error entry with a message and optional metadata";
@@ -219,7 +219,7 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
             }
         }
 
-        LogAdjustment(nameof(ResultProblemError));
+        this.LogAdjustment(nameof(ResultProblemError));
     }
 
     /// <summary>
@@ -231,12 +231,12 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
     /// </remarks>
     private void TransformProblemErrorSchema(OpenApiSchema schema)
     {
-        schema.Type = "object";
+        schema.Type = JsonSchemaType.Object;
         schema.AdditionalPropertiesAllowed = true;
         schema.AdditionalProperties = new OpenApiSchema();
         schema.Description = "Represents an individual error entry with flexible structure for additional data";
 
-        LogAdjustment(nameof(ProblemError));
+        this.LogAdjustment(nameof(ProblemError));
     }
 
     /// <summary>

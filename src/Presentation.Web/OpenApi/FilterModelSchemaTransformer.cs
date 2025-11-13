@@ -7,7 +7,8 @@ namespace BridgingIT.DevKit.Presentation.Web;
 
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
+using System.Text.Json.Nodes;
 
 /// <summary>
 /// Completes incomplete FilterModel-related schemas in the OpenAPI document.
@@ -51,31 +52,31 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
 
         if (type == typeof(FilterModel))
         {
-            CompleteFilterModelSchema(schema);
+            this.CompleteFilterModelSchema(schema);
         }
         else if (type == typeof(FilterCriteria))
         {
-            CompleteFilterCriteriaSchema(schema);
+            this.CompleteFilterCriteriaSchema(schema);
         }
         else if (type == typeof(OrderDirection))
         {
-            CompleteOrderDirectionSchema(schema);
+            this.CompleteOrderDirectionSchema(schema);
         }
         else if (type == typeof(CompositeSpecification))
         {
-            CompleteCompositeSpecificationSchema(schema);
+            this.CompleteCompositeSpecificationSchema(schema);
         }
         else if (type == typeof(SpecificationNode))
         {
-            CompleteSpecificationNodeSchema(schema);
+            this.CompleteSpecificationNodeSchema(schema);
         }
         else if (type == typeof(SpecificationLeaf))
         {
-            CompleteSpecificationLeafSchema(schema);
+            this.CompleteSpecificationLeafSchema(schema);
         }
         else if (type == typeof(SpecificationGroup))
         {
-            CompleteSpecificationGroupSchema(schema);
+            this.CompleteSpecificationGroupSchema(schema);
         }
 
         return Task.CompletedTask;
@@ -91,39 +92,44 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     /// </remarks>
     private void CompleteFilterModelSchema(OpenApiSchema schema)
     {
-        schema.Type = "object";
+        schema.Type = JsonSchemaType.Object;
         schema.Description = "Represents a complete filter model for querying data with pagination, sorting, and filtering";
-        schema.Example = new Microsoft.OpenApi.Any.OpenApiObject
+        schema.Example = new JsonObject
         {
-            ["page"] = new Microsoft.OpenApi.Any.OpenApiInteger(1),
-            ["pageSize"] = new Microsoft.OpenApi.Any.OpenApiInteger(150),
-            //["noTracking"] = new Microsoft.OpenApi.Any.OpenApiBoolean(true),
-            ["orderings"] = new Microsoft.OpenApi.Any.OpenApiArray
+            ["page"] = 1,
+            ["pageSize"] = 150,
+
+            //["noTracking"] = true,  // uncomment if needed
+
+            ["orderings"] = new JsonArray
             {
-                new Microsoft.OpenApi.Any.OpenApiObject
+                new JsonObject
                 {
-                    ["field"] = new Microsoft.OpenApi.Any.OpenApiString("CreatedDate"),
-                    ["direction"] = new Microsoft.OpenApi.Any.OpenApiString("desc")
+                    ["field"] = "CreatedDate",
+                    ["direction"] = "desc"
                 }
             },
-            ["filters"] = new Microsoft.OpenApi.Any.OpenApiArray
+
+            ["filters"] = new JsonArray
             {
-                new Microsoft.OpenApi.Any.OpenApiObject
+                new JsonObject
                 {
-                    ["field"] = new Microsoft.OpenApi.Any.OpenApiString("Status"),
-                    ["operator"] = new Microsoft.OpenApi.Any.OpenApiString("eq"),
-                    ["value"] = new Microsoft.OpenApi.Any.OpenApiString("active")
+                    ["field"] = "Status",
+                    ["operator"] = "eq",
+                    ["value"] = "active"
                 }
             },
-            ["includes"] = new Microsoft.OpenApi.Any.OpenApiArray
+
+            ["includes"] = new JsonArray
             {
-                new Microsoft.OpenApi.Any.OpenApiString("relatedEntity")
+                "relatedEntity"
             }
-            //["hierarchy"] = new Microsoft.OpenApi.Any.OpenApiString("children"),
-            //["hierarchyMaxDepth"] = new Microsoft.OpenApi.Any.OpenApiInteger(3)
+
+            //["hierarchy"] = "children",
+            //["hierarchyMaxDepth"] = 3
         };
 
-        schema.Properties ??= new Dictionary<string, OpenApiSchema>();
+        schema.Properties ??= new Dictionary<string, IOpenApiSchema>();
 
         // Remove the dummy schema discovery properties
         //schema.Properties.Remove("_FilterCriteriaSchema");
@@ -131,18 +137,23 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
         //schema.Properties.Remove("_SpecificationNodeSchema");
 
         // Fix the Filters property to properly reference FilterCriteria
-        schema.Properties["filters"] = new()
+        schema.Properties["filters"] = new OpenApiSchema
         {
-            Type = "array",
+            // Array that can be null → type: ["array", "null"]
+            Type = JsonSchemaType.Array | JsonSchemaType.Null,
+
+            // This creates:  items: { oneOf: [ { $ref: "#/components/schemas/FilterCriteria" } ] }
             Items = new OpenApiSchema
             {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.Schema,
-                    Id = "FilterCriteria"
-                }
+                OneOf =
+                [
+                    new OpenApiSchema
+                    {
+                        Id = "FilterCriteria"   // This is the only way to make a $ref in .NET 10
+                    }
+                ]
             },
-            Nullable = true,
+
             Description = "Filter criteria to apply to the query"
         };
 
@@ -193,147 +204,125 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     /// </remarks>
     private void CompleteFilterCriteriaSchema(OpenApiSchema schema)
     {
-        schema.Type = "object";
+        schema.Type = JsonSchemaType.Object;
         schema.Description = "Represents a single filter criterion for filtering query results";
-        schema.Example = new Microsoft.OpenApi.Any.OpenApiObject
+
+        schema.Example = new JsonObject
         {
-            ["field"] = new Microsoft.OpenApi.Any.OpenApiString("status"),
-            ["operator"] = new Microsoft.OpenApi.Any.OpenApiString("eq"),
-            ["value"] = new Microsoft.OpenApi.Any.OpenApiString("active"),
-            ["logic"] = new Microsoft.OpenApi.Any.OpenApiString("and")
+            ["field"] = "status",
+            ["operator"] = "eq",
+            ["value"] = "active",
+            ["logic"] = "and"
         };
-        schema.Properties = new Dictionary<string, OpenApiSchema>
+
+        schema.Properties = new Dictionary<string, IOpenApiSchema>
         {
-            ["field"] = new()
+            ["field"] = new OpenApiSchema
             {
-                Type = "string",
-                Nullable = true,
+                Type = JsonSchemaType.String | JsonSchemaType.Null,
                 Description = "The field to filter on"
             },
-            ["operator"] = new()
+
+            ["operator"] = new OpenApiSchema
             {
-                Type = "string",
+                Type = JsonSchemaType.String,
                 Enum =
                 [
-                    new Microsoft.OpenApi.Any.OpenApiString("eq"),
-                    new Microsoft.OpenApi.Any.OpenApiString("neq"),
-                    new Microsoft.OpenApi.Any.OpenApiString("isnull"),
-                    new Microsoft.OpenApi.Any.OpenApiString("isnotnull"),
-                    new Microsoft.OpenApi.Any.OpenApiString("isempty"),
-                    new Microsoft.OpenApi.Any.OpenApiString("isnotempty"),
-                    new Microsoft.OpenApi.Any.OpenApiString("gt"),
-                    new Microsoft.OpenApi.Any.OpenApiString("gte"),
-                    new Microsoft.OpenApi.Any.OpenApiString("lt"),
-                    new Microsoft.OpenApi.Any.OpenApiString("lte"),
-                    new Microsoft.OpenApi.Any.OpenApiString("contains"),
-                    new Microsoft.OpenApi.Any.OpenApiString("doesnotcontain"),
-                    new Microsoft.OpenApi.Any.OpenApiString("startswith"),
-                    new Microsoft.OpenApi.Any.OpenApiString("doesnotstartwith"),
-                    new Microsoft.OpenApi.Any.OpenApiString("endswith"),
-                    new Microsoft.OpenApi.Any.OpenApiString("doesnotendwith"),
-                    new Microsoft.OpenApi.Any.OpenApiString("any"),
-                    new Microsoft.OpenApi.Any.OpenApiString("all"),
-                    new Microsoft.OpenApi.Any.OpenApiString("none")
+                    "eq", "neq", "isnull", "isnotnull", "isempty", "isnotempty",
+                    "gt", "gte", "lt", "lte",
+                    "contains", "doesnotcontain",
+                    "startswith", "doesnotstartwith",
+                    "endswith", "doesnotendwith",
+                    "any", "all", "none"
                 ],
                 Description = "The operator to use for filtering"
             },
-            ["value"] = new()
+
+            ["value"] = new OpenApiSchema
             {
-                Nullable = true,
-                Description = "The value to compare against (any type)",
-                Type = "object"
-                //OneOf = new List<OpenApiSchema>
-                //{
-                //    new() { Type = "string" },
-                //    new() { Type = "number" },
-                //    new() { Type = "integer" },
-                //    new() { Type = "boolean" },
-                //    //new() { Type = "null" },
-                //    new() { Type = "array", Items = new OpenApiSchema() },
-                //    new() { Type = "object", AdditionalPropertiesAllowed = true }
-                //}
-            },
-            ["logic"] = new()
-            {
-                Type = "string",
-                Enum =
+                // Any type: string, number, bool, array, object, or null
+                OneOf =
                 [
-                    new Microsoft.OpenApi.Any.OpenApiString("and"),
-                    new Microsoft.OpenApi.Any.OpenApiString("or")
+                    new OpenApiSchema() { Type = JsonSchemaType.String },
+                    new OpenApiSchema() { Type = JsonSchemaType.Number },
+                    new OpenApiSchema() { Type = JsonSchemaType.Integer },
+                    new OpenApiSchema() { Type = JsonSchemaType.Boolean },
+                    new OpenApiSchema() { Type = JsonSchemaType.Null },
+                    new OpenApiSchema() { Type = JsonSchemaType.Array, Items = new OpenApiSchema() },
+                    new OpenApiSchema() { Type = JsonSchemaType.Object, AdditionalPropertiesAllowed = true }
                 ],
-                Default = new Microsoft.OpenApi.Any.OpenApiString("and"),
-                Description = "Logic operator for combining nested filters"
+                Description = "The value to compare against (any type)"
             },
-            ["filters"] = new()
+
+            ["logic"] = new OpenApiSchema
             {
-                Type = "array",
+                Type = JsonSchemaType.String,
+                Enum = ["and", "or"],
+                Default = JsonValue.Create("and"),
+                Description = "Logic operator for combining nested lofty filters"
+            },
+
+            ["filters"] = new OpenApiSchema
+            {
+                Type = JsonSchemaType.Array | JsonSchemaType.Null,
                 Items = new OpenApiSchema
                 {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.Schema,
-                        Id = "FilterCriteria"
-                    }
+                    OneOf =
+                    [
+                        new OpenApiSchema { Id = "FilterCriteria" }  // $ref: #/components/schemas/FilterCriteria
+                    ]
                 },
-                Nullable = true,
                 Description = "Nested filter criteria"
             },
-            ["customType"] = new()
+
+            ["customType"] = new OpenApiSchema
             {
-                Type = "string",
+                Type = JsonSchemaType.String,
                 Enum =
-                [
-                    new Microsoft.OpenApi.Any.OpenApiString("none"),
-                    new Microsoft.OpenApi.Any.OpenApiString("fulltextsearch"),
-                    new Microsoft.OpenApi.Any.OpenApiString("daterange"),
-                    new Microsoft.OpenApi.Any.OpenApiString("daterelative"),
-                    new Microsoft.OpenApi.Any.OpenApiString("timerange"),
-                    new Microsoft.OpenApi.Any.OpenApiString("timerelative"),
-                    new Microsoft.OpenApi.Any.OpenApiString("numericrange"),
-                    new Microsoft.OpenApi.Any.OpenApiString("isnull"),
-                    new Microsoft.OpenApi.Any.OpenApiString("isnotnull"),
-                    new Microsoft.OpenApi.Any.OpenApiString("enumvalues"),
-                    new Microsoft.OpenApi.Any.OpenApiString("textin"),
-                    new Microsoft.OpenApi.Any.OpenApiString("textnotin"),
-                    new Microsoft.OpenApi.Any.OpenApiString("numericin"),
-                    new Microsoft.OpenApi.Any.OpenApiString("numericnotin"),
-                    new Microsoft.OpenApi.Any.OpenApiString("namedspecification"),
-                    new Microsoft.OpenApi.Any.OpenApiString("compositespecification")
-                ],
-                Default = new Microsoft.OpenApi.Any.OpenApiString("none"),
+            [
+                "none", "fulltextsearch", "daterange", "daterelative",
+                "timerange", "timerelative", "numericrange",
+                "isnull", "isnotnull", "enumvalues",
+                "textin", "textnotin", "numericin", "numericnotin",
+                "namedspecification", "compositespecification"
+            ],
+                Default = JsonValue.Create("none"),
                 Description = "Custom filter type"
             },
-            ["customParameters"] = new()
+
+            ["customParameters"] = new OpenApiSchema
             {
-                Type = "object",
+                Type = JsonSchemaType.Object | JsonSchemaType.Null,
                 AdditionalPropertiesAllowed = true,
-                Nullable = true,
                 Description = "Custom parameters for the filter"
             },
-            ["specificationName"] = new()
+
+            ["specificationName"] = new OpenApiSchema
             {
-                Type = "string",
-                Nullable = true,
+                Type = JsonSchemaType.String | JsonSchemaType.Null,
                 Description = "Name of a registered specification"
             },
-            ["specificationArguments"] = new()
+
+            ["specificationArguments"] = new OpenApiSchema
             {
-                Type = "array",
+                Type = JsonSchemaType.Array | JsonSchemaType.Null,
                 Items = new OpenApiSchema(),
-                Nullable = true,
                 Description = "Arguments for the specification"
             },
-            ["compositeSpecification"] = new()
+
+            ["compositeSpecification"] = new OpenApiSchema
             {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.Schema,
-                    Id = "CompositeSpecification"
-                },
-                Nullable = true,
+                OneOf =
+                [
+                    new OpenApiSchema { Id = "CompositeSpecification" },
+                    new OpenApiSchema { Type = JsonSchemaType.Null }
+                ],
                 Description = "Composite specification combining multiple nodes"
             }
         };
+
+        // Required fields
+        //schema.Required = new HashSet<string> { "operator" };
     }
 
     /// <summary>
@@ -342,15 +331,14 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     /// <param name="schema">The OrderDirection schema to complete.</param>
     private void CompleteOrderDirectionSchema(OpenApiSchema schema)
     {
-        schema.Type = "string";
-        schema.Description = "Sort direction for ordering query results";
-        schema.Example = new Microsoft.OpenApi.Any.OpenApiString("asc");
+        schema.Type = JsonSchemaType.String;
+        schema.Description = "Order direction";
+        schema.Example = JsonValue.Create("asc");
         schema.Enum =
         [
-            new Microsoft.OpenApi.Any.OpenApiString("asc"),
-            new Microsoft.OpenApi.Any.OpenApiString("desc")
+            "asc",
+            "desc"
         ];
-        schema.Description = "Order direction";
     }
 
     /// <summary>
@@ -363,22 +351,17 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     /// </remarks>
     private void CompleteCompositeSpecificationSchema(OpenApiSchema schema)
     {
-        schema.Type = "object";
+        schema.Type = JsonSchemaType.Object;
         schema.Description = "A tree structure containing specification nodes for complex filtering logic";
-        schema.Properties = new Dictionary<string, OpenApiSchema>
+        schema.Properties = new Dictionary<string, IOpenApiSchema>
         {
-            ["nodes"] = new()
+            ["nodes"] = new OpenApiSchema()
             {
-                Type = "array",
+                Type = JsonSchemaType.Array | JsonSchemaType.Null,
                 Items = new OpenApiSchema
                 {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.Schema,
-                        Id = "SpecificationNode"
-                    }
+                    Id = "SpecificationNode"
                 },
-                Nullable = true,
                 Description = "List of specification nodes"
             }
         };
@@ -409,36 +392,31 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     /// </remarks>
     private void CompleteSpecificationLeafSchema(OpenApiSchema schema)
     {
-        schema.Type = "object";
+        schema.Type = JsonSchemaType.Object;
         schema.Description = "A terminal specification node that references a named specification";
-        schema.Example = new Microsoft.OpenApi.Any.OpenApiObject
+        schema.Example = new JsonObject
         {
-            ["type"] = new Microsoft.OpenApi.Any.OpenApiString("SpecificationLeaf"),
-            ["name"] = new Microsoft.OpenApi.Any.OpenApiString("ActiveUserSpecification"),
-            ["arguments"] = new Microsoft.OpenApi.Any.OpenApiArray()
+            ["type"] = "SpecificationLeaf",
+            ["name"] = "ActiveUserSpecification",
+            ["arguments"] = new JsonArray()
         };
-        schema.Properties = new Dictionary<string, OpenApiSchema>
+        schema.Properties = new Dictionary<string, IOpenApiSchema>
         {
-            ["type"] = new()
+            ["type"] = new OpenApiSchema()
             {
-                Type = "string",
-                Enum =
-                [
-                    new Microsoft.OpenApi.Any.OpenApiString("SpecificationLeaf")
-                ],
+                Type = JsonSchemaType.String,
+                Enum = [JsonValue.Create("SpecificationLeaf")!],
                 Description = "Discriminator for specification leaf"
             },
-            ["name"] = new()
+            ["name"] = new OpenApiSchema()
             {
-                Type = "string",
-                Nullable = true,
+                Type = JsonSchemaType.String | JsonSchemaType.Null,
                 Description = "Name of the registered specification"
             },
-            ["arguments"] = new()
+            ["arguments"] = new OpenApiSchema()
             {
-                Type = "array",
+                Type = JsonSchemaType.Array | JsonSchemaType.Null,
                 Items = new OpenApiSchema(),
-                Nullable = true,
                 Description = "Arguments for the specification"
             }
         };
@@ -455,49 +433,45 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     /// </remarks>
     private void CompleteSpecificationGroupSchema(OpenApiSchema schema)
     {
-        schema.Type = "object";
+        schema.Type = JsonSchemaType.Object;
         schema.Description = "A composite specification group combining multiple child nodes with a logical operator";
-        schema.Example = new Microsoft.OpenApi.Any.OpenApiObject
+
+        schema.Example = new JsonObject
         {
-            ["type"] = new Microsoft.OpenApi.Any.OpenApiString("SpecificationGroup"),
-            ["logic"] = new Microsoft.OpenApi.Any.OpenApiString("and"),
-            ["nodes"] = new Microsoft.OpenApi.Any.OpenApiArray()
+            ["type"] = "SpecificationGroup",
+            ["logic"] = "and",
+            ["nodes"] = new JsonArray()
         };
-        schema.Properties = new Dictionary<string, OpenApiSchema>
+
+        schema.Properties = new Dictionary<string, IOpenApiSchema>
         {
-            ["type"] = new()
+            ["type"] = new OpenApiSchema
             {
-                Type = "string",
-                Enum =
-                [
-                    new Microsoft.OpenApi.Any.OpenApiString("SpecificationGroup")
-                ]
+                Type = JsonSchemaType.String,
+                Enum = [JsonValue.Create("SpecificationGroup")!],
+                Description = "Discriminator for specification group"
             },
-            ["logic"] = new()
+            ["logic"] = new OpenApiSchema
             {
-                Type = "string",
+                Type = JsonSchemaType.String,
                 Enum =
                 [
-                    new Microsoft.OpenApi.Any.OpenApiString("and"),
-                    new Microsoft.OpenApi.Any.OpenApiString("or")
+                    JsonValue.Create("and")!,
+                JsonValue.Create("or")!
                 ],
                 Description = "Logic operator for combining nodes (serialized as string)"
             },
-            ["nodes"] = new()
+            ["nodes"] = new OpenApiSchema
             {
-                Type = "array",
+                Type = JsonSchemaType.Array | JsonSchemaType.Null,
                 Items = new OpenApiSchema
                 {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.Schema,
-                        Id = "SpecificationNode"
-                    }
+                    Id = "SpecificationNode"
                 },
-                Nullable = true,
                 Description = "Child specification nodes"
             }
         };
+
         schema.Required = new HashSet<string> { "logic" };
     }
 }

@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 /// <summary>
 /// Sets the operation summary directly from the operation name/ID.

@@ -6,8 +6,9 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using System.Collections.Concurrent;
+
 /// <summary>
 /// An OpenAPI schema transformer that logs diagnostic information about each schema processed.
 /// </summary>
@@ -38,7 +39,7 @@ public class DiagnosticSchemaTransformer : IOpenApiSchemaTransformer
         var typeName = context.JsonTypeInfo.Type?.FullName ?? "(unknown)";
 
         // Skip System.* types
-        if (typeName.StartsWith("System."))
+        if (typeName.StartsWith("System.") || typeName.StartsWith("Microsoft."))
         {
             return Task.CompletedTask;
         }
@@ -46,11 +47,17 @@ public class DiagnosticSchemaTransformer : IOpenApiSchemaTransformer
         // Log schema processing only once per type (distinct)
         if (LoggedSchemas.TryAdd(typeName, true))
         {
-            var schemaType = schema.Type ?? "(none)";
-            var hasProperties = schema.Properties?.Count > 0 ? schema.Properties.Count : 0;
-            var isNullable = schema.Nullable ? "nullable" : "non-nullable";
+            // Properly format type (handles multiple types like "String, Null")
+            var schemaType = schema.Type.HasValue
+                ? string.Join(", ", Enum.GetValues<JsonSchemaType>()
+                    .Where(flag => schema.Type.Value.HasFlag(flag))
+                    .Select(flag => flag.ToString()))
+                : "(none)";
 
-            Console.WriteLine($"[OpenAPI] Schema {typeName}, Type: {schemaType}, Properties: {hasProperties}, {isNullable}");
+            var propertyCount = schema.Properties?.Count ?? 0;
+            var isNullable = schema.Type?.HasFlag(JsonSchemaType.Null) == true ? "nullable" : "non-nullable";
+
+            Console.WriteLine("[OpenAPI] Schema: {typeName}, Type: {schemaType}, Properties: {propertyCount}, Nullability: {isNullable}");
         }
 
         return Task.CompletedTask;

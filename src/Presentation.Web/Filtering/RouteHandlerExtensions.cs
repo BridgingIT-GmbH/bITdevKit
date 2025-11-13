@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -8,8 +8,7 @@ namespace BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.OpenApi;
-//using Microsoft.OpenApi.Any;
-//using Microsoft.OpenApi.Models;
+using System.Text.Json.Nodes;
 
 public static class RouteHandlerExtensions
 {
@@ -63,26 +62,23 @@ public static class RouteHandlerExtensions
                 new OpenApiSchema()
                 {
                     Type = JsonSchemaType.Object,
-                    Properties = new Dictionary<string, OpenApiSchema>
+                    Properties = new Dictionary<string, IOpenApiSchema>
                     {
-                        ["name"] = new() { Type = JsonSchemaType.String },
-                        ["arguments"] = new() { Type = JsonSchemaType.Array, Items = new OpenApiSchema { Type = JsonSchemaType.Object } }
+                        ["name"] = new OpenApiSchema() { Type = JsonSchemaType.String },
+                        ["arguments"] = new OpenApiSchema() { Type = JsonSchemaType.Array, Items = new OpenApiSchema { Type = JsonSchemaType.Object } }
                     }
                 },
                 new OpenApiSchema()
                 {
                     Type = JsonSchemaType.Object,
-                    Properties = new Dictionary<string, OpenApiSchema>
+                    Properties = new Dictionary<string, IOpenApiSchema>
                     {
-                        ["logic"] = new()
+                        ["logic"] = new OpenApiSchema()
                         {
                             Type = JsonSchemaType.String,
-                            Enum = Enum.GetNames<FilterLogicOperator>()
-                                .Select(x => new OpenApiString(x.ToLowerInvariant()))
-                                .Cast<IOpenApiAny>()
-                                .ToList()
+                            Enum = [.. Common.EnumExtensions.GetEnumMemberValues<FilterLogicOperator>().Select(v => JsonValue.Create(v))]
                         },
-                        ["nodes"] = new()
+                        ["nodes"] = new OpenApiSchema()
                         {
                             Type = JsonSchemaType.Array,
                             Items = new OpenApiSchema { Type = JsonSchemaType.Object }
@@ -95,48 +91,39 @@ public static class RouteHandlerExtensions
         var filterCriteriaSchema = new OpenApiSchema
         {
             Type = JsonSchemaType.Object,
-            Properties = new Dictionary<string, OpenApiSchema>
+            Properties = new Dictionary<string, IOpenApiSchema>
             {
-                ["field"] = new() { Type = JsonSchemaType.String },
-                ["operator"] = new()
+                ["field"] = new OpenApiSchema() { Type = JsonSchemaType.String },
+                ["operator"] = new OpenApiSchema()
                 {
                     Type = JsonSchemaType.String,
-                    Enum = Enum.GetNames<FilterOperator>()
-                        .Select(x => new OpenApiString(x.ToLowerInvariant()))
-                        .Cast<IOpenApiAny>()
-                        .ToList()
+                    Enum = [.. Common.EnumExtensions.GetEnumMemberValues<FilterOperator>().Select(v => JsonValue.Create(v))]
                 },
-                ["value"] = new() { Type = JsonSchemaType.Object },
-                ["logic"] = new()
+                ["value"] = new OpenApiSchema() { Type = JsonSchemaType.Object },
+                ["logic"] = new OpenApiSchema()
                 {
                     Type = JsonSchemaType.String,
-                    Enum = Enum.GetNames<FilterLogicOperator>()
-                        .Select(x => new OpenApiString(x.ToLowerInvariant()))
-                        .Cast<IOpenApiAny>()
-                        .ToList()
+                    Enum = [.. Common.EnumExtensions.GetEnumMemberValues<FilterLogicOperator>().Select(v => JsonValue.Create(v))]
                 },
-                ["filters"] = new()
+                ["filters"] = new OpenApiSchema()
                 {
                     Type = JsonSchemaType.Array,
                     Items = new OpenApiSchema { Type = JsonSchemaType.Object }
                 },
-                ["customType"] = new()
+                ["customType"] = new OpenApiSchema()
                 {
                     Type = JsonSchemaType.String,
-                    Enum = Enum.GetNames<FilterCustomType>()
-                        .Select(x => new OpenApiString(x.ToLowerInvariant()))
-                        .Cast<IOpenApiAny>()
-                        .ToList()
+                    Enum = [.. Common.EnumExtensions.GetEnumMemberValues<FilterCustomType>().Select(v => JsonValue.Create(v))]
                 },
-                ["customParameters"] = new() { Type = JsonSchemaType.Object, AdditionalProperties = new OpenApiSchema { Type = JsonSchemaType.Object } },
-                ["specificationName"] = new() { Type = JsonSchemaType.String },
-                ["specificationArguments"] = new() { Type = JsonSchemaType.Array, Items = new OpenApiSchema { Type = JsonSchemaType.Object } },
-                ["compositeSpecification"] = new()
+                ["customParameters"] = new OpenApiSchema() { Type = JsonSchemaType.Object, AdditionalProperties = new OpenApiSchema { Type = JsonSchemaType.Object } },
+                ["specificationName"] = new OpenApiSchema() { Type = JsonSchemaType.String },
+                ["specificationArguments"] = new OpenApiSchema() { Type = JsonSchemaType.Array, Items = new OpenApiSchema { Type = JsonSchemaType.Object } },
+                ["compositeSpecification"] = new OpenApiSchema()
                 {
                     Type = JsonSchemaType.Object,
-                    Properties = new Dictionary<string, OpenApiSchema>
+                    Properties = new Dictionary<string, IOpenApiSchema>
                     {
-                        ["nodes"] = new() { Type = JsonSchemaType.Array, Items = specificationNodeSchema }
+                        ["nodes"] = new OpenApiSchema() { Type = JsonSchemaType.Array, Items = specificationNodeSchema }
                     }
                 }
             }
@@ -146,40 +133,37 @@ public static class RouteHandlerExtensions
         {
             Type = isRequestBody ? JsonSchemaType.Object : JsonSchemaType.String,
             Description = isRequestBody ? "FilterModel" : "URL-encoded JSON FilterModel",
-            Properties = new Dictionary<string, OpenApiSchema>
+            Properties = new Dictionary<string, IOpenApiSchema>
             {
-                ["page"] = new() { Type = JsonSchemaType.Integer, Default = new OpenApiInteger(1) },
-                ["pageSize"] = new() { Type = JsonSchemaType.Integer, Default = new OpenApiInteger(10) },
-                ["orderings"] = new()
+                ["page"] = new OpenApiSchema() { Type = JsonSchemaType.Integer, Default = JsonValue.Create(0) },
+                ["pageSize"] = new OpenApiSchema() { Type = JsonSchemaType.Integer, Default = JsonValue.Create(0) },
+                ["orderings"] = new OpenApiSchema()
                 {
                     Type = JsonSchemaType.Array,
                     Items = new OpenApiSchema
                     {
                         Type = JsonSchemaType.Object,
-                        Properties = new Dictionary<string, OpenApiSchema>
+                        Properties = new Dictionary<string, IOpenApiSchema>
                         {
-                            ["field"] = new() { Type = JsonSchemaType.String },
-                            ["direction"] = new()
+                            ["field"] = new OpenApiSchema() { Type = JsonSchemaType.String },
+                            ["direction"] = new OpenApiSchema()
                             {
                                 Type = JsonSchemaType.String,
-                                Enum = Enum.GetNames<OrderDirection>()
-                                    .Select(x => new OpenApiString(x.ToLowerInvariant()))
-                                    .Cast<IOpenApiAny>()
-                                    .ToList()
+                                Enum = [.. Common.EnumExtensions.GetEnumMemberValues<OrderDirection>().Select(v => JsonValue.Create(v))]
                             }
                         }
                     }
                 },
-                ["filters"] = new() { Type = JsonSchemaType.Array, Items = filterCriteriaSchema },
-                ["includes"] = new() { Type = JsonSchemaType.Array, Items = new OpenApiSchema { Type = JsonSchemaType.String } },
-                ["hierarchy"] = new() { Type = JsonSchemaType.String, Nullable = true },
-                ["hierarchyMaxDepth"] = new() { Type = JsonSchemaType.Integer, Default = new OpenApiInteger(5) }
+                ["filters"] = new OpenApiSchema() { Type = JsonSchemaType.Array, Items = filterCriteriaSchema },
+                ["includes"] = new OpenApiSchema() { Type = JsonSchemaType.Array, Items = new OpenApiSchema { Type = JsonSchemaType.String } },
+                ["hierarchy"] = new OpenApiSchema() { Type = JsonSchemaType.String | JsonSchemaType.Null },
+                ["hierarchyMaxDepth"] = new OpenApiSchema() { Type = JsonSchemaType.Integer, Default = JsonValue.Create(5) }
             }
         };
 
         return builder
-            .WithOpenApi(operation => // TODO: WithOpenApi is obsolete in dotnet 10 https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/10/withopenapi-deprecated
-            //.AddOpenApiOperationTransformer((operation, context, ct) =>
+            //.WithOpenApi(operation => // TODO: WithOpenApi is obsolete in dotnet 10 https://learn.microsoft.com/en-us/dotnet/core/compatibility/aspnet-core/10/withopenapi-deprecated
+            .AddOpenApiOperationTransformer((operation, context, ct) =>
             {
                 if (isRequestBody)
                 {
@@ -203,7 +187,7 @@ public static class RouteHandlerExtensions
                     });
                 }
 
-                return operation;
+                return Task.CompletedTask;
             });
     }
 }

@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Common;
 
 using System.ComponentModel;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 public static class EnumExtensions
 {
@@ -151,5 +152,20 @@ public static class EnumExtensions
         }
 
         return default;
+    }
+
+    public static IEnumerable<string> GetEnumMemberValues<T>() where T : Enum
+    {
+        return Enum.GetValues(typeof(T))
+                   .Cast<T>()
+                   .Select(e => e.GetEnumMemberValue() ?? e.ToString())
+                   .Where(v => v != null)!;
+    }
+
+    public static string GetEnumMemberValue(this Enum enumValue)
+    {
+        var field = enumValue.GetType().GetField(enumValue.ToString());
+        var attribute = field?.GetCustomAttribute<EnumMemberAttribute>();
+        return attribute?.Value;
     }
 }

@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 /// <summary>
 /// Configurable OpenAPI document transformer for adding security requirements.
@@ -144,21 +144,10 @@ public class SecurityRequirementDocumentTransformer(SecurityRequirementOptions o
         document.Components.SecuritySchemes.Add(this.options.SchemeName, securityScheme);
 
         // Apply the security requirement to all operations
-        document.SecurityRequirements.Add(
-            new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = this.options.SchemeName
-                        }
-                    },
-                    this.options.Scopes ?? []
-                }
-            });
+        document.Security.Add(new OpenApiSecurityRequirement
+        {
+            [new OpenApiSecuritySchemeReference(this.options.SchemeName, document)] = []
+        });
 
         return Task.CompletedTask;
     }

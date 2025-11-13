@@ -1,5 +1,5 @@
 {
-  "openapi": "3.0.1",
+  "openapi": "3.1.1",
   "info": {
     "title": "DoFiesta API",
     "description": "API for DoFiesta application.",
@@ -452,54 +452,65 @@
         "type": "object",
         "properties": {
           "nodes": {
-            "type": "array",
+            "type": [
+              "null",
+              "array"
+            ],
             "items": {
               "$ref": "#/components/schemas/SpecificationNode"
             },
-            "description": "List of specification nodes",
-            "nullable": true
+            "description": "List of specification nodes"
           }
         },
-        "description": "A tree structure containing specification nodes for complex filtering logic",
-        "nullable": true
+        "description": "A tree structure containing specification nodes for complex filtering logic"
       },
       "EnumerationModel": {
         "type": "object",
         "properties": {
           "todoStatuses": {
-            "type": "array",
+            "type": [
+              "null",
+              "array"
+            ],
             "items": {
               "$ref": "#/components/schemas/TodoStatus"
-            },
-            "nullable": true
+            }
           },
           "todoPriorities": {
-            "type": "array",
+            "type": [
+              "null",
+              "array"
+            ],
             "items": {
               "$ref": "#/components/schemas/TodoPriority"
-            },
-            "nullable": true
+            }
           },
           "subscriptionStatuses": {
-            "type": "array",
+            "type": [
+              "null",
+              "array"
+            ],
             "items": {
               "$ref": "#/components/schemas/SubscriptionStatus"
-            },
-            "nullable": true
+            }
           },
           "subscriptionPlans": {
-            "type": "array",
+            "type": [
+              "null",
+              "array"
+            ],
             "items": {
               "$ref": "#/components/schemas/SubscriptionPlan"
-            },
-            "nullable": true
+            }
           },
           "subscriptionBillingCycles": {
-            "type": "array",
+            "type": [
+              "null",
+              "array"
+            ],
             "items": {
               "$ref": "#/components/schemas/SubscriptionBillingCycle"
-            },
-            "nullable": true
+            }
           }
         }
       },
@@ -507,9 +518,11 @@
         "type": "object",
         "properties": {
           "field": {
-            "type": "string",
-            "description": "The field to filter on",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "The field to filter on"
           },
           "operator": {
             "enum": [
@@ -537,9 +550,31 @@
             "description": "The operator to use for filtering"
           },
           "value": {
-            "type": "object",
-            "description": "The value to compare against (any type)",
-            "nullable": true
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              },
+              {
+                "type": "integer"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              },
+              {
+                "type": "array",
+                "items": { }
+              },
+              {
+                "type": "object"
+              }
+            ],
+            "description": "The value to compare against (any type)"
           },
           "logic": {
             "enum": [
@@ -547,16 +582,18 @@
               "or"
             ],
             "type": "string",
-            "description": "Logic operator for combining nested filters",
+            "description": "Logic operator for combining nested lofty filters",
             "default": "and"
           },
           "filters": {
-            "type": "array",
+            "type": [
+              "null",
+              "array"
+            ],
             "items": {
               "$ref": "#/components/schemas/FilterCriteria"
             },
-            "description": "Nested filter criteria",
-            "nullable": true
+            "description": "Nested filter criteria"
           },
           "customType": {
             "enum": [
@@ -582,27 +619,32 @@
             "default": "none"
           },
           "customParameters": {
-            "type": "object",
-            "description": "Custom parameters for the filter",
-            "nullable": true
+            "type": [
+              "null",
+              "object"
+            ],
+            "description": "Custom parameters for the filter"
           },
           "specificationName": {
-            "type": "string",
-            "description": "Name of a registered specification",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Name of a registered specification"
           },
           "specificationArguments": {
-            "type": "array",
+            "type": [
+              "null",
+              "array"
+            ],
             "items": { },
-            "description": "Arguments for the specification",
-            "nullable": true
+            "description": "Arguments for the specification"
           },
           "compositeSpecification": {
             "$ref": "#/components/schemas/CompositeSpecification"
           }
         },
         "description": "Represents a single filter criterion for filtering query results",
-        "nullable": true,
         "example": {
           "field": "status",
           "operator": "eq",
@@ -628,33 +670,181 @@
             "description": "Disable change tracking for improved query performance"
           },
           "orderings": {
-            "type": "array",
+            "type": [
+              "null",
+              "array"
+            ],
             "items": {
               "$ref": "#/components/schemas/FilterOrderCriteria"
             },
-            "description": "Sort criteria to apply to the results",
-            "nullable": true
+            "description": "Sort criteria to apply to the results"
           },
           "filters": {
-            "type": "array",
+            "type": [
+              "null",
+              "array"
+            ],
             "items": {
-              "$ref": "#/components/schemas/FilterCriteria"
+              "type": "object",
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/FilterCriteria"
+                }
+              ],
+              "properties": {
+                "field": {
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "description": "The field to filter on"
+                },
+                "operator": {
+                  "enum": [
+                    "eq",
+                    "neq",
+                    "isnull",
+                    "isnotnull",
+                    "isempty",
+                    "isnotempty",
+                    "gt",
+                    "gte",
+                    "lt",
+                    "lte",
+                    "contains",
+                    "doesnotcontain",
+                    "startswith",
+                    "doesnotstartwith",
+                    "endswith",
+                    "doesnotendwith",
+                    "any",
+                    "all",
+                    "none"
+                  ],
+                  "type": "string",
+                  "description": "The operator to use for filtering"
+                },
+                "value": {
+                  "oneOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "integer"
+                    },
+                    {
+                      "type": "boolean"
+                    },
+                    {
+                      "type": "null"
+                    },
+                    {
+                      "type": "array",
+                      "items": { }
+                    },
+                    {
+                      "type": "object"
+                    }
+                  ],
+                  "description": "The value to compare against (any type)"
+                },
+                "logic": {
+                  "enum": [
+                    "and",
+                    "or"
+                  ],
+                  "type": "string",
+                  "description": "Logic operator for combining nested lofty filters",
+                  "default": "and"
+                },
+                "filters": {
+                  "type": [
+                    "null",
+                    "array"
+                  ],
+                  "items": {
+                    "$ref": "#/components/schemas/FilterCriteria"
+                  },
+                  "description": "Nested filter criteria"
+                },
+                "customType": {
+                  "enum": [
+                    "none",
+                    "fulltextsearch",
+                    "daterange",
+                    "daterelative",
+                    "timerange",
+                    "timerelative",
+                    "numericrange",
+                    "isnull",
+                    "isnotnull",
+                    "enumvalues",
+                    "textin",
+                    "textnotin",
+                    "numericin",
+                    "numericnotin",
+                    "namedspecification",
+                    "compositespecification"
+                  ],
+                  "type": "string",
+                  "description": "Custom filter type",
+                  "default": "none"
+                },
+                "customParameters": {
+                  "type": [
+                    "null",
+                    "object"
+                  ],
+                  "description": "Custom parameters for the filter"
+                },
+                "specificationName": {
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "description": "Name of a registered specification"
+                },
+                "specificationArguments": {
+                  "type": [
+                    "null",
+                    "array"
+                  ],
+                  "items": { },
+                  "description": "Arguments for the specification"
+                },
+                "compositeSpecification": {
+                  "$ref": "#/components/schemas/CompositeSpecification"
+                }
+              },
+              "description": "Represents a single filter criterion for filtering query results",
+              "example": {
+                "field": "status",
+                "operator": "eq",
+                "value": "active",
+                "logic": "and"
+              }
             },
-            "description": "Filter criteria to apply to the query",
-            "nullable": true
+            "description": "Filter criteria to apply to the query"
           },
           "includes": {
-            "type": "array",
+            "type": [
+              "null",
+              "array"
+            ],
             "items": {
               "type": "string"
             },
-            "description": "Related entities to include via eager loading",
-            "nullable": true
+            "description": "Related entities to include via eager loading"
           },
           "hierarchy": {
-            "type": "string",
-            "description": "Navigation property for hierarchical queries",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Navigation property for hierarchical queries"
           },
           "hierarchyMaxDepth": {
             "type": "integer",
@@ -697,8 +887,10 @@
         "type": "object",
         "properties": {
           "field": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "direction": {
             "$ref": "#/components/schemas/OrderDirection"
@@ -726,46 +918,57 @@
             "$ref": "#/components/schemas/ResultProblemResult"
           },
           "errors": {
-            "type": "array",
+            "type": [
+              "null",
+              "array"
+            ],
             "items": {
               "$ref": "#/components/schemas/ProblemError"
             },
-            "description": "Collection of additional errors outside the result object",
-            "nullable": true
+            "description": "Collection of additional errors outside the result object"
           }
         },
         "additionalProperties": { },
-        "description": "Data section included within a problem details response",
-        "nullable": true
+        "description": "Data section included within a problem details response"
       },
       "ResultProblemDetails": {
         "type": "object",
         "properties": {
           "type": {
-            "type": "string",
-            "description": "A URI reference that identifies the problem type",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "A URI reference that identifies the problem type"
           },
           "title": {
-            "type": "string",
-            "description": "A short, human-readable summary of the problem",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "A short, human-readable summary of the problem"
           },
           "status": {
-            "type": "integer",
+            "type": [
+              "null",
+              "integer"
+            ],
             "description": "The HTTP status code",
-            "format": "int32",
-            "nullable": true
+            "format": "int32"
           },
           "detail": {
-            "type": "string",
-            "description": "A human-readable explanation specific to this occurrence",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "A human-readable explanation specific to this occurrence"
           },
           "instance": {
-            "type": "string",
-            "description": "A URI reference that identifies the specific occurrence of the problem",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "A URI reference that identifies the specific occurrence of the problem"
           },
           "data": {
             "$ref": "#/components/schemas/ResultProblemData"
@@ -778,9 +981,11 @@
         "type": "object",
         "properties": {
           "message": {
-            "type": "string",
-            "description": "Human-readable error message",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Human-readable error message"
           }
         },
         "additionalProperties": { },
@@ -794,29 +999,31 @@
             "description": "Indicates whether the operation completed successfully"
           },
           "messages": {
-            "type": "array",
+            "type": [
+              "null",
+              "array"
+            ],
             "items": {
               "type": "string"
             },
-            "description": "Collection of informational or diagnostic messages from the operation",
-            "nullable": true
+            "description": "Collection of informational or diagnostic messages from the operation"
           },
           "errors": {
-            "type": "array",
+            "type": [
+              "null",
+              "array"
+            ],
             "items": {
               "$ref": "#/components/schemas/ResultProblemError"
             },
-            "description": "Collection of domain or technical errors encountered during the operation",
-            "nullable": true
+            "description": "Collection of domain or technical errors encountered during the operation"
           }
         },
         "additionalProperties": { },
-        "description": "Represents the operation outcome with success status, messages, and errors",
-        "nullable": true
+        "description": "Represents the operation outcome with success status, messages, and errors"
       },
       "SpecificationNode": {
-        "description": "Polymorphic specification node: either a leaf (named specification) or group (combining multiple nodes)",
-        "nullable": true
+        "description": "Polymorphic specification node: either a leaf (named specification) or group (combining multiple nodes)"
       },
       "SubscriptionBillingCycle": {
         "type": "object",
@@ -825,8 +1032,10 @@
             "type": "boolean"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "autoRenew": {
             "type": "boolean"
@@ -836,8 +1045,10 @@
             "format": "int32"
           },
           "value": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -845,8 +1056,10 @@
         "type": "object",
         "properties": {
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "details": {
             "$ref": "#/components/schemas/SubscriptionPlanDetails"
@@ -856,8 +1069,10 @@
             "format": "int32"
           },
           "value": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -865,8 +1080,10 @@
         "type": "object",
         "properties": {
           "name": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "pricePerMonth": {
             "type": "number",
@@ -896,8 +1113,7 @@
           "allowsComments": {
             "type": "boolean"
           }
-        },
-        "nullable": true
+        }
       },
       "SubscriptionStatus": {
         "type": "object",
@@ -906,16 +1122,20 @@
             "type": "boolean"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "id": {
             "type": "integer",
             "format": "int32"
           },
           "value": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -923,24 +1143,32 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "userId": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "number": {
             "type": "integer",
             "format": "int64"
           },
           "title": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "status": {
             "type": "integer",
@@ -951,28 +1179,36 @@
             "format": "int32"
           },
           "dueDate": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
           },
           "orderIndex": {
             "type": "integer",
             "format": "int32"
           },
           "assignee": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "steps": {
-            "type": "array",
+            "type": [
+              "null",
+              "array"
+            ],
             "items": {
               "$ref": "#/components/schemas/TodoStepModel"
-            },
-            "nullable": true
+            }
           },
           "concurrencyVersion": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -983,16 +1219,20 @@
             "type": "boolean"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "id": {
             "type": "integer",
             "format": "int32"
           },
           "value": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -1003,16 +1243,20 @@
             "type": "boolean"
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "id": {
             "type": "integer",
             "format": "int32"
           },
           "value": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -1020,16 +1264,22 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "todoItemId": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "description": {
-            "type": "string",
-            "nullable": true
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "status": {
             "type": "integer",
@@ -1040,15 +1290,18 @@
             "format": "int32"
           },
           "isDeleted": {
-            "type": "boolean",
-            "nullable": true
+            "type": [
+              "null",
+              "boolean"
+            ]
           }
         }
       }
     },
     "securitySchemes": {
       "Bearer": {
-        "type": "oauth2"
+        "type": "oauth2",
+        "description": "The JWT token in the format: Bearer {token}"
       }
     }
   },

@@ -136,6 +136,15 @@ public class SecurityRequirementDocumentTransformer(SecurityRequirementOptions o
 
         // Ensure the document has a components section for security schemes
         document.Components ??= new OpenApiComponents();
+        if (document.Components.SecuritySchemes == null)
+        {
+            document.Components.SecuritySchemes = new Dictionary<string, IOpenApiSecurityScheme>(StringComparer.OrdinalIgnoreCase);
+        }
+
+        if (document.Security == null)
+        {
+            document.Security = new List<OpenApiSecurityRequirement>();
+        }
 
         // Create the security scheme based on configuration
         var securityScheme = this.CreateSecurityScheme();

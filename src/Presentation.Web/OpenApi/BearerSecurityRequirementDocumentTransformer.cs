@@ -68,6 +68,15 @@ public class BearerSecurityRequirementDocumentTransformer : IOpenApiDocumentTran
 
         // Ensure the document has a components section for security schemes
         document.Components ??= new OpenApiComponents();
+        if (document.Components.SecuritySchemes == null)
+        {
+            document.Components.SecuritySchemes = new Dictionary<string, IOpenApiSecurityScheme>(StringComparer.OrdinalIgnoreCase);
+        }
+
+        if (document.Security == null)
+        {
+            document.Security = new List<OpenApiSecurityRequirement>();
+        }
 
         // Add the OAuth 2.0 Bearer security scheme to the components
         document.Components.SecuritySchemes.Add(

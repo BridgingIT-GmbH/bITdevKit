@@ -139,18 +139,12 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
         // Fix the Filters property to properly reference FilterCriteria
         schema.Properties["filters"] = new OpenApiSchema
         {
-            // Array that can be null → type: ["array", "null"]
             Type = JsonSchemaType.Array | JsonSchemaType.Null,
-
-            // This creates:  items: { oneOf: [ { $ref: "#/components/schemas/FilterCriteria" } ] }
-            Items = new OpenApiSchema
+            Items = new OpenApiSchema()
             {
                 OneOf =
                 [
-                    new OpenApiSchema
-                    {
-                        Id = "FilterCriteria"   // This is the only way to make a $ref in .NET 10
-                    }
+                    new OpenApiSchemaRef("FilterCriteria"),
                 ]
             },
 
@@ -265,13 +259,7 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
             ["filters"] = new OpenApiSchema
             {
                 Type = JsonSchemaType.Array | JsonSchemaType.Null,
-                Items = new OpenApiSchema
-                {
-                    OneOf =
-                    [
-                        new OpenApiSchema { Id = "FilterCriteria" }  // $ref: #/components/schemas/FilterCriteria
-                    ]
-                },
+                Items = new OpenApiSchemaRef("FilterCriteria"),
                 Description = "Nested filter criteria"
             },
 
@@ -310,15 +298,7 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
                 Description = "Arguments for the specification"
             },
 
-            ["compositeSpecification"] = new OpenApiSchema
-            {
-                OneOf =
-                [
-                    new OpenApiSchema { Id = "CompositeSpecification" },
-                    new OpenApiSchema { Type = JsonSchemaType.Null }
-                ],
-                Description = "Composite specification combining multiple nodes"
-            }
+            ["compositeSpecification"] = new OpenApiSchemaRef("CompositeSpecification")
         };
 
         // Required fields
@@ -353,15 +333,13 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     {
         schema.Type = JsonSchemaType.Object;
         schema.Description = "A tree structure containing specification nodes for complex filtering logic";
+
         schema.Properties = new Dictionary<string, IOpenApiSchema>
         {
             ["nodes"] = new OpenApiSchema()
             {
                 Type = JsonSchemaType.Array | JsonSchemaType.Null,
-                Items = new OpenApiSchema
-                {
-                    Id = "SpecificationNode"
-                },
+                Items = new OpenApiSchemaRef("SpecificationNode"),
                 Description = "List of specification nodes"
             }
         };
@@ -464,10 +442,7 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
             ["nodes"] = new OpenApiSchema
             {
                 Type = JsonSchemaType.Array | JsonSchemaType.Null,
-                Items = new OpenApiSchema
-                {
-                    Id = "SpecificationNode"
-                },
+                Items = new OpenApiSchemaRef("SpecificationNode"),
                 Description = "Child specification nodes"
             }
         };

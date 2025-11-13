@@ -65,57 +65,6 @@
   <Folder Name="/examples/">
     <File Path="examples/Directory.Build.props" />
   </Folder>
-  <Folder Name="/examples/DinnerFiesta/">
-    <Project Path="examples/DinnerFiesta/Presentation.Web.Client/DinnerFiesta.Presentation.Web.Client.csproj" />
-    <Project Path="examples/DinnerFiesta/Presentation.Web.Server/DinnerFiesta.Presentation.Web.Server.csproj" />
-  </Folder>
-  <Folder Name="/examples/DinnerFiesta/assets/">
-    <File Path="examples/DinnerFiesta/DinnerFiesta-Domain-Overview.png" />
-    <File Path="examples/DinnerFiesta/DinnerFiesta-README.md" />
-  </Folder>
-  <Folder Name="/examples/DinnerFiesta/Modules/">
-    <File Path="examples/DinnerFiesta/Modules/Directory.Build.props" />
-  </Folder>
-  <Folder Name="/examples/DinnerFiesta/Modules/Core/">
-    <Project Path="examples/DinnerFiesta/Modules/Core/Core.Application/DinnerFiesta.Core.Application.csproj" />
-    <Project Path="examples/DinnerFiesta/Modules/Core/Core.Domain/DinnerFiesta.Core.Domain.csproj" />
-    <Project Path="examples/DinnerFiesta/Modules/Core/Core.Infrastructure/DinnerFiesta.Core.Infrastructure.csproj" />
-    <Project Path="examples/DinnerFiesta/Modules/Core/Core.Presentation.Web.Client/DinnerFiesta.Core.Presentation.Web.Client.csproj" />
-    <Project Path="examples/DinnerFiesta/Modules/Core/Core.Presentation/DinnerFiesta.Core.Presentation.csproj" />
-  </Folder>
-  <Folder Name="/examples/DinnerFiesta/Modules/Core/assets/">
-    <File Path="examples/DinnerFiesta/Modules/Core/Core-API.http" />
-    <File Path="examples/DinnerFiesta/Modules/Core/Core-OpenAPI.yaml" />
-    <File Path="examples/DinnerFiesta/Modules/Core/Core-Overview-Domain.drawio.png" />
-    <File Path="examples/DinnerFiesta/Modules/Core/Core-README.md" />
-  </Folder>
-  <Folder Name="/examples/DinnerFiesta/Modules/Core/tests/">
-    <Project Path="examples/DinnerFiesta/Modules/Core/Core.EndToEndTests/DinnerFiesta.Core.EndToEndTests.csproj" />
-    <Project Path="examples/DinnerFiesta/Modules/Core/Core.IntegrationTests/DinnerFiesta.Core.IntegrationTests.csproj" />
-    <Project Path="examples/DinnerFiesta/Modules/Core/Core.UnitTests/DinnerFiesta.Core.UnitTests.csproj" />
-  </Folder>
-  <Folder Name="/examples/DinnerFiesta/Modules/Identity/" />
-  <Folder Name="/examples/DinnerFiesta/Modules/Identity/assets/">
-    <File Path="examples/DinnerFiesta/Modules/Identity/Identity-OpenAPI.yaml" />
-  </Folder>
-  <Folder Name="/examples/DinnerFiesta/Modules/Marketing/">
-    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.Application/DinnerFiesta.Marketing.Application.csproj" />
-    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.Domain/DinnerFiesta.Marketing.Domain.csproj" />
-    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.Infrastructure/DinnerFiesta.Marketing.Infrastructure.csproj" />
-    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.Presentation.Web.Client/DinnerFiesta.Marketing.Presentation.Web.Client.csproj" />
-    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.Presentation/DinnerFiesta.Marketing.Presentation.csproj" />
-  </Folder>
-  <Folder Name="/examples/DinnerFiesta/Modules/Marketing/assets/">
-    <File Path="examples/DinnerFiesta/Modules/Marketing/Marketing-API.http" />
-    <File Path="examples/DinnerFiesta/Modules/Marketing/Marketing-OpenAPI.yaml" />
-    <File Path="examples/DinnerFiesta/Modules/Marketing/Marketing-Overview-Domain.drawio.png" />
-    <File Path="examples/DinnerFiesta/Modules/Marketing/Marketing-README.md" />
-  </Folder>
-  <Folder Name="/examples/DinnerFiesta/Modules/Marketing/tests/">
-    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.EndToEndTests/DinnerFiesta.Marketing.EndToEndTests.csproj" />
-    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.IntegrationTests/DinnerFiesta.Marketing.IntegrationTests.csproj" />
-    <Project Path="examples/DinnerFiesta/Modules/Marketing/Marketing.UnitTests/DinnerFiesta.Marketing.UnitTests.csproj" />
-  </Folder>
   <Folder Name="/examples/DoFiesta/">
     <Project Path="examples/DoFiesta/DoFiesta.Application/DoFiesta.Application.csproj" />
     <Project Path="examples/DoFiesta/DoFiesta.Domain/DoFiesta.Domain.csproj" />

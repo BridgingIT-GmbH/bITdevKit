@@ -75,8 +75,8 @@ public class BearerSecurityRequirementDocumentTransformer : IOpenApiDocumentTran
             new OpenApiSecurityScheme
             {
                 Type = SecuritySchemeType.OAuth2,
-                BearerFormat = "JWT",
                 Scheme = JwtBearerDefaults.AuthenticationScheme,
+                BearerFormat = "JWT",
                 Description = "The JWT token in the format: Bearer {token}"
             });
 

@@ -34,10 +34,10 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         /// <summary>Filter criteria to apply to the query</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public List<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria>? Filters { get; set; }
+        public List<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters>? Filters { get; set; }
 #nullable restore
 #else
-        public List<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria> Filters { get; set; }
+        public List<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters> Filters { get; set; }
 #endif
         /// <summary>Navigation property for hierarchical queries</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -106,7 +106,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             {
                 { "_CompositeSpecificationSchema", n => { CompositeSpecificationSchema = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.CompositeSpecification>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.CompositeSpecification.CreateFromDiscriminatorValue); } },
                 { "_FilterCriteriaSchema", n => { FilterCriteriaSchema = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria.CreateFromDiscriminatorValue); } },
-                { "filters", n => { Filters = n.GetCollectionOfObjectValues<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria.CreateFromDiscriminatorValue)?.AsList(); } },
+                { "filters", n => { Filters = n.GetCollectionOfObjectValues<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "hierarchy", n => { Hierarchy = n.GetStringValue(); } },
                 { "hierarchyMaxDepth", n => { HierarchyMaxDepth = n.GetIntValue(); } },
                 { "includes", n => { Includes = n.GetCollectionOfPrimitiveValues<string>()?.AsList(); } },
@@ -126,7 +126,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.CompositeSpecification>("_CompositeSpecificationSchema", CompositeSpecificationSchema);
             writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria>("_FilterCriteriaSchema", FilterCriteriaSchema);
-            writer.WriteCollectionOfObjectValues<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria>("filters", Filters);
+            writer.WriteCollectionOfObjectValues<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters>("filters", Filters);
             writer.WriteStringValue("hierarchy", Hierarchy);
             writer.WriteIntValue("hierarchyMaxDepth", HierarchyMaxDepth);
             writer.WriteCollectionOfPrimitiveValues<string>("includes", Includes);

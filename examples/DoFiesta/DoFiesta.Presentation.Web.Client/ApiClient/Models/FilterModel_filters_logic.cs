@@ -5,7 +5,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
 {
     /// <summary>Logic operator for combining nested lofty filters</summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    public enum FilterCriteria_logic
+    public enum FilterModel_filters_logic
     {
         [EnumMember(Value = "and")]
         #pragma warning disable CS1591

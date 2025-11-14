@@ -11,7 +11,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
     /// Represents a single filter criterion for filtering query results
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-    public partial class FilterCriteria : IAdditionalDataHolder, IParsable
+    public partial class FilterModel_filters : IAdditionalDataHolder, IParsable
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
@@ -26,13 +26,13 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         /// <summary>Custom parameters for the filter</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_customParameters? CustomParameters { get; set; }
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_customParameters? CustomParameters { get; set; }
 #nullable restore
 #else
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_customParameters CustomParameters { get; set; }
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_customParameters CustomParameters { get; set; }
 #endif
         /// <summary>Custom filter type</summary>
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_customType? CustomType { get; set; }
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_customType? CustomType { get; set; }
         /// <summary>The field to filter on</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -50,9 +50,9 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         public List<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria> Filters { get; set; }
 #endif
         /// <summary>Logic operator for combining nested lofty filters</summary>
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_logic? Logic { get; set; }
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_logic? Logic { get; set; }
         /// <summary>The operator to use for filtering</summary>
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_operator? Operator { get; set; }
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_operator? Operator { get; set; }
         /// <summary>Arguments for the specification</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -72,29 +72,29 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         /// <summary>The value to compare against (any type)</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria.FilterCriteria_value? Value { get; set; }
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters.FilterModel_filters_value? Value { get; set; }
 #nullable restore
 #else
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria.FilterCriteria_value Value { get; set; }
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters.FilterModel_filters_value Value { get; set; }
 #endif
         /// <summary>
-        /// Instantiates a new <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria"/> and sets the default values.
+        /// Instantiates a new <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters"/> and sets the default values.
         /// </summary>
-        public FilterCriteria()
+        public FilterModel_filters()
         {
             AdditionalData = new Dictionary<string, object>();
-            CustomType = global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_customType.None;
-            Logic = global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_logic.And;
+            CustomType = global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_customType.None;
+            Logic = global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_logic.And;
         }
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria"/></returns>
+        /// <returns>A <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-            return new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria();
+            return new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters();
         }
         /// <summary>
         /// The deserialization information for the current model
@@ -105,15 +105,15 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             return new Dictionary<string, Action<IParseNode>>
             {
                 { "compositeSpecification", n => { CompositeSpecification = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.CompositeSpecification>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.CompositeSpecification.CreateFromDiscriminatorValue); } },
-                { "customParameters", n => { CustomParameters = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_customParameters>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_customParameters.CreateFromDiscriminatorValue); } },
-                { "customType", n => { CustomType = n.GetEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_customType>(); } },
+                { "customParameters", n => { CustomParameters = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_customParameters>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_customParameters.CreateFromDiscriminatorValue); } },
+                { "customType", n => { CustomType = n.GetEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_customType>(); } },
                 { "field", n => { Field = n.GetStringValue(); } },
                 { "filters", n => { Filters = n.GetCollectionOfObjectValues<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria.CreateFromDiscriminatorValue)?.AsList(); } },
-                { "logic", n => { Logic = n.GetEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_logic>(); } },
-                { "operator", n => { Operator = n.GetEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_operator>(); } },
+                { "logic", n => { Logic = n.GetEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_logic>(); } },
+                { "operator", n => { Operator = n.GetEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_operator>(); } },
                 { "specificationArguments", n => { SpecificationArguments = n.GetObjectValue<UntypedNode>(UntypedNode.CreateFromDiscriminatorValue); } },
                 { "specificationName", n => { SpecificationName = n.GetStringValue(); } },
-                { "value", n => { Value = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria.FilterCriteria_value>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria.FilterCriteria_value.CreateFromDiscriminatorValue); } },
+                { "value", n => { Value = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters.FilterModel_filters_value>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters.FilterModel_filters_value.CreateFromDiscriminatorValue); } },
             };
         }
         /// <summary>
@@ -124,50 +124,50 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.CompositeSpecification>("compositeSpecification", CompositeSpecification);
-            writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_customParameters>("customParameters", CustomParameters);
-            writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_customType>("customType", CustomType);
+            writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_customParameters>("customParameters", CustomParameters);
+            writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_customType>("customType", CustomType);
             writer.WriteStringValue("field", Field);
             writer.WriteCollectionOfObjectValues<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria>("filters", Filters);
-            writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_logic>("logic", Logic);
-            writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_operator>("operator", Operator);
+            writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_logic>("logic", Logic);
+            writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_operator>("operator", Operator);
             writer.WriteObjectValue<UntypedNode>("specificationArguments", SpecificationArguments);
             writer.WriteStringValue("specificationName", SpecificationName);
-            writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria.FilterCriteria_value>("value", Value);
+            writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters.FilterModel_filters_value>("value", Value);
             writer.WriteAdditionalData(AdditionalData);
         }
         /// <summary>
-        /// Composed type wrapper for classes <see cref="bool"/>, <see cref="double"/>, <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember1"/>, <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember2"/>, <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember3"/>, <see cref="int"/>, <see cref="string"/>
+        /// Composed type wrapper for classes <see cref="bool"/>, <see cref="double"/>, <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember1"/>, <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember2"/>, <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember3"/>, <see cref="int"/>, <see cref="string"/>
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class FilterCriteria_value : IComposedTypeWrapper, IParsable
+        public partial class FilterModel_filters_value : IComposedTypeWrapper, IParsable
         {
             /// <summary>Composed type representation for type <see cref="bool"/></summary>
             public bool? Boolean { get; set; }
             /// <summary>Composed type representation for type <see cref="double"/></summary>
             public double? Double { get; set; }
-            /// <summary>Composed type representation for type <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember1"/></summary>
+            /// <summary>Composed type representation for type <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember1"/></summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember1? FilterCriteriaValueMember1 { get; set; }
+            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember1? FilterModelFiltersValueMember1 { get; set; }
 #nullable restore
 #else
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember1 FilterCriteriaValueMember1 { get; set; }
+            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember1 FilterModelFiltersValueMember1 { get; set; }
 #endif
-            /// <summary>Composed type representation for type <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember2"/></summary>
+            /// <summary>Composed type representation for type <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember2"/></summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember2? FilterCriteriaValueMember2 { get; set; }
+            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember2? FilterModelFiltersValueMember2 { get; set; }
 #nullable restore
 #else
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember2 FilterCriteriaValueMember2 { get; set; }
+            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember2 FilterModelFiltersValueMember2 { get; set; }
 #endif
-            /// <summary>Composed type representation for type <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember3"/></summary>
+            /// <summary>Composed type representation for type <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember3"/></summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember3? FilterCriteriaValueMember3 { get; set; }
+            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember3? FilterModelFiltersValueMember3 { get; set; }
 #nullable restore
 #else
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember3 FilterCriteriaValueMember3 { get; set; }
+            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember3 FilterModelFiltersValueMember3 { get; set; }
 #endif
             /// <summary>Composed type representation for type <see cref="int"/></summary>
             public int? Integer { get; set; }
@@ -182,24 +182,24 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             /// <summary>
             /// Creates a new instance of the appropriate class based on discriminator value
             /// </summary>
-            /// <returns>A <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria.FilterCriteria_value"/></returns>
+            /// <returns>A <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters.FilterModel_filters_value"/></returns>
             /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-            public static global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria.FilterCriteria_value CreateFromDiscriminatorValue(IParseNode parseNode)
+            public static global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters.FilterModel_filters_value CreateFromDiscriminatorValue(IParseNode parseNode)
             {
                 if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
                 var mappingValue = parseNode.GetChildNode("")?.GetStringValue();
-                var result = new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria.FilterCriteria_value();
+                var result = new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters.FilterModel_filters_value();
                 if("".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
                 {
-                    result.FilterCriteriaValueMember1 = new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember1();
+                    result.FilterModelFiltersValueMember1 = new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember1();
                 }
                 else if("".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
                 {
-                    result.FilterCriteriaValueMember2 = new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember2();
+                    result.FilterModelFiltersValueMember2 = new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember2();
                 }
                 else if("".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
                 {
-                    result.FilterCriteriaValueMember3 = new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember3();
+                    result.FilterModelFiltersValueMember3 = new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember3();
                 }
                 else if(parseNode.GetBoolValue() is bool booleanValue)
                 {
@@ -225,17 +225,17 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             /// <returns>A IDictionary&lt;string, Action&lt;IParseNode&gt;&gt;</returns>
             public virtual IDictionary<string, Action<IParseNode>> GetFieldDeserializers()
             {
-                if(FilterCriteriaValueMember1 != null)
+                if(FilterModelFiltersValueMember1 != null)
                 {
-                    return FilterCriteriaValueMember1.GetFieldDeserializers();
+                    return FilterModelFiltersValueMember1.GetFieldDeserializers();
                 }
-                else if(FilterCriteriaValueMember2 != null)
+                else if(FilterModelFiltersValueMember2 != null)
                 {
-                    return FilterCriteriaValueMember2.GetFieldDeserializers();
+                    return FilterModelFiltersValueMember2.GetFieldDeserializers();
                 }
-                else if(FilterCriteriaValueMember3 != null)
+                else if(FilterModelFiltersValueMember3 != null)
                 {
-                    return FilterCriteriaValueMember3.GetFieldDeserializers();
+                    return FilterModelFiltersValueMember3.GetFieldDeserializers();
                 }
                 return new Dictionary<string, Action<IParseNode>>();
             }
@@ -246,17 +246,17 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             public virtual void Serialize(ISerializationWriter writer)
             {
                 if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-                if(FilterCriteriaValueMember1 != null)
+                if(FilterModelFiltersValueMember1 != null)
                 {
-                    writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember1>(null, FilterCriteriaValueMember1);
+                    writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember1>(null, FilterModelFiltersValueMember1);
                 }
-                else if(FilterCriteriaValueMember2 != null)
+                else if(FilterModelFiltersValueMember2 != null)
                 {
-                    writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember2>(null, FilterCriteriaValueMember2);
+                    writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember2>(null, FilterModelFiltersValueMember2);
                 }
-                else if(FilterCriteriaValueMember3 != null)
+                else if(FilterModelFiltersValueMember3 != null)
                 {
-                    writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_valueMember3>(null, FilterCriteriaValueMember3);
+                    writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel_filters_valueMember3>(null, FilterModelFiltersValueMember3);
                 }
                 else if(Boolean != null)
                 {

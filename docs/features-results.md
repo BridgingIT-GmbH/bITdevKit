@@ -840,6 +840,449 @@ This example demonstrates:
 - Structured error handling
 - Comprehensive logging
 
+## Result Operation Scope
+
+### Overview
+
+`ResultOperationScope<T, TOperation>` is a **generic scoped operation pattern** that provides a fluent API for wrapping Result chains within any operation requiring scoped resource management. While commonly demonstrated with database transactions, this pattern is applicable to **any operation that requires**:
+
+- **Lazy Start**: Operation begins only when needed
+- **Automatic Cleanup**: Resources are properly released
+- **All-or-Nothing Semantics**: Either complete successfully or rollback/cleanup
+- **Railway-Oriented Programming**: Clean error handling with short-circuiting
+
+It implements the Railway-Oriented Programming pattern with automatic resource management, ensuring that all operations within the scope are either committed on success or rolled back on failure.
+
+### Key Features
+
+- **Lazy Operation Start**: Operation is only started when the first async operation is executed
+- **Automatic Commit/Rollback**: Operation is automatically committed on success or rolled back on failure/exception
+- **Fluent API**: Seamless chaining of operations with full async/await support
+- **Railway-Oriented Programming**: Short-circuits on failure, continuing only on success path
+- **Clean Architecture**: Abstract interface pattern allows any scoped operation implementation
+- **Generic Pattern**: Works with transactions, locks, file operations, API sessions, sagas, and more
+
+### Basic Usage
+
+#### Simple Transaction Example
+
+```csharp
+var result = await Result<User>.Success(user)
+    // Start transaction scope (lazy - not started yet)
+    .StartOperation(async ct => await transaction.BeginTransactionAsync(ct))
+    // Set properties (sync operation - transaction still not started)
+    .Tap(u => u.UpdatedAt = DateTime.UtcNow)
+    // First async operation - TRANSACTION STARTS HERE
+    .TapAsync(async (u, ct) =>
+        await auditService.LogUpdateAsync(u.Id, ct), cancellationToken)
+    // Validate business rules
+    .EnsureAsync(async (u, ct) =>
+        await permissionService.CanUpdateAsync(u),
+        new UnauthorizedError(),
+        cancellationToken)
+    // Update in database (within transaction)
+    .BindAsync(async (u, ct) =>
+        await repository.UpdateResultAsync(u, ct), cancellationToken)
+    // End transaction (commit on success, rollback on failure)
+    .EndOperationAsync(cancellationToken);
+```
+
+#### Complex Example: TodoItem Creation with Transaction
+
+```csharp
+protected override async Task<Result<TodoItemModel>> HandleAsync(
+    TodoItemCreateCommand request,
+    SendOptions options,
+    CancellationToken cancellationToken) =>
+    await Result<TodoItem>.Success(mapper.Map<TodoItemModel, TodoItem>(request.Model))
+        // Start transaction scope using repository transaction
+        .StartOperation(async ct => await transaction.BeginTransactionAsync(ct))
+        // Set current user (sync)
+        .Tap(e => e.UserId = currentUserAccessor.UserId)
+        // Generate sequence number (first async - transaction starts here)
+        .TapAsync(async (e, ct) =>
+        {
+            var seqResult = await numberGenerator.GetNextAsync("TodoItemSequence", "core", ct);
+            e.Number = seqResult.IsSuccess ? (int)seqResult.Value : 0;
+        }, cancellationToken)
+        // Check business rules
+        .UnlessAsync(async (e, ct) => await Rule
+            .Add(RuleSet.IsNotEmpty(e.Title))
+            .Add(RuleSet.NotEqual(e.Title, "todo"))
+            .Add(new TitleShouldBeUniqueRule(e.Title, repository))
+            .CheckAsync(ct), cancellationToken)
+        // Register domain event
+        .Tap(e => e.DomainEvents.Register(new TodoItemCreatedDomainEvent(e)))
+        // Insert into database (within transaction)
+        .BindAsync(async (e, ct) =>
+            await repository.InsertResultAsync(e, ct), cancellationToken)
+        // Set permissions
+        .Tap(e =>
+            new EntityPermissionProviderBuilder(permissionProvider)
+                .ForUser(e.UserId)
+                    .WithPermission<TodoItem>(e.Id, Permission.Read)
+                    .WithPermission<TodoItem>(e.Id, Permission.Write)
+                    .WithPermission<TodoItem>(e.Id, Permission.Delete)
+                .Build())
+        // Audit logging
+        .Tap(e => Console.WriteLine("AUDIT"))
+        // End transaction (commit on success, rollback on failure)
+        .EndOperationAsync(cancellationToken)
+        // Map entity back to model
+        .Map(mapper.Map<TodoItem, TodoItemModel>);
+```
+
+### API Reference
+
+#### Starting an Operation Scope
+
+```csharp
+// With async operation factory
+public static ResultOperationScope<T, TOperation> StartOperation<T, TOperation>(
+    this Result<T> result,
+    Func<CancellationToken, Task<TOperation>> startAsync)
+    where TOperation : class
+
+// With synchronously created operation
+public static ResultOperationScope<T, TOperation> StartOperation<T, TOperation>(
+    this Result<T> result,
+    TOperation operation)
+    where TOperation : class
+```
+
+#### Available Operations
+
+All standard Result operations are available within the scope:
+
+- **Tap / TapAsync**: Execute side effects
+- **Map / MapAsync**: Transform the value
+- **Bind / BindAsync**: Chain Result-returning operations
+- **Ensure / EnsureAsync**: Validate conditions (fails if predicate returns false)
+- **UnlessAsync**: Validate conditions (fails if predicate returns true or if Rule validation fails)
+
+#### Ending an Operation Scope
+
+##### Simplified API (Recommended for IOperationScope implementations)
+
+```csharp
+public async Task<Result<T>> EndOperationAsync(
+    CancellationToken cancellationToken = default)
+    where TOperation : IOperationScope
+```
+
+Use this overload when your operation implements `IOperationScope`. It automatically calls `CommitAsync()` on success or `RollbackAsync()` on failure/exception.
+
+**Example:**
+```csharp
+var result = await Result<User>.Success(user)
+    .StartOperation(async ct => await transaction.BeginTransactionAsync(ct))
+    .BindAsync(async (u, ct) => await repository.UpdateResultAsync(u, ct), cancellationToken)
+    .EndOperationAsync(cancellationToken); // Clean and simple!
+```
+
+##### Delegate-Based API (For custom operations or legacy code)
+
+```csharp
+public async Task<Result<T>> EndOperationAsync(
+    Func<TOperation, CancellationToken, Task> commitAsync,
+    Func<TOperation, Exception, CancellationToken, Task> rollbackAsync = null,
+    CancellationToken cancellationToken = default)
+```
+
+Use this overload for operations that don't implement `IOperationScope` or when you need custom commit/rollback logic.
+
+### Operation Scope Interfaces
+
+#### IOperationScope (Base Interface)
+
+The `IOperationScope` interface is the foundation for all scoped operations in the Result pattern. Any operation implementing this interface can be used with the simplified `EndOperationAsync` API.
+
+```csharp
+/// <summary>
+///     Represents a scoped operation that can be committed or rolled back.
+///     This is the base interface for all operation scopes used with ResultOperationScope.
+/// </summary>
+public interface IOperationScope
+{
+    /// <summary>
+    ///     Commits the operation, finalizing all changes.
+    ///     Called when the Result chain completes successfully.
+    /// </summary>
+    Task CommitAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Rolls back the operation, undoing all changes and cleaning up resources.
+    ///     Called when the Result chain fails or an exception occurs.
+    /// </summary>
+    Task RollbackAsync(CancellationToken cancellationToken = default);
+}
+```
+
+**Key Benefits:**
+- **Simplified API**: Operations implementing `IOperationScope` can use the cleaner `EndOperationAsync(cancellationToken)` overload
+- **Type Safety**: Interface contract ensures all required methods are implemented
+- **Discoverability**: All scopes follow the same pattern
+- **Testability**: Easy to mock with standard mocking frameworks
+
+#### IRepositoryTransaction<TEntity>
+
+```csharp
+public interface IRepositoryTransaction<TEntity>
+    where TEntity : class, IEntity
+{
+    // Legacy methods
+    Task ExecuteScopedAsync(Func<Task> action, CancellationToken cancellationToken = default);
+    Task<TEntity> ExecuteScopedAsync(Func<Task<TEntity>> action, CancellationToken cancellationToken = default);
+
+    // New method for explicit transaction control
+    Task<IRepositoryTransactionScope> BeginTransactionAsync(CancellationToken cancellationToken = default);
+}
+```
+
+#### IRepositoryTransactionScope
+
+```csharp
+public interface IRepositoryTransactionScope : IOperationScope
+{
+    // Inherits CommitAsync and RollbackAsync from IOperationScope
+}
+```
+
+### Key Concepts
+
+#### Railway-Oriented Programming
+- Each operation is a "station" on a railway track
+- Success path continues forward on the track
+- Failure switches to failure track (short-circuits)
+- All operations check `IsSuccess` before executing
+
+#### Lazy Operation Start
+- Operation is NOT started at `StartOperation()`
+- Operation starts at first `*Async` operation (e.g., `TapAsync`, `BindAsync`)
+- Avoids unnecessary overhead for synchronous operations
+- Improves performance by delaying operation creation
+
+#### Scoped Operations
+- All operations after the first async call are within the scope
+- Automatic commit on success
+- Automatic rollback on failure or exception
+- Guaranteed resource cleanup
+
+#### Fluent Chaining
+- Each method returns `ResultOperationScope<T, TOperation>`
+- Extension methods on `Task<ResultOperationScope>` enable seamless chaining
+- No need for intermediate variables or `await` breaks
+- Maintains readability while handling async operations
+
+### Use Cases Beyond Database Transactions
+
+While `ResultOperationScope` is commonly demonstrated with database transactions, this pattern is a **generic scoped operation pattern** applicable to many scenarios:
+
+#### 1. File System Operations
+
+**Scenario**: Create multiple files atomically - if any operation fails, cleanup all created files.
+
+```csharp
+public class FileSystemScope : IOperationScope
+{
+    private readonly List<string> createdFiles = new();
+    private readonly List<string> createdDirectories = new();
+
+    public void TrackFile(string filePath) => createdFiles.Add(filePath);
+    public void TrackDirectory(string dirPath) => createdDirectories.Add(dirPath);
+
+    public Task CommitAsync(CancellationToken cancellationToken = default)
+    {
+        // Files are already written, just clear tracking
+        createdFiles.Clear();
+        createdDirectories.Clear();
+        return Task.CompletedTask;
+    }
+
+    public async Task RollbackAsync(CancellationToken cancellationToken = default)
+    {
+        // Delete all created files and directories
+        foreach (var file in createdFiles)
+        {
+            if (File.Exists(file))
+                File.Delete(file);
+        }
+
+        foreach (var dir in createdDirectories.OrderByDescending(d => d.Length))
+        {
+            if (Directory.Exists(dir))
+                Directory.Delete(dir, recursive: true);
+        }
+    }
+}
+```
+
+#### 2. Distributed Lock Management
+
+**Scenario**: Acquire distributed lock, perform work, release lock on success or failure.
+
+```csharp
+public interface IDistributedLockScope : IOperationScope
+{
+    string LockId { get; }
+}
+
+// Usage: Process order with distributed lock
+var result = await Result<Order>.Success(order)
+    .StartOperation(async ct =>
+    {
+        var lockId = Guid.NewGuid().ToString();
+        var acquired = await lockService.AcquireLockAsync(
+            resource: $"order:{order.Id}",
+            lockId: lockId,
+            expiry: TimeSpan.FromMinutes(5),
+            ct);
+
+        if (!acquired)
+            throw new LockAcquisitionException($"Could not acquire lock for order {order.Id}");
+
+        return new RedisDistributedLock(redis, $"order:{order.Id}", lockId);
+    })
+    .EnsureAsync(async (o, ct) =>
+        await orderValidator.ValidateAsync(o, ct),
+        new ValidationError("Order validation failed"),
+        cancellationToken)
+    .BindAsync(async (o, ct) =>
+        await inventoryService.ReserveItemsAsync(o.Items, ct), cancellationToken)
+    .BindAsync(async (o, ct) =>
+        await paymentService.ProcessPaymentAsync(o.Payment, ct), cancellationToken)
+    .EndOperationAsync(cancellationToken);
+```
+
+#### 3. Saga/Workflow Orchestration
+
+**Scenario**: Execute multi-step workflow with compensation logic for rollback.
+
+```csharp
+public interface ISagaScope : IOperationScope
+{
+    void RegisterCompensation(Func<CancellationToken, Task> compensation);
+    Task CommitAsync(CancellationToken cancellationToken = default);
+    Task RollbackAsync(CancellationToken cancellationToken = default);
+}
+
+// Usage: Book trip (flight + hotel + car) with compensations
+var result = await Result<TripBooking>.Success(new TripBooking())
+    .StartOperation(ct => Task.FromResult<ISagaScope>(new SagaOrchestrator()))
+    .BindAsync(async (booking, ct) =>
+    {
+        var flight = await flightService.BookAsync(booking.FlightDetails, ct);
+        saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
+        booking.FlightConfirmation = flight.ConfirmationNumber;
+        return Result<TripBooking>.Success(booking);
+    }, cancellationToken)
+    .BindAsync(async (booking, ct) =>
+    {
+        var hotel = await hotelService.BookAsync(booking.HotelDetails, ct);
+        saga.RegisterCompensation(async ct => await hotelService.CancelAsync(hotel.Id, ct));
+        booking.HotelConfirmation = hotel.ConfirmationNumber;
+        return Result<TripBooking>.Success(booking);
+    }, cancellationToken)
+    .EndOperationAsync(
+        commitAsync: async (saga, ct) => await saga.CommitAsync(ct),
+        rollbackAsync: async (saga, ex, ct) => await saga.RollbackAsync(ct),
+        cancellationToken);
+```
+
+### Best Practices
+
+#### 1. Always Provide Rollback Handler
+
+```csharp
+// ✅ Good: Explicit rollback handling
+.EndOperationAsync(
+    commitAsync: async (tx, ct) => await tx.CommitAsync(ct),
+    rollbackAsync: async (tx, ex, ct) => await tx.RollbackAsync(ct),
+    cancellationToken)
+
+// ⚠️ Avoid: No rollback handler
+.EndOperationAsync(
+    commitAsync: async (tx, ct) => await tx.CommitAsync(ct),
+    cancellationToken: cancellationToken)
+```
+
+#### 2. Keep Synchronous Operations Before First Async
+
+```csharp
+// ✅ Good: Sync operations before operation starts
+.StartOperation(...)
+.Tap(e => e.UpdatedAt = DateTime.UtcNow)  // Sync, no operation yet
+.Tap(e => e.UpdatedBy = userId)            // Sync, no operation yet
+.TapAsync(async (e, ct) => ...)            // Operation starts here
+
+// ⚠️ Less optimal: Unnecessary early operation start
+.StartOperation(...)
+.TapAsync(async (e, ct) => ...)            // Operation starts immediately
+.Tap(e => e.UpdatedAt = DateTime.UtcNow)   // Could have been before
+```
+
+#### 3. Use Dependency Injection
+
+```csharp
+public class MyCommandHandler(
+    IRepositoryTransaction<MyEntity> transaction,
+    IGenericRepository<MyEntity> repository)
+{
+    // ✅ Abstraction injected, not concrete implementation
+}
+```
+
+#### 4. Handle Domain Events Within Scope
+
+```csharp
+// ✅ Good: Domain events registered within scope
+.Tap(e => e.DomainEvents.Register(new EntityCreatedEvent(e)))
+.BindAsync(async (e, ct) => await repository.InsertResultAsync(e, ct))
+.EndOperationAsync(...)  // Events and entity committed together
+```
+
+### Performance Considerations
+
+- **Lazy Start**: Operation only begins when needed, reducing overhead
+- **Connection Pooling**: Resources reused efficiently
+- **Parallel Sync Ops**: Multiple `Tap()` operations before first async are fast
+- **Short Scopes**: Keep scope as short as possible
+- **Avoid Long Operations**: Don't perform long-running operations within scope
+
+### Migration Guide
+
+#### Before: Manual Resource Management
+
+```csharp
+using var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
+try
+{
+    entity.UserId = currentUserAccessor.UserId;
+    await repository.InsertAsync(entity, cancellationToken);
+    await permissionProvider.SetPermissionsAsync(entity.Id, permissions);
+    await transaction.CommitAsync(cancellationToken);
+}
+catch (Exception ex)
+{
+    await transaction.RollbackAsync(cancellationToken);
+    throw;
+}
+```
+
+#### After: ResultOperationScope
+
+```csharp
+return await Result<Entity>.Success(entity)
+    .StartOperation(async ct => await transaction.BeginTransactionAsync(ct))
+    .Tap(e => e.UserId = currentUserAccessor.UserId)
+    .BindAsync(async (e, ct) => await repository.InsertResultAsync(e, ct), cancellationToken)
+    .TapAsync(async (e, ct) => await permissionProvider.SetPermissionsAsync(e.Id, permissions), cancellationToken)
+    .EndOperationAsync(
+        commitAsync: async (tx, ct) => await tx.CommitAsync(ct),
+        rollbackAsync: async (tx, ex, ct) => await tx.RollbackAsync(ct),
+        cancellationToken);
+```
+
 ## Appendix A: Repository Extensions
 
 > The bITdevKit provides extension methods for repositories that don't natively support the Result

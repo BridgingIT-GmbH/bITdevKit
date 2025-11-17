@@ -9,7 +9,6 @@
     <File Path=".editorconfig" />
     <File Path=".github/copilot-instructions.md" />
     <File Path=".github/workflows/github-actions.yml" />
-    <File Path=".github/workflows/sonarcloud.yml" />
     <File Path=".gitignore" />
     <File Path="azure-pipelines.yml" />
     <File Path="CODE-OF-CONDUCT.md" />

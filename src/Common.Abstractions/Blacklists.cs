@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public struct Blacklists
+public readonly struct Blacklists
 {
     public static readonly string[] ApplicationDependencies =
     [

@@ -1,5 +1,5 @@
 ﻿@page "/culture"
-@inject IStringLocalizer<Global> localizer
+@* @inject IStringLocalizer<Global> localizer *@
 
 <PageTitle>Culture</PageTitle>
 <MudText Typo="Typo.h3" GutterBottom="true">Culture</MudText>
@@ -54,12 +54,12 @@
     </li>
 </ul>
 
-<MudText Typo="Typo.h5" GutterBottom="true">Localization</MudText>
+@* <MudText Typo="Typo.h5" GutterBottom="true">Localization</MudText>
 <ul>
     <li>
         <b>Text:</b> @localizer["Localization_Title"]
     </li>
-</ul>
+</ul> *@
 
 @code {
     private DateTime dt = DateTime.Now;

@@ -115,7 +115,8 @@ builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
 builder.Services.AddAppOpenApi();
 
 // Add services to the container.
-builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
+builder.Services.AddRazorComponents()
+    .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddMudServices();
 builder.Services.AddSignalR();
@@ -182,6 +183,7 @@ app.MapModules();
 app.MapControllers();
 app.MapEndpoints();
 
+app.MapStaticAssets(); // needed for dotnet10 Blazor WASM static assets
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     //.AddInteractiveServerRenderMode()

@@ -16,9 +16,9 @@
       },
       "Microsoft.Azure.Cosmos": {
         "type": "Direct",
-        "requested": "[3.54.1, )",
-        "resolved": "3.54.1",
-        "contentHash": "AD/HvzCeHpLGWCysh3fpTHdmgnOh/+le9D7cjzvqJjxsbWW98vAWcaBxRDNjcudTnNBM0uLjy6oRQNqVm3aUNQ==",
+        "requested": "[3.55.0, )",
+        "resolved": "3.55.0",
+        "contentHash": "s4VxMrLM/6GnbuYWK8iXez4yYSpq5XLxtx2RcqH5o92T7bQBiSleEENpen37niuH6wys4u5o1XlY1PdjBk3u2A==",
         "dependencies": {
           "Azure.Core": "1.44.1",
           "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
@@ -294,7 +294,7 @@
           "MediatR.Contracts": "[2.0.1, 2.0.1]",
           "Microsoft.Extensions.Localization.Abstractions": "[10.0.0, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "System.Linq.Dynamic.Core": "[1.6.10, )"
+          "System.Linq.Dynamic.Core": "[1.7.0, )"
         }
       },
       "CsvHelper": {
@@ -478,9 +478,9 @@
       },
       "System.Linq.Dynamic.Core": {
         "type": "CentralTransitive",
-        "requested": "[1.6.10, )",
-        "resolved": "1.6.10",
-        "contentHash": "JTEdrebBsLQkA0JpHgMLgmX34gzCHLrY2zv9V5E7gOBJAb4yYe69JVzUOnxXL7d+vXl/EFodW+6+fJVz9rRwZg=="
+        "requested": "[1.7.0, )",
+        "resolved": "1.7.0",
+        "contentHash": "RRRSPBgjpY1JKFYhXhv7V4W00HSTDScxb1odljuO59F+vMeN9sv9/v0FeXtmI4AJ9F+VRyX/3TgTLQ3PByHpAw=="
       }
     }
   }

@@ -73,9 +73,9 @@
       },
       "Spectre.Console": {
         "type": "Direct",
-        "requested": "[0.53.0, )",
-        "resolved": "0.53.0",
-        "contentHash": "m2iv8Egfywp7FaNLKCmCFHbSf36D4ctzZKvlAK9NXMyGLh6L+CnrZWK8o+LOYsoAS1jtoHn0W1BT0W8vuq/FUw=="
+        "requested": "[0.54.0, )",
+        "resolved": "0.54.0",
+        "contentHash": "StDXCFayfy0yB1xzUHT2tgEpV1/HFTiS4JgsAQS49EYTfMixSwwucaQs/bIOCwXjWwIQTMuxjUIxcB5XsJkFJA=="
       },
       "System.IdentityModel.Tokens.Jwt": {
         "type": "Direct",
@@ -369,7 +369,7 @@
           "Ensure.That": "[10.1.0, )",
           "MediatR.Contracts": "[2.0.1, 2.0.1]",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "System.Linq.Dynamic.Core": "[1.6.10, )"
+          "System.Linq.Dynamic.Core": "[1.7.0, )"
         }
       },
       "BridgingIT.DevKit.Presentation": {
@@ -378,7 +378,7 @@
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "Spectre.Console": "[0.53.0, )"
+          "Spectre.Console": "[0.54.0, )"
         }
       },
       "CsvHelper": {
@@ -500,9 +500,9 @@
       },
       "System.Linq.Dynamic.Core": {
         "type": "CentralTransitive",
-        "requested": "[1.6.10, )",
-        "resolved": "1.6.10",
-        "contentHash": "JTEdrebBsLQkA0JpHgMLgmX34gzCHLrY2zv9V5E7gOBJAb4yYe69JVzUOnxXL7d+vXl/EFodW+6+fJVz9rRwZg=="
+        "requested": "[1.7.0, )",
+        "resolved": "1.7.0",
+        "contentHash": "RRRSPBgjpY1JKFYhXhv7V4W00HSTDScxb1odljuO59F+vMeN9sv9/v0FeXtmI4AJ9F+VRyX/3TgTLQ3PByHpAw=="
       }
     }
   }

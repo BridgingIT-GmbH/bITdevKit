@@ -552,23 +552,7 @@
           "value": {
             "oneOf": [
               {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              },
-              {
-                "type": "integer"
-              },
-              {
-                "type": "boolean"
-              },
-              {
                 "type": "null"
-              },
-              {
-                "type": "array",
-                "items": { }
               },
               {
                 "type": "object"
@@ -727,23 +711,7 @@
                 "value": {
                   "oneOf": [
                     {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number"
-                    },
-                    {
-                      "type": "integer"
-                    },
-                    {
-                      "type": "boolean"
-                    },
-                    {
                       "type": "null"
-                    },
-                    {
-                      "type": "array",
-                      "items": { }
                     },
                     {
                       "type": "object"

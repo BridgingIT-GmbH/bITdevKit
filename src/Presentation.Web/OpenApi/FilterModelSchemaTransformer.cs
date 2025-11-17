@@ -237,13 +237,14 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
                 // Any type: string, number, bool, array, object, or null
                 OneOf =
                 [
-                    new OpenApiSchema() { Type = JsonSchemaType.String },
-                    new OpenApiSchema() { Type = JsonSchemaType.Number },
-                    new OpenApiSchema() { Type = JsonSchemaType.Integer },
-                    new OpenApiSchema() { Type = JsonSchemaType.Boolean },
+                    //new OpenApiSchema() { Type = JsonSchemaType.String },
+                    //new OpenApiSchema() { Type = JsonSchemaType.Number },
+                    //new OpenApiSchema() { Type = JsonSchemaType.Integer },
+                    //new OpenApiSchema() { Type = JsonSchemaType.Boolean },
                     new OpenApiSchema() { Type = JsonSchemaType.Null },
-                    new OpenApiSchema() { Type = JsonSchemaType.Array, Items = new OpenApiSchema() },
-                    new OpenApiSchema() { Type = JsonSchemaType.Object, AdditionalPropertiesAllowed = true }
+                    new OpenApiSchema() { Type = JsonSchemaType.Object }
+                    //new OpenApiSchema() { Type = JsonSchemaType.Array, Items = new OpenApiSchema() },
+                    //new OpenApiSchema() { Type = JsonSchemaType.Object, AdditionalPropertiesAllowed = true }
                 ],
                 Description = "The value to compare against (any type)"
             },

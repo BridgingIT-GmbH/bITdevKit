@@ -1981,7 +1981,8 @@ public static partial class ResultTTaskExtensions
         }
     }
 
-    public static async Task<Result<TOutput>> Wrap<TOutput>(this Task<Result<TOutput>> resultTask)
+    public static async Task<Result<TOutput>> Wrap<TOutput>(
+        this Task<Result<TOutput>> resultTask)
     {
         try
         {
@@ -2000,6 +2001,32 @@ public static partial class ResultTTaskExtensions
                 .WithError(new ExceptionError(ex))
                 .WithMessage(ex.Message);
         }
+    }
+
+    public static async Task<ResultOperationScope<T, TOperation>> StartOperation<T, TOperation>(
+        this Task<Result<T>> resultTask,
+        Func<CancellationToken, Task<TOperation>> operation,
+        CancellationToken cancellationToken = default)
+        where TOperation : class, IOperationScope
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+
+        var result = await resultTask;
+
+        return result.StartOperation(operation);
+    }
+
+    public static async Task<ResultOperationScope<T, TOperation>> StartOperation<T, TOperation>(
+        this Task<Result<T>> resultTask,
+        TOperation operation,
+        CancellationToken cancellationToken = default)
+        where TOperation : class, IOperationScope
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+
+        var result = await resultTask;
+
+        return result.StartOperation(operation);
     }
 
     public static async Task<Result> Unwrap<T>(this Task<Result<T>> resultTask)

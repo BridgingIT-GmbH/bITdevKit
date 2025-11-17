@@ -19,6 +19,7 @@ public static class ResultOperationScopeTaskExtensions
         where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
+
         return scope.Tap(operation);
     }
 
@@ -32,6 +33,7 @@ public static class ResultOperationScopeTaskExtensions
         where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
+
         return await scope.TapAsync(operation, cancellationToken);
     }
 
@@ -44,6 +46,7 @@ public static class ResultOperationScopeTaskExtensions
         where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
+
         return scope.Map(mapper);
     }
 
@@ -57,6 +60,7 @@ public static class ResultOperationScopeTaskExtensions
         where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
+
         return await scope.MapAsync(mapper, cancellationToken);
     }
 
@@ -69,6 +73,7 @@ public static class ResultOperationScopeTaskExtensions
         where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
+
         return scope.Bind(binder);
     }
 
@@ -82,6 +87,7 @@ public static class ResultOperationScopeTaskExtensions
         where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
+
         return await scope.BindAsync(binder, cancellationToken);
     }
 
@@ -95,6 +101,7 @@ public static class ResultOperationScopeTaskExtensions
         where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
+
         return scope.Ensure(predicate, error);
     }
 
@@ -109,6 +116,7 @@ public static class ResultOperationScopeTaskExtensions
         where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
+
         return await scope.EnsureAsync(predicate, error, cancellationToken);
     }
 
@@ -124,6 +132,7 @@ public static class ResultOperationScopeTaskExtensions
         where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
+
         return await scope.UnlessAsync(predicate, error, cancellationToken);
     }
 
@@ -138,6 +147,7 @@ public static class ResultOperationScopeTaskExtensions
         where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
+
         return await scope.UnlessAsync(operation, cancellationToken);
     }
 
@@ -151,6 +161,7 @@ public static class ResultOperationScopeTaskExtensions
         where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
+
         return await scope.EndOperationAsync(cancellationToken);
     }
 
@@ -166,6 +177,7 @@ public static class ResultOperationScopeTaskExtensions
         where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
+
         return await scope.EndOperationAsync(commitAsync, rollbackAsync, cancellationToken);
     }
 }

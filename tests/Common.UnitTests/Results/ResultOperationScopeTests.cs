@@ -52,6 +52,34 @@ public class ResultOperationScopeTests
     }
 
     [Fact]
+    public async Task EndOperationAsync_WithSuccessResultTwice_CallsCommit()
+    {
+        // Arrange
+        var testScope1 = new TestOperationScope();
+        var testScope2 = new TestOperationScope();
+        var value = this.faker.Random.Int(1, 100);
+
+        // Act
+        var result = await Result<int>.Success(value)
+            // 1
+            .StartOperation(ct => Task.FromResult<IOperationScope>(testScope1))
+            .TapAsync(async (v, ct) => await Task.Delay(1, ct))
+            .EndOperationAsync(CancellationToken.None)
+            // 2
+            .StartOperation(ct => Task.FromResult<IOperationScope>(testScope2))
+            .TapAsync(async (v, ct) => await Task.Delay(1, ct))
+            .EndOperationAsync(CancellationToken.None); ;
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.ShouldBe(value);
+        testScope1.IsCommitted.ShouldBeTrue();
+        testScope1.IsRolledBack.ShouldBeFalse();
+        testScope2.IsCommitted.ShouldBeTrue();
+        testScope2.IsRolledBack.ShouldBeFalse();
+    }
+
+    [Fact]
     public async Task EndOperationAsync_WithFailureResult_CallsRollback()
     {
         // Arrange
@@ -440,7 +468,6 @@ public class ResultOperationScopeTests
         result.Messages.ShouldContain(message1);
         result.Messages.ShouldContain(message2);
     }
-
 }
 
 // Test implementation of IOperationScope

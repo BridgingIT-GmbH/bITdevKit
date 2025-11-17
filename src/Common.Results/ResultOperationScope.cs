@@ -20,32 +20,23 @@ namespace BridgingIT.DevKit.Common;
 ///     .EndOperationAsync(cancellationToken); // Simplified API
 /// </code>
 /// </example>
-public sealed class ResultOperationScope<T, TOperation>
+public class ResultOperationScope<T, TOperation>(Result<T> result, Func<CancellationToken, Task<TOperation>> startAsync)
     where TOperation : class, IOperationScope
 {
-    private readonly Result<T> result;
-    private readonly Func<CancellationToken, Task<TOperation>> startAsync;
     private TOperation operation;
     private bool operationStarted;
-
-    internal ResultOperationScope(Result<T> result, Func<CancellationToken, Task<TOperation>> startAsync)
-    {
-        this.result = result;
-        this.startAsync = startAsync;
-    }
 
     /// <summary>
     ///     Ensures that a condition is met for the contained value within the operation scope.
     /// </summary>
     public ResultOperationScope<T, TOperation> Ensure(Func<T, bool> predicate, IResultError error)
     {
-        if (!this.result.IsSuccess)
+        if (!result.IsSuccess)
         {
             return this;
         }
 
-        var newResult = this.result.Ensure(predicate, error);
-        return new ResultOperationScope<T, TOperation>(newResult, this.startAsync)
+        return new ResultOperationScope<T, TOperation>(result.Ensure(predicate, error), startAsync)
         {
             operation = this.operation,
             operationStarted = this.operationStarted
@@ -60,15 +51,14 @@ public sealed class ResultOperationScope<T, TOperation>
         IResultError error,
         CancellationToken cancellationToken = default)
     {
-        if (!this.result.IsSuccess)
+        if (!result.IsSuccess)
         {
             return this;
         }
 
         await this.EnsureOperationStartedAsync(cancellationToken);
 
-        var newResult = await this.result.EnsureAsync(predicate, error, cancellationToken);
-        return new ResultOperationScope<T, TOperation>(newResult, this.startAsync)
+        return new ResultOperationScope<T, TOperation>(await result.EnsureAsync(predicate, error, cancellationToken), startAsync)
         {
             operation = this.operation,
             operationStarted = this.operationStarted
@@ -80,8 +70,7 @@ public sealed class ResultOperationScope<T, TOperation>
     /// </summary>
     public ResultOperationScope<TNew, TOperation> Map<TNew>(Func<T, TNew> mapper)
     {
-        var newResult = this.result.Map(mapper);
-        return new ResultOperationScope<TNew, TOperation>(newResult, this.startAsync)
+        return new ResultOperationScope<TNew, TOperation>(result.Map(mapper), startAsync)
         {
             operation = this.operation,
             operationStarted = this.operationStarted
@@ -97,8 +86,7 @@ public sealed class ResultOperationScope<T, TOperation>
     {
         await this.EnsureOperationStartedAsync(cancellationToken);
 
-        var newResult = await this.result.MapAsync(mapper, cancellationToken);
-        return new ResultOperationScope<TNew, TOperation>(newResult, this.startAsync)
+        return new ResultOperationScope<TNew, TOperation>(await result.MapAsync(mapper, cancellationToken), startAsync)
         {
             operation = this.operation,
             operationStarted = this.operationStarted
@@ -110,8 +98,8 @@ public sealed class ResultOperationScope<T, TOperation>
     /// </summary>
     public ResultOperationScope<TNew, TOperation> Bind<TNew>(Func<T, Result<TNew>> binder)
     {
-        var newResult = this.result.Bind(binder);
-        return new ResultOperationScope<TNew, TOperation>(newResult, this.startAsync)
+        var newResult = result.Bind(binder);
+        return new ResultOperationScope<TNew, TOperation>(newResult, startAsync)
         {
             operation = this.operation,
             operationStarted = this.operationStarted
@@ -127,8 +115,7 @@ public sealed class ResultOperationScope<T, TOperation>
     {
         await this.EnsureOperationStartedAsync(cancellationToken);
 
-        var newResult = await this.result.BindAsync(binder, cancellationToken);
-        return new ResultOperationScope<TNew, TOperation>(newResult, this.startAsync)
+        return new ResultOperationScope<TNew, TOperation>(await result.BindAsync(binder, cancellationToken), startAsync)
         {
             operation = this.operation,
             operationStarted = this.operationStarted
@@ -140,8 +127,7 @@ public sealed class ResultOperationScope<T, TOperation>
     /// </summary>
     public ResultOperationScope<T, TOperation> Tap(Action<T> operation)
     {
-        var newResult = this.result.Tap(operation);
-        return new ResultOperationScope<T, TOperation>(newResult, this.startAsync)
+        return new ResultOperationScope<T, TOperation>(result.Tap(operation), startAsync)
         {
             operation = this.operation,
             operationStarted = this.operationStarted
@@ -157,8 +143,7 @@ public sealed class ResultOperationScope<T, TOperation>
     {
         await this.EnsureOperationStartedAsync(cancellationToken);
 
-        var newResult = await this.result.TapAsync(operation, cancellationToken);
-        return new ResultOperationScope<T, TOperation>(newResult, this.startAsync)
+        return new ResultOperationScope<T, TOperation>(await result.TapAsync(operation, cancellationToken), startAsync)
         {
             operation = this.operation,
             operationStarted = this.operationStarted
@@ -174,15 +159,14 @@ public sealed class ResultOperationScope<T, TOperation>
         IResultError error,
         CancellationToken cancellationToken = default)
     {
-        if (!this.result.IsSuccess)
+        if (!result.IsSuccess)
         {
             return this;
         }
 
         await this.EnsureOperationStartedAsync(cancellationToken);
 
-        var newResult = await this.result.UnlessAsync(predicate, error, cancellationToken);
-        return new ResultOperationScope<T, TOperation>(newResult, this.startAsync)
+        return new ResultOperationScope<T, TOperation>(await result.UnlessAsync(predicate, error, cancellationToken), startAsync)
         {
             operation = this.operation,
             operationStarted = this.operationStarted
@@ -197,15 +181,14 @@ public sealed class ResultOperationScope<T, TOperation>
         Func<T, CancellationToken, Task<Result>> operation,
         CancellationToken cancellationToken = default)
     {
-        if (!this.result.IsSuccess)
+        if (!result.IsSuccess)
         {
             return this;
         }
 
         await this.EnsureOperationStartedAsync(cancellationToken);
 
-        var newResult = await this.result.UnlessAsync(operation, cancellationToken);
-        return new ResultOperationScope<T, TOperation>(newResult, this.startAsync)
+        return new ResultOperationScope<T, TOperation>(await result.UnlessAsync(operation, cancellationToken), startAsync)
         {
             operation = this.operation,
             operationStarted = this.operationStarted
@@ -229,7 +212,7 @@ public sealed class ResultOperationScope<T, TOperation>
         {
             await this.EnsureOperationStartedAsync(cancellationToken);
 
-            if (this.result.IsSuccess)
+            if (result.IsSuccess)
             {
                 await this.operation.CommitAsync(cancellationToken);
             }
@@ -238,7 +221,12 @@ public sealed class ResultOperationScope<T, TOperation>
                 await this.operation.RollbackAsync(cancellationToken);
             }
 
-            return this.result;
+            return result;
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<T>.Failure()
+                .WithError(new OperationCancelledError("Operation was cancelled"));
         }
         catch (Exception ex)
         {
@@ -255,9 +243,9 @@ public sealed class ResultOperationScope<T, TOperation>
             }
 
             return Result<T>.Failure()
-                .WithErrors(this.result.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.result.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -283,16 +271,13 @@ public sealed class ResultOperationScope<T, TOperation>
         Func<TOperation, Exception, CancellationToken, Task> rollbackAsync = null,
         CancellationToken cancellationToken = default)
     {
-        if (commitAsync is null)
-        {
-            throw new ArgumentNullException(nameof(commitAsync));
-        }
+        ArgumentNullException.ThrowIfNull(commitAsync);
 
         try
         {
             await this.EnsureOperationStartedAsync(cancellationToken);
 
-            if (this.result.IsSuccess)
+            if (result.IsSuccess)
             {
                 await commitAsync(this.operation, cancellationToken);
             }
@@ -301,7 +286,12 @@ public sealed class ResultOperationScope<T, TOperation>
                 await rollbackAsync(this.operation, null, cancellationToken);
             }
 
-            return this.result;
+            return result;
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<T>.Failure()
+                .WithError(new OperationCancelledError("Operation was cancelled"));
         }
         catch (Exception ex)
         {
@@ -318,9 +308,9 @@ public sealed class ResultOperationScope<T, TOperation>
             }
 
             return Result<T>.Failure()
-                .WithErrors(this.result.Errors)
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
-                .WithMessages(this.result.Messages);
+                .WithMessages(result.Messages);
         }
     }
 
@@ -329,9 +319,9 @@ public sealed class ResultOperationScope<T, TOperation>
     /// </summary>
     private async Task EnsureOperationStartedAsync(CancellationToken cancellationToken)
     {
-        if (!this.operationStarted && this.result.IsSuccess)
+        if (!this.operationStarted && result.IsSuccess)
         {
-            this.operation = await this.startAsync(cancellationToken);
+            this.operation = await startAsync(cancellationToken);
             this.operationStarted = true;
         }
     }

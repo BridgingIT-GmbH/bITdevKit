@@ -2317,7 +2317,7 @@ public static class ResultTExtensions
     /// <typeparam name="T">The type of the result value.</typeparam>
     /// <typeparam name="TOperation">The type of the operation, must implement IOperationScope.</typeparam>
     /// <param name="result">The result to wrap in an operation scope.</param>
-    /// <param name="startAsync">Function to start the operation (e.g., BeginTransactionAsync).</param>
+    /// <param name="operation">Function to start the operation (e.g., BeginTransactionAsync).</param>
     /// <returns>A ResultOperationScope that allows chaining operations and ending with EndOperationAsync.</returns>
     /// <example>
     /// <code>
@@ -2341,12 +2341,12 @@ public static class ResultTExtensions
     /// </example>
     public static ResultOperationScope<T, TOperation> StartOperation<T, TOperation>(
         this Result<T> result,
-        Func<CancellationToken, Task<TOperation>> startAsync)
+        Func<CancellationToken, Task<TOperation>> operation)
         where TOperation : class, IOperationScope
     {
-        ArgumentNullException.ThrowIfNull(startAsync);
+        ArgumentNullException.ThrowIfNull(operation);
 
-        return new ResultOperationScope<T, TOperation>(result, startAsync);
+        return new ResultOperationScope<T, TOperation>(result, operation);
     }
 
     /// <summary>

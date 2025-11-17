@@ -61,7 +61,6 @@ builder.Services.AddScoped<IRequestAdapter>(sp =>
 builder.Services.AddScoped(sp =>
     new BackendApiClient(sp.GetRequiredService<IRequestAdapter>()));
 
-//builder.Services.AddScoped<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
 builder.Services.AddOidcAuthentication(options =>
 {
     builder.Configuration.Bind("Authentication", options.ProviderOptions);

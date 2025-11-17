@@ -64,7 +64,7 @@ public class BearerSecurityRequirementDocumentTransformer : IOpenApiDocumentTran
         OpenApiDocumentTransformerContext context,
         CancellationToken cancellationToken)
     {
-        Console.WriteLine("[OpenAPI] Adding Bearer Security Scheme");
+        //Console.WriteLine("[OpenAPI] Adding Bearer Security Scheme");
 
         // Ensure the document has a components section for security schemes
         document.Components ??= new OpenApiComponents();

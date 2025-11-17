@@ -57,7 +57,7 @@ public class DiagnosticSchemaTransformer : IOpenApiSchemaTransformer
             var propertyCount = schema.Properties?.Count ?? 0;
             var isNullable = schema.Type?.HasFlag(JsonSchemaType.Null) == true ? "nullable" : "non-nullable";
 
-            Console.WriteLine("[OpenAPI] Schema: {typeName}, Type: {schemaType}, Properties: {propertyCount}, Nullability: {isNullable}");
+            //Console.WriteLine("[OpenAPI] Schema: {typeName}, Type: {schemaType}, Properties: {propertyCount}, Nullability: {isNullable}");
         }
 
         return Task.CompletedTask;

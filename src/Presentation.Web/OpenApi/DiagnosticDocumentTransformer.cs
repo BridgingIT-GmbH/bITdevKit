@@ -27,14 +27,14 @@ public class DiagnosticDocumentTransformer : IOpenApiDocumentTransformer
         OpenApiDocumentTransformerContext context,
         CancellationToken cancellationToken)
     {
-        Console.WriteLine($"[OpenAPI] Processing document '{context.DocumentName}'");
-        Console.WriteLine($"[OpenAPI] Title: {document.Info?.Title}");
-        Console.WriteLine($"[OpenAPI] Version: {document.Info?.Version}");
+        //Console.WriteLine($"[OpenAPI] Processing document '{context.DocumentName}'");
+        //Console.WriteLine($"[OpenAPI] Title: {document.Info?.Title}");
+        //Console.WriteLine($"[OpenAPI] Version: {document.Info?.Version}");
 
         // Log paths
         if (document.Paths?.Count > 0)
         {
-            Console.WriteLine($"[OpenAPI] Paths ({document.Paths.Count}):");
+            //Console.WriteLine($"[OpenAPI] Paths ({document.Paths.Count}):");
             foreach (var path in document.Paths)
             {
                 var pathKey = path.Key;
@@ -50,21 +50,21 @@ public class DiagnosticDocumentTransformer : IOpenApiDocumentTransformer
                 }
 
                 var operationList = operations.Count > 0 ? string.Join(", ", operations) : "NONE";
-                Console.WriteLine($"[OpenAPI] - {pathKey} [{operationList}]");
+                //Console.WriteLine($"[OpenAPI] - {pathKey} [{operationList}]");
             }
         }
         else
         {
-            Console.WriteLine("[OpenAPI] Paths: (none)");
+            //Console.WriteLine("[OpenAPI] Paths: (none)");
         }
 
         // Log schemas
         if (document.Components?.Schemas?.Count > 0)
         {
-            Console.WriteLine($"[OpenAPI] Schemas ({document.Components.Schemas.Count}):");
+            //Console.WriteLine($"[OpenAPI] Schemas ({document.Components.Schemas.Count}):");
             foreach (var schemaKey in document.Components.Schemas.Keys)
             {
-                Console.WriteLine($"[OpenAPI]   - {schemaKey}");
+                //Console.WriteLine($"[OpenAPI]   - {schemaKey}");
             }
         }
         //else
@@ -72,7 +72,7 @@ public class DiagnosticDocumentTransformer : IOpenApiDocumentTransformer
         //    Console.WriteLine("[OpenAPI] Schemas: (none)");
         //}
 
-        Console.WriteLine("[OpenAPI] Document processing complete");
+        //Console.WriteLine("[OpenAPI] Document processing complete");
 
         return Task.CompletedTask;
     }

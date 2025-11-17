@@ -247,7 +247,7 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
     {
         if (AdjustedSchemas.TryAdd(typeName, true))
         {
-            Console.WriteLine($"[OpenAPI] Schema {typeName} adjusted with descriptions and additionalProperties");
+            //Console.WriteLine($"[OpenAPI] Schema {typeName} adjusted with descriptions and additionalProperties");
         }
     }
 }

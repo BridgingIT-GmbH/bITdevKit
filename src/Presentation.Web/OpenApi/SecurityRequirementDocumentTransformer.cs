@@ -132,7 +132,7 @@ public class SecurityRequirementDocumentTransformer(SecurityRequirementOptions o
         OpenApiDocumentTransformerContext context,
         CancellationToken cancellationToken)
     {
-        Console.WriteLine($"[OpenAPI] Adding Security Scheme: {this.options.SchemeName}");
+        //Console.WriteLine($"[OpenAPI] Adding Security Scheme: {this.options.SchemeName}");
 
         // Ensure the document has a components section for security schemes
         document.Components ??= new OpenApiComponents();

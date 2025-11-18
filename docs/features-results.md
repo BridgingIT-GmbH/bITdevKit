@@ -1100,24 +1100,21 @@ public class FileSystemScope : IOperationScope
 var saga = new SagaOperationScope();
 var result = await Result<TripBooking>.Success(new TripBooking())
     .StartOperation(saga)
-    .BindAsync(async (booking, ct) =>
-    {
-        var flight = await flightService.BookAsync(booking.FlightDetails, ct);
-        saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
-        booking.FlightConfirmation = flight.ConfirmationNumber;
-        return Result<TripBooking>.Success(booking);
-    }, cancellationToken)
-    .BindAsync(async (booking, ct) =>
-    {
-        var hotel = await hotelService.BookAsync(booking.HotelDetails, ct);
-        saga.RegisterCompensation(async ct => await hotelService.CancelAsync(hotel.Id, ct));
-        booking.HotelConfirmation = hotel.ConfirmationNumber;
-        return Result<TripBooking>.Success(booking);
-    }, cancellationToken)
-    .EndOperationAsync(
-        commitAsync: async (saga, ct) => await saga.CommitAsync(ct),
-        rollbackAsync: async (saga, ex, ct) => await saga.RollbackAsync(ct),
-        cancellationToken);
+      .BindAsync(async (booking, ct) =>
+      {
+          var flight = await flightService.BookAsync(booking.FlightDetails, ct);
+          saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
+          booking.FlightConfirmation = flight.ConfirmationNumber;
+          return Result<TripBooking>.Success(booking);
+      }, cancellationToken)
+      .BindAsync(async (booking, ct) =>
+      {
+          var hotel = await hotelService.BookAsync(booking.HotelDetails, ct);
+          saga.RegisterCompensation(async ct => await hotelService.CancelAsync(hotel.Id, ct));
+          booking.HotelConfirmation = hotel.ConfirmationNumber;
+          return Result<TripBooking>.Success(booking);
+      }, cancellationToken)
+    .EndOperationAsync(cancellationToken); // Commit or rollback entire saga, calling compensations as needed
 ```
 
 ## Appendix A: Repository Extensions

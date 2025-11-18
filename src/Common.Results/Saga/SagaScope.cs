@@ -9,12 +9,13 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
 /// <summary>
-/// Generic saga scope implementation for coordinating distributed transactions using the compensating transaction pattern.
-///
+/// <para>Generic saga scope implementation for coordinating distributed transactions using the compensating transaction pattern.</para>
+/// <para>
 /// This class orchestrates multi-step workflows where each successful step registers a compensation function.
 /// If any step fails, all registered compensations are executed in reverse order (LIFO - Last In First Out)
 /// to undo previous changes. This implements the saga pattern for maintaining consistency across
 /// distributed operations without traditional two-phase commit.
+/// </para>
 /// </summary>
 /// <remarks>
 /// <para>
@@ -87,7 +88,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 ///     .EndOperationAsync(CancellationToken.None);
 /// </code>
 /// </example>
-public class SagaOperationScope : IOperationScope
+public class SagaScope : IOperationScope
 {
     /// <summary>
     /// Internal list of registered compensation descriptors with their metadata.
@@ -110,10 +111,10 @@ public class SagaOperationScope : IOperationScope
     private int maxCompensationCount;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="SagaOperationScope"/> class.
+    /// Initializes a new instance of the <see cref="SagaScope"/> class.
     /// </summary>
     /// <param name="logger">Optional logger for structured logging. If null, a null logger is used.</param>
-    public SagaOperationScope(ILogger logger = null)
+    public SagaScope(ILogger logger = null)
     {
         this.logger = logger ?? NullLogger.Instance;
         this.Context = new SagaContext();
@@ -199,10 +200,11 @@ public class SagaOperationScope : IOperationScope
     public IReadOnlyList<Exception> CompensationErrors => this.compensationErrors.AsReadOnly();
 
     /// <summary>
+    /// <para>
     /// Registers a compensation function to be executed if the saga fails.
     /// This is a backward-compatible overload that uses anonymous compensation.
-    ///
-    /// Compensations are executed in reverse order (LIFO - Last In First Out) during rollback.
+    /// </para>
+    /// <para>Compensations are executed in reverse order (LIFO - Last In First Out) during rollback.</para>
     /// </summary>
     /// <param name="compensation">
     /// An async function that undoes a previous step.
@@ -220,11 +222,12 @@ public class SagaOperationScope : IOperationScope
     }
 
     /// <summary>
-    /// Registers a named compensation function to be executed if the saga fails.
-    ///
+    /// <para>Registers a named compensation function to be executed if the saga fails.</para>
+    /// <para>
     /// Compensations are executed in reverse order (LIFO - Last In First Out) during rollback,
     /// ensuring proper cleanup order. For example, if you book Flight then Hotel,
     /// the compensation will cancel Hotel then Flight.
+    /// </para>
     /// </summary>
     /// <param name="stepName">
     /// A meaningful name for this compensation step.
@@ -306,10 +309,11 @@ public class SagaOperationScope : IOperationScope
     }
 
     /// <summary>
-    /// Commits the saga, marking all changes as successful and clearing compensations.
-    ///
+    /// <para>Commits the saga, marking all changes as successful and clearing compensations.</para>
+    /// <para>
     /// Called automatically by <see cref="ResultOperationScope{T, TOperation}"/> when all saga steps
     /// complete successfully. This signals that no rollback is needed.
+    /// </para>
     /// </summary>
     /// <param name="cancellationToken">
     /// A cancellation token that can be used to cancel the commit operation.
@@ -329,11 +333,12 @@ public class SagaOperationScope : IOperationScope
     }
 
     /// <summary>
-    /// Rolls back the saga by executing all registered compensations in reverse order (LIFO).
-    ///
+    /// <para>Rolls back the saga by executing all registered compensations in reverse order (LIFO).</para>
+    /// <para>
     /// Called automatically by <see cref="ResultOperationScope{T, TOperation}"/> when any saga step fails
     /// or an exception occurs. This method ensures best-effort cleanup of all previous steps,
     /// even if individual compensation operations fail.
+    /// </para>
     /// </summary>
     /// <param name="cancellationToken">
     /// A cancellation token that can be used to cancel the rollback operation.

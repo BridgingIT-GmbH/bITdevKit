@@ -17,7 +17,7 @@ public class ResultOperationSagaScopeTests
     {
         // Arrange
         var logger = Substitute.For<ILogger>();
-        var saga = new SagaOperationScope(logger);
+        var saga = new SagaScope(logger);
         saga.Context.CorrelationId = "test-correlation-id";
         saga.Context.SetProperty("UserId", "user-123");
         saga.Context.Properties.Set("RequestId", "556677");
@@ -84,7 +84,7 @@ public class ResultOperationSagaScopeTests
     public async Task SagaScope_WithFailedStep_RollsBackPreviousSteps()
     {
         // Arrange
-        var saga = new SagaOperationScope();
+        var saga = new SagaScope();
         var booking = new TripBooking();
         var flightService = new TestFlightService();
         var hotelService = new TestHotelService { ShouldFailBooking = true }; // Hotel booking will fail
@@ -133,7 +133,7 @@ public class ResultOperationSagaScopeTests
     public async Task SagaScope_WithException_RollsBackAllSteps()
     {
         // Arrange
-        var saga = new SagaOperationScope();
+        var saga = new SagaScope();
         var booking = new TripBooking();
         var flightService = new TestFlightService();
         var hotelService = new TestHotelService();
@@ -169,7 +169,7 @@ public class ResultOperationSagaScopeTests
     public async Task SagaScope_WithMultipleSteps_RegistersCompensationsInOrder()
     {
         // Arrange
-        var saga = new SagaOperationScope();
+        var saga = new SagaScope();
         var booking = new TripBooking();
         var flightService = new TestFlightService();
         var hotelService = new TestHotelService();
@@ -216,7 +216,7 @@ public class ResultOperationSagaScopeTests
     public async Task SagaScope_WithFailedCompensation_ContinuesWithOthers()
     {
         // Arrange
-        var saga = new SagaOperationScope();
+        var saga = new SagaScope();
         var booking = new TripBooking();
         var flightService = new TestFlightService { ShouldFailCancellation = true }; // Compensation will fail
         var hotelService = new TestHotelService();
@@ -260,7 +260,7 @@ public class ResultOperationSagaScopeTests
     public async Task SagaScope_EmptyBooking_HandlesGracefully()
     {
         // Arrange
-        var saga = new SagaOperationScope();
+        var saga = new SagaScope();
         var booking = new TripBooking();
 
         // Act
@@ -279,7 +279,7 @@ public class ResultOperationSagaScopeTests
     public async Task SagaScope_WithCancellation_RollsBackGracefully()
     {
         // Arrange
-        var saga = new SagaOperationScope();
+        var saga = new SagaScope();
         var booking = new TripBooking();
         var flightService = new TestFlightService();
         var cts = new CancellationTokenSource();
@@ -321,7 +321,7 @@ public class ResultOperationSagaScopeTests
     {
         // Arrange
         var logger = Substitute.For<ILogger>();
-        var saga = new SagaOperationScope(logger);
+        var saga = new SagaScope(logger);
         var booking = new TripBooking();
         var flightService = new TestFlightService();
         var paymentCaptured = false; // Condition: payment not captured
@@ -381,7 +381,7 @@ public class ResultOperationSagaScopeTests
     public async Task SagaScope_WithEvents_NotifiesAllLifecycleStages()
     {
         // Arrange
-        var saga = new SagaOperationScope();
+        var saga = new SagaScope();
         var booking = new TripBooking();
         var flightService = new TestFlightService();
 

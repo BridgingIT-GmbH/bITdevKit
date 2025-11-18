@@ -743,9 +743,9 @@ public class ResultValueTests
         validatedResult.ShouldBeFailure();
         validatedResult.Errors.Count.ShouldBe(1);
         validatedResult.Errors.ShouldAllBe(e => e is FluentValidationError);
-        validatedResult.Errors.Select(e => e.Message)
+        validatedResult.Errors.Get<FluentValidationError>().Errors.Select(e => e.ErrorMessage)
             .ShouldContain(e => e.Contains("Must be 18 or older"));
-        validatedResult.Errors.Select(e => e.Message)
+        validatedResult.Errors.Get<FluentValidationError>().Errors.Select(e => e.ErrorMessage)
             .ShouldContain(e => e.Contains("Invalid email"));
     }
 
@@ -767,7 +767,7 @@ public class ResultValueTests
         // Assert
         validatedResult.ShouldBeFailure();
         validatedResult.Errors.Count.ShouldBe(1);
-        validatedResult.Errors.First().Message.ShouldContain("Must be 18 or older");
+        validatedResult.Errors.Get<FluentValidationError>().Errors.Select(e => e.ErrorMessage).ShouldContain("Must be 18 or older");
     }
 
     [Fact]

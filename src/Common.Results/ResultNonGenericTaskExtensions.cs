@@ -1233,15 +1233,9 @@ public static partial class ResultNonGenericTaskExtensions
         Func<TResult> onSuccess,
         Func<IReadOnlyList<IResultError>, TResult> onFailure)
     {
-        if (onSuccess is null)
-        {
-            throw new ArgumentNullException(nameof(onSuccess));
-        }
+        ArgumentNullException.ThrowIfNull(onSuccess);
 
-        if (onFailure is null)
-        {
-            throw new ArgumentNullException(nameof(onFailure));
-        }
+        ArgumentNullException.ThrowIfNull(onFailure);
 
         try
         {
@@ -1314,15 +1308,9 @@ public static partial class ResultNonGenericTaskExtensions
         Func<IReadOnlyList<IResultError>, CancellationToken, Task<TResult>> onFailure,
         CancellationToken cancellationToken = default)
     {
-        if (onSuccess is null)
-        {
-            throw new ArgumentNullException(nameof(onSuccess));
-        }
+        ArgumentNullException.ThrowIfNull(onSuccess);
 
-        if (onFailure is null)
-        {
-            throw new ArgumentNullException(nameof(onFailure));
-        }
+        ArgumentNullException.ThrowIfNull(onFailure);
 
         try
         {
@@ -1365,15 +1353,9 @@ public static partial class ResultNonGenericTaskExtensions
         Func<IReadOnlyList<IResultError>, TResult> onFailure,
         CancellationToken cancellationToken = default)
     {
-        if (onSuccess is null)
-        {
-            throw new ArgumentNullException(nameof(onSuccess));
-        }
+        ArgumentNullException.ThrowIfNull(onSuccess);
 
-        if (onFailure is null)
-        {
-            throw new ArgumentNullException(nameof(onFailure));
-        }
+        ArgumentNullException.ThrowIfNull(onFailure);
 
         try
         {
@@ -1416,15 +1398,9 @@ public static partial class ResultNonGenericTaskExtensions
         Func<IReadOnlyList<IResultError>, CancellationToken, Task<TResult>> onFailure,
         CancellationToken cancellationToken = default)
     {
-        if (onSuccess is null)
-        {
-            throw new ArgumentNullException(nameof(onSuccess));
-        }
+        ArgumentNullException.ThrowIfNull(onSuccess);
 
-        if (onFailure is null)
-        {
-            throw new ArgumentNullException(nameof(onFailure));
-        }
+        ArgumentNullException.ThrowIfNull(onFailure);
 
         try
         {

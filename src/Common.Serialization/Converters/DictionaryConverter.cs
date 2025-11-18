@@ -35,7 +35,7 @@ public class DictionaryConverter : JsonConverter<IDictionary<string, object>>
                 reader.Read(); // Move to value
 
                 // Peek ahead to determine the value type
-                var value = DeserializeValue(ref reader, options);
+                var value = this.DeserializeValue(ref reader, options);
                 dictionary[key] = value ?? new object(); // Default to new object if null
             }
         }

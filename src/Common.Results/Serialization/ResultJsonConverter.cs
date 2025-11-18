@@ -9,9 +9,11 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 /// <summary>
+/// <para>
 /// A custom JSON converter for <see cref="Result"/> that writes a compact and
 /// client-safe JSON representation.
-/// 
+/// </para>
+/// <para>
 /// Behavior:
 /// - Writes the following top-level properties:
 ///   - <c>isSuccess</c> (boolean)
@@ -22,11 +24,13 @@ using System.Text.Json.Serialization;
 /// - For <see cref="ExceptionError"/>, emits a safe, flattened object and
 ///   deliberately excludes the raw <see cref="Exception"/> instance to avoid
 ///   unsupported types (e.g., <c>MethodBase</c>) and oversized/PII payloads.
-/// 
+/// </para>
+/// <para>
 /// Notes:
 /// - Deserialization is not supported and will throw <see cref="NotSupportedException"/>.
 /// - This converter is intended for outbound API responses or logging, not for
 ///   round-tripping back into domain models.
+/// </para>
 /// </summary>
 public sealed class ResultJsonConverter : JsonConverter<Result>
 {
@@ -74,18 +78,21 @@ public sealed class ResultJsonConverter : JsonConverter<Result>
     /// like <c>MethodBase</c> and potentially sensitive data).
     /// </summary>
     /// <remarks>
+    /// <para>
     /// Why special-case ExceptionError?
     /// - System.Text.Json cannot serialize certain members of <see cref="Exception"/>
     ///   (e.g., <c>TargetSite</c>/<see cref="System.Reflection.MethodBase"/>), which
     ///   throws <see cref="NotSupportedException"/>.
     /// - Serializing full exceptions can bloat payloads and leak PII/implementation details.
-    /// 
+    /// </para>
+    /// <para>
     /// Output shape for ExceptionError:
     /// {
     ///   "message": "…",
     ///   "exceptionType": "Namespace.ExceptionType",
     ///   "stackTrace": "…" // optional, omitted if null/empty
     /// }
+    /// </para>
     /// </remarks>
     private static void WriteErrors(Utf8JsonWriter writer, Result value, JsonSerializerOptions options)
     {

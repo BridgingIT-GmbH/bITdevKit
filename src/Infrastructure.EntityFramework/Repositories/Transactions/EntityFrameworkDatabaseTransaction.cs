@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-public class DatabaseTransaction : IDatabaseTransaction
+public class EntityFrameworkDatabaseTransaction : IDatabaseTransaction
 {
     private readonly DbContext context;
 
-    public DatabaseTransaction(DbContext context)
+    public EntityFrameworkDatabaseTransaction(DbContext context)
     {
         EnsureArg.IsNotNull(context, nameof(context));
 

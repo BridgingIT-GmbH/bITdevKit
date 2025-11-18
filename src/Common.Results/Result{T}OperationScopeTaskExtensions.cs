@@ -171,13 +171,13 @@ public static class ResultOperationScopeTaskExtensions
     /// </summary>
     public static async Task<Result<T>> EndOperationAsync<T, TOperation>(
         this Task<ResultOperationScope<T, TOperation>> scopeTask,
-        Func<TOperation, CancellationToken, Task> commitAsync,
-        Func<TOperation, Exception, CancellationToken, Task> rollbackAsync = null,
+        Func<TOperation, CancellationToken, Task> commit,
+        Func<TOperation, Exception, CancellationToken, Task> rollback = null,
         CancellationToken cancellationToken = default)
         where TOperation : class, IOperationScope
     {
         var scope = await scopeTask;
 
-        return await scope.EndOperationAsync(commitAsync, rollbackAsync, cancellationToken);
+        return await scope.EndOperationAsync(commit, rollback, cancellationToken);
     }
 }

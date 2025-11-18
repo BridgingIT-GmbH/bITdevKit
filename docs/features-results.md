@@ -869,7 +869,7 @@ It implements the Railway-Oriented Programming pattern with automatic resource m
 ```csharp
 var result = await Result<User>.Success(user)
     // Start transaction scope (lazy - not started yet)
-    .StartOperation(async ct => await transaction.BeginTransactionAsync(ct))
+    .StartOperation(async ct => await transaction.BeginAsync(ct))
     // Set properties (sync operation - transaction still not started)
     .Tap(u => u.UpdatedAt = DateTime.UtcNow)
     // First async operation - TRANSACTION STARTS HERE
@@ -896,7 +896,7 @@ protected override async Task<Result<TodoItemModel>> HandleAsync(
     CancellationToken cancellationToken) =>
     await Result<TodoItem>.Success(mapper.Map<TodoItemModel, TodoItem>(request.Model))
         // Start transaction scope using repository transaction
-        .StartOperation(async ct => await transaction.BeginTransactionAsync(ct))
+        .StartOperation(async ct => await transaction.BeginAsync(ct))
         // Set current user (sync)
         .Tap(e => e.UserId = currentUserAccessor.UserId)
         // Generate sequence number (first async - transaction starts here)
@@ -975,7 +975,7 @@ Use this overload when your operation implements `IOperationScope`. It automatic
 **Example:**
 ```csharp
 var result = await Result<User>.Success(user)
-    .StartOperation(async ct => await transaction.BeginTransactionAsync(ct))
+    .StartOperation(async ct => await transaction.BeginAsync(ct))
     .BindAsync(async (u, ct) => await repository.UpdateResultAsync(u, ct), cancellationToken)
     .EndOperationAsync(cancellationToken); // Clean and simple!
 ```
@@ -1035,14 +1035,14 @@ public interface IRepositoryTransaction<TEntity>
     Task<TEntity> ExecuteScopedAsync(Func<Task<TEntity>> action, CancellationToken cancellationToken = default);
 
     // New method for explicit transaction control
-    Task<IRepositoryTransactionScope> BeginTransactionAsync(CancellationToken cancellationToken = default);
+    Task<ITransactionOperationScope> BeginAsync(CancellationToken cancellationToken = default);
 }
 ```
 
-#### IRepositoryTransactionScope
+#### ITransactionOperationScope
 
 ```csharp
-public interface IRepositoryTransactionScope : IOperationScope
+public interface ITransactionOperationScope : IOperationScope
 {
     // Inherits CommitAsync and RollbackAsync from IOperationScope
 }

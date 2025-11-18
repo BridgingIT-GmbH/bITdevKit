@@ -253,8 +253,8 @@ public class ResultOperationScope<T, TOperation>(Result<T> result, Func<Cancella
     ///     Ends the operation scope by committing on success or rolling back on failure.
     ///     This overload allows custom commit/rollback logic via delegates.
     /// </summary>
-    /// <param name="commitAsync">The function to commit the operation.</param>
-    /// <param name="rollbackAsync">The optional function to rollback the operation on failure or exception.</param>
+    /// <param name="commit">The function to commit the operation.</param>
+    /// <param name="rollback">The optional function to rollback the operation on failure or exception.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     /// <returns>The final Result{T}.</returns>
     /// <example>
@@ -267,11 +267,11 @@ public class ResultOperationScope<T, TOperation>(Result<T> result, Func<Cancella
     /// </code>
     /// </example>
     public async Task<Result<T>> EndOperationAsync(
-        Func<TOperation, CancellationToken, Task> commitAsync,
-        Func<TOperation, Exception, CancellationToken, Task> rollbackAsync = null,
+        Func<TOperation, CancellationToken, Task> commit,
+        Func<TOperation, Exception, CancellationToken, Task> rollback = null,
         CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(commitAsync);
+        ArgumentNullException.ThrowIfNull(commit);
 
         try
         {
@@ -279,11 +279,11 @@ public class ResultOperationScope<T, TOperation>(Result<T> result, Func<Cancella
 
             if (result.IsSuccess)
             {
-                await commitAsync(this.operation, cancellationToken);
+                await commit(this.operation, cancellationToken);
             }
-            else if (rollbackAsync is not null)
+            else if (rollback is not null)
             {
-                await rollbackAsync(this.operation, null, cancellationToken);
+                await rollback(this.operation, null, cancellationToken);
             }
 
             return result;
@@ -295,11 +295,11 @@ public class ResultOperationScope<T, TOperation>(Result<T> result, Func<Cancella
         }
         catch (Exception ex)
         {
-            if (this.operation is not null && rollbackAsync is not null)
+            if (this.operation is not null && rollback is not null)
             {
                 try
                 {
-                    await rollbackAsync(this.operation, ex, cancellationToken);
+                    await rollback(this.operation, ex, cancellationToken);
                 }
                 catch
                 {

@@ -119,6 +119,7 @@ public class CoreModule : WebModuleBase
 
         // repositories
         services.AddEntityFrameworkRepository<TodoItem, CoreDbContext>()
+            .WithTransactions()
             .WithBehavior<RepositoryTracingBehavior<TodoItem>>()
             .WithBehavior<RepositoryLoggingBehavior<TodoItem>>()
             .WithBehavior<RepositoryAuditStateBehavior<TodoItem>>()
@@ -126,6 +127,7 @@ public class CoreModule : WebModuleBase
         //.WithBehavior<RepositoryDomainEventPublisherBehavior<TodoItem>>();
 
         services.AddEntityFrameworkRepository<Subscription, CoreDbContext>()
+            .WithTransactions()
             .WithBehavior<RepositoryTracingBehavior<Subscription>>()
             .WithBehavior<RepositoryLoggingBehavior<Subscription>>()
             .WithBehavior<RepositoryAuditStateBehavior<Subscription>>()

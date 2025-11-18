@@ -306,12 +306,12 @@ public class ResultOperationScopeTests
             .StartOperation(ct => Task.FromResult<IOperationScope>(testScope))
             .TapAsync(async (v, ct) => await Task.Delay(1, ct))
             .EndOperationAsync(
-                commitAsync: async (op, ct) =>
+                commit: async (op, ct) =>
                 {
                     customCommitCalled = true;
                     await op.CommitAsync(ct);
                 },
-                rollbackAsync: async (op, ex, ct) =>
+                rollback: async (op, ex, ct) =>
                 {
                     customRollbackCalled = true;
                     await op.RollbackAsync(ct);

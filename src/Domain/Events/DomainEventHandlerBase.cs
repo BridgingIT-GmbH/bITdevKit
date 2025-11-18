@@ -89,9 +89,9 @@ public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandl
         }
     }
 
-    public virtual async Task<Result> HandleAsync(TEvent notification, PublishOptions options, CancellationToken cancellationToken) // notifier handler interface
+    public virtual async Task<Result> HandleAsync(TEvent @event, PublishOptions options, CancellationToken cancellationToken) // notifier handler interface
     {
-        await this.Process(notification, cancellationToken);
+        await this.Process(@event, cancellationToken);
 
         return Result.Success();
     }
@@ -99,10 +99,10 @@ public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandl
     /// <summary>
     ///     Processes the specified domain event notification with the possibility of cancellation.
     /// </summary>
-    /// <param name="notification">The domain event notification to process.</param>
+    /// <param name="event">The domain event notification to process.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    public abstract Task Process(TEvent notification, CancellationToken cancellationToken);
+    public abstract Task Process(TEvent @event, CancellationToken cancellationToken);
 
     public static partial class TypedLogger
     {

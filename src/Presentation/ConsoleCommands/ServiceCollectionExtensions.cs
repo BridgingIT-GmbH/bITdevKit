@@ -21,7 +21,8 @@ public static class ServiceCollectionExtensions
     /// <returns>The same service collection for chaining.</returns>
     public static IServiceCollection AddConsoleCommands(this IServiceCollection services, Action<ConsoleCommandsBuilder> configure)
     {
-        services.AddSingleton(_ => AnsiConsole.Create(new AnsiConsoleSettings { Ansi = AnsiSupport.Detect, ColorSystem = ColorSystemSupport.Detect }));
+        services.AddSingleton(_ =>
+            AnsiConsole.Create(new AnsiConsoleSettings { Ansi = AnsiSupport.Detect, ColorSystem = ColorSystemSupport.Detect }));
 
         services.AddTransient<IConsoleCommand, HelpConsoleCommand>();
         services.AddTransient<IConsoleCommand, InfoConsoleCommand>();

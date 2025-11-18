@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -14,28 +14,30 @@ public class ResultOperationSagaScopeTests
     public async Task SagaScope_WithSuccessfulSteps_CommitsAll()
     {
         // Arrange
-        var saga = new TestSagaScope();
+        var saga = new SagaOperationScope();
         var booking = new TripBooking();
         var flightService = new TestFlightService();
         var hotelService = new TestHotelService();
 
         // Act
         var result = await Result<TripBooking>.Success(booking)
-            .StartOperation<TripBooking, TestSagaScope>(ct => Task.FromResult(saga))
-            .BindAsync(async (b, ct) =>
-            {
-                var flight = await flightService.BookAsync(b.FlightDetails, ct);
-                saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
-                b.FlightConfirmation = flight.ConfirmationNumber;
-                return Result<TripBooking>.Success(b);
-            }, CancellationToken.None)
-            .BindAsync(async (b, ct) =>
-            {
-                var hotel = await hotelService.BookAsync(b.HotelDetails, ct);
-                saga.RegisterCompensation(async ct => await hotelService.CancelAsync(hotel.Id, ct));
-                b.HotelConfirmation = hotel.ConfirmationNumber;
-                return Result<TripBooking>.Success(b);
-            }, CancellationToken.None)
+            .StartOperation(saga)
+                .BindAsync(async (b, ct) =>
+                {
+                    var flight = await flightService.BookAsync(b.FlightDetails, ct);
+                    saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
+                    b.FlightConfirmation = flight.ConfirmationNumber;
+
+                    return Result<TripBooking>.Success(b);
+                }, CancellationToken.None)
+                .BindAsync(async (b, ct) =>
+                {
+                    var hotel = await hotelService.BookAsync(b.HotelDetails, ct);
+                    saga.RegisterCompensation(async ct => await hotelService.CancelAsync(hotel.Id, ct));
+                    b.HotelConfirmation = hotel.ConfirmationNumber;
+
+                    return Result<TripBooking>.Success(b);
+                }, CancellationToken.None)
             .EndOperationAsync(CancellationToken.None);
 
         // Assert
@@ -55,36 +57,38 @@ public class ResultOperationSagaScopeTests
     public async Task SagaScope_WithFailedStep_RollsBackPreviousSteps()
     {
         // Arrange
-        var saga = new TestSagaScope();
+        var saga = new SagaOperationScope();
         var booking = new TripBooking();
         var flightService = new TestFlightService();
         var hotelService = new TestHotelService { ShouldFailBooking = true }; // Hotel booking will fail
 
         // Act
         var result = await Result<TripBooking>.Success(booking)
-            .StartOperation<TripBooking, TestSagaScope>(ct => Task.FromResult(saga))
-            .BindAsync(async (b, ct) =>
-            {
-                var flight = await flightService.BookAsync(b.FlightDetails, ct);
-                saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
-                b.FlightConfirmation = flight.ConfirmationNumber;
-                return Result<TripBooking>.Success(b);
-            }, CancellationToken.None)
-            .BindAsync(async (b, ct) =>
-            {
-                // This will fail
-                var hotelResult = await hotelService.BookResultAsync(b.HotelDetails, ct);
-                if (hotelResult.IsFailure)
+            .StartOperation(saga)
+                .BindAsync(async (b, ct) =>
                 {
-                    return Result<TripBooking>.Failure()
-                        .WithErrors(hotelResult.Errors)
-                        .WithMessage("Hotel booking failed");
-                }
+                    var flight = await flightService.BookAsync(b.FlightDetails, ct);
+                    saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
+                    b.FlightConfirmation = flight.ConfirmationNumber;
 
-                saga.RegisterCompensation(async ct => await hotelService.CancelAsync(hotelResult.Value.Id, ct));
-                b.HotelConfirmation = hotelResult.Value.ConfirmationNumber;
-                return Result<TripBooking>.Success(b);
-            }, CancellationToken.None)
+                    return Result<TripBooking>.Success(b);
+                }, CancellationToken.None)
+                .BindAsync(async (b, ct) =>
+                {
+                    // This will fail
+                    var hotelResult = await hotelService.BookResultAsync(b.HotelDetails, ct);
+                    if (hotelResult.IsFailure)
+                    {
+                        return Result<TripBooking>.Failure()
+                            .WithErrors(hotelResult.Errors)
+                            .WithMessage("Hotel booking failed");
+                    }
+
+                    saga.RegisterCompensation(async ct => await hotelService.CancelAsync(hotelResult.Value.Id, ct));
+                    b.HotelConfirmation = hotelResult.Value.ConfirmationNumber;
+
+                    return Result<TripBooking>.Success(b);
+                }, CancellationToken.None)
             .EndOperationAsync(CancellationToken.None);
 
         // Assert
@@ -102,26 +106,27 @@ public class ResultOperationSagaScopeTests
     public async Task SagaScope_WithException_RollsBackAllSteps()
     {
         // Arrange
-        var saga = new TestSagaScope();
+        var saga = new SagaOperationScope();
         var booking = new TripBooking();
         var flightService = new TestFlightService();
         var hotelService = new TestHotelService();
 
         // Act
         var result = await Result<TripBooking>.Success(booking)
-            .StartOperation<TripBooking, TestSagaScope>(ct => Task.FromResult(saga))
-            .BindAsync(async (b, ct) =>
-            {
-                var flight = await flightService.BookAsync(b.FlightDetails, ct);
-                saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
-                b.FlightConfirmation = flight.ConfirmationNumber;
-                return Result<TripBooking>.Success(b);
-            }, CancellationToken.None)
-            .TapAsync(async (b, ct) =>
-            {
-                await Task.Delay(1, ct);
-                throw new InvalidOperationException("Unexpected error during booking");
-            })
+            .StartOperation(saga)
+                .BindAsync(async (b, ct) =>
+                {
+                    var flight = await flightService.BookAsync(b.FlightDetails, ct);
+                    saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
+                    b.FlightConfirmation = flight.ConfirmationNumber;
+
+                    return Result<TripBooking>.Success(b);
+                }, CancellationToken.None)
+                .TapAsync(async (b, ct) =>
+                {
+                    await Task.Delay(1, ct);
+                    throw new InvalidOperationException("Unexpected error during booking");
+                })
             .EndOperationAsync(CancellationToken.None);
 
         // Assert
@@ -137,7 +142,7 @@ public class ResultOperationSagaScopeTests
     public async Task SagaScope_WithMultipleSteps_RegistersCompensationsInOrder()
     {
         // Arrange
-        var saga = new TestSagaScope();
+        var saga = new SagaOperationScope();
         var booking = new TripBooking();
         var flightService = new TestFlightService();
         var hotelService = new TestHotelService();
@@ -145,28 +150,31 @@ public class ResultOperationSagaScopeTests
 
         // Act
         var result = await Result<TripBooking>.Success(booking)
-            .StartOperation<TripBooking, TestSagaScope>(ct => Task.FromResult(saga))
-            .BindAsync(async (b, ct) =>
-            {
-                var flight = await flightService.BookAsync(b.FlightDetails, ct);
-                saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
-                b.FlightConfirmation = flight.ConfirmationNumber;
-                return Result<TripBooking>.Success(b);
-            }, CancellationToken.None)
-            .BindAsync(async (b, ct) =>
-            {
-                var hotel = await hotelService.BookAsync(b.HotelDetails, ct);
-                saga.RegisterCompensation(async ct => await hotelService.CancelAsync(hotel.Id, ct));
-                b.HotelConfirmation = hotel.ConfirmationNumber;
-                return Result<TripBooking>.Success(b);
-            }, CancellationToken.None)
-            .BindAsync(async (b, ct) =>
-            {
-                var car = await carService.RentAsync(b.CarDetails, ct);
-                saga.RegisterCompensation(async ct => await carService.CancelAsync(car.Id, ct));
-                b.CarConfirmation = car.ConfirmationNumber;
-                return Result<TripBooking>.Success(b);
-            }, CancellationToken.None)
+            .StartOperation(saga)
+                .BindAsync(async (b, ct) =>
+                {
+                    var flight = await flightService.BookAsync(b.FlightDetails, ct);
+                    saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
+                    b.FlightConfirmation = flight.ConfirmationNumber;
+
+                    return Result<TripBooking>.Success(b);
+                }, CancellationToken.None)
+                .BindAsync(async (b, ct) =>
+                {
+                    var hotel = await hotelService.BookAsync(b.HotelDetails, ct);
+                    saga.RegisterCompensation(async ct => await hotelService.CancelAsync(hotel.Id, ct));
+                    b.HotelConfirmation = hotel.ConfirmationNumber;
+
+                    return Result<TripBooking>.Success(b);
+                }, CancellationToken.None)
+                .BindAsync(async (b, ct) =>
+                {
+                    var car = await carService.RentAsync(b.CarDetails, ct);
+                    saga.RegisterCompensation(async ct => await carService.CancelAsync(car.Id, ct));
+                    b.CarConfirmation = car.ConfirmationNumber;
+
+                    return Result<TripBooking>.Success(b);
+                }, CancellationToken.None)
             .EndOperationAsync(CancellationToken.None);
 
         // Assert
@@ -181,33 +189,36 @@ public class ResultOperationSagaScopeTests
     public async Task SagaScope_WithFailedCompensation_ContinuesWithOthers()
     {
         // Arrange
-        var saga = new TestSagaScope();
+        var saga = new SagaOperationScope();
         var booking = new TripBooking();
         var flightService = new TestFlightService { ShouldFailCancellation = true }; // Compensation will fail
         var hotelService = new TestHotelService();
 
         // Act
         var result = await Result<TripBooking>.Success(booking)
-            .StartOperation<TripBooking, TestSagaScope>(ct => Task.FromResult(saga))
-            .BindAsync(async (b, ct) =>
-            {
-                var flight = await flightService.BookAsync(b.FlightDetails, ct);
-                saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
-                b.FlightConfirmation = flight.ConfirmationNumber;
-                return Result<TripBooking>.Success(b);
-            }, CancellationToken.None)
-            .BindAsync(async (b, ct) =>
-            {
-                var hotel = await hotelService.BookAsync(b.HotelDetails, ct);
-                saga.RegisterCompensation(async ct => await hotelService.CancelAsync(hotel.Id, ct));
-                b.HotelConfirmation = hotel.ConfirmationNumber;
-                return Result<TripBooking>.Success(b);
-            }, CancellationToken.None)
-            .EnsureAsync(async (b, ct) =>
-            {
-                await Task.Delay(1, ct);
-                return false; // Force rollback
-            }, new ValidationError("Booking validation failed"))
+            .StartOperation(saga)
+                .BindAsync(async (b, ct) =>
+                {
+                    var flight = await flightService.BookAsync(b.FlightDetails, ct);
+                    saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
+                    b.FlightConfirmation = flight.ConfirmationNumber;
+
+                    return Result<TripBooking>.Success(b);
+                }, CancellationToken.None)
+                .BindAsync(async (b, ct) =>
+                {
+                    var hotel = await hotelService.BookAsync(b.HotelDetails, ct);
+                    saga.RegisterCompensation(async ct => await hotelService.CancelAsync(hotel.Id, ct));
+                    b.HotelConfirmation = hotel.ConfirmationNumber;
+
+                    return Result<TripBooking>.Success(b);
+                }, CancellationToken.None)
+                .EnsureAsync(async (b, ct) =>
+                {
+                    await Task.Delay(1, ct);
+
+                    return false; // Force rollback
+                }, new ValidationError("Booking validation failed"))
             .EndOperationAsync(CancellationToken.None);
 
         // Assert
@@ -222,13 +233,13 @@ public class ResultOperationSagaScopeTests
     public async Task SagaScope_EmptyBooking_HandlesGracefully()
     {
         // Arrange
-        var saga = new TestSagaScope();
+        var saga = new SagaOperationScope();
         var booking = new TripBooking();
 
         // Act
         var result = await Result<TripBooking>.Success(booking)
-            .StartOperation<TripBooking, TestSagaScope>(ct => Task.FromResult(saga))
-            .TapAsync(async (b, ct) => await Task.Delay(1, ct))
+            .StartOperation(saga)
+                .TapAsync(async (b, ct) => await Task.Delay(1, ct))
             .EndOperationAsync(CancellationToken.None);
 
         // Assert
@@ -241,32 +252,33 @@ public class ResultOperationSagaScopeTests
     public async Task SagaScope_WithCancellation_RollsBackGracefully()
     {
         // Arrange
-        var saga = new TestSagaScope();
+        var saga = new SagaOperationScope();
         var booking = new TripBooking();
         var flightService = new TestFlightService();
         var cts = new CancellationTokenSource();
 
         // Act - Cancel before operation starts (so it completes successfully with cancellation token not yet triggered)
         var result = await Result<TripBooking>.Success(booking)
-            .StartOperation<TripBooking, TestSagaScope>(ct => Task.FromResult(saga))
-            .BindAsync(async (b, ct) =>
-            {
-                var flight = await flightService.BookAsync(b.FlightDetails, ct);
-                saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
-                b.FlightConfirmation = flight.ConfirmationNumber;
+            .StartOperation(saga)
+                .BindAsync(async (b, ct) =>
+                {
+                    var flight = await flightService.BookAsync(b.FlightDetails, ct);
+                    saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
+                    b.FlightConfirmation = flight.ConfirmationNumber;
 
-                // Trigger cancellation AFTER successful booking
-                cts.Cancel();
+                    // Trigger cancellation AFTER successful booking
+                    cts.Cancel();
 
-                return Result<TripBooking>.Success(b);
-            }, cts.Token)
-            .BindAsync(async (b, ct) =>
-            {
-                // This should be cancelled
-                ct.ThrowIfCancellationRequested();
-                await Task.Delay(100, ct);
-                return Result<TripBooking>.Success(b);
-            }, cts.Token)
+                    return Result<TripBooking>.Success(b);
+                }, cts.Token)
+                .BindAsync(async (b, ct) =>
+                {
+                    // This should be cancelled
+                    ct.ThrowIfCancellationRequested();
+                    await Task.Delay(100, ct);
+
+                    return Result<TripBooking>.Success(b);
+                }, cts.Token)
             .EndOperationAsync(cts.Token);
 
         // Assert
@@ -310,26 +322,23 @@ public class CarDetails
 public class FlightBooking
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string ConfirmationNumber { get; set; } = $"FL{Guid.NewGuid():N}".Substring(0, 10).ToUpper();
+    public string ConfirmationNumber { get; set; } = $"FL{Guid.NewGuid():N}"[..10].ToUpper();
 }
 
 public class HotelBooking
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string ConfirmationNumber { get; set; } = $"HT{Guid.NewGuid():N}".Substring(0, 10).ToUpper();
+    public string ConfirmationNumber { get; set; } = $"HT{Guid.NewGuid():N}"[..10].ToUpper();
 }
 
 public class CarRental
 {
     public string Id { get; set; } = Guid.NewGuid().ToString();
-    public string ConfirmationNumber { get; set; } = $"CR{Guid.NewGuid():N}".Substring(0, 10).ToUpper();
+    public string ConfirmationNumber { get; set; } = $"CR{Guid.NewGuid():N}"[..10].ToUpper();
 }
 
-public class BookingError : ResultErrorBase
+public class BookingError(string message) : ResultErrorBase(message)
 {
-    public BookingError(string message) : base(message)
-    {
-    }
 }
 
 // Test Service Implementations
@@ -343,6 +352,7 @@ public class TestFlightService
     {
         var booking = new FlightBooking();
         this.BookedFlights.Add(booking);
+
         return Task.FromResult(booking);
     }
 
@@ -354,6 +364,7 @@ public class TestFlightService
         }
 
         this.CancelledFlights.Add(flightId);
+
         return Task.CompletedTask;
     }
 }
@@ -373,6 +384,7 @@ public class TestHotelService
 
         var booking = new HotelBooking();
         this.BookedHotels.Add(booking);
+
         return Task.FromResult(booking);
     }
 
@@ -386,12 +398,14 @@ public class TestHotelService
 
         var booking = new HotelBooking();
         this.BookedHotels.Add(booking);
+
         return Task.FromResult(Result<HotelBooking>.Success(booking));
     }
 
     public Task CancelAsync(string hotelId, CancellationToken cancellationToken)
     {
         this.CancelledHotels.Add(hotelId);
+
         return Task.CompletedTask;
     }
 }
@@ -411,62 +425,7 @@ public class TestCarRentalService
     public Task CancelAsync(string carId, CancellationToken cancellationToken)
     {
         this.CancelledCars.Add(carId);
-        return Task.CompletedTask;
-    }
-}
-
-// Saga Scope Implementation
-public class TestSagaScope : IOperationScope
-{
-    private readonly List<Func<CancellationToken, Task>> compensations = [];
-    private readonly List<Exception> compensationErrors = [];
-    private int maxCompensationCount;
-
-    public bool IsCommitted { get; private set; }
-
-    public bool IsRolledBack { get; private set; }
-
-    public int CompensationCount => this.maxCompensationCount; // Use max count instead of current count
-
-    public int CompensationExecutedCount { get; private set; }
-
-    public IReadOnlyList<Exception> CompensationErrors => this.compensationErrors.AsReadOnly();
-
-    public void RegisterCompensation(Func<CancellationToken, Task> compensation)
-    {
-        ArgumentNullException.ThrowIfNull(compensation);
-
-        this.compensations.Add(compensation);
-        this.maxCompensationCount = Math.Max(this.maxCompensationCount, this.compensations.Count);
-    }
-
-    public Task CommitAsync(CancellationToken cancellationToken = default)
-    {
-        this.IsCommitted = true;
-        // Keep the max count for assertions, but clear the list
-        this.compensations.Clear();
 
         return Task.CompletedTask;
-    }
-
-    public async Task RollbackAsync(CancellationToken cancellationToken = default)
-    {
-        this.IsRolledBack = true;
-
-        // Execute compensations in reverse order (LIFO)
-        for (var i = this.compensations.Count - 1; i >= 0; i--)
-        {
-            try
-            {
-                await this.compensations[i](cancellationToken);
-                this.CompensationExecutedCount++;
-            }
-            catch (Exception ex)
-            {
-                // Log compensation errors but continue with other compensations
-                this.compensationErrors.Add(ex);
-                this.CompensationExecutedCount++;
-            }
-        }
     }
 }

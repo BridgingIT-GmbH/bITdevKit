@@ -1096,16 +1096,10 @@ public class FileSystemScope : IOperationScope
 **Scenario**: Execute multi-step workflow with compensation logic for rollback. An example implementation can be found [here](/tests/Common.UnitTests/Results/ResultOperationSagaScopeTests.cs)
 
 ```csharp
-public interface ISagaScope : IOperationScope
-{
-    void RegisterCompensation(Func<CancellationToken, Task> compensation);
-    Task CommitAsync(CancellationToken cancellationToken = default);
-    Task RollbackAsync(CancellationToken cancellationToken = default);
-}
-
 // Usage: Book trip (flight + hotel + car) with compensations
+var saga = new SagaOperationScope();
 var result = await Result<TripBooking>.Success(new TripBooking())
-    .StartOperation(ct => Task.FromResult<ISagaScope>(new SagaOrchestrator()))
+    .StartOperation(saga)
     .BindAsync(async (booking, ct) =>
     {
         var flight = await flightService.BookAsync(booking.FlightDetails, ct);

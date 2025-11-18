@@ -643,12 +643,12 @@ public readonly partial struct Result : IResult
     /// var validationError = result.GetError{ValidationError}();
     /// Console.WriteLine($"Validation error: {error.Message}");
     /// </example>
-    public IResultError GetError<TError>()
-        where TError : IResultError
+    public TError GetError<TError>()
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
 
-        return this.errors.AsEnumerable().FirstOrDefault(e => e.GetType() == errorType);
+        return this.errors.AsEnumerable().FirstOrDefault(e => e.GetType() == errorType) as TError;
     }
 
     /// <summary>
@@ -661,12 +661,12 @@ public readonly partial struct Result : IResult
     ///     Console.WriteLine($"Validation error: {error.Message}");
     /// }
     /// </example>
-    public IEnumerable<IResultError> GetErrors<TError>()
-        where TError : IResultError
+    public IEnumerable<TError> GetErrors<TError>()
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
 
-        return this.errors.AsEnumerable().Where(e => e.GetType() == errorType);
+        return this.errors.AsEnumerable().Where(e => e.GetType() == errorType).Cast<TError>();
     }
 
     /// <summary>

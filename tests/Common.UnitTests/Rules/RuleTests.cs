@@ -100,9 +100,9 @@ public class RuleTests( /*RulesFixture fixture*/) : IClassFixture<RulesFixture>
 
         result.ShouldBeFailure();
         result.HasError<FluentValidationError>().ShouldBeTrue();
-        var error = result.GetError<FluentValidationError>();
-        error.Message.ShouldContain("Must be 18 or older");
-        error.Message.ShouldContain("Invalid email");
+        var fluentError = result.GetError<FluentValidationError>();
+        fluentError.Errors.Any(e => e.ErrorMessage.Contains("Must be 18 or older")).ShouldBeTrue();
+        fluentError.Errors.Any(e => e.ErrorMessage.Contains("Invalid email")).ShouldBeTrue();
     }
 
     [Fact]

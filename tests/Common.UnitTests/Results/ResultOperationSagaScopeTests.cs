@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Results;
 
+using Microsoft.Extensions.Logging;
+
 [UnitTest("Common")]
 public class ResultOperationSagaScopeTests
 {
@@ -14,10 +16,23 @@ public class ResultOperationSagaScopeTests
     public async Task SagaScope_WithSuccessfulSteps_CommitsAll()
     {
         // Arrange
-        var saga = new SagaOperationScope();
+        var logger = Substitute.For<ILogger>();
+        var saga = new SagaOperationScope(logger);
+        saga.Context.CorrelationId = "test-correlation-id";
+        saga.Context.SetProperty("UserId", "user-123");
+        saga.Context.Properties.Set("RequestId", "556677");
+
         var booking = new TripBooking();
         var flightService = new TestFlightService();
         var hotelService = new TestHotelService();
+
+        // Track compensation events
+        var compensationEvents = new List<SagaCompensationEvent>();
+        saga.OnCompensationEvent += (evt) =>
+        {
+            compensationEvents.Add(evt);
+            return Task.CompletedTask;
+        };
 
         // Act
         var result = await Result<TripBooking>.Success(booking)
@@ -25,7 +40,8 @@ public class ResultOperationSagaScopeTests
                 .BindAsync(async (b, ct) =>
                 {
                     var flight = await flightService.BookAsync(b.FlightDetails, ct);
-                    saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
+                    saga.RegisterCompensation("FlightCancellation",
+                        async ct => await flightService.CancelAsync(flight.Id, ct));
                     b.FlightConfirmation = flight.ConfirmationNumber;
 
                     return Result<TripBooking>.Success(b);
@@ -33,7 +49,8 @@ public class ResultOperationSagaScopeTests
                 .BindAsync(async (b, ct) =>
                 {
                     var hotel = await hotelService.BookAsync(b.HotelDetails, ct);
-                    saga.RegisterCompensation(async ct => await hotelService.CancelAsync(hotel.Id, ct));
+                    saga.RegisterCompensation("HotelCancellation",
+                        async ct => await hotelService.CancelAsync(hotel.Id, ct));
                     b.HotelConfirmation = hotel.ConfirmationNumber;
 
                     return Result<TripBooking>.Success(b);
@@ -47,6 +64,16 @@ public class ResultOperationSagaScopeTests
         saga.IsCommitted.ShouldBeTrue();
         saga.IsRolledBack.ShouldBeFalse();
         saga.CompensationCount.ShouldBe(2); // Two compensations registered
+        saga.Context.CorrelationId.ShouldBe("test-correlation-id");
+        saga.Context.GetProperty<string>("UserId").ShouldBe("user-123");
+        saga.Context.GetProperty<string>("RequestId").ShouldBe("556677");
+
+        // Verify compensation events
+        compensationEvents.Count.ShouldBe(2); // 2 registrations
+        compensationEvents.ShouldAllBe(e => e.EventType == CompensationEventType.Registered);
+        compensationEvents[0].StepName.ShouldBe("FlightCancellation");
+        compensationEvents[1].StepName.ShouldBe("HotelCancellation");
+
         flightService.BookedFlights.Count.ShouldBe(1);
         flightService.CancelledFlights.Count.ShouldBe(0); // Not cancelled
         hotelService.BookedHotels.Count.ShouldBe(1);
@@ -263,7 +290,8 @@ public class ResultOperationSagaScopeTests
                 .BindAsync(async (b, ct) =>
                 {
                     var flight = await flightService.BookAsync(b.FlightDetails, ct);
-                    saga.RegisterCompensation(async ct => await flightService.CancelAsync(flight.Id, ct));
+                    saga.RegisterCompensation("FlightCancellation",
+                        async ct => await flightService.CancelAsync(flight.Id, ct));
                     b.FlightConfirmation = flight.ConfirmationNumber;
 
                     // Trigger cancellation AFTER successful booking
@@ -286,6 +314,119 @@ public class ResultOperationSagaScopeTests
         result.ShouldContainError<OperationCancelledError>();
         saga.IsRolledBack.ShouldBeTrue();
         saga.CompensationExecutedCount.ShouldBe(1); // Flight compensation executed
+    }
+
+    [Fact]
+    public async Task SagaScope_WithConditionalCompensation_OnlyExecutesWhenConditionMet()
+    {
+        // Arrange
+        var logger = Substitute.For<ILogger>();
+        var saga = new SagaOperationScope(logger);
+        var booking = new TripBooking();
+        var flightService = new TestFlightService();
+        var paymentCaptured = false; // Condition: payment not captured
+
+        var compensationEvents = new List<SagaCompensationEvent>();
+        saga.OnCompensationEvent += (evt) =>
+        {
+            compensationEvents.Add(evt);
+            return Task.CompletedTask;
+        };
+
+        // Act
+        var result = await Result<TripBooking>.Success(booking)
+            .StartOperation(saga)
+                .BindAsync(async (b, ct) =>
+                {
+                    var flight = await flightService.BookAsync(b.FlightDetails, ct);
+                    saga.RegisterCompensation("FlightCancellation",
+                        async ct => await flightService.CancelAsync(flight.Id, ct));
+                    b.FlightConfirmation = flight.ConfirmationNumber;
+
+                    return Result<TripBooking>.Success(b);
+                }, CancellationToken.None)
+                .BindAsync((b, ct) =>
+                {
+                    // Register conditional compensation for payment reversal
+                    // Only execute if payment was actually captured
+                    saga.RegisterCompensation("PaymentReversal",
+                        async ct => await Task.CompletedTask, // Mock payment reversal
+                        async ct => await Task.FromResult(paymentCaptured)); // Condition: only if captured
+
+                    return Task.FromResult(Result<TripBooking>.Success(b));
+                }, CancellationToken.None)
+                .EnsureAsync(async (b, ct) =>
+                {
+                    await Task.Delay(1, ct);
+                    return false; // Force rollback
+                }, new ValidationError("Forced failure"))
+            .EndOperationAsync(CancellationToken.None);
+
+        // Assert
+        result.ShouldBeFailure();
+        saga.IsRolledBack.ShouldBeTrue();
+        saga.CompensationExecutedCount.ShouldBe(1); // Only flight, payment reversal skipped
+        flightService.CancelledFlights.Count.ShouldBe(1);
+
+        // Verify compensation events include skipped event
+        compensationEvents.ShouldContain(e =>
+            e.EventType == CompensationEventType.Skipped &&
+            e.StepName == "PaymentReversal");
+        compensationEvents.ShouldContain(e =>
+            e.EventType == CompensationEventType.Succeeded &&
+            e.StepName == "FlightCancellation");
+    }
+
+    [Fact]
+    public async Task SagaScope_WithEvents_NotifiesAllLifecycleStages()
+    {
+        // Arrange
+        var saga = new SagaOperationScope();
+        var booking = new TripBooking();
+        var flightService = new TestFlightService();
+
+        var events = new List<SagaCompensationEvent>();
+        saga.OnCompensationEvent += (evt) =>
+        {
+            events.Add(evt);
+            return Task.CompletedTask;
+        };
+
+        // Act
+        var result = await Result<TripBooking>.Success(booking)
+            .StartOperation(saga)
+                .BindAsync(async (b, ct) =>
+                {
+                    var flight = await flightService.BookAsync(b.FlightDetails, ct);
+                    saga.RegisterCompensation("FlightCancellation",
+                        async ct => await flightService.CancelAsync(flight.Id, ct));
+                    b.FlightConfirmation = flight.ConfirmationNumber;
+
+                    return Result<TripBooking>.Success(b);
+                }, CancellationToken.None)
+                .EnsureAsync(async (b, ct) =>
+                {
+                    await Task.Delay(1, ct);
+                    return false; // Force rollback
+                }, new ValidationError("Forced failure"))
+            .EndOperationAsync(CancellationToken.None);
+
+        // Assert
+        result.ShouldBeFailure();
+        saga.IsRolledBack.ShouldBeTrue();
+
+        // Verify all event types
+        events.Count.ShouldBe(3);
+        events[0].EventType.ShouldBe(CompensationEventType.Registered);
+        events[0].StepName.ShouldBe("FlightCancellation");
+
+        events[1].EventType.ShouldBe(CompensationEventType.Started);
+        events[1].StepName.ShouldBe("FlightCancellation");
+
+        events[2].EventType.ShouldBe(CompensationEventType.Succeeded);
+        events[2].StepName.ShouldBe("FlightCancellation");
+        events[2].Duration.ShouldNotBeNull();
+        events[2].Duration.Value.TotalMilliseconds.ShouldBeGreaterThanOrEqualTo(0);
     }
 }
 

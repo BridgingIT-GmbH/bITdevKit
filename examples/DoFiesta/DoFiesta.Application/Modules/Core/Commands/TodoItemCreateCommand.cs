@@ -39,7 +39,7 @@ public class TodoItemCreateCommandHandler(
     protected override async Task<Result<TodoItemModel>> HandleAsync(TodoItemCreateCommand request, SendOptions options, CancellationToken cancellationToken) =>
         await Result<TodoItem>.Success(mapper.Map<TodoItemModel, TodoItem>(request.Model))
             // Start transaction scope using repository transaction
-            .StartOperation(async ct => await transaction.BeginTransactionAsync(ct))
+            .StartOperation(transaction.BeginAsync)
             // Set current user
             .Tap(e => e.UserId = currentUserAccessor.UserId)
             // Generate sequence number

@@ -16,14 +16,5 @@ public interface IRepositoryTransaction<TEntity>
     ///     Begins a new transaction and returns it for manual control.
     ///     Use this when you need explicit control over commit/rollback (e.g., with ResultOperationScope).
     /// </summary>
-    Task<IRepositoryTransactionScope> BeginTransactionAsync(CancellationToken cancellationToken = default);
-}
-
-/// <summary>
-///     Represents a repository transaction scope with explicit commit/rollback control.
-///     Implements IOperationScope for use with ResultOperationScope.
-/// </summary>
-public interface IRepositoryTransactionScope : IOperationScope
-{
-    // Inherits CommitAsync and RollbackAsync from IOperationScope
+    Task<ITransactionOperationScope> BeginAsync(CancellationToken cancellationToken = default);
 }

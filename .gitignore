@@ -421,3 +421,4 @@ FodyWeavers.xsd
 /src/**/CombinedSource.md
 
 /.tmp/
+.claude

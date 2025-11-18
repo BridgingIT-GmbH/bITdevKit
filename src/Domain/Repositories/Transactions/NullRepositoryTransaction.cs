@@ -17,4 +17,9 @@ public class NullRepositoryTransaction<TEntity> : IRepositoryTransaction<TEntity
     {
         return await action();
     }
+
+    public Task<ITransactionOperationScope> BeginAsync(CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult<ITransactionOperationScope>(new NullTransactionScope());
+    }
 }

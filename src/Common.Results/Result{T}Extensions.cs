@@ -2309,4 +2309,71 @@ public static class ResultTExtensions
             return result;
         }
     }
+
+    /// <summary>
+    ///     Starts a scoped operation (e.g., database transaction) around a Result chain.
+    ///     The operation is lazily started on the first async operation in the chain.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <typeparam name="TOperation">The type of the operation, must implement IOperationScope.</typeparam>
+    /// <param name="result">The result to wrap in an operation scope.</param>
+    /// <param name="operation">Function to start the operation (e.g., BeginTransactionAsync).</param>
+    /// <returns>A ResultOperationScope that allows chaining operations and ending with EndOperationAsync.</returns>
+    /// <example>
+    /// <code>
+    /// // With database transaction
+    /// await Result{Unit}.Success()
+    ///     .StartOperation(async ct => await transaction.BeginTransactionAsync(ct))
+    ///     .EnsureAsync(async (e, ct) =>
+    ///         await permissionEvaluator.HasPermissionAsync(currentUser, id, Permission.Delete, ct),
+    ///         new UnauthorizedError())
+    ///     .BindAsync(async (e, ct) =>
+    ///         await repository.DeleteResultAsync(id, ct))
+    ///     .Tap(e => Console.WriteLine("AUDIT"))
+    ///     .EndOperationAsync(cancellationToken); // Simplified API
+    ///
+    /// // With custom operation
+    /// await Result{User}.Success(user)
+    ///     .StartOperation(async ct => await AcquireLockAsync(userId, ct))
+    ///     .BindAsync(async (user, ct) => await UpdateUserAsync(user, ct))
+    ///     .EndOperationAsync(cancellationToken); // Simplified API
+    /// </code>
+    /// </example>
+    public static ResultOperationScope<T, TOperation> StartOperation<T, TOperation>(
+        this Result<T> result,
+        Func<CancellationToken, Task<TOperation>> operation)
+        where TOperation : class, IOperationScope
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+
+        return new ResultOperationScope<T, TOperation>(result, operation);
+    }
+
+    /// <summary>
+    ///     Starts a scoped operation with a synchronously created operation object.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <typeparam name="TOperation">The type of the operation, must implement IOperationScope.</typeparam>
+    /// <param name="result">The result to wrap in an operation scope.</param>
+    /// <param name="operation">The operation instance (e.g., a transaction that was already started).</param>
+    /// <returns>A ResultOperationScope that allows chaining operations and ending with EndOperationAsync.</returns>
+    /// <example>
+    /// <code>
+    /// var transaction = await dbContext.Database.BeginTransactionAsync(cancellationToken);
+    /// await Result{Unit}.Success()
+    ///     .StartOperation(transaction)
+    ///     .EnsureAsync(...)
+    ///     .BindAsync(...)
+    ///     .EndOperationAsync(cancellationToken); // Simplified API
+    /// </code>
+    /// </example>
+    public static ResultOperationScope<T, TOperation> StartOperation<T, TOperation>(
+        this Result<T> result,
+        TOperation operation)
+        where TOperation : class, IOperationScope
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+
+        return new ResultOperationScope<T, TOperation>(result, ct => Task.FromResult(operation));
+    }
 }

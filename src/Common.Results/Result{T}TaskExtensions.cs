@@ -1981,27 +1981,113 @@ public static partial class ResultTTaskExtensions
         }
     }
 
-    public static async Task<Result<TOutput>> Wrap<TOutput>(this Task<Result<TOutput>> resultTask)
+    /// <summary>
+    /// Starts an operation scope for the Result task, allowing transactional or scoped operations
+    /// to be performed within the result pipeline.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <typeparam name="TOperation">The type of operation scope implementing IOperationScope.</typeparam>
+    /// <param name="resultTask">The Result task to attach the operation scope to.</param>
+    /// <param name="operation">An async factory function that creates the operation scope.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>
+    /// A <see cref="ResultOperationScope{T, TOperation}"/> that wraps the result and the operation scope,
+    /// allowing subsequent operations to complete or rollback the scope.
+    /// </returns>
+    /// <remarks>
+    /// This method is useful for wrapping results with transactional contexts, database transactions,
+    /// distributed tracing spans, or any other scoped operation that needs to be committed or rolled back
+    /// based on the success or failure of subsequent pipeline operations.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// await GetUserAsync(userId)
+    ///     .StartOperation(async ct => await _dbContext.Database.BeginTransactionAsync(ct), cancellationToken)
+    ///     .Then(async scope => await UpdateUserAsync(scope.Value))
+    ///     .CompleteOperation();
+    /// </code>
+    /// </example>
+    public static async Task<ResultOperationScope<T, TOperation>> StartOperation<T, TOperation>(
+        this Task<Result<T>> resultTask,
+        Func<CancellationToken, Task<TOperation>> operation,
+        CancellationToken cancellationToken = default)
+        where TOperation : class, IOperationScope
     {
-        try
-        {
-            var result = await resultTask;
+        ArgumentNullException.ThrowIfNull(operation);
 
-            return result.Wrap<TOutput>();
-        }
-        catch (OperationCanceledException)
-        {
-            return Result<TOutput>.Failure()
-                .WithError(new OperationCancelledError("Operation was cancelled"));
-        }
-        catch (Exception ex)
-        {
-            return Result<TOutput>.Failure()
-                .WithError(new ExceptionError(ex))
-                .WithMessage(ex.Message);
-        }
+        var result = await resultTask;
+
+        return result.StartOperation(operation);
     }
 
+    /// <summary>
+    /// Starts an operation scope for the Result task using an existing operation scope instance,
+    /// allowing transactional or scoped operations to be performed within the result pipeline.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <typeparam name="TOperation">The type of operation scope implementing IOperationScope.</typeparam>
+    /// <param name="resultTask">The Result task to attach the operation scope to.</param>
+    /// <param name="operation">An existing operation scope instance.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>
+    /// A <see cref="ResultOperationScope{T, TOperation}"/> that wraps the result and the operation scope,
+    /// allowing subsequent operations to complete or rollback the scope.
+    /// </returns>
+    /// <remarks>
+    /// This overload accepts an already-created operation scope, useful when the scope was created
+    /// earlier in the pipeline or passed in from an outer context.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// var transaction = await _dbContext.Database.BeginTransactionAsync(cancellationToken);
+    ///
+    /// await GetUserAsync(userId)
+    ///     .StartOperation(transaction, cancellationToken)
+    ///     .Then(async scope => await UpdateUserAsync(scope.Value))
+    ///     .CompleteOperation();
+    /// </code>
+    /// </example>
+    public static async Task<ResultOperationScope<T, TOperation>> StartOperation<T, TOperation>(
+        this Task<Result<T>> resultTask,
+        TOperation operation,
+        CancellationToken cancellationToken = default)
+        where TOperation : class, IOperationScope
+    {
+        ArgumentNullException.ThrowIfNull(operation);
+
+        var result = await resultTask;
+
+        return result.StartOperation(operation);
+    }
+
+    /// <summary>
+    /// Unwraps a <see cref="Result{T}"/> task to a non-generic <see cref="Result"/> task,
+    /// discarding the typed value while preserving success/failure state and errors.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value to discard.</typeparam>
+    /// <param name="resultTask">The typed Result task to unwrap.</param>
+    /// <returns>
+    /// A non-generic <see cref="Result"/> task indicating success or failure with the same
+    /// errors and messages as the original, but without the typed value.
+    /// </returns>
+    /// <remarks>
+    /// This is useful when you only care about the success/failure state of an operation
+    /// and not the actual value returned. Common scenarios include validation pipelines,
+    /// void operations, or when interfacing with APIs that expect non-generic Results.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// // When you only need to know if the operation succeeded
+    /// Result result = await CreateUserAsync(request)
+    ///     .Validate(new UserValidator())
+    ///     .Unwrap();
+    ///
+    /// if (result.IsFailure)
+    /// {
+    ///     return BadRequest(result.Errors);
+    /// }
+    /// </code>
+    /// </example>
     public static async Task<Result> Unwrap<T>(this Task<Result<T>> resultTask)
     {
         var result = await resultTask;

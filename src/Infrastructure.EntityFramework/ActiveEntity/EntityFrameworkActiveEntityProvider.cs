@@ -1156,7 +1156,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
                 await this.context.Database.BeginTransactionAsync(cancellationToken).AnyContext();
             }
 
-            return Result<IDatabaseTransaction>.Success(new DatabaseTransaction(this.context)).WithMessage("Transaction has been started.");
+            return Result<IDatabaseTransaction>.Success(new EntityFrameworkDatabaseTransaction(this.context)).WithMessage("Transaction has been started.");
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {

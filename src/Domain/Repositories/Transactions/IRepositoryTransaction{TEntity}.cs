@@ -11,4 +11,10 @@ public interface IRepositoryTransaction<TEntity>
     Task ExecuteScopedAsync(Func<Task> action, CancellationToken cancellationToken = default);
 
     Task<TEntity> ExecuteScopedAsync(Func<Task<TEntity>> action, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    ///     Begins a new transaction and returns it for manual control.
+    ///     Use this when you need explicit control over commit/rollback (e.g., with ResultOperationScope).
+    /// </summary>
+    Task<ITransactionOperationScope> BeginAsync(CancellationToken cancellationToken = default);
 }

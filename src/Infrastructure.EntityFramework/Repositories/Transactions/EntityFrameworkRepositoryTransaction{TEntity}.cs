@@ -38,4 +38,10 @@ public class EntityFrameworkRepositoryTransaction<TEntity> : IRepositoryTransact
         return await ResilientTransaction.Create(this.context)
             .ExecuteAsync(async () => await action().AnyContext(), cancellationToken).AnyContext();
     }
+
+    public async Task<ITransactionOperationScope> BeginAsync(CancellationToken cancellationToken = default)
+    {
+        var transaction = await this.context.Database.BeginTransactionAsync(cancellationToken);
+        return new EntityFrameworkTransactionScope(transaction);
+    }
 }

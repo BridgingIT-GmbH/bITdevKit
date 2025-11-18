@@ -45,7 +45,6 @@ public static partial class ServiceCollectionExtensions
         services.AddTransient<IConsoleCommand, EchoConsoleCommand>();
         services.AddTransient<IConsoleCommand, BrowseConsoleCommand>();
         services.AddTransient<IConsoleCommand, RequesterInfoConsoleCommand>();
-        services.AddTransient<IConsoleCommand, NotifierInfoConsoleCommand>();
 
         // extra command registrations
         if (configure is not null)

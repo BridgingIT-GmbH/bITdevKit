@@ -6,6 +6,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 
 using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;
@@ -57,6 +58,7 @@ public class TodoItemCreateCommandHandler(
                     .CheckAsync(ct), cancellationToken: cancellationToken)
                 // Register domain event
                 .Tap(e => e.DomainEvents.Register(new TodoItemCreatedDomainEvent(e)))
+                .Tap(e => e.DomainEvents.Register(new EntityCreatedDomainEvent<TodoItem>(e)))
                 // Insert into database
                 .BindAsync(async (e, ct) =>
                     await repository.InsertResultAsync(e, ct), cancellationToken: cancellationToken)

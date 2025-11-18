@@ -87,11 +87,24 @@ public static class TypeExtensions
     [DebuggerStepThrough]
     public static string AssemblyQualifiedNameShort(this Type source)
     {
-        // ommits the assembly version and culture
-        var assemblyQualifiedName = source.AssemblyQualifiedName;
+        var aqn = source.AssemblyQualifiedName; /// Remove version, culture, and public key token info but preserve structure
+        if (string.IsNullOrEmpty(aqn))
+        {
+            return string.Empty;
+        }
 
-        return $"{assemblyQualifiedName.Split(',')[0]}, {assemblyQualifiedName.Split(',')[1]}".Replace("  ", " ");
+        var regex = new System.Text.RegularExpressions.Regex(
+            @", Version=\d+\.\d+\.\d+\.\d+, Culture=\w+, PublicKeyToken=\w+");
+
+        return regex.Replace(aqn, "").Replace("  ", " ");
     }
+    //public static string AssemblyQualifiedNameShort(this Type source)
+    //{
+    //    // ommits the assembly version and culture
+    //    var assemblyQualifiedName = source.AssemblyQualifiedName;
+
+    //    return $"{assemblyQualifiedName.Split(',')[0]}, {assemblyQualifiedName.Split(',')[1]}".Replace("  ", " ");
+    //}
 
     [DebuggerStepThrough]
     public static bool IsNumeric(this Type type)

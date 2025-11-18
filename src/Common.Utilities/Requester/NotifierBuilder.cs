@@ -100,6 +100,7 @@ public class NotifierBuilder
                         var notificationType = handlerInterface.GetGenericArguments()[0];
 
                         this.handlerCache.TryAdd(handlerInterface, type);
+                        Console.WriteLine($"+++++++++++++++++++ Notifier: {notificationType.Name} -> {type.Name}");
                         this.policyCache.TryAdd(type, new PolicyConfig
                         {
                             AuthorizePolicy = type.GetCustomAttribute<HandlerAuthorizePolicyAttribute>(),

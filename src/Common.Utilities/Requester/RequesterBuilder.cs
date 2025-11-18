@@ -96,6 +96,7 @@ public class RequesterBuilder
                         .GetGenericArguments()[1];
 
                     this.handlerCache.TryAdd(typeof(IRequestHandler<,>).MakeGenericType(requestType, valueType), type);
+                    Console.WriteLine($"+++++++++++++++++++ Requester: {requestType.Name} -> {type.Name}");
                     this.policyCache.TryAdd(type, new PolicyConfig
                     {
                         AuthorizePolicy = type.GetCustomAttribute<HandlerAuthorizePolicyAttribute>(),

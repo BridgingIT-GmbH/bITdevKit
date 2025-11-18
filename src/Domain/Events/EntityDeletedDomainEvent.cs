@@ -8,5 +8,8 @@ namespace BridgingIT.DevKit.Domain;
 public class EntityDeletedDomainEvent<TEntity>(TEntity entity) : DomainEventBase
     where TEntity : class, IEntity, IAggregateRoot
 {
-    public TEntity Entity { get; } = entity;
+    protected EntityDeletedDomainEvent() : this(null)
+    { }
+
+    public TEntity Entity { get; protected set; } = entity;
 }

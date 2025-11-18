@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;
 
 using BridgingIT.DevKit.Domain;
+using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using Microsoft.Extensions.Logging;
 using System.Threading;
 using System.Threading.Tasks;
@@ -35,7 +36,7 @@ public class TodoItemUpdatedDomainEventHandler(ILoggerFactory loggerFactory)
     public override Task Process(TodoItemUpdatedDomainEvent notification, CancellationToken cancellationToken)
     {
         // implement event reaction logic (audit, notify, etc.)
-        this.Logger.LogInformation("DoFiesta - TodoItemUpdatedDomainEvent handled in Domain");
+        this.Logger.LogInformation("DoFiesta - TodoItemUpdatedDomainEvent handled in Domain " + notification.Model?.Title);
 
         return Task.CompletedTask;
     }

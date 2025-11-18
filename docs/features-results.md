@@ -1093,7 +1093,9 @@ public class FileSystemScope : IOperationScope
 
 #### 2. Saga/Workflow Orchestration
 
-**Scenario**: Execute multi-step workflow with compensation logic for rollback. An example implementation can be found [here](/tests/Common.UnitTests/Results/ResultOperationSagaScopeTests.cs)
+The [Saga design pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/saga) helps maintain data consistency in distributed systems by coordinating transactions across multiple services. A saga is a sequence of local transactions where each service performs its operation and initiates the next step through events or messages. If a step in the sequence fails, the saga performs compensating transactions to undo the completed steps. This approach helps maintain data consistency.
+
+**Scenario**: Execute multi-step workflow with compensation logic for rollback. An example can be found [here](/tests/Common.UnitTests/Results/ResultOperationSagaScopeTests.cs)
 
 ```csharp
 // Usage: Book trip (flight + hotel + car) with compensations

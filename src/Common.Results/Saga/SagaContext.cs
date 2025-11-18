@@ -34,7 +34,7 @@ public class SagaContext
     /// </summary>
     /// <param name="key">The metadata key.</param>
     /// <param name="value">The metadata value.</param>
-    public void SetProperty(string key, object value) // TODO: use ProperyBag.Set instead
+    public void SetProperty(string key, object value)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(key);
 

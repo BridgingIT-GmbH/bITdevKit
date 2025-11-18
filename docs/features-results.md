@@ -1093,7 +1093,7 @@ public class FileSystemScope : IOperationScope
 
 #### 2. Saga/Workflow Orchestration
 
-**Scenario**: Execute multi-step workflow with compensation logic for rollback.
+**Scenario**: Execute multi-step workflow with compensation logic for rollback. An example implementation can be found [here](/tests/Common.UnitTests/Results/ResultOperationSagaScopeTests.cs)
 
 ```csharp
 public interface ISagaScope : IOperationScope

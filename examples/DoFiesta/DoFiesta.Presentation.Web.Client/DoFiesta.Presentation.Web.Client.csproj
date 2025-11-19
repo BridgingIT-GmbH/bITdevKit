@@ -31,11 +31,13 @@
     <OpenApiJson>..\DoFiesta.Presentation.Web.Server\wwwroot\openapi.json</OpenApiJson>
   </PropertyGroup>
 
-  <Target Name="KiotaGenerate" BeforeTargets="Compile">
-    <Message Text="Generating Kiota client from $(OpenApiJson)" Importance="high" />
-    <!-- tools part of manifest -->
+  <Target Name="KiotaGenerate" BeforeTargets="Build">
+    <Message Text="dotnet tool restore" Importance="high" />
     <Exec Command="dotnet tool restore" ContinueOnError="WarnAndContinue" />
+
+    <Message Text="Generating Kiota client from $(OpenApiJson)" Importance="high" />
     <Exec Command="dotnet kiota generate --log-level Error --language $(KiotaLanguage) --openapi $(OpenApiJson) --output $(KiotaOutDir) --namespace-name $(KiotaNamespace) --class-name $(KiotaClientName)" ContinueOnError="WarnAndContinue" />
+
     <ItemGroup>
       <Compile Include="$(KiotaOutDir)\**\*.cs" />
     </ItemGroup>

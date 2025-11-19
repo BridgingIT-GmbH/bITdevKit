@@ -134,7 +134,8 @@ public static partial class ApplicationBuilderExtensions
                     console.MarkupLine("[red]" + e + "[/]");
                 }
 
-                ConsoleCommandBinder.WriteHelp(console, cmd, detailed: true); continue;
+                ConsoleCommandBinder.WriteHelp(console, cmd, detailed: true);
+                continue;
             }
             try { cmd.OnAfterBind(console, tokens); }
             catch (Exception hookEx) { console.MarkupLine("[red]Post-bind validation failed:[/] " + hookEx.Message); continue; }

@@ -98,7 +98,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
             }
             catch (OperationCanceledException)
             {
-                this.logger.LogInformation("{LogKey} outbox message service stopped due to cancellation", Constants.LogKey);
+                this.logger.LogInformation("{LogKey} outbox message service stopped", Constants.LogKey);
             }
         });
 

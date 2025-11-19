@@ -70,7 +70,7 @@ public class OutboxNotificationEmailService(
             }
             catch (OperationCanceledException)
             {
-                this.logger.LogInformation("{LogKey} outbox notification email service stopped due to cancellation", Constants.LogKey);
+                this.logger.LogInformation("{LogKey} outbox notification email service stopped", Constants.LogKey);
             }
             catch (Exception ex)
             {

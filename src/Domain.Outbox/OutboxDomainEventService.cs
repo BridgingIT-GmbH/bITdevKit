@@ -108,7 +108,7 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
             }
             catch (OperationCanceledException)
             {
-                this.logger.LogInformation("{LogKey} outbox domain event service stopped due to cancellation", Constants.LogKey);
+                this.logger.LogInformation("{LogKey} outbox domain event service stopped", Constants.LogKey);
             }
         });
 

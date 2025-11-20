@@ -13,6 +13,22 @@ using Serilog.Debugging;
 
 public static class HostBuilderExtensions
 {
+    /// <summary>
+    /// Configures Serilog-based logging for the specified host builder, applying optional filters and OpenTelemetry
+    /// integration based on the provided configuration and exclusion patterns.
+    /// </summary>
+    /// <remarks>Logging configuration is only applied if Serilog has not already been set up for the host
+    /// builder. Health check and telemetry endpoints are excluded from logs by default. If OpenTelemetry configuration
+    /// is provided, logs are exported accordingly. This method is intended to be called during application
+    /// startup.</remarks>
+    /// <param name="builder">The host builder to configure logging for. Cannot be null.</param>
+    /// <param name="configuration">An optional configuration source used to customize Serilog and OpenTelemetry logging settings. If null, default
+    /// configuration is used.</param>
+    /// <param name="exclusionPatterns">An optional array of filter expressions that specify log events to exclude. Each pattern is applied as a Serilog
+    /// filter.</param>
+    /// <param name="selfLogEnabled">A value indicating whether Serilog internal diagnostic messages should be written to the console error stream.
+    /// Set to <see langword="true"/> to enable self-logging.</param>
+    /// <returns>The same <see cref="IHostBuilder"/> instance, with logging configured according to the specified parameters.</returns>
     public static IHostBuilder ConfigureLogging(
         this IHostBuilder builder,
         IConfiguration configuration = null,

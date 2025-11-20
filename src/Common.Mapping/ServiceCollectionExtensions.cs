@@ -15,6 +15,16 @@ using IMapper = BridgingIT.DevKit.Common.IMapper;
 
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds mapping services to the specified service collection and returns a context for further configuration.
+    /// </summary>
+    /// <remarks>This method is typically called during application startup to register mapping services and
+    /// perform additional configuration. The returned context allows chaining further mapping setup
+    /// operations.</remarks>
+    /// <param name="services">The service collection to which mapping services will be added. Cannot be null.</param>
+    /// <param name="configuration">An optional configuration source used to configure mapping services. If null, default configuration is used.</param>
+    /// <param name="optionsAction">An optional delegate that can be used to further configure the mapping builder context after initialization.</param>
+    /// <returns>A MappingBuilderContext instance that can be used to configure mapping services.</returns>
     public static MappingBuilderContext AddMapping(
         this IServiceCollection services,
         IConfiguration configuration = null,
@@ -28,6 +38,13 @@ public static class ServiceCollectionExtensions
         return context;
     }
 
+    /// <summary>
+    /// Configures Mapster mapping for the specified builder context using the provided configuration and section name.
+    /// </summary>
+    /// <param name="context">The mapping builder context to configure. Cannot be null.</param>
+    /// <param name="configuration">The Mapster configuration to use for mapping. If null, the default configuration is applied.</param>
+    /// <param name="section">The configuration section name to use for Mapster settings. Defaults to "Mapping:Mapster" if not specified.</param>
+    /// <returns>A MapsterBuilderContext instance configured with Mapster mapping based on the specified parameters.</returns>
     public static MapsterBuilderContext WithMapster(
         this MappingBuilderContext context,
         MapsterConfiguration configuration = null,

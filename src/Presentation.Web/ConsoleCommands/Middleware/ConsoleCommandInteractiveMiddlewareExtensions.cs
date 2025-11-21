@@ -21,7 +21,12 @@ public static class ConsoleCommandInteractiveMiddlewareExtensions
     /// <returns>The configured <see cref="WebApplication"/>.</returns>
     public static WebApplication UseConsoleCommandsInteractiveStats(this WebApplication app)
     {
-        var stats = app.Services.GetRequiredService<ConsoleCommandInteractiveRuntimeStats>();
+        var stats = app.Services.GetService<ConsoleCommandInteractiveRuntimeStats>();
+        if (stats == null)
+        {
+            return app;
+        }
+
         app.Use(async (ctx, next) =>
         {
             var sw = Stopwatch.StartNew();

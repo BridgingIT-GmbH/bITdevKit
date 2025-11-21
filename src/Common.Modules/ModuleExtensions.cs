@@ -22,6 +22,21 @@ public static class ModuleExtensions
 
     public static string ServiceName { get; } = Assembly.GetExecutingAssembly().GetName().Name;
 
+    /// <summary>
+    /// Registers module services and activity sources with the specified service collection, using optional
+    /// configuration and environment settings.
+    /// </summary>
+    /// <remarks>This method scans the provided assemblies for modules, configures their enablement based on
+    /// the configuration, and registers each enabled module with the service collection. Activity sources are
+    /// registered for each module and for the service as a whole. This method should be called during application
+    /// startup to ensure all modules are properly registered.</remarks>
+    /// <param name="services">The service collection to which module services and activity sources will be added. Cannot be null.</param>
+    /// <param name="configuration">An optional configuration source used to determine module enablement and provide settings during registration.
+    /// If null, all modules are enabled by default.</param>
+    /// <param name="environment">An optional web host environment that may be used by modules during registration.</param>
+    /// <param name="assemblies">One or more assemblies to scan for modules to register. If no assemblies are provided, no modules will be
+    /// discovered.</param>
+    /// <returns>A ModuleBuilderContext instance containing the registered services and configuration.</returns>
     public static ModuleBuilderContext AddModules(
         this IServiceCollection services,
         IConfiguration configuration = null,
@@ -79,6 +94,14 @@ public static class ModuleExtensions
         return context;
     }
 
+    /// <summary>
+    /// Adds a module of the specified type to the current module builder context.
+    /// </summary>
+    /// <remarks>This method is a generic convenience overload for adding a module by type. It is equivalent
+    /// to calling <c>WithModule(context, typeof(T))</c>.</remarks>
+    /// <typeparam name="T">The type of the module to add. Must implement <see cref="IModule"/> and be a reference type.</typeparam>
+    /// <param name="context">The module builder context to which the module will be added. Cannot be null.</param>
+    /// <returns>A new <see cref="ModuleBuilderContext"/> instance that includes the specified module type.</returns>
     public static ModuleBuilderContext WithModule<T>(this ModuleBuilderContext context)
         where T : class, IModule
     {

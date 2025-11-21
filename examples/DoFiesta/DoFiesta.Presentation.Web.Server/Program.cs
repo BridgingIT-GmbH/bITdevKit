@@ -15,7 +15,6 @@ using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using MudBlazor.Services;
 using Scalar.AspNetCore;

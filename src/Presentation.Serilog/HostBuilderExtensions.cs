@@ -2,14 +2,16 @@
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
-
 namespace Microsoft.Extensions.Hosting;
 
 using BridgingIT.DevKit.Presentation;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Serilog.Core;
 using Serilog.Debugging;
+using Serilog.Events;
 
 public static class HostBuilderExtensions
 {
@@ -17,7 +19,8 @@ public static class HostBuilderExtensions
         this IHostBuilder builder,
         IConfiguration configuration = null,
         string[] exclusionPatterns = null,
-        bool selfLogEnabled = false)
+        bool selfLogEnabled = false,
+        bool registerLogCommands = true)
     {
         EnsureArg.IsNotNull(builder, nameof(builder));
 
@@ -48,13 +51,37 @@ public static class HostBuilderExtensions
                     WriteToOpenTelemetry(loggerConfiguration, configuration);
                 }
 
-                var logger = loggerConfiguration.ReadFrom.Configuration(ctx.Configuration).CreateLogger();
+                // setup the logging level switch
+                var levelSwitch = new LoggingLevelSwitch(LogEventLevel.Debug);
+                var levelConfig = ctx.Configuration.GetSection("Serilog:MinimumLevel:Default");
+                if (Enum.TryParse<LogEventLevel>(levelConfig.Value, out var level))
+                {
+                    levelSwitch.MinimumLevel = level;
+                }
+
+                LogLevelSwitchProvider.SetControlSwitch(levelSwitch);
+
+                var logger = loggerConfiguration
+                    .ReadFrom.Configuration(ctx.Configuration)
+                    .MinimumLevel.ControlledBy(levelSwitch) // use level switch for dynamic log level control
+                    .CreateLogger();
 
                 c.ClearProviders();
                 c.AddSerilog(logger);
                 builder.UseSerilog(logger);
 
+                if (registerLogCommands)
+                {
+                    builder.ConfigureServices((HostBuilderContext _, IServiceCollection collection) =>
+                    {
+                        collection.AddTransient<IConsoleCommand, LogLevelListConsoleCommand>();
+                        collection.AddTransient<IConsoleCommand, LogLevelGetConsoleCommand>();
+                        collection.AddTransient<IConsoleCommand, LogLevelSetConsoleCommand>();
+                    });
+                }
+
                 Log.Logger = logger;
+                Log.Logger.Information("{LogKey} logging configured using appsettings (MinimumLevel: {MinimumLevel}).", "LOG", levelSwitch.MinimumLevel);
             });
         }
 
@@ -64,7 +91,9 @@ public static class HostBuilderExtensions
     public static IHostBuilder ConfigureLogging(
         this IHostBuilder builder,
         Action<LoggerConfiguration> configure,
-        bool selfLogEnabled = false)
+        LogEventLevel logEventLevel = LogEventLevel.Debug,
+        bool selfLogEnabled = false,
+        bool registerLogCommands = true)
     {
         EnsureArg.IsNotNull(builder, nameof(builder));
         EnsureArg.IsNotNull(configure, nameof(configure));
@@ -80,13 +109,31 @@ public static class HostBuilderExtensions
             {
                 var configuration = new LoggerConfiguration();
                 configure.Invoke(configuration);
-                var logger = configuration.CreateLogger();
+
+                // setup the logging level switch
+                var levelSwitch = new LoggingLevelSwitch(logEventLevel);
+                LogLevelSwitchProvider.SetControlSwitch(levelSwitch);
+
+                var logger = configuration
+                    .MinimumLevel.ControlledBy(levelSwitch) // use level switch for dynamic log level control
+                    .CreateLogger();
 
                 c.ClearProviders();
                 c.AddSerilog(logger);
                 //builder.UseSerilog(logger);
 
+                if (registerLogCommands)
+                {
+                    builder.ConfigureServices((HostBuilderContext _, IServiceCollection collection) =>
+                    {
+                        collection.AddTransient<IConsoleCommand, LogLevelListConsoleCommand>();
+                        collection.AddTransient<IConsoleCommand, LogLevelGetConsoleCommand>();
+                        collection.AddTransient<IConsoleCommand, LogLevelSetConsoleCommand>();
+                    });
+                }
+
                 Log.Logger = logger;
+                Log.Logger.Information("{LogKey} logging configured using custom action (MinimumLevel: {MinimumLevel}).", "LOG", levelSwitch.MinimumLevel);
             });
         }
 
@@ -95,8 +142,7 @@ public static class HostBuilderExtensions
 
     private static void WriteToOpenTelemetry(LoggerConfiguration loggerConfiguration, IConfiguration configuration)
     {
-        if (!string.IsNullOrEmpty(
-                configuration["OTEL_EXPORTER_OTLP_ENDPOINT"])) // add serilog > otel > aspire log forwarder
+        if (!string.IsNullOrEmpty(configuration["OTEL_EXPORTER_OTLP_ENDPOINT"])) // add serilog > otel > aspire log forwarder
         {
             loggerConfiguration.WriteTo.OpenTelemetry(
                 options => // https://github.com/serilog/serilog-sinks-opentelemetry?tab=readme-ov-file#getting-started

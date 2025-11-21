@@ -8,10 +8,21 @@ namespace BridgingIT.DevKit.Presentation;
 using Spectre.Console;
 using System.Threading.Tasks;
 
+/// <summary>
+/// Console command that displays the current Serilog log level.
+/// </summary>
 public class LogLevelGetConsoleCommand : LogLevelGroupConsoleCommandBase
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LogLevelGetConsoleCommand"/> class.
+    /// </summary>
     public LogLevelGetConsoleCommand() : base("get", "Show current log level") { }
 
+    /// <summary>
+    /// Executes the command: writes the current log level and its description to the console.
+    /// </summary>
+    /// <param name="console">The Spectre console used for output.</param>
+    /// <param name="services">Service provider (unused here but available for extensibility).</param>
     public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
     {
         await this.ExecuteWithLogLevelManagerAsync(console, async manager =>

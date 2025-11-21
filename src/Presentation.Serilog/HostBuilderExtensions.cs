@@ -13,8 +13,28 @@ using Serilog.Core;
 using Serilog.Debugging;
 using Serilog.Events;
 
+/// <summary>
+/// Provides extension methods for configuring Serilog logging on an <see cref="IHostBuilder"/>.
+/// </summary>
+/// <remarks>
+/// These extensions set up Serilog only if it has not already been configured (i.e. the logger is still a <c>SilentLogger</c>).
+/// They also establish a <see cref="LoggingLevelSwitch"/> which enables dynamic log level changes at runtime via console commands.
+/// Optionally, OpenTelemetry forwarding can be enabled when OTLP configuration values are present.
+/// </remarks>
 public static class HostBuilderExtensions
 {
+    /// <summary>
+    /// Configures Serilog logging from application configuration (appsettings) and registers runtime log level console commands.
+    /// </summary>
+    /// <param name="builder">The host builder to configure.</param>
+    /// <param name="configuration">Optional configuration root used (only) for OpenTelemetry sink setup. Serilog itself is read from the host builder context configuration.</param>
+    /// <param name="exclusionPatterns">Optional collection of Serilog expression filters to exclude log events (added in addition to default health/otel exclusions).</param>
+    /// <param name="selfLogEnabled">If <c>true</c>, enables Serilog self-log output to <see cref="System.Console.Error"/> for diagnostics.</param>
+    /// <param name="registerLogCommands">If <c>true</c>, registers console commands for listing, getting and setting the active log level at runtime.</param>
+    /// <returns>The same <see cref="IHostBuilder"/> instance for chaining.</returns>
+    /// <remarks>
+    /// The minimum level is controlled through a <see cref="LoggingLevelSwitch"/> whose initial value is read from <c>Serilog:MinimumLevel:Default</c> in configuration.
+    /// </remarks>
     public static IHostBuilder ConfigureLogging(
         this IHostBuilder builder,
         IConfiguration configuration = null,
@@ -88,6 +108,18 @@ public static class HostBuilderExtensions
         return builder;
     }
 
+    /// <summary>
+    /// Configures Serilog logging using a custom configuration action and registers runtime log level console commands.
+    /// </summary>
+    /// <param name="builder">The host builder to configure.</param>
+    /// <param name="configure">An action that receives a new <see cref="LoggerConfiguration"/> for custom sink/enrichment setup.</param>
+    /// <param name="logEventLevel">Initial minimum log level applied to the dynamic <see cref="LoggingLevelSwitch"/>.</param>
+    /// <param name="selfLogEnabled">If <c>true</c>, enables Serilog self-log output to <see cref="System.Console.Error"/> for diagnostics.</param>
+    /// <param name="registerLogCommands">If <c>true</c>, registers console commands for listing, getting and setting the active log level at runtime.</param>
+    /// <returns>The same <see cref="IHostBuilder"/> instance for chaining.</returns>
+    /// <remarks>
+    /// This overload does not read Serilog configuration from appsettings; the caller must fully configure the logger.
+    /// </remarks>
     public static IHostBuilder ConfigureLogging(
         this IHostBuilder builder,
         Action<LoggerConfiguration> configure,
@@ -140,6 +172,15 @@ public static class HostBuilderExtensions
         return builder;
     }
 
+    /// <summary>
+    /// Adds an OpenTelemetry sink to the provided <see cref="LoggerConfiguration"/> when OTLP environment/configuration variables are present.
+    /// </summary>
+    /// <param name="loggerConfiguration">The logger configuration to modify.</param>
+    /// <param name="configuration">Configuration for reading OTLP endpoint, headers and resource attributes.</param>
+    /// <remarks>
+    /// Expected configuration keys: <c>OTEL_EXPORTER_OTLP_ENDPOINT</c>, <c>OTEL_EXPORTER_OTLP_HEADERS</c> (comma separated key=value) and <c>OTEL_RESOURCE_ATTRIBUTES</c> (single key=value).
+    /// Throws if headers or attributes are malformed.
+    /// </remarks>
     private static void WriteToOpenTelemetry(LoggerConfiguration loggerConfiguration, IConfiguration configuration)
     {
         if (!string.IsNullOrEmpty(configuration["OTEL_EXPORTER_OTLP_ENDPOINT"])) // add serilog > otel > aspire log forwarder

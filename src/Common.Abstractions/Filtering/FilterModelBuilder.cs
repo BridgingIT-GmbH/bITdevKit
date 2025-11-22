@@ -374,6 +374,31 @@ public static class FilterModelBuilder
         }
 
         /// <summary>
+        /// Adds an include criterion to the filter model, specifying related entities to include using a string path.
+        /// </summary>
+        /// <param name="path">The navigation property path to include in the query.</param>
+        /// <param name="condition">If specified, applies the include only when the condition is <see langword="true"/>.</param>
+        /// <returns>The current <see cref="Builder{T}"/> instance for method chaining.</returns>
+        /// <example>
+        /// builder.AddInclude("Addresses");
+        /// builder.AddInclude("Addresses.City");
+        /// </example>
+        public Builder<T> AddInclude(string path, bool? condition = null)
+        {
+            EnsureArg.IsNotNullOrWhiteSpace(path, nameof(path));
+
+            if (condition.HasValue && !condition.Value)
+            {
+                return this;
+            }
+
+            this.filterModel.Includes ??= [];
+            this.filterModel.Includes.Add(path);
+
+            return this;
+        }
+
+        /// <summary>
         /// Determines whether the filter model contains any included items.
         /// </summary>
         public bool HasIncludes() =>

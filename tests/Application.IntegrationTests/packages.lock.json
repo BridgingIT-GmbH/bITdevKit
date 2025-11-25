@@ -22,9 +22,9 @@
       },
       "Microsoft.Azure.Cosmos": {
         "type": "Direct",
-        "requested": "[3.55.0, )",
-        "resolved": "3.55.0",
-        "contentHash": "s4VxMrLM/6GnbuYWK8iXez4yYSpq5XLxtx2RcqH5o92T7bQBiSleEENpen37niuH6wys4u5o1XlY1PdjBk3u2A==",
+        "requested": "[3.56.0, )",
+        "resolved": "3.56.0",
+        "contentHash": "YGdZL2FOHZ5W9DlPqobS7bwmq4PRnTMGGMkCA1O5aRtSiyklmbxAjAgur5Au0U23A/hh2k/vYkIJVcmmW1XRIw==",
         "dependencies": {
           "Azure.Core": "1.44.1",
           "Microsoft.Bcl.AsyncInterfaces": "6.0.0",
@@ -111,38 +111,38 @@
       },
       "Testcontainers.Azurite": {
         "type": "Direct",
-        "requested": "[4.8.1, )",
-        "resolved": "4.8.1",
-        "contentHash": "MffiF8csBqZDF8YQ42y7W5Koi8VbSgGB26w9Rnnn37ohrIMrJ9n9Kdhv9vY/Ltj0GvrnM2ep1TrT207rwemo/w==",
+        "requested": "[4.9.0, )",
+        "resolved": "4.9.0",
+        "contentHash": "4+ycchNDitX8a0Q08Q3tyJct1ZP+AazKgMpy15/xAg5ew38gpEm5FPMscpHcn5bIpXVXoVdP4mN/yT1B9iO+oQ==",
         "dependencies": {
-          "Testcontainers": "4.8.1"
+          "Testcontainers": "4.9.0"
         }
       },
       "Testcontainers.CosmosDb": {
         "type": "Direct",
-        "requested": "[4.8.1, )",
-        "resolved": "4.8.1",
-        "contentHash": "48sBLkjxMHIQBZoMkkol39KwicPqBh5uqBxFDsjcqdocY1UpaWBbH7iCrgnfCeS10Il+GPMS4V/0FYDzWtATQA==",
+        "requested": "[4.9.0, )",
+        "resolved": "4.9.0",
+        "contentHash": "cjwicJCavrg4w9YnFhdCHWIRYBeMzdjpdZkOatIRq4wUC8u2hMJR8EX25SQi4+T+DSEn/byFyK5kswzM5YyauQ==",
         "dependencies": {
-          "Testcontainers": "4.8.1"
+          "Testcontainers": "4.9.0"
         }
       },
       "Testcontainers.MsSql": {
         "type": "Direct",
-        "requested": "[4.8.1, )",
-        "resolved": "4.8.1",
-        "contentHash": "6uJdmEHc5fyd+RMSDQ2SrHt9eXfCjHtaqI5Nx/Wp+aRSb1ahCDB3N2n0d4Sjqo/tL7e2W7Ifh4X6IVFGHSF7hw==",
+        "requested": "[4.9.0, )",
+        "resolved": "4.9.0",
+        "contentHash": "52ed1hdmzO+aCXCdrY9HwGiyz6db83jUXZSm1M8KsPFEB8uG6aE8+J/vrrfmhoEs+ZElgXuBs99sHU0XPLJc5Q==",
         "dependencies": {
-          "Testcontainers": "4.8.1"
+          "Testcontainers": "4.9.0"
         }
       },
       "Testcontainers.RabbitMq": {
         "type": "Direct",
-        "requested": "[4.8.1, )",
-        "resolved": "4.8.1",
-        "contentHash": "jo7DWhtONSHFkzNR6XVSdrLxzFoj3ss1y+OhJQRmJvnv/EQx2V0PI7IVqozwMBUbf+Ou+FbpDqILLdJfh16Few==",
+        "requested": "[4.9.0, )",
+        "resolved": "4.9.0",
+        "contentHash": "bpeBvFIJZgZPrbl2L/ucCsWbSZPbYrOkL9zkNkKJsBHH9qhuvw9Y8ROf4jXyRvFUdLR+Zd1mIkIwEBy6m4WQPw==",
         "dependencies": {
-          "Testcontainers": "4.8.1"
+          "Testcontainers": "4.9.0"
         }
       },
       "xunit": {
@@ -183,8 +183,8 @@
       },
       "BouncyCastle.Cryptography": {
         "type": "Transitive",
-        "resolved": "2.6.1",
-        "contentHash": "vZsG2YILhthgRqO+ZVgRff4ZFKKTl0v7kqaVBLCtRvpREhfBP33pcWrdA3PRYgWuFL1RxiUFvjMUHTdBZlJcoA=="
+        "resolved": "2.6.2",
+        "contentHash": "7oWOcvnntmMKNzDLsdxAYqApt+AjpRpP2CShjMfIa3umZ42UQMvH0tl1qAliYPNYO6vTdcGMqnRrCPmsfzTI1w=="
       },
       "Castle.Core": {
         "type": "Transitive",
@@ -205,18 +205,18 @@
       },
       "Docker.DotNet.Enhanced": {
         "type": "Transitive",
-        "resolved": "3.129.0",
-        "contentHash": "+mTwpvdnCs0366AfuofuBhUFGHuGraWX+4am+NX93sL1tmLTCX6idDS8stDA6JG/5SYdx+UFn7BNu8H5Fjhj9g==",
+        "resolved": "3.130.0",
+        "contentHash": "LQpn/tmB4TPInO9ILgFg98ivcr5QsLBm6sUltqOjgU/FKDU4SW3mbR9QdmYgBJlE6PtKmSffDdSyVYMyUYyEjA==",
         "dependencies": {
           "Microsoft.Extensions.Logging.Abstractions": "8.0.3"
         }
       },
       "Docker.DotNet.Enhanced.X509": {
         "type": "Transitive",
-        "resolved": "3.129.0",
-        "contentHash": "UxMlIB7XX9jZKWUGk/hosD1VGlnb9BTcMzBkhba9ZvN3PZn/bLlhLSDLLFa29Wh/WUfsngpSfz+zuyfChr7Dqw==",
+        "resolved": "3.130.0",
+        "contentHash": "stAlaM/h5u8bIqqXQVR4tgJgsN8CDC0ynjmCYZFy4alXs2VJdIoRZwJJmgmmYYrAdMwWJC8lWWe0ilxPqc8Wkg==",
         "dependencies": {
-          "Docker.DotNet.Enhanced": "3.129.0"
+          "Docker.DotNet.Enhanced": "3.130.0"
         }
       },
       "EmptyFiles": {
@@ -592,8 +592,8 @@
       },
       "Polly.Core": {
         "type": "Transitive",
-        "resolved": "8.6.4",
-        "contentHash": "4AWqYnQ2TME0E+Mzovt1Uu+VyvpR84ymUldMcPw7Mbj799Phaag14CKrMtlJGx5jsvYP+S3oR1QmysgmXoD5cw=="
+        "resolved": "8.6.5",
+        "contentHash": "t+sUVrIwvo7UmsgHGgOG9F0GDZSRIm47u2ylH17Gvcv1q5hNEwgD5GoBlFyc0kh/pebmPyrAgvGsR/65ZBaXlg=="
       },
       "Serilog.Extensions.Logging": {
         "type": "Transitive",
@@ -638,10 +638,11 @@
       },
       "SSH.NET": {
         "type": "Transitive",
-        "resolved": "2024.2.0",
-        "contentHash": "9r+4UF2P51lTztpd+H7SJywk7WgmlWB//Cm2o96c6uGVZU5r58ys2/cD9pCgTk0zCdSkfflWL1WtqQ9I4IVO9Q==",
+        "resolved": "2025.1.0",
+        "contentHash": "jrnbtf0ItVaXAe6jE8X/kSLa6uC+0C+7W1vepcnRQB/rD88qy4IxG7Lf1FIbWmkoc4iVXv0pKrz+Wc6J4ngmHw==",
         "dependencies": {
-          "BouncyCastle.Cryptography": "2.4.0"
+          "BouncyCastle.Cryptography": "2.6.2",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.3"
         }
       },
       "System.ClientModel": {
@@ -702,13 +703,13 @@
       },
       "Testcontainers": {
         "type": "Transitive",
-        "resolved": "4.8.1",
-        "contentHash": "6KB430LIVqn2H25idznjqWFu8I9ltQua8FFCoyB8AywUAqEjbkGVm1SfJ8wfXprV7tZlgSxrcWFgilZbA1RDYA==",
+        "resolved": "4.9.0",
+        "contentHash": "OmU6x91OozhCRVOt7ISQDdaHACaKQImrN6fWDJJnvMAwMv/iJ95Q4cr7K1FU+nAYLDDIMDbSS8SOCzKkERsoIw==",
         "dependencies": {
-          "Docker.DotNet.Enhanced": "3.129.0",
-          "Docker.DotNet.Enhanced.X509": "3.129.0",
+          "Docker.DotNet.Enhanced": "3.130.0",
+          "Docker.DotNet.Enhanced.X509": "3.130.0",
           "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
-          "SSH.NET": "2024.2.0",
+          "SSH.NET": "2025.1.0",
           "SharpZipLib": "1.4.2"
         }
       },
@@ -764,7 +765,7 @@
           "Humanizer.Core": "[3.0.1, )",
           "MediatR": "[12.5.0, 12.5.0]",
           "Microsoft.Extensions.Caching.Abstractions": "[10.0.0, )",
-          "Polly": "[8.6.4, )",
+          "Polly": "[8.6.5, )",
           "Polly.Contrib.Simmy": "[0.3.0, )"
         }
       },
@@ -787,7 +788,7 @@
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Humanizer.Core": "[3.0.1, )",
-          "Polly": "[8.6.4, )",
+          "Polly": "[8.6.5, )",
           "Polly.Contrib.Simmy": "[0.3.0, )",
           "Quartz": "[3.15.1, )",
           "Quartz.Extensions.DependencyInjection": "[3.15.1, )"
@@ -804,7 +805,7 @@
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Humanizer.Core": "[3.0.1, )",
-          "Polly": "[8.6.4, )",
+          "Polly": "[8.6.5, )",
           "Polly.Contrib.Simmy": "[0.3.0, )"
         }
       },
@@ -832,7 +833,7 @@
           "Humanizer.Core": "[3.0.1, )",
           "MediatR": "[12.5.0, 12.5.0]",
           "Microsoft.Extensions.Caching.Abstractions": "[10.0.0, )",
-          "Polly": "[8.6.4, )",
+          "Polly": "[8.6.5, )",
           "Polly.Contrib.Simmy": "[0.3.0, )"
         }
       },
@@ -846,7 +847,7 @@
           "Humanizer.Core": "[3.0.1, )",
           "Microsoft.Extensions.Logging": "[10.0.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[10.0.0, )",
-          "Polly": "[8.6.4, )",
+          "Polly": "[8.6.5, )",
           "Polly.Contrib.Simmy": "[0.3.0, )",
           "Scrutor": "[4.2.2, 5.0.0)",
           "SharpCompress": "[0.41.0, )"
@@ -967,7 +968,7 @@
           "Microsoft.Extensions.Configuration.Abstractions": "[10.0.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[10.0.0, )",
           "NewId": "[4.0.1, )",
-          "Polly": "[8.6.4, )",
+          "Polly": "[8.6.5, )",
           "Polly.Contrib.Simmy": "[0.3.0, )"
         }
       },
@@ -1430,11 +1431,11 @@
       },
       "Polly": {
         "type": "CentralTransitive",
-        "requested": "[8.6.4, )",
-        "resolved": "8.6.4",
-        "contentHash": "uuBsDoBw0oYrMe3uTWRjkT2sIkKh+ZZnnDrLb4Z+QANfeA4+7FJacx6E8CY5GAxXRoSgFrvUADEAQ7DPF6fGiw==",
+        "requested": "[8.6.5, )",
+        "resolved": "8.6.5",
+        "contentHash": "VqtW2ZE/ALvQMAH1cQY3qZ2cF2OXa3oe/HKMdOv6Q02HCoEW0rsFNfcBONXlHBe1TnjWW1vdRxBEkPeq0/2FHA==",
         "dependencies": {
-          "Polly.Core": "8.6.4"
+          "Polly.Core": "8.6.5"
         }
       },
       "Polly.Contrib.Simmy": {

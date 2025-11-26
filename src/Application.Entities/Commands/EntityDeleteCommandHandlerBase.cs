@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Application.Entities;
 using Microsoft.Extensions.Localization;
 using Constants = Commands.Constants;
 
+[Obsolete("Use the new Requester from now on")]
 public abstract class EntityDeleteCommandHandlerBase<TCommand, TEntity>
     : CommandHandlerBase<TCommand, Result<EntityDeletedCommandResult>>
     where TCommand : EntityDeleteCommandBase<TEntity>

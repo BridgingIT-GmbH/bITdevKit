@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
+[Obsolete("Use the new Requester from now on")]
 public abstract class EntityDeleteCommandBase<TEntity>(string id, string identity = null)
     : CommandRequestBase<Result<EntityDeletedCommandResult>>, IEntityDeleteCommand<TEntity>
     where TEntity : class, IEntity

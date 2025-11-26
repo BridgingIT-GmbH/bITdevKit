@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Application.Commands;
 
 using FluentValidation.Results;
 
+[Obsolete("Use the new Requester from now on")]
 public abstract class CommandRequestBase(Guid id) : ICommandRequest<CommandResponse>
 {
     protected CommandRequestBase()
@@ -22,6 +23,7 @@ public abstract class CommandRequestBase(Guid id) : ICommandRequest<CommandRespo
     }
 }
 
+[Obsolete("Use the new Requester from now on")]
 public abstract class CommandRequestBase<TResult>(Guid id) : ICommandRequest<CommandResponse<TResult>>
 {
     protected CommandRequestBase()

@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Application.Queries;
 
 using FluentValidation.Results;
 
+[Obsolete("Use the new Requester from now on")]
 public abstract class QueryRequestBase<TResult>(Guid id) : IQueryRequest<QueryResponse<TResult>>, IQueryHandler
 {
     protected QueryRequestBase()

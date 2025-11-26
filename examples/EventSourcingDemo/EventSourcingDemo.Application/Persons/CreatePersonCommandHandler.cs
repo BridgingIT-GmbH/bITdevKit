@@ -13,7 +13,9 @@ using Domain.Model;
 using Domain.Model.Events;
 using Microsoft.Extensions.Logging;
 
+#pragma warning disable CS0618 // Type or member is obsolete
 public class CreatePersonCommandHandler : CommandHandlerBase<CreatePersonCommand, PersonOverviewViewModel>
+#pragma warning restore CS0618 // Type or member is obsolete
 {
     private readonly IEventStore<Person> eventStore;
     private readonly IEntityMapper mapper;

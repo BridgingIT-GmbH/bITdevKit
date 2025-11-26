@@ -8,6 +8,11 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors>false</WarningsAsErrors>
+  </PropertyGroup>
+
   <ItemGroup>
     <Using Include="BridgingIT.DevKit.Common" />
     <Using Include="Bogus" />

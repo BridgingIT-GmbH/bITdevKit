@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Application.Entities;
 
 using Constants = BridgingIT.DevKit.Application.Queries.Constants;
 
+[Obsolete("Use the new Requester from now on")]
 public class EntityFindOneQueryHandlerBase<TQuery, TEntity> : QueryHandlerBase<TQuery, Result<TEntity>>
     where TQuery : EntityFindOneQueryBase<TEntity>
     where TEntity : class, IEntity

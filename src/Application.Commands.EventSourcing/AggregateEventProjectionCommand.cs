@@ -16,7 +16,9 @@ using Domain.EventSourcing.Model;
 ///     null sein.
 /// </param>
 public class AggregateEventProjectionCommand<TAggregate>(TAggregate aggregate, AggregateEvent aggregateEvent)
+#pragma warning disable CS0618 // Type or member is obsolete
     : CommandRequestBase<bool>
+#pragma warning restore CS0618 // Type or member is obsolete
     where TAggregate : EventSourcingAggregateRoot
 {
     public TAggregate Aggregate { get; private set; } = aggregate;

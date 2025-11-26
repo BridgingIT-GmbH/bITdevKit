@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
+[Obsolete("Use the new Requester from now on")]
 public abstract class EntityFindOneQueryBase<TEntity> : QueryRequestBase<Result<TEntity>>, IEntityFindOneQuery<TEntity>
     where TEntity : class, IEntity
 {

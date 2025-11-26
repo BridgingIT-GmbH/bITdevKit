@@ -9,6 +9,7 @@ using System.Diagnostics;
 using FluentValidation;
 using Microsoft.Extensions.Logging.Abstractions;
 
+[Obsolete("Use the new Requester from now on")]
 public abstract partial class QueryHandlerBase<TQuery, TResult>
     : MediatR.IRequestHandler<TQuery, QueryResponse<TResult>>, IQueryHandler
     where TQuery : class, IQueryRequest<QueryResponse<TResult>>

@@ -77,7 +77,6 @@
     <PackageVersion Include="NSwag.MSBuild" Version="14.6.3" />
     <PackageVersion Include="OpenTelemetry" Version="1.14.0" />
     <PackageVersion Include="OpenTelemetry.Exporter.Console" Version="1.14.0" />
-    <PackageVersion Include="OpenTelemetry.Exporter.Prometheus.AspNetCore" Version="1.14.0-beta.1" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.14.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.14.0" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.14.0" />
@@ -113,12 +112,12 @@
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.6" />
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageVersion Include="System.Data.SQLite" Version="2.0.2" />
-    <PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="10.0.0" />
+    <!--<PackageVersion Include="System.Diagnostics.DiagnosticSource" Version="10.0.0" />-->
     <PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="10.0.0" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
     <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.0" />
-    <PackageVersion Include="System.Net.Http.Json" Version="10.0.0" />
-    <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
+    <!--<PackageVersion Include="System.Net.Http.Json" Version="10.0.0" />-->
+    <!--<PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />-->
   </ItemGroup>
   <ItemGroup Label="test dependencies">
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.6" />

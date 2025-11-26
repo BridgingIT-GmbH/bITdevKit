@@ -271,10 +271,10 @@ app.UseAuthorization();
 
 app.UseCurrentUserLogging();
 
-if (builder.Configuration["Metrics:Prometheus:Enabled"].To<bool>())
-{
-    app.UseOpenTelemetryPrometheusScrapingEndpoint();
-}
+//if (builder.Configuration["Metrics:Prometheus:Enabled"].To<bool>())
+//{
+//    app.UseOpenTelemetryPrometheusScrapingEndpoint();
+//}
 
 app.UseCors();
 app.MapModules();
@@ -318,11 +318,11 @@ void ConfigureMetrics(MeterProviderBuilder provider)
             "System.Net.Http",
             "BridgingIT.DevKit");
 
-    if (builder.Configuration["Metrics:Prometheus:Enabled"].To<bool>())
-    {
-        Log.Logger.Information("{LogKey} prometheus exporter enabled (endpoint={MetricsEndpoint})", "MET", "/metrics");
-        provider.AddPrometheusExporter();
-    }
+    //if (builder.Configuration["Metrics:Prometheus:Enabled"].To<bool>())
+    //{
+    //    Log.Logger.Information("{LogKey} prometheus exporter enabled (endpoint={MetricsEndpoint})", "MET", "/metrics");
+    //    provider.AddPrometheusExporter();
+    //}
 }
 
 void ConfigureTracing(TracerProviderBuilder provider)

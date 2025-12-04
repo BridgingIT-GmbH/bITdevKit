@@ -111,4 +111,9 @@ public readonly struct Permission : IEquatable<Permission>
     /// Implicitly converts the permission to its string representation.
     /// </summary>
     public static implicit operator string(Permission permission) => permission.value;
+
+    /// <summary>
+    /// Implicitly converts a string to a permission.
+    /// </summary>
+    public static implicit operator Permission(string value) => new(value);
 }

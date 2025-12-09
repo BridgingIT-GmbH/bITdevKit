@@ -20,6 +20,14 @@
 
 ## Introduction
 
+::: mermaid
+sequenceDiagram
+    Christie->>Josh: Hello Josh, how are you?
+    Josh-->>Christie: Great!
+    Christie->>Josh: See you later!
+:::
+
+
 Our goal is to empower developers by offering modular components that can be easily integrated into
 your projects. Whether you're working with repositories, commands, queries, or other components, the
 bITDevKit provides flexible solutions that can adapt to your specific needs.

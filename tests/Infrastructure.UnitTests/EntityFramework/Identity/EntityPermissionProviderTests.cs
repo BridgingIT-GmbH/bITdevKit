@@ -423,9 +423,9 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         // Assert
         permissions.ShouldNotBeNull();
         permissions.Count.ShouldBe(3);
-        permissions.ShouldContain(Permission.Read);
-        permissions.ShouldContain(Permission.Write);
-        permissions.ShouldContain(Permission.List);
+        permissions.ShouldContain(Permission.Read.ToString());
+        permissions.ShouldContain(Permission.Write.ToString());
+        permissions.ShouldContain(Permission.List.ToString());
     }
 
     [Fact]
@@ -467,8 +467,8 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         // Assert
         permissions.ShouldNotBeNull();
         permissions.Count.ShouldBe(1);
-        permissions.ShouldContain(Permission.Read);
-        permissions.ShouldNotContain(Permission.Write);
+        permissions.ShouldContain(Permission.Read.ToString());
+        permissions.ShouldNotContain(Permission.Write.ToString());
     }
 
     [Fact]
@@ -492,9 +492,9 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         // Assert
         permissions.ShouldNotBeNull();
         permissions.Count.ShouldBe(3);
-        permissions.ShouldContain(Permission.Read);
-        permissions.ShouldContain(Permission.Write);
-        permissions.ShouldContain(Permission.List);
+        permissions.ShouldContain(Permission.Read.ToString());
+        permissions.ShouldContain(Permission.Write.ToString());
+        permissions.ShouldContain(Permission.List.ToString());
     }
 
     [Fact]
@@ -536,7 +536,7 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         // Assert
         permissions.ShouldNotBeNull();
         permissions.Count.ShouldBe(1);
-        permissions.ShouldContain(Permission.Write);
-        permissions.ShouldNotContain(Permission.Read);
+        permissions.ShouldContain(Permission.Write.ToString());
+        permissions.ShouldNotContain(Permission.Read.ToString());
     }
 }

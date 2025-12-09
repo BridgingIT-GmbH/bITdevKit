@@ -324,9 +324,9 @@ public class NonHierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubD
 
         var permissions = await this.evaluator.GetPermissionsAsync(userId, [], person);
         permissions.Count.ShouldBe(3);
-        permissions.Select(p => p.Permission).ShouldContain(Permission.Read);
-        permissions.Select(p => p.Permission).ShouldContain(Permission.Write);
-        permissions.Select(p => p.Permission).ShouldContain(Permission.Delete);
+        permissions.Select(p => p.Permission).ShouldContain(Permission.Read.ToString());
+        permissions.Select(p => p.Permission).ShouldContain(Permission.Write.ToString());
+        permissions.Select(p => p.Permission).ShouldContain(Permission.Delete.ToString());
     }
 
     [Fact]

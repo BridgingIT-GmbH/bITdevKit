@@ -102,14 +102,14 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
             userId,
             nameof(PersonStub),
             null,
-            Permission.Read);
+            Permission.Read.ToString());
 
         // Act & Assert
         var hasPermission = await this.provider.HasPermissionAsync(
             userId,
             [],
             nameof(PersonStub),
-            Permission.Read);
+            Permission.Read.ToString());
         hasPermission.ShouldBeTrue("Should have wildcard permission");
 
         var hasPerson1Access = await this.provider.HasPermissionAsync(
@@ -117,7 +117,7 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
             [],
             nameof(PersonStub),
             person1.Id,
-            Permission.Read);
+            Permission.Read.ToString());
         hasPerson1Access.ShouldBeTrue("Should have access to person1 through wildcard");
 
         var hasPerson2Access = await this.provider.HasPermissionAsync(
@@ -125,7 +125,7 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
             [],
             nameof(PersonStub),
             person2.Id,
-            Permission.Read);
+            Permission.Read.ToString());
         hasPerson2Access.ShouldBeTrue("Should have access to person2 through wildcard");
     }
 
@@ -142,7 +142,7 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
             "Admins",
             nameof(PersonStub),
             person.Id,
-            Permission.Read);
+            Permission.Read.ToString());
 
         // Act & Assert
         var hasAccessWithRole = await this.provider.HasPermissionAsync(
@@ -150,7 +150,7 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
             ["Admins"],
             nameof(PersonStub),
             person.Id,
-            Permission.Read);
+            Permission.Read.ToString());
         hasAccessWithRole.ShouldBeTrue("Should have access through role");
 
         var hasAccessWithoutRole = await this.provider.HasPermissionAsync(
@@ -158,7 +158,7 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
             [],
             nameof(PersonStub),
             person.Id,
-            Permission.Read);
+            Permission.Read.ToString());
         hasAccessWithoutRole.ShouldBeFalse("Should not have access without role");
     }
 
@@ -175,11 +175,11 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
             userId,
             nameof(PersonStub),
             person.Id,
-            Permission.Read);
+            Permission.Read.ToString());
 
         // Verify initial access
         var hasInitialAccess = await this.provider.HasPermissionAsync(
-            userId, [], nameof(PersonStub), person.Id, Permission.Read);
+            userId, [], nameof(PersonStub), person.Id, Permission.Read.ToString());
         hasInitialAccess.ShouldBeTrue("Should have initial access");
 
         // Act
@@ -187,11 +187,11 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
             userId,
             nameof(PersonStub),
             person.Id,
-            Permission.Read);
+            Permission.Read.ToString());
 
         // Assert
         var hasAccessAfterRevoke = await this.provider.HasPermissionAsync(
-            userId, [], nameof(PersonStub), person.Id, Permission.Read);
+            userId, [], nameof(PersonStub), person.Id, Permission.Read.ToString());
         hasAccessAfterRevoke.ShouldBeFalse("Should not have access after revoke");
     }
 
@@ -207,20 +207,20 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         var roleName = $"Editors_{DateTime.UtcNow.Ticks}";
 
         // Grant different permissions to user and role
-        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), person.Id, Permission.Read);
-        await this.provider.GrantRolePermissionAsync(roleName, nameof(PersonStub), person.Id, Permission.Write);
+        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), person.Id, Permission.Read.ToString());
+        await this.provider.GrantRolePermissionAsync(roleName, nameof(PersonStub), person.Id, Permission.Write.ToString());
 
         // Act & Assert
         var hasReadWithoutRole = await this.provider.HasPermissionAsync(
-            userId, [], nameof(PersonStub), person.Id, Permission.Read);
+            userId, [], nameof(PersonStub), person.Id, Permission.Read.ToString());
         hasReadWithoutRole.ShouldBeTrue("Should have read access through user permission");
 
         var hasWriteWithoutRole = await this.provider.HasPermissionAsync(
-            userId, [], nameof(PersonStub), person.Id, Permission.Write);
+            userId, [], nameof(PersonStub), person.Id, Permission.Write.ToString());
         hasWriteWithoutRole.ShouldBeFalse("Should not have write access without role");
 
         var hasWriteWithRole = await this.provider.HasPermissionAsync(
-            userId, [roleName], nameof(PersonStub), person.Id, Permission.Write);
+            userId, [roleName], nameof(PersonStub), person.Id, Permission.Write.ToString());
         hasWriteWithRole.ShouldBeTrue("Should have write access through role");
     }
 
@@ -237,22 +237,22 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         var writersRole = $"Writers_{ticks}";
 
         // Grant different permissions to different roles
-        await this.provider.GrantRolePermissionAsync(readersRole, nameof(PersonStub), person.Id, Permission.Read);
-        await this.provider.GrantRolePermissionAsync(writersRole, nameof(PersonStub), person.Id, Permission.Write);
+        await this.provider.GrantRolePermissionAsync(readersRole, nameof(PersonStub), person.Id, Permission.Read.ToString());
+        await this.provider.GrantRolePermissionAsync(writersRole, nameof(PersonStub), person.Id, Permission.Write.ToString());
 
         var userId = DateTime.UtcNow.Ticks.ToString();
 
         // Act & Assert
         var hasReadWithReaderRole = await this.provider.HasPermissionAsync(
-            userId, [readersRole], nameof(PersonStub), person.Id, Permission.Read);
+            userId, [readersRole], nameof(PersonStub), person.Id, Permission.Read.ToString());
         hasReadWithReaderRole.ShouldBeTrue("Should have read access through Readers role");
 
         var hasWriteWithWriterRole = await this.provider.HasPermissionAsync(
-            userId, [writersRole], nameof(PersonStub), person.Id, Permission.Write);
+            userId, [writersRole], nameof(PersonStub), person.Id, Permission.Write.ToString());
         hasWriteWithWriterRole.ShouldBeTrue("Should have write access through Writers role");
 
         var hasBothWithBothRoles = await this.provider.HasPermissionAsync(
-            userId, [readersRole, writersRole], nameof(PersonStub), person.Id, Permission.Write);
+            userId, [readersRole, writersRole], nameof(PersonStub), person.Id, Permission.Write.ToString());
         hasBothWithBothRoles.ShouldBeTrue("Should have both permissions with both roles");
     }
 
@@ -267,15 +267,15 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         var userId = DateTime.UtcNow.Ticks.ToString();
         var roleName = $"Readers_{DateTime.UtcNow.Ticks}";
 
-        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), person.Id, Permission.Read);
-        await this.provider.GrantRolePermissionAsync(roleName, nameof(PersonStub), person.Id, Permission.Read);
+        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), person.Id, Permission.Read.ToString());
+        await this.provider.GrantRolePermissionAsync(roleName, nameof(PersonStub), person.Id, Permission.Read.ToString());
 
         // Act
-        await this.provider.RevokeRolePermissionAsync(roleName, nameof(PersonStub), person.Id, Permission.Read);
+        await this.provider.RevokeRolePermissionAsync(roleName, nameof(PersonStub), person.Id, Permission.Read.ToString());
 
         // Assert
         var hasAccessWithoutRole = await this.provider.HasPermissionAsync(
-            userId, [], nameof(PersonStub), person.Id, Permission.Read);
+            userId, [], nameof(PersonStub), person.Id, Permission.Read.ToString());
         hasAccessWithoutRole.ShouldBeTrue("Should still have access through user permission");
     }
 
@@ -291,14 +291,14 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
             userId,
             nameof(PersonStub),
             null,
-            Permission.Read);
+            Permission.Read.ToString());
 
         // Act & Assert
         var hasTypePermission = await this.provider.HasPermissionAsync(
             userId,
             [],
             nameof(PersonStub),
-            Permission.Read);
+            Permission.Read.ToString());
         hasTypePermission.ShouldBeTrue("Should have type-wide permission");
 
         // Grant type-wide permission to role
@@ -306,13 +306,13 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
             roleName,
             nameof(PersonStub),
             null,
-            Permission.Write);
+            Permission.Write.ToString());
 
         var hasRoleTypePermission = await this.provider.HasPermissionAsync(
             userId,
             [roleName],
             nameof(PersonStub),
-            Permission.Write);
+            Permission.Write.ToString());
         hasRoleTypePermission.ShouldBeTrue("Should have type-wide permission through role");
     }
 
@@ -332,27 +332,27 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
             userId,
             nameof(PersonStub),
             person.Id,
-            Permission.Read);
+            Permission.Read.ToString());
 
         await this.provider.GrantRolePermissionAsync(
             roleName,
             nameof(PersonStub),
             person.Id,
-            Permission.Write);
+            Permission.Write.ToString());
 
         // Act & Assert
         var hasTypePermission = await this.provider.HasPermissionAsync(
             userId,
             [],
             nameof(PersonStub),
-            Permission.Read);
+            Permission.Read.ToString());
         hasTypePermission.ShouldBeFalse("Should not have type-wide permission when only entity-specific exists");
 
         var hasRoleTypePermission = await this.provider.HasPermissionAsync(
             userId,
             [roleName],
             nameof(PersonStub),
-            Permission.Write);
+            Permission.Write.ToString());
         hasRoleTypePermission.ShouldBeFalse("Should not have type-wide permission through role when only entity-specific exists");
     }
 
@@ -369,13 +369,13 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
             readersRole,
             nameof(PersonStub),
             null,
-            Permission.Read);
+            Permission.Read.ToString());
 
         await this.provider.GrantRolePermissionAsync(
             writersRole,
             nameof(PersonStub),
             null,
-            Permission.Write);
+            Permission.Write.ToString());
 
         var userId = DateTime.UtcNow.Ticks.ToString();
 
@@ -384,21 +384,21 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
             userId,
             [readersRole],
             nameof(PersonStub),
-            Permission.Read);
+            Permission.Read.ToString());
         hasReadWithReaderRole.ShouldBeTrue("Should have type-wide read access through Readers role");
 
         var hasWriteWithWriterRole = await this.provider.HasPermissionAsync(
             userId,
             [writersRole],
             nameof(PersonStub),
-            Permission.Write);
+            Permission.Write.ToString());
         hasWriteWithWriterRole.ShouldBeTrue("Should have type-wide write access through Writers role");
 
         var hasBothWithBothRoles = await this.provider.HasPermissionAsync(
             userId,
             [readersRole, writersRole],
             nameof(PersonStub),
-            Permission.Write);
+            Permission.Write.ToString());
         hasBothWithBothRoles.ShouldBeTrue("Should have both type-wide permissions with both roles");
     }
 
@@ -413,9 +413,9 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         var userId = DateTime.UtcNow.Ticks.ToString();
 
         // Grant specific and wildcard permissions
-        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), person.Id, Permission.Read);
-        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), person.Id, Permission.Write);
-        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), null, Permission.List);
+        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), person.Id, Permission.Read.ToString());
+        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), person.Id, Permission.Write.ToString());
+        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), null, Permission.List.ToString());
 
         // Act
         var permissions = await this.provider.GetUserPermissionsAsync(userId, nameof(PersonStub), person.Id);
@@ -423,9 +423,9 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         // Assert
         permissions.ShouldNotBeNull();
         permissions.Count.ShouldBe(3);
-        permissions.ShouldContain(Permission.Read);
-        permissions.ShouldContain(Permission.Write);
-        permissions.ShouldContain(Permission.List);
+        permissions.ShouldContain(Permission.Read.ToString());
+        permissions.ShouldContain(Permission.Write.ToString());
+        permissions.ShouldContain(Permission.List.ToString());
     }
 
     [Fact]
@@ -458,8 +458,8 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         var roleName = $"Readers_{DateTime.UtcNow.Ticks}";
 
         // Grant user and role permissions
-        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), person.Id, Permission.Read);
-        await this.provider.GrantRolePermissionAsync(roleName, nameof(PersonStub), person.Id, Permission.Write);
+        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), person.Id, Permission.Read.ToString());
+        await this.provider.GrantRolePermissionAsync(roleName, nameof(PersonStub), person.Id, Permission.Write.ToString());
 
         // Act
         var permissions = await this.provider.GetUserPermissionsAsync(userId, nameof(PersonStub), person.Id);
@@ -467,8 +467,8 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         // Assert
         permissions.ShouldNotBeNull();
         permissions.Count.ShouldBe(1);
-        permissions.ShouldContain(Permission.Read);
-        permissions.ShouldNotContain(Permission.Write);
+        permissions.ShouldContain(Permission.Read.ToString());
+        permissions.ShouldNotContain(Permission.Write.ToString());
     }
 
     [Fact]
@@ -482,9 +482,9 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         var roleName = $"Admins_{DateTime.UtcNow.Ticks}";
 
         // Grant specific and wildcard permissions to role
-        await this.provider.GrantRolePermissionAsync(roleName, nameof(PersonStub), person.Id, Permission.Read);
-        await this.provider.GrantRolePermissionAsync(roleName, nameof(PersonStub), person.Id, Permission.Write);
-        await this.provider.GrantRolePermissionAsync(roleName, nameof(PersonStub), null, Permission.List);
+        await this.provider.GrantRolePermissionAsync(roleName, nameof(PersonStub), person.Id, Permission.Read.ToString());
+        await this.provider.GrantRolePermissionAsync(roleName, nameof(PersonStub), person.Id, Permission.Write.ToString());
+        await this.provider.GrantRolePermissionAsync(roleName, nameof(PersonStub), null, Permission.List.ToString());
 
         // Act
         var permissions = await this.provider.GetRolePermissionsAsync(roleName, nameof(PersonStub), person.Id);
@@ -492,9 +492,9 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         // Assert
         permissions.ShouldNotBeNull();
         permissions.Count.ShouldBe(3);
-        permissions.ShouldContain(Permission.Read);
-        permissions.ShouldContain(Permission.Write);
-        permissions.ShouldContain(Permission.List);
+        permissions.ShouldContain(Permission.Read.ToString());
+        permissions.ShouldContain(Permission.Write.ToString());
+        permissions.ShouldContain(Permission.List.ToString());
     }
 
     [Fact]
@@ -527,8 +527,8 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         var roleName = $"Readers_{DateTime.UtcNow.Ticks}";
 
         // Grant user and role permissions
-        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), person.Id, Permission.Read);
-        await this.provider.GrantRolePermissionAsync(roleName, nameof(PersonStub), person.Id, Permission.Write);
+        await this.provider.GrantUserPermissionAsync(userId, nameof(PersonStub), person.Id, Permission.Read.ToString());
+        await this.provider.GrantRolePermissionAsync(roleName, nameof(PersonStub), person.Id, Permission.Write.ToString());
 
         // Act
         var permissions = await this.provider.GetRolePermissionsAsync(roleName, nameof(PersonStub), person.Id);
@@ -536,7 +536,7 @@ public class EntityPermissionProviderTests : IClassFixture<StubDbContextFixture>
         // Assert
         permissions.ShouldNotBeNull();
         permissions.Count.ShouldBe(1);
-        permissions.ShouldContain(Permission.Write);
-        permissions.ShouldNotContain(Permission.Read);
+        permissions.ShouldContain(Permission.Write.ToString());
+        permissions.ShouldNotContain(Permission.Read.ToString());
     }
 }

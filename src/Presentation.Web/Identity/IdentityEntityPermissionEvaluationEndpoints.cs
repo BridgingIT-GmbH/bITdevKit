@@ -36,7 +36,7 @@ public class IdentityEntityPermissionEvaluationEndpoints(IdentityEntityPermissio
         group.MapGet(string.Empty, this.GetEffectivePermissions)
             .WithName("System.GetEffectivePermissions")
             .WithDescription("Gets all effective permissions for the current user and the entity type.")
-            .Produces<EntityPermissionModel>()
+            .Produces<IEnumerable<EntityPermissionModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
     }
 

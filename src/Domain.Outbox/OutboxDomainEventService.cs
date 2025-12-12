@@ -61,12 +61,18 @@ public class OutboxDomainEventService : BackgroundService // OutboxDomainEventHo
 
         var registration = this.applicationLifetime.ApplicationStarted.Register(async () =>
         {
-            if (this.options.StartupDelay.TotalMilliseconds > 0)
+        if (this.options.StartupDelay.TotalMilliseconds > 0)
+        {
+            this.logger.LogDebug("{LogKey} outbox domain event service startup delayed", Constants.LogKey);
+            if (!cancellationToken.IsCancellationRequested)
             {
-                this.logger.LogDebug("{LogKey} outbox domain event service startup delayed", Constants.LogKey);
-                if (!cancellationToken.IsCancellationRequested)
+                try
                 {
                     await Task.Delay(this.options.StartupDelay, cancellationToken);
+                }
+                catch (TaskCanceledException)
+                {
+                    // Ignore cancellation during startup delay
                 }
             }
 

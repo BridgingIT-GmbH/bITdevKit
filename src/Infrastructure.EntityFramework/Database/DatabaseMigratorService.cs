@@ -65,7 +65,17 @@ public class DatabaseMigratorService<TContext> : IHostedService
                 if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
                     this.logger.LogInformation("{LogKey} database migrator startup delayed (context={DbContextType})", Constants.LogKey, contextName);
-                    await Task.Delay(this.options.StartupDelay, cancellationToken);
+                    if (!cancellationToken.IsCancellationRequested)
+                    {
+                        try
+                        {
+                            await Task.Delay(this.options.StartupDelay, cancellationToken);
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            // Ignore cancellation during startup delay
+                        }
+                    }
                 }
 
                 try

@@ -68,7 +68,17 @@ public class JobSchedulingService : BackgroundService
             if (this.options.StartupDelay.TotalMilliseconds > 0)
             {
                 this.logger.LogDebug("{LogKey} scheduling service startup delayed by {Delay}ms", Constants.LogKey, this.options.StartupDelay.TotalMilliseconds);
-                await Task.Delay(this.options.StartupDelay, cancellationToken);
+                if (!cancellationToken.IsCancellationRequested)
+                {
+                    try
+                    {
+                        await Task.Delay(this.options.StartupDelay, cancellationToken);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        // Ignore cancellation during startup delay
+                    }
+                }
             }
 
             const int maxRetries = 3;

@@ -51,7 +51,17 @@ public class LogEntryMaintenanceService<TContext>(
                 if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
                     this.logger.LogDebug("{LogKey} maintenance service startup delayed", "LOG");
-                    await Task.Delay(this.options.StartupDelay, cancellationToken); // line 52: offending code
+                    if (!cancellationToken.IsCancellationRequested)
+                    {
+                        try
+                        {
+                            await Task.Delay(this.options.StartupDelay, cancellationToken);
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            // Ignore cancellation during startup delay
+                        }
+                    }
                 }
                 this.logger.LogInformation("{LogKey} maintenance service started", "LOG");
 

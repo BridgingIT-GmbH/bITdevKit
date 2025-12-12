@@ -443,8 +443,8 @@
       },
       "Microsoft.DotNet.HotReload.WebAssembly.Browser": {
         "type": "Transitive",
-        "resolved": "10.0.100",
-        "contentHash": "bTCi3TK6L54rXu7pA0duoG6/OFt//LI1tK+oPD3HTrT4ghzGi5Jgn52X8xeFGpqadSIGf5JgIxRV/uvKXNP+ig=="
+        "resolved": "10.0.101",
+        "contentHash": "30d2d7ti8GiDYf9zg4+w5cvH3jm9HAQMyXzZgCVpEjmh3WLErJazuu2tyoIO75uNYLWPD/NNTTRD9SoPpDiACw=="
       },
       "Microsoft.EntityFrameworkCore.Abstractions": {
         "type": "Transitive",
@@ -1456,7 +1456,7 @@
           "Microsoft.AspNetCore.Components.WebAssembly": "[10.0.0, )",
           "Microsoft.AspNetCore.Components.WebAssembly.Authentication": "[10.0.0, )",
           "Microsoft.AspNetCore.SignalR.Client": "[10.0.0, )",
-          "Microsoft.DotNet.HotReload.WebAssembly.Browser": "[10.0.100, )",
+          "Microsoft.DotNet.HotReload.WebAssembly.Browser": "[10.0.101, )",
           "Microsoft.Extensions.Http": "[10.0.0, )",
           "Microsoft.Extensions.Http.Polly": "[10.0.0, )",
           "Microsoft.Extensions.Localization": "[10.0.0, )",
@@ -1486,7 +1486,6 @@
           "Microsoft.AspNetCore.Components.WebAssembly.Server": "[10.0.0, )",
           "MudBlazor": "[8.15.0, )",
           "OpenTelemetry.Exporter.Console": "[1.14.0, )",
-          "OpenTelemetry.Exporter.Prometheus.AspNetCore": "(, )",
           "OpenTelemetry.Extensions.Hosting": "[1.14.0, )",
           "OpenTelemetry.Instrumentation.AspNetCore": "[1.14.0, )",
           "OpenTelemetry.Instrumentation.Http": "[1.14.0, )",

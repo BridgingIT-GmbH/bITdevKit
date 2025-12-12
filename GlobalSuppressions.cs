@@ -299,3 +299,5 @@ using System.Diagnostics.CodeAnalysis;
         Justification = "<Pending>")]
 
 [assembly: SuppressMessage("Style", "IDE0130:Namespace does not match folder structure", Justification = "<Pending>")]
+
+[assembly: SuppressMessage("Performance", "CA1873:Avoid potentially expensive logging", Justification = "<Pending>")]

@@ -186,6 +186,45 @@ public static class ResultTExtensions
     }
 
     /// <summary>
+    /// Applies a synchronous transformation function on a successful <see cref="Result{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the value inside the <see cref="Result{T}"/>.</typeparam>
+    /// <param name="result">The input <see cref="Result{T}"/> instance.</param>
+    /// <param name="binder">A pure function that transforms the success value.</param>
+    /// <returns>
+    /// A new successful <see cref="Result{T}"/> containing the transformed value,
+    /// or the original failure result if <paramref name="result"/> is a failure.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// var result = Result&lt;string&gt;.Success("bravo")
+    ///     .Bind2(v => v.ToUpper());
+    ///
+    /// // Result.Value = "BRAVO"
+    /// </code>
+    /// </example>
+    public static Result<T> Bind<T>(this Result<T> result, Func<T, T> binder)
+    {
+        if (result.IsFailure)
+        {
+            return result;
+        }
+
+        try
+        {
+            var newValue = binder(result.Value);
+            return Result<T>.Success(newValue)
+                .WithMessages(result.Messages)
+                .WithErrors(result.Errors);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
     ///     Asynchronously binds a successful Result{T} to another Result{TNew}.
     /// </summary>
     /// <typeparam name="T">The type of the source result value.</typeparam>
@@ -236,6 +275,79 @@ public static class ResultTExtensions
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(result.Messages);
         }
+    }
+
+    /// <summary>
+    /// Binds a synchronous operation that returns a <see cref="Result{TInner}"/> to a
+    /// parent <see cref="Result{T}"/>, merging both contexts. If either result fails,
+    /// the failure is propagated automatically.
+    /// </summary>
+    /// <typeparam name="T">Outer context type.</typeparam>
+    /// <typeparam name="TInner">Inner success value type.</typeparam>
+    /// <param name="result">The outer <see cref="Result{T}"/> to bind from.</param>
+    /// <param name="binder">
+    /// A synchronous function returning another <see cref="Result{TInner}"/>.
+    /// </param>
+    /// <param name="merge">
+    /// A function that merges <paramref name="result"/> and the inner success value.
+    /// </param>
+    /// <returns>
+    /// A combined <see cref="Result{T}"/>; propagates any inner or outer failures.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// var result = Result&lt;OrderContext&gt;.Success(ctx)
+    ///     .BindResult(
+    ///         ctx => inventory.CheckStock(ctx.ProductId),
+    ///         (ctx, stock) => ctx.WithStock(stock));
+    /// </code>
+    /// </example>
+    public static Result<T> BindResult<T, TInner>(
+        this Result<T> result,
+        Func<T, Result<TInner>> binder,
+        Func<T, TInner, T> merge)
+    {
+        if (result.IsFailure)
+            return result;
+
+        try
+        {
+            var inner = binder(result.Value);
+            if (inner.IsFailure)
+                return inner.Wrap<T>();
+
+            var combined = merge(result.Value, inner.Value);
+            return Result<T>.Success(combined)
+                .WithMessages(result.Messages)
+                .WithErrors(result.Errors);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
+    /// Awaits a <see cref="Task{Result}"/> and binds a synchronous operation returning
+    /// another <see cref="Result{TInner}"/>, propagating any failures.
+    /// </summary>
+    /// <typeparam name="T">Outer context type.</typeparam>
+    /// <typeparam name="TInner">Inner success value type.</typeparam>
+    /// <param name="task">Asynchronous source task returning a <see cref="Result{T}"/>.</param>
+    /// <param name="binder">Synchronous operation returning a <see cref="Result{TInner}"/>.</param>
+    /// <param name="merge">Merge function combining outer and inner values.</param>
+    /// <returns>
+    /// A new <see cref="Task{TResult}"/> returning the combined <see cref="Result{T}"/>.
+    /// </returns>
+    public static async Task<Result<T>> BindResult<T, TInner>(
+        this Task<Result<T>> task,
+        Func<T, Result<TInner>> binder,
+        Func<T, TInner, T> merge)
+    {
+        var result = await task.AnyContext();
+
+        return result.BindResult(binder, merge);
     }
 
     /// <summary>
@@ -520,7 +632,9 @@ public static class ResultTExtensions
         params object[] args)
     {
         if (logger is null)
+        {
             return result;
+        }
 
         try
         {
@@ -661,7 +775,9 @@ public static class ResultTExtensions
         LogLevel failureLevel)
     {
         if (logger is null)
+        {
             return result;
+        }
 
         try
         {

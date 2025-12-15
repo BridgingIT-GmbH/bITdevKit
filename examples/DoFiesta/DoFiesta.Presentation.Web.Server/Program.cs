@@ -30,6 +30,7 @@ builder.Host.ConfigureAppConfiguration();
 builder.Services.AddModules(builder.Configuration, builder.Environment)
     .WithModule<CoreModule>();
 
+
 // ===============================================================================================
 // Configure the services
 builder.Services.AddRequester()

@@ -725,7 +725,9 @@ public static class ResultNonGenericExtensions
         params object[] args)
     {
         if (logger is null)
+        {
             return result;
+        }
 
         try
         {
@@ -829,7 +831,9 @@ public static class ResultNonGenericExtensions
         LogLevel failureLevel)
     {
         if (logger is null)
+        {
             return result;
+        }
 
         try
         {

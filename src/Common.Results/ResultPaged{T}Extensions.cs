@@ -754,7 +754,9 @@ public static class ResultPagedExtensions
         params object[] args)
     {
         if (logger is null)
+        {
             return result;
+        }
 
         try
         {
@@ -865,7 +867,9 @@ public static class ResultPagedExtensions
         LogLevel failureLevel)
     {
         if (logger is null)
+        {
             return result;
+        }
 
         try
         {

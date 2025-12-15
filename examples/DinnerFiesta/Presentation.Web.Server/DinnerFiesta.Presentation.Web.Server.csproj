@@ -6,6 +6,7 @@
     <RootNamespace>BridgingIT.DevKit.Examples.DinnerFiesta.Presentation.Web.Server</RootNamespace>
     <IsPackable>false</IsPackable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <HotReloadAutoRestart>true</HotReloadAutoRestart>
   </PropertyGroup>
 
   <ItemGroup>

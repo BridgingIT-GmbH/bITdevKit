@@ -71,7 +71,9 @@ public static class ModuleExtensions
 
         RegisterActivityListener();
 
-        return new ModuleBuilderContext(services, configuration);
+        return new ModuleBuilderContext(services, configuration)
+            .WithModuleContextAccessors()
+            .WithRequestModuleContextAccessors();
     }
 
     public static ModuleBuilderContext AddModules(
@@ -86,7 +88,9 @@ public static class ModuleExtensions
         services.AddSingleton(new ActivitySource("default"));
         services.AddSingleton(new ActivitySource(ServiceName));
 
-        var context = new ModuleBuilderContext(services, configuration);
+        var context = new ModuleBuilderContext(services, configuration)
+            .WithModuleContextAccessors()
+            .WithRequestModuleContextAccessors();
         optionsAction?.Invoke(context);
 
         RegisterActivityListener();

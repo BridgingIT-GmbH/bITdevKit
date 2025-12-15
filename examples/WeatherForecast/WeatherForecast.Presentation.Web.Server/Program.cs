@@ -48,8 +48,6 @@ builder.Host.ConfigureAppConfiguration();
 // Configure the modules
 builder.Services.AddModules(builder.Configuration, builder.Environment)
     .WithModule<CoreModule>()
-    .WithModuleContextAccessors()
-    .WithRequestModuleContextAccessors()
     .WithModuleControllers(c =>
         c.AddJsonOptions(ConfigureJsonOptions)); // alternative: WithModuleFeatureProvider(c => ...)
 

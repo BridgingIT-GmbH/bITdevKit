@@ -29,7 +29,6 @@ builder.Host.ConfigureAppConfiguration();
 // Configure the modules
 builder.Services.AddModules(builder.Configuration, builder.Environment)
     .WithModule<CoreModule>();
-bump
 
 // ===============================================================================================
 // Configure the services

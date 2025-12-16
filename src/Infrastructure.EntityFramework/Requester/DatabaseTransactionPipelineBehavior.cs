@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System;
 using System.Data;
 using System.Reflection;
@@ -22,13 +23,15 @@ using System.Threading.Tasks;
 /// </summary>
 public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
-    IDbContextResolver contextResolver)
+    IDbContextResolver contextResolver,
+    IOptions<DatabaseTransactionOptions> options = null)
     : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class
     where TResponse : IResult
 {
     private readonly IDbContextResolver dbContextResolver =
         contextResolver ?? throw new ArgumentNullException(nameof(contextResolver));
+    private readonly DatabaseTransactionOptions transactionOptions = options?.Value ?? new DatabaseTransactionOptions();
 
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
@@ -63,13 +66,21 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
 
         if (nameAttr is not null)
         {
-            if (string.IsNullOrWhiteSpace(nameAttr.ContextName))
+            var contextName = nameAttr.ContextName;
+
+            // Use default context name from options if not specified in attribute
+            if (string.IsNullOrWhiteSpace(contextName))
             {
-                this.Logger.LogError("{LogKey} behavior: contextName missing on HandlerDatabaseTransactionAttribute (handler={Handler})", LogKey, handlerType.FullName);
-                throw new InvalidOperationException("HandlerDatabaseTransactionAttribute.ContextName must be provided.");
+                contextName = this.transactionOptions.DefaultContextName;
             }
 
-            dbContext = this.dbContextResolver.Resolve(nameAttr.ContextName);
+            if (string.IsNullOrWhiteSpace(contextName))
+            {
+                this.Logger.LogError("{LogKey} behavior: contextName missing on HandlerDatabaseTransactionAttribute and no default configured (handler={Handler})", LogKey, handlerType.FullName);
+                throw new InvalidOperationException("HandlerDatabaseTransactionAttribute.ContextName must be provided or a default context name must be configured via DatabaseTransactionOptions.DefaultContextName.");
+            }
+
+            dbContext = this.dbContextResolver.Resolve(contextName);
             attrIsolationLevel = nameAttr.IsolationLevel;
             rollbackOnFailure = nameAttr.RollbackOnFailure;
         }

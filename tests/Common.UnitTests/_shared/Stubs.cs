@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -54,6 +54,8 @@ public class PersonStub
     public EmailAddressStub Email { get; set; }
 
     public IReadOnlyList<LocationStub> Locations => this.locations.AsReadOnly();
+
+    public LocationStub PrimaryLocation { get; set; }
 
     public int Age { get; set; }
 
@@ -159,6 +161,19 @@ public class LocationStub
 public class Dummy
 {
     public string Text { get; set; } = "ABC";
+    public DummyDetails Details { get; set; }
+}
+
+public class DummyDetails
+{
+    public string Description { get; set; }
+    public DummyMetadata Metadata { get; set; }
+}
+
+public class DummyMetadata
+{
+    public string Author { get; set; }
+    public DateTime CreatedDate { get; set; }
 }
 
 public class PersonDtoStub

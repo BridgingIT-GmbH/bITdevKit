@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -13,7 +13,7 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
     where TEntity : class, IEntity
 {
     private List<OrderOption<TEntity>> orders = [];
-    private List<IncludeOption<TEntity>> includes = [];
+    private List<IncludeOptionBase<TEntity>> includes = [];
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="FindOptions{TEntity}" /> class.
@@ -124,9 +124,9 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
     ///     Gets or sets the collection of include options for find operations.
     /// </summary>
     /// <value>
-    ///     A collection of <see cref="IncludeOption{TEntity}" /> to specify related entities to include in the query result.
+    ///     A collection of <see cref="IncludeOptionBase{TEntity}" /> to specify related entities to include in the query result.
     /// </value>
-    public IEnumerable<IncludeOption<TEntity>> Includes
+    public IEnumerable<IncludeOptionBase<TEntity>> Includes
     {
         get => this.includes.AsReadOnly();
         set
@@ -172,6 +172,44 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
     {
         EnsureArg.IsNotNull(include, nameof(include));
         this.includes.Add(include);
+        return this;
+    }
+
+    /// <summary>
+    ///     Adds an includable option (with ThenInclude chain) to the query.
+    /// </summary>
+    /// <typeparam name="TProperty">The type of the included property.</typeparam>
+    /// <param name="includable">The includable option to add.</param>
+    /// <returns>The current instance for chaining.</returns>
+    /// <example>
+    /// var options = new FindOptions<Customer>()
+    ///     .AddInclude(new IncludeOption<Customer, ICollection<Order>>(c => c.Orders)
+    ///         .ThenInclude(o => o.OrderItems)
+    ///         .ThenInclude(i => i.Product));
+    /// </example>
+    public FindOptions<TEntity> AddInclude<TProperty>(IIncludableOption<TEntity, TProperty> includable)
+    {
+        EnsureArg.IsNotNull(includable, nameof(includable));
+
+        // Extract the underlying IncludeOption from the IIncludableOption
+        IncludeOptionBase<TEntity> includeOption = null;
+
+        // Try to get from wrapper types using reflection
+        var wrapperProperty = includable.GetType().GetProperty("IncludeOption");
+        if (wrapperProperty is not null)
+        {
+            includeOption = wrapperProperty.GetValue(includable) as IncludeOptionBase<TEntity>;
+        }
+
+        // Direct cast if it's already an IncludeOptionBase
+        includeOption ??= includable as IncludeOptionBase<TEntity>;
+
+        if (includeOption is null)
+        {
+            throw new ArgumentException($"Could not extract IncludeOption from type: {includable.GetType().Name}", nameof(includable));
+        }
+
+        this.includes.Add(includeOption);
         return this;
     }
 

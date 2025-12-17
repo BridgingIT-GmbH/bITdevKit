@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -73,7 +73,7 @@ public interface IFindOptions<TEntity>
     /// <value>
     ///     The collection of include options.
     /// </value>
-    IEnumerable<IncludeOption<TEntity>> Includes { get; set; }
+    IEnumerable<IncludeOptionBase<TEntity>> Includes { get; set; }
 
     HierarchyOption<TEntity> Hierarchy { get; set; }
 

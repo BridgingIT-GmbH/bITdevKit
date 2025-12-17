@@ -1609,6 +1609,86 @@ var filterModel = FilterModelBuilder.For<Order>()
     .Build();
 ```
 
+## ThenInclude - Nested Navigation Properties
+
+The `ThenInclude` feature enables type-safe chaining of navigation properties for eager loading deeply nested entity graphs.
+
+### Basic Usage
+
+**Reference Navigation** (single related entity):
+```csharp
+var filterModel = FilterModelBuilder.For<Customer>()
+    .AddInclude(c => c.BillingAddress)
+        .ThenInclude(a => a.City)
+        .ThenInclude(c => c.Country)
+    .Build();
+```
+
+**Collection Navigation** (collection of related entities):
+```csharp
+var filterModel = FilterModelBuilder.For<Customer>()
+    .AddInclude(c => c.Orders)             // ICollection<Order>
+        .ThenInclude(o => o.OrderItems)    // Lambda parameter is element type
+        .ThenInclude(i => i.Product)
+    .Build();
+```
+
+Supports all common collection types: `IEnumerable<T>`, `ICollection<T>`, `IReadOnlyCollection<T>`, `IReadOnlyList<T>`, `List<T>`.
+
+### Multiple Include Chains
+
+```csharp
+var filterModel = FilterModelBuilder.For<Order>()
+    .AddInclude(o => o.ShippingAddress)
+        .ThenInclude(a => a.City)
+    .AddInclude(o => o.OrderItems)
+        .ThenInclude(i => i.Product)
+    .AddInclude(o => o.Customer)
+        .ThenInclude(c => c.BillingAddress)
+    .Build();
+```
+
+### Conditional Includes
+
+```csharp
+var filterModel = FilterModelBuilder.For<Product>()
+    .AddInclude(p => p.Category)
+        .ThenInclude(c => c.ParentCategory, condition: includeDetails)
+    .Build();
+```
+
+When `condition: false`, all subsequent ThenIncludes in that chain are skipped.
+
+### Integration with Filters and Ordering
+
+ThenInclude works seamlessly with other builder methods:
+
+```csharp
+var filterModel = FilterModelBuilder.For<Customer>()
+    .AddFilter(c => c.IsActive, FilterOperator.Equal, true)
+    .AddInclude(c => c.Orders)
+        .ThenInclude(o => o.OrderItems)
+    .AddOrdering(c => c.LastName, OrderDirection.Ascending)
+    .SetPaging(1, 25)
+    .Build();
+```
+
+### Example
+
+```csharp
+var filterModel = FilterModelBuilder.For<Order>()
+    .AddFilter(o => o.Status, FilterOperator.Equal, OrderStatus.Active)
+    .AddInclude(o => o.Customer)
+        .ThenInclude(c => c.BillingAddress)
+        .ThenInclude(a => a.City)
+    .AddInclude(o => o.OrderItems)
+        .ThenInclude(i => i.Product)
+        .ThenInclude(p => p.Category)
+    .AddOrdering(o => o.OrderDate, OrderDirection.Descending)
+    .SetPaging(1, 20)
+    .Build();
+```
+
 # Appendix D: Disclaimer
 
 > This Filtering feature described here is designed to provide a pragmatic, flexible filtering

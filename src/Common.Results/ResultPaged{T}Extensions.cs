@@ -1907,4 +1907,197 @@ public static class ResultPagedExtensions
             return result;
         }
     }
+
+    /// <summary>
+    ///     Conditionally executes a chain of operations on the paged result based on an external condition.
+    ///     If the condition is false, the original result is returned unchanged.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The paged result to operate on.</param>
+    /// <param name="condition">The condition that determines whether to execute the operations.</param>
+    /// <param name="operation">A function that receives the result and returns a transformed result through chained operations.</param>
+    /// <returns>The transformed result if condition is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10)
+    ///     .When(isAdmin, r => r
+    ///         .Ensure(users => users.All(u => u.IsActive), new Error("All users must be active"))
+    ///         .Tap(users => LogAdminAccess(users))
+    ///     )
+    ///     .When(requiresValidation, r => r
+    ///         .Ensure(users => users.All(u => u.Email != null), new Error("Email required"))
+    ///     );
+    /// </code>
+    /// </example>
+    public static ResultPaged<T> When<T>(
+        this ResultPaged<T> result,
+        bool condition,
+        Func<ResultPaged<T>, ResultPaged<T>> operation)
+    {
+        if (!condition || !result.IsSuccess || operation is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            return operation(result);
+        }
+        catch (Exception ex)
+        {
+            return ResultPaged<T>.Failure()
+                .WithErrors(result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
+
+    /// <summary>
+    ///     Conditionally executes a chain of operations on the paged result based on a predicate evaluated against the value collection.
+    ///     If the predicate returns false, the original result is returned unchanged.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The paged result to operate on.</param>
+    /// <param name="predicate">A function that evaluates the value collection to determine whether to execute the operations.</param>
+    /// <param name="operation">A function that receives the result and returns a transformed result through chained operations.</param>
+    /// <returns>The transformed result if predicate is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = ResultPaged{Order}.Success(orders, totalCount: 50, page: 1, pageSize: 10)
+    ///     .When(orders => orders.Any(o => o.Total > 1000), r => r
+    ///         .Tap(orders => NotifyAccountManager(orders))
+    ///     )
+    ///     .When(orders => orders.All(o => o.IsInternational), r => r
+    ///         .Ensure(orders => orders.All(o => o.CustomsInfo != null), new Error("Customs info required"))
+    ///     );
+    /// </code>
+    /// </example>
+    public static ResultPaged<T> When<T>(
+        this ResultPaged<T> result,
+        Func<IEnumerable<T>, bool> predicate,
+        Func<ResultPaged<T>, ResultPaged<T>> operation)
+    {
+        if (!result.IsSuccess || predicate is null || operation is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            return predicate(result.Value)
+                ? operation(result)
+                : result;
+        }
+        catch (Exception ex)
+        {
+            return ResultPaged<T>.Failure()
+                .WithErrors(result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
+
+    /// <summary>
+    ///     Asynchronously and conditionally executes a chain of operations on the paged result based on an external condition.
+    ///     If the condition is false, the original result is returned unchanged.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The paged result to operate on.</param>
+    /// <param name="condition">The condition that determines whether to execute the operations.</param>
+    /// <param name="operation">An async function that receives the result and returns a transformed result through chained operations.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The transformed result if condition is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await ResultPaged{User}.Success(users, totalCount: 100, page: 1, pageSize: 10)
+    ///     .WhenAsync(isAdmin, async (r, ct) => await r
+    ///         .EnsureAsync(async (users, ct) => await ValidateAllActiveAsync(users, ct), new Error("Must be active"), ct)
+    ///         .TapAsync(async (users, ct) => await EnrichAdminDataAsync(users, ct), ct)
+    ///     , cancellationToken);
+    /// </code>
+    /// </example>
+    public static async Task<ResultPaged<T>> WhenAsync<T>(
+        this ResultPaged<T> result,
+        bool condition,
+        Func<ResultPaged<T>, CancellationToken, Task<ResultPaged<T>>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (!condition || !result.IsSuccess || operation is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            return await operation(result, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultPaged<T>.Failure()
+                .WithErrors(result.Errors)
+                .WithError(new OperationCancelledError())
+                .WithMessages(result.Messages);
+        }
+        catch (Exception ex)
+        {
+            return ResultPaged<T>.Failure()
+                .WithErrors(result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
+
+    /// <summary>
+    ///     Asynchronously and conditionally executes a chain of operations on the paged result based on a predicate evaluated against the value collection.
+    ///     If the predicate returns false, the original result is returned unchanged.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The paged result to operate on.</param>
+    /// <param name="predicate">A function that evaluates the value collection to determine whether to execute the operations.</param>
+    /// <param name="operation">An async function that receives the result and returns a transformed result through chained operations.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The transformed result if predicate is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await ResultPaged{Order}.Success(orders, totalCount: 50, page: 1, pageSize: 10)
+    ///     .WhenAsync(
+    ///         orders => orders.Any(o => o.Total > 1000),
+    ///         async (r, ct) => await r
+    ///             .TapAsync(async (orders, ct) => await NotifyAccountManagerAsync(orders, ct), ct),
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<ResultPaged<T>> WhenAsync<T>(
+        this ResultPaged<T> result,
+        Func<IEnumerable<T>, bool> predicate,
+        Func<ResultPaged<T>, CancellationToken, Task<ResultPaged<T>>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (!result.IsSuccess || predicate is null || operation is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            return predicate(result.Value)
+                ? await operation(result, cancellationToken)
+                : result;
+        }
+        catch (OperationCanceledException)
+        {
+            return ResultPaged<T>.Failure()
+                .WithErrors(result.Errors)
+                .WithError(new OperationCancelledError())
+                .WithMessages(result.Messages);
+        }
+        catch (Exception ex)
+        {
+            return ResultPaged<T>.Failure()
+                .WithErrors(result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
 }

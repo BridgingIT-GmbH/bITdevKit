@@ -1418,6 +1418,38 @@ await result.AndThenAsync(async (user, ct) => await ValidateUserAsync(user));
 
 > Conditional logic and alternative paths.
 
+- **When**: Conditionally execute a Result chain based on a condition or predicate
+
+```csharp
+// Execute operations only when external condition is true
+await result.When(
+    user.IsActive,
+    r => r
+        .Ensure(u => u.Age >= 18, new Error("Must be adult"))
+        .Map(u => u.Email));
+
+// Execute operations only when predicate matches the value
+await result.When(
+    user => user.Role == "Admin",
+    r => r
+        .Tap(u => Console.WriteLine("Admin user detected"))
+        .Bind(ValidateAdminPermissions));
+
+// Async version with cancellation support
+await result.WhenAsync(
+    true,
+    async (r, ct) => await r
+        .EnsureAsync(async (u, ct) => await HasPermissionAsync(u), new Error("No permission"), ct)
+        .MapAsync(async (u, ct) => await LoadUserDetailsAsync(u), ct),
+    cancellationToken);
+
+// Multiple When blocks for different conditions
+var finalResult = result
+    .When(user => user.IsActive, r => r.Map(u => u.WithStatus("active")))
+    .When(user => user.IsPremium, r => r.Map(u => u.WithBadge("premium")))
+    .When(user => user.IsVerified, r => r.Map(u => u.WithBadge("verified")));
+```
+
 - **Filter**: Convert to failure if predicate fails
 
 ```csharp

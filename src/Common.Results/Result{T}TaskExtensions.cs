@@ -647,6 +647,195 @@ public static partial class ResultTTaskExtensions
     }
 
     /// <summary>
+    ///     Conditionally executes a chain of operations on the Result task based on an external condition.
+    ///     If the condition is false, the original result is returned unchanged.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="resultTask">The Result task to operate on.</param>
+    /// <param name="condition">The condition that determines whether to execute the operations.</param>
+    /// <param name="operation">A function that receives the result and returns a transformed result through chained operations.</param>
+    /// <returns>The transformed result if condition is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await GetUserAsync(userId)
+    ///     .When(isAdmin, r => r
+    ///         .Ensure(u => u.IsActive, new Error("Admin must be active"))
+    ///         .Bind(u => EnrichAdminData(u))
+    ///         .Tap(u => LogAdminAccess(u))
+    ///     )
+    ///     .When(requiresValidation, r => r
+    ///         .Ensure(u => u.Email != null, new Error("Email required"))
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> When<T>(
+        this Task<Result<T>> resultTask,
+        bool condition,
+        Func<Result<T>, Result<T>> operation)
+    {
+        if (!condition || operation is null)
+        {
+            return await resultTask;
+        }
+
+        try
+        {
+            var result = await resultTask;
+            return result.When(condition, operation);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    ///     Conditionally executes a chain of operations on the Result task based on a predicate evaluated against the value.
+    ///     If the predicate returns false, the original result is returned unchanged.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="resultTask">The Result task to operate on.</param>
+    /// <param name="predicate">A function that evaluates the value to determine whether to execute the operations.</param>
+    /// <param name="operation">A function that receives the result and returns a transformed result through chained operations.</param>
+    /// <returns>The transformed result if predicate is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await GetOrderAsync(orderId)
+    ///     .When(o => o.Total > 1000, r => r
+    ///         .Bind(o => ApplyVipDiscount(o))
+    ///         .Tap(o => NotifyAccountManager(o))
+    ///     )
+    ///     .When(o => o.IsInternational, r => r
+    ///         .Bind(o => ApplyInternationalRules(o))
+    ///         .Ensure(o => o.CustomsInfo != null, new Error("Customs info required"))
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> When<T>(
+        this Task<Result<T>> resultTask,
+        Func<T, bool> predicate,
+        Func<Result<T>, Result<T>> operation)
+    {
+        if (predicate is null || operation is null)
+        {
+            return await resultTask;
+        }
+
+        try
+        {
+            var result = await resultTask;
+            return result.When(predicate, operation);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    ///     Asynchronously and conditionally executes a chain of operations on the Result task based on an external condition.
+    ///     If the condition is false, the original result is returned unchanged.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="resultTask">The Result task to operate on.</param>
+    /// <param name="condition">The condition that determines whether to execute the operations.</param>
+    /// <param name="operation">An async function that receives the result and returns a transformed result through chained operations.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The transformed result if condition is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await GetUserAsync(userId)
+    ///     .WhenAsync(isAdmin, async (r, ct) => await r
+    ///         .EnsureAsync(async (u, ct2) => await IsActiveAsync(u, ct2), new Error("Must be active"), ct)
+    ///         .BindAsync(async (u, ct2) => await EnrichAdminDataAsync(u, ct2), ct)
+    ///     , cancellationToken);
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> WhenAsync<T>(
+        this Task<Result<T>> resultTask,
+        bool condition,
+        Func<Result<T>, CancellationToken, Task<Result<T>>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (!condition || operation is null)
+        {
+            return await resultTask;
+        }
+
+        try
+        {
+            var result = await resultTask;
+            return await result.WhenAsync(condition, operation, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<T>.Failure()
+                .WithError(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    ///     Asynchronously and conditionally executes a chain of operations on the Result task based on a predicate evaluated against the value.
+    ///     If the predicate returns false, the original result is returned unchanged.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="resultTask">The Result task to operate on.</param>
+    /// <param name="predicate">A function that evaluates the value to determine whether to execute the operations.</param>
+    /// <param name="operation">An async function that receives the result and returns a transformed result through chained operations.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The transformed result if predicate is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await GetOrderAsync(orderId)
+    ///     .WhenAsync(
+    ///         o => o.Total > 1000,
+    ///         async (r, ct) => await r
+    ///             .BindAsync(async (o, ct2) => await ApplyVipDiscountAsync(o, ct2), ct)
+    ///             .TapAsync(async (o, ct2) => await NotifyAccountManagerAsync(o, ct2), ct),
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> WhenAsync<T>(
+        this Task<Result<T>> resultTask,
+        Func<T, bool> predicate,
+        Func<Result<T>, CancellationToken, Task<Result<T>>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (predicate is null || operation is null)
+        {
+            return await resultTask;
+        }
+
+        try
+        {
+            var result = await resultTask;
+            return await result.WhenAsync(predicate, operation, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<T>.Failure()
+                .WithError(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
     ///     Wraps a Result task in a Try operation, catching any exceptions.
     /// </summary>
     /// <typeparam name="T">The type of the value.</typeparam>

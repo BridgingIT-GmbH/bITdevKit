@@ -134,6 +134,7 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
 #### Core Methods
 
 - **FileExistsAsync(string path, IProgress<FileProgress> progress, CancellationToken token)**: Checks if a file exists at `path`. Returns `Task<Result>` indicating success or failure with errors (e.g., `FileSystemError` for missing files).
+
   ```csharp
   var provider = factory.CreateProvider("local");
   var existsResult = await provider.FileExistsAsync("data.txt", null, CancellationToken.None);
@@ -141,6 +142,7 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   ```
 
 - **ReadFileAsync(string path, IProgress<FileProgress> progress, CancellationToken token)**: Reads a file as a `Stream`. Returns `Task<Result<Stream>>` with the stream or errors (e.g., `PermissionError`).
+
   ```csharp
   var readResult = await provider.ReadFileAsync("data.txt", null, CancellationToken.None);
   readResult.ShouldBeSuccess("Read should succeed");
@@ -149,24 +151,28 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   ```
 
 - **WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress, CancellationToken token)**: Writes `content` to `path`. Returns `Task<Result>` with success or errors (e.g., `FileSystemError`).
+
   ```csharp
   var writeResult = await provider.WriteFileAsync("data.txt", new MemoryStream(Encoding.UTF8.GetBytes("Test content")), null, CancellationToken.None);
   writeResult.ShouldBeSuccess("Write should succeed");
   ```
 
 - **DeleteFileAsync(string path, IProgress<FileProgress> progress, CancellationToken token)**: Deletes a file at `path`. Returns `Task<Result>` with success or errors (e.g., `PermissionError`).
+
   ```csharp
   var deleteResult = await provider.DeleteFileAsync("data.txt", null, CancellationToken.None);
   deleteResult.ShouldBeSuccess("Delete should succeed");
   ```
 
 - **GetChecksumAsync(string path, CancellationToken token)**: Computes a checksum for a file. Returns `Task<Result<string>>` with the checksum or errors (e.g., `FileSystemError`).
+
   ```csharp
   var checksumResult = await provider.GetChecksumAsync("data.txt", CancellationToken.None);
   checksumResult.ShouldBeSuccess("Checksum should succeed");
   ```
 
 - **GetFileMetadataAsync(string path, CancellationToken token)**: Retrieves metadata for a file. Returns `Task<Result<FileMetadata>>` with `FileMetadata` or errors (e.g., `FileSystemError`).
+
   ```csharp
   var metadataResult = await provider.GetFileMetadataAsync("data.txt", CancellationToken.None);
   metadataResult.ShouldBeSuccess("Metadata retrieval should succeed");
@@ -176,6 +182,7 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   ```
 
 - **SetFileMetadataAsync(string path, FileMetadata metadata, CancellationToken token)**: Sets metadata for a file. Returns `Task<Result>` with success or errors (e.g., `FileSystemError`).
+
   ```csharp
   var metadata = new FileMetadata { Path = "data.txt", Length = 100, LastModified = DateTime.UtcNow };
   var setResult = await provider.SetFileMetadataAsync("data.txt", metadata, CancellationToken.None);
@@ -183,6 +190,7 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   ```
 
 - **UpdateFileMetadataAsync(string path, Func<FileMetadata, FileMetadata> metadataUpdate, CancellationToken token)**: Updates metadata for a file using a transformation function. Returns `Task<Result<FileMetadata>>` with updated metadata or errors.
+
   ```csharp
   var updateResult = await provider.UpdateFileMetadataAsync("data.txt", m => { m.Length = 200; return m; }, CancellationToken.None);
   updateResult.ShouldBeSuccess("Metadata update should succeed");
@@ -190,6 +198,7 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   ```
 
 - **ListFilesAsync(string path, string searchPattern, bool recursive, string continuationToken, CancellationToken token)**: Lists files matching `searchPattern` under `path`. Returns `Task<Result<(IEnumerable<string> Files, string NextContinuationToken)>>` with files and pagination token or errors (e.g., `PermissionError`).
+
   ```csharp
   var listResult = await provider.ListFilesAsync("/", "*.txt", true, null, CancellationToken.None);
   listResult.ShouldBeSuccess("Listing should succeed");
@@ -198,24 +207,28 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   ```
 
 - **CopyFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)**: Copies a file from `sourcePath` to `destinationPath` within the same provider. Returns `Task<Result>` with success or errors.
+
   ```csharp
   var copyResult = await provider.CopyFileAsync("data.txt", "data_copy.txt", null, CancellationToken.None);
   copyResult.ShouldBeSuccess("Copy should succeed");
   ```
 
 - **RenameFileAsync(string path, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)**: Renames a file from `path` to `destinationPath` within the same provider. Returns `Task<Result>` with success or errors.
+
   ```csharp
   var renameResult = await provider.RenameFileAsync("data.txt", "renamed.txt", null, CancellationToken.None);
   renameResult.ShouldBeSuccess("Rename should succeed");
   ```
 
 - **MoveFileAsync(string path, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)**: Moves a file from `path` to `destinationPath` within the same provider. Returns `Task<Result>` with success or errors.
+
   ```csharp
   var moveResult = await provider.MoveFileAsync("data.txt", "moved.txt", null, CancellationToken.None);
   moveResult.ShouldBeSuccess("Move should succeed");
   ```
 
 - **CopyFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress, CancellationToken token)**: Copies multiple files within the same provider. Returns `Task<Result>` with success or partial failure (e.g., `PartialOperationError`).
+
   ```csharp
   var filePairs = new[] { ("data1.txt", "copy1.txt"), ("data2.txt", "copy2.txt") };
   var copyFilesResult = await provider.CopyFilesAsync(filePairs, null, CancellationToken.None);
@@ -223,6 +236,7 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   ```
 
 - **DeleteFilesAsync(IEnumerable<string> paths, IProgress<FileProgress> progress, CancellationToken token)**: Deletes multiple files. Returns `Task<Result>` with success or partial failure.
+
   ```csharp
   var paths = new[] { "data1.txt", "data2.txt" };
   var deleteFilesResult = await provider.DeleteFilesAsync(paths, null, CancellationToken.None);
@@ -230,30 +244,35 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   ```
 
 - **MoveFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress, CancellationToken token)**: Moves multiple files within the same provider. Returns `Task<Result>` with success or partial failure.
+
   ```csharp
   var moveFilesResult = await provider.MoveFilesAsync(filePairs, null, CancellationToken.None);
   moveFilesResult.ShouldBeSuccess("Bulk move should succeed");
   ```
 
 - **DirectoryExistsAsync(string path, CancellationToken token)**: Checks if `path` is a directory. Returns `Task<Result>` with success or errors (e.g., `FileSystemError`).
+
   ```csharp
   var dirExistsResult = await provider.DirectoryExistsAsync("new_dir", CancellationToken.None);
   dirExistsResult.ShouldBeSuccess("Directory should exist");
   ```
 
 - **CreateDirectoryAsync(string path, CancellationToken token)**: Creates a directory at `path`. Returns `Task<Result>` with success or errors (e.g., `PermissionError`).
+
   ```csharp
   var createDirResult = await provider.CreateDirectoryAsync("new_dir", CancellationToken.None);
   createDirResult.ShouldBeSuccess("Directory creation should succeed");
   ```
 
 - **DeleteDirectoryAsync(string path, bool recursive, CancellationToken token)**: Deletes a directory at `path`. Returns `Task<Result>` with success or errors (e.g., `PermissionError`).
+
   ```csharp
   var deleteDirResult = await provider.DeleteDirectoryAsync("new_dir", true, CancellationToken.None);
   deleteDirResult.ShouldBeSuccess("Directory deletion should succeed");
   ```
 
 - **ListDirectoriesAsync(string path, string searchPattern, bool recursive, CancellationToken token)**: Lists directories matching `searchPattern` under `path`. Returns `Task<Result<IEnumerable<string>>>` with directories or errors (e.g., `PermissionError`).
+
   ```csharp
   var dirsResult = await provider.ListDirectoriesAsync("/", null, true, CancellationToken.None);
   dirsResult.ShouldBeSuccess("Directory listing should succeed");
@@ -262,6 +281,7 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   ```
 
 - **CheckHealthAsync(CancellationToken token)**: Verifies storage provider health. Returns `Task<Result>` with success or errors (e.g., `FileSystemError`).
+
   ```csharp
   var healthResult = await provider.CheckHealthAsync(CancellationToken.None);
   healthResult.ShouldBeSuccess("Health check should succeed");
@@ -359,6 +379,7 @@ uncompressResult.ShouldBeSuccess("Directory decompression should succeed");
 The `FileStorageProviderCrossExtensions` class provides methods to perform operations across different `IFileStorageProvider` instances, such as copying or moving files between providers (e.g., from a local file system to an in-memory provider). These methods support progress reporting and handle errors using the `Result` pattern.
 
 - **CopyFileAsync(IFileStorageProvider sourceProvider, string sourcePath, IFileStorageProvider destinationProvider, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)**: Copies a file from the source provider to the destination provider. Returns `Task<Result>` with success or errors (e.g., `FileSystemError`, `PermissionError`).
+
   ```csharp
   var sourceProvider = factory.CreateProvider("local");
   var destProvider = factory.CreateProvider("inMemory");
@@ -375,6 +396,7 @@ The `FileStorageProviderCrossExtensions` class provides methods to perform opera
   ```
 
 - **CopyFilesAsync(IFileStorageProvider sourceProvider, IFileStorageProvider destinationProvider, IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress, CancellationToken token)**: Copies multiple files between providers in a batch. Returns `Task<Result>` with success or partial failure (e.g., `PartialOperationError`).
+
   ```csharp
   var filePairs = new[]
   {
@@ -401,6 +423,7 @@ The `FileStorageProviderCrossExtensions` class provides methods to perform opera
   ```
 
 - **MoveFileAsync(IFileStorageProvider sourceProvider, string sourcePath, IFileStorageProvider destinationProvider, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)**: Moves a file by copying it to the destination provider and deleting it from the source provider. Returns `Task<Result>` with success or errors.
+
   ```csharp
   await sourceProvider.WriteFileAsync("move.txt", new MemoryStream(Encoding.UTF8.GetBytes("Move content")), null, CancellationToken.None);
 
@@ -415,6 +438,7 @@ The `FileStorageProviderCrossExtensions` class provides methods to perform opera
   ```
 
 - **MoveFilesAsync(IFileStorageProvider sourceProvider, IFileStorageProvider destinationProvider, IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress, CancellationToken token)**: Moves multiple files between providers in a batch. Returns `Task<Result>` with success or partial failure.
+
   ```csharp
   var moveFilesResult = await sourceProvider.MoveFilesAsync(destProvider, filePairs, progress, CancellationToken.None);
   moveFilesResult.ShouldBeSuccess("Cross-provider bulk move should succeed");
@@ -464,6 +488,7 @@ The `FileMonitoring` feature builds on `FileStorage` to provide real-time and on
 #### FileEvent Structure
 
 The `FileEvent` class represents a detected file change, with the following key properties:
+
 - **EventType**: The type of change (e.g., `Added`, `Changed`, `Deleted`, `Unchanged`).
 - **FilePath**: The relative path of the file.
 - **Checksum**: The file's checksum for change detection.
@@ -642,7 +667,7 @@ services.AddJobScheduling(c => c.StartupDelay(5000), configuration)
 
 #### Example Log Output
 
-```
+```bash
 STR job: scan started (location=inbound)
 STR job: progress (location=inbound, filesScanned=10, totalFiles=100, percentageComplete=10.00) -> took 1000.0000 ms
 STR job: scan completed (location=inbound, eventCount=5)
@@ -653,7 +678,7 @@ STR job: event processed (location=inbound, eventType=Added, filePath=file1.txt,
 
 The job implements `IRetryJobScheduling` with 3 attempts and a 1-second backoff. If a scan fails (e.g., due to a transient error), the job will retry up to 3 times:
 
-```
+```bash
 STR job: scan started (location=inbound)
 STR job: scan failed (location=inbound, attempt=1)
 STR job: scan started (location=inbound)

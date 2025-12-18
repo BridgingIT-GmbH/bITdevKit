@@ -23,10 +23,6 @@ public class CoreTodoItemEndpoints : EndpointsBase
             .MapGroup("api/core/todoitems").RequireAuthorization()
             .WithTags("CoreModule.TodoItems");
 
-        app.MapGet("/_schema/probe", () => Results.NoContent())
-           .ExcludeFromDescription()
-           .Produces<ResultProblemDetails>(StatusCodes.Status200OK, "application/problem+json");
-
         // GET single TodoItem
         group.MapGet("/{id}",
             async ([FromServices] IRequester requester,

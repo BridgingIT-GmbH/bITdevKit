@@ -14,6 +14,7 @@ Commands are lightweight classes derived from `ConsoleCommandBase` and discovere
 ### Challenges
 
 Modern local development and operational workflows often face:
+
 - Manual repetition of diagnostic and maintenance tasks (threads, memory, GC, environment info).
 - Lack of a consistent, discoverable interface for custom runtime operations.
 - Ad hoc scripts that duplicate logic scattered across multiple project areas.
@@ -23,6 +24,7 @@ Modern local development and operational workflows often face:
 ### Solution
 
 The feature addresses these challenges by supplying:
+
 - A unified command abstraction (`IConsoleCommand`) with a lean base class (`ConsoleCommandBase`).
 - Attribute-driven option & argument binding (`ConsoleCommandOptionAttribute`, `ConsoleCommandArgumentAttribute`).
 - Grouped subcommands (`IGroupedConsoleCommand`) enabling hierarchical organization (e.g. `history list`, `diag perf`).
@@ -77,7 +79,9 @@ flowchart LR
 ## Setup
 
 ### Register Non-Interactive Commands (Console)
+
 Use when you need single-run invocation (e.g. hosted service executing a command supplied via args).
+
 ```csharp
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -92,7 +96,9 @@ return await ConsoleCommands.RunAsync(host.Services, args);
 ```
 
 ### Register Interactive Commands (Kestrel)
+
 Enable the interactive loop for local development.
+
 ```csharp
 builder.Services.AddConsoleCommandsInteractive(cfg =>
 {
@@ -104,21 +110,26 @@ app.UseConsoleCommandsInteractive();
 ```
 
 ### Environment Constraints
+
 The interactive loop is automatically bypassed in non-development environments (local checks).
 
 ## Command Definition
 
 ### Options & Arguments
+
 Annotate public properties:
+
 - `ConsoleCommandOptionAttribute`: Named option (`--name value` or short alias `-n value`) plus optional default.
 - `ConsoleCommandArgumentAttribute`: Positional argument by index.
 
 Binding Rules:
+
 - Booleans are treated as flags (presence => true unless explicitly `false`).
 - Missing required options/arguments produce binder errors and detailed help output.
 - Unrecognized tokens yield validation feedback.
 
 ### Example: Simple Echo Command
+
 ```csharp
 public class EchoConsoleCommand : ConsoleCommandBase
 {
@@ -128,43 +139,53 @@ public class EchoConsoleCommand : ConsoleCommandBase
  public EchoConsoleCommand() : base("echo", "Echo text with optional repetition") { }
  public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
  {
- var output = Upper ? Text.ToUpperInvariant() : Text;
- for (var i =0; i < Repeat; i++) console.MarkupLine($"[green]{Markup.Escape(output)}[/]");
- return Task.CompletedTask;
+  var output = Upper ? Text.ToUpperInvariant() : Text;
+  for (var i =0; i < Repeat; i++) console.MarkupLine($"[green]{Markup.Escape(output)}[/]");
+  return Task.CompletedTask;
  }
 }
 ```
+
 Usage:
-```
+
+```bash
 echo "hello world" --repeat=3 --upper
 ```
 
 ### Example: Grouped Command (history)
+
 Grouped commands share a `GroupName` token followed by subcommand names.
-```
+
+```bash
 history list --max=25
 history clear --keep-last=5
 history search restart
 ```
+
 Each subcommand class implements `IGroupedConsoleCommand` and supplies its own `Name` / `Description` while inheriting group metadata.
 
 ### Life Cycle Hook
+
 `OnAfterBind(console, tokens)` allows post-binding adjustment / validation (e.g. deriving repeat count from another option).
 
 ## Interactive Mode
 
 ### Launch
+
 When registered and running locally, a banner appears and the loop waits for user input. History is appended after each line. Control signals:
+
 - Empty line: ignored.
 - `quit` / `exit` / `q`: graceful shutdown.
 - `restart`: development-only restart (spawns new process, sets environment marker).
 
 ### Help System
+
 - `help` lists all commands and grouped subcommands.
 - `help history` shows group subcommands.
 - `help history list` shows detailed option/argument help for a specific subcommand.
 
 ### History Management
+
 | Command | Purpose |
 |---------|---------|
 | `history list --max=50` | Show recent entries. |
@@ -172,9 +193,11 @@ When registered and running locally, a banner appears and the loop waits for use
 | `history clear --keep-last=10` | Trim or fully clear persisted history file. |
 
 ### Restart Flow
+
 `restart` (development only) sets a transient environment variable to prevent nested restarts, spawns a new instance then stops current process.
 
 ## Diagnostics (diag Group)
+
 The `diag` group centralizes point-in-time runtime introspection.
 
 | Subcommand | Description | Key Metrics |
@@ -190,11 +213,13 @@ All output is tabular via Spectre.Console for readability and consistent formatt
 ## Non-Interactive Invocation
 
 You can host commands in a console entry point to perform a single operation based on command-line args:
+
 ```csharp
 var line = string.Join(' ', args);
 var tokens = Split(line);
 // Resolve registered IConsoleCommand services and execute matching command (reuse binder).
 ```
+
 This approach enables automation (CI tasks, maintenance jobs) while reusing the exact same command implementations as interactive mode.
 
 ## Error Handling & Validation
@@ -206,15 +231,18 @@ This approach enables automation (CI tasks, maintenance jobs) while reusing the 
 ## Extensibility
 
 ### Add Custom Commands
+
 1. Create a class deriving `ConsoleCommandBase` (or implementing `IGroupedConsoleCommand` for groups).
 2. Decorate properties with option / argument attributes.
 3. Register via builder (`cfg.AddCommand<YourCommand>()`).
 4. Implement `ExecuteAsync` producing Spectre.Console output (tables, markup, panels).
 
 ### Introduce New Groups
+
 Group multiple related sub-operations (e.g. `cache warm`, `cache stats`). Provide a consistent `GroupName` and optional aliases. Each subcommand remains small and focused.
 
 ### Share Utilities
+
 Refactor repeated metrics/data gathering into internal static helper classes (similar to `DiagnosticTablesBuilder`) to keep execution methods lean.
 
 ## Best Practices
@@ -248,15 +276,19 @@ Refactor repeated metrics/data gathering into internal static helper classes (si
 ## Advanced Topics
 
 ### Integrating With External Scripts
+
 Non-interactive commands can be wrapped by shell scripts or scheduled tasks (e.g. Windows Task Scheduler) by passing the command tokens as part of process args. Consistent parsing semantics ensure parity with interactive usage.
 
 ### Custom Output Formats
+
 While tables are recommended, commands may output JSON for machine consumption. Provide a `--json` option where appropriate and serialize with indentation for clarity.
 
 ### Security Considerations
+
 Do not expose interactive console capabilities in production internet-facing environments. Group names or command names should not leak sensitive operational intentions. Restrict potentially destructive commands via environment checks and role guards if extended.
 
 ### Future Extensions (Suggested Roadmap)
+
 - Latency distribution and percentiles in `diag perf`.
 - Endpoint-specific HTTP statistics (per route breakdown).
 - Snapshot diff & export (`diag diff`, `diag export`).
@@ -299,7 +331,7 @@ end
 
 ## Appendix C: Example Group Design
 
-```
+```bash
 Group: diag
 Subcommands: gc, threads, mem, perf, env
 Goal: Centralize diagnostics; each subcommand returns one cohesive table.
@@ -309,6 +341,7 @@ Additions (future): heap, latency, http, allocations, exceptions.
 ## Appendix D: Non-Interactive Pattern
 
 Minimal bootstrap for executing a single command outside interactive mode:
+
 ```csharp
 using var scope = host.Services.CreateScope();
 var all = scope.ServiceProvider.GetServices<IConsoleCommand>();

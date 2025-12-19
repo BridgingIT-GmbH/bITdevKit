@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application.Messaging\Application.Messaging.csproj"/>
-    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj"/>
     <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj"/>
   </ItemGroup>
 

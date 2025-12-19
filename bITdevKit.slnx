@@ -9,6 +9,7 @@
     <File Path=".editorconfig" />
     <File Path=".github/copilot-instructions.md" />
     <File Path=".github/workflows/github-actions.yml" />
+    <File Path=".github/workflows/sonarcloud.yml" />
     <File Path=".gitignore" />
     <File Path="azure-pipelines.yml" />
     <File Path="CODE-OF-CONDUCT.md" />
@@ -28,13 +29,11 @@
   <Folder Name="/docs/">
     <File Path="docs/features-application-commands-queries.md" />
     <File Path="docs/features-consolecommands.md" />
-    <File Path="docs/features-documentstorage.md" />
     <File Path="docs/features-domain-activeentity-design.md" />
     <File Path="docs/features-domain-activeentity.md" />
     <File Path="docs/features-domain-repositories.md" />
     <File Path="docs/features-domain.md" />
     <File Path="docs/features-entitypermissions.md" />
-    <File Path="docs/features-filestorage.md" />
     <File Path="docs/features-filtering.md" />
     <File Path="docs/features-identityprovider.md" />
     <File Path="docs/features-jobscheduling.md" />
@@ -46,6 +45,8 @@
     <File Path="docs/features-results.md" />
     <File Path="docs/features-rules.md" />
     <File Path="docs/features-startuptasks.md" />
+    <File Path="docs/features-storage-documents.md" />
+    <File Path="docs/features-storage-files.md" />
     <File Path="docs/features-utilities.md" />
     <File Path="README.md" />
   </Folder>

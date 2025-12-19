@@ -209,4 +209,126 @@ public class PropertyBagTests
             bag.Get<int>($"k{i}").ShouldBe(iterations - 1);
         }
     }
+
+    [Fact]
+    public void Serialize_And_Deserialize_To_String_Roundtrip()
+    {
+        // Arrange
+        var serializer = new SystemTextJsonSerializer();
+        var bag = new PropertyBag();
+        bag.Set("name", "John Doe");
+        bag.Set("age", 30);
+        bag.Set("isActive", true);
+
+        // Act
+        var json = serializer.SerializeToString(bag);
+        var deserialized = serializer.Deserialize<PropertyBag>(json);
+
+        // Assert
+        json.ShouldNotBeNullOrEmpty();
+        deserialized.ShouldNotBeNull();
+        deserialized.Get<string>("name").ShouldBe("John Doe");
+        deserialized.Get<int>("age").ShouldBe(30);
+        deserialized.Get<bool>("isActive").ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Serialize_And_Deserialize_To_Bytes_Roundtrip()
+    {
+        // Arrange
+        var serializer = new SystemTextJsonSerializer();
+        var bag = new PropertyBag();
+        bag.Set("foo", 42);
+        bag.Set("bar", "test");
+
+        // Act
+        var bytes = serializer.SerializeToBytes(bag);
+        var deserialized = serializer.Deserialize<PropertyBag>(bytes);
+
+        // Assert
+        bytes.ShouldNotBeNull();
+        bytes.Length.ShouldBeGreaterThan(0);
+        deserialized.ShouldNotBeNull();
+        deserialized.Get<int>("foo").ShouldBe(42);
+        deserialized.Get<string>("bar").ShouldBe("test");
+    }
+
+    [Fact]
+    public void Serialize_Empty_PropertyBag_Roundtrip()
+    {
+        // Arrange
+        var serializer = new SystemTextJsonSerializer();
+        var bag = new PropertyBag();
+
+        // Act
+        var json = serializer.SerializeToString(bag);
+        var deserialized = serializer.Deserialize<PropertyBag>(json);
+
+        // Assert
+        json.ShouldNotBeNullOrEmpty();
+        deserialized.ShouldNotBeNull();
+        deserialized.Keys.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Serialize_PropertyBag_With_Complex_Values_Roundtrip()
+    {
+        // Arrange
+        var serializer = new SystemTextJsonSerializer();
+        var bag = new PropertyBag();
+        bag.Set("number", 123);
+        bag.Set("text", "hello");
+        bag.Set("flag", true);
+        bag.Set("decimal", 99.99m);
+        bag.Set("date", new DateTime(2024, 1, 15));
+
+        // Act
+        var json = serializer.SerializeToString(bag);
+        var deserialized = serializer.Deserialize<PropertyBag>(json);
+
+        // Assert
+        deserialized.ShouldNotBeNull();
+        deserialized.Get<int>("number").ShouldBe(123);
+        deserialized.Get<string>("text").ShouldBe("hello");
+        deserialized.Get<bool>("flag").ShouldBeTrue();
+        deserialized.Get<decimal>("decimal").ShouldBe(99.99m);
+        deserialized.Get<DateTime>("date").ShouldBe(new DateTime(2024, 1, 15));
+    }
+
+    [Fact]
+    public void Serialize_PropertyBag_With_Nested_Objects_Roundtrip()
+    {
+        // Arrange
+        var serializer = new SystemTextJsonSerializer();
+        var bag = new PropertyBag();
+        var nestedBag = new PropertyBag();
+        nestedBag.Set("inner", "value");
+        bag.Set("outer", "test");
+        bag.Set("nested", nestedBag);
+
+        // Act
+        var json = serializer.SerializeToString(bag);
+        var deserialized = serializer.Deserialize<PropertyBag>(json);
+
+        // Assert
+        deserialized.ShouldNotBeNull();
+        deserialized.Get<string>("outer").ShouldBe("test");
+        deserialized.Contains("nested").ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Serialize_Null_PropertyBag_Returns_Null()
+    {
+        // Arrange
+        var serializer = new SystemTextJsonSerializer();
+        PropertyBag bag = null;
+
+        // Act
+        var json = serializer.SerializeToString(bag);
+        var bytes = serializer.SerializeToBytes(bag);
+
+        // Assert
+        json.ShouldBeNull();
+        bytes.ShouldBeNull();
+    }
 }

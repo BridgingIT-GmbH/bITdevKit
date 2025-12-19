@@ -214,14 +214,6 @@
           "Microsoft.Extensions.Configuration.Binder": "[10.0.1, )"
         }
       },
-      "BridgingIT.DevKit.Common.Extensions": {
-        "type": "Project",
-        "dependencies": {
-          "Ensure.That": "[10.1.0, )",
-          "Microsoft.Extensions.Configuration.Abstractions": "[10.0.1, )",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.1, )"
-        }
-      },
       "BridgingIT.DevKit.Common.Mapping": {
         "type": "Project",
         "dependencies": {
@@ -245,7 +237,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "FluentValidation": "[12.1.1, )",
           "Microsoft.Extensions.Logging.Abstractions": "[10.0.1, )"
@@ -255,7 +246,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "FluentValidation": "[12.1.1, )",
@@ -277,7 +267,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
@@ -294,7 +283,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",

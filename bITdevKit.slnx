@@ -28,8 +28,6 @@
   </Folder>
   <Folder Name="/docs/">
     <File Path="docs/features-application-commands-queries.md" />
-    <File Path="docs/features-consolecommands.md" />
-    <File Path="docs/features-domain-activeentity-design.md" />
     <File Path="docs/features-domain-activeentity.md" />
     <File Path="docs/features-domain-repositories.md" />
     <File Path="docs/features-domain.md" />
@@ -40,6 +38,7 @@
     <File Path="docs/features-messaging.md" />
     <File Path="docs/features-modules.md" />
     <File Path="docs/features-presentation-appstate.md" />
+    <File Path="docs/features-presentation-console-commands.md" />
     <File Path="docs/features-presentation-cors.md" />
     <File Path="docs/features-requester-notifier.md" />
     <File Path="docs/features-results.md" />

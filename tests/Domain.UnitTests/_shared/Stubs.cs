@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Domain.UnitTests;
 using System.Linq.Expressions;
 using Model;
 
-public class PersonStub : Entity<Guid>
+public class PersonStub : AggregateRoot<Guid>
 {
     public string FirstName { get; set; }
 

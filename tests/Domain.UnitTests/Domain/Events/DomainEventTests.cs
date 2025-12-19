@@ -192,7 +192,7 @@ public class DomainEventTests
     /// Tests that PublishAsync successfully processes a notification and returns a result.
     /// </summary>
     [Fact]
-    public async Task PublishAsync_SuccessfulNotification_ReturnsSuccessResult()
+    public async Task PublishAsync_SuccessfullDomainevent_ReturnsSuccessResult()
     {
         // Arrange
         var notifier = this.serviceProvider.GetService<INotifier>();
@@ -206,6 +206,34 @@ public class DomainEventTests
         result.IsSuccess.ShouldBeTrue();
         StubDomainEventEventHandler.Handled.ShouldBeTrue();
         StubDomainEventEventHandler.Value.ShouldBe(originalValue);
+    }
+
+    /// <summary>
+    /// Tests that PublishAsync successfully processes a notification and returns a result.
+    /// </summary>
+    [Fact]
+    public async Task PublishAsync_SuccessfullEntityDomainEvent_ReturnsSuccessResult()
+    {
+        // Arrange
+        var notifier = this.serviceProvider.GetService<INotifier>();
+        var entity = new PersonStub()
+        {
+            Id = Guid.NewGuid(),
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 30,
+            BirthDate = new DateTime(1994, 1, 1),
+            Email = "john.doe@example.com"
+        };
+        var originalEvent = new EntityCreatedDomainEvent<PersonStub>(entity);
+
+        // Act
+        var result = await notifier.PublishAsync(originalEvent);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        PersonStubCreatedEventHandler.Handled.ShouldBeTrue();
+        PersonStubCreatedEventHandler.Value.ShouldBe(entity.Id);
     }
 
     //[Fact]
@@ -243,6 +271,27 @@ public class StubDomainEventEventHandler(ILoggerFactory loggerFactory) : DomainE
         {
             Handled = true;
             Value = notification.Value;
+        }, cancellationToken);
+    }
+}
+
+public class PersonStubCreatedEventHandler(ILoggerFactory loggerFactory) : DomainEventHandlerBase<EntityCreatedDomainEvent<PersonStub>>(loggerFactory)
+{
+    public static Guid Value { get; internal set; }
+
+    public static bool Handled { get; internal set; }
+
+    public override bool CanHandle(EntityCreatedDomainEvent<PersonStub> notification)
+    {
+        return true;
+    }
+
+    public override async Task Process(EntityCreatedDomainEvent<PersonStub> notification, CancellationToken cancellationToken)
+    {
+        await Task.Run(() =>
+        {
+            Handled = true;
+            Value = notification.Entity.Id;
         }, cancellationToken);
     }
 }

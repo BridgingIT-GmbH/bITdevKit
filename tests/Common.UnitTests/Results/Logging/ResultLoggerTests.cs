@@ -25,10 +25,10 @@ public class ResultLoggerTests
     public void Log_ShouldLogCorrectInformation()
     {
         // Arrange
-        var context = "TestContext";
-        var content = "TestContent";
+        const string context = "TestContext";
+        const string content = "TestContent";
         var result = Result.Failure("Message1").WithError(new Exception("Error1"));
-        var logLevel = LogLevel.Information;
+        const LogLevel logLevel = LogLevel.Information;
 
         // Act
         this.sut.Log(context, content, result, logLevel);
@@ -46,10 +46,10 @@ public class ResultLoggerTests
     public void Log_Generic_ShouldLogCorrectInformation()
     {
         // Arrange
-        var content = "TestContent";
+        const string content = "TestContent";
         var result = Result.Failure("Message1")
             .WithError(new Exception("Error1"));
-        var logLevel = LogLevel.Error;
+        const LogLevel logLevel = LogLevel.Error;
 
         // Act
         this.sut.Log<ResultLoggerTests>(content, result, logLevel);

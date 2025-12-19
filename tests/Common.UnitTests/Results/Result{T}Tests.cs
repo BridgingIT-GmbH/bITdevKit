@@ -1200,7 +1200,7 @@ public class ResultValueTests
     public void When_WithTrueCondition_ExecutesOperations()
     {
         // Arrange
-        var value = 25;
+        const int value = 25;
         var result = Result<int>.Success(value);
 
         // Act
@@ -1218,7 +1218,7 @@ public class ResultValueTests
     public void When_WithFalseCondition_ReturnsOriginalResult()
     {
         // Arrange
-        var value = 25;
+        const int value = 25;
         var result = Result<int>.Success(value);
 
         // Act
@@ -1235,7 +1235,7 @@ public class ResultValueTests
     public void When_WithPredicateTrue_ExecutesOperations()
     {
         // Arrange
-        var value = 30;
+        const int value = 30;
         var result = Result<int>.Success(value);
 
         // Act
@@ -1253,7 +1253,7 @@ public class ResultValueTests
     public void When_WithPredicateFalse_ReturnsOriginalResult()
     {
         // Arrange
-        var value = 20;
+        const int value = 20;
         var result = Result<int>.Success(value);
 
         // Act
@@ -1288,7 +1288,7 @@ public class ResultValueTests
     public void When_WithChainedOperations_ExecutesAll()
     {
         // Arrange
-        var value = 25;
+        const int value = 25;
         var result = Result<int>.Success(value);
         var tapExecuted = false;
 
@@ -1361,7 +1361,7 @@ public class ResultValueTests
     public async Task WhenAsync_WithTrueCondition_ExecutesOperations()
     {
         // Arrange
-        var value = 25;
+        const int value = 25;
         var result = Result<int>.Success(value);
 
         // Act
@@ -1382,7 +1382,7 @@ public class ResultValueTests
     public async Task WhenAsync_WithFalseCondition_ReturnsOriginalResult()
     {
         // Arrange
-        var value = 25;
+        const int value = 25;
         var result = Result<int>.Success(value);
 
         // Act
@@ -1403,7 +1403,7 @@ public class ResultValueTests
     public async Task WhenAsync_WithPredicateTrue_ExecutesOperations()
     {
         // Arrange
-        var value = 30;
+        const int value = 30;
         var result = Result<int>.Success(value);
 
         // Act
@@ -1447,7 +1447,7 @@ public class ResultValueTests
     public async Task TaskWhen_WithTrueCondition_ExecutesOperations()
     {
         // Arrange
-        var value = 25;
+        const int value = 25;
         var resultTask = Task.FromResult(Result<int>.Success(value));
 
         // Act
@@ -1465,7 +1465,7 @@ public class ResultValueTests
     public async Task TaskWhen_WithFalseCondition_ReturnsOriginalResult()
     {
         // Arrange
-        var value = 25;
+        const int value = 25;
         var resultTask = Task.FromResult(Result<int>.Success(value));
 
         // Act
@@ -1502,7 +1502,7 @@ public class ResultValueTests
     public async Task TaskWhenAsync_WithAsyncOperations_ExecutesSuccessfully()
     {
         // Arrange
-        var value = 25;
+        const int value = 25;
         var resultTask = Task.FromResult(Result<int>.Success(value));
 
         // Act
@@ -1523,7 +1523,7 @@ public class ResultValueTests
     public async Task TaskWhenAsync_WithPredicateAndAsyncOps_ExecutesConditionally()
     {
         // Arrange
-        var value = 30;
+        const int value = 30;
         var resultTask = Task.FromResult(Result<int>.Success(value));
 
         // Act
@@ -1549,8 +1549,8 @@ public class ResultValueTests
             this.faker.Name.LastName(),
             "admin@example.com",
             30);
-        var isAdmin = true;
-        var requiresValidation = true;
+        const bool isAdmin = true;
+        const bool requiresValidation = true;
 
         // Act
         var result = Result<PersonStub>.Success(adminUser)
@@ -1571,9 +1571,9 @@ public class ResultValueTests
     public void When_RealWorldScenario_FeatureFlags()
     {
         // Arrange
-        var value = 100;
-        var featureAEnabled = true;
-        var featureBEnabled = false;
+        const int value = 100;
+        const bool featureAEnabled = true;
+        const bool featureBEnabled = false;
 
         // Act
         var result = Result<int>.Success(value)

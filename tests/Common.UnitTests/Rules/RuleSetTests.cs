@@ -813,7 +813,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     [Fact]
     public void HasValues_WhenEnumValueIsAllowed_ShouldReturnSuccess()
     {
-        var value = TestEnum.Value1;
+        const TestEnum value = TestEnum.Value1;
         var allowedValues = new[] { TestEnum.Value1, TestEnum.Value2 };
         var rule = RuleSet.HasValues(value, allowedValues);
 
@@ -824,7 +824,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     [Fact]
     public void HasValues_WhenEnumValueNotAllowed_ShouldReturnFailure()
     {
-        var value = TestEnum.Value3;
+        const TestEnum value = TestEnum.Value3;
         var allowedValues = new[] { TestEnum.Value1, TestEnum.Value2 };
         var rule = RuleSet.HasValues(value, allowedValues);
 
@@ -887,7 +887,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     [Fact]
     public void In_WhenValueInAllowedValues_ShouldReturnSuccess()
     {
-        var value = "test";
+        const string value = "test";
         var allowed = new[] { "sample", "test", "example" };
         var rule = RuleSet.In(value, allowed);
 
@@ -898,7 +898,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     [Fact]
     public void In_WhenValueNotInAllowedValues_ShouldReturnFailure()
     {
-        var value = "other";
+        const string value = "other";
         var allowed = new[] { "sample", "test", "example" };
         var rule = RuleSet.In(value, allowed);
 
@@ -909,7 +909,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     [Fact]
     public void NotIn_WhenValueNotInDisallowedValues_ShouldReturnSuccess()
     {
-        var value = "valid";
+        const string value = "valid";
         var disallowed = new[] { "invalid", "blocked" };
         var rule = RuleSet.NotIn(value, disallowed);
 
@@ -920,7 +920,7 @@ public class RuleSetTests(RulesFixture fixture) : IClassFixture<RulesFixture>
     [Fact]
     public void NotIn_WhenValueInDisallowedValues_ShouldReturnFailure()
     {
-        var value = "invalid";
+        const string value = "invalid";
         var disallowed = new[] { "invalid", "blocked" };
         var rule = RuleSet.NotIn(value, disallowed);
 

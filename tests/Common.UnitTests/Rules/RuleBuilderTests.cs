@@ -331,7 +331,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
     {
         // Arrange
         var person = new PersonStub(string.Empty, "Doe", "john@example.com", 25);
-        var message = "First name is required";
+        const string message = "First name is required";
 
         // Act
         var result = Rule.Add()
@@ -382,7 +382,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
     {
         // Arrange
         var person = new PersonStub("John", "Doe", "john@example.com", 15);
-        var shouldValidateAge = false;
+        const bool shouldValidateAge = false;
 
         // Act
         var result = Rule.Add()

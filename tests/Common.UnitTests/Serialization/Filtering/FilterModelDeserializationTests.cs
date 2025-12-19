@@ -22,7 +22,7 @@ public class FilterModelDeserializationTests
     {
         // Arrange
         // This is the single "filter" query value string passed into TryParse by ASP.NET.
-        var queryValue = "{\"page\":2,\"pageSize\":25,\"filters\":[{\"field\":\"type.name\",\"operator\":\"isnotnull\"},{\"field\":\"type.name\",\"operator\":\"eq\",\"value\":\"AAA\"},{\"field\":\"temperatureMin\",\"operator\":\"gte\",\"value\":16.1},{\"field\":\"timestamp\",\"operator\":\"gte\",\"value\":\"2024-10-24T10:00:00\"}],\"orderings\":[{\"field\":\"createdAt\",\"direction\":\"Desc\"}]}";
+        const string queryValue = "{\"page\":2,\"pageSize\":25,\"filters\":[{\"field\":\"type.name\",\"operator\":\"isnotnull\"},{\"field\":\"type.name\",\"operator\":\"eq\",\"value\":\"AAA\"},{\"field\":\"temperatureMin\",\"operator\":\"gte\",\"value\":16.1},{\"field\":\"timestamp\",\"operator\":\"gte\",\"value\":\"2024-10-24T10:00:00\"}],\"orderings\":[{\"field\":\"createdAt\",\"direction\":\"Desc\"}]}";
 
         // Act
         var success = FilterModel.TryParse(queryValue, provider: null, out var model);

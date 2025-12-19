@@ -11,9 +11,17 @@ namespace BridgingIT.DevKit.Common;
 public interface IResultError
 {
     /// <summary>
-    ///     Gets the error message associated with the result error.
+    /// Gets the collection of custom properties associated with this instance.
+    /// </summary>
+    PropertyBag Properties { get; }
+
+    /// <summary>
+    /// Gets the error message associated with the result error.
     /// </summary>
     string Message { get; }
 
+    /// <summary>
+    /// Throws an exception to indicate an error has occurred.
+    /// </summary>
     public void Throw();
 }

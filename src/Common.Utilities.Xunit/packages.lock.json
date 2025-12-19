@@ -360,7 +360,9 @@
       "BridgingIT.DevKit.Common.Abstractions": {
         "type": "Project",
         "dependencies": {
-          "Ensure.That": "[10.1.0, )"
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.Configuration.Abstractions": "[10.0.1, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.1, )"
         }
       },
       "BridgingIT.DevKit.Common.Extensions": {

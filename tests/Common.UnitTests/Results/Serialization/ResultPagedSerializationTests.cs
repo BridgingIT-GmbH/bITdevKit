@@ -211,7 +211,7 @@ public class ResultPagedSerializationTests
     public void Deserialize_ThrowsNotSupportedException()
     {
         // Arrange
-        var json = @"{""isSuccess"":true,""value"":[],""currentPage"":1}";
+        const string json = @"{""isSuccess"":true,""value"":[],""currentPage"":1}";
 
         // Act & Assert
         Should.Throw<NotSupportedException>(() =>

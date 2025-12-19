@@ -32,6 +32,11 @@ public class ExceptionError : IResultError
     }
 
     /// <summary>
+    /// Gets the collection of custom properties associated with this instance.
+    /// </summary>
+    public PropertyBag Properties { get; protected set; } = [];
+
+    /// <summary>
     /// Gets the error message associated with the encapsulated exception.
     /// </summary>
     public string Message { get; init; }

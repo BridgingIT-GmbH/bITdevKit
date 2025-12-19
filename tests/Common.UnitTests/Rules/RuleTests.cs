@@ -506,7 +506,7 @@ public class RuleTests( /*RulesFixture fixture*/) : IClassFixture<RulesFixture>
     public void Check_WithCustomExceptionFactory_ShouldUseCustomException()
     {
         // Arrange
-        var customMessage = "Custom exception message";
+        const string customMessage = "Custom exception message";
         Rule.Setup(builder => builder
             .SetRuleFailureExceptionFactory(r => new RuleException(r, customMessage)));
 

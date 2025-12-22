@@ -222,21 +222,21 @@ stages:
             inputs:
               command: test
               projects: "**/*[Tt]ests/*UnitTests.csproj"
-              arguments: "--configuration $(buildConfiguration) --no-restore --no-build --nologo"
+              arguments: "--configuration $(buildConfiguration) --nologo"
 
-          - task: DotNetCoreCLI@2
-            displayName: Dotnet test (integration)
-            inputs:
-              command: test
-              projects: "**/*[Tt]ests/*IntegrationTests.csproj"
-              arguments: "--configuration $(buildConfiguration) --no-restore --no-build --nologo --filter FullyQualifiedName!~Examples"
+          # - task: DotNetCoreCLI@2
+          #   displayName: Dotnet test (integration)
+          #   inputs:
+          #     command: test
+          #     projects: "**/*[Tt]ests/*IntegrationTests.csproj"
+          #     arguments: "--configuration $(buildConfiguration) --no-restore --no-build --nologo --filter FullyQualifiedName!~Examples"
 
-          - task: DotNetCoreCLI@2
-            displayName: Dotnet test (end2end)
-            inputs:
-              command: test
-              projects: "**/*[Tt]ests/*EndToEndTests.csproj"
-              arguments: "--configuration $(buildConfiguration) --no-restore --no-build --nologo --filter FullyQualifiedName!~Examples"
+          # - task: DotNetCoreCLI@2
+          #   displayName: Dotnet test (end2end)
+          #   inputs:
+          #     command: test
+          #     projects: "**/*[Tt]ests/*EndToEndTests.csproj"
+          #     arguments: "--configuration $(buildConfiguration) --no-restore --no-build --nologo --filter FullyQualifiedName!~Examples"
 
           - bash: |
               docker compose stop

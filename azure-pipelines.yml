@@ -221,7 +221,7 @@ stages:
             displayName: Dotnet test (unit)
             inputs:
               command: test
-              projects: "tests/*UnitTests.csproj"
+              projects: "$(Build.SourcesDirectory)/tests/*UnitTests.csproj"
               arguments: "--configuration $(buildConfiguration) --nologo"
 
           # - task: DotNetCoreCLI@2

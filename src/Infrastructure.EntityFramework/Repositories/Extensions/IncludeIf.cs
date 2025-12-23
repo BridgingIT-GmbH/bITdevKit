@@ -100,13 +100,18 @@ public static partial class Extensions
         IncludeOptionBase<TEntity> includeOption)
         where TEntity : class, IEntity
     {
-        // Build the full include path with ThenIncludes
-        var basePath = includeOption.Path;
-
         if (includeOption.ThenIncludes.Count == 0)
         {
             // Simple include without ThenInclude - use expression-based Include
             return source.Include(includeOption.Expression);
+        }
+
+        // Build the full include path with ThenIncludes
+        // Get base path from Path property or extract it from Expression
+        var basePath = includeOption.Path;
+        if (string.IsNullOrEmpty(basePath) && includeOption.Expression is not null)
+        {
+            basePath = GetPropertyName(includeOption.Expression);
         }
 
         // Build dotted path for ThenIncludes (e.g., "Steps.Description" or "BillingAddress.City.Country")

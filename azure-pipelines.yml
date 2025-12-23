@@ -221,8 +221,8 @@ stages:
             displayName: Dotnet test (unit)
             inputs:
               command: test
-              projects: "**/*[Tt]ests/*UnitTests.csproj"
-              arguments: "--configuration $(buildConfiguration) --nologo --filter FullyQualifiedName!~Examples"
+              projects: "tests/*UnitTests.csproj"
+              arguments: "--configuration $(buildConfiguration) --nologo"
 
           # - task: DotNetCoreCLI@2
           #   displayName: Dotnet test (integration)

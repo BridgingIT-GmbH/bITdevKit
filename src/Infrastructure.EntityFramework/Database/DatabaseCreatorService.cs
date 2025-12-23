@@ -109,16 +109,23 @@ public class DatabaseCreatorService<TContext> : IHostedService
                                 await context.Database
                                     .ExecuteSqlRawAsync(SqlStatements.SqlServer.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables), cancellationToken).AnyContext();
                             }
+                            else if (context.Database.ProviderName == "Npgsql.EntityFrameworkCore.PostgreSQL")
+                            {
+                                await context.Database
+                                    .ExecuteSqlRawAsync(SqlStatements.PostgreSQL.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables), cancellationToken).AnyContext();
+                            }
                             else if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
                             {
                                 await context.Database
-                                    .ExecuteSqlRawAsync(SqlStatements.Sqlite.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables),
-                                        cancellationToken).AnyContext();
+                                    .ExecuteSqlRawAsync(SqlStatements.Sqlite.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables), cancellationToken).AnyContext();
+                            }
+                            else if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+                            {
+                                // In-memory database does not require truncation
                             }
                             else
                             {
-                                throw new ArgumentException(
-                                    $"Database provider '{context.Database.ProviderName}' does not supported truncating tables.");
+                                throw new ArgumentException($"Database provider '{context.Database.ProviderName}' does not supported truncating tables.");
                             }
                         }
 

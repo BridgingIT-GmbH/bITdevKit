@@ -30,9 +30,7 @@ public class InProcessMessageBroker : MessageBrokerBase
                 if (messageRequest != null)
                 {
                     if (!options.MessageExpiration.HasValue ||
-                        messageRequest.Message.Timestamp.AddMilliseconds(options.MessageExpiration.Value
-                            .TotalMilliseconds) >=
-                        DateTime.UtcNow)
+                        messageRequest.Message.Timestamp.AddMilliseconds(options.MessageExpiration.Value.TotalMilliseconds) >= DateTime.UtcNow)
                     {
                         await this.Process(messageRequest);
                     }
@@ -49,9 +47,7 @@ public class InProcessMessageBroker : MessageBrokerBase
                 EnsureOrdered = true
             });
 
-        this.Logger.LogInformation("{LogKey} broker initialized (name={MessageBroker})",
-            Constants.LogKey,
-            this.GetType().Name);
+        this.Logger.LogInformation("{LogKey} broker initialized (name={MessageBroker})", Constants.LogKey, this.GetType().Name);
     }
 
     public InProcessMessageBroker(
@@ -61,9 +57,8 @@ public class InProcessMessageBroker : MessageBrokerBase
     protected override Task OnPublish(IMessage message, CancellationToken cancellationToken)
     {
         var tcs = new TaskCompletionSource<bool>();
-        this.messageProcessor.Post(new MessageRequest(message,
-            result => tcs.SetResult(result),
-            cancellationToken)); // TODO: message.Clone(), has issues with inheritance (EchoMessage = Message after clone)
+        this.messageProcessor.Post(
+            new MessageRequest(message, tcs.SetResult, cancellationToken)); // TODO: message.Clone(), has issues with inheritance (EchoMessage = Message after clone)
 
         return tcs.Task;
     }

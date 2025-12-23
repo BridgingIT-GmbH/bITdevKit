@@ -50,8 +50,7 @@ public class OutboxMessage
         set =>
             this.Properties = value.IsNullOrEmpty()
                 ? []
-                : JsonSerializer.Deserialize<Dictionary<string, object>>(value,
-                    DefaultJsonSerializerOptions.Create());
+                : JsonSerializer.Deserialize<Dictionary<string, object>>(value, DefaultJsonSerializerOptions.Create());
     }
 
     // [Timestamp]

@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model.AAA;
+namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
@@ -61,6 +61,21 @@ public class AggregateRootTests
         result.IsFailure.ShouldBeTrue();
         result.HasError<Error>().ShouldBeTrue();
         result.GetError<Error>().Message.ShouldContain("negative");
+        person.Age.ShouldBe(25); // Should stay original
+        person.DomainEvents.GetAll().ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Change_When_WhenFails_ShouldSkipAndNotUpdate()
+    {
+        // Arrange
+        var person = new TestPerson { Age = 25 };
+
+        // Act
+        var result = person.ChangeAge(0); // Invalid age
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(); // When in ChangeAge clause skips the change, but does not fail
         person.Age.ShouldBe(25); // Should stay original
         person.DomainEvents.GetAll().ShouldBeEmpty();
     }
@@ -202,16 +217,17 @@ public class AggregateRootTests
                 .Set(p => p.FirstName, first)
                 .Set(p => p.LastName, last)
                 .Register(p => new PersonNameChangedEvent(p.Id)) // custom event, replaces default EntityUpdatedDomainEvent<TestPerson>
-                .Validate(p => p.FirstName != string.Empty, "First name cannot be empty") // Post-condition
+                .Check(p => p.FirstName != string.Empty, "First name cannot be empty") // Post-condition
                 .Apply();
         }
 
         public Result<TestPerson> ChangeAge(int age)
         {
             return this.Change()
-                .Ensure(p => age >= 0, "Age must be non-negative") // Pre-condition
+                .When(_ => age != 0)
+                .Ensure(p => age > 0, "Age must be non-negative") // Pre-condition
                 .Set(p => p.Age, age)
-                .Validate(p => p.Age >= 0, "Age cannot be negative") // Post-condition
+                .Check(p => p.Age >= 0, "Age cannot be negative") // Post-condition
                 .Apply();
         }
 
@@ -242,8 +258,8 @@ public class AggregateRootTests
         public Result<TestPerson> PromoteToAdult()
         {
             return this.Change()
-                .Set(p => p.FirstName, "Adult")
                 .When(p => p.Age >= 18)
+                .Set(p => p.FirstName, "Adult")
                 .Apply();
         }
 

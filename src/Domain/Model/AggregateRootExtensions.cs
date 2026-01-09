@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using BridgingIT.DevKit.Common; // Assuming Result definition is here based on provided snippet
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using System;
 using System.Collections.Concurrent;
@@ -102,6 +102,9 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     private bool replaceExisting = true;
     private bool registerNoEvents = false;
 
+    // Global guard that protects the entire change transaction
+    private (Func<TAggregate, bool> Predicate, string Message)? globalGuard;
+
     // Initialized to Success. Since Result is a struct, we avoid null checks and rely on IsFailure state.
     private Result chainConstructionFailure = Result.Success();
 
@@ -114,10 +117,12 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
         return this;
     }
 
+    /// <summary>
+    /// Specifies that no domain events should be registered when changes are applied.
+    /// </summary>
     public AggregateRootChangeBuilder<TAggregate> RegisterNoEvents(bool noEvents = true)
     {
         this.registerNoEvents = noEvents;
-
         return this;
     }
 
@@ -227,7 +232,30 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     // -------------------------------------------------------------------------
 
     /// <summary>
+    /// Sets a global condition that guards the entire change transaction.
+    /// If the predicate returns false, the entire transaction is skipped silently with a successful result.
+    /// This must be called at the beginning of the chain before any Set, Add, Remove, or Ensure operations.
+    /// </summary>
+    /// <param name="predicate">The condition to evaluate against the aggregate.</param>
+    /// <param name="errorMessage">Optional error message (not used for silent skip, informational only).</param>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .When(_ => age != 0)  // Guard: skip entire chain if age is 0
+    ///     .Ensure(p => age >= 0, "Age must be non-negative")
+    ///     .Set(p => p.Age, age)
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public AggregateRootChangeBuilder<TAggregate> When(Func<TAggregate, bool> predicate, string errorMessage = null)
+    {
+        this.globalGuard = (predicate, errorMessage ?? "When condition not met");
+        return this;
+    }
+
+    /// <summary>
     /// Adds a pre-condition check. If the predicate returns false, the transaction aborts.
+    /// This runs *after* the global When() guard but *before* any Set/Add/Remove operations.
     /// </summary>
     public AggregateRootChangeBuilder<TAggregate> Ensure(Func<TAggregate, bool> predicate, string errorMessage)
     {
@@ -244,33 +272,16 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
         return this;
     }
 
-    /// <summary>
-    /// Applies a condition to the *immediately preceding* operation.
-    /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> When(Func<TAggregate, bool> predicate)
-    {
-        if (this.operations.Count == 0)
-        {
-            throw new InvalidOperationException("When() must be called after an operation.");
-        }
-
-        var lastOp = this.operations[this.operations.Count - 1];
-        lastOp.AddCondition(predicate);
-
-        return this;
-    }
-
     // -------------------------------------------------------------------------
     // 4. Validation & Events
     // -------------------------------------------------------------------------
 
     /// <summary>
-    /// Adds a validation rule that runs *after* changes have been applied.
+    /// Adds a check rule that runs *after* changes have been applied.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> Validate(Func<TAggregate, bool> predicate, string errorMessage)
+    public AggregateRootChangeBuilder<TAggregate> Check(Func<TAggregate, bool> predicate, string errorMessage)
     {
         this.validations.Add((predicate, errorMessage));
-
         return this;
     }
 
@@ -281,7 +292,6 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
         where TEvent : IDomainEvent
     {
         this.eventFactories.Add((agg, ctx) => eventFactory(agg, ctx));
-
         return this;
     }
 
@@ -292,7 +302,6 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
         where TEvent : IDomainEvent
     {
         this.eventFactories.Add((agg, _) => eventFactory(agg));
-
         return this;
     }
 
@@ -302,10 +311,25 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
 
     /// <summary>
     /// Executes the change transaction.
+    /// <para>
+    /// Steps:
+    /// 1. Evaluates the global When() guard. If false, returns success without changes.
+    /// 2. Checks for fast-fail errors from Result-based Set operations.
+    /// 3. Executes all queued operations (Ensure, Set, Add, Remove, Execute).
+    /// 4. Checks post-change validations.
+    /// 5. Registers domain events if changes were made.
+    /// </para>
     /// </summary>
     public Result<TAggregate> Apply()
     {
-        // 1. Check for fast-fail errors captured during chaining
+        // 1. Check global guard FIRST
+        // If When() condition is false, skip entire transaction silently
+        if (this.globalGuard.HasValue && !this.globalGuard.Value.Predicate(aggregate))
+        {
+            return Result<TAggregate>.Success(aggregate);
+        }
+
+        // 2. Check for fast-fail errors captured during chaining
         if (this.chainConstructionFailure.IsFailure)
         {
             return Result<TAggregate>.Failure(aggregate)
@@ -316,11 +340,10 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
         var context = new AggregateRootChangeContext();
         var changesMade = false;
 
-        // 2. Execute Operations
+        // 3. Execute Operations
         foreach (var op in this.operations)
         {
             var opResult = op.Execute(aggregate, context);
-
             if (opResult.IsFailure)
             {
                 return Result<TAggregate>.Failure(aggregate)
@@ -338,7 +361,7 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
             return Result<TAggregate>.Success(aggregate);
         }
 
-        // 3. Post-Change Validation
+        // 4. Post-Change Validation
         foreach (var (predicate, message) in this.validations)
         {
             if (!predicate(aggregate))
@@ -347,8 +370,8 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
             }
         }
 
-        // 4. Register Events
-        if (!this.registerNoEvents) // Skip event registration if flag is set
+        // 5. Register Events
+        if (!this.registerNoEvents)
         {
             foreach (var factory in this.eventFactories)
             {
@@ -356,7 +379,7 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
                 aggregate.DomainEvents.Register(evt, this.replaceExisting);
             }
 
-            if (this.eventFactories.Count == 0) // Default event if none registered
+            if (this.eventFactories.Count == 0)
             {
                 aggregate.DomainEvents.Register(
                     new EntityUpdatedDomainEvent<TAggregate>(aggregate),
@@ -377,7 +400,9 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     private readonly struct OpResult
     {
         public bool IsFailure { get; }
+
         public bool HasChanged { get; }
+
         public IEnumerable<IResultError> Errors { get; }
 
         private OpResult(bool isFailure, bool hasChanged, IEnumerable<IResultError> errors)
@@ -388,12 +413,14 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
         }
 
         public static OpResult Success(bool changed) => new(false, changed, null);
+
         public static OpResult Failure(IEnumerable<IResultError> errors) => new(true, false, errors);
     }
 
     private interface IOperation
     {
         void AddCondition(Func<TAggregate, bool> predicate);
+
         OpResult Execute(TAggregate aggregate, AggregateRootChangeContext context);
     }
 
@@ -595,8 +622,6 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
         {
             if (!predicate(aggregate))
             {
-                // Assuming Error is a basic implementation of IResultError.
-                // Replace "new Error(errorMessage)" with your specific error implementation if needed.
                 return OpResult.Failure([new Error(errorMessage)]);
             }
 

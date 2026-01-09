@@ -231,7 +231,7 @@ sequenceDiagram
     participant Agg as AggregateRoot
     participant Events as DomainEvents
 
-    Dev->>Builder: this.Change()<br/>.Ensure(Guard)<br/>.Set(Property)<br/>.Validate(Rule)<br/>.WithEvent(Event)<br/>.Apply()
+    Dev->>Builder: this.Change()<br/>.Ensure(Guard)<br/>.Set(Property)<br/>.Check(Rule)<br/>.WithEvent(Event)<br/>.Apply()
     
     Builder->>Builder: Check Pre-conditions (Ensure)
     
@@ -243,7 +243,7 @@ sequenceDiagram
         end
     end
 
-    Builder->>Builder: Check Post-conditions (Validate)
+    Builder->>Builder: Check Post-conditions (Check)
     
     alt If Changed & Valid
         Builder->>Events: Register Custom Events
@@ -273,9 +273,9 @@ public Result<Customer> ChangeName(string firstName, string lastName)
 public Result<Customer> PromoteToVIP()
 {
     return this.Change()
-        .Set(c => c.Status, CustomerStatus.VIP)
         .When(c => c.TotalSpend > 1000) // Only apply if condition met
-        .Validate(c => c.HasValidEmail(), "VIPs must have valid email") // Post-check
+        .Set(c => c.Status, CustomerStatus.VIP)
+        .Check(c => c.HasValidEmail(), "VIPs must have valid email") // Post-check
         .WithEvent(c => new CustomerPromotedEvent(c.Id))
         .Apply();
 }
@@ -315,8 +315,8 @@ public Result<Customer> AddTag(string tag)
 | **`Set`** | Updates a property. Supports direct values, computed factories, and `Result<T>` factories (fail-fast). |
 | **`Add` / `Remove` / `Clear`** | Manages collection properties with automatic change detection. |
 | **`Ensure`** | Pre-condition guard. If false, aborts transaction immediately without applying changes. |
-| **`Validate`** | Post-condition check. Runs *after* changes. If false, returns a Failure result (leaves entity dirty in memory, intended for unit-of-work rollbacks). |
-| **`When`** | Conditional execution for the *preceding* operation. |
+| **`Check`** | Post-condition check. Runs *after* changes. If false, returns a Failure result (leaves entity dirty in memory, intended for unit-of-work rollbacks). |
+| **`When`** | Conditional execution for the whole operation. |
 | **`Execute`** | Runs arbitrary actions (e.g., methods on child entities). |
 | **`WithEvent`** | Registers a Domain Event if changes occurred. Provides access to `ChangeContext` for old values. |
 | **`Apply`** | Commits the transaction, registers generic `EntityUpdatedDomainEvent`, and returns a `Result`. |

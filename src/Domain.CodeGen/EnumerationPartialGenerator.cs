@@ -181,6 +181,7 @@ public class EnumerationPartialGenerator : ISourceGenerator
         builder.AppendLine($"            ?? throw new ArgumentException($\"No {className} exists with Value {{value}}\", nameof(value));");
         builder.AppendLine("    }");
         builder.AppendLine("}");
+
         return builder.ToString();
     }
 

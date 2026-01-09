@@ -100,6 +100,7 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     private readonly List<Func<TAggregate, AggregateRootChangeContext, IDomainEvent>> eventFactories = [];
     private readonly List<(Func<TAggregate, bool> Predicate, string Message)> validations = [];
     private bool replaceExisting = true;
+    private bool registerNoEvents = false;
 
     // Initialized to Success. Since Result is a struct, we avoid null checks and rely on IsFailure state.
     private Result chainConstructionFailure = Result.Success();
@@ -110,6 +111,13 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     public AggregateRootChangeBuilder<TAggregate> ReplaceExisting(bool replace = true)
     {
         this.replaceExisting = replace;
+        return this;
+    }
+
+    public AggregateRootChangeBuilder<TAggregate> RegisterNoEvents(bool noEvents = true)
+    {
+        this.registerNoEvents = noEvents;
+
         return this;
     }
 
@@ -262,26 +270,29 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     public AggregateRootChangeBuilder<TAggregate> Validate(Func<TAggregate, bool> predicate, string errorMessage)
     {
         this.validations.Add((predicate, errorMessage));
+
         return this;
     }
 
     /// <summary>
-    /// Adds a custom domain event to be registered if changes occur.
+    /// Registers a custom domain event to be registered if changes occur.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> WithEvent<TEvent>(Func<TAggregate, AggregateRootChangeContext, TEvent> eventFactory)
+    public AggregateRootChangeBuilder<TAggregate> Register<TEvent>(Func<TAggregate, AggregateRootChangeContext, TEvent> eventFactory)
         where TEvent : IDomainEvent
     {
         this.eventFactories.Add((agg, ctx) => eventFactory(agg, ctx));
+
         return this;
     }
 
     /// <summary>
-    /// Adds a custom domain event to be registered if changes occur.
+    /// Registers a custom domain event to be registered if changes occur.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> WithEvent<TEvent>(Func<TAggregate, TEvent> eventFactory)
+    public AggregateRootChangeBuilder<TAggregate> Register<TEvent>(Func<TAggregate, TEvent> eventFactory)
         where TEvent : IDomainEvent
     {
         this.eventFactories.Add((agg, _) => eventFactory(agg));
+
         return this;
     }
 
@@ -337,17 +348,20 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
         }
 
         // 4. Register Events
-        foreach (var factory in this.eventFactories)
+        if (!this.registerNoEvents) // Skip event registration if flag is set
         {
-            var evt = factory(aggregate, context);
-            aggregate.DomainEvents.Register(evt, this.replaceExisting);
-        }
+            foreach (var factory in this.eventFactories)
+            {
+                var evt = factory(aggregate, context);
+                aggregate.DomainEvents.Register(evt, this.replaceExisting);
+            }
 
-        if (this.eventFactories.Count == 0)
-        {
-            aggregate.DomainEvents.Register(
-                new EntityUpdatedDomainEvent<TAggregate>(aggregate),
-                this.replaceExisting);
+            if (this.eventFactories.Count == 0) // Default event if none registered
+            {
+                aggregate.DomainEvents.Register(
+                    new EntityUpdatedDomainEvent<TAggregate>(aggregate),
+                    this.replaceExisting);
+            }
         }
 
         return Result<TAggregate>.Success(aggregate);

@@ -201,7 +201,7 @@ public class AggregateRootTests
             return this.Change()
                 .Set(p => p.FirstName, first)
                 .Set(p => p.LastName, last)
-                .WithEvent(p => new PersonNameChangedEvent(p.Id)) // custom event, replaces default EntityUpdatedDomainEvent<TestPerson>
+                .Register(p => new PersonNameChangedEvent(p.Id)) // custom event, replaces default EntityUpdatedDomainEvent<TestPerson>
                 .Validate(p => p.FirstName != string.Empty, "First name cannot be empty") // Post-condition
                 .Apply();
         }
@@ -251,7 +251,7 @@ public class AggregateRootTests
         {
             return this.Change()
                 .Add(p => p.Addresses, address)
-                .WithEvent(_ => new AddressListChangedEvent())
+                .Register(_ => new AddressListChangedEvent())
                 .Apply();
         }
 
@@ -259,7 +259,7 @@ public class AggregateRootTests
         {
             return this.Change()
                 .Remove(p => p.Addresses, address)
-                .WithEvent(_ => new AddressListChangedEvent())
+                .Register(_ => new AddressListChangedEvent())
                 .Apply();
         }
 
@@ -274,7 +274,7 @@ public class AggregateRootTests
         {
             return this.Change()
                 .Set(p => p.Email, newEmail)
-                .WithEvent((p, ctx) => new EmailChangedEvent(ctx.GetOldValue<string>(nameof(this.Email)), p.Email))
+                .Register((p, ctx) => new EmailChangedEvent(ctx.GetOldValue<string>(nameof(this.Email)), p.Email))
                 .Apply();
         }
     }

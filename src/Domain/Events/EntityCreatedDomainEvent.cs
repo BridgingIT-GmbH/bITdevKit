@@ -6,9 +6,9 @@
 namespace BridgingIT.DevKit.Domain;
 
 public class EntityCreatedDomainEvent<TEntity>(TEntity entity) : DomainEventBase
-    where TEntity : class, IEntity, IAggregateRoot
+    where TEntity : IEntity, IAggregateRoot
 {
-    protected EntityCreatedDomainEvent() : this(null)
+    protected EntityCreatedDomainEvent() : this(default)
     { }
 
     public TEntity Entity { get; protected set; } = entity;

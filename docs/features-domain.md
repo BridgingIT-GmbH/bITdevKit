@@ -185,3 +185,147 @@ public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<Todo>
 - **Value Semantics**: Proper equality comparison
 
 The TypedEntityId pattern transforms primitive identifiers into first-class domain concepts, making code both safer and more expressive. It prevents a whole class of bugs while better communicating domain intent through the type system.
+
+## Appendix C: Fluent Aggregate Updates
+
+### Overview
+
+In Domain-Driven Design, Aggregate Roots are responsible for maintaining consistency boundaries. Modifying state often involves complex logic:
+1.  **Change Tracking**: Only applying updates if the value actually changed.
+2.  **Event Sourcing**: Raising Domain Events when specific state changes occur.
+3.  **Invariants**: Ensuring business rules (guards) are met before and after changes.
+4.  **Side Effects**: Handling interactions with child entities.
+
+Implementing this logic manually in every setter or update method leads to repetitive, error-prone boilerplate code (the "check-change-notify" pattern).
+
+### Challenge
+
+Writing consistent update logic for every property is tedious. Developers often forget to check if the value actually changed before raising an event, or they duplicate validation logic.
+
+**Anti-Pattern (Manual Implementation):**
+```csharp
+public void ChangeEmail(string newEmail)
+{
+    if (string.IsNullOrEmpty(newEmail)) throw new ArgumentException(...); // Guard
+    
+    if (this.Email != newEmail) // Check difference
+    {
+        var oldEmail = this.Email;
+        this.Email = newEmail; // Set
+        
+        // Notify
+        this.DomainEvents.Register(new EmailChangedEvent(oldEmail, newEmail));
+        this.DomainEvents.Register(new CustomerUpdatedEvent(this));
+    }
+}
+```
+
+### Solution: Fluent Change Builder
+
+The `AggregateRoot` extensions provide a fluent, transactional builder pattern (`this.Change()`) to handle state mutations declaratively. It encapsulates the complexity of change detection, validation, and event registration into a clean, readable API.
+
+```mermaid
+sequenceDiagram
+    participant Dev as Developer
+    participant Builder as ChangeBuilder
+    participant Agg as AggregateRoot
+    participant Events as DomainEvents
+
+    Dev->>Builder: this.Change()<br/>.Ensure(Guard)<br/>.Set(Property)<br/>.Validate(Rule)<br/>.WithEvent(Event)<br/>.Apply()
+    
+    Builder->>Builder: Check Pre-conditions (Ensure)
+    
+    loop For each Property
+        Builder->>Agg: Compare New vs Old Value
+        alt Value Changed
+            Builder->>Agg: Update Property
+            Builder->>Builder: Mark as Changed
+        end
+    end
+
+    Builder->>Builder: Check Post-conditions (Validate)
+    
+    alt If Changed & Valid
+        Builder->>Events: Register Custom Events
+        Builder->>Events: Register EntityUpdatedDomainEvent
+        Builder-->>Dev: Return Success Result
+    else If Invalid or No Change
+        Builder-->>Dev: Return Failure or Success(NoOp)
+    end
+```
+
+### Usage
+
+#### Basic Property Update
+```csharp
+public Result<Customer> ChangeName(string firstName, string lastName)
+{
+    return this.Change()
+        .Set(c => c.FirstName, firstName)
+        .Set(c => c.LastName, lastName)
+        .WithEvent(c => new CustomerNameChangedEvent(c.Id))
+        .Apply();
+}
+```
+
+#### Conditional Logic & Validation
+```csharp
+public Result<Customer> PromoteToVIP()
+{
+    return this.Change()
+        .Set(c => c.Status, CustomerStatus.VIP)
+        .When(c => c.TotalSpend > 1000) // Only apply if condition met
+        .Validate(c => c.HasValidEmail(), "VIPs must have valid email") // Post-check
+        .WithEvent(c => new CustomerPromotedEvent(c.Id))
+        .Apply();
+}
+```
+
+#### Using Result-Returning Factories (Fail Fast)
+If the value generation itself can fail (e.g., creating a Value Object), the builder handles the `Result` automatically. If `EmailAddress.Create` returns a Failure, the chain stops, and `Apply()` returns that failure.
+
+```csharp
+public Result<Customer> ChangeEmail(string emailString)
+{
+    return this.Change()
+        // If Create returns Failure, the chain aborts here
+        .Set(c => c.Email, EmailAddress.Create(emailString))
+        .WithEvent((c, ctx) => new EmailChangedEvent(
+             ctx.GetOldValue<EmailAddress>(nameof(Email)), 
+             c.Email))
+        .Apply();
+}
+```
+
+#### Collection Management
+```csharp
+public Result<Customer> AddTag(string tag)
+{
+    return this.Change()
+        .Add(c => c.Tags, tag)
+        .Ensure(c => c.Tags.Count < 10, "Tag limit reached") // Pre-check
+        .Apply();
+}
+```
+
+### Features
+
+| Operation | Description |
+|-----------|-------------|
+| **`Set`** | Updates a property. Supports direct values, computed factories, and `Result<T>` factories (fail-fast). |
+| **`Add` / `Remove` / `Clear`** | Manages collection properties with automatic change detection. |
+| **`Ensure`** | Pre-condition guard. If false, aborts transaction immediately without applying changes. |
+| **`Validate`** | Post-condition check. Runs *after* changes. If false, returns a Failure result (leaves entity dirty in memory, intended for unit-of-work rollbacks). |
+| **`When`** | Conditional execution for the *preceding* operation. |
+| **`Execute`** | Runs arbitrary actions (e.g., methods on child entities). |
+| **`WithEvent`** | Registers a Domain Event if changes occurred. Provides access to `ChangeContext` for old values. |
+| **`Apply`** | Commits the transaction, registers generic `EntityUpdatedDomainEvent`, and returns a `Result`. |
+
+### Benefits
+
+1.  **Declarative Syntax**: Reads like a sentence describing the business transaction.
+2.  **Automatic Change Detection**: Properties are only updated if values actually differ; events are only raised if updates occurred.
+3.  **Consistency**: Enforces a standard pattern for all aggregate updates.
+4.  **Reduced Boilerplate**: Removes repetitive `if (old != new)` checks and event registration code.
+5.  **Fail-Fast Safety**: Integrates seamlessly with the `Result` pattern to abort operations on validation errors.
+6.  **Context Awareness**: Easy access to "Old Value" vs "New Value" when creating domain events.

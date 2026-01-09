@@ -153,9 +153,9 @@ public class EnumerationPartialGenerator : ISourceGenerator
         builder.AppendLine($"    /// Implicitly converts an <see cref=\"int\"/> identifier into a corresponding");
         builder.AppendLine($"    /// <see cref=\"{className}\"/> if one exists.");
         builder.AppendLine("    /// </summary>");
-        builder.AppendLine("    /// <param name=\"id\">The identifier of the customer status.</param>");
+        builder.AppendLine("    /// <param name=\"id\">The identifier of the enumeration.</param>");
         builder.AppendLine("    /// <exception cref=\"ArgumentException\">");
-        builder.AppendLine($"    /// Thrown if no customer status is defined with the specified <paramref name=\"id\"/>.");
+        builder.AppendLine($"    /// Thrown if no enumeration item is defined with the specified <paramref name=\"id\"/>.");
         builder.AppendLine("    /// </exception>");
         builder.AppendLine($"    /// <returns>The <see cref=\"{className}\"/> instance associated with the given <paramref name=\"id\"/>.");
         builder.AppendLine("    /// </returns>");
@@ -163,6 +163,22 @@ public class EnumerationPartialGenerator : ISourceGenerator
         builder.AppendLine("    {");
         builder.AppendLine($"        return GetAll<{className}>().FirstOrDefault(e => e.Id == id)");
         builder.AppendLine($"            ?? throw new ArgumentException($\"No {className} exists with Id {{id}}\", nameof(id));");
+        builder.AppendLine("    }");
+
+        builder.AppendLine("    /// <summary>");
+        builder.AppendLine($"    /// Implicitly converts an <see cref=\"string\"/> value into a corresponding");
+        builder.AppendLine($"    /// <see cref=\"{className}\"/> if one exists.");
+        builder.AppendLine("    /// </summary>");
+        builder.AppendLine("    /// <param name=\"value\">The value of the enumeration.</param>");
+        builder.AppendLine("    /// <exception cref=\"ArgumentException\">");
+        builder.AppendLine($"    /// Thrown if no enumeration item is defined with the specified <paramref name=\"value\"/>.");
+        builder.AppendLine("    /// </exception>");
+        builder.AppendLine($"    /// <returns>The <see cref=\"{className}\"/> instance associated with the given <paramref name=\"id\"/>.");
+        builder.AppendLine("    /// </returns>");
+        builder.AppendLine($"    public static implicit operator {className}(string value)");
+        builder.AppendLine("    {");
+        builder.AppendLine($"        return GetAll<{className}>().FirstOrDefault(e => e.Value == value)");
+        builder.AppendLine($"            ?? throw new ArgumentException($\"No {className} exists with Value {{value}}\", nameof(value));");
         builder.AppendLine("    }");
         builder.AppendLine("}");
         return builder.ToString();

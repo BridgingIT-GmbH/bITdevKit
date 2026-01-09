@@ -136,15 +136,15 @@ public class EnumerationPartialGenerator : ISourceGenerator
         builder.AppendLine($"    /// Retrieves a <see cref=\"{className}\"/> instance by its unique identifier.");
         builder.AppendLine("    /// </summary>");
         builder.AppendLine("    /// <param name=\"id\">The unique identifier of the status.</param>");
-        builder.AppendLine($"    /// <returns>The <see cref=\"{className}\"/> instance associated with the given <paramref name=\"id\"/>.");
+        builder.AppendLine($"    /// <returns>The <see cref=\"{className}\"/> instance associated with the given <paramref name=\"id\"/> or default when not found.");
         builder.AppendLine("    /// </returns>");
-        builder.AppendLine("    /// <exception cref=\"ArgumentException\">");
-        builder.AppendLine($"    /// Thrown if no <see cref=\"{className}\"/> instance exists with the specified <paramref name=\"id\"/>.");
-        builder.AppendLine("    /// </exception>");
-        builder.AppendLine($"    public static {className} GetById(int id)");
+        //builder.AppendLine("    /// <exception cref=\"ArgumentException\">");
+        //builder.AppendLine($"    /// Thrown if no <see cref=\"{className}\"/> instance exists with the specified <paramref name=\"id\"/>.");
+        //builder.AppendLine("    /// </exception>");
+        builder.AppendLine($"    public static {className}? GetById(int id)");
         builder.AppendLine("    {");
-        builder.AppendLine($"        return GetAll<{className}>()");
-        builder.AppendLine($"            .FirstOrDefault(e => e.Id == id) ?? throw new ArgumentException($\"No {className} exists with Id {{id}}\", nameof(id));");
+        builder.AppendLine($"        return GetAll<{className}>().FirstOrDefault(e => e.Id == id);");
+        //builder.AppendLine($"            ?? throw new ArgumentException($\"No {className} exists with Id {{id}}\", nameof(id));");
         builder.AppendLine("    }");
         builder.AppendLine();
 
@@ -154,15 +154,15 @@ public class EnumerationPartialGenerator : ISourceGenerator
         builder.AppendLine($"    /// <see cref=\"{className}\"/> if one exists.");
         builder.AppendLine("    /// </summary>");
         builder.AppendLine("    /// <param name=\"id\">The identifier of the enumeration.</param>");
-        builder.AppendLine("    /// <exception cref=\"ArgumentException\">");
-        builder.AppendLine($"    /// Thrown if no enumeration item is defined with the specified <paramref name=\"id\"/>.");
-        builder.AppendLine("    /// </exception>");
-        builder.AppendLine($"    /// <returns>The <see cref=\"{className}\"/> instance associated with the given <paramref name=\"id\"/>.");
+        //builder.AppendLine("    /// <exception cref=\"ArgumentException\">");
+        //builder.AppendLine($"    /// Thrown if no enumeration item is defined with the specified <paramref name=\"id\"/>.");
+        //builder.AppendLine("    /// </exception>");
+        builder.AppendLine($"    /// <returns>The <see cref=\"{className}\"/> instance associated with the given <paramref name=\"id\"/> or default when not found.");
         builder.AppendLine("    /// </returns>");
-        builder.AppendLine($"    public static implicit operator {className}(int id)");
+        builder.AppendLine($"    public static implicit operator {className}?(int id)");
         builder.AppendLine("    {");
-        builder.AppendLine($"        return GetAll<{className}>().FirstOrDefault(e => e.Id == id)");
-        builder.AppendLine($"            ?? throw new ArgumentException($\"No {className} exists with Id {{id}}\", nameof(id));");
+        builder.AppendLine($"        return GetAll<{className}>().FirstOrDefault(e => e.Id == id);");
+        //builder.AppendLine($"            ?? throw new ArgumentException($\"No {className} exists with Id {{id}}\", nameof(id));");
         builder.AppendLine("    }");
 
         builder.AppendLine("    /// <summary>");
@@ -170,15 +170,15 @@ public class EnumerationPartialGenerator : ISourceGenerator
         builder.AppendLine($"    /// <see cref=\"{className}\"/> if one exists.");
         builder.AppendLine("    /// </summary>");
         builder.AppendLine("    /// <param name=\"value\">The value of the enumeration.</param>");
-        builder.AppendLine("    /// <exception cref=\"ArgumentException\">");
-        builder.AppendLine($"    /// Thrown if no enumeration item is defined with the specified <paramref name=\"value\"/>.");
-        builder.AppendLine("    /// </exception>");
-        builder.AppendLine($"    /// <returns>The <see cref=\"{className}\"/> instance associated with the given <paramref name=\"id\"/>.");
+        //builder.AppendLine("    /// <exception cref=\"ArgumentException\">");
+        //builder.AppendLine($"    /// Thrown if no enumeration item is defined with the specified <paramref name=\"value\"/>.");
+        //builder.AppendLine("    /// </exception>");
+        builder.AppendLine($"    /// <returns>The <see cref=\"{className}\"/> instance associated with the given <paramref name=\"value\"/> or default when not found.");
         builder.AppendLine("    /// </returns>");
-        builder.AppendLine($"    public static implicit operator {className}(string value)");
+        builder.AppendLine($"    public static implicit operator {className}?(string value)");
         builder.AppendLine("    {");
-        builder.AppendLine($"        return GetAll<{className}>().FirstOrDefault(e => e.Value == value)");
-        builder.AppendLine($"            ?? throw new ArgumentException($\"No {className} exists with Value {{value}}\", nameof(value));");
+        builder.AppendLine($"        return GetAll<{className}>().FirstOrDefault(e => e.Value == value);");
+        //builder.AppendLine($"            ?? throw new ArgumentException($\"No {className} exists with Value {{value}}\", nameof(value));");
         builder.AppendLine("    }");
         builder.AppendLine("}");
 

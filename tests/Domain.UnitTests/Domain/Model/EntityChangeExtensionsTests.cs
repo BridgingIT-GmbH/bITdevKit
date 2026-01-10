@@ -12,7 +12,7 @@ using Shouldly;
 using System.Linq;
 using Xunit;
 
-public class AggregateRootTests
+public class EntityChangeExtensionsTests
 {
     [Fact]
     public void Change_SetProperty_WhenValueDifferent_ShouldUpdateAndRaiseEvents()
@@ -196,6 +196,34 @@ public class AggregateRootTests
         evt.NewEmail.ShouldBe("new@mail.com");
     }
 
+    [Fact]
+    public void Change_OnPlainEntity_WhenNoEventsRegistered_ShouldSucceed()
+    {
+        // Arrange
+        var entity = new PlainEntity { Id = Guid.NewGuid(), Name = "Old Name" };
+
+        // Act
+        var result = entity.ChangeName("New Name");
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        entity.Name.ShouldBe("New Name");
+    }
+
+    [Fact]
+    public void Change_OnPlainEntity_WhenEventRegistered_ShouldThrowException()
+    {
+        // Arrange
+        var entity = new PlainEntity { Id = Guid.NewGuid(), Name = "Old Name" };
+
+        // Act & Assert
+        var exception = Should.Throw<InvalidOperationException>(() =>
+            entity.ChangeNameWithEvent("New Name"));
+
+        exception.Message.ShouldContain("does not implement IAggregateRoot");
+        exception.Message.ShouldContain("PlainEntity");
+    }
+
     // -------------------------------------------------------------------------
     // Test Helpers (TestPerson & Events)
     // -------------------------------------------------------------------------
@@ -309,4 +337,29 @@ public class AggregateRootTests
 
         public string NewEmail { get; } = newEmail;
     }
+
+    /// <summary>
+    /// A plain entity that does not inherit from AggregateRoot
+    /// </summary>
+    private class PlainEntity : Entity<Guid>
+    {
+        public string Name { get; set; }
+
+        public Result<PlainEntity> ChangeName(string newName)
+        {
+            return this.Change()
+                .Set(e => e.Name, newName)
+                .Apply();
+        }
+
+        public Result<PlainEntity> ChangeNameWithEvent(string newName)
+        {
+            return this.Change()
+                .Set(e => e.Name, newName)
+                .Register(e => new TestDomainEvent()) // not allowed on entities (non aggregate roots)
+                .Apply();
+        }
+    }
+
+    private class TestDomainEvent : DomainEventBase;
 }

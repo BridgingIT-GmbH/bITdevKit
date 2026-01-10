@@ -15,17 +15,17 @@ using System.Linq.Expressions;
 using System.Reflection;
 
 /// <summary>
-/// Provides extension methods for the Aggregate Root pattern to enable fluent,
+/// Provides extension methods for entities to enable fluent,
 /// transactional-style state changes with automatic change tracking and event registration.
 /// </summary>
-public static class AggregateRootExtensions
+public static class EntityChangeExtensions
 {
     /// <summary>
-    /// Initiates a fluent change transaction on an aggregate root.
+    /// Initiates a fluent change transaction on an entity.
     /// </summary>
-    /// <typeparam name="TAggregate">The type of the aggregate root.</typeparam>
-    /// <param name="aggregate">The aggregate root instance.</param>
-    /// <returns>A <see cref="AggregateRootChangeBuilder{TAggregate}"/> for fluent configuration.</returns>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <param name="entity">The entity instance.</param>
+    /// <returns>A <see cref="EntityChangeBuilder{TEntity}"/> for fluent configuration.</returns>
     /// <example>
     /// <code>
     /// return this.Change()
@@ -33,10 +33,10 @@ public static class AggregateRootExtensions
     ///     .Apply();
     /// </code>
     /// </example>
-    public static AggregateRootChangeBuilder<TAggregate> Change<TAggregate>(this TAggregate aggregate)
-        where TAggregate : IAggregateRoot
+    public static EntityChangeBuilder<TEntity> Change<TEntity>(this TEntity entity)
+        where TEntity : IEntity
     {
-        return new AggregateRootChangeBuilder<TAggregate>(aggregate);
+        return new EntityChangeBuilder<TEntity>(entity);
     }
 }
 
@@ -44,7 +44,7 @@ public static class AggregateRootExtensions
 /// A context object containing details about the changes applied during a specific change transaction.
 /// Used primarily within custom domain event factories to access previous values.
 /// </summary>
-public class AggregateRootChangeContext
+public class EntityChangeContext
 {
     private readonly Dictionary<string, (object OldValue, object NewValue)> changes = [];
 
@@ -87,23 +87,23 @@ public class AggregateRootChangeContext
 }
 
 /// <summary>
-/// Fluent builder for applying complex changes to aggregate roots.
+/// Fluent builder for applying complex changes to entities.
 /// </summary>
-/// <typeparam name="TAggregate">The type of the aggregate root.</typeparam>
+/// <typeparam name="TEntity">The type of the entity.</typeparam>
 /// <remarks>
-/// Initializes a new instance of the <see cref="AggregateRootChangeBuilder{TAggregate}"/> class.
+/// Initializes a new instance of the <see cref="EntityChangeBuilder{TEntity}"/> class.
 /// </remarks>
-public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
-    where TAggregate : IAggregateRoot
+public class EntityChangeBuilder<TEntity>(TEntity entity)
+    where TEntity : IEntity
 {
     private readonly List<IOperation> operations = [];
-    private readonly List<Func<TAggregate, AggregateRootChangeContext, IDomainEvent>> eventFactories = [];
-    private readonly List<(Func<TAggregate, bool> Predicate, string Message)> validations = [];
+    private readonly List<Func<TEntity, EntityChangeContext, IDomainEvent>> eventFactories = [];
+    private readonly List<(Func<TEntity, bool> Predicate, string Message)> validations = [];
     private bool replaceExisting = true;
-    private bool registerNoEvents = false;
+    private bool registerNoEvents;
 
     // Global guard that protects the entire change transaction
-    private (Func<TAggregate, bool> Predicate, string Message)? globalGuard;
+    private (Func<TEntity, bool> Predicate, string Message)? globalGuard;
 
     // Initialized to Success. Since Result is a struct, we avoid null checks and rely on IsFailure state.
     private Result chainConstructionFailure = Result.Success();
@@ -111,7 +111,7 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     /// <summary>
     /// Specifies whether to replace existing domain events of the same type.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> ReplaceExisting(bool replace = true)
+    public EntityChangeBuilder<TEntity> ReplaceExisting(bool replace = true)
     {
         this.replaceExisting = replace;
         return this;
@@ -120,7 +120,7 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     /// <summary>
     /// Specifies that no domain events should be registered when changes are applied.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> RegisterNoEvents(bool noEvents = true)
+    public EntityChangeBuilder<TEntity> RegisterNoEvents(bool noEvents = true)
     {
         this.registerNoEvents = noEvents;
         return this;
@@ -133,8 +133,8 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     /// <summary>
     /// Queues a property change with a direct value.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> Set<TValue>(
-        Expression<Func<TAggregate, TValue>> propertyExpression,
+    public EntityChangeBuilder<TEntity> Set<TValue>(
+        Expression<Func<TEntity, TValue>> propertyExpression,
         TValue newValue,
         IEqualityComparer<TValue> comparer = null)
     {
@@ -145,9 +145,9 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     /// <summary>
     /// Queues a property change with a computed value.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> Set<TValue>(
-        Expression<Func<TAggregate, TValue>> propertyExpression,
-        Func<TAggregate, TValue> valueFactory,
+    public EntityChangeBuilder<TEntity> Set<TValue>(
+        Expression<Func<TEntity, TValue>> propertyExpression,
+        Func<TEntity, TValue> valueFactory,
         IEqualityComparer<TValue> comparer = null)
     {
         this.operations.Add(new SetOperation<TValue>(propertyExpression, valueFactory, comparer));
@@ -158,8 +158,8 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     /// Queues a property change using a <see cref="Result{T}"/>.
     /// If the Result is a Failure, the entire transaction will fail when <see cref="Apply"/> is called.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> Set<TValue>(
-        Expression<Func<TAggregate, TValue>> propertyExpression,
+    public EntityChangeBuilder<TEntity> Set<TValue>(
+        Expression<Func<TEntity, TValue>> propertyExpression,
         Result<TValue> result,
         IEqualityComparer<TValue> comparer = null)
     {
@@ -180,9 +180,9 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     /// <summary>
     /// Queues a property change using a function that returns a <see cref="Result{T}"/>.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> Set<TValue>(
-        Expression<Func<TAggregate, TValue>> propertyExpression,
-        Func<TAggregate, Result<TValue>> valueFactory,
+    public EntityChangeBuilder<TEntity> Set<TValue>(
+        Expression<Func<TEntity, TValue>> propertyExpression,
+        Func<TEntity, Result<TValue>> valueFactory,
         IEqualityComparer<TValue> comparer = null)
     {
         this.operations.Add(new ResultSetOperation<TValue>(propertyExpression, valueFactory, comparer));
@@ -196,8 +196,8 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     /// <summary>
     /// Queues an operation to add an item to a collection property.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> Add<TItem>(
-        Expression<Func<TAggregate, ICollection<TItem>>> collectionExpression,
+    public EntityChangeBuilder<TEntity> Add<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TItem item,
         IEqualityComparer<TItem> comparer = null)
     {
@@ -218,8 +218,8 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     ///     .Apply();
     /// </code>
     /// </example>
-    public AggregateRootChangeBuilder<TAggregate> Add<TItem>(
-        Expression<Func<TAggregate, ICollection<TItem>>> collectionExpression,
+    public EntityChangeBuilder<TEntity> Add<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Result<TItem> result,
         IEqualityComparer<TItem> comparer = null)
     {
@@ -249,9 +249,9 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     ///     .Apply();
     /// </code>
     /// </example>
-    public AggregateRootChangeBuilder<TAggregate> Add<TItem>(
-        Expression<Func<TAggregate, ICollection<TItem>>> collectionExpression,
-        Func<TAggregate, Result<TItem>> itemFactory,
+    public EntityChangeBuilder<TEntity> Add<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        Func<TEntity, Result<TItem>> itemFactory,
         IEqualityComparer<TItem> comparer = null)
     {
         this.operations.Add(new ResultCollectionOperation<TItem>(collectionExpression, itemFactory, isAdd: true, comparer));
@@ -261,8 +261,8 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     /// <summary>
     /// Queues an operation to remove an item from a collection property.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> Remove<TItem>(
-        Expression<Func<TAggregate, ICollection<TItem>>> collectionExpression,
+    public EntityChangeBuilder<TEntity> Remove<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TItem item,
         IEqualityComparer<TItem> comparer = null)
     {
@@ -274,8 +274,8 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     /// Queues an operation to remove an item from a collection property using a <see cref="Result{T}"/>.
     /// If the Result is a Failure, the entire transaction will fail when <see cref="Apply"/> is called.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> Remove<TItem>(
-        Expression<Func<TAggregate, ICollection<TItem>>> collectionExpression,
+    public EntityChangeBuilder<TEntity> Remove<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Result<TItem> result,
         IEqualityComparer<TItem> comparer = null)
     {
@@ -295,9 +295,9 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     /// Queues an operation to remove an item from a collection property using a function that returns a <see cref="Result{T}"/>.
     /// If the computed Result is a Failure, the transaction stops and returns that failure.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> Remove<TItem>(
-        Expression<Func<TAggregate, ICollection<TItem>>> collectionExpression,
-        Func<TAggregate, Result<TItem>> itemFactory,
+    public EntityChangeBuilder<TEntity> Remove<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        Func<TEntity, Result<TItem>> itemFactory,
         IEqualityComparer<TItem> comparer = null)
     {
         this.operations.Add(new ResultCollectionOperation<TItem>(collectionExpression, itemFactory, isAdd: false, comparer));
@@ -307,8 +307,8 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     /// <summary>
     /// Queues an operation to clear all items from a collection property.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> Clear<TItem>(
-        Expression<Func<TAggregate, ICollection<TItem>>> collectionExpression)
+    public EntityChangeBuilder<TEntity> Clear<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression)
     {
         this.operations.Add(new ClearCollectionOperation<TItem>(collectionExpression));
         return this;
@@ -323,7 +323,7 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     /// If the predicate returns false, the entire transaction is skipped silently with a successful result.
     /// This must be called at the beginning of the chain before any Set, Add, Remove, or Ensure operations.
     /// </summary>
-    /// <param name="predicate">The condition to evaluate against the aggregate.</param>
+    /// <param name="predicate">The condition to evaluate against the entity.</param>
     /// <param name="errorMessage">Optional error message (not used for silent skip, informational only).</param>
     /// <example>
     /// <code>
@@ -334,7 +334,7 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     ///     .Apply();
     /// </code>
     /// </example>
-    public AggregateRootChangeBuilder<TAggregate> When(Func<TAggregate, bool> predicate, string errorMessage = null)
+    public EntityChangeBuilder<TEntity> When(Func<TEntity, bool> predicate, string errorMessage = null)
     {
         this.globalGuard = (predicate, errorMessage ?? "When condition not met");
         return this;
@@ -344,16 +344,16 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     /// Adds a pre-condition check. If the predicate returns false, the transaction aborts.
     /// This runs *after* the global When() guard but *before* any Set/Add/Remove operations.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> Ensure(Func<TAggregate, bool> predicate, string errorMessage)
+    public EntityChangeBuilder<TEntity> Ensure(Func<TEntity, bool> predicate, string errorMessage)
     {
         this.operations.Add(new EnsureOperation(predicate, errorMessage));
         return this;
     }
 
     /// <summary>
-    /// Executes an arbitrary action on the aggregate.
+    /// Executes an arbitrary action on the entity.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> Execute(Action<TAggregate> action)
+    public EntityChangeBuilder<TEntity> Execute(Action<TEntity> action)
     {
         this.operations.Add(new ExecuteOperation(action));
         return this;
@@ -366,7 +366,7 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     /// <summary>
     /// Adds a check rule that runs *after* changes have been applied.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> Check(Func<TAggregate, bool> predicate, string errorMessage)
+    public EntityChangeBuilder<TEntity> Check(Func<TEntity, bool> predicate, string errorMessage)
     {
         this.validations.Add((predicate, errorMessage));
         return this;
@@ -374,8 +374,9 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
 
     /// <summary>
     /// Registers a custom domain event to be registered if changes occur.
+    /// Note: This will throw an InvalidOperationException at runtime if the entity does not implement IAggregateRoot.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> Register<TEvent>(Func<TAggregate, AggregateRootChangeContext, TEvent> eventFactory)
+    public EntityChangeBuilder<TEntity> Register<TEvent>(Func<TEntity, EntityChangeContext, TEvent> eventFactory)
         where TEvent : IDomainEvent
     {
         this.eventFactories.Add((agg, ctx) => eventFactory(agg, ctx));
@@ -384,8 +385,9 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
 
     /// <summary>
     /// Registers a custom domain event to be registered if changes occur.
+    /// Note: This will throw an InvalidOperationException at runtime if the entity does not implement IAggregateRoot.
     /// </summary>
-    public AggregateRootChangeBuilder<TAggregate> Register<TEvent>(Func<TAggregate, TEvent> eventFactory)
+    public EntityChangeBuilder<TEntity> Register<TEvent>(Func<TEntity, TEvent> eventFactory)
         where TEvent : IDomainEvent
     {
         this.eventFactories.Add((agg, _) => eventFactory(agg));
@@ -404,36 +406,36 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     /// 2. Checks for fast-fail errors from Result-based Set operations.
     /// 3. Executes all queued operations (Ensure, Set, Add, Remove, Execute).
     /// 4. Checks post-change validations.
-    /// 5. Registers domain events if changes were made.
+    /// 5. Registers domain events if changes were made (only for IAggregateRoot instances).
     /// </para>
     /// </summary>
-    public Result<TAggregate> Apply()
+    public Result<TEntity> Apply()
     {
         // 1. Check global guard FIRST
         // If When() condition is false, skip entire transaction silently
-        if (this.globalGuard.HasValue && !this.globalGuard.Value.Predicate(aggregate))
+        if (this.globalGuard.HasValue && !this.globalGuard.Value.Predicate(entity))
         {
-            return Result<TAggregate>.Success(aggregate);
+            return Result<TEntity>.Success(entity);
         }
 
         // 2. Check for fast-fail errors captured during chaining
         if (this.chainConstructionFailure.IsFailure)
         {
-            return Result<TAggregate>.Failure(aggregate)
+            return Result<TEntity>.Failure(entity)
                 .WithMessages(this.chainConstructionFailure.Messages)
                 .WithErrors(this.chainConstructionFailure.Errors);
         }
 
-        var context = new AggregateRootChangeContext();
+        var context = new EntityChangeContext();
         var changesMade = false;
 
         // 3. Execute Operations
         foreach (var op in this.operations)
         {
-            var opResult = op.Execute(aggregate, context);
+            var opResult = op.Execute(entity, context);
             if (opResult.IsFailure)
             {
-                return Result<TAggregate>.Failure(aggregate)
+                return Result<TEntity>.Failure(entity)
                     .WithErrors(opResult.Errors);
             }
 
@@ -445,36 +447,46 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
 
         if (!changesMade)
         {
-            return Result<TAggregate>.Success(aggregate);
+            return Result<TEntity>.Success(entity);
         }
 
         // 4. Post-Change Validation
         foreach (var (predicate, message) in this.validations)
         {
-            if (!predicate(aggregate))
+            if (!predicate(entity))
             {
-                return Result<TAggregate>.Failure(aggregate, message);
+                return Result<TEntity>.Failure(entity, message);
             }
         }
 
-        // 5. Register Events
+        // 5. Register Events (only if entity implements IAggregateRoot)
         if (!this.registerNoEvents)
         {
-            foreach (var factory in this.eventFactories)
+            if (entity is IAggregateRoot aggregateRoot) // Check if entity implements IAggregateRoot at runtime
             {
-                var evt = factory(aggregate, context);
-                aggregate.DomainEvents.Register(evt, this.replaceExisting);
-            }
+                foreach (var factory in this.eventFactories)
+                {
+                    var evt = factory(entity, context);
+                    aggregateRoot.DomainEvents.Register(evt, this.replaceExisting);
+                }
 
-            if (this.eventFactories.Count == 0)
+                if (this.eventFactories.Count == 0)
+                {
+                    // Create the event using reflection since TEntity might not constrain to IAggregateRoot
+                    var eventType = typeof(EntityUpdatedDomainEvent<>).MakeGenericType(entity.GetType());
+                    var domainEvent = (IDomainEvent)Activator.CreateInstance(eventType, entity);
+                    aggregateRoot.DomainEvents.Register(domainEvent, this.replaceExisting);
+                }
+            }
+            else if (this.eventFactories.Count > 0)
             {
-                aggregate.DomainEvents.Register(
-                    new EntityUpdatedDomainEvent<TAggregate>(aggregate),
-                    this.replaceExisting);
+                // Events were registered, but entity is not an aggregate root
+                throw new InvalidOperationException(
+                    $"Cannot register domain events on entity of type '{typeof(TEntity).Name}' because it does not implement IAggregateRoot. Only aggregate roots can register domain events.");
             }
         }
 
-        return Result<TAggregate>.Success(aggregate);
+        return Result<TEntity>.Success(entity);
     }
 
     // -------------------------------------------------------------------------
@@ -506,42 +518,42 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
 
     private interface IOperation
     {
-        void AddCondition(Func<TAggregate, bool> predicate);
+        void AddCondition(Func<TEntity, bool> predicate);
 
-        OpResult Execute(TAggregate aggregate, AggregateRootChangeContext context);
+        OpResult Execute(TEntity entity, EntityChangeContext context);
     }
 
     private abstract class OperationBase : IOperation
     {
-        protected List<Func<TAggregate, bool>> Conditions { get; } = [];
+        protected List<Func<TEntity, bool>> Conditions { get; } = [];
 
-        public void AddCondition(Func<TAggregate, bool> predicate) => this.Conditions.Add(predicate);
+        public void AddCondition(Func<TEntity, bool> predicate) => this.Conditions.Add(predicate);
 
-        public OpResult Execute(TAggregate aggregate, AggregateRootChangeContext context)
+        public OpResult Execute(TEntity entity, EntityChangeContext context)
         {
             foreach (var condition in this.Conditions)
             {
-                if (!condition(aggregate))
+                if (!condition(entity))
                 {
                     return OpResult.Success(false);
                 }
             }
-            return this.ApplyChange(aggregate, context);
+            return this.ApplyChange(entity, context);
         }
 
-        protected abstract OpResult ApplyChange(TAggregate aggregate, AggregateRootChangeContext context);
+        protected abstract OpResult ApplyChange(TEntity entity, EntityChangeContext context);
     }
 
     private class SetOperation<TValue> : OperationBase
     {
         private readonly PropertyAccessor<TValue> accessor;
-        private readonly Func<TAggregate, TValue> valueFactory;
+        private readonly Func<TEntity, TValue> valueFactory;
         private readonly IEqualityComparer<TValue> comparer;
         private readonly string propertyName;
 
         public SetOperation(
-            Expression<Func<TAggregate, TValue>> propertyExpression,
-            Func<TAggregate, TValue> valueFactory,
+            Expression<Func<TEntity, TValue>> propertyExpression,
+            Func<TEntity, TValue> valueFactory,
             IEqualityComparer<TValue> comparer)
         {
             this.accessor = new PropertyAccessor<TValue>(propertyExpression);
@@ -550,17 +562,17 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
             this.propertyName = this.accessor.PropertyInfo.Name;
         }
 
-        protected override OpResult ApplyChange(TAggregate aggregate, AggregateRootChangeContext context)
+        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
         {
-            var currentValue = this.accessor.GetValue(aggregate);
-            var newValue = this.valueFactory(aggregate);
+            var currentValue = this.accessor.GetValue(entity);
+            var newValue = this.valueFactory(entity);
 
             if (this.comparer.Equals(currentValue, newValue))
             {
                 return OpResult.Success(false);
             }
 
-            this.accessor.SetValue(aggregate, newValue);
+            this.accessor.SetValue(entity, newValue);
             context.RecordChange(this.propertyName, currentValue, newValue);
             return OpResult.Success(true);
         }
@@ -569,13 +581,13 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     private class ResultSetOperation<TValue> : OperationBase
     {
         private readonly PropertyAccessor<TValue> accessor;
-        private readonly Func<TAggregate, Result<TValue>> valueFactory;
+        private readonly Func<TEntity, Result<TValue>> valueFactory;
         private readonly IEqualityComparer<TValue> comparer;
         private readonly string propertyName;
 
         public ResultSetOperation(
-            Expression<Func<TAggregate, TValue>> propertyExpression,
-            Func<TAggregate, Result<TValue>> valueFactory,
+            Expression<Func<TEntity, TValue>> propertyExpression,
+            Func<TEntity, Result<TValue>> valueFactory,
             IEqualityComparer<TValue> comparer)
         {
             this.accessor = new PropertyAccessor<TValue>(propertyExpression);
@@ -584,21 +596,21 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
             this.propertyName = this.accessor.PropertyInfo.Name;
         }
 
-        protected override OpResult ApplyChange(TAggregate aggregate, AggregateRootChangeContext context)
+        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
         {
-            var result = this.valueFactory(aggregate);
+            var result = this.valueFactory(entity);
             if (result.IsFailure)
             {
                 return OpResult.Failure(result.Errors);
             }
 
-            var currentValue = this.accessor.GetValue(aggregate);
+            var currentValue = this.accessor.GetValue(entity);
             if (this.comparer.Equals(currentValue, result.Value))
             {
                 return OpResult.Success(false);
             }
 
-            this.accessor.SetValue(aggregate, result.Value);
+            this.accessor.SetValue(entity, result.Value);
             context.RecordChange(this.propertyName, currentValue, result.Value);
             return OpResult.Success(true);
         }
@@ -606,14 +618,14 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
 
     private class CollectionOperation<TItem> : OperationBase
     {
-        private readonly Func<TAggregate, ICollection<TItem>> collectionGetter;
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter;
         private readonly TItem item;
         private readonly bool isAdd;
         private readonly string propertyName;
         private readonly IEqualityComparer<TItem> comparer;
 
         public CollectionOperation(
-            Expression<Func<TAggregate, ICollection<TItem>>> collectionExpression,
+            Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
             TItem item,
             bool isAdd,
             IEqualityComparer<TItem> comparer)
@@ -626,9 +638,9 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
             this.comparer = comparer ?? EqualityComparer<TItem>.Default;
         }
 
-        protected override OpResult ApplyChange(TAggregate aggregate, AggregateRootChangeContext context)
+        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
         {
-            var collection = this.collectionGetter(aggregate);
+            var collection = this.collectionGetter(entity);
             if (collection == null)
             {
                 return OpResult.Success(false);
@@ -679,15 +691,15 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
 
     private class ResultCollectionOperation<TItem> : OperationBase
     {
-        private readonly Func<TAggregate, ICollection<TItem>> collectionGetter;
-        private readonly Func<TAggregate, Result<TItem>> itemFactory;
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter;
+        private readonly Func<TEntity, Result<TItem>> itemFactory;
         private readonly bool isAdd;
         private readonly string propertyName;
         private readonly IEqualityComparer<TItem> comparer;
 
         public ResultCollectionOperation(
-            Expression<Func<TAggregate, ICollection<TItem>>> collectionExpression,
-            Func<TAggregate, Result<TItem>> itemFactory,
+            Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+            Func<TEntity, Result<TItem>> itemFactory,
             bool isAdd,
             IEqualityComparer<TItem> comparer)
         {
@@ -699,17 +711,17 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
             this.comparer = comparer ?? EqualityComparer<TItem>.Default;
         }
 
-        protected override OpResult ApplyChange(TAggregate aggregate, AggregateRootChangeContext context)
+        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
         {
             // 1. Get the item from the factory (which returns a Result)
-            var result = this.itemFactory(aggregate);
+            var result = this.itemFactory(entity);
             if (result.IsFailure)
             {
                 return OpResult.Failure(result.Errors);
             }
 
             var item = result.Value;
-            var collection = this.collectionGetter(aggregate);
+            var collection = this.collectionGetter(entity);
             if (collection == null)
             {
                 return OpResult.Success(false);
@@ -761,19 +773,19 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
 
     private class ClearCollectionOperation<TItem> : OperationBase
     {
-        private readonly Func<TAggregate, ICollection<TItem>> collectionGetter;
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter;
         private readonly string propertyName;
 
-        public ClearCollectionOperation(Expression<Func<TAggregate, ICollection<TItem>>> collectionExpression)
+        public ClearCollectionOperation(Expression<Func<TEntity, ICollection<TItem>>> collectionExpression)
         {
             var member = (collectionExpression.Body as MemberExpression)?.Member as PropertyInfo ?? throw new ArgumentException("Expression must be a property");
             this.propertyName = member.Name;
             this.collectionGetter = collectionExpression.Compile();
         }
 
-        protected override OpResult ApplyChange(TAggregate aggregate, AggregateRootChangeContext context)
+        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
         {
-            var collection = this.collectionGetter(aggregate);
+            var collection = this.collectionGetter(entity);
             if (collection == null || collection.Count == 0)
             {
                 return OpResult.Success(false);
@@ -785,11 +797,11 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
         }
     }
 
-    private class EnsureOperation(Func<TAggregate, bool> predicate, string errorMessage) : OperationBase
+    private class EnsureOperation(Func<TEntity, bool> predicate, string errorMessage) : OperationBase
     {
-        protected override OpResult ApplyChange(TAggregate aggregate, AggregateRootChangeContext context)
+        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
         {
-            if (!predicate(aggregate))
+            if (!predicate(entity))
             {
                 return OpResult.Failure([new Error(errorMessage)]);
             }
@@ -798,11 +810,11 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
         }
     }
 
-    private class ExecuteOperation(Action<TAggregate> action) : OperationBase
+    private class ExecuteOperation(Action<TEntity> action) : OperationBase
     {
-        protected override OpResult ApplyChange(TAggregate aggregate, AggregateRootChangeContext context)
+        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
         {
-            action(aggregate);
+            action(entity);
             context.RecordChange("Execute", null, "Action Executed");
             return OpResult.Success(true);
         }
@@ -811,25 +823,25 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     private class PropertyAccessor<TValue>
     {
         public PropertyInfo PropertyInfo { get; }
-        private readonly Func<TAggregate, TValue> getter;
-        private readonly Action<TAggregate, TValue> setter;
-        private static readonly ConcurrentDictionary<string, (Func<TAggregate, TValue>, Action<TAggregate, TValue>)> Cache = [];
+        private readonly Func<TEntity, TValue> getter;
+        private readonly Action<TEntity, TValue> setter;
+        private static readonly ConcurrentDictionary<string, (Func<TEntity, TValue>, Action<TEntity, TValue>)> Cache = [];
 
-        public PropertyAccessor(Expression<Func<TAggregate, TValue>> propertyExpression)
+        public PropertyAccessor(Expression<Func<TEntity, TValue>> propertyExpression)
         {
             var memberExpression = propertyExpression.Body as MemberExpression ?? throw new ArgumentException("Expression must be a property access");
             this.PropertyInfo = memberExpression.Member as PropertyInfo ?? throw new ArgumentException("Expression must reference a property");
-            var key = $"{typeof(TAggregate).FullName}.{this.PropertyInfo.Name}";
+            var key = $"{typeof(TEntity).FullName}.{this.PropertyInfo.Name}";
 
             var accessors = Cache.GetOrAdd(key, _ =>
             {
-                var instanceParam = Expression.Parameter(typeof(TAggregate), "instance");
+                var instanceParam = Expression.Parameter(typeof(TEntity), "instance");
                 var propertyAccess = Expression.Property(instanceParam, this.PropertyInfo);
-                var compiledGetter = Expression.Lambda<Func<TAggregate, TValue>>(propertyAccess, instanceParam).Compile();
+                var compiledGetter = Expression.Lambda<Func<TEntity, TValue>>(propertyAccess, instanceParam).Compile();
 
                 var valueParam = Expression.Parameter(typeof(TValue), "value");
                 var assignExpression = Expression.Assign(Expression.Property(instanceParam, this.PropertyInfo), valueParam);
-                var compiledSetter = Expression.Lambda<Action<TAggregate, TValue>>(assignExpression, instanceParam, valueParam).Compile();
+                var compiledSetter = Expression.Lambda<Action<TEntity, TValue>>(assignExpression, instanceParam, valueParam).Compile();
 
                 return (compiledGetter, compiledSetter);
             });
@@ -838,7 +850,7 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
             this.setter = accessors.Item2;
         }
 
-        public TValue GetValue(TAggregate instance) => this.getter(instance);
-        public void SetValue(TAggregate instance, TValue value) => this.setter(instance, value);
+        public TValue GetValue(TEntity instance) => this.getter(instance);
+        public void SetValue(TEntity instance, TValue value) => this.setter(instance, value);
     }
 }

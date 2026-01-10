@@ -206,6 +206,59 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
     }
 
     /// <summary>
+    /// Queues an operation to add an item to a collection property using a <see cref="Result{T}"/>.
+    /// If the Result is a Failure, the entire transaction will fail when <see cref="Apply"/> is called.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var addressResult = Address.Create("123 Main St");
+    /// return this.Change()
+    ///     .Add(e => e.Addresses, addressResult)  // Only add if addressResult is success
+    ///     .Register(e => new CustomerUpdatedDomainEvent(e))
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public AggregateRootChangeBuilder<TAggregate> Add<TItem>(
+        Expression<Func<TAggregate, ICollection<TItem>>> collectionExpression,
+        Result<TItem> result,
+        IEqualityComparer<TItem> comparer = null)
+    {
+        if (result.IsFailure)
+        {
+            // If we haven't failed yet, capture this failure
+            if (this.chainConstructionFailure.IsSuccess)
+            {
+                // Convert Result<T> failure to non-generic Result failure
+                this.chainConstructionFailure = Result.Failure(result.Messages, result.Errors);
+            }
+            return this;
+        }
+
+        return this.Add(collectionExpression, result.Value, comparer);
+    }
+
+    /// <summary>
+    /// Queues an operation to add an item to a collection property using a function that returns a <see cref="Result{T}"/>.
+    /// If the computed Result is a Failure, the transaction stops and returns that failure.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Add(e => e.Addresses, agg => Address.Create(dto.Street))
+    ///     .Register(e => new CustomerUpdatedDomainEvent(e))
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public AggregateRootChangeBuilder<TAggregate> Add<TItem>(
+        Expression<Func<TAggregate, ICollection<TItem>>> collectionExpression,
+        Func<TAggregate, Result<TItem>> itemFactory,
+        IEqualityComparer<TItem> comparer = null)
+    {
+        this.operations.Add(new ResultCollectionOperation<TItem>(collectionExpression, itemFactory, isAdd: true, comparer));
+        return this;
+    }
+
+    /// <summary>
     /// Queues an operation to remove an item from a collection property.
     /// </summary>
     public AggregateRootChangeBuilder<TAggregate> Remove<TItem>(
@@ -214,6 +267,40 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
         IEqualityComparer<TItem> comparer = null)
     {
         this.operations.Add(new CollectionOperation<TItem>(collectionExpression, item, isAdd: false, comparer));
+        return this;
+    }
+
+    /// <summary>
+    /// Queues an operation to remove an item from a collection property using a <see cref="Result{T}"/>.
+    /// If the Result is a Failure, the entire transaction will fail when <see cref="Apply"/> is called.
+    /// </summary>
+    public AggregateRootChangeBuilder<TAggregate> Remove<TItem>(
+        Expression<Func<TAggregate, ICollection<TItem>>> collectionExpression,
+        Result<TItem> result,
+        IEqualityComparer<TItem> comparer = null)
+    {
+        if (result.IsFailure)
+        {
+            if (this.chainConstructionFailure.IsSuccess)
+            {
+                this.chainConstructionFailure = Result.Failure(result.Messages, result.Errors);
+            }
+            return this;
+        }
+
+        return this.Remove(collectionExpression, result.Value, comparer);
+    }
+
+    /// <summary>
+    /// Queues an operation to remove an item from a collection property using a function that returns a <see cref="Result{T}"/>.
+    /// If the computed Result is a Failure, the transaction stops and returns that failure.
+    /// </summary>
+    public AggregateRootChangeBuilder<TAggregate> Remove<TItem>(
+        Expression<Func<TAggregate, ICollection<TItem>>> collectionExpression,
+        Func<TAggregate, Result<TItem>> itemFactory,
+        IEqualityComparer<TItem> comparer = null)
+    {
+        this.operations.Add(new ResultCollectionOperation<TItem>(collectionExpression, itemFactory, isAdd: false, comparer));
         return this;
     }
 
@@ -583,6 +670,88 @@ public class AggregateRootChangeBuilder<TAggregate>(TAggregate aggregate)
                 else
                 {
                     collection.Remove(this.item);
+                }
+                context.RecordChange(this.propertyName, "Collection", "Item Removed");
+                return OpResult.Success(true);
+            }
+        }
+    }
+
+    private class ResultCollectionOperation<TItem> : OperationBase
+    {
+        private readonly Func<TAggregate, ICollection<TItem>> collectionGetter;
+        private readonly Func<TAggregate, Result<TItem>> itemFactory;
+        private readonly bool isAdd;
+        private readonly string propertyName;
+        private readonly IEqualityComparer<TItem> comparer;
+
+        public ResultCollectionOperation(
+            Expression<Func<TAggregate, ICollection<TItem>>> collectionExpression,
+            Func<TAggregate, Result<TItem>> itemFactory,
+            bool isAdd,
+            IEqualityComparer<TItem> comparer)
+        {
+            var member = (collectionExpression.Body as MemberExpression)?.Member as PropertyInfo ?? throw new ArgumentException("Expression must be a property", nameof(collectionExpression));
+            this.propertyName = member.Name;
+            this.collectionGetter = collectionExpression.Compile();
+            this.itemFactory = itemFactory;
+            this.isAdd = isAdd;
+            this.comparer = comparer ?? EqualityComparer<TItem>.Default;
+        }
+
+        protected override OpResult ApplyChange(TAggregate aggregate, AggregateRootChangeContext context)
+        {
+            // 1. Get the item from the factory (which returns a Result)
+            var result = this.itemFactory(aggregate);
+            if (result.IsFailure)
+            {
+                return OpResult.Failure(result.Errors);
+            }
+
+            var item = result.Value;
+            var collection = this.collectionGetter(aggregate);
+            if (collection == null)
+            {
+                return OpResult.Success(false);
+            }
+
+            // 2. Check if item exists in collection
+            bool exists;
+            if (this.comparer == EqualityComparer<TItem>.Default)
+            {
+                exists = collection.Contains(item);
+            }
+            else
+            {
+                exists = collection.Any(x => this.comparer.Equals(x, item));
+            }
+
+            if (this.isAdd)
+            {
+                if (exists)
+                {
+                    return OpResult.Success(false);
+                }
+
+                collection.Add(item);
+                context.RecordChange(this.propertyName, "Collection", "Item Added");
+                return OpResult.Success(true);
+            }
+            else // Remove
+            {
+                if (!exists)
+                {
+                    return OpResult.Success(false);
+                }
+
+                if (this.comparer != EqualityComparer<TItem>.Default)
+                {
+                    var itemToRemove = collection.First(x => this.comparer.Equals(x, item));
+                    collection.Remove(itemToRemove);
+                }
+                else
+                {
+                    collection.Remove(item);
                 }
                 context.RecordChange(this.propertyName, "Collection", "Item Removed");
                 return OpResult.Success(true);

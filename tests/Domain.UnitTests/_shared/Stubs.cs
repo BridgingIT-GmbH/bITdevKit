@@ -29,6 +29,104 @@ public class PersonStub : AggregateRoot<Guid>
     public List<AddressStub> Addresses { get; set; } = [];
 
     public AddressStub BillingAddress { get; set; }
+
+    public Result<PersonStub> ChangeName(string first, string last)
+    {
+        return this.Change()
+            .Set(p => p.FirstName, first)
+            .Set(p => p.LastName, last)
+            .Register(p => new PersonNameChangedEvent(p.Id)) // custom event, replaces default EntityUpdatedDomainEvent<PersonStub>
+            .Check(p => p.FirstName != string.Empty, "First name cannot be empty") // Post-condition
+            .Apply();
+    }
+
+    public Result<PersonStub> ChangeAge(int age)
+    {
+        return this.Change()
+            .When(_ => age != 0)
+            .Ensure(p => age > 0, "Age must be non-negative") // Pre-condition
+            .Set(p => p.Age, age)
+            .Check(p => p.Age >= 0, "Age cannot be negative") // Post-condition
+            .Apply();
+    }
+
+    public Result<PersonStub> ChangeEmail(string email)
+    {
+        return this.Change()
+            // Ensure runs BEFORE any changes
+            .Ensure(p => p.EmploymentStatus != EmploymentStatus.Unemployed, "Must be employed to have email")
+            .Set(p => p.Email, email)
+            .Apply();
+    }
+
+    public Result<PersonStub> ChangeEmailWithValidation(string email)
+    {
+        // Simulating a Result-returning factory
+        static Result<string> CreateEmail(string input)
+        {
+            if (input.Contains("invalid"))
+                return Result<string>.Failure().WithError(new ValidationError("Invalid format"));
+            return Result<string>.Success(input);
+        }
+
+        return this.Change()
+            .Set(p => p.Email, CreateEmail(email))
+            .Apply();
+    }
+
+    public Result<PersonStub> PromoteToAdult()
+    {
+        return this.Change()
+            .When(p => p.Age >= 18)
+            .Set(p => p.FirstName, "Adult")
+            .Apply();
+    }
+
+    public Result<PersonStub> AddAddress(AddressStub address)
+    {
+        return this.Change()
+            .Add(p => p.Addresses, address)
+            .Register(_ => new AddressListChangedEvent())
+            .Apply();
+    }
+
+    public Result<PersonStub> RemoveAddress(AddressStub address)
+    {
+        return this.Change()
+            .Remove(p => p.Addresses, address)
+            .Register(_ => new AddressListChangedEvent())
+            .Apply();
+    }
+
+    public Result<PersonStub> ClearAddresses()
+    {
+        return this.Change()
+            .Execute(p => p.Addresses.Clear()) // Using Execute for void methods
+            .Apply();
+    }
+
+    public Result<PersonStub> UpdateEmailWithHistory(string newEmail)
+    {
+        return this.Change()
+            .Set(p => p.Email, newEmail)
+            .Register((p, ctx) => new EmailChangedEvent(ctx.GetOldValue<string>(nameof(this.Email)), p.Email))
+            .Apply();
+    }
+
+    // Domain Events for testing
+    public class PersonNameChangedEvent(Guid id) : DomainEventBase
+    {
+        public Guid PersonId { get; } = id;
+    }
+
+    public class AddressListChangedEvent : DomainEventBase;
+
+    public class EmailChangedEvent(string oldEmail, string newEmail) : DomainEventBase
+    {
+        public string OldEmail { get; } = oldEmail;
+
+        public string NewEmail { get; } = newEmail;
+    }
 }
 
 public class OrderStub

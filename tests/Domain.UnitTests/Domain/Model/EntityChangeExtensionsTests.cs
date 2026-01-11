@@ -18,7 +18,7 @@ public class EntityChangeExtensionsTests
     public void Change_SetProperty_WhenValueDifferent_ShouldUpdateAndRaiseEvents()
     {
         // Arrange
-        var person = new TestPerson { FirstName = "John", LastName = "Doe" };
+        var person = new PersonStub { FirstName = "John", LastName = "Doe" };
 
         // Act
         var result = person.ChangeName("Jane", "Doe"); // LastName unchanged
@@ -30,15 +30,15 @@ public class EntityChangeExtensionsTests
 
         // Check Events
         person.DomainEvents.GetAll().Count().ShouldBe(1); // 1 Custom event only
-        person.DomainEvents.GetAll().ShouldContain(e => e is PersonNameChangedEvent);
-        // default EntityUpdatedDomainEvent<TestPerson> is not raised as we have a custom event (see ChangeName)
+        person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.PersonNameChangedEvent);
+        // default EntityUpdatedDomainEvent<PersonStub> is not raised as we have a custom event (see ChangeName)
     }
 
     [Fact]
     public void Change_SetProperty_WhenValuesSame_ShouldNotRaiseEvents()
     {
         // Arrange
-        var person = new TestPerson { FirstName = "John", LastName = "Doe" };
+        var person = new PersonStub { FirstName = "John", LastName = "Doe" };
 
         // Act
         var result = person.ChangeName("John", "Doe");
@@ -52,7 +52,7 @@ public class EntityChangeExtensionsTests
     public void Change_Ensure_WhenFails_ShouldFailAndNotUpdate()
     {
         // Arrange
-        var person = new TestPerson { Age = 25 };
+        var person = new PersonStub { Age = 25 };
 
         // Act
         var result = person.ChangeAge(-5); // Invalid age
@@ -69,7 +69,7 @@ public class EntityChangeExtensionsTests
     public void Change_When_WhenFails_ShouldSkipAndNotUpdate()
     {
         // Arrange
-        var person = new TestPerson { Age = 25 };
+        var person = new PersonStub { Age = 25 };
 
         // Act
         var result = person.ChangeAge(0); // Invalid age
@@ -84,7 +84,7 @@ public class EntityChangeExtensionsTests
     public void Change_Ensure_WhenPreConditionFails_ShouldFailFast()
     {
         // Arrange
-        var person = new TestPerson { EmploymentStatus = EmploymentStatus.Unemployed };
+        var person = new PersonStub { EmploymentStatus = EmploymentStatus.Unemployed };
 
         // Act
         // Try to give a work email to an unemployed person
@@ -100,7 +100,7 @@ public class EntityChangeExtensionsTests
     public void Change_SetWithResult_WhenResultFails_ShouldFailChain()
     {
         // Arrange
-        var person = new TestPerson();
+        var person = new PersonStub();
 
         // Act
         // IsValidEmail returns Failure for this input
@@ -116,7 +116,7 @@ public class EntityChangeExtensionsTests
     public void Change_WhenPredicate_ShouldOnlyUpdateIfTrue()
     {
         // Arrange
-        var person = new TestPerson { Age = 17, FirstName = "Kid" };
+        var person = new PersonStub { Age = 17, FirstName = "Kid" };
 
         // Act
         // Should only update name to "Adult" if Age >= 18
@@ -141,7 +141,7 @@ public class EntityChangeExtensionsTests
     public void Change_Collection_AddRemove_ShouldUpdateCollection()
     {
         // Arrange
-        var person = new TestPerson();
+        var person = new PersonStub();
         var address = AddressStub.Create("Home", "Street", "", "12345", "City", "Country");
 
         // Act - Add
@@ -150,7 +150,7 @@ public class EntityChangeExtensionsTests
         // Assert - Add
         resultAdd.IsSuccess.ShouldBeTrue();
         person.Addresses.ShouldContain(address);
-        person.DomainEvents.GetAll().ShouldContain(e => e is AddressListChangedEvent);
+        person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
 
         // Reset events
         person.DomainEvents.Clear();
@@ -161,14 +161,14 @@ public class EntityChangeExtensionsTests
         // Assert - Remove
         resultRemove.IsSuccess.ShouldBeTrue();
         person.Addresses.ShouldBeEmpty();
-        person.DomainEvents.GetAll().ShouldContain(e => e is AddressListChangedEvent);
+        person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
     }
 
     [Fact]
     public void Change_Execute_ShouldRunArbitraryAction()
     {
         // Arrange
-        var person = new TestPerson();
+        var person = new PersonStub();
         person.Addresses.Add(AddressStub.Create("Old", "St", "", "1", "C", "C"));
 
         // Act
@@ -177,21 +177,21 @@ public class EntityChangeExtensionsTests
         // Assert
         result.IsSuccess.ShouldBeTrue();
         person.Addresses.ShouldBeEmpty();
-        person.DomainEvents.GetAll().ShouldContain(e => e is EntityUpdatedDomainEvent<TestPerson>);
+        person.DomainEvents.GetAll().ShouldContain(e => e is EntityUpdatedDomainEvent<PersonStub>);
     }
 
     [Fact]
     public void Change_WithEventContext_ShouldAccessOldValues()
     {
         // Arrange
-        var person = new TestPerson { Email = "old@mail.com" };
+        var person = new PersonStub { Email = "old@mail.com" };
 
         // Act
         var result = person.UpdateEmailWithHistory("new@mail.com");
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        var evt = person.DomainEvents.GetAll().OfType<EmailChangedEvent>().Single();
+        var evt = person.DomainEvents.GetAll().OfType<PersonStub.EmailChangedEvent>().Single();
         evt.OldEmail.ShouldBe("old@mail.com");
         evt.NewEmail.ShouldBe("new@mail.com");
     }
@@ -225,118 +225,8 @@ public class EntityChangeExtensionsTests
     }
 
     // -------------------------------------------------------------------------
-    // Test Helpers (TestPerson & Events)
+    // Test Helpers (PersonStub & Events)
     // -------------------------------------------------------------------------
-
-    /// <summary>
-    /// wrapper class to add behavior to the stub without modifying the original file.
-    /// </summary>
-    private class TestPerson : PersonStub
-    {
-        public TestPerson()
-        {
-            this.Id = Guid.NewGuid();
-            this.Addresses = []; // Ensure initialization
-        }
-
-        public Result<TestPerson> ChangeName(string first, string last)
-        {
-            return this.Change()
-                .Set(p => p.FirstName, first)
-                .Set(p => p.LastName, last)
-                .Register(p => new PersonNameChangedEvent(p.Id)) // custom event, replaces default EntityUpdatedDomainEvent<TestPerson>
-                .Check(p => p.FirstName != string.Empty, "First name cannot be empty") // Post-condition
-                .Apply();
-        }
-
-        public Result<TestPerson> ChangeAge(int age)
-        {
-            return this.Change()
-                .When(_ => age != 0)
-                .Ensure(p => age > 0, "Age must be non-negative") // Pre-condition
-                .Set(p => p.Age, age)
-                .Check(p => p.Age >= 0, "Age cannot be negative") // Post-condition
-                .Apply();
-        }
-
-        public Result<TestPerson> ChangeEmail(string email)
-        {
-            return this.Change()
-                // Ensure runs BEFORE any changes
-                .Ensure(p => p.EmploymentStatus != EmploymentStatus.Unemployed, "Must be employed to have email")
-                .Set(p => p.Email, email)
-                .Apply();
-        }
-
-        public Result<TestPerson> ChangeEmailWithValidation(string email)
-        {
-            // Simulating a Result-returning factory
-            static Result<string> CreateEmail(string input)
-            {
-                if (input.Contains("invalid"))
-                    return Result<string>.Failure().WithError(new ValidationError("Invalid format"));
-                return Result<string>.Success(input);
-            }
-
-            return this.Change()
-                .Set(p => p.Email, CreateEmail(email))
-                .Apply();
-        }
-
-        public Result<TestPerson> PromoteToAdult()
-        {
-            return this.Change()
-                .When(p => p.Age >= 18)
-                .Set(p => p.FirstName, "Adult")
-                .Apply();
-        }
-
-        public Result<TestPerson> AddAddress(AddressStub address)
-        {
-            return this.Change()
-                .Add(p => p.Addresses, address)
-                .Register(_ => new AddressListChangedEvent())
-                .Apply();
-        }
-
-        public Result<TestPerson> RemoveAddress(AddressStub address)
-        {
-            return this.Change()
-                .Remove(p => p.Addresses, address)
-                .Register(_ => new AddressListChangedEvent())
-                .Apply();
-        }
-
-        public Result<TestPerson> ClearAddresses()
-        {
-            return this.Change()
-                .Execute(p => p.Addresses.Clear()) // Using Execute for void methods
-                .Apply();
-        }
-
-        public Result<TestPerson> UpdateEmailWithHistory(string newEmail)
-        {
-            return this.Change()
-                .Set(p => p.Email, newEmail)
-                .Register((p, ctx) => new EmailChangedEvent(ctx.GetOldValue<string>(nameof(this.Email)), p.Email))
-                .Apply();
-        }
-    }
-
-    // Domain Events for testing
-    private class PersonNameChangedEvent(Guid id) : DomainEventBase
-    {
-        public Guid PersonId { get; } = id;
-    }
-
-    private class AddressListChangedEvent : DomainEventBase;
-
-    private class EmailChangedEvent(string oldEmail, string newEmail) : DomainEventBase
-    {
-        public string OldEmail { get; } = oldEmail;
-
-        public string NewEmail { get; } = newEmail;
-    }
 
     /// <summary>
     /// A plain entity that does not inherit from AggregateRoot

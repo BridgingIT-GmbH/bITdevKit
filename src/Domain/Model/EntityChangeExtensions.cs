@@ -630,7 +630,16 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             bool isAdd,
             IEqualityComparer<TItem> comparer)
         {
-            var member = (collectionExpression.Body as MemberExpression)?.Member as PropertyInfo ?? throw new ArgumentException("Expression must be a property", nameof(collectionExpression));
+            // Handle both properties and fields (backing fields for properties)
+            var memberExpression = collectionExpression.Body as MemberExpression
+                ?? throw new ArgumentException("Expression must be a member access", nameof(collectionExpression));
+
+            var member = memberExpression.Member;
+            if (member is not PropertyInfo && member is not FieldInfo)
+            {
+                throw new ArgumentException("Expression must be a property or field", nameof(collectionExpression));
+            }
+
             this.propertyName = member.Name;
             this.collectionGetter = collectionExpression.Compile();
             this.item = item;
@@ -703,7 +712,16 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             bool isAdd,
             IEqualityComparer<TItem> comparer)
         {
-            var member = (collectionExpression.Body as MemberExpression)?.Member as PropertyInfo ?? throw new ArgumentException("Expression must be a property", nameof(collectionExpression));
+            // Handle both properties and fields (backing fields for properties)
+            var memberExpression = collectionExpression.Body as MemberExpression
+                ?? throw new ArgumentException("Expression must be a member access", nameof(collectionExpression));
+
+            var member = memberExpression.Member;
+            if (member is not PropertyInfo && member is not FieldInfo)
+            {
+                throw new ArgumentException("Expression must be a property or field", nameof(collectionExpression));
+            }
+
             this.propertyName = member.Name;
             this.collectionGetter = collectionExpression.Compile();
             this.itemFactory = itemFactory;
@@ -778,7 +796,16 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
 
         public ClearCollectionOperation(Expression<Func<TEntity, ICollection<TItem>>> collectionExpression)
         {
-            var member = (collectionExpression.Body as MemberExpression)?.Member as PropertyInfo ?? throw new ArgumentException("Expression must be a property");
+            // Handle both properties and fields (backing fields for properties)
+            var memberExpression = collectionExpression.Body as MemberExpression
+                ?? throw new ArgumentException("Expression must be a member access", nameof(collectionExpression));
+
+            var member = memberExpression.Member;
+            if (member is not PropertyInfo && member is not FieldInfo)
+            {
+                throw new ArgumentException("Expression must be a property or field", nameof(collectionExpression));
+            }
+
             this.propertyName = member.Name;
             this.collectionGetter = collectionExpression.Compile();
         }
@@ -829,7 +856,9 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
 
         public PropertyAccessor(Expression<Func<TEntity, TValue>> propertyExpression)
         {
+            // Extract PropertyInfo from expression
             var memberExpression = propertyExpression.Body as MemberExpression ?? throw new ArgumentException("Expression must be a property access");
+            // Handle both properties and fields (backing fields for properties)
             this.PropertyInfo = memberExpression.Member as PropertyInfo ?? throw new ArgumentException("Expression must reference a property");
             var key = $"{typeof(TEntity).FullName}.{this.PropertyInfo.Name}";
 

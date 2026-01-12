@@ -224,6 +224,33 @@ public class EntityChangeExtensionsTests
         exception.Message.ShouldContain("PlainEntity");
     }
 
+    [Fact]
+    public void Change_Collection_WithBackingField_ShouldWork()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address = AddressStub.Create("Home", "Street", "", "12345", "City", "Country");
+
+        // Act - Add using backing field
+        var resultAdd = person.AddAddress(address);
+
+        // Assert - Add
+        resultAdd.IsSuccess.ShouldBeTrue();
+        person.Addresses.ShouldContain(address);
+        person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
+
+        // Reset events
+        person.DomainEvents.Clear();
+
+        // Act - Remove using backing field
+        var resultRemove = person.RemoveAddress(address);
+
+        // Assert - Remove
+        resultRemove.IsSuccess.ShouldBeTrue();
+        person.Addresses.ShouldBeEmpty();
+        person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
+    }
+
     // -------------------------------------------------------------------------
     // Test Helpers (PersonStub & Events)
     // -------------------------------------------------------------------------

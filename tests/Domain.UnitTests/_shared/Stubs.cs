@@ -10,6 +10,8 @@ using Model;
 
 public class PersonStub : AggregateRoot<Guid>
 {
+    private List<AddressStub> addresses = [];
+
     public string FirstName { get; set; }
 
     public string LastName { get; set; }
@@ -26,7 +28,9 @@ public class PersonStub : AggregateRoot<Guid>
 
     public List<OrderStub> Orders { get; set; }
 
-    public List<AddressStub> Addresses { get; set; } = [];
+    public IReadOnlyCollection<AddressStub> Addresses { get => this.addresses; }
+
+    //public List<AddressStub> Addresses { get; set; } = [];
 
     public AddressStub BillingAddress { get; set; }
 
@@ -85,7 +89,7 @@ public class PersonStub : AggregateRoot<Guid>
     public Result<PersonStub> AddAddress(AddressStub address)
     {
         return this.Change()
-            .Add(p => p.Addresses, address)
+            .Add(p => p.addresses, address)
             .Register(_ => new AddressListChangedEvent())
             .Apply();
     }
@@ -93,7 +97,7 @@ public class PersonStub : AggregateRoot<Guid>
     public Result<PersonStub> RemoveAddress(AddressStub address)
     {
         return this.Change()
-            .Remove(p => p.Addresses, address)
+            .Remove(p => p.addresses, address)
             .Register(_ => new AddressListChangedEvent())
             .Apply();
     }
@@ -101,7 +105,7 @@ public class PersonStub : AggregateRoot<Guid>
     public Result<PersonStub> ClearAddresses()
     {
         return this.Change()
-            .Execute(p => p.Addresses.Clear()) // Using Execute for void methods
+            .Execute(p => p.addresses.Clear()) // Using Execute for void methods
             .Apply();
     }
 

@@ -224,6 +224,20 @@ public void ChangeEmail(string newEmail)
 
 The `AggregateRoot` extensions provide a fluent, transactional builder pattern (`this.Change()`) to handle state mutations declaratively. It encapsulates the complexity of change detection, validation, and event registration into a clean, readable API.
 
+**Key Feature: Declaration-Order Execution**
+
+All operations execute **in the exact order they are declared**. This makes the code intuitive and predictable - "what you see is what executes":
+
+```csharp
+return this.Change()
+    .Set(c => c.Name, "John")       // 1. Executes first
+    .Check(c => c.Name != null, "") // 2. Validates immediately after Set
+    .When(c => c.Age >= 18)         // 3. Circuit breaker - cancels remaining if false
+    .Set(c => c.Status, Adult)      // 4. Only executes if When succeeded
+    .Register(c => new Event())     // 5. Queues event if changes occurred
+    .Apply();
+```
+
 ```mermaid
 sequenceDiagram
     participant Dev as Developer
@@ -231,23 +245,23 @@ sequenceDiagram
     participant Agg as AggregateRoot
     participant Events as DomainEvents
 
-    Dev->>Builder: this.Change()<br/>.Ensure(Guard)<br/>.Set(Property)<br/>.Check(Rule)<br/>.Regisiter(Event)<br/>.Apply()
-    
-    Builder->>Builder: Check Pre-conditions (Ensure)
-    
-    loop For each Property
-        Builder->>Agg: Compare New vs Old Value
-        alt Value Changed
-            Builder->>Agg: Update Property
-            Builder->>Builder: Mark as Changed
-        end
-    end
+    Dev->>Builder: this.Change()<br/>.Set(Property1)<br/>.Check(Rule1)<br/>.When(Guard)<br/>.Set(Property2)<br/>.Register(Event)<br/>.Apply()
 
-    Builder->>Builder: Check Post-conditions (Check)
-    
-    alt If Changed & Valid
-        Builder->>Events: Register Custom Events
-        Builder->>Events: Register EntityUpdatedDomainEvent
+    Note over Builder: Execute in declaration order
+
+    Builder->>Agg: Set Property1
+    Builder->>Builder: Check Rule1 (immediate)
+
+    alt When Guard Passes
+        Builder->>Agg: Set Property2
+        Builder->>Builder: Queue Event
+        Builder->>Events: Register Events at Apply() end
+        Builder-->>Dev: Success Result
+    else When Guard Fails (Circuit Breaker)
+        Note over Builder: Skip remaining operations<br/>Property1 changed, Property2 unchanged
+        Builder->>Events: Register events for changes before When
+        Builder-->>Dev: Success Result (partial changes)
+    end
         Builder-->>Dev: Return Success Result
     else If Invalid or No Change
         Builder-->>Dev: Return Failure or Success(NoOp)
@@ -268,15 +282,37 @@ public Result<Customer> ChangeName(string firstName, string lastName)
 }
 ```
 
-#### Conditional Logic & Validation
+#### Conditional Logic with When (Circuit Breaker)
+The `When` method acts as a circuit breaker at its declared position. Operations **before** When execute normally, operations **after** When only execute if the condition is true.
+
 ```csharp
 public Result<Customer> PromoteToVIP()
 {
     return this.Change()
-        .When(c => c.TotalSpend > 1000) // Only apply if condition met
-        .Set(c => c.Status, CustomerStatus.VIP)
-        .Check(c => c.HasValidEmail(), "VIPs must have valid email") // Post-check
-        .Regisiter(c => new CustomerPromotedEvent(c.Id))
+        .Set(c => c.LastReviewed, DateTime.UtcNow)  // Always executes
+        .When(c => c.TotalSpend > 1000)             // Circuit breaker - only proceed if true
+        .Set(c => c.Status, CustomerStatus.VIP)     // Only if When passed
+        .Check(c => c.HasValidEmail(), "VIPs must have valid email")  // Immediate validation
+        .Register(c => new CustomerPromotedEvent(c.Id))
+        .Apply();
+}
+```
+
+**Important:** If When fails, `LastReviewed` is still updated, but `Status` remains unchanged and no promotion event is registered. This allows for partial updates with conditional logic.
+
+#### Validation with Check and Ensure
+- **`Ensure`**: Pre-condition check - aborts **before** making changes if false
+- **`Check`**: Post-condition validation - executes **immediately** at its position, after changes
+
+```csharp
+public Result<Customer> UpdateProfile(string name, int age)
+{
+    return this.Change()
+        .Ensure(c => c.IsActive, "Cannot update inactive customer")  // Pre-check
+        .Set(c => c.Name, name)
+        .Check(c => !string.IsNullOrEmpty(c.Name), "Name required")  // Validates immediately
+        .Set(c => c.Age, age)
+        .Check(c => c.Age >= 0, "Age must be positive")              // Validates immediately
         .Apply();
 }
 ```
@@ -364,11 +400,21 @@ public Result<Customer> PromoteToAdult()
 ```
 
 **Key behaviors:**
-- `Execute` transformations run **after** all Set/Add/Remove operations, validations (Check), and event registrations complete
-- Multiple `Execute` calls execute sequentially in the order they're defined
-- If any `Execute` transformation returns a failure Result, remaining transformations are **short-circuited** (railway-oriented programming)
-- `Execute` transformations are **skipped** when the `When` guard fails (entire transaction bypassed)
+- `Execute` transformations execute **at their declared position** in the operation chain
+- Multiple `Execute` calls execute sequentially in declaration order
+- If any `Execute` transformation returns a failure Result, remaining operations are **short-circuited**
+- `Execute` transformations **skip** when a preceding `When` circuit breaker cancels remaining operations
 - Can be used standalone without any Set/Add operations: `.Change().Execute(r => r.Tap(...)).Apply()`
+
+**Execution order example:**
+```csharp
+return this.Change()
+    .Set(c => c.Field1, "A")               // 1. Executes
+    .Execute(r => r.Tap(c => Log("A")))    // 2. Logs "A"
+    .Set(c => c.Field2, "B")               // 3. Executes
+    .Execute(r => r.Tap(c => Log("B")))    // 4. Logs "B"
+    .Apply();
+```
 
 **Common use cases:**
 - **Logging**: Use `.Execute(r => r.Tap(...))` for side effects without changing the value
@@ -403,14 +449,37 @@ public Result<Customer> ComplexUpdate(string name, int age)
 
 | Operation | Description |
 |-----------|-------------|
-| **`Set`** | Updates a property. Supports direct values, computed factories, `Result<T>` factories (fail-fast), and Result-returning methods for chaining domain logic. |
-| **`Add` / `Remove` / `Clear`** | Manages collection properties with automatic change detection. |
-| **`Ensure`** | Pre-condition guard. If false, aborts transaction immediately without applying changes. |
-| **`Check`** | Post-condition check. Runs *after* changes. If false, returns a Failure result (leaves entity dirty in memory, intended for unit-of-work rollbacks). |
-| **`When`** | Conditional execution for the whole operation. |
-| **`Execute`** | Two overloads: (1) Runs arbitrary void actions with automatic exception handling. (2) Applies Result transformations (Map, Bind, Tap, Ensure) after all operations complete. Both short-circuit on failure. |
-| **`Regisiter`** | Registers a Domain Event if changes occurred. Provides access to `ChangeContext` for old values. |
-| **`Apply`** | Commits the transaction, registers generic `EntityUpdatedDomainEvent`, and returns a `Result`. |
+| **`Set`** | Updates a property at its declaration position. Supports direct values, computed factories, `Result<T>` factories (fail-fast), and Result-returning methods for chaining domain logic. Only updates if value differs (automatic change detection). |
+| **`Add` / `Remove` / `Clear`** | Manages collection properties with automatic change detection. Executes at declaration position. |
+| **`Ensure`** | Pre-condition guard that executes **before** making changes. If false, aborts transaction immediately. Executes at declaration position. |
+| **`Check`** | Post-condition validation that executes **immediately at its position** after preceding operations. If false, returns Failure result. Use for immediate validation after specific changes. |
+| **`When`** | **Circuit breaker** that executes at its declaration position. If condition is false, **cancels all remaining operations** after it. Operations before When execute normally. Enables conditional operation chains. |
+| **`Execute`** | Two overloads: (1) Runs arbitrary void actions at declaration position with automatic exception handling. (2) Applies Result transformations (Map, Bind, Tap, Ensure) at declaration position. Both short-circuit on failure. |
+| **`Register`** | Queues a Domain Event at declaration position to be registered at Apply() end if changes occurred. Provides access to `ChangeContext` for old values. Events only register if changes made and no cancellation. |
+| **`Apply`** | Executes all queued operations in declaration order, registers queued events (plus generic `EntityUpdatedDomainEvent` if no custom events), and returns a `Result`. |
+
+### Execution Model
+
+**Declaration Order Guarantee:**
+- All operations execute in the **exact order they are declared**
+- No batching or phase-based execution
+- "What you see is what executes"
+
+**When as Circuit Breaker:**
+```csharp
+.Set(prop1)       // ✅ Always executes
+.Register(event1) // ✅ Always queues
+.When(condition)  // ⚡ Decision point
+.Set(prop2)       // ❌ Skips if When false
+.Register(event2) // ❌ Skips if When false
+```
+
+**Check Executes Immediately:**
+```csharp
+.Set(c => c.Age, 25)
+.Check(c => c.Age > 0, "Age must be positive")  // Validates immediately after Set
+.Set(c => c.Name, "John")                       // Only executes if Check passed
+```
 
 ### Benefits
 

@@ -87,6 +87,37 @@ public class EntityChangeContext
 }
 
 /// <summary>
+/// Represents the outcome of an entity change operation, tracking whether changes occurred.
+/// </summary>
+public class ChangeOperationOutcome
+{
+    /// <summary>
+    /// Gets a value indicating whether the operation resulted in a change to the entity.
+    /// </summary>
+    public bool HasChanged { get; init; }
+
+    /// <summary>
+    /// Gets an optional description of what changed during the operation.
+    /// </summary>
+    public string ChangeDescription { get; init; }
+
+    /// <summary>
+    /// Creates an outcome indicating that a change occurred.
+    /// </summary>
+    /// <param name="description">Optional description of the change.</param>
+    /// <returns>An OperationOutcome with HasChanged set to true.</returns>
+    public static ChangeOperationOutcome Changed(string description = null) =>
+        new() { HasChanged = true, ChangeDescription = description };
+
+    /// <summary>
+    /// Creates an outcome indicating that no change occurred.
+    /// </summary>
+    /// <returns>An OperationOutcome with HasChanged set to false.</returns>
+    public static ChangeOperationOutcome NoChange() =>
+        new() { HasChanged = false };
+}
+
+/// <summary>
 /// Fluent builder for applying complex changes to entities.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
@@ -96,7 +127,7 @@ public class EntityChangeContext
 public class EntityChangeBuilder<TEntity>(TEntity entity)
     where TEntity : IEntity
 {
-    private readonly List<IOperation> operations = [];
+    private readonly List<IChangeOperation> operations = [];
     private readonly List<Func<TEntity, EntityChangeContext, IDomainEvent>> eventFactories = [];
     private readonly List<(Func<TEntity, bool> Predicate, string Message)> validations = [];
     private bool registerSingle = true;
@@ -604,7 +635,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                     .WithMessages(opResult.Messages);
             }
 
-            if (opResult.HasChanged)
+            if (opResult.Value.HasChanged)
             {
                 changesMade = true;
             }
@@ -658,61 +689,35 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     // Internal Infrastructure
     // -------------------------------------------------------------------------
 
-    /// <summary>
-    /// Represents the result of an individual change operation.
-    /// </summary>
-    private readonly struct OpResult
-    {
-        public bool IsFailure { get; }
-
-        public bool HasChanged { get; }
-
-        public IEnumerable<IResultError> Errors { get; }
-
-        public IEnumerable<string> Messages { get; }
-
-        private OpResult(bool isFailure, bool hasChanged, IEnumerable<IResultError> errors, IEnumerable<string> messages)
-        {
-            this.IsFailure = isFailure;
-            this.HasChanged = hasChanged;
-            this.Errors = errors ?? [];
-            this.Messages = messages ?? [];
-        }
-
-        public static OpResult Success(bool changed) => new(false, changed, null, null);
-
-        public static OpResult Failure(IEnumerable<IResultError> errors, IEnumerable<string> messages = null) => new(true, false, errors, messages);
-    }
-
-    private interface IOperation
+    private interface IChangeOperation
     {
         void AddCondition(Func<TEntity, bool> predicate);
 
-        OpResult Execute(TEntity entity, EntityChangeContext context);
+        Result<ChangeOperationOutcome> Execute(TEntity entity, EntityChangeContext context);
     }
 
-    private abstract class OperationBase : IOperation
+    private abstract class ChangeOperationBase : IChangeOperation
     {
         protected List<Func<TEntity, bool>> Conditions { get; } = [];
 
         public void AddCondition(Func<TEntity, bool> predicate) => this.Conditions.Add(predicate);
 
-        public OpResult Execute(TEntity entity, EntityChangeContext context)
+        public Result<ChangeOperationOutcome> Execute(TEntity entity, EntityChangeContext context)
         {
             foreach (var condition in this.Conditions)
             {
                 if (!condition(entity))
                 {
-                    return OpResult.Success(false);
+                    return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.NoChange());
                 }
             }
             return this.ApplyChange(entity, context);
         }
 
-        protected abstract OpResult ApplyChange(TEntity entity, EntityChangeContext context);
+        protected abstract Result<ChangeOperationOutcome> ApplyChange(TEntity entity, EntityChangeContext context);
     }
 
-    private class SetOperation<TValue> : OperationBase
+    private class SetOperation<TValue> : ChangeOperationBase
     {
         private readonly PropertyAccessor<TValue> accessor;
         private readonly Func<TEntity, TValue> valueFactory;
@@ -730,23 +735,23 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             this.propertyName = this.accessor.PropertyInfo.Name;
         }
 
-        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
+        protected override Result<ChangeOperationOutcome> ApplyChange(TEntity entity, EntityChangeContext context)
         {
             var currentValue = this.accessor.GetValue(entity);
             var newValue = this.valueFactory(entity);
 
             if (this.comparer.Equals(currentValue, newValue))
             {
-                return OpResult.Success(false);
+                return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.NoChange());
             }
 
             this.accessor.SetValue(entity, newValue);
             context.RecordChange(this.propertyName, currentValue, newValue);
-            return OpResult.Success(true);
+            return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.Changed($"Property '{this.propertyName}' changed"));
         }
     }
 
-    private class ResultSetOperation<TValue> : OperationBase
+    private class ResultSetOperation<TValue> : ChangeOperationBase
     {
         private readonly PropertyAccessor<TValue> accessor;
         private readonly Func<TEntity, Result<TValue>> valueFactory;
@@ -764,27 +769,29 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             this.propertyName = this.accessor.PropertyInfo.Name;
         }
 
-        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
+        protected override Result<ChangeOperationOutcome> ApplyChange(TEntity entity, EntityChangeContext context)
         {
             var result = this.valueFactory(entity);
             if (result.IsFailure)
             {
-                return OpResult.Failure(result.Errors, result.Messages);
+                return Result<ChangeOperationOutcome>.Failure()
+                    .WithErrors(result.Errors)
+                    .WithMessages(result.Messages);
             }
 
             var currentValue = this.accessor.GetValue(entity);
             if (this.comparer.Equals(currentValue, result.Value))
             {
-                return OpResult.Success(false);
+                return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.NoChange());
             }
 
             this.accessor.SetValue(entity, result.Value);
             context.RecordChange(this.propertyName, currentValue, result.Value);
-            return OpResult.Success(true);
+            return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.Changed($"Property '{this.propertyName}' changed"));
         }
     }
 
-    private class CollectionOperation<TItem> : OperationBase
+    private class CollectionOperation<TItem> : ChangeOperationBase
     {
         private readonly Func<TEntity, ICollection<TItem>> collectionGetter;
         private readonly TItem item;
@@ -815,12 +822,12 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             this.comparer = comparer ?? EqualityComparer<TItem>.Default;
         }
 
-        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
+        protected override Result<ChangeOperationOutcome> ApplyChange(TEntity entity, EntityChangeContext context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null)
             {
-                return OpResult.Success(false);
+                return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.NoChange());
             }
 
             bool exists;
@@ -837,18 +844,18 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 if (exists)
                 {
-                    return OpResult.Success(false);
+                    return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.NoChange());
                 }
 
                 collection.Add(this.item);
                 context.RecordChange(this.propertyName, "Collection", "Item Added");
-                return OpResult.Success(true);
+                return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.Changed($"Item added to '{this.propertyName}'"));
             }
             else
             {
                 if (!exists)
                 {
-                    return OpResult.Success(false);
+                    return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.NoChange());
                 }
 
                 if (this.comparer != EqualityComparer<TItem>.Default)
@@ -861,12 +868,12 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                     collection.Remove(this.item);
                 }
                 context.RecordChange(this.propertyName, "Collection", "Item Removed");
-                return OpResult.Success(true);
+                return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.Changed($"Item removed from '{this.propertyName}'"));
             }
         }
     }
 
-    private class ResultCollectionOperation<TItem> : OperationBase
+    private class ResultCollectionOperation<TItem> : ChangeOperationBase
     {
         private readonly Func<TEntity, ICollection<TItem>> collectionGetter;
         private readonly Func<TEntity, Result<TItem>> itemFactory;
@@ -897,20 +904,22 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             this.comparer = comparer ?? EqualityComparer<TItem>.Default;
         }
 
-        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
+        protected override Result<ChangeOperationOutcome> ApplyChange(TEntity entity, EntityChangeContext context)
         {
             // 1. Get the item from the factory (which returns a Result)
             var result = this.itemFactory(entity);
             if (result.IsFailure)
             {
-                return OpResult.Failure(result.Errors, result.Messages);
+                return Result<ChangeOperationOutcome>.Failure()
+                    .WithErrors(result.Errors)
+                    .WithMessages(result.Messages);
             }
 
             var item = result.Value;
             var collection = this.collectionGetter(entity);
             if (collection == null)
             {
-                return OpResult.Success(false);
+                return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.NoChange());
             }
 
             // 2. Check if item exists in collection
@@ -928,18 +937,18 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 if (exists)
                 {
-                    return OpResult.Success(false);
+                    return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.NoChange());
                 }
 
                 collection.Add(item);
                 context.RecordChange(this.propertyName, "Collection", "Item Added");
-                return OpResult.Success(true);
+                return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.Changed($"Item added to '{this.propertyName}'"));
             }
             else // Remove
             {
                 if (!exists)
                 {
-                    return OpResult.Success(false);
+                    return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.NoChange());
                 }
 
                 if (this.comparer != EqualityComparer<TItem>.Default)
@@ -952,12 +961,12 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                     collection.Remove(item);
                 }
                 context.RecordChange(this.propertyName, "Collection", "Item Removed");
-                return OpResult.Success(true);
+                return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.Changed($"Item removed from '{this.propertyName}'"));
             }
         }
     }
 
-    private class ClearCollectionOperation<TItem> : OperationBase
+    private class ClearCollectionOperation<TItem> : ChangeOperationBase
     {
         private readonly Func<TEntity, ICollection<TItem>> collectionGetter;
         private readonly string propertyName;
@@ -978,79 +987,84 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             this.collectionGetter = collectionExpression.Compile();
         }
 
-        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
+        protected override Result<ChangeOperationOutcome> ApplyChange(TEntity entity, EntityChangeContext context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null || collection.Count == 0)
             {
-                return OpResult.Success(false);
+                return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.NoChange());
             }
 
             collection.Clear();
             context.RecordChange(this.propertyName, "Collection", "Cleared");
-            return OpResult.Success(true);
+            return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.Changed($"Collection '{this.propertyName}' cleared"));
         }
     }
 
-    private class EnsureOperation(Func<TEntity, bool> predicate, string errorMessage) : OperationBase
+    private class EnsureOperation(Func<TEntity, bool> predicate, string errorMessage) : ChangeOperationBase
     {
-        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
+        protected override Result<ChangeOperationOutcome> ApplyChange(TEntity entity, EntityChangeContext context)
         {
             if (!predicate(entity))
             {
-                return OpResult.Failure([new Error(errorMessage)]);
+                return Result<ChangeOperationOutcome>.Failure()
+                    .WithError(new Error(errorMessage));
             }
 
-            return OpResult.Success(false);
+            return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.NoChange());
         }
     }
 
-    private class ExecuteOperation(Action<TEntity> action) : OperationBase
+    private class ExecuteOperation(Action<TEntity> action) : ChangeOperationBase
     {
-        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
+        protected override Result<ChangeOperationOutcome> ApplyChange(TEntity entity, EntityChangeContext context)
         {
             try
             {
                 action(entity);
                 context.RecordChange("Execute", null, "Action Executed");
-                return OpResult.Success(true);
+                return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.Changed("Action executed"));
             }
             catch (Exception ex)
             {
-                return OpResult.Failure(
-                    [Result.Settings.ExceptionErrorFactory(ex)],
-                    [ex.Message]);
+                return Result<ChangeOperationOutcome>.Failure()
+                    .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                    .WithMessage(ex.Message);
             }
         }
     }
 
-    private class ResultExecuteOperation(Func<TEntity, Result> func) : OperationBase
+    private class ResultExecuteOperation(Func<TEntity, Result> func) : ChangeOperationBase
     {
-        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
+        protected override Result<ChangeOperationOutcome> ApplyChange(TEntity entity, EntityChangeContext context)
         {
             var result = func(entity);
             if (result.IsFailure)
             {
-                return OpResult.Failure(result.Errors, result.Messages);
+                return Result<ChangeOperationOutcome>.Failure()
+                    .WithErrors(result.Errors)
+                    .WithMessages(result.Messages);
             }
 
             context.RecordChange("Execute", null, "Result Function Executed");
-            return OpResult.Success(true);
+            return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.Changed("Result function executed"));
         }
     }
 
-    private class ResultEntityExecuteOperation(Func<TEntity, Result<TEntity>> func) : OperationBase
+    private class ResultEntityExecuteOperation(Func<TEntity, Result<TEntity>> func) : ChangeOperationBase
     {
-        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
+        protected override Result<ChangeOperationOutcome> ApplyChange(TEntity entity, EntityChangeContext context)
         {
             var result = func(entity);
             if (result.IsFailure)
             {
-                return OpResult.Failure(result.Errors, result.Messages);
+                return Result<ChangeOperationOutcome>.Failure()
+                    .WithErrors(result.Errors)
+                    .WithMessages(result.Messages);
             }
 
             context.RecordChange("Execute", null, "Result<TEntity> Function Executed");
-            return OpResult.Success(true);
+            return Result<ChangeOperationOutcome>.Success(ChangeOperationOutcome.Changed("Result<TEntity> function executed"));
         }
     }
 

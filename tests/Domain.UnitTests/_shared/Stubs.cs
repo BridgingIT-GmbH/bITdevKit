@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Domain.UnitTests;
 
 using System.Linq.Expressions;
-using Model;
+using BridgingIT.DevKit.Domain.Model;
 
 public class PersonStub : AggregateRoot<Guid>
 {

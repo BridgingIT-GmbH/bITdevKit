@@ -130,6 +130,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     private readonly List<IChangeOperation> operations = [];
     private readonly List<Func<TEntity, EntityChangeContext, IDomainEvent>> eventFactories = [];
     private readonly List<(Func<TEntity, bool> Predicate, string Message)> validations = [];
+    private readonly List<Func<Result<TEntity>, Result<TEntity>>> resultTransformations = [];
     private bool registerSingle = true;
     private bool registerNoEvents;
 
@@ -170,6 +171,49 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     public EntityChangeBuilder<TEntity> RegisterNoEvents(bool noEvents = true)
     {
         this.registerNoEvents = noEvents;
+        return this;
+    }
+
+    // -------------------------------------------------------------------------
+    // 0. Result Transformations
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Applies a transformation to the final Result after all operations complete.
+    /// Enables use of Result functional extensions (Map, Bind, Tap, Ensure, Filter, etc.).
+    /// Can be used standalone or chained after Set/Add/Remove operations.
+    /// Multiple Do calls are executed sequentially. Failures short-circuit remaining transformations.
+    /// </summary>
+    /// <param name="transformation">Function to transform the Result. Receives Result{TEntity}, returns Result{TEntity}.</param>
+    /// <returns>The builder for method chaining.</returns>
+    /// <example>
+    /// <code>
+    /// // Standalone usage - no Set/Add required
+    /// return this.Change()
+    ///     .Execute(r => r.Tap(e => logger.LogInformation($"Processing {e.Name}")))
+    ///     .Apply();
+    ///
+    /// // Chained with operations
+    /// return this.Change()
+    ///     .Set(p => p.FirstName, "John")
+    ///     .Execute(r => r.Tap(e => Console.WriteLine($"Changed: {e.FirstName}")))
+    ///     .Execute(r => r.Ensure(e => e.FirstName.Length > 0, new ValidationError("Name required")))
+    ///     .Apply();
+    ///
+    /// // Using Map to transform
+    /// return this.Change()
+    ///     .Set(p => p.Age, 25)
+    ///     .Execute(r => r.Map(e => { e.UpdatedAt = DateTime.UtcNow; return e; }))
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> Execute(Func<Result<TEntity>, Result<TEntity>> transformation)
+    {
+        if (transformation != null)
+        {
+            this.resultTransformations.Add(transformation);
+        }
+
         return this;
     }
 
@@ -607,7 +651,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     public Result<TEntity> Apply()
     {
         // 1. Check global guard FIRST
-        // If When() condition is false, skip entire transaction silently
+        // If When() condition is false, skip entire transaction (operations AND transformations)
         if (this.globalGuard.HasValue && !this.globalGuard.Value.Predicate(entity))
         {
             return Result<TEntity>.Success(entity);
@@ -641,22 +685,20 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             }
         }
 
-        if (!changesMade)
+        // 4. Post-Change Validation (only if changes were made)
+        if (changesMade)
         {
-            return Result<TEntity>.Success(entity);
-        }
-
-        // 4. Post-Change Validation
-        foreach (var (predicate, message) in this.validations)
-        {
-            if (!predicate(entity))
+            foreach (var (predicate, message) in this.validations)
             {
-                return Result<TEntity>.Failure(entity, message);
+                if (!predicate(entity))
+                {
+                    return Result<TEntity>.Failure(entity, message);
+                }
             }
         }
 
-        // 5. Register Events (only if entity implements IAggregateRoot)
-        if (!this.registerNoEvents)
+        // 5. Register Events (only if entity implements IAggregateRoot and changes were made)
+        if (changesMade && !this.registerNoEvents)
         {
             if (entity is IAggregateRoot aggregateRoot) // Check if entity implements IAggregateRoot at runtime
             {
@@ -682,7 +724,21 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             }
         }
 
-        return Result<TEntity>.Success(entity);
+        // Final result - create from entity
+        var result = Result<TEntity>.Success(entity);
+
+        // 6. Execute Result Transformations (Execute Result operations)
+        foreach (var transformation in this.resultTransformations)
+        {
+            result = transformation(result);
+            if (result.IsFailure)
+            {
+                // Short-circuit: stop executing remaining transformations on failure
+                return result;
+            }
+        }
+
+        return result;
     }
 
     // -------------------------------------------------------------------------

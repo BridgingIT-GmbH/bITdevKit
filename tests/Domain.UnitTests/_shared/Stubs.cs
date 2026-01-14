@@ -92,6 +92,8 @@ public class PersonStub : AggregateRoot<Guid>
         return this.Change()
             .When(p => p.Age >= 18)
             .Set(p => p.FirstName, "Adult")
+            .Execute(r => r.Map(e => { e.LastName = "Adult"; return e; }))
+            .Execute(r => r.Tap(e => Console.WriteLine($"Promoted {e.FirstName} {e.LastName} to Adult")))
             .Apply();
     }
 

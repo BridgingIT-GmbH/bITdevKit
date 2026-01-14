@@ -231,7 +231,7 @@ sequenceDiagram
     participant Agg as AggregateRoot
     participant Events as DomainEvents
 
-    Dev->>Builder: this.Change()<br/>.Ensure(Guard)<br/>.Set(Property)<br/>.Check(Rule)<br/>.WithEvent(Event)<br/>.Apply()
+    Dev->>Builder: this.Change()<br/>.Ensure(Guard)<br/>.Set(Property)<br/>.Check(Rule)<br/>.Regisiter(Event)<br/>.Apply()
     
     Builder->>Builder: Check Pre-conditions (Ensure)
     
@@ -263,7 +263,7 @@ public Result<Customer> ChangeName(string firstName, string lastName)
     return this.Change()
         .Set(c => c.FirstName, firstName)
         .Set(c => c.LastName, lastName)
-        .WithEvent(c => new CustomerNameChangedEvent(c.Id))
+        .Regisiter(c => new CustomerNameChangedEvent(c.Id))
         .Apply();
 }
 ```
@@ -276,7 +276,7 @@ public Result<Customer> PromoteToVIP()
         .When(c => c.TotalSpend > 1000) // Only apply if condition met
         .Set(c => c.Status, CustomerStatus.VIP)
         .Check(c => c.HasValidEmail(), "VIPs must have valid email") // Post-check
-        .WithEvent(c => new CustomerPromotedEvent(c.Id))
+        .Regisiter(c => new CustomerPromotedEvent(c.Id))
         .Apply();
 }
 ```
@@ -290,7 +290,7 @@ public Result<Customer> ChangeEmail(string emailString)
     return this.Change()
         // If Create returns Failure, the chain aborts here
         .Set(c => c.Email, EmailAddress.Create(emailString))
-        .WithEvent((c, ctx) => new EmailChangedEvent(
+        .Regisiter((c, ctx) => new EmailChangedEvent(
              ctx.GetOldValue<EmailAddress>(nameof(Email)), 
              c.Email))
         .Apply();
@@ -354,7 +354,7 @@ public Result<Customer> ResetData()
 | **`Check`** | Post-condition check. Runs *after* changes. If false, returns a Failure result (leaves entity dirty in memory, intended for unit-of-work rollbacks). |
 | **`When`** | Conditional execution for the whole operation. |
 | **`Execute`** | Runs arbitrary actions (void methods). Automatically catches and converts exceptions to Result failures. |
-| **`WithEvent`** | Registers a Domain Event if changes occurred. Provides access to `ChangeContext` for old values. |
+| **`Regisiter`** | Registers a Domain Event if changes occurred. Provides access to `ChangeContext` for old values. |
 | **`Apply`** | Commits the transaction, registers generic `EntityUpdatedDomainEvent`, and returns a `Result`. |
 
 ### Benefits

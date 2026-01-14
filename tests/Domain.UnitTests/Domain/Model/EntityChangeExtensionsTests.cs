@@ -366,7 +366,7 @@ public class EntityChangeExtensionsTests
 
         // Act
         var result = person.Change()
-            .Execute(p => throw new InvalidOperationException("Test exception"))
+            .Execute((PersonStub p) => throw new InvalidOperationException("Test exception"))
             .Apply();
 
         // Assert
@@ -392,12 +392,211 @@ public class EntityChangeExtensionsTests
         // Assert
         result.IsSuccess.ShouldBeTrue();
         executionCount.ShouldBe(2);
-        person.FirstName.ShouldBe("Updated");
-    }
+            person.FirstName.ShouldBe("Updated");
+        }
 
-    // -------------------------------------------------------------------------
-    // Test Helpers (PersonStub & Events)
-    // -------------------------------------------------------------------------
+        [Fact]
+        public void Change_Execute_WhenStandalone_ShouldExecuteTransformation()
+        {
+            // Arrange
+            var person = new PersonStub { FirstName = "John" };
+            var tapExecuted = false;
+
+            // Act - Do without Set, standalone usage
+            var result = person.Change()
+                .Execute(r => r.Tap(e => tapExecuted = true))
+                .Apply();
+
+            // Assert
+            result.IsSuccess.ShouldBeTrue();
+            tapExecuted.ShouldBeTrue();
+            result.Value.ShouldBe(person);
+        }
+
+        [Fact]
+        public void Change_Execute_WhenChainedWithSet_ShouldExecuteAfterSet()
+        {
+            // Arrange
+            var person = new PersonStub { FirstName = "John" };
+            var observedName = string.Empty;
+
+            // Act - Do after Set
+            var result = person.Change()
+                .Set(p => p.FirstName, "Jane")
+                .Execute(r => r.Tap(e => observedName = e.FirstName))
+                .Apply();
+
+            // Assert
+            result.IsSuccess.ShouldBeTrue();
+            person.FirstName.ShouldBe("Jane");
+            observedName.ShouldBe("Jane"); // Do observed the changed value
+        }
+
+        [Fact]
+        public void Change_Execute_WithEnsure_WhenValidationFails_ShouldReturnFailure()
+        {
+            // Arrange
+            var person = new PersonStub { FirstName = "John" };
+
+            // Act - Do with Ensure that fails
+            var result = person.Change()
+                .Set(p => p.FirstName, "")
+                .Execute(r => r.Ensure(e => !string.IsNullOrEmpty(e.FirstName), new ValidationError("Name cannot be empty")))
+                .Apply();
+
+            // Assert
+            result.IsFailure.ShouldBeTrue();
+            result.HasError<ValidationError>().ShouldBeTrue();
+            result.GetError<ValidationError>().Message.ShouldBe("Name cannot be empty");
+            person.FirstName.ShouldBe(""); // Change was applied, Do validation failed
+        }
+
+        [Fact]
+        public void Change_Execute_MultipleCalls_ShouldExecuteSequentially()
+        {
+            // Arrange
+            var person = new PersonStub { FirstName = "John" };
+            var executionOrder = new List<int>();
+
+            // Act - Multiple Do calls
+            var result = person.Change()
+                .Execute(r => r.Tap(_ => executionOrder.Add(1)))
+                .Execute(r => r.Tap(_ => executionOrder.Add(2)))
+                .Execute(r => r.Tap(_ => executionOrder.Add(3)))
+                .Apply();
+
+            // Assert
+            result.IsSuccess.ShouldBeTrue();
+            executionOrder.ShouldBe(new[] { 1, 2, 3 });
+        }
+
+        [Fact]
+        public void Change_Execute_WhenFirstFails_ShouldShortCircuit()
+        {
+            // Arrange
+            var person = new PersonStub { FirstName = "John" };
+            var secondDoExecuted = false;
+
+            // Act - First Do fails, second should not execute
+            var result = person.Change()
+                .Execute(r => Result<PersonStub>.Failure().WithError(new Error("First Do failed")))
+                .Execute(r => r.Tap(_ => secondDoExecuted = true))
+                .Apply();
+
+            // Assert
+            result.IsFailure.ShouldBeTrue();
+            result.HasError<Error>().ShouldBeTrue();
+            secondDoExecuted.ShouldBeFalse(); // Should not have executed
+        }
+
+        [Fact]
+        public void Change_Execute_WithMap_ShouldTransformResult()
+        {
+            // Arrange
+            var person = new PersonStub { FirstName = "John", Age = 25 };
+            DateTime? capturedTimestamp = null;
+
+            // Act - Use Map to add side effect
+            var result = person.Change()
+                .Set(p => p.Age, 26)
+                .Execute(r => r.Map(e =>
+                {
+                    capturedTimestamp = DateTime.UtcNow;
+                    return e;
+                }))
+                .Apply();
+
+            // Assert
+            result.IsSuccess.ShouldBeTrue();
+            person.Age.ShouldBe(26);
+            capturedTimestamp.ShouldNotBeNull();
+        }
+
+        [Fact]
+        public void Change_Execute_WhenGuardSkipsOperations_ShouldNotExecuteDo()
+        {
+            // Arrange
+            var person = new PersonStub { FirstName = "John", Age = 15 };
+            var doExecuted = false;
+
+            // Act - When guard prevents Set, Do should also NOT execute
+            var result = person.Change()
+                .When(p => p.Age >= 18) // This is false, skipping entire transaction
+                .Set(p => p.FirstName, "Adult")
+                .Execute(r => r.Tap(_ => doExecuted = true))
+                .Apply();
+
+            // Assert
+            result.IsSuccess.ShouldBeTrue();
+            person.FirstName.ShouldBe("John"); // Not changed due to guard
+            doExecuted.ShouldBeFalse(); // Do should NOT execute when guard fails
+        }
+
+        [Fact]
+        public void Change_Execute_WithNullTransformation_ShouldBeIgnored()
+        {
+            // Arrange
+            var person = new PersonStub { FirstName = "John" };
+
+            // Act - Do with null transformation (should be ignored)
+            var result = person.Change()
+                .Execute(null)
+                .Apply();
+
+            // Assert
+            result.IsSuccess.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void Change_Execute_RealWorldScenario_PromoteToAdultWithValidation()
+        {
+            // Arrange - Person eligible for adult promotion
+            var person = new PersonStub { FirstName = "John", LastName = "Doe", Age = 18 };
+            var promotionLogged = false;
+
+            // Act - Promote to adult with validation and logging
+            var result = person.Change()
+                .When(p => p.Age >= 18) // Only promote if age qualifies
+                .Set(p => p.FirstName, "Adult")
+                .Execute(r => r.Map(e => { e.LastName = "Adult"; return e; })) // Additional field update via Do
+                .Execute(r => r.Ensure(
+                    e => !string.IsNullOrEmpty(e.FirstName) && !string.IsNullOrEmpty(e.LastName),
+                    new ValidationError("Name fields cannot be empty after promotion")))
+                .Execute(r => r.Tap(e => promotionLogged = true)) // Log the promotion
+                .Apply();
+
+            // Assert
+            result.IsSuccess.ShouldBeTrue();
+            person.FirstName.ShouldBe("Adult");
+            person.LastName.ShouldBe("Adult");
+            promotionLogged.ShouldBeTrue();
+        }
+
+        [Fact]
+        public void Change_Execute_RealWorldScenario_MinorCannotBePromoted()
+        {
+            // Arrange - Person NOT eligible for adult promotion (under 18)
+            var person = new PersonStub { FirstName = "John", LastName = "Doe", Age = 16 };
+            var promotionLogged = false;
+
+            // Act - Attempt to promote minor (should be silently skipped)
+            var result = person.Change()
+                .When(p => p.Age >= 18) // Guard will fail
+                .Set(p => p.FirstName, "Adult")
+                .Execute(r => r.Map(e => { e.LastName = "Adult"; return e; }))
+                .Execute(r => r.Tap(e => promotionLogged = true))
+                .Apply();
+
+            // Assert
+            result.IsSuccess.ShouldBeTrue(); // Success but no changes
+            person.FirstName.ShouldBe("John"); // Original name preserved
+            person.LastName.ShouldBe("Doe"); // Original last name preserved
+            promotionLogged.ShouldBeFalse(); // Do operations never executed
+        }
+
+        // -------------------------------------------------------------------------
+        // Test Helpers (PersonStub & Events)
+        // -------------------------------------------------------------------------
 
     /// <summary>
     /// A plain entity that does not inherit from AggregateRoot

@@ -491,39 +491,51 @@ public class ChangeOperationOutcome
 
     /// <summary>
     /// Queues an operation to remove an item from a collection property.
+    /// Returns a failure with <see cref="NotFoundError"/> if the item is not found in the collection.
     /// </summary>
+    /// <param name="collectionExpression">Expression selecting the collection property.</param>
+    /// <param name="item">The item to remove.</param>
+    /// <param name="comparer">Optional equality comparer for item comparison.</param>
+    /// <param name="errorMessage">Optional custom error message when item is not found. If null, uses default message.</param>
     /// <example>
     /// <code>
     /// return this.Change()
-    ///     .Remove(p => p.Addresses, oldAddress)
+    ///     .Remove(p => p.Addresses, oldAddress, errorMessage: "Address not found")
     ///     .Apply();
     /// </code>
     /// </example>
     public EntityChangeBuilder<TEntity> Remove<TItem>(
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TItem item,
-        IEqualityComparer<TItem> comparer = null)
+        IEqualityComparer<TItem> comparer = null,
+        string errorMessage = null)
     {
-        this.orderedOperations.Add(new CollectionRemoveOperationOrdered<TItem>(collectionExpression, item, comparer));
+        this.orderedOperations.Add(new CollectionRemoveOperationOrdered<TItem>(collectionExpression, item, comparer, errorMessage));
         return this;
     }
 
     /// <summary>
     /// Queues an operation to remove an item from a collection property using a <see cref="Result{T}"/>.
     /// If the Result is a Failure, the entire transaction will fail when <see cref="Apply"/> is called.
+    /// Returns a failure with <see cref="NotFoundError"/> if the item is not found in the collection.
     /// </summary>
+    /// <param name="collectionExpression">Expression selecting the collection property.</param>
+    /// <param name="result">Result containing the item to remove.</param>
+    /// <param name="comparer">Optional equality comparer for item comparison.</param>
+    /// <param name="errorMessage">Optional custom error message when item is not found. If null, uses default message.</param>
     /// <example>
     /// <code>
     /// var addressResult = FindAddressById(addressId);
     /// return this.Change()
-    ///     .Remove(p => p.Addresses, addressResult)
+    ///     .Remove(p => p.Addresses, addressResult, errorMessage: "Address not found")
     ///     .Apply();
     /// </code>
     /// </example>
     public EntityChangeBuilder<TEntity> Remove<TItem>(
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Result<TItem> result,
-        IEqualityComparer<TItem> comparer = null)
+        IEqualityComparer<TItem> comparer = null,
+        string errorMessage = null)
     {
         if (result.IsFailure)
         {
@@ -534,26 +546,131 @@ public class ChangeOperationOutcome
             return this;
         }
 
-        return this.Remove(collectionExpression, result.Value, comparer);
+        return this.Remove(collectionExpression, result.Value, comparer, errorMessage);
     }
 
     /// <summary>
     /// Queues an operation to remove an item from a collection property using a function that returns a <see cref="Result{T}"/>.
     /// If the computed Result is a Failure, the transaction stops and returns that failure.
+    /// Returns a failure with <see cref="NotFoundError"/> if the item is not found in the collection.
     /// </summary>
+    /// <param name="collectionExpression">Expression selecting the collection property.</param>
+    /// <param name="itemFactory">Function that returns a Result containing the item to remove.</param>
+    /// <param name="comparer">Optional equality comparer for item comparison.</param>
+    /// <param name="errorMessage">Optional custom error message when item is not found. If null, uses default message.</param>
     /// <example>
     /// <code>
     /// return this.Change()
-    ///     .Remove(p => p.Addresses, p => p.FindAddressById(addressId))
+    ///     .Remove(p => p.Addresses, p => p.FindAddressById(addressId), errorMessage: "Address not found")
     ///     .Apply();
     /// </code>
     /// </example>
     public EntityChangeBuilder<TEntity> Remove<TItem>(
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Func<TEntity, Result<TItem>> itemFactory,
-        IEqualityComparer<TItem> comparer = null)
+        IEqualityComparer<TItem> comparer = null,
+        string errorMessage = null)
     {
-        this.orderedOperations.Add(new ResultCollectionRemoveOperationOrdered<TItem>(collectionExpression, itemFactory, comparer));
+        this.orderedOperations.Add(new ResultCollectionRemoveOperationOrdered<TItem>(collectionExpression, itemFactory, comparer, errorMessage));
+        return this;
+    }
+
+    /// <summary>
+    /// Queues an operation to remove an item from a collection by its ID.
+    /// The item type must implement <see cref="IEntity{TId}"/>.
+    /// Returns a failure with <see cref="NotFoundError"/> if no item with the specified ID is found.
+    /// </summary>
+    /// <typeparam name="TItem">The type of items in the collection. Must implement IEntity{TId}.</typeparam>
+    /// <typeparam name="TId">The type of the entity ID.</typeparam>
+    /// <param name="collectionExpression">Expression selecting the collection property.</param>
+    /// <param name="id">The ID of the item to remove.</param>
+    /// <param name="comparer">Optional equality comparer for ID comparison.</param>
+    /// <param name="errorMessage">Optional custom error message when item is not found. If null, uses default message.</param>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .RemoveById&lt;Address, AddressId&gt;(e => e.Addresses, addressId, errorMessage: "Address not found")
+    ///     .Register(e => new CustomerUpdatedDomainEvent(e))
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> Remove<TItem, TId>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        TId id,
+        IEqualityComparer<TId> comparer = null,
+        string errorMessage = null)
+        where TItem : IEntity<TId>
+    {
+        this.orderedOperations.Add(new CollectionRemoveByIdOperationOrdered<TItem, TId>(collectionExpression, id, comparer, errorMessage));
+        return this;
+    }
+
+    /// <summary>
+    /// Queues an operation to remove an item from a collection by its ID using a <see cref="Result{TId}"/>.
+    /// The item type must implement <see cref="IEntity{TId}"/>.
+    /// If the Result is a Failure, the entire transaction will fail when <see cref="Apply"/> is called.
+    /// Returns a failure with <see cref="NotFoundError"/> if no item with the specified ID is found.
+    /// </summary>
+    /// <typeparam name="TItem">The type of items in the collection. Must implement IEntity{TId}.</typeparam>
+    /// <typeparam name="TId">The type of the entity ID.</typeparam>
+    /// <param name="collectionExpression">Expression selecting the collection property.</param>
+    /// <param name="result">Result containing the ID of the item to remove.</param>
+    /// <param name="comparer">Optional equality comparer for ID comparison.</param>
+    /// <param name="errorMessage">Optional custom error message when item is not found. If null, uses default message.</param>
+    /// <example>
+    /// <code>
+    /// var idResult = GetAddressId();
+    /// return this.Change()
+    ///     .RemoveById&lt;Address, AddressId&gt;(e => e.Addresses, idResult, errorMessage: "Address not found")
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> Remove<TItem, TId>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        Result<TId> result,
+        IEqualityComparer<TId> comparer = null,
+        string errorMessage = null)
+        where TItem : IEntity<TId>
+    {
+        if (result.IsFailure)
+        {
+            if (this.chainConstructionFailure.IsSuccess)
+            {
+                this.chainConstructionFailure = Result.Failure(result.Messages, result.Errors);
+            }
+            return this;
+        }
+
+        return this.Remove<TItem, TId>(collectionExpression, result.Value, comparer, errorMessage);
+    }
+
+    /// <summary>
+    /// Queues an operation to remove an item from a collection by its ID using a function that returns a <see cref="Result{TId}"/>.
+    /// The item type must implement <see cref="IEntity{TId}"/>.
+    /// If the computed Result is a Failure, the transaction stops and returns that failure.
+    /// Returns a failure with <see cref="NotFoundError"/> if no item with the specified ID is found.
+    /// </summary>
+    /// <typeparam name="TItem">The type of items in the collection. Must implement IEntity{TId}.</typeparam>
+    /// <typeparam name="TId">The type of the entity ID.</typeparam>
+    /// <param name="collectionExpression">Expression selecting the collection property.</param>
+    /// <param name="idFactory">Function that returns a Result containing the ID of the item to remove.</param>
+    /// <param name="comparer">Optional equality comparer for ID comparison.</param>
+    /// <param name="errorMessage">Optional custom error message when item is not found. If null, uses default message.</param>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .RemoveById&lt;Address, AddressId&gt;(e => e.Addresses, e => e.GetPrimaryAddressId(), errorMessage: "Address not found")
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> RemoveById<TItem, TId>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        Func<TEntity, Result<TId>> idFactory,
+        IEqualityComparer<TId> comparer = null,
+        string errorMessage = null)
+        where TItem : IEntity<TId>
+    {
+        this.orderedOperations.Add(new ResultCollectionRemoveByIdOperationOrdered<TItem, TId>(collectionExpression, idFactory, comparer, errorMessage));
         return this;
     }
 
@@ -1204,11 +1321,13 @@ public class ChangeOperationOutcome
 
             /// <summary>
             /// Collection remove operation for ordered execution.
+            /// Returns NotFoundError if item is not in the collection.
             /// </summary>
             private class CollectionRemoveOperationOrdered<TItem>(
                 Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
                 TItem item,
-                IEqualityComparer<TItem> comparer) : IOrderedOperation
+                IEqualityComparer<TItem> comparer,
+                string errorMessage) : IOrderedOperation
             {
                 private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
                 private readonly IEqualityComparer<TItem> comparer = comparer ?? EqualityComparer<TItem>.Default;
@@ -1228,7 +1347,10 @@ public class ChangeOperationOutcome
                     var collection = this.collectionGetter(entity);
                     if (collection == null)
                     {
-                        return OperationExecutionResult.Success(hasChanged: false);
+                        var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
+                        return OperationExecutionResult.Failure(
+                            errors: [new NotFoundError(message)],
+                            messages: [message]);
                     }
 
                     var exists = this.comparer == EqualityComparer<TItem>.Default
@@ -1237,7 +1359,10 @@ public class ChangeOperationOutcome
 
                     if (!exists)
                     {
-                        return OperationExecutionResult.Success(hasChanged: false);
+                        var message = errorMessage ?? $"Item not found in collection '{this.propertyName}'";
+                        return OperationExecutionResult.Failure(
+                            errors: [new NotFoundError(message)],
+                            messages: [message]);
                     }
 
                     if (this.comparer != EqualityComparer<TItem>.Default)
@@ -1257,11 +1382,13 @@ public class ChangeOperationOutcome
 
             /// <summary>
             /// Collection remove operation with Result-returning factory for ordered execution.
+            /// Returns NotFoundError if item is not in the collection.
             /// </summary>
             private class ResultCollectionRemoveOperationOrdered<TItem>(
                 Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
                 Func<TEntity, Result<TItem>> itemFactory,
-                IEqualityComparer<TItem> comparer) : IOrderedOperation
+                IEqualityComparer<TItem> comparer,
+                string errorMessage) : IOrderedOperation
             {
                 private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
                 private readonly IEqualityComparer<TItem> comparer = comparer ?? EqualityComparer<TItem>.Default;
@@ -1288,7 +1415,10 @@ public class ChangeOperationOutcome
                     var collection = this.collectionGetter(entity);
                     if (collection == null)
                     {
-                        return OperationExecutionResult.Success(hasChanged: false);
+                        var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
+                        return OperationExecutionResult.Failure(
+                            errors: [new NotFoundError(message)],
+                            messages: [message]);
                     }
 
                     var exists = this.comparer == EqualityComparer<TItem>.Default
@@ -1297,7 +1427,10 @@ public class ChangeOperationOutcome
 
                     if (!exists)
                     {
-                        return OperationExecutionResult.Success(hasChanged: false);
+                        var message = errorMessage ?? $"Item not found in collection '{this.propertyName}'";
+                        return OperationExecutionResult.Failure(
+                            errors: [new NotFoundError(message)],
+                            messages: [message]);
                     }
 
                     if (this.comparer != EqualityComparer<TItem>.Default)
@@ -1310,6 +1443,113 @@ public class ChangeOperationOutcome
                         collection.Remove(item);
                     }
 
+                    context.RecordChange(this.propertyName, "Collection");
+                    return OperationExecutionResult.Success(hasChanged: true);
+                }
+            }
+
+            /// <summary>
+            /// Collection remove by ID operation for ordered execution.
+            /// Returns NotFoundError if no item with the specified ID is found.
+            /// </summary>
+            private class CollectionRemoveByIdOperationOrdered<TItem, TId>(
+                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+                TId id,
+                IEqualityComparer<TId> comparer,
+                string errorMessage) : IOrderedOperation
+                where TItem : IEntity<TId>
+            {
+                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+                private readonly IEqualityComparer<TId> comparer = comparer ?? EqualityComparer<TId>.Default;
+                private readonly string propertyName = GetPropertyName(collectionExpression);
+
+                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+                {
+                    if (expr.Body is MemberExpression memberExpr)
+                    {
+                        return memberExpr.Member.Name;
+                    }
+                    return "Collection";
+                }
+
+                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+                {
+                    var collection = this.collectionGetter(entity);
+                    if (collection == null)
+                    {
+                        var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
+                        return OperationExecutionResult.Failure(
+                            errors: [new NotFoundError(message)],
+                            messages: [message]);
+                    }
+
+                    var itemToRemove = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
+                    if (itemToRemove == null)
+                    {
+                        var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
+                        return OperationExecutionResult.Failure(
+                            errors: [new NotFoundError(message)],
+                            messages: [message]);
+                    }
+
+                    collection.Remove(itemToRemove);
+                    context.RecordChange(this.propertyName, "Collection");
+                    return OperationExecutionResult.Success(hasChanged: true);
+                }
+            }
+
+            /// <summary>
+            /// Collection remove by ID operation with Result-returning factory for ordered execution.
+            /// Returns NotFoundError if no item with the specified ID is found.
+            /// </summary>
+            private class ResultCollectionRemoveByIdOperationOrdered<TItem, TId>(
+                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+                Func<TEntity, Result<TId>> idFactory,
+                IEqualityComparer<TId> comparer,
+                string errorMessage) : IOrderedOperation
+                where TItem : IEntity<TId>
+            {
+                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+                private readonly IEqualityComparer<TId> comparer = comparer ?? EqualityComparer<TId>.Default;
+                private readonly string propertyName = GetPropertyName(collectionExpression);
+
+                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+                {
+                    if (expr.Body is MemberExpression memberExpr)
+                    {
+                        return memberExpr.Member.Name;
+                    }
+                    return "Collection";
+                }
+
+                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+                {
+                    var result = idFactory(entity);
+                    if (result.IsFailure)
+                    {
+                        return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                    }
+
+                    var id = result.Value;
+                    var collection = this.collectionGetter(entity);
+                    if (collection == null)
+                    {
+                        var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
+                        return OperationExecutionResult.Failure(
+                            errors: [new NotFoundError(message)],
+                            messages: [message]);
+                    }
+
+                    var itemToRemove = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
+                    if (itemToRemove == null)
+                    {
+                        var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
+                        return OperationExecutionResult.Failure(
+                            errors: [new NotFoundError(message)],
+                            messages: [message]);
+                    }
+
+                    collection.Remove(itemToRemove);
                     context.RecordChange(this.propertyName, "Collection");
                     return OperationExecutionResult.Success(hasChanged: true);
                 }

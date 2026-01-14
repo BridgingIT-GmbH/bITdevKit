@@ -10,7 +10,8 @@ using BridgingIT.DevKit.Domain.Model;
 
 public class PersonStub : AggregateRoot<Guid>
 {
-    private List<AddressStub> addresses = [];
+    internal List<AddressStub> addresses = [];
+    internal List<AddressEntityStub> addressEntities = [];
 
     public string FirstName { get; set; }
 
@@ -29,6 +30,8 @@ public class PersonStub : AggregateRoot<Guid>
     public List<OrderStub> Orders { get; set; }
 
     public IReadOnlyCollection<AddressStub> Addresses { get => this.addresses; }
+
+    public IReadOnlyCollection<AddressEntityStub> AddressEntities { get => this.addressEntities; }
 
     //public List<AddressStub> Addresses { get; set; } = [];
 
@@ -125,6 +128,22 @@ public class PersonStub : AggregateRoot<Guid>
         return this.Change()
             .Set(p => p.Email, newEmail)
             .Register((p, ctx) => new EmailChangedEvent(ctx.GetOldValue<string>(nameof(this.Email)), p.Email))
+            .Apply();
+    }
+
+    public Result<PersonStub> AddAddressEntity(AddressEntityStub address)
+    {
+        return this.Change()
+            .Add(p => p.addressEntities, address)
+            .Register(_ => new AddressListChangedEvent())
+            .Apply();
+    }
+
+    public Result<PersonStub> RemoveAddressEntityById(Guid addressId, string errorMessage = null)
+    {
+        return this.Change()
+            .Remove(p => p.addressEntities, addressId, errorMessage: errorMessage)
+            .Register(_ => new AddressListChangedEvent())
             .Apply();
     }
 
@@ -226,6 +245,25 @@ public class AddressStub : ValueObject
             !string.IsNullOrEmpty(address.PostalCode) &&
             !string.IsNullOrEmpty(address.Country) &&
             !string.IsNullOrEmpty(address.Country));
+    }
+}
+
+/// <summary>
+/// Entity version of Address for testing RemoveById functionality.
+/// </summary>
+public class AddressEntityStub : Entity<Guid>
+{
+    public string Street { get; set; }
+    public string City { get; set; }
+
+    public static AddressEntityStub Create(string street, string city)
+    {
+        return new AddressEntityStub
+        {
+            Id = Guid.NewGuid(),
+            Street = street,
+            City = city
+        };
     }
 }
 

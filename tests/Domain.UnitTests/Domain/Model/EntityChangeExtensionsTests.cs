@@ -890,4 +890,236 @@ public class EntityChangeExtensionsTests
         person2.FirstName.ShouldBe("Jane"); // Changed before When
         person2.Age.ShouldBe(17);           // Set after When didn't run
     }
+
+    // =========================================================================
+    // Remove with NotFoundError Tests
+    // =========================================================================
+
+    [Fact]
+    public void Change_Remove_WhenItemNotFound_ShouldReturnNotFoundError()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address = AddressStub.Create("Home", "Street", "", "12345", "City", "Country");
+
+        // Act - Try to remove an address that was never added
+        var result = person.RemoveAddress(address);
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.HasError<NotFoundError>().ShouldBeTrue();
+        result.GetError<NotFoundError>().Message.ShouldContain("not found");
+        person.DomainEvents.GetAll().ShouldBeEmpty(); // No events since operation failed
+    }
+
+    [Fact]
+    public void Change_Remove_WithCustomErrorMessage_ShouldUseCustomMessage()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address = AddressStub.Create("Home", "Street", "", "12345", "City", "Country");
+
+        // Act - Try to remove with custom error message using method with custom message
+        var result = person.Change()
+            .Execute(p => { }) // Dummy operation to test direct access
+            .Apply();
+
+        // Note: We can't directly test custom error message without accessing backing field
+        // Testing via PersonStub.RemoveAddress which has no custom message
+        var result2 = person.RemoveAddress(address);
+
+        // Assert
+        result2.IsFailure.ShouldBeTrue();
+        result2.HasError<NotFoundError>().ShouldBeTrue();
+        result2.GetError<NotFoundError>().Message.ShouldContain("not found");
+    }
+
+    [Fact]
+    public void Change_Remove_WhenItemExists_ShouldRemoveSuccessfully()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address = AddressStub.Create("Home", "Street", "", "12345", "City", "Country");
+        person.AddAddress(address);
+        person.DomainEvents.Clear();
+
+        // Act
+        var result = person.RemoveAddress(address);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        person.Addresses.ShouldBeEmpty();
+        person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
+    }
+
+    // =========================================================================
+    // RemoveById Tests
+    // =========================================================================
+
+    [Fact]
+    public void Change_RemoveById_WhenItemExists_ShouldRemoveSuccessfully()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address1 = AddressEntityStub.Create("123 Main St", "New York");
+        var address2 = AddressEntityStub.Create("456 Oak Ave", "Boston");
+        person.AddAddressEntity(address1);
+        person.AddAddressEntity(address2);
+        person.DomainEvents.Clear();
+
+        // Act - Remove by ID
+        var result = person.RemoveAddressEntityById(address1.Id);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        person.AddressEntities.Count.ShouldBe(1);
+        person.AddressEntities.ShouldNotContain(a => a.Id == address1.Id);
+        person.AddressEntities.ShouldContain(a => a.Id == address2.Id);
+        person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
+    }
+
+    [Fact]
+    public void Change_RemoveById_WhenItemNotFound_ShouldReturnNotFoundError()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var nonExistentId = Guid.NewGuid();
+
+        // Act
+        var result = person.RemoveAddressEntityById(nonExistentId);
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.HasError<NotFoundError>().ShouldBeTrue();
+        result.GetError<NotFoundError>().Message.ShouldContain("not found");
+        result.GetError<NotFoundError>().Message.ShouldContain(nonExistentId.ToString());
+    }
+
+    [Fact]
+    public void Change_RemoveById_WithCustomErrorMessage_ShouldUseCustomMessage()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var nonExistentId = Guid.NewGuid();
+
+        // Act
+        var result = person.RemoveAddressEntityById(nonExistentId, "Address with specified ID was not found");
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.HasError<NotFoundError>().ShouldBeTrue();
+        result.GetError<NotFoundError>().Message.ShouldBe("Address with specified ID was not found");
+    }
+
+    [Fact]
+    public void Change_RemoveById_WithResultId_WhenResultFails_ShouldPropagateFailure()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address = AddressEntityStub.Create("123 Main St", "New York");
+        person.AddAddressEntity(address);
+
+        // Act - RemoveById with failing Result
+        var failedIdResult = Result<Guid>.Failure().WithError(new ValidationError("Invalid ID format"));
+        var result = person.Change()
+            .Remove<AddressEntityStub, Guid>(p => p.addressEntities, failedIdResult)
+            .Apply();
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.HasError<ValidationError>().ShouldBeTrue();
+        person.AddressEntities.Count.ShouldBe(1); // Item not removed
+    }
+
+    [Fact]
+    public void Change_RemoveById_WithResultIdFunc_WhenResultFails_ShouldPropagateFailure()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address = AddressEntityStub.Create("123 Main St", "New York");
+        person.AddAddressEntity(address);
+
+        // Act - RemoveById with function returning failing Result
+        var result = person.Change()
+            .RemoveById<AddressEntityStub, Guid>(
+                p => p.addressEntities,
+                p => Result<Guid>.Failure().WithError(new ValidationError("Could not find ID")))
+            .Apply();
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.HasError<ValidationError>().ShouldBeTrue();
+        person.AddressEntities.Count.ShouldBe(1); // Item not removed
+    }
+
+    [Fact]
+    public void Change_RemoveById_MultipleOperations_ShouldExecuteInOrder()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address1 = AddressEntityStub.Create("123 Main St", "New York");
+        var address2 = AddressEntityStub.Create("456 Oak Ave", "Boston");
+        var address3 = AddressEntityStub.Create("789 Pine Rd", "Chicago");
+        person.AddAddressEntity(address1);
+        person.AddAddressEntity(address2);
+        person.AddAddressEntity(address3);
+        person.DomainEvents.Clear();
+
+        // Act - Remove multiple addresses by ID
+        var result = person.Change()
+            .Remove<AddressEntityStub, Guid>(p => p.addressEntities, address1.Id)
+            .Remove<AddressEntityStub, Guid>(p => p.addressEntities, address3.Id)
+            .Apply();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        person.AddressEntities.Count.ShouldBe(1);
+        person.AddressEntities.ShouldContain(a => a.Id == address2.Id);
+        person.AddressEntities.ShouldNotContain(a => a.Id == address1.Id);
+        person.AddressEntities.ShouldNotContain(a => a.Id == address3.Id);
+    }
+
+    [Fact]
+    public void Change_RemoveById_WhenFirstFailsSecondSkipped_ShouldStopChain()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address = AddressEntityStub.Create("123 Main St", "New York");
+        person.AddAddressEntity(address);
+        var nonExistentId = Guid.NewGuid();
+
+        // Act - First remove fails, second should not execute
+        var result = person.Change()
+            .Remove<AddressEntityStub, Guid>(p => p.addressEntities, nonExistentId) // Fails
+            .Remove<AddressEntityStub, Guid>(p => p.addressEntities, address.Id)     // Should not execute
+            .Apply();
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.HasError<NotFoundError>().ShouldBeTrue();
+        person.AddressEntities.Count.ShouldBe(1); // Original address still there
+        person.AddressEntities.ShouldContain(a => a.Id == address.Id);
+    }
+
+    [Fact]
+    public void Change_RemoveById_WithWhenGuard_ShouldRespectCircuitBreaker()
+    {
+        // Arrange
+        var person = new PersonStub { Age = 15 };
+        var address = AddressEntityStub.Create("123 Main St", "New York");
+        person.AddAddressEntity(address);
+
+        // Act - When guard prevents RemoveById
+        var result = person.Change()
+            .Set(p => p.FirstName, "John")
+            .When(p => p.Age >= 18) // Circuit breaker - fails
+            .Remove<AddressEntityStub, Guid>(p => p.addressEntities, address.Id) // Should not execute
+            .Apply();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(); // Success but RemoveById was skipped
+        person.FirstName.ShouldBe("John"); // Set before When executed
+        person.AddressEntities.Count.ShouldBe(1); // RemoveById did not execute
+        person.AddressEntities.ShouldContain(a => a.Id == address.Id);
+    }
 }

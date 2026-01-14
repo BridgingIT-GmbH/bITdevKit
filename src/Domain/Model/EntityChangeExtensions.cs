@@ -111,6 +111,14 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <summary>
     /// Specifies whether to replace existing domain events of the same type.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .ReplaceExisting(false)  // Keep all events, don't replace
+    ///     .Set(p => p.Status, newStatus)
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> ReplaceExisting(bool replace = true)
     {
         this.replaceExisting = replace;
@@ -120,6 +128,14 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <summary>
     /// Specifies that no domain events should be registered when changes are applied.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .RegisterNoEvents()  // Silent update, no events
+    ///     .Set(p => p.LastLoginAt, DateTime.UtcNow)
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> RegisterNoEvents(bool noEvents = true)
     {
         this.registerNoEvents = noEvents;
@@ -133,6 +149,14 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <summary>
     /// Queues a property change with a direct value.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Set(p => p.FirstName, "John")
+    ///     .Set(p => p.Age, 30)
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> Set<TValue>(
         Expression<Func<TEntity, TValue>> propertyExpression,
         TValue newValue,
@@ -145,6 +169,14 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <summary>
     /// Queues a property change with a computed value.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Set(p => p.FullName, p => $"{p.FirstName} {p.LastName}")
+    ///     .Set(p => p.UpdatedAt, _ => DateTime.UtcNow)
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> Set<TValue>(
         Expression<Func<TEntity, TValue>> propertyExpression,
         Func<TEntity, TValue> valueFactory,
@@ -158,6 +190,14 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// Queues a property change using a <see cref="Result{T}"/>.
     /// If the Result is a Failure, the entire transaction will fail when <see cref="Apply"/> is called.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// var emailResult = EmailAddress.Create(emailString);
+    /// return this.Change()
+    ///     .Set(p => p.Email, emailResult)  // Transaction fails if emailResult is failure
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> Set<TValue>(
         Expression<Func<TEntity, TValue>> propertyExpression,
         Result<TValue> result,
@@ -180,6 +220,13 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <summary>
     /// Queues a property change using a function that returns a <see cref="Result{T}"/>.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Set(p => p.Email, p => EmailAddress.Create(p.RawEmail))
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> Set<TValue>(
         Expression<Func<TEntity, TValue>> propertyExpression,
         Func<TEntity, Result<TValue>> valueFactory,
@@ -196,6 +243,14 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <summary>
     /// Queues an operation to add an item to a collection property.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// var address = new Address("123 Main St", "New York");
+    /// return this.Change()
+    ///     .Add(p => p.Addresses, address)
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> Add<TItem>(
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TItem item,
@@ -261,6 +316,13 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <summary>
     /// Queues an operation to remove an item from a collection property.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Remove(p => p.Addresses, oldAddress)
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> Remove<TItem>(
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TItem item,
@@ -274,6 +336,14 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// Queues an operation to remove an item from a collection property using a <see cref="Result{T}"/>.
     /// If the Result is a Failure, the entire transaction will fail when <see cref="Apply"/> is called.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// var addressResult = FindAddressById(addressId);
+    /// return this.Change()
+    ///     .Remove(p => p.Addresses, addressResult)
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> Remove<TItem>(
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Result<TItem> result,
@@ -295,6 +365,13 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// Queues an operation to remove an item from a collection property using a function that returns a <see cref="Result{T}"/>.
     /// If the computed Result is a Failure, the transaction stops and returns that failure.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Remove(p => p.Addresses, p => p.FindAddressById(addressId))
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> Remove<TItem>(
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Func<TEntity, Result<TItem>> itemFactory,
@@ -307,6 +384,14 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <summary>
     /// Queues an operation to clear all items from a collection property.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Clear(p => p.Addresses)
+    ///     .Clear(p => p.Tags)
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> Clear<TItem>(
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression)
     {
@@ -344,6 +429,14 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// Adds a pre-condition check. If the predicate returns false, the transaction aborts.
     /// This runs *after* the global When() guard but *before* any Set/Add/Remove operations.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Ensure(p => p.Age >= 18, "Must be an adult")
+    ///     .Set(p => p.CanVote, true)
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> Ensure(Func<TEntity, bool> predicate, string errorMessage)
     {
         this.operations.Add(new EnsureOperation(predicate, errorMessage));
@@ -409,6 +502,15 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <summary>
     /// Adds a check rule that runs *after* changes have been applied.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Set(p => p.FirstName, firstName)
+    ///     .Set(p => p.LastName, lastName)
+    ///     .Check(p => !string.IsNullOrEmpty(p.FirstName), "First name is required")
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> Check(Func<TEntity, bool> predicate, string errorMessage)
     {
         this.validations.Add((predicate, errorMessage));
@@ -419,6 +521,16 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// Registers a custom domain event to be registered if changes occur.
     /// Note: This will throw an InvalidOperationException at runtime if the entity does not implement IAggregateRoot.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Set(p => p.Email, newEmail)
+    ///     .Register((p, ctx) => new EmailChangedEvent(
+    ///         ctx.GetOldValue&lt;string&gt;(nameof(Email)),
+    ///         p.Email))
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> Register<TEvent>(Func<TEntity, EntityChangeContext, TEvent> eventFactory)
         where TEvent : IDomainEvent
     {
@@ -430,6 +542,15 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// Registers a custom domain event to be registered if changes occur.
     /// Note: This will throw an InvalidOperationException at runtime if the entity does not implement IAggregateRoot.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Set(p => p.FirstName, firstName)
+    ///     .Set(p => p.LastName, lastName)
+    ///     .Register(p => new CustomerNameChangedEvent(p.Id))
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> Register<TEvent>(Func<TEntity, TEvent> eventFactory)
         where TEvent : IDomainEvent
     {

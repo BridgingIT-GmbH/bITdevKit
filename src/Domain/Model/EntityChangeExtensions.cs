@@ -359,6 +359,41 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         return this;
     }
 
+    /// <summary>
+    /// Executes an arbitrary function that returns a <see cref="Result"/> on the entity.
+    /// If the Result is a Failure, the transaction stops and returns that failure.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Execute(p => p.ChangeAge(age))  // If ChangeAge returns failure, chain stops
+    ///     .Execute(p => p.ChangeEmail(email))  // Only runs if previous Execute succeeded
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> Execute(Func<TEntity, Result> func)
+    {
+        this.operations.Add(new ResultExecuteOperation(func));
+        return this;
+    }
+
+    /// <summary>
+    /// Executes an arbitrary function that returns a <see cref="Result{TEntity}"/> on the entity.
+    /// If the Result is a Failure, the transaction stops and returns that failure.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Execute(p => p.ChangeName(first, last))  // If ChangeName returns failure, chain stops
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> Execute(Func<TEntity, Result<TEntity>> func)
+    {
+        this.operations.Add(new ResultEntityExecuteOperation(func));
+        return this;
+    }
+
     // -------------------------------------------------------------------------
     // 4. Validation & Events
     // -------------------------------------------------------------------------
@@ -436,7 +471,8 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             if (opResult.IsFailure)
             {
                 return Result<TEntity>.Failure(entity)
-                    .WithErrors(opResult.Errors);
+                    .WithErrors(opResult.Errors)
+                    .WithMessages(opResult.Messages);
             }
 
             if (opResult.HasChanged)
@@ -504,16 +540,19 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
 
         public IEnumerable<IResultError> Errors { get; }
 
-        private OpResult(bool isFailure, bool hasChanged, IEnumerable<IResultError> errors)
+        public IEnumerable<string> Messages { get; }
+
+        private OpResult(bool isFailure, bool hasChanged, IEnumerable<IResultError> errors, IEnumerable<string> messages)
         {
             this.IsFailure = isFailure;
             this.HasChanged = hasChanged;
             this.Errors = errors ?? [];
+            this.Messages = messages ?? [];
         }
 
-        public static OpResult Success(bool changed) => new(false, changed, null);
+        public static OpResult Success(bool changed) => new(false, changed, null, null);
 
-        public static OpResult Failure(IEnumerable<IResultError> errors) => new(true, false, errors);
+        public static OpResult Failure(IEnumerable<IResultError> errors, IEnumerable<string> messages = null) => new(true, false, errors, messages);
     }
 
     private interface IOperation
@@ -601,7 +640,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             var result = this.valueFactory(entity);
             if (result.IsFailure)
             {
-                return OpResult.Failure(result.Errors);
+                return OpResult.Failure(result.Errors, result.Messages);
             }
 
             var currentValue = this.accessor.GetValue(entity);
@@ -735,7 +774,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             var result = this.itemFactory(entity);
             if (result.IsFailure)
             {
-                return OpResult.Failure(result.Errors);
+                return OpResult.Failure(result.Errors, result.Messages);
             }
 
             var item = result.Value;
@@ -843,6 +882,36 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         {
             action(entity);
             context.RecordChange("Execute", null, "Action Executed");
+            return OpResult.Success(true);
+        }
+    }
+
+    private class ResultExecuteOperation(Func<TEntity, Result> func) : OperationBase
+    {
+        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
+        {
+            var result = func(entity);
+            if (result.IsFailure)
+            {
+                return OpResult.Failure(result.Errors, result.Messages);
+            }
+
+            context.RecordChange("Execute", null, "Result Function Executed");
+            return OpResult.Success(true);
+        }
+    }
+
+    private class ResultEntityExecuteOperation(Func<TEntity, Result<TEntity>> func) : OperationBase
+    {
+        protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
+        {
+            var result = func(entity);
+            if (result.IsFailure)
+            {
+                return OpResult.Failure(result.Errors, result.Messages);
+            }
+
+            context.RecordChange("Execute", null, "Result<TEntity> Function Executed");
             return OpResult.Success(true);
         }
     }

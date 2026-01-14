@@ -308,6 +308,30 @@ public Result<Customer> AddTag(string tag)
 }
 ```
 
+#### Executing Methods with Result Propagation
+When you need to call other domain methods that return `Result`, use `Execute` to chain them. If any method fails, the entire chain stops and returns that failure.
+
+```csharp
+public Result<Customer> UpdateContactInfo(string firstName, string lastName, int age, string email)
+{
+    return this.Change()
+        .Execute(c => c.ChangeName(firstName, lastName))  // If fails, chain stops
+        .Execute(c => c.ChangeAge(age))                   // Only runs if previous succeeded
+        .Execute(c => c.ChangeEmail(email))               // Only runs if previous succeeded
+        .Apply();
+}
+
+// Individual methods that return Results
+public Result<Customer> ChangeName(string firstName, string lastName)
+{
+    return this.Change()
+        .Set(c => c.FirstName, firstName)
+        .Set(c => c.LastName, lastName)
+        .Check(c => !string.IsNullOrEmpty(c.FirstName), "First name required")
+        .Apply();
+}
+```
+
 ### Features
 
 | Operation | Description |
@@ -317,7 +341,7 @@ public Result<Customer> AddTag(string tag)
 | **`Ensure`** | Pre-condition guard. If false, aborts transaction immediately without applying changes. |
 | **`Check`** | Post-condition check. Runs *after* changes. If false, returns a Failure result (leaves entity dirty in memory, intended for unit-of-work rollbacks). |
 | **`When`** | Conditional execution for the whole operation. |
-| **`Execute`** | Runs arbitrary actions (e.g., methods on child entities). |
+| **`Execute`** | Runs arbitrary actions or functions on the entity. Supports `Action<TEntity>`, `Func<TEntity, Result>`, and `Func<TEntity, Result<TEntity>>` for Result propagation. |
 | **`WithEvent`** | Registers a Domain Event if changes occurred. Provides access to `ChangeContext` for old values. |
 | **`Apply`** | Commits the transaction, registers generic `EntityUpdatedDomainEvent`, and returns a `Result`. |
 

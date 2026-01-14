@@ -99,7 +99,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     private readonly List<IOperation> operations = [];
     private readonly List<Func<TEntity, EntityChangeContext, IDomainEvent>> eventFactories = [];
     private readonly List<(Func<TEntity, bool> Predicate, string Message)> validations = [];
-    private bool replaceExisting = true;
+    private bool registerSingle = true;
     private bool registerNoEvents;
 
     // Global guard that protects the entire change transaction
@@ -114,14 +114,14 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <example>
     /// <code>
     /// return this.Change()
-    ///     .ReplaceExisting(false)  // Keep all events, don't replace
+    ///     .RegisterEnsureSingle(false)  // Keep all events, don't replace
     ///     .Set(p => p.Status, newStatus)
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> ReplaceExisting(bool replace = true)
+    public EntityChangeBuilder<TEntity> RegisterEnsureSingle(bool replace = true)
     {
-        this.replaceExisting = replace;
+        this.registerSingle = replace;
         return this;
     }
 
@@ -632,7 +632,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                 foreach (var factory in this.eventFactories)
                 {
                     var evt = factory(entity, context);
-                    aggregateRoot.DomainEvents.Register(evt, this.replaceExisting);
+                    aggregateRoot.DomainEvents.Register(evt, this.registerSingle);
                 }
 
                 if (this.eventFactories.Count == 0)
@@ -640,7 +640,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                     // Create the event using reflection since TEntity might not constrain to IAggregateRoot
                     var eventType = typeof(EntityUpdatedDomainEvent<>).MakeGenericType(entity.GetType());
                     var domainEvent = (IDomainEvent)Activator.CreateInstance(eventType, entity);
-                    aggregateRoot.DomainEvents.Register(domainEvent, this.replaceExisting);
+                    aggregateRoot.DomainEvents.Register(domainEvent, this.registerSingle);
                 }
             }
             else if (this.eventFactories.Count > 0)

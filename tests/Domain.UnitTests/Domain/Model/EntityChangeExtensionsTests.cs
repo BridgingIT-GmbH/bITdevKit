@@ -247,116 +247,157 @@ public class EntityChangeExtensionsTests
 
         // Assert - Remove
         resultRemove.IsSuccess.ShouldBeTrue();
-            person.Addresses.ShouldBeEmpty();
-            person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
-        }
+        person.Addresses.ShouldBeEmpty();
+        person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
+    }
 
-        [Fact]
-        public void Change_Execute_WithResultReturningMethod_WhenSuccess_ShouldApplyChanges()
+    [Fact]
+    public void Change_Set_WithResultReturningMethod_WhenSuccess_ShouldApplyChanges()
+    {
+        // Arrange
+        var person = new PersonStub
         {
-            // Arrange
-            var person = new PersonStub
-            {
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 25,
-                EmploymentStatus = EmploymentStatus.FullTime
-            };
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 25,
+            EmploymentStatus = EmploymentStatus.FullTime
+        };
 
-            // Act - Using Execute to chain multiple Result-returning methods
-            var result = person.ChangeName("Jane", "Smith", 30, "jane@example.com");
+        // Act - Using Set to chain multiple Result-returning methods
+        var result = person.ChangeName("Jane", "Smith", 30, "jane@example.com");
 
-            // Assert
-            result.IsSuccess.ShouldBeTrue();
-            person.FirstName.ShouldBe("Jane");
-            person.LastName.ShouldBe("Smith");
-            person.Age.ShouldBe(30);
-            person.Email.ShouldBe("jane@example.com");
-        }
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        person.FirstName.ShouldBe("Jane");
+        person.LastName.ShouldBe("Smith");
+        person.Age.ShouldBe(30);
+        person.Email.ShouldBe("jane@example.com");
+    }
 
-        [Fact]
-        public void Change_Execute_WithResultReturningMethod_WhenFirstFails_ShouldStopChain()
+    [Fact]
+    public void Change_Set_WithResultReturningMethod_WhenFirstFails_ShouldStopChain()
+    {
+        // Arrange
+        var person = new PersonStub
         {
-            // Arrange
-            var person = new PersonStub
-            {
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 25,
-                EmploymentStatus = EmploymentStatus.FullTime
-            };
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 25,
+            EmploymentStatus = EmploymentStatus.FullTime
+        };
 
-            // Act - First Execute should fail due to empty first name (Check validation)
-            var result = person.ChangeName("", "Smith", 30, "jane@example.com");
+        // Act - First Set should fail due to empty first name (Check validation)
+        var result = person.ChangeName("", "Smith", 30, "jane@example.com");
 
-            // Assert
-            result.IsFailure.ShouldBeTrue();
-            // Check uses messages, not errors
-            result.Messages.ShouldNotBeEmpty();
-            result.Messages[0].ShouldContain("First name");
-            // Check modifies state then validates, so first Execute modified state before failing
-            person.FirstName.ShouldBe("");
-            person.LastName.ShouldBe("Smith");
-            // But second and third Execute never run because first failed
-            person.Age.ShouldBe(25);
-            person.Email.ShouldBeNull();
-        }
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        // Check uses messages, not errors
+        result.Messages.ShouldNotBeEmpty();
+        result.Messages[0].ShouldContain("First name");
+        // Check modifies state then validates, so first Set modified state before failing
+        person.FirstName.ShouldBe("");
+        person.LastName.ShouldBe("Smith");
+        // But second and third Set never run because first failed
+        person.Age.ShouldBe(25);
+        person.Email.ShouldBeNull();
+    }
 
-        [Fact]
-        public void Change_Execute_WithResultReturningMethod_WhenSecondFails_ShouldStopAtSecond()
+    [Fact]
+    public void Change_Set_WithResultReturningMethod_WhenSecondFails_ShouldStopAtSecond()
+    {
+        // Arrange
+        var person = new PersonStub
         {
-            // Arrange
-            var person = new PersonStub
-            {
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 25,
-                EmploymentStatus = EmploymentStatus.FullTime
-            };
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 25,
+            EmploymentStatus = EmploymentStatus.FullTime
+        };
 
-            // Act - Second Execute (ChangeAge) should fail due to negative age
-            var result = person.ChangeName("Jane", "Smith", -5, "jane@example.com");
+        // Act - Second Set (ChangeAge) should fail due to negative age
+        var result = person.ChangeName("Jane", "Smith", -5, "jane@example.com");
 
-            // Assert
-            result.IsFailure.ShouldBeTrue();
-            result.Errors[0].Message.ShouldContain("negative");
-            // First Execute succeeded, so name changed
-            person.FirstName.ShouldBe("Jane");
-            person.LastName.ShouldBe("Smith");
-            // Second Execute failed, so age and email remain unchanged
-            person.Age.ShouldBe(25);
-            person.Email.ShouldBeNull();
-        }
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Errors[0].Message.ShouldContain("negative");
+        // First Set succeeded, so name changed
+        person.FirstName.ShouldBe("Jane");
+        person.LastName.ShouldBe("Smith");
+        // Second Set failed, so age and email remain unchanged
+        person.Age.ShouldBe(25);
+        person.Email.ShouldBeNull();
+    }
 
-        [Fact]
-        public void Change_Execute_WithResultReturningMethod_WhenThirdFails_ShouldStopAtThird()
+    [Fact]
+    public void Change_Set_WithResultReturningMethod_WhenThirdFails_ShouldStopAtThird()
+    {
+        // Arrange
+        var person = new PersonStub
         {
-            // Arrange
-            var person = new PersonStub
-            {
-                FirstName = "John",
-                LastName = "Doe",
-                Age = 25,
-                EmploymentStatus = EmploymentStatus.Unemployed // This will cause email change to fail
-            };
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 25,
+            EmploymentStatus = EmploymentStatus.Unemployed // This will cause email change to fail
+        };
 
-            // Act - Third Execute (ChangeEmail) should fail due to unemployment status
-            var result = person.ChangeName("Jane", "Smith", 30, "jane@example.com");
+        // Act - Third Set (ChangeEmail) should fail due to unemployment status
+        var result = person.ChangeName("Jane", "Smith", 30, "jane@example.com");
 
-            // Assert
-            result.IsFailure.ShouldBeTrue();
-            result.Errors[0].Message.ShouldContain("employed");
-            // First and second Execute succeeded
-            person.FirstName.ShouldBe("Jane");
-            person.LastName.ShouldBe("Smith");
-            person.Age.ShouldBe(30);
-            // Third Execute failed, so email remains unchanged
-            person.Email.ShouldBeNull();
-        }
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Errors[0].Message.ShouldContain("employed");
+        // First and second Set succeeded
+        person.FirstName.ShouldBe("Jane");
+        person.LastName.ShouldBe("Smith");
+        person.Age.ShouldBe(30);
+        // Third Set failed, so email remains unchanged
+        person.Email.ShouldBeNull();
+    }
 
-        // -------------------------------------------------------------------------
-        // Test Helpers (PersonStub & Events)
-        // -------------------------------------------------------------------------
+    [Fact]
+    public void Change_Execute_WhenActionThrowsException_ShouldCatchAndReturnFailure()
+    {
+        // Arrange
+        var person = new PersonStub
+        {
+            FirstName = "John",
+            LastName = "Doe"
+        };
+
+        // Act
+        var result = person.Change()
+            .Execute(p => throw new InvalidOperationException("Test exception"))
+            .Apply();
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldNotBeEmpty();
+        result.Messages.ShouldContain(m => m.Contains("Test exception"));
+    }
+
+    [Fact]
+    public void Change_Execute_WhenActionSucceeds_ShouldContinueChain()
+    {
+        // Arrange
+        var person = new PersonStub { Age = 30 };
+        var executionCount = 0;
+
+        // Act
+        var result = person.Change()
+            .Execute(p => executionCount++)
+            .Execute(p => executionCount++)
+            .Set(p => p.FirstName, "Updated")
+            .Apply();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        executionCount.ShouldBe(2);
+        person.FirstName.ShouldBe("Updated");
+    }
+
+    // -------------------------------------------------------------------------
+    // Test Helpers (PersonStub & Events)
+    // -------------------------------------------------------------------------
 
     /// <summary>
     /// A plain entity that does not inherit from AggregateRoot

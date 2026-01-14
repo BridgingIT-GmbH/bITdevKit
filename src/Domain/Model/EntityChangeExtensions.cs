@@ -352,7 +352,15 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
 
     /// <summary>
     /// Executes an arbitrary action on the entity.
+    /// If the action throws an unhandled exception, the transaction stops and returns a failure.
     /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Execute(p => p.addresses.Clear())  // If throws, chain stops with failure
+    ///     .Apply();
+    /// </code>
+    /// </example>
     public EntityChangeBuilder<TEntity> Execute(Action<TEntity> action)
     {
         this.operations.Add(new ExecuteOperation(action));
@@ -360,35 +368,35 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     }
 
     /// <summary>
-    /// Executes an arbitrary function that returns a <see cref="Result"/> on the entity.
+    /// Applies changes by calling a method that returns a <see cref="Result"/> on the entity.
     /// If the Result is a Failure, the transaction stops and returns that failure.
     /// </summary>
     /// <example>
     /// <code>
     /// return this.Change()
-    ///     .Execute(p => p.ChangeAge(age))  // If ChangeAge returns failure, chain stops
-    ///     .Execute(p => p.ChangeEmail(email))  // Only runs if previous Execute succeeded
+    ///     .Set(p => p.ChangeAge(age))  // If ChangeAge returns failure, chain stops
+    ///     .Set(p => p.ChangeEmail(email))  // Only runs if previous Set succeeded
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Execute(Func<TEntity, Result> func)
+    public EntityChangeBuilder<TEntity> Set(Func<TEntity, Result> func)
     {
         this.operations.Add(new ResultExecuteOperation(func));
         return this;
     }
 
     /// <summary>
-    /// Executes an arbitrary function that returns a <see cref="Result{TEntity}"/> on the entity.
+    /// Applies changes by calling a method that returns a <see cref="Result{TEntity}"/> on the entity.
     /// If the Result is a Failure, the transaction stops and returns that failure.
     /// </summary>
     /// <example>
     /// <code>
     /// return this.Change()
-    ///     .Execute(p => p.ChangeName(first, last))  // If ChangeName returns failure, chain stops
+    ///     .Set(p => p.ChangeName(first, last))  // If ChangeName returns failure, chain stops
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Execute(Func<TEntity, Result<TEntity>> func)
+    public EntityChangeBuilder<TEntity> Set(Func<TEntity, Result<TEntity>> func)
     {
         this.operations.Add(new ResultEntityExecuteOperation(func));
         return this;
@@ -880,9 +888,18 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     {
         protected override OpResult ApplyChange(TEntity entity, EntityChangeContext context)
         {
-            action(entity);
-            context.RecordChange("Execute", null, "Action Executed");
-            return OpResult.Success(true);
+            try
+            {
+                action(entity);
+                context.RecordChange("Execute", null, "Action Executed");
+                return OpResult.Success(true);
+            }
+            catch (Exception ex)
+            {
+                return OpResult.Failure(
+                    [Result.Settings.ExceptionErrorFactory(ex)],
+                    [ex.Message]);
+            }
         }
     }
 

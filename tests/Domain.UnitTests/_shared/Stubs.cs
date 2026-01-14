@@ -37,9 +37,9 @@ public class PersonStub : AggregateRoot<Guid>
     public Result<PersonStub> ChangeName(string first, string last, int age, string email)
     {
         return this.Change()
-            .Execute(p => p.ChangeName(first, last)) // Result should propagate failure
-            .Execute(p => p.ChangeAge(age)) // Result should propagate failure
-            .Execute(p => p.ChangeEmail(email)) // Result should propagate failure
+            .Set(p => p.ChangeName(first, last)) // Result should propagate failure
+            .Set(p => p.ChangeAge(age)) // Result should propagate failure
+            .Set(p => p.ChangeEmail(email)) // Result should propagate failure
             .Apply();
     }
 

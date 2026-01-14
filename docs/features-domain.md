@@ -309,15 +309,15 @@ public Result<Customer> AddTag(string tag)
 ```
 
 #### Executing Methods with Result Propagation
-When you need to call other domain methods that return `Result`, use `Execute` to chain them. If any method fails, the entire chain stops and returns that failure.
+When you need to call other domain methods that return `Result`, use `Set` to chain them. If any method fails, the entire chain stops and returns that failure.
 
 ```csharp
 public Result<Customer> UpdateContactInfo(string firstName, string lastName, int age, string email)
 {
     return this.Change()
-        .Execute(c => c.ChangeName(firstName, lastName))  // If fails, chain stops
-        .Execute(c => c.ChangeAge(age))                   // Only runs if previous succeeded
-        .Execute(c => c.ChangeEmail(email))               // Only runs if previous succeeded
+        .Set(c => c.ChangeName(firstName, lastName))  // If fails, chain stops
+        .Set(c => c.ChangeAge(age))                   // Only runs if previous succeeded
+        .Set(c => c.ChangeEmail(email))               // Only runs if previous succeeded
         .Apply();
 }
 
@@ -332,16 +332,28 @@ public Result<Customer> ChangeName(string firstName, string lastName)
 }
 ```
 
+For void actions (like clearing collections), use `Execute`. If the action throws an exception, it's automatically caught and the chain stops with a failure:
+
+```csharp
+public Result<Customer> ResetData()
+{
+    return this.Change()
+        .Execute(c => c.Tags.Clear())  // If throws exception, chain stops with failure
+        .Execute(c => c.Notes.Clear())
+        .Apply();
+}
+```
+
 ### Features
 
 | Operation | Description |
 |-----------|-------------|
-| **`Set`** | Updates a property. Supports direct values, computed factories, and `Result<T>` factories (fail-fast). |
+| **`Set`** | Updates a property. Supports direct values, computed factories, `Result<T>` factories (fail-fast), and Result-returning methods for chaining domain logic. |
 | **`Add` / `Remove` / `Clear`** | Manages collection properties with automatic change detection. |
 | **`Ensure`** | Pre-condition guard. If false, aborts transaction immediately without applying changes. |
 | **`Check`** | Post-condition check. Runs *after* changes. If false, returns a Failure result (leaves entity dirty in memory, intended for unit-of-work rollbacks). |
 | **`When`** | Conditional execution for the whole operation. |
-| **`Execute`** | Runs arbitrary actions or functions on the entity. Supports `Action<TEntity>`, `Func<TEntity, Result>`, and `Func<TEntity, Result<TEntity>>` for Result propagation. |
+| **`Execute`** | Runs arbitrary actions (void methods). Automatically catches and converts exceptions to Result failures. |
 | **`WithEvent`** | Registers a Domain Event if changes occurred. Provides access to `ChangeContext` for old values. |
 | **`Apply`** | Commits the transaction, registers generic `EntityUpdatedDomainEvent`, and returns a `Result`. |
 

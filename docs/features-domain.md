@@ -344,6 +344,61 @@ public Result<Customer> ResetData()
 }
 ```
 
+#### Result Transformations with Execute
+
+The `Execute` method can also be used to apply Result functional extensions (Map, Bind, Tap, Ensure, Filter, etc.) after all operations complete. This enables powerful post-processing, validation, and side effects while maintaining the Result pattern:
+
+```csharp
+public Result<Customer> PromoteToAdult()
+{
+    return this.Change()
+        .When(c => c.Age >= 18)  // Only proceed if eligible
+        .Set(c => c.Status, CustomerStatus.Adult)
+        .Execute(r => r.Map(c => { c.PromotedDate = DateTime.UtcNow; return c; }))  // Additional field update
+        .Execute(r => r.Ensure(
+            c => !string.IsNullOrEmpty(c.Email), 
+            new ValidationError("Adults must have an email")))  // Post-operation validation
+        .Execute(r => r.Tap(c => logger.LogInformation($"Promoted {c.Name} to Adult")))  // Logging
+        .Apply();
+}
+```
+
+**Key behaviors:**
+- `Execute` transformations run **after** all Set/Add/Remove operations, validations (Check), and event registrations complete
+- Multiple `Execute` calls execute sequentially in the order they're defined
+- If any `Execute` transformation returns a failure Result, remaining transformations are **short-circuited** (railway-oriented programming)
+- `Execute` transformations are **skipped** when the `When` guard fails (entire transaction bypassed)
+- Can be used standalone without any Set/Add operations: `.Change().Execute(r => r.Tap(...)).Apply()`
+
+**Common use cases:**
+- **Logging**: Use `.Execute(r => r.Tap(...))` for side effects without changing the value
+- **Additional validation**: Use `.Execute(r => r.Ensure(...))` for complex post-operation checks
+- **Transformations**: Use `.Execute(r => r.Map(...))` to modify additional fields based on the final state
+- **Conditional logic**: Use `.Execute(r => r.Filter(...))` to convert success to failure based on conditions
+
+```csharp
+// Standalone usage - no Set required
+public Result<Customer> LogActivity()
+{
+    return this.Change()
+        .Execute(r => r.Tap(c => activityLogger.Log($"Activity for {c.Name}")))
+        .Execute(r => r.Ensure(c => c.IsActive, new Error("Customer is not active")))
+        .Apply();
+}
+
+// Multiple Execute calls with validation
+public Result<Customer> ComplexUpdate(string name, int age)
+{
+    return this.Change()
+        .Set(c => c.Name, name)
+        .Set(c => c.Age, age)
+        .Execute(r => r.Ensure(c => c.Age >= 18, new ValidationError("Must be adult")))
+        .Execute(r => r.Map(c => { c.LastModified = DateTime.UtcNow; return c; }))
+        .Execute(r => r.Tap(c => auditLog.Record($"Updated {c.Name}")))
+        .Apply();
+}
+```
+
 ### Features
 
 | Operation | Description |
@@ -353,7 +408,7 @@ public Result<Customer> ResetData()
 | **`Ensure`** | Pre-condition guard. If false, aborts transaction immediately without applying changes. |
 | **`Check`** | Post-condition check. Runs *after* changes. If false, returns a Failure result (leaves entity dirty in memory, intended for unit-of-work rollbacks). |
 | **`When`** | Conditional execution for the whole operation. |
-| **`Execute`** | Runs arbitrary actions (void methods). Automatically catches and converts exceptions to Result failures. |
+| **`Execute`** | Two overloads: (1) Runs arbitrary void actions with automatic exception handling. (2) Applies Result transformations (Map, Bind, Tap, Ensure) after all operations complete. Both short-circuit on failure. |
 | **`Regisiter`** | Registers a Domain Event if changes occurred. Provides access to `ChangeContext` for old values. |
 | **`Apply`** | Commits the transaction, registers generic `EntityUpdatedDomainEvent`, and returns a `Result`. |
 

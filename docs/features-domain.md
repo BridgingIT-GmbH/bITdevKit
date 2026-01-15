@@ -335,11 +335,47 @@ public Result<Customer> ChangeEmail(string emailString)
 
 #### Collection Management
 ```csharp
+// Add/Remove items
 public Result<Customer> AddTag(string tag)
 {
     return this.Change()
         .Add(c => c.Tags, tag)
-        .Ensure(c => c.Tags.Count < 10, "Tag limit reached") // Pre-check
+        .Ensure(c => c.Tags.Count < 10, "Tag limit reached")
+        .Apply();
+}
+
+// Remove by ID (fails with NotFoundError if not found)
+public Result<Customer> RemoveAddress(AddressId addressId)
+{
+    return this.Change()
+        .Remove(c => c.Addresses, addressId, errorMessage: "Address not found")
+        .Register(c => new CustomerUpdatedEvent(c.Id))
+        .Apply();
+}
+
+// Apply action to all collection items
+public Result<Customer> ClearAllPrimaryFlags()
+{
+    return this.Change()
+        .Set(c => c.Addresses, a => a.ClearPrimary())  // Applies to all
+        .Apply();
+}
+
+// Apply action to filtered items
+public Result<Customer> ActivateExpiredSubscriptions()
+{
+    return this.Change()
+        .Set(c => c.Subscriptions, s => s.IsExpired, s => s.Renew())  // Filter + action
+        .Apply();
+}
+
+// Apply action to single item by ID (fails with NotFoundError if not found)
+public Result<Customer> SetPrimaryAddress(AddressId addressId)
+{
+    return this.Change()
+        .Set(c => c.Addresses, a => a.ClearPrimary())                               // Clear all
+        .Set(c => c.Addresses, addressId, a => a.SetPrimary(), "Address not found") // Set one
+        .Register(c => new CustomerUpdatedEvent(c.Id))
         .Apply();
 }
 ```
@@ -449,8 +485,8 @@ public Result<Customer> ComplexUpdate(string name, int age)
 
 | Operation | Description |
 |-----------|-------------|
-| **`Set`** | Updates a property at its declaration position. Supports direct values, computed factories, `Result<T>` factories (fail-fast), and Result-returning methods for chaining domain logic. Only updates if value differs (automatic change detection). |
-| **`Add` / `Remove` / `Clear`** | Manages collection properties with automatic change detection. Executes at declaration position. |
+| **`Set`** | Updates a property at its declaration position. Supports direct values, computed factories, `Result<T>` factories (fail-fast), and Result-returning methods for chaining domain logic. Only updates if value differs (automatic change detection). **Also applies actions to collection items:** all items, filtered items, or single item by ID. |
+| **`Add` / `Remove` / `Clear`** | Manages collection properties with automatic change detection. `Remove` fails with `NotFoundError` if item not found. Executes at declaration position. |
 | **`Ensure`** | Pre-condition guard that executes **before** making changes. If false, aborts transaction immediately. Executes at declaration position. |
 | **`Check`** | Post-condition validation that executes **immediately at its position** after preceding operations. If false, returns Failure result. Use for immediate validation after specific changes. |
 | **`When`** | **Circuit breaker** that executes at its declaration position. If condition is false, **cancels all remaining operations** after it. Operations before When execute normally. Enables conditional operation chains. |

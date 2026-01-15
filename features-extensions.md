@@ -29,7 +29,7 @@ The extensions are organized into logical groups:
 - **String Checks**: Specialized null/empty validation for strings
 - **Conditional Logic**: When/Unless for predicate-based operations
 - **Transformations**: Select/Map for value transformations
-- **Side Effects**: Do for logging and non-transforming operations
+- **Side Effects**: Do for logging and non-transforming operations (Tap)
 - **Error Handling**: Throw/ThrowWhen for validation
 - **Pattern Matching**: Match for both-case handling
 - **Fallback Values**: OrElse for default factories
@@ -242,7 +242,7 @@ var result = await users
 
 ### Side Effects
 
-**Do** execute operations without changing the value:
+**Do** execute operations without changing the value (Tap):
 
 ```csharp
 // Log without changing value

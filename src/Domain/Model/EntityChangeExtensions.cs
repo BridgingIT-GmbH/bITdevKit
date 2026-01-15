@@ -590,7 +590,7 @@ public class ChangeOperationOutcome
     /// <example>
     /// <code>
     /// return this.Change()
-    ///     .RemoveById&lt;Address, AddressId&gt;(e => e.Addresses, addressId, errorMessage: "Address not found")
+    ///     .RemoveById(e => e.Addresses, addressId, errorMessage: "Address not found")
     ///     .Register(e => new CustomerUpdatedDomainEvent(e))
     ///     .Apply();
     /// </code>

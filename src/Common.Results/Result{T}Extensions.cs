@@ -198,7 +198,7 @@ public static class ResultTExtensions
     /// <example>
     /// <code>
     /// var result = Result&lt;string&gt;.Success("bravo")
-    ///     .Bind2(v => v.ToUpper());
+    ///     .Bind(v => v.ToUpper());
     ///
     /// // Result.Value = "BRAVO"
     /// </code>
@@ -340,7 +340,7 @@ public static class ResultTExtensions
     /// <returns>
     /// A new <see cref="Task{TResult}"/> returning the combined <see cref="Result{T}"/>.
     /// </returns>
-    public static async Task<Result<T>> BindResult<T, TInner>(
+    public static async Task<Result<T>> BindResultAsync<T, TInner>(
         this Task<Result<T>> task,
         Func<T, Result<TInner>> binder,
         Func<T, TInner, T> merge)
@@ -2688,5 +2688,191 @@ public static class ResultTExtensions
         ArgumentNullException.ThrowIfNull(operation);
 
         return new ResultOperationScope<T, TOperation>(result, ct => Task.FromResult(operation));
+    }
+
+    /// <summary>
+    ///     Flattens a collection of Results into a single Result, combining all errors and messages.
+    ///     Returns success with the last successful value only if ALL results succeed.
+    ///     Returns failure with the first failed value if ANY result fails.
+    /// </summary>
+    /// <typeparam name="T">The type of the value.</typeparam>
+    /// <param name="results">The collection of Results to flatten.</param>
+    /// <param name="options">Options for handling failure scenarios.</param>
+    /// <returns>A single Result with accumulated errors/messages, successful only if all results succeed.</returns>
+    /// <example>
+    /// <code>
+    /// // Combine multiple validation results
+    /// var result = new[] 
+    /// { 
+    ///     ValidateName(user), 
+    ///     ValidateEmail(user), 
+    ///     ValidateAge(user) 
+    /// }.Flatten();
+    /// // Result is successful only if all validations pass
+    /// </code>
+    /// </example>
+    public static Result<T> Flatten<T>(
+        this IEnumerable<Result<T>> results,
+        ProcessingOptions options = null)
+    {
+        if (results is null)
+        {
+            return Result<T>.Failure()
+                .WithError(new Error("Results collection cannot be null"));
+        }
+
+        try
+        {
+            options ??= ProcessingOptions.Default;
+            var errors = new List<IResultError>();
+            var messages = new List<string>();
+            var lastSuccessResult = default(Result<T>);
+            var firstFailedResult = default(Result<T>);
+            var hasSuccess = false;
+            var hasFailure = false;
+
+            foreach (var result in results)
+            {
+                if (result.IsSuccess)
+                {
+                    lastSuccessResult = result;
+                    hasSuccess = true;
+                }
+                else
+                {
+                    if (!hasFailure)
+                    {
+                        firstFailedResult = result;
+                        hasFailure = true;
+                    }
+                }
+
+                errors.AddRange(result.Errors);
+                messages.AddRange(result.Messages);
+            }
+
+            if (hasFailure)
+            {
+                return Result<T>.Failure(firstFailedResult.Value)
+                    .WithErrors(errors)
+                    .WithMessages(messages);
+            }
+
+            if (hasSuccess)
+            {
+                return Result<T>.Success(lastSuccessResult.Value)
+                    .WithErrors(errors)
+                    .WithMessages(messages);
+            }
+
+            return Result<T>.Failure()
+                .WithErrors(errors)
+                .WithError(new Error("No results provided"))
+                .WithMessages(messages);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    ///     Flattens a collection of Result tasks into a single Result, combining all errors and messages.
+    ///     Returns success with the last successful value only if ALL results succeed.
+    ///     Returns failure with the first failed value if ANY result fails.
+    /// </summary>
+    /// <typeparam name="T">The type of the value.</typeparam>
+    /// <param name="resultTasks">The collection of Result tasks to flatten.</param>
+    /// <param name="options">Options for handling failure scenarios.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A single Result with accumulated errors/messages, successful only if all results succeed.</returns>
+    /// <example>
+    /// <code>
+    /// // Combine multiple async validation results
+    /// var result = await new[] 
+    /// { 
+    ///     ValidateNameAsync(user), 
+    ///     ValidateEmailAsync(user), 
+    ///     ValidateAgeAsync(user) 
+    /// }.FlattenAsync(cancellationToken: cancellationToken);
+    /// // Result is successful only if all validations pass
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> FlattenAsync<T>(
+       this IEnumerable<Task<Result<T>>> resultTasks,
+       ProcessingOptions options = null,
+       CancellationToken cancellationToken = default)
+    {
+        if (resultTasks is null)
+        {
+            return Result<T>.Failure()
+                .WithError(new Error("Result tasks collection cannot be null"));
+        }
+
+        try
+        {
+            options ??= ProcessingOptions.Default;
+            var errors = new List<IResultError>();
+            var messages = new List<string>();
+            var lastSuccessResult = default(Result<T>);
+            var firstFailedResult = default(Result<T>);
+            var hasSuccess = false;
+            var hasFailure = false;
+
+            foreach (var task in resultTasks)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var result = await task;
+
+                if (result.IsSuccess)
+                {
+                    lastSuccessResult = result;
+                    hasSuccess = true;
+                }
+                else
+                {
+                    if (!hasFailure)
+                    {
+                        firstFailedResult = result;
+                        hasFailure = true;
+                    }
+                }
+
+                errors.AddRange(result.Errors);
+                messages.AddRange(result.Messages);
+            }
+
+            if (hasFailure)
+            {
+                return Result<T>.Failure(firstFailedResult.Value)
+                    .WithErrors(errors)
+                    .WithMessages(messages);
+            }
+
+            if (hasSuccess)
+            {
+                return Result<T>.Success(lastSuccessResult.Value)
+                    .WithErrors(errors)
+                    .WithMessages(messages);
+            }
+
+            return Result<T>.Failure()
+                .WithErrors(errors)
+                .WithError(new Error("No results provided"))
+                .WithMessages(messages);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<T>.Failure()
+                .WithError(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
     }
 }

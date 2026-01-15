@@ -142,8 +142,32 @@ public class PersonStub : AggregateRoot<Guid>
     public Result<PersonStub> RemoveAddressEntityById(Guid addressId, string errorMessage = null)
     {
         return this.Change()
-            .Remove(p => p.addressEntities, addressId, errorMessage: errorMessage)
+            .Remove<AddressEntityStub, Guid>(p => p.addressEntities, addressId, errorMessage: errorMessage)
             .Register(_ => new AddressListChangedEvent())
+            .Apply();
+    }
+
+    public Result<PersonStub> ClearAllPrimaryAddresses()
+    {
+        return this.Change()
+            .Set(p => p.addressEntities, a => a.ClearPrimary())
+            .Register(_ => new AddressListChangedEvent())
+            .Apply();
+    }
+
+    public Result<PersonStub> SetPrimaryAddress(Guid addressId)
+    {
+        return this.Change()
+            .Set(p => p.addressEntities, a => a.ClearPrimary())                          // Clear all first
+            .Set(p => p.addressEntities, addressId, a => a.SetPrimary(), "Address not found") // Set one as primary
+            .Register(_ => new AddressListChangedEvent())
+            .Apply();
+    }
+
+    public Result<PersonStub> ValidateAllAddresses()
+    {
+        return this.Change()
+            .Set(p => p.addressEntities, a => a.Validate())
             .Apply();
     }
 
@@ -255,6 +279,7 @@ public class AddressEntityStub : Entity<Guid>
 {
     public string Street { get; set; }
     public string City { get; set; }
+    public bool IsPrimary { get; set; }
 
     public static AddressEntityStub Create(string street, string city)
     {
@@ -262,8 +287,32 @@ public class AddressEntityStub : Entity<Guid>
         {
             Id = Guid.NewGuid(),
             Street = street,
-            City = city
+            City = city,
+            IsPrimary = false
         };
+    }
+
+    public void SetPrimary()
+    {
+        this.IsPrimary = true;
+    }
+
+    public void ClearPrimary()
+    {
+        this.IsPrimary = false;
+    }
+
+    public Result Validate()
+    {
+        if (string.IsNullOrEmpty(this.Street))
+        {
+            return Result.Failure().WithError(new ValidationError("Street is required"));
+        }
+        if (string.IsNullOrEmpty(this.City))
+        {
+            return Result.Failure().WithError(new ValidationError("City is required"));
+        }
+        return Result.Success();
     }
 }
 

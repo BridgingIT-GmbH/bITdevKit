@@ -1122,4 +1122,207 @@ public class EntityChangeExtensionsTests
         person.AddressEntities.Count.ShouldBe(1); // RemoveById did not execute
         person.AddressEntities.ShouldContain(a => a.Id == address.Id);
     }
+
+    // =========================================================================
+    // Set on Collection Items Tests
+    // =========================================================================
+
+    [Fact]
+    public void Change_SetOnAllCollectionItems_ShouldApplyActionToAll()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address1 = AddressEntityStub.Create("123 Main St", "New York");
+        var address2 = AddressEntityStub.Create("456 Oak Ave", "Boston");
+        address1.SetPrimary();
+        address2.SetPrimary();
+        person.AddAddressEntity(address1);
+        person.AddAddressEntity(address2);
+        person.DomainEvents.Clear();
+
+        // Act - Clear primary on all addresses
+        var result = person.ClearAllPrimaryAddresses();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        person.AddressEntities.All(a => !a.IsPrimary).ShouldBeTrue();
+        person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
+    }
+
+    [Fact]
+    public void Change_SetOnAllCollectionItems_WhenEmpty_ShouldReturnSuccessWithNoChange()
+    {
+        // Arrange
+        var person = new PersonStub();
+
+        // Act - Clear primary on empty collection
+        var result = person.ClearAllPrimaryAddresses();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        person.DomainEvents.GetAll().ShouldBeEmpty(); // No changes, no events
+    }
+
+    [Fact]
+    public void Change_SetByIdOnCollection_ShouldApplyActionToSingleItem()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address1 = AddressEntityStub.Create("123 Main St", "New York");
+        var address2 = AddressEntityStub.Create("456 Oak Ave", "Boston");
+        person.AddAddressEntity(address1);
+        person.AddAddressEntity(address2);
+        person.DomainEvents.Clear();
+
+        // Act - Set one address as primary
+        var result = person.SetPrimaryAddress(address1.Id);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        person.AddressEntities.Single(a => a.Id == address1.Id).IsPrimary.ShouldBeTrue();
+        person.AddressEntities.Single(a => a.Id == address2.Id).IsPrimary.ShouldBeFalse();
+        person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
+    }
+
+    [Fact]
+    public void Change_SetByIdOnCollection_WhenNotFound_ShouldReturnNotFoundError()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var nonExistentId = Guid.NewGuid();
+
+        // Act
+        var result = person.SetPrimaryAddress(nonExistentId);
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.HasError<NotFoundError>().ShouldBeTrue();
+        result.GetError<NotFoundError>().Message.ShouldContain("not found");
+    }
+
+    [Fact]
+    public void Change_SetOnCollectionWithResultAction_WhenAllSucceed_ShouldApplyAll()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address1 = AddressEntityStub.Create("123 Main St", "New York");
+        var address2 = AddressEntityStub.Create("456 Oak Ave", "Boston");
+        person.AddAddressEntity(address1);
+        person.AddAddressEntity(address2);
+
+        // Act - Validate all addresses (all valid)
+        var result = person.ValidateAllAddresses();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Change_SetOnCollectionWithResultAction_WhenOneFails_ShouldStopAndReturnFailure()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address1 = AddressEntityStub.Create("123 Main St", "New York");
+        var address2 = AddressEntityStub.Create("", "Boston"); // Invalid - empty street
+        person.AddAddressEntity(address1);
+        person.AddAddressEntity(address2);
+
+        // Act - Validate all addresses (second is invalid)
+        var result = person.ValidateAllAddresses();
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.HasError<ValidationError>().ShouldBeTrue();
+        result.GetError<ValidationError>().Message.ShouldContain("Street is required");
+    }
+
+    [Fact]
+    public void Change_SetOnFilteredCollectionItems_ShouldApplyActionToMatchingOnly()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address1 = AddressEntityStub.Create("123 Main St", "New York");
+        var address2 = AddressEntityStub.Create("456 Oak Ave", "New York");
+        var address3 = AddressEntityStub.Create("789 Pine Rd", "Boston");
+        person.AddAddressEntity(address1);
+        person.AddAddressEntity(address2);
+        person.AddAddressEntity(address3);
+
+        // Act - Set primary on New York addresses only
+        var result = person.Change()
+            .Set(p => p.addressEntities, a => a.City == "New York", a => a.SetPrimary())
+            .Apply();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        person.AddressEntities.Single(a => a.Id == address1.Id).IsPrimary.ShouldBeTrue();
+        person.AddressEntities.Single(a => a.Id == address2.Id).IsPrimary.ShouldBeTrue();
+        person.AddressEntities.Single(a => a.Id == address3.Id).IsPrimary.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Change_SetOnFilteredCollectionItems_WhenNoMatches_ShouldReturnSuccessWithNoChange()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address = AddressEntityStub.Create("123 Main St", "New York");
+        person.AddAddressEntity(address);
+        person.DomainEvents.Clear();
+
+        // Act - Filter for Boston addresses (none exist)
+        var result = person.Change()
+            .Set(p => p.addressEntities, a => a.City == "Boston", a => a.SetPrimary())
+            .Apply();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        person.DomainEvents.GetAll().ShouldBeEmpty(); // No changes, no events
+        address.IsPrimary.ShouldBeFalse(); // Not changed
+    }
+
+    [Fact]
+    public void Change_SetOnCollection_ComplexScenario_ClearAndSetPrimary()
+    {
+        // Arrange
+        var person = new PersonStub();
+        var address1 = AddressEntityStub.Create("123 Main St", "New York");
+        var address2 = AddressEntityStub.Create("456 Oak Ave", "Boston");
+        var address3 = AddressEntityStub.Create("789 Pine Rd", "Chicago");
+        address1.SetPrimary();
+        address3.SetPrimary();
+        person.AddAddressEntity(address1);
+        person.AddAddressEntity(address2);
+        person.AddAddressEntity(address3);
+        person.DomainEvents.Clear();
+
+        // Act - Clear all, then set address2 as primary
+        var result = person.SetPrimaryAddress(address2.Id);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        person.AddressEntities.Single(a => a.Id == address1.Id).IsPrimary.ShouldBeFalse();
+        person.AddressEntities.Single(a => a.Id == address2.Id).IsPrimary.ShouldBeTrue();
+        person.AddressEntities.Single(a => a.Id == address3.Id).IsPrimary.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Change_SetOnCollectionById_WithWhenGuard_ShouldRespectCircuitBreaker()
+    {
+        // Arrange
+        var person = new PersonStub { Age = 15 };
+        var address = AddressEntityStub.Create("123 Main St", "New York");
+        person.AddAddressEntity(address);
+
+        // Act - When guard prevents Set
+        var result = person.Change()
+            .Set(p => p.FirstName, "John")
+            .When(p => p.Age >= 18) // Circuit breaker - fails
+            .Set(p => p.addressEntities, address.Id, a => a.SetPrimary()) // Should not execute
+            .Apply();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue(); // Success but Set was skipped
+        person.FirstName.ShouldBe("John"); // Set before When executed
+        address.IsPrimary.ShouldBeFalse(); // Set did not execute
+    }
 }

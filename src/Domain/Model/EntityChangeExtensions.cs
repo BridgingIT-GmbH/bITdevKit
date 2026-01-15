@@ -693,8 +693,165 @@ public class ChangeOperationOutcome
     }
 
     // -------------------------------------------------------------------------
+    // 2b. Collection Item Operations (Set operations on items)
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// Applies an action to all items in a collection.
+    /// If collection is empty, returns success with hasChanged = false.
+    /// </summary>
+    /// <typeparam name="TItem">The type of items in the collection.</typeparam>
+    /// <param name="collectionExpression">Expression selecting the collection property.</param>
+    /// <param name="action">Action to apply to each item in the collection.</param>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Set(e => e.Addresses, a => a.ClearPrimary())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> Set<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        Action<TItem> action)
+    {
+        this.orderedOperations.Add(new CollectionSetAllOperationOrdered<TItem>(collectionExpression, action));
+        return this;
+    }
+
+    /// <summary>
+    /// Applies a Result-returning action to all items in a collection.
+    /// If any action fails, the transaction stops and returns that failure.
+    /// If collection is empty, returns success with hasChanged = false.
+    /// </summary>
+    /// <typeparam name="TItem">The type of items in the collection.</typeparam>
+    /// <param name="collectionExpression">Expression selecting the collection property.</param>
+    /// <param name="action">Result-returning action to apply to each item.</param>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Set(e => e.Addresses, a => a.Validate())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> Set<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        Func<TItem, Result> action)
+    {
+        this.orderedOperations.Add(new ResultCollectionSetAllOperationOrdered<TItem>(collectionExpression, action));
+        return this;
+    }
+
+    /// <summary>
+    /// Applies an action to filtered items in a collection.
+    /// If no items match the filter, returns success with hasChanged = false.
+    /// </summary>
+    /// <typeparam name="TItem">The type of items in the collection.</typeparam>
+    /// <param name="collectionExpression">Expression selecting the collection property.</param>
+    /// <param name="filter">Predicate to filter items.</param>
+    /// <param name="action">Action to apply to each matching item.</param>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Set(e => e.Addresses, a => a.IsActive, a => a.Renew())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> Set<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        Func<TItem, bool> filter,
+        Action<TItem> action)
+    {
+        this.orderedOperations.Add(new CollectionSetFilteredOperationOrdered<TItem>(collectionExpression, filter, action));
+        return this;
+    }
+
+    /// <summary>
+    /// Applies a Result-returning action to filtered items in a collection.
+    /// If any action fails, the transaction stops and returns that failure.
+    /// If no items match the filter, returns success with hasChanged = false.
+    /// </summary>
+    /// <typeparam name="TItem">The type of items in the collection.</typeparam>
+    /// <param name="collectionExpression">Expression selecting the collection property.</param>
+    /// <param name="filter">Predicate to filter items.</param>
+    /// <param name="action">Result-returning action to apply to each matching item.</param>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Set(e => e.Subscriptions, s => s.IsExpired, s => s.Renew())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> Set<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        Func<TItem, bool> filter,
+        Func<TItem, Result> action)
+    {
+        this.orderedOperations.Add(new ResultCollectionSetFilteredOperationOrdered<TItem>(collectionExpression, filter, action));
+        return this;
+    }
+
+    /// <summary>
+    /// Applies an action to a single item in a collection identified by its ID.
+    /// Returns a failure with <see cref="NotFoundError"/> if no item with the specified ID is found.
+    /// </summary>
+    /// <typeparam name="TItem">The type of items in the collection. Must implement IEntity{TId}.</typeparam>
+    /// <typeparam name="TId">The type of the entity ID.</typeparam>
+    /// <param name="collectionExpression">Expression selecting the collection property.</param>
+    /// <param name="id">The ID of the item to operate on.</param>
+    /// <param name="action">Action to apply to the matching item.</param>
+    /// <param name="errorMessage">Optional custom error message when item is not found.</param>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Set(e => e.Addresses, addressId, a => a.SetPrimary(), "Address not found")
+    ///     .Register(e => new CustomerUpdatedDomainEvent(e))
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> Set<TItem, TId>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        TId id,
+        Action<TItem> action,
+        string errorMessage = null)
+        where TItem : IEntity<TId>
+    {
+        this.orderedOperations.Add(new CollectionSetByIdOperationOrdered<TItem, TId>(collectionExpression, id, action, errorMessage));
+        return this;
+    }
+
+    /// <summary>
+    /// Applies a Result-returning action to a single item in a collection identified by its ID.
+    /// Returns a failure with <see cref="NotFoundError"/> if no item with the specified ID is found.
+    /// If the action fails, returns that failure.
+    /// </summary>
+    /// <typeparam name="TItem">The type of items in the collection. Must implement IEntity{TId}.</typeparam>
+    /// <typeparam name="TId">The type of the entity ID.</typeparam>
+    /// <param name="collectionExpression">Expression selecting the collection property.</param>
+    /// <param name="id">The ID of the item to operate on.</param>
+    /// <param name="action">Result-returning action to apply to the matching item.</param>
+    /// <param name="errorMessage">Optional custom error message when item is not found.</param>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Set(e => e.Addresses, addressId, a => a.Activate(), "Address not found")
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> Set<TItem, TId>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        TId id,
+        Func<TItem, Result> action,
+        string errorMessage = null)
+        where TItem : IEntity<TId>
+    {
+        this.orderedOperations.Add(new ResultCollectionSetByIdOperationOrdered<TItem, TId>(collectionExpression, id, action, errorMessage));
+        return this;
+    }
+
+    // -------------------------------------------------------------------------
     // 3. Logic & Guards
     // -------------------------------------------------------------------------
+
 
     /// <summary>
     /// Adds a circuit breaker condition at the current position in the operation chain.
@@ -1586,4 +1743,280 @@ public class ChangeOperationOutcome
                     return OperationExecutionResult.Success(hasChanged: true);
                 }
             }
+
+            /// <summary>
+            /// Collection set all operation - applies action to all items.
+            /// </summary>
+            private class CollectionSetAllOperationOrdered<TItem>(
+                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+                Action<TItem> action) : IOrderedOperation
+            {
+                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+                private readonly string propertyName = GetPropertyName(collectionExpression);
+
+                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+                {
+                    if (expr.Body is MemberExpression memberExpr)
+                    {
+                        return memberExpr.Member.Name;
+                    }
+                    return "Collection";
+                }
+
+                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+                {
+                    var collection = this.collectionGetter(entity);
+                    if (collection == null || collection.Count == 0)
+                    {
+                        return OperationExecutionResult.Success(hasChanged: false);
+                    }
+
+                    foreach (var item in collection)
+                    {
+                        action(item);
+                    }
+
+                    context.RecordChange(this.propertyName, "Collection");
+                    return OperationExecutionResult.Success(hasChanged: true);
+                }
+            }
+
+            /// <summary>
+            /// Collection set all operation with Result-returning action.
+            /// </summary>
+            private class ResultCollectionSetAllOperationOrdered<TItem>(
+                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+                Func<TItem, Result> action) : IOrderedOperation
+            {
+                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+                private readonly string propertyName = GetPropertyName(collectionExpression);
+
+                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+                {
+                    if (expr.Body is MemberExpression memberExpr)
+                    {
+                        return memberExpr.Member.Name;
+                    }
+                    return "Collection";
+                }
+
+                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+                {
+                    var collection = this.collectionGetter(entity);
+                    if (collection == null || collection.Count == 0)
+                    {
+                        return OperationExecutionResult.Success(hasChanged: false);
+                    }
+
+                    foreach (var item in collection)
+                    {
+                        var result = action(item);
+                        if (result.IsFailure)
+                        {
+                            return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                        }
+                    }
+
+                    context.RecordChange(this.propertyName, "Collection");
+                    return OperationExecutionResult.Success(hasChanged: true);
+                }
+            }
+
+            /// <summary>
+            /// Collection set filtered operation - applies action to filtered items.
+            /// </summary>
+            private class CollectionSetFilteredOperationOrdered<TItem>(
+                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+                Func<TItem, bool> filter,
+                Action<TItem> action) : IOrderedOperation
+            {
+                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+                private readonly string propertyName = GetPropertyName(collectionExpression);
+
+                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+                {
+                    if (expr.Body is MemberExpression memberExpr)
+                    {
+                        return memberExpr.Member.Name;
+                    }
+                    return "Collection";
+                }
+
+                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+                {
+                    var collection = this.collectionGetter(entity);
+                    if (collection == null)
+                    {
+                        return OperationExecutionResult.Success(hasChanged: false);
+                    }
+
+                    var matchingItems = collection.Where(filter).ToList();
+                    if (matchingItems.Count == 0)
+                    {
+                        return OperationExecutionResult.Success(hasChanged: false);
+                    }
+
+                    foreach (var item in matchingItems)
+                    {
+                        action(item);
+                    }
+
+                    context.RecordChange(this.propertyName, "Collection");
+                    return OperationExecutionResult.Success(hasChanged: true);
+                }
+            }
+
+            /// <summary>
+            /// Collection set filtered operation with Result-returning action.
+            /// </summary>
+            private class ResultCollectionSetFilteredOperationOrdered<TItem>(
+                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+                Func<TItem, bool> filter,
+                Func<TItem, Result> action) : IOrderedOperation
+            {
+                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+                private readonly string propertyName = GetPropertyName(collectionExpression);
+
+                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+                {
+                    if (expr.Body is MemberExpression memberExpr)
+                    {
+                        return memberExpr.Member.Name;
+                    }
+                    return "Collection";
+                }
+
+                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+                {
+                    var collection = this.collectionGetter(entity);
+                    if (collection == null)
+                    {
+                        return OperationExecutionResult.Success(hasChanged: false);
+                    }
+
+                    var matchingItems = collection.Where(filter).ToList();
+                    if (matchingItems.Count == 0)
+                    {
+                        return OperationExecutionResult.Success(hasChanged: false);
+                    }
+
+                    foreach (var item in matchingItems)
+                    {
+                        var result = action(item);
+                        if (result.IsFailure)
+                        {
+                            return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                        }
+                    }
+
+                    context.RecordChange(this.propertyName, "Collection");
+                    return OperationExecutionResult.Success(hasChanged: true);
+                }
+            }
+
+            /// <summary>
+            /// Collection set by ID operation - applies action to item by ID.
+            /// Returns NotFoundError if item not found.
+            /// </summary>
+            private class CollectionSetByIdOperationOrdered<TItem, TId>(
+                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+                TId id,
+                Action<TItem> action,
+                string errorMessage) : IOrderedOperation
+                where TItem : IEntity<TId>
+            {
+                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+                private readonly string propertyName = GetPropertyName(collectionExpression);
+                private readonly IEqualityComparer<TId> comparer = EqualityComparer<TId>.Default;
+
+                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+                {
+                    if (expr.Body is MemberExpression memberExpr)
+                    {
+                        return memberExpr.Member.Name;
+                    }
+                    return "Collection";
+                }
+
+                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+                {
+                    var collection = this.collectionGetter(entity);
+                    if (collection == null)
+                    {
+                        var message = errorMessage ?? $"Cannot operate on null collection '{this.propertyName}'";
+                        return OperationExecutionResult.Failure(
+                            errors: [new NotFoundError(message)],
+                            messages: [message]);
+                    }
+
+                    var item = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
+                    if (item == null)
+                    {
+                        var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
+                        return OperationExecutionResult.Failure(
+                            errors: [new NotFoundError(message)],
+                            messages: [message]);
+                    }
+
+                    action(item);
+                    context.RecordChange(this.propertyName, "Collection");
+                    return OperationExecutionResult.Success(hasChanged: true);
+                }
+            }
+
+            /// <summary>
+            /// Collection set by ID operation with Result-returning action.
+            /// Returns NotFoundError if item not found.
+            /// </summary>
+            private class ResultCollectionSetByIdOperationOrdered<TItem, TId>(
+                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+                TId id,
+                Func<TItem, Result> action,
+                string errorMessage) : IOrderedOperation
+                where TItem : IEntity<TId>
+            {
+                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+                private readonly string propertyName = GetPropertyName(collectionExpression);
+                private readonly IEqualityComparer<TId> comparer = EqualityComparer<TId>.Default;
+
+                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+                {
+                    if (expr.Body is MemberExpression memberExpr)
+                    {
+                        return memberExpr.Member.Name;
+                    }
+                    return "Collection";
+                }
+
+                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+                {
+                    var collection = this.collectionGetter(entity);
+                    if (collection == null)
+                    {
+                        var message = errorMessage ?? $"Cannot operate on null collection '{this.propertyName}'";
+                        return OperationExecutionResult.Failure(
+                            errors: [new NotFoundError(message)],
+                            messages: [message]);
+                    }
+
+                    var item = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
+                    if (item == null)
+                    {
+                        var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
+                        return OperationExecutionResult.Failure(
+                            errors: [new NotFoundError(message)],
+                            messages: [message]);
+                    }
+
+                    var result = action(item);
+                    if (result.IsFailure)
+                    {
+                        return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                    }
+
+                    context.RecordChange(this.propertyName, "Collection");
+                    return OperationExecutionResult.Success(hasChanged: true);
+                }
+            }
         }
+

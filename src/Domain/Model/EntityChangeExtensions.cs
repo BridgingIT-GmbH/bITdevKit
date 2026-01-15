@@ -565,13 +565,14 @@ public class ChangeOperationOutcome
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Remove<TItem>(
+    public EntityChangeBuilder<TEntity> RemoveBy<TItem>(
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Func<TEntity, Result<TItem>> itemFactory,
         IEqualityComparer<TItem> comparer = null,
         string errorMessage = null)
     {
-        this.orderedOperations.Add(new ResultCollectionRemoveOperationOrdered<TItem>(collectionExpression, itemFactory, comparer, errorMessage));
+        this.orderedOperations.Add(
+            new ResultCollectionRemoveOperationOrdered<TItem>(collectionExpression, itemFactory, comparer, errorMessage));
         return this;
     }
 
@@ -594,7 +595,7 @@ public class ChangeOperationOutcome
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Remove<TItem, TId>(
+    public EntityChangeBuilder<TEntity> RemoveById<TItem, TId>(
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TId id,
         IEqualityComparer<TId> comparer = null,
@@ -621,11 +622,11 @@ public class ChangeOperationOutcome
     /// <code>
     /// var idResult = GetAddressId();
     /// return this.Change()
-    ///     .RemoveById&lt;Address, AddressId&gt;(e => e.Addresses, idResult, errorMessage: "Address not found")
+    ///     .RemoveById(e => e.Addresses, idResult, errorMessage: "Address not found")
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Remove<TItem, TId>(
+    public EntityChangeBuilder<TEntity> RemoveById<TItem, TId>(
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Result<TId> result,
         IEqualityComparer<TId> comparer = null,
@@ -641,7 +642,7 @@ public class ChangeOperationOutcome
             return this;
         }
 
-        return this.Remove<TItem, TId>(collectionExpression, result.Value, comparer, errorMessage);
+        return this.RemoveById<TItem, TId>(collectionExpression, result.Value, comparer, errorMessage);
     }
 
     /// <summary>
@@ -670,7 +671,8 @@ public class ChangeOperationOutcome
         string errorMessage = null)
         where TItem : IEntity<TId>
     {
-        this.orderedOperations.Add(new ResultCollectionRemoveByIdOperationOrdered<TItem, TId>(collectionExpression, idFactory, comparer, errorMessage));
+        this.orderedOperations.Add(
+            new ResultCollectionRemoveByIdOperationOrdered<TItem, TId>(collectionExpression, idFactory, comparer, errorMessage));
         return this;
     }
 
@@ -714,7 +716,8 @@ public class ChangeOperationOutcome
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Action<TItem> action)
     {
-        this.orderedOperations.Add(new CollectionSetAllOperationOrdered<TItem>(collectionExpression, action));
+        this.orderedOperations.Add(
+            new CollectionSetAllOperationOrdered<TItem>(collectionExpression, action));
         return this;
     }
 
@@ -737,7 +740,8 @@ public class ChangeOperationOutcome
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Func<TItem, Result> action)
     {
-        this.orderedOperations.Add(new ResultCollectionSetAllOperationOrdered<TItem>(collectionExpression, action));
+        this.orderedOperations.Add(
+            new ResultCollectionSetAllOperationOrdered<TItem>(collectionExpression, action));
         return this;
     }
 
@@ -756,7 +760,7 @@ public class ChangeOperationOutcome
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Set<TItem>(
+    public EntityChangeBuilder<TEntity> SetBy<TItem>(
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Func<TItem, bool> filter,
         Action<TItem> action)
@@ -781,7 +785,7 @@ public class ChangeOperationOutcome
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Set<TItem>(
+    public EntityChangeBuilder<TEntity> SetBy<TItem>(
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Func<TItem, bool> filter,
         Func<TItem, Result> action)
@@ -808,7 +812,7 @@ public class ChangeOperationOutcome
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Set<TItem, TId>(
+    public EntityChangeBuilder<TEntity> SetById<TItem, TId>(
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TId id,
         Action<TItem> action,
@@ -837,7 +841,7 @@ public class ChangeOperationOutcome
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Set<TItem, TId>(
+    public EntityChangeBuilder<TEntity> SetById<TItem, TId>(
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TId id,
         Func<TItem, Result> action,

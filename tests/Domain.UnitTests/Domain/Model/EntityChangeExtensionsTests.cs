@@ -1022,7 +1022,7 @@ public class EntityChangeExtensionsTests
         // Act - RemoveById with failing Result
         var failedIdResult = Result<Guid>.Failure().WithError(new ValidationError("Invalid ID format"));
         var result = person.Change()
-            .Remove<AddressEntityStub, Guid>(p => p.addressEntities, failedIdResult)
+            .RemoveById<AddressEntityStub, Guid>(p => p.addressEntities, failedIdResult)
             .Apply();
 
         // Assert
@@ -1067,8 +1067,8 @@ public class EntityChangeExtensionsTests
 
         // Act - Remove multiple addresses by ID
         var result = person.Change()
-            .Remove<AddressEntityStub, Guid>(p => p.addressEntities, address1.Id)
-            .Remove<AddressEntityStub, Guid>(p => p.addressEntities, address3.Id)
+            .RemoveById<AddressEntityStub, Guid>(p => p.addressEntities, address1.Id)
+            .RemoveById<AddressEntityStub, Guid>(p => p.addressEntities, address3.Id)
             .Apply();
 
         // Assert
@@ -1090,8 +1090,8 @@ public class EntityChangeExtensionsTests
 
         // Act - First remove fails, second should not execute
         var result = person.Change()
-            .Remove<AddressEntityStub, Guid>(p => p.addressEntities, nonExistentId) // Fails
-            .Remove<AddressEntityStub, Guid>(p => p.addressEntities, address.Id)     // Should not execute
+            .RemoveById<AddressEntityStub, Guid>(p => p.addressEntities, nonExistentId) // Fails
+            .RemoveById<AddressEntityStub, Guid>(p => p.addressEntities, address.Id)     // Should not execute
             .Apply();
 
         // Assert
@@ -1113,7 +1113,7 @@ public class EntityChangeExtensionsTests
         var result = person.Change()
             .Set(p => p.FirstName, "John")
             .When(p => p.Age >= 18) // Circuit breaker - fails
-            .Remove<AddressEntityStub, Guid>(p => p.addressEntities, address.Id) // Should not execute
+            .RemoveById<AddressEntityStub, Guid>(p => p.addressEntities, address.Id) // Should not execute
             .Apply();
 
         // Assert
@@ -1250,7 +1250,7 @@ public class EntityChangeExtensionsTests
 
         // Act - Set primary on New York addresses only
         var result = person.Change()
-            .Set(p => p.addressEntities, a => a.City == "New York", a => a.SetPrimary())
+            .SetBy(p => p.addressEntities, a => a.City == "New York", a => a.SetPrimary())
             .Apply();
 
         // Assert
@@ -1271,7 +1271,7 @@ public class EntityChangeExtensionsTests
 
         // Act - Filter for Boston addresses (none exist)
         var result = person.Change()
-            .Set(p => p.addressEntities, a => a.City == "Boston", a => a.SetPrimary())
+            .SetBy(p => p.addressEntities, a => a.City == "Boston", a => a.SetPrimary())
             .Apply();
 
         // Assert
@@ -1317,7 +1317,7 @@ public class EntityChangeExtensionsTests
         var result = person.Change()
             .Set(p => p.FirstName, "John")
             .When(p => p.Age >= 18) // Circuit breaker - fails
-            .Set(p => p.addressEntities, address.Id, a => a.SetPrimary()) // Should not execute
+            .SetById(p => p.addressEntities, address.Id, a => a.SetPrimary()) // Should not execute
             .Apply();
 
         // Assert

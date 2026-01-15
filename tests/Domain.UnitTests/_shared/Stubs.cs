@@ -142,7 +142,7 @@ public class PersonStub : AggregateRoot<Guid>
     public Result<PersonStub> RemoveAddressEntityById(Guid addressId, string errorMessage = null)
     {
         return this.Change()
-            .Remove<AddressEntityStub, Guid>(p => p.addressEntities, addressId, errorMessage: errorMessage)
+            .RemoveById(p => p.addressEntities, addressId, errorMessage: errorMessage)
             .Register(_ => new AddressListChangedEvent())
             .Apply();
     }
@@ -159,7 +159,7 @@ public class PersonStub : AggregateRoot<Guid>
     {
         return this.Change()
             .Set(p => p.addressEntities, a => a.ClearPrimary())                          // Clear all first
-            .Set(p => p.addressEntities, addressId, a => a.SetPrimary(), "Address not found") // Set one as primary
+            .SetById(p => p.addressEntities, addressId, a => a.SetPrimary(), "Address not found") // Set one as primary
             .Register(_ => new AddressListChangedEvent())
             .Apply();
     }

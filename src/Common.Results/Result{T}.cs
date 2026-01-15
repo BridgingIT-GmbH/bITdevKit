@@ -832,6 +832,11 @@ public readonly partial struct Result<T> : IResult<T>
         return new Result<T>(false, this.value, this.messages, this.errors.Add(error));
     }
 
+    public Result<T> WithError(string errorMessage)
+    {
+        return new Result<T>(false, this.value, this.messages, this.errors.Add(new Error(errorMessage)));
+    }
+
     /// <summary>
     /// Adds an exception to the Result and marks it as failed.
     /// </summary>

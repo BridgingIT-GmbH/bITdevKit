@@ -500,6 +500,11 @@ public readonly partial struct Result : IResult
         return new Result(false, this.messages, this.errors.Add(error));
     }
 
+    public Result WithError(string errorMessage)
+    {
+        return new Result(false, this.messages, this.errors.Add(new Error(errorMessage)));
+    }
+
     /// <summary>
     /// Adds an exception to the Result and marks it as failed.
     /// </summary>

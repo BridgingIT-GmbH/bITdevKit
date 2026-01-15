@@ -3,41 +3,31 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-using Shouldly;
-
 namespace BridgingIT.DevKit.Common.UnitTests.Abstractions.Extensions;
+
+using Shouldly;
 
 [UnitTest("Common")]
 public class LinqFluentExtensionsTests
 {
     #region Test Models
 
-    private class TestEntity
+    private class TestEntity(int id = 1, string name = "Test", int value = 100, bool isActive = true)
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public int Value { get; set; }
-        public bool IsActive { get; set; }
+        public int Id { get; set; } = id;
 
-        public TestEntity(int id = 1, string name = "Test", int value = 100, bool isActive = true)
-        {
-            Id = id;
-            Name = name;
-            Value = value;
-            IsActive = isActive;
-        }
+        public string Name { get; set; } = name;
+
+        public int Value { get; set; } = value;
+
+        public bool IsActive { get; set; } = isActive;
     }
 
-    private struct TestValue
+    private struct TestValue(int id = 1, bool isActive = true)
     {
-        public int Id { get; set; }
-        public bool IsActive { get; set; }
+        public int Id { get; set; } = id;
 
-        public TestValue(int id = 1, bool isActive = true)
-        {
-            Id = id;
-            IsActive = isActive;
-        }
+        public bool IsActive { get; set; } = isActive;
     }
 
     #endregion
@@ -1364,6 +1354,1229 @@ public class LinqFluentExtensionsTests
 
         // Assert
         result.ShouldBe(42);
+    }
+
+    #endregion
+
+    #region Async Find Tests
+
+    [Fact]
+    public async Task FindAsync_WithMatchingAsyncPredicate_ReturnsFirstMatch()
+    {
+        // Arrange
+        var entities = new List<TestEntity>
+        {
+            new(1, "Alice"),
+            new(2, "Bob"),
+            new(3, "Charlie")
+        };
+
+        // Act
+        var result = await entities.FindAsync(async (e, ct) =>
+        {
+            await Task.Delay(1, ct);
+            return e.Id == 2;
+        });
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.Id.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task FindAsync_WithoutCancellationTokenParam_ReturnsFirstMatch()
+    {
+        // Arrange
+        var entities = new List<TestEntity>
+        {
+            new(1, "Alice"),
+            new(2, "Bob")
+        };
+
+        // Act
+        var result = await entities.FindAsync(async e =>
+        {
+            await Task.Delay(1);
+            return e.Id == 2;
+        });
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.Id.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task FindAsync_WithNoMatch_ReturnsNull()
+    {
+        // Arrange
+        var entities = new List<TestEntity> { new(1, "Alice") };
+
+        // Act
+        var result = await entities.FindAsync(async (e, ct) =>
+        {
+            await Task.Delay(1, ct);
+            return e.Id == 99;
+        });
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task FindAsync_WithNullSource_ReturnsNull()
+    {
+        // Arrange
+        List<TestEntity> entities = null;
+
+        // Act
+        var result = await entities.FindAsync(async (e, ct) => await Task.FromResult(true), CancellationToken.None);
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task FindAsync_WithNullPredicate_ReturnsNull()
+    {
+        // Arrange
+        var entities = new List<TestEntity> { new(1, "Alice") };
+
+        // Act
+        var result = await entities.FindAsync((Func<TestEntity, CancellationToken, Task<bool>>)null);
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task FindValueAsync_WithMatchingAsyncPredicate_ReturnsFirstMatch()
+    {
+        // Arrange
+        var values = new List<TestValue>
+        {
+            new(1, true),
+            new(2, false),
+            new(3, true)
+        };
+
+        // Act
+        var result = await values.FindValueAsync(async (v, ct) =>
+        {
+            await Task.Delay(1, ct);
+            return v.Id == 2;
+        });
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.Value.Id.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task FindValueAsync_WithoutCancellationTokenParam_ReturnsFirstMatch()
+    {
+        // Arrange
+        var values = new List<TestValue> { new(1, true), new(2, false) };
+
+        // Act
+        var result = await values.FindValueAsync(async v =>
+        {
+            await Task.Delay(1);
+            return v.Id == 2;
+        });
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.Value.Id.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task FindValueAsync_WithNoMatch_ReturnsNull()
+    {
+        // Arrange
+        var values = new List<TestValue> { new(1, true) };
+
+        // Act
+        var result = await values.FindValueAsync(async (v, ct) => await Task.FromResult(false), CancellationToken.None);
+
+        // Assert
+        result.ShouldBeNull();
+    }
+
+    #endregion
+
+    #region Async WhenNotNull / WhenNull Tests
+
+    [Fact]
+    public async Task WhenNotNullAsync_WithNotNullReferenceType_ExecutesAsyncAction()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test");
+        var actionExecuted = false;
+
+        // Act
+        var result = await entity.WhenNotNullAsync(async (e, ct) =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBe(entity);
+    }
+
+    [Fact]
+    public async Task WhenNotNullAsync_WithoutCancellationTokenParam_ExecutesAsyncAction()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test");
+        var actionExecuted = false;
+
+        // Act
+        var result = await entity.WhenNotNullAsync(async e =>
+        {
+            await Task.Delay(1);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBe(entity);
+    }
+
+    [Fact]
+    public async Task WhenNotNullAsync_WithNullReferenceType_DoesNotExecuteAction()
+    {
+        // Arrange
+        TestEntity entity = null;
+        var actionExecuted = false;
+
+        // Act
+        var result = await entity.WhenNotNullAsync(async (e, ct) =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeFalse();
+        result.ShouldBeNull();
+    }
+
+
+
+    [Fact]
+    public async Task WhenNullAsync_WithNullReferenceType_ExecutesAsyncAction()
+    {
+        // Arrange
+        TestEntity entity = null;
+        var actionExecuted = false;
+
+        // Act
+        var result = await entity.WhenNullAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task WhenNullAsync_WithNotNull_DoesNotExecuteAction()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test");
+        var actionExecuted = false;
+
+        // Act
+        var result = await entity.WhenNullAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeFalse();
+        result.ShouldBe(entity);
+    }
+
+    [Fact]
+    public async Task WhenNullAsync_OnTask_WithNull_ExecutesAction()
+    {
+        // Arrange
+        var task = Task.FromResult((TestEntity)null);
+        var actionExecuted = false;
+
+        // Act
+        var result = await task.WhenNullAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBeNull();
+    }
+
+    #endregion
+
+    #region Async String-Specific Tests
+
+    [Fact]
+    public async Task WhenNotNullOrEmptyAsync_WithValidString_ExecutesAction()
+    {
+        // Arrange
+        var str = "test value";
+        var capturedValue = "";
+
+        // Act
+        var result = await str.WhenNotNullOrEmptyAsync(async (s, ct) =>
+        {
+            await Task.Delay(1, ct);
+            capturedValue = s;
+        });
+
+        // Assert
+        capturedValue.ShouldBe("test value");
+        result.ShouldBe(str);
+    }
+
+    [Fact]
+    public async Task WhenNotNullOrEmptyAsync_WithEmptyString_DoesNotExecuteAction()
+    {
+        // Arrange
+        var str = "";
+        var actionExecuted = false;
+
+        // Act
+        var result = await str.WhenNotNullOrEmptyAsync(async (s, ct) =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeFalse();
+        result.ShouldBe("");
+    }
+
+    [Fact]
+    public async Task WhenNotNullOrEmptyAsync_OnTask_WithValidString_ExecutesAction()
+    {
+        // Arrange
+        var task = Task.FromResult("test string");
+        var actionExecuted = false;
+
+        // Act
+        var result = await task.WhenNotNullOrEmptyAsync(async (s, ct) =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBe("test string");
+    }
+
+    [Fact]
+    public async Task WhenNotNullOrWhiteSpaceAsync_WithValidString_ExecutesAction()
+    {
+        // Arrange
+        var str = "content";
+        var actionExecuted = false;
+
+        // Act
+        var result = await str.WhenNotNullOrWhiteSpaceAsync(async (s, ct) =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBe(str);
+    }
+
+    [Fact]
+    public async Task WhenNotNullOrWhiteSpaceAsync_WithWhitespace_DoesNotExecuteAction()
+    {
+        // Arrange
+        var str = "   ";
+        var actionExecuted = false;
+
+        // Act
+        var result = await str.WhenNotNullOrWhiteSpaceAsync(async (s, ct) =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeFalse();
+        result.ShouldBe(str);
+    }
+
+    [Fact]
+    public async Task WhenNotNullOrWhiteSpaceAsync_OnTask_WithWhitespace_DoesNotExecuteAction()
+    {
+        // Arrange
+        var task = Task.FromResult("   ");
+        var actionExecuted = false;
+
+        // Act
+        var result = await task.WhenNotNullOrWhiteSpaceAsync(async (s, ct) =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeFalse();
+        result.ShouldBe("   ");
+    }
+
+    [Fact]
+    public async Task WhenNullOrEmptyAsync_WithNullString_ExecutesAction()
+    {
+        // Arrange
+        string str = null;
+        var actionExecuted = false;
+
+        // Act
+        var result = await str.WhenNullOrEmptyAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task WhenNullOrEmptyAsync_OnTask_WithEmptyString_ExecutesAction()
+    {
+        // Arrange
+        var task = Task.FromResult("");
+        var actionExecuted = false;
+
+        // Act
+        var result = await task.WhenNullOrEmptyAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBe("");
+    }
+
+    [Fact]
+    public async Task WhenNullOrWhiteSpaceAsync_WithWhitespace_ExecutesAction()
+    {
+        // Arrange
+        var str = "   ";
+        var actionExecuted = false;
+
+        // Act
+        var result = await str.WhenNullOrWhiteSpaceAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBe(str);
+    }
+
+    [Fact]
+    public async Task WhenNullOrWhiteSpaceAsync_OnTask_WithValidString_DoesNotExecuteAction()
+    {
+        // Arrange
+        var task = Task.FromResult("content");
+        var actionExecuted = false;
+
+        // Act
+        var result = await task.WhenNullOrWhiteSpaceAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeFalse();
+        result.ShouldBe("content");
+    }
+
+    #endregion
+
+    #region Async When / Unless Tests
+
+    [Fact]
+    public async Task WhenAsync_WithTruePredicate_ExecutesAsyncAction()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test") { IsActive = true };
+        var actionExecuted = false;
+
+        // Act
+        var result = await entity.WhenAsync(
+            async (e, ct) => await Task.FromResult(e.IsActive),
+            async (e, ct) =>
+            {
+                await Task.Delay(1, ct);
+                actionExecuted = true;
+            });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBe(entity);
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithFalsePredicate_DoesNotExecuteAction()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test") { IsActive = false };
+        var actionExecuted = false;
+
+        // Act
+        var result = await entity.WhenAsync(
+            async (e, ct) => await Task.FromResult(e.IsActive),
+            async (e, ct) =>
+            {
+                await Task.Delay(1, ct);
+                actionExecuted = true;
+            });
+
+        // Assert
+        actionExecuted.ShouldBeFalse();
+        result.ShouldBe(entity);
+    }
+
+    [Fact]
+    public async Task WhenAsync_OnTask_WithTruePredicate_ExecutesAsyncAction()
+    {
+        // Arrange
+        var task = Task.FromResult(new TestEntity(1, "Test") { IsActive = true });
+        var actionExecuted = false;
+
+        // Act
+        var result = await task.WhenAsync(
+            async (e, ct) => await Task.FromResult(e.IsActive),
+            async (e, ct) =>
+            {
+                await Task.Delay(1, ct);
+                actionExecuted = true;
+            });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public async Task UnlessAsync_WithFalsePredicate_ExecutesAsyncAction()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test") { IsActive = false };
+        var actionExecuted = false;
+
+        // Act
+        var result = await entity.UnlessAsync(
+            async (e, ct) => await Task.FromResult(e.IsActive),
+            async (e, ct) =>
+            {
+                await Task.Delay(1, ct);
+                actionExecuted = true;
+            });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBe(entity);
+    }
+
+    [Fact]
+    public async Task UnlessAsync_WithTruePredicate_DoesNotExecuteAction()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test") { IsActive = true };
+        var actionExecuted = false;
+
+        // Act
+        var result = await entity.UnlessAsync(
+            async (e, ct) => await Task.FromResult(e.IsActive),
+            async (e, ct) =>
+            {
+                await Task.Delay(1, ct);
+                actionExecuted = true;
+            });
+
+        // Assert
+        actionExecuted.ShouldBeFalse();
+        result.ShouldBe(entity);
+    }
+
+    [Fact]
+    public async Task UnlessAsync_OnTask_WithFalsePredicate_ExecutesAsyncAction()
+    {
+        // Arrange
+        var task = Task.FromResult(new TestEntity(1, "Test") { IsActive = false });
+        var actionExecuted = false;
+
+        // Act
+        var result = await task.UnlessAsync(
+            async (e, ct) => await Task.FromResult(e.IsActive),
+            async (e, ct) =>
+            {
+                await Task.Delay(1, ct);
+                actionExecuted = true;
+            });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldNotBeNull();
+    }
+
+    #endregion
+
+    #region Async Bool Condition Tests
+
+    [Fact]
+    public async Task WhenAsync_WithBoolTrue_ExecutesAsyncAction()
+    {
+        // Arrange
+        var condition = true;
+        var actionExecuted = false;
+
+        // Act
+        var result = await condition.WhenAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithBoolFalse_DoesNotExecuteAction()
+    {
+        // Arrange
+        var condition = false;
+        var actionExecuted = false;
+
+        // Act
+        var result = await condition.WhenAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeFalse();
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task WhenAsync_OnTask_WithBoolTrue_ExecutesAsyncAction()
+    {
+        // Arrange
+        var task = Task.FromResult(true);
+        var actionExecuted = false;
+
+        // Act
+        var result = await task.WhenAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task OtherwiseAsync_WithBoolFalse_ExecutesAsyncAction()
+    {
+        // Arrange
+        var condition = false;
+        var actionExecuted = false;
+
+        // Act
+        var result = await condition.OtherwiseAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task OtherwiseAsync_WithBoolTrue_DoesNotExecuteAction()
+    {
+        // Arrange
+        var condition = true;
+        var actionExecuted = false;
+
+        // Act
+        var result = await condition.OtherwiseAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeFalse();
+        result.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task OtherwiseAsync_OnTask_WithBoolFalse_ExecutesAsyncAction()
+    {
+        // Arrange
+        var task = Task.FromResult(false);
+        var actionExecuted = false;
+
+        // Act
+        var result = await task.OtherwiseAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBeFalse();
+    }
+
+    #endregion
+
+    #region Async Do Tests
+
+    [Fact]
+    public async Task DoAsync_WithReferenceType_ExecutesAsyncActionAndReturnsValue()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test");
+        var capturedId = 0;
+
+        // Act
+        var result = await entity.DoAsync(async (e, ct) =>
+        {
+            await Task.Delay(1, ct);
+            capturedId = e.Id;
+        });
+
+        // Assert
+        capturedId.ShouldBe(1);
+        result.ShouldBe(entity);
+    }
+
+    [Fact]
+    public async Task DoAsync_WithoutCancellationTokenParam_ExecutesAsyncAction()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test");
+        var actionExecuted = false;
+
+        // Act
+        var result = await entity.DoAsync(async e =>
+        {
+            await Task.Delay(1);
+            actionExecuted = true;
+        });
+
+        // Assert
+        actionExecuted.ShouldBeTrue();
+        result.ShouldBe(entity);
+    }
+
+    [Fact]
+    public async Task DoAsync_WithValueType_ExecutesAsyncActionAndReturnsValue()
+    {
+        // Arrange
+        int? value = 42;
+        var capturedValue = 0;
+
+        // Act
+        var result = await value.DoAsync(async (v, ct) =>
+        {
+            await Task.Delay(1, ct);
+            capturedValue = v;
+        });
+
+        // Assert
+        capturedValue.ShouldBe(42);
+        result.ShouldBe(42);
+    }
+
+    [Fact]
+    public async Task DoAsync_WithNullAction_DoesNotThrowAndReturnsValue()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test");
+
+        // Act
+        var result = await entity.DoAsync((Func<TestEntity, CancellationToken, Task>)null);
+
+        // Assert
+        result.ShouldBe(entity);
+    }
+
+    [Fact]
+    public async Task DoAsync_WithValueType_WithNullAction_DoesNotThrow()
+    {
+        // Arrange
+        int? value = 42;
+
+        // Act
+        var result = await value.DoAsync((Func<int, CancellationToken, Task>)null);
+
+        // Assert
+        result.ShouldBe(42);
+    }
+
+    #endregion
+
+    #region Async Throw / ThrowWhen Tests
+
+    [Fact]
+    public async Task ThrowAsync_WithNullValue_ThrowsException()
+    {
+        // Arrange
+        TestEntity entity = null;
+
+        // Act & Assert
+        await Should.ThrowAsync<InvalidOperationException>(async () =>
+            await entity.ThrowAsync(async ct => new InvalidOperationException("Entity not found")));
+    }
+
+    [Fact]
+    public async Task ThrowAsync_WithNotNullValue_DoesNotThrowAndReturnsValue()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test");
+
+        // Act
+        var result = await entity.ThrowAsync(async ct => new InvalidOperationException("Entity not found"));
+
+        // Assert
+        result.ShouldBe(entity);
+    }
+
+    [Fact]
+    public async Task ThrowWhenAsync_WithTrueCondition_ThrowsException()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test") { IsActive = false };
+
+        // Act & Assert
+        await Should.ThrowAsync<InvalidOperationException>(async () =>
+            await entity.ThrowWhenAsync(
+                async (e, ct) => await Task.FromResult(!e.IsActive),
+                async (e, ct) => new InvalidOperationException("Inactive")));
+    }
+
+    [Fact]
+    public async Task ThrowWhenAsync_WithFalseCondition_DoesNotThrowAndReturnsValue()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test") { IsActive = true };
+
+        // Act
+        var result = await entity.ThrowWhenAsync(
+            async (e, ct) => await Task.FromResult(!e.IsActive),
+            async (e, ct) => new InvalidOperationException("Inactive"));
+
+        // Assert
+        result.ShouldBe(entity);
+    }
+
+    [Fact]
+    public async Task ThrowWhenAsync_OnTask_WithTrueCondition_ThrowsException()
+    {
+        // Arrange
+        var task = Task.FromResult(new TestEntity(1, "Test") { IsActive = false });
+
+        // Act & Assert
+        await Should.ThrowAsync<InvalidOperationException>(async () =>
+            await task.ThrowWhenAsync(
+                async (e, ct) => await Task.FromResult(!e.IsActive),
+                async (e, ct) => new InvalidOperationException("Inactive")));
+    }
+
+    #endregion
+
+    #region Async Match Tests
+
+    [Fact]
+    public async Task MatchAsync_WithNotNullValue_ExecutesSomeFunction()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test");
+
+        // Act
+        var result = await entity.MatchAsync(
+            some: async (e, ct) =>
+            {
+                await Task.Delay(1, ct);
+                return $"Found: {e.Name}";
+            },
+            none: async ct =>
+            {
+                await Task.Delay(1, ct);
+                return "Not found";
+            });
+
+        // Assert
+        result.ShouldBe("Found: Test");
+    }
+
+    [Fact]
+    public async Task MatchAsync_WithoutCancellationTokenParam_ExecutesSomeFunction()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test");
+
+        // Act
+        var result = await entity.MatchAsync(
+            some: async e =>
+            {
+                await Task.Delay(1);
+                return $"Found: {e.Name}";
+            },
+            none: async () =>
+            {
+                await Task.Delay(1);
+                return "Not found";
+            });
+
+        // Assert
+        result.ShouldBe("Found: Test");
+    }
+
+    [Fact]
+    public async Task MatchAsync_WithNullValue_ExecutesNoneFunction()
+    {
+        // Arrange
+        TestEntity entity = null;
+
+        // Act
+        var result = await entity.MatchAsync(
+            some: async (e, ct) => await Task.FromResult($"Found: {e.Name}"),
+            none: async ct => await Task.FromResult("Not found"));
+
+        // Assert
+        result.ShouldBe("Not found");
+    }
+
+    [Fact]
+    public async Task MatchAsync_OnTask_WithNotNull_ExecutesSomeFunction()
+    {
+        // Arrange
+        var task = Task.FromResult(new TestEntity(1, "Test"));
+
+        // Act
+        var result = await task.MatchAsync(
+            some: async (e, ct) => await Task.FromResult($"Found: {e.Name}"),
+            none: async ct => await Task.FromResult("Not found"));
+
+        // Assert
+        result.ShouldBe("Found: Test");
+    }
+
+    [Fact]
+    public async Task MatchAsync_OnTask_WithNull_ExecutesNoneFunction()
+    {
+        // Arrange
+        var task = Task.FromResult((TestEntity)null);
+
+        // Act
+        var result = await task.MatchAsync(
+            some: async (e, ct) => await Task.FromResult($"Found: {e.Name}"),
+            none: async ct => await Task.FromResult("Not found"));
+
+        // Assert
+        result.ShouldBe("Not found");
+    }
+
+    [Fact]
+    public async Task MatchAsync_WithValueType_ExecutesSomeWhenHasValue()
+    {
+        // Arrange
+        int? value = 42;
+
+        // Act
+        var result = await value.MatchAsync(
+            some: async (v, ct) => await Task.FromResult($"Value: {v}"),
+            none: async ct => await Task.FromResult("No value"));
+
+        // Assert
+        result.ShouldBe("Value: 42");
+    }
+
+    [Fact]
+    public async Task MatchAsync_WithValueType_ExecutesNoneWhenNoValue()
+    {
+        // Arrange
+        int? value = null;
+
+        // Act
+        var result = await value.MatchAsync(
+            some: async (v, ct) => await Task.FromResult($"Value: {v}"),
+            none: async ct => await Task.FromResult("No value"));
+
+        // Assert
+        result.ShouldBe("No value");
+    }
+
+    #endregion
+
+    #region Async OrElse Tests
+
+    [Fact]
+    public async Task OrElseAsync_WithNotNullValue_ReturnsValue()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test");
+
+        // Act
+        var result = await entity.OrElseAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            return new TestEntity(999, "Fallback");
+        });
+
+        // Assert
+        result.ShouldBe(entity);
+        result.Id.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task OrElseAsync_WithNullValue_ReturnsFallback()
+    {
+        // Arrange
+        TestEntity entity = null;
+        var fallback = new TestEntity(999, "Fallback");
+
+        // Act
+        var result = await entity.OrElseAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            return fallback;
+        });
+
+        // Assert
+        result.ShouldBe(fallback);
+        result.Id.ShouldBe(999);
+    }
+
+    [Fact]
+    public async Task OrElseAsync_WithoutCancellationTokenParam_ReturnsFallback()
+    {
+        // Arrange
+        TestEntity entity = null;
+        var fallback = new TestEntity(999, "Fallback");
+
+        // Act
+        var result = await entity.OrElseAsync(async () =>
+        {
+            await Task.Delay(1);
+            return fallback;
+        });
+
+        // Assert
+        result.ShouldBe(fallback);
+    }
+
+    [Fact]
+    public async Task OrElseAsync_WithValueType_ReturnsValueWhenHasValue()
+    {
+        // Arrange
+        int? value = 42;
+
+        // Act
+        var result = await value.OrElseAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            return 999;
+        });
+
+        // Assert
+        result.ShouldBe(42);
+    }
+
+    [Fact]
+    public async Task OrElseAsync_WithValueType_ReturnsFallbackWhenNoValue()
+    {
+        // Arrange
+        int? value = null;
+
+        // Act
+        var result = await value.OrElseAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            return 999;
+        });
+
+        // Assert
+        result.ShouldBe(999);
+    }
+
+    [Fact]
+    public async Task OrElseAsync_OnTask_WithNotNull_ReturnsValue()
+    {
+        // Arrange
+        var task = Task.FromResult(new TestEntity(1, "Test"));
+
+        // Act
+        var result = await task.OrElseAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            return new TestEntity(999, "Fallback");
+        });
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.Id.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task OrElseAsync_OnTask_WithNull_ReturnsFallback()
+    {
+        // Arrange
+        var task = Task.FromResult((TestEntity)null);
+
+        // Act
+        var result = await task.OrElseAsync(async ct =>
+        {
+            await Task.Delay(1, ct);
+            return new TestEntity(999, "Fallback");
+        });
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.Id.ShouldBe(999);
+    }
+
+    [Fact]
+    public async Task OrElseAsync_OnTask_WithoutCancellationTokenParam_ReturnsFallback()
+    {
+        // Arrange
+        var task = Task.FromResult((TestEntity)null);
+
+        // Act
+        var result = await task.OrElseAsync(async () =>
+        {
+            await Task.Delay(1);
+            return new TestEntity(999, "Fallback");
+        });
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.Id.ShouldBe(999);
+    }
+
+    #endregion
+
+    #region Async Select Tests
+
+    [Fact]
+    public async Task SelectAsync_OnTask_WithSyncSelector_ReturnsTransformedValue()
+    {
+        // Arrange
+        var task = Task.FromResult(new TestEntity(1, "Test"));
+
+        // Act
+        var result = await task.Select(e => e.Name);
+
+        // Assert
+        result.ShouldBe("Test");
+    }
+
+    [Fact]
+    public async Task SelectAsync_WithAsyncSelector_ReturnsTransformedValue()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test");
+
+        // Act
+        var result = await entity.SelectAsync(async (e, ct) =>
+        {
+            await Task.Delay(1, ct);
+            return new { e.Id, e.Name };
+        });
+
+        // Assert
+        result.ShouldNotBeNull();
+        result.Id.ShouldBe(1);
+        result.Name.ShouldBe("Test");
+    }
+
+    [Fact]
+    public async Task SelectAsync_WithoutCancellationTokenParam_ReturnsTransformedValue()
+    {
+        // Arrange
+        var entity = new TestEntity(1, "Test");
+
+        // Act
+        var result = await entity.SelectAsync(async e =>
+        {
+            await Task.Delay(1);
+            return e.Name.ToUpper();
+        });
+
+        // Assert
+        result.ShouldBe("TEST");
+    }
+
+    [Fact]
+    public async Task SelectAsync_OnTask_WithAsyncSelector_ReturnsTransformedValue()
+    {
+        // Arrange
+        var task = Task.FromResult(new TestEntity(1, "Test"));
+
+        // Act
+        var result = await task.SelectAsync(async (e, ct) =>
+        {
+            await Task.Delay(1, ct);
+            return e.Name.ToUpper();
+        });
+
+        // Assert
+        result.ShouldBe("TEST");
+    }
+
+    [Fact]
+    public async Task SelectAsync_OnTask_WithoutCancellationTokenParam_ReturnsTransformedValue()
+    {
+        // Arrange
+        var task = Task.FromResult(new TestEntity(1, "Test"));
+
+        // Act
+        var result = await task.SelectAsync(async e =>
+        {
+            await Task.Delay(1);
+            return e.Name;
+        });
+
+        // Assert
+        result.ShouldBe("Test");
     }
 
     #endregion

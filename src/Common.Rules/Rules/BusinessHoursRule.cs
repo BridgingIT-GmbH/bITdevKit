@@ -5,9 +5,11 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public class BusinessHoursRule(DateTime dateTime) : RuleBase
+public class BusinessHoursRule(DateTime dateTime, string message = null) : RuleBase
 {
-    public override string Message { get; } = "Datetime should be during business hours (MO-FR: 9 AM - 5 PM)";
+    private readonly string message = message ?? "Datetime should be during business hours (MO-FR: 9 AM - 5 PM)";
+
+    public override string Message => this.message;
 
     public override Result Execute()
     {

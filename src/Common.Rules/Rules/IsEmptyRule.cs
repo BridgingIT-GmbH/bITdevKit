@@ -8,12 +8,14 @@ namespace BridgingIT.DevKit.Common;
 /// <summary>
 /// Represents a validation rule that checks if a given value is empty.
 /// </summary>
-public class IsEmptyRule(string value) : RuleBase
+public class IsEmptyRule(string value, string message = null) : RuleBase
 {
+    private readonly string message = message ?? "Value must be empty";
+
     /// <summary>
     /// Gets the message that will be displayed when the rule fails.
     /// </summary>
-    public override string Message => "Value must be empty";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes the rule associated with the current instance.
@@ -26,12 +28,14 @@ public class IsEmptyRule(string value) : RuleBase
 /// <summary>
 /// Represents a validation rule that checks if a given value is empty.
 /// </summary>
-public class IsEmptyRule<T>(IEnumerable<T> value) : RuleBase
+public class IsEmptyRule<T>(IEnumerable<T> value, string message = null) : RuleBase
 {
+    private readonly string message = message ?? "Value must be empty";
+
     /// <summary>
     /// Gets the message that will be displayed when the rule fails.
     /// </summary>
-    public override string Message => "Value must be empty";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes the rule associated with the current instance.

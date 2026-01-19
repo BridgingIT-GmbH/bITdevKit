@@ -11,8 +11,11 @@ namespace BridgingIT.DevKit.Common;
 public class TextInRule(
     string value,
     IEnumerable<string> allowedValues,
-    StringComparison comparison) : RuleBase
+    StringComparison comparison,
+    string message = null) : RuleBase
 {
+    private readonly string message = message ?? $"Text must be one of: {string.Join(", ", allowedValues)}";
+
     /// <summary>
     /// Gets a message that describes the result of the rule.
     /// </summary>
@@ -20,8 +23,7 @@ public class TextInRule(
     /// This property is typically used to provide a user-friendly explanation or reason for why a rule passed or failed.
     /// Each specific rule implementation may override this property to provide a more detailed or contextual message.
     /// </remarks>
-    public override string Message =>
-        $"Text must be one of: {string.Join(", ", allowedValues)}";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes the rule logic and returns a Result indicating the success or failure of the rule.

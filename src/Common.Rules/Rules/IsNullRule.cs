@@ -8,13 +8,15 @@ namespace BridgingIT.DevKit.Common;
 /// <summary>
 /// Rule for validating if a given value is null.
 /// </summary>
-public class IsNullRule<T>(T value) : RuleBase
+public class IsNullRule<T>(T value, string message = null) : RuleBase
 {
+    private readonly string message = message ?? "Value must be null";
+
     /// <summary>
     /// Gets the message associated with the rule. Provides a human-readable explanation
     /// of why the rule failed or what condition the rule checks for.
     /// </summary>
-    public override string Message => "Value must be null";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes a validation rule.

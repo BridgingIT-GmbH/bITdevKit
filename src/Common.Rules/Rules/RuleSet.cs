@@ -16,97 +16,97 @@ public static class RuleSet
     /// Validates that two values are equal.
     /// Usage: ValueRules.Equal(status, Status.Active)
     /// </summary>
-    public static IRule Equal<T>(T value, T other) =>
-        new EqualRule<T>(value, other);
+    public static IRule Equal<T>(T value, T other, string message = null) =>
+        new EqualRule<T>(value, other, message);
 
     /// <summary>
     /// Validates that two values are not equal.
     /// Usage: ValueRules.NotEqual(status, Status.Deleted)
     /// </summary>
-    public static IRule NotEqual<T>(T value, T other) =>
-        new NotEqualRule<T>(value, other);
+    public static IRule NotEqual<T>(T value, T other, string message = null) =>
+        new NotEqualRule<T>(value, other, message);
 
     /// <summary>
     /// Validates that a value is greater than another value.
     /// Usage: ValueRules.GreaterThan(age, 18)
     /// </summary>
-    public static IRule GreaterThan<T>(T value, T other)
+    public static IRule GreaterThan<T>(T value, T other, string message = null)
         where T : IComparable<T> =>
-        new GreaterThanRule<T>(value, other);
+        new GreaterThanRule<T>(value, other, message);
 
     /// <summary>
     /// Validates that a value is greater than or equal to another value.
     /// Usage: ValueRules.GreaterThanOrEqual(amount, 0)
     /// </summary>
-    public static IRule GreaterThanOrEqual<T>(T value, T other)
+    public static IRule GreaterThanOrEqual<T>(T value, T other, string message = null)
         where T : IComparable<T> =>
-        new GreaterThanOrEqualRule<T>(value, other);
+        new GreaterThanOrEqualRule<T>(value, other, message);
 
     /// <summary>
     /// Validates that a value is less than another value.
     /// Usage: ValueRules.LessThan(temperature, 100)
     /// </summary>
-    public static IRule LessThan<T>(T value, T other)
+    public static IRule LessThan<T>(T value, T other, string message = null)
         where T : IComparable<T> =>
-        new LessThanRule<T>(value, other);
+        new LessThanRule<T>(value, other, message);
 
     /// <summary>
     /// Validates that a value is less than or equal to another value.
     /// Usage: ValueRules.LessThanOrEqual(discount, 100)
     /// </summary>
-    public static IRule LessThanOrEqual<T>(T value, T other)
+    public static IRule LessThanOrEqual<T>(T value, T other, string message = null)
         where T : IComparable<T> =>
-        new LessThanOrEqualRule<T>(value, other);
+        new LessThanOrEqualRule<T>(value, other, message);
 
     /// <summary>
     /// Validates that a value falls within a numeric range (inclusive).
     /// Usage: ValueRules.NumericRange(rating, 1, 5)
     /// </summary>
-    public static IRule NumericRange<T>(T value, T min, T max)
+    public static IRule NumericRange<T>(T value, T min, T max, string message = null)
         where T : IComparable<T> =>
-        new NumericRangeRule<T>(value, min, max);
+        new NumericRangeRule<T>(value, min, max, message);
 
     /// <summary>
     /// Validates that a value is null.
     /// Usage: ValueRules.IsNull(optionalValue)
     /// </summary>
-    public static IRule IsNull<T>(T value) =>
-        new IsNullRule<T>(value);
+    public static IRule IsNull<T>(T value, string message = null) =>
+        new IsNullRule<T>(value, message);
 
     /// <summary>
     /// Validates that a value is not null.
     /// Usage: ValueRules.IsNotNull(requiredValue)
     /// </summary>
-    public static IRule IsNotNull<T>(T value) =>
-        new IsNotNullRule<T>(value);
+    public static IRule IsNotNull<T>(T value, string message = null) =>
+        new IsNotNullRule<T>(value, message);
 
     /// <summary>
     /// Validates that a collection or string is empty.
     /// Usage: ValueRules.IsEmpty(list)
     /// </summary>
-    public static IRule IsEmpty(string value) =>
-        new IsEmptyRule(value);
+    public static IRule IsEmpty(string value, string message = null) =>
+        new IsEmptyRule(value, message);
 
     /// <summary>
     /// Validates that a collection or string is not empty.
     /// Usage: ValueRules.IsNotEmpty(requiredList)
     /// </summary>
-    public static IRule IsNotEmpty(string value) =>
-        new IsNotEmptyRule(value);
+    public static IRule IsNotEmpty(string value, string message = null) =>
+        new IsNotEmptyRule(value, message);
 
     /// <summary>
     /// Validates that a collection or string is empty.
     /// Usage: ValueRules.IsEmpty(list)
     /// </summary>
-    public static IRule IsEmpty<T>(IEnumerable<T> value) =>
-        new IsEmptyRule<T>(value);
+    public static IRule IsEmpty<T>(IEnumerable<T> value, string message = null) =>
+        new IsEmptyRule<T>(value, message);
 
     /// <summary>
     /// Validates that a collection or string is not empty.
     /// Usage: ValueRules.IsNotEmpty(requiredList)
     /// </summary>
-    public static IRule IsNotEmpty<T>(IEnumerable<T> value) =>
-        new IsNotEmptyRule<T>(value);
+    public static IRule IsNotEmpty<T>(IEnumerable<T> value, string message = null) =>
+        new IsNotEmptyRule<T>(value, message);
 
     /// <summary>
     /// Validates that a string contains a substring.
@@ -115,8 +115,9 @@ public static class RuleSet
     public static IRule Contains(
         string value,
         string substring,
-        StringComparison comparison = StringComparison.Ordinal) =>
-        new ContainsRule(value, substring, comparison);
+        StringComparison comparison = StringComparison.Ordinal,
+        string message = null) =>
+        new ContainsRule(value, substring, comparison, message);
 
     /// <summary>
     /// Validates that a string does not contain a substring.
@@ -125,8 +126,9 @@ public static class RuleSet
     public static IRule DoesNotContain(
         string value,
         string substring,
-        StringComparison comparison = StringComparison.Ordinal) =>
-        new DoesNotContainRule(value, substring, comparison);
+        StringComparison comparison = StringComparison.Ordinal,
+        string message = null) =>
+        new DoesNotContainRule(value, substring, comparison, message);
 
     /// <summary>
     /// Validates that a string starts with a prefix.
@@ -135,8 +137,9 @@ public static class RuleSet
     public static IRule StartsWith(
         string value,
         string prefix,
-        StringComparison comparison = StringComparison.Ordinal) =>
-        new StartsWithRule(value, prefix, comparison);
+        StringComparison comparison = StringComparison.Ordinal,
+        string message = null) =>
+        new StartsWithRule(value, prefix, comparison, message);
 
     /// <summary>
     /// Validates that a string does not start with a prefix.
@@ -169,20 +172,20 @@ public static class RuleSet
         new DoesNotEndWithRule(value, suffix, comparison);
 
     // Creates a rule to check if a DateTime is before another specified date
-    public static IRule IsBefore(DateTime value, DateTime comparisonDate) =>
-        new IsBeforeRule(value, comparisonDate);
+    public static IRule IsBefore(DateTime value, DateTime comparisonDate, string message = null) =>
+        new IsBeforeRule(value, comparisonDate, message);
 
     // Creates a rule to check if a DateTime is after another specified date
-    public static IRule IsAfter(DateTime value, DateTime comparisonDate) =>
-        new IsAfterRule(value, comparisonDate);
+    public static IRule IsAfter(DateTime value, DateTime comparisonDate, string message = null) =>
+        new IsAfterRule(value, comparisonDate, message);
 
     // Creates a rule to check if a boolean value is true
-    public static IRule IsTrue(bool value) =>
-        new IsTrueRule(value);
+    public static IRule IsTrue(bool value, string message = null) =>
+        new IsTrueRule(value, message);
 
     // Creates a rule to check if a boolean value is false
-    public static IRule IsFalse(bool value) =>
-        new IsFalseRule(value);
+    public static IRule IsFalse(bool value, string message = null) =>
+        new IsFalseRule(value, message);
 
     /// <summary>
     /// Validates that a date falls within a specific range.
@@ -269,8 +272,8 @@ public static class RuleSet
     /// Validates that a string is a valid email address.
     /// Usage: ValueRules.IsEmail("test@example.com")
     /// </summary>
-    public static IRule IsValidEmail(string value) =>
-        new ValidEmailRule(value);
+    public static IRule IsValidEmail(string value, string message = null) =>
+        new ValidEmailRule(value, message);
 
     /// <summary>
     /// Validates that an enum value is one of the allowed values.
@@ -341,6 +344,6 @@ public static class RuleSet
     /// Validates an object using a FluentValidation validator.
     /// Usage: ValueRules.ValidateWith(customer, new CustomerValidator())
     /// </summary>
-    public static IRule Validate<T>(T instance, IValidator<T> validator) =>
-        new ValidationRule<T>(instance, validator);
+    public static IRule Validate<T>(T instance, IValidator<T> validator, string message = null) =>
+        new ValidationRule<T>(instance, validator, message);
 }

@@ -9,8 +9,10 @@ namespace BridgingIT.DevKit.Common;
 /// Represents a validation rule that checks if two values are equal.
 /// </summary>
 /// <typeparam name="T">The type of the values being compared.</typeparam>
-public class EqualRule<T>(T value, T other) : RuleBase
+public class EqualRule<T>(T value, T other, string message = null) : RuleBase
 {
+    private readonly string message = message ?? $"Value must be equal to {other}";
+
     /// <summary>
     /// Gets the message that describes the outcome of the rule evaluation.
     /// </summary>
@@ -18,7 +20,7 @@ public class EqualRule<T>(T value, T other) : RuleBase
     /// In the context of the derived class <see cref="EqualRule{T}"/>, the message indicates that
     /// the value must be equal to the specified other value.
     /// </remarks>
-    public override string Message => $"Value must be equal to {other}";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes the rule logic associated with this rule.

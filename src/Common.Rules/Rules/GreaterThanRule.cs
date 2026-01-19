@@ -9,14 +9,16 @@ namespace BridgingIT.DevKit.Common;
 /// Represents a validation rule that checks if a value is greater than a specified value.
 /// </summary>
 /// <typeparam name="T">The type of the values being compared, which must implement IComparable{T}.</typeparam>
-public class GreaterThanRule<T>(T value, T other)
+public class GreaterThanRule<T>(T value, T other, string message = null)
     : RuleBase
     where T : IComparable<T>
 {
+    private readonly string message = message ?? $"Value must be greater than {other}";
+
     /// <summary>
     /// Gets the message associated with the rule. This message provides information about the rule failure reason.
     /// </summary>
-    public override string Message => $"Value must be greater than {other}";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes a validation rule and returns the result.

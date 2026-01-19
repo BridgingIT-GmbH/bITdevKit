@@ -10,14 +10,16 @@ namespace BridgingIT.DevKit.Common;
 /// Uses the <see cref="IComparable{T}"/> interface for comparison.
 /// </summary>
 /// <typeparam name="T">The type of the values being compared.</typeparam>
-public class GreaterThanOrEqualRule<T>(T value, T other)
+public class GreaterThanOrEqualRule<T>(T value, T other, string message = null)
     : RuleBase
     where T : IComparable<T>
 {
+    private readonly string message = message ?? $"Value must be greater than or equal to {other}";
+
     /// <summary>
     /// Gets the message associated with the rule.
     /// </summary>
-    public override string Message => $"Value must be greater than or equal to {other}";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes the rule and returns the result of the execution.

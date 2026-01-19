@@ -8,9 +8,11 @@ namespace BridgingIT.DevKit.Common;
 /// <summary>
 /// Rule that checks if a DateTime is after another specified date.
 /// </summary>
-public class IsAfterRule(DateTime value, DateTime comparisonDate) : RuleBase
+public class IsAfterRule(DateTime value, DateTime comparisonDate, string message = null) : RuleBase
 {
-    public override string Message => $"Value must be after {comparisonDate}";
+    private readonly string message = message ?? $"Value must be after {comparisonDate}";
+
+    public override string Message => this.message;
 
     public override Result Execute() =>
         Result.SuccessIf(value > comparisonDate);

@@ -8,14 +8,16 @@ namespace BridgingIT.DevKit.Common;
 /// <summary>
 /// Represents a rule that validates whether a string does not contain a specified substring.
 /// </summary>
-public class DoesNotContainRule(string value, string substring, StringComparison comparison)
+public class DoesNotContainRule(string value, string substring, StringComparison comparison, string message = null)
     : RuleBase
 {
+    private readonly string message = message ?? $"Value must not contain '{substring}'";
+
     /// <summary>
     /// Provides a descriptive message that explains why the rule failed.
     /// This message is intended to be user-friendly and specific to the particular rule implementation.
     /// </summary>
-    public override string Message => $"Value must not contain '{substring}'";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes a predefined validation rule.

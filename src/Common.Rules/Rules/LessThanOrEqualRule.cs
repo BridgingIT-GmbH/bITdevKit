@@ -9,14 +9,16 @@ namespace BridgingIT.DevKit.Common;
 /// Represents a validation rule that checks whether a given value is less than or equal to a specified value.
 /// </summary>
 /// <typeparam name="T">The type of the values being compared. Must implement IComparable<T>.</typeparam>
-public class LessThanOrEqualRule<T>(T value, T other)
+public class LessThanOrEqualRule<T>(T value, T other, string message = null)
     : RuleBase
     where T : IComparable<T>
 {
+    private readonly string message = message ?? $"Value must be less than or equal to {other}";
+
     /// <summary>
     /// Gets the message associated with the rule.
     /// </summary>
-    public override string Message => $"Value must be less than or equal to {other}";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes the defined rule and returns the result of the execution.

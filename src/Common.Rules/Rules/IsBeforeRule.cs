@@ -8,9 +8,11 @@ namespace BridgingIT.DevKit.Common;
 /// <summary>
 /// Rule that checks if a DateTime is before another specified date.
 /// </summary>
-public class IsBeforeRule(DateTime value, DateTime comparisonDate) : RuleBase
+public class IsBeforeRule(DateTime value, DateTime comparisonDate, string message = null) : RuleBase
 {
-    public override string Message => $"Value must be before {comparisonDate}";
+    private readonly string message = message ?? $"Value must be before {comparisonDate}";
+
+    public override string Message => this.message;
 
     public override Result Execute() =>
         Result.SuccessIf(value < comparisonDate);

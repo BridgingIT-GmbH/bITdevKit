@@ -10,8 +10,10 @@ using System.Text.RegularExpressions;
 /// <summary>
 /// Validates whether a given string is a valid email address format.
 /// </summary>
-public partial class ValidEmailRule(string value) : RuleBase
+public partial class ValidEmailRule(string value, string message = null) : RuleBase
 {
+    private readonly string message = message ?? "Invalid email address";
+
     // Using source generation for regex compilation
     /// <summary>
     /// Represents a regular expression pattern used to validate email addresses.
@@ -30,7 +32,7 @@ public partial class ValidEmailRule(string value) : RuleBase
     /// <value>
     /// The message providing details or information.
     /// </value>
-    public override string Message => "Invalid email address";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes a given business rule, performing its associated action.

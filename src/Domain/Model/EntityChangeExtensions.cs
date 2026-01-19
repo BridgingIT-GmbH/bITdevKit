@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -109,137 +109,139 @@ public class ChangeOperationOutcome
     public static ChangeOperationOutcome Changed(string description = null) =>
         new() { HasChanged = true, ChangeDescription = description };
 
-        /// <summary>
-        /// Creates an outcome indicating that no change occurred.
-        /// </summary>
-        /// <returns>An OperationOutcome with HasChanged set to false.</returns>
-        public static ChangeOperationOutcome NoChange() =>
-            new() { HasChanged = false };
+    /// <summary>
+    /// Creates an outcome indicating that no change occurred.
+    /// </summary>
+    /// <returns>An OperationOutcome with HasChanged set to false.</returns>
+    public static ChangeOperationOutcome NoChange() =>
+        new() { HasChanged = false };
+}
+
+/// <summary>
+/// Represents the result of executing an ordered operation in a change transaction.
+/// </summary>
+internal class OperationExecutionResult
+{
+    /// <summary>
+    /// Gets a value indicating whether the operation executed successfully.
+    /// </summary>
+    public bool IsSuccess { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether the operation signaled cancellation of remaining operations.
+    /// </summary>
+    public bool IsCancelled { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether the operation failed.
+    /// </summary>
+    public bool IsFailure => !this.IsSuccess && !this.IsCancelled;
+
+    /// <summary>
+    /// Gets a value indicating whether the operation resulted in changes to the entity.
+    /// </summary>
+    public bool HasChanged { get; init; }
+
+    /// <summary>
+    /// Gets the errors that occurred during operation execution.
+    /// </summary>
+    public IEnumerable<IResultError> Errors { get; init; } = [];
+
+    /// <summary>
+    /// Gets the messages associated with the operation execution.
+    /// </summary>
+    public IEnumerable<string> Messages { get; init; } = [];
+
+    /// <summary>
+    /// Creates a successful operation result.
+    /// </summary>
+    public static OperationExecutionResult Success(bool hasChanged = false) =>
+        new() { IsSuccess = true, HasChanged = hasChanged };
+
+    /// <summary>
+    /// Creates a cancelled operation result (circuit breaker triggered).
+    /// </summary>
+    public static OperationExecutionResult Cancelled() =>
+        new() { IsCancelled = true };
+
+    /// <summary>
+    /// Creates a failed operation result with errors and messages.
+    /// </summary>
+    public static OperationExecutionResult Failure(IEnumerable<IResultError> errors = null, IEnumerable<string> messages = null) =>
+        new() { Errors = errors ?? [], Messages = messages ?? [] };
+}
+
+/// <summary>
+/// Context for ordered operation execution, tracking changes and queued events.
+/// </summary>
+internal class OrderedExecutionContext
+{
+    /// <summary>
+    /// Gets a value indicating whether any operations have made changes to the entity.
+    /// </summary>
+    public bool ChangesMade { get; set; }
+
+    /// <summary>
+    /// Gets the dictionary storing old values of changed properties for event factories.
+    /// </summary>
+    public Dictionary<string, object> OldValues { get; } = [];
+
+    /// <summary>
+    /// Gets the list of queued event factories with their optional target aggregates to be registered at the end of Apply().
+    /// </summary>
+    public List<(Func<IDomainEvent> EventFactory, IAggregateRoot Target)> QueuedEvents { get; } = [];
+
+    /// <summary>
+    /// Records a property change with its old value.
+    /// </summary>
+    public void RecordChange(string propertyName, object oldValue)
+    {
+        this.ChangesMade = true;
+        this.OldValues[propertyName] = oldValue;
     }
 
     /// <summary>
-    /// Represents the result of executing an ordered operation in a change transaction.
+    /// Queues an event factory to be registered when Apply() completes successfully.
     /// </summary>
-    internal class OperationExecutionResult
+    /// <param name="eventFactory">The factory function that creates the domain event.</param>
+    /// <param name="target">Optional target aggregate root on which to register the event. If null, uses the entity itself.</param>
+    public void QueueEvent(Func<IDomainEvent> eventFactory, IAggregateRoot target = null)
     {
-        /// <summary>
-        /// Gets a value indicating whether the operation executed successfully.
-        /// </summary>
-        public bool IsSuccess { get; init; }
-
-        /// <summary>
-        /// Gets a value indicating whether the operation signaled cancellation of remaining operations.
-        /// </summary>
-        public bool IsCancelled { get; init; }
-
-        /// <summary>
-        /// Gets a value indicating whether the operation failed.
-        /// </summary>
-        public bool IsFailure => !this.IsSuccess && !this.IsCancelled;
-
-        /// <summary>
-        /// Gets a value indicating whether the operation resulted in changes to the entity.
-        /// </summary>
-        public bool HasChanged { get; init; }
-
-        /// <summary>
-        /// Gets the errors that occurred during operation execution.
-        /// </summary>
-        public IEnumerable<IResultError> Errors { get; init; } = [];
-
-        /// <summary>
-        /// Gets the messages associated with the operation execution.
-        /// </summary>
-        public IEnumerable<string> Messages { get; init; } = [];
-
-        /// <summary>
-        /// Creates a successful operation result.
-        /// </summary>
-        public static OperationExecutionResult Success(bool hasChanged = false) =>
-            new() { IsSuccess = true, HasChanged = hasChanged };
-
-        /// <summary>
-        /// Creates a cancelled operation result (circuit breaker triggered).
-        /// </summary>
-        public static OperationExecutionResult Cancelled() =>
-            new() { IsCancelled = true };
-
-        /// <summary>
-        /// Creates a failed operation result with errors and messages.
-        /// </summary>
-        public static OperationExecutionResult Failure(IEnumerable<IResultError> errors = null, IEnumerable<string> messages = null) =>
-            new() { Errors = errors ?? [], Messages = messages ?? [] };
+        this.QueuedEvents.Add((eventFactory, target));
     }
 
     /// <summary>
-    /// Context for ordered operation execution, tracking changes and queued events.
+    /// Gets the old value of a changed property for use in event factories.
     /// </summary>
-    internal class OrderedExecutionContext
+    public T GetOldValue<T>(string propertyName)
     {
-        /// <summary>
-        /// Gets a value indicating whether any operations have made changes to the entity.
-        /// </summary>
-        public bool ChangesMade { get; set; }
-
-        /// <summary>
-        /// Gets the dictionary storing old values of changed properties for event factories.
-        /// </summary>
-        public Dictionary<string, object> OldValues { get; } = [];
-
-        /// <summary>
-        /// Gets the list of queued event factories to be registered at the end of Apply().
-        /// </summary>
-        public List<Func<IDomainEvent>> QueuedEvents { get; } = [];
-
-        /// <summary>
-        /// Records a property change with its old value.
-        /// </summary>
-        public void RecordChange(string propertyName, object oldValue)
+        if (this.OldValues.TryGetValue(propertyName, out var value))
         {
-            this.ChangesMade = true;
-            this.OldValues[propertyName] = oldValue;
+            return (T)value;
         }
-
-        /// <summary>
-        /// Queues an event factory to be registered when Apply() completes successfully.
-        /// </summary>
-        public void QueueEvent(Func<IDomainEvent> eventFactory)
-        {
-            this.QueuedEvents.Add(eventFactory);
-        }
-
-        /// <summary>
-        /// Gets the old value of a changed property for use in event factories.
-        /// </summary>
-        public T GetOldValue<T>(string propertyName)
-        {
-            if (this.OldValues.TryGetValue(propertyName, out var value))
-            {
-                return (T)value;
-            }
-            return default;
-        }
+        return default;
     }
+}
 
-    /// <summary>
-    /// Fluent builder for applying complex changes to entities.
-    /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    /// <remarks>
-    /// Initializes a new instance of the <see cref="EntityChangeBuilder{TEntity}"/> class.
-    /// </remarks>
-    public class EntityChangeBuilder<TEntity>(TEntity entity)
-        where TEntity : IEntity
-    {
-        // Unified storage for all operations in declaration order
-        private readonly List<IOrderedOperation> orderedOperations = [];
+/// <summary>
+/// Fluent builder for applying complex changes to entities.
+/// </summary>
+/// <typeparam name="TEntity">The type of the entity.</typeparam>
+/// <remarks>
+/// Initializes a new instance of the <see cref="EntityChangeBuilder{TEntity}"/> class.
+/// </remarks>
+public class EntityChangeBuilder<TEntity>(TEntity entity)
+    where TEntity : IEntity
+{
+    // Unified storage for all operations in declaration order
+    private readonly List<IOrderedOperation> orderedOperations = [];
 
-        // Configuration flags
-        private bool registerSingle = true;
-        private bool registerNoEvents;
+    // Configuration flags
+    private bool registerSingle = true;
+    private bool registerNoEvents;
 
-        // Initialized to Success. Since Result is a struct, we avoid null checks and rely on IsFailure state.
-        private Result chainConstructionFailure = Result.Success();
+    // Initialized to Success. Since Result is a struct, we avoid null checks and rely on IsFailure state.
+    private Result chainConstructionFailure = Result.Success();
 
     /// <summary>
     /// Specifies whether to replace existing domain events of the same type.
@@ -985,7 +987,7 @@ public class ChangeOperationOutcome
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Register<TEvent>(Func<TEntity, EntityChangeContext, TEvent> eventFactory)
+    public EntityChangeBuilder<TEntity> Register<TEvent>(Func<TEntity, EntityChangeContext, TEvent> eventFactory) //1 
         where TEvent : IDomainEvent
     {
         this.orderedOperations.Add(new RegisterOperationOrdered((agg, ctx) => eventFactory(agg, ctx)));
@@ -1005,10 +1007,30 @@ public class ChangeOperationOutcome
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Register<TEvent>(Func<TEntity, TEvent> eventFactory)
+    public EntityChangeBuilder<TEntity> Register<TEvent>(Func<TEntity, TEvent> eventFactory) //2
         where TEvent : IDomainEvent
     {
         this.orderedOperations.Add(new RegisterOperationOrdered((agg, _) => eventFactory(agg)));
+        return this;
+    }
+
+    /// <summary>
+    /// Queues a custom domain event to be registered on the specified target at Apply() end if changes occur.
+    /// Note: This will throw an InvalidOperationException at runtime if the entity does not implement IAggregateRoot.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Set(p => p.FirstName, firstName)
+    ///     .Set(p => p.LastName, lastName)
+    ///     .Register(target, p => new CustomerNameChangedEvent(p.Id))
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> Register<TEvent>(Func<TEntity, TEvent> eventFactory, IAggregateRoot target = null) //3
+        where TEvent : IDomainEvent
+    {
+        this.orderedOperations.Add(new RegisterOperationOrdered((agg, _) => eventFactory(agg), target));
         return this;
     }
 
@@ -1074,7 +1096,8 @@ public class ChangeOperationOutcome
     }
 
     /// <summary>
-    /// Registers all queued events if changes were made and entity is an aggregate root.
+    /// Registers all queued events if changes were made.
+    /// Events are registered on their specified target aggregate, or on the entity itself if no target is specified.
     /// </summary>
     private void RegisterQueuedEvents(TEntity entity, OrderedExecutionContext context)
     {
@@ -1083,30 +1106,39 @@ public class ChangeOperationOutcome
             return;
         }
 
-        if (entity is not IAggregateRoot aggregateRoot)
+        // Check if any queued events lack a target and entity is not an aggregate root
+        var entityAsAggregateRoot = entity as IAggregateRoot;
+        var hasEventsWithoutTarget = context.QueuedEvents.Any(q => q.Target == null);
+
+        if (hasEventsWithoutTarget && entityAsAggregateRoot == null)
         {
-            // Events were queued, but entity is not an aggregate root
-            if (context.QueuedEvents.Count > 0)
-            {
-                throw new InvalidOperationException(
-                    $"Cannot register domain events on entity of type '{typeof(TEntity).Name}' because it does not implement IAggregateRoot. Only aggregate roots can register domain events.");
-            }
-            return;
+            throw new InvalidOperationException(
+                $"Cannot register domain events on entity of type '{typeof(TEntity).Name}' because it does not implement IAggregateRoot. " +
+                "Either specify a target aggregate root using the Register overload, or use an aggregate root as the entity.");
         }
 
-        // Register all queued events
-        foreach (var eventFactory in context.QueuedEvents)
+        // Register all queued events on their respective targets
+        foreach (var (eventFactory, target) in context.QueuedEvents)
         {
             var evt = eventFactory();
-            aggregateRoot.DomainEvents.Register(evt, this.registerSingle);
+            var targetAggregate = target ?? entityAsAggregateRoot;
+
+            // This should not happen due to the check above, but being defensive
+            if (targetAggregate == null)
+            {
+                throw new InvalidOperationException(
+                    $"Cannot register domain event '{evt.GetType().Name}'. No target aggregate specified and entity '{typeof(TEntity).Name}' does not implement IAggregateRoot.");
+            }
+
+            targetAggregate.DomainEvents.Register(evt, this.registerSingle);
         }
 
-        // If no events were explicitly registered, register default EntityUpdatedDomainEvent
-        if (context.QueuedEvents.Count == 0)
+        // If no events were explicitly registered, register default EntityUpdatedDomainEvent on the entity (if it's an aggregate root)
+        if (context.QueuedEvents.Count == 0 && entityAsAggregateRoot != null)
         {
             var eventType = typeof(EntityUpdatedDomainEvent<>).MakeGenericType(entity.GetType());
             var domainEvent = (IDomainEvent)Activator.CreateInstance(eventType, entity);
-            aggregateRoot.DomainEvents.Register(domainEvent, this.registerSingle);
+            entityAsAggregateRoot.DomainEvents.Register(domainEvent, this.registerSingle);
         }
     }
 
@@ -1163,864 +1195,866 @@ public class ChangeOperationOutcome
             this.setter = accessors.Item2;
         }
 
-                public TValue GetValue(TEntity instance) => this.getter(instance);
-                public void SetValue(TEntity instance, TValue value) => this.setter(instance, value);
+        public TValue GetValue(TEntity instance) => this.getter(instance);
+        public void SetValue(TEntity instance, TValue value) => this.setter(instance, value);
+    }
+
+    // -------------------------------------------------------------------------
+    // NEW ORDERED OPERATION IMPLEMENTATIONS
+    // -------------------------------------------------------------------------
+
+    /// <summary>
+    /// When operation acts as a circuit breaker - cancels all remaining operations if predicate fails.
+    /// </summary>
+    private class WhenOperation(Func<TEntity, bool> predicate) : IOrderedOperation
+    {
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            // If predicate passes, continue execution
+            if (predicate(entity))
+            {
+                return OperationExecutionResult.Success();
             }
 
-            // -------------------------------------------------------------------------
-            // NEW ORDERED OPERATION IMPLEMENTATIONS
-            // -------------------------------------------------------------------------
+            // If predicate fails, signal cancellation (circuit breaker)
+            return OperationExecutionResult.Cancelled();
+        }
+    }
 
-            /// <summary>
-            /// When operation acts as a circuit breaker - cancels all remaining operations if predicate fails.
-            /// </summary>
-            private class WhenOperation(Func<TEntity, bool> predicate) : IOrderedOperation
+    /// <summary>
+    /// Set operation for ordered execution - sets a property value with change tracking.
+    /// </summary>
+    private class SetOperationOrdered<TValue>(
+        Expression<Func<TEntity, TValue>> propertyExpression,
+        Func<TEntity, TValue> valueFactory,
+        IEqualityComparer<TValue> comparer) : IOrderedOperation
+    {
+        private readonly PropertyAccessor<TValue> accessor = new(propertyExpression);
+        private readonly IEqualityComparer<TValue> comparer = comparer ?? EqualityComparer<TValue>.Default;
+
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var currentValue = this.accessor.GetValue(entity);
+            var newValue = valueFactory(entity);
+
+            if (this.comparer.Equals(currentValue, newValue))
             {
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    // If predicate passes, continue execution
-                    if (predicate(entity))
-                    {
-                        return OperationExecutionResult.Success();
-                    }
-
-                    // If predicate fails, signal cancellation (circuit breaker)
-                    return OperationExecutionResult.Cancelled();
-                }
+                return OperationExecutionResult.Success(hasChanged: false);
             }
 
-            /// <summary>
-            /// Set operation for ordered execution - sets a property value with change tracking.
-            /// </summary>
-            private class SetOperationOrdered<TValue>(
-                Expression<Func<TEntity, TValue>> propertyExpression,
-                Func<TEntity, TValue> valueFactory,
-                IEqualityComparer<TValue> comparer) : IOrderedOperation
+            this.accessor.SetValue(entity, newValue);
+            context.RecordChange(this.accessor.PropertyInfo.Name, currentValue);
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Set operation with Result-returning factory for ordered execution.
+    /// </summary>
+    private class ResultSetOperationOrdered<TValue>(
+        Expression<Func<TEntity, TValue>> propertyExpression,
+        Func<TEntity, Result<TValue>> valueFactory,
+        IEqualityComparer<TValue> comparer) : IOrderedOperation
+    {
+        private readonly PropertyAccessor<TValue> accessor = new(propertyExpression);
+        private readonly IEqualityComparer<TValue> comparer = comparer ?? EqualityComparer<TValue>.Default;
+
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var result = valueFactory(entity);
+            if (result.IsFailure)
             {
-                private readonly PropertyAccessor<TValue> accessor = new(propertyExpression);
-                private readonly IEqualityComparer<TValue> comparer = comparer ?? EqualityComparer<TValue>.Default;
-
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var currentValue = this.accessor.GetValue(entity);
-                    var newValue = valueFactory(entity);
-
-                    if (this.comparer.Equals(currentValue, newValue))
-                    {
-                        return OperationExecutionResult.Success(hasChanged: false);
-                    }
-
-                    this.accessor.SetValue(entity, newValue);
-                    context.RecordChange(this.accessor.PropertyInfo.Name, currentValue);
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
+                return OperationExecutionResult.Failure(result.Errors, result.Messages);
             }
 
-            /// <summary>
-            /// Set operation with Result-returning factory for ordered execution.
-            /// </summary>
-            private class ResultSetOperationOrdered<TValue>(
-                Expression<Func<TEntity, TValue>> propertyExpression,
-                Func<TEntity, Result<TValue>> valueFactory,
-                IEqualityComparer<TValue> comparer) : IOrderedOperation
+            var currentValue = this.accessor.GetValue(entity);
+            if (this.comparer.Equals(currentValue, result.Value))
             {
-                private readonly PropertyAccessor<TValue> accessor = new(propertyExpression);
-                private readonly IEqualityComparer<TValue> comparer = comparer ?? EqualityComparer<TValue>.Default;
-
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var result = valueFactory(entity);
-                    if (result.IsFailure)
-                    {
-                        return OperationExecutionResult.Failure(result.Errors, result.Messages);
-                    }
-
-                    var currentValue = this.accessor.GetValue(entity);
-                    if (this.comparer.Equals(currentValue, result.Value))
-                    {
-                        return OperationExecutionResult.Success(hasChanged: false);
-                    }
-
-                    this.accessor.SetValue(entity, result.Value);
-                    context.RecordChange(this.accessor.PropertyInfo.Name, currentValue);
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
+                return OperationExecutionResult.Success(hasChanged: false);
             }
 
-            /// <summary>
-            /// Check operation for ordered execution - validates condition at declaration point.
-            /// </summary>
-            private class CheckOperationOrdered(Func<TEntity, bool> predicate, string errorMessage) : IOrderedOperation
-            {
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    if (!predicate(entity))
-                    {
-                        return OperationExecutionResult.Failure(
-                            errors: [new Error(errorMessage)],
-                            messages: [errorMessage]);
-                    }
+            this.accessor.SetValue(entity, result.Value);
+            context.RecordChange(this.accessor.PropertyInfo.Name, currentValue);
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
 
-                    return OperationExecutionResult.Success();
-                }
+    /// <summary>
+    /// Check operation for ordered execution - validates condition at declaration point.
+    /// </summary>
+    private class CheckOperationOrdered(Func<TEntity, bool> predicate, string errorMessage) : IOrderedOperation
+    {
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            if (!predicate(entity))
+            {
+                return OperationExecutionResult.Failure(
+                    errors: [new Error(errorMessage)],
+                    messages: [errorMessage]);
             }
 
-            /// <summary>
-            /// Ensure operation for ordered execution - validates pre-condition.
-            /// </summary>
-            private class EnsureOperationOrdered(Func<TEntity, bool> predicate, string errorMessage) : IOrderedOperation
-            {
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    if (!predicate(entity))
-                    {
-                        return OperationExecutionResult.Failure(
-                            errors: [new Error(errorMessage)],
-                            messages: [errorMessage]);
-                    }
+            return OperationExecutionResult.Success();
+        }
+    }
 
-                    return OperationExecutionResult.Success();
-                }
+    /// <summary>
+    /// Ensure operation for ordered execution - validates pre-condition.
+    /// </summary>
+    private class EnsureOperationOrdered(Func<TEntity, bool> predicate, string errorMessage) : IOrderedOperation
+    {
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            if (!predicate(entity))
+            {
+                return OperationExecutionResult.Failure(
+                    errors: [new Error(errorMessage)],
+                    messages: [errorMessage]);
             }
 
-            /// <summary>
-            /// Execute operation for void actions in ordered execution.
-            /// </summary>
-            private class ExecuteOperationOrdered(Action<TEntity> action) : IOrderedOperation
+            return OperationExecutionResult.Success();
+        }
+    }
+
+    /// <summary>
+    /// Execute operation for void actions in ordered execution.
+    /// </summary>
+    private class ExecuteOperationOrdered(Action<TEntity> action) : IOrderedOperation
+    {
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            try
             {
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    try
-                    {
-                        action(entity);
-                        context.RecordChange("Execute", null);
-                        return OperationExecutionResult.Success(hasChanged: true);
-                    }
-                    catch (Exception ex)
-                    {
-                        return OperationExecutionResult.Failure(
-                            errors: [Result.Settings.ExceptionErrorFactory(ex)],
-                            messages: [ex.Message]);
-                    }
-                }
+                action(entity);
+                context.RecordChange("Execute", null);
+                return OperationExecutionResult.Success(hasChanged: true);
             }
-
-            /// <summary>
-            /// Execute operation for Result-returning functions in ordered execution.
-            /// </summary>
-            private class ResultExecuteOperationOrdered(Func<TEntity, Result> func) : IOrderedOperation
+            catch (Exception ex)
             {
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var result = func(entity);
-                    if (result.IsFailure)
-                    {
-                        return OperationExecutionResult.Failure(result.Errors, result.Messages);
-                    }
-
-                    context.RecordChange("Execute", null);
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
-            }
-
-            /// <summary>
-            /// Execute operation for Result<TEntity>-returning functions in ordered execution.
-            /// </summary>
-            private class ResultEntityExecuteOperationOrdered(Func<TEntity, Result<TEntity>> func) : IOrderedOperation
-            {
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var result = func(entity);
-                    if (result.IsFailure)
-                    {
-                        return OperationExecutionResult.Failure(result.Errors, result.Messages);
-                    }
-
-                    context.RecordChange("Execute", null);
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
-            }
-
-            /// <summary>
-            /// Execute operation for Result<TEntity> transformations in ordered execution.
-            /// </summary>
-            private class ResultTransformOperationOrdered(Func<Result<TEntity>, Result<TEntity>> transformation) : IOrderedOperation
-            {
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var entityResult = Result<TEntity>.Success(entity);
-                    var result = transformation(entityResult);
-
-                    if (result.IsFailure)
-                    {
-                        return OperationExecutionResult.Failure(result.Errors, result.Messages);
-                    }
-
-                    // Note: transformation might have changed entity state
-                    // We mark as changed to be safe
-                    context.ChangesMade = true;
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
-            }
-
-            /// <summary>
-            /// Register operation for ordered execution - queues event factory for later registration.
-            /// </summary>
-            private class RegisterOperationOrdered(Func<TEntity, EntityChangeContext, IDomainEvent> eventFactory) : IOrderedOperation
-            {
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    // Queue the event factory to be registered at Apply() end
-                    context.QueueEvent(() => {
-                        // Create EntityChangeContext from OrderedExecutionContext
-                        var changeContext = new EntityChangeContext();
-                        foreach (var kvp in context.OldValues)
-                        {
-                            changeContext.RecordChange(kvp.Key, kvp.Value, null); // We don't track new values separately
-                        }
-                        return eventFactory(entity, changeContext);
-                    });
-
-                    return OperationExecutionResult.Success();
-                }
-            }
-
-            /// <summary>
-            /// Collection add operation for ordered execution.
-            /// </summary>
-            private class CollectionAddOperationOrdered<TItem>(
-                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
-                TItem item,
-                IEqualityComparer<TItem> comparer) : IOrderedOperation
-            {
-                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
-                private readonly IEqualityComparer<TItem> comparer = comparer ?? EqualityComparer<TItem>.Default;
-                private readonly string propertyName = GetPropertyName(collectionExpression);
-
-                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
-                {
-                    if (expr.Body is MemberExpression memberExpr)
-                    {
-                        return memberExpr.Member.Name;
-                    }
-                    return "Collection";
-                }
-
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var collection = this.collectionGetter(entity);
-                    if (collection == null)
-                    {
-                        return OperationExecutionResult.Success(hasChanged: false);
-                    }
-
-                    var exists = this.comparer == EqualityComparer<TItem>.Default
-                        ? collection.Contains(item)
-                        : collection.Any(x => this.comparer.Equals(x, item));
-
-                    if (exists)
-                    {
-                        return OperationExecutionResult.Success(hasChanged: false);
-                    }
-
-                    collection.Add(item);
-                    context.RecordChange(this.propertyName, "Collection");
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
-            }
-
-            /// <summary>
-            /// Collection add operation with Result-returning factory for ordered execution.
-            /// </summary>
-            private class ResultCollectionAddOperationOrdered<TItem>(
-                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
-                Func<TEntity, Result<TItem>> itemFactory,
-                IEqualityComparer<TItem> comparer) : IOrderedOperation
-            {
-                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
-                private readonly IEqualityComparer<TItem> comparer = comparer ?? EqualityComparer<TItem>.Default;
-                private readonly string propertyName = GetPropertyName(collectionExpression);
-
-                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
-                {
-                    if (expr.Body is MemberExpression memberExpr)
-                    {
-                        return memberExpr.Member.Name;
-                    }
-                    return "Collection";
-                }
-
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var result = itemFactory(entity);
-                    if (result.IsFailure)
-                    {
-                        return OperationExecutionResult.Failure(result.Errors, result.Messages);
-                    }
-
-                    var item = result.Value;
-                    var collection = this.collectionGetter(entity);
-                    if (collection == null)
-                    {
-                        return OperationExecutionResult.Success(hasChanged: false);
-                    }
-
-                    var exists = this.comparer == EqualityComparer<TItem>.Default
-                        ? collection.Contains(item)
-                        : collection.Any(x => this.comparer.Equals(x, item));
-
-                    if (exists)
-                    {
-                        return OperationExecutionResult.Success(hasChanged: false);
-                    }
-
-                    collection.Add(item);
-                    context.RecordChange(this.propertyName, "Collection");
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
-            }
-
-            /// <summary>
-            /// Collection remove operation for ordered execution.
-            /// Returns NotFoundError if item is not in the collection.
-            /// </summary>
-            private class CollectionRemoveOperationOrdered<TItem>(
-                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
-                TItem item,
-                IEqualityComparer<TItem> comparer,
-                string errorMessage) : IOrderedOperation
-            {
-                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
-                private readonly IEqualityComparer<TItem> comparer = comparer ?? EqualityComparer<TItem>.Default;
-                private readonly string propertyName = GetPropertyName(collectionExpression);
-
-                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
-                {
-                    if (expr.Body is MemberExpression memberExpr)
-                    {
-                        return memberExpr.Member.Name;
-                    }
-                    return "Collection";
-                }
-
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var collection = this.collectionGetter(entity);
-                    if (collection == null)
-                    {
-                        var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
-                        return OperationExecutionResult.Failure(
-                            errors: [new NotFoundError(message)],
-                            messages: [message]);
-                    }
-
-                    var exists = this.comparer == EqualityComparer<TItem>.Default
-                        ? collection.Contains(item)
-                        : collection.Any(x => this.comparer.Equals(x, item));
-
-                    if (!exists)
-                    {
-                        var message = errorMessage ?? $"Item not found in collection '{this.propertyName}'";
-                        return OperationExecutionResult.Failure(
-                            errors: [new NotFoundError(message)],
-                            messages: [message]);
-                    }
-
-                    if (this.comparer != EqualityComparer<TItem>.Default)
-                    {
-                        var itemToRemove = collection.First(x => this.comparer.Equals(x, item));
-                        collection.Remove(itemToRemove);
-                    }
-                    else
-                    {
-                        collection.Remove(item);
-                    }
-
-                    context.RecordChange(this.propertyName, "Collection");
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
-            }
-
-            /// <summary>
-            /// Collection remove operation with Result-returning factory for ordered execution.
-            /// Returns NotFoundError if item is not in the collection.
-            /// </summary>
-            private class ResultCollectionRemoveOperationOrdered<TItem>(
-                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
-                Func<TEntity, Result<TItem>> itemFactory,
-                IEqualityComparer<TItem> comparer,
-                string errorMessage) : IOrderedOperation
-            {
-                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
-                private readonly IEqualityComparer<TItem> comparer = comparer ?? EqualityComparer<TItem>.Default;
-                private readonly string propertyName = GetPropertyName(collectionExpression);
-
-                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
-                {
-                    if (expr.Body is MemberExpression memberExpr)
-                    {
-                        return memberExpr.Member.Name;
-                    }
-                    return "Collection";
-                }
-
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var result = itemFactory(entity);
-                    if (result.IsFailure)
-                    {
-                        return OperationExecutionResult.Failure(result.Errors, result.Messages);
-                    }
-
-                    var item = result.Value;
-                    var collection = this.collectionGetter(entity);
-                    if (collection == null)
-                    {
-                        var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
-                        return OperationExecutionResult.Failure(
-                            errors: [new NotFoundError(message)],
-                            messages: [message]);
-                    }
-
-                    var exists = this.comparer == EqualityComparer<TItem>.Default
-                        ? collection.Contains(item)
-                        : collection.Any(x => this.comparer.Equals(x, item));
-
-                    if (!exists)
-                    {
-                        var message = errorMessage ?? $"Item not found in collection '{this.propertyName}'";
-                        return OperationExecutionResult.Failure(
-                            errors: [new NotFoundError(message)],
-                            messages: [message]);
-                    }
-
-                    if (this.comparer != EqualityComparer<TItem>.Default)
-                    {
-                        var itemToRemove = collection.First(x => this.comparer.Equals(x, item));
-                        collection.Remove(itemToRemove);
-                    }
-                    else
-                    {
-                        collection.Remove(item);
-                    }
-
-                    context.RecordChange(this.propertyName, "Collection");
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
-            }
-
-            /// <summary>
-            /// Collection remove by ID operation for ordered execution.
-            /// Returns NotFoundError if no item with the specified ID is found.
-            /// </summary>
-            private class CollectionRemoveByIdOperationOrdered<TItem, TId>(
-                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
-                TId id,
-                IEqualityComparer<TId> comparer,
-                string errorMessage) : IOrderedOperation
-                where TItem : IEntity<TId>
-            {
-                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
-                private readonly IEqualityComparer<TId> comparer = comparer ?? EqualityComparer<TId>.Default;
-                private readonly string propertyName = GetPropertyName(collectionExpression);
-
-                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
-                {
-                    if (expr.Body is MemberExpression memberExpr)
-                    {
-                        return memberExpr.Member.Name;
-                    }
-                    return "Collection";
-                }
-
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var collection = this.collectionGetter(entity);
-                    if (collection == null)
-                    {
-                        var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
-                        return OperationExecutionResult.Failure(
-                            errors: [new NotFoundError(message)],
-                            messages: [message]);
-                    }
-
-                    var itemToRemove = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
-                    if (itemToRemove == null)
-                    {
-                        var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
-                        return OperationExecutionResult.Failure(
-                            errors: [new NotFoundError(message)],
-                            messages: [message]);
-                    }
-
-                    collection.Remove(itemToRemove);
-                    context.RecordChange(this.propertyName, "Collection");
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
-            }
-
-            /// <summary>
-            /// Collection remove by ID operation with Result-returning factory for ordered execution.
-            /// Returns NotFoundError if no item with the specified ID is found.
-            /// </summary>
-            private class ResultCollectionRemoveByIdOperationOrdered<TItem, TId>(
-                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
-                Func<TEntity, Result<TId>> idFactory,
-                IEqualityComparer<TId> comparer,
-                string errorMessage) : IOrderedOperation
-                where TItem : IEntity<TId>
-            {
-                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
-                private readonly IEqualityComparer<TId> comparer = comparer ?? EqualityComparer<TId>.Default;
-                private readonly string propertyName = GetPropertyName(collectionExpression);
-
-                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
-                {
-                    if (expr.Body is MemberExpression memberExpr)
-                    {
-                        return memberExpr.Member.Name;
-                    }
-                    return "Collection";
-                }
-
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var result = idFactory(entity);
-                    if (result.IsFailure)
-                    {
-                        return OperationExecutionResult.Failure(result.Errors, result.Messages);
-                    }
-
-                    var id = result.Value;
-                    var collection = this.collectionGetter(entity);
-                    if (collection == null)
-                    {
-                        var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
-                        return OperationExecutionResult.Failure(
-                            errors: [new NotFoundError(message)],
-                            messages: [message]);
-                    }
-
-                    var itemToRemove = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
-                    if (itemToRemove == null)
-                    {
-                        var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
-                        return OperationExecutionResult.Failure(
-                            errors: [new NotFoundError(message)],
-                            messages: [message]);
-                    }
-
-                    collection.Remove(itemToRemove);
-                    context.RecordChange(this.propertyName, "Collection");
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
-            }
-
-            /// <summary>
-            /// Collection clear operation for ordered execution.
-            /// </summary>
-            private class ClearCollectionOperationOrdered<TItem>(
-                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression) : IOrderedOperation
-            {
-                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
-                private readonly string propertyName = GetPropertyName(collectionExpression);
-
-                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
-                {
-                    if (expr.Body is MemberExpression memberExpr)
-                    {
-                        return memberExpr.Member.Name;
-                    }
-                    return "Collection";
-                }
-
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var collection = this.collectionGetter(entity);
-                    if (collection == null || collection.Count == 0)
-                    {
-                        return OperationExecutionResult.Success(hasChanged: false);
-                    }
-
-                    collection.Clear();
-                    context.RecordChange(this.propertyName, "Collection");
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
-            }
-
-            /// <summary>
-            /// Collection set all operation - applies action to all items.
-            /// </summary>
-            private class CollectionSetAllOperationOrdered<TItem>(
-                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
-                Action<TItem> action) : IOrderedOperation
-            {
-                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
-                private readonly string propertyName = GetPropertyName(collectionExpression);
-
-                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
-                {
-                    if (expr.Body is MemberExpression memberExpr)
-                    {
-                        return memberExpr.Member.Name;
-                    }
-                    return "Collection";
-                }
-
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var collection = this.collectionGetter(entity);
-                    if (collection == null || collection.Count == 0)
-                    {
-                        return OperationExecutionResult.Success(hasChanged: false);
-                    }
-
-                    foreach (var item in collection)
-                    {
-                        action(item);
-                    }
-
-                    context.RecordChange(this.propertyName, "Collection");
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
-            }
-
-            /// <summary>
-            /// Collection set all operation with Result-returning action.
-            /// </summary>
-            private class ResultCollectionSetAllOperationOrdered<TItem>(
-                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
-                Func<TItem, Result> action) : IOrderedOperation
-            {
-                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
-                private readonly string propertyName = GetPropertyName(collectionExpression);
-
-                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
-                {
-                    if (expr.Body is MemberExpression memberExpr)
-                    {
-                        return memberExpr.Member.Name;
-                    }
-                    return "Collection";
-                }
-
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var collection = this.collectionGetter(entity);
-                    if (collection == null || collection.Count == 0)
-                    {
-                        return OperationExecutionResult.Success(hasChanged: false);
-                    }
-
-                    foreach (var item in collection)
-                    {
-                        var result = action(item);
-                        if (result.IsFailure)
-                        {
-                            return OperationExecutionResult.Failure(result.Errors, result.Messages);
-                        }
-                    }
-
-                    context.RecordChange(this.propertyName, "Collection");
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
-            }
-
-            /// <summary>
-            /// Collection set filtered operation - applies action to filtered items.
-            /// </summary>
-            private class CollectionSetFilteredOperationOrdered<TItem>(
-                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
-                Func<TItem, bool> filter,
-                Action<TItem> action) : IOrderedOperation
-            {
-                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
-                private readonly string propertyName = GetPropertyName(collectionExpression);
-
-                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
-                {
-                    if (expr.Body is MemberExpression memberExpr)
-                    {
-                        return memberExpr.Member.Name;
-                    }
-                    return "Collection";
-                }
-
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var collection = this.collectionGetter(entity);
-                    if (collection == null)
-                    {
-                        return OperationExecutionResult.Success(hasChanged: false);
-                    }
-
-                    var matchingItems = collection.Where(filter).ToList();
-                    if (matchingItems.Count == 0)
-                    {
-                        return OperationExecutionResult.Success(hasChanged: false);
-                    }
-
-                    foreach (var item in matchingItems)
-                    {
-                        action(item);
-                    }
-
-                    context.RecordChange(this.propertyName, "Collection");
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
-            }
-
-            /// <summary>
-            /// Collection set filtered operation with Result-returning action.
-            /// </summary>
-            private class ResultCollectionSetFilteredOperationOrdered<TItem>(
-                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
-                Func<TItem, bool> filter,
-                Func<TItem, Result> action) : IOrderedOperation
-            {
-                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
-                private readonly string propertyName = GetPropertyName(collectionExpression);
-
-                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
-                {
-                    if (expr.Body is MemberExpression memberExpr)
-                    {
-                        return memberExpr.Member.Name;
-                    }
-                    return "Collection";
-                }
-
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var collection = this.collectionGetter(entity);
-                    if (collection == null)
-                    {
-                        return OperationExecutionResult.Success(hasChanged: false);
-                    }
-
-                    var matchingItems = collection.Where(filter).ToList();
-                    if (matchingItems.Count == 0)
-                    {
-                        return OperationExecutionResult.Success(hasChanged: false);
-                    }
-
-                    foreach (var item in matchingItems)
-                    {
-                        var result = action(item);
-                        if (result.IsFailure)
-                        {
-                            return OperationExecutionResult.Failure(result.Errors, result.Messages);
-                        }
-                    }
-
-                    context.RecordChange(this.propertyName, "Collection");
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
-            }
-
-            /// <summary>
-            /// Collection set by ID operation - applies action to item by ID.
-            /// Returns NotFoundError if item not found.
-            /// </summary>
-            private class CollectionSetByIdOperationOrdered<TItem, TId>(
-                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
-                TId id,
-                Action<TItem> action,
-                string errorMessage) : IOrderedOperation
-                where TItem : IEntity<TId>
-            {
-                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
-                private readonly string propertyName = GetPropertyName(collectionExpression);
-                private readonly IEqualityComparer<TId> comparer = EqualityComparer<TId>.Default;
-
-                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
-                {
-                    if (expr.Body is MemberExpression memberExpr)
-                    {
-                        return memberExpr.Member.Name;
-                    }
-                    return "Collection";
-                }
-
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var collection = this.collectionGetter(entity);
-                    if (collection == null)
-                    {
-                        var message = errorMessage ?? $"Cannot operate on null collection '{this.propertyName}'";
-                        return OperationExecutionResult.Failure(
-                            errors: [new NotFoundError(message)],
-                            messages: [message]);
-                    }
-
-                    var item = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
-                    if (item == null)
-                    {
-                        var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
-                        return OperationExecutionResult.Failure(
-                            errors: [new NotFoundError(message)],
-                            messages: [message]);
-                    }
-
-                    action(item);
-                    context.RecordChange(this.propertyName, "Collection");
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
-            }
-
-            /// <summary>
-            /// Collection set by ID operation with Result-returning action.
-            /// Returns NotFoundError if item not found.
-            /// </summary>
-            private class ResultCollectionSetByIdOperationOrdered<TItem, TId>(
-                Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
-                TId id,
-                Func<TItem, Result> action,
-                string errorMessage) : IOrderedOperation
-                where TItem : IEntity<TId>
-            {
-                private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
-                private readonly string propertyName = GetPropertyName(collectionExpression);
-                private readonly IEqualityComparer<TId> comparer = EqualityComparer<TId>.Default;
-
-                private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
-                {
-                    if (expr.Body is MemberExpression memberExpr)
-                    {
-                        return memberExpr.Member.Name;
-                    }
-                    return "Collection";
-                }
-
-                public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
-                {
-                    var collection = this.collectionGetter(entity);
-                    if (collection == null)
-                    {
-                        var message = errorMessage ?? $"Cannot operate on null collection '{this.propertyName}'";
-                        return OperationExecutionResult.Failure(
-                            errors: [new NotFoundError(message)],
-                            messages: [message]);
-                    }
-
-                    var item = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
-                    if (item == null)
-                    {
-                        var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
-                        return OperationExecutionResult.Failure(
-                            errors: [new NotFoundError(message)],
-                            messages: [message]);
-                    }
-
-                    var result = action(item);
-                    if (result.IsFailure)
-                    {
-                        return OperationExecutionResult.Failure(result.Errors, result.Messages);
-                    }
-
-                    context.RecordChange(this.propertyName, "Collection");
-                    return OperationExecutionResult.Success(hasChanged: true);
-                }
+                return OperationExecutionResult.Failure(
+                    errors: [Result.Settings.ExceptionErrorFactory(ex)],
+                    messages: [ex.Message]);
             }
         }
+    }
+
+    /// <summary>
+    /// Execute operation for Result-returning functions in ordered execution.
+    /// </summary>
+    private class ResultExecuteOperationOrdered(Func<TEntity, Result> func) : IOrderedOperation
+    {
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var result = func(entity);
+            if (result.IsFailure)
+            {
+                return OperationExecutionResult.Failure(result.Errors, result.Messages);
+            }
+
+            context.RecordChange("Execute", null);
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Execute operation for Result<TEntity>-returning functions in ordered execution.
+    /// </summary>
+    private class ResultEntityExecuteOperationOrdered(Func<TEntity, Result<TEntity>> func) : IOrderedOperation
+    {
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var result = func(entity);
+            if (result.IsFailure)
+            {
+                return OperationExecutionResult.Failure(result.Errors, result.Messages);
+            }
+
+            context.RecordChange("Execute", null);
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Execute operation for Result<TEntity> transformations in ordered execution.
+    /// </summary>
+    private class ResultTransformOperationOrdered(Func<Result<TEntity>, Result<TEntity>> transformation) : IOrderedOperation
+    {
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var entityResult = Result<TEntity>.Success(entity);
+            var result = transformation(entityResult);
+
+            if (result.IsFailure)
+            {
+                return OperationExecutionResult.Failure(result.Errors, result.Messages);
+            }
+
+            // Note: transformation might have changed entity state
+            // We mark as changed to be safe
+            context.ChangesMade = true;
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Register operation for ordered execution - queues event factory for later registration.
+    /// </summary>
+    private class RegisterOperationOrdered(Func<TEntity, EntityChangeContext, IDomainEvent> eventFactory, IAggregateRoot target = null) : IOrderedOperation
+    {
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            // Queue the event factory to be registered at Apply() end, along with the optional target aggregate
+            context.QueueEvent(() =>
+            {
+                // Create EntityChangeContext from OrderedExecutionContext
+                var changeContext = new EntityChangeContext();
+                foreach (var kvp in context.OldValues)
+                {
+                    changeContext.RecordChange(kvp.Key, kvp.Value, null); // We don't track new values separately
+                }
+
+                return eventFactory(entity, changeContext);
+            }, target);
+
+            return OperationExecutionResult.Success();
+        }
+    }
+
+    /// <summary>
+    /// Collection add operation for ordered execution.
+    /// </summary>
+    private class CollectionAddOperationOrdered<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        TItem item,
+        IEqualityComparer<TItem> comparer) : IOrderedOperation
+    {
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+        private readonly IEqualityComparer<TItem> comparer = comparer ?? EqualityComparer<TItem>.Default;
+        private readonly string propertyName = GetPropertyName(collectionExpression);
+
+        private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+        {
+            if (expr.Body is MemberExpression memberExpr)
+            {
+                return memberExpr.Member.Name;
+            }
+            return "Collection";
+        }
+
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var collection = this.collectionGetter(entity);
+            if (collection == null)
+            {
+                return OperationExecutionResult.Success(hasChanged: false);
+            }
+
+            var exists = this.comparer == EqualityComparer<TItem>.Default
+                ? collection.Contains(item)
+                : collection.Any(x => this.comparer.Equals(x, item));
+
+            if (exists)
+            {
+                return OperationExecutionResult.Success(hasChanged: false);
+            }
+
+            collection.Add(item);
+            context.RecordChange(this.propertyName, "Collection");
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Collection add operation with Result-returning factory for ordered execution.
+    /// </summary>
+    private class ResultCollectionAddOperationOrdered<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        Func<TEntity, Result<TItem>> itemFactory,
+        IEqualityComparer<TItem> comparer) : IOrderedOperation
+    {
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+        private readonly IEqualityComparer<TItem> comparer = comparer ?? EqualityComparer<TItem>.Default;
+        private readonly string propertyName = GetPropertyName(collectionExpression);
+
+        private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+        {
+            if (expr.Body is MemberExpression memberExpr)
+            {
+                return memberExpr.Member.Name;
+            }
+            return "Collection";
+        }
+
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var result = itemFactory(entity);
+            if (result.IsFailure)
+            {
+                return OperationExecutionResult.Failure(result.Errors, result.Messages);
+            }
+
+            var item = result.Value;
+            var collection = this.collectionGetter(entity);
+            if (collection == null)
+            {
+                return OperationExecutionResult.Success(hasChanged: false);
+            }
+
+            var exists = this.comparer == EqualityComparer<TItem>.Default
+                ? collection.Contains(item)
+                : collection.Any(x => this.comparer.Equals(x, item));
+
+            if (exists)
+            {
+                return OperationExecutionResult.Success(hasChanged: false);
+            }
+
+            collection.Add(item);
+            context.RecordChange(this.propertyName, "Collection");
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Collection remove operation for ordered execution.
+    /// Returns NotFoundError if item is not in the collection.
+    /// </summary>
+    private class CollectionRemoveOperationOrdered<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        TItem item,
+        IEqualityComparer<TItem> comparer,
+        string errorMessage) : IOrderedOperation
+    {
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+        private readonly IEqualityComparer<TItem> comparer = comparer ?? EqualityComparer<TItem>.Default;
+        private readonly string propertyName = GetPropertyName(collectionExpression);
+
+        private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+        {
+            if (expr.Body is MemberExpression memberExpr)
+            {
+                return memberExpr.Member.Name;
+            }
+            return "Collection";
+        }
+
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var collection = this.collectionGetter(entity);
+            if (collection == null)
+            {
+                var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
+                return OperationExecutionResult.Failure(
+                    errors: [new NotFoundError(message)],
+                    messages: [message]);
+            }
+
+            var exists = this.comparer == EqualityComparer<TItem>.Default
+                ? collection.Contains(item)
+                : collection.Any(x => this.comparer.Equals(x, item));
+
+            if (!exists)
+            {
+                var message = errorMessage ?? $"Item not found in collection '{this.propertyName}'";
+                return OperationExecutionResult.Failure(
+                    errors: [new NotFoundError(message)],
+                    messages: [message]);
+            }
+
+            if (this.comparer != EqualityComparer<TItem>.Default)
+            {
+                var itemToRemove = collection.First(x => this.comparer.Equals(x, item));
+                collection.Remove(itemToRemove);
+            }
+            else
+            {
+                collection.Remove(item);
+            }
+
+            context.RecordChange(this.propertyName, "Collection");
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Collection remove operation with Result-returning factory for ordered execution.
+    /// Returns NotFoundError if item is not in the collection.
+    /// </summary>
+    private class ResultCollectionRemoveOperationOrdered<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        Func<TEntity, Result<TItem>> itemFactory,
+        IEqualityComparer<TItem> comparer,
+        string errorMessage) : IOrderedOperation
+    {
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+        private readonly IEqualityComparer<TItem> comparer = comparer ?? EqualityComparer<TItem>.Default;
+        private readonly string propertyName = GetPropertyName(collectionExpression);
+
+        private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+        {
+            if (expr.Body is MemberExpression memberExpr)
+            {
+                return memberExpr.Member.Name;
+            }
+            return "Collection";
+        }
+
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var result = itemFactory(entity);
+            if (result.IsFailure)
+            {
+                return OperationExecutionResult.Failure(result.Errors, result.Messages);
+            }
+
+            var item = result.Value;
+            var collection = this.collectionGetter(entity);
+            if (collection == null)
+            {
+                var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
+                return OperationExecutionResult.Failure(
+                    errors: [new NotFoundError(message)],
+                    messages: [message]);
+            }
+
+            var exists = this.comparer == EqualityComparer<TItem>.Default
+                ? collection.Contains(item)
+                : collection.Any(x => this.comparer.Equals(x, item));
+
+            if (!exists)
+            {
+                var message = errorMessage ?? $"Item not found in collection '{this.propertyName}'";
+                return OperationExecutionResult.Failure(
+                    errors: [new NotFoundError(message)],
+                    messages: [message]);
+            }
+
+            if (this.comparer != EqualityComparer<TItem>.Default)
+            {
+                var itemToRemove = collection.First(x => this.comparer.Equals(x, item));
+                collection.Remove(itemToRemove);
+            }
+            else
+            {
+                collection.Remove(item);
+            }
+
+            context.RecordChange(this.propertyName, "Collection");
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Collection remove by ID operation for ordered execution.
+    /// Returns NotFoundError if no item with the specified ID is found.
+    /// </summary>
+    private class CollectionRemoveByIdOperationOrdered<TItem, TId>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        TId id,
+        IEqualityComparer<TId> comparer,
+        string errorMessage) : IOrderedOperation
+        where TItem : IEntity<TId>
+    {
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+        private readonly IEqualityComparer<TId> comparer = comparer ?? EqualityComparer<TId>.Default;
+        private readonly string propertyName = GetPropertyName(collectionExpression);
+
+        private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+        {
+            if (expr.Body is MemberExpression memberExpr)
+            {
+                return memberExpr.Member.Name;
+            }
+            return "Collection";
+        }
+
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var collection = this.collectionGetter(entity);
+            if (collection == null)
+            {
+                var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
+                return OperationExecutionResult.Failure(
+                    errors: [new NotFoundError(message)],
+                    messages: [message]);
+            }
+
+            var itemToRemove = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
+            if (itemToRemove == null)
+            {
+                var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
+                return OperationExecutionResult.Failure(
+                    errors: [new NotFoundError(message)],
+                    messages: [message]);
+            }
+
+            collection.Remove(itemToRemove);
+            context.RecordChange(this.propertyName, "Collection");
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Collection remove by ID operation with Result-returning factory for ordered execution.
+    /// Returns NotFoundError if no item with the specified ID is found.
+    /// </summary>
+    private class ResultCollectionRemoveByIdOperationOrdered<TItem, TId>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        Func<TEntity, Result<TId>> idFactory,
+        IEqualityComparer<TId> comparer,
+        string errorMessage) : IOrderedOperation
+        where TItem : IEntity<TId>
+    {
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+        private readonly IEqualityComparer<TId> comparer = comparer ?? EqualityComparer<TId>.Default;
+        private readonly string propertyName = GetPropertyName(collectionExpression);
+
+        private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+        {
+            if (expr.Body is MemberExpression memberExpr)
+            {
+                return memberExpr.Member.Name;
+            }
+            return "Collection";
+        }
+
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var result = idFactory(entity);
+            if (result.IsFailure)
+            {
+                return OperationExecutionResult.Failure(result.Errors, result.Messages);
+            }
+
+            var id = result.Value;
+            var collection = this.collectionGetter(entity);
+            if (collection == null)
+            {
+                var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
+                return OperationExecutionResult.Failure(
+                    errors: [new NotFoundError(message)],
+                    messages: [message]);
+            }
+
+            var itemToRemove = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
+            if (itemToRemove == null)
+            {
+                var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
+                return OperationExecutionResult.Failure(
+                    errors: [new NotFoundError(message)],
+                    messages: [message]);
+            }
+
+            collection.Remove(itemToRemove);
+            context.RecordChange(this.propertyName, "Collection");
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Collection clear operation for ordered execution.
+    /// </summary>
+    private class ClearCollectionOperationOrdered<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression) : IOrderedOperation
+    {
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+        private readonly string propertyName = GetPropertyName(collectionExpression);
+
+        private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+        {
+            if (expr.Body is MemberExpression memberExpr)
+            {
+                return memberExpr.Member.Name;
+            }
+            return "Collection";
+        }
+
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var collection = this.collectionGetter(entity);
+            if (collection == null || collection.Count == 0)
+            {
+                return OperationExecutionResult.Success(hasChanged: false);
+            }
+
+            collection.Clear();
+            context.RecordChange(this.propertyName, "Collection");
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Collection set all operation - applies action to all items.
+    /// </summary>
+    private class CollectionSetAllOperationOrdered<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        Action<TItem> action) : IOrderedOperation
+    {
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+        private readonly string propertyName = GetPropertyName(collectionExpression);
+
+        private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+        {
+            if (expr.Body is MemberExpression memberExpr)
+            {
+                return memberExpr.Member.Name;
+            }
+            return "Collection";
+        }
+
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var collection = this.collectionGetter(entity);
+            if (collection == null || collection.Count == 0)
+            {
+                return OperationExecutionResult.Success(hasChanged: false);
+            }
+
+            foreach (var item in collection)
+            {
+                action(item);
+            }
+
+            context.RecordChange(this.propertyName, "Collection");
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Collection set all operation with Result-returning action.
+    /// </summary>
+    private class ResultCollectionSetAllOperationOrdered<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        Func<TItem, Result> action) : IOrderedOperation
+    {
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+        private readonly string propertyName = GetPropertyName(collectionExpression);
+
+        private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+        {
+            if (expr.Body is MemberExpression memberExpr)
+            {
+                return memberExpr.Member.Name;
+            }
+            return "Collection";
+        }
+
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var collection = this.collectionGetter(entity);
+            if (collection == null || collection.Count == 0)
+            {
+                return OperationExecutionResult.Success(hasChanged: false);
+            }
+
+            foreach (var item in collection)
+            {
+                var result = action(item);
+                if (result.IsFailure)
+                {
+                    return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                }
+            }
+
+            context.RecordChange(this.propertyName, "Collection");
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Collection set filtered operation - applies action to filtered items.
+    /// </summary>
+    private class CollectionSetFilteredOperationOrdered<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        Func<TItem, bool> filter,
+        Action<TItem> action) : IOrderedOperation
+    {
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+        private readonly string propertyName = GetPropertyName(collectionExpression);
+
+        private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+        {
+            if (expr.Body is MemberExpression memberExpr)
+            {
+                return memberExpr.Member.Name;
+            }
+            return "Collection";
+        }
+
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var collection = this.collectionGetter(entity);
+            if (collection == null)
+            {
+                return OperationExecutionResult.Success(hasChanged: false);
+            }
+
+            var matchingItems = collection.Where(filter).ToList();
+            if (matchingItems.Count == 0)
+            {
+                return OperationExecutionResult.Success(hasChanged: false);
+            }
+
+            foreach (var item in matchingItems)
+            {
+                action(item);
+            }
+
+            context.RecordChange(this.propertyName, "Collection");
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Collection set filtered operation with Result-returning action.
+    /// </summary>
+    private class ResultCollectionSetFilteredOperationOrdered<TItem>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        Func<TItem, bool> filter,
+        Func<TItem, Result> action) : IOrderedOperation
+    {
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+        private readonly string propertyName = GetPropertyName(collectionExpression);
+
+        private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+        {
+            if (expr.Body is MemberExpression memberExpr)
+            {
+                return memberExpr.Member.Name;
+            }
+            return "Collection";
+        }
+
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var collection = this.collectionGetter(entity);
+            if (collection == null)
+            {
+                return OperationExecutionResult.Success(hasChanged: false);
+            }
+
+            var matchingItems = collection.Where(filter).ToList();
+            if (matchingItems.Count == 0)
+            {
+                return OperationExecutionResult.Success(hasChanged: false);
+            }
+
+            foreach (var item in matchingItems)
+            {
+                var result = action(item);
+                if (result.IsFailure)
+                {
+                    return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                }
+            }
+
+            context.RecordChange(this.propertyName, "Collection");
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Collection set by ID operation - applies action to item by ID.
+    /// Returns NotFoundError if item not found.
+    /// </summary>
+    private class CollectionSetByIdOperationOrdered<TItem, TId>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        TId id,
+        Action<TItem> action,
+        string errorMessage) : IOrderedOperation
+        where TItem : IEntity<TId>
+    {
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+        private readonly string propertyName = GetPropertyName(collectionExpression);
+        private readonly IEqualityComparer<TId> comparer = EqualityComparer<TId>.Default;
+
+        private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+        {
+            if (expr.Body is MemberExpression memberExpr)
+            {
+                return memberExpr.Member.Name;
+            }
+            return "Collection";
+        }
+
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var collection = this.collectionGetter(entity);
+            if (collection == null)
+            {
+                var message = errorMessage ?? $"Cannot operate on null collection '{this.propertyName}'";
+                return OperationExecutionResult.Failure(
+                    errors: [new NotFoundError(message)],
+                    messages: [message]);
+            }
+
+            var item = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
+            if (item == null)
+            {
+                var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
+                return OperationExecutionResult.Failure(
+                    errors: [new NotFoundError(message)],
+                    messages: [message]);
+            }
+
+            action(item);
+            context.RecordChange(this.propertyName, "Collection");
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+
+    /// <summary>
+    /// Collection set by ID operation with Result-returning action.
+    /// Returns NotFoundError if item not found.
+    /// </summary>
+    private class ResultCollectionSetByIdOperationOrdered<TItem, TId>(
+        Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
+        TId id,
+        Func<TItem, Result> action,
+        string errorMessage) : IOrderedOperation
+        where TItem : IEntity<TId>
+    {
+        private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
+        private readonly string propertyName = GetPropertyName(collectionExpression);
+        private readonly IEqualityComparer<TId> comparer = EqualityComparer<TId>.Default;
+
+        private static string GetPropertyName(Expression<Func<TEntity, ICollection<TItem>>> expr)
+        {
+            if (expr.Body is MemberExpression memberExpr)
+            {
+                return memberExpr.Member.Name;
+            }
+            return "Collection";
+        }
+
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        {
+            var collection = this.collectionGetter(entity);
+            if (collection == null)
+            {
+                var message = errorMessage ?? $"Cannot operate on null collection '{this.propertyName}'";
+                return OperationExecutionResult.Failure(
+                    errors: [new NotFoundError(message)],
+                    messages: [message]);
+            }
+
+            var item = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
+            if (item == null)
+            {
+                var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
+                return OperationExecutionResult.Failure(
+                    errors: [new NotFoundError(message)],
+                    messages: [message]);
+            }
+
+            var result = action(item);
+            if (result.IsFailure)
+            {
+                return OperationExecutionResult.Failure(result.Errors, result.Messages);
+            }
+
+            context.RecordChange(this.propertyName, "Collection");
+            return OperationExecutionResult.Success(hasChanged: true);
+        }
+    }
+}
 

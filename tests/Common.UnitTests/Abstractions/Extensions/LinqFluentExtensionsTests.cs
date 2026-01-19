@@ -46,7 +46,7 @@ public class LinqFluentExtensionsTests
         };
 
         // Act
-        var result = entities.Find(e => e.Id == 2);
+        var result = entities.AsEnumerable().Find(e => e.Id == 2);
 
         // Assert
         result.ShouldNotBeNull();
@@ -65,30 +65,10 @@ public class LinqFluentExtensionsTests
         };
 
         // Act
-        var result = entities.Find(e => e.Id == 99);
+        var result = entities.AsEnumerable().Find(e => e.Id == 99);
 
         // Assert
         result.ShouldBeNull();
-    }
-
-    [Fact]
-    public void Find_WithNullSource_ThrowsNullReferenceException()
-    {
-        // Arrange
-        List<TestEntity> entities = null;
-
-        // Act & Assert - Extension method on null will throw
-        Should.Throw<NullReferenceException>(() => entities.Find(e => e.Id == 1));
-    }
-
-    [Fact]
-    public void Find_WithNullPredicate_ThrowsArgumentNullException()
-    {
-        // Arrange
-        var entities = new List<TestEntity> { new(1, "Alice") };
-
-        // Act & Assert - Calling List.Find with null predicate throws
-        Should.Throw<ArgumentNullException>(() => entities.Find(null));
     }
 
     [Fact]

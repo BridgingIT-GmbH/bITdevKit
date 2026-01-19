@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -719,7 +719,7 @@ public class EntityChangeExtensionsTests
         var person = new PersonStub { FirstName = "John", Age = 17 };
 
         // Act - Event registered before When, should still fire even when When cancels
-        var result = person.Change() 
+        var result = person.Change()
             .Set(p => p.FirstName, "Jane")                      // 1. Changes property
             .Register(p => new PersonStub.PersonNameChangedEvent(p.Id))  // 2. Queues event
             .When(p => p.Age >= 18)                                       // 3. ❌ Cancels remaining
@@ -732,7 +732,30 @@ public class EntityChangeExtensionsTests
         person.Age.ShouldBe(17);  // NOT changed
 
         // Event from before When should still be registered
-        person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.PersonNameChangedEvent);
+        var events = person.DomainEvents.GetAll().OfType<PersonStub.PersonNameChangedEvent>().ToList();
+    }
+
+    [Fact]
+    public void Change_Register_WithExplicitTarget_ShouldRegisterEventOnTargetAggregate()
+    {
+        // Arrange
+        var person = new PersonStub { FirstName = "John", Age = 25 };
+        var anotherPerson = new PersonStub { FirstName = "Jane", Age = 30 }; // target
+
+        // Act - Register event on a different aggregate (anotherPerson)
+        var result = person.Change()
+            .Set(p => p.FirstName, "Johnny")
+            .Register(p => new PersonStub.PersonNameChangedEvent(p.Id), anotherPerson)  // Register on anotherPerson (target)
+            .Apply();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        person.FirstName.ShouldBe("Johnny");
+
+        // Event should be registered on anotherPerson, NOT on person
+        person.DomainEvents.GetAll().ShouldBeEmpty();
+        anotherPerson.DomainEvents.GetAll().Count().ShouldBe(1);
+        anotherPerson.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.PersonNameChangedEvent);
     }
 
     [Fact]

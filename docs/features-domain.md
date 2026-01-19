@@ -300,6 +300,22 @@ public Result<Customer> PromoteToVIP()
 
 **Important:** If When fails, `LastReviewed` is still updated, but `Status` remains unchanged and no promotion event is registered. This allows for partial updates with conditional logic.
 
+#### Side Effects with OnChanged
+
+The `OnChanged` method queues actions that execute only if changes occurred, useful for side effects like audit updates or logging.
+
+```csharp
+public Result<Customer> ChangeStatus(CustomerStatus status)
+{
+    return this.Change()
+        .When(_ => status != null)
+        .Set(e => e.Status, status)
+        .Register(e => new CustomerUpdatedDomainEvent(e))
+        .OnChanged(e => e.AuditState.SetUpdated()) // Executes only if changes occurred
+        .Apply();
+}
+```
+
 #### Validation with Check and Ensure
 - **`Ensure`**: Pre-condition check - aborts **before** making changes if false
 - **`Check`**: Post-condition validation - executes **immediately** at its position, after changes
@@ -492,7 +508,8 @@ public Result<Customer> ComplexUpdate(string name, int age)
 | **`When`** | **Circuit breaker** that executes at its declaration position. If condition is false, **cancels all remaining operations** after it. Operations before When execute normally. Enables conditional operation chains. |
 | **`Execute`** | Two overloads: (1) Runs arbitrary void actions at declaration position with automatic exception handling. (2) Applies Result transformations (Map, Bind, Tap, Ensure) at declaration position. Both short-circuit on failure. |
 | **`Register`** | Queues a Domain Event at declaration position to be registered at Apply() end if changes occurred. Provides access to `ChangeContext` for old values. Events only register if changes made and no cancellation. |
-| **`Apply`** | Executes all queued operations in declaration order, registers queued events (plus generic `EntityUpdatedDomainEvent` if no custom events), and returns a `Result`. |
+| **`OnChanged`** | Queues an action at declaration position to be executed at Apply() end if changes occurred. Actions run on the entity in declaration order. Exceptions in actions cause Apply() to return failure. |
+| **`Apply`** | Executes all queued operations in declaration order, registers queued events and executes OnChanged actions (if changes occurred), and returns a `Result`. |
 
 ### Execution Model
 
@@ -503,11 +520,13 @@ public Result<Customer> ComplexUpdate(string name, int age)
 
 **When as Circuit Breaker:**
 ```csharp
-.Set(prop1)       // ✅ Always executes
-.Register(event1) // ✅ Always queues
-.When(condition)  // ⚡ Decision point
-.Set(prop2)       // ❌ Skips if When false
-.Register(event2) // ❌ Skips if When false
+.Set(prop1)       // Always executes
+.Register(event1) // Always queues
+.OnChanged(action1) // Always queues
+.When(condition)  // Decision point
+.Set(prop2)       // Skips if When false
+.Register(event2) // Skips if When false
+.OnChanged(action2) // Skips if When false
 ```
 
 **Check Executes Immediately:**

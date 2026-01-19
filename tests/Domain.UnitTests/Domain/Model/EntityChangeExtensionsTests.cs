@@ -594,6 +594,115 @@ public class EntityChangeExtensionsTests
         promotionLogged.ShouldBeFalse(); // Do operations never executed
     }
 
+    [Fact]
+    public void Change_OnChanged_WhenChangesMade_ShouldExecuteAction()
+    {
+        // Arrange
+        var person = new PersonStub { FirstName = "John" };
+        var executed = false;
+
+        // Act
+        var result = person.Change()
+            .Set(p => p.FirstName, "Jane")
+            .OnChanged(p => executed = true)
+            .Apply();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        person.FirstName.ShouldBe("Jane");
+        executed.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Change_OnChanged_WhenNoChanges_ShouldNotExecuteAction()
+    {
+        // Arrange
+        var person = new PersonStub { FirstName = "John" };
+        var executed = false;
+
+        // Act
+        var result = person.Change()
+            .Set(p => p.FirstName, "John") // Same value
+            .OnChanged(p => executed = true)
+            .Apply();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        executed.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Change_OnChanged_Standalone_ShouldNotExecuteAction()
+    {
+        // Arrange
+        var person = new PersonStub { FirstName = "John" };
+        var executed = false;
+
+        // Act
+        var result = person.Change()
+            .OnChanged(p => executed = true)
+            .Apply();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        executed.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void Change_OnChanged_Multiple_ShouldExecuteInOrder()
+    {
+        // Arrange
+        var person = new PersonStub { FirstName = "John" };
+        var executionOrder = new List<int>();
+
+        // Act
+        var result = person.Change()
+            .OnChanged(p => executionOrder.Add(1))
+            .OnChanged(p => executionOrder.Add(2))
+            .Set(p => p.FirstName, "Jane")
+            .Apply();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        executionOrder.ShouldBe(new[] { 1, 2 });
+    }
+
+    [Fact]
+    public void Change_OnChanged_WhenActionThrows_ShouldReturnFailure()
+    {
+        // Arrange
+        var person = new PersonStub { FirstName = "John" };
+
+        // Act
+        var result = person.Change()
+            .OnChanged(p => throw new Exception("Test exception"))
+            .Set(p => p.FirstName, "Jane")
+            .Apply();
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.HasError<Error>().ShouldBeTrue();
+        result.GetError<Error>().Message.ShouldContain("Test exception");
+    }
+
+    [Fact]
+    public void Change_OnChanged_WithWhenCircuitBreaker_ShouldNotExecuteIfSkipped()
+    {
+        // Arrange
+        var person = new PersonStub { FirstName = "John", Age = 17 };
+        var executed = false;
+
+        // Act
+        var result = person.Change()
+            .When(p => p.Age >= 18) // Circuit breaker - fails
+            .OnChanged(p => executed = true)
+            .Apply();
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        executed.ShouldBeFalse(); // OnChanged not executed due to no changes
+    }
+
     // -------------------------------------------------------------------------
     // Test Helpers (PersonStub & Events)
     // -------------------------------------------------------------------------

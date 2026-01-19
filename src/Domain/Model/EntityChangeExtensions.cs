@@ -174,7 +174,7 @@ internal class OperationExecutionResult
 /// <summary>
 /// Context for ordered operation execution, tracking changes and queued events.
 /// </summary>
-internal class OrderedExecutionContext
+internal class OrderedExecutionContext<TEntity>
 {
     /// <summary>
     /// Gets a value indicating whether any operations have made changes to the entity.
@@ -190,6 +190,11 @@ internal class OrderedExecutionContext
     /// Gets the list of queued event factories with their optional target aggregates to be registered at the end of Apply().
     /// </summary>
     public List<(Func<IDomainEvent> EventFactory, IAggregateRoot Target)> QueuedEvents { get; } = [];
+
+    /// <summary>
+    /// Gets the list of queued OnChanged actions to be executed at the end of Apply().
+    /// </summary>
+    public List<Action<TEntity>> QueuedOnChangedActions { get; } = [];
 
     /// <summary>
     /// Records a property change with its old value.
@@ -1034,6 +1039,26 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         return this;
     }
 
+    /// <summary>
+    /// Queues a custom action to be executed at Apply() end if changes occur.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Set(p => p.Status, newStatus)
+    ///     .OnChanged(e => e.AuditState.SetUpdated())
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> OnChanged(Action<TEntity> action)
+    {
+        if (action != null)
+        {
+            this.orderedOperations.Add(new OnChangedOperationOrdered(action));
+        }
+        return this;
+    }
+
     // -------------------------------------------------------------------------
     // 5. Apply
     // -------------------------------------------------------------------------
@@ -1058,7 +1083,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                 .WithErrors(this.chainConstructionFailure.Errors);
         }
 
-        var context = new OrderedExecutionContext();
+        var context = new OrderedExecutionContext<TEntity>();
 
         // 2. Execute all operations in declaration order
         foreach (var operation in this.orderedOperations)
@@ -1092,6 +1117,22 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         // 3. Register queued events if changes were made (only for IAggregateRoot instances)
         this.RegisterQueuedEvents(entity, context);
 
+        // 4. Execute queued OnChanged actions if changes were made
+        if (context.ChangesMade)
+        {
+            foreach (var action in context.QueuedOnChangedActions)
+            {
+                try
+                {
+                    action(entity);
+                }
+                catch (Exception ex)
+                {
+                    return Result<TEntity>.Failure(entity).WithError(new Error(ex.Message));
+                }
+            }
+        }
+
         return Result<TEntity>.Success(entity);
     }
 
@@ -1099,7 +1140,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// Registers all queued events if changes were made.
     /// Events are registered on their specified target aggregate, or on the entity itself if no target is specified.
     /// </summary>
-    private void RegisterQueuedEvents(TEntity entity, OrderedExecutionContext context)
+    private void RegisterQueuedEvents(TEntity entity, OrderedExecutionContext<TEntity> context)
     {
         if (!context.ChangesMade || this.registerNoEvents)
         {
@@ -1157,7 +1198,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         /// <param name="entity">The entity to operate on.</param>
         /// <param name="context">The execution context tracking changes and events.</param>
         /// <returns>The result of the operation execution.</returns>
-        OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context);
+        OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context);
     }
 
     /// <summary>
@@ -1208,7 +1249,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class WhenOperation(Func<TEntity, bool> predicate) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             // If predicate passes, continue execution
             if (predicate(entity))
@@ -1232,7 +1273,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         private readonly PropertyAccessor<TValue> accessor = new(propertyExpression);
         private readonly IEqualityComparer<TValue> comparer = comparer ?? EqualityComparer<TValue>.Default;
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var currentValue = this.accessor.GetValue(entity);
             var newValue = valueFactory(entity);
@@ -1259,7 +1300,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         private readonly PropertyAccessor<TValue> accessor = new(propertyExpression);
         private readonly IEqualityComparer<TValue> comparer = comparer ?? EqualityComparer<TValue>.Default;
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var result = valueFactory(entity);
             if (result.IsFailure)
@@ -1284,7 +1325,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class CheckOperationOrdered(Func<TEntity, bool> predicate, string errorMessage) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             if (!predicate(entity))
             {
@@ -1302,7 +1343,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class EnsureOperationOrdered(Func<TEntity, bool> predicate, string errorMessage) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             if (!predicate(entity))
             {
@@ -1320,7 +1361,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class ExecuteOperationOrdered(Action<TEntity> action) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             try
             {
@@ -1342,7 +1383,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class ResultExecuteOperationOrdered(Func<TEntity, Result> func) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var result = func(entity);
             if (result.IsFailure)
@@ -1360,7 +1401,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class ResultEntityExecuteOperationOrdered(Func<TEntity, Result<TEntity>> func) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var result = func(entity);
             if (result.IsFailure)
@@ -1378,7 +1419,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class ResultTransformOperationOrdered(Func<Result<TEntity>, Result<TEntity>> transformation) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var entityResult = Result<TEntity>.Success(entity);
             var result = transformation(entityResult);
@@ -1400,7 +1441,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class RegisterOperationOrdered(Func<TEntity, EntityChangeContext, IDomainEvent> eventFactory, IAggregateRoot target = null) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             // Queue the event factory to be registered at Apply() end, along with the optional target aggregate
             context.QueueEvent(() =>
@@ -1415,6 +1456,18 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                 return eventFactory(entity, changeContext);
             }, target);
 
+            return OperationExecutionResult.Success();
+        }
+    }
+
+    /// <summary>
+    /// OnChanged operation for ordered execution - queues action for later execution.
+    /// </summary>
+    private class OnChangedOperationOrdered(Action<TEntity> action) : IOrderedOperation
+    {
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        {
+            context.QueuedOnChangedActions.Add(action);
             return OperationExecutionResult.Success();
         }
     }
@@ -1440,7 +1493,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null)
@@ -1484,7 +1537,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var result = itemFactory(entity);
             if (result.IsFailure)
@@ -1537,7 +1590,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null)
@@ -1598,7 +1651,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var result = itemFactory(entity);
             if (result.IsFailure)
@@ -1667,7 +1720,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null)
@@ -1717,7 +1770,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var result = idFactory(entity);
             if (result.IsFailure)
@@ -1768,7 +1821,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null || collection.Count == 0)
@@ -1801,7 +1854,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null || collection.Count == 0)
@@ -1838,7 +1891,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null || collection.Count == 0)
@@ -1880,7 +1933,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null)
@@ -1924,7 +1977,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null)
@@ -1976,7 +2029,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null)
@@ -2026,7 +2079,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext context)
+        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null)

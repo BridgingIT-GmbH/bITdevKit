@@ -292,8 +292,7 @@ public class EntityChangeExtensionsTests
         // Assert
         result.IsFailure.ShouldBeTrue();
         // Check uses messages, not errors
-        result.Messages.ShouldNotBeEmpty();
-        result.Messages[0].ShouldContain("First name");
+        result.GetError<Error>().Message.ShouldContain("First name");
         // Check modifies state then validates, so first Set modified state before failing
         person.FirstName.ShouldBe("");
         person.LastName.ShouldBe("Smith");
@@ -774,7 +773,7 @@ public class EntityChangeExtensionsTests
 
         // Assert
         result.IsFailure.ShouldBeTrue();
-        result.Messages.ShouldContain(m => m.Contains("Name required"));
+        result.GetError<Error>().Message.ShouldContain("Name required");
         person.FirstName.ShouldBe("");  // First Set executed
         person.Age.ShouldBe(25);        // Second Set did NOT execute
     }

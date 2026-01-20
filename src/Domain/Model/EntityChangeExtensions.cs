@@ -515,9 +515,10 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TItem item,
         IEqualityComparer<TItem> comparer = null,
-        string errorMessage = null)
+        string errorMessage = null,
+        IResultError error = null)
     {
-        this.orderedOperations.Add(new CollectionRemoveOperationOrdered<TItem>(collectionExpression, item, comparer, errorMessage));
+        this.orderedOperations.Add(new CollectionRemoveOperationOrdered<TItem>(collectionExpression, item, comparer, errorMessage, error));
         return this;
     }
 
@@ -542,7 +543,8 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Result<TItem> result,
         IEqualityComparer<TItem> comparer = null,
-        string errorMessage = null)
+        string errorMessage = null,
+        IResultError error = null)
     {
         if (result.IsFailure)
         {
@@ -553,7 +555,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return this;
         }
 
-        return this.Remove(collectionExpression, result.Value, comparer, errorMessage);
+        return this.Remove(collectionExpression, result.Value, comparer, errorMessage, error);
     }
 
     /// <summary>
@@ -576,10 +578,11 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Func<TEntity, Result<TItem>> itemFactory,
         IEqualityComparer<TItem> comparer = null,
-        string errorMessage = null)
+        string errorMessage = null,
+        IResultError error = null)
     {
         this.orderedOperations.Add(
-            new ResultCollectionRemoveOperationOrdered<TItem>(collectionExpression, itemFactory, comparer, errorMessage));
+            new ResultCollectionRemoveOperationOrdered<TItem>(collectionExpression, itemFactory, comparer, errorMessage, error));
         return this;
     }
 
@@ -606,10 +609,11 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TId id,
         IEqualityComparer<TId> comparer = null,
-        string errorMessage = null)
+        string errorMessage = null,
+        IResultError error = null)
         where TItem : IEntity<TId>
     {
-        this.orderedOperations.Add(new CollectionRemoveByIdOperationOrdered<TItem, TId>(collectionExpression, id, comparer, errorMessage));
+        this.orderedOperations.Add(new CollectionRemoveByIdOperationOrdered<TItem, TId>(collectionExpression, id, comparer, errorMessage, error));
         return this;
     }
 
@@ -637,7 +641,8 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Result<TId> result,
         IEqualityComparer<TId> comparer = null,
-        string errorMessage = null)
+        string errorMessage = null,
+        IResultError error = null)
         where TItem : IEntity<TId>
     {
         if (result.IsFailure)
@@ -649,7 +654,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return this;
         }
 
-        return this.RemoveById<TItem, TId>(collectionExpression, result.Value, comparer, errorMessage);
+        return this.RemoveById<TItem, TId>(collectionExpression, result.Value, comparer, errorMessage, error);
     }
 
     /// <summary>
@@ -675,11 +680,12 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Func<TEntity, Result<TId>> idFactory,
         IEqualityComparer<TId> comparer = null,
-        string errorMessage = null)
+        string errorMessage = null,
+        IResultError error = null)
         where TItem : IEntity<TId>
     {
         this.orderedOperations.Add(
-            new ResultCollectionRemoveByIdOperationOrdered<TItem, TId>(collectionExpression, idFactory, comparer, errorMessage));
+            new ResultCollectionRemoveByIdOperationOrdered<TItem, TId>(collectionExpression, idFactory, comparer, errorMessage, error));
         return this;
     }
 
@@ -823,10 +829,11 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TId id,
         Action<TItem> action,
-        string errorMessage = null)
+        string errorMessage = null,
+        IResultError error = null)
         where TItem : IEntity<TId>
     {
-        this.orderedOperations.Add(new CollectionSetByIdOperationOrdered<TItem, TId>(collectionExpression, id, action, errorMessage));
+        this.orderedOperations.Add(new CollectionSetByIdOperationOrdered<TItem, TId>(collectionExpression, id, action, errorMessage, error));
         return this;
     }
 
@@ -852,10 +859,11 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TId id,
         Func<TItem, Result> action,
-        string errorMessage = null)
+        string errorMessage = null,
+        IResultError error = null)
         where TItem : IEntity<TId>
     {
-        this.orderedOperations.Add(new ResultCollectionSetByIdOperationOrdered<TItem, TId>(collectionExpression, id, action, errorMessage));
+        this.orderedOperations.Add(new ResultCollectionSetByIdOperationOrdered<TItem, TId>(collectionExpression, id, action, errorMessage, error));
         return this;
     }
 
@@ -863,14 +871,12 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     // 3. Logic & Guards
     // -------------------------------------------------------------------------
 
-
     /// <summary>
     /// Adds a circuit breaker condition at the current position in the operation chain.
     /// If the predicate returns false when executed, ALL remaining operations after this point are cancelled.
     /// Operations before this When() execute normally.
     /// </summary>
     /// <param name="predicate">The condition to evaluate against the entity.</param>
-    /// <param name="errorMessage">Optional error message for documentation purposes.</param>
     /// <example>
     /// <code>
     /// return this.Change()
@@ -880,7 +886,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> When(Func<TEntity, bool> predicate, string errorMessage = null)
+    public EntityChangeBuilder<TEntity> When(Func<TEntity, bool> predicate)
     {
         this.orderedOperations.Add(new WhenOperation(predicate));
         return this;
@@ -897,9 +903,9 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Ensure(Func<TEntity, bool> predicate, string errorMessage)
+    public EntityChangeBuilder<TEntity> Ensure(Func<TEntity, bool> predicate, string errorMessage = null, IResultError error = null)
     {
-        this.orderedOperations.Add(new EnsureOperationOrdered(predicate, errorMessage));
+        this.orderedOperations.Add(new EnsureOperationOrdered(predicate, errorMessage, error));
         return this;
     }
 
@@ -972,9 +978,9 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Check(Func<TEntity, bool> predicate, string errorMessage)
+    public EntityChangeBuilder<TEntity> Check(Func<TEntity, bool> predicate, string errorMessage = null, IResultError error = null)
     {
-        this.orderedOperations.Add(new CheckOperationOrdered(predicate, errorMessage));
+        this.orderedOperations.Add(new CheckOperationOrdered(predicate, errorMessage, error));
         return this;
     }
 
@@ -992,7 +998,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Register<TEvent>(Func<TEntity, EntityChangeContext, TEvent> eventFactory) //1 
+    public EntityChangeBuilder<TEntity> Register<TEvent>(Func<TEntity, EntityChangeContext, TEvent> eventFactory) //1
         where TEvent : IDomainEvent
     {
         this.orderedOperations.Add(new RegisterOperationOrdered((agg, ctx) => eventFactory(agg, ctx)));
@@ -1323,15 +1329,14 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <summary>
     /// Check operation for ordered execution - validates condition at declaration point.
     /// </summary>
-    private class CheckOperationOrdered(Func<TEntity, bool> predicate, string errorMessage) : IOrderedOperation
+    private class CheckOperationOrdered(Func<TEntity, bool> predicate, string errorMessage = null, IResultError error = null) : IOrderedOperation
     {
         public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             if (!predicate(entity))
             {
                 return OperationExecutionResult.Failure(
-                    errors: [new Error(errorMessage)],
-                    messages: [errorMessage]);
+                    errors: [error ?? new Error(errorMessage)]);
             }
 
             return OperationExecutionResult.Success();
@@ -1341,15 +1346,14 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <summary>
     /// Ensure operation for ordered execution - validates pre-condition.
     /// </summary>
-    private class EnsureOperationOrdered(Func<TEntity, bool> predicate, string errorMessage) : IOrderedOperation
+    private class EnsureOperationOrdered(Func<TEntity, bool> predicate, string errorMessage = null, IResultError error = null) : IOrderedOperation
     {
         public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
         {
             if (!predicate(entity))
             {
                 return OperationExecutionResult.Failure(
-                    errors: [new Error(errorMessage)],
-                    messages: [errorMessage]);
+                    errors: [error ?? new Error(errorMessage)]);
             }
 
             return OperationExecutionResult.Success();
@@ -1575,7 +1579,8 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TItem item,
         IEqualityComparer<TItem> comparer,
-        string errorMessage) : IOrderedOperation
+        string errorMessage = null,
+        IResultError error = null) : IOrderedOperation
     {
         private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
         private readonly IEqualityComparer<TItem> comparer = comparer ?? EqualityComparer<TItem>.Default;
@@ -1597,8 +1602,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
                 return OperationExecutionResult.Failure(
-                    errors: [new NotFoundError(message)],
-                    messages: [message]);
+                    errors: [error ?? new NotFoundError(message)]);
             }
 
             var exists = this.comparer == EqualityComparer<TItem>.Default
@@ -1609,8 +1613,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 var message = errorMessage ?? $"Item not found in collection '{this.propertyName}'";
                 return OperationExecutionResult.Failure(
-                    errors: [new NotFoundError(message)],
-                    messages: [message]);
+                    errors: [error ?? new NotFoundError(message)]);
             }
 
             if (this.comparer != EqualityComparer<TItem>.Default)
@@ -1636,7 +1639,8 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Func<TEntity, Result<TItem>> itemFactory,
         IEqualityComparer<TItem> comparer,
-        string errorMessage) : IOrderedOperation
+        string errorMessage = null,
+        IResultError error = null) : IOrderedOperation
     {
         private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
         private readonly IEqualityComparer<TItem> comparer = comparer ?? EqualityComparer<TItem>.Default;
@@ -1665,8 +1669,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
                 return OperationExecutionResult.Failure(
-                    errors: [new NotFoundError(message)],
-                    messages: [message]);
+                    errors: [error ?? new NotFoundError(message)]);
             }
 
             var exists = this.comparer == EqualityComparer<TItem>.Default
@@ -1677,8 +1680,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 var message = errorMessage ?? $"Item not found in collection '{this.propertyName}'";
                 return OperationExecutionResult.Failure(
-                    errors: [new NotFoundError(message)],
-                    messages: [message]);
+                    errors: [error ?? new NotFoundError(message)]);
             }
 
             if (this.comparer != EqualityComparer<TItem>.Default)
@@ -1704,7 +1706,8 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TId id,
         IEqualityComparer<TId> comparer,
-        string errorMessage) : IOrderedOperation
+        string errorMessage = null,
+        IResultError error = null) : IOrderedOperation
         where TItem : IEntity<TId>
     {
         private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
@@ -1727,8 +1730,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
                 return OperationExecutionResult.Failure(
-                    errors: [new NotFoundError(message)],
-                    messages: [message]);
+                    errors: [error ?? new NotFoundError(message)]);
             }
 
             var itemToRemove = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
@@ -1736,8 +1738,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
                 return OperationExecutionResult.Failure(
-                    errors: [new NotFoundError(message)],
-                    messages: [message]);
+                    errors: [error ?? new NotFoundError(message)]);
             }
 
             collection.Remove(itemToRemove);
@@ -1754,7 +1755,8 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         Func<TEntity, Result<TId>> idFactory,
         IEqualityComparer<TId> comparer,
-        string errorMessage) : IOrderedOperation
+        string errorMessage,
+        IResultError error = null) : IOrderedOperation
         where TItem : IEntity<TId>
     {
         private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
@@ -1784,8 +1786,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
                 return OperationExecutionResult.Failure(
-                    errors: [new NotFoundError(message)],
-                    messages: [message]);
+                    errors: [error ?? new NotFoundError(message)]);
             }
 
             var itemToRemove = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
@@ -1793,8 +1794,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
                 return OperationExecutionResult.Failure(
-                    errors: [new NotFoundError(message)],
-                    messages: [message]);
+                    errors: [error ?? new NotFoundError(message)]);
             }
 
             collection.Remove(itemToRemove);
@@ -2013,7 +2013,8 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TId id,
         Action<TItem> action,
-        string errorMessage) : IOrderedOperation
+        string errorMessage = null,
+        IResultError error = null) : IOrderedOperation
         where TItem : IEntity<TId>
     {
         private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
@@ -2036,8 +2037,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 var message = errorMessage ?? $"Cannot operate on null collection '{this.propertyName}'";
                 return OperationExecutionResult.Failure(
-                    errors: [new NotFoundError(message)],
-                    messages: [message]);
+                    errors: [error ?? new NotFoundError(message)]);
             }
 
             var item = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
@@ -2045,8 +2045,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
                 return OperationExecutionResult.Failure(
-                    errors: [new NotFoundError(message)],
-                    messages: [message]);
+                    errors: [error ?? new NotFoundError(message)]);
             }
 
             action(item);
@@ -2063,7 +2062,8 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         Expression<Func<TEntity, ICollection<TItem>>> collectionExpression,
         TId id,
         Func<TItem, Result> action,
-        string errorMessage) : IOrderedOperation
+        string errorMessage = null,
+        IResultError error = null) : IOrderedOperation
         where TItem : IEntity<TId>
     {
         private readonly Func<TEntity, ICollection<TItem>> collectionGetter = collectionExpression.Compile();
@@ -2086,8 +2086,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 var message = errorMessage ?? $"Cannot operate on null collection '{this.propertyName}'";
                 return OperationExecutionResult.Failure(
-                    errors: [new NotFoundError(message)],
-                    messages: [message]);
+                    errors: [error ?? new NotFoundError(message)]);
             }
 
             var item = collection.FirstOrDefault(x => this.comparer.Equals(x.Id, id));
@@ -2095,8 +2094,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             {
                 var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
                 return OperationExecutionResult.Failure(
-                    errors: [new NotFoundError(message)],
-                    messages: [message]);
+                    errors: [error ?? new NotFoundError(message)]);
             }
 
             var result = action(item);
@@ -2110,4 +2108,3 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         }
     }
 }
-

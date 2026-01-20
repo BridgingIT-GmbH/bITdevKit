@@ -37,6 +37,10 @@ public static partial class Errors
         public static DomainPolicyError DomainPolicy(IEnumerable<string> messages = null)
             => new(messages);
 
+        /// <summary>Creates an <see cref="EntityNotFoundError"/> when an entity cannot be found.</summary>
+        public static EntityNotFoundError EntityNotFound(string message = null)
+            => new(message);
+
         /// <summary>Creates a <see cref="DomainError"/> for general domain or business logic errors.</summary>
         public static DomainError Error(string message = null)
             => new(message);

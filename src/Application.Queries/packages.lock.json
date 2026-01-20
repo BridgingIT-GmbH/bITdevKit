@@ -41,9 +41,9 @@
       },
       "MinVer": {
         "type": "Direct",
-        "requested": "[6.0.0, )",
-        "resolved": "6.0.0",
-        "contentHash": "+/SsmiySsXJlvQLCGBqaZKNVt3s/Y/HbAdwtop7Km2CnuZbaScoqkWJEBQ5Cy9ebkn6kCYKrHsXgwrFdTgcb3g=="
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "2lMTCQl5bGP4iv0JNkockPnyllC6eHLz+CoK2ICvalvHod+exXSxueu9hq+zNkU7bZBJf8wMfeRC/Edn8AGmEg=="
       },
       "Polly": {
         "type": "Direct",
@@ -134,14 +134,6 @@
           "Microsoft.Extensions.Configuration.Binder": "[10.0.1, )"
         }
       },
-      "BridgingIT.DevKit.Common.Extensions": {
-        "type": "Project",
-        "dependencies": {
-          "Ensure.That": "[10.1.0, )",
-          "Microsoft.Extensions.Configuration.Abstractions": "[10.0.1, )",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.1, )"
-        }
-      },
       "BridgingIT.DevKit.Common.Mapping": {
         "type": "Project",
         "dependencies": {
@@ -157,7 +149,6 @@
       "BridgingIT.DevKit.Common.Modules": {
         "type": "Project",
         "dependencies": {
-          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "FluentValidation": "[12.1.1, )",
@@ -176,7 +167,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "FluentValidation": "[12.1.1, )",
           "Microsoft.Extensions.Logging.Abstractions": "[10.0.1, )"
@@ -197,7 +187,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",

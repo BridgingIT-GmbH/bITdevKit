@@ -32,27 +32,27 @@ public class TestEnvironmentFixture : IAsyncLifetime
             .WithName(this.NetworkName)
             .Build();
 
-        this.SqlContainer = new MsSqlBuilder()
-            .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
+        this.SqlContainer = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest")
+            //.WithImage("mcr.microsoft.com/mssql/server:2022-latest")
             .WithNetworkAliases(this.NetworkName)
             .WithExposedPort(1433)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(1433))
             .Build();
 
         this.CosmosContainer =
-            new CosmosDbBuilder()
+            new CosmosDbBuilder("mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:vnext-preview")
                 .WithNetworkAliases(this.NetworkName)
                 .WithWaitStrategy(Wait.ForUnixContainer()
                     .AddCustomWaitStrategy(new WaitUntil()))
                 .Build();
 
-        this.AzuriteContainer = new AzuriteBuilder()
-            .WithImage("mcr.microsoft.com/azure-storage/azurite:latest")
+        this.AzuriteContainer = new AzuriteBuilder("mcr.microsoft.com/azure-storage/azurite:latest")
+            //.WithImage("mcr.microsoft.com/azure-storage/azurite:latest")
             .WithCommand("--skipApiVersionCheck")
             .Build();
 
-        this.MailHogContainer = new ContainerBuilder()
-            .WithImage("mailhog/mailhog:latest")
+        this.MailHogContainer = new ContainerBuilder("mailhog/mailhog:latest")
+            //.WithImage("mailhog/mailhog:latest")
             .WithNetworkAliases(this.NetworkName)
             //.WithExposedPort(1025).WithExposedPort(8025)
             .WithPortBinding(1025, 1025) // SMTP port
@@ -225,7 +225,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
             new CosmosClientOptions
             {
                 SerializerOptions = new CosmosSerializationOptions { PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase },
-                ConnectionMode = ConnectionMode.Gateway,
+                ConnectionMode = Microsoft.Azure.Cosmos.ConnectionMode.Gateway,
                 HttpClientFactory = () => this.CosmosContainer.HttpClient
             });
     }

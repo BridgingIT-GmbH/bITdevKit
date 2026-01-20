@@ -36,15 +36,15 @@ public class TestEnvironmentFixture : IAsyncLifetime
             .WithName(this.NetworkName)
             .Build();
 
-        this.SqlContainer = new MsSqlBuilder()
-            .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
+        this.SqlContainer = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest")
+            //.WithImage("mcr.microsoft.com/mssql/server:2022-latest")
             .WithNetworkAliases(this.NetworkName)
             .WithExposedPort(1433)
             .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(1433))
             .Build();
 
-        this.PostgresContainer = new PostgreSqlBuilder()
-             .WithImage("postgres:16-alpine")
+        this.PostgresContainer = new PostgreSqlBuilder("postgres:16-alpine")
+             //.WithImage("postgres:16-alpine")
              .WithDatabase("testdb")
              .WithUsername("postgres")
              .WithPassword("postgres")
@@ -52,7 +52,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
              .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(5432))
              .Build();
 
-        this.CosmosContainer = new CosmosDbBuilder() // INFO: remove docker image when container fails with 'The evaluation period has expired.' https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/60
+        this.CosmosContainer = new CosmosDbBuilder("mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:vnext-preview") // INFO: remove docker image when container fails with 'The evaluation period has expired.' https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/60
             .WithNetworkAliases(this.NetworkName)
             .WithWaitStrategy(Wait.ForUnixContainer().AddCustomWaitStrategy(new WaitUntil()))
             //.WithImage("mcr.microsoft.com/cosmosdb/linux/azure-cosmos-emulator:latest")
@@ -78,8 +78,8 @@ public class TestEnvironmentFixture : IAsyncLifetime
         //         .UntilPortIsAvailable(8081))
         //     .Build();
 
-        this.AzuriteContainer = new AzuriteBuilder()
-                .WithImage("mcr.microsoft.com/azure-storage/azurite:latest")
+        this.AzuriteContainer = new AzuriteBuilder("mcr.microsoft.com/azure-storage/azurite:latest")
+                //.WithImage("mcr.microsoft.com/azure-storage/azurite:latest")
                 .WithCommand("--skipApiVersionCheck")
                 .Build();
         //new AzuriteBuilder()
@@ -292,7 +292,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
                 optionsBuilder.UseCosmos(this.CosmosConnectionString, "test_ef",
                     o =>
                     {
-                        o.ConnectionMode(ConnectionMode.Gateway);
+                        o.ConnectionMode(Microsoft.Azure.Cosmos.ConnectionMode.Gateway);
                         o.HttpClientFactory(() => this.CosmosContainer.HttpClient);
                     });
             }
@@ -302,7 +302,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
                     "test_ef",
                     o =>
                     {
-                        o.ConnectionMode(ConnectionMode.Direct);
+                        o.ConnectionMode(Microsoft.Azure.Cosmos.ConnectionMode.Direct);
                         o.HttpClientFactory(() =>
                         {
                             return new HttpClient(new HttpClientHandler
@@ -365,7 +365,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
                     this.CosmosConnectionString,
                     new CosmosClientOptions
                     {
-                        ConnectionMode = ConnectionMode.Gateway,
+                        ConnectionMode = Microsoft.Azure.Cosmos.ConnectionMode.Gateway,
                         HttpClientFactory = () => this.CosmosContainer.HttpClient,
                         // TODO: systemtextjson still has issues deserializing types with no public or multiple constructors, that is an issue for ValueObjects.
                         //Serializer = new CosmosSystemTextJsonSerializer(
@@ -392,7 +392,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
                     connectionString,
                     new CosmosClientOptions
                     {
-                        ConnectionMode = ConnectionMode.Direct,
+                        ConnectionMode = Microsoft.Azure.Cosmos.ConnectionMode.Direct,
                         // TODO: systemtextjson still has issues deserializing types with no public or multiple constructors, that is an issue for ValueObjects.
                         //HttpClientFactory = () => this.CosmosDbContainer.HttpClient,
                         //Serializer = new CosmosSystemTextJsonSerializer(

@@ -9,7 +9,9 @@ using Application.Commands;
 using FluentValidation;
 using FluentValidation.Results;
 
+#pragma warning disable CS0618 // Type or member is obsolete
 public class StubPersonAddCommand(PersonStub person) : CommandRequestBase<bool>
+#pragma warning restore CS0618 // Type or member is obsolete
 {
     public PersonStub Person { get; } = person;
 

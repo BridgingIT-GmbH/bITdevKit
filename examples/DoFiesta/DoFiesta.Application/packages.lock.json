@@ -30,9 +30,9 @@
       },
       "MinVer": {
         "type": "Direct",
-        "requested": "[6.0.0, )",
-        "resolved": "6.0.0",
-        "contentHash": "+/SsmiySsXJlvQLCGBqaZKNVt3s/Y/HbAdwtop7Km2CnuZbaScoqkWJEBQ5Cy9ebkn6kCYKrHsXgwrFdTgcb3g=="
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "2lMTCQl5bGP4iv0JNkockPnyllC6eHLz+CoK2ICvalvHod+exXSxueu9hq+zNkU7bZBJf8wMfeRC/Edn8AGmEg=="
       },
       "Mapster.Core": {
         "type": "Transitive",
@@ -183,11 +183,6 @@
           "System.Composition.Runtime": "9.0.0"
         }
       },
-      "ZstdSharp.Port": {
-        "type": "Transitive",
-        "resolved": "0.8.6",
-        "contentHash": "iP4jVLQoQmUjMU88g1WObiNr6YKZGvh4aOXn3yOJsHqZsflwRsxZPcIBvNXgjXO3vQKSLctXGLTpcBPLnWPS8A=="
-      },
       "BridgingIT.DevKit.Application.Identity": {
         "type": "Project",
         "dependencies": {
@@ -201,7 +196,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
@@ -217,7 +211,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
@@ -241,7 +234,7 @@
           "Polly": "[8.6.5, )",
           "Polly.Contrib.Simmy": "[0.3.0, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "SharpCompress": "[0.42.1, )"
+          "SharpCompress": "[0.44.1, )"
         }
       },
       "BridgingIT.DevKit.Common.Abstractions": {
@@ -262,14 +255,6 @@
           "Microsoft.Extensions.Configuration.Binder": "[10.0.1, )"
         }
       },
-      "BridgingIT.DevKit.Common.Extensions": {
-        "type": "Project",
-        "dependencies": {
-          "Ensure.That": "[10.1.0, )",
-          "Microsoft.Extensions.Configuration.Abstractions": "[10.0.1, )",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.1, )"
-        }
-      },
       "BridgingIT.DevKit.Common.Mapping": {
         "type": "Project",
         "dependencies": {
@@ -285,7 +270,6 @@
       "BridgingIT.DevKit.Common.Modules": {
         "type": "Project",
         "dependencies": {
-          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "FluentValidation": "[12.1.1, )",
@@ -304,7 +288,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "FluentValidation": "[12.1.1, )",
           "Microsoft.Extensions.Logging.Abstractions": "[10.0.1, )"
@@ -314,7 +297,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "FluentValidation": "[12.1.1, )",
@@ -336,7 +318,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
@@ -353,7 +334,6 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
@@ -635,12 +615,9 @@
       },
       "SharpCompress": {
         "type": "CentralTransitive",
-        "requested": "[0.42.1, )",
-        "resolved": "0.42.1",
-        "contentHash": "1GpO8MSF0W6VugHJCJvWm73rpMd2SIjF8I5HzE9Y57D+IhdrIBtLF0qdWFPwIiPXNndvhsxHs9Dj5subTqivUA==",
-        "dependencies": {
-          "ZstdSharp.Port": "0.8.6"
-        }
+        "requested": "[0.44.1, )",
+        "resolved": "0.44.1",
+        "contentHash": "QHhxJHoyIXKeu3vLJ0XY2rDJLd4fLvZ0xXPCMO854OOcSz62uHB5uPloBMtg236MFDMVUSUHuO1E8WY5HpLp6Q=="
       },
       "System.Linq.Dynamic.Core": {
         "type": "CentralTransitive",

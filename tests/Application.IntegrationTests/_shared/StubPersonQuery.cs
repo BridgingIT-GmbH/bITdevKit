@@ -8,7 +8,9 @@ namespace BridgingIT.DevKit.Application.IntegrationTests.Queries;
 using Application.Queries;
 using FluentValidation.Results;
 
+#pragma warning disable CS0618 // Type or member is obsolete
 public class StubPersonQuery(string firstName) : QueryRequestBase<IEnumerable<PersonStub>>
+#pragma warning restore CS0618 // Type or member is obsolete
 {
     public string FirstName { get; } = firstName;
 

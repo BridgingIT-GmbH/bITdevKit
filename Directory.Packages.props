@@ -9,8 +9,8 @@
     <PackageVersion Include="Azure.Identity" Version="1.17.1" />
     <PackageVersion Include="Azure.Messaging.ServiceBus" Version="7.20.1" />
     <PackageVersion Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.5.0" />
-    <PackageVersion Include="Azure.Storage.Blobs" Version="12.26.0" />
-    <PackageVersion Include="Azure.Storage.Files.Shares" Version="12.24.0" />
+    <PackageVersion Include="Azure.Storage.Blobs" Version="12.27.0" />
+    <PackageVersion Include="Azure.Storage.Files.Shares" Version="12.25.0" />
     <PackageVersion Include="Azure.Storage.Queues" Version="12.17.1" />
     <PackageVersion Include="CsvHelper" Version="33.1.0" />
     <PackageVersion Include="Dapper" Version="2.1.66" />
@@ -40,7 +40,7 @@
     <PackageVersion Include="Microsoft.AspNetCore.SignalR.Client" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="8.4.0" />
     <PackageVersion Include="Microsoft.Azure.Cosmos" Version="3.56.0" />
-    <PackageVersion Include="Microsoft.Data.SqlClient" Version="6.1.3" />
+    <PackageVersion Include="Microsoft.Data.SqlClient" Version="6.1.4" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore" Version="10.0.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Cosmos" Version="10.0.1" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1" />
@@ -67,7 +67,7 @@
     <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.0.1" />
     <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="10.1.0" />
     <PackageVersion Include="Microsoft.IdentityModel.Protocols.OpenIdConnect" Version="8.15.0" />
-    <PackageVersion Include="Microsoft.Kiota.Bundle" Version="1.21.1" />
+    <PackageVersion Include="Microsoft.Kiota.Bundle" Version="1.21.2" />
     <PackageVersion Include="MudBlazor" Version="8.15.0" />
     <PackageVersion Include="NewId" Version="4.0.1" />
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
@@ -89,7 +89,7 @@
     <PackageVersion Include="Quartz.Serialization.Json" Version="3.15.1" />
     <PackageVersion Include="RabbitMQ.Client" Version="[6.8.1,7.0.0)" />
     <PackageVersion Include="RazorSlices" Version="0.9.5" />
-    <PackageVersion Include="Scalar.AspNetCore" Version="2.11.8" />
+    <PackageVersion Include="Scalar.AspNetCore" Version="2.12.11" />
     <PackageVersion Include="Scrutor" Version="[4.2.2,5.0.0)" />
     <PackageVersion Include="Serilog" Version="4.3.0" />
     <PackageVersion Include="Serilog.AspNetCore" Version="10.0.0" />
@@ -106,7 +106,7 @@
     <PackageVersion Include="Serilog.Sinks.Seq" Version="9.0.0" />
     <PackageVersion Include="Serilog.Sinks.Trace" Version="4.0.0" />
     <PackageVersion Include="Serilog.Sinks.XUnit" Version="3.0.19" />
-    <PackageVersion Include="SharpCompress" Version="0.42.1" />
+    <PackageVersion Include="SharpCompress" Version="0.44.1" />
     <PackageVersion Include="Spectre.Console" Version="0.54.0" />
     <PackageVersion Include="StyleCop.Analyzers" Version="1.1.118" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="9.0.6" />
@@ -129,19 +129,19 @@
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.0.1" />
     <PackageVersion Include="Microsoft.Playwright" Version="1.57.0" />
     <PackageVersion Include="Microsoft.Playwright.NUnit" Version="1.57.0" />
-    <PackageVersion Include="MinVer" Version="6.0.0" />
+    <PackageVersion Include="MinVer" Version="7.0.0" />
     <PackageVersion Include="NBuilder" Version="6.1.0" />
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
     <PackageVersion Include="Shouldly" Version="4.3.0" />
-    <PackageVersion Include="Testcontainers.Azurite" Version="4.9.0" />
-    <PackageVersion Include="Testcontainers.CosmosDb" Version="4.9.0" />
-    <PackageVersion Include="Testcontainers.MsSql" Version="4.9.0" />
-    <PackageVersion Include="Testcontainers.RabbitMq" Version="4.9.0" />
-    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.9.0" />
+    <PackageVersion Include="Testcontainers.Azurite" Version="4.10.0" />
+    <PackageVersion Include="Testcontainers.CosmosDb" Version="4.10.0" />
+    <PackageVersion Include="Testcontainers.MsSql" Version="4.10.0" />
+    <PackageVersion Include="Testcontainers.RabbitMq" Version="4.10.0" />
+    <PackageVersion Include="Testcontainers.PostgreSql" Version="4.10.0" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="xunit.abstractions" Version="2.0.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5" />
-    <PackageVersion Include="Xunit.SkippableFact" Version="1.5.23" />
+    <PackageVersion Include="Xunit.SkippableFact" Version="1.5.61" />
   </ItemGroup>
   <ItemGroup Label="set the compiler toolset to a specific version">
     <PackageVersion Include="Microsoft.Net.Compilers.Toolset" Version="5.0.0" />

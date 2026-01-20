@@ -34,9 +34,9 @@
       },
       "MinVer": {
         "type": "Direct",
-        "requested": "[6.0.0, )",
-        "resolved": "6.0.0",
-        "contentHash": "+/SsmiySsXJlvQLCGBqaZKNVt3s/Y/HbAdwtop7Km2CnuZbaScoqkWJEBQ5Cy9ebkn6kCYKrHsXgwrFdTgcb3g=="
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "2lMTCQl5bGP4iv0JNkockPnyllC6eHLz+CoK2ICvalvHod+exXSxueu9hq+zNkU7bZBJf8wMfeRC/Edn8AGmEg=="
       },
       "Azure.Core": {
         "type": "Transitive",
@@ -175,11 +175,6 @@
           "System.Drawing.Common": "6.0.0"
         }
       },
-      "ZstdSharp.Port": {
-        "type": "Transitive",
-        "resolved": "0.8.6",
-        "contentHash": "iP4jVLQoQmUjMU88g1WObiNr6YKZGvh4aOXn3yOJsHqZsflwRsxZPcIBvNXgjXO3vQKSLctXGLTpcBPLnWPS8A=="
-      },
       "BridgingIT.DevKit.Application.Storage": {
         "type": "Project",
         "dependencies": {
@@ -193,7 +188,7 @@
           "Polly": "[8.6.5, )",
           "Polly.Contrib.Simmy": "[0.3.0, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "SharpCompress": "[0.42.1, )"
+          "SharpCompress": "[0.44.1, )"
         }
       },
       "BridgingIT.DevKit.Common.Abstractions": {
@@ -458,12 +453,9 @@
       },
       "SharpCompress": {
         "type": "CentralTransitive",
-        "requested": "[0.42.1, )",
-        "resolved": "0.42.1",
-        "contentHash": "1GpO8MSF0W6VugHJCJvWm73rpMd2SIjF8I5HzE9Y57D+IhdrIBtLF0qdWFPwIiPXNndvhsxHs9Dj5subTqivUA==",
-        "dependencies": {
-          "ZstdSharp.Port": "0.8.6"
-        }
+        "requested": "[0.44.1, )",
+        "resolved": "0.44.1",
+        "contentHash": "QHhxJHoyIXKeu3vLJ0XY2rDJLd4fLvZ0xXPCMO854OOcSz62uHB5uPloBMtg236MFDMVUSUHuO1E8WY5HpLp6Q=="
       },
       "System.Linq.Dynamic.Core": {
         "type": "CentralTransitive",

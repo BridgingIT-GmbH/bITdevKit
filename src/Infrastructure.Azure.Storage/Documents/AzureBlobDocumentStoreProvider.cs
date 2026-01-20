@@ -171,10 +171,12 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
         }
         else if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
         {
+            var options = new GetBlobsOptions
+            {
+                Prefix = $"{documentKey.PartitionKey}{this.blobNameSeperator}{documentKey.RowKey}"
+            };
             await foreach (var page in containerClient
-                               .GetBlobsAsync(
-                                   prefix: $"{documentKey.PartitionKey}{this.blobNameSeperator}{documentKey.RowKey}",
-                                   cancellationToken: cancellationToken)
+                               .GetBlobsAsync(options, cancellationToken: cancellationToken)
                                .AsPages()
                                .WithCancellation(cancellationToken))
             {
@@ -306,10 +308,12 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider
         }
         else if (filter == DocumentKeyFilter.RowKeyPrefixMatch)
         {
+            var options = new GetBlobsOptions
+            {
+                Prefix = $"{documentKey.PartitionKey}{this.blobNameSeperator}{documentKey.RowKey}"
+            };
             await foreach (var page in containerClient
-                               .GetBlobsAsync(
-                                   prefix: $"{documentKey.PartitionKey}{this.blobNameSeperator}{documentKey.RowKey}",
-                                   cancellationToken: cancellationToken)
+                               .GetBlobsAsync(options, cancellationToken: cancellationToken)
                                .AsPages()
                                .WithCancellation(cancellationToken))
             {

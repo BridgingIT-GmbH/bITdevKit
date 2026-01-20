@@ -22,6 +22,7 @@ using System.Security.Cryptography;
 /// </summary>
 public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
 {
+    private const string PathSeperator = "/";
     private readonly string connectionString;
     private readonly Lazy<BlobServiceClient> lazyBlobServiceClient;
     private readonly string containerName;
@@ -854,8 +855,12 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
 
         try
         {
-            var prefix = normalizedPath.EndsWith("/") ? normalizedPath : normalizedPath + "/";
-            var blobItems = containerClient.GetBlobsAsync(prefix: prefix, cancellationToken: cancellationToken);
+            var prefix = normalizedPath.EndsWith(PathSeperator) ? normalizedPath : normalizedPath + PathSeperator;
+            var options = new GetBlobsOptions
+            {
+                Prefix = prefix
+            };
+            var blobItems = containerClient.GetBlobsAsync(options, cancellationToken: cancellationToken);
             var exists = await blobItems.AnyAsync(cancellationToken: cancellationToken);
             if (!exists)
             {
@@ -901,7 +906,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
 
         try
         {
-            var directoryPath = normalizedPath.EndsWith("/") ? normalizedPath : normalizedPath + "/";
+            var directoryPath = normalizedPath.EndsWith(PathSeperator) ? normalizedPath : normalizedPath + PathSeperator;
             var blobClient = containerClient.GetBlobClient(directoryPath + ".directory");
             using var emptyContent = new MemoryStream();
             await blobClient.UploadAsync(emptyContent, true, cancellationToken);
@@ -940,12 +945,16 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var directoryPath = normalizedPath.EndsWith("/") ? normalizedPath : normalizedPath + "/";
+        var directoryPath = normalizedPath.EndsWith(PathSeperator) ? normalizedPath : normalizedPath + PathSeperator;
         var containerClient = await this.GetContainerClientAsync();
 
         try
         {
-            var blobItems = containerClient.GetBlobsAsync(prefix: directoryPath, cancellationToken: cancellationToken);
+            var options = new GetBlobsOptions
+            {
+                Prefix = directoryPath
+            };
+            var blobItems = containerClient.GetBlobsAsync(options, cancellationToken: cancellationToken);
             var blobs = await blobItems.ToListAsync(cancellationToken);
             if (!blobs.Any())
             {
@@ -1001,12 +1010,16 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
 
         var normalizedPath = this.NormalizePath(path);
-        var prefix = string.IsNullOrEmpty(normalizedPath) ? string.Empty : normalizedPath.EndsWith("/") ? normalizedPath : normalizedPath + "/";
+        var prefix = string.IsNullOrEmpty(normalizedPath) ? string.Empty : normalizedPath.EndsWith(PathSeperator) ? normalizedPath : normalizedPath + PathSeperator;
         var containerClient = await this.GetContainerClientAsync();
 
         try
         {
-            var blobItems = containerClient.GetBlobsAsync(prefix: prefix, cancellationToken: cancellationToken);
+            var options = new GetBlobsOptions
+            {
+                Prefix = prefix
+            };
+            var blobItems = containerClient.GetBlobsAsync(options, cancellationToken);
             var directories = new HashSet<string>();
 
             await foreach (var blob in blobItems)

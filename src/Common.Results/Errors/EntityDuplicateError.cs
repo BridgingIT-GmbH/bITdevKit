@@ -5,14 +5,14 @@
 
 namespace BridgingIT.DevKit.Common;
 
-public class EntityNotFoundError(string message = null) : ResultErrorBase(message ?? "Not found")
+public class EntityDuplicateError(string message = null) : ResultErrorBase(message ?? "Duplicate")
 {
-    public EntityNotFoundError() : this(null)
+    public EntityDuplicateError() : this(null)
     {
     }
 
-    public EntityNotFoundError(string entityType, string entityId)
-        : this($"{entityType} with id {entityId} not found")
+    public EntityDuplicateError(string entityType, string entityId)
+        : this($"{entityType} with id {entityId} duplicate")
     {
         this.EntityType = entityType;
         this.EntityId = entityId;

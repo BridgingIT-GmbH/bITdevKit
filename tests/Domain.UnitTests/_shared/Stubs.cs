@@ -60,9 +60,9 @@ public class PersonStub : AggregateRoot<Guid>
     {
         return this.Change()
             .When(_ => age != 0)
-            .Ensure(p => age > 0, "Age must be non-negative") // Pre-condition
+            .Ensure(p => age > 0, new ValidationError("Age must be non-negative")) // Pre-condition
             .Set(p => p.Age, age)
-            .Check(p => p.Age >= 0, "Age cannot be negative") // Post-condition
+            .Check(p => p.Age >= 0, new ValidationError("Age cannot be negative")) // Post-condition
             .Apply();
     }
 

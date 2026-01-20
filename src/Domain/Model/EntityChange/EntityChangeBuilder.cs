@@ -15,220 +15,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 
 /// <summary>
-/// Provides extension methods for entities to enable fluent,
-/// transactional-style state changes with automatic change tracking and event registration.
-/// </summary>
-public static class EntityChangeExtensions
-{
-    /// <summary>
-    /// Initiates a fluent change transaction on an entity.
-    /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
-    /// <param name="entity">The entity instance.</param>
-    /// <returns>A <see cref="EntityChangeBuilder{TEntity}"/> for fluent configuration.</returns>
-    /// <example>
-    /// <code>
-    /// return this.Change()
-    ///     .Set(c => c.Name, "New Name")
-    ///     .Apply();
-    /// </code>
-    /// </example>
-    public static EntityChangeBuilder<TEntity> Change<TEntity>(this TEntity entity)
-        where TEntity : IEntity
-    {
-        return new EntityChangeBuilder<TEntity>(entity);
-    }
-}
-
-/// <summary>
-/// A context object containing details about the changes applied during a specific change transaction.
-/// Used primarily within custom domain event factories to access previous values.
-/// </summary>
-public class EntityChangeContext
-{
-    private readonly Dictionary<string, (object OldValue, object NewValue)> changes = [];
-
-    /// <summary>
-    /// Records a change to a specific property.
-    /// </summary>
-    internal void RecordChange(string propertyName, object oldValue, object newValue)
-    {
-        this.changes[propertyName] = (oldValue, newValue);
-    }
-
-    /// <summary>
-    /// Checks if a specific property was changed during the transaction.
-    /// </summary>
-    public bool HasChanged(string propertyName) => this.changes.ContainsKey(propertyName);
-
-    /// <summary>
-    /// Gets the old value of a modified property.
-    /// </summary>
-    public T GetOldValue<T>(string propertyName)
-    {
-        if (this.changes.TryGetValue(propertyName, out var record))
-        {
-            return (T)record.OldValue;
-        }
-        return default;
-    }
-
-    /// <summary>
-    /// Gets the new value of a modified property.
-    /// </summary>
-    public T GetNewValue<T>(string propertyName)
-    {
-        if (this.changes.TryGetValue(propertyName, out var record))
-        {
-            return (T)record.NewValue;
-        }
-        return default;
-    }
-}
-
-/// <summary>
-/// Represents the outcome of an entity change operation, tracking whether changes occurred.
-/// </summary>
-public class ChangeOperationOutcome
-{
-    /// <summary>
-    /// Gets a value indicating whether the operation resulted in a change to the entity.
-    /// </summary>
-    public bool HasChanged { get; init; }
-
-    /// <summary>
-    /// Gets an optional description of what changed during the operation.
-    /// </summary>
-    public string ChangeDescription { get; init; }
-
-    /// <summary>
-    /// Creates an outcome indicating that a change occurred.
-    /// </summary>
-    /// <param name="description">Optional description of the change.</param>
-    /// <returns>An OperationOutcome with HasChanged set to true.</returns>
-    public static ChangeOperationOutcome Changed(string description = null) =>
-        new() { HasChanged = true, ChangeDescription = description };
-
-    /// <summary>
-    /// Creates an outcome indicating that no change occurred.
-    /// </summary>
-    /// <returns>An OperationOutcome with HasChanged set to false.</returns>
-    public static ChangeOperationOutcome NoChange() =>
-        new() { HasChanged = false };
-}
-
-/// <summary>
-/// Represents the result of executing an ordered operation in a change transaction.
-/// </summary>
-internal class OperationExecutionResult
-{
-    /// <summary>
-    /// Gets a value indicating whether the operation executed successfully.
-    /// </summary>
-    public bool IsSuccess { get; init; }
-
-    /// <summary>
-    /// Gets a value indicating whether the operation signaled cancellation of remaining operations.
-    /// </summary>
-    public bool IsCancelled { get; init; }
-
-    /// <summary>
-    /// Gets a value indicating whether the operation failed.
-    /// </summary>
-    public bool IsFailure => !this.IsSuccess && !this.IsCancelled;
-
-    /// <summary>
-    /// Gets a value indicating whether the operation resulted in changes to the entity.
-    /// </summary>
-    public bool HasChanged { get; init; }
-
-    /// <summary>
-    /// Gets the errors that occurred during operation execution.
-    /// </summary>
-    public IEnumerable<IResultError> Errors { get; init; } = [];
-
-    /// <summary>
-    /// Gets the messages associated with the operation execution.
-    /// </summary>
-    public IEnumerable<string> Messages { get; init; } = [];
-
-    /// <summary>
-    /// Creates a successful operation result.
-    /// </summary>
-    public static OperationExecutionResult Success(bool hasChanged = false) =>
-        new() { IsSuccess = true, HasChanged = hasChanged };
-
-    /// <summary>
-    /// Creates a cancelled operation result (circuit breaker triggered).
-    /// </summary>
-    public static OperationExecutionResult Cancelled() =>
-        new() { IsCancelled = true };
-
-    /// <summary>
-    /// Creates a failed operation result with errors and messages.
-    /// </summary>
-    public static OperationExecutionResult Failure(IEnumerable<IResultError> errors = null, IEnumerable<string> messages = null) =>
-        new() { Errors = errors ?? [], Messages = messages ?? [] };
-}
-
-/// <summary>
-/// Context for ordered operation execution, tracking changes and queued events.
-/// </summary>
-internal class OrderedExecutionContext<TEntity>
-{
-    /// <summary>
-    /// Gets a value indicating whether any operations have made changes to the entity.
-    /// </summary>
-    public bool ChangesMade { get; set; }
-
-    /// <summary>
-    /// Gets the dictionary storing old values of changed properties for event factories.
-    /// </summary>
-    public Dictionary<string, object> OldValues { get; } = [];
-
-    /// <summary>
-    /// Gets the list of queued event factories with their optional target aggregates to be registered at the end of Apply().
-    /// </summary>
-    public List<(Func<IDomainEvent> EventFactory, IAggregateRoot Target)> QueuedEvents { get; } = [];
-
-    /// <summary>
-    /// Gets the list of queued OnChanged actions to be executed at the end of Apply().
-    /// </summary>
-    public List<Action<TEntity>> QueuedOnChangedActions { get; } = [];
-
-    /// <summary>
-    /// Records a property change with its old value.
-    /// </summary>
-    public void RecordChange(string propertyName, object oldValue)
-    {
-        this.ChangesMade = true;
-        this.OldValues[propertyName] = oldValue;
-    }
-
-    /// <summary>
-    /// Queues an event factory to be registered when Apply() completes successfully.
-    /// </summary>
-    /// <param name="eventFactory">The factory function that creates the domain event.</param>
-    /// <param name="target">Optional target aggregate root on which to register the event. If null, uses the entity itself.</param>
-    public void QueueEvent(Func<IDomainEvent> eventFactory, IAggregateRoot target = null)
-    {
-        this.QueuedEvents.Add((eventFactory, target));
-    }
-
-    /// <summary>
-    /// Gets the old value of a changed property for use in event factories.
-    /// </summary>
-    public T GetOldValue<T>(string propertyName)
-    {
-        if (this.OldValues.TryGetValue(propertyName, out var value))
-        {
-            return (T)value;
-        }
-        return default;
-    }
-}
-
-/// <summary>
 /// Fluent builder for applying complex changes to entities.
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity.</typeparam>
@@ -903,9 +689,26 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Ensure(Func<TEntity, bool> predicate, string errorMessage = null, IResultError error = null)
+    public EntityChangeBuilder<TEntity> Ensure(Func<TEntity, bool> predicate, string errorMessage)
     {
-        this.orderedOperations.Add(new EnsureOperationOrdered(predicate, errorMessage, error));
+        this.orderedOperations.Add(new EnsureOperationOrdered(predicate, errorMessage, null));
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a pre-condition check at the current position. If the predicate returns false, the transaction aborts.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Ensure(p => p.Age >= 18, new ValidationError("Must be an adult"))
+    ///     .Set(p => p.CanVote, true)
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> Ensure(Func<TEntity, bool> predicate, IResultError error)
+    {
+        this.orderedOperations.Add(new EnsureOperationOrdered(predicate, null, error));
         return this;
     }
 
@@ -978,9 +781,28 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     ///     .Apply();
     /// </code>
     /// </example>
-    public EntityChangeBuilder<TEntity> Check(Func<TEntity, bool> predicate, string errorMessage = null, IResultError error = null)
+    public EntityChangeBuilder<TEntity> Check(Func<TEntity, bool> predicate, string errorMessage)
     {
-        this.orderedOperations.Add(new CheckOperationOrdered(predicate, errorMessage, error));
+        this.orderedOperations.Add(new CheckOperationOrdered(predicate, errorMessage, null));
+        return this;
+    }
+
+    /// <summary>
+    /// Adds a validation check at the current position in the operation chain.
+    /// If the predicate returns false, the transaction aborts with an error.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// return this.Change()
+    ///     .Set(p => p.FirstName, firstName)
+    ///     .Set(p => p.LastName, lastName)
+    ///     .Check(p => !string.IsNullOrEmpty(p.FirstName), new ValidationError("First name is required"))
+    ///     .Apply();
+    /// </code>
+    /// </example>
+    public EntityChangeBuilder<TEntity> Check(Func<TEntity, bool> predicate, IResultError error)
+    {
+        this.orderedOperations.Add(new CheckOperationOrdered(predicate, null, error));
         return this;
     }
 
@@ -1089,7 +911,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                 .WithErrors(this.chainConstructionFailure.Errors);
         }
 
-        var context = new OrderedExecutionContext<TEntity>();
+        var context = new EntityChangeOrderedExecutionContext<TEntity>();
 
         // 2. Execute all operations in declaration order
         foreach (var operation in this.orderedOperations)
@@ -1146,7 +968,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// Registers all queued events if changes were made.
     /// Events are registered on their specified target aggregate, or on the entity itself if no target is specified.
     /// </summary>
-    private void RegisterQueuedEvents(TEntity entity, OrderedExecutionContext<TEntity> context)
+    private void RegisterQueuedEvents(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
     {
         if (!context.ChangesMade || this.registerNoEvents)
         {
@@ -1204,7 +1026,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         /// <param name="entity">The entity to operate on.</param>
         /// <param name="context">The execution context tracking changes and events.</param>
         /// <returns>The result of the operation execution.</returns>
-        OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context);
+        EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context);
     }
 
     /// <summary>
@@ -1255,16 +1077,16 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class WhenOperation(Func<TEntity, bool> predicate) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             // If predicate passes, continue execution
             if (predicate(entity))
             {
-                return OperationExecutionResult.Success();
+                return EntityChangeOperationExecutionResult.Success();
             }
 
             // If predicate fails, signal cancellation (circuit breaker)
-            return OperationExecutionResult.Cancelled();
+            return EntityChangeOperationExecutionResult.Cancelled();
         }
     }
 
@@ -1279,19 +1101,19 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         private readonly PropertyAccessor<TValue> accessor = new(propertyExpression);
         private readonly IEqualityComparer<TValue> comparer = comparer ?? EqualityComparer<TValue>.Default;
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var currentValue = this.accessor.GetValue(entity);
             var newValue = valueFactory(entity);
 
             if (this.comparer.Equals(currentValue, newValue))
             {
-                return OperationExecutionResult.Success(hasChanged: false);
+                return EntityChangeOperationExecutionResult.Success(hasChanged: false);
             }
 
             this.accessor.SetValue(entity, newValue);
             context.RecordChange(this.accessor.PropertyInfo.Name, currentValue);
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -1306,23 +1128,23 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
         private readonly PropertyAccessor<TValue> accessor = new(propertyExpression);
         private readonly IEqualityComparer<TValue> comparer = comparer ?? EqualityComparer<TValue>.Default;
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var result = valueFactory(entity);
             if (result.IsFailure)
             {
-                return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                return EntityChangeOperationExecutionResult.Failure(result.Errors, result.Messages);
             }
 
             var currentValue = this.accessor.GetValue(entity);
             if (this.comparer.Equals(currentValue, result.Value))
             {
-                return OperationExecutionResult.Success(hasChanged: false);
+                return EntityChangeOperationExecutionResult.Success(hasChanged: false);
             }
 
             this.accessor.SetValue(entity, result.Value);
             context.RecordChange(this.accessor.PropertyInfo.Name, currentValue);
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -1331,15 +1153,15 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class CheckOperationOrdered(Func<TEntity, bool> predicate, string errorMessage = null, IResultError error = null) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             if (!predicate(entity))
             {
-                return OperationExecutionResult.Failure(
+                return EntityChangeOperationExecutionResult.Failure(
                     errors: [error ?? new Error(errorMessage)]);
             }
 
-            return OperationExecutionResult.Success();
+            return EntityChangeOperationExecutionResult.Success();
         }
     }
 
@@ -1348,15 +1170,15 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class EnsureOperationOrdered(Func<TEntity, bool> predicate, string errorMessage = null, IResultError error = null) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             if (!predicate(entity))
             {
-                return OperationExecutionResult.Failure(
+                return EntityChangeOperationExecutionResult.Failure(
                     errors: [error ?? new Error(errorMessage)]);
             }
 
-            return OperationExecutionResult.Success();
+            return EntityChangeOperationExecutionResult.Success();
         }
     }
 
@@ -1365,17 +1187,17 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class ExecuteOperationOrdered(Action<TEntity> action) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             try
             {
                 action(entity);
                 context.RecordChange("Execute", null);
-                return OperationExecutionResult.Success(hasChanged: true);
+                return EntityChangeOperationExecutionResult.Success(hasChanged: true);
             }
             catch (Exception ex)
             {
-                return OperationExecutionResult.Failure(
+                return EntityChangeOperationExecutionResult.Failure(
                     errors: [Result.Settings.ExceptionErrorFactory(ex)],
                     messages: [ex.Message]);
             }
@@ -1387,16 +1209,16 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class ResultExecuteOperationOrdered(Func<TEntity, Result> func) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var result = func(entity);
             if (result.IsFailure)
             {
-                return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                return EntityChangeOperationExecutionResult.Failure(result.Errors, result.Messages);
             }
 
             context.RecordChange("Execute", null);
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -1405,16 +1227,16 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class ResultEntityExecuteOperationOrdered(Func<TEntity, Result<TEntity>> func) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var result = func(entity);
             if (result.IsFailure)
             {
-                return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                return EntityChangeOperationExecutionResult.Failure(result.Errors, result.Messages);
             }
 
             context.RecordChange("Execute", null);
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -1423,20 +1245,20 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class ResultTransformOperationOrdered(Func<Result<TEntity>, Result<TEntity>> transformation) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var entityResult = Result<TEntity>.Success(entity);
             var result = transformation(entityResult);
 
             if (result.IsFailure)
             {
-                return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                return EntityChangeOperationExecutionResult.Failure(result.Errors, result.Messages);
             }
 
             // Note: transformation might have changed entity state
             // We mark as changed to be safe
             context.ChangesMade = true;
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -1445,7 +1267,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class RegisterOperationOrdered(Func<TEntity, EntityChangeContext, IDomainEvent> eventFactory, IAggregateRoot target = null) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             // Queue the event factory to be registered at Apply() end, along with the optional target aggregate
             context.QueueEvent(() =>
@@ -1460,7 +1282,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                 return eventFactory(entity, changeContext);
             }, target);
 
-            return OperationExecutionResult.Success();
+            return EntityChangeOperationExecutionResult.Success();
         }
     }
 
@@ -1469,10 +1291,10 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </summary>
     private class OnChangedOperationOrdered(Action<TEntity> action) : IOrderedOperation
     {
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             context.QueuedOnChangedActions.Add(action);
-            return OperationExecutionResult.Success();
+            return EntityChangeOperationExecutionResult.Success();
         }
     }
 
@@ -1497,12 +1319,12 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null)
             {
-                return OperationExecutionResult.Success(hasChanged: false);
+                return EntityChangeOperationExecutionResult.Success(hasChanged: false);
             }
 
             var exists = this.comparer == EqualityComparer<TItem>.Default
@@ -1511,12 +1333,12 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
 
             if (exists)
             {
-                return OperationExecutionResult.Success(hasChanged: false);
+                return EntityChangeOperationExecutionResult.Success(hasChanged: false);
             }
 
             collection.Add(item);
             context.RecordChange(this.propertyName, "Collection");
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -1541,19 +1363,19 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var result = itemFactory(entity);
             if (result.IsFailure)
             {
-                return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                return EntityChangeOperationExecutionResult.Failure(result.Errors, result.Messages);
             }
 
             var item = result.Value;
             var collection = this.collectionGetter(entity);
             if (collection == null)
             {
-                return OperationExecutionResult.Success(hasChanged: false);
+                return EntityChangeOperationExecutionResult.Success(hasChanged: false);
             }
 
             var exists = this.comparer == EqualityComparer<TItem>.Default
@@ -1562,12 +1384,12 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
 
             if (exists)
             {
-                return OperationExecutionResult.Success(hasChanged: false);
+                return EntityChangeOperationExecutionResult.Success(hasChanged: false);
             }
 
             collection.Add(item);
             context.RecordChange(this.propertyName, "Collection");
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -1595,13 +1417,13 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null)
             {
                 var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
-                return OperationExecutionResult.Failure(
+                return EntityChangeOperationExecutionResult.Failure(
                     errors: [error ?? new NotFoundError(message)]);
             }
 
@@ -1612,7 +1434,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             if (!exists)
             {
                 var message = errorMessage ?? $"Item not found in collection '{this.propertyName}'";
-                return OperationExecutionResult.Failure(
+                return EntityChangeOperationExecutionResult.Failure(
                     errors: [error ?? new NotFoundError(message)]);
             }
 
@@ -1627,7 +1449,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             }
 
             context.RecordChange(this.propertyName, "Collection");
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -1655,12 +1477,12 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var result = itemFactory(entity);
             if (result.IsFailure)
             {
-                return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                return EntityChangeOperationExecutionResult.Failure(result.Errors, result.Messages);
             }
 
             var item = result.Value;
@@ -1668,7 +1490,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             if (collection == null)
             {
                 var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
-                return OperationExecutionResult.Failure(
+                return EntityChangeOperationExecutionResult.Failure(
                     errors: [error ?? new NotFoundError(message)]);
             }
 
@@ -1679,7 +1501,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             if (!exists)
             {
                 var message = errorMessage ?? $"Item not found in collection '{this.propertyName}'";
-                return OperationExecutionResult.Failure(
+                return EntityChangeOperationExecutionResult.Failure(
                     errors: [error ?? new NotFoundError(message)]);
             }
 
@@ -1694,7 +1516,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             }
 
             context.RecordChange(this.propertyName, "Collection");
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -1723,13 +1545,13 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null)
             {
                 var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
-                return OperationExecutionResult.Failure(
+                return EntityChangeOperationExecutionResult.Failure(
                     errors: [error ?? new NotFoundError(message)]);
             }
 
@@ -1737,13 +1559,13 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             if (itemToRemove == null)
             {
                 var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
-                return OperationExecutionResult.Failure(
+                return EntityChangeOperationExecutionResult.Failure(
                     errors: [error ?? new NotFoundError(message)]);
             }
 
             collection.Remove(itemToRemove);
             context.RecordChange(this.propertyName, "Collection");
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -1772,12 +1594,12 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var result = idFactory(entity);
             if (result.IsFailure)
             {
-                return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                return EntityChangeOperationExecutionResult.Failure(result.Errors, result.Messages);
             }
 
             var id = result.Value;
@@ -1785,7 +1607,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             if (collection == null)
             {
                 var message = errorMessage ?? $"Cannot remove item from null collection '{this.propertyName}'";
-                return OperationExecutionResult.Failure(
+                return EntityChangeOperationExecutionResult.Failure(
                     errors: [error ?? new NotFoundError(message)]);
             }
 
@@ -1793,13 +1615,13 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             if (itemToRemove == null)
             {
                 var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
-                return OperationExecutionResult.Failure(
+                return EntityChangeOperationExecutionResult.Failure(
                     errors: [error ?? new NotFoundError(message)]);
             }
 
             collection.Remove(itemToRemove);
             context.RecordChange(this.propertyName, "Collection");
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -1821,17 +1643,17 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null || collection.Count == 0)
             {
-                return OperationExecutionResult.Success(hasChanged: false);
+                return EntityChangeOperationExecutionResult.Success(hasChanged: false);
             }
 
             collection.Clear();
             context.RecordChange(this.propertyName, "Collection");
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -1854,12 +1676,12 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null || collection.Count == 0)
             {
-                return OperationExecutionResult.Success(hasChanged: false);
+                return EntityChangeOperationExecutionResult.Success(hasChanged: false);
             }
 
             foreach (var item in collection)
@@ -1868,7 +1690,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             }
 
             context.RecordChange(this.propertyName, "Collection");
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -1891,12 +1713,12 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null || collection.Count == 0)
             {
-                return OperationExecutionResult.Success(hasChanged: false);
+                return EntityChangeOperationExecutionResult.Success(hasChanged: false);
             }
 
             foreach (var item in collection)
@@ -1904,12 +1726,12 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                 var result = action(item);
                 if (result.IsFailure)
                 {
-                    return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                    return EntityChangeOperationExecutionResult.Failure(result.Errors, result.Messages);
                 }
             }
 
             context.RecordChange(this.propertyName, "Collection");
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -1933,18 +1755,18 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null)
             {
-                return OperationExecutionResult.Success(hasChanged: false);
+                return EntityChangeOperationExecutionResult.Success(hasChanged: false);
             }
 
             var matchingItems = collection.Where(filter).ToList();
             if (matchingItems.Count == 0)
             {
-                return OperationExecutionResult.Success(hasChanged: false);
+                return EntityChangeOperationExecutionResult.Success(hasChanged: false);
             }
 
             foreach (var item in matchingItems)
@@ -1953,7 +1775,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             }
 
             context.RecordChange(this.propertyName, "Collection");
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -1977,18 +1799,18 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null)
             {
-                return OperationExecutionResult.Success(hasChanged: false);
+                return EntityChangeOperationExecutionResult.Success(hasChanged: false);
             }
 
             var matchingItems = collection.Where(filter).ToList();
             if (matchingItems.Count == 0)
             {
-                return OperationExecutionResult.Success(hasChanged: false);
+                return EntityChangeOperationExecutionResult.Success(hasChanged: false);
             }
 
             foreach (var item in matchingItems)
@@ -1996,12 +1818,12 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                 var result = action(item);
                 if (result.IsFailure)
                 {
-                    return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                    return EntityChangeOperationExecutionResult.Failure(result.Errors, result.Messages);
                 }
             }
 
             context.RecordChange(this.propertyName, "Collection");
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -2030,13 +1852,13 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null)
             {
                 var message = errorMessage ?? $"Cannot operate on null collection '{this.propertyName}'";
-                return OperationExecutionResult.Failure(
+                return EntityChangeOperationExecutionResult.Failure(
                     errors: [error ?? new NotFoundError(message)]);
             }
 
@@ -2044,13 +1866,13 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             if (item == null)
             {
                 var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
-                return OperationExecutionResult.Failure(
+                return EntityChangeOperationExecutionResult.Failure(
                     errors: [error ?? new NotFoundError(message)]);
             }
 
             action(item);
             context.RecordChange(this.propertyName, "Collection");
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 
@@ -2079,13 +1901,13 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return "Collection";
         }
 
-        public OperationExecutionResult Execute(TEntity entity, OrderedExecutionContext<TEntity> context)
+        public EntityChangeOperationExecutionResult Execute(TEntity entity, EntityChangeOrderedExecutionContext<TEntity> context)
         {
             var collection = this.collectionGetter(entity);
             if (collection == null)
             {
                 var message = errorMessage ?? $"Cannot operate on null collection '{this.propertyName}'";
-                return OperationExecutionResult.Failure(
+                return EntityChangeOperationExecutionResult.Failure(
                     errors: [error ?? new NotFoundError(message)]);
             }
 
@@ -2093,18 +1915,18 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             if (item == null)
             {
                 var message = errorMessage ?? $"Item with ID '{id}' not found in collection '{this.propertyName}'";
-                return OperationExecutionResult.Failure(
+                return EntityChangeOperationExecutionResult.Failure(
                     errors: [error ?? new NotFoundError(message)]);
             }
 
             var result = action(item);
             if (result.IsFailure)
             {
-                return OperationExecutionResult.Failure(result.Errors, result.Messages);
+                return EntityChangeOperationExecutionResult.Failure(result.Errors, result.Messages);
             }
 
             context.RecordChange(this.propertyName, "Collection");
-            return OperationExecutionResult.Success(hasChanged: true);
+            return EntityChangeOperationExecutionResult.Success(hasChanged: true);
         }
     }
 }

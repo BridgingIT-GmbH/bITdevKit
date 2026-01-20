@@ -59,8 +59,8 @@ public class EntityChangeExtensionsTests
 
         // Assert
         result.IsFailure.ShouldBeTrue();
-        result.HasError<Error>().ShouldBeTrue();
-        result.GetError<Error>().Message.ShouldContain("negative");
+        result.HasError<ValidationError>().ShouldBeTrue();
+        result.GetError<ValidationError>().Message.ShouldContain("negative");
         person.Age.ShouldBe(25); // Should stay original
         person.DomainEvents.GetAll().ShouldBeEmpty();
     }

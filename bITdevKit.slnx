@@ -49,7 +49,7 @@
     <File Path="docs/features-storage-documents.md" />
     <File Path="docs/features-storage-files.md" />
     <File Path="docs/features-utilities.md" />
-    <File Path="docs/introduction-guid.md" />
+    <File Path="docs/introduction-guide.md" />
     <File Path="README.md" />
   </Folder>
   <Folder Name="/docs/assets/">

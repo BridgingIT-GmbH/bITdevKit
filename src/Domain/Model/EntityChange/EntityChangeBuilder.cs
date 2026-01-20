@@ -956,7 +956,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
                 }
                 catch (Exception ex)
                 {
-                    return Result<TEntity>.Failure(entity).WithError(new Error(ex.Message));
+                    return Result<TEntity>.Failure(entity).WithError(new ExceptionError(ex));
                 }
             }
         }
@@ -1158,7 +1158,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             if (!predicate(entity))
             {
                 return EntityChangeOperationExecutionResult.Failure(
-                    errors: [error ?? new Error(errorMessage)]);
+                    errors: [error ?? new ChangeError(errorMessage)]);
             }
 
             return EntityChangeOperationExecutionResult.Success();
@@ -1175,7 +1175,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             if (!predicate(entity))
             {
                 return EntityChangeOperationExecutionResult.Failure(
-                    errors: [error ?? new Error(errorMessage)]);
+                    errors: [error ?? new ChangeError(errorMessage)]);
             }
 
             return EntityChangeOperationExecutionResult.Success();

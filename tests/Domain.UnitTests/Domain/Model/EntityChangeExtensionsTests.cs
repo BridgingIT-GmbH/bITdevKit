@@ -24,7 +24,7 @@ public class EntityChangeExtensionsTests
         var result = person.ChangeName("Jane", "Doe"); // LastName unchanged
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.FirstName.ShouldBe("Jane");
         person.LastName.ShouldBe("Doe");
 
@@ -44,7 +44,7 @@ public class EntityChangeExtensionsTests
         var result = person.ChangeName("John", "Doe");
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.DomainEvents.GetAll().ShouldBeEmpty();
     }
 
@@ -58,7 +58,7 @@ public class EntityChangeExtensionsTests
         var result = person.ChangeAge(-5); // Invalid age
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.HasError<ValidationError>().ShouldBeTrue();
         result.GetError<ValidationError>().Message.ShouldContain("negative");
         person.Age.ShouldBe(25); // Should stay original
@@ -75,7 +75,7 @@ public class EntityChangeExtensionsTests
         var result = person.ChangeAge(0); // Invalid age
 
         // Assert
-        result.IsSuccess.ShouldBeTrue(); // When in ChangeAge clause skips the change, but does not fail
+        result.ShouldBeSuccess(); // When in ChangeAge clause skips the change, but does not fail
         person.Age.ShouldBe(25); // Should stay original
         person.DomainEvents.GetAll().ShouldBeEmpty();
     }
@@ -91,7 +91,7 @@ public class EntityChangeExtensionsTests
         var result = person.ChangeEmail("job@company.com");
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.Errors[0].Message.ShouldContain("employed");
         person.Email.ShouldBeNull(); // Should not have touched the property
     }
@@ -107,7 +107,7 @@ public class EntityChangeExtensionsTests
         var result = person.ChangeEmailWithValidation("invalid-email");
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.Errors[0].Message.ShouldContain("format");
         person.Email.ShouldBeNull();
     }
@@ -123,7 +123,7 @@ public class EntityChangeExtensionsTests
         var result = person.PromoteToAdult();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.FirstName.ShouldBe("Kid"); // Should NOT change
         person.DomainEvents.GetAll().ShouldBeEmpty();
 
@@ -148,7 +148,7 @@ public class EntityChangeExtensionsTests
         var resultAdd = person.AddAddress(address);
 
         // Assert - Add
-        resultAdd.IsSuccess.ShouldBeTrue();
+        resultAdd.ShouldBeSuccess();
         person.Addresses.ShouldContain(address);
         person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
 
@@ -159,7 +159,7 @@ public class EntityChangeExtensionsTests
         var resultRemove = person.RemoveAddress(address);
 
         // Assert - Remove
-        resultRemove.IsSuccess.ShouldBeTrue();
+        resultRemove.ShouldBeSuccess();
         person.Addresses.ShouldBeEmpty();
         person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
     }
@@ -175,7 +175,7 @@ public class EntityChangeExtensionsTests
         var result = person.ClearAddresses();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.Addresses.ShouldBeEmpty();
         person.DomainEvents.GetAll().ShouldContain(e => e is EntityUpdatedDomainEvent<PersonStub>);
     }
@@ -190,7 +190,7 @@ public class EntityChangeExtensionsTests
         var result = person.UpdateEmailWithHistory("new@mail.com");
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         var evt = person.DomainEvents.GetAll().OfType<PersonStub.EmailChangedEvent>().Single();
         evt.OldEmail.ShouldBe("old@mail.com");
         evt.NewEmail.ShouldBe("new@mail.com");
@@ -206,7 +206,7 @@ public class EntityChangeExtensionsTests
         var result = entity.ChangeName("New Name");
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         entity.Name.ShouldBe("New Name");
     }
 
@@ -235,7 +235,7 @@ public class EntityChangeExtensionsTests
         var resultAdd = person.AddAddress(address);
 
         // Assert - Add
-        resultAdd.IsSuccess.ShouldBeTrue();
+        resultAdd.ShouldBeSuccess();
         person.Addresses.ShouldContain(address);
         person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
 
@@ -246,7 +246,7 @@ public class EntityChangeExtensionsTests
         var resultRemove = person.RemoveAddress(address);
 
         // Assert - Remove
-        resultRemove.IsSuccess.ShouldBeTrue();
+        resultRemove.ShouldBeSuccess();
         person.Addresses.ShouldBeEmpty();
         person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
     }
@@ -267,7 +267,7 @@ public class EntityChangeExtensionsTests
         var result = person.ChangeName("Jane", "Smith", 30, "jane@example.com");
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.FirstName.ShouldBe("Jane");
         person.LastName.ShouldBe("Smith");
         person.Age.ShouldBe(30);
@@ -290,9 +290,9 @@ public class EntityChangeExtensionsTests
         var result = person.ChangeName("", "Smith", 30, "jane@example.com");
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         // Check uses messages, not errors
-        result.GetError<Error>().Message.ShouldContain("First name");
+        result.GetError<ChangeError>().Message.ShouldContain("First name");
         // Check modifies state then validates, so first Set modified state before failing
         person.FirstName.ShouldBe("");
         person.LastName.ShouldBe("Smith");
@@ -317,7 +317,7 @@ public class EntityChangeExtensionsTests
         var result = person.ChangeName("Jane", "Smith", -5, "jane@example.com");
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.Errors[0].Message.ShouldContain("negative");
         // First Set succeeded, so name changed
         person.FirstName.ShouldBe("Jane");
@@ -343,7 +343,7 @@ public class EntityChangeExtensionsTests
         var result = person.ChangeName("Jane", "Smith", 30, "jane@example.com");
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.Errors[0].Message.ShouldContain("employed");
         // First and second Set succeeded
         person.FirstName.ShouldBe("Jane");
@@ -369,7 +369,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.Errors.ShouldNotBeEmpty();
         result.Messages.ShouldContain(m => m.Contains("Test exception"));
     }
@@ -389,7 +389,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         executionCount.ShouldBe(2);
         person.FirstName.ShouldBe("Updated");
     }
@@ -407,7 +407,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         tapExecuted.ShouldBeTrue();
         result.Value.ShouldBe(person);
     }
@@ -426,7 +426,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.FirstName.ShouldBe("Jane");
         observedName.ShouldBe("Jane"); // Do observed the changed value
     }
@@ -444,7 +444,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.HasError<ValidationError>().ShouldBeTrue();
         result.GetError<ValidationError>().Message.ShouldBe("Name cannot be empty");
         person.FirstName.ShouldBe(""); // Change was applied, Do validation failed
@@ -465,7 +465,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         executionOrder.ShouldBe(new[] { 1, 2, 3 });
     }
 
@@ -483,7 +483,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.HasError<Error>().ShouldBeTrue();
         secondDoExecuted.ShouldBeFalse(); // Should not have executed
     }
@@ -506,7 +506,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.Age.ShouldBe(26);
         capturedTimestamp.ShouldNotBeNull();
     }
@@ -526,7 +526,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.FirstName.ShouldBe("John"); // Not changed due to guard
         doExecuted.ShouldBeFalse(); // Do should NOT execute when guard fails
     }
@@ -543,7 +543,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
     }
 
     [Fact]
@@ -565,7 +565,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.FirstName.ShouldBe("Adult");
         person.LastName.ShouldBe("Adult");
         promotionLogged.ShouldBeTrue();
@@ -587,7 +587,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue(); // Success but no changes
+        result.ShouldBeSuccess(); // Success but no changes
         person.FirstName.ShouldBe("John"); // Original name preserved
         person.LastName.ShouldBe("Doe"); // Original last name preserved
         promotionLogged.ShouldBeFalse(); // Do operations never executed
@@ -607,7 +607,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.FirstName.ShouldBe("Jane");
         executed.ShouldBeTrue();
     }
@@ -626,7 +626,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         executed.ShouldBeFalse();
     }
 
@@ -643,7 +643,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         executed.ShouldBeFalse();
     }
 
@@ -662,7 +662,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         executionOrder.ShouldBe(new[] { 1, 2 });
     }
 
@@ -679,9 +679,9 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
-        result.HasError<Error>().ShouldBeTrue();
-        result.GetError<Error>().Message.ShouldContain("Test exception");
+        result.ShouldBeFailure();
+        result.HasError<ExceptionError>().ShouldBeTrue();
+        result.GetError<ExceptionError>().Message.ShouldContain("Test exception");
     }
 
     [Fact]
@@ -698,7 +698,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         executed.ShouldBeFalse(); // OnChanged not executed due to no changes
     }
 
@@ -752,7 +752,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         executionOrder.ShouldBe(new[] { "1-Execute", "3-Execute", "5-Execute" });
         person.FirstName.ShouldBe("Jane"); // Set at position 2
         person.Age.ShouldBe(30);           // Set at position 4
@@ -772,8 +772,8 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
-        result.GetError<Error>().Message.ShouldContain("Name required");
+        result.ShouldBeFailure();
+        result.GetError<ChangeError>().Message.ShouldContain("Name required");
         person.FirstName.ShouldBe("");  // First Set executed
         person.Age.ShouldBe(25);        // Second Set did NOT execute
     }
@@ -793,7 +793,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.FirstName.ShouldBe("Jane");  // Changed (before When)
         person.LastName.ShouldBe("Doe");    // NOT changed (after When)
         person.Age.ShouldBe(17);            // NOT changed (after When)
@@ -814,7 +814,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.FirstName.ShouldBe("Jane");
         person.LastName.ShouldBe("Smith");
         person.Age.ShouldBe(30);
@@ -835,7 +835,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.FirstName.ShouldBe("Jane");
         person.Age.ShouldBe(17);  // NOT changed
 
@@ -857,7 +857,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.FirstName.ShouldBe("Johnny");
 
         // Event should be registered on anotherPerson, NOT on person
@@ -888,7 +888,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.FirstName.ShouldBe("Jane");    // Changed (before first When)
         person.LastName.ShouldBe("Smith");    // Changed (after first When passed)
         person.Email.ShouldBe("old@mail.com"); // NOT changed (after second When failed)
@@ -911,7 +911,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         executionOrder.ShouldBe(new[] { "1-Before", "2-Middle", "3-After" });
     }
 
@@ -930,7 +930,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.FirstName.ShouldBe("Jane");
         executeRan.ShouldBeFalse(); // Execute was skipped
     }
@@ -962,7 +962,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         executionLog.ShouldBe(new[] { "After FirstName", "After LastName" });
         person.FirstName.ShouldBe("Jane");
         person.LastName.ShouldBe("Smith");
@@ -984,7 +984,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.Errors[0].Message.ShouldContain("employed");
         person.FirstName.ShouldBe("John"); // NOT changed
         person.Age.ShouldBe(25);           // NOT changed
@@ -1012,12 +1012,12 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert 1 - Check causes failure
-        result1.IsFailure.ShouldBeTrue();
+        result1.ShouldBeFailure();
         person1.FirstName.ShouldBe("Jane"); // Changed before Check
         person1.Age.ShouldBe(17);           // Set after Check didn't run
 
         // Assert 2 - When cancels but succeeds
-        result2.IsSuccess.ShouldBeTrue();
+        result2.ShouldBeSuccess();
         person2.FirstName.ShouldBe("Jane"); // Changed before When
         person2.Age.ShouldBe(17);           // Set after When didn't run
     }
@@ -1037,7 +1037,7 @@ public class EntityChangeExtensionsTests
         var result = person.RemoveAddress(address);
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.HasError<NotFoundError>().ShouldBeTrue();
         result.GetError<NotFoundError>().Message.ShouldContain("not found");
         person.DomainEvents.GetAll().ShouldBeEmpty(); // No events since operation failed
@@ -1060,7 +1060,7 @@ public class EntityChangeExtensionsTests
         var result2 = person.RemoveAddress(address);
 
         // Assert
-        result2.IsFailure.ShouldBeTrue();
+        result2.ShouldBeFailure();
         result2.HasError<NotFoundError>().ShouldBeTrue();
         result2.GetError<NotFoundError>().Message.ShouldContain("not found");
     }
@@ -1078,7 +1078,7 @@ public class EntityChangeExtensionsTests
         var result = person.RemoveAddress(address);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.Addresses.ShouldBeEmpty();
         person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
     }
@@ -1102,7 +1102,7 @@ public class EntityChangeExtensionsTests
         var result = person.RemoveAddressEntityById(address1.Id);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.AddressEntities.Count.ShouldBe(1);
         person.AddressEntities.ShouldNotContain(a => a.Id == address1.Id);
         person.AddressEntities.ShouldContain(a => a.Id == address2.Id);
@@ -1120,7 +1120,7 @@ public class EntityChangeExtensionsTests
         var result = person.RemoveAddressEntityById(nonExistentId);
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.HasError<NotFoundError>().ShouldBeTrue();
         result.GetError<NotFoundError>().Message.ShouldContain("not found");
         result.GetError<NotFoundError>().Message.ShouldContain(nonExistentId.ToString());
@@ -1137,7 +1137,7 @@ public class EntityChangeExtensionsTests
         var result = person.RemoveAddressEntityById(nonExistentId, "Address with specified ID was not found");
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.HasError<NotFoundError>().ShouldBeTrue();
         result.GetError<NotFoundError>().Message.ShouldBe("Address with specified ID was not found");
     }
@@ -1157,7 +1157,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.HasError<ValidationError>().ShouldBeTrue();
         person.AddressEntities.Count.ShouldBe(1); // Item not removed
     }
@@ -1178,7 +1178,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.HasError<ValidationError>().ShouldBeTrue();
         person.AddressEntities.Count.ShouldBe(1); // Item not removed
     }
@@ -1203,7 +1203,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.AddressEntities.Count.ShouldBe(1);
         person.AddressEntities.ShouldContain(a => a.Id == address2.Id);
         person.AddressEntities.ShouldNotContain(a => a.Id == address1.Id);
@@ -1226,7 +1226,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.HasError<NotFoundError>().ShouldBeTrue();
         person.AddressEntities.Count.ShouldBe(1); // Original address still there
         person.AddressEntities.ShouldContain(a => a.Id == address.Id);
@@ -1248,7 +1248,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue(); // Success but RemoveById was skipped
+        result.ShouldBeSuccess(); // Success but RemoveById was skipped
         person.FirstName.ShouldBe("John"); // Set before When executed
         person.AddressEntities.Count.ShouldBe(1); // RemoveById did not execute
         person.AddressEntities.ShouldContain(a => a.Id == address.Id);
@@ -1275,7 +1275,7 @@ public class EntityChangeExtensionsTests
         var result = person.ClearAllPrimaryAddresses();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.AddressEntities.All(a => !a.IsPrimary).ShouldBeTrue();
         person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
     }
@@ -1290,7 +1290,7 @@ public class EntityChangeExtensionsTests
         var result = person.ClearAllPrimaryAddresses();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.DomainEvents.GetAll().ShouldBeEmpty(); // No changes, no events
     }
 
@@ -1309,7 +1309,7 @@ public class EntityChangeExtensionsTests
         var result = person.SetPrimaryAddress(address1.Id);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.AddressEntities.Single(a => a.Id == address1.Id).IsPrimary.ShouldBeTrue();
         person.AddressEntities.Single(a => a.Id == address2.Id).IsPrimary.ShouldBeFalse();
         person.DomainEvents.GetAll().ShouldContain(e => e is PersonStub.AddressListChangedEvent);
@@ -1326,7 +1326,7 @@ public class EntityChangeExtensionsTests
         var result = person.SetPrimaryAddress(nonExistentId);
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.HasError<NotFoundError>().ShouldBeTrue();
         result.GetError<NotFoundError>().Message.ShouldContain("not found");
     }
@@ -1345,7 +1345,7 @@ public class EntityChangeExtensionsTests
         var result = person.ValidateAllAddresses();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
     }
 
     [Fact]
@@ -1362,7 +1362,7 @@ public class EntityChangeExtensionsTests
         var result = person.ValidateAllAddresses();
 
         // Assert
-        result.IsFailure.ShouldBeTrue();
+        result.ShouldBeFailure();
         result.HasError<ValidationError>().ShouldBeTrue();
         result.GetError<ValidationError>().Message.ShouldContain("Street is required");
     }
@@ -1385,7 +1385,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.AddressEntities.Single(a => a.Id == address1.Id).IsPrimary.ShouldBeTrue();
         person.AddressEntities.Single(a => a.Id == address2.Id).IsPrimary.ShouldBeTrue();
         person.AddressEntities.Single(a => a.Id == address3.Id).IsPrimary.ShouldBeFalse();
@@ -1406,7 +1406,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.DomainEvents.GetAll().ShouldBeEmpty(); // No changes, no events
         address.IsPrimary.ShouldBeFalse(); // Not changed
     }
@@ -1430,7 +1430,7 @@ public class EntityChangeExtensionsTests
         var result = person.SetPrimaryAddress(address2.Id);
 
         // Assert
-        result.IsSuccess.ShouldBeTrue();
+        result.ShouldBeSuccess();
         person.AddressEntities.Single(a => a.Id == address1.Id).IsPrimary.ShouldBeFalse();
         person.AddressEntities.Single(a => a.Id == address2.Id).IsPrimary.ShouldBeTrue();
         person.AddressEntities.Single(a => a.Id == address3.Id).IsPrimary.ShouldBeFalse();
@@ -1452,7 +1452,7 @@ public class EntityChangeExtensionsTests
             .Apply();
 
         // Assert
-        result.IsSuccess.ShouldBeTrue(); // Success but Set was skipped
+        result.ShouldBeSuccess(); // Success but Set was skipped
         person.FirstName.ShouldBe("John"); // Set before When executed
         address.IsPrimary.ShouldBeFalse(); // Set did not execute
     }

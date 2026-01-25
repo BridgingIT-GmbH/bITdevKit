@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -7,16 +7,19 @@ namespace BridgingIT.DevKit.Common;
 
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Polly.Contrib.Simmy;
 using Polly.Contrib.Simmy.Outcomes;
 
 public class ChaosPipelineBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
-    ConcurrentDictionary<Type, PolicyConfig> policyCache) : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
+    ConcurrentDictionary<Type, PolicyConfig> policyCache,
+    IOptions<ChaosOptions> options = null) : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class
     where TResponse : IResult
 {
     private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
+    private readonly ChaosOptions chaosOptions = options?.Value ?? new ChaosOptions();
 
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
@@ -34,18 +37,28 @@ public class ChaosPipelineBehavior<TRequest, TResponse>(
             return await next();
         }
 
-        if (policyConfig.Chaos.InjectionRate <= 0)
+        // Use attribute values if specified, otherwise fall back to options defaults
+        var injectionRate = policyConfig.Chaos.InjectionRate ?? this.chaosOptions.DefaultInjectionRate;
+        var enabled = policyConfig.Chaos.Enabled ?? this.chaosOptions.DefaultEnabled;
+
+        if (!injectionRate.HasValue || !enabled.HasValue)
+        {
+            this.Logger.LogError("{LogKey} chaos behavior: injectionRate or enabled not specified on attribute and no default configured via ChaosOptions (handler={HandlerType})", LogKey, handlerType.FullName);
+            throw new InvalidOperationException("HandlerChaosAttribute.InjectionRate and Enabled must be provided or default values must be configured via ChaosOptions.");
+        }
+
+        if (injectionRate.Value <= 0)
         {
             this.Logger.LogDebug("{LogKey} chaos behavior skipped due to injection rate <= 0 (type={BehaviorType})", LogKey, this.GetType().Name);
             return await next();
         }
 
-        this.Logger.LogDebug("{LogKey} applying chaos behavior with injection rate {InjectionRate} (type={BehaviorType})", LogKey, policyConfig.Chaos.InjectionRate, this.GetType().Name);
+        this.Logger.LogDebug("{LogKey} applying chaos behavior with injection rate {InjectionRate} (type={BehaviorType})", LogKey, injectionRate.Value, this.GetType().Name);
 
         var policy = MonkeyPolicy.InjectException(with =>
             with.Fault(new ChaosException("Chaos injection triggered"))
-                .InjectionRate(policyConfig.Chaos.InjectionRate)
-                .Enabled(policyConfig.Chaos.Enabled));
+                .InjectionRate(injectionRate.Value)
+                .Enabled(enabled.Value));
 
         return await policy.Execute(async context => await next().AnyContext(), cancellationToken).AnyContext();
     }

@@ -121,6 +121,7 @@
     <Project Path="src/Common.Utilities.Tracing/Common.Utilities.Tracing.csproj" />
     <Project Path="src/Common.Utilities.Xunit/Common.Utilities.Xunit.csproj" />
     <Project Path="src/Common.Utilities/Common.Utilities.csproj" />
+    <Project Path="src/Common.DataPorter/Common.DataPorter.csproj" />
   </Folder>
   <Folder Name="/src/1. Application/">
     <Project Path="src/Application.Commands.EventSourcing/Application.Commands.EventSourcing.csproj" />

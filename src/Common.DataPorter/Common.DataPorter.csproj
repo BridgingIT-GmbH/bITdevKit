@@ -15,7 +15,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder"/>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
-    <PackageReference Include="QuestPDF"/>
+    <PackageReference Include="PDFsharp-MigraDoc"/>
   </ItemGroup>
 
   <ItemGroup>

@@ -7,12 +7,13 @@ namespace BridgingIT.DevKit.Common.DataPorter;
 
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using QuestPDF.Fluent;
-using QuestPDF.Helpers;
-using QuestPDF.Infrastructure;
+using MigraDoc.DocumentObjectModel;
+using MigraDoc.DocumentObjectModel.Tables;
+using MigraDoc.Rendering;
+using MigraDocVerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment;
 
 /// <summary>
-/// PDF data porter provider using QuestPDF (export only).
+/// PDF data porter provider using MigraDoc (export only).
 /// </summary>
 public sealed class PdfDataPorterProvider : IDataExportProvider
 {
@@ -30,9 +31,6 @@ public sealed class PdfDataPorterProvider : IDataExportProvider
     {
         this.configuration = configuration ?? new PdfConfiguration();
         this.logger = loggerFactory?.CreateLogger<PdfDataPorterProvider>() ?? NullLogger<PdfDataPorterProvider>.Instance;
-
-        // Configure QuestPDF license for community use
-        QuestPDF.Settings.License = LicenseType.Community;
     }
 
     /// <inheritdoc/>
@@ -61,28 +59,26 @@ public sealed class PdfDataPorterProvider : IDataExportProvider
         var dataList = data.ToList();
         var columns = exportConfiguration.Columns.ToList();
 
-        var document = Document.Create(container =>
+        var document = this.CreateDocument();
+        var section = this.CreateSection(document);
+
+        // Header
+        if (!string.IsNullOrEmpty(this.configuration.HeaderText) ||
+            !string.IsNullOrEmpty(exportConfiguration.SheetName))
         {
-            container.Page(page =>
-            {
-                this.ConfigurePage(page);
+            this.AddHeader(section, exportConfiguration);
+        }
 
-                // Header
-                if (!string.IsNullOrEmpty(this.configuration.HeaderText) ||
-                    !string.IsNullOrEmpty(exportConfiguration.SheetName))
-                {
-                    page.Header().Element(c => this.ComposeHeader(c, exportConfiguration));
-                }
+        // Content table
+        this.AddContentTable(section, dataList, columns, exportConfiguration);
 
-                // Content
-                page.Content().Element(c => this.ComposeContent(c, dataList, columns, exportConfiguration));
+        // Footer
+        this.AddFooter(section);
 
-                // Footer
-                page.Footer().Element(this.ComposeFooter);
-            });
-        });
-
-        document.GeneratePdf(outputStream);
+        // Render to stream
+        var renderer = new PdfDocumentRenderer { Document = document };
+        renderer.RenderDocument();
+        renderer.PdfDocument.Save(outputStream, false);
 
         return Task.FromResult(new ExportResult
         {
@@ -102,31 +98,30 @@ public sealed class PdfDataPorterProvider : IDataExportProvider
         var dataSetsList = dataSets.ToList();
         var totalRows = 0;
 
-        var document = Document.Create(container =>
+        var document = this.CreateDocument();
+
+        foreach (var (data, exportConfiguration) in dataSetsList)
         {
-            foreach (var (data, exportConfiguration) in dataSetsList)
-            {
-                var dataList = data.ToList();
-                var columns = exportConfiguration.Columns.ToList();
-                totalRows += dataList.Count;
+            var dataList = data.ToList();
+            var columns = exportConfiguration.Columns.ToList();
+            totalRows += dataList.Count;
 
-                container.Page(page =>
-                {
-                    this.ConfigurePage(page);
+            var section = this.CreateSection(document);
 
-                    // Header with sheet name
-                    page.Header().Element(c => this.ComposeHeader(c, exportConfiguration));
+            // Header with sheet name
+            this.AddHeader(section, exportConfiguration);
 
-                    // Content
-                    page.Content().Element(c => this.ComposeContent(c, dataList, columns, exportConfiguration));
+            // Content table
+            this.AddContentTable(section, dataList, columns, exportConfiguration);
 
-                    // Footer
-                    page.Footer().Element(this.ComposeFooter);
-                });
-            }
-        });
+            // Footer
+            this.AddFooter(section);
+        }
 
-        document.GeneratePdf(outputStream);
+        // Render to stream
+        var renderer = new PdfDocumentRenderer { Document = document };
+        renderer.RenderDocument();
+        renderer.PdfDocument.Save(outputStream, false);
 
         return Task.FromResult(new ExportResult
         {
@@ -137,175 +132,204 @@ public sealed class PdfDataPorterProvider : IDataExportProvider
         });
     }
 
-    private void ConfigurePage(PageDescriptor page)
+    private Document CreateDocument()
     {
-        var pageSize = this.configuration.PageSize switch
+        var document = new Document();
+
+        // Set document info
+        if (!string.IsNullOrEmpty(this.configuration.Title))
         {
-            PdfPageSize.A3 => PageSizes.A3,
-            PdfPageSize.Letter => PageSizes.Letter,
-            PdfPageSize.Legal => PageSizes.Legal,
-            _ => PageSizes.A4
+            document.Info.Title = this.configuration.Title;
+        }
+
+        if (!string.IsNullOrEmpty(this.configuration.Author))
+        {
+            document.Info.Author = this.configuration.Author;
+        }
+
+        if (!string.IsNullOrEmpty(this.configuration.Subject))
+        {
+            document.Info.Subject = this.configuration.Subject;
+        }
+
+        // Define default style
+        var style = document.Styles[StyleNames.Normal];
+        style.Font.Name = this.configuration.FontFamily;
+        style.Font.Size = Unit.FromPoint(this.configuration.BodyFontSize);
+
+        return document;
+    }
+
+    private Section CreateSection(Document document)
+    {
+        var section = document.AddSection();
+
+        // Configure page size
+        var (width, height) = this.configuration.PageSize switch
+        {
+            PdfPageSize.A3 => (Unit.FromMillimeter(297), Unit.FromMillimeter(420)),
+            PdfPageSize.Letter => (Unit.FromInch(8.5), Unit.FromInch(11)),
+            PdfPageSize.Legal => (Unit.FromInch(8.5), Unit.FromInch(14)),
+            _ => (Unit.FromMillimeter(210), Unit.FromMillimeter(297)) // A4
         };
 
         if (this.configuration.Orientation == PdfPageOrientation.Landscape)
         {
-            pageSize = pageSize.Landscape();
+            section.PageSetup.PageWidth = height;
+            section.PageSetup.PageHeight = width;
+        }
+        else
+        {
+            section.PageSetup.PageWidth = width;
+            section.PageSetup.PageHeight = height;
         }
 
-        page.Size(pageSize);
-        page.Margin(this.configuration.Margin, Unit.Point);
-        page.DefaultTextStyle(x => x.FontSize(this.configuration.BodyFontSize));
+        // Set margins
+        var margin = Unit.FromPoint(this.configuration.Margin);
+        section.PageSetup.TopMargin = margin;
+        section.PageSetup.BottomMargin = margin;
+        section.PageSetup.LeftMargin = margin;
+        section.PageSetup.RightMargin = margin;
+
+        return section;
     }
 
-    private void ComposeHeader(IContainer container, ExportConfiguration exportConfiguration)
+    private void AddHeader(Section section, ExportConfiguration exportConfiguration)
     {
-        container.Row(row =>
+        var title = this.configuration.HeaderText ?? exportConfiguration.SheetName ?? this.configuration.Title;
+        if (!string.IsNullOrEmpty(title))
         {
-            row.RelativeItem().Column(column =>
-            {
-                var title = this.configuration.HeaderText ?? exportConfiguration.SheetName ?? this.configuration.Title;
-                if (!string.IsNullOrEmpty(title))
-                {
-                    column.Item()
-                        .Text(title)
-                        .FontSize(this.configuration.HeaderFontSize + 4)
-                        .Bold();
-                }
+            var paragraph = section.AddParagraph(title);
+            paragraph.Format.Font.Size = Unit.FromPoint(this.configuration.HeaderFontSize + 4);
+            paragraph.Format.Font.Bold = true;
+            paragraph.Format.SpaceAfter = Unit.FromPoint(5);
+        }
 
-                if (this.configuration.ShowGenerationDate)
-                {
-                    column.Item()
-                        .Text($"Generated: {DateTime.Now.ToString(this.configuration.DateFormat)}")
-                        .FontSize(this.configuration.HeaderFontSize - 1)
-                        .FontColor(Colors.Grey.Medium);
-                }
-            });
-        });
-
-        container.PaddingBottom(10);
+        if (this.configuration.ShowGenerationDate)
+        {
+            var dateParagraph = section.AddParagraph($"Generated: {DateTime.Now.ToString(this.configuration.DateFormat)}");
+            dateParagraph.Format.Font.Size = Unit.FromPoint(this.configuration.HeaderFontSize - 1);
+            dateParagraph.Format.Font.Color = Colors.Gray;
+            dateParagraph.Format.SpaceAfter = Unit.FromPoint(10);
+        }
     }
 
-    private void ComposeContent<TSource>(
-        IContainer container,
+    private void AddContentTable<TSource>(
+        Section section,
         List<TSource> dataList,
         List<ColumnConfiguration> columns,
         ExportConfiguration exportConfiguration)
         where TSource : class
     {
-        container.Table(table =>
+        var table = section.AddTable();
+        table.Borders.Width = 0.5;
+        table.Borders.Color = Colors.LightGray;
+
+        // Define columns
+        foreach (var column in columns)
         {
-            // Define columns
-            table.ColumnsDefinition(def =>
+            var tableColumn = table.AddColumn();
+            if (column.Width > 0)
             {
-                foreach (var column in columns)
-                {
-                    if (column.Width > 0)
-                    {
-                        def.ConstantColumn((float)column.Width, Unit.Point);
-                    }
-                    else
-                    {
-                        def.RelativeColumn();
-                    }
-                }
-            });
-
-            // Header row
-            table.Header(header =>
-            {
-                foreach (var column in columns)
-                {
-                    header.Cell()
-                        .Background(this.ParseColor(this.configuration.TableHeaderBackgroundColor))
-                        .Padding(5)
-                        .Text(column.HeaderName ?? column.PropertyName)
-                        .FontColor(this.ParseColor(this.configuration.TableHeaderTextColor))
-                        .Bold()
-                        .FontSize(this.configuration.BodyFontSize);
-                }
-            });
-
-            // Data rows
-            var rowIndex = 0;
-            foreach (var item in dataList)
-            {
-                var isAlternate = rowIndex % 2 == 1;
-                rowIndex++;
-
-                foreach (var column in columns)
-                {
-                    var value = column.GetValue(item);
-
-                    // Apply converter if present
-                    if (column.Converter is not null)
-                    {
-                        var context = new ValueConversionContext
-                        {
-                            PropertyName = column.PropertyName,
-                            PropertyType = column.PropertyInfo?.PropertyType ?? typeof(object),
-                            EntityType = exportConfiguration.SourceType,
-                            Format = column.Format,
-                            Culture = exportConfiguration.Culture
-                        };
-
-                        value = column.Converter.ConvertToExport(value, context);
-                    }
-
-                    var cell = table.Cell();
-
-                    if (this.configuration.UseAlternatingRowColors && isAlternate)
-                    {
-                        cell.Background(this.ParseColor(this.configuration.AlternateRowBackgroundColor));
-                    }
-
-                    // Apply alignment
-                    if (column.HorizontalAlignment == HorizontalAlignment.Right)
-                    {
-                        cell.AlignRight();
-                    }
-                    else if (column.HorizontalAlignment == HorizontalAlignment.Center)
-                    {
-                        cell.AlignCenter();
-                    }
-
-                    cell.Padding(5)
-                        .Text(this.FormatValue(value, column, exportConfiguration.Culture))
-                        .FontSize(this.configuration.BodyFontSize);
-                }
-            }
-        });
-    }
-
-    private void ComposeFooter(IContainer container)
-    {
-        container.Row(row =>
-        {
-            if (!string.IsNullOrEmpty(this.configuration.FooterText))
-            {
-                row.RelativeItem()
-                    .AlignLeft()
-                    .Text(this.configuration.FooterText)
-                    .FontSize(this.configuration.HeaderFontSize - 2)
-                    .FontColor(Colors.Grey.Medium);
+                tableColumn.Width = Unit.FromPoint(column.Width);
             }
             else
             {
-                row.RelativeItem();
+                // Calculate approximate width based on available space
+                var availableWidth = section.PageSetup.PageWidth - section.PageSetup.LeftMargin - section.PageSetup.RightMargin;
+                tableColumn.Width = availableWidth / columns.Count;
+            }
+        }
+
+        // Header row
+        var headerRow = table.AddRow();
+        headerRow.HeadingFormat = true;
+        headerRow.Format.Font.Bold = true;
+        headerRow.Format.Font.Color = this.ParseColor(this.configuration.TableHeaderTextColor);
+        headerRow.Shading.Color = this.ParseColor(this.configuration.TableHeaderBackgroundColor);
+
+        for (var i = 0; i < columns.Count; i++)
+        {
+            var cell = headerRow.Cells[i];
+            cell.AddParagraph(columns[i].HeaderName ?? columns[i].PropertyName);
+            cell.Format.Font.Size = Unit.FromPoint(this.configuration.BodyFontSize);
+            cell.VerticalAlignment = MigraDocVerticalAlignment.Top;
+            cell.Format.LeftIndent = Unit.FromPoint(5);
+        }
+
+        // Data rows
+        var rowIndex = 0;
+        foreach (var item in dataList)
+        {
+            var isAlternate = rowIndex % 2 == 1;
+            rowIndex++;
+
+            var row = table.AddRow();
+
+            if (this.configuration.UseAlternatingRowColors && isAlternate)
+            {
+                row.Shading.Color = this.ParseColor(this.configuration.AlternateRowBackgroundColor);
             }
 
-            if (this.configuration.ShowPageNumbers)
+            for (var i = 0; i < columns.Count; i++)
             {
-                row.RelativeItem()
-                    .AlignRight()
-                    .Text(text =>
+                var column = columns[i];
+                var value = column.GetValue(item);
+
+                // Apply converter if present
+                if (column.Converter is not null)
+                {
+                    var context = new ValueConversionContext
                     {
-                        text.Span("Page ").FontSize(this.configuration.HeaderFontSize - 2).FontColor(Colors.Grey.Medium);
-                        text.CurrentPageNumber().FontSize(this.configuration.HeaderFontSize - 2).FontColor(Colors.Grey.Medium);
-                        text.Span(" of ").FontSize(this.configuration.HeaderFontSize - 2).FontColor(Colors.Grey.Medium);
-                        text.TotalPages().FontSize(this.configuration.HeaderFontSize - 2).FontColor(Colors.Grey.Medium);
-                    });
+                        PropertyName = column.PropertyName,
+                        PropertyType = column.PropertyInfo?.PropertyType ?? typeof(object),
+                        EntityType = exportConfiguration.SourceType,
+                        Format = column.Format,
+                        Culture = exportConfiguration.Culture
+                    };
+
+                    value = column.Converter.ConvertToExport(value, context);
+                }
+
+                var cell = row.Cells[i];
+                cell.AddParagraph(this.FormatValue(value, column, exportConfiguration.Culture));
+                cell.Format.Font.Size = Unit.FromPoint(this.configuration.BodyFontSize);
+                cell.VerticalAlignment = MigraDocVerticalAlignment.Top;
+                cell.Format.LeftIndent = Unit.FromPoint(5);
+
+                // Apply alignment
+                cell.Format.Alignment = column.HorizontalAlignment switch
+                {
+                    HorizontalAlignment.Right => ParagraphAlignment.Right,
+                    HorizontalAlignment.Center => ParagraphAlignment.Center,
+                    _ => ParagraphAlignment.Left
+                };
             }
-        });
+        }
+    }
+
+    private void AddFooter(Section section)
+    {
+        var footer = section.Footers.Primary;
+
+        if (!string.IsNullOrEmpty(this.configuration.FooterText))
+        {
+            var paragraph = footer.AddParagraph(this.configuration.FooterText);
+            paragraph.Format.Font.Size = Unit.FromPoint(this.configuration.HeaderFontSize - 2);
+            paragraph.Format.Font.Color = Colors.Gray;
+        }
+
+        if (this.configuration.ShowPageNumbers)
+        {
+            var paragraph = footer.AddParagraph();
+            paragraph.Format.Alignment = ParagraphAlignment.Right;
+            paragraph.Format.Font.Size = Unit.FromPoint(this.configuration.HeaderFontSize - 2);
+            paragraph.Format.Font.Color = Colors.Gray;
+            paragraph.AddText("Page ");
+            paragraph.AddPageField();
+            paragraph.AddText(" of ");
+            paragraph.AddNumPagesField();
+        }
     }
 
     private string FormatValue(object value, ColumnConfiguration column, System.Globalization.CultureInfo culture)
@@ -351,6 +375,6 @@ public sealed class PdfDataPorterProvider : IDataExportProvider
         var g = Convert.ToByte(hexColor.Substring(2, 2), 16);
         var b = Convert.ToByte(hexColor.Substring(4, 2), 16);
 
-        return Color.FromRGB(r, g, b);
+        return new Color(r, g, b);
     }
 }

@@ -292,7 +292,7 @@ services.AddDataPorter()
 
 ### PDF Provider (Export Only)
 
-Uses QuestPDF for PDF generation.
+Uses PDFsharp-MigraDoc for PDF generation (MIT licensed).
 
 ```csharp
 services.AddDataPorter()
@@ -536,7 +536,7 @@ Common.DataPorter/
 |---------|---------|---------|
 | ClosedXML | Latest | Excel file handling |
 | CsvHelper | Latest | CSV file handling |
-| QuestPDF | Latest | PDF generation |
+| PDFsharp-MigraDoc | 6.2.0 | PDF generation (MIT licensed) |
 | System.Text.Json | Built-in | JSON handling |
 | System.Xml.Linq | Built-in | XML handling |
 

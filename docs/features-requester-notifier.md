@@ -1,4 +1,4 @@
-# Requester and Notifier Feature Documentation
+﻿# Requester and Notifier Feature Documentation
 
 [TOC]
 
@@ -437,6 +437,285 @@ var result = await requester.SendAsync(new CancelableCommand { TaskId = Guid.New
        .WithBehavior<TransactionPipelineBehavior<,>>()
        .WithBehavior<RetryPipelineBehavior<,>>();
    ```
+
+### Configuring Behavior Options
+
+The `Requester` and `Notifier` systems support configuring default options for various pipeline behaviors through a fluent API. These options can be configured globally to provide default values that are used when handler-specific attributes don't specify them. This allows for centralized configuration of cross-cutting concerns like retries, timeouts, and circuit breakers.
+
+#### Available Options
+
+The following options can be configured:
+
+- **RetryOptions**: Configure default retry behavior (count and delay).
+- **TimeoutOptions**: Configure default timeout duration.
+- **CircuitBreakerOptions**: Configure default circuit breaker behavior (attempts, break duration, backoff).
+- **ChaosOptions**: Configure default chaos injection behavior (injection rate, enabled state).
+- **DatabaseTransactionOptions** (EntityFramework): Configure default database transaction behavior (context name).
+
+#### Configuration Methods
+
+Each option type has two configuration methods:
+
+1. **Parameter-based**: Pass specific values directly.
+2. **Action-based**: Pass a configuration action for more flexibility.
+
+Additionally, a generic `WithBehaviorOptions<TOptions>` method allows configuring any option type using an action delegate.
+
+#### RetryOptions Configuration
+
+Configure default retry behavior for handlers with the `HandlerRetryAttribute`:
+
+```csharp
+// Using parameters
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior<RetryPipelineBehavior<,>>()
+    .WithRetryOptions(defaultCount: 3, defaultDelay: 100);
+
+// Using action
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior<RetryPipelineBehavior<,>>()
+    .WithRetryOptions(options =>
+    {
+        options.DefaultCount = 3;
+        options.DefaultDelay = 100;
+    });
+
+// Handler usage: attribute values take precedence, otherwise defaults are used
+[HandlerRetry] // Uses defaults from RetryOptions
+public class MyCommandHandler : RequestHandlerBase<MyCommand, Unit>
+{
+    protected override Task<Result<Unit>> HandleAsync(MyCommand request, SendOptions options, CancellationToken cancellationToken)
+    {
+        // Handler logic with automatic retry on failure
+        return Task.FromResult(Result<Unit>.Success(Unit.Value));
+    }
+}
+```
+
+#### TimeoutOptions Configuration
+
+Configure default timeout duration for handlers with the `HandlerTimeoutAttribute`:
+
+```csharp
+// Using parameter
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior<TimeoutPipelineBehavior<,>>()
+    .WithTimeoutOptions(defaultDuration: 5000); // 5 seconds
+
+// Using action
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior<TimeoutPipelineBehavior<,>>()
+    .WithTimeoutOptions(options => options.DefaultDuration = 5000);
+
+// Handler usage
+[HandlerTimeout] // Uses default from TimeoutOptions
+public class MyQueryHandler : RequestHandlerBase<MyQuery, User>
+{
+    protected override async Task<Result<User>> HandleAsync(MyQuery request, SendOptions options, CancellationToken cancellationToken)
+    {
+        // Handler logic with automatic timeout
+        return Result<User>.Success(new User());
+    }
+}
+```
+
+#### CircuitBreakerOptions Configuration
+
+Configure default circuit breaker behavior for handlers with the `HandlerCircuitBreakerAttribute`:
+
+```csharp
+// Using parameters
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior<CircuitBreakerPipelineBehavior<,>>()
+    .WithCircuitBreakerOptions(
+        defaultAttempts: 5,
+        defaultBreakDurationSeconds: 60,
+        defaultBackoffMilliseconds: 1000,
+        defaultBackoffExponential: true);
+
+// Using action
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior<CircuitBreakerPipelineBehavior<,>>()
+    .WithCircuitBreakerOptions(options =>
+    {
+        options.DefaultAttempts = 5;
+        options.DefaultBreakDurationSeconds = 60;
+        options.DefaultBackoffMilliseconds = 1000;
+        options.DefaultBackoffExponential = true;
+    });
+
+// Handler usage
+[HandlerCircuitBreaker] // Uses defaults from CircuitBreakerOptions
+public class ExternalApiCommandHandler : RequestHandlerBase<ExternalApiCommand, Unit>
+{
+    protected override Task<Result<Unit>> HandleAsync(ExternalApiCommand request, SendOptions options, CancellationToken cancellationToken)
+    {
+        // Handler logic with circuit breaker protection
+        return Task.FromResult(Result<Unit>.Success(Unit.Value));
+    }
+}
+```
+
+#### ChaosOptions Configuration
+
+Configure default chaos injection behavior for handlers with the `HandlerChaosAttribute`:
+
+```csharp
+// Using parameters
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior<ChaosPipelineBehavior<,>>()
+    .WithChaosOptions(defaultInjectionRate: 0.1, defaultEnabled: false); // 10% injection rate, disabled by default
+
+// Using action
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior<ChaosPipelineBehavior<,>>()
+    .WithChaosOptions(options =>
+    {
+        options.DefaultInjectionRate = 0.1;
+        options.DefaultEnabled = false; // Disable chaos injection by default
+    });
+
+// Handler usage
+[HandlerChaos] // Uses defaults from ChaosOptions
+public class TestCommandHandler : RequestHandlerBase<TestCommand, Unit>
+{
+    protected override Task<Result<Unit>> HandleAsync(TestCommand request, SendOptions options, CancellationToken cancellationToken)
+    {
+        // Handler logic with chaos injection for testing resilience
+        return Task.FromResult(Result<Unit>.Success(Unit.Value));
+    }
+}
+```
+
+#### DatabaseTransactionOptions Configuration (EntityFramework)
+
+Configure default database transaction behavior for handlers with the `HandlerDatabaseTransactionAttribute`:
+
+```csharp
+// Using parameter
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior<DatabaseTransactionPipelineBehavior<,>>()
+    .WithDatabaseTransactionOptions(defaultContextName: "Core"); // Default to "CoreDbContext"
+
+// Using action
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior<DatabaseTransactionPipelineBehavior<,>>()
+    .WithDatabaseTransactionOptions(options => options.DefaultContextName = "Core");
+
+// Handler usage
+[HandlerDatabaseTransaction] // Uses default "Core" from DatabaseTransactionOptions
+public class UpdateUserCommandHandler : RequestHandlerBase<UpdateUserCommand, Unit>
+{
+    private readonly IGenericRepository<User> userRepository;
+
+    public UpdateUserCommandHandler(IGenericRepository<User> userRepository)
+    {
+        this.userRepository = userRepository;
+    }
+
+    protected override async Task<Result<Unit>> HandleAsync(UpdateUserCommand request, SendOptions options, CancellationToken cancellationToken)
+    {
+        // Handler logic wrapped in database transaction
+        var user = await this.userRepository.FindOneAsync(request.UserId, cancellationToken: cancellationToken);
+        user.Username = request.Username;
+        await this.userRepository.UpdateAsync(user, cancellationToken);
+        return Result<Unit>.Success(Unit.Value);
+    }
+}
+```
+
+#### Generic BehaviorOptions Configuration
+
+Use the generic `WithBehaviorOptions<TOptions>` method to configure any option type:
+
+```csharp
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior<RetryPipelineBehavior<,>>()
+    .WithBehaviorOptions<RetryOptions>(options =>
+    {
+        options.DefaultCount = 3;
+        options.DefaultDelay = 100;
+    })
+    .WithBehavior<TimeoutPipelineBehavior<,>>()
+    .WithBehaviorOptions<TimeoutOptions>(options => options.DefaultDuration = 5000);
+```
+
+#### Fluent API Chaining
+
+All option configuration methods return the builder instance, enabling fluent API chaining:
+
+```csharp
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior<ValidationPipelineBehavior<,>>()
+    .WithBehavior<RetryPipelineBehavior<,>>()
+    .WithRetryOptions(3, 100)
+    .WithBehavior<TimeoutPipelineBehavior<,>>()
+    .WithTimeoutOptions(5000)
+    .WithBehavior<CircuitBreakerPipelineBehavior<,>>()
+    .WithCircuitBreakerOptions(5, 60, 1000, true)
+    .WithBehavior<ChaosPipelineBehavior<,>>()
+    .WithChaosOptions(0.1, false)
+    .WithBehavior<DatabaseTransactionPipelineBehavior<,>>()
+    .WithDatabaseTransactionOptions("Core");
+```
+
+#### Configuration Priority
+
+When both default options and handler attributes are present, the handler attribute values take precedence:
+
+```csharp
+// Configure defaults
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior<RetryPipelineBehavior<,>>()
+    .WithRetryOptions(3, 100); // Default: 3 retries with 100ms delay
+
+// Handler with specific values
+[HandlerRetry(5, 200)] // Overrides defaults: 5 retries with 200ms delay
+public class ImportantCommandHandler : RequestHandlerBase<ImportantCommand, Unit>
+{
+    protected override Task<Result<Unit>> HandleAsync(ImportantCommand request, SendOptions options, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(Result<Unit>.Success(Unit.Value));
+    }
+}
+
+// Handler using defaults
+[HandlerRetry] // Uses defaults: 3 retries with 100ms delay
+public class StandardCommandHandler : RequestHandlerBase<StandardCommand, Unit>
+{
+    protected override Task<Result<Unit>> HandleAsync(StandardCommand request, SendOptions options, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(Result<Unit>.Success(Unit.Value));
+    }
+}
+```
+
+#### Notifier Options Configuration
+
+The same options configuration methods are available for the `Notifier` system:
+
+```csharp
+services.AddNotifier()
+    .AddHandlers()
+    .WithBehavior<ValidationPipelineBehavior<,>>()
+    .WithBehavior<RetryPipelineBehavior<,>>()
+    .WithRetryOptions(3, 100)
+    .WithBehavior<TimeoutPipelineBehavior<,>>()
+    .WithTimeoutOptions(5000);
+```
 
 ### Examples
 

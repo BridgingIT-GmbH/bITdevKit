@@ -6,8 +6,10 @@
 namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 
 using Application.Modules.Core;
+using Application.Modules.Core.DataPorter;
 using BridgingIT.DevKit.Application;
 using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Common.DataPorter;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
@@ -135,9 +137,48 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryOutboxDomainEventBehavior<Subscription, CoreDbContext>>();
         //.WithBehavior<RepositoryDomainEventPublisherBehavior<Subscription>>();
 
+        // dataporter - register export/import capabilities
+        services.AddDataPorter(configuration)
+            .WithExcel(config =>
+            {
+                config.UseTableFormatting = true;
+                config.DefaultTableStyleName = "TableStyleMedium2";
+                config.AutoFitColumns = true;
+                config.FreezeHeaderRow = true;
+            })
+            .WithCsv(config =>
+            {
+                config.Delimiter = ",";
+                config.IncludeHeader = true;
+                config.TrimFields = true;
+            })
+            .WithJson(config =>
+            {
+                config.WriteIndented = true;
+                config.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+            })
+            .WithXml(config =>
+            {
+                config.RootElementName = "TodoItems";
+                config.ItemElementName = "TodoItem";
+                config.WriteIndented = true;
+            })
+            .WithPdf(config =>
+            {
+                config.PageSize = PdfPageSize.A4;
+                config.Orientation = PdfPageOrientation.Landscape;
+                config.Title = "DoFiesta Todo Items";
+                config.HeaderText = "DoFiesta Todo Items Export";
+                config.ShowPageNumbers = true;
+                config.ShowGenerationDate = true;
+            })
+            .AddExportProfile<TodoItemExportProfile>()
+            .AddImportProfile<TodoItemImportProfile>();
+
         // endpoints
         services.AddEndpoints<CoreTodoItemEndpoints>();
         services.AddEndpoints<CoreEnumerationEndpoints>();
+        services.AddEndpoints<CoreDataPorterEndpoints>();
 
         return services;
     }

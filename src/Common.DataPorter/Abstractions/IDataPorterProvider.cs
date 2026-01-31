@@ -11,9 +11,9 @@ namespace BridgingIT.DevKit.Common.DataPorter;
 public interface IDataPorterProvider
 {
     /// <summary>
-    /// Gets the unique format identifier (e.g., "excel", "csv", "json", "xml", "pdf").
+    /// Gets the unique format identifier.
     /// </summary>
-    string Format { get; }
+    DataPorterFormat Format { get; }
 
     /// <summary>
     /// Gets the supported file extensions for this provider.

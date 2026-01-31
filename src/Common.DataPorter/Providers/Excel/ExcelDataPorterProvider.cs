@@ -32,7 +32,7 @@ public sealed class ExcelDataPorterProvider : IDataExportProvider, IDataImportPr
     }
 
     /// <inheritdoc/>
-    public string Format => "excel";
+    public DataPorterFormat Format => DataPorterFormat.Excel;
 
     /// <inheritdoc/>
     public IReadOnlyCollection<string> SupportedExtensions => [".xlsx", ".xlsm"];

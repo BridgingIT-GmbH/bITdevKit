@@ -28,7 +28,7 @@ public sealed record ExportResult
     /// <summary>
     /// Gets the format used for export.
     /// </summary>
-    public required string Format { get; init; }
+    public required DataPorterFormat Format { get; init; }
 
     /// <summary>
     /// Gets any warnings generated during export.

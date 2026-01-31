@@ -11,9 +11,9 @@ namespace BridgingIT.DevKit.Common.DataPorter;
 public sealed record ExportOptions
 {
     /// <summary>
-    /// Gets or sets the format to export to (e.g., "excel", "csv", "json", "xml", "pdf").
+    /// Gets or sets the format to export to.
     /// </summary>
-    public string Format { get; init; } = "excel";
+    public DataPorterFormat Format { get; init; } = DataPorterFormat.Excel;
 
     /// <summary>
     /// Gets or sets the name of a specific profile to use.

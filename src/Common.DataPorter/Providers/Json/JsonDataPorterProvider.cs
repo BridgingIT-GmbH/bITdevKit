@@ -32,7 +32,7 @@ public sealed class JsonDataPorterProvider : IDataExportProvider, IDataImportPro
     }
 
     /// <inheritdoc/>
-    public string Format => "json";
+    public DataPorterFormat Format => DataPorterFormat.Json;
 
     /// <inheritdoc/>
     public IReadOnlyCollection<string> SupportedExtensions => [".json"];

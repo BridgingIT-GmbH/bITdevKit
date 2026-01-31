@@ -81,8 +81,8 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
             {
                 return Result<ExportResult>.Failure()
                     .WithError(new FormatNotSupportedError(
-                        options.Format,
-                        this.providers.Where(p => p.SupportsExport).Select(p => p.Format)));
+                        options.Format.ToString(),
+                        this.providers.Where(p => p.SupportsExport).Select(p => p.Format.ToString())));
             }
 
             var result = await exportProvider.ExportAsync(
@@ -166,8 +166,8 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
             {
                 return Result<ExportResult>.Failure()
                     .WithError(new FormatNotSupportedError(
-                        options.Format,
-                        this.providers.Where(p => p.SupportsExport).Select(p => p.Format)));
+                        options.Format.ToString(),
+                        this.providers.Where(p => p.SupportsExport).Select(p => p.Format.ToString())));
             }
 
             var configurations = dataSets.Select(ds =>
@@ -232,8 +232,8 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
             {
                 return Result<ImportResult<TTarget>>.Failure()
                     .WithError(new FormatNotSupportedError(
-                        options.Format,
-                        this.providers.Where(p => p.SupportsImport).Select(p => p.Format)));
+                        options.Format.ToString(),
+                        this.providers.Where(p => p.SupportsImport).Select(p => p.Format.ToString())));
             }
 
             var result = await importProvider.ImportAsync<TTarget>(
@@ -315,7 +315,7 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
             yield return Result<TTarget>.Failure()
                 .WithError(new FormatNotSupportedError(
                     $"{options.Format} (streaming)",
-                    this.providers.Where(p => p.SupportsImport && p.SupportsStreaming).Select(p => p.Format)));
+                    this.providers.Where(p => p.SupportsImport && p.SupportsStreaming).Select(p => p.Format.ToString())));
             yield break;
         }
 
@@ -359,8 +359,8 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
             {
                 return Result<ValidationResult>.Failure()
                     .WithError(new FormatNotSupportedError(
-                        options.Format,
-                        this.providers.Where(p => p.SupportsImport).Select(p => p.Format)));
+                        options.Format.ToString(),
+                        this.providers.Where(p => p.SupportsImport).Select(p => p.Format.ToString())));
             }
 
             var result = await importProvider.ValidateAsync<TTarget>(
@@ -379,19 +379,18 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
     }
 
     private Result<IDataPorterProvider> GetProvider(
-        string format,
+        DataPorterFormat format,
         bool requiresExport = false,
         bool requiresImport = false)
     {
-        var provider = this.providers.FirstOrDefault(
-            p => p.Format.Equals(format, StringComparison.OrdinalIgnoreCase));
+        var provider = this.providers.FirstOrDefault(p => p.Format == format);
 
         if (provider is null)
         {
             return Result<IDataPorterProvider>.Failure()
                 .WithError(new FormatNotSupportedError(
-                    format,
-                    this.providers.Select(p => p.Format)));
+                    format.ToString(),
+                    this.providers.Select(p => p.Format.ToString())));
         }
 
         if (requiresExport && !provider.SupportsExport)
@@ -399,7 +398,7 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
             return Result<IDataPorterProvider>.Failure()
                 .WithError(new FormatNotSupportedError(
                     $"{format} (export)",
-                    this.providers.Where(p => p.SupportsExport).Select(p => p.Format)));
+                    this.providers.Where(p => p.SupportsExport).Select(p => p.Format.ToString())));
         }
 
         if (requiresImport && !provider.SupportsImport)
@@ -407,7 +406,7 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
             return Result<IDataPorterProvider>.Failure()
                 .WithError(new FormatNotSupportedError(
                     $"{format} (import)",
-                    this.providers.Where(p => p.SupportsImport).Select(p => p.Format)));
+                    this.providers.Where(p => p.SupportsImport).Select(p => p.Format.ToString())));
         }
 
         return Result<IDataPorterProvider>.Success(provider);

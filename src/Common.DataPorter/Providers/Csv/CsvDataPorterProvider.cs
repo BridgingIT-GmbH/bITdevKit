@@ -33,7 +33,7 @@ public sealed class CsvDataPorterProvider : IDataExportProvider, IDataImportProv
     }
 
     /// <inheritdoc/>
-    public string Format => "csv";
+    public DataPorterFormat Format => DataPorterFormat.Csv;
 
     /// <inheritdoc/>
     public IReadOnlyCollection<string> SupportedExtensions => [".csv", ".tsv"];

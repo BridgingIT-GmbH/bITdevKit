@@ -33,7 +33,7 @@ public sealed class XmlDataPorterProvider : IDataExportProvider, IDataImportProv
     }
 
     /// <inheritdoc/>
-    public string Format => "xml";
+    public DataPorterFormat Format => DataPorterFormat.Xml;
 
     /// <inheritdoc/>
     public IReadOnlyCollection<string> SupportedExtensions => [".xml"];

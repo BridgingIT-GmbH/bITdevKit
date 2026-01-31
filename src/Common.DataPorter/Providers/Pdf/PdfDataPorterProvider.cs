@@ -34,7 +34,7 @@ public sealed class PdfDataPorterProvider : IDataExportProvider
     }
 
     /// <inheritdoc/>
-    public string Format => "pdf";
+    public DataPorterFormat Format => DataPorterFormat.Pdf;
 
     /// <inheritdoc/>
     public IReadOnlyCollection<string> SupportedExtensions => [".pdf"];

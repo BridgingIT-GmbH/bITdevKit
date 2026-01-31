@@ -11,9 +11,9 @@ namespace BridgingIT.DevKit.Common.DataPorter;
 public sealed record ImportOptions
 {
     /// <summary>
-    /// Gets or sets the format to import from (e.g., "excel", "csv", "json", "xml").
+    /// Gets or sets the format to import from.
     /// </summary>
-    public string Format { get; init; } = "excel";
+    public DataPorterFormat Format { get; init; } = DataPorterFormat.Excel;
 
     /// <summary>
     /// Gets or sets the name of a specific profile to use.

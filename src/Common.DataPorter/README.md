@@ -49,7 +49,7 @@ public class MyService
     {
         var result = await this.exporter.ExportAsync(orders, output, new ExportOptions
         {
-            Format = "excel"
+            Format = DataPorterFormat.Excel
         });
 
         if (result.IsSuccess)
@@ -67,7 +67,7 @@ public async Task<IEnumerable<Order>> ImportOrdersAsync(Stream input)
 {
     var result = await this.importer.ImportAsync<Order>(input, new ImportOptions
     {
-        Format = "csv"
+        Format = DataPorterFormat.Csv
     });
 
     if (result.IsSuccess)
@@ -370,7 +370,7 @@ var dataSets = new[]
 
 await exporter.ExportMultipleAsync(dataSets, stream, new ExportOptions
 {
-    Format = "excel"
+    Format = DataPorterFormat.Excel
 });
 ```
 

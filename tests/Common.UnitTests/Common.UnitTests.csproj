@@ -39,6 +39,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Application.Utilities\Application.Utilities.csproj" />
     <ProjectReference Include="..\..\src\Common.Caching\Common.Caching.csproj" />
+    <ProjectReference Include="..\..\src\Common.DataPorter\Common.DataPorter.csproj" />
     <ProjectReference Include="..\..\src\Common.Extensions.Web\Common.Extensions.Web.csproj" />
     <ProjectReference Include="..\..\src\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\..\src\Common.Mapping\Common.Mapping.csproj" />

@@ -1,0 +1,293 @@
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Common.UnitTests.DataPorter;
+
+using BridgingIT.DevKit.Common.DataPorter;
+
+[UnitTest("Common")]
+public class ExportOptionsTests
+{
+    [Fact]
+    public void ExportOptions_DefaultValues_AreCorrect()
+    {
+        // Arrange & Act
+        var sut = new ExportOptions();
+
+        // Assert
+        sut.Format.ShouldBe(DataPorterFormat.Excel);
+        sut.UseAttributes.ShouldBeTrue();
+        sut.IncludeHeaders.ShouldBeTrue();
+        sut.Culture.ShouldBe(System.Globalization.CultureInfo.InvariantCulture);
+        sut.ProviderOptions.ShouldNotBeNull();
+        sut.ProviderOptions.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void ExportOptions_WithCustomValues_AreSet()
+    {
+        // Arrange & Act
+        var sut = new ExportOptions
+        {
+            Format = DataPorterFormat.Csv,
+            ProfileName = "TestProfile",
+            UseAttributes = false,
+            Culture = new System.Globalization.CultureInfo("de-DE"),
+            SheetName = "Custom Sheet",
+            IncludeHeaders = false,
+            ProviderOptions = new Dictionary<string, object> { { "key", "value" } }
+        };
+
+        // Assert
+        sut.Format.ShouldBe(DataPorterFormat.Csv);
+        sut.ProfileName.ShouldBe("TestProfile");
+        sut.UseAttributes.ShouldBeFalse();
+        sut.Culture.Name.ShouldBe("de-DE");
+        sut.SheetName.ShouldBe("Custom Sheet");
+        sut.IncludeHeaders.ShouldBeFalse();
+        sut.ProviderOptions["key"].ShouldBe("value");
+    }
+}
+
+[UnitTest("Common")]
+public class ImportOptionsTests
+{
+    [Fact]
+    public void ImportOptions_DefaultValues_AreCorrect()
+    {
+        // Arrange & Act
+        var sut = new ImportOptions();
+
+        // Assert
+        sut.Format.ShouldBe(DataPorterFormat.Excel);
+        sut.UseAttributes.ShouldBeTrue();
+        sut.HeaderRowIndex.ShouldBe(0);
+        sut.SkipRows.ShouldBe(0);
+        sut.ValidationBehavior.ShouldBe(ImportValidationBehavior.CollectErrors);
+        sut.Culture.ShouldBe(System.Globalization.CultureInfo.InvariantCulture);
+        sut.ProviderOptions.ShouldNotBeNull();
+        sut.ProviderOptions.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void ImportOptions_WithCustomValues_AreSet()
+    {
+        // Arrange & Act
+        var sut = new ImportOptions
+        {
+            Format = DataPorterFormat.Json,
+            ProfileName = "TestProfile",
+            UseAttributes = false,
+            Culture = new System.Globalization.CultureInfo("fr-FR"),
+            SheetName = "Import Sheet",
+            SheetIndex = 2,
+            HeaderRowIndex = 1,
+            SkipRows = 3,
+            ValidationBehavior = ImportValidationBehavior.StopImport,
+            MaxErrors = 10,
+            ProviderOptions = new Dictionary<string, object> { { "strict", true } }
+        };
+
+        // Assert
+        sut.Format.ShouldBe(DataPorterFormat.Json);
+        sut.ProfileName.ShouldBe("TestProfile");
+        sut.UseAttributes.ShouldBeFalse();
+        sut.Culture.Name.ShouldBe("fr-FR");
+        sut.SheetName.ShouldBe("Import Sheet");
+        sut.SheetIndex.ShouldBe(2);
+        sut.HeaderRowIndex.ShouldBe(1);
+        sut.SkipRows.ShouldBe(3);
+        sut.ValidationBehavior.ShouldBe(ImportValidationBehavior.StopImport);
+        sut.MaxErrors.ShouldBe(10);
+        sut.ProviderOptions["strict"].ShouldBe(true);
+    }
+}
+
+[UnitTest("Common")]
+public class ExportResultTests
+{
+    [Fact]
+    public void ExportResult_WithRequiredProperties_CreatesInstance()
+    {
+        // Arrange & Act
+        var sut = new ExportResult
+        {
+            BytesWritten = 1024,
+            RowsExported = 100,
+            Duration = TimeSpan.FromSeconds(5),
+            Format = DataPorterFormat.Excel
+        };
+
+        // Assert
+        sut.BytesWritten.ShouldBe(1024);
+        sut.RowsExported.ShouldBe(100);
+        sut.Duration.ShouldBe(TimeSpan.FromSeconds(5));
+        sut.Format.ShouldBe(DataPorterFormat.Excel);
+        sut.Warnings.ShouldNotBeNull();
+        sut.Warnings.ShouldBeEmpty();
+        sut.Metadata.ShouldNotBeNull();
+        sut.Metadata.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void ExportResult_WithWarningsAndMetadata_CreatesInstance()
+    {
+        // Arrange & Act
+        var sut = new ExportResult
+        {
+            BytesWritten = 2048,
+            RowsExported = 50,
+            Duration = TimeSpan.FromMilliseconds(500),
+            Format = DataPorterFormat.Csv,
+            Warnings = ["Warning 1", "Warning 2"],
+            Metadata = new Dictionary<string, object> { { "source", "test" } }
+        };
+
+        // Assert
+        sut.Warnings.Count.ShouldBe(2);
+        sut.Metadata["source"].ShouldBe("test");
+    }
+}
+
+[UnitTest("Common")]
+public class ImportResultTests
+{
+    [Fact]
+    public void ImportResult_WithRequiredProperties_CreatesInstance()
+    {
+        // Arrange
+        var data = new List<SimpleEntity>
+        {
+            new() { Id = 1, Name = "Item 1" },
+            new() { Id = 2, Name = "Item 2" }
+        };
+
+        // Act
+        var sut = new ImportResult<SimpleEntity>
+        {
+            Data = data,
+            TotalRows = 2,
+            SuccessfulRows = 2,
+            FailedRows = 0,
+            Duration = TimeSpan.FromSeconds(1)
+        };
+
+        // Assert
+        sut.Data.Count.ShouldBe(2);
+        sut.TotalRows.ShouldBe(2);
+        sut.SuccessfulRows.ShouldBe(2);
+        sut.FailedRows.ShouldBe(0);
+        sut.Duration.ShouldBe(TimeSpan.FromSeconds(1));
+        sut.Errors.ShouldBeEmpty();
+        sut.Warnings.ShouldBeEmpty();
+        sut.HasErrors.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void ImportResult_WithErrors_HasErrorsReturnsTrue()
+    {
+        // Arrange & Act
+        var sut = new ImportResult<SimpleEntity>
+        {
+            Data = [],
+            TotalRows = 2,
+            SuccessfulRows = 1,
+            FailedRows = 1,
+            Duration = TimeSpan.FromSeconds(1),
+            Errors =
+            [
+                new ImportRowError
+                {
+                    RowNumber = 2,
+                    Column = "Name",
+                    Message = "Name is required"
+                }
+            ]
+        };
+
+        // Assert
+        sut.HasErrors.ShouldBeTrue();
+        sut.Errors.Count.ShouldBe(1);
+    }
+}
+
+[UnitTest("Common")]
+public class ImportRowErrorTests
+{
+    [Fact]
+    public void ImportRowError_WithRequiredProperties_CreatesInstance()
+    {
+        // Arrange & Act
+        var sut = new ImportRowError
+        {
+            RowNumber = 5,
+            Column = "Email",
+            Message = "Invalid email format"
+        };
+
+        // Assert
+        sut.RowNumber.ShouldBe(5);
+        sut.Column.ShouldBe("Email");
+        sut.Message.ShouldBe("Invalid email format");
+        sut.RawValue.ShouldBeNull();
+        sut.Severity.ShouldBe(ErrorSeverity.Error);
+    }
+
+    [Fact]
+    public void ImportRowError_WithOptionalProperties_CreatesInstance()
+    {
+        // Arrange & Act
+        var sut = new ImportRowError
+        {
+            RowNumber = 10,
+            Column = "Amount",
+            Message = "Value truncated",
+            RawValue = "123.456789",
+            Severity = ErrorSeverity.Warning
+        };
+
+        // Assert
+        sut.RawValue.ShouldBe("123.456789");
+        sut.Severity.ShouldBe(ErrorSeverity.Warning);
+    }
+}
+
+[UnitTest("Common")]
+public class ValidationResultTests
+{
+    [Fact]
+    public void ValidationResult_WithRequiredProperties_CreatesInstance()
+    {
+        // Arrange & Act
+        var sut = new ValidationResult
+        {
+            IsValid = true,
+            TotalRows = 100,
+            ValidRows = 100,
+            InvalidRows = 0
+        };
+
+        // Assert
+        sut.IsValid.ShouldBeTrue();
+        sut.TotalRows.ShouldBe(100);
+        sut.ValidRows.ShouldBe(100);
+        sut.InvalidRows.ShouldBe(0);
+        sut.Errors.ShouldBeEmpty();
+        sut.Warnings.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void ValidationResult_Success_CreatesValidResult()
+    {
+        // Arrange & Act
+        var sut = ValidationResult.Success(50);
+
+        // Assert
+        sut.IsValid.ShouldBeTrue();
+        sut.TotalRows.ShouldBe(50);
+        sut.ValidRows.ShouldBe(50);
+        sut.InvalidRows.ShouldBe(0);
+    }
+}

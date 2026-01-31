@@ -42,12 +42,12 @@ public class TodoItemImportProfile : ImportProfileBase<TodoItemModel>
 
         this.ForColumn(t => t.Status)
             .FromHeader("Status")
-            .ParseWith(value => int.Parse(value, CultureInfo.InvariantCulture))
+            .ParseWith(value => string.IsNullOrWhiteSpace(value) ? 1 : int.Parse(value, CultureInfo.InvariantCulture))
             .Validate(status => status >= 1 && status <= 5, "Status must be between 1 and 5");
 
         this.ForColumn(t => t.Priority)
             .FromHeader("Priority")
-            .ParseWith(value => int.Parse(value, CultureInfo.InvariantCulture))
+            .ParseWith(value => string.IsNullOrWhiteSpace(value) ? 1 : int.Parse(value, CultureInfo.InvariantCulture))
             .Validate(priority => priority >= 1 && priority <= 4, "Priority must be between 1 and 4");
 
         this.ForColumn(t => t.DueDate)
@@ -71,6 +71,8 @@ public class TodoItemImportProfile : ImportProfileBase<TodoItemModel>
         // Use factory to initialize default values
         this.UseFactory(() => new TodoItemModel
         {
+            Status = 1,  // Default to "New"
+            Priority = 1, // Default to "Low"
             Steps = []
         });
     }

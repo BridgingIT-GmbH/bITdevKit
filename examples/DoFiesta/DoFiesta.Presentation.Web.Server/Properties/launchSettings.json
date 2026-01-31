@@ -63,7 +63,7 @@
     "DoFiesta Development": {
       "commandName": "Project",
       "dotnetRunMessages": true,
-      "launchBrowser": true,
+      "launchBrowser": false,
       "launchUrl": "https://localhost:5001",
       "hotReloadEnabled": true,
       "environmentVariables": {

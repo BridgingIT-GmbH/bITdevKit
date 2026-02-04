@@ -13,6 +13,11 @@ public class UnitTestDiscoverer : ITraitDiscoverer
     internal const string TypeName = "BridgingIT.DevKit.Common." + nameof(UnitTestDiscoverer);
     internal const string AssemblyName = "BridgingIT.DevKit.Common.Utilities.Xunit";
 
+    /// <summary>
+    /// Gets the traits for the specified unit test attribute.
+    /// </summary>
+    /// <param name="traitAttribute">The unit test attribute to extract traits from.</param>
+    /// <returns>An enumerable of key-value pairs representing the traits.</returns>
     public IEnumerable<KeyValuePair<string, string>> GetTraits(IAttributeInfo traitAttribute)
     {
         var identifier = traitAttribute.GetNamedArgument<string>("Identifier");

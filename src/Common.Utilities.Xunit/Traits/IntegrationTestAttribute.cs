@@ -9,16 +9,16 @@ using Xunit.Sdk;
 
 [TraitDiscoverer(IntegrationTestDiscoverer.TypeName, IntegrationTestDiscoverer.AssemblyName)]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-public class IntegrationTestAttribute : Attribute, ITraitAttribute
+public class IntegrationTestAttribute : CategoryAttribute, ITraitAttribute
 {
-    public IntegrationTestAttribute() { }
+    public IntegrationTestAttribute() : base("IntegrationTest") { }
 
-    public IntegrationTestAttribute(string name)
+    public IntegrationTestAttribute(string name) : base("IntegrationTest")
     {
         this.Identifier = name;
     }
 
-    public IntegrationTestAttribute(long id)
+    public IntegrationTestAttribute(long id) : base("IntegrationTest")
     {
         this.Identifier = id.ToString();
     }

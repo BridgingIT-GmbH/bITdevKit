@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -7,16 +7,19 @@ namespace BridgingIT.DevKit.Common;
 
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Timeout;
 
 public class TimeoutPipelineBehavior<TRequest, TResponse>(
     ILoggerFactory loggerFactory,
-    ConcurrentDictionary<Type, PolicyConfig> policyCache) : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
+    ConcurrentDictionary<Type, PolicyConfig> policyCache,
+    IOptions<TimeoutOptions> options = null) : PipelineBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class
     where TResponse : IResult
 {
     private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
+    private readonly TimeoutOptions timeoutOptions = options?.Value ?? new TimeoutOptions();
 
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
@@ -34,7 +37,16 @@ public class TimeoutPipelineBehavior<TRequest, TResponse>(
             return await next();
         }
 
-        var timeout = TimeSpan.FromMilliseconds(policyConfig.Timeout.Duration);
+        // Use attribute value if specified, otherwise fall back to options default
+        var durationMs = policyConfig.Timeout.Duration ?? this.timeoutOptions.DefaultDuration;
+
+        if (!durationMs.HasValue)
+        {
+            this.Logger.LogError("{LogKey} timeout behavior: duration not specified on attribute and no default configured via TimeoutOptions (handler={HandlerType})", LogKey, handlerType.FullName);
+            throw new InvalidOperationException("HandlerTimeoutAttribute.Duration must be provided or a default value must be configured via TimeoutOptions.");
+        }
+
+        var timeout = TimeSpan.FromMilliseconds(durationMs.Value);
         var policy = Policy.TimeoutAsync<TResponse>(
             timeout,
             TimeoutStrategy.Pessimistic,

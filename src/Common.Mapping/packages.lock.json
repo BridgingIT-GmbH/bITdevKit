@@ -143,6 +143,7 @@
           "Humanizer.Core": "[3.0.1, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[10.0.2, )",
           "Microsoft.Extensions.Logging.Abstractions": "[10.0.2, )",
+          "Microsoft.Extensions.Options": "[10.0.2, )",
           "NewId": "[4.0.1, )",
           "Polly": "[8.6.5, )",
           "Polly.Contrib.Simmy": "[0.3.0, )"
@@ -190,6 +191,16 @@
         "contentHash": "RZkez/JjpnO+MZ6efKkSynN6ZztLpw3WbxNzjLCPBd97wWj1S9ZYPWi0nmT4kWBRa6atHsdM1ydGkUr8GudyDQ==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.2"
+        }
+      },
+      "Microsoft.Extensions.Options": {
+        "type": "CentralTransitive",
+        "requested": "[10.0.2, )",
+        "resolved": "10.0.2",
+        "contentHash": "1De2LJjmxdqopI5AYC5dIhoZQ79AR5ayywxNF1rXrXFtKQfbQOV9+n/IsZBa7qWlr0MqoGpW8+OY2v/57udZOA==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.2",
+          "Microsoft.Extensions.Primitives": "10.0.2"
         }
       },
       "NewId": {

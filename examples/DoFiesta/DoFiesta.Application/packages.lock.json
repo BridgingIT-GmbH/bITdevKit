@@ -309,10 +309,10 @@
           "ClosedXML": "[0.104.2, )",
           "CsvHelper": "[33.1.0, )",
           "Ensure.That": "[10.1.0, )",
-          "Microsoft.Extensions.Configuration.Abstractions": "[10.0.1, )",
-          "Microsoft.Extensions.Configuration.Binder": "[10.0.1, )",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.1, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[10.0.1, )",
+          "Microsoft.Extensions.Configuration.Abstractions": "[10.0.2, )",
+          "Microsoft.Extensions.Configuration.Binder": "[10.0.2, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.2, )",
+          "Microsoft.Extensions.Logging.Abstractions": "[10.0.2, )",
           "PDFsharp-MigraDoc": "[6.2.0, )"
         }
       },

@@ -9,16 +9,16 @@ using Xunit.Sdk;
 
 [TraitDiscoverer(SystemTestDiscoverer.TypeName, SystemTestDiscoverer.AssemblyName)]
 [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method, AllowMultiple = true)]
-public class SystemTestAttribute : Attribute, ITraitAttribute
+public class SystemTestAttribute : CategoryAttribute, ITraitAttribute
 {
-    public SystemTestAttribute() { }
+    public SystemTestAttribute() : base("SystemTest") { }
 
-    public SystemTestAttribute(string name)
+    public SystemTestAttribute(string name) : base("SystemTest")
     {
         this.Identifier = name;
     }
 
-    public SystemTestAttribute(long id)
+    public SystemTestAttribute(long id) : base("SystemTest")
     {
         this.Identifier = id.ToString();
     }

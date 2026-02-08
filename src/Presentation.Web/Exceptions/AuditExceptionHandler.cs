@@ -44,7 +44,7 @@ public class AuditExceptionHandler(
     /// <summary>
     ///     Attempts to handle the exception by auditing it and then delegating to the next handler.
     /// </summary>
-    public override async ValueTask<bool> TryHandleAsync(
+    public override ValueTask<bool> TryHandleAsync(
         HttpContext httpContext,
         Exception exception,
         CancellationToken cancellationToken)
@@ -53,7 +53,7 @@ public class AuditExceptionHandler(
         this.AuditException(httpContext, exception);
 
         // Return false to allow other handlers to process the exception
-        return false;
+        return ValueTask.FromResult(false);
     }
 
     /// <summary>

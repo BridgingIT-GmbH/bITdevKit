@@ -52,7 +52,7 @@ public class OpenApiSchemaRef(string name) : OpenApiSchema
     /// <c>$ref</c> to the specified component schema.
     /// </summary>
     /// <param name="writer">The OpenAPI writer.</param>
-    public override void SerializeAsV3(IOpenApiWriter writer) => SerializeAsV31(writer);
+    public override void SerializeAsV3(IOpenApiWriter writer) => this.SerializeAsV31(writer);
 
     /// <summary>
     /// Serializes this instance as an OpenAPI 2.0 (Swagger) schema object containing only a
@@ -60,5 +60,5 @@ public class OpenApiSchemaRef(string name) : OpenApiSchema
     /// this implementation mirrors 3.x for convenience; adjust if targeting 2.0 output.
     /// </summary>
     /// <param name="writer">The OpenAPI writer.</param>
-    public override void SerializeAsV2(IOpenApiWriter writer) => SerializeAsV31(writer);
+    public override void SerializeAsV2(IOpenApiWriter writer) => this.SerializeAsV31(writer);
 }

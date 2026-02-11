@@ -22,14 +22,11 @@ public class TodoItemImportProfile : ImportProfileBase<TodoItemModel>
         this.OnValidationFailure(ImportValidationBehavior.CollectErrors);
 
         this.ForColumn(t => t.Id)
-            .FromHeader("ID")
-            .IsRequired("ID is required");
+            .FromHeader("ID");
 
         this.ForColumn(t => t.Number)
             .FromHeader("Number")
-            .IsRequired("Number is required")
-            .ParseWith(value => long.Parse(value, CultureInfo.InvariantCulture))
-            .Validate(num => num > 0, "Number must be greater than 0");
+            .ParseWith(value => string.IsNullOrWhiteSpace(value) ? 0L : long.Parse(value, CultureInfo.InvariantCulture));
 
         this.ForColumn(t => t.Title)
             .FromHeader("Title")
@@ -42,13 +39,11 @@ public class TodoItemImportProfile : ImportProfileBase<TodoItemModel>
 
         this.ForColumn(t => t.Status)
             .FromHeader("Status")
-            .ParseWith(value => string.IsNullOrWhiteSpace(value) ? 1 : int.Parse(value, CultureInfo.InvariantCulture))
-            .Validate(status => status >= 1 && status <= 5, "Status must be between 1 and 5");
+            .ParseWith(value => string.IsNullOrWhiteSpace(value) ? 1 : int.Parse(value, CultureInfo.InvariantCulture));
 
         this.ForColumn(t => t.Priority)
             .FromHeader("Priority")
-            .ParseWith(value => string.IsNullOrWhiteSpace(value) ? 1 : int.Parse(value, CultureInfo.InvariantCulture))
-            .Validate(priority => priority >= 1 && priority <= 4, "Priority must be between 1 and 4");
+            .ParseWith(value => string.IsNullOrWhiteSpace(value) ? 1 : int.Parse(value, CultureInfo.InvariantCulture));
 
         this.ForColumn(t => t.DueDate)
             .FromHeader("Due Date")
@@ -62,10 +57,9 @@ public class TodoItemImportProfile : ImportProfileBase<TodoItemModel>
 
         this.ForColumn(t => t.OrderIndex)
             .FromHeader("Order")
-            .ParseWith(value => int.Parse(value, CultureInfo.InvariantCulture));
+            .ParseWith(value => string.IsNullOrWhiteSpace(value) ? 0 : int.Parse(value, CultureInfo.InvariantCulture));
 
         this.Ignore(t => t.UserId);
-        this.Ignore(t => t.ConcurrencyVersion);
         this.Ignore(t => t.Steps);
 
         // Use factory to initialize default values

@@ -25,7 +25,9 @@ public class TodoItemImportCommandHandler(
     {
         var importResult = await importer.ImportAsync<TodoItemModel>(request.Stream, new ImportOptions
         {
-            Format = request.Format
+            Format = request.Format,
+            ProfileName = "TodoItemImportProfile",
+            ValidationBehavior = ImportValidationBehavior.CollectErrors // Continue importing despite errors
         },
         cancellationToken);
 
@@ -38,9 +40,24 @@ public class TodoItemImportCommandHandler(
                 if (result.HasErrors)
                 {
                     Console.WriteLine($"IMPORT WARNING: {result.Errors.Count} errors encountered during import");
-                    foreach (var error in result.Errors.Take(5))
+
+                    // Group errors by type to understand the pattern
+                    var errorsByColumn = result.Errors.GroupBy(e => e.Column).ToDictionary(g => g.Key, g => g.Count());
+                    Console.WriteLine($"IMPORT ERROR SUMMARY:");
+                    foreach (var (column, count) in errorsByColumn)
                     {
-                        Console.WriteLine($"  Row {error.RowNumber}: {error.Message}");
+                        Console.WriteLine($"  Column '{column}': {count} errors");
+                    }
+
+                    // Show first few errors with raw values
+                    Console.WriteLine($"IMPORT ERROR DETAILS (first 10):");
+                    foreach (var error in result.Errors.Take(10))
+                    {
+                        Console.WriteLine($"  Row {error.RowNumber}, Column '{error.Column}': {error.Message}");
+                        if (!string.IsNullOrEmpty(error.RawValue))
+                        {
+                            Console.WriteLine($"    Raw value: '{error.RawValue}'");
+                        }
                     }
                 }
             })
@@ -59,7 +76,7 @@ public class TodoItemImportCommandHandler(
                     {
                         // Set the current user ID for each imported entity
                         entity.UserId = currentUserAccessor.UserId;
-                        await repository.InsertAsync(entity, ct);
+                        await repository.UpsertAsync(entity, ct);
                     }
 
                     Console.WriteLine($"IMPORT: Successfully persisted {entities.Count} TodoItems");

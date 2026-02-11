@@ -84,7 +84,6 @@ public class TodoItemExportProfile : ExportProfileBase<TodoItemModel>
 
         // Ignore internal fields
         this.Ignore(t => t.UserId);
-        this.Ignore(t => t.ConcurrencyVersion);
         this.Ignore(t => t.Steps);
 
         // Add header and footer

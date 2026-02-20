@@ -109,7 +109,7 @@
                         <MudTd DataLabel="Title" Style="width: 100%">
                             <MudTooltip Text="@todoItem.Description">
                                 <MudTextField @bind-Value="todoItem.Title" Variant="Variant.Text" Margin="Margin.Dense"
-                                              Immediate="true" Class="flex-grow-1" Style="width: 100%; min-width: 350px;" AutoGrow Lines="1"
+                                              Immediate="true" Class="flex-grow-1" Style="width: 100%; min-width: 350px;"
                                               OnBlur="@(() => UpdateTodo(todoItem))" />
                             </MudTooltip>
                         </MudTd>

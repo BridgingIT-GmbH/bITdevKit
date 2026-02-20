@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 using System;
 namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
 {
-    /// <summary>Logic operator for combining nested filters</summary>
+    /// <summary>Logic operator for combining nested lofty filters</summary>
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     public enum FilterCriteria_logic
     {

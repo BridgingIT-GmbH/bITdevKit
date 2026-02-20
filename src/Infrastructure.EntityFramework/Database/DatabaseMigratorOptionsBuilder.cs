@@ -69,7 +69,20 @@ public class DatabaseMigratorOptionsBuilder
     }
 
     /// <summary>
+    ///     Halt the application process when database migration fails.
+    /// </summary>
+    public DatabaseMigratorOptionsBuilder HaltOnFailure(bool value = true)
+    {
+        this.Target.HaltOnFailure = value;
+
+        return this;
+    }
+
+    /// <summary>
     ///     Delete database on startup.
+    ///     <para>
+    ///         Warning: The entire database is deleted, and no effort is made to remove just the database objects that are used by the model for this context.
+    ///     </para>
     /// </summary>
     public DatabaseMigratorOptionsBuilder DeleteOnStartup(bool value = true)
     {
@@ -80,6 +93,9 @@ public class DatabaseMigratorOptionsBuilder
 
     /// <summary>
     ///     Truncate the database on startup.
+    ///     <para>
+    ///         Warning: The entire database is truncated, and no effort is made to truncate just the database objects that are used by the model for this context.
+    ///     </para>
     /// </summary>
     public DatabaseMigratorOptionsBuilder PurgeOnStartup(bool value = true, IEnumerable<string> ignoreTables = null)
     {

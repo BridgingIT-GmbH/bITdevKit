@@ -98,7 +98,7 @@ public class UniversalContractResolverTests
     [Fact]
     public void Deserialize_PublicClassWithPublicSetters_SetsPropertiesCorrectly()
     {
-        var json = @"{""id"": 1, ""name"": ""TestName""}";
+        const string json = @"{""id"": 1, ""name"": ""TestName""}";
         var result = JsonSerializer.Deserialize<TestPublicClass>(json, this.options);
 
         result.ShouldNotBeNull();
@@ -109,7 +109,7 @@ public class UniversalContractResolverTests
     [Fact]
     public void Deserialize_PrivateClassWithPrivateSetters_SetsPropertiesCorrectly()
     {
-        var json = @"{""id"": 2, ""name"": ""PrivateTest""}";
+        const string json = @"{""id"": 2, ""name"": ""PrivateTest""}";
         var result = JsonSerializer.Deserialize<TestPrivateClass>(json, this.options);
 
         result.ShouldNotBeNull();
@@ -120,7 +120,7 @@ public class UniversalContractResolverTests
     [Fact]
     public void Deserialize_ProtectedClassWithMixedSetters_SetsPropertiesCorrectly()
     {
-        var json = @"{""id"": 3, ""name"": ""ProtectedTest""}";
+        const string json = @"{""id"": 3, ""name"": ""ProtectedTest""}";
         var result = JsonSerializer.Deserialize<TestProtectedClass>(json, this.options);
 
         result.ShouldNotBeNull();
@@ -131,7 +131,7 @@ public class UniversalContractResolverTests
     [Fact]
     public void Deserialize_StubStatusWithInheritedProperties_SetsAllPropertiesCorrectly()
     {
-        var json = @"[
+        const string json = @"[
             { ""id"": 1, ""value"": ""Stub01"", ""code"": ""S1"", ""description"": ""Lorem Ipsum01"" },
             { ""id"": 3, ""value"": ""Stub03"", ""code"": ""S3"", ""description"": ""Lorem Ipsum03"" }
         ]";
@@ -152,7 +152,7 @@ public class UniversalContractResolverTests
     [Fact]
     public void Deserialize_EmptyObject_SetsDefaults()
     {
-        var json = @"{}";
+        const string json = @"{}";
         var result = JsonSerializer.Deserialize<TestPublicClass>(json, this.options);
 
         result.ShouldNotBeNull();
@@ -178,7 +178,7 @@ public class UniversalContractResolverTests
     [Fact]
     public void Deserialize_PrimitiveClassWithNullOptionalTypes_SetsPropertiesCorrectly()
     {
-        var json = @"{""guidValue"": ""550e8400-e29b-41d4-a716-446655440000"", ""dateTimeValue"": ""2023-10-15T14:30:00Z"", ""optionalInt"": null, ""optionalGuid"": null}";
+        const string json = @"{""guidValue"": ""550e8400-e29b-41d4-a716-446655440000"", ""dateTimeValue"": ""2023-10-15T14:30:00Z"", ""optionalInt"": null, ""optionalGuid"": null}";
         var result = JsonSerializer.Deserialize<TestPrimitiveClass>(json, this.options);
 
         result.ShouldNotBeNull();
@@ -191,7 +191,7 @@ public class UniversalContractResolverTests
     [Fact]
     public void Deserialize_ParentClassWithChildObject_SetsPropertiesCorrectly()
     {
-        var json = @"{""parentId"": 1, ""child"": {""childName"": ""Child1"", ""childValue"": 100}}";
+        const string json = @"{""parentId"": 1, ""child"": {""childName"": ""Child1"", ""childValue"": 100}}";
         var result = JsonSerializer.Deserialize<TestParentClass>(json, this.options);
 
         result.ShouldNotBeNull();
@@ -204,7 +204,7 @@ public class UniversalContractResolverTests
     [Fact]
     public void Deserialize_ParentClassWithNullChild_SetsPropertiesCorrectly()
     {
-        var json = @"{""parentId"": 2, ""child"": null}";
+        const string json = @"{""parentId"": 2, ""child"": null}";
         var result = JsonSerializer.Deserialize<TestParentClass>(json, this.options);
 
         result.ShouldNotBeNull();

@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Presentation.Web;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using System; // for StringComparison
 
 /// <summary>
@@ -64,10 +64,19 @@ public class BearerSecurityRequirementDocumentTransformer : IOpenApiDocumentTran
         OpenApiDocumentTransformerContext context,
         CancellationToken cancellationToken)
     {
-        Console.WriteLine("[OpenAPI] Adding Bearer Security Scheme");
+        //Console.WriteLine("[OpenAPI] Adding Bearer Security Scheme");
 
         // Ensure the document has a components section for security schemes
         document.Components ??= new OpenApiComponents();
+        if (document.Components.SecuritySchemes == null)
+        {
+            document.Components.SecuritySchemes = new Dictionary<string, IOpenApiSecurityScheme>(StringComparer.OrdinalIgnoreCase);
+        }
+
+        if (document.Security == null)
+        {
+            document.Security = new List<OpenApiSecurityRequirement>();
+        }
 
         // Add the OAuth 2.0 Bearer security scheme to the components
         document.Components.SecuritySchemes.Add(
@@ -75,26 +84,16 @@ public class BearerSecurityRequirementDocumentTransformer : IOpenApiDocumentTran
             new OpenApiSecurityScheme
             {
                 Type = SecuritySchemeType.OAuth2,
-                Description = "JWT Bearer token authentication using OAuth 2.0"
+                Scheme = JwtBearerDefaults.AuthenticationScheme,
+                BearerFormat = "JWT",
+                Description = "The JWT token in the format: Bearer {token}"
             });
 
         // Apply the security requirement to all operations as the default authentication method
-        document.SecurityRequirements.Add(
-            new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = JwtBearerDefaults.AuthenticationScheme
-                        }
-                    },
-                    [] // Empty list: no specific scopes required at the global level
-                      // Can be populated with scopes like "api://<client-id>/data.read" if needed
-                }
-            });
+        document.Security.Add(new OpenApiSecurityRequirement
+        {
+            [new OpenApiSecuritySchemeReference(JwtBearerDefaults.AuthenticationScheme, document)] = [],
+        });
 
         return Task.CompletedTask;
     }

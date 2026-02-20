@@ -1195,4 +1195,393 @@ public class ResultValueTests
         result.ShouldContainMessage(message);
         result.Value.ShouldBe(42);
     }
+
+    [Fact]
+    public void When_WithTrueCondition_ExecutesOperations()
+    {
+        // Arrange
+        const int value = 25;
+        var result = Result<int>.Success(value);
+
+        // Act
+        var finalResult = result.When(true, r => r
+            .Ensure(x => x >= 18, new Error("Must be adult"))
+            .Map(x => x * 2)
+        );
+
+        // Assert
+        finalResult.ShouldBeSuccess();
+        finalResult.Value.ShouldBe(50);
+    }
+
+    [Fact]
+    public void When_WithFalseCondition_ReturnsOriginalResult()
+    {
+        // Arrange
+        const int value = 25;
+        var result = Result<int>.Success(value);
+
+        // Act
+        var finalResult = result.When(false, r => r
+            .Map(x => x * 2)
+        );
+
+        // Assert
+        finalResult.ShouldBeSuccess();
+        finalResult.Value.ShouldBe(value); // Original value, not mapped
+    }
+
+    [Fact]
+    public void When_WithPredicateTrue_ExecutesOperations()
+    {
+        // Arrange
+        const int value = 30;
+        var result = Result<int>.Success(value);
+
+        // Act
+        var finalResult = result.When(
+            x => x >= 25,
+            r => r.Map(x => x * 2)
+        );
+
+        // Assert
+        finalResult.ShouldBeSuccess();
+        finalResult.Value.ShouldBe(60);
+    }
+
+    [Fact]
+    public void When_WithPredicateFalse_ReturnsOriginalResult()
+    {
+        // Arrange
+        const int value = 20;
+        var result = Result<int>.Success(value);
+
+        // Act
+        var finalResult = result.When(
+            x => x >= 25,
+            r => r.Map(x => x * 2)
+        );
+
+        // Assert
+        finalResult.ShouldBeSuccess();
+        finalResult.Value.ShouldBe(value); // Original value, predicate was false
+    }
+
+    [Fact]
+    public void When_WithFailedResult_ReturnsFailure()
+    {
+        // Arrange
+        var error = new Error("Initial error");
+        var result = Result<int>.Failure().WithError(error);
+
+        // Act
+        var finalResult = result.When(true, r => r
+            .Map(x => x * 2)
+        );
+
+        // Assert
+        finalResult.ShouldBeFailure();
+        finalResult.ShouldContainError<Error>();
+    }
+
+    [Fact]
+    public void When_WithChainedOperations_ExecutesAll()
+    {
+        // Arrange
+        const int value = 25;
+        var result = Result<int>.Success(value);
+        var tapExecuted = false;
+
+        // Act
+        var finalResult = result.When(true, r => r
+            .Ensure(x => x >= 18, new Error("Must be adult"))
+            .Tap(x => tapExecuted = true)
+            .Map(x => x * 2)
+        );
+
+        // Assert
+        finalResult.ShouldBeSuccess();
+        finalResult.Value.ShouldBe(50);
+        tapExecuted.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void When_WithMultipleWhenBlocks_ExecutesConditionally()
+    {
+        // Arrange
+        var person = new PersonStub(
+            this.faker.Name.FirstName(),
+            this.faker.Name.LastName(),
+            this.faker.Internet.Email(),
+            30);
+        var result = Result<int>.Success(100);
+        var firstWhenExecuted = false;
+        var secondWhenExecuted = false;
+
+        // Act
+        var finalResult = result
+            .When(true, r => r.Tap(_ => firstWhenExecuted = true))
+            .When(false, r => r.Tap(_ => secondWhenExecuted = true));
+
+        // Assert
+        finalResult.ShouldBeSuccess();
+        firstWhenExecuted.ShouldBeTrue();
+        secondWhenExecuted.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void When_WithNullOperation_ReturnsOriginalResult()
+    {
+        // Arrange
+        var result = Result<int>.Success(42);
+
+        // Act
+        var finalResult = result.When(true, null);
+
+        // Assert
+        finalResult.ShouldBeSuccess();
+        finalResult.Value.ShouldBe(42);
+    }
+
+    [Fact]
+    public void When_WithExceptionInOperation_ReturnsFailure()
+    {
+        // Arrange
+        var result = Result<int>.Success(42);
+
+        // Act
+        var finalResult = result.When(true, r => throw new InvalidOperationException("Test exception"));
+
+        // Assert
+        finalResult.ShouldBeFailure();
+        finalResult.ShouldContainError<ExceptionError>();
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithTrueCondition_ExecutesOperations()
+    {
+        // Arrange
+        const int value = 25;
+        var result = Result<int>.Success(value);
+
+        // Act
+        var finalResult = await result.WhenAsync(
+            true,
+            async (r, ct) =>
+            {
+                await Task.Delay(10, ct);
+                return r.Map(x => x * 2);
+            });
+
+        // Assert
+        finalResult.ShouldBeSuccess();
+        finalResult.Value.ShouldBe(50);
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithFalseCondition_ReturnsOriginalResult()
+    {
+        // Arrange
+        const int value = 25;
+        var result = Result<int>.Success(value);
+
+        // Act
+        var finalResult = await result.WhenAsync(
+            false,
+            async (r, ct) =>
+            {
+                await Task.Delay(10, ct);
+                return r.Map(x => x * 2);
+            });
+
+        // Assert
+        finalResult.ShouldBeSuccess();
+        finalResult.Value.ShouldBe(value);
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithPredicateTrue_ExecutesOperations()
+    {
+        // Arrange
+        const int value = 30;
+        var result = Result<int>.Success(value);
+
+        // Act
+        var finalResult = await result.WhenAsync(
+            x => x >= 25,
+            async (r, ct) =>
+            {
+                await Task.Delay(10, ct);
+                return r.Map(x => x * 2);
+            });
+
+        // Assert
+        finalResult.ShouldBeSuccess();
+        finalResult.Value.ShouldBe(60);
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithCancellation_ThrowsCancellationException()
+    {
+        // Arrange
+        var result = Result<int>.Success(42);
+        var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        // Act
+        var finalResult = await result.WhenAsync(
+            true,
+            async (r, ct) =>
+            {
+                await Task.Delay(1000, ct);
+                return r;
+            },
+            cts.Token);
+
+        // Assert
+        finalResult.ShouldBeFailure();
+        finalResult.ShouldContainError<OperationCancelledError>();
+    }
+
+    [Fact]
+    public async Task TaskWhen_WithTrueCondition_ExecutesOperations()
+    {
+        // Arrange
+        const int value = 25;
+        var resultTask = Task.FromResult(Result<int>.Success(value));
+
+        // Act
+        var finalResult = await resultTask.When(true, r => r
+            .Ensure(x => x >= 18, new Error("Must be adult"))
+            .Map(x => x * 2)
+        );
+
+        // Assert
+        finalResult.ShouldBeSuccess();
+        finalResult.Value.ShouldBe(50);
+    }
+
+    [Fact]
+    public async Task TaskWhen_WithFalseCondition_ReturnsOriginalResult()
+    {
+        // Arrange
+        const int value = 25;
+        var resultTask = Task.FromResult(Result<int>.Success(value));
+
+        // Act
+        var finalResult = await resultTask.When(false, r => r.Map(x => x * 2));
+
+        // Assert
+        finalResult.ShouldBeSuccess();
+        finalResult.Value.ShouldBe(value);
+    }
+
+    [Fact]
+    public async Task TaskWhen_WithPredicate_ExecutesConditionally()
+    {
+        // Arrange
+        var person = new PersonStub(
+            this.faker.Name.FirstName(),
+            this.faker.Name.LastName(),
+            this.faker.Internet.Email(),
+            30);
+        var resultTask = Task.FromResult(Result<PersonStub>.Success(person));
+
+        // Act
+        var finalResult = await resultTask.When(
+            p => p.Age >= 25,
+            r => r.Tap(p => { })
+        );
+
+        // Assert
+        finalResult.ShouldBeSuccess();
+        finalResult.Value.ShouldBe(person);
+    }
+
+    [Fact]
+    public async Task TaskWhenAsync_WithAsyncOperations_ExecutesSuccessfully()
+    {
+        // Arrange
+        const int value = 25;
+        var resultTask = Task.FromResult(Result<int>.Success(value));
+
+        // Act
+        var finalResult = await resultTask.WhenAsync(
+            true,
+            async (r, ct) =>
+            {
+                await Task.Delay(10, ct);
+                return r.Map(x => x * 2);
+            });
+
+        // Assert
+        finalResult.ShouldBeSuccess();
+        finalResult.Value.ShouldBe(50);
+    }
+
+    [Fact]
+    public async Task TaskWhenAsync_WithPredicateAndAsyncOps_ExecutesConditionally()
+    {
+        // Arrange
+        const int value = 30;
+        var resultTask = Task.FromResult(Result<int>.Success(value));
+
+        // Act
+        var finalResult = await resultTask.WhenAsync(
+            x => x >= 25,
+            async (r, ct) =>
+            {
+                await Task.Delay(10, ct);
+                return r.Map(x => x * 2);
+            });
+
+        // Assert
+        finalResult.ShouldBeSuccess();
+        finalResult.Value.ShouldBe(60);
+    }
+
+    [Fact]
+    public void When_RealWorldScenario_AdminValidation()
+    {
+        // Arrange
+        var adminUser = new PersonStub(
+            this.faker.Name.FirstName(),
+            this.faker.Name.LastName(),
+            "admin@example.com",
+            30);
+        const bool isAdmin = true;
+        const bool requiresValidation = true;
+
+        // Act
+        var result = Result<PersonStub>.Success(adminUser)
+            .When(isAdmin, r => r
+                .Ensure(u => u.Age >= 18, new Error("Admin must be adult"))
+                .Tap(u => Console.WriteLine($"Validated admin: {u.FirstName}"))
+            )
+            .When(requiresValidation, r => r
+                .Ensure(u => u.Email.Value.Contains("@"), new Error("Valid email required"))
+            );
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.ShouldBe(adminUser);
+    }
+
+    [Fact]
+    public void When_RealWorldScenario_FeatureFlags()
+    {
+        // Arrange
+        const int value = 100;
+        const bool featureAEnabled = true;
+        const bool featureBEnabled = false;
+
+        // Act
+        var result = Result<int>.Success(value)
+            .When(featureAEnabled, r => r.Map(x => x * 2))
+            .When(featureBEnabled, r => r.Map(x => x + 50));
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.ShouldBe(200); // Only feature A applied
+    }
 }

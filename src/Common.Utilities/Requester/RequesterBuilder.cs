@@ -38,6 +38,14 @@ public class RequesterBuilder
     private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = HandlerCacheFactory.CreatePolicyCache();
 
     /// <summary>
+    /// Gets the service collection for dependency injection registration.
+    /// </summary>
+    /// <remarks>
+    /// This property allows extension methods to configure additional services and options.
+    /// </remarks>
+    public IServiceCollection Services => this.services;
+
+    /// <summary>
     /// Initializes a new instance of the <see cref="RequesterBuilder"/> class.
     /// </summary>
     /// <param name="services">The service collection for dependency injection registration.</param>
@@ -96,6 +104,7 @@ public class RequesterBuilder
                         .GetGenericArguments()[1];
 
                     this.handlerCache.TryAdd(typeof(IRequestHandler<,>).MakeGenericType(requestType, valueType), type);
+                    //Console.WriteLine($"+++++++++++++++++++ Requester: {requestType.Name} -> {type.Name}");
                     this.policyCache.TryAdd(type, new PolicyConfig
                     {
                         AuthorizePolicy = type.GetCustomAttribute<HandlerAuthorizePolicyAttribute>(),
@@ -427,6 +436,144 @@ public class RequesterBuilder
         this.services.AddScoped(typeof(IPipelineBehavior<,>), behaviorType);
         this.pipelineBehaviorTypes.Add(behaviorType);
 
+        return this;
+    }
+
+    /// <summary>
+    /// Configures options for a specific behavior type using an action.
+    /// </summary>
+    /// <typeparam name="TOptions">The type of options to configure.</typeparam>
+    /// <param name="configureOptions">Action to configure the options.</param>
+    /// <returns>The <see cref="RequesterBuilder"/> instance for fluent chaining.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddRequester()
+    ///     .WithBehavior&lt;TimeoutPipelineBehavior&lt;,&gt;&gt;()
+    ///     .WithBehaviorOptions&lt;TimeoutOptions&gt;(options => options.DefaultDuration = 300);
+    /// </code>
+    /// </example>
+    public RequesterBuilder WithBehaviorOptions<TOptions>(Action<TOptions> configureOptions)
+        where TOptions : class
+    {
+        this.services.Configure(configureOptions);
+        return this;
+    }
+
+    /// <summary>
+    /// Configures the default retry options.
+    /// </summary>
+    /// <param name="defaultCount">The default number of retry attempts.</param>
+    /// <param name="defaultDelay">The default delay between retries in milliseconds.</param>
+    /// <returns>The <see cref="RequesterBuilder"/> instance for fluent chaining.</returns>
+    public RequesterBuilder WithRetryOptions(int defaultCount, int defaultDelay)
+    {
+        this.services.Configure<RetryOptions>(options =>
+        {
+            options.DefaultCount = defaultCount;
+            options.DefaultDelay = defaultDelay;
+        });
+
+        return this;
+    }
+
+    /// <summary>
+    /// Configures the default retry options using a configuration action.
+    /// </summary>
+    /// <param name="configureOptions">Action to configure the options.</param>
+    /// <returns>The <see cref="RequesterBuilder"/> instance for fluent chaining.</returns>
+    public RequesterBuilder WithRetryOptions(Action<RetryOptions> configureOptions)
+    {
+        this.services.Configure(configureOptions);
+        return this;
+    }
+
+    /// <summary>
+    /// Configures the default timeout options.
+    /// </summary>
+    /// <param name="defaultDuration">The default timeout duration in milliseconds.</param>
+    /// <returns>The <see cref="RequesterBuilder"/> instance for fluent chaining.</returns>
+    public RequesterBuilder WithTimeoutOptions(int defaultDuration)
+    {
+        this.services.Configure<TimeoutOptions>(options =>
+        {
+            options.DefaultDuration = defaultDuration;
+        });
+
+        return this;
+    }
+
+    /// <summary>
+    /// Configures the default timeout options using a configuration action.
+    /// </summary>
+    /// <param name="configureOptions">Action to configure the options.</param>
+    /// <returns>The <see cref="RequesterBuilder"/> instance for fluent chaining.</returns>
+    public RequesterBuilder WithTimeoutOptions(Action<TimeoutOptions> configureOptions)
+    {
+        this.services.Configure(configureOptions);
+        return this;
+    }
+
+    /// <summary>
+    /// Configures the default circuit breaker options.
+    /// </summary>
+    /// <param name="defaultAttempts">The default number of attempts before the circuit opens.</param>
+    /// <param name="defaultBreakDurationSeconds">The default break duration in seconds.</param>
+    /// <param name="defaultBackoffMilliseconds">The default backoff time in milliseconds.</param>
+    /// <param name="defaultBackoffExponential">The default value for exponential backoff.</param>
+    /// <returns>The <see cref="RequesterBuilder"/> instance for fluent chaining.</returns>
+    public RequesterBuilder WithCircuitBreakerOptions(
+        int defaultAttempts,
+        int defaultBreakDurationSeconds,
+        int defaultBackoffMilliseconds,
+        bool defaultBackoffExponential = false)
+    {
+        this.services.Configure<CircuitBreakerOptions>(options =>
+        {
+            options.DefaultAttempts = defaultAttempts;
+            options.DefaultBreakDurationSeconds = defaultBreakDurationSeconds;
+            options.DefaultBackoffMilliseconds = defaultBackoffMilliseconds;
+            options.DefaultBackoffExponential = defaultBackoffExponential;
+        });
+
+        return this;
+    }
+
+    /// <summary>
+    /// Configures the default circuit breaker options using a configuration action.
+    /// </summary>
+    /// <param name="configureOptions">Action to configure the options.</param>
+    /// <returns>The <see cref="RequesterBuilder"/> instance for fluent chaining.</returns>
+    public RequesterBuilder WithCircuitBreakerOptions(Action<CircuitBreakerOptions> configureOptions)
+    {
+        this.services.Configure(configureOptions);
+        return this;
+    }
+
+    /// <summary>
+    /// Configures the default chaos injection options.
+    /// </summary>
+    /// <param name="defaultInjectionRate">The default injection rate (0.0 to 1.0).</param>
+    /// <param name="defaultEnabled">The default enabled state.</param>
+    /// <returns>The <see cref="RequesterBuilder"/> instance for fluent chaining.</returns>
+    public RequesterBuilder WithChaosOptions(double defaultInjectionRate, bool defaultEnabled = true)
+    {
+        this.services.Configure<ChaosOptions>(options =>
+        {
+            options.DefaultInjectionRate = defaultInjectionRate;
+            options.DefaultEnabled = defaultEnabled;
+        });
+
+        return this;
+    }
+
+    /// <summary>
+    /// Configures the default chaos injection options using a configuration action.
+    /// </summary>
+    /// <param name="configureOptions">Action to configure the options.</param>
+    /// <returns>The <see cref="RequesterBuilder"/> instance for fluent chaining.</returns>
+    public RequesterBuilder WithChaosOptions(Action<ChaosOptions> configureOptions)
+    {
+        this.services.Configure(configureOptions);
         return this;
     }
 

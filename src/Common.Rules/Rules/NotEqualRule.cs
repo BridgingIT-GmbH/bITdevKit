@@ -9,12 +9,14 @@ namespace BridgingIT.DevKit.Common;
 /// Represents a validation rule that checks if two values are not equal.
 /// </summary>
 /// <typeparam name="T">The type of the values being compared.</typeparam>
-public class NotEqualRule<T>(T value, T other) : RuleBase
+public class NotEqualRule<T>(T value, T other, string message = null) : RuleBase
 {
+    private readonly string message = message ?? $"Value must not be equal to {other}";
+
     /// <summary>
     /// Represents a simple message with a sender and content.
     /// </summary>
-    public override string Message => $"Value must not be equal to {other}";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes the validation rule, returning a success result if the rule passes and a failure result if it does not.

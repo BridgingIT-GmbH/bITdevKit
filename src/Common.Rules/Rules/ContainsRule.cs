@@ -12,13 +12,15 @@ namespace BridgingIT.DevKit.Common;
 /// This rule checks whether the main string contains the specified substring using the comparison rules provided.
 /// If checked string is empty or null, the validation fails.
 /// </remarks>
-public class ContainsRule(string value, string substring, StringComparison comparison)
+public class ContainsRule(string value, string substring, StringComparison comparison, string message = null)
     : RuleBase
 {
+    private readonly string message = message ?? $"Value must contain '{substring}'";
+
     /// <summary>
     /// Gets the message that describes the result of applying the rule.
     /// </summary>
-    public override string Message => $"Value must contain '{substring}'";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes the specified rule.

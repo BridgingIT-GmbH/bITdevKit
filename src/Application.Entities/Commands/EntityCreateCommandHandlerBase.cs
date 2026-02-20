@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Application.Entities;
 using Microsoft.Extensions.Localization;
 using Constants = BridgingIT.DevKit.Application.Commands.Constants;
 
+[Obsolete("Use the new Requester from now on")]
 public abstract class EntityCreateCommandHandlerBase<TCommand, TEntity>
     : CommandHandlerBase<TCommand, Result<EntityCreatedCommandResult>>
     where TCommand : EntityCreateCommandBase<TEntity>

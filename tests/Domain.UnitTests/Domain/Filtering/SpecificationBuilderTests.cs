@@ -277,22 +277,14 @@ public class SpecificationBuilderTests
         result.Count().ShouldBe(1);
         var spec = result.First();
 
-        var matchingPerson = new PersonStub
-        {
-            Addresses =
-            [
-                AddressStub.Create("Home", "123 Main St", "", "12345", "New York", "USA"),
-                AddressStub.Create("Work", "456 Office Blvd", "", "10115", "Berlin", "Germany")
-            ]
-        };
-        var nonMatchingPerson = new PersonStub
-        {
-            Addresses =
-            [
-                AddressStub.Create("Home", "123 Main St", "", "12345", "New York", "USA"),
-                AddressStub.Create("Work", "456 Office Blvd", "", "80331", "Munich", "Germany")
-            ]
-        };
+        var matchingPerson = new PersonStub();
+        var nonMatchingPerson = new PersonStub();
+
+        matchingPerson.AddAddress(AddressStub.Create("Home", "123 Main St", "", "12345", "New York", "USA"));
+        matchingPerson.AddAddress(AddressStub.Create("Work", "456 Office Blvd", "", "10115", "Berlin", "Germany"));
+
+        nonMatchingPerson.AddAddress(AddressStub.Create("Home", "123 Main St", "", "12345", "New York", "USA"));
+        nonMatchingPerson.AddAddress(AddressStub.Create("Work", "456 Office Blvd", "", "80331", "Munich", "Germany"));
 
         spec.IsSatisfiedBy(matchingPerson).ShouldBeTrue();
         spec.IsSatisfiedBy(nonMatchingPerson).ShouldBeFalse();
@@ -325,22 +317,14 @@ public class SpecificationBuilderTests
         result.Count().ShouldBe(1);
         var spec = result.First();
 
-        var matchingPerson = new PersonStub
-        {
-            Addresses =
-            [
-                AddressStub.Create("Home", "123 Main St", "", "12345", "New York", "USA"),
-                AddressStub.Create("Work", "456 Office Blvd", "", "10115", "Berlin", "Germany")
-            ]
-        };
-        var nonMatchingPerson = new PersonStub
-        {
-            Addresses =
-            [
-                AddressStub.Create("Home", "123 Main St", "", "12345", "New York", "USA"),
-                AddressStub.Create("Work", "456 Office Blvd", "", "80331", "Munich", "Germany")
-            ]
-        };
+        var matchingPerson = new PersonStub();
+        var nonMatchingPerson = new PersonStub();
+
+        matchingPerson.AddAddress(AddressStub.Create("Home", "123 Main St", "", "12345", "New York", "USA"));
+        matchingPerson.AddAddress(AddressStub.Create("Work", "456 Office Blvd", "", "10115", "Berlin", "Germany"));
+
+        nonMatchingPerson.AddAddress(AddressStub.Create("Home", "123 Main St", "", "12345", "New York", "USA"));
+        nonMatchingPerson.AddAddress(AddressStub.Create("Work", "456 Office Blvd", "", "80331", "Munich", "Germany"));
 
         spec.IsSatisfiedBy(matchingPerson).ShouldBeTrue();
         spec.IsSatisfiedBy(nonMatchingPerson).ShouldBeFalse();
@@ -370,22 +354,12 @@ public class SpecificationBuilderTests
         result.Count().ShouldBe(1);
         var spec = result.First();
 
-        var matchingPerson = new PersonStub
-        {
-            Addresses =
-            [
-                AddressStub.Create("Home", "123 Main St", "", "10115", "Berlin", "Germany"),
-                AddressStub.Create("Work", "456 Office Blvd", "", "80331", "Munich", "Germany")
-            ]
-        };
-        var nonMatchingPerson = new PersonStub
-        {
-            Addresses =
-            [
-                AddressStub.Create("Home", "123 Main St", "", "12345", "New York", "USA"),
-                AddressStub.Create("Work", "456 Office Blvd", "", "10115", "Berlin", "Germany")
-            ]
-        };
+        var matchingPerson = new PersonStub();
+        matchingPerson.AddAddress(AddressStub.Create("Home", "123 Main St", "", "10115", "Berlin", "Germany"));
+        matchingPerson.AddAddress(AddressStub.Create("Work", "456 Office Blvd", "", "80331", "Munich", "Germany"));
+        var nonMatchingPerson = new PersonStub();
+        nonMatchingPerson.AddAddress(AddressStub.Create("Home", "123 Main St", "", "12345", "New York", "USA"));
+        nonMatchingPerson.AddAddress(AddressStub.Create("Work", "456 Office Blvd", "", "10115", "Berlin", "Germany"));
 
         spec.IsSatisfiedBy(matchingPerson).ShouldBeTrue();
         spec.IsSatisfiedBy(nonMatchingPerson).ShouldBeFalse();
@@ -415,22 +389,12 @@ public class SpecificationBuilderTests
         result.Count().ShouldBe(1);
         var spec = result.First();
 
-        var matchingPerson = new PersonStub
-        {
-            Addresses =
-            [
-                AddressStub.Create("Home", "123 Main St", "", "20115", "Hamburg", "Germany"),
-                AddressStub.Create("Work", "456 Office Blvd", "", "80331", "Munich", "Germany")
-            ]
-        };
-        var nonMatchingPerson = new PersonStub
-        {
-            Addresses =
-            [
-                AddressStub.Create("Home", "123 Main St", "", "12345", "New York", "USA"),
-                AddressStub.Create("Work", "456 Office Blvd", "", "10115", "Berlin", "Germany")
-            ]
-        };
+        var matchingPerson = new PersonStub();
+        matchingPerson.AddAddress(AddressStub.Create("Home", "123 Main St", "", "20115", "Hamburg", "Germany"));
+        matchingPerson.AddAddress(AddressStub.Create("Work", "456 Office Blvd", "", "80331", "Munich", "Germany"));
+        var nonMatchingPerson = new PersonStub();
+        nonMatchingPerson.AddAddress(AddressStub.Create("Home", "123 Main St", "", "12345", "New York", "USA"));
+        nonMatchingPerson.AddAddress(AddressStub.Create("Work", "456 Office Blvd", "", "10115", "Berlin", "Germany"));
 
         spec.IsSatisfiedBy(matchingPerson).ShouldBeTrue();
         spec.IsSatisfiedBy(nonMatchingPerson).ShouldBeFalse();

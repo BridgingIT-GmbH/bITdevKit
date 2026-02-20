@@ -14,7 +14,9 @@ using Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
 public sealed class PersonCreatedProjectionCommandHandler
+#pragma warning disable CS0618 // Type or member is obsolete
     : CommandHandlerBase<AggregateEventProjectionCommand<Person>, bool> // <1>
+#pragma warning restore CS0618 // Type or member is obsolete
 {
     private readonly IPersonOverviewRepository personOverviewRepository;
     private readonly IEntityMapper mapper;

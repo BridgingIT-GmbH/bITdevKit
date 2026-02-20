@@ -5,7 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.Commands.Outbox;
 
+#pragma warning disable CS0618 // Type or member is obsolete
 public class OutboxMessageCommand : CommandRequestBase<OutboxMessageCommandResult>
+#pragma warning restore CS0618 // Type or member is obsolete
 {
     private OutboxMessageCommand()
     {

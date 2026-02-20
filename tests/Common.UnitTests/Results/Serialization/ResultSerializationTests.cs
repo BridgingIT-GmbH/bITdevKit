@@ -145,7 +145,7 @@ public class ResultSerializationTests
     public void Deserialize_Stream_ThrowsNotSupported()
     {
         // Arrange
-        var json = @"{""isSuccess"":true,""messages"":[],""errors"":[]}";
+        const string json = @"{""isSuccess"":true,""messages"":[],""errors"":[]}";
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(json));
 
         // Act & Assert

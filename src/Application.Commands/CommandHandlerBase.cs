@@ -9,6 +9,7 @@ using FluentValidation;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Diagnostics;
 
+[Obsolete("Use the new Requester from now on")]
 public abstract partial class CommandHandlerBase<TCommand>
     : MediatR.IRequestHandler<TCommand, CommandResponse>, ICommandRequestHandler
     where TCommand : class, ICommandRequest<CommandResponse>
@@ -126,6 +127,7 @@ public abstract partial class CommandHandlerBase<TCommand>
     }
 }
 
+[Obsolete("Use the new Requester from now on")]
 public abstract partial class CommandHandlerBase<TCommand, TResult>(
     ILoggerFactory loggerFactory,
     IEnumerable<IModuleContextAccessor> moduleAccessors = null,

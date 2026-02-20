@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Application.Entities;
 
 using Constants = BridgingIT.DevKit.Application.Queries.Constants;
 
+[Obsolete("Use the new Requester from now on")]
 public abstract class
     EntityFindAllQueryHandlerBase<TQuery, TEntity>
     : QueryHandlerBase<TQuery, ResultPaged<TEntity>> // TODO: move to FRAMEWORK Application.Queries

@@ -9,15 +9,17 @@ namespace BridgingIT.DevKit.Common;
 /// Represents a validation rule that checks if a numeric value falls within a specified range.
 /// </summary>
 /// <typeparam name="T">The type of the numeric value, which must implement IComparable&lt;T&gt;.</typeparam>
-public class NumericRangeRule<T>(T value, T min, T max)
+public class NumericRangeRule<T>(T value, T min, T max, string message = null)
     : RuleBase
     where T : IComparable<T>
 {
+    private readonly string message = message ?? $"Value must be between {min} and {max}";
+
     /// <summary>
     /// Message providing additional information about the rule's execution result.
     /// Derived classes can override this property to provide a more specific message context.
     /// </summary>
-    public override string Message => $"Value must be between {min} and {max}";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes the specific rule defined in the derived class.

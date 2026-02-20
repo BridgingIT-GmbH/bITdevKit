@@ -725,7 +725,9 @@ public static class ResultNonGenericExtensions
         params object[] args)
     {
         if (logger is null)
+        {
             return result;
+        }
 
         try
         {
@@ -829,7 +831,9 @@ public static class ResultNonGenericExtensions
         LogLevel failureLevel)
     {
         if (logger is null)
+        {
             return result;
+        }
 
         try
         {
@@ -1475,6 +1479,195 @@ public static class ResultNonGenericExtensions
         catch (Exception ex)
         {
             return Result.Failure()
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
+
+    /// <summary>
+    ///     Conditionally executes a chain of operations on the result based on an external condition.
+    ///     If the condition is false, the original result is returned unchanged.
+    /// </summary>
+    /// <param name="result">The result to operate on.</param>
+    /// <param name="condition">The condition that determines whether to execute the operations.</param>
+    /// <param name="operation">A function that receives the result and returns a transformed result through chained operations.</param>
+    /// <returns>The transformed result if condition is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.Success()
+    ///     .When(isAdmin, r => r
+    ///         .Ensure(() => HasActiveSession(), new Error("Session must be active"))
+    ///         .Tap(() => LogAdminAccess())
+    ///     )
+    ///     .When(requiresValidation, r => r
+    ///         .Ensure(() => IsValidContext(), new Error("Invalid context"))
+    ///     );
+    /// </code>
+    /// </example>
+    public static Result When(
+        this Result result,
+        bool condition,
+        Func<Result, Result> operation)
+    {
+        if (!condition || !result.IsSuccess || operation is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            return operation(result);
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithErrors(result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
+
+    /// <summary>
+    ///     Conditionally executes a chain of operations on the result based on a predicate.
+    ///     If the predicate returns false, the original result is returned unchanged.
+    /// </summary>
+    /// <param name="result">The result to operate on.</param>
+    /// <param name="predicate">A function that determines whether to execute the operations.</param>
+    /// <param name="operation">A function that receives the result and returns a transformed result through chained operations.</param>
+    /// <returns>The transformed result if predicate is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result.Success()
+    ///     .When(() => CurrentTime.Hour >= 9 && CurrentTime.Hour < 17, r => r
+    ///         .Tap(() => LogBusinessHoursAccess())
+    ///     )
+    ///     .When(() => IsWeekend(), r => r
+    ///         .Ensure(() => HasWeekendPermission(), new Error("Weekend access not allowed"))
+    ///     );
+    /// </code>
+    /// </example>
+    public static Result When(
+        this Result result,
+        Func<bool> predicate,
+        Func<Result, Result> operation)
+    {
+        if (!result.IsSuccess || predicate is null || operation is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            return predicate()
+                ? operation(result)
+                : result;
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithErrors(result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
+
+    /// <summary>
+    ///     Asynchronously and conditionally executes a chain of operations on the result based on an external condition.
+    ///     If the condition is false, the original result is returned unchanged.
+    /// </summary>
+    /// <param name="result">The result to operate on.</param>
+    /// <param name="condition">The condition that determines whether to execute the operations.</param>
+    /// <param name="operation">An async function that receives the result and returns a transformed result through chained operations.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The transformed result if condition is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Result.Success()
+    ///     .WhenAsync(isAdmin, async (r, ct) => await r
+    ///         .EnsureAsync(async ct => await IsActiveSessionAsync(ct), new Error("Must be active"), ct)
+    ///         .TapAsync(async ct => await EnrichAdminDataAsync(ct), ct)
+    ///     , cancellationToken);
+    /// </code>
+    /// </example>
+    public static async Task<Result> WhenAsync(
+        this Result result,
+        bool condition,
+        Func<Result, CancellationToken, Task<Result>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (!condition || !result.IsSuccess || operation is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            return await operation(result, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure()
+                .WithErrors(result.Errors)
+                .WithError(new OperationCancelledError())
+                .WithMessages(result.Messages);
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithErrors(result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
+
+    /// <summary>
+    ///     Asynchronously and conditionally executes a chain of operations on the result based on a predicate.
+    ///     If the predicate returns false, the original result is returned unchanged.
+    /// </summary>
+    /// <param name="result">The result to operate on.</param>
+    /// <param name="predicate">A function that determines whether to execute the operations.</param>
+    /// <param name="operation">An async function that receives the result and returns a transformed result through chained operations.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The transformed result if predicate is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Result.Success()
+    ///     .WhenAsync(
+    ///         () => IsBusinessHours(),
+    ///         async (r, ct) => await r
+    ///             .TapAsync(async ct => await LogAccessAsync(ct), ct),
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result> WhenAsync(
+        this Result result,
+        Func<bool> predicate,
+        Func<Result, CancellationToken, Task<Result>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (!result.IsSuccess || predicate is null || operation is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            return predicate()
+                ? await operation(result, cancellationToken)
+                : result;
+        }
+        catch (OperationCanceledException)
+        {
+            return Result.Failure()
+                .WithErrors(result.Errors)
+                .WithError(new OperationCancelledError())
+                .WithMessages(result.Messages);
+        }
+        catch (Exception ex)
+        {
+            return Result.Failure()
+                .WithErrors(result.Errors)
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(result.Messages);
         }

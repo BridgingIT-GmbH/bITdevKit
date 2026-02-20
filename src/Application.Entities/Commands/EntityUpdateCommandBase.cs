@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
+[Obsolete("Use the new Requester from now on")]
 public abstract class EntityUpdateCommandBase<TEntity>(TEntity entity, string identity = null)
     : CommandRequestBase<Result<EntityUpdatedCommandResult>>, IEntityUpdateCommand<TEntity>
     where TEntity : class, IEntity

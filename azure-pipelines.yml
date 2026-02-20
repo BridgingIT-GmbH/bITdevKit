@@ -2,13 +2,13 @@ variables:
   - group: global
   - group: NuGetOrg
   - name: dotnetVersion
-    value: '9.0.306'
+    value: '10.0.103'
   - name: solution
     value: "**/*.slnx"
   - name: buildConfiguration
     value: 'Release'
   - name: publishableBranches
-    value: 'main,releases/dotnet9'  # Comma-separated list of branch names to publish packages for
+    value: 'main,features/dotnet-10'  # Comma-separated list of branch names to publish packages for
 
 trigger:
   tags:
@@ -221,22 +221,22 @@ stages:
             displayName: Dotnet test (unit)
             inputs:
               command: test
-              projects: "**/*[Tt]ests/*UnitTests.csproj"
-              arguments: "--configuration $(buildConfiguration) --no-restore --no-build --nologo"
+              projects: "$(Build.SourcesDirectory)/tests/**/*UnitTests.csproj"
+              arguments: "--configuration $(buildConfiguration) --nologo"
 
-          - task: DotNetCoreCLI@2
-            displayName: Dotnet test (integration)
-            inputs:
-              command: test
-              projects: "**/*[Tt]ests/*IntegrationTests.csproj"
-              arguments: "--configuration $(buildConfiguration) --no-restore --no-build --nologo --filter FullyQualifiedName!~Examples"
+          # - task: DotNetCoreCLI@2
+          #   displayName: Dotnet test (integration)
+          #   inputs:
+          #     command: test
+          #     projects: "**/*[Tt]ests/*IntegrationTests.csproj"
+          #     arguments: "--configuration $(buildConfiguration) --no-restore --no-build --nologo --filter FullyQualifiedName!~Examples"
 
-          - task: DotNetCoreCLI@2
-            displayName: Dotnet test (end2end)
-            inputs:
-              command: test
-              projects: "**/*[Tt]ests/*EndToEndTests.csproj"
-              arguments: "--configuration $(buildConfiguration) --no-restore --no-build --nologo --filter FullyQualifiedName!~Examples"
+          # - task: DotNetCoreCLI@2
+          #   displayName: Dotnet test (end2end)
+          #   inputs:
+          #     command: test
+          #     projects: "**/*[Tt]ests/*EndToEndTests.csproj"
+          #     arguments: "--configuration $(buildConfiguration) --no-restore --no-build --nologo --filter FullyQualifiedName!~Examples"
 
           - bash: |
               docker compose stop

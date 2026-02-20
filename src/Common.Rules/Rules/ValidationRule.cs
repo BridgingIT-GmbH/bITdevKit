@@ -10,12 +10,14 @@ using FluentValidation;
 /// <summary>
 /// Represents a single validation rule to be applied to a value.
 /// </summary>
-public class ValidationRule<T>(T instance, IValidator<T> validator) : RuleBase
+public class ValidationRule<T>(T instance, IValidator<T> validator, string message = null) : RuleBase
 {
+    private readonly string message = message ?? "Rule validation not satisfied";
+
     /// <summary>
     /// Gets or sets the content of the message.
     /// </summary>
-    public override string Message => "Rule validation not satisfied";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes a specified rule.

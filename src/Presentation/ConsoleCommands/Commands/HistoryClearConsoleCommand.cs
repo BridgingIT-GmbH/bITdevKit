@@ -11,9 +11,12 @@ using System.Collections.Generic;
 public class HistoryClearConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
 {
     public string GroupName => "history";
+
     public IReadOnlyCollection<string> GroupAliases => ["hist"];
+
     [ConsoleCommandOption("keep-last", Alias = "k", Description = "Keep last N entries", Default = 10)] public int KeepLast { get; set; }
     public HistoryClearConsoleCommand() : base("clear", "Clear command history (optionally keep last N)") { }
+
     public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
     {
         ConsoleCommandHistory.ClearKeepLast(Math.Max(0, this.KeepLast));
@@ -22,4 +25,3 @@ public class HistoryClearConsoleCommand : ConsoleCommandBase, IGroupedConsoleCom
         return Task.CompletedTask;
     }
 }
-// === end diagnostic additions ===

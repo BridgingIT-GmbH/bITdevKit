@@ -8,13 +8,15 @@ namespace BridgingIT.DevKit.Common;
 /// <summary>
 /// Validates whether a specified string value starts with a given prefix using the specified string comparison option.
 /// </summary>
-public class StartsWithRule(string value, string prefix, StringComparison comparison)
+public class StartsWithRule(string value, string prefix, StringComparison comparison, string message = null)
     : RuleBase
 {
+    private readonly string message = message ?? $"Value must start with '{prefix}'";
+
     /// <summary>
     /// Gets the message associated with the rule, providing detailed information about the rule's constraint.
     /// </summary>
-    public override string Message => $"Value must start with '{prefix}'";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes the rule and returns the result.

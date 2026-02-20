@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 
 /// <summary>
 /// Configurable OpenAPI document transformer for adding security requirements.
@@ -132,10 +132,19 @@ public class SecurityRequirementDocumentTransformer(SecurityRequirementOptions o
         OpenApiDocumentTransformerContext context,
         CancellationToken cancellationToken)
     {
-        Console.WriteLine($"[OpenAPI] Adding Security Scheme: {this.options.SchemeName}");
+        //Console.WriteLine($"[OpenAPI] Adding Security Scheme: {this.options.SchemeName}");
 
         // Ensure the document has a components section for security schemes
         document.Components ??= new OpenApiComponents();
+        if (document.Components.SecuritySchemes == null)
+        {
+            document.Components.SecuritySchemes = new Dictionary<string, IOpenApiSecurityScheme>(StringComparer.OrdinalIgnoreCase);
+        }
+
+        if (document.Security == null)
+        {
+            document.Security = new List<OpenApiSecurityRequirement>();
+        }
 
         // Create the security scheme based on configuration
         var securityScheme = this.CreateSecurityScheme();
@@ -144,21 +153,10 @@ public class SecurityRequirementDocumentTransformer(SecurityRequirementOptions o
         document.Components.SecuritySchemes.Add(this.options.SchemeName, securityScheme);
 
         // Apply the security requirement to all operations
-        document.SecurityRequirements.Add(
-            new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = this.options.SchemeName
-                        }
-                    },
-                    this.options.Scopes ?? []
-                }
-            });
+        document.Security.Add(new OpenApiSecurityRequirement
+        {
+            [new OpenApiSecuritySchemeReference(this.options.SchemeName, document)] = []
+        });
 
         return Task.CompletedTask;
     }

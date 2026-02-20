@@ -28,26 +28,28 @@
   </Folder>
   <Folder Name="/docs/">
     <File Path="docs/features-application-commands-queries.md" />
-    <File Path="docs/features-consolecommands.md" />
-    <File Path="docs/features-documentstorage.md" />
-    <File Path="docs/features-domain-activeentity-design.md" />
     <File Path="docs/features-domain-activeentity.md" />
     <File Path="docs/features-domain-repositories.md" />
     <File Path="docs/features-domain.md" />
     <File Path="docs/features-entitypermissions.md" />
-    <File Path="docs/features-filestorage.md" />
+    <File Path="docs/features-extensions.md" />
     <File Path="docs/features-filtering.md" />
     <File Path="docs/features-identityprovider.md" />
     <File Path="docs/features-jobscheduling.md" />
     <File Path="docs/features-messaging.md" />
     <File Path="docs/features-modules.md" />
     <File Path="docs/features-presentation-appstate.md" />
+    <File Path="docs/features-presentation-console-commands.md" />
     <File Path="docs/features-presentation-cors.md" />
+    <File Path="docs/features-presentation-exception-handling.md" />
     <File Path="docs/features-requester-notifier.md" />
     <File Path="docs/features-results.md" />
     <File Path="docs/features-rules.md" />
     <File Path="docs/features-startuptasks.md" />
+    <File Path="docs/features-storage-documents.md" />
+    <File Path="docs/features-storage-files.md" />
     <File Path="docs/features-utilities.md" />
+    <File Path="docs/introduction-guide.md" />
     <File Path="README.md" />
   </Folder>
   <Folder Name="/docs/assets/">
@@ -165,6 +167,7 @@
     <Project Path="src/Presentation.Configuration/Presentation.Configuration.csproj" />
     <Project Path="src/Presentation.Serilog/Presentation.Serilog.csproj" />
     <Project Path="src/Presentation.Web.Client/Presentation.Web.Client.csproj" />
+    <Project Path="src/Presentation.Web.EntityFramework/Presentation.Web.EntityFramework.csproj" />
     <Project Path="src/Presentation.Web.JobScheduling/Presentation.Web.JobScheduling.csproj" />
     <Project Path="src/Presentation.Web/Presentation.Web.csproj" />
     <Project Path="src/Presentation/Presentation.csproj" />

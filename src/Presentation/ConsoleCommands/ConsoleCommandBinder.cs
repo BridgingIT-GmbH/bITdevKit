@@ -106,25 +106,32 @@ public static class ConsoleCommandBinder
     /// <param name="detailed">Whether to include detailed option examples.</param>
     public static void WriteHelp(IAnsiConsole console, IConsoleCommand cmd, bool detailed = false)
     {
-        var meta = GetMeta(cmd.GetType());
-        var table = new Table().Border(TableBorder.Minimal).Title($"[bold cyan]{cmd.Name}[/]");
-        table.AddColumn("Key"); table.AddColumn("Value");
-        table.AddRow("Description", cmd.Description);
-        if (meta.Options.Any())
+        try
         {
-            var optText = string.Join("\n", meta.Options.Select(o => $"--{o.Name}{(o.Alias != null ? "/-" + o.Alias : "")}: {o.Description} {(o.Required ? "(required)" : "")} {(o.Default != null ? "(default=" + o.Default + ")" : "")} ({FriendlyType(o.Property.PropertyType)})"));
-            table.AddRow("Options", optText);
+            var meta = GetMeta(cmd.GetType());
+            var table = new Table().Border(TableBorder.Minimal).Title($"[bold cyan]{cmd.Name}[/]");
+            table.AddColumn("Key"); table.AddColumn("Value");
+            table.AddRow("Description", cmd.Description);
+            if (meta.Options.Any())
+            {
+                var optText = string.Join("\n", meta.Options.Select(o => $"--{o.Name}{(o.Alias != null ? "/-" + o.Alias : "")}: {o.Description} {(o.Required ? "(required)" : "")} {(o.Default != null ? "(default=" + o.Default + ")" : "")} ({FriendlyType(o.Property.PropertyType)})")).Replace("[]", " array");
+                table.AddRow("Options", optText);
+            }
+            if (meta.Arguments.Any())
+            {
+                var argText = string.Join("\n", meta.Arguments.OrderBy(a => a.Order).Select(a => $"{a.Order}: {a.Property.Name} {a.Description ?? ""} {(a.Required ? "(required)" : "")} ({FriendlyType(a.Property.PropertyType)})"));
+                table.AddRow("Arguments", argText);
+            }
+            if (detailed && meta.Options.Any())
+            {
+                table.AddRow("Example", $"{cmd.Name} " + string.Join(' ', meta.Options.Take(2).Select(o => $"--{o.Name}{(o.Property.PropertyType != typeof(bool) ? "=value" : "")}")));
+            }
+            console.Write(table);
         }
-        if (meta.Arguments.Any())
+        catch (Exception ex)
         {
-            var argText = string.Join("\n", meta.Arguments.OrderBy(a => a.Order).Select(a => $"{a.Order}: {a.Property.Name} {a.Description ?? ""} {(a.Required ? "(required)" : "")} ({FriendlyType(a.Property.PropertyType)})"));
-            table.AddRow("Arguments", argText);
+            console.WriteException(ex, ExceptionFormats.ShortenEverything | ExceptionFormats.ShowLinks);
         }
-        if (detailed && meta.Options.Any())
-        {
-            table.AddRow("Example", $"{cmd.Name} " + string.Join(' ', meta.Options.Take(2).Select(o => $"--{o.Name}{(o.Property.PropertyType != typeof(bool) ? "=value" : "")}")));
-        }
-        console.Write(table);
     }
 
     /// <summary>

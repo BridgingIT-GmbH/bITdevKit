@@ -568,4 +568,406 @@ public class ResultPagedTests
         result.HasNextPage.ShouldBeTrue();
         result.HasPreviousPage.ShouldBeTrue();
     }
+
+    [Fact]
+    public void When_WithTrueCondition_ExecutesOperation()
+    {
+        // Arrange
+        var operationExecuted = false;
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = sut.When(true, r =>
+        {
+            operationExecuted = true;
+            return r.WithMessage("Condition met");
+        });
+
+        // Assert
+        result.ShouldBeSuccess();
+        operationExecuted.ShouldBeTrue();
+        result.ShouldContainMessage("Condition met");
+        result.CurrentPage.ShouldBe(this.page);
+        result.PageSize.ShouldBe(this.pageSize);
+        result.TotalCount.ShouldBe(this.count);
+    }
+
+    [Fact]
+    public void When_WithFalseCondition_DoesNotExecuteOperation()
+    {
+        // Arrange
+        var operationExecuted = false;
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = sut.When(false, r =>
+        {
+            operationExecuted = true;
+            return r.WithMessage("Should not appear");
+        });
+
+        // Assert
+        result.ShouldBeSuccess();
+        operationExecuted.ShouldBeFalse();
+        result.ShouldNotContainMessage("Should not appear");
+    }
+
+    [Fact]
+    public void When_WithFailedResult_DoesNotExecuteOperation()
+    {
+        // Arrange
+        var operationExecuted = false;
+        var sut = ResultPaged<PersonStub>.Failure()
+            .WithError<NotFoundError>();
+
+        // Act
+        var result = sut.When(true, r =>
+        {
+            operationExecuted = true;
+            return r;
+        });
+
+        // Assert
+        result.ShouldBeFailure();
+        operationExecuted.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void When_WithNullOperation_ReturnsOriginalResult()
+    {
+        // Arrange
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = sut.When(true, null);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.ShouldBe(this.values);
+    }
+
+    [Fact]
+    public void When_WithPredicate_WhenPredicateTrue_ExecutesOperation()
+    {
+        // Arrange
+        var operationExecuted = false;
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = sut.When(
+            values => values.Count() >= 2,
+            r =>
+            {
+                operationExecuted = true;
+                return r.WithMessage("Predicate met");
+            });
+
+        // Assert
+        result.ShouldBeSuccess();
+        operationExecuted.ShouldBeTrue();
+        result.ShouldContainMessage("Predicate met");
+    }
+
+    [Fact]
+    public void When_WithPredicate_WhenPredicateFalse_DoesNotExecuteOperation()
+    {
+        // Arrange
+        var operationExecuted = false;
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = sut.When(
+            values => values.Count() > 10,
+            r =>
+            {
+                operationExecuted = true;
+                return r.WithMessage("Should not appear");
+            });
+
+        // Assert
+        result.ShouldBeSuccess();
+        operationExecuted.ShouldBeFalse();
+        result.ShouldNotContainMessage("Should not appear");
+    }
+
+    [Fact]
+    public void When_WithPredicate_WhenFailedResult_DoesNotExecuteOperation()
+    {
+        // Arrange
+        var operationExecuted = false;
+        var sut = ResultPaged<PersonStub>.Failure()
+            .WithError<NotFoundError>();
+
+        // Act
+        var result = sut.When(
+            values => values.Any(),
+            r =>
+            {
+                operationExecuted = true;
+                return r;
+            });
+
+        // Assert
+        result.ShouldBeFailure();
+        operationExecuted.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void When_WithPredicate_WhenNullPredicate_ReturnsOriginalResult()
+    {
+        // Arrange
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = sut.When(
+            null,
+            r => r.WithMessage("Should not appear"));
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.ShouldNotContainMessage("Should not appear");
+    }
+
+    [Fact]
+    public void When_WithException_ReturnsFailureWithError()
+    {
+        // Arrange
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = sut.When(true, r => throw new InvalidOperationException("Test exception"));
+
+        // Assert
+        result.ShouldBeFailure();
+        result.ShouldContainError<ExceptionError>();
+    }
+
+    [Fact]
+    public void When_CanChainMultipleConditions()
+    {
+        // Arrange
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = sut
+            .When(true, r => r.WithMessage("First"))
+            .When(true, r => r.WithMessage("Second"))
+            .When(false, r => r.WithMessage("Should not appear"));
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.ShouldContainMessage("First");
+        result.ShouldContainMessage("Second");
+        result.ShouldNotContainMessage("Should not appear");
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithTrueCondition_ExecutesOperation()
+    {
+        // Arrange
+        var operationExecuted = false;
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = await sut.WhenAsync(
+            true,
+            async (r, ct) =>
+            {
+                await Task.Delay(10, ct);
+                operationExecuted = true;
+                return r.WithMessage("Async condition met");
+            });
+
+        // Assert
+        result.ShouldBeSuccess();
+        operationExecuted.ShouldBeTrue();
+        result.ShouldContainMessage("Async condition met");
+        result.CurrentPage.ShouldBe(this.page);
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithFalseCondition_DoesNotExecuteOperation()
+    {
+        // Arrange
+        var operationExecuted = false;
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = await sut.WhenAsync(
+            false,
+            async (r, ct) =>
+            {
+                await Task.Delay(10, ct);
+                operationExecuted = true;
+                return r;
+            });
+
+        // Assert
+        result.ShouldBeSuccess();
+        operationExecuted.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithFailedResult_DoesNotExecuteOperation()
+    {
+        // Arrange
+        var operationExecuted = false;
+        var sut = ResultPaged<PersonStub>.Failure()
+            .WithError<NotFoundError>();
+
+        // Act
+        var result = await sut.WhenAsync(
+            true,
+            async (r, ct) =>
+            {
+                await Task.Delay(10, ct);
+                operationExecuted = true;
+                return r;
+            });
+
+        // Assert
+        result.ShouldBeFailure();
+        operationExecuted.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithPredicate_WhenPredicateTrue_ExecutesOperation()
+    {
+        // Arrange
+        var operationExecuted = false;
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = await sut.WhenAsync(
+            values => values.Count() >= 2,
+            async (r, ct) =>
+            {
+                await Task.Delay(10, ct);
+                operationExecuted = true;
+                return r.WithMessage("Async predicate met");
+            });
+
+        // Assert
+        result.ShouldBeSuccess();
+        operationExecuted.ShouldBeTrue();
+        result.ShouldContainMessage("Async predicate met");
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithPredicate_WhenPredicateFalse_DoesNotExecuteOperation()
+    {
+        // Arrange
+        var operationExecuted = false;
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = await sut.WhenAsync(
+            values => values.Count() > 10,
+            async (r, ct) =>
+            {
+                await Task.Delay(10, ct);
+                operationExecuted = true;
+                return r;
+            });
+
+        // Assert
+        result.ShouldBeSuccess();
+        operationExecuted.ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithCancellation_ReturnsFailureWithCancellationError()
+    {
+        // Arrange
+        var cts = new CancellationTokenSource();
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+        cts.Cancel();
+
+        // Act
+        var result = await sut.WhenAsync(
+            true,
+            async (r, ct) =>
+            {
+                await Task.Delay(1000, ct);
+                return r;
+            },
+            cts.Token);
+
+        // Assert
+        result.ShouldBeFailure();
+        result.ShouldContainError<OperationCancelledError>();
+    }
+
+    [Fact]
+    public async Task WhenAsync_WithException_ReturnsFailureWithError()
+    {
+        // Arrange
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = await sut.WhenAsync(
+            true,
+            async (r, ct) =>
+            {
+                await Task.Delay(10, ct);
+                throw new InvalidOperationException("Async test exception");
+            });
+
+        // Assert
+        result.ShouldBeFailure();
+        result.ShouldContainError<ExceptionError>();
+    }
+
+    [Fact]
+    public async Task WhenAsync_CanChainMultipleConditions()
+    {
+        // Arrange
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = await sut
+            .WhenAsync(true, async (r, ct) =>
+            {
+                await Task.Delay(10, ct);
+                return r.WithMessage("First async");
+            })
+            .WhenAsync(true, async (r, ct) =>
+            {
+                await Task.Delay(10, ct);
+                return r.WithMessage("Second async");
+            })
+            .WhenAsync(false, async (r, ct) =>
+            {
+                await Task.Delay(10, ct);
+                return r.WithMessage("Should not appear");
+            });
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.ShouldContainMessage("First async");
+        result.ShouldContainMessage("Second async");
+        result.ShouldNotContainMessage("Should not appear");
+    }
+
+    [Fact]
+    public async Task WhenAsync_PreservesPaginationMetadata()
+    {
+        // Arrange
+        var sut = ResultPaged<PersonStub>.Success(this.values, this.count, this.page, this.pageSize);
+
+        // Act
+        var result = await sut.WhenAsync(
+            true,
+            async (r, ct) =>
+            {
+                await Task.Delay(10, ct);
+                return r.WithMessage("Test");
+            });
+
+        // Assert
+        result.CurrentPage.ShouldBe(this.page);
+        result.PageSize.ShouldBe(this.pageSize);
+        result.TotalCount.ShouldBe(this.count);
+        result.TotalPages.ShouldBe((int)Math.Ceiling(this.count / (double)this.pageSize));
+    }
 }

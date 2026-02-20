@@ -5,6 +5,7 @@
 
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Infrastructure;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client.Layout;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server;
@@ -13,6 +14,7 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
+using BridgingIT.DevKit.Presentation.Web.Host;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -28,9 +30,7 @@ builder.Host.ConfigureAppConfiguration();
 // ===============================================================================================
 // Configure the modules
 builder.Services.AddModules(builder.Configuration, builder.Environment)
-    .WithModule<CoreModule>()
-    .WithModuleContextAccessors()
-    .WithRequestModuleContextAccessors();
+    .WithModule<CoreModule>();
 
 // ===============================================================================================
 // Configure the services
@@ -111,11 +111,47 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers(); // needed for openapi gen, even with no controllers
 #pragma warning disable CS0618 // Type or member is obsolete
 builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
+//builder.Services.AddExceptionHandler(o =>
+//{
+//    // Configuration
+//    o.IncludeExceptionDetails = builder.Environment.IsDevelopment();
+//    o.EnableLogging = true;
+
+//    // Custom handlers with priority and conditions
+//    o.AddHandler<AuditExceptionHandler>(priority: 100)
+//           .AddHandler<DebugExceptionHandler>(when: builder.Environment.IsDevelopment(), priority: 1000);
+
+//    // Add EF Core handlers (incl. Concurrency)
+//    o.AddEntityFrameworkHandlers();
+
+//    // Fluent exception mapping
+//    o.Map<EntityNotFoundException>(StatusCodes.Status404NotFound, "Entity Not Found")
+//           .Map<AggregateNotFoundException>(StatusCodes.Status404NotFound, "AggregateNotFoundException Not Found")
+//           .Map<ConflictException>(StatusCodes.Status409Conflict)
+//           .Map<DomainException>((ex, ctx) => new ProblemDetails
+//           {
+//               Title = "Domain Error",
+//               Status = StatusCodes.Status422UnprocessableEntity,
+//               Extensions = { ["code"] = ex.Code }
+//           });
+
+//    // Exception filtering
+//    o.Ignore<OperationCanceledException>()
+//           .Rethrow<OutOfMemoryException>();
+
+//    // Problem details enrichment
+//    o.EnrichProblemDetails = (ctx, problem, ex) =>
+//    {
+//        problem.Extensions["correlationId"] = ctx.TraceIdentifier;
+//        problem.Extensions["timestamp"] = DateTimeOffset.UtcNow;
+//    };
+//});
 #pragma warning restore CS0618 // Type or member is obsolete
 builder.Services.AddAppOpenApi();
 
 // Add services to the container.
-builder.Services.AddRazorComponents().AddInteractiveWebAssemblyComponents();
+builder.Services.AddRazorComponents()
+    .AddInteractiveWebAssemblyComponents();
 
 builder.Services.AddMudServices();
 builder.Services.AddSignalR();
@@ -173,6 +209,7 @@ app.UseAntiforgery();
 
 app.UseModules();
 
+//app.UseExceptionHandler();
 app.UseAuthentication();
 app.UseAuthorization();
 
@@ -182,6 +219,7 @@ app.MapModules();
 app.MapControllers();
 app.MapEndpoints();
 
+app.MapStaticAssets(); // needed for dotnet10 Blazor WASM static assets
 app.MapRazorComponents<App>()
     .AddInteractiveWebAssemblyRenderMode()
     //.AddInteractiveServerRenderMode()

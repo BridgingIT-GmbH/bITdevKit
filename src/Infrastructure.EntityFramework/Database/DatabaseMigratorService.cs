@@ -32,7 +32,6 @@ public class DatabaseMigratorService<TContext> : IHostedService
         this.serviceProvider = serviceProvider;
         this.databaseReadyService = databaseReadyService;
         this.applicationLifetime = applicationLifetime;
-        this.applicationLifetime = applicationLifetime;
         this.options = options ?? new DatabaseMigratorOptions();
     }
 
@@ -43,11 +42,6 @@ public class DatabaseMigratorService<TContext> : IHostedService
         if (!this.options.Enabled)
         {
             this.logger.LogInformation("{LogKey} database migrator skipped, not enabled (context={DbContextType})", Constants.LogKey, contextName);
-
-            if (this.databaseReadyService == null)
-            {
-                return;
-            }
 
             using var scope = this.serviceProvider.CreateScope();
             if (await this.CheckDatabaseAccessible(contextName, scope.ServiceProvider.GetRequiredService<TContext>(), cancellationToken).AnyContext())
@@ -65,7 +59,17 @@ public class DatabaseMigratorService<TContext> : IHostedService
                 if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
                     this.logger.LogInformation("{LogKey} database migrator startup delayed (context={DbContextType})", Constants.LogKey, contextName);
-                    await Task.Delay(this.options.StartupDelay, cancellationToken);
+                    if (!cancellationToken.IsCancellationRequested)
+                    {
+                        try
+                        {
+                            await Task.Delay(this.options.StartupDelay, cancellationToken);
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            // Ignore cancellation during startup delay
+                        }
+                    }
                 }
 
                 try
@@ -98,15 +102,23 @@ public class DatabaseMigratorService<TContext> : IHostedService
                                 await context.Database
                                     .ExecuteSqlRawAsync(SqlStatements.SqlServer.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables), cancellationToken).AnyContext();
                             }
+                            else if (context.Database.ProviderName == "Npgsql.EntityFrameworkCore.PostgreSQL")
+                            {
+                                await context.Database
+                                    .ExecuteSqlRawAsync(SqlStatements.PostgreSQL.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables), cancellationToken).AnyContext();
+                            }
                             else if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
                             {
                                 await context.Database
                                     .ExecuteSqlRawAsync(SqlStatements.Sqlite.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables), cancellationToken).AnyContext();
                             }
+                            else if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+                            {
+                                // In-memory database does not require truncation
+                            }
                             else
                             {
-                                throw new ArgumentException(
-                                    $"Database provider '{context.Database.ProviderName}' does not supported truncating tables.");
+                                throw new ArgumentException($"Database provider '{context.Database.ProviderName}' does not supported truncating tables.");
                             }
                         }
 
@@ -127,12 +139,20 @@ public class DatabaseMigratorService<TContext> : IHostedService
                         }
                     }
 
-                    this.databaseReadyService.SetReady(contextName); // assume database is ready if we reach this point
+                    this.databaseReadyService?.SetReady(contextName); // assume database is ready if we reach this point
                 }
                 catch (Exception ex)
                 {
-                    this.databaseReadyService.SetFaulted(contextName, ex.Message);
+                    this.databaseReadyService?.SetFaulted(contextName, ex.Message);
                     this.logger.LogError(ex, "{LogKey} database migrator failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, contextName);
+
+                    if (this.options.HaltOnFailure)
+                    {
+                        var failFastMessage = $"{Constants.LogKey} database migrator: app terminated (context={contextName}, error={ex.Message})";
+                        this.logger.LogCritical(ex, "{FailFastMessage}", failFastMessage);
+                        Console.Error.WriteLine(failFastMessage);
+                        Environment.FailFast(failFastMessage, ex);
+                    }
                 }
             }, cancellationToken);
         });

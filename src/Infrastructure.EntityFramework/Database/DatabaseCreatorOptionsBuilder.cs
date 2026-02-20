@@ -68,7 +68,20 @@ public class DatabaseCreatorOptionsBuilder : OptionsBuilderBase<DatabaseCreatorO
     }
 
     /// <summary>
+    ///     Halt the application process when database creation fails.
+    /// </summary>
+    public DatabaseCreatorOptionsBuilder HaltOnFailure(bool value = true)
+    {
+        this.Target.HaltOnFailure = value;
+
+        return this;
+    }
+
+    /// <summary>
     ///     Delete database on startup.
+    ///     <para>
+    ///         Warning: The entire database is deleted, and no effort is made to remove just the database objects that are used by the model for this context.
+    ///     </para>
     /// </summary>
     public DatabaseCreatorOptionsBuilder DeleteOnStartup(bool value = true)
     {
@@ -79,6 +92,9 @@ public class DatabaseCreatorOptionsBuilder : OptionsBuilderBase<DatabaseCreatorO
 
     /// <summary>
     ///     Truncate the database on startup.
+    ///     <para>
+    ///         Warning: The entire database is truncated, and no effort is made to truncate just the database objects that are used by the model for this context.
+    ///     </para>
     /// </summary>
     public DatabaseCreatorOptionsBuilder PurgeOnStartup(bool value = true, IEnumerable<string> ignoreTables = null)
     {

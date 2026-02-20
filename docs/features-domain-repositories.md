@@ -4,13 +4,185 @@
 
 ## Overview
 
+The Domain Repositories feature provides a generic repository pattern implementation with powerful query capabilities. It enables efficient data access with type-safe filtering, ordering, paging, and eager loading of related entities through a fluent API.
+
 ### Challenges
+
+When working with data access layers in domain-driven applications, developers face several challenges:
+
+- **Repetitive CRUD Operations**: Writing the same create, read, update, delete operations for each entity type
+- **Complex Include Paths**: Loading nested related entities requires verbose and error-prone string-based paths
+- **Type Safety**: Lack of compile-time checking when specifying navigation properties to include
+- **Query Composition**: Difficulty in building reusable, composable queries across different contexts
+- **Abstraction Leakage**: Data access concerns bleeding into domain logic
 
 ### Solution
 
+The repository pattern implementation provides:
+
+- **Generic Repository Interface**: `IGenericRepository<TEntity>` for common CRUD operations
+- **FindOptions**: A fluent API for building complex queries with filtering, ordering, paging, and includes
+- **Type-Safe Includes**: `IncludeOption<TEntity, TProperty>` with `ThenInclude` support for nested navigation properties
+- **Multiple Implementations**: EntityFramework, Cosmos, Azure Storage, and in-memory implementations
+- **Specification Pattern**: Reusable query specifications for complex business rules
+
 ### Use Cases
 
+- Loading entities with deeply nested navigation properties (e.g., Customer → Orders → OrderItems → Product)
+- Building reusable query options across different handlers
+- Implementing eager loading strategies to avoid N+1 query problems
+- Creating type-safe data access layers that prevent runtime errors
+
 ## Usage
+
+### Basic Repository Operations
+
+```csharp
+public class CustomerService
+{
+    private readonly IGenericRepository<Customer> repository;
+
+    public async Task<Customer> GetCustomerAsync(Guid id, CancellationToken ct)
+    {
+        return await repository.FindOneAsync(id, cancellationToken: ct);
+    }
+
+    public async Task<IEnumerable<Customer>> GetAllCustomersAsync(CancellationToken ct)
+    {
+        return await repository.FindAllAsync(cancellationToken: ct);
+    }
+}
+```
+
+### Including Related Entities
+
+Use `IncludeOption` to eagerly load related entities:
+
+```csharp
+// Simple include
+var options = new FindOptions<Customer>()
+    .AddInclude(new IncludeOption<Customer, Address>(c => c.BillingAddress));
+
+var customers = await repository.FindAllAsync(options, cancellationToken);
+```
+
+### Nested Includes with ThenInclude
+
+The `ThenInclude` feature enables fluent, type-safe chaining of navigation properties for loading deeply nested entity graphs. This is particularly useful when you need to load multiple levels of related entities in a single query.
+
+#### Reference Navigation Properties
+
+For single-reference navigation properties (e.g., Customer → Address → City → Country):
+
+```csharp
+var options = new FindOptions<Customer>()
+    .AddInclude(new IncludeOption<Customer, Address>(c => c.BillingAddress)
+        .ThenInclude(a => a.City)
+        .ThenInclude(c => c.Country));
+
+var customers = await repository.FindAllAsync(options, cancellationToken);
+// Loads: Customer → BillingAddress → City → Country
+```
+
+#### Collection Navigation Properties
+
+For collection navigation properties (e.g., Customer → Orders → OrderItems → Product):
+
+```csharp
+var options = new FindOptions<Customer>()
+    .AddInclude(new IncludeOption<Customer, ICollection<Order>>(c => c.Orders)
+        .ThenInclude(o => o.OrderItems)
+        .ThenInclude(i => i.Product));
+
+var customers = await repository.FindAllAsync(options, cancellationToken);
+// Loads: Customer → Orders → OrderItems → Product
+```
+
+#### Multiple Include Chains
+
+You can add multiple include chains to load different navigation paths:
+
+```csharp
+var options = new FindOptions<Order>()
+    .AddInclude(new IncludeOption<Order, Address>(o => o.ShippingAddress)
+        .ThenInclude(a => a.City)
+        .ThenInclude(c => c.Country))
+    .AddInclude(new IncludeOption<Order, ICollection<OrderItem>>(o => o.OrderItems)
+        .ThenInclude(i => i.Product)
+        .ThenInclude(p => p.Category));
+
+var orders = await repository.FindAllAsync(options, cancellationToken);
+// Loads both: Order → ShippingAddress → City → Country
+//         and: Order → OrderItems → Product → Category
+```
+
+#### Real-World Example: E-Commerce Order Query
+
+```csharp
+public class OrderQueryHandler
+{
+    private readonly IGenericRepository<Order> orderRepository;
+
+    public async Task<IEnumerable<Order>> GetOrdersWithFullDetailsAsync(
+        CancellationToken cancellationToken)
+    {
+        var options = new FindOptions<Order>()
+            // Include customer and their billing address details
+            .AddInclude(new IncludeOption<Order, Customer>(o => o.Customer)
+                .ThenInclude(c => c.BillingAddress)
+                .ThenInclude(a => a.City))
+            // Include order items and product details
+            .AddInclude(new IncludeOption<Order, ICollection<OrderItem>>(o => o.OrderItems)
+                .ThenInclude(i => i.Product)
+                .ThenInclude(p => p.Supplier))
+            // Include payment information
+            .AddInclude(new IncludeOption<Order, Payment>(o => o.Payment)
+                .ThenInclude(p => p.PaymentMethod));
+
+        return await orderRepository.FindAllAsync(options, cancellationToken);
+    }
+}
+```
+
+#### Key Points
+
+- **Type Safety**: All navigation properties are validated at compile-time
+- **Fluent API**: Chain multiple `ThenInclude` calls for deep nesting
+- **Generic Type Parameters**: Always specify both `TEntity` and `TProperty` types explicitly in `IncludeOption<TEntity, TProperty>`
+- **Collection Support**: Works with both reference properties (`Address`, `Customer`) and collection properties (`ICollection<Order>`, `IEnumerable<OrderItem>`)
+- **Multiple Chains**: Combine multiple include chains in a single `FindOptions` instance
+- **Performance**: Reduces database round-trips by loading all related data in a single query
+
+### Combining with Other Options
+
+You can combine includes with filtering, ordering, and paging:
+
+```csharp
+var options = new FindOptions<Customer>()
+    .AddInclude(new IncludeOption<Customer, ICollection<Order>>(c => c.Orders)
+        .ThenInclude(o => o.OrderItems))
+    .WithOrder(new OrderOption<Customer>(c => c.Name))
+    .WithFilter(new FilterOption<Customer>(c => c.IsActive))
+    .WithPage(1, 20)
+    .WithDistinct();
+
+var pagedCustomers = await repository.FindAllAsync(options, cancellationToken);
+```
+
+### Projection with Includes
+
+Use includes with projection to load related data before projecting:
+
+```csharp
+var options = new FindOptions<Order>()
+    .AddInclude(new IncludeOption<Order, Customer>(o => o.Customer)
+        .ThenInclude(c => c.BillingAddress));
+
+var customerNames = await repository.ProjectAllAsync(
+    o => o.Customer.Name,
+    options,
+    cancellationToken);
+```
 
 ## Appendix A: Optimistic Concurrency Support
 

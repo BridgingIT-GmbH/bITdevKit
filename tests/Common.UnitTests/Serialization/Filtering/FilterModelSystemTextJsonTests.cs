@@ -445,8 +445,8 @@ public class EnumConverterTests
     public void Read_ValidEnumValue_ReturnsCorrectEnum()
     {
         // Arrange
-        var json = "\"CustomValue1\"";
-        var expectedEnum = TestEnum.Value1;
+        const string json = "\"CustomValue1\"";
+        const TestEnum expectedEnum = TestEnum.Value1;
 
         // Act
         var result = this.serializer.Deserialize<TestEnum>(
@@ -460,7 +460,7 @@ public class EnumConverterTests
     public void Read_InvalidEnumValue_ThrowsJsonException()
     {
         // Arrange
-        var json = "\"InvalidValue\"";
+        const string json = "\"InvalidValue\"";
 
         // Act & Assert
         Should.Throw<JsonException>(() =>
@@ -485,7 +485,7 @@ public class EnumConverterTests
     public void Write_EnumWithoutEnumMemberAttribute_WritesEnumName()
     {
         // Arrange
-        var enumValue = TestEnum.Value1;
+        const TestEnum enumValue = TestEnum.Value1;
 
         // Act
         var result = JsonSerializer.Serialize(enumValue, this.options);
@@ -498,7 +498,7 @@ public class EnumConverterTests
     public void ReadWrite_RoundTrip_PreservesEnumValue()
     {
         // Arrange
-        var originalEnum = TestEnum.Value2;
+        const TestEnum originalEnum = TestEnum.Value2;
 
         // Act
         var json = JsonSerializer.Serialize(originalEnum, this.options);

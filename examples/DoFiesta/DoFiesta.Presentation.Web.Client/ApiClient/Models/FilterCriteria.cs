@@ -49,7 +49,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
 #else
         public List<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria> Filters { get; set; }
 #endif
-        /// <summary>Logic operator for combining nested filters</summary>
+        /// <summary>Logic operator for combining nested lofty filters</summary>
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_logic? Logic { get; set; }
         /// <summary>The operator to use for filtering</summary>
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_operator? Operator { get; set; }
@@ -72,10 +72,10 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         /// <summary>The value to compare against (any type)</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_value? Value { get; set; }
+        public UntypedNode? Value { get; set; }
 #nullable restore
 #else
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_value Value { get; set; }
+        public UntypedNode Value { get; set; }
 #endif
         /// <summary>
         /// Instantiates a new <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria"/> and sets the default values.
@@ -113,7 +113,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
                 { "operator", n => { Operator = n.GetEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_operator>(); } },
                 { "specificationArguments", n => { SpecificationArguments = n.GetObjectValue<UntypedNode>(UntypedNode.CreateFromDiscriminatorValue); } },
                 { "specificationName", n => { SpecificationName = n.GetStringValue(); } },
-                { "value", n => { Value = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_value>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_value.CreateFromDiscriminatorValue); } },
+                { "value", n => { Value = n.GetObjectValue<UntypedNode>(UntypedNode.CreateFromDiscriminatorValue); } },
             };
         }
         /// <summary>
@@ -132,7 +132,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_operator>("operator", Operator);
             writer.WriteObjectValue<UntypedNode>("specificationArguments", SpecificationArguments);
             writer.WriteStringValue("specificationName", SpecificationName);
-            writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterCriteria_value>("value", Value);
+            writer.WriteObjectValue<UntypedNode>("value", Value);
             writer.WriteAdditionalData(AdditionalData);
         }
     }

@@ -18,10 +18,10 @@ public class ResultNullLoggerTests
     public void Log_WithStringContext_DoesNotThrowException()
     {
         // Arrange
-        var context = "TestContext";
-        var content = "Test content";
+        const string context = "TestContext";
+        const string content = "Test content";
         var result = Result.Success();
-        var logLevel = LogLevel.Information;
+        const LogLevel logLevel = LogLevel.Information;
 
         // Act & Assert
         var exception = Record.Exception(() => this.logger.Log(context, content, result, logLevel));
@@ -32,9 +32,9 @@ public class ResultNullLoggerTests
     public void Log_WithGenericContext_DoesNotThrowException()
     {
         // Arrange
-        var content = "Test content";
+        const string content = "Test content";
         var result = Result.Success();
-        var logLevel = LogLevel.Information;
+        const LogLevel logLevel = LogLevel.Information;
 
         // Act & Assert
         var exception = Record.Exception(() => this.logger.Log<ResultNullLoggerTests>(content, result, logLevel));

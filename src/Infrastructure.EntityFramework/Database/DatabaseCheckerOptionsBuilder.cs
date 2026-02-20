@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 public class DatabaseCheckerOptionsBuilder : OptionsBuilderBase<DatabaseCheckerOptions, DatabaseCheckerOptionsBuilder>
 {
     /// <summary>
-    ///     Enable or Disable the database migrator.
+    ///     Enable or disable the database checker.
     /// </summary>
     public DatabaseCheckerOptionsBuilder Enabled(bool value = true)
     {
@@ -18,7 +18,7 @@ public class DatabaseCheckerOptionsBuilder : OptionsBuilderBase<DatabaseCheckerO
     }
 
     /// <summary>
-    ///     Disable the database migrator.
+    ///     Disable the database checker.
     /// </summary>
     public DatabaseCheckerOptionsBuilder Disabled()
     {
@@ -28,7 +28,7 @@ public class DatabaseCheckerOptionsBuilder : OptionsBuilderBase<DatabaseCheckerO
     }
 
     /// <summary>
-    ///     Delay the startup of the database migrator.
+    ///     Delay the startup of the database checker.
     /// </summary>
     public DatabaseCheckerOptionsBuilder StartupDelay(TimeSpan timespan)
     {
@@ -38,7 +38,7 @@ public class DatabaseCheckerOptionsBuilder : OptionsBuilderBase<DatabaseCheckerO
     }
 
     /// <summary>
-    ///     Delay the startup of the database migrator.
+    ///     Delay the startup of the database checker.
     /// </summary>
     public DatabaseCheckerOptionsBuilder StartupDelay(int milliseconds)
     {
@@ -48,11 +48,21 @@ public class DatabaseCheckerOptionsBuilder : OptionsBuilderBase<DatabaseCheckerO
     }
 
     /// <summary>
-    ///     Delay the startup of the database migrator.
+    ///     Delay the startup of the database checker.
     /// </summary>
     public DatabaseCheckerOptionsBuilder StartupDelay(string value)
     {
         this.Target.StartupDelay = TimeSpan.Parse(value);
+
+        return this;
+    }
+
+    /// <summary>
+    ///     Halt the application process when database checking fails.
+    /// </summary>
+    public DatabaseCheckerOptionsBuilder HaltOnFailure(bool value = true)
+    {
+        this.Target.HaltOnFailure = value;
 
         return this;
     }

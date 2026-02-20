@@ -8,16 +8,17 @@ namespace BridgingIT.DevKit.Common;
 /// <summary>
 /// Represents a rule that validates strings based on specific patterns.
 /// </summary>
-public class PatternRule(string value, string pattern) : RuleBase
+public class PatternRule(string value, string pattern, string message = null) : RuleBase
 {
+    private readonly string message = message ?? $"Value does not match pattern: {pattern}";
+
     /// <summary>
     /// Gets or sets the message content.
     /// </summary>
     /// <value>
     /// The message content as a string.
     /// </value>
-    public override string Message =>
-        $"Value does not match pattern: {pattern}";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes a specified rule based on the given parameters.

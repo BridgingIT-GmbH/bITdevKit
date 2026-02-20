@@ -12,8 +12,10 @@ namespace BridgingIT.DevKit.Common;
 /// <param name="start">The start of the time range.</param>
 /// <param name="end">The end of the time range.</param>
 /// <param name="inclusive">Indicates whether the range is inclusive of the start and end times.</param>
-public class TimeRangeRule(TimeOnly value, TimeOnly start, TimeOnly end, bool inclusive) : RuleBase
+public class TimeRangeRule(TimeOnly value, TimeOnly start, TimeOnly end, bool inclusive, string message = null) : RuleBase
 {
+    private readonly string message = message ?? $"Time must be {(inclusive ? "between" : "strictly between")} {start} and {end}";
+
     /// <summary>
     /// Gets or sets the message.
     /// </summary>
@@ -22,7 +24,7 @@ public class TimeRangeRule(TimeOnly value, TimeOnly start, TimeOnly end, bool in
     /// messages, notifications, or communications within the application.
     /// The content of this string can vary depending on the context in which it's used.
     /// </remarks>
-    public override string Message => $"Time must be {(inclusive ? "between" : "strictly between")} {start} and {end}";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes a validation rule and returns the result.

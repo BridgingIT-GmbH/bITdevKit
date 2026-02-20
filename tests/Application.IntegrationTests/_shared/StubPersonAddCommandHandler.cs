@@ -8,7 +8,9 @@ namespace BridgingIT.DevKit.Application.IntegrationTests.Commands;
 using Application.Commands;
 using Microsoft.Extensions.Logging;
 
+#pragma warning disable CS0618 // Type or member is obsolete
 public class StubPersonAddCommandHandler(ILoggerFactory loggerFactory) : CommandHandlerBase<StubPersonAddCommand, bool>(loggerFactory)
+#pragma warning restore CS0618 // Type or member is obsolete
 {
     public override async Task<CommandResponse<bool>> Process(StubPersonAddCommand request, CancellationToken cancellationToken)
     {

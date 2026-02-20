@@ -6,10 +6,13 @@
 namespace BridgingIT.DevKit.Domain.UnitTests;
 
 using System.Linq.Expressions;
-using Model;
+using BridgingIT.DevKit.Domain.Model;
 
-public class PersonStub : Entity<Guid>
+public class PersonStub : AggregateRoot<Guid>
 {
+    internal List<AddressStub> addresses = [];
+    internal List<AddressEntityStub> addressEntities = [];
+
     public string FirstName { get; set; }
 
     public string LastName { get; set; }
@@ -26,9 +29,162 @@ public class PersonStub : Entity<Guid>
 
     public List<OrderStub> Orders { get; set; }
 
-    public List<AddressStub> Addresses { get; set; } = [];
+    public IReadOnlyCollection<AddressStub> Addresses { get => this.addresses; }
+
+    public IReadOnlyCollection<AddressEntityStub> AddressEntities { get => this.addressEntities; }
+
+    //public List<AddressStub> Addresses { get; set; } = [];
 
     public AddressStub BillingAddress { get; set; }
+
+    public Result<PersonStub> ChangeName(string first, string last, int age, string email)
+    {
+        return this.Change()
+            .Set(p => p.ChangeName(first, last)) // Result should propagate failure
+            .Set(p => p.ChangeAge(age)) // Result should propagate failure
+            .Set(p => p.ChangeEmail(email)) // Result should propagate failure
+            .Apply();
+    }
+
+    public Result<PersonStub> ChangeName(string first, string last)
+    {
+        return this.Change()
+            .Set(p => p.FirstName, first)
+            .Set(p => p.LastName, last)
+            .Register(p => new PersonNameChangedEvent(p.Id)) // custom event, replaces default EntityUpdatedDomainEvent<PersonStub>
+            .Check(p => p.FirstName != string.Empty, "First name cannot be empty") // Post-condition
+            .Apply();
+    }
+
+    public Result<PersonStub> ChangeAge(int age)
+    {
+        return this.Change()
+            .When(_ => age != 0)
+            .Ensure(p => age > 0, new ValidationError("Age must be non-negative")) // Pre-condition
+            .Set(p => p.Age, age)
+            .Check(p => p.Age >= 0, new ValidationError("Age cannot be negative")) // Post-condition
+            .Apply();
+    }
+
+    public Result<PersonStub> ChangeEmail(string email)
+    {
+        return this.Change()
+            // Ensure runs BEFORE any changes
+            .Ensure(p => p.EmploymentStatus != EmploymentStatus.Unemployed, "Must be employed to have email")
+            .Set(p => p.Email, email)
+            .Apply();
+    }
+
+    public Result<PersonStub> ChangeEmailWithValidation(string email)
+    {
+        // Simulating a Result-returning factory
+        static Result<string> CreateEmail(string input)
+        {
+            if (input.Contains("invalid"))
+                return Result<string>.Failure().WithError(new ValidationError("Invalid format"));
+            return Result<string>.Success(input);
+        }
+
+        return this.Change()
+            .Set(p => p.Email, CreateEmail(email))
+            .Apply();
+    }
+
+    public Result<PersonStub> PromoteToAdult()
+    {
+        return this.Change()
+            .When(p => p.Age >= 18)
+            .Set(p => p.FirstName, "Adult")
+            .Execute(r => r.Map(e => { e.LastName = "Adult"; return e; }))
+            .Execute(r => r.Tap(e => Console.WriteLine($"Promoted {e.FirstName} {e.LastName} to Adult")))
+            .Apply();
+    }
+
+    public Result<PersonStub> AddAddress(AddressStub address)
+    {
+        return this.Change()
+            .Add(p => p.addresses, address)
+            .Register(_ => new AddressListChangedEvent())
+            .Apply();
+    }
+
+    public Result<PersonStub> RemoveAddress(AddressStub address)
+    {
+        return this.Change()
+            .Remove(p => p.addresses, address)
+            .Register(_ => new AddressListChangedEvent())
+            .Apply();
+    }
+
+    public Result<PersonStub> ClearAddresses()
+    {
+        return this.Change()
+            .Execute(p => p.addresses.Clear()) // Using Execute for void methods
+            .Apply();
+    }
+
+    public Result<PersonStub> UpdateEmailWithHistory(string newEmail)
+    {
+        return this.Change()
+            .Set(p => p.Email, newEmail)
+            .Register((p, ctx) => new EmailChangedEvent(ctx.GetOldValue<string>(nameof(this.Email)), p.Email))
+            .Apply();
+    }
+
+    public Result<PersonStub> AddAddressEntity(AddressEntityStub address)
+    {
+        return this.Change()
+            .Add(p => p.addressEntities, address)
+            .Register(_ => new AddressListChangedEvent())
+            .Apply();
+    }
+
+    public Result<PersonStub> RemoveAddressEntityById(Guid addressId, string errorMessage = null)
+    {
+        return this.Change()
+            .RemoveById(p => p.addressEntities, addressId, errorMessage: errorMessage)
+            .Register(_ => new AddressListChangedEvent())
+            .Apply();
+    }
+
+    public Result<PersonStub> ClearAllPrimaryAddresses()
+    {
+        return this.Change()
+            .Set(p => p.addressEntities, a => a.ClearPrimary())
+            .Register(_ => new AddressListChangedEvent())
+            .Apply();
+    }
+
+    public Result<PersonStub> SetPrimaryAddress(Guid addressId)
+    {
+        return this.Change()
+            .Set(p => p.addressEntities, a => a.ClearPrimary())                          // Clear all first
+            .SetById(p => p.addressEntities, addressId, a => a.SetPrimary(), "Address not found") // Set one as primary
+            .Register(_ => new AddressListChangedEvent())
+            .Apply();
+    }
+
+    public Result<PersonStub> ValidateAllAddresses()
+    {
+        return this.Change()
+            .Set(p => p.addressEntities, a => a.Validate())
+            .Apply();
+    }
+
+    // Domain Events for testing
+    public class PersonNameChangedEvent(Guid id) : DomainEventBase
+    {
+        public Guid PersonId { get; } = id;
+    }
+
+    public class AddressListChangedEvent : DomainEventBase;
+
+    public class EmailChangedEvent(string oldEmail, string newEmail) : DomainEventBase
+    {
+        public string OldEmail { get; } = oldEmail;
+
+        public string NewEmail { get; } = newEmail;
+    }
 }
 
 public class OrderStub
@@ -113,6 +269,50 @@ public class AddressStub : ValueObject
             !string.IsNullOrEmpty(address.PostalCode) &&
             !string.IsNullOrEmpty(address.Country) &&
             !string.IsNullOrEmpty(address.Country));
+    }
+}
+
+/// <summary>
+/// Entity version of Address for testing RemoveById functionality.
+/// </summary>
+public class AddressEntityStub : Entity<Guid>
+{
+    public string Street { get; set; }
+    public string City { get; set; }
+    public bool IsPrimary { get; set; }
+
+    public static AddressEntityStub Create(string street, string city)
+    {
+        return new AddressEntityStub
+        {
+            Id = Guid.NewGuid(),
+            Street = street,
+            City = city,
+            IsPrimary = false
+        };
+    }
+
+    public void SetPrimary()
+    {
+        this.IsPrimary = true;
+    }
+
+    public void ClearPrimary()
+    {
+        this.IsPrimary = false;
+    }
+
+    public Result Validate()
+    {
+        if (string.IsNullOrEmpty(this.Street))
+        {
+            return Result.Failure().WithError(new ValidationError("Street is required"));
+        }
+        if (string.IsNullOrEmpty(this.City))
+        {
+            return Result.Failure().WithError(new ValidationError("City is required"));
+        }
+        return Result.Success();
     }
 }
 

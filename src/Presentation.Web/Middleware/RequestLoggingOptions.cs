@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Serilog;
 using Serilog.Events;
@@ -75,20 +74,4 @@ public class RequestLoggingOptions
             ctx.Response.StatusCode > 499 ? LogEventLevel.Error : LogEventLevel.Information;
     }
 #pragma warning restore SA1313 // Parameter names should begin with lower-case letter
-}
-
-/// <summary>
-///     Options for the <see cref="IExceptionHandler" />.
-/// </summary>
-public class GlobalExceptionHandlerOptions : ExceptionHandlerOptions
-{
-    /// <summary>
-    ///     Gets or sets if exception details are included.
-    /// </summary>
-    public bool IncludeExceptionDetails { get; set; } = true;
-
-    /// <summary>
-    ///     Gets or sets if exception should be logged
-    /// </summary>
-    public bool EnableLogging { get; set; } = false;
 }

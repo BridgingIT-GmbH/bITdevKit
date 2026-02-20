@@ -9,7 +9,9 @@ using Common;
 using Domain.Outbox;
 using Microsoft.Extensions.Logging;
 
+#pragma warning disable CS0618 // Type or member is obsolete
 public class OutboxMessageCommandHandler : CommandHandlerBase<OutboxMessageCommand, OutboxMessageCommandResult>
+#pragma warning restore CS0618 // Type or member is obsolete
 {
     private readonly IOutboxMessageWriterRepository repository;
 

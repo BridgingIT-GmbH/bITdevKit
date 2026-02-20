@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -9,20 +9,40 @@ namespace BridgingIT.DevKit.Common;
 /// Specifies a retry policy for a handler.
 /// </summary>
 /// <remarks>
-/// Initializes a new instance of the <see cref="HandlerRetryAttribute"/> class.
+/// When parameters are not specified, defaults from <see cref="RetryOptions"/> will be used.
+/// If no options are configured, an exception will be thrown at runtime.
 /// </remarks>
-/// <param name="count">The number of retry attempts.</param>
-/// <param name="delay">The delay between retries in milliseconds.</param>
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-public class HandlerRetryAttribute(int count, int delay) : Attribute
+public class HandlerRetryAttribute : Attribute
 {
     /// <summary>
-    /// Gets the number of retry attempts.
+    /// Initializes a new instance of the <see cref="HandlerRetryAttribute"/> class with specified values.
     /// </summary>
-    public int Count { get; } = count;
+    /// <param name="count">The number of retry attempts.</param>
+    /// <param name="delay">The delay between retries in milliseconds.</param>
+    public HandlerRetryAttribute(int count, int delay)
+    {
+        this.Count = count;
+        this.Delay = delay;
+    }
 
     /// <summary>
-    /// Gets the delay between retries in milliseconds.
+    /// Initializes a new instance of the <see cref="HandlerRetryAttribute"/> class using defaults from options.
     /// </summary>
-    public int Delay { get; } = delay;
+    /// <remarks>
+    /// When using this constructor, ensure <see cref="RetryOptions"/> is configured with default values.
+    /// </remarks>
+    public HandlerRetryAttribute()
+    {
+    }
+
+    /// <summary>
+    /// Gets the number of retry attempts, or null to use the default from <see cref="RetryOptions"/>.
+    /// </summary>
+    public int? Count { get; }
+
+    /// <summary>
+    /// Gets the delay between retries in milliseconds, or null to use the default from <see cref="RetryOptions"/>.
+    /// </summary>
+    public int? Delay { get; }
 }

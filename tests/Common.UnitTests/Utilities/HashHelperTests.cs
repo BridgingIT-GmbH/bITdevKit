@@ -38,7 +38,7 @@ public class HashHelperTests
     public void Compute_StringIsNull_ReturnsEmptyString()
     {
         // Arrange
-        string input = null;
+        const string input = null;
 
         // Act
         var result = HashHelper.Compute(input);
@@ -79,7 +79,7 @@ public class HashHelperTests
     public void Compute_GivenString_ReturnsCorrectHash()
     {
         // Arrange
-        var input = "Hello World";
+        const string input = "Hello World";
 
         // Act
         var result = HashHelper.Compute(input);

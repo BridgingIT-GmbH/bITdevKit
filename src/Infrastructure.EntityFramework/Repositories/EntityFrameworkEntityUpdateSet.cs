@@ -5,16 +5,14 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using Microsoft.EntityFrameworkCore.Query;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using System.Reflection;
 
 /// <summary>
 /// EF Core–specific implementation of <see cref="IEntityUpdateSet{TEntity}"/>.
 /// Collects property assignments in a type-safe way and translates them
-/// into EF Core <c>ExecuteUpdateAsync</c> expressions.
+/// into EF Core <c>ExecuteUpdateAsync</c> calls.
 /// </summary>
 /// <typeparam name="TEntity">The entity type.</typeparam>
 /// <remarks>
@@ -44,21 +42,35 @@ public class EntityFrameworkEntityUpdateSet<TEntity> : IEntityUpdateSet<TEntity>
 {
     /// <summary>
     /// Gets the list of property assignments collected by this update set.
-    /// Each assignment is stored as a function that transforms an expression
-    /// representing the current <see cref="SetPropertyCalls{TEntity}"/>.
     /// </summary>
     /// <remarks>
-    /// These functions are later combined into a single expression tree
-    /// inside the provider before being passed to EF Core's
-    /// <c>ExecuteUpdateAsync</c>.
+    /// In EF Core 10+, ExecuteUpdateAsync accepts an Action instead of Expression,
+    /// making dynamic updates much simpler. We store the assignments and apply them
+    /// in the ExecuteUpdateAsync lambda.
     /// </remarks>
-    public List<Func<Expression, Expression>> Assignments { get; } = [];
+    private readonly List<Assignment> assignments = [];
+
+    /// <summary>
+    /// Represents a single property assignment with its selector and value.
+    /// </summary>
+    public class Assignment
+    {
+        public LambdaExpression PropertySelector { get; set; }
+
+        public object Value { get; set; }
+
+        public LambdaExpression ValueFactory { get; set; }
+
+        public bool IsComputed => this.ValueFactory != null;
+    }
+
+    public IReadOnlyList<Assignment> Assignments => this.assignments;
 
     /// <summary>
     /// Adds a property assignment to the update set with a constant value.
     /// </summary>
     /// <typeparam name="TProperty">The type of the property being updated.</typeparam>
-    /// <param name="property">The property selector delegate.</param>
+    /// <param name="property">The property selector expression.</param>
     /// <param name="value">The constant value to assign to the property.</param>
     /// <returns>The current <see cref="IEntityUpdateSet{TEntity}"/> for chaining.</returns>
     /// <example>
@@ -70,19 +82,12 @@ public class EntityFrameworkEntityUpdateSet<TEntity> : IEntityUpdateSet<TEntity>
     /// </example>
     public IEntityUpdateSet<TEntity> Set<TProperty>(Expression<Func<TEntity, TProperty>> property, TProperty value)
     {
-        this.Assignments.Add(setters =>
-            Expression.Call(
-                setters,
-                typeof(SetPropertyCalls<TEntity>)
-                    .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                    .First(m => m.Name == nameof(SetPropertyCalls<TEntity>.SetProperty)
-                             && m.GetParameters().Length == 2
-                             && m.GetParameters()[1].ParameterType.IsGenericParameter)
-                    .MakeGenericMethod(typeof(TProperty)),
-                property,                        // property selector
-                Expression.Constant(value, typeof(TProperty)) // raw constant
-            )
-        );
+        this.assignments.Add(new Assignment
+        {
+            PropertySelector = property,
+            Value = value,
+            ValueFactory = null
+        });
 
         return this;
     }
@@ -92,8 +97,8 @@ public class EntityFrameworkEntityUpdateSet<TEntity> : IEntityUpdateSet<TEntity>
     /// based on the entity itself.
     /// </summary>
     /// <typeparam name="TProperty">The type of the property being updated.</typeparam>
-    /// <param name="property">The property selector delegate.</param>
-    /// <param name="valueFactory">A delegate that computes the new value from the entity.</param>
+    /// <param name="property">The property selector expression.</param>
+    /// <param name="valueFactory">An expression that computes the new value from the entity.</param>
     /// <returns>The current <see cref="IEntityUpdateSet{TEntity}"/> for chaining.</returns>
     /// <example>
     /// <code>
@@ -104,20 +109,48 @@ public class EntityFrameworkEntityUpdateSet<TEntity> : IEntityUpdateSet<TEntity>
     /// </example>
     public IEntityUpdateSet<TEntity> Set<TProperty>(Expression<Func<TEntity, TProperty>> property, Expression<Func<TEntity, TProperty>> valueFactory)
     {
-        this.Assignments.Add(setters =>
-            Expression.Call(
-                setters,
-                typeof(SetPropertyCalls<TEntity>)
-                    .GetMethods(BindingFlags.Public | BindingFlags.Instance)
-                    .First(m => m.Name == nameof(SetPropertyCalls<TEntity>.SetProperty)
-                             && m.GetParameters().Length == 2
-                             && m.GetParameters()[1].ParameterType == m.GetParameters()[0].ParameterType)
-                    .MakeGenericMethod(typeof(TProperty)),
-                property,      // Expression<Func<TEntity,TProperty>>
-                valueFactory   // Expression<Func<TEntity,TProperty>>
-            )
-        );
+        this.assignments.Add(new Assignment
+        {
+            PropertySelector = property,
+            Value = null,
+            ValueFactory = valueFactory
+        });
 
         return this;
+    }
+
+    /// <summary>
+    /// Applies all collected assignments to the provided setters action.
+    /// This method is called internally by the EF Core provider.
+    /// </summary>
+    internal void ApplyTo(dynamic setters)
+    {
+        foreach (var assignment in this.assignments)
+        {
+            if (assignment.IsComputed)
+            {
+                // Call SetProperty with both expressions (for computed values)
+                InvokeSetProperty(setters, assignment.PropertySelector, assignment.ValueFactory);
+            }
+            else
+            {
+                // Call SetProperty with expression and constant value
+                InvokeSetProperty(setters, assignment.PropertySelector, assignment.Value);
+            }
+        }
+    }
+
+    private static void InvokeSetProperty(dynamic setters, LambdaExpression propertySelector, object value)
+    {
+        // Use dynamic to call SetProperty without knowing the exact type
+        // EF Core 10 will handle the strongly-typed method resolution
+        if (value is LambdaExpression valueExpr)
+        {
+            setters.SetProperty(propertySelector, valueExpr);
+        }
+        else
+        {
+            setters.SetProperty(propertySelector, value);
+        }
     }
 }

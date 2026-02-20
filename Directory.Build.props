@@ -42,10 +42,6 @@
     <PropertyGroup>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <WarningsAsErrors>true</WarningsAsErrors>
-
-    <!--    <CodeAnalysisRuleSet></CodeAnalysisRuleSet>-->
-    <!--<UseSharedCompilation>true</UseSharedCompilation>-->
-    <!--roslyn build speed-->
     </PropertyGroup>
 
     <ItemGroup>

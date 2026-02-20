@@ -8,7 +8,9 @@ namespace BridgingIT.DevKit.Application.IntegrationTests.Queries;
 using Application.Queries;
 using Microsoft.Extensions.Logging;
 
+#pragma warning disable CS0618 // Type or member is obsolete
 public class StubPersonQueryHandler(ILoggerFactory loggerFactory) : QueryHandlerBase<StubPersonQuery, IEnumerable<PersonStub>>(loggerFactory)
+#pragma warning restore CS0618 // Type or member is obsolete
 {
     public override async Task<QueryResponse<IEnumerable<PersonStub>>> Process(StubPersonQuery request, CancellationToken cancellationToken)
     {

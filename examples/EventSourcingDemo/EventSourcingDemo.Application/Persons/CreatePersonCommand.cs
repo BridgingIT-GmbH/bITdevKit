@@ -7,7 +7,9 @@ namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Application.Persons;
 
 using DevKit.Application.Commands;
 
+#pragma warning disable CS0618 // Type or member is obsolete
 public class CreatePersonCommand : CommandRequestBase<PersonOverviewViewModel>
+#pragma warning restore CS0618 // Type or member is obsolete
 {
     public CreatePersonViewModel Model { get; set; }
 }

@@ -36,7 +36,7 @@ public class TodoItemUpdatedDomainEventHandler(ILoggerFactory loggerFactory)
     public override Task Process(TodoItemUpdatedDomainEvent notification, CancellationToken cancellationToken)
     {
         // implement event reaction logic (audit, notify, etc.)
-        this.Logger.LogInformation("DoFiesta - TodoItemUpdatedDomainEvent handled in Application");
+        this.Logger.LogInformation("DoFiesta - TodoItemUpdatedDomainEvent handled in Application " + notification.Model?.Title);
 
         return Task.CompletedTask;
     }

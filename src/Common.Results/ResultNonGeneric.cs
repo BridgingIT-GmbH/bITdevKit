@@ -500,6 +500,11 @@ public readonly partial struct Result : IResult
         return new Result(false, this.messages, this.errors.Add(error));
     }
 
+    public Result WithError(string errorMessage)
+    {
+        return new Result(false, this.messages, this.errors.Add(new Error(errorMessage)));
+    }
+
     /// <summary>
     /// Adds an exception to the Result and marks it as failed.
     /// </summary>
@@ -643,12 +648,12 @@ public readonly partial struct Result : IResult
     /// var validationError = result.GetError{ValidationError}();
     /// Console.WriteLine($"Validation error: {error.Message}");
     /// </example>
-    public IResultError GetError<TError>()
-        where TError : IResultError
+    public TError GetError<TError>()
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
 
-        return this.errors.AsEnumerable().FirstOrDefault(e => e.GetType() == errorType);
+        return this.errors.AsEnumerable().FirstOrDefault(e => e.GetType() == errorType) as TError;
     }
 
     /// <summary>
@@ -661,12 +666,12 @@ public readonly partial struct Result : IResult
     ///     Console.WriteLine($"Validation error: {error.Message}");
     /// }
     /// </example>
-    public IEnumerable<IResultError> GetErrors<TError>()
-        where TError : IResultError
+    public IEnumerable<TError> GetErrors<TError>()
+        where TError : class, IResultError
     {
         var errorType = typeof(TError);
 
-        return this.errors.AsEnumerable().Where(e => e.GetType() == errorType);
+        return this.errors.AsEnumerable().Where(e => e.GetType() == errorType).Cast<TError>();
     }
 
     /// <summary>
@@ -1221,5 +1226,142 @@ public readonly partial struct Result : IResult
         }
 
         return sb.ToString();
+    }
+
+    /// <summary>
+    ///     Flattens a collection of Results into a single Result, combining all errors and messages.
+    ///     Returns success only if ALL results succeed.
+    ///     Returns failure if ANY result fails.
+    /// </summary>
+    /// <param name="results">The collection of Results to flatten.</param>
+    /// <returns>A single Result with accumulated errors/messages, successful only if all results succeed.</returns>
+    /// <example>
+    /// <code>
+    /// // Combine multiple validation results
+    /// var result = new[] 
+    /// { 
+    ///     ValidateName(user), 
+    ///     ValidateEmail(user), 
+    ///     ValidateAge(user) 
+    /// }.Flatten();
+    /// // Result is successful only if all validations pass
+    /// </code>
+    /// </example>
+    public static Result Flatten(IEnumerable<Result> results)
+    {
+        if (results is null)
+        {
+            return Failure()
+                .WithError(new Error("Results collection cannot be null"));
+        }
+
+        try
+        {
+            var errors = new List<IResultError>();
+            var messages = new List<string>();
+            var hasFailure = false;
+
+            foreach (var result in results)
+            {
+                if (result.IsFailure)
+                {
+                    hasFailure = true;
+                }
+
+                errors.AddRange(result.Errors);
+                messages.AddRange(result.Messages);
+            }
+
+            if (hasFailure)
+            {
+                return Failure()
+                    .WithErrors(errors)
+                    .WithMessages(messages);
+            }
+
+            return Success()
+                .WithErrors(errors)
+                .WithMessages(messages);
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    ///     Flattens a collection of Result tasks into a single Result, combining all errors and messages.
+    ///     Returns success only if ALL results succeed.
+    ///     Returns failure if ANY result fails.
+    /// </summary>
+    /// <param name="resultTasks">The collection of Result tasks to flatten.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A single Result with accumulated errors/messages, successful only if all results succeed.</returns>
+    /// <example>
+    /// <code>
+    /// // Combine multiple async validation results
+    /// var result = await new[] 
+    /// { 
+    ///     ValidateNameAsync(user), 
+    ///     ValidateEmailAsync(user), 
+    ///     ValidateAgeAsync(user) 
+    /// }.FlattenAsync(cancellationToken);
+    /// // Result is successful only if all validations pass
+    /// </code>
+    /// </example>
+    public static async Task<Result> FlattenAsync(
+        IEnumerable<Task<Result>> resultTasks,
+        CancellationToken cancellationToken = default)
+    {
+        if (resultTasks is null)
+        {
+            return Failure()
+                .WithError(new Error("Result tasks collection cannot be null"));
+        }
+
+        try
+        {
+            var errors = new List<IResultError>();
+            var messages = new List<string>();
+            var hasFailure = false;
+
+            foreach (var task in resultTasks)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var result = await task;
+
+                if (result.IsFailure)
+                {
+                    hasFailure = true;
+                }
+
+                errors.AddRange(result.Errors);
+                messages.AddRange(result.Messages);
+            }
+
+            if (hasFailure)
+            {
+                return Failure()
+                    .WithErrors(errors)
+                    .WithMessages(messages);
+            }
+
+            return Success()
+                .WithErrors(errors)
+                .WithMessages(messages);
+        }
+        catch (OperationCanceledException)
+        {
+            return Failure()
+                .WithError(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            return Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
     }
 }

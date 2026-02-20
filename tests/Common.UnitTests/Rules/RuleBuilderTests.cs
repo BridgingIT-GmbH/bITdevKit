@@ -331,7 +331,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
     {
         // Arrange
         var person = new PersonStub(string.Empty, "Doe", "john@example.com", 25);
-        var message = "First name is required";
+        const string message = "First name is required";
 
         // Act
         var result = Rule.Add()
@@ -382,7 +382,7 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
     {
         // Arrange
         var person = new PersonStub("John", "Doe", "john@example.com", 15);
-        var shouldValidateAge = false;
+        const bool shouldValidateAge = false;
 
         // Act
         var result = Rule.Add()
@@ -770,9 +770,9 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
 
         // FluentValidation errors
         result.HasError<FluentValidationError>().ShouldBeTrue();
-        var fluentErrors = result.GetError<FluentValidationError>();
-        fluentErrors.Message.ShouldContain("Must be 18 or older");
-        fluentErrors.Message.ShouldContain("Invalid email");
+        var fluentError = result.GetError<FluentValidationError>();
+        fluentError.Errors.Any(e => e.ErrorMessage.Contains("Must be 18 or older")).ShouldBeTrue();
+        fluentError.Errors.Any(e => e.ErrorMessage.Contains("Invalid email")).ShouldBeTrue();
     }
 
     [Fact]
@@ -849,9 +849,9 @@ public class RuleBuilderTests(RulesFixture fixture) : IClassFixture<RulesFixture
 
         result.IsFailure.ShouldBeTrue();
         result.HasError<FluentValidationError>().ShouldBeTrue();
-        var fluentErrors = result.GetError<FluentValidationError>();
-        fluentErrors.Message.ShouldContain("Must be 18 or older");
-        fluentErrors.Message.ShouldContain("Invalid email");
+        var fluentError = result.GetError<FluentValidationError>();
+        fluentError.Errors.Any(e => e.ErrorMessage.Contains("Must be 18 or older")).ShouldBeTrue();
+        fluentError.Errors.Any(e => e.ErrorMessage.Contains("Invalid email")).ShouldBeTrue();
         result.Errors.Count.ShouldBe(1); // Only the FluentValidation error group
     }
 

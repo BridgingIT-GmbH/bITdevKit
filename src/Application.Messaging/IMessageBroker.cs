@@ -22,8 +22,8 @@ public interface IMessageBroker
     /// <summary>
     ///     Subscribes for the message with a specific message handler.
     /// </summary>
-    /// <typeparam name="messageType">The type of the message.</typeparam>
-    /// <typeparam name="handlerType">The type of the message handler.</typeparam>
+    /// <param name="messageType">The type of the message.</param>
+    /// <param name="handlerType">The type of the message handler.</param>
     Task Subscribe(Type messageType, Type handlerType);
 
     /// <summary>
@@ -38,8 +38,8 @@ public interface IMessageBroker
     /// <summary>
     ///     Unsubscribes message and its message handler.
     /// </summary>
-    /// <typeparam name="messageType">The type of the message.</typeparam>
-    /// <typeparam name="handlerType">The type of the message handler.</typeparam>
+    /// <param name="messageType">The type of the message.</param>
+    /// <param name="handlerType">The type of the message handler.</param>
     Task Unsubscribe(Type messageType, Type handlerType);
 
     /// <summary>

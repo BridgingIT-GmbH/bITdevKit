@@ -45,15 +45,10 @@ public class DatabaseCreatorService<TContext> : IHostedService
         {
             this.logger.LogInformation("{LogKey} database creator skipped, not enabled (context={DbContextType})", Constants.LogKey, contextName);
 
-            if (this.databaseReadyService == null)
-            {
-                return;
-            }
-
             using var scope = this.serviceProvider.CreateScope();
             if (await this.CheckDatabaseAccessible(contextName, scope.ServiceProvider.GetRequiredService<TContext>(), cancellationToken).AnyContext())
             {
-                this.databaseReadyService.SetReady(contextName);
+                this.databaseReadyService?.SetReady(contextName);
             }
 
             return;
@@ -66,8 +61,17 @@ public class DatabaseCreatorService<TContext> : IHostedService
                 if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
                     this.logger.LogInformation("{LogKey} database creator startup delayed (context={DbContextType})", Constants.LogKey, contextName);
-
-                    await Task.Delay(this.options.StartupDelay, cancellationToken);
+                    if (!cancellationToken.IsCancellationRequested)
+                    {
+                        try
+                        {
+                            await Task.Delay(this.options.StartupDelay, cancellationToken);
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            // Ignore cancellation during startup delay
+                        }
+                    }
                 }
 
                 try
@@ -100,16 +104,23 @@ public class DatabaseCreatorService<TContext> : IHostedService
                                 await context.Database
                                     .ExecuteSqlRawAsync(SqlStatements.SqlServer.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables), cancellationToken).AnyContext();
                             }
+                            else if (context.Database.ProviderName == "Npgsql.EntityFrameworkCore.PostgreSQL")
+                            {
+                                await context.Database
+                                    .ExecuteSqlRawAsync(SqlStatements.PostgreSQL.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables), cancellationToken).AnyContext();
+                            }
                             else if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.Sqlite")
                             {
                                 await context.Database
-                                    .ExecuteSqlRawAsync(SqlStatements.Sqlite.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables),
-                                        cancellationToken).AnyContext();
+                                    .ExecuteSqlRawAsync(SqlStatements.Sqlite.TruncateAllTables(this.options.EnsureTruncatedIgnoreTables), cancellationToken).AnyContext();
+                            }
+                            else if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.InMemory")
+                            {
+                                // In-memory database does not require truncation
                             }
                             else
                             {
-                                throw new ArgumentException(
-                                    $"Database provider '{context.Database.ProviderName}' does not supported truncating tables.");
+                                throw new ArgumentException($"Database provider '{context.Database.ProviderName}' does not supported truncating tables.");
                             }
                         }
 
@@ -128,14 +139,22 @@ public class DatabaseCreatorService<TContext> : IHostedService
                             await databaseCreator?.CreateTablesAsync(cancellationToken);
                         }
 
-                        this.databaseReadyService.SetReady(contextName); // assume database is ready if we reach this point
+                        this.databaseReadyService?.SetReady(contextName); // assume database is ready if we reach this point
                         this.logger.LogInformation("{LogKey} database creator finished (context={DbContextType}, dbexists({DbExists}), provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, exists, context.Database.ProviderName);
                     }
                 }
                 catch (Exception ex)
                 {
-                    this.databaseReadyService.SetFaulted(contextName, ex.Message);
+                    this.databaseReadyService?.SetFaulted(contextName, ex.Message);
                     this.logger.LogError(ex, "{LogKey} database creator failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, contextName);
+
+                    if (this.options.HaltOnFailure)
+                    {
+                        var failFastMessage = $"{Constants.LogKey} database creator: app terminated (context={contextName}, error={ex.Message})";
+                        this.logger.LogCritical(ex, "{FailFastMessage}", failFastMessage);
+                        Console.Error.WriteLine(failFastMessage);
+                        Environment.FailFast(failFastMessage, ex);
+                    }
                 }
             }, cancellationToken);
         });

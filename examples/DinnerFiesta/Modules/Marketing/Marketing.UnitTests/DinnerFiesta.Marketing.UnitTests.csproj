@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <ModuleName>Marketing</ModuleName>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Examples.DinnerFiesta.Modules.$(ModuleName).UnitTests</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Examples.DinnerFiesta.Modules.$(ModuleName).UnitTests</RootNamespace>
     <IsPackable>false</IsPackable>

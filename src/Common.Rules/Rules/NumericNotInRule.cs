@@ -10,10 +10,12 @@ namespace BridgingIT.DevKit.Common;
 /// contained within a specified set of disallowed values.
 /// </summary>
 /// <typeparam name="T">The type of the value being validated, which must implement IComparable<T
-public class NumericNotInRule<T>(T value, IEnumerable<T> disallowedValues)
+public class NumericNotInRule<T>(T value, IEnumerable<T> disallowedValues, string message = null)
     : RuleBase
     where T : IComparable<T>
 {
+    private readonly string message = message ?? $"Value must not be one of: {string.Join(", ", disallowedValues)}";
+
     /// <summary>
     /// Gets the message associated with the rule indicating the reason why the rule was not satisfied.
     /// </summary>
@@ -21,8 +23,7 @@ public class NumericNotInRule<T>(T value, IEnumerable<T> disallowedValues)
     /// This property provides the specific message that describes the constraint or validation error.
     /// Override this property in derived classes to provide a meaningful message for the rule.
     /// </remarks>
-    public override string Message =>
-        $"Value must not be one of: {string.Join(", ", disallowedValues)}";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes a validation rule.

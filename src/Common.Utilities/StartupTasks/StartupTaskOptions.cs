@@ -11,6 +11,14 @@ namespace BridgingIT.DevKit.Common;
 public class StartupTaskOptions : OptionsBase
 {
     /// <summary>
+    ///     Gets or sets a value indicating whether the application process should be terminated immediately when this startup task fails.
+    /// </summary>
+    /// <remarks>
+    ///     When enabled, a failure triggers <see cref="Environment.FailFast(string, Exception)" /> after logging.
+    /// </remarks>
+    public bool HaltOnFailure { get; set; }
+
+    /// <summary>
     ///     Gets or sets a value indicating whether the startup task is enabled.
     /// </summary>
     /// <value>

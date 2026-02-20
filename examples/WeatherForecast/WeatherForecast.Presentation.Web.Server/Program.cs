@@ -48,8 +48,6 @@ builder.Host.ConfigureAppConfiguration();
 // Configure the modules
 builder.Services.AddModules(builder.Configuration, builder.Environment)
     .WithModule<CoreModule>()
-    .WithModuleContextAccessors()
-    .WithRequestModuleContextAccessors()
     .WithModuleControllers(c =>
         c.AddJsonOptions(ConfigureJsonOptions)); // alternative: WithModuleFeatureProvider(c => ...)
 
@@ -271,10 +269,10 @@ app.UseAuthorization();
 
 app.UseCurrentUserLogging();
 
-if (builder.Configuration["Metrics:Prometheus:Enabled"].To<bool>())
-{
-    app.UseOpenTelemetryPrometheusScrapingEndpoint();
-}
+//if (builder.Configuration["Metrics:Prometheus:Enabled"].To<bool>())
+//{
+//    app.UseOpenTelemetryPrometheusScrapingEndpoint();
+//}
 
 app.UseCors();
 app.MapModules();
@@ -318,11 +316,11 @@ void ConfigureMetrics(MeterProviderBuilder provider)
             "System.Net.Http",
             "BridgingIT.DevKit");
 
-    if (builder.Configuration["Metrics:Prometheus:Enabled"].To<bool>())
-    {
-        Log.Logger.Information("{LogKey} prometheus exporter enabled (endpoint={MetricsEndpoint})", "MET", "/metrics");
-        provider.AddPrometheusExporter();
-    }
+    //if (builder.Configuration["Metrics:Prometheus:Enabled"].To<bool>())
+    //{
+    //    Log.Logger.Information("{LogKey} prometheus exporter enabled (endpoint={MetricsEndpoint})", "MET", "/metrics");
+    //    provider.AddPrometheusExporter();
+    //}
 }
 
 void ConfigureTracing(TracerProviderBuilder provider)
@@ -369,23 +367,23 @@ void ConfigureTracing(TracerProviderBuilder provider)
         })
         .AddSqlClientInstrumentation(options =>
         {
-            options.EnableConnectionLevelAttributes = true;
+            //options.EnableConnectionLevelAttributes = true;
             options.RecordException = true;
-            options.SetDbStatementForText = true;
+            //options.SetDbStatementForText = true;
         });
 
-    if (builder.Configuration["Tracing:Jaeger:Enabled"].To<bool>())
-    {
-        Log.Logger.Information("{LogKey} jaeger exporter enabled (host={JaegerHost})",
-            "TRC",
-            builder.Configuration["Tracing:Jaeger:AgentHost"]);
-        provider.AddJaegerExporter(opts =>
-        {
-            opts.AgentHost = builder.Configuration["Tracing:Jaeger:AgentHost"];
-            opts.AgentPort = Convert.ToInt32(builder.Configuration["Tracing:Jaeger:AgentPort"]);
-            opts.ExportProcessorType = ExportProcessorType.Simple;
-        });
-    }
+    //if (builder.Configuration["Tracing:Jaeger:Enabled"].To<bool>())
+    //{
+    //    Log.Logger.Information("{LogKey} jaeger exporter enabled (host={JaegerHost})",
+    //        "TRC",
+    //        builder.Configuration["Tracing:Jaeger:AgentHost"]);
+    //    provider.AddJaegerExporter(opts =>
+    //    {
+    //        opts.AgentHost = builder.Configuration["Tracing:Jaeger:AgentHost"];
+    //        opts.AgentPort = Convert.ToInt32(builder.Configuration["Tracing:Jaeger:AgentPort"]);
+    //        opts.ExportProcessorType = ExportProcessorType.Simple;
+    //    });
+    //}
 
     if (builder.Configuration["Tracing:Console:Enabled"].To<bool>())
     {

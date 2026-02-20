@@ -6,16 +6,25 @@
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain;
 
 using BridgingIT.DevKit.Common.Converters;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.Text.Json;
 
 [UnitTest("Domain")]
 public class DomainEventTests
 {
     private readonly JsonSerializerOptions options;
+    private readonly IServiceProvider serviceProvider;
 
     public DomainEventTests()
     {
         this.options = DefaultJsonSerializerOptions.Create(new DictionaryConverter());
+
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddNotifier()
+            .AddHandlers();
+        this.serviceProvider = services.BuildServiceProvider();
     }
 
     [Fact]
@@ -179,6 +188,54 @@ public class DomainEventTests
         deserializedEvent.Properties.ShouldNotBeNull();
     }
 
+    /// <summary>
+    /// Tests that PublishAsync successfully processes a notification and returns a result.
+    /// </summary>
+    [Fact]
+    public async Task PublishAsync_SuccessfullDomainevent_ReturnsSuccessResult()
+    {
+        // Arrange
+        var notifier = this.serviceProvider.GetService<INotifier>();
+        var originalValue = Guid.NewGuid();
+        var originalEvent = new StubDomainEvent(originalValue);
+
+        // Act
+        var result = await notifier.PublishAsync(originalEvent);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        StubDomainEventEventHandler.Handled.ShouldBeTrue();
+        StubDomainEventEventHandler.Value.ShouldBe(originalValue);
+    }
+
+    /// <summary>
+    /// Tests that PublishAsync successfully processes a notification and returns a result.
+    /// </summary>
+    [Fact]
+    public async Task PublishAsync_SuccessfullEntityDomainEvent_ReturnsSuccessResult()
+    {
+        // Arrange
+        var notifier = this.serviceProvider.GetService<INotifier>();
+        var entity = new PersonStub()
+        {
+            Id = Guid.NewGuid(),
+            FirstName = "John",
+            LastName = "Doe",
+            Age = 30,
+            BirthDate = new DateTime(1994, 1, 1),
+            Email = "john.doe@example.com"
+        };
+        var originalEvent = new EntityCreatedDomainEvent<PersonStub>(entity);
+
+        // Act
+        var result = await notifier.PublishAsync(originalEvent);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        PersonStubCreatedEventHandler.Handled.ShouldBeTrue();
+        PersonStubCreatedEventHandler.Value.ShouldBe(entity.Id);
+    }
+
     //[Fact]
     //public void SerializeAndDeserialize_InvalidJson_ThrowsJsonException()
     //{
@@ -195,4 +252,46 @@ public partial class StubDomainEvent(Guid value) : DomainEventBase
     // source code generator adds private ctor needed for deserialization
 
     public Guid Value { get; private set; } = value;
+}
+
+public class StubDomainEventEventHandler(ILoggerFactory loggerFactory) : DomainEventHandlerBase<StubDomainEvent>(loggerFactory)
+{
+    public static Guid Value { get; internal set; }
+
+    public static bool Handled { get; internal set; }
+
+    public override bool CanHandle(StubDomainEvent notification)
+    {
+        return true;
+    }
+
+    public override async Task Process(StubDomainEvent notification, CancellationToken cancellationToken)
+    {
+        await Task.Run(() =>
+        {
+            Handled = true;
+            Value = notification.Value;
+        }, cancellationToken);
+    }
+}
+
+public class PersonStubCreatedEventHandler(ILoggerFactory loggerFactory) : DomainEventHandlerBase<EntityCreatedDomainEvent<PersonStub>>(loggerFactory)
+{
+    public static Guid Value { get; internal set; }
+
+    public static bool Handled { get; internal set; }
+
+    public override bool CanHandle(EntityCreatedDomainEvent<PersonStub> notification)
+    {
+        return true;
+    }
+
+    public override async Task Process(EntityCreatedDomainEvent<PersonStub> notification, CancellationToken cancellationToken)
+    {
+        await Task.Run(() =>
+        {
+            Handled = true;
+            Value = notification.Entity.Id;
+        }, cancellationToken);
+    }
 }

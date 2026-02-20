@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Domain.IntegrationTests</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Domain.IntegrationTests</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -41,10 +41,6 @@
     <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
     <ProjectReference Include="..\..\src\Domain.Mediator\Domain.Mediator.csproj" />
     <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ActiveRecord\" />
   </ItemGroup>
 
 </Project>

@@ -186,6 +186,45 @@ public static class ResultTExtensions
     }
 
     /// <summary>
+    /// Applies a synchronous transformation function on a successful <see cref="Result{T}"/>.
+    /// </summary>
+    /// <typeparam name="T">The type of the value inside the <see cref="Result{T}"/>.</typeparam>
+    /// <param name="result">The input <see cref="Result{T}"/> instance.</param>
+    /// <param name="binder">A pure function that transforms the success value.</param>
+    /// <returns>
+    /// A new successful <see cref="Result{T}"/> containing the transformed value,
+    /// or the original failure result if <paramref name="result"/> is a failure.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// var result = Result&lt;string&gt;.Success("bravo")
+    ///     .Bind(v => v.ToUpper());
+    ///
+    /// // Result.Value = "BRAVO"
+    /// </code>
+    /// </example>
+    public static Result<T> Bind<T>(this Result<T> result, Func<T, T> binder)
+    {
+        if (result.IsFailure)
+        {
+            return result;
+        }
+
+        try
+        {
+            var newValue = binder(result.Value);
+            return Result<T>.Success(newValue)
+                .WithMessages(result.Messages)
+                .WithErrors(result.Errors);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
     ///     Asynchronously binds a successful Result{T} to another Result{TNew}.
     /// </summary>
     /// <typeparam name="T">The type of the source result value.</typeparam>
@@ -236,6 +275,79 @@ public static class ResultTExtensions
                 .WithError(Result.Settings.ExceptionErrorFactory(ex))
                 .WithMessages(result.Messages);
         }
+    }
+
+    /// <summary>
+    /// Binds a synchronous operation that returns a <see cref="Result{TInner}"/> to a
+    /// parent <see cref="Result{T}"/>, merging both contexts. If either result fails,
+    /// the failure is propagated automatically.
+    /// </summary>
+    /// <typeparam name="T">Outer context type.</typeparam>
+    /// <typeparam name="TInner">Inner success value type.</typeparam>
+    /// <param name="result">The outer <see cref="Result{T}"/> to bind from.</param>
+    /// <param name="binder">
+    /// A synchronous function returning another <see cref="Result{TInner}"/>.
+    /// </param>
+    /// <param name="merge">
+    /// A function that merges <paramref name="result"/> and the inner success value.
+    /// </param>
+    /// <returns>
+    /// A combined <see cref="Result{T}"/>; propagates any inner or outer failures.
+    /// </returns>
+    /// <example>
+    /// <code>
+    /// var result = Result&lt;OrderContext&gt;.Success(ctx)
+    ///     .BindResult(
+    ///         ctx => inventory.CheckStock(ctx.ProductId),
+    ///         (ctx, stock) => ctx.WithStock(stock));
+    /// </code>
+    /// </example>
+    public static Result<T> BindResult<T, TInner>(
+        this Result<T> result,
+        Func<T, Result<TInner>> binder,
+        Func<T, TInner, T> merge)
+    {
+        if (result.IsFailure)
+            return result;
+
+        try
+        {
+            var inner = binder(result.Value);
+            if (inner.IsFailure)
+                return inner.Wrap<T>();
+
+            var combined = merge(result.Value, inner.Value);
+            return Result<T>.Success(combined)
+                .WithMessages(result.Messages)
+                .WithErrors(result.Errors);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex));
+        }
+    }
+
+    /// <summary>
+    /// Awaits a <see cref="Task{Result}"/> and binds a synchronous operation returning
+    /// another <see cref="Result{TInner}"/>, propagating any failures.
+    /// </summary>
+    /// <typeparam name="T">Outer context type.</typeparam>
+    /// <typeparam name="TInner">Inner success value type.</typeparam>
+    /// <param name="task">Asynchronous source task returning a <see cref="Result{T}"/>.</param>
+    /// <param name="binder">Synchronous operation returning a <see cref="Result{TInner}"/>.</param>
+    /// <param name="merge">Merge function combining outer and inner values.</param>
+    /// <returns>
+    /// A new <see cref="Task{TResult}"/> returning the combined <see cref="Result{T}"/>.
+    /// </returns>
+    public static async Task<Result<T>> BindResultAsync<T, TInner>(
+        this Task<Result<T>> task,
+        Func<T, Result<TInner>> binder,
+        Func<T, TInner, T> merge)
+    {
+        var result = await task.AnyContext();
+
+        return result.BindResult(binder, merge);
     }
 
     /// <summary>
@@ -334,6 +446,203 @@ public static class ResultTExtensions
                     .WithErrors(result.Errors)
                     .WithError(error ?? new Error("Predicate condition not met"))
                     .WithMessages(result.Messages);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
+                .WithError(new OperationCancelledError())
+                .WithMessages(result.Messages);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
+
+    /// <summary>
+    ///     Conditionally executes a chain of operations on the result based on an external condition.
+    ///     If the condition is false, the original result is returned unchanged.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to operate on.</param>
+    /// <param name="condition">The condition that determines whether to execute the operations.</param>
+    /// <param name="operation">A function that receives the result and returns a transformed result through chained operations.</param>
+    /// <returns>The transformed result if condition is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result{User}.Success(user)
+    ///     .When(isAdmin, r => r
+    ///         .Ensure(u => u.IsActive, new Error("Admin must be active"))
+    ///         .Bind(u => EnrichAdminData(u))
+    ///         .Tap(u => LogAdminAccess(u))
+    ///     )
+    ///     .When(requiresValidation, r => r
+    ///         .Ensure(u => u.Email != null, new Error("Email required"))
+    ///     );
+    /// </code>
+    /// </example>
+    public static Result<T> When<T>(
+        this Result<T> result,
+        bool condition,
+        Func<Result<T>, Result<T>> operation)
+    {
+        if (!condition || !result.IsSuccess || operation is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            return operation(result);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
+
+    /// <summary>
+    ///     Conditionally executes a chain of operations on the result based on a predicate evaluated against the value.
+    ///     If the predicate returns false, the original result is returned unchanged.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to operate on.</param>
+    /// <param name="predicate">A function that evaluates the value to determine whether to execute the operations.</param>
+    /// <param name="operation">A function that receives the result and returns a transformed result through chained operations.</param>
+    /// <returns>The transformed result if predicate is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = Result{Order}.Success(order)
+    ///     .When(o => o.Total > 1000, r => r
+    ///         .Bind(o => ApplyVipDiscount(o))
+    ///         .Tap(o => NotifyAccountManager(o))
+    ///     )
+    ///     .When(o => o.IsInternational, r => r
+    ///         .Bind(o => ApplyInternationalRules(o))
+    ///         .Ensure(o => o.CustomsInfo != null, new Error("Customs info required"))
+    ///     );
+    /// </code>
+    /// </example>
+    public static Result<T> When<T>(
+        this Result<T> result,
+        Func<T, bool> predicate,
+        Func<Result<T>, Result<T>> operation)
+    {
+        if (!result.IsSuccess || predicate is null || operation is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            return predicate(result.Value)
+                ? operation(result)
+                : result;
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
+
+    /// <summary>
+    ///     Asynchronously and conditionally executes a chain of operations on the result based on an external condition.
+    ///     If the condition is false, the original result is returned unchanged.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to operate on.</param>
+    /// <param name="condition">The condition that determines whether to execute the operations.</param>
+    /// <param name="operation">An async function that receives the result and returns a transformed result through chained operations.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The transformed result if condition is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Result{User}.Success(user)
+    ///     .WhenAsync(isAdmin, async (r, ct) => await r
+    ///         .EnsureAsync(async (u, ct) => await IsActiveAsync(u, ct), new Error("Must be active"), ct)
+    ///         .BindAsync(async (u, ct) => await EnrichAdminDataAsync(u, ct), ct)
+    ///     , cancellationToken);
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> WhenAsync<T>(
+        this Result<T> result,
+        bool condition,
+        Func<Result<T>, CancellationToken, Task<Result<T>>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (!condition || !result.IsSuccess || operation is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            return await operation(result, cancellationToken);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
+                .WithError(new OperationCancelledError())
+                .WithMessages(result.Messages);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure(result.Value)
+                .WithErrors(result.Errors)
+                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithMessages(result.Messages);
+        }
+    }
+
+    /// <summary>
+    ///     Asynchronously and conditionally executes a chain of operations on the result based on a predicate evaluated against the value.
+    ///     If the predicate returns false, the original result is returned unchanged.
+    /// </summary>
+    /// <typeparam name="T">The type of the result value.</typeparam>
+    /// <param name="result">The result to operate on.</param>
+    /// <param name="predicate">A function that evaluates the value to determine whether to execute the operations.</param>
+    /// <param name="operation">An async function that receives the result and returns a transformed result through chained operations.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>The transformed result if predicate is true and result is successful; otherwise, the original result.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await Result{Order}.Success(order)
+    ///     .WhenAsync(
+    ///         o => o.Total > 1000,
+    ///         async (r, ct) => await r
+    ///             .BindAsync(async (o, ct) => await ApplyVipDiscountAsync(o, ct), ct)
+    ///             .TapAsync(async (o, ct) => await NotifyAccountManagerAsync(o, ct), ct),
+    ///         cancellationToken
+    ///     );
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> WhenAsync<T>(
+        this Result<T> result,
+        Func<T, bool> predicate,
+        Func<Result<T>, CancellationToken, Task<Result<T>>> operation,
+        CancellationToken cancellationToken = default)
+    {
+        if (!result.IsSuccess || predicate is null || operation is null)
+        {
+            return result;
+        }
+
+        try
+        {
+            return predicate(result.Value)
+                ? await operation(result, cancellationToken)
+                : result;
         }
         catch (OperationCanceledException)
         {
@@ -520,7 +829,9 @@ public static class ResultTExtensions
         params object[] args)
     {
         if (logger is null)
+        {
             return result;
+        }
 
         try
         {
@@ -661,7 +972,9 @@ public static class ResultTExtensions
         LogLevel failureLevel)
     {
         if (logger is null)
+        {
             return result;
+        }
 
         try
         {
@@ -2375,5 +2688,191 @@ public static class ResultTExtensions
         ArgumentNullException.ThrowIfNull(operation);
 
         return new ResultOperationScope<T, TOperation>(result, ct => Task.FromResult(operation));
+    }
+
+    /// <summary>
+    ///     Flattens a collection of Results into a single Result, combining all errors and messages.
+    ///     Returns success with the last successful value only if ALL results succeed.
+    ///     Returns failure with the first failed value if ANY result fails.
+    /// </summary>
+    /// <typeparam name="T">The type of the value.</typeparam>
+    /// <param name="results">The collection of Results to flatten.</param>
+    /// <param name="options">Options for handling failure scenarios.</param>
+    /// <returns>A single Result with accumulated errors/messages, successful only if all results succeed.</returns>
+    /// <example>
+    /// <code>
+    /// // Combine multiple validation results
+    /// var result = new[] 
+    /// { 
+    ///     ValidateName(user), 
+    ///     ValidateEmail(user), 
+    ///     ValidateAge(user) 
+    /// }.Flatten();
+    /// // Result is successful only if all validations pass
+    /// </code>
+    /// </example>
+    public static Result<T> Flatten<T>(
+        this IEnumerable<Result<T>> results,
+        ProcessingOptions options = null)
+    {
+        if (results is null)
+        {
+            return Result<T>.Failure()
+                .WithError(new Error("Results collection cannot be null"));
+        }
+
+        try
+        {
+            options ??= ProcessingOptions.Default;
+            var errors = new List<IResultError>();
+            var messages = new List<string>();
+            var lastSuccessResult = default(Result<T>);
+            var firstFailedResult = default(Result<T>);
+            var hasSuccess = false;
+            var hasFailure = false;
+
+            foreach (var result in results)
+            {
+                if (result.IsSuccess)
+                {
+                    lastSuccessResult = result;
+                    hasSuccess = true;
+                }
+                else
+                {
+                    if (!hasFailure)
+                    {
+                        firstFailedResult = result;
+                        hasFailure = true;
+                    }
+                }
+
+                errors.AddRange(result.Errors);
+                messages.AddRange(result.Messages);
+            }
+
+            if (hasFailure)
+            {
+                return Result<T>.Failure(firstFailedResult.Value)
+                    .WithErrors(errors)
+                    .WithMessages(messages);
+            }
+
+            if (hasSuccess)
+            {
+                return Result<T>.Success(lastSuccessResult.Value)
+                    .WithErrors(errors)
+                    .WithMessages(messages);
+            }
+
+            return Result<T>.Failure()
+                .WithErrors(errors)
+                .WithError(new Error("No results provided"))
+                .WithMessages(messages);
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
+    }
+
+    /// <summary>
+    ///     Flattens a collection of Result tasks into a single Result, combining all errors and messages.
+    ///     Returns success with the last successful value only if ALL results succeed.
+    ///     Returns failure with the first failed value if ANY result fails.
+    /// </summary>
+    /// <typeparam name="T">The type of the value.</typeparam>
+    /// <param name="resultTasks">The collection of Result tasks to flatten.</param>
+    /// <param name="options">Options for handling failure scenarios.</param>
+    /// <param name="cancellationToken">Token to cancel the operation.</param>
+    /// <returns>A single Result with accumulated errors/messages, successful only if all results succeed.</returns>
+    /// <example>
+    /// <code>
+    /// // Combine multiple async validation results
+    /// var result = await new[] 
+    /// { 
+    ///     ValidateNameAsync(user), 
+    ///     ValidateEmailAsync(user), 
+    ///     ValidateAgeAsync(user) 
+    /// }.FlattenAsync(cancellationToken: cancellationToken);
+    /// // Result is successful only if all validations pass
+    /// </code>
+    /// </example>
+    public static async Task<Result<T>> FlattenAsync<T>(
+       this IEnumerable<Task<Result<T>>> resultTasks,
+       ProcessingOptions options = null,
+       CancellationToken cancellationToken = default)
+    {
+        if (resultTasks is null)
+        {
+            return Result<T>.Failure()
+                .WithError(new Error("Result tasks collection cannot be null"));
+        }
+
+        try
+        {
+            options ??= ProcessingOptions.Default;
+            var errors = new List<IResultError>();
+            var messages = new List<string>();
+            var lastSuccessResult = default(Result<T>);
+            var firstFailedResult = default(Result<T>);
+            var hasSuccess = false;
+            var hasFailure = false;
+
+            foreach (var task in resultTasks)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                var result = await task;
+
+                if (result.IsSuccess)
+                {
+                    lastSuccessResult = result;
+                    hasSuccess = true;
+                }
+                else
+                {
+                    if (!hasFailure)
+                    {
+                        firstFailedResult = result;
+                        hasFailure = true;
+                    }
+                }
+
+                errors.AddRange(result.Errors);
+                messages.AddRange(result.Messages);
+            }
+
+            if (hasFailure)
+            {
+                return Result<T>.Failure(firstFailedResult.Value)
+                    .WithErrors(errors)
+                    .WithMessages(messages);
+            }
+
+            if (hasSuccess)
+            {
+                return Result<T>.Success(lastSuccessResult.Value)
+                    .WithErrors(errors)
+                    .WithMessages(messages);
+            }
+
+            return Result<T>.Failure()
+                .WithErrors(errors)
+                .WithError(new Error("No results provided"))
+                .WithMessages(messages);
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<T>.Failure()
+                .WithError(new OperationCancelledError());
+        }
+        catch (Exception ex)
+        {
+            return Result<T>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage(ex.Message);
+        }
     }
 }

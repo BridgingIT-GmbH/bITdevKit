@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Infrastructure.Azure.Cosmos</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Infrastructure.Azure</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -15,7 +15,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application.Storage\Application.Storage.csproj"/>
-    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj"/>
     <ProjectReference Include="..\Common.Options\Common.Options.csproj"/>
     <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj"/>
     <ProjectReference Include="..\Domain\Domain.csproj"/>

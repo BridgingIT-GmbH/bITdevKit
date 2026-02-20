@@ -4,6 +4,9 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Common;
+
+using static System.Runtime.InteropServices.JavaScript.JSType;
+
 /// <summary>
 /// Represents a paged result containing a collection of values with pagination details.
 /// Implements value semantics and immutable behavior for thread-safety.
@@ -564,6 +567,18 @@ public readonly partial struct ResultPaged<T> : IResultPaged<T>
             this.pageSize,
             this.messages,
             this.errors.Add(error));
+    }
+
+    public ResultPaged<T> WithError(string errorMessage)
+    {
+        return new ResultPaged<T>(
+            this.value,
+            false, // Set success to false when adding error
+            this.totalCount,
+            this.currentPage,
+            this.pageSize,
+            this.messages,
+            this.errors.Add(new Error(errorMessage)));
     }
 
     /// <summary>

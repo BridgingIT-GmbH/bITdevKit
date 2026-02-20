@@ -9,15 +9,16 @@ namespace BridgingIT.DevKit.Common;
 /// Represents a validation rule that checks if a numeric value is within a set of allowed values.
 /// </summary>
 /// <typeparam name="T">The type of the value being validated. Must implement IComparable&lt;T&gt;.</typeparam>
-public class NumericInRule<T>(T value, IEnumerable<T> allowedValues)
+public class NumericInRule<T>(T value, IEnumerable<T> allowedValues, string message = null)
     : RuleBase
     where T : IComparable<T>
 {
+    private readonly string message = message ?? $"Value must be one of: {string.Join(", ", allowedValues)}";
+
     /// <summary>
     /// Represents the validation message returned by a rule when it is not satisfied.
     /// </summary>
-    public override string Message =>
-        $"Value must be one of: {string.Join(", ", allowedValues)}";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes the rule to produce a result.

@@ -1093,7 +1093,9 @@ public class FileSystemScope : IOperationScope
 
 #### 2. Saga/Workflow Orchestration
 
-**Scenario**: Execute multi-step workflow with compensation logic for rollback. An example implementation can be found [here](/tests/Common.UnitTests/Results/ResultOperationSagaScopeTests.cs)
+The [Saga design pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/saga) helps maintain data consistency in distributed systems by coordinating transactions across multiple services. A saga is a sequence of local transactions where each service performs its operation and initiates the next step through events or messages. If a step in the sequence fails, the saga performs compensating transactions to undo the completed steps. This approach helps maintain data consistency.
+
+**Scenario**: Execute multi-step workflow with compensation logic for rollback. An example can be found [here](/tests/Common.UnitTests/Results/ResultOperationSagaScopeTests.cs)
 
 ```csharp
 // Usage: Book trip (flight + hotel + car) with compensations
@@ -1415,6 +1417,38 @@ await result.AndThenAsync(async (user, ct) => await ValidateUserAsync(user));
 ### Control Flow
 
 > Conditional logic and alternative paths.
+
+- **When**: Conditionally execute a Result chain based on a condition or predicate
+
+```csharp
+// Execute operations only when external condition is true
+await result.When(
+    user.IsActive,
+    r => r
+        .Ensure(u => u.Age >= 18, new Error("Must be adult"))
+        .Map(u => u.Email));
+
+// Execute operations only when predicate matches the value
+await result.When(
+    user => user.Role == "Admin",
+    r => r
+        .Tap(u => Console.WriteLine("Admin user detected"))
+        .Bind(ValidateAdminPermissions));
+
+// Async version with cancellation support
+await result.WhenAsync(
+    true,
+    async (r, ct) => await r
+        .EnsureAsync(async (u, ct) => await HasPermissionAsync(u), new Error("No permission"), ct)
+        .MapAsync(async (u, ct) => await LoadUserDetailsAsync(u), ct),
+    cancellationToken);
+
+// Multiple When blocks for different conditions
+var finalResult = result
+    .When(user => user.IsActive, r => r.Map(u => u.WithStatus("active")))
+    .When(user => user.IsPremium, r => r.Map(u => u.WithBadge("premium")))
+    .When(user => user.IsVerified, r => r.Map(u => u.WithBadge("verified")));
+```
 
 - **Filter**: Convert to failure if predicate fails
 

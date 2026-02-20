@@ -24,4 +24,3 @@ public class ClearConsoleCommand : ConsoleCommandBase
         return Task.CompletedTask;
     }
 }
-// === end diagnostic additions ===

@@ -97,6 +97,7 @@ public abstract partial class MessageBrokerBase : IMessageBroker
         foreach (var (messageType, handler) in subscriptions)
         {
             TypedLogger.LogUnsubscribe(this.Logger, Constants.LogKey, messageType, handler.Name);
+
             this.Subscriptions.Remove(messageType, handler);
             await this.OnUnsubscribe(messageType, handler);
         }
@@ -109,10 +110,7 @@ public abstract partial class MessageBrokerBase : IMessageBroker
         var messageType = message.GetType().PrettyName(false);
 
         TypedLogger.LogPublish(this.Logger, Constants.LogKey, messageType, message.MessageId);
-        this.Logger.LogDebug("{LogKey} publish validating (type={MessageType}, id={MessageId})",
-            Constants.LogKey,
-            messageType,
-            message.MessageId);
+        this.Logger.LogDebug("{LogKey} publish validating (type={MessageType}, id={MessageId})", Constants.LogKey, messageType, message.MessageId);
         this.ValidatePublish(message); // TODO: message validation can also be done with a PublisherBehavior
 
         // create a behavior pipeline and run it (publisher > next)
@@ -158,49 +156,32 @@ public abstract partial class MessageBrokerBase : IMessageBroker
                 foreach (var subscription in this.Subscriptions.GetAll()
                              .Where(s => s.Key.Equals(messageType, StringComparison.OrdinalIgnoreCase)))
                 {
-                    this.Logger.LogDebug("{LogKey} subscription: {MessageType} -> {MessageHandlers} ",
-                        Constants.LogKey,
-                        subscription.Key,
-                        subscription.Value.Select(s => s.HandlerType.FullName).ToString(", "));
+                    this.Logger.LogDebug("{LogKey} subscription: {MessageType} -> {MessageHandlers} ", Constants.LogKey, subscription.Key, subscription.Value.Select(s => s.HandlerType.FullName).ToString(", "));
                 }
 
                 foreach (var subscription in this.Subscriptions.GetAll(messageType))
                 {
                     try
                     {
-                        this.Logger.LogDebug("{LogKey} handler: {MessageType} ",
-                            Constants.LogKey,
-                            subscription.HandlerType?.FullName);
+                        this.Logger.LogDebug("{LogKey} handler: {MessageType} ", Constants.LogKey, subscription.HandlerType?.FullName);
 
                         if (subscription.MessageType is null)
                         {
                             continue;
                         }
 
-                        TypedLogger.LogProcessing(this.Logger,
-                            Constants.LogKey,
-                            messageType,
-                            subscription.HandlerType.FullName,
-                            messageRequest.Message.MessageId,
-                            this.GetType().Name);
+                        TypedLogger.LogProcessing(this.Logger, Constants.LogKey, messageType, subscription.HandlerType.FullName, messageRequest.Message.MessageId, this.GetType().Name);
                         var watch = ValueStopwatch.StartNew();
 
                         // construct the handler instance by using the DI container
-                        var handlerInstance =
-                            this.HandlerFactory.Create(subscription.HandlerType); // should not be null, did you forget to register your generic handler (EntityMessageHandler<T>)
+                        var handlerInstance = this.HandlerFactory.Create(subscription.HandlerType); // should not be null, did you forget to register your generic handler (EntityMessageHandler<T>)
                         var handlerType = typeof(IMessageHandler<>).MakeGenericType(subscription.MessageType);
-                        var handlerMethod =
-                            handlerType.GetMethod(
-                                "Handle"); // TODO: can .NET 8 new reflection improve this? https://steven-giesel.com/blogPost/05ecdd16-8dc4-490f-b1cf-780c994346a4
+                        var handlerMethod = handlerType.GetMethod("Handle"); // TODO: can .NET 8 new reflection improve this? https://steven-giesel.com/blogPost/05ecdd16-8dc4-490f-b1cf-780c994346a4
                         //this.Logger.LogDebug("{LogKey} types {MessageType} > {handler} (type={MessageType}, handler={MessageHandler}, id={MessageId}, broker={MessageBroker})", Constants.LogKey, subscription.MessageType.FullName, subscription.HandlerType.FullName, messageName, subscription.HandlerType.Name, messageRequest.Message.Id, this.GetType().Name);
 
                         if (messageRequest.CancellationToken.IsCancellationRequested)
                         {
-                            this.Logger.LogWarning("{LogKey} process cancelled (type={MessageType}, id={MessageId}, broker={MessageBroker})",
-                                Constants.LogKey,
-                                messageType,
-                                messageRequest.Message.MessageId,
-                                this.GetType().Name);
+                            this.Logger.LogWarning("{LogKey} process cancelled (type={MessageType}, id={MessageId}, broker={MessageBroker})", Constants.LogKey, messageType, messageRequest.Message.MessageId, this.GetType().Name);
                             //messageRequest.CancellationToken.ThrowIfCancellationRequested();
                             result = false;
 
@@ -214,14 +195,10 @@ public abstract partial class MessageBrokerBase : IMessageBroker
                             try
                             {
                                 // convert consumed message for the handler message type
-                                var message = this.Serializer.Deserialize(
-                                    this.Serializer.SerializeToString(messageRequest.Message),
-                                    subscription.MessageType);
+                                var message = this.Serializer.Deserialize(this.Serializer.SerializeToString(messageRequest.Message), subscription.MessageType);
 
                                 // create a behavior pipeline and run it (handler > next)
-                                this.Logger.LogDebug(
-                                    $"{{LogKey}} handle behaviors: {this.HandlerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {handlerInstance.GetType().Name}:Handle",
-                                    Constants.LogKey);
+                                this.Logger.LogDebug($"{{LogKey}} handle behaviors: {this.HandlerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {handlerInstance.GetType().Name}:Handle", Constants.LogKey);
 
                                 async Task Handler()
                                 {
@@ -247,34 +224,17 @@ public abstract partial class MessageBrokerBase : IMessageBroker
                         }
                         else
                         {
-                            this.Logger.LogError(
-                                "{LogKey} processing error, message handler could not be created. is the handler registered? (type={MessageType}, handler={MessageHandler}, id={MessageId})",
-                                Constants.LogKey,
-                                messageType,
-                                subscription.HandlerType.Name,
-                                messageRequest.Message.MessageId);
+                            this.Logger.LogError("{LogKey} processing error, message handler could not be created. is the handler registered? (type={MessageType}, handler={MessageHandler}, id={MessageId})", Constants.LogKey, messageType, subscription.HandlerType.Name, messageRequest.Message.MessageId);
                             result = false;
 
                             break;
                         }
 
-                        TypedLogger.LogProcessed(this.Logger,
-                            Constants.LogKey,
-                            messageType,
-                            subscription.HandlerType.FullName,
-                            messageRequest.Message.MessageId,
-                            this.GetType().Name,
-                            watch.GetElapsedMilliseconds());
+                        TypedLogger.LogProcessed(this.Logger, Constants.LogKey, messageType, subscription.HandlerType.FullName, messageRequest.Message.MessageId, this.GetType().Name, watch.GetElapsedMilliseconds());
                     }
                     catch (Exception ex)
                     {
-                        this.Logger.LogError(ex,
-                            "{LogKey} processing error (type={MessageType}, handler={MessageHandler}, id={MessageId}): {ErrorMessage}",
-                            Constants.LogKey,
-                            messageType,
-                            subscription.HandlerType.FullName,
-                            messageRequest.Message.MessageId,
-                            ex.Message);
+                        this.Logger.LogError(ex, "{LogKey} processing error (type={MessageType}, handler={MessageHandler}, id={MessageId}): {ErrorMessage}", Constants.LogKey, messageType, subscription.HandlerType.FullName, messageRequest.Message.MessageId, ex.Message);
                         result = false;
 
                         break;
@@ -283,12 +243,7 @@ public abstract partial class MessageBrokerBase : IMessageBroker
             }
             else
             {
-                this.Logger.LogDebug(
-                    "{LogKey} processing skipped, no registration (type={MessageType}, id={MessageId}, broker={MessageBroker})",
-                    Constants.LogKey,
-                    messageType,
-                    messageRequest.Message.MessageId,
-                    this.GetType().Name);
+                this.Logger.LogDebug("{LogKey} processing skipped, no registration (type={MessageType}, id={MessageId}, broker={MessageBroker})", Constants.LogKey, messageType, messageRequest.Message.MessageId, this.GetType().Name);
             }
 
             messageRequest.OnPublishComplete(result);

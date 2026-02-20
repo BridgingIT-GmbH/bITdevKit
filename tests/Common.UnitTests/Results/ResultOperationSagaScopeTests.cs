@@ -324,7 +324,7 @@ public class ResultOperationSagaScopeTests
         var saga = new SagaScope(logger);
         var booking = new TripBooking();
         var flightService = new TestFlightService();
-        var paymentCaptured = false; // Condition: payment not captured
+        const bool paymentCaptured = false; // Condition: payment not captured
 
         var compensationEvents = new List<SagaCompensationEvent>();
         saga.OnCompensationEvent += (evt) =>

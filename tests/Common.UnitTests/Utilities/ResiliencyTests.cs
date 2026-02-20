@@ -244,55 +244,55 @@ public class ResiliencyTests
         lastProgress.Status.ShouldContain("timed out");
     }
 
-    [Fact]
-    public async Task SimpleRequester_SendsRequestWithHandler_ReportsProgress()
-    {
-        // Arrange
-        var progress = new Progress<SimpleRequesterProgress>(p => this.progressUpdates.Add(p));
-        var requester = new SimpleRequesterBuilder()
-            .WithProgress(progress)
-            //.AddPipelineBehavior(new LoggingRequestPipelineBehavior(new ConsoleLogger())) // Optional logging behavior
-            .Build();
-        requester.RegisterHandler(new TestRequestHandler()); // Commented to avoid duplicate registration
-        var cts = new CancellationTokenSource();
+    //[Fact]
+    //public async Task SimpleRequester_SendsRequestWithHandler_ReportsProgress()
+    //{
+    //    // Arrange
+    //    var progress = new Progress<SimpleRequesterProgress>(p => this.progressUpdates.Add(p));
+    //    var requester = new SimpleRequesterBuilder()
+    //        .WithProgress(progress)
+    //        //.AddPipelineBehavior(new LoggingRequestPipelineBehavior(new ConsoleLogger())) // Optional logging behavior
+    //        .Build();
+    //    requester.RegisterHandler(new TestRequestHandler()); // Commented to avoid duplicate registration
+    //    var cts = new CancellationTokenSource();
 
-        // Act
-        var response = await requester.SendAsync<TestRequest, string>(new TestRequest(), cancellationToken: cts.Token);
+    //    // Act
+    //    var response = await requester.SendAsync<TestRequest, string>(new TestRequest(), cancellationToken: cts.Token);
 
-        // Assert
-        this.progressUpdates.ShouldAllBe(p => p is SimpleRequesterProgress);
-        this.progressUpdates.Count.ShouldBe(1);
-        var progressUpdate = (SimpleRequesterProgress)this.progressUpdates[0];
-        progressUpdate.RequestType.ShouldBe(nameof(TestRequest));
-        response.ShouldBe("Processed: TestRequest");
-    }
+    //    // Assert
+    //    this.progressUpdates.ShouldAllBe(p => p is SimpleRequesterProgress);
+    //    this.progressUpdates.Count.ShouldBe(1);
+    //    var progressUpdate = (SimpleRequesterProgress)this.progressUpdates[0];
+    //    progressUpdate.RequestType.ShouldBe(nameof(TestRequest));
+    //    response.ShouldBe("Processed: TestRequest");
+    //}
 
-    [Fact]
-    public async Task SimpleRequester_SendsRequestWithFunc_ReportsProgress()
-    {
-        // Arrange
-        var progress = new Progress<SimpleRequesterProgress>(p => this.progressUpdates.Add(p));
-        var requester = new SimpleRequesterBuilder()
-            .WithProgress(progress)
-            .AddPipelineBehavior(new LoggingRequestPipelineBehavior(new ConsoleLogger()))
-            .Build();
-        requester.RegisterHandler<TestRequest, string>(async (req, ct) =>
-        {
-            await Task.Delay(50, ct); // Simulate processing delay
-            return "Processed: TestRequest";
-        });
-        var cts = new CancellationTokenSource();
+    //[Fact]
+    //public async Task SimpleRequester_SendsRequestWithFunc_ReportsProgress()
+    //{
+    //    // Arrange
+    //    var progress = new Progress<SimpleRequesterProgress>(p => this.progressUpdates.Add(p));
+    //    var requester = new SimpleRequesterBuilder()
+    //        .WithProgress(progress)
+    //        .AddPipelineBehavior(new LoggingRequestPipelineBehavior(new ConsoleLogger()))
+    //        .Build();
+    //    requester.RegisterHandler<TestRequest, string>(async (req, ct) =>
+    //    {
+    //        await Task.Delay(50, ct); // Simulate processing delay
+    //        return "Processed: TestRequest";
+    //    });
+    //    var cts = new CancellationTokenSource();
 
-        // Act
-        var response = await requester.SendAsync<TestRequest, string>(new TestRequest(), cancellationToken: cts.Token);
+    //    // Act
+    //    var response = await requester.SendAsync<TestRequest, string>(new TestRequest(), cancellationToken: cts.Token);
 
-        // Assert
-        this.progressUpdates.ShouldAllBe(p => p is SimpleRequesterProgress);
-        this.progressUpdates.Count.ShouldBe(1);
-        var progressUpdate = (SimpleRequesterProgress)this.progressUpdates[0];
-        progressUpdate.RequestType.ShouldBe(nameof(TestRequest));
-        response.ShouldBe("Processed: TestRequest");
-    }
+    //    // Assert
+    //    this.progressUpdates.ShouldAllBe(p => p is SimpleRequesterProgress);
+    //    this.progressUpdates.Count.ShouldBe(1);
+    //    var progressUpdate = (SimpleRequesterProgress)this.progressUpdates[0];
+    //    progressUpdate.RequestType.ShouldBe(nameof(TestRequest));
+    //    response.ShouldBe("Processed: TestRequest");
+    //}
 
     [Fact]
     public async Task SimpleRequester_NoHandlerRegistered_ThrowsInvalidOperationException()

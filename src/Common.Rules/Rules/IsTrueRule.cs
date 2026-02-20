@@ -8,9 +8,11 @@ namespace BridgingIT.DevKit.Common;
 /// <summary>
 /// Rule that checks if a boolean value is true.
 /// </summary>
-public class IsTrueRule(bool value) : RuleBase
+public class IsTrueRule(bool value, string message = null) : RuleBase
 {
-    public override string Message => "Value must be true";
+    private readonly string message = message ?? "Value must be true";
+
+    public override string Message => this.message;
 
     public override Result Execute() =>
         Result.SuccessIf(value);

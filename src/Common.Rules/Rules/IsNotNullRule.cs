@@ -10,13 +10,15 @@ namespace BridgingIT.DevKit.Common;
 /// The rule returns a success result if the value is not null; otherwise, it returns a failure result.
 /// </summary>
 /// <typeparam name="T">The type of the value to be validated.</typeparam>
-public class IsNotNullRule<T>(T value) : RuleBase
+public class IsNotNullRule<T>(T value, string message = null) : RuleBase
 {
+    private readonly string message = message ?? "Value must not be null";
+
     /// <summary>
     /// Sends a message to the console and logs the message.
     /// </summary>
     /// <param name="message">The message to be sent and logged.</param>
-    public override string Message => "Value must not be null";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes a business rule encapsulated within an Action delegate.

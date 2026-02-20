@@ -6,6 +6,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.JobScheduling;
+using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 
 public static class ServiceCollectionExtensions
@@ -47,6 +48,24 @@ public static class ServiceCollectionExtensions
         if (enabled)
         {
             context.Services.AddEndpoints<JobSchedulingEndpoints>(enabled);
+        }
+
+        return context;
+    }
+
+    public static JobSchedulingBuilderContext AddConsoleCommands(
+        this JobSchedulingBuilderContext context,
+        bool enabled = true)
+    {
+        if (enabled)
+        {
+            context.Services.AddTransient<IConsoleCommand, JobListConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, JobTriggerConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, JobHistoryConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, JobStatsConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, JobInterruptConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, JobPauseConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, JobResumeConsoleCommand>();
         }
 
         return context;

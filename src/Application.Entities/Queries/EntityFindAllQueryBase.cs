@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
+[Obsolete("Use the new Requester from now on")]
 public abstract class EntityFindAllQueryBase<TEntity>(
     int pageNumber = 1,
     int pageSize = int.MaxValue,

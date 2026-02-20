@@ -29,10 +29,15 @@ public class CoreModule : WebModuleBase
         var moduleConfiguration = this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
 
         // tasks
-        services.AddStartupTasks(o => o.StartupDelay(moduleConfiguration.SeederTaskStartupDelay))
-            .WithTask<CoreDomainSeederTask>(o => o
-                //.Enabled(environment?.IsDevelopment() == true)
-                .StartupDelay(moduleConfiguration.SeederTaskStartupDelay));
+        services.AddStartupTasks(o => o
+            .Enabled()
+            .HaltOnFailure())
+            .WithTask<CoreDomainSeederTask>(o => o.HaltOnFailure());
+        //services.AddStartupTasks(o => o.StartupDelay(moduleConfiguration.SeederTaskStartupDelay))
+        //    .WithTask<CoreDomainSeederTask>(o => o
+        //        .Enabled(environment?.IsDevelopment() == true)
+        //        .StartupDelay(moduleConfiguration.SeederTaskStartupDelay));
+
         // jobs
         services.AddJobScheduling(o => o
             .Enabled().StartupDelay(configuration["JobScheduling:StartupDelay"]), configuration)
@@ -44,12 +49,13 @@ public class CoreModule : WebModuleBase
                 .WithData(DataKeys.DelayPerFile, "00:00:00:100")
                 .WithData(DataKeys.FileFilter, "*.*")
                 .WithData(DataKeys.FileBlackListFilter, "*.tmp;*.log")
-                .RegisterScoped();
-        //.WithJob<EchoJob>()
-        //    .Cron(CronExpressions.EveryMinute)
-        //    .Named("firstecho")
-        //    .WithData("message", "First echo")
-        //    .RegisterScoped()
+                .RegisterScoped()
+            .WithJob<DevKit.Application.JobScheduling.EchoJob>()
+                .Cron(CronExpressions.EveryMinute)
+                .Named("firstecho")
+                .WithData("message", "First echo")
+                .RegisterScoped()
+            .AddConsoleCommands();
         //.WithJob<EchoJob>()
         //    .Cron(CronExpressions.Every5Seconds)
         //    .Named("secondecho")
@@ -74,6 +80,7 @@ public class CoreModule : WebModuleBase
             .WithSequenceNumberGenerator()
             .WithDatabaseCreatorService(o => o
                 .Enabled(environment.IsLocalDevelopment())
+                .HaltOnFailure()
                 .DeleteOnStartup(environment.IsLocalDevelopment()))
             .WithOutboxDomainEventService(o => o
                 .ProcessingInterval("00:00:30")

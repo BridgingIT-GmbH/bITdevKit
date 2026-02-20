@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Presentation.Web</AssemblyName>
     <RootNamespace>BridgingIT.DevKit.Presentation.Web</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -29,15 +29,10 @@
     <ProjectReference Include="..\Application.Identity\Application.Identity.csproj" />
     <ProjectReference Include="..\Application.Utilities\Application.Utilities.csproj" />
     <ProjectReference Include="..\Common.Extensions.Web\Common.Extensions.Web.csproj" />
-    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\Common.Mapping\Common.Mapping.csproj" />
     <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
     <ProjectReference Include="..\Presentation\Presentation.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pages\" />
   </ItemGroup>
 
 </Project>

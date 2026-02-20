@@ -8,16 +8,17 @@ namespace BridgingIT.DevKit.Common;
 /// <summary>
 /// Enforces constraints on the length of string values ensuring they meet specified minimum and maximum length criteria.
 /// </summary>
-public class StringLengthRule(string value, int minLength, int maxLength) : RuleBase
+public class StringLengthRule(string value, int minLength, int maxLength, string message = null) : RuleBase
 {
+    private readonly string message = message ?? $"Text length must be between {minLength} and {maxLength} characters";
+
     /// <summary>
     /// Gets or sets the message content.
     /// </summary>
     /// <value>
     /// The message is represented as a string, and it contains the content that will be transmitted or displayed.
     /// </value>
-    public override string Message =>
-        $"Text length must be between {minLength} and {maxLength} characters";
+    public override string Message => this.message;
 
     /// <summary>
     /// Executes the provided rule and returns a boolean indicating success or failure.

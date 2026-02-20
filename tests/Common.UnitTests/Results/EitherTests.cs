@@ -5,7 +5,9 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Results;
 
+#pragma warning disable RCS1102 // Make class static
 public class EitherTests
+#pragma warning restore RCS1102 // Make class static
 {
     public class ConstructorTests
     {
@@ -101,7 +103,7 @@ public class EitherTests
         public void ImplicitOperator_FromFirstType_CreatesEitherWithFirstValue()
         {
             // Arrange
-            int value = this.faker.Random.Int();
+            var value = this.faker.Random.Int();
 
             // Act
             Either<int, string> sut = value;
@@ -115,7 +117,7 @@ public class EitherTests
         public void ImplicitOperator_FromSecondType_CreatesEitherWithSecondValue()
         {
             // Arrange
-            string value = this.faker.Lorem.Word();
+            var value = this.faker.Lorem.Word();
 
             // Act
             Either<int, string> sut = value;
@@ -177,7 +179,7 @@ public class EitherTests
         public void FromNullable_WithNullValue_CreatesEitherWithSecondValue()
         {
             // Arrange
-            string value = null;
+            const string value = null;
             var defaultSecond = this.faker.Lorem.Word();
 
             // Act
@@ -189,7 +191,9 @@ public class EitherTests
         }
     }
 
+#pragma warning disable RCS1102 // Make class static
     public class MatchAndSwitchTests
+#pragma warning restore RCS1102 // Make class static
     {
         public class MatchTests
         {
@@ -530,7 +534,9 @@ public class EitherTests
         }
     }
 
+#pragma warning disable RCS1102 // Make class static
     public class MiscTests
+#pragma warning restore RCS1102 // Make class static
     {
         public class TryMethodTests
         {
@@ -806,6 +812,8 @@ public class EitherTests
 
         private class CustomResultError(string message) : IResultError
         {
+            public PropertyBag Properties { get; } = [];
+
             public string Message { get; } = message;
 
             public void Throw()

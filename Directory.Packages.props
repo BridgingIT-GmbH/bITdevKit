@@ -13,6 +13,7 @@
     <PackageVersion Include="Azure.Storage.Files.Shares" Version="12.25.0" />
     <PackageVersion Include="Azure.Storage.Queues" Version="12.17.1" />
     <PackageVersion Include="CsvHelper" Version="33.1.0" />
+    <PackageVersion Include="ClosedXML" Version="0.104.2" />
     <PackageVersion Include="Dapper" Version="2.1.66" />
     <PackageVersion Include="Ensure.That" Version="10.1.0" />
     <PackageVersion Include="FluentValidation" Version="12.1.1" />
@@ -85,6 +86,7 @@
     <PackageVersion Include="OpenTelemetry.Instrumentation.SqlClient" Version="1.15.0" />
     <PackageVersion Include="Polly" Version="8.6.5" />
     <PackageVersion Include="Polly.Contrib.Simmy" Version="0.3.0" />
+    <PackageVersion Include="PDFsharp-MigraDoc" Version="6.2.0" />
     <PackageVersion Include="Quartz" Version="3.15.1" />
     <PackageVersion Include="Quartz.Extensions.DependencyInjection" Version="3.15.1" />
     <PackageVersion Include="Quartz.Serialization.Json" Version="3.15.1" />

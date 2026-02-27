@@ -59,6 +59,11 @@ public class TodoItemImportProfile : ImportProfileBase<TodoItemModel>
             .FromHeader("Order")
             .ParseWith(value => string.IsNullOrWhiteSpace(value) ? 0 : int.Parse(value, CultureInfo.InvariantCulture));
 
+        this.ForColumn(t => t.ConcurrencyVersion)
+            .FromHeader("Concurrency Version")
+            .Validate(version => string.IsNullOrWhiteSpace(version) || Guid.TryParse(version, out _),
+                "Concurrency Version must be a valid GUID");
+
         this.Ignore(t => t.UserId);
         this.Ignore(t => t.Steps);
 

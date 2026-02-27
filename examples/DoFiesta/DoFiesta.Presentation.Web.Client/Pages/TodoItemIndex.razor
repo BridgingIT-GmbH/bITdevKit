@@ -201,11 +201,14 @@
             <MudSelectItem Value="@("excel")">Excel</MudSelectItem>
         </MudSelect>
         <MudFileUpload T="IBrowserFile" @bind-Files="importFile" Accept=".csv,.json,.xml,.xlsx" MaxFileSize="10485760" Class="mt-3">
-            <ActivatorContent>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CloudUpload">
+            <CustomContent Context="fileUpload">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                           OnClick="@(async () => await fileUpload.OpenFilePickerAsync())">
                     @(importFile == null ? "Select File" : importFile.Name)
                 </MudButton>
-            </ActivatorContent>
+            </CustomContent>
         </MudFileUpload>
         @if (!string.IsNullOrEmpty(importMessage))
         {

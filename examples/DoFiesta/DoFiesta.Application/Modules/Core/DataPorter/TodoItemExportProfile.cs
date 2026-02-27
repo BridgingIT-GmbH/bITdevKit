@@ -82,6 +82,11 @@ public class TodoItemExportProfile : ExportProfileBase<TodoItemModel>
             .HasWidth(10)
             .Align(HorizontalAlignment.Right);
 
+        this.ForColumn(t => t.ConcurrencyVersion)
+            .HasName("Concurrency Version")
+            .HasOrder(9)
+            .HasWidth(38);
+
         // Ignore internal fields
         this.Ignore(t => t.UserId);
         this.Ignore(t => t.Steps);

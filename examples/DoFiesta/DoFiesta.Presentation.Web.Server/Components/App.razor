@@ -17,6 +17,18 @@
     <script src="@Assets["_content/MudBlazor/MudBlazor.min.js"]"></script>
     <script src="@Assets["_content/Microsoft.AspNetCore.Components.WebAssembly.Authentication/AuthenticationService.js"]"></script>
     <script>
+        window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+            const arrayBuffer = await contentStreamReference.arrayBuffer();
+            const blob = new Blob([arrayBuffer]);
+            const url = URL.createObjectURL(blob);
+            const anchorElement = document.createElement("a");
+            anchorElement.href = url;
+            anchorElement.download = fileName ?? "download";
+            anchorElement.click();
+            anchorElement.remove();
+            URL.revokeObjectURL(url);
+        };
+
         const _oldInit = AuthenticationService.init;
         AuthenticationService.init = function(settings, logger) {
             // When using certain IDPs, an attempt to use an embedded IFrame is blocked due to 'X-Frame-Options' and

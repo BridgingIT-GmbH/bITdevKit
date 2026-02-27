@@ -158,6 +158,11 @@ public class StartupTasksService : IHostedService
                     catch (Exception ex)
                     {
                         this.logger.LogError(ex, "{LogKey} startup task {StartupTaskType} failed: {ErrorMessage}", Constants.LogKey, definition.TaskType.Name, ex.Message);
+
+                        if (this.options.HaltOnFailure || definition.Options.HaltOnFailure)
+                        {
+                            this.FailFast($"{Constants.LogKey} startup task: app terminated (task={definition.TaskType.Name}, error={ex.Message})", ex);
+                        }
                     }
                 }, cancellationToken));
 
@@ -170,8 +175,21 @@ public class StartupTasksService : IHostedService
         catch (Exception ex)
         {
             this.logger.LogError(ex, "{LogKey} startup tasks failed: {ErrorMessage}", Constants.LogKey, ex.Message);
+
+            if (this.options.HaltOnFailure)
+            {
+                this.FailFast($"{Constants.LogKey} startup tasks: app terminated (error={ex.Message})", ex);
+            }
+
             throw;
         }
+    }
+
+    private void FailFast(string message, Exception exception)
+    {
+        this.logger.LogCritical(exception, "{FailFastMessage}", message);
+        System.Console.Error.WriteLine(message);
+        System.Environment.FailFast(message, exception);
     }
 
     private async Task ExecuteDefinitionAsync(

@@ -5,9 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using BridgingIT.DevKit.Common.Utilities; // Add this using for Retryer
+using BridgingIT.DevKit.Common.Utilities;
 using Microsoft.Extensions.Hosting;
 
+/// <summary>
+///     Hosted service that checks database connectivity for a <see cref="DbContext" /> during application startup.
+/// </summary>
+/// <typeparam name="TContext">The database context type to check.</typeparam>
 public class DatabaseCheckerService<TContext> : IHostedService
     where TContext : DbContext
 {
@@ -17,11 +21,19 @@ public class DatabaseCheckerService<TContext> : IHostedService
     private readonly IHostApplicationLifetime applicationLifetime;
     private readonly DatabaseCheckerOptions options;
 
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="DatabaseCheckerService{TContext}" /> class.
+    /// </summary>
+    /// <param name="loggerFactory">The logger factory.</param>
+    /// <param name="applicationLifetime">The application lifetime used to register startup execution.</param>
+    /// <param name="serviceProvider">The root service provider.</param>
+    /// <param name="databaseReadyService">The service that reports database readiness and fault state.</param>
+    /// <param name="options">The checker behavior options.</param>
     public DatabaseCheckerService(
         ILoggerFactory loggerFactory,
         IHostApplicationLifetime applicationLifetime,
         IServiceProvider serviceProvider,
-        IDatabaseReadyService databaseReadyService,
+        IDatabaseReadyService databaseReadyService = null,
         DatabaseCheckerOptions options = null)
     {
         EnsureArg.IsNotNull(serviceProvider, nameof(serviceProvider));
@@ -34,6 +46,11 @@ public class DatabaseCheckerService<TContext> : IHostedService
         this.options = options ?? new DatabaseCheckerOptions();
     }
 
+    /// <summary>
+    ///     Starts the checker and executes connectivity checks after the host has started.
+    /// </summary>
+    /// <param name="cancellationToken">A token that can be used to cancel startup processing.</param>
+    /// <returns>A completed task.</returns>
     public Task StartAsync(CancellationToken cancellationToken)
     {
         var contextName = typeof(TContext).Name;
@@ -76,14 +93,22 @@ public class DatabaseCheckerService<TContext> : IHostedService
                     if (exists)
                     {
                         this.logger.LogInformation("{LogKey} database checker succeeded (context={DbContextType}, provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, context.Database.ProviderName);
-                        this.databaseReadyService.SetReady(contextName);
+                        this.databaseReadyService?.SetReady(contextName);
                     }
                 }
                 catch (Exception ex)
                 {
                     this.logger.LogError(ex, "{LogKey} database checker failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, contextName);
 
-                    this.databaseReadyService.SetFaulted(contextName, ex.Message);
+                    this.databaseReadyService?.SetFaulted(contextName, ex.Message);
+
+                    if (this.options.HaltOnFailure)
+                    {
+                        var failFastMessage = $"{Constants.LogKey} database checker: app terminated (context={contextName}, error={ex.Message})";
+                        this.logger.LogCritical(ex, "{FailFastMessage}", failFastMessage);
+                        Console.Error.WriteLine(failFastMessage);
+                        Environment.FailFast(failFastMessage, ex);
+                    }
                 }
             }, cancellationToken);
         });
@@ -120,6 +145,11 @@ public class DatabaseCheckerService<TContext> : IHostedService
         return exists;
     }
 
+    /// <summary>
+    ///     Stops the checker service.
+    /// </summary>
+    /// <param name="cancellationToken">A token that can be used to cancel stop processing.</param>
+    /// <returns>A completed task.</returns>
     public Task StopAsync(CancellationToken cancellationToken)
     {
         return Task.CompletedTask;

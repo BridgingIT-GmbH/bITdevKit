@@ -36,7 +36,7 @@ public class EntityFrameworkActiveEntityProviderOptionsBuilder<TContext, TEntity
     public EntityFrameworkActiveEntityProviderOptionsBuilder<TContext, TEntity> GenericMergeStrategy(Options options = null)
     {
         this.Target.MergeStrategy = (ctx, entity, ct) =>
-            GenericEntityMergeStrategy.MergeAsync(ctx, entity, options ?? new(), ct);
+            MergeAsync(ctx, entity, options ?? new(), ct);
 
         return this;
     }

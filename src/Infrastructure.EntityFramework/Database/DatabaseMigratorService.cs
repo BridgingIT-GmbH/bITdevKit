@@ -32,7 +32,6 @@ public class DatabaseMigratorService<TContext> : IHostedService
         this.serviceProvider = serviceProvider;
         this.databaseReadyService = databaseReadyService;
         this.applicationLifetime = applicationLifetime;
-        this.applicationLifetime = applicationLifetime;
         this.options = options ?? new DatabaseMigratorOptions();
     }
 
@@ -43,11 +42,6 @@ public class DatabaseMigratorService<TContext> : IHostedService
         if (!this.options.Enabled)
         {
             this.logger.LogInformation("{LogKey} database migrator skipped, not enabled (context={DbContextType})", Constants.LogKey, contextName);
-
-            if (this.databaseReadyService == null)
-            {
-                return;
-            }
 
             using var scope = this.serviceProvider.CreateScope();
             if (await this.CheckDatabaseAccessible(contextName, scope.ServiceProvider.GetRequiredService<TContext>(), cancellationToken).AnyContext())
@@ -145,12 +139,20 @@ public class DatabaseMigratorService<TContext> : IHostedService
                         }
                     }
 
-                    this.databaseReadyService.SetReady(contextName); // assume database is ready if we reach this point
+                    this.databaseReadyService?.SetReady(contextName); // assume database is ready if we reach this point
                 }
                 catch (Exception ex)
                 {
-                    this.databaseReadyService.SetFaulted(contextName, ex.Message);
+                    this.databaseReadyService?.SetFaulted(contextName, ex.Message);
                     this.logger.LogError(ex, "{LogKey} database migrator failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, contextName);
+
+                    if (this.options.HaltOnFailure)
+                    {
+                        var failFastMessage = $"{Constants.LogKey} database migrator: app terminated (context={contextName}, error={ex.Message})";
+                        this.logger.LogCritical(ex, "{FailFastMessage}", failFastMessage);
+                        Console.Error.WriteLine(failFastMessage);
+                        Environment.FailFast(failFastMessage, ex);
+                    }
                 }
             }, cancellationToken);
         });

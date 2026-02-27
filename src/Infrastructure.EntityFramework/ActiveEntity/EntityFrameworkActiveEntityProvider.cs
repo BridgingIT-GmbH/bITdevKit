@@ -267,7 +267,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
 
             foreach (var entry in this.context.ChangeTracker.Entries())
             {
-                TypedLogger.LogEntityState(this.Logger, BridgingIT.DevKit.Infrastructure.EntityFramework.Constants.LogKey, entry.Entity.GetType().Name, entry.IsKeySet, entry.State);
+                TypedLogger.LogEntityState(this.Logger, Constants.LogKey, entry.Entity.GetType().Name, entry.IsKeySet, entry.State);
             }
 
             await this.context.SaveChangesAsync(cancellationToken).AnyContext();

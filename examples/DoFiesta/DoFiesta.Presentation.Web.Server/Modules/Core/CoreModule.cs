@@ -31,10 +31,15 @@ public class CoreModule : WebModuleBase
         var moduleConfiguration = this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
 
         // tasks
-        services.AddStartupTasks(o => o.StartupDelay(moduleConfiguration.SeederTaskStartupDelay))
-            .WithTask<CoreDomainSeederTask>(o => o
-                //.Enabled(environment?.IsDevelopment() == true)
-                .StartupDelay(moduleConfiguration.SeederTaskStartupDelay));
+        services.AddStartupTasks(o => o
+            .Enabled()
+            .HaltOnFailure())
+            .WithTask<CoreDomainSeederTask>(o => o.HaltOnFailure());
+        //services.AddStartupTasks(o => o.StartupDelay(moduleConfiguration.SeederTaskStartupDelay))
+        //    .WithTask<CoreDomainSeederTask>(o => o
+        //        .Enabled(environment?.IsDevelopment() == true)
+        //        .StartupDelay(moduleConfiguration.SeederTaskStartupDelay));
+
         // jobs
         services.AddJobScheduling(o => o
             .Enabled().StartupDelay(configuration["JobScheduling:StartupDelay"]), configuration)
@@ -77,6 +82,7 @@ public class CoreModule : WebModuleBase
             .WithSequenceNumberGenerator()
             .WithDatabaseCreatorService(o => o
                 .Enabled(environment.IsLocalDevelopment())
+                .HaltOnFailure()
                 .DeleteOnStartup(environment.IsLocalDevelopment()))
             .WithOutboxDomainEventService(o => o
                 .ProcessingInterval("00:00:30")

@@ -2143,7 +2143,7 @@ public class LinqFluentExtensionsTests
 
         // Act & Assert
         await Should.ThrowAsync<InvalidOperationException>(async () =>
-            await entity.ThrowAsync(ct => Task.FromResult<Exception>(new InvalidOperationException("Entity not found"))));
+            await entity.ThrowAsync(async ct => new InvalidOperationException("Entity not found")));
     }
 
     [Fact]
@@ -2153,7 +2153,7 @@ public class LinqFluentExtensionsTests
         var entity = new TestEntity(1, "Test");
 
         // Act
-        var result = await entity.ThrowAsync(ct => Task.FromResult<Exception>(new InvalidOperationException("Entity not found")));
+        var result = await entity.ThrowAsync(async ct => new InvalidOperationException("Entity not found"));
 
         // Assert
         result.ShouldBe(entity);
@@ -2169,7 +2169,7 @@ public class LinqFluentExtensionsTests
         await Should.ThrowAsync<InvalidOperationException>(async () =>
             await entity.ThrowWhenAsync(
                 async (e, ct) => await Task.FromResult(!e.IsActive),
-                (e, ct) => Task.FromResult<Exception>(new InvalidOperationException("Inactive"))));
+                async (e, ct) => new InvalidOperationException("Inactive")));
     }
 
     [Fact]
@@ -2181,7 +2181,7 @@ public class LinqFluentExtensionsTests
         // Act
         var result = await entity.ThrowWhenAsync(
             async (e, ct) => await Task.FromResult(!e.IsActive),
-            (e, ct) => Task.FromResult<Exception>(new InvalidOperationException("Inactive")));
+            async (e, ct) => new InvalidOperationException("Inactive"));
 
         // Assert
         result.ShouldBe(entity);
@@ -2197,7 +2197,7 @@ public class LinqFluentExtensionsTests
         await Should.ThrowAsync<InvalidOperationException>(async () =>
             await task.ThrowWhenAsync(
                 async (e, ct) => await Task.FromResult(!e.IsActive),
-                (e, ct) => Task.FromResult<Exception>(new InvalidOperationException("Inactive"))));
+                async (e, ct) => new InvalidOperationException("Inactive")));
     }
 
     #endregion

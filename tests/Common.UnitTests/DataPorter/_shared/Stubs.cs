@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Common.UnitTests.DataPorter;
 
 using System.Runtime.CompilerServices;
-using BridgingIT.DevKit.Common.DataPorter;
+using BridgingIT.DevKit.Application.DataPorter;
 
 #region Test Entities
 

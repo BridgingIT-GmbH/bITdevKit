@@ -121,12 +121,12 @@
     <Project Path="src/Common.Utilities.Tracing/Common.Utilities.Tracing.csproj" />
     <Project Path="src/Common.Utilities.Xunit/Common.Utilities.Xunit.csproj" />
     <Project Path="src/Common.Utilities/Common.Utilities.csproj" />
-    <Project Path="src/Common.DataPorter/Common.DataPorter.csproj" />
   </Folder>
   <Folder Name="/src/1. Application/">
     <Project Path="src/Application.Commands.EventSourcing/Application.Commands.EventSourcing.csproj" />
     <Project Path="src/Application.Commands.Outbox/Application.Commands.Outbox.csproj" />
     <Project Path="src/Application.Commands/Application.Commands.csproj" />
+    <Project Path="src/Application.DataPorter/Application.DataPorter.csproj" />
     <Project Path="src/Application.Entities.Messaging/Application.Entities.Messaging.csproj" />
     <Project Path="src/Application.Entities/Application.Entities.csproj" />
     <Project Path="src/Application.Identity/Application.Identity.csproj" />

@@ -65,7 +65,7 @@
     <ProjectReference Include="..\..\..\src\Application.Storage.Jobs\Application.Storage.Jobs.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Storage\Application.Storage.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Utilities\Application.Utilities.csproj" />
-    <ProjectReference Include="..\..\..\src\Common.DataPorter\Common.DataPorter.csproj" />
+    <ProjectReference Include="..\..\..\src\Application.DataPorter/Application.DataPorter.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Extensions.Web\Common.Extensions.Web.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Configuration\Presentation.Configuration.csproj" />

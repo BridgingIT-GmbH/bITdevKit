@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.DataPorter;
 
-using BridgingIT.DevKit.Common.DataPorter;
+using BridgingIT.DevKit.Application.DataPorter;
 
 [UnitTest("Common")]
 public class ProfileRegistryTests

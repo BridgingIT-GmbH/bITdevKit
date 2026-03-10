@@ -633,6 +633,21 @@
           "xunit.extensibility.core": "[2.9.3]"
         }
       },
+      "BridgingIT.DevKit.Application.DataPorter": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "ClosedXML": "[0.104.2, )",
+          "CsvHelper": "[33.1.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.Configuration.Abstractions": "[10.0.3, )",
+          "Microsoft.Extensions.Configuration.Binder": "[10.0.3, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.3, )",
+          "Microsoft.Extensions.Logging.Abstractions": "[10.0.3, )",
+          "PDFsharp-MigraDoc": "[6.2.0, )"
+        }
+      },
       "BridgingIT.DevKit.Application.Utilities": {
         "type": "Project",
         "dependencies": {
@@ -657,21 +672,6 @@
           "Microsoft.Extensions.Caching.Memory": "[10.0.3, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[10.0.3, )",
           "Microsoft.Extensions.Configuration.Binder": "[10.0.3, )"
-        }
-      },
-      "BridgingIT.DevKit.Common.DataPorter": {
-        "type": "Project",
-        "dependencies": {
-          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
-          "ClosedXML": "[0.104.2, )",
-          "CsvHelper": "[33.1.0, )",
-          "Ensure.That": "[10.1.0, )",
-          "Microsoft.Extensions.Configuration.Abstractions": "[10.0.3, )",
-          "Microsoft.Extensions.Configuration.Binder": "[10.0.3, )",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.3, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[10.0.3, )",
-          "PDFsharp-MigraDoc": "[6.2.0, )"
         }
       },
       "BridgingIT.DevKit.Common.Extensions": {

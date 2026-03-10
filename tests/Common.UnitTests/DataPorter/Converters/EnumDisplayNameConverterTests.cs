@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Common.UnitTests.DataPorter;
 
 using System.ComponentModel.DataAnnotations;
-using BridgingIT.DevKit.Common.DataPorter;
+using BridgingIT.DevKit.Application.DataPorter;
 
 [UnitTest("Common")]
 public class EnumDisplayNameConverterTests

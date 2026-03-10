@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 
 using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Common.DataPorter;
+using BridgingIT.DevKit.Application.DataPorter;
 using FluentValidation;
 
 public class TodoItemExportQuery(DataPorterFormat format) : RequestBase<Stream>

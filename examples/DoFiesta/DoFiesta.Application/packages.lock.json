@@ -229,6 +229,21 @@
         "resolved": "8.0.1",
         "contentHash": "CoCRHFym33aUSf/NtWSVSZa99dkd0Hm7OCZUxORBjRB16LNhIEOf8THPqzIYlvKM0nNDAPTRBa1FxEECrgaxxA=="
       },
+      "BridgingIT.DevKit.Application.DataPorter": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "ClosedXML": "[0.104.2, )",
+          "CsvHelper": "[33.1.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.Configuration.Abstractions": "[10.0.3, )",
+          "Microsoft.Extensions.Configuration.Binder": "[10.0.3, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.3, )",
+          "Microsoft.Extensions.Logging.Abstractions": "[10.0.3, )",
+          "PDFsharp-MigraDoc": "[6.2.0, )"
+        }
+      },
       "BridgingIT.DevKit.Application.Identity": {
         "type": "Project",
         "dependencies": {
@@ -299,21 +314,6 @@
           "Microsoft.Extensions.Caching.Memory": "[10.0.3, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[10.0.3, )",
           "Microsoft.Extensions.Configuration.Binder": "[10.0.3, )"
-        }
-      },
-      "BridgingIT.DevKit.Common.DataPorter": {
-        "type": "Project",
-        "dependencies": {
-          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
-          "ClosedXML": "[0.104.2, )",
-          "CsvHelper": "[33.1.0, )",
-          "Ensure.That": "[10.1.0, )",
-          "Microsoft.Extensions.Configuration.Abstractions": "[10.0.3, )",
-          "Microsoft.Extensions.Configuration.Binder": "[10.0.3, )",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.3, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[10.0.3, )",
-          "PDFsharp-MigraDoc": "[6.2.0, )"
         }
       },
       "BridgingIT.DevKit.Common.Mapping": {

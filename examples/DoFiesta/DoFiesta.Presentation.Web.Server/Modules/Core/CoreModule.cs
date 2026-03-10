@@ -9,7 +9,7 @@ using Application.Modules.Core;
 using Application.Modules.Core.DataPorter;
 using BridgingIT.DevKit.Application;
 using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Common.DataPorter;
+using BridgingIT.DevKit.Application.DataPorter;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;

@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core.DataPorter;
 
 using System.Globalization;
-using BridgingIT.DevKit.Common.DataPorter;
+using BridgingIT.DevKit.Application.DataPorter;
 
 /// <summary>
 /// Import profile for TodoItem using profile-based configuration.

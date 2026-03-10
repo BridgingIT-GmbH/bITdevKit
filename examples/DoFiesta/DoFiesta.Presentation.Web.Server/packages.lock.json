@@ -611,8 +611,8 @@
       },
       "MimeKit": {
         "type": "Transitive",
-        "resolved": "4.15.0",
-        "contentHash": "+KVUJwHIp1aVPyVjcadAH1M9QkAwLflLujzySAS4N//AqSYjD+wMo2a3PkYu5XDibSuhlAg5sIh/DVNwVNGiVw==",
+        "resolved": "4.15.1",
+        "contentHash": "cxCcQhD0zhboFoG136jJuJtQjNRDJ+BxBm3f2vWn+53bff/CRo+K1mAkWjsW4Wuyy5O22F40MdMG2nRzQu1cJw==",
         "dependencies": {
           "BouncyCastle.Cryptography": "2.6.2",
           "System.Security.Cryptography.Pkcs": "10.0.0"
@@ -903,6 +903,17 @@
         "resolved": "16.3.0",
         "contentHash": "SgMOdxbz8X65z8hraIs6hOEdnkH6hESTAIUa7viEngHOYaH+6q5XJmwr1+yb9vJpNQ19hCQY69xbFsLtXpobQA=="
       },
+      "BridgingIT.DevKit.Application.DataPorter": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "ClosedXML": "[0.104.2, )",
+          "CsvHelper": "[33.1.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "PDFsharp-MigraDoc": "[6.2.0, )"
+        }
+      },
       "BridgingIT.DevKit.Application.Identity": {
         "type": "Project",
         "dependencies": {
@@ -946,7 +957,7 @@
           "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "MailKit": "[4.15.0, )"
+          "MailKit": "[4.15.1, )"
         }
       },
       "BridgingIT.DevKit.Application.Storage": {
@@ -990,17 +1001,6 @@
         "dependencies": {
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )"
-        }
-      },
-      "BridgingIT.DevKit.Common.DataPorter": {
-        "type": "Project",
-        "dependencies": {
-          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
-          "ClosedXML": "[0.104.2, )",
-          "CsvHelper": "[33.1.0, )",
-          "Ensure.That": "[10.1.0, )",
-          "PDFsharp-MigraDoc": "[6.2.0, )"
         }
       },
       "BridgingIT.DevKit.Common.Extensions": {
@@ -1126,12 +1126,12 @@
       "BridgingIT.DevKit.Examples.DoFiesta.Application": {
         "type": "Project",
         "dependencies": {
+          "BridgingIT.DevKit.Application.DataPorter": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Identity": "[1.0.0, )",
           "BridgingIT.DevKit.Application.JobScheduling": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Caching": "[1.0.0, )",
-          "BridgingIT.DevKit.Common.DataPorter": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Mapping": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "BridgingIT.DevKit.Examples.DoFiesta.Domain": "[1.0.0, )",
@@ -1358,11 +1358,11 @@
       },
       "MailKit": {
         "type": "CentralTransitive",
-        "requested": "[4.15.0, )",
-        "resolved": "4.15.0",
-        "contentHash": "PM3bNDLwmK2hdiTx8xkTLRMRf9Y0VuirdyHWsrlSlz9hrME0lFkt/rF/9xlK/AtVML86BlS07pEPqo43Cmptbg==",
+        "requested": "[4.15.1, )",
+        "resolved": "4.15.1",
+        "contentHash": "4mLbqTbH3ctd0NlukHjVQbU3ZnNDuCtB6ttNZDLPZLWMA2Dr31rh/eCSTqOwDojUX8zfDOVaxstMgJTE9PwZNA==",
         "dependencies": {
-          "MimeKit": "4.15.0"
+          "MimeKit": "4.15.1"
         }
       },
       "Mapster": {

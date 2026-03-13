@@ -29,7 +29,7 @@ public class DataPorterServiceImportTests
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
 
         // Act
-        var result = await sut.ImportAsync<SimpleEntity>(null);
+        var result = await sut.ImportAsync<SimpleEntity>((Stream)null);
 
         // Assert
         result.ShouldBeFailure();
@@ -123,7 +123,7 @@ public class DataPorterServiceImportTests
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
 
         // Act
-        var result = await sut.ImportFromBytesAsync<SimpleEntity>(null);
+        var result = await sut.ImportAsync<SimpleEntity>((byte[])null);
 
         // Assert
         result.ShouldBeFailure();
@@ -137,7 +137,7 @@ public class DataPorterServiceImportTests
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
 
         // Act
-        var result = await sut.ImportFromBytesAsync<SimpleEntity>([]);
+        var result = await sut.ImportAsync<SimpleEntity>([]);
 
         // Assert
         result.ShouldBeFailure();
@@ -152,7 +152,7 @@ public class DataPorterServiceImportTests
         var data = new byte[] { 1, 2, 3, 4 };
 
         // Act
-        var result = await sut.ImportFromBytesAsync<SimpleEntity>(data);
+        var result = await sut.ImportAsync<SimpleEntity>(data);
 
         // Assert
         result.ShouldBeSuccess();
@@ -232,7 +232,7 @@ public class DataPorterServiceImportTests
 
         // Act
         var results = new List<Result<SimpleEntity>>();
-        await foreach (var result in sut.ImportStreamAsync<SimpleEntity>(null))
+        await foreach (var result in sut.ImportAsyncEnumerable<SimpleEntity>(null))
         {
             results.Add(result);
         }
@@ -251,7 +251,7 @@ public class DataPorterServiceImportTests
 
         // Act
         var results = new List<Result<SimpleEntity>>();
-        await foreach (var result in sut.ImportStreamAsync<SimpleEntity>(stream))
+        await foreach (var result in sut.ImportAsyncEnumerable<SimpleEntity>(stream))
         {
             results.Add(result);
         }
@@ -271,7 +271,7 @@ public class DataPorterServiceImportTests
 
         // Act
         var results = new List<Result<SimpleEntity>>();
-        await foreach (var result in sut.ImportStreamAsync<SimpleEntity>(stream))
+        await foreach (var result in sut.ImportAsyncEnumerable<SimpleEntity>(stream))
         {
             results.Add(result);
         }
@@ -291,7 +291,7 @@ public class DataPorterServiceImportTests
 
         // Act
         var results = new List<Result<SimpleEntity>>();
-        await foreach (var result in sut.ImportStreamAsync<SimpleEntity>(stream))
+        await foreach (var result in sut.ImportAsyncEnumerable<SimpleEntity>(stream))
         {
             results.Add(result);
         }

@@ -50,7 +50,7 @@ public interface IDataExporter
     /// <param name="options">Optional export options.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A result containing export information or error details.</returns>
-    Task<Result<ExportResult>> ExportMultipleAsync(
+    Task<Result<ExportResult>> ExportAsync(
         IEnumerable<ExportDataSet> dataSets,
         Stream outputStream,
         ExportOptions options = null,

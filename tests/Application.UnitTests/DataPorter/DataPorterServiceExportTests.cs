@@ -176,7 +176,7 @@ public class DataPorterServiceExportTests
         using var stream = new MemoryStream();
 
         // Act
-        var result = await sut.ExportMultipleAsync(null, stream);
+        var result = await sut.ExportAsync(null, stream);
 
         // Assert
         result.ShouldBeFailure();
@@ -191,7 +191,7 @@ public class DataPorterServiceExportTests
         using var stream = new MemoryStream();
 
         // Act
-        var result = await sut.ExportMultipleAsync([], stream);
+        var result = await sut.ExportAsync([], stream);
 
         // Assert
         result.ShouldBeFailure();

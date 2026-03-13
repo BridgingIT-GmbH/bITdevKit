@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Application.DataPorter;
 
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 /// <summary>
 /// Main service for data export and import operations.
@@ -129,7 +129,19 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
-    public async Task<Result<ExportResult>> ExportMultipleAsync(
+    public Task<Result> ExportToStreamAsync<TSource>(
+        IEnumerable<TSource> data,
+        Stream outputStream,
+        ExportOptions options = null,
+        CancellationToken cancellationToken = default) where TSource : class
+    {
+        options ??= new ExportOptions();
+
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc/>
+    public async Task<Result<ExportResult>> ExportAsync(
         IEnumerable<ExportDataSet> dataSets,
         Stream outputStream,
         ExportOptions options = null,
@@ -212,11 +224,7 @@ public sealed class DataPorterService(
         var configuration = configurationMerger.BuildImportConfiguration<TTarget>(options);
         var provider = providerResult.Value;
 
-        this.logger.LogInformation(
-            "Importing {Type} from {Format}",
-            typeof(TTarget).Name,
-            options.Format);
-
+        this.logger.LogInformation("Importing {Type} from {Format}", typeof(TTarget).Name, options.Format);
         var stopwatch = Stopwatch.StartNew();
 
         try
@@ -229,19 +237,11 @@ public sealed class DataPorterService(
                         this.providers.Where(p => p.SupportsImport).Select(p => p.Format.ToString())));
             }
 
-            var result = await importProvider.ImportAsync<TTarget>(
-                inputStream,
-                configuration,
-                cancellationToken);
+            var result = await importProvider.ImportAsync<TTarget>(inputStream, configuration, cancellationToken);
 
             stopwatch.Stop();
 
-            this.logger.LogInformation(
-                "Imported {Success}/{Total} rows from {Format} in {Duration}ms",
-                result.SuccessfulRows,
-                result.TotalRows,
-                options.Format,
-                stopwatch.ElapsedMilliseconds);
+            this.logger.LogInformation("Imported {Success}/{Total} rows from {Format} in {Duration}ms", result.SuccessfulRows, result.TotalRows, options.Format, stopwatch.ElapsedMilliseconds);
 
             return Result<ImportResult<TTarget>>.Success(result with { Duration = stopwatch.Elapsed });
         }
@@ -260,7 +260,7 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
-    public async Task<Result<ImportResult<TTarget>>> ImportFromBytesAsync<TTarget>(
+    public async Task<Result<ImportResult<TTarget>>> ImportAsync<TTarget>(
         byte[] data,
         ImportOptions options = null,
         CancellationToken cancellationToken = default)
@@ -277,7 +277,7 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
-    public async IAsyncEnumerable<Result<TTarget>> ImportStreamAsync<TTarget>(
+    public async IAsyncEnumerable<Result<TTarget>> ImportAsyncEnumerable<TTarget>(
         Stream inputStream,
         ImportOptions options = null,
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -312,10 +312,7 @@ public sealed class DataPorterService(
             yield break;
         }
 
-        await foreach (var item in importProvider.ImportStreamAsync<TTarget>(
-            inputStream,
-            configuration,
-            cancellationToken))
+        await foreach (var item in importProvider.ImportStreamAsync<TTarget>(inputStream, configuration, cancellationToken))
         {
             yield return item;
         }
@@ -356,10 +353,7 @@ public sealed class DataPorterService(
                         this.providers.Where(p => p.SupportsImport).Select(p => p.Format.ToString())));
             }
 
-            var result = await importProvider.ValidateAsync<TTarget>(
-                inputStream,
-                configuration,
-                cancellationToken);
+            var result = await importProvider.ValidateAsync<TTarget>(inputStream, configuration, cancellationToken);
 
             return Result<ValidationResult>.Success(result);
         }
@@ -404,61 +398,4 @@ public sealed class DataPorterService(
 
         return Result<IDataPorterProvider>.Success(provider);
     }
-}
-
-/// <summary>
-/// Provider interface for export operations.
-/// </summary>
-public interface IDataExportProvider : IDataPorterProvider
-{
-    /// <summary>
-    /// Exports data to a stream.
-    /// </summary>
-    Task<ExportResult> ExportAsync<TSource>(
-        IEnumerable<TSource> data,
-        Stream outputStream,
-        ExportConfiguration configuration,
-        CancellationToken cancellationToken = default)
-        where TSource : class;
-
-    /// <summary>
-    /// Exports multiple data sets to a stream.
-    /// </summary>
-    Task<ExportResult> ExportMultipleAsync(
-        IEnumerable<(IEnumerable<object> Data, ExportConfiguration Configuration)> dataSets,
-        Stream outputStream,
-        CancellationToken cancellationToken = default);
-}
-
-/// <summary>
-/// Provider interface for import operations.
-/// </summary>
-public interface IDataImportProvider : IDataPorterProvider
-{
-    /// <summary>
-    /// Imports data from a stream.
-    /// </summary>
-    Task<ImportResult<TTarget>> ImportAsync<TTarget>(
-        Stream inputStream,
-        ImportConfiguration configuration,
-        CancellationToken cancellationToken = default)
-        where TTarget : class, new();
-
-    /// <summary>
-    /// Streams import results for large files.
-    /// </summary>
-    IAsyncEnumerable<Result<TTarget>> ImportStreamAsync<TTarget>(
-        Stream inputStream,
-        ImportConfiguration configuration,
-        CancellationToken cancellationToken = default)
-        where TTarget : class, new();
-
-    /// <summary>
-    /// Validates import data without importing.
-    /// </summary>
-    Task<ValidationResult> ValidateAsync<TTarget>(
-        Stream inputStream,
-        ImportConfiguration configuration,
-        CancellationToken cancellationToken = default)
-        where TTarget : class, new();
 }

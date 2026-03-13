@@ -319,7 +319,7 @@ services.AddDataPorter()
 For large files, use streaming to avoid loading everything into memory:
 
 ```csharp
-await foreach (var result in importer.ImportStreamAsync<Order>(stream, options))
+await foreach (var result in importer.ImportAsyncEnumerable<Order>(stream, options))
 {
     if (result.IsSuccess)
     {
@@ -364,7 +364,7 @@ var dataSets = new[]
     ExportDataSet.Create(customers, "Customers")
 };
 
-await exporter.ExportMultipleAsync(dataSets, stream, new ExportOptions
+await exporter.ExportAsync(dataSets, stream, new ExportOptions
 {
     Format = Format.Excel
 });

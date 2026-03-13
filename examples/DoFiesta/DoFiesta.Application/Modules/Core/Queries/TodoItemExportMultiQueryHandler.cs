@@ -37,7 +37,7 @@ public class TodoItemExportMultiQueryHandler(
             .BindAsync(async (dataSets, ct) =>
             {
                 var memoryStream = new MemoryStream();
-                var exportResult = await exporter.ExportMultipleAsync(dataSets, memoryStream, new ExportOptions
+                var exportResult = await exporter.ExportAsync(dataSets, memoryStream, new ExportOptions
                 {
                     Format = Format.Excel
                 }, ct);

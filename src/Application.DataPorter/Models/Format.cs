@@ -21,6 +21,11 @@ public enum Format
     Csv,
 
     /// <summary>
+    /// Typed-row Comma-Separated Values format (.csv) for hierarchical object graphs.
+    /// </summary>
+    CsvTyped,
+
+    /// <summary>
     /// JavaScript Object Notation format (.json).
     /// </summary>
     Json,

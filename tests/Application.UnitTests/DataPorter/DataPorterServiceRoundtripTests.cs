@@ -18,6 +18,7 @@ public class DataPorterServiceRoundtripTests
     public static TheoryData<IDataPorterProvider, Format> RoundtripProviders => new()
     {
         { new CsvDataPorterProvider(), Format.Csv },
+        { new CsvTypedDataPorterProvider(), Format.CsvTyped },
         { new ExcelDataPorterProvider(), Format.Excel },
         { new JsonDataPorterProvider(), Format.Json },
         { new XmlDataPorterProvider(), Format.Xml }
@@ -122,6 +123,37 @@ public class DataPorterServiceRoundtripTests
         exportedContent.ShouldContain("Address_Street");
         exportedContent.ShouldContain("Address_City");
         exportedContent.ShouldContain("PreviousAddresses_Street");
+        importResult.ShouldBeSuccess();
+        AssertPersons([.. importResult.Value.Data], data);
+        AssertNestedData([.. importResult.Value.Data], data);
+    }
+
+    [Fact]
+    public async Task ExportAndImportAsync_WithCsvTypedProvider_RoundTripsTypedHierarchy()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvTypedDataPorterProvider()], this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.CsvTyped, UseAttributes = false };
+        var importOptions = new ImportOptions { Format = Format.CsvTyped, UseAttributes = false };
+
+        // Act
+        var exportResult = await sut.ExportAsync(data, stream, exportOptions);
+        this.WriteExportToOutput(Format.CsvTyped, stream);
+        var exportedContent = ReadTextContent(stream);
+        stream.Position = 0;
+        var importResult = await sut.ImportAsync<PersonEntity>(stream, importOptions);
+        this.output.WriteLine("Imported data:");
+        this.output.WriteLine(importResult.Value.Data.DumpText());
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        exportedContent.ShouldContain("RecordType,RootId,RecordId,ParentId,Collection,Index");
+        exportedContent.ShouldContain("Person,");
+        exportedContent.ShouldContain("Address,");
+        exportedContent.ShouldContain("BillingAddress,");
+        exportedContent.ShouldContain("PreviousAddress,");
         importResult.ShouldBeSuccess();
         AssertPersons([.. importResult.Value.Data], data);
         AssertNestedData([.. importResult.Value.Data], data);
@@ -392,6 +424,7 @@ public class DataPorterServiceRoundtripTests
         switch (format)
         {
             case Format.Csv:
+            case Format.CsvTyped:
             case Format.Json:
             case Format.Xml:
                 this.WriteTextContentToOutput(format, stream);

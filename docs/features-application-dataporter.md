@@ -4,7 +4,7 @@ A flexible, extensible data export/import framework for .NET supporting multiple
 
 ## Features
 
-- **Multiple Format Support**: Excel (.xlsx), CSV, JSON, XML, and PDF (export only)
+- **Multiple Format Support**: Excel (.xlsx), CSV, typed-row CSV, JSON, XML, and PDF (export only)
 - **Dual Configuration Approaches**: Profile-based (similar to AutoMapper) or attribute-based
 - **Streaming Support**: Memory-efficient import for large files using `IAsyncEnumerable`
 - **Validation**: Built-in validation with customizable rules and error handling
@@ -28,6 +28,7 @@ Add the package to your project:
 services.AddDataPorter(configuration)
     .WithExcel(c => c.UseTableFormatting = true)
     .WithCsv(c => c.Delimiter = ",")
+    .WithCsvTyped(c => c.Delimiter = ",")
     .WithJson()
     .WithXml()
     .WithPdf();
@@ -232,6 +233,67 @@ services.AddDataPorter()
         config.DefaultFontSize = 11;
         config.MaxColumnWidth = 100;
     });
+```
+
+### Typed-Row CSV Provider
+
+Uses CsvHelper with a typed-rows schema for hierarchical object graphs in a single CSV file.
+
+```csharp
+services.AddDataPorter()
+    .WithCsvTyped(config =>
+    {
+        config.Delimiter = ",";
+        config.Encoding = Encoding.UTF8;
+        config.Culture = CultureInfo.InvariantCulture;
+        config.TrimFields = true;
+    });
+```
+
+**What the typed-rows pattern is:**
+- one CSV row represents exactly one logical node in the object graph
+- root entities, nested objects, and collection items each get their own row
+- `RecordType` identifies what kind of node the row represents
+- `RootId`, `RecordId`, and `ParentId` make the hierarchy explicit and round-trip friendly
+
+This is preferable to flattening unbounded collections into `Item1`, `Item2`, `Item3` columns because the schema stays stable when collection sizes change. It is also preferable to embedding JSON in a cell because the file remains plain CSV, tabular, and easy to inspect with standard tools.
+
+**Base columns:**
+- `RecordType` - logical node kind such as `Person`, `Address`, `BillingAddress`, `PreviousAddress`
+- `RootId` - identifier of the root aggregate row
+- `RecordId` - identifier of the current row/node
+- `ParentId` - identifier of the direct parent row/node
+- `Collection` - relationship name for child rows when applicable
+- `Index` - collection order for repeated child items
+
+**Mapping rules for export:**
+- the root `PersonEntity` is emitted as `RecordType = Person`
+- the nested `Address` is emitted as a child row with `RecordType = Address`, `ParentId = <person id>`, `Collection = Address`
+- the nested `BillingAddress` value object is emitted as a child row with `RecordType = BillingAddress`, `ParentId = <person id>`, `Collection = BillingAddress`
+- each `PreviousAddresses` item is emitted as its own child row with `RecordType = PreviousAddress`, `ParentId = <person id>`, `Collection = PreviousAddresses`, and `Index = 0..n`
+- value objects without their own persisted identifier should use a deterministic synthetic `RecordId`, for example `<RootId>:BillingAddress`
+
+**Parsing and rehydration rules for import:**
+- read all rows into a typed-row model first
+- group rows by `RootId`
+- materialize the root row first
+- attach direct child rows by matching `ParentId`
+- rebuild collections by grouping child rows by `Collection` and ordering by `Index`
+- use invariant parsing for `Guid`, enum, integer, and nullable values
+
+**Typed CSV example:**
+
+```csv
+RecordType,RootId,RecordId,ParentId,Collection,Index,FirstName,LastName,Age,ManagerId,Status,AddressName,Street,PostalCode,City,Country
+Person,person-1,person-1,,,,Ada,Lovelace,36,manager-1,Active,,,,,
+Address,person-1,address-1,person-1,Address,,,,,,,,Analytical Engine Way 1,,London,
+BillingAddress,person-1,person-1:BillingAddress,person-1,BillingAddress,,,,,,,Ada Lovelace,Analytical Engine Way 1,A1 100,London,UK
+PreviousAddress,person-1,prev-1,person-1,PreviousAddresses,0,,,,,,,,Byron Avenue 5,,London,
+PreviousAddress,person-1,prev-2,person-1,PreviousAddresses,1,,,,,,,,Countess Road 9,,Oxford,
+Person,person-2,person-2,,,,Grace,Hopper,85,,Inactive,,,,,
+Address,person-2,address-2,person-2,Address,,,,,,,,Compiler Street 42,,Arlington,
+BillingAddress,person-2,person-2:BillingAddress,person-2,BillingAddress,,,,,,,Grace Hopper,Compiler Street 42,C0 200,Arlington,US
+PreviousAddress,person-2,prev-3,person-2,PreviousAddresses,0,,,,,,,,Cobol Lane 1,,New York,
 ```
 
 **Features:**

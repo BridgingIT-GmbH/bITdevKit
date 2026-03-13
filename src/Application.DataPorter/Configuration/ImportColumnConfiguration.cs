@@ -233,19 +233,3 @@ public sealed class ImportColumnConfiguration : IColumnConfiguration
         return Convert.ChangeType(value, targetType, System.Globalization.CultureInfo.InvariantCulture);
     }
 }
-
-/// <summary>
-/// Represents a validator for a column.
-/// </summary>
-public sealed class ColumnValidator
-{
-    /// <summary>
-    /// Gets or sets the validation function.
-    /// </summary>
-    public required Func<object, bool> Validate { get; init; }
-
-    /// <summary>
-    /// Gets or sets the error message when validation fails.
-    /// </summary>
-    public required string ErrorMessage { get; init; }
-}

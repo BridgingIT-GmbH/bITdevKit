@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Common.UnitTests.DataPorter;
+namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
 using BridgingIT.DevKit.Application.DataPorter;
 
@@ -17,7 +17,7 @@ public class ExportOptionsTests
         var sut = new ExportOptions();
 
         // Assert
-        sut.Format.ShouldBe(DataPorterFormat.Excel);
+        sut.Format.ShouldBe(Format.Excel);
         sut.UseAttributes.ShouldBeTrue();
         sut.IncludeHeaders.ShouldBeTrue();
         sut.Culture.ShouldBe(System.Globalization.CultureInfo.InvariantCulture);
@@ -31,7 +31,7 @@ public class ExportOptionsTests
         // Arrange & Act
         var sut = new ExportOptions
         {
-            Format = DataPorterFormat.Csv,
+            Format = Format.Csv,
             ProfileName = "TestProfile",
             UseAttributes = false,
             Culture = new System.Globalization.CultureInfo("de-DE"),
@@ -41,7 +41,7 @@ public class ExportOptionsTests
         };
 
         // Assert
-        sut.Format.ShouldBe(DataPorterFormat.Csv);
+        sut.Format.ShouldBe(Format.Csv);
         sut.ProfileName.ShouldBe("TestProfile");
         sut.UseAttributes.ShouldBeFalse();
         sut.Culture.Name.ShouldBe("de-DE");
@@ -61,7 +61,7 @@ public class ImportOptionsTests
         var sut = new ImportOptions();
 
         // Assert
-        sut.Format.ShouldBe(DataPorterFormat.Excel);
+        sut.Format.ShouldBe(Format.Excel);
         sut.UseAttributes.ShouldBeTrue();
         sut.HeaderRowIndex.ShouldBe(0);
         sut.SkipRows.ShouldBe(0);
@@ -77,7 +77,7 @@ public class ImportOptionsTests
         // Arrange & Act
         var sut = new ImportOptions
         {
-            Format = DataPorterFormat.Json,
+            Format = Format.Json,
             ProfileName = "TestProfile",
             UseAttributes = false,
             Culture = new System.Globalization.CultureInfo("fr-FR"),
@@ -91,7 +91,7 @@ public class ImportOptionsTests
         };
 
         // Assert
-        sut.Format.ShouldBe(DataPorterFormat.Json);
+        sut.Format.ShouldBe(Format.Json);
         sut.ProfileName.ShouldBe("TestProfile");
         sut.UseAttributes.ShouldBeFalse();
         sut.Culture.Name.ShouldBe("fr-FR");
@@ -117,14 +117,14 @@ public class ExportResultTests
             BytesWritten = 1024,
             RowsExported = 100,
             Duration = TimeSpan.FromSeconds(5),
-            Format = DataPorterFormat.Excel
+            Format = Format.Excel
         };
 
         // Assert
         sut.BytesWritten.ShouldBe(1024);
         sut.RowsExported.ShouldBe(100);
         sut.Duration.ShouldBe(TimeSpan.FromSeconds(5));
-        sut.Format.ShouldBe(DataPorterFormat.Excel);
+        sut.Format.ShouldBe(Format.Excel);
         sut.Warnings.ShouldNotBeNull();
         sut.Warnings.ShouldBeEmpty();
         sut.Metadata.ShouldNotBeNull();
@@ -140,7 +140,7 @@ public class ExportResultTests
             BytesWritten = 2048,
             RowsExported = 50,
             Duration = TimeSpan.FromMilliseconds(500),
-            Format = DataPorterFormat.Csv,
+            Format = Format.Csv,
             Warnings = ["Warning 1", "Warning 2"],
             Metadata = new Dictionary<string, object> { { "source", "test" } }
         };

@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.DataPorter;
 /// <summary>
 /// Specifies the supported data porter formats for import and export operations.
 /// </summary>
-public enum DataPorterFormat
+public enum Format
 {
     /// <summary>
     /// Microsoft Excel format (.xlsx).

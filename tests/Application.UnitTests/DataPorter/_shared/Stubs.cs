@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Common.UnitTests.DataPorter;
+namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
 using System.Runtime.CompilerServices;
 using BridgingIT.DevKit.Application.DataPorter;
@@ -241,13 +241,13 @@ public class TestExportProvider : IDataExportProvider
 {
     private readonly bool throwOnCancel;
 
-    public TestExportProvider(DataPorterFormat format = DataPorterFormat.Excel, bool throwOnCancel = false)
+    public TestExportProvider(Format format = Format.Excel, bool throwOnCancel = false)
     {
         this.Format = format;
         this.throwOnCancel = throwOnCancel;
     }
 
-    public DataPorterFormat Format { get; }
+    public Format Format { get; }
 
     public IReadOnlyCollection<string> SupportedExtensions => [".xlsx"];
 
@@ -308,13 +308,13 @@ public class TestImportProvider : IDataImportProvider
 {
     private readonly bool throwOnCancel;
 
-    public TestImportProvider(DataPorterFormat format = DataPorterFormat.Excel, bool throwOnCancel = false)
+    public TestImportProvider(Format format = Format.Excel, bool throwOnCancel = false)
     {
         this.Format = format;
         this.throwOnCancel = throwOnCancel;
     }
 
-    public DataPorterFormat Format { get; }
+    public Format Format { get; }
 
     public IReadOnlyCollection<string> SupportedExtensions => [".xlsx"];
 
@@ -378,7 +378,7 @@ public class TestImportProvider : IDataImportProvider
 /// </summary>
 public class TestImportOnlyProvider : IDataPorterProvider
 {
-    public DataPorterFormat Format => DataPorterFormat.Excel;
+    public Format Format => Format.Excel;
 
     public IReadOnlyCollection<string> SupportedExtensions => [".xlsx"];
 
@@ -394,7 +394,7 @@ public class TestImportOnlyProvider : IDataPorterProvider
 /// </summary>
 public class TestExportOnlyProvider : IDataPorterProvider
 {
-    public DataPorterFormat Format => DataPorterFormat.Excel;
+    public Format Format => Format.Excel;
 
     public IReadOnlyCollection<string> SupportedExtensions => [".xlsx"];
 
@@ -410,7 +410,7 @@ public class TestExportOnlyProvider : IDataPorterProvider
 /// </summary>
 public class TestStreamingImportProvider : IDataImportProvider
 {
-    public DataPorterFormat Format => DataPorterFormat.Excel;
+    public Format Format => Format.Excel;
 
     public IReadOnlyCollection<string> SupportedExtensions => [".xlsx"];
 

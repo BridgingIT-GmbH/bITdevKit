@@ -29,7 +29,7 @@ public class CoreDataPorterEndpoints : EndpointsBase
                    [FromQuery] string fileName = null,
                    CancellationToken ct = default) =>
             {
-                if (!Enum.TryParse<DataPorterFormat>(format, ignoreCase: true, out var dataPorterFormat))
+                if (!Enum.TryParse<Format>(format, ignoreCase: true, out var dataPorterFormat))
                 {
                     return Results.Problem(
                         title: "Invalid format",
@@ -52,11 +52,11 @@ public class CoreDataPorterEndpoints : EndpointsBase
                 var stream = result.Value;
                 var (contentType, extension) = dataPorterFormat switch
                 {
-                    DataPorterFormat.Excel => ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx"),
-                    DataPorterFormat.Csv => ("text/csv", "csv"),
-                    DataPorterFormat.Json => ("application/json", "json"),
-                    DataPorterFormat.Xml => ("application/xml", "xml"),
-                    DataPorterFormat.Pdf => ("application/pdf", "pdf"),
+                    Format.Excel => ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx"),
+                    Format.Csv => ("text/csv", "csv"),
+                    Format.Json => ("application/json", "json"),
+                    Format.Xml => ("application/xml", "xml"),
+                    Format.Pdf => ("application/pdf", "pdf"),
                     _ => ("application/octet-stream", "dat")
                 };
 
@@ -124,7 +124,7 @@ public class CoreDataPorterEndpoints : EndpointsBase
                         statusCode: StatusCodes.Status400BadRequest);
                 }
 
-                if (!Enum.TryParse<DataPorterFormat>(format, ignoreCase: true, out var dataPorterFormat))
+                if (!Enum.TryParse<Format>(format, ignoreCase: true, out var dataPorterFormat))
                 {
                     return Results.Problem(
                         title: "Invalid format",
@@ -198,7 +198,7 @@ public class CoreDataPorterEndpoints : EndpointsBase
                         statusCode: StatusCodes.Status400BadRequest);
                 }
 
-                if (!Enum.TryParse<DataPorterFormat>(format, ignoreCase: true, out var dataPorterFormat))
+                if (!Enum.TryParse<Format>(format, ignoreCase: true, out var dataPorterFormat))
                 {
                     return Results.Problem(
                         title: "Invalid format",

@@ -15,26 +15,20 @@ using MigraDocVerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAl
 /// <summary>
 /// PDF data porter provider using MigraDoc (export only).
 /// </summary>
-public sealed class PdfDataPorterProvider : IDataExportProvider
+/// <remarks>
+/// Initializes a new instance of the <see cref="PdfDataPorterProvider"/> class.
+/// </remarks>
+/// <param name="configuration">The PDF configuration.</param>
+/// <param name="loggerFactory">The logger factory.</param>
+public sealed class PdfDataPorterProvider(
+    PdfConfiguration configuration = null,
+    ILoggerFactory loggerFactory = null) : IDataExportProvider
 {
-    private readonly PdfConfiguration configuration;
-    private readonly ILogger<PdfDataPorterProvider> logger;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="PdfDataPorterProvider"/> class.
-    /// </summary>
-    /// <param name="configuration">The PDF configuration.</param>
-    /// <param name="loggerFactory">The logger factory.</param>
-    public PdfDataPorterProvider(
-        PdfConfiguration configuration = null,
-        ILoggerFactory loggerFactory = null)
-    {
-        this.configuration = configuration ?? new PdfConfiguration();
-        this.logger = loggerFactory?.CreateLogger<PdfDataPorterProvider>() ?? NullLogger<PdfDataPorterProvider>.Instance;
-    }
+    private readonly PdfConfiguration configuration = configuration ?? new PdfConfiguration();
+    private readonly ILogger<PdfDataPorterProvider> logger = loggerFactory?.CreateLogger<PdfDataPorterProvider>() ?? NullLogger<PdfDataPorterProvider>.Instance;
 
     /// <inheritdoc/>
-    public DataPorterFormat Format => DataPorterFormat.Pdf;
+    public Format Format => Format.Pdf;
 
     /// <inheritdoc/>
     public IReadOnlyCollection<string> SupportedExtensions => [".pdf"];

@@ -47,7 +47,12 @@ public static partial class ServiceCollectionExtensions
         return context;
     }
 
-    /// <param name="context">The builder context.</param>
+    /// <summary>
+    /// Provides extension methods for registering export and import profiles in a DataPorterBuilderContext.
+    /// </summary>
+    /// <remarks>Use these extension methods to add export and import profiles from assemblies or register
+    /// specific profile types for data porting operations. These methods support method chaining for fluent
+    /// configuration.</remarks>
     extension(DataPorterBuilderContext context)
     {
         /// <summary>
@@ -55,7 +60,7 @@ public static partial class ServiceCollectionExtensions
         /// </summary>
         /// <typeparam name="T">A type in the assembly to scan.</typeparam>
         /// <returns>The builder context for method chaining.</returns>
-        public DataPorterBuilderContext AddProfilesFromAssemblyContaining<T>()
+        public DataPorterBuilderContext AddProfilesFromAssembly<T>()
         {
             return context.AddProfilesFromAssembly(typeof(T).Assembly);
         }

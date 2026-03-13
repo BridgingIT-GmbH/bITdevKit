@@ -14,27 +14,19 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// <summary>
 /// Main service for data export and import operations.
 /// </summary>
-public sealed class DataPorterService : IDataExporter, IDataImporter
+/// <remarks>
+/// Initializes a new instance of the <see cref="DataPorterService"/> class.
+/// </remarks>
+/// <param name="providers">The available data porter providers.</param>
+/// <param name="configurationMerger">The configuration merger.</param>
+/// <param name="loggerFactory">The logger factory.</param>
+public sealed class DataPorterService(
+    IEnumerable<IDataPorterProvider> providers,
+    ConfigurationMerger configurationMerger,
+    ILoggerFactory loggerFactory = null) : IDataExporter, IDataImporter
 {
-    private readonly IEnumerable<IDataPorterProvider> providers;
-    private readonly ConfigurationMerger configurationMerger;
-    private readonly ILogger<DataPorterService> logger;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DataPorterService"/> class.
-    /// </summary>
-    /// <param name="providers">The available data porter providers.</param>
-    /// <param name="configurationMerger">The configuration merger.</param>
-    /// <param name="loggerFactory">The logger factory.</param>
-    public DataPorterService(
-        IEnumerable<IDataPorterProvider> providers,
-        ConfigurationMerger configurationMerger,
-        ILoggerFactory loggerFactory = null)
-    {
-        this.providers = providers ?? [];
-        this.configurationMerger = configurationMerger;
-        this.logger = loggerFactory?.CreateLogger<DataPorterService>() ?? NullLogger<DataPorterService>.Instance;
-    }
+    private readonly IEnumerable<IDataPorterProvider> providers = providers ?? [];
+    private readonly ILogger<DataPorterService> logger = loggerFactory?.CreateLogger<DataPorterService>() ?? NullLogger<DataPorterService>.Instance;
 
     /// <inheritdoc/>
     public async Task<Result<ExportResult>> ExportAsync<TSource>(
@@ -65,7 +57,7 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
                 .WithErrors(providerResult.Errors);
         }
 
-        var configuration = this.configurationMerger.BuildExportConfiguration<TSource>(options);
+        var configuration = configurationMerger.BuildExportConfiguration<TSource>(options);
         var provider = providerResult.Value;
 
         this.logger.LogInformation(
@@ -123,7 +115,7 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
         CancellationToken cancellationToken = default)
         where TSource : class
     {
-        using var stream = new MemoryStream();
+        await using var stream = new MemoryStream();
         var result = await this.ExportAsync(data, stream, options, cancellationToken);
 
         if (result.IsFailure)
@@ -145,7 +137,7 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
     {
         options ??= new ExportOptions();
 
-        if (dataSets is null || !dataSets.Any())
+        if (dataSets?.Any() != true)
         {
             return Result<ExportResult>.Failure()
                 .WithError(new DataPorterError("Data sets cannot be null or empty."));
@@ -173,7 +165,7 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
 
             var configurations = dataSets.Select(ds =>
             {
-                var config = this.configurationMerger.BuildExportConfiguration(ds.ItemType, options);
+                var config = configurationMerger.BuildExportConfiguration(ds.ItemType, options);
                 config.SheetName = ds.SheetName;
                 return (ds.Data, config);
             }).ToList();
@@ -217,7 +209,7 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
                 .WithErrors(providerResult.Errors);
         }
 
-        var configuration = this.configurationMerger.BuildImportConfiguration<TTarget>(options);
+        var configuration = configurationMerger.BuildImportConfiguration<TTarget>(options);
         var provider = providerResult.Value;
 
         this.logger.LogInformation(
@@ -280,7 +272,7 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
                 .WithError(new DataPorterError("Data cannot be null or empty."));
         }
 
-        using var stream = new MemoryStream(data);
+        await using var stream = new MemoryStream(data);
         return await this.ImportAsync<TTarget>(stream, options, cancellationToken);
     }
 
@@ -308,7 +300,7 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
             yield break;
         }
 
-        var configuration = this.configurationMerger.BuildImportConfiguration<TTarget>(options);
+        var configuration = configurationMerger.BuildImportConfiguration<TTarget>(options);
         var provider = providerResult.Value;
 
         if (provider is not IDataImportProvider importProvider || !provider.SupportsStreaming)
@@ -351,7 +343,7 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
                 .WithErrors(providerResult.Errors);
         }
 
-        var configuration = this.configurationMerger.BuildImportConfiguration<TTarget>(options);
+        var configuration = configurationMerger.BuildImportConfiguration<TTarget>(options);
         var provider = providerResult.Value;
 
         try
@@ -380,7 +372,7 @@ public sealed class DataPorterService : IDataExporter, IDataImporter
     }
 
     private Result<IDataPorterProvider> GetProvider(
-        DataPorterFormat format,
+        Format format,
         bool requiresExport = false,
         bool requiresImport = false)
     {

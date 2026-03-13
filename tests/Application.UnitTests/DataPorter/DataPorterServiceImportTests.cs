@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Common.UnitTests.DataPorter;
+namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
 using BridgingIT.DevKit.Application.DataPorter;
 
@@ -55,10 +55,10 @@ public class DataPorterServiceImportTests
     public async Task ImportAsync_WithUnsupportedFormat_ReturnsFailure()
     {
         // Arrange
-        var mockProvider = CreateMockImportProvider(DataPorterFormat.Csv);
+        var mockProvider = CreateMockImportProvider(Format.Csv);
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
         using var stream = new MemoryStream([1, 2, 3, 4]);
-        var options = new ImportOptions { Format = DataPorterFormat.Excel };
+        var options = new ImportOptions { Format = Format.Excel };
 
         // Act
         var result = await sut.ImportAsync<SimpleEntity>(stream, options);
@@ -205,12 +205,12 @@ public class DataPorterServiceImportTests
     public async Task ImportAsync_WithImportOptions_UsesProvidedOptions()
     {
         // Arrange
-        var mockProvider = CreateMockImportProvider(DataPorterFormat.Csv);
+        var mockProvider = CreateMockImportProvider(Format.Csv);
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
         using var stream = new MemoryStream([1, 2, 3, 4]);
         var options = new ImportOptions
         {
-            Format = DataPorterFormat.Csv,
+            Format = Format.Csv,
             SheetName = "CustomSheet",
             HeaderRowIndex = 1,
             SkipRows = 2
@@ -302,7 +302,7 @@ public class DataPorterServiceImportTests
     }
 
     private static TestImportProvider CreateMockImportProvider(
-        DataPorterFormat format = DataPorterFormat.Excel,
+        Format format = Format.Excel,
         bool throwOnCancel = false)
     {
         return new TestImportProvider(format, throwOnCancel);

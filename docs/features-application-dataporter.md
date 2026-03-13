@@ -26,8 +26,8 @@ Add the package to your project:
 
 ```csharp
 services.AddDataPorter(configuration)
-    .WithExcel(config => config.UseTableFormatting = true)
-    .WithCsv(config => config.Delimiter = ",")
+    .WithExcel(c => c.UseTableFormatting = true)
+    .WithCsv(c => c.Delimiter = ",")
     .WithJson()
     .WithXml()
     .WithPdf();
@@ -49,7 +49,7 @@ public class MyService
     {
         var result = await this.exporter.ExportAsync(orders, output, new ExportOptions
         {
-            Format = DataPorterFormat.Excel
+            Format = Format.Excel
         });
 
         if (result.IsSuccess)
@@ -67,7 +67,7 @@ public async Task<IEnumerable<Order>> ImportOrdersAsync(Stream input)
 {
     var result = await this.importer.ImportAsync<Order>(input, new ImportOptions
     {
-        Format = DataPorterFormat.Csv
+        Format = Format.Csv
     });
 
     if (result.IsSuccess)
@@ -211,7 +211,7 @@ services.AddDataPorter(configuration)
     .AddExportProfile<OrderExportProfile>()
     .AddImportProfile<OrderImportProfile>()
     // Or scan an assembly
-    .AddProfilesFromAssemblyContaining<OrderExportProfile>();
+    .AddProfilesFromAssembly<OrderExportProfile>();
 ```
 
 ## Format Providers
@@ -366,7 +366,7 @@ var dataSets = new[]
 
 await exporter.ExportMultipleAsync(dataSets, stream, new ExportOptions
 {
-    Format = DataPorterFormat.Excel
+    Format = Format.Excel
 });
 ```
 

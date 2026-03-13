@@ -14,26 +14,20 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// <summary>
 /// Excel data porter provider using ClosedXML.
 /// </summary>
-public sealed class ExcelDataPorterProvider : IDataExportProvider, IDataImportProvider
+/// <remarks>
+/// Initializes a new instance of the <see cref="ExcelDataPorterProvider"/> class.
+/// </remarks>
+/// <param name="configuration">The Excel configuration.</param>
+/// <param name="loggerFactory">The logger factory.</param>
+public sealed class ExcelDataPorterProvider(
+    ExcelConfiguration configuration = null,
+    ILoggerFactory loggerFactory = null) : IDataExportProvider, IDataImportProvider
 {
-    private readonly ExcelConfiguration configuration;
-    private readonly ILogger<ExcelDataPorterProvider> logger;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ExcelDataPorterProvider"/> class.
-    /// </summary>
-    /// <param name="configuration">The Excel configuration.</param>
-    /// <param name="loggerFactory">The logger factory.</param>
-    public ExcelDataPorterProvider(
-        ExcelConfiguration configuration = null,
-        ILoggerFactory loggerFactory = null)
-    {
-        this.configuration = configuration ?? new ExcelConfiguration();
-        this.logger = loggerFactory?.CreateLogger<ExcelDataPorterProvider>() ?? NullLogger<ExcelDataPorterProvider>.Instance;
-    }
+    private readonly ExcelConfiguration configuration = configuration ?? new ExcelConfiguration();
+    private readonly ILogger<ExcelDataPorterProvider> logger = loggerFactory?.CreateLogger<ExcelDataPorterProvider>() ?? NullLogger<ExcelDataPorterProvider>.Instance;
 
     /// <inheritdoc/>
-    public DataPorterFormat Format => DataPorterFormat.Excel;
+    public Format Format => Format.Excel;
 
     /// <inheritdoc/>
     public IReadOnlyCollection<string> SupportedExtensions => [".xlsx", ".xlsm"];

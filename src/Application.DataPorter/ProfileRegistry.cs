@@ -106,12 +106,12 @@ public sealed class ProfileRegistry : IProfileRegistry
     /// <inheritdoc/>
     public IReadOnlyCollection<IExportProfile> GetAllExportProfiles()
     {
-        return this.exportProfiles.Values.ToList();
+        return [.. this.exportProfiles.Values];
     }
 
     /// <inheritdoc/>
     public IReadOnlyCollection<IImportProfile> GetAllImportProfiles()
     {
-        return this.importProfiles.Values.ToList();
+        return [.. this.importProfiles.Values];
     }
 }

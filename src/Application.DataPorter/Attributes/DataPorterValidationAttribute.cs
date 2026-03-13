@@ -8,29 +8,24 @@ namespace BridgingIT.DevKit.Application.DataPorter;
 /// <summary>
 /// Adds validation rules for import operations.
 /// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="DataPorterValidationAttribute"/> class.
+/// </remarks>
+/// <param name="type">The validation type.</param>
+/// <param name="errorMessage">The custom error message.</param>
 [AttributeUsage(AttributeTargets.Property, Inherited = true, AllowMultiple = true)]
-public sealed class DataPorterValidationAttribute : Attribute
+public sealed class DataPorterValidationAttribute(ValidationType type, string errorMessage = null) : Attribute
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DataPorterValidationAttribute"/> class.
-    /// </summary>
-    /// <param name="type">The validation type.</param>
-    /// <param name="errorMessage">The custom error message.</param>
-    public DataPorterValidationAttribute(ValidationType type, string errorMessage = null)
-    {
-        this.Type = type;
-        this.ErrorMessage = errorMessage;
-    }
 
     /// <summary>
     /// Gets the validation type.
     /// </summary>
-    public ValidationType Type { get; }
+    public ValidationType Type { get; } = type;
 
     /// <summary>
     /// Gets or sets the custom error message.
     /// </summary>
-    public string ErrorMessage { get; set; }
+    public string ErrorMessage { get; set; } = errorMessage;
 
     /// <summary>
     /// Gets or sets the validation parameter (e.g., min length, max length, regex pattern).

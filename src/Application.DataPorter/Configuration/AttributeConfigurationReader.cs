@@ -11,20 +11,14 @@ using System.Reflection;
 /// <summary>
 /// Reads configuration from DataPorter attributes on types.
 /// </summary>
-public sealed class AttributeConfigurationReader
+/// <remarks>
+/// Initializes a new instance of the <see cref="AttributeConfigurationReader"/> class.
+/// </remarks>
+/// <param name="serviceProvider">The service provider for resolving converters.</param>
+public sealed class AttributeConfigurationReader(IServiceProvider serviceProvider = null)
 {
     private readonly ConcurrentDictionary<Type, ExportConfiguration> exportConfigCache = new();
     private readonly ConcurrentDictionary<Type, ImportConfiguration> importConfigCache = new();
-    private readonly IServiceProvider serviceProvider;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AttributeConfigurationReader"/> class.
-    /// </summary>
-    /// <param name="serviceProvider">The service provider for resolving converters.</param>
-    public AttributeConfigurationReader(IServiceProvider serviceProvider = null)
-    {
-        this.serviceProvider = serviceProvider;
-    }
 
     /// <summary>
     /// Reads export configuration from attributes on the specified type.
@@ -64,13 +58,13 @@ public sealed class AttributeConfigurationReader
             foreach (var property in properties)
             {
                 var ignoreAttr = property.GetCustomAttribute<DataPorterIgnoreAttribute>();
-                if (ignoreAttr is not null && !ignoreAttr.ImportOnly)
+                if (ignoreAttr?.ImportOnly == false)
                 {
                     continue;
                 }
 
                 var columnAttr = property.GetCustomAttribute<DataPorterColumnAttribute>();
-                if (columnAttr is not null && !columnAttr.Export)
+                if (columnAttr?.Export == false)
                 {
                     continue;
                 }
@@ -101,7 +95,7 @@ public sealed class AttributeConfigurationReader
             }
 
             // Sort columns by order
-            config.Columns = config.Columns.OrderBy(c => c.Order).ToList();
+            config.Columns = [.. config.Columns.OrderBy(c => c.Order)];
 
             return config;
         });
@@ -151,13 +145,13 @@ public sealed class AttributeConfigurationReader
                 }
 
                 var ignoreAttr = property.GetCustomAttribute<DataPorterIgnoreAttribute>();
-                if (ignoreAttr is not null && !ignoreAttr.ExportOnly)
+                if (ignoreAttr?.ExportOnly == false)
                 {
                     continue;
                 }
 
                 var columnAttr = property.GetCustomAttribute<DataPorterColumnAttribute>();
-                if (columnAttr is not null && !columnAttr.Import)
+                if (columnAttr?.Import == false)
                 {
                     continue;
                 }
@@ -202,9 +196,9 @@ public sealed class AttributeConfigurationReader
 
     private IValueConverter ResolveConverter(Type converterType)
     {
-        if (this.serviceProvider is not null)
+        if (serviceProvider is not null)
         {
-            var converter = this.serviceProvider.GetService(converterType) as IValueConverter;
+            var converter = serviceProvider.GetService(converterType) as IValueConverter;
             if (converter is not null)
             {
                 return converter;

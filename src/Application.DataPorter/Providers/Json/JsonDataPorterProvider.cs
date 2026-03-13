@@ -14,26 +14,20 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// <summary>
 /// JSON data porter provider using System.Text.Json.
 /// </summary>
-public sealed class JsonDataPorterProvider : IDataExportProvider, IDataImportProvider
+/// <remarks>
+/// Initializes a new instance of the <see cref="JsonDataPorterProvider"/> class.
+/// </remarks>
+/// <param name="configuration">The JSON configuration.</param>
+/// <param name="loggerFactory">The logger factory.</param>
+public sealed class JsonDataPorterProvider(
+    JsonConfiguration configuration = null,
+    ILoggerFactory loggerFactory = null) : IDataExportProvider, IDataImportProvider
 {
-    private readonly JsonConfiguration configuration;
-    private readonly ILogger<JsonDataPorterProvider> logger;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="JsonDataPorterProvider"/> class.
-    /// </summary>
-    /// <param name="configuration">The JSON configuration.</param>
-    /// <param name="loggerFactory">The logger factory.</param>
-    public JsonDataPorterProvider(
-        JsonConfiguration configuration = null,
-        ILoggerFactory loggerFactory = null)
-    {
-        this.configuration = configuration ?? new JsonConfiguration();
-        this.logger = loggerFactory?.CreateLogger<JsonDataPorterProvider>() ?? NullLogger<JsonDataPorterProvider>.Instance;
-    }
+    private readonly JsonConfiguration configuration = configuration ?? new JsonConfiguration();
+    private readonly ILogger<JsonDataPorterProvider> logger = loggerFactory?.CreateLogger<JsonDataPorterProvider>() ?? NullLogger<JsonDataPorterProvider>.Instance;
 
     /// <inheritdoc/>
-    public DataPorterFormat Format => DataPorterFormat.Json;
+    public Format Format => Format.Json;
 
     /// <inheritdoc/>
     public IReadOnlyCollection<string> SupportedExtensions => [".json"];

@@ -9,24 +9,15 @@ namespace BridgingIT.DevKit.Application.DataPorter;
 /// Merges configuration from profiles, attributes, and options.
 /// Priority: Profile > Attributes > Options > Defaults
 /// </summary>
-public sealed class ConfigurationMerger
+/// <remarks>
+/// Initializes a new instance of the <see cref="ConfigurationMerger"/> class.
+/// </remarks>
+/// <param name="profileRegistry">The profile registry.</param>
+/// <param name="attributeReader">The attribute configuration reader.</param>
+public sealed class ConfigurationMerger(
+    IProfileRegistry profileRegistry,
+    AttributeConfigurationReader attributeReader)
 {
-    private readonly IProfileRegistry profileRegistry;
-    private readonly AttributeConfigurationReader attributeReader;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ConfigurationMerger"/> class.
-    /// </summary>
-    /// <param name="profileRegistry">The profile registry.</param>
-    /// <param name="attributeReader">The attribute configuration reader.</param>
-    public ConfigurationMerger(
-        IProfileRegistry profileRegistry,
-        AttributeConfigurationReader attributeReader)
-    {
-        this.profileRegistry = profileRegistry;
-        this.attributeReader = attributeReader;
-    }
-
     /// <summary>
     /// Builds the export configuration for a type.
     /// </summary>
@@ -51,11 +42,11 @@ public sealed class ConfigurationMerger
 
         // Start with attribute-based configuration
         var config = options.UseAttributes
-            ? this.attributeReader.ReadExportConfiguration(sourceType)
+            ? attributeReader.ReadExportConfiguration(sourceType)
             : new ExportConfiguration { SourceType = sourceType };
 
         // Override with profile configuration if available
-        var profile = this.profileRegistry.GetExportProfile(sourceType);
+        var profile = profileRegistry.GetExportProfile(sourceType);
         if (profile is not null)
         {
             this.MergeProfileIntoExportConfig(config, profile);
@@ -97,11 +88,11 @@ public sealed class ConfigurationMerger
 
         // Start with attribute-based configuration
         var config = options.UseAttributes
-            ? this.attributeReader.ReadImportConfiguration(targetType)
+            ? attributeReader.ReadImportConfiguration(targetType)
             : new ImportConfiguration { TargetType = targetType };
 
         // Override with profile configuration if available
-        var profile = this.profileRegistry.GetImportProfile(targetType);
+        var profile = profileRegistry.GetImportProfile(targetType);
         if (profile is not null)
         {
             this.MergeProfileIntoImportConfig(config, profile);
@@ -174,10 +165,9 @@ public sealed class ConfigurationMerger
         config.FooterRows.AddRange(profile.FooterRows);
 
         // Re-sort columns by order
-        config.Columns = config.Columns
+        config.Columns = [.. config.Columns
             .Where(c => !c.Ignore)
-            .OrderBy(c => c.Order >= 0 ? c.Order : int.MaxValue)
-            .ToList();
+            .OrderBy(c => c.Order >= 0 ? c.Order : int.MaxValue)];
     }
 
     private void MergeColumnConfiguration(ColumnConfiguration target, ColumnConfiguration source)
@@ -277,7 +267,7 @@ public sealed class ConfigurationMerger
                     PropertyInfo = profileColumn.PropertyInfo,
                     ValueSetter = profileColumn.ValueSetter,
                     Parser = profileColumn.Parser,
-                    Validators = new List<ColumnValidator>(profileColumn.Validators)
+                    Validators = [.. profileColumn.Validators]
                 });
             }
         }

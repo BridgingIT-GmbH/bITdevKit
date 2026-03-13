@@ -13,7 +13,7 @@ public interface IDataPorterProvider
     /// <summary>
     /// Gets the unique format identifier.
     /// </summary>
-    DataPorterFormat Format { get; }
+    Format Format { get; }
 
     /// <summary>
     /// Gets the supported file extensions for this provider.

@@ -8,22 +8,18 @@ namespace BridgingIT.DevKit.Application.DataPorter;
 /// <summary>
 /// Configures the sheet/section for a class during export/import operations.
 /// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="DataPorterSheetAttribute"/> class.
+/// </remarks>
+/// <param name="name">The sheet/section name.</param>
 [AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
-public sealed class DataPorterSheetAttribute : Attribute
+public sealed class DataPorterSheetAttribute(string name) : Attribute
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="DataPorterSheetAttribute"/> class.
-    /// </summary>
-    /// <param name="name">The sheet/section name.</param>
-    public DataPorterSheetAttribute(string name)
-    {
-        this.Name = name;
-    }
 
     /// <summary>
     /// Gets the sheet/section name.
     /// </summary>
-    public string Name { get; }
+    public string Name { get; } = name;
 
     /// <summary>
     /// Gets or sets the sheet index (for import, 0-based). -1 means use Name.

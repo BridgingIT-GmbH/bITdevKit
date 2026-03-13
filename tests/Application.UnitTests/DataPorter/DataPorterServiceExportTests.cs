@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Common.UnitTests.DataPorter;
+namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
 using BridgingIT.DevKit.Application.DataPorter;
 
@@ -73,11 +73,11 @@ public class DataPorterServiceExportTests
     public async Task ExportAsync_WithUnsupportedFormat_ReturnsFailure()
     {
         // Arrange
-        var mockProvider = CreateMockExportProvider(DataPorterFormat.Csv);
+        var mockProvider = CreateMockExportProvider(Format.Csv);
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
         var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
         using var stream = new MemoryStream();
-        var options = new ExportOptions { Format = DataPorterFormat.Excel };
+        var options = new ExportOptions { Format = Format.Excel };
 
         // Act
         var result = await sut.ExportAsync(data, stream, options);
@@ -201,13 +201,13 @@ public class DataPorterServiceExportTests
     public async Task ExportAsync_WithExportOptions_UsesProvidedOptions()
     {
         // Arrange
-        var mockProvider = CreateMockExportProvider(DataPorterFormat.Csv);
+        var mockProvider = CreateMockExportProvider(Format.Csv);
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
         var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
         using var stream = new MemoryStream();
         var options = new ExportOptions
         {
-            Format = DataPorterFormat.Csv,
+            Format = Format.Csv,
             SheetName = "CustomSheet",
             IncludeHeaders = false
         };
@@ -220,7 +220,7 @@ public class DataPorterServiceExportTests
     }
 
     private static TestExportProvider CreateMockExportProvider(
-        DataPorterFormat format = DataPorterFormat.Excel,
+        Format format = Format.Excel,
         bool throwOnCancel = false)
     {
         return new TestExportProvider(format, throwOnCancel);

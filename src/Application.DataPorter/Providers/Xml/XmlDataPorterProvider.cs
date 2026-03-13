@@ -15,26 +15,20 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// <summary>
 /// XML data porter provider using System.Xml.
 /// </summary>
-public sealed class XmlDataPorterProvider : IDataExportProvider, IDataImportProvider
+/// <remarks>
+/// Initializes a new instance of the <see cref="XmlDataPorterProvider"/> class.
+/// </remarks>
+/// <param name="configuration">The XML configuration.</param>
+/// <param name="loggerFactory">The logger factory.</param>
+public sealed class XmlDataPorterProvider(
+    XmlConfiguration configuration = null,
+    ILoggerFactory loggerFactory = null) : IDataExportProvider, IDataImportProvider
 {
-    private readonly XmlConfiguration configuration;
-    private readonly ILogger<XmlDataPorterProvider> logger;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="XmlDataPorterProvider"/> class.
-    /// </summary>
-    /// <param name="configuration">The XML configuration.</param>
-    /// <param name="loggerFactory">The logger factory.</param>
-    public XmlDataPorterProvider(
-        XmlConfiguration configuration = null,
-        ILoggerFactory loggerFactory = null)
-    {
-        this.configuration = configuration ?? new XmlConfiguration();
-        this.logger = loggerFactory?.CreateLogger<XmlDataPorterProvider>() ?? NullLogger<XmlDataPorterProvider>.Instance;
-    }
+    private readonly XmlConfiguration configuration = configuration ?? new XmlConfiguration();
+    private readonly ILogger<XmlDataPorterProvider> logger = loggerFactory?.CreateLogger<XmlDataPorterProvider>() ?? NullLogger<XmlDataPorterProvider>.Instance;
 
     /// <inheritdoc/>
-    public DataPorterFormat Format => DataPorterFormat.Xml;
+    public Format Format => Format.Xml;
 
     /// <inheritdoc/>
     public IReadOnlyCollection<string> SupportedExtensions => [".xml"];
@@ -506,9 +500,7 @@ public sealed class XmlDataPorterProvider : IDataExportProvider, IDataImportProv
         }
 
         // Remove invalid XML characters and replace spaces
-        var sanitized = new string(name
-            .Where(c => char.IsLetterOrDigit(c) || c == '_' || c == '-')
-            .ToArray());
+        var sanitized = new string([.. name.Where(c => char.IsLetterOrDigit(c) || c == '_' || c == '-')]);
 
         // Ensure starts with letter or underscore
         if (sanitized.Length == 0 || (!char.IsLetter(sanitized[0]) && sanitized[0] != '_'))

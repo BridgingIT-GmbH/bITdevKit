@@ -15,26 +15,20 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// <summary>
 /// CSV data porter provider using CsvHelper.
 /// </summary>
-public sealed class CsvDataPorterProvider : IDataExportProvider, IDataImportProvider
+/// <remarks>
+/// Initializes a new instance of the <see cref="CsvDataPorterProvider"/> class.
+/// </remarks>
+/// <param name="configuration">The CSV configuration.</param>
+/// <param name="loggerFactory">The logger factory.</param>
+public sealed class CsvDataPorterProvider(
+    CsvConfiguration configuration = null,
+    ILoggerFactory loggerFactory = null) : IDataExportProvider, IDataImportProvider
 {
-    private readonly CsvConfiguration configuration;
-    private readonly ILogger<CsvDataPorterProvider> logger;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CsvDataPorterProvider"/> class.
-    /// </summary>
-    /// <param name="configuration">The CSV configuration.</param>
-    /// <param name="loggerFactory">The logger factory.</param>
-    public CsvDataPorterProvider(
-        CsvConfiguration configuration = null,
-        ILoggerFactory loggerFactory = null)
-    {
-        this.configuration = configuration ?? new CsvConfiguration();
-        this.logger = loggerFactory?.CreateLogger<CsvDataPorterProvider>() ?? NullLogger<CsvDataPorterProvider>.Instance;
-    }
+    private readonly CsvConfiguration configuration = configuration ?? new CsvConfiguration();
+    private readonly ILogger<CsvDataPorterProvider> logger = loggerFactory?.CreateLogger<CsvDataPorterProvider>() ?? NullLogger<CsvDataPorterProvider>.Instance;
 
     /// <inheritdoc/>
-    public DataPorterFormat Format => DataPorterFormat.Csv;
+    public Format Format => Format.Csv;
 
     /// <inheritdoc/>
     public IReadOnlyCollection<string> SupportedExtensions => [".csv", ".tsv"];

@@ -9,11 +9,11 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Application.DataPorter;
 using FluentValidation;
 
-public class TodoItemValidateImportQuery(Stream stream, DataPorterFormat format) : RequestBase<ValidationResult>
+public class TodoItemValidateImportQuery(Stream stream, Format format) : RequestBase<ValidationResult>
 {
     public Stream Stream { get; } = stream;
 
-    public DataPorterFormat Format { get; } = format;
+    public Format Format { get; } = format;
 
     public class Validator : AbstractValidator<TodoItemValidateImportQuery>
     {

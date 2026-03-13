@@ -23,8 +23,4 @@
     <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj"/>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Remove="icon.png" />
-  </ItemGroup>
-
 </Project>

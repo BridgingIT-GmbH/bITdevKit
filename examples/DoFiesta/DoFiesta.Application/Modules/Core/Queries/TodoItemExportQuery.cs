@@ -9,9 +9,9 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Application.DataPorter;
 using FluentValidation;
 
-public class TodoItemExportQuery(DataPorterFormat format) : RequestBase<Stream>
+public class TodoItemExportQuery(Format format) : RequestBase<Stream>
 {
-    public DataPorterFormat Format { get; } = format;
+    public Format Format { get; } = format;
 
     public class Validator : AbstractValidator<TodoItemExportQuery>
     {

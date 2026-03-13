@@ -13,7 +13,7 @@ public sealed record ExportOptions
     /// <summary>
     /// Gets or sets the format to export to.
     /// </summary>
-    public DataPorterFormat Format { get; init; } = DataPorterFormat.Excel;
+    public Format Format { get; init; } = Format.Excel;
 
     /// <summary>
     /// Gets or sets the name of a specific profile to use.

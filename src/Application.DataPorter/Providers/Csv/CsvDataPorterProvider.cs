@@ -287,6 +287,7 @@ public sealed class CsvDataPorterProvider(
     {
         var columns = new List<CsvExportColumn>();
         PropertyInfo collectionProperty = null;
+        var typePath = new HashSet<Type> { config.SourceType };
 
         foreach (var column in config.Columns)
         {
@@ -295,7 +296,7 @@ public sealed class CsvDataPorterProvider(
                 continue;
             }
 
-            this.AddExportColumns(columns, column, [column.PropertyInfo], column.HeaderName ?? column.PropertyName, ref collectionProperty);
+            this.AddExportColumns(columns, column, [column.PropertyInfo], column.HeaderName ?? column.PropertyName, ref collectionProperty, typePath);
         }
 
         return new CsvExportPlan(columns, collectionProperty);
@@ -305,6 +306,7 @@ public sealed class CsvDataPorterProvider(
     {
         var columns = new List<CsvImportColumn>();
         PropertyInfo collectionProperty = null;
+        var typePath = new HashSet<Type> { config.TargetType };
 
         foreach (var column in config.Columns)
         {
@@ -313,7 +315,7 @@ public sealed class CsvDataPorterProvider(
                 continue;
             }
 
-            this.AddImportColumns(columns, column, [column.PropertyInfo], column.SourceName ?? column.PropertyName, ref collectionProperty);
+            this.AddImportColumns(columns, column, [column.PropertyInfo], column.SourceName ?? column.PropertyName, ref collectionProperty, typePath);
         }
 
         var mappedColumns = columns
@@ -339,7 +341,8 @@ public sealed class CsvDataPorterProvider(
         ColumnConfiguration sourceColumn,
         IReadOnlyList<PropertyInfo> path,
         string headerName,
-        ref PropertyInfo collectionProperty)
+        ref PropertyInfo collectionProperty,
+        HashSet<Type> typePath)
     {
         var propertyType = path[^1].PropertyType;
         var topLevelProperty = path[0];
@@ -370,18 +373,32 @@ public sealed class CsvDataPorterProvider(
                 return;
             }
 
-            foreach (var property in this.GetFlattenableProperties(elementType, writable: false))
+            if (!typePath.Add(elementType))
             {
-                this.AddExportColumns(columns, sourceColumn, [.. path, property], $"{headerName}_{property.Name}", ref collectionProperty);
+                return;
             }
 
+            foreach (var property in this.GetFlattenableProperties(elementType, writable: false))
+            {
+                this.AddExportColumns(columns, sourceColumn, [.. path, property], $"{headerName}_{property.Name}", ref collectionProperty, typePath);
+            }
+
+            typePath.Remove(elementType);
+
+            return;
+        }
+
+        if (!typePath.Add(propertyType))
+        {
             return;
         }
 
         foreach (var property in this.GetFlattenableProperties(propertyType, writable: false))
         {
-            this.AddExportColumns(columns, sourceColumn, [.. path, property], $"{headerName}_{property.Name}", ref collectionProperty);
+            this.AddExportColumns(columns, sourceColumn, [.. path, property], $"{headerName}_{property.Name}", ref collectionProperty, typePath);
         }
+
+        typePath.Remove(propertyType);
     }
 
     private void AddImportColumns(
@@ -389,7 +406,8 @@ public sealed class CsvDataPorterProvider(
         ImportColumnConfiguration sourceColumn,
         IReadOnlyList<PropertyInfo> path,
         string headerName,
-        ref PropertyInfo collectionProperty)
+        ref PropertyInfo collectionProperty,
+        HashSet<Type> typePath)
     {
         var propertyType = path[^1].PropertyType;
         var topLevelProperty = path[0];
@@ -420,18 +438,32 @@ public sealed class CsvDataPorterProvider(
                 return;
             }
 
-            foreach (var property in this.GetFlattenableProperties(elementType, writable: true))
+            if (!typePath.Add(elementType))
             {
-                this.AddImportColumns(columns, sourceColumn, [.. path, property], $"{headerName}_{property.Name}", ref collectionProperty);
+                return;
             }
 
+            foreach (var property in this.GetFlattenableProperties(elementType, writable: true))
+            {
+                this.AddImportColumns(columns, sourceColumn, [.. path, property], $"{headerName}_{property.Name}", ref collectionProperty, typePath);
+            }
+
+            typePath.Remove(elementType);
+
+            return;
+        }
+
+        if (!typePath.Add(propertyType))
+        {
             return;
         }
 
         foreach (var property in this.GetFlattenableProperties(propertyType, writable: true))
         {
-            this.AddImportColumns(columns, sourceColumn, [.. path, property], $"{headerName}_{property.Name}", ref collectionProperty);
+            this.AddImportColumns(columns, sourceColumn, [.. path, property], $"{headerName}_{property.Name}", ref collectionProperty, typePath);
         }
+
+        typePath.Remove(propertyType);
     }
 
     private IEnumerable<object> GetCollectionItems(object source, PropertyInfo collectionProperty)

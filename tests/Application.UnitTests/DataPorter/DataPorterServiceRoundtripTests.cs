@@ -128,6 +128,37 @@ public class DataPorterServiceRoundtripTests
         AssertNestedData([.. importResult.Value.Data], data);
     }
 
+    [Theory]
+    [InlineData(Format.Csv)]
+    [InlineData(Format.CsvTyped)]
+    [InlineData(Format.Json)]
+    [InlineData(Format.Xml)]
+    public async Task ExportAsync_WithRecursiveChildBackReference_DoesNotRecurseInfinitely(Format format)
+    {
+        // Arrange
+        var provider = format switch
+        {
+            Format.Csv => (IDataPorterProvider)new CsvDataPorterProvider(new CsvConfiguration { UseNesting = true }),
+            Format.CsvTyped => new CsvTypedDataPorterProvider(),
+            Format.Json => new JsonDataPorterProvider(),
+            Format.Xml => new XmlDataPorterProvider(),
+            _ => throw new NotSupportedException()
+        };
+        var sut = new DataPorterService([provider], this.CreateRecursiveConfigurationMerger());
+        var person = CreatePersons()[0];
+        person.Address.Owner = person;
+        person.PreviousAddresses[0].Owner = person;
+        await using var stream = new MemoryStream();
+        var options = new ExportOptions { Format = format, UseAttributes = false };
+
+        // Act
+        var result = await sut.ExportAsync([person], stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.RowsExported.ShouldBeGreaterThan(0);
+    }
+
     [Fact]
     public async Task ExportAndImportAsync_WithCsvTypedProvider_RoundTripsTypedHierarchy()
     {
@@ -397,6 +428,15 @@ public class DataPorterServiceRoundtripTests
         return new ConfigurationMerger(profileRegistry, new AttributeConfigurationReader());
     }
 
+    private ConfigurationMerger CreateRecursiveConfigurationMerger()
+    {
+        var profileRegistry = new ProfileRegistry(
+            [new PersonEntityWithRecursiveExportProfile()],
+            [new PersonEntityWithRecursiveImportProfile()]);
+
+        return new ConfigurationMerger(profileRegistry, new AttributeConfigurationReader());
+    }
+
     private static string ReadTextContent(MemoryStream stream)
     {
         stream.Position = 0;
@@ -529,6 +569,35 @@ public class AddressEntity : Entity<Guid>
     public string Street { get; set; }
 
     public string City { get; set; }
+
+    public PersonEntity Owner { get; set; }
+}
+
+public class PersonEntityWithRecursiveExportProfile : IExportProfile<PersonEntity>
+{
+    public Type SourceType => typeof(PersonEntity);
+
+    private static readonly EnumerationConverter<PersonStatus> statusConverter = new();
+    private static readonly BillingAddressValueObjectConverter billingAddressConverter = new();
+
+    public IReadOnlyList<ColumnConfiguration> Columns { get; } =
+    [
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Id), 0),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.FirstName), 1),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.LastName), 2),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Age), 3),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.ManagerId), 4),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.BillingAddress), 5, billingAddressConverter),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Address), 6),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.PreviousAddresses), 7),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Status), 8, statusConverter)
+    ];
+
+    public string SheetName => "Persons";
+
+    public IReadOnlyList<HeaderRowConfiguration> HeaderRows { get; } = [];
+
+    public IReadOnlyList<FooterRowConfiguration> FooterRows { get; } = [];
 }
 
 public class BillingAddressValueObject : ValueObject
@@ -665,6 +734,41 @@ public class PersonEntityImportProfile : IImportProfile<PersonEntity>
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.ManagerId), 4),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.BillingAddress), 5, billingAddressConverter),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Status), 6, new EnumerationConverter<PersonStatus>())
+    ];
+
+    public string SheetName => "Persons";
+
+    public int SheetIndex => -1;
+
+    public int HeaderRowIndex => 0;
+
+    public int SkipRows => 0;
+
+    public ImportValidationBehavior ValidationBehavior => ImportValidationBehavior.CollectErrors;
+
+    public Func<PersonEntity> Factory => () => new PersonEntity();
+
+    Func<object> IImportProfile.Factory => () => new PersonEntity();
+}
+
+public class PersonEntityWithRecursiveImportProfile : IImportProfile<PersonEntity>
+{
+    public Type TargetType => typeof(PersonEntity);
+
+    private static readonly EnumerationConverter<PersonStatus> statusConverter = new();
+    private static readonly BillingAddressValueObjectConverter billingAddressConverter = new();
+
+    public IReadOnlyList<ImportColumnConfiguration> Columns { get; } =
+    [
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Id), 0),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.FirstName), 1),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.LastName), 2),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Age), 3),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.ManagerId), 4),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.BillingAddress), 5, billingAddressConverter),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Address), 6),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.PreviousAddresses), 7),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Status), 8, statusConverter)
     ];
 
     public string SheetName => "Persons";

@@ -51,6 +51,10 @@ public sealed class JsonDataPorterProvider(
     {
         var options = this.configuration.GetSerializerOptions();
         var dataList = data.ToList();
+        var jsonOptions = new JsonSerializerOptions(options)
+        {
+            ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
+        };
 
         // Transform data if columns are configured
         var exportData = dataList.Select(item =>
@@ -81,7 +85,7 @@ public sealed class JsonDataPorterProvider(
             return dict;
         }).ToList();
 
-        await JsonSerializer.SerializeAsync(outputStream, exportData, options, cancellationToken);
+        await JsonSerializer.SerializeAsync(outputStream, exportData, jsonOptions, cancellationToken);
 
         return new ExportResult
         {
@@ -99,6 +103,10 @@ public sealed class JsonDataPorterProvider(
         CancellationToken cancellationToken = default)
     {
         var options = this.configuration.GetSerializerOptions();
+        var jsonOptions = new JsonSerializerOptions(options)
+        {
+            ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
+        };
         var result = new Dictionary<string, List<Dictionary<string, object>>>();
         var totalRows = 0;
 
@@ -123,7 +131,7 @@ public sealed class JsonDataPorterProvider(
             totalRows += dataList.Count;
         }
 
-        await JsonSerializer.SerializeAsync(outputStream, result, options, cancellationToken);
+        await JsonSerializer.SerializeAsync(outputStream, result, jsonOptions, cancellationToken);
 
         return new ExportResult
         {

@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.DataPorter;
 
+using System.Collections;
+using System.Globalization;
+using System.Reflection;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -93,7 +96,7 @@ public sealed class XmlDataPorterProvider(
 
                 if (column.Converter is null && propertyType.SupportsStructuredValue())
                 {
-                    await this.WriteStructuredElementAsync(writer, elementName, value, propertyType);
+                    await this.WriteStructuredElementAsync(writer, elementName, value, propertyType, new HashSet<object>(ReferenceEqualityComparer.Instance));
                     continue;
                 }
 
@@ -161,7 +164,7 @@ public sealed class XmlDataPorterProvider(
 
                     if (column.Converter is null && (column.PropertyInfo?.PropertyType ?? value?.GetType() ?? typeof(object)).SupportsStructuredValue())
                     {
-                        await this.WriteStructuredElementAsync(writer, elementName, value, column.PropertyInfo?.PropertyType ?? typeof(object));
+                        await this.WriteStructuredElementAsync(writer, elementName, value, column.PropertyInfo?.PropertyType ?? typeof(object), new HashSet<object>(ReferenceEqualityComparer.Instance));
                         continue;
                     }
 
@@ -549,7 +552,7 @@ public sealed class XmlDataPorterProvider(
         };
     }
 
-    private async Task WriteStructuredElementAsync(XmlWriter writer, string elementName, object value, Type propertyType)
+    private async Task WriteStructuredElementAsync(XmlWriter writer, string elementName, object value, Type propertyType, HashSet<object> visited)
     {
         if (value is null)
         {
@@ -558,22 +561,85 @@ public sealed class XmlDataPorterProvider(
             return;
         }
 
-        var serializedElement = this.SerializeStructuredValue(value, propertyType, elementName);
+        var serializedElement = this.SerializeStructuredValue(value, propertyType, elementName, visited);
         await writer.WriteRawAsync(serializedElement.ToString(SaveOptions.DisableFormatting));
     }
 
-    private XElement SerializeStructuredValue(object value, Type propertyType, string elementName)
+    private XElement SerializeStructuredValue(object value, Type propertyType, string elementName, HashSet<object> visited)
     {
-        var serializer = new XmlSerializer(value?.GetType() ?? propertyType, new XmlRootAttribute(elementName));
-        var namespaces = new XmlSerializerNamespaces();
-        namespaces.Add(string.Empty, string.Empty);
+        return this.SerializeStructuredObject(value, value?.GetType() ?? propertyType, elementName, visited);
+    }
 
-        using var stringWriter = new StringWriter();
-        using var xmlWriter = XmlWriter.Create(stringWriter, new XmlWriterSettings { OmitXmlDeclaration = true });
+    private XElement SerializeStructuredObject(object value, Type propertyType, string elementName, HashSet<object> visited)
+    {
+        if (value is null)
+        {
+            return new XElement(elementName);
+        }
 
-        serializer.Serialize(xmlWriter, value, namespaces);
+        if (!propertyType.IsValueType && !visited.Add(value))
+        {
+            return new XElement(elementName);
+        }
 
-        return XElement.Parse(stringWriter.ToString());
+        try
+        {
+            if (propertyType.IsCollectionType())
+            {
+                var element = new XElement(elementName);
+                foreach (var item in (System.Collections.IEnumerable)value)
+                {
+                    if (item is null)
+                    {
+                        continue;
+                    }
+
+                    if (!item.GetType().IsValueType && visited.Contains(item))
+                    {
+                        continue;
+                    }
+
+                    element.Add(this.SerializeStructuredObject(item, item.GetType(), "Item", visited));
+                }
+
+                return element;
+            }
+
+            var elementResult = new XElement(elementName);
+            foreach (var property in propertyType.GetProperties(BindingFlags.Public | BindingFlags.Instance).Where(p => p.CanRead && p.GetIndexParameters().Length == 0))
+            {
+                var propertyValue = property.GetValue(value);
+                var propertyElementName = this.SanitizeElementName(property.Name);
+
+                if (propertyValue is null)
+                {
+                    continue;
+                }
+
+                if (!property.PropertyType.IsValueType && visited.Contains(propertyValue))
+                {
+                    continue;
+                }
+
+                if (property.PropertyType.SupportsStructuredValue())
+                {
+                    elementResult.Add(this.SerializeStructuredObject(propertyValue, property.PropertyType, propertyElementName, visited));
+                }
+                else
+                {
+                    elementResult.Add(new XElement(propertyElementName, this.FormatValue(propertyValue)));
+                }
+            }
+
+            return elementResult;
+        }
+        finally
+        {
+            if (!propertyType.IsValueType)
+            {
+                visited.Remove(value);
+            }
+        }
     }
 
     private object DeserializeStructuredValue(XElement element, Type targetType)
@@ -583,10 +649,156 @@ public sealed class XmlDataPorterProvider(
             return null;
         }
 
-        var serializer = new XmlSerializer(targetType, new XmlRootAttribute(element.Name.LocalName));
-        using var reader = element.CreateReader();
+        if (targetType.IsCollectionType())
+        {
+            var collection = this.CreateCollectionInstance(targetType);
+            var elementType = this.GetCollectionElementType(targetType) ?? typeof(string);
 
-        return serializer.Deserialize(reader);
+            foreach (var child in element.Elements())
+            {
+                var item = elementType.SupportsStructuredValue()
+                    ? this.DeserializeStructuredValue(child, elementType)
+                    : this.ConvertToType(child.Value, elementType);
+
+                this.AddCollectionItem(collection, item);
+            }
+
+            return collection;
+        }
+
+        if (!targetType.SupportsStructuredValue())
+        {
+            return this.ConvertToType(element.Value, targetType);
+        }
+
+        var instance = Activator.CreateInstance(targetType);
+        foreach (var property in targetType.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                     .Where(p => p.CanWrite && p.GetIndexParameters().Length == 0))
+        {
+            var child = element.Element(this.SanitizeElementName(property.Name));
+            if (child is null)
+            {
+                continue;
+            }
+
+            var value = property.PropertyType.SupportsStructuredValue()
+                ? this.DeserializeStructuredValue(child, property.PropertyType)
+                : this.ConvertToType(child.Value, property.PropertyType);
+
+            property.SetValue(instance, value);
+        }
+
+        return instance;
+    }
+
+    private object CreateCollectionInstance(Type collectionType)
+    {
+        if (!collectionType.IsInterface && !collectionType.IsAbstract)
+        {
+            return Activator.CreateInstance(collectionType);
+        }
+
+        var elementType = this.GetCollectionElementType(collectionType) ?? typeof(object);
+        return Activator.CreateInstance(typeof(List<>).MakeGenericType(elementType));
+    }
+
+    private void AddCollectionItem(object collection, object item)
+    {
+        if (collection is IList list)
+        {
+            list.Add(item);
+            return;
+        }
+
+        collection.GetType().GetMethod("Add")?.Invoke(collection, [item]);
+    }
+
+    private Type GetCollectionElementType(Type collectionType)
+    {
+        if (collectionType.IsArray)
+        {
+            return collectionType.GetElementType();
+        }
+
+        if (collectionType.IsGenericType)
+        {
+            return collectionType.GetGenericArguments()[0];
+        }
+
+        return collectionType.GetInterfaces()
+            .FirstOrDefault(type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            ?.GetGenericArguments()[0];
+    }
+
+    private object ConvertToType(string value, Type targetType)
+    {
+        if (targetType == typeof(string))
+        {
+            return value;
+        }
+
+        var underlyingType = Nullable.GetUnderlyingType(targetType);
+        if (underlyingType is not null)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return null;
+            }
+
+            targetType = underlyingType;
+        }
+
+        if (targetType == typeof(int))
+        {
+            return int.Parse(value, CultureInfo.InvariantCulture);
+        }
+
+        if (targetType == typeof(long))
+        {
+            return long.Parse(value, CultureInfo.InvariantCulture);
+        }
+
+        if (targetType == typeof(decimal))
+        {
+            return decimal.Parse(value, CultureInfo.InvariantCulture);
+        }
+
+        if (targetType == typeof(double))
+        {
+            return double.Parse(value, CultureInfo.InvariantCulture);
+        }
+
+        if (targetType == typeof(float))
+        {
+            return float.Parse(value, CultureInfo.InvariantCulture);
+        }
+
+        if (targetType == typeof(bool))
+        {
+            return bool.Parse(value);
+        }
+
+        if (targetType == typeof(DateTime))
+        {
+            return DateTime.Parse(value, CultureInfo.InvariantCulture);
+        }
+
+        if (targetType == typeof(DateTimeOffset))
+        {
+            return DateTimeOffset.Parse(value, CultureInfo.InvariantCulture);
+        }
+
+        if (targetType == typeof(Guid))
+        {
+            return Guid.Parse(value);
+        }
+
+        if (targetType.IsEnum)
+        {
+            return Enum.Parse(targetType, value, ignoreCase: true);
+        }
+
+        return Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture);
     }
 
     private bool IsSimpleType(object value)

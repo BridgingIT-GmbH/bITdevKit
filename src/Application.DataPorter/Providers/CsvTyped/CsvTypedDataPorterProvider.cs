@@ -247,10 +247,12 @@ public sealed class CsvTypedDataPorterProvider(
             var rootId = this.GetIdentifier(item) ?? Guid.NewGuid().ToString("D", CultureInfo.InvariantCulture);
             var rootRecordType = this.GetRecordTypeName(configuration.SourceType, rootColumns, isCollectionItem: false);
             var rootPayload = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            var visited = new HashSet<object>(ReferenceEqualityComparer.Instance);
+            visited.Add(item);
 
             rows.Add(new CsvTypedRow(rootRecordType, rootId, rootId, null, null, null, rootPayload));
             this.WriteRootPayload(rootPayload, item, rootColumns, configuration);
-            this.AddChildRows(rows, item, rootId, rootId, rootColumns, configuration);
+            this.AddChildRows(rows, item, rootId, rootId, rootColumns, configuration, visited);
         }
 
         return rows;
@@ -295,7 +297,8 @@ public sealed class CsvTypedDataPorterProvider(
         string rootId,
         string parentId,
         IReadOnlyList<ColumnConfiguration> columns,
-        ExportConfiguration configuration)
+        ExportConfiguration configuration,
+        HashSet<object> visited)
     {
         foreach (var column in columns)
         {
@@ -327,22 +330,56 @@ public sealed class CsvTypedDataPorterProvider(
                         continue;
                     }
 
+                    if (!item.GetType().IsValueType && !visited.Add(item))
+                    {
+                        index++;
+                        continue;
+                    }
+
                     var itemType = item.GetType();
                     var recordType = this.GetRecordTypeName(itemType, [], isCollectionItem: true, propertyName: column.PropertyName);
                     var recordId = this.GetIdentifier(item) ?? $"{rootId}:{column.PropertyName}:{index}";
                     var payload = this.BuildPayload(item, itemType, configuration.Culture);
                     rows.Add(new CsvTypedRow(recordType, rootId, recordId, parentId, column.PropertyName, index, payload));
-                    this.AddNestedStructuredRows(rows, item, rootId, recordId, itemType, configuration);
+
+                    try
+                    {
+                        this.AddNestedStructuredRows(rows, item, rootId, recordId, itemType, configuration, visited);
+                    }
+                    finally
+                    {
+                        if (!itemType.IsValueType)
+                        {
+                            visited.Remove(item);
+                        }
+                    }
+
                     index++;
                 }
             }
             else
             {
+                if (!value.GetType().IsValueType && !visited.Add(value))
+                {
+                    continue;
+                }
+
                 var recordType = this.GetRecordTypeName(propertyType, [], isCollectionItem: false, propertyName: column.PropertyName);
                 var recordId = this.GetIdentifier(value) ?? $"{rootId}:{column.PropertyName}";
                 var payload = this.BuildPayload(value, propertyType, configuration.Culture);
                 rows.Add(new CsvTypedRow(recordType, rootId, recordId, parentId, column.PropertyName, null, payload));
-                this.AddNestedStructuredRows(rows, value, rootId, recordId, propertyType, configuration);
+
+                try
+                {
+                    this.AddNestedStructuredRows(rows, value, rootId, recordId, propertyType, configuration, visited);
+                }
+                finally
+                {
+                    if (!propertyType.IsValueType)
+                    {
+                        visited.Remove(value);
+                    }
+                }
             }
         }
     }
@@ -353,7 +390,8 @@ public sealed class CsvTypedDataPorterProvider(
         string rootId,
         string parentId,
         Type sourceType,
-        ExportConfiguration configuration)
+        ExportConfiguration configuration,
+        HashSet<object> visited)
     {
         var nestedColumns = this.GetFlattenableProperties(sourceType)
             .Select((property, order) => new ColumnConfiguration
@@ -365,7 +403,7 @@ public sealed class CsvTypedDataPorterProvider(
             })
             .ToList();
 
-        this.AddChildRows(rows, value, rootId, parentId, nestedColumns, configuration);
+        this.AddChildRows(rows, value, rootId, parentId, nestedColumns, configuration, visited);
     }
 
     private Dictionary<string, string> BuildPayload(object value, Type sourceType, CultureInfo culture)

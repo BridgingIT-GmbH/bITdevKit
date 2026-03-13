@@ -41,7 +41,7 @@ public class DataPorterServiceImportTests
     {
         // Arrange
         var sut = new DataPorterService([], this.configurationMerger);
-        using var stream = new MemoryStream([1, 2, 3, 4]);
+        await using var stream = new MemoryStream([1, 2, 3, 4]);
 
         // Act
         var result = await sut.ImportAsync<SimpleEntity>(stream);
@@ -57,7 +57,7 @@ public class DataPorterServiceImportTests
         // Arrange
         var mockProvider = CreateMockImportProvider(Format.Csv);
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
-        using var stream = new MemoryStream([1, 2, 3, 4]);
+        await using var stream = new MemoryStream([1, 2, 3, 4]);
         var options = new ImportOptions { Format = Format.Excel };
 
         // Act
@@ -73,7 +73,7 @@ public class DataPorterServiceImportTests
         // Arrange
         var mockProvider = CreateMockExportOnlyProvider();
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
-        using var stream = new MemoryStream([1, 2, 3, 4]);
+        await using var stream = new MemoryStream([1, 2, 3, 4]);
 
         // Act
         var result = await sut.ImportAsync<SimpleEntity>(stream);
@@ -88,7 +88,7 @@ public class DataPorterServiceImportTests
         // Arrange
         var mockProvider = CreateMockImportProvider();
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
-        using var stream = new MemoryStream([1, 2, 3, 4]);
+        await using var stream = new MemoryStream([1, 2, 3, 4]);
 
         // Act
         var result = await sut.ImportAsync<SimpleEntity>(stream);
@@ -104,7 +104,7 @@ public class DataPorterServiceImportTests
         // Arrange
         var mockProvider = CreateMockImportProvider(throwOnCancel: true);
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
-        using var stream = new MemoryStream([1, 2, 3, 4]);
+        await using var stream = new MemoryStream([1, 2, 3, 4]);
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
@@ -178,7 +178,7 @@ public class DataPorterServiceImportTests
         // Arrange
         var mockProvider = CreateMockImportProvider();
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
-        using var stream = new MemoryStream([1, 2, 3, 4]);
+        await using var stream = new MemoryStream([1, 2, 3, 4]);
 
         // Act
         var result = await sut.ValidateAsync<SimpleEntity>(stream);
@@ -192,7 +192,7 @@ public class DataPorterServiceImportTests
     {
         // Arrange
         var sut = new DataPorterService([], this.configurationMerger);
-        using var stream = new MemoryStream([1, 2, 3, 4]);
+        await using var stream = new MemoryStream([1, 2, 3, 4]);
 
         // Act
         var result = await sut.ValidateAsync<SimpleEntity>(stream);
@@ -207,7 +207,7 @@ public class DataPorterServiceImportTests
         // Arrange
         var mockProvider = CreateMockImportProvider(Format.Csv);
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
-        using var stream = new MemoryStream([1, 2, 3, 4]);
+        await using var stream = new MemoryStream([1, 2, 3, 4]);
         var options = new ImportOptions
         {
             Format = Format.Csv,
@@ -247,7 +247,7 @@ public class DataPorterServiceImportTests
     {
         // Arrange
         var sut = new DataPorterService([], this.configurationMerger);
-        using var stream = new MemoryStream([1, 2, 3, 4]);
+        await using var stream = new MemoryStream([1, 2, 3, 4]);
 
         // Act
         var results = new List<Result<SimpleEntity>>();
@@ -267,7 +267,7 @@ public class DataPorterServiceImportTests
         // Arrange
         var mockProvider = CreateMockImportProvider();
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
-        using var stream = new MemoryStream([1, 2, 3, 4]);
+        await using var stream = new MemoryStream([1, 2, 3, 4]);
 
         // Act
         var results = new List<Result<SimpleEntity>>();
@@ -287,7 +287,7 @@ public class DataPorterServiceImportTests
         // Arrange
         var mockProvider = CreateMockStreamingProvider();
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
-        using var stream = new MemoryStream([1, 2, 3, 4]);
+        await using var stream = new MemoryStream([1, 2, 3, 4]);
 
         // Act
         var results = new List<Result<SimpleEntity>>();

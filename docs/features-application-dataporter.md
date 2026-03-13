@@ -316,7 +316,7 @@ services.AddDataPorter()
 
 ### Streaming Import
 
-For large files, use streaming to avoid loading everything into memory:
+For large files, use async enumerables to avoid loading every result into memory:
 
 ```csharp
 await foreach (var result in importer.ImportAsyncEnumerable<Order>(stream, options))
@@ -411,12 +411,76 @@ ForColumn(o => o.Status)
     .UseConverter(new StatusConverter());
 ```
 
+Converters are responsible for translating a single property value between the domain model and the external representation used in CSV, Excel, PDF, or other providers.
+
+- `ConvertToExport(...)` transforms the in-memory property value into the value written to the output.
+- `ConvertFromImport(...)` transforms the incoming raw value into the property type used by the entity or DTO.
+- `ValueConversionContext` provides additional metadata such as the property name, property type, owning entity type, `Format`, `Culture`, and optional `Parameters` so converters can stay reusable and profile-driven.
+
+This is useful when the exported shape differs from the .NET type, for example:
+
+- booleans as `"Yes"` / `"No"`
+- enums as display names or external codes
+- smart enumerations by identifier or value
+- dates and times in culture-specific or ISO formats
+- decimals using localized number separators
+- strings that need trimming, normalization, or external value mapping
+
+Converters can be configured per column, which allows different representations for the same .NET type in different import/export profiles.
+
 ### Built-in Converters
 
 | Converter | Description |
 |-----------|-------------|
-| `BooleanYesNoConverter` | Converts bool to "Yes"/"No" |
-| `EnumDisplayNameConverter<T>` | Uses `[Display]` attribute for enum names |
+| `BooleanYesNoConverter` | Converts `bool` values to and from configurable `"Yes"` / `"No"` strings |
+| `DateOnlyFormatConverter` | Converts `DateOnly` values using custom culture-aware or ISO 8601 date formats |
+| `DateTimeFormatConverter` | Converts `DateTime` values using custom culture-aware or ISO 8601 formats with optional UTC conversion |
+| `DateTimeOffsetFormatConverter` | Converts `DateTimeOffset` values using custom culture-aware or ISO 8601 formats with optional UTC conversion |
+| `DecimalFormatConverter` | Converts `decimal` values using configurable format strings, cultures, invariant culture, and number styles |
+| `EnumDisplayNameConverter<T>` | Converts enums using their `[Display]` attribute names |
+| `EnumerationConverter<T...>` | Converts smart enumerations (`Enumeration`, `Enumeration<TValue>`, `Enumeration<TId, TValue>`) using their `Id` or `Value` |
+| `EnumValueConverter<T>` | Converts enums using enum names or underlying numeric values |
+| `GuidFormatConverter` | Converts `Guid` values using standard GUID format specifiers such as `D` or `N` |
+| `StringMapConverter<T>` | Maps external string values to typed values and back using configurable import/export mappings |
+| `StringTrimConverter` | Trims and normalizes string values during import and export |
+| `TimeOnlyFormatConverter` | Converts `TimeOnly` values using custom culture-aware or ISO 8601 time formats |
+
+Example using format and culture-aware converters in a profile:
+
+```csharp
+ForColumn(o => o.OrderDate)
+    .UseConverter(new DateTimeFormatConverter
+    {
+        Format = "dd.MM.yyyy HH:mm:ss",
+        Culture = new CultureInfo("de-DE")
+    });
+
+ForColumn(o => o.TotalAmount)
+    .UseConverter(new DecimalFormatConverter
+    {
+        Format = "N2",
+        Culture = new CultureInfo("de-DE")
+    });
+```
+
+Example using mapping-based converters for external codes:
+
+```csharp
+ForColumn(o => o.Status)
+    .UseConverter(new StringMapConverter<OrderStatus>
+    {
+        ImportMappings = new Dictionary<string, OrderStatus>
+        {
+            ["P"] = OrderStatus.Pending,
+            ["S"] = OrderStatus.Shipped
+        },
+        ExportMappings = new Dictionary<OrderStatus, string>
+        {
+            [OrderStatus.Pending] = "P",
+            [OrderStatus.Shipped] = "S"
+        }
+    });
+```
 
 ### Validation Behaviors
 

@@ -27,7 +27,7 @@ public class DataPorterServiceExportTests
         // Arrange
         var mockProvider = CreateMockExportProvider();
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
-        using var stream = new MemoryStream();
+        await using var stream = new MemoryStream();
 
         // Act
         var result = await sut.ExportAsync<SimpleEntity>(null, stream);
@@ -59,7 +59,7 @@ public class DataPorterServiceExportTests
         // Arrange
         var sut = new DataPorterService([], this.configurationMerger);
         var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
-        using var stream = new MemoryStream();
+        await using var stream = new MemoryStream();
 
         // Act
         var result = await sut.ExportAsync(data, stream);
@@ -76,7 +76,7 @@ public class DataPorterServiceExportTests
         var mockProvider = CreateMockExportProvider(Format.Csv);
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
         var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
-        using var stream = new MemoryStream();
+        await using var stream = new MemoryStream();
         var options = new ExportOptions { Format = Format.Excel };
 
         // Act
@@ -93,7 +93,7 @@ public class DataPorterServiceExportTests
         var mockProvider = CreateMockImportOnlyProvider();
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
         var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
-        using var stream = new MemoryStream();
+        await using var stream = new MemoryStream();
 
         // Act
         var result = await sut.ExportAsync(data, stream);
@@ -109,7 +109,7 @@ public class DataPorterServiceExportTests
         var mockProvider = CreateMockExportProvider();
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
         var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
-        using var stream = new MemoryStream();
+        await using var stream = new MemoryStream();
 
         // Act
         var result = await sut.ExportAsync(data, stream);
@@ -126,7 +126,7 @@ public class DataPorterServiceExportTests
         var mockProvider = CreateMockExportProvider(throwOnCancel: true);
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
         var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
-        using var stream = new MemoryStream();
+        await using var stream = new MemoryStream();
         using var cts = new CancellationTokenSource();
         cts.Cancel();
 
@@ -173,7 +173,7 @@ public class DataPorterServiceExportTests
         // Arrange
         var mockProvider = CreateMockExportProvider();
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
-        using var stream = new MemoryStream();
+        await using var stream = new MemoryStream();
 
         // Act
         var result = await sut.ExportAsync(null, stream);
@@ -188,7 +188,7 @@ public class DataPorterServiceExportTests
         // Arrange
         var mockProvider = CreateMockExportProvider();
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
-        using var stream = new MemoryStream();
+        await using var stream = new MemoryStream();
 
         // Act
         var result = await sut.ExportAsync([], stream);
@@ -204,7 +204,7 @@ public class DataPorterServiceExportTests
         var mockProvider = CreateMockExportProvider(Format.Csv);
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
         var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
-        using var stream = new MemoryStream();
+        await using var stream = new MemoryStream();
         var options = new ExportOptions
         {
             Format = Format.Csv,

@@ -27,6 +27,7 @@
     <Project Path="benchmarks/Common.Benchmarks/Common.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/docs/">
+    <File Path="docs/design-application-templating.md" />
     <File Path="docs/features-application-commands-queries.md" />
     <File Path="docs/features-application-dataporter.md" />
     <File Path="docs/features-domain-activeentity.md" />

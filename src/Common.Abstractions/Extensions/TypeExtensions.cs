@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Collections;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -40,6 +41,83 @@ public static class TypeExtensions
         }
 
         return source.IsGenericType && source.GetGenericTypeDefinition() == typeof(Nullable<>);
+    }
+
+    /// <summary>
+    ///     Determines whether the specified type should be treated as a simple scalar value.
+    /// </summary>
+    /// <param name="source">The type to inspect.</param>
+    /// <returns>
+    ///     <c>true</c> when the type represents a primitive, enum, common framework scalar, or smart enumeration;
+    ///     otherwise, <c>false</c>.
+    /// </returns>
+    [DebuggerStepThrough]
+    public static bool IsSimpleType(this Type source)
+    {
+        if (source is null)
+        {
+            return false;
+        }
+
+        source = Nullable.GetUnderlyingType(source) ?? source;
+
+        return source.IsPrimitive
+            || source.IsEnum
+            || source == typeof(string)
+            || source == typeof(decimal)
+            || source == typeof(DateTime)
+            || source == typeof(DateTimeOffset)
+            || source == typeof(DateOnly)
+            || source == typeof(TimeOnly)
+            || source == typeof(TimeSpan)
+            || source == typeof(Guid)
+            || source == typeof(Uri)
+            || typeof(IEnumeration).IsAssignableFrom(source);
+    }
+
+    /// <summary>
+    ///     Determines whether the specified type represents a collection.
+    /// </summary>
+    /// <param name="source">The type to inspect.</param>
+    /// <returns>
+    ///     <c>true</c> when the type implements <see cref="IEnumerable"/> and is not treated as a scalar value such as
+    ///     <see cref="string"/> or <see cref="byte"/>[]; otherwise, <c>false</c>.
+    /// </returns>
+    [DebuggerStepThrough]
+    public static bool IsCollectionType(this Type source)
+    {
+        if (source is null)
+        {
+            return false;
+        }
+
+        if (source == typeof(string))
+        {
+            return false;
+        }
+
+        return typeof(IEnumerable).IsAssignableFrom(source) && source != typeof(byte[]);
+    }
+
+    /// <summary>
+    ///     Determines whether the specified type can be represented as a structured value such as a nested object or collection.
+    /// </summary>
+    /// <param name="source">The type to inspect.</param>
+    /// <returns>
+    ///     <c>true</c> when the type is not a simple scalar and represents either a collection or a non-<see cref="object"/>
+    ///     reference type; otherwise, <c>false</c>.
+    /// </returns>
+    [DebuggerStepThrough]
+    public static bool SupportsStructuredValue(this Type source)
+    {
+        if (source is null)
+        {
+            return false;
+        }
+
+        source = Nullable.GetUnderlyingType(source) ?? source;
+
+        return !source.IsSimpleType() && (source.IsCollectionType() || (source.IsClass && source != typeof(object)));
     }
 
     [DebuggerStepThrough]

@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Application.DataPorter;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Serialization;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -71,6 +72,7 @@ public sealed class XmlDataPorterProvider(
             foreach (var column in exportConfiguration.Columns)
             {
                 var value = column.GetValue(item);
+                var propertyType = column.PropertyInfo?.PropertyType ?? value?.GetType() ?? typeof(object);
 
                 // Apply converter if present
                 if (column.Converter is not null)
@@ -88,6 +90,12 @@ public sealed class XmlDataPorterProvider(
                 }
 
                 var elementName = this.SanitizeElementName(column.HeaderName ?? column.PropertyName);
+
+                if (column.Converter is null && propertyType.SupportsStructuredValue())
+                {
+                    await this.WriteStructuredElementAsync(writer, elementName, value, propertyType);
+                    continue;
+                }
 
                 if (this.configuration.UseAttributes && this.IsSimpleType(value))
                 {
@@ -150,6 +158,12 @@ public sealed class XmlDataPorterProvider(
                 {
                     var value = column.GetValue(item);
                     var elementName = this.SanitizeElementName(column.HeaderName ?? column.PropertyName);
+
+                    if (column.Converter is null && (column.PropertyInfo?.PropertyType ?? value?.GetType() ?? typeof(object)).SupportsStructuredValue())
+                    {
+                        await this.WriteStructuredElementAsync(writer, elementName, value, column.PropertyInfo?.PropertyType ?? typeof(object));
+                        continue;
+                    }
 
                     await writer.WriteStartElementAsync(null, elementName, null);
                     await writer.WriteStringAsync(this.FormatValue(value));
@@ -340,7 +354,8 @@ public sealed class XmlDataPorterProvider(
                     var childElement = element.Element(key);
                     var attributeValue = element.Attribute(key)?.Value;
                     var hasValue = childElement is not null || attributeValue is not null;
-                    var rawValue = childElement?.Value ?? attributeValue;
+            var rawValue = childElement?.ToString(SaveOptions.DisableFormatting) ?? attributeValue;
+            var targetType = column.PropertyInfo?.PropertyType ?? typeof(string);
 
                     // Validate required
                     if (column.IsRequired && !hasValue)
@@ -422,7 +437,8 @@ public sealed class XmlDataPorterProvider(
             var childElement = element.Element(key);
             var attributeValue = element.Attribute(key)?.Value;
             var hasValue = childElement is not null || attributeValue is not null;
-            var rawValue = childElement?.Value ?? attributeValue;
+            var rawValue = childElement?.ToString(SaveOptions.DisableFormatting) ?? attributeValue;
+            var targetType = column.PropertyInfo?.PropertyType ?? typeof(string);
 
             try
             {
@@ -470,7 +486,17 @@ public sealed class XmlDataPorterProvider(
                 }
 
                 // Convert and set value
-                var convertedValue = column.ConvertValue(rawValue);
+                object convertedValue;
+
+                if (column.Converter is null && childElement is not null && targetType.SupportsStructuredValue())
+                {
+                    convertedValue = this.DeserializeStructuredValue(childElement, targetType);
+                }
+                else
+                {
+                    convertedValue = column.ConvertValue(childElement?.Value ?? attributeValue);
+                }
+
                 column.SetValue(item, convertedValue);
             }
             catch (Exception ex)
@@ -523,6 +549,46 @@ public sealed class XmlDataPorterProvider(
         };
     }
 
+    private async Task WriteStructuredElementAsync(XmlWriter writer, string elementName, object value, Type propertyType)
+    {
+        if (value is null)
+        {
+            await writer.WriteStartElementAsync(null, elementName, null);
+            await writer.WriteEndElementAsync();
+            return;
+        }
+
+        var serializedElement = this.SerializeStructuredValue(value, propertyType, elementName);
+        await writer.WriteRawAsync(serializedElement.ToString(SaveOptions.DisableFormatting));
+    }
+
+    private XElement SerializeStructuredValue(object value, Type propertyType, string elementName)
+    {
+        var serializer = new XmlSerializer(value?.GetType() ?? propertyType, new XmlRootAttribute(elementName));
+        var namespaces = new XmlSerializerNamespaces();
+        namespaces.Add(string.Empty, string.Empty);
+
+        using var stringWriter = new StringWriter();
+        using var xmlWriter = XmlWriter.Create(stringWriter, new XmlWriterSettings { OmitXmlDeclaration = true });
+
+        serializer.Serialize(xmlWriter, value, namespaces);
+
+        return XElement.Parse(stringWriter.ToString());
+    }
+
+    private object DeserializeStructuredValue(XElement element, Type targetType)
+    {
+        if (!element.HasElements && !element.HasAttributes && string.IsNullOrWhiteSpace(element.Value))
+        {
+            return null;
+        }
+
+        var serializer = new XmlSerializer(targetType, new XmlRootAttribute(element.Name.LocalName));
+        using var reader = element.CreateReader();
+
+        return serializer.Deserialize(reader);
+    }
+
     private bool IsSimpleType(object value)
     {
         if (value is null)
@@ -530,12 +596,6 @@ public sealed class XmlDataPorterProvider(
             return true;
         }
 
-        var type = value.GetType();
-        return type.IsPrimitive
-            || type == typeof(string)
-            || type == typeof(decimal)
-            || type == typeof(DateTime)
-            || type == typeof(DateTimeOffset)
-            || type == typeof(Guid);
+        return value.GetType().IsSimpleType();
     }
 }

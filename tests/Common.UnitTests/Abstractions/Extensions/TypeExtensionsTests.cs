@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Abstractions.Extensions;
 
+using System.Collections;
+
 [UnitTest("Common")]
 public class TypeExtensionsTests
 {
@@ -258,6 +260,178 @@ public class TypeExtensionsTests
     }
 
     [Fact]
+    public void IsSimpleType_NullSource_ReturnsFalse()
+    {
+        // Arrange
+        Type sut = null;
+
+        // Act
+        var result = sut.IsSimpleType();
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void IsSimpleType_WithSupportedScalarTypes_ReturnsTrue()
+    {
+        // Arrange
+        var sut = new[]
+        {
+            typeof(int),
+            typeof(string),
+            typeof(decimal),
+            typeof(DateTime),
+            typeof(DateTimeOffset),
+            typeof(DateOnly),
+            typeof(TimeOnly),
+            typeof(TimeSpan),
+            typeof(Guid),
+            typeof(Uri),
+            typeof(SimpleStatus),
+            typeof(SimpleStatus?)
+        };
+
+        foreach (var type in sut)
+        {
+            // Act
+            var result = type.IsSimpleType();
+
+            // Assert
+            result.ShouldBeTrue();
+        }
+    }
+
+    [Fact]
+    public void IsSimpleType_WithComplexTypes_ReturnsFalse()
+    {
+        // Arrange
+        var sut = new[]
+        {
+            typeof(MyClass),
+            typeof(List<string>),
+            typeof(Dictionary<int, string>)
+        };
+
+        foreach (var type in sut)
+        {
+            // Act
+            var result = type.IsSimpleType();
+
+            // Assert
+            result.ShouldBeFalse();
+        }
+    }
+
+    [Fact]
+    public void IsCollectionType_NullSource_ReturnsFalse()
+    {
+        // Arrange
+        Type sut = null;
+
+        // Act
+        var result = sut.IsCollectionType();
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void IsCollectionType_WithCollectionTypes_ReturnsTrue()
+    {
+        // Arrange
+        var sut = new[]
+        {
+            typeof(int[]),
+            typeof(List<string>),
+            typeof(IEnumerable<Guid>),
+            typeof(ArrayList)
+        };
+
+        foreach (var type in sut)
+        {
+            // Act
+            var result = type.IsCollectionType();
+
+            // Assert
+            result.ShouldBeTrue();
+        }
+    }
+
+    [Fact]
+    public void IsCollectionType_WithStringAndByteArray_ReturnsFalse()
+    {
+        // Arrange
+        var sut = new[] { typeof(string), typeof(byte[]) };
+
+        foreach (var type in sut)
+        {
+            // Act
+            var result = type.IsCollectionType();
+
+            // Assert
+            result.ShouldBeFalse();
+        }
+    }
+
+    [Fact]
+    public void SupportsStructuredValue_NullSource_ReturnsFalse()
+    {
+        // Arrange
+        Type sut = null;
+
+        // Act
+        var result = sut.SupportsStructuredValue();
+
+        // Assert
+        result.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void SupportsStructuredValue_WithComplexObjectAndCollection_ReturnsTrue()
+    {
+        // Arrange
+        var sut = new[]
+        {
+            typeof(MyClass),
+            typeof(List<MyClass>),
+            typeof(MyClass[])
+        };
+
+        foreach (var type in sut)
+        {
+            // Act
+            var result = type.SupportsStructuredValue();
+
+            // Assert
+            result.ShouldBeTrue();
+        }
+    }
+
+    [Fact]
+    public void SupportsStructuredValue_WithScalarTypes_ReturnsFalse()
+    {
+        // Arrange
+        var sut = new[]
+        {
+            typeof(int),
+            typeof(string),
+            typeof(Guid),
+            typeof(SimpleStatus),
+            typeof(object)
+        };
+
+        foreach (var type in sut)
+        {
+            // Act
+            var result = type.SupportsStructuredValue();
+
+            // Assert
+            result.ShouldBeFalse();
+        }
+    }
+
+    [Fact]
     public void GetFieldUnambiguous_NullSource_ThrowsArgumentNullException()
     {
         // Arrange
@@ -403,4 +577,10 @@ public class TypeExtensionsTests
     }
 
     private class MyDerivedClass : MyClass;
+
+    private enum SimpleStatus
+    {
+        Pending,
+        Active
+    }
 }

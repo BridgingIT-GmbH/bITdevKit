@@ -496,7 +496,18 @@ public sealed class JsonDataPorterProvider(
 
     private object ConvertJsonElement(JsonElement element, ImportColumnConfiguration column)
     {
+        var options = this.configuration.GetSerializerOptions();
         var targetType = column.PropertyInfo?.PropertyType ?? typeof(string);
+
+        if (targetType.SupportsStructuredValue())
+        {
+            if (column.Converter is not null)
+            {
+                return column.ConvertValue(element.GetRawText());
+            }
+
+            return JsonSerializer.Deserialize(element.GetRawText(), targetType, options);
+        }
 
         return element.ValueKind switch
         {

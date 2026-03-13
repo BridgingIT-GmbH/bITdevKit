@@ -118,7 +118,7 @@ public class DataPorterServiceRoundtripTests
     }
 
     [Fact]
-    public async Task ExportAndImportAsync_WithJsonProviderAndChildEntityColumn_ExportsNestedObjectButCannotImportIt()
+    public async Task ExportAndImportAsync_WithJsonProviderAndNestedColumns_RoundTripsChildEntityAndCollection()
     {
         // Arrange
         var sut = new DataPorterService([new JsonDataPorterProvider()], this.CreateChildEntityConfigurationMerger());
@@ -140,11 +140,13 @@ public class DataPorterServiceRoundtripTests
         exportResult.ShouldBeSuccess();
         exportedContent.ShouldContain("\"Address\": {");
         exportedContent.ShouldContain("\"Street\": \"Analytical Engine Way 1\"");
-        AssertChildEntityIsNotImported(importResult, data.Length);
+        importResult.ShouldBeSuccess();
+        AssertPersons([.. importResult.Value.Data], data);
+        AssertNestedData([.. importResult.Value.Data], data);
     }
 
     [Fact]
-    public async Task ExportAndImportAsync_WithXmlProviderAndChildEntityColumn_DoesNotRoundTripChildEntity()
+    public async Task ExportAndImportAsync_WithXmlProviderAndNestedColumns_RoundTripsChildEntityAndCollection()
     {
         // Arrange
         var sut = new DataPorterService([new XmlDataPorterProvider()], this.CreateChildEntityConfigurationMerger());
@@ -165,8 +167,11 @@ public class DataPorterServiceRoundtripTests
         // Assert
         exportResult.ShouldBeSuccess();
         exportedContent.ShouldContain("<Address>");
-        exportedContent.ShouldContain("AddressEntity");
-        AssertChildEntityIsNotImported(importResult, data.Length);
+        exportedContent.ShouldContain("<Street>Analytical Engine Way 1</Street>");
+        exportedContent.ShouldContain("<PreviousAddresses>");
+        importResult.ShouldBeSuccess();
+        AssertPersons([.. importResult.Value.Data], data);
+        AssertNestedData([.. importResult.Value.Data], data);
     }
 
     private static PersonEntity[] CreatePersons()
@@ -186,6 +191,21 @@ public class DataPorterServiceRoundtripTests
                     Street = "Analytical Engine Way 1",
                     City = "London"
                 },
+                PreviousAddresses =
+                [
+                    new AddressEntity
+                    {
+                        Id = Guid.NewGuid(),
+                        Street = "Byron Avenue 5",
+                        City = "London"
+                    },
+                    new AddressEntity
+                    {
+                        Id = Guid.NewGuid(),
+                        Street = "Countess Road 9",
+                        City = "Oxford"
+                    }
+                ],
                 Status = PersonStatus.Active
             },
             new PersonEntity
@@ -201,6 +221,15 @@ public class DataPorterServiceRoundtripTests
                     Street = "Compiler Street 42",
                     City = "Arlington"
                 },
+                PreviousAddresses =
+                [
+                    new AddressEntity
+                    {
+                        Id = Guid.NewGuid(),
+                        Street = "Cobol Lane 1",
+                        City = "New York"
+                    }
+                ],
                 Status = PersonStatus.Inactive
             }
         ];
@@ -231,7 +260,27 @@ public class DataPorterServiceRoundtripTests
         importResult.Value.Data.Count.ShouldBe(expectedCount);
         importResult.Value.Errors.ShouldNotBeEmpty();
         importResult.Value.Errors.Any(e => e.Column == nameof(PersonEntity.Address)).ShouldBeTrue();
+        importResult.Value.Errors.Any(e => e.Column == nameof(PersonEntity.PreviousAddresses)).ShouldBeTrue();
         importResult.Value.Data.All(e => e.Address is null).ShouldBeTrue();
+        importResult.Value.Data.All(e => e.PreviousAddresses is null || e.PreviousAddresses.Count == 0).ShouldBeTrue();
+    }
+
+    private static void AssertNestedData(PersonEntity[] imported, PersonEntity[] expected)
+    {
+        imported[0].Address.ShouldNotBeNull();
+        imported[0].Address.Id.ShouldBe(expected[0].Address.Id);
+        imported[0].Address.Street.ShouldBe(expected[0].Address.Street);
+        imported[0].Address.City.ShouldBe(expected[0].Address.City);
+        imported[0].PreviousAddresses.Count.ShouldBe(expected[0].PreviousAddresses.Count);
+        imported[0].PreviousAddresses[0].Street.ShouldBe(expected[0].PreviousAddresses[0].Street);
+        imported[0].PreviousAddresses[1].City.ShouldBe(expected[0].PreviousAddresses[1].City);
+
+        imported[1].Address.ShouldNotBeNull();
+        imported[1].Address.Id.ShouldBe(expected[1].Address.Id);
+        imported[1].Address.Street.ShouldBe(expected[1].Address.Street);
+        imported[1].Address.City.ShouldBe(expected[1].Address.City);
+        imported[1].PreviousAddresses.Count.ShouldBe(expected[1].PreviousAddresses.Count);
+        imported[1].PreviousAddresses[0].Street.ShouldBe(expected[1].PreviousAddresses[0].Street);
     }
 
     private ConfigurationMerger CreateChildEntityConfigurationMerger()
@@ -350,7 +399,7 @@ public class DataPorterServiceRoundtripTests
     }
 }
 
-public class PersonEntity : AggregateRoot<Guid>
+public class PersonEntity : Entity<Guid>
 {
     public string FirstName { get; set; }
 
@@ -361,6 +410,8 @@ public class PersonEntity : AggregateRoot<Guid>
     public Guid? ManagerId { get; set; }
 
     public AddressEntity Address { get; set; }
+
+    public List<AddressEntity> PreviousAddresses { get; set; } = [];
 
     public PersonStatus Status { get; set; }
 }
@@ -447,7 +498,8 @@ public class PersonEntityWithChildExportProfile : IExportProfile<PersonEntity>
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Age), 3),
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.ManagerId), 4),
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Address), 5),
-        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Status), 6, statusConverter)
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.PreviousAddresses), 6),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Status), 7, statusConverter)
     ];
 
     public string SheetName => "Persons";
@@ -471,7 +523,8 @@ public class PersonEntityWithChildImportProfile : IImportProfile<PersonEntity>
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Age), 3),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.ManagerId), 4),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Address), 5),
-        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Status), 6, statusConverter)
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.PreviousAddresses), 6),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Status), 7, statusConverter)
     ];
 
     public string SheetName => "Persons";

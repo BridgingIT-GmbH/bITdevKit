@@ -32,6 +32,15 @@
         "resolved": "8.0.0",
         "contentHash": "EMkj/2F6n6IVPrvGYkqzGJs6phuGGkq6N+E7KW9rNyzNxXbwQ1KfMqWyXNf9nCNEQOA6IjFwmOLvkriwKE7Orw=="
       },
+      "Dumpify": {
+        "type": "Direct",
+        "requested": "[0.6.6, )",
+        "resolved": "0.6.6",
+        "contentHash": "KDPmd681ltvJKRWRfbc7WLzOztYV8BXBSwoDaZVLlaq9Y45X3sZeh8FDF2MyfTErcKVp4fPEWyDiKyizInCptg==",
+        "dependencies": {
+          "Spectre.Console": "0.48.0"
+        }
+      },
       "Ensure.That": {
         "type": "Direct",
         "requested": "[10.1.0, )",
@@ -1223,6 +1232,12 @@
         "requested": "[0.44.5, )",
         "resolved": "0.44.5",
         "contentHash": "//rgXHGp1vVFK+2A75OKXseZM9Fq8NDkhuV9uf1NxUU4JQj6HDG9VRl51nghasteYF4/ub1Oe/o7Fnwpdj4t1g=="
+      },
+      "Spectre.Console": {
+        "type": "CentralTransitive",
+        "requested": "[0.54.0, )",
+        "resolved": "0.54.0",
+        "contentHash": "StDXCFayfy0yB1xzUHT2tgEpV1/HFTiS4JgsAQS49EYTfMixSwwucaQs/bIOCwXjWwIQTMuxjUIxcB5XsJkFJA=="
       },
       "System.Linq.Dynamic.Core": {
         "type": "CentralTransitive",

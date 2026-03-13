@@ -535,7 +535,3 @@ Application.DataPorter/
 | PDFsharp-MigraDoc | 6.2.0 | PDF generation (MIT licensed) |
 | System.Text.Json | Built-in | JSON handling |
 | System.Xml.Linq | Built-in | XML handling |
-
-## License
-
-MIT License - See LICENSE file for details.

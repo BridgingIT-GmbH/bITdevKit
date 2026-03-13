@@ -28,6 +28,7 @@
   </Folder>
   <Folder Name="/docs/">
     <File Path="docs/features-application-commands-queries.md" />
+    <File Path="docs/features-application-dataporter.md" />
     <File Path="docs/features-domain-activeentity.md" />
     <File Path="docs/features-domain-repositories.md" />
     <File Path="docs/features-domain.md" />

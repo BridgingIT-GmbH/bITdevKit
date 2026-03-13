@@ -1,4 +1,4 @@
-# DataPorter
+	# DataPorter
 
 A flexible, extensible data export/import framework for .NET supporting multiple file formats with both profile-based and attribute-based configuration.
 
@@ -409,8 +409,13 @@ services.AddDataPorter()
         config.TableHeaderTextColor = "#FFFFFF";
         config.UseAlternatingRowColors = true;
         config.AlternateRowBackgroundColor = "#F2F2F2";
+        config.UseNesting = true;
     });
 ```
+
+When `UseNesting` is enabled, the PDF provider renders nested structured values into table cells using a readable textual representation. Child objects and collections are traversed recursively and formatted inline. Recursive back references are ignored during rendering so cyclical object graphs cannot cause endless export generation.
+
+When `UseNesting` is disabled, nested structured properties without explicit converters are omitted from the PDF table output.
 
 ## Advanced Features
 

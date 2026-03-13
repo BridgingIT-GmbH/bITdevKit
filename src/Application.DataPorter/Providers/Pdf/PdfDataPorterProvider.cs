@@ -5,11 +5,15 @@
 
 namespace BridgingIT.DevKit.Application.DataPorter;
 
+using System.Collections;
+using System.Reflection;
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using MigraDoc.DocumentObjectModel;
 using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
+using MigraDocUnit = MigraDoc.DocumentObjectModel.Unit;
 using MigraDocVerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment;
 
 /// <summary>
@@ -26,6 +30,8 @@ public sealed class PdfDataPorterProvider(
 {
     private readonly PdfConfiguration configuration = configuration ?? new PdfConfiguration();
     private readonly ILogger<PdfDataPorterProvider> logger = loggerFactory?.CreateLogger<PdfDataPorterProvider>() ?? NullLogger<PdfDataPorterProvider>.Instance;
+    private static readonly Lock fontResolverLock = new();
+    private static bool fontResolverInitialized;
 
     /// <inheritdoc/>
     public Format Format => Format.Pdf;
@@ -50,8 +56,10 @@ public sealed class PdfDataPorterProvider(
         CancellationToken cancellationToken = default)
         where TSource : class
     {
+        this.EnsureFontResolution();
+
         var dataList = data.ToList();
-        var columns = exportConfiguration.Columns.ToList();
+        var columns = this.GetExportColumns(exportConfiguration);
 
         var document = this.CreateDocument();
         var section = this.CreateSection(document);
@@ -89,6 +97,8 @@ public sealed class PdfDataPorterProvider(
         Stream outputStream,
         CancellationToken cancellationToken = default)
     {
+        this.EnsureFontResolution();
+
         var dataSetsList = dataSets.ToList();
         var totalRows = 0;
 
@@ -97,7 +107,7 @@ public sealed class PdfDataPorterProvider(
         foreach (var (data, exportConfiguration) in dataSetsList)
         {
             var dataList = data.ToList();
-            var columns = exportConfiguration.Columns.ToList();
+            var columns = this.GetExportColumns(exportConfiguration);
             totalRows += dataList.Count;
 
             var section = this.CreateSection(document);
@@ -149,7 +159,7 @@ public sealed class PdfDataPorterProvider(
         // Define default style
         var style = document.Styles[StyleNames.Normal];
         style.Font.Name = this.configuration.FontFamily;
-        style.Font.Size = Unit.FromPoint(this.configuration.BodyFontSize);
+        style.Font.Size = MigraDocUnit.FromPoint(this.configuration.BodyFontSize);
 
         return document;
     }
@@ -161,10 +171,10 @@ public sealed class PdfDataPorterProvider(
         // Configure page size
         var (width, height) = this.configuration.PageSize switch
         {
-            PdfPageSize.A3 => (Unit.FromMillimeter(297), Unit.FromMillimeter(420)),
-            PdfPageSize.Letter => (Unit.FromInch(8.5), Unit.FromInch(11)),
-            PdfPageSize.Legal => (Unit.FromInch(8.5), Unit.FromInch(14)),
-            _ => (Unit.FromMillimeter(210), Unit.FromMillimeter(297)) // A4
+            PdfPageSize.A3 => (MigraDocUnit.FromMillimeter(297), MigraDocUnit.FromMillimeter(420)),
+            PdfPageSize.Letter => (MigraDocUnit.FromInch(8.5), MigraDocUnit.FromInch(11)),
+            PdfPageSize.Legal => (MigraDocUnit.FromInch(8.5), MigraDocUnit.FromInch(14)),
+            _ => (MigraDocUnit.FromMillimeter(210), MigraDocUnit.FromMillimeter(297)) // A4
         };
 
         if (this.configuration.Orientation == PdfPageOrientation.Landscape)
@@ -179,7 +189,7 @@ public sealed class PdfDataPorterProvider(
         }
 
         // Set margins
-        var margin = Unit.FromPoint(this.configuration.Margin);
+        var margin = MigraDocUnit.FromPoint(this.configuration.Margin);
         section.PageSetup.TopMargin = margin;
         section.PageSetup.BottomMargin = margin;
         section.PageSetup.LeftMargin = margin;
@@ -194,17 +204,107 @@ public sealed class PdfDataPorterProvider(
         if (!string.IsNullOrEmpty(title))
         {
             var paragraph = section.AddParagraph(title);
-            paragraph.Format.Font.Size = Unit.FromPoint(this.configuration.HeaderFontSize + 4);
+            paragraph.Format.Font.Size = MigraDocUnit.FromPoint(this.configuration.HeaderFontSize + 4);
             paragraph.Format.Font.Bold = true;
-            paragraph.Format.SpaceAfter = Unit.FromPoint(5);
+            paragraph.Format.SpaceAfter = MigraDocUnit.FromPoint(5);
         }
 
         if (this.configuration.ShowGenerationDate)
         {
             var dateParagraph = section.AddParagraph($"Generated: {DateTime.Now.ToString(this.configuration.DateFormat)}");
-            dateParagraph.Format.Font.Size = Unit.FromPoint(this.configuration.HeaderFontSize - 1);
+            dateParagraph.Format.Font.Size = MigraDocUnit.FromPoint(this.configuration.HeaderFontSize - 1);
             dateParagraph.Format.Font.Color = Colors.Gray;
-            dateParagraph.Format.SpaceAfter = Unit.FromPoint(10);
+            dateParagraph.Format.SpaceAfter = MigraDocUnit.FromPoint(10);
+        }
+    }
+
+    private void EnsureFontResolution()
+    {
+        lock (fontResolverLock)
+        {
+            if (fontResolverInitialized)
+            {
+                return;
+            }
+
+            try
+            {
+                var globalFontSettingsType = AppDomain.CurrentDomain.GetAssemblies()
+                    .Select(assembly => assembly.GetType("PdfSharp.Fonts.GlobalFontSettings", throwOnError: false))
+                    .FirstOrDefault(type => type is not null);
+
+                var fontResolverProperty = globalFontSettingsType?.GetProperty("FontResolver", BindingFlags.Public | BindingFlags.Static);
+                if (fontResolverProperty?.GetValue(null) is null)
+                {
+                    fontResolverProperty?.SetValue(null, new WindowsFontResolver());
+                }
+
+                fontResolverInitialized = true;
+            }
+            catch (Exception ex)
+            {
+                this.logger.LogDebug(ex, "Could not initialize PDFsharp font resolution.");
+            }
+        }
+    }
+
+    private sealed class WindowsFontResolver : PdfSharp.Fonts.IFontResolver
+    {
+        private static readonly Dictionary<string, string> fileNames = new(StringComparer.OrdinalIgnoreCase)
+        {
+            ["Arial#Regular"] = "arial.ttf",
+            ["Arial#Bold"] = "arialbd.ttf",
+            ["Arial#Italic"] = "ariali.ttf",
+            ["Arial#BoldItalic"] = "arialbi.ttf",
+            ["Courier New#Regular"] = "cour.ttf",
+            ["Courier New#Bold"] = "courbd.ttf",
+            ["Courier New#Italic"] = "couri.ttf",
+            ["Courier New#BoldItalic"] = "courbi.ttf",
+            ["Helvetica#Regular"] = "arial.ttf",
+            ["Helvetica#Bold"] = "arialbd.ttf",
+            ["Helvetica#Italic"] = "ariali.ttf",
+            ["Helvetica#BoldItalic"] = "arialbi.ttf",
+            ["Times New Roman#Regular"] = "arial.ttf",
+            ["Times New Roman#Bold"] = "arialbd.ttf",
+            ["Times New Roman#Italic"] = "ariali.ttf",
+            ["Times New Roman#BoldItalic"] = "arialbi.ttf"
+        };
+
+        public byte[] GetFont(string faceName)
+        {
+            if (!fileNames.TryGetValue(faceName, out var fileName))
+            {
+                fileName = "arial.ttf";
+            }
+
+            return File.ReadAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts", fileName));
+        }
+
+        public PdfSharp.Fonts.FontResolverInfo ResolveTypeface(string familyName, bool isBold, bool isItalic)
+        {
+            familyName = string.IsNullOrWhiteSpace(familyName) ? "Arial" : familyName;
+            var style = isBold && isItalic
+                ? "BoldItalic"
+                : isBold
+                    ? "Bold"
+                    : isItalic
+                        ? "Italic"
+                        : "Regular";
+
+            var normalizedFamily = familyName switch
+            {
+                "Helvetica" => "Helvetica",
+                "Courier" => "Courier New",
+                _ => familyName
+            };
+
+            var faceName = $"{normalizedFamily}#{style}";
+            if (!fileNames.ContainsKey(faceName))
+            {
+                faceName = $"Arial#{style}";
+            }
+
+            return new PdfSharp.Fonts.FontResolverInfo(faceName);
         }
     }
 
@@ -225,7 +325,7 @@ public sealed class PdfDataPorterProvider(
             var tableColumn = table.AddColumn();
             if (column.Width > 0)
             {
-                tableColumn.Width = Unit.FromPoint(column.Width);
+                tableColumn.Width = MigraDocUnit.FromPoint(column.Width);
             }
             else
             {
@@ -246,9 +346,9 @@ public sealed class PdfDataPorterProvider(
         {
             var cell = headerRow.Cells[i];
             cell.AddParagraph(columns[i].HeaderName ?? columns[i].PropertyName);
-            cell.Format.Font.Size = Unit.FromPoint(this.configuration.BodyFontSize);
+            cell.Format.Font.Size = MigraDocUnit.FromPoint(this.configuration.BodyFontSize);
             cell.VerticalAlignment = MigraDocVerticalAlignment.Top;
-            cell.Format.LeftIndent = Unit.FromPoint(5);
+            cell.Format.LeftIndent = MigraDocUnit.FromPoint(5);
         }
 
         // Data rows
@@ -285,11 +385,16 @@ public sealed class PdfDataPorterProvider(
                     value = column.Converter.ConvertToExport(value, context);
                 }
 
+                if (column.Converter is null && (column.PropertyInfo?.PropertyType?.SupportsStructuredValue() == true))
+                {
+                    value = this.FormatStructuredValue(value, new HashSet<object>(ReferenceEqualityComparer.Instance));
+                }
+
                 var cell = row.Cells[i];
                 cell.AddParagraph(this.FormatValue(value, column, exportConfiguration.Culture));
-                cell.Format.Font.Size = Unit.FromPoint(this.configuration.BodyFontSize);
+                cell.Format.Font.Size = MigraDocUnit.FromPoint(this.configuration.BodyFontSize);
                 cell.VerticalAlignment = MigraDocVerticalAlignment.Top;
-                cell.Format.LeftIndent = Unit.FromPoint(5);
+                cell.Format.LeftIndent = MigraDocUnit.FromPoint(5);
 
                 // Apply alignment
                 cell.Format.Alignment = column.HorizontalAlignment switch
@@ -309,7 +414,7 @@ public sealed class PdfDataPorterProvider(
         if (!string.IsNullOrEmpty(this.configuration.FooterText))
         {
             var paragraph = footer.AddParagraph(this.configuration.FooterText);
-            paragraph.Format.Font.Size = Unit.FromPoint(this.configuration.HeaderFontSize - 2);
+            paragraph.Format.Font.Size = MigraDocUnit.FromPoint(this.configuration.HeaderFontSize - 2);
             paragraph.Format.Font.Color = Colors.Gray;
         }
 
@@ -317,7 +422,7 @@ public sealed class PdfDataPorterProvider(
         {
             var paragraph = footer.AddParagraph();
             paragraph.Format.Alignment = ParagraphAlignment.Right;
-            paragraph.Format.Font.Size = Unit.FromPoint(this.configuration.HeaderFontSize - 2);
+            paragraph.Format.Font.Size = MigraDoc.DocumentObjectModel.Unit.FromPoint(this.configuration.HeaderFontSize - 2);
             paragraph.Format.Font.Color = Colors.Gray;
             paragraph.AddText("Page ");
             paragraph.AddPageField();
@@ -349,6 +454,83 @@ public sealed class PdfDataPorterProvider(
             bool b => b ? "Yes" : "No",
             _ => value.ToString() ?? string.Empty
         };
+    }
+
+    private List<ColumnConfiguration> GetExportColumns(ExportConfiguration config)
+    {
+        return [.. config.Columns.Where(column => !column.Ignore && !this.ShouldIgnoreNestedColumn(column))];
+    }
+
+    private bool ShouldIgnoreNestedColumn(ColumnConfiguration column)
+    {
+        return !this.configuration.UseNesting
+            && column.Converter is null
+            && column.PropertyInfo?.PropertyType.SupportsStructuredValue() == true;
+    }
+
+    private string FormatStructuredValue(object value, HashSet<object> visited)
+    {
+        if (value is null)
+        {
+            return string.Empty;
+        }
+
+        var type = value.GetType();
+        if (!type.IsValueType && !visited.Add(value))
+        {
+            return string.Empty;
+        }
+
+        try
+        {
+            if (type.IsCollectionType())
+            {
+                var parts = new List<string>();
+                foreach (var item in (IEnumerable)value)
+                {
+                    var formatted = this.FormatStructuredValue(item, visited);
+                    if (!string.IsNullOrWhiteSpace(formatted))
+                    {
+                        parts.Add(formatted);
+                    }
+                }
+
+                return string.Join(" | ", parts);
+            }
+
+            var partsForObject = new List<string>();
+            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                         .Where(property => property.CanRead && property.GetIndexParameters().Length == 0))
+            {
+                var propertyValue = property.GetValue(value);
+                if (propertyValue is null)
+                {
+                    continue;
+                }
+
+                if (property.PropertyType.SupportsStructuredValue())
+                {
+                    var nested = this.FormatStructuredValue(propertyValue, visited);
+                    if (!string.IsNullOrWhiteSpace(nested))
+                    {
+                        partsForObject.Add($"{property.Name}: {nested}");
+                    }
+
+                    continue;
+                }
+
+                partsForObject.Add($"{property.Name}: {propertyValue}");
+            }
+
+            return string.Join(", ", partsForObject);
+        }
+        finally
+        {
+            if (!type.IsValueType)
+            {
+                visited.Remove(value);
+            }
+        }
     }
 
     private Color ParseColor(string hexColor)

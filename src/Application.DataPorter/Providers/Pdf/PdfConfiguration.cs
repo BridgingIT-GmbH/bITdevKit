@@ -99,6 +99,12 @@ public sealed class PdfConfiguration
     /// Gets or sets the date format string.
     /// </summary>
     public string DateFormat { get; set; } = "yyyy-MM-dd HH:mm";
+
+    /// <summary>
+    /// Gets or sets a value indicating whether nested structured values should be rendered.
+    /// When disabled, nested objects and collections without an explicit converter are ignored during PDF export.
+    /// </summary>
+    public bool UseNesting { get; set; } = false;
 }
 
 /// <summary>

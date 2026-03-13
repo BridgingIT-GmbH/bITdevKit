@@ -133,6 +133,7 @@ public class DataPorterServiceRoundtripTests
     [InlineData(Format.CsvTyped)]
     [InlineData(Format.Json)]
     [InlineData(Format.Xml)]
+    [InlineData(Format.Pdf)]
     public async Task ExportAsync_WithRecursiveChildBackReference_DoesNotRecurseInfinitely(Format format)
     {
         // Arrange
@@ -142,6 +143,7 @@ public class DataPorterServiceRoundtripTests
             Format.CsvTyped => new CsvTypedDataPorterProvider(),
             Format.Json => new JsonDataPorterProvider(),
             Format.Xml => new XmlDataPorterProvider(),
+            Format.Pdf => new PdfDataPorterProvider(new PdfConfiguration { UseNesting = true }),
             _ => throw new NotSupportedException()
         };
         var sut = new DataPorterService([provider], this.CreateRecursiveConfigurationMerger());
@@ -157,6 +159,25 @@ public class DataPorterServiceRoundtripTests
         // Assert
         result.ShouldBeSuccess();
         result.Value.RowsExported.ShouldBeGreaterThan(0);
+    }
+
+    [Fact]
+    public async Task ExportAsync_WithPdfProviderAndNestingEnabled_RendersNestedObjects()
+    {
+        // Arrange
+        var sut = new DataPorterService(
+            [new PdfDataPorterProvider(new PdfConfiguration { UseNesting = true })],
+            this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var options = new ExportOptions { Format = Format.Pdf, UseAttributes = false };
+
+        // Act
+        var result = await sut.ExportAsync(data, stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        stream.Length.ShouldBeGreaterThan(0);
     }
 
     [Fact]

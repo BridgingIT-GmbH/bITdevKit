@@ -567,28 +567,94 @@ services.AddDataPorter(configuration)
 
 ## Architecture
 
+`Application.DataPorter` is built around a small orchestration core with pluggable format providers and column-level transformation/configuration.
+
+At the center is `DataPorterService`, which implements both `IDataExporter` and `IDataImporter`. It does not know how to read or write CSV, Excel, JSON, XML, or PDF itself. Instead, it coordinates the workflow:
+
+1. validate the request and selected `Format`
+2. resolve the matching provider from the registered `IDataPorterProvider` implementations
+3. build the effective import or export configuration for the requested type
+4. delegate the actual read/write work to the selected provider
+5. wrap the outcome in `Result`, `ExportResult`, `ImportResult<T>`, or `ValidationResult`
+
+This separation keeps the public API stable while allowing each file format to have its own optimized implementation.
+
+### Core building blocks
+
+- **Service layer**
+  - `DataPorterService` is the façade used by application code.
+  - It selects providers by `Format`, applies logging, timing, cancellation, and error handling.
+
+- **Provider model**
+  - `IDataPorterProvider` describes provider capabilities such as supported format, file extensions, import/export support, and streaming support.
+  - `IDataExportProvider` and `IDataImportProvider` add the actual export/import operations.
+  - Concrete providers such as CSV, Excel, JSON, XML, and PDF encapsulate all format-specific logic.
+
+- **Configuration model**
+  - `ExportOptions` and `ImportOptions` define runtime choices like format, culture, sheet selection, validation behavior, and whether attributes should be used.
+  - `ExportConfiguration` and `ImportConfiguration` represent the fully merged configuration that providers consume.
+  - `ConfigurationMerger` combines configuration sources with this precedence: **Profile > Attributes > Options > Defaults**.
+
+- **Metadata sources**
+  - **Profiles** (`IExportProfile`, `IImportProfile`) provide explicit, code-based configuration for columns, formats, headers, sheet names, validation, and converters.
+  - **Attributes** (`DataPorterSheet`, `DataPorterColumn`, `DataPorterConverter`, `DataPorterValidation`, `DataPorterIgnore`) provide declarative configuration directly on types and properties.
+  - `ProfileRegistry` stores registered profiles.
+  - `AttributeConfigurationReader` scans types and builds configuration from attributes.
+
+- **Converter pipeline**
+  - `IValueConverter` and `IValueConverter<T>` allow per-column transformation between domain values and external representations.
+  - Providers call converters while reading or writing individual column values.
+  - `ValueConversionContext` passes property metadata plus optional `Format`, `Culture`, and additional parameters into the converter.
+  - This makes converters reusable across formats because the provider handles transport concerns while the converter handles value semantics.
+
+- **Validation pipeline**
+  - During import, column validators can be created from attributes or profiles.
+  - Validation behavior is controlled through `ImportValidationBehavior`, allowing callers to collect errors, skip invalid rows, or stop the import.
+
+### Provider responsibilities
+
+Providers are intentionally responsible only for format-specific concerns, for example:
+
+- **CSV provider**: delimiter handling, text encoding, row-by-row streaming, header writing/reading
+- **Excel provider**: worksheets, styling, widths, header/footer rows, conditional formatting
+- **JSON/XML providers**: document serialization shape and structured parsing
+- **PDF provider**: tabular rendering and document layout for export-only scenarios
+
+Because the configuration and converter pipeline are shared, the same domain type can be exported to multiple formats with consistent column naming, formatting, validation, and transformation rules.
+
+### Runtime flow
+
+Typical export flow:
+
+```text
+Application code
+  -> DataPorterService
+  -> ConfigurationMerger
+  -> matching export provider
+  -> per-column value access + converter execution
+  -> format-specific writer
 ```
-Application.DataPorter/
-├── Abstractions/           # Core interfaces
-│   ├── IDataExporter.cs
-│   ├── IDataImporter.cs
-│   ├── IDataPorterProvider.cs
-│   ├── IExportProfile.cs
-│   ├── IImportProfile.cs
-│   └── IValueConverter.cs
-├── Attributes/             # Attribute-based configuration
-├── Configuration/          # Profile base classes and builders
-├── Converters/             # Built-in value converters
-├── Errors/                 # Error types for Result pattern
-├── Models/                 # Result and option models
-├── Providers/              # Format-specific implementations
-│   ├── Csv/
-│   ├── Excel/
-│   ├── Json/
-│   ├── Pdf/
-│   └── Xml/
-└── Services/               # Core service implementations
+
+Typical import flow:
+
+```text
+Input stream
+  -> DataPorterService
+  -> ConfigurationMerger
+  -> matching import provider
+  -> raw field extraction
+  -> converter execution
+  -> validation
+  -> object materialization
 ```
+
+The result is an architecture where:
+
+- **formats are pluggable**
+- **configuration is composable**
+- **value transformation is isolated in converters**
+- **domain models stay independent from file-format details**
+- **import and export share the same conceptual model**
 
 ## Dependencies
 

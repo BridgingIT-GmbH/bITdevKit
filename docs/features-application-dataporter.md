@@ -410,12 +410,17 @@ services.AddDataPorter()
         config.UseAlternatingRowColors = true;
         config.AlternateRowBackgroundColor = "#F2F2F2";
         config.UseNesting = true;
+        // Optional: override PDFsharp font resolution
+        // config.FontResolver = new MyPdfFontResolver();
+        // config.FallbackFontResolver = new MyPdfFallbackFontResolver();
     });
 ```
 
 When `UseNesting` is enabled, the PDF provider renders nested structured values into table cells using a readable textual representation. Child objects and collections are traversed recursively and formatted inline. Recursive back references are ignored during rendering so cyclical object graphs cannot cause endless export generation.
 
 When `UseNesting` is disabled, nested structured properties without explicit converters are omitted from the PDF table output.
+
+The PDF provider now uses a platform-aware font resolver so exports can work on Windows and Linux environments such as Ubuntu, provided common system fonts are installed. Clients can also override the primary and fallback PDFsharp font resolvers during setup when they need custom font resolution behavior.
 
 ## Advanced Features
 

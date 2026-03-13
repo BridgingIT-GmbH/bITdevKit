@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.DataPorter;
 
+using PdfSharp.Fonts;
+
 /// <summary>
 /// Configuration options for the PDF provider.
 /// </summary>
@@ -105,6 +107,18 @@ public sealed class PdfConfiguration
     /// When disabled, nested objects and collections without an explicit converter are ignored during PDF export.
     /// </summary>
     public bool UseNesting { get; set; } = false;
+
+    /// <summary>
+    /// Gets or sets an optional custom PDFsharp font resolver.
+    /// When provided, it is used as the primary resolver during PDF export.
+    /// </summary>
+    public IFontResolver FontResolver { get; set; }
+
+    /// <summary>
+    /// Gets or sets an optional fallback PDFsharp font resolver.
+    /// When not specified and <see cref="FontResolver"/> is set, the built-in platform-aware resolver is used as fallback.
+    /// </summary>
+    public IFontResolver FallbackFontResolver { get; set; }
 }
 
 /// <summary>

@@ -6,13 +6,14 @@
 namespace BridgingIT.DevKit.Application.DataPorter;
 
 using System.Collections;
+using System.Runtime.InteropServices;
 using System.Reflection;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using MigraDoc.DocumentObjectModel;
-using MigraDoc.DocumentObjectModel.Tables;
 using MigraDoc.Rendering;
+using PdfSharp.Fonts;
 using MigraDocUnit = MigraDoc.DocumentObjectModel.Unit;
 using MigraDocVerticalAlignment = MigraDoc.DocumentObjectModel.Tables.VerticalAlignment;
 
@@ -30,8 +31,9 @@ public sealed class PdfDataPorterProvider(
 {
     private readonly PdfConfiguration configuration = configuration ?? new PdfConfiguration();
     private readonly ILogger<PdfDataPorterProvider> logger = loggerFactory?.CreateLogger<PdfDataPorterProvider>() ?? NullLogger<PdfDataPorterProvider>.Instance;
-    private static readonly Lock fontResolverLock = new();
+    private static readonly System.Threading.Lock fontResolverLock = new();
     private static bool fontResolverInitialized;
+    private static readonly PlatformFontResolver platformFontResolver = new();
 
     /// <inheritdoc/>
     public Format Format => Format.Pdf;
@@ -234,9 +236,28 @@ public sealed class PdfDataPorterProvider(
                     .FirstOrDefault(type => type is not null);
 
                 var fontResolverProperty = globalFontSettingsType?.GetProperty("FontResolver", BindingFlags.Public | BindingFlags.Static);
+                var fallbackFontResolverProperty = globalFontSettingsType?.GetProperty("FallbackFontResolver", BindingFlags.Public | BindingFlags.Static);
+                var currentFontResolver = fontResolverProperty?.GetValue(null);
+                var currentFallbackFontResolver = fallbackFontResolverProperty?.GetValue(null);
+
+                if (this.configuration.FontResolver is not null && currentFontResolver is null)
+                {
+                    fontResolverProperty?.SetValue(null, this.configuration.FontResolver);
+                }
+
+                if (this.configuration.FallbackFontResolver is not null && currentFallbackFontResolver is null)
+                {
+                    fallbackFontResolverProperty?.SetValue(null, this.configuration.FallbackFontResolver);
+                }
+
                 if (fontResolverProperty?.GetValue(null) is null)
                 {
-                    fontResolverProperty?.SetValue(null, new WindowsFontResolver());
+                    fontResolverProperty?.SetValue(null, platformFontResolver);
+                }
+
+                if (fallbackFontResolverProperty?.GetValue(null) is null)
+                {
+                    fallbackFontResolverProperty?.SetValue(null, this.configuration.FallbackFontResolver ?? platformFontResolver);
                 }
 
                 fontResolverInitialized = true;
@@ -248,39 +269,53 @@ public sealed class PdfDataPorterProvider(
         }
     }
 
-    private sealed class WindowsFontResolver : PdfSharp.Fonts.IFontResolver
+    private sealed class PlatformFontResolver : IFontResolver
     {
-        private static readonly Dictionary<string, string> fileNames = new(StringComparer.OrdinalIgnoreCase)
+        private static readonly Dictionary<string, string[]> fontFileNames = new(StringComparer.OrdinalIgnoreCase)
         {
-            ["Arial#Regular"] = "arial.ttf",
-            ["Arial#Bold"] = "arialbd.ttf",
-            ["Arial#Italic"] = "ariali.ttf",
-            ["Arial#BoldItalic"] = "arialbi.ttf",
-            ["Courier New#Regular"] = "cour.ttf",
-            ["Courier New#Bold"] = "courbd.ttf",
-            ["Courier New#Italic"] = "couri.ttf",
-            ["Courier New#BoldItalic"] = "courbi.ttf",
-            ["Helvetica#Regular"] = "arial.ttf",
-            ["Helvetica#Bold"] = "arialbd.ttf",
-            ["Helvetica#Italic"] = "ariali.ttf",
-            ["Helvetica#BoldItalic"] = "arialbi.ttf",
-            ["Times New Roman#Regular"] = "arial.ttf",
-            ["Times New Roman#Bold"] = "arialbd.ttf",
-            ["Times New Roman#Italic"] = "ariali.ttf",
-            ["Times New Roman#BoldItalic"] = "arialbi.ttf"
+            ["Arial#Regular"] = ["arial.ttf", "Arial.ttf", "LiberationSans-Regular.ttf", "DejaVuSans.ttf"],
+            ["Arial#Bold"] = ["arialbd.ttf", "Arial Bold.ttf", "LiberationSans-Bold.ttf", "DejaVuSans-Bold.ttf"],
+            ["Arial#Italic"] = ["ariali.ttf", "Arial Italic.ttf", "LiberationSans-Italic.ttf", "DejaVuSans-Oblique.ttf"],
+            ["Arial#BoldItalic"] = ["arialbi.ttf", "Arial Bold Italic.ttf", "LiberationSans-BoldItalic.ttf", "DejaVuSans-BoldOblique.ttf"],
+            ["Courier New#Regular"] = ["cour.ttf", "Courier New.ttf", "LiberationMono-Regular.ttf", "DejaVuSansMono.ttf"],
+            ["Courier New#Bold"] = ["courbd.ttf", "Courier New Bold.ttf", "LiberationMono-Bold.ttf", "DejaVuSansMono-Bold.ttf"],
+            ["Courier New#Italic"] = ["couri.ttf", "Courier New Italic.ttf", "LiberationMono-Italic.ttf", "DejaVuSansMono-Oblique.ttf"],
+            ["Courier New#BoldItalic"] = ["courbi.ttf", "Courier New Bold Italic.ttf", "LiberationMono-BoldItalic.ttf", "DejaVuSansMono-BoldOblique.ttf"],
+            ["Helvetica#Regular"] = ["arial.ttf", "Arial.ttf", "LiberationSans-Regular.ttf", "DejaVuSans.ttf"],
+            ["Helvetica#Bold"] = ["arialbd.ttf", "Arial Bold.ttf", "LiberationSans-Bold.ttf", "DejaVuSans-Bold.ttf"],
+            ["Helvetica#Italic"] = ["ariali.ttf", "Arial Italic.ttf", "LiberationSans-Italic.ttf", "DejaVuSans-Oblique.ttf"],
+            ["Helvetica#BoldItalic"] = ["arialbi.ttf", "Arial Bold Italic.ttf", "LiberationSans-BoldItalic.ttf", "DejaVuSans-BoldOblique.ttf"],
+            ["Times New Roman#Regular"] = ["times.ttf", "Times New Roman.ttf", "LiberationSerif-Regular.ttf", "DejaVuSerif.ttf"],
+            ["Times New Roman#Bold"] = ["timesbd.ttf", "Times New Roman Bold.ttf", "LiberationSerif-Bold.ttf", "DejaVuSerif-Bold.ttf"],
+            ["Times New Roman#Italic"] = ["timesi.ttf", "Times New Roman Italic.ttf", "LiberationSerif-Italic.ttf", "DejaVuSerif-Italic.ttf"],
+            ["Times New Roman#BoldItalic"] = ["timesbi.ttf", "Times New Roman Bold Italic.ttf", "LiberationSerif-BoldItalic.ttf", "DejaVuSerif-BoldItalic.ttf"]
         };
+
+        private static readonly string[] fontDirectories = GetFontDirectories();
 
         public byte[] GetFont(string faceName)
         {
-            if (!fileNames.TryGetValue(faceName, out var fileName))
+            if (!fontFileNames.TryGetValue(faceName, out var fileNames))
             {
-                fileName = "arial.ttf";
+                fileNames = fontFileNames["Arial#Regular"];
             }
 
-            return File.ReadAllBytes(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts", fileName));
+            foreach (var fileName in fileNames)
+            {
+                foreach (var directory in fontDirectories)
+                {
+                    var path = Path.Combine(directory, fileName);
+                    if (File.Exists(path))
+                    {
+                        return File.ReadAllBytes(path);
+                    }
+                }
+            }
+
+            throw new FileNotFoundException($"Could not resolve font file for '{faceName}'.");
         }
 
-        public PdfSharp.Fonts.FontResolverInfo ResolveTypeface(string familyName, bool isBold, bool isItalic)
+        public FontResolverInfo ResolveTypeface(string familyName, bool isBold, bool isItalic)
         {
             familyName = string.IsNullOrWhiteSpace(familyName) ? "Arial" : familyName;
             var style = isBold && isItalic
@@ -299,12 +334,45 @@ public sealed class PdfDataPorterProvider(
             };
 
             var faceName = $"{normalizedFamily}#{style}";
-            if (!fileNames.ContainsKey(faceName))
+            if (!fontFileNames.ContainsKey(faceName))
             {
                 faceName = $"Arial#{style}";
             }
 
-            return new PdfSharp.Fonts.FontResolverInfo(faceName);
+            return new FontResolverInfo(faceName);
+        }
+
+        private static string[] GetFontDirectories()
+        {
+            var directories = new List<string>();
+
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                directories.Add(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Windows), "Fonts"));
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                directories.AddRange([
+                    "/usr/share/fonts",
+                    "/usr/local/share/fonts",
+                    "/usr/share/fonts/truetype",
+                    "/usr/share/fonts/truetype/dejavu",
+                    "/usr/share/fonts/truetype/liberation2",
+                    "/usr/share/fonts/opentype",
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".fonts"),
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), ".local", "share", "fonts")
+                ]);
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                directories.AddRange([
+                    "/System/Library/Fonts",
+                    "/Library/Fonts",
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Library", "Fonts")
+                ]);
+            }
+
+            return [.. directories.Where(Directory.Exists).Distinct(StringComparer.OrdinalIgnoreCase)];
         }
     }
 

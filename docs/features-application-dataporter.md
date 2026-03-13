@@ -401,6 +401,7 @@ services.AddDataPorter()
         config.HeaderText = "My Report";
         config.FooterText = "Confidential";
         config.ShowPageNumbers = true;
+        config.ShowSummaryHeader = true;
         config.ShowGenerationDate = true;
         config.FontFamily = "Helvetica";
         config.HeaderFontSize = 10;
@@ -410,13 +411,21 @@ services.AddDataPorter()
         config.UseAlternatingRowColors = true;
         config.AlternateRowBackgroundColor = "#F2F2F2";
         config.UseNesting = true;
+        config.RenderTemplate = PdfRenderTemplate.Table;
         // Optional: override PDFsharp font resolution
         // config.FontResolver = new MyPdfFontResolver();
         // config.FallbackFontResolver = new MyPdfFallbackFontResolver();
     });
 ```
 
-When `UseNesting` is enabled, the PDF provider renders nested structured values into table cells using a readable textual representation. Child objects and collections are traversed recursively and formatted inline. Recursive back references are ignored during rendering so cyclical object graphs cannot cause endless export generation.
+`RenderTemplate` controls how the PDF is laid out:
+
+- `PdfRenderTemplate.Table` keeps the existing tabular report layout
+- `PdfRenderTemplate.Paragraph` renders each exported item as grouped paragraphs for a more human-readable document style
+
+`ShowSummaryHeader` controls whether the PDF header metadata line is rendered. When enabled, the header shows the total number of exported items and, if `ShowGenerationDate` is also enabled, the generated timestamp.
+
+When `UseNesting` is enabled, the PDF provider renders nested structured values in both templates using a readable textual representation. Child objects and collections are traversed recursively and formatted inline. Recursive back references are ignored during rendering so cyclical object graphs cannot cause endless export generation.
 
 When `UseNesting` is disabled, nested structured properties without explicit converters are omitted from the PDF table output.
 

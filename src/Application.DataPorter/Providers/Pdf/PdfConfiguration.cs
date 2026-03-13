@@ -63,6 +63,11 @@ public sealed class PdfConfiguration
     public bool ShowGenerationDate { get; set; } = true;
 
     /// <summary>
+    /// Gets or sets a value indicating whether to show the export summary header.
+    /// </summary>
+    public bool ShowSummaryHeader { get; set; } = true;
+
+    /// <summary>
     /// Gets or sets the font family name.
     /// </summary>
     public string FontFamily { get; set; } = "Helvetica";
@@ -101,6 +106,11 @@ public sealed class PdfConfiguration
     /// Gets or sets the date format string.
     /// </summary>
     public string DateFormat { get; set; } = "yyyy-MM-dd HH:mm";
+
+    /// <summary>
+    /// Gets or sets the PDF render template.
+    /// </summary>
+    public PdfRenderTemplate RenderTemplate { get; set; } = PdfRenderTemplate.Table;
 
     /// <summary>
     /// Gets or sets a value indicating whether nested structured values should be rendered.
@@ -161,4 +171,20 @@ public enum PdfPageOrientation
     /// Landscape orientation.
     /// </summary>
     Landscape
+}
+
+/// <summary>
+/// PDF render template options.
+/// </summary>
+public enum PdfRenderTemplate
+{
+    /// <summary>
+    /// Render the export as a tabular report.
+    /// </summary>
+    Table,
+
+    /// <summary>
+    /// Render the export as grouped paragraphs with nested details.
+    /// </summary>
+    Paragraph
 }

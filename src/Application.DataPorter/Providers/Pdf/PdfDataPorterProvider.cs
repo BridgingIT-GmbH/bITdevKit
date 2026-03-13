@@ -68,13 +68,13 @@ public sealed class PdfDataPorterProvider(
 
         // Header
         if (!string.IsNullOrEmpty(this.configuration.HeaderText) ||
-            !string.IsNullOrEmpty(exportConfiguration.SheetName))
+            !string.IsNullOrEmpty(exportConfiguration.SheetName) ||
+            this.configuration.ShowSummaryHeader)
         {
-            this.AddHeader(section, exportConfiguration);
+            this.AddHeader(section, exportConfiguration, dataList.Count);
         }
 
-        // Content table
-        this.AddContentTable(section, dataList, columns, exportConfiguration);
+        this.AddContent(section, dataList, columns, exportConfiguration);
 
         // Footer
         this.AddFooter(section);
@@ -115,10 +115,9 @@ public sealed class PdfDataPorterProvider(
             var section = this.CreateSection(document);
 
             // Header with sheet name
-            this.AddHeader(section, exportConfiguration);
+            this.AddHeader(section, exportConfiguration, dataList.Count);
 
-            // Content table
-            this.AddContentTable(section, dataList, columns, exportConfiguration);
+            this.AddContent(section, dataList, columns, exportConfiguration);
 
             // Footer
             this.AddFooter(section);
@@ -200,7 +199,7 @@ public sealed class PdfDataPorterProvider(
         return section;
     }
 
-    private void AddHeader(Section section, ExportConfiguration exportConfiguration)
+    private void AddHeader(Section section, ExportConfiguration exportConfiguration, int itemCount)
     {
         var title = this.configuration.HeaderText ?? exportConfiguration.SheetName ?? this.configuration.Title;
         if (!string.IsNullOrEmpty(title))
@@ -211,12 +210,18 @@ public sealed class PdfDataPorterProvider(
             paragraph.Format.SpaceAfter = MigraDocUnit.FromPoint(5);
         }
 
-        if (this.configuration.ShowGenerationDate)
+        if (this.configuration.ShowSummaryHeader)
         {
-            var dateParagraph = section.AddParagraph($"Generated: {DateTime.Now.ToString(this.configuration.DateFormat)}");
-            dateParagraph.Format.Font.Size = MigraDocUnit.FromPoint(this.configuration.HeaderFontSize - 1);
-            dateParagraph.Format.Font.Color = Colors.Gray;
-            dateParagraph.Format.SpaceAfter = MigraDocUnit.FromPoint(10);
+            var summaryParts = new List<string> { $"Items: {itemCount}" };
+            if (this.configuration.ShowGenerationDate)
+            {
+                summaryParts.Insert(0, $"Generated: {DateTime.Now.ToString(this.configuration.DateFormat)}");
+            }
+
+            var summaryParagraph = section.AddParagraph(string.Join(" | ", summaryParts));
+            summaryParagraph.Format.Font.Size = MigraDocUnit.FromPoint(this.configuration.HeaderFontSize - 1);
+            summaryParagraph.Format.Font.Color = Colors.Gray;
+            summaryParagraph.Format.SpaceAfter = MigraDocUnit.FromPoint(10);
         }
     }
 
@@ -376,6 +381,24 @@ public sealed class PdfDataPorterProvider(
         }
     }
 
+    private void AddContent<TSource>(
+        Section section,
+        List<TSource> dataList,
+        List<ColumnConfiguration> columns,
+        ExportConfiguration exportConfiguration)
+        where TSource : class
+    {
+        switch (this.configuration.RenderTemplate)
+        {
+            case PdfRenderTemplate.Paragraph:
+                this.AddContentParagraphs(section, dataList, columns, exportConfiguration);
+                break;
+            default:
+                this.AddContentTable(section, dataList, columns, exportConfiguration);
+                break;
+        }
+    }
+
     private void AddContentTable<TSource>(
         Section section,
         List<TSource> dataList,
@@ -403,7 +426,6 @@ public sealed class PdfDataPorterProvider(
             }
         }
 
-        // Header row
         var headerRow = table.AddRow();
         headerRow.HeadingFormat = true;
         headerRow.Format.Font.Bold = true;
@@ -419,7 +441,6 @@ public sealed class PdfDataPorterProvider(
             cell.Format.LeftIndent = MigraDocUnit.FromPoint(5);
         }
 
-        // Data rows
         var rowIndex = 0;
         foreach (var item in dataList)
         {
@@ -436,35 +457,13 @@ public sealed class PdfDataPorterProvider(
             for (var i = 0; i < columns.Count; i++)
             {
                 var column = columns[i];
-                var value = column.GetValue(item);
-
-                // Apply converter if present
-                if (column.Converter is not null)
-                {
-                    var context = new ValueConversionContext
-                    {
-                        PropertyName = column.PropertyName,
-                        PropertyType = column.PropertyInfo?.PropertyType ?? typeof(object),
-                        EntityType = exportConfiguration.SourceType,
-                        Format = column.Format,
-                        Culture = exportConfiguration.Culture
-                    };
-
-                    value = column.Converter.ConvertToExport(value, context);
-                }
-
-                if (column.Converter is null && (column.PropertyInfo?.PropertyType?.SupportsStructuredValue() == true))
-                {
-                    value = this.FormatStructuredValue(value, new HashSet<object>(ReferenceEqualityComparer.Instance));
-                }
+                var value = this.GetColumnValue(item, column, exportConfiguration);
 
                 var cell = row.Cells[i];
                 cell.AddParagraph(this.FormatValue(value, column, exportConfiguration.Culture));
                 cell.Format.Font.Size = MigraDocUnit.FromPoint(this.configuration.BodyFontSize);
                 cell.VerticalAlignment = MigraDocVerticalAlignment.Top;
                 cell.Format.LeftIndent = MigraDocUnit.FromPoint(5);
-
-                // Apply alignment
                 cell.Format.Alignment = column.HorizontalAlignment switch
                 {
                     HorizontalAlignment.Right => ParagraphAlignment.Right,
@@ -473,6 +472,238 @@ public sealed class PdfDataPorterProvider(
                 };
             }
         }
+    }
+
+    private void AddContentParagraphs<TSource>(
+        Section section,
+        List<TSource> dataList,
+        List<ColumnConfiguration> columns,
+        ExportConfiguration exportConfiguration)
+        where TSource : class
+    {
+        for (var index = 0; index < dataList.Count; index++)
+        {
+            var item = dataList[index];
+
+            if (index > 0)
+            {
+                this.AddParagraphSeparator(section);
+            }
+
+            var titleParagraph = section.AddParagraph($"Item {index + 1}");
+            titleParagraph.Format.Font.Bold = true;
+            titleParagraph.Format.Font.Size = MigraDocUnit.FromPoint(this.configuration.BodyFontSize + 2);
+            titleParagraph.Format.SpaceBefore = MigraDocUnit.FromPoint(0);
+            titleParagraph.Format.SpaceAfter = MigraDocUnit.FromPoint(4);
+
+            foreach (var column in columns)
+            {
+            var rawValue = this.GetRawColumnValue(item, column, exportConfiguration);
+            if (rawValue is null)
+            {
+                continue;
+            }
+
+            var propertyType = column.PropertyInfo?.PropertyType ?? rawValue.GetType();
+            if (column.Converter is null && propertyType.IsCollectionType())
+                {
+                this.AddCollectionParagraphs(section, column, (IEnumerable)rawValue);
+                continue;
+                }
+
+            if (column.Converter is null && propertyType.SupportsStructuredValue())
+            {
+                this.AddObjectParagraphs(section, column, rawValue);
+                continue;
+            }
+
+            var value = this.GetColumnValue(item, column, exportConfiguration);
+            var text = this.FormatValue(value, column, exportConfiguration.Culture);
+            if (string.IsNullOrWhiteSpace(text))
+            {
+                continue;
+            }
+
+                var paragraph = section.AddParagraph();
+                paragraph.Format.SpaceAfter = MigraDocUnit.FromPoint(2);
+                paragraph.Format.LeftIndent = MigraDocUnit.FromPoint(8);
+
+                var label = paragraph.AddFormattedText($"{column.HeaderName ?? column.PropertyName}: ");
+                label.Bold = true;
+                paragraph.AddText(text);
+            }
+        }
+    }
+
+    private void AddParagraphSeparator(Section section)
+    {
+        var separator = section.AddParagraph();
+        separator.Format.SpaceBefore = MigraDocUnit.FromPoint(4);
+        separator.Format.SpaceAfter = MigraDocUnit.FromPoint(6);
+        separator.Format.Borders.Top.Width = 1;
+        separator.Format.Borders.Top.Color = Colors.Gray;
+    }
+
+    private void AddObjectParagraphs(Section section, ColumnConfiguration column, object value)
+    {
+        var lines = this.GetStructuredValueLines(value, new HashSet<object>(ReferenceEqualityComparer.Instance));
+        if (lines.Count == 0)
+        {
+            return;
+        }
+
+        var labelParagraph = section.AddParagraph();
+        labelParagraph.Format.SpaceAfter = MigraDocUnit.FromPoint(1);
+        labelParagraph.Format.LeftIndent = MigraDocUnit.FromPoint(8);
+
+        var label = labelParagraph.AddFormattedText($"{column.HeaderName ?? column.PropertyName}:");
+        label.Bold = true;
+
+        foreach (var line in lines)
+        {
+            var paragraph = section.AddParagraph();
+            paragraph.Format.SpaceAfter = MigraDocUnit.FromPoint(1);
+            paragraph.Format.LeftIndent = MigraDocUnit.FromPoint(18);
+            paragraph.AddText(line);
+        }
+    }
+
+    private void AddCollectionParagraphs(Section section, ColumnConfiguration column, IEnumerable values)
+    {
+        var items = values.Cast<object>()
+            .Where(value => value is not null)
+            .Select((value, index) => new
+            {
+                Index = index + 1,
+                Lines = this.GetStructuredValueLines(value, new HashSet<object>(ReferenceEqualityComparer.Instance))
+            })
+            .Where(item => item.Lines.Count > 0)
+            .ToList();
+
+        if (items.Count == 0)
+        {
+            return;
+        }
+
+        var labelParagraph = section.AddParagraph();
+        labelParagraph.Format.SpaceAfter = MigraDocUnit.FromPoint(1);
+        labelParagraph.Format.LeftIndent = MigraDocUnit.FromPoint(8);
+
+        var label = labelParagraph.AddFormattedText($"{column.HeaderName ?? column.PropertyName}:");
+        label.Bold = true;
+
+        foreach (var item in items)
+        {
+            var itemParagraph = section.AddParagraph();
+            itemParagraph.Format.SpaceAfter = MigraDocUnit.FromPoint(1);
+            itemParagraph.Format.LeftIndent = MigraDocUnit.FromPoint(18);
+
+            var itemLabel = itemParagraph.AddFormattedText($"Item {item.Index}");
+            itemLabel.Bold = true;
+
+            foreach (var line in item.Lines)
+            {
+                var paragraph = section.AddParagraph();
+                paragraph.Format.SpaceAfter = MigraDocUnit.FromPoint(1);
+                paragraph.Format.LeftIndent = MigraDocUnit.FromPoint(28);
+                paragraph.AddText($"• {line}");
+            }
+        }
+    }
+
+    private List<string> GetStructuredValueLines(object value, HashSet<object> visited)
+    {
+        var lines = new List<string>();
+        if (value is null)
+        {
+            return lines;
+        }
+
+        var type = value.GetType();
+        if (!type.IsValueType && !visited.Add(value))
+        {
+            return lines;
+        }
+
+        try
+        {
+            foreach (var property in type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                         .Where(property => property.CanRead && property.GetIndexParameters().Length == 0))
+            {
+                var propertyValue = property.GetValue(value);
+                if (propertyValue is null)
+                {
+                    continue;
+                }
+
+                if (property.PropertyType.IsCollectionType())
+                {
+                    var collectionItems = ((IEnumerable)propertyValue).Cast<object>()
+                        .Where(item => item is not null)
+                        .Select(item => this.FormatStructuredValue(item, visited))
+                        .Where(text => !string.IsNullOrWhiteSpace(text))
+                        .Select(text => $"{property.Name}: {text}");
+
+                    lines.AddRange(collectionItems);
+                    continue;
+                }
+
+                if (property.PropertyType.SupportsStructuredValue())
+                {
+                    var nestedLines = this.GetStructuredValueLines(propertyValue, visited);
+                    foreach (var nestedLine in nestedLines)
+                    {
+                        lines.Add($"{property.Name} {nestedLine}");
+                    }
+
+                    continue;
+                }
+
+                lines.Add($"{property.Name}: {propertyValue}");
+            }
+
+            return lines;
+        }
+        finally
+        {
+            if (!type.IsValueType)
+            {
+                visited.Remove(value);
+            }
+        }
+    }
+
+    private object GetRawColumnValue(object item, ColumnConfiguration column, ExportConfiguration exportConfiguration)
+    {
+        var value = column.GetValue(item);
+
+        if (column.Converter is not null)
+        {
+            var context = new ValueConversionContext
+            {
+                PropertyName = column.PropertyName,
+                PropertyType = column.PropertyInfo?.PropertyType ?? typeof(object),
+                EntityType = exportConfiguration.SourceType,
+                Format = column.Format,
+                Culture = exportConfiguration.Culture
+            };
+
+            value = column.Converter.ConvertToExport(value, context);
+        }
+
+        return value;
+    }
+
+    private object GetColumnValue(object item, ColumnConfiguration column, ExportConfiguration exportConfiguration)
+    {
+        var value = this.GetRawColumnValue(item, column, exportConfiguration);
+
+        if (column.Converter is null && (column.PropertyInfo?.PropertyType?.SupportsStructuredValue() == true))
+        {
+            value = this.FormatStructuredValue(value, new HashSet<object>(ReferenceEqualityComparer.Instance));
+        }
+
+        return value;
     }
 
     private void AddFooter(Section section)

@@ -180,12 +180,60 @@ public class DataPorterServiceRoundtripTests
         stream.Length.ShouldBeGreaterThan(0);
     }
 
-    [Fact]
-    public async Task ExportAsync_WithPdfProviderAndNestingEnabled_WritesPdfFileToArtifactsFolder()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task ExportAsync_WithPdfProviderAndConfigurableSummaryHeader_RendersSuccessfully(bool showSummaryHeader)
     {
         // Arrange
         var sut = new DataPorterService(
-            [new PdfDataPorterProvider(new PdfConfiguration { UseNesting = true })],
+            [new PdfDataPorterProvider(new PdfConfiguration
+            {
+                UseNesting = true,
+                RenderTemplate = PdfRenderTemplate.Paragraph,
+                ShowSummaryHeader = showSummaryHeader,
+                ShowGenerationDate = showSummaryHeader
+            })],
+            this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var options = new ExportOptions { Format = Format.Pdf, UseAttributes = false };
+
+        // Act
+        var result = await sut.ExportAsync(data, stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        stream.Length.ShouldBeGreaterThan(0);
+    }
+
+    [Fact]
+    public async Task ExportAsync_WithPdfProviderAndParagraphTemplate_RendersNestedObjects()
+    {
+        // Arrange
+        var sut = new DataPorterService(
+            [new PdfDataPorterProvider(new PdfConfiguration { UseNesting = true, RenderTemplate = PdfRenderTemplate.Paragraph })],
+            this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var options = new ExportOptions { Format = Format.Pdf, UseAttributes = false };
+
+        // Act
+        var result = await sut.ExportAsync(data, stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        stream.Length.ShouldBeGreaterThan(0);
+    }
+
+    [Theory]
+    [InlineData(PdfRenderTemplate.Table)]
+    [InlineData(PdfRenderTemplate.Paragraph)]
+    public async Task ExportAsync_WithPdfProviderAndNestingEnabled_WritesPdfFileToArtifactsFolder(PdfRenderTemplate renderTemplate)
+    {
+        // Arrange
+        var sut = new DataPorterService(
+            [new PdfDataPorterProvider(new PdfConfiguration { UseNesting = true, RenderTemplate = renderTemplate })],
             this.CreateChildEntityConfigurationMerger());
         var data = CreatePersons();
         await using var stream = new MemoryStream();
@@ -193,7 +241,7 @@ public class DataPorterServiceRoundtripTests
         var rootPath = FindWorkspaceRoot();
         var artifactDirectory = Path.Combine(rootPath, ".tmp", "dataporter");
         Directory.CreateDirectory(artifactDirectory);
-        var filePath = Path.Combine(artifactDirectory, "persons-nested-export-test.pdf");
+        var filePath = Path.Combine(artifactDirectory, $"persons-nested-export-{renderTemplate}-test.pdf");
 
         // Act
         var result = await sut.ExportAsync(data, stream, options);

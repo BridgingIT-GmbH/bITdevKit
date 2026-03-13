@@ -67,6 +67,108 @@ public class DataPorterServiceRoundtripTests
         AssertPersons([.. importResult.Value.Data], data);
     }
 
+    [Fact]
+    public async Task ExportAndImportAsync_WithCsvProviderAndChildEntityColumn_DoesNotRoundTripChildEntity()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvDataPorterProvider()], this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.Csv, UseAttributes = false };
+        var importOptions = new ImportOptions { Format = Format.Csv, UseAttributes = false };
+
+        // Act
+        var exportResult = await sut.ExportAsync(data, stream, exportOptions);
+        this.WriteExportToOutput(Format.Csv, stream);
+        var exportedContent = ReadTextContent(stream);
+        stream.Position = 0;
+        var importResult = await sut.ImportAsync<PersonEntity>(stream, importOptions);
+        this.output.WriteLine("Imported data:");
+        this.output.WriteLine(importResult.Value.Data.DumpText());
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        exportedContent.ShouldContain("AddressEntity");
+        AssertChildEntityIsNotImported(importResult, data.Length);
+    }
+
+    [Fact]
+    public async Task ExportAndImportAsync_WithExcelProviderAndChildEntityColumn_DoesNotRoundTripChildEntity()
+    {
+        // Arrange
+        var sut = new DataPorterService([new ExcelDataPorterProvider()], this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.Excel, UseAttributes = false };
+        var importOptions = new ImportOptions { Format = Format.Excel, UseAttributes = false };
+
+        // Act
+        var exportResult = await sut.ExportAsync(data, stream, exportOptions);
+        this.WriteExportToOutput(Format.Excel, stream);
+        var addressCellValue = ReadExcelCellValue(stream, "Persons", 2, 6);
+        stream.Position = 0;
+        var importResult = await sut.ImportAsync<PersonEntity>(stream, importOptions);
+        this.output.WriteLine("Imported data:");
+        this.output.WriteLine(importResult.Value.Data.DumpText());
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        addressCellValue.ShouldContain("AddressEntity");
+        AssertChildEntityIsNotImported(importResult, data.Length);
+    }
+
+    [Fact]
+    public async Task ExportAndImportAsync_WithJsonProviderAndChildEntityColumn_ExportsNestedObjectButCannotImportIt()
+    {
+        // Arrange
+        var sut = new DataPorterService([new JsonDataPorterProvider()], this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.Json, UseAttributes = false };
+        var importOptions = new ImportOptions { Format = Format.Json, UseAttributes = false };
+
+        // Act
+        var exportResult = await sut.ExportAsync(data, stream, exportOptions);
+        this.WriteExportToOutput(Format.Json, stream);
+        var exportedContent = ReadTextContent(stream);
+        stream.Position = 0;
+        var importResult = await sut.ImportAsync<PersonEntity>(stream, importOptions);
+        this.output.WriteLine("Imported data:");
+        this.output.WriteLine(importResult.Value.Data.DumpText());
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        exportedContent.ShouldContain("\"Address\": {");
+        exportedContent.ShouldContain("\"Street\": \"Analytical Engine Way 1\"");
+        AssertChildEntityIsNotImported(importResult, data.Length);
+    }
+
+    [Fact]
+    public async Task ExportAndImportAsync_WithXmlProviderAndChildEntityColumn_DoesNotRoundTripChildEntity()
+    {
+        // Arrange
+        var sut = new DataPorterService([new XmlDataPorterProvider()], this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.Xml, UseAttributes = false };
+        var importOptions = new ImportOptions { Format = Format.Xml, UseAttributes = false };
+
+        // Act
+        var exportResult = await sut.ExportAsync(data, stream, exportOptions);
+        this.WriteExportToOutput(Format.Xml, stream);
+        var exportedContent = ReadTextContent(stream);
+        stream.Position = 0;
+        var importResult = await sut.ImportAsync<PersonEntity>(stream, importOptions);
+        this.output.WriteLine("Imported data:");
+        this.output.WriteLine(importResult.Value.Data.DumpText());
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        exportedContent.ShouldContain("<Address>");
+        exportedContent.ShouldContain("AddressEntity");
+        AssertChildEntityIsNotImported(importResult, data.Length);
+    }
+
     private static PersonEntity[] CreatePersons()
     {
         return
@@ -78,6 +180,12 @@ public class DataPorterServiceRoundtripTests
                 LastName = "Lovelace",
                 Age = 36,
                 ManagerId = Guid.NewGuid(),
+                Address = new AddressEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Street = "Analytical Engine Way 1",
+                    City = "London"
+                },
                 Status = PersonStatus.Active
             },
             new PersonEntity
@@ -87,6 +195,12 @@ public class DataPorterServiceRoundtripTests
                 LastName = "Hopper",
                 Age = 85,
                 ManagerId = null,
+                Address = new AddressEntity
+                {
+                    Id = Guid.NewGuid(),
+                    Street = "Compiler Street 42",
+                    City = "Arlington"
+                },
                 Status = PersonStatus.Inactive
             }
         ];
@@ -109,6 +223,46 @@ public class DataPorterServiceRoundtripTests
         imported[1].Age.ShouldBe(expected[1].Age);
         imported[1].ManagerId.ShouldBeNull();
         imported[1].Status.ShouldBe(expected[1].Status);
+    }
+
+    private static void AssertChildEntityIsNotImported(Result<ImportResult<PersonEntity>> importResult, int expectedCount)
+    {
+        importResult.ShouldBeSuccess();
+        importResult.Value.Data.Count.ShouldBe(expectedCount);
+        importResult.Value.Errors.ShouldNotBeEmpty();
+        importResult.Value.Errors.Any(e => e.Column == nameof(PersonEntity.Address)).ShouldBeTrue();
+        importResult.Value.Data.All(e => e.Address is null).ShouldBeTrue();
+    }
+
+    private ConfigurationMerger CreateChildEntityConfigurationMerger()
+    {
+        var profileRegistry = new ProfileRegistry(
+            [new PersonEntityWithChildExportProfile()],
+            [new PersonEntityWithChildImportProfile()]);
+
+        return new ConfigurationMerger(profileRegistry, new AttributeConfigurationReader());
+    }
+
+    private static string ReadTextContent(MemoryStream stream)
+    {
+        stream.Position = 0;
+
+        using var reader = new StreamReader(stream, leaveOpen: true);
+        var content = reader.ReadToEnd();
+
+        stream.Position = 0;
+        return content;
+    }
+
+    private static string ReadExcelCellValue(MemoryStream stream, string worksheetName, int row, int column)
+    {
+        stream.Position = 0;
+
+        using var workbook = new XLWorkbook(stream);
+        var value = workbook.Worksheet(worksheetName).Cell(row, column).GetValue<string>();
+
+        stream.Position = 0;
+        return value;
     }
 
     private void WriteExportToOutput(Format format, MemoryStream stream)
@@ -206,7 +360,16 @@ public class PersonEntity : AggregateRoot<Guid>
 
     public Guid? ManagerId { get; set; }
 
+    public AddressEntity Address { get; set; }
+
     public PersonStatus Status { get; set; }
+}
+
+public class AddressEntity : Entity<Guid>
+{
+    public string Street { get; set; }
+
+    public string City { get; set; }
 }
 
 public class PersonStatus(int id, string value) : Enumeration(id, value)
@@ -253,6 +416,62 @@ public class PersonEntityImportProfile : IImportProfile<PersonEntity>
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Age), 3),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.ManagerId), 4),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Status), 5, new EnumerationConverter<PersonStatus>())
+    ];
+
+    public string SheetName => "Persons";
+
+    public int SheetIndex => -1;
+
+    public int HeaderRowIndex => 0;
+
+    public int SkipRows => 0;
+
+    public ImportValidationBehavior ValidationBehavior => ImportValidationBehavior.CollectErrors;
+
+    public Func<PersonEntity> Factory => () => new PersonEntity();
+
+    Func<object> IImportProfile.Factory => () => new PersonEntity();
+}
+
+public class PersonEntityWithChildExportProfile : IExportProfile<PersonEntity>
+{
+    public Type SourceType => typeof(PersonEntity);
+
+    private static readonly EnumerationConverter<PersonStatus> statusConverter = new();
+
+    public IReadOnlyList<ColumnConfiguration> Columns { get; } =
+    [
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Id), 0),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.FirstName), 1),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.LastName), 2),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Age), 3),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.ManagerId), 4),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Address), 5),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Status), 6, statusConverter)
+    ];
+
+    public string SheetName => "Persons";
+
+    public IReadOnlyList<HeaderRowConfiguration> HeaderRows { get; } = [];
+
+    public IReadOnlyList<FooterRowConfiguration> FooterRows { get; } = [];
+}
+
+public class PersonEntityWithChildImportProfile : IImportProfile<PersonEntity>
+{
+    public Type TargetType => typeof(PersonEntity);
+
+    private static readonly EnumerationConverter<PersonStatus> statusConverter = new();
+
+    public IReadOnlyList<ImportColumnConfiguration> Columns { get; } =
+    [
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Id), 0),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.FirstName), 1),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.LastName), 2),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Age), 3),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.ManagerId), 4),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Address), 5),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Status), 6, statusConverter)
     ];
 
     public string SheetName => "Persons";

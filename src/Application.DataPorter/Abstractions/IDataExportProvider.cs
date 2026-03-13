@@ -29,7 +29,7 @@ public interface IDataExportProvider : IDataPorterProvider
     /// <summary>
     /// Exports multiple data sets to a stream.
     /// </summary>
-    Task<ExportResult> ExportMultipleAsync(
+    Task<ExportResult> ExportAsync(
         IEnumerable<(IEnumerable<object> Data, ExportConfiguration Configuration)> dataSets,
         Stream outputStream,
         CancellationToken cancellationToken = default);

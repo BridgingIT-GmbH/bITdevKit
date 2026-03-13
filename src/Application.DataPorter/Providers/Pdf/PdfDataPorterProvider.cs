@@ -84,7 +84,7 @@ public sealed class PdfDataPorterProvider(
     }
 
     /// <inheritdoc/>
-    public Task<ExportResult> ExportMultipleAsync(
+    public Task<ExportResult> ExportAsync(
         IEnumerable<(IEnumerable<object> Data, ExportConfiguration Configuration)> dataSets,
         Stream outputStream,
         CancellationToken cancellationToken = default)

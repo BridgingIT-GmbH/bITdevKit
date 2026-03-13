@@ -189,7 +189,7 @@ public sealed class ExcelDataPorterProvider(
     }
 
     /// <inheritdoc/>
-    public async Task<ExportResult> ExportMultipleAsync(
+    public async Task<ExportResult> ExportAsync(
         IEnumerable<(IEnumerable<object> Data, ExportConfiguration Configuration)> dataSets,
         Stream outputStream,
         CancellationToken cancellationToken = default)

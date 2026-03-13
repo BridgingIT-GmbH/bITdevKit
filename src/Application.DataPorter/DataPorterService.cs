@@ -182,7 +182,7 @@ public sealed class DataPorterService(
                 return (ds.Data, config);
             }).ToList();
 
-            var result = await exportProvider.ExportMultipleAsync(
+            var result = await exportProvider.ExportAsync(
                 configurations,
                 outputStream,
                 cancellationToken);

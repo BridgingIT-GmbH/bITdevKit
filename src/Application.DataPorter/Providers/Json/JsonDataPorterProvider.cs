@@ -499,13 +499,15 @@ public sealed class JsonDataPorterProvider(
         var options = this.configuration.GetSerializerOptions();
         var targetType = column.PropertyInfo?.PropertyType ?? typeof(string);
 
+        if (column.Converter is not null)
+        {
+            return element.ValueKind == JsonValueKind.String
+                ? column.ConvertValue(element.GetString())
+                : column.ConvertValue(element.GetRawText());
+        }
+
         if (targetType.SupportsStructuredValue())
         {
-            if (column.Converter is not null)
-            {
-                return column.ConvertValue(element.GetRawText());
-            }
-
             return JsonSerializer.Deserialize(element.GetRawText(), targetType, options);
         }
 

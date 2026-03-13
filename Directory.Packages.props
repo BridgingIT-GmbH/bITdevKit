@@ -155,6 +155,7 @@
   </ItemGroup>
   <ItemGroup Label="upgrade some packages due to transitive vulnerabilities">
     <!-- https://learn.microsoft.com/en-us/nuget/consume-packages/Central-Package-Management#transitive-pinning -->
+    <PackageVersion Include="MimeKit" Version="4.15.1" />
     <!--<PackageVersion Include="System.Net.Http" Version="4.3.4" />
     <PackageVersion Include="System.Text.Json" Version="9.0.10" />
     <PackageVersion Include="System.Runtime.Caching" Version="9.0.10" />

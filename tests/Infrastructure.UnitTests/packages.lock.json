@@ -466,15 +466,6 @@
           "Newtonsoft.Json": "13.0.3"
         }
       },
-      "MimeKit": {
-        "type": "Transitive",
-        "resolved": "4.15.1",
-        "contentHash": "cxCcQhD0zhboFoG136jJuJtQjNRDJ+BxBm3f2vWn+53bff/CRo+K1mAkWjsW4Wuyy5O22F40MdMG2nRzQu1cJw==",
-        "dependencies": {
-          "BouncyCastle.Cryptography": "2.6.2",
-          "System.Security.Cryptography.Pkcs": "10.0.0"
-        }
-      },
       "NETStandard.Library": {
         "type": "Transitive",
         "resolved": "1.6.1",
@@ -697,9 +688,10 @@
           "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "MailKit": "[4.15.0, )",
+          "MailKit": "[4.15.1, )",
           "Microsoft.Extensions.Configuration.Binder": "[10.0.3, )",
-          "Microsoft.Extensions.Hosting.Abstractions": "[10.0.3, )"
+          "Microsoft.Extensions.Hosting.Abstractions": "[10.0.3, )",
+          "MimeKit": "[4.15.1, )"
         }
       },
       "BridgingIT.DevKit.Application.Storage": {
@@ -1332,6 +1324,16 @@
         "dependencies": {
           "Microsoft.IdentityModel.Protocols": "8.15.0",
           "System.IdentityModel.Tokens.Jwt": "8.15.0"
+        }
+      },
+      "MimeKit": {
+        "type": "CentralTransitive",
+        "requested": "[4.15.1, )",
+        "resolved": "4.15.1",
+        "contentHash": "cxCcQhD0zhboFoG136jJuJtQjNRDJ+BxBm3f2vWn+53bff/CRo+K1mAkWjsW4Wuyy5O22F40MdMG2nRzQu1cJw==",
+        "dependencies": {
+          "BouncyCastle.Cryptography": "2.6.2",
+          "System.Security.Cryptography.Pkcs": "10.0.0"
         }
       },
       "NewId": {

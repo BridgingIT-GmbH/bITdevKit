@@ -47,4 +47,11 @@ public sealed class CsvConfiguration
     /// Gets or sets a value indicating whether to ignore blank lines.
     /// </summary>
     public bool IgnoreBlankLines { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether nested structured values should be processed.
+    /// When disabled, nested objects and collections without an explicit converter are ignored
+    /// during CSV export and import.
+    /// </summary>
+    public bool UseNesting { get; set; } = false;
 }

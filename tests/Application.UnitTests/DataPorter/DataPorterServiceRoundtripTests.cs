@@ -71,7 +71,9 @@ public class DataPorterServiceRoundtripTests
     public async Task ExportAndImportAsync_WithCsvProviderAndChildEntityColumn_DoesNotRoundTripChildEntity()
     {
         // Arrange
-        var sut = new DataPorterService([new CsvDataPorterProvider()], this.CreateChildEntityConfigurationMerger());
+        var sut = new DataPorterService(
+            [new CsvDataPorterProvider(new CsvConfiguration { UseNesting = false })],
+            this.CreateChildEntityConfigurationMerger());
         var data = CreatePersons();
         await using var stream = new MemoryStream();
         var exportOptions = new ExportOptions { Format = Format.Csv, UseAttributes = false };
@@ -88,8 +90,78 @@ public class DataPorterServiceRoundtripTests
 
         // Assert
         exportResult.ShouldBeSuccess();
-        exportedContent.ShouldContain("AddressEntity");
+        exportedContent.ShouldNotContain($",{nameof(PersonEntity.Address)},");
+        exportedContent.ShouldNotContain($",{nameof(PersonEntity.PreviousAddresses)},");
+        exportedContent.ShouldContain(nameof(PersonEntity.BillingAddress));
         AssertChildEntityIsNotImported(importResult, data.Length);
+    }
+
+    [Fact]
+    public async Task ExportAndImportAsync_WithCsvProviderAndNestingEnabled_RoundTripsChildEntityAndCollection()
+    {
+        // Arrange
+        var sut = new DataPorterService(
+            [new CsvDataPorterProvider(new CsvConfiguration { UseNesting = true })],
+            this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.Csv, UseAttributes = false };
+        var importOptions = new ImportOptions { Format = Format.Csv, UseAttributes = false };
+
+        // Act
+        var exportResult = await sut.ExportAsync(data, stream, exportOptions);
+        this.WriteExportToOutput(Format.Csv, stream);
+        var exportedContent = ReadTextContent(stream);
+        stream.Position = 0;
+        var importResult = await sut.ImportAsync<PersonEntity>(stream, importOptions);
+        this.output.WriteLine("Imported data:");
+        this.output.WriteLine(importResult.Value.Data.DumpText());
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        exportedContent.ShouldContain("Address_Street");
+        exportedContent.ShouldContain("Address_City");
+        exportedContent.ShouldContain("PreviousAddresses_Street");
+        importResult.ShouldBeSuccess();
+        AssertPersons([.. importResult.Value.Data], data);
+        AssertNestedData([.. importResult.Value.Data], data);
+    }
+
+    [Fact]
+    public async Task ExportAndImportAsync_WithCsvProviderAndNestingDisabled_IgnoresNestedColumns()
+    {
+        // Arrange
+        var sut = new DataPorterService(
+            [new CsvDataPorterProvider(new CsvConfiguration { UseNesting = false })],
+            this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.Csv, UseAttributes = false };
+        var importOptions = new ImportOptions { Format = Format.Csv, UseAttributes = false };
+
+        // Act
+        var exportResult = await sut.ExportAsync(data, stream, exportOptions);
+        this.WriteExportToOutput(Format.Csv, stream);
+        var exportedContent = ReadTextContent(stream);
+        stream.Position = 0;
+        var importResult = await sut.ImportAsync<PersonEntity>(stream, importOptions);
+        this.output.WriteLine("Imported data:");
+        this.output.WriteLine(importResult.Value.Data.DumpText());
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        exportedContent.ShouldNotContain($",{nameof(PersonEntity.Address)},");
+        exportedContent.ShouldNotContain($",{nameof(PersonEntity.PreviousAddresses)},");
+        exportedContent.ShouldNotStartWith($"{nameof(PersonEntity.Address)},");
+        exportedContent.ShouldNotStartWith($"{nameof(PersonEntity.PreviousAddresses)},");
+        exportedContent.ShouldContain(nameof(PersonEntity.BillingAddress));
+        importResult.ShouldBeSuccess();
+        importResult.Value.Errors.ShouldBeEmpty();
+        importResult.Value.Data.Count.ShouldBe(data.Length);
+        importResult.Value.Data.All(e => e.Address is null).ShouldBeTrue();
+        importResult.Value.Data.All(e => e.PreviousAddresses.Count == 0).ShouldBeTrue();
+        importResult.Value.Data[0].BillingAddress.ShouldBe(data[0].BillingAddress);
+        importResult.Value.Data[1].BillingAddress.ShouldBe(data[1].BillingAddress);
     }
 
     [Fact]
@@ -262,9 +334,6 @@ public class DataPorterServiceRoundtripTests
     {
         importResult.ShouldBeSuccess();
         importResult.Value.Data.Count.ShouldBe(expectedCount);
-        importResult.Value.Errors.ShouldNotBeEmpty();
-        importResult.Value.Errors.Any(e => e.Column == nameof(PersonEntity.Address)).ShouldBeTrue();
-        importResult.Value.Errors.Any(e => e.Column == nameof(PersonEntity.PreviousAddresses)).ShouldBeTrue();
         importResult.Value.Data.All(e => e.Address is null).ShouldBeTrue();
         importResult.Value.Data.All(e => e.PreviousAddresses is null || e.PreviousAddresses.Count == 0).ShouldBeTrue();
     }

@@ -253,8 +253,46 @@ services.AddDataPorter()
         config.Encoding = Encoding.UTF8;
         config.Culture = CultureInfo.InvariantCulture;
         config.TrimFields = true;
+        config.UseNesting = true;
     });
 ```
+
+**Features:**
+- Standard flat CSV export/import
+- Optional flattened nesting for structured properties
+- Optional row expansion for a single nested collection
+- Converter-based scalar representations for value objects or custom external formats
+
+When `UseNesting` is enabled, the CSV provider can flatten nested object properties into regular CSV columns.
+Flattened column names use underscore-separated segments, for example:
+
+- `Address_Street`
+- `Address_City`
+- `PreviousAddresses_Street`
+- `PreviousAddresses_City`
+
+Single nested child objects are flattened into additional columns on the same row. A single child collection of objects is exported using repeated parent rows, with the parent values duplicated and the child item values written into the flattened collection columns.
+
+Example export shape for a nested object:
+
+```csv
+Id,FirstName,LastName,Address_Street,Address_City,Status
+1,Ada,Lovelace,Analytical Engine Way 1,London,Active
+2,Grace,Hopper,Compiler Street 42,Arlington,Inactive
+```
+
+Example export shape for a nested collection:
+
+```csv
+Id,FirstName,LastName,Address_Street,Address_City,PreviousAddresses_Street,PreviousAddresses_City,Status
+1,Ada,Lovelace,Analytical Engine Way 1,London,Byron Avenue 5,London,Active
+1,Ada,Lovelace,Analytical Engine Way 1,London,Countess Road 9,Oxford,Active
+2,Grace,Hopper,Compiler Street 42,Arlington,Cobol Lane 1,New York,Inactive
+```
+
+During import, repeated rows are grouped back into a single aggregate and the nested collection is hydrated again.
+
+When `UseNesting` is disabled, nested structured properties without explicit converters are ignored for CSV export/import. This is useful when only scalar columns should participate.
 
 ### JSON Provider
 

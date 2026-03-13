@@ -648,6 +648,49 @@ Input stream
   -> object materialization
 ```
 
+Mermaid sequence diagram:
+
+```mermaid
+sequenceDiagram
+    autonumber
+    participant App as Client
+    participant Service as DataPorterService
+    participant Merger as ConfigurationMerger
+    participant Registry as ProfileRegistry
+    participant Provider as Format Provider
+    participant Converter as IValueConverter
+
+    alt Export
+        App->>Service: ExportAsync(data, stream, options)
+        Service->>Service: Validate request and resolve Format
+        Service->>Merger: BuildExportConfiguration(type, options)
+        Merger->>Registry: Read profiles and attributes
+        Registry-->>Merger: Column and sheet metadata
+        Merger-->>Service: ExportConfiguration
+        Service->>Provider: ExportAsync(data, stream, configuration)
+        loop For each row / configured column
+            Provider->>Converter: ConvertToExport(value, context)
+            Converter-->>Provider: External representation
+        end
+        Provider-->>Service: ExportResult
+        Service-->>App: Result<ExportResult>
+    else Import
+        App->>Service: ImportAsync(stream, options)
+        Service->>Service: Validate request and resolve Format
+        Service->>Merger: BuildImportConfiguration(type, options)
+        Merger->>Registry: Read profiles and attributes
+        Registry-->>Merger: Column and validation metadata
+        Merger-->>Service: ImportConfiguration
+        Service->>Provider: ImportAsync(stream, configuration)
+        loop For each row / configured column
+            Provider->>Converter: ConvertFromImport(rawValue, context)
+            Converter-->>Provider: Typed value
+        end
+        Provider-->>Service: ImportResult<T>
+        Service-->>App: Result<ImportResult<T>>
+    end
+```
+
 The result is an architecture where:
 
 - **formats are pluggable**

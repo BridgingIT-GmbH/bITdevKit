@@ -363,12 +363,7 @@ public sealed class CsvDataPorterProvider(
             }
 
             collectionProperty = topLevelProperty;
-            var elementType = this.GetCollectionElementType(propertyType);
-            if (elementType is null)
-            {
-                throw new NotSupportedException($"CSV export cannot determine the element type for collection column '{sourceColumn.PropertyName}'.");
-            }
-
+            var elementType = this.GetCollectionElementType(propertyType) ?? throw new NotSupportedException($"CSV export cannot determine the element type for collection column '{sourceColumn.PropertyName}'.");
             if (!elementType.SupportsStructuredValue())
             {
                 columns.Add(new CsvExportColumn(sourceColumn, headerName, [.. path], true));
@@ -418,12 +413,7 @@ public sealed class CsvDataPorterProvider(
             }
 
             collectionProperty = topLevelProperty;
-            var elementType = this.GetCollectionElementType(propertyType);
-            if (elementType is null)
-            {
-                throw new NotSupportedException($"CSV import cannot determine the element type for collection column '{sourceColumn.PropertyName}'.");
-            }
-
+            var elementType = this.GetCollectionElementType(propertyType) ?? throw new NotSupportedException($"CSV import cannot determine the element type for collection column '{sourceColumn.PropertyName}'.");
             if (!elementType.SupportsStructuredValue())
             {
                 columns.Add(new CsvImportColumn(sourceColumn, headerName, [.. path], true));
@@ -451,8 +441,7 @@ public sealed class CsvDataPorterProvider(
             return [null];
         }
 
-        var collection = collectionProperty.GetValue(source) as IEnumerable;
-        if (collection is null)
+        if (collectionProperty.GetValue(source) is not IEnumerable collection)
         {
             return [null];
         }
@@ -733,8 +722,7 @@ public sealed class CsvDataPorterProvider(
     private IReadOnlyList<PropertyInfo> GetFlattenableProperties(Type type, bool writable)
     {
         return [.. type.GetProperties(BindingFlags.Public | BindingFlags.Instance)
-            .Where(property => property.GetIndexParameters().Length == 0)
-            .Where(property => writable ? property.CanWrite : property.CanRead)];
+            .Where(property => property.GetIndexParameters().Length == 0 && (writable ? property.CanWrite : property.CanRead))];
     }
 
     private Type GetCollectionElementType(Type collectionType)
@@ -863,10 +851,9 @@ public sealed class CsvDataPorterProvider(
     {
         public object GetValue(object source, object collectionItem)
         {
-            object current = this.IsCollection ? collectionItem : source;
-            var properties = this.IsCollection ? this.PropertyPath.Skip(1) : this.PropertyPath.AsEnumerable();
+            var current = this.IsCollection ? collectionItem : source;
 
-            foreach (var property in properties)
+            foreach (var property in this.IsCollection ? this.PropertyPath.Skip(1) : this.PropertyPath.AsEnumerable())
             {
                 if (current is null)
                 {

@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Application.DataPorter;
 
+using BridgingIT.DevKit.Common;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 
 /// <summary>
 /// XML data porter provider using System.Xml.
@@ -312,9 +312,9 @@ public sealed class XmlDataPorterProvider(
             {
                 yield return Result<TTarget>.Failure()
                     .WithError(new ImportValidationError(
-                        errors.First().RowNumber,
-                        errors.First().Column,
-                        errors.First().Message));
+                        errors[0].RowNumber,
+                        errors[0].Column,
+                        errors[0].Message));
             }
         }
     }
@@ -354,8 +354,8 @@ public sealed class XmlDataPorterProvider(
                     var childElement = element.Element(key);
                     var attributeValue = element.Attribute(key)?.Value;
                     var hasValue = childElement is not null || attributeValue is not null;
-            var rawValue = childElement?.ToString(SaveOptions.DisableFormatting) ?? attributeValue;
-            var targetType = column.PropertyInfo?.PropertyType ?? typeof(string);
+                    var rawValue = childElement?.ToString(SaveOptions.DisableFormatting) ?? attributeValue;
+                    var targetType = column.PropertyInfo?.PropertyType ?? typeof(string);
 
                     // Validate required
                     if (column.IsRequired && !hasValue)

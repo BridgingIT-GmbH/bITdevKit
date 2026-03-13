@@ -298,9 +298,9 @@ public sealed class JsonDataPorterProvider(
             {
                 yield return Result<TTarget>.Failure()
                     .WithError(new ImportValidationError(
-                        errors.First().RowNumber,
-                        errors.First().Column,
-                        errors.First().Message));
+                        errors[0].RowNumber,
+                        errors[0].Column,
+                        errors[0].Message));
             }
         }
     }

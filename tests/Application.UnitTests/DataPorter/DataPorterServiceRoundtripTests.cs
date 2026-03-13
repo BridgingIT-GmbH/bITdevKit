@@ -181,6 +181,37 @@ public class DataPorterServiceRoundtripTests
     }
 
     [Fact]
+    public async Task ExportAsync_WithPdfProviderAndNestingEnabled_WritesPdfFileToArtifactsFolder()
+    {
+        // Arrange
+        var sut = new DataPorterService(
+            [new PdfDataPorterProvider(new PdfConfiguration { UseNesting = true })],
+            this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var options = new ExportOptions { Format = Format.Pdf, UseAttributes = false };
+        var rootPath = FindWorkspaceRoot();
+        var artifactDirectory = Path.Combine(rootPath, ".tmp", "dataporter");
+        Directory.CreateDirectory(artifactDirectory);
+        var filePath = Path.Combine(artifactDirectory, "persons-nested-export-test.pdf");
+
+        // Act
+        var result = await sut.ExportAsync(data, stream, options);
+        stream.Position = 0;
+        await using (var fileStream = File.Create(filePath))
+        {
+            await stream.CopyToAsync(fileStream);
+        }
+
+        this.output.WriteLine($"PDF written to: {filePath}");
+
+        // Assert
+        result.ShouldBeSuccess();
+        File.Exists(filePath).ShouldBeTrue();
+        new FileInfo(filePath).Length.ShouldBeGreaterThan(0);
+    }
+
+    [Fact]
     public async Task ExportAndImportAsync_WithCsvTypedProvider_RoundTripsTypedHierarchy()
     {
         // Arrange
@@ -467,6 +498,25 @@ public class DataPorterServiceRoundtripTests
 
         stream.Position = 0;
         return content;
+    }
+
+    private static string FindWorkspaceRoot()
+    {
+        var directory = new DirectoryInfo(AppContext.BaseDirectory);
+
+        while (directory is not null)
+        {
+            if (Directory.Exists(Path.Combine(directory.FullName, ".git"))
+                || File.Exists(Path.Combine(directory.FullName, "bIT.bITdevKit.slnx"))
+                || File.Exists(Path.Combine(directory.FullName, "bIT.bITdevKit.sln")))
+            {
+                return directory.FullName;
+            }
+
+            directory = directory.Parent;
+        }
+
+        return AppContext.BaseDirectory;
     }
 
     private static string ReadExcelCellValue(MemoryStream stream, string worksheetName, int row, int column)

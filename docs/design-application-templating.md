@@ -1,4 +1,4 @@
-# Design Document: Extensible Document Templating Feature
+﻿# Design Document: Extensible Document Templating Feature
 
 [TOC]
 
@@ -100,7 +100,7 @@ Template Resolution
     ->
 Global Merge Strategy
     ->
-Model Behaviors
+Model Processors
     ->
 Execution Mode Selection
     ->
@@ -112,7 +112,7 @@ Execution Mode Selection
         ->
     [blocks] TemplateDocument
         ->
-    [blocks] Document Behaviors
+    [blocks] Document Processors
         ->
     [blocks] Validation
         ->
@@ -120,7 +120,7 @@ Execution Mode Selection
     or
     [model] Model Renderer
     ->
-Artifact Behaviors
+Artifact Processors
     ->
 Rendered Output
 ```
@@ -131,19 +131,19 @@ The same pipeline as a Mermaid flowchart:
 flowchart LR
     model[Model] --> resolve[Template Resolution]
     resolve --> globals[Global Merge Strategy]
-    globals --> modelBehaviors[Model Behaviors]
-    modelBehaviors --> mode{Execution Mode}
+    globals --> modelProcessors[Model Processors]
+    modelProcessors --> mode{Execution Mode}
     mode -->|blocks| scriban[Scriban Rendering]
     scriban --> yaml[Rendered YAML]
     yaml --> parse[YAML Deserialization]
     parse --> document[TemplateDocument]
-    document --> documentBehaviors[Document Behaviors]
-    documentBehaviors --> validate[Validation]
+    document --> documentProcessors[Document Processors]
+    documentProcessors --> validate[Validation]
     validate --> renderer[Selected IDocumentRenderer]
     mode -->|model| modelRenderer[Selected IDocumentModelRenderer]
-    renderer --> artifactBehaviors[Artifact Behaviors]
-    modelRenderer --> artifactBehaviors
-    artifactBehaviors --> output[Rendered Output]
+    renderer --> artifactProcessors[Artifact Processors]
+    modelRenderer --> artifactProcessors
+    artifactProcessors --> output[Rendered Output]
 ```
 
 One renderer implementation may target PDF using MigraDoc and PDFsharp. The architecture must primarily support peer renderer families over the same validated `TemplateDocument`, for example HTML preview, email body generation through HTML, plain text, or future Excel export. It should also support a simpler whole-document model-renderer path for families or document types where block composition would be unnatural, overly verbose, or too lossy.
@@ -153,7 +153,7 @@ One renderer implementation may target PDF using MigraDoc and PDFsharp. The arch
 The platform is divided into these layers:
 
 1. Template resolution
-2. Strategy and behavior based pipeline customization
+2. Strategy and processor based pipeline customization
 3. execution mode selection
 4. Template text rendering with Scriban for block-based templates
 5. Template parsing/deserialization for block-based templates
@@ -175,15 +175,15 @@ sequenceDiagram
     participant Resolver as Template Resolver
     participant Globals as Globals Provider
     participant Merge as Globals Merge Strategy
-    participant ModelBehaviors as Model Behaviors
+    participant ModelProcessors as Model Processors
     participant Mode as Execution Mode Selector
     participant Scriban as Scriban Renderer
     participant Yaml as YAML Deserializer
-    participant DocumentBehaviors as Document Behaviors
+    participant DocumentProcessors as Document Processors
     participant Validator as Template Validator
     participant Renderer as Selected IDocumentRenderer
     participant ModelRenderer as Selected IDocumentModelRenderer
-    participant ArtifactBehaviors as Artifact Behaviors
+    participant ArtifactProcessors as Artifact Processors
 
     Client->>Engine: RenderAsync(templateName, renderer, model, context)
     Engine->>Resolver: Resolve template and includes
@@ -192,8 +192,8 @@ sequenceDiagram
     Globals-->>Engine: branding and global values
     Engine->>Merge: Merge defaults + provider + context globals
     Merge-->>Engine: final globals
-    Engine->>ModelBehaviors: Execute model behaviors
-    ModelBehaviors-->>Engine: adjusted model/globals or failed Result
+    Engine->>ModelProcessors: Execute model processors
+    ModelProcessors-->>Engine: adjusted model/globals or failed Result
     Engine->>Mode: Resolve renderMode
     Mode-->>Engine: blocks or model
     alt renderMode = blocks
@@ -201,15 +201,15 @@ sequenceDiagram
         Scriban-->>Engine: Rendered YAML
         Engine->>Yaml: Deserialize rendered YAML
         Yaml-->>Engine: TemplateDocument
-        Engine->>DocumentBehaviors: Execute document behaviors
-        DocumentBehaviors-->>Engine: adjusted document or failed Result
+        Engine->>DocumentProcessors: Execute document processors
+        DocumentProcessors-->>Engine: adjusted document or failed Result
         Engine->>Validator: Validate(document)
         Validator-->>Engine: Validation result
         alt Document is valid
             Engine->>Renderer: RenderAsync(document, context)
             Renderer-->>Engine: Result<RenderedArtifactResult>
-            Engine->>ArtifactBehaviors: Execute artifact behaviors
-            ArtifactBehaviors-->>Engine: adjusted artifact or failed Result
+            Engine->>ArtifactProcessors: Execute artifact processors
+            ArtifactProcessors-->>Engine: adjusted artifact or failed Result
             Engine-->>Client: Result<RenderedArtifactResult>
         else Document is invalid
             Engine-->>Client: Failed Result<RenderedArtifactResult>
@@ -217,8 +217,8 @@ sequenceDiagram
     else renderMode = model
         Engine->>ModelRenderer: RenderAsync(model, context, globals, template)
         ModelRenderer-->>Engine: Result<RenderedArtifactResult>
-        Engine->>ArtifactBehaviors: Execute artifact behaviors
-        ArtifactBehaviors-->>Engine: adjusted artifact or failed Result
+        Engine->>ArtifactProcessors: Execute artifact processors
+        ArtifactProcessors-->>Engine: adjusted artifact or failed Result
         Engine-->>Client: Result<RenderedArtifactResult>
     end
 ```
@@ -299,15 +299,72 @@ An additional HTML renderer transforming the same document model should be imple
 
 Some families or document types do not fit the shared block model well, for example `excel`, narrowly specialized email bodies, or highly branded renderer-native PDFs.
 
-For those cases the platform may branch after template resolution, global merging, and model behaviors into a whole-document model renderer selected by `template name + renderer family`.
+For those cases the platform may branch after template resolution, global merging, and model processors into a whole-document model renderer selected by `template name + renderer family`.
 
 This is the simpler authoring path when a team wants to stay close to the CLR model and renderer-native APIs:
 
 - model renderers are the easiest path to implement for renderer-native output
 - block renderers remain the richer shared-document path when reuse across renderer families matters
 - model renderers are opt-in through the resolved execution descriptor with `RenderMode = Model`
-- template resolution, tenant/module/culture fallback, model behaviors, and artifact behaviors still stay shared
-- the model-renderer path skips Scriban, YAML-to-`TemplateDocument` deserialization, document behaviors, and block rendering
+- template resolution, tenant/module/culture fallback, model processors, and artifact processors still stay shared
+- the model-renderer path skips Scriban, YAML-to-`TemplateDocument` deserialization, document processors, and block rendering
+
+### 5.9 Concept glossary
+
+The following glossary summarizes the main concepts used throughout the design. It is a quick reference, not a replacement for the detailed sections later in the document.
+
+| Term | Meaning in this design | Technical shape / notes |
+| --- | --- | --- |
+| family | A logical output category used to group renderers and block renderers | usually a renderer family such as `pdf`, `html`, `text`, or `excel` |
+| template | A named document definition that the engine can resolve and render | may come from YAML-backed resolvers or code-first registration |
+| configured template | A template registered directly in code instead of loaded from YAML | `RegisterModelTemplate(...)`, `ConfiguredTemplateResolver` |
+| template source | One raw template input before indexing and resolution | `TemplateSource` |
+| template resolver | A component that loads template sources from one backend | `ITemplateResolver`, for example embedded resource, file system, SQL, configured |
+| template cache | The in-memory index of all loaded templates and the place where logical matching happens | `ITemplateCache`; resolves by `Name + TenantId + Module + Culture` |
+| template metadata | Static identity data used to match and diagnose templates | `TemplateMetadata`; includes `name`, `tenantId`, `module`, `culture` |
+| execution descriptor | Static data that tells the engine how to execute a resolved template | `TemplateExecutionDescriptor`; mainly `RenderMode` and `DocumentKind` |
+| resolved template | The single template chosen for one render request | `ResolvedTemplate`; includes metadata, source info, execution descriptor |
+| business model | The application/domain object passed into rendering as the main input | examples are `InvoiceModel`, `OrderDocumentModel`, `OrderExportModel` |
+| block path | The default execution path that goes through Scriban, YAML deserialization, `TemplateDocument`, validation, and block renderers | `RenderMode = Blocks` |
+| model path | The simpler execution path that skips `TemplateDocument` and renders directly from the CLR model | `RenderMode = Model` |
+| render context | Per-request caller input that influences resolution and rendering | `TemplateRenderContext`; includes `Culture`, `TenantId`, `Module`, globals |
+| document model | The shared intermediate structure for the block path | `TemplateDocument` |
+| document kind | The structural kind of block-rendered document being materialized | open string key; built-ins are `page` and `workbook` |
+| `TemplateDocument` | The concrete shared document type used on the block path | one root with `Kind` plus kind-specific shapes such as `Sections` or `Sheets` |
+| document kind definition | A registered definition for one block-path document kind | built-ins: `page`, `workbook`; custom kinds are allowed |
+| document kind parser | A parser/materializer that turns kind-specific YAML into `TemplateDocument` | `ITemplateDocumentKindParser` |
+| document kind validator | A validator for one registered block-path document kind | `ITemplateDocumentKindValidator` |
+| kind payload | An advanced typed payload for custom document kinds inside the shared root | `TemplateDocument.KindPayload` |
+| page kind | The built-in page/document-oriented block kind | `document.kind: page`; uses `sections`, `header`, `body`, `footer` |
+| workbook kind | The built-in workbook-oriented block kind | `document.kind: workbook`; uses `sheets` |
+| block | One semantic fragment inside the shared document model | `IBlock`; examples are paragraph, table, image, custom blocks |
+| block renderer | A family-specific renderer for one block type | `IBlockRenderer`; for example `(pdf, paragraph)` or `(html, table)` |
+| block validator | A validator for one block type after YAML deserialization | `IBlockValidator` |
+| renderer family | A named output family such as `pdf`, `html`, `text`, or `excel` | selected by renderer `Name` / family key |
+| document renderer | A renderer that turns a `TemplateDocument` into one family-specific artifact | `IDocumentRenderer` |
+| model renderer | A renderer that skips blocks and produces the final artifact directly from the CLR model | `IDocumentModelRenderer` |
+| renderer implementation | A concrete class for one renderer family | for example MigraDoc/PDFsharp PDF renderer, `ProjectHtmlRenderer`, `ProjectTextRenderer`, `OrderExportExcelRenderer` |
+| PDF renderer | A concrete renderer implementation for the `pdf` family | usually page-oriented, for example MigraDoc/PDFsharp |
+| HTML renderer | A concrete renderer implementation for the `html` family | may use a typed HTML tree such as `HtmlTags` |
+| text renderer | A concrete renderer implementation for the `text` family | produces readable plain text output |
+| Excel renderer | Usually a model renderer for the `excel` family | for example ClosedXML-based export renderer |
+| template engine | The main application-facing service used to render and validate templates | `IDocumentTemplateEngine` |
+| branding provider | Supplies branding/theme values for rendering | provider service, consumed during globals assembly |
+| globals provider | Supplies global values shared across templates | provider service, consumed before merge strategy |
+| asset resolver | Resolves external named assets such as images or files | `IAssetResolver` |
+| Scriban configurer | Applies project-specific Scriban setup before rendering templates | `IScribanConfigurer` |
+| discovery service | Scans assemblies and registers discovered handlers | block discovery service, document kind discovery service, model renderer discovery service |
+| document kind registry | Runtime lookup for registered document kinds, parsers, and validators | built-in kinds plus custom registered kinds |
+| strategy | A single active policy component that owns one centralized decision rule | `ITemplateGlobalsMergeStrategy`, `IRenderDegradationStrategy` |
+| processor | An ordered pipeline step that can enrich, mutate, diagnose, or stop processing at a safe lifecycle stage | `ITemplateModelProcessor`, `ITemplateDocumentProcessor`, `IRenderedArtifactProcessor` |
+| validator | A component that checks whether some render input is valid | block validators, document validation, model-renderer validators |
+| model-renderer validator | An optional validator for a whole-document model renderer path | `IModelRendererValidator` |
+| artifact | The final rendered output returned by the engine | `RenderedArtifactResult`; includes `ContentType`, `Content`, optional `NativeArtifact` |
+| artifact content | The serialized bytes of the final artifact | `RenderedArtifactResult.Content` |
+| native artifact | An optional renderer-native object exposed alongside serialized bytes | `RenderedArtifactResult.NativeArtifact` |
+| artifact processor | A post-render processor that adjusts the final artifact | `IRenderedArtifactProcessor`; may work on bytes and optionally `NativeArtifact` |
+| diagnostics | Structured information about how the render ran | `TemplateDiagnostics`; includes selected template, execution mode, processors, strategies, warnings |
+| registries | Runtime lookup maps for discovered handlers | block renderer registry, model renderer registry |
 
 ---
 
@@ -467,6 +524,7 @@ builder.Services
     .AddCoreTemplates()
     .AddInvoiceModule()
     .AddTemplates<AssemblyTypeMarker>()
+    .AddDocumentKinds<AssemblyTypeMarker>()
     .AddResolver(
         c => c.Enabled = true,
         new SqlTemplateResolver(...));
@@ -483,9 +541,10 @@ The builder API should:
 - support custom resolvers
 - support code-first model template registration in `AddTemplating(...)`
 - support custom renderer families
+- support open document-kind registration with built-in `page` and `workbook`
 - support automatic discovery of blocks, renderer-family-specific block renderers, and optional validators
 - support strategy replacement for centralized policy decisions
-- support ordered behaviors for safe pipeline customization
+- support ordered processors for safe pipeline customization
 - support resolver ordering
 
 ## 8.3 Example builder interfaces
@@ -558,6 +617,9 @@ public static class TemplatingServiceCollectionExtensions
     public static ITemplatingBuilder AddBlocks<TMarker>(
         this ITemplatingBuilder builder);
 
+    public static ITemplatingBuilder AddDocumentKinds<TMarker>(
+        this ITemplatingBuilder builder);
+
     public static ITemplatingBuilder AddModelRenderers<TMarker>(
         this ITemplatingBuilder builder);
 
@@ -583,17 +645,17 @@ public static class TemplatingServiceCollectionExtensions
         this ITemplatingBuilder builder)
         where T : class, IRenderDegradationStrategy;
 
-    public static ITemplatingBuilder AddModelBehavior<T>(
+    public static ITemplatingBuilder AddModelProcessor<T>(
         this ITemplatingBuilder builder)
-        where T : class, ITemplateModelBehavior;
+        where T : class, ITemplateModelProcessor;
 
-    public static ITemplatingBuilder AddDocumentBehavior<T>(
+    public static ITemplatingBuilder AddDocumentProcessor<T>(
         this ITemplatingBuilder builder)
-        where T : class, ITemplateDocumentBehavior;
+        where T : class, ITemplateDocumentProcessor;
 
-    public static ITemplatingBuilder AddArtifactBehavior<T>(
+    public static ITemplatingBuilder AddArtifactProcessor<T>(
         this ITemplatingBuilder builder)
-        where T : class, IRenderedArtifactBehavior;
+        where T : class, IRenderedArtifactProcessor;
 }
 ```
 
@@ -707,6 +769,8 @@ public sealed class TemplateExecutionDescriptor
 {
     public TemplateExecutionMode RenderMode { get; init; } =
         TemplateExecutionMode.Blocks;
+    public string? DocumentKind { get; init; }
+    public string? TemplateType { get; init; }
 }
 
 public sealed class TemplateMetadataParseResult
@@ -738,6 +802,7 @@ metadata:
 document:
   version: 1
   renderMode: blocks
+  kind: page
   sections:
     - body:
         - type: paragraph
@@ -747,7 +812,7 @@ document:
 The `metadata` section must be static YAML and must not contain Scriban expressions.
 It is parsed before rendering and used for cache indexing and template selection.
 
-Inside `document`, the `renderMode` scalar must also be a static YAML scalar and must not contain Scriban expressions. The engine needs that value before Scriban runs so it can decide whether the template follows the normal block pipeline or the simpler model-renderer path.
+Inside `document`, the `renderMode` scalar and, for block-rendered templates, the `kind` scalar must be static YAML scalars and must not contain Scriban expressions. The engine needs those values before Scriban runs so it can decide whether the template follows the normal block pipeline or the simpler model-renderer path and, for block-rendered templates, which document-kind parser should materialize the final `TemplateDocument`.
 
 For code-first model templates, the application registers the same identity plus execution descriptor directly in `AddTemplating(...)`:
 
@@ -763,7 +828,9 @@ builder.Services.AddTemplating(c =>
 
 That parsing should live behind a small abstraction such as `ITemplateMetadataParser`. The cache should use parsed metadata when content is YAML-backed, but it should accept already-supplied metadata/execution for code-first registrations. This keeps `TemplateCache` focused on loading, indexing, and lookup rather than envelope parsing mechanics.
 
-The `document` section contains the existing Scriban/YAML document definition for block-rendered templates and the static `renderMode` execution descriptor for YAML-backed model-rendered templates. Code-first model templates do not need a YAML wrapper at all.
+The `document` section contains the existing Scriban/YAML document definition for block-rendered templates and the static `renderMode`/`kind` execution descriptor for YAML-backed model-rendered templates. Code-first model templates do not need a YAML wrapper at all.
+
+For block-rendered templates, `document.kind` defaults to `page` when omitted so existing page-style templates remain valid. The platform ships `page` and `workbook` as built-in kinds, but the value is intentionally an open string so projects can register additional custom kinds later.
 
 Explicit template identity rules:
 
@@ -960,6 +1027,8 @@ public sealed class ScribanIncludeLoader : /* Scriban template loader interface 
     }
 }
 ```
+
+Built-in document kinds `page` and `workbook` should be registered by default in `AddTemplating(...)`. `AddDocumentKinds<TMarker>()` is for custom kind discovery and extension modules, not for enabling the built-ins.
 
 This keeps include resolution aligned with resolver precedence, cache semantics, tenant/module selection, and culture fallback.
 
@@ -1179,22 +1248,35 @@ The following schema describes the inner `document` section of a template wrappe
 
 `TemplateDocument` is a shared semantic document model. It is intentionally renderer-family-neutral and should not encode MigraDoc-, HTML-, text-, or Excel-specific object graphs.
 
+The public model now distinguishes between execution mode and document kind:
+
+- `RenderMode = Blocks` means the template will materialize a shared `TemplateDocument`
+- `RenderMode = Model` means the template skips `TemplateDocument` entirely
+- `Kind` identifies the block-path document shape and is only relevant when `RenderMode = Blocks`
+
+`document.kind` is an open extension point. The platform provides built-in registrations for `page` and `workbook`, but projects may add their own kinds through discovery and builder registration. To keep authoring simple, built-in kinds use friendly kind-specific shapes such as `sections` for `page` and `sheets` for `workbook` instead of exposing a generic container DSL.
+
 ```csharp
 public sealed class TemplateDocument
 {
     public int Version { get; set; } = 1;
     public TemplateExecutionMode RenderMode { get; set; } =
         TemplateExecutionMode.Blocks;
+    public string Kind { get; set; } = "page";
     public string? TemplateType { get; set; }
     public TemplateInfo? Info { get; set; }
     public List<TemplateStyle> Styles { get; set; } = [];
     public List<TemplateSection> Sections { get; set; } = [];
+    public List<TemplateSheet> Sheets { get; set; } = [];
+    public object? KindPayload { get; set; }
 }
 ```
 
-`RenderMode` defaults to `blocks`. `TemplateType` is optional semantic metadata for block-rendered documents when a module wants to classify the resulting `TemplateDocument`. It is not used to select model renderers. When `renderMode: model` is selected, the engine still parses the static execution descriptor from the unresolved template envelope, but it does not deserialize the rest of the `document` node into `TemplateDocument`.
+`RenderMode` defaults to `blocks`. `Kind` defaults to `page`. `TemplateType` is optional semantic metadata for block-rendered documents when a module wants to classify the resulting `TemplateDocument`. It is not used to select model renderers. When `renderMode: model` is selected, the engine still parses the static execution descriptor from the unresolved template envelope, but it does not deserialize the rest of the `document` node into `TemplateDocument`.
 
-## 14.2 Section model
+For built-in kinds, only the matching kind-specific shape should normally be populated. In other words, `page` documents should populate `Sections`, `workbook` documents should populate `Sheets`, and validators should reject mixed or ambiguous shapes. Custom kinds may instead populate `KindPayload`.
+
+## 14.2 Section and sheet model
 
 ```csharp
 public sealed class TemplateSection
@@ -1206,7 +1288,19 @@ public sealed class TemplateSection
 }
 ```
 
+```csharp
+public sealed class TemplateSheet
+{
+    public string Name { get; set; } = default!;
+    public List<IBlock> Body { get; set; } = [];
+}
+```
+
 `PageSetupSpec` is a renderer hint. Page-oriented families such as `pdf` will usually honor it directly. Flow-oriented or text-oriented families such as `html` and `text` may ignore it and record diagnostics.
+
+`TemplateSection` is the built-in shape for `document.kind: page`. `TemplateSheet` is the initial built-in shape for `document.kind: workbook`. The workbook shape is intentionally small in v1: a workbook contains named `sheets`, and each sheet currently exposes one `body` block list.
+
+Projects may register additional document kinds beyond `page` and `workbook`. Those custom kinds may define their own friendly YAML/document shape, but they should still materialize into the same shared `TemplateDocument` root. For advanced custom kinds, the parser may place a typed payload into `KindPayload`. The complexity belongs in the registered kind parser, not in normal template authoring.
 
 ## 14.3 Standard block set
 
@@ -1618,12 +1712,13 @@ The rendering layer converts either a `TemplateDocument` or a whole input model 
 
 - select the target renderer
 - select the target execution mode
+- validate document-kind support
 - expose renderer family capabilities
 - apply document metadata
 - apply styles
-- create sections
+- create sections, sheets, or other kind-appropriate native containers
 - configure page setup where relevant
-- render headers/footers
+- render headers/footers or other kind-defined regions
 - delegate block rendering through registered family-specific block renderers
 - optionally delegate whole-document rendering through a model renderer
 - produce the renderer-specific output artifact
@@ -1644,6 +1739,8 @@ public interface IDocumentRenderer
 
 public sealed class RendererCapabilities
 {
+    public IReadOnlyCollection<string> SupportedKinds { get; init; } =
+        ["page"];
     public bool SupportsPageSetup { get; init; }
     public bool SupportsHeaders { get; init; }
     public bool SupportsFooters { get; init; }
@@ -1658,6 +1755,8 @@ public sealed class RendererCapabilities
 The engine selects the renderer by matching `IDocumentRenderer.Name` against the `renderer` argument passed to `RenderAsync`. Projects extend rendering by registering additional `IDocumentRenderer` implementations in DI.
 
 One implementation may use MigraDoc and PDFsharp to produce PDF output. Other implementations may target formats such as HTML, plain text, or future Excel. The core engine remains unchanged when new renderer families are added.
+
+Each renderer must also declare the block-path document kinds it supports through `RendererCapabilities.SupportedKinds`. Unsupported `(renderer family, document kind)` combinations should fail clearly with a typed validation/render error instead of silently trying to flatten the document into an unrelated native model.
 
 Each renderer family is also responsible for the built-in blocks for that family. For example, the `pdf` renderer package provides the `paragraph`, `table`, `image`, `spacer`, and `pageBreak` renderers for `pdf`. The `html` and `text` packages do the same for their own families.
 
@@ -1692,29 +1791,29 @@ Model renderers are intentionally narrower than `IDocumentRenderer`, and for man
 
 - they are only used for `RenderMode = Model`
 - they receive the original model rather than a `TemplateDocument`
-- they keep template resolution, globals, model behaviors, and artifact behaviors shared with the rest of the platform
+- they keep template resolution, globals, model processors, and artifact processors shared with the rest of the platform
 - they do not replace the block renderer architecture for normal templates
 
-## 19.4 Strategy and behavior extensibility
+## 19.4 Strategy and processor extensibility
 
 The advanced extensibility model should support two complementary forms:
 
 - targeted strategies for centralized policy decisions where exactly one active implementation should own the rule
-- ordered behaviors for cross-cutting adjustments at a few safe lifecycle stages
+- ordered processors for cross-cutting adjustments at a few safe lifecycle stages
 
 Strategies are appropriate when the platform needs one authoritative answer, for example:
 
 - how globals are merged before Scriban
 - how unsupported renderer features degrade
 
-Behaviors are appropriate when projects want to enrich or adjust the pipeline without replacing the engine, for example:
+Processors are appropriate when projects want to enrich or adjust the pipeline without replacing the engine, for example:
 
 - adding preview globals before Scriban
 - injecting disclaimer blocks after YAML materialization
 - adjusting final HTML, text, or PDF output after rendering
 - adjusting final output after a model renderer has produced an artifact
 
-Behaviors should remain intentionally limited to three mutation stages:
+Processors should remain intentionally limited to three mutation stages:
 
 1. before execution mode selection
 2. after `TemplateDocument` materialization and before validation for block-rendered templates
@@ -1726,7 +1825,7 @@ They are global registrations and decide from the current render context whether
 
 Render context includes:
 
-- body/header/footer location
+- current document-kind location, for example body/header/footer within a page section or body within a workbook sheet
 - culture/timezone
 - branding info if needed
 - diagnostics integration
@@ -1735,50 +1834,55 @@ Model-renderer execution should receive a dedicated context carrying:
 
 - resolved template metadata/source
 - static execution descriptor including `renderMode`
+- selected document kind when relevant
 - merged globals
 - culture/timezone/tenant/module/brand
 - diagnostics integration
 
-## 19.6 Behavior pipeline
+## 19.6 Processor pipeline
 
 The engine should orchestrate the advanced extensibility points in this order:
 
 1. resolve template from cache
 2. collect built-in defaults and provider globals
 3. merge globals through `ITemplateGlobalsMergeStrategy`
-4. execute `ITemplateModelBehavior` in ascending `Order`
+4. execute `ITemplateModelProcessor` in ascending `Order`
 5. read the execution descriptor from the resolved template
 6. branch by `RenderMode`
 7. block path:
 8. render Scriban to text
-9. parse the YAML envelope and deserialize `TemplateDocument`
-10. execute `ITemplateDocumentBehavior` in ascending `Order`
-11. validate document and blocks
-12. render through the selected `IDocumentRenderer`
-13. use `IRenderDegradationStrategy` inside renderers when they cannot faithfully support a feature
-14. model path:
-15. resolve `IDocumentModelRenderer` by `(renderer, templateName)`
-16. optionally run model-renderer validation
-17. render through the selected `IDocumentModelRenderer`
-18. execute `IRenderedArtifactBehavior` in ascending `Order`
-19. return `Result<RenderedArtifactResult>`
+9. select the registered document-kind parser by `document.kind`, defaulting to `page` when omitted
+10. parse the YAML envelope and materialize `TemplateDocument`
+11. validate the selected renderer against `RendererCapabilities.SupportedKinds`
+12. execute `ITemplateDocumentProcessor` in ascending `Order`
+13. run document-kind validation and block validation
+14. render through the selected `IDocumentRenderer`
+15. use `IRenderDegradationStrategy` inside renderers when they cannot faithfully support a feature
+16. model path:
+17. resolve `IDocumentModelRenderer` by `(renderer, templateName)`
+18. optionally run model-renderer validation
+19. render through the selected `IDocumentModelRenderer`
+20. after either path, execute `IRenderedArtifactProcessor` in ascending `Order`
+21. return `Result<RenderedArtifactResult>`
 
 Important rule:
 
-- `ITemplateDocumentBehavior` is the only document mutation stage
+- `ITemplateDocumentProcessor` is the only document mutation stage
 - there is no post-validation document mutation stage
-- `ITemplateDocumentBehavior` does not run for `RenderMode = Model`
+- `ITemplateDocumentProcessor` does not run for `RenderMode = Model`
 
 This keeps validation authoritative. A document should not be modified after it has already been validated.
 
-## 19.7 Renderer-family behavior
+## 19.7 Renderer-family semantics
 
 Block-renderer families are peers over the same `TemplateDocument`. Model renderers are the simpler code-first option for cases where a family or template cannot be expressed reasonably through that shared model or where staying close to the CLR model is preferable.
 
-- `pdf` is page-oriented and will usually honor page setup, headers, footers, styles, tables, and images
-- `html` is flow-oriented and may ignore print-specific page setup while still rendering semantic content and styles, preferably through a typed HTML model such as `HtmlTags`
-- `text` is a readable text-oriented family and may flatten layout features into paragraphs, separators, and textual table output
-- future families such as `excel` may focus on tabular content and ignore page-flow concepts without requiring core contract changes
+- `pdf` will usually support the built-in `page` kind and honor page setup, headers, footers, styles, tables, and images
+- `html` will usually support the built-in `page` kind and may ignore print-specific page setup while still rendering semantic content and styles, preferably through a typed HTML model such as `HtmlTags`
+- `text` will usually support the built-in `page` kind and may flatten layout features into paragraphs, separators, and textual table output
+- a future block-path `excel` renderer could declare support for the built-in `workbook` kind
+- custom renderer packages may declare support for custom kinds and interpret `TemplateDocument.KindPayload` for those kinds
+- families or templates that need richer native concepts than the shared block model should continue to use the model-renderer path
 
 ## 19.8 Degradation and diagnostics
 
@@ -1798,7 +1902,7 @@ That policy should be owned by a dedicated `IRenderDegradationStrategy`. The def
 
 Rendering should only fail when the renderer cannot produce any valid artifact at all.
 
-Behaviors may also add diagnostics or stop the pipeline with a failed `Result`, but they should not silently suppress renderer limitations without recording what happened.
+Processors may also add diagnostics or stop the pipeline with a failed `Result`, but they should not silently suppress renderer limitations without recording what happened.
 
 ## 19.9 Standard block interpretation examples
 
@@ -1851,11 +1955,14 @@ Checks:
 - for YAML-backed templates, execution descriptor values are static YAML scalars and do not depend on Scriban
 - for code-first registrations, startup validation should reject missing `Name`, unsupported `RenderMode`, and duplicate logical keys
 
-### Phase 2: document/schema validation
+### Phase 2: document-kind/schema validation
 
 Checks:
 
-- document has sections
+- a parser is registered for the selected `document.kind`, defaulting to `page` when omitted
+- a validator is registered for the selected `document.kind`, defaulting to `page` when omitted
+- `page` documents have valid `sections` content
+- `workbook` documents have valid `sheets` content
 - styles are valid
 - referenced styles exist
 - page setup values are parseable
@@ -1871,6 +1978,8 @@ Checks:
 - custom block semantic constraints
 
 Renderer-family support is not a validation concern. A block may validate successfully and still be degraded by a selected renderer family that does not implement that block.
+
+Renderer-kind compatibility is renderer-aware validation concern. When a caller validates for a specific renderer, the engine should fail clearly if that renderer does not declare support for the selected `document.kind`.
 
 ### Phase 4: model-renderer validation
 
@@ -1914,8 +2023,9 @@ The engine should expose:
 - validation errors
 - renderer warnings and degradation diagnostics
 - selected model renderer when applicable
+- selected document kind and kind parser when applicable
 - skipped pipeline stages for model-rendered templates
-- behavior and strategy participation where relevant
+- processor and strategy participation where relevant
 - resolution/rendering timings
 
 ## 21.3 Example diagnostics object
@@ -1927,6 +2037,7 @@ public sealed class TemplateDiagnostics
     public string? ResolvedFrom { get; init; }
     public TemplateExecutionMode ExecutionMode { get; init; } =
         TemplateExecutionMode.Blocks;
+    public string? DocumentKind { get; init; }
     public string? TemplateType { get; init; }
     public string? ModelRenderer { get; init; }
     public List<string> IncludedTemplates { get; init; } = [];
@@ -1948,7 +2059,7 @@ public sealed class TemplateRenderDiagnostic
     public string? Path { get; init; }
     public string? Renderer { get; init; }
     public string? BlockName { get; init; }
-    public string? Behavior { get; init; }
+    public string? Processor { get; init; }
     public string? Strategy { get; init; }
 }
 ```
@@ -1997,7 +2108,7 @@ Selection keys should include:
 
 The cache should expose a runtime reset operation so a caller can clear and rebuild it without restarting the process.
 
-The cache should not own YAML envelope parsing logic directly. It should delegate metadata extraction to `ITemplateMetadataParser` for YAML-backed sources and should accept already-supplied metadata/execution for code-first registrations.
+The cache should not own YAML envelope parsing logic directly. It should delegate metadata extraction to `ITemplateMetadataParser` for YAML-backed sources and should accept already-supplied metadata/execution for code-first registrations. That metadata extraction now includes the static block-path `document.kind` value in addition to execution mode.
 
 ## 22.3 Notes
 
@@ -2108,7 +2219,7 @@ The renderer-agnostic `RenderAsync` method is the primary API. Renderer-specific
 
 All caller-facing methods should return `Result` or `Result<T>`. This keeps rendering composable inside application pipelines and makes validation, resolution, and renderer failures explicit without forcing exception-based control flow.
 
-The advanced strategy/behavior extensibility model stays behind this same public engine surface. Callers still use `RenderAsync(...)`, `RenderPdfAsync(...)`, `RenderHtmlAsync(...)`, or `RenderTextAsync(...)`; strategies and behaviors adjust the internal pipeline without changing the caller contract.
+The advanced strategy/processor extensibility model stays behind this same public engine surface. Callers still use `RenderAsync(...)`, `RenderPdfAsync(...)`, `RenderHtmlAsync(...)`, or `RenderTextAsync(...)`; strategies and processors adjust the internal pipeline without changing the caller contract.
 
 ## 27.1 API shape
 
@@ -2264,6 +2375,7 @@ public sealed class RenderedArtifactResult
     public object? NativeArtifact { get; init; }
     public TemplateExecutionMode ExecutionMode { get; init; } =
         TemplateExecutionMode.Blocks;
+    public string? DocumentKind { get; init; }
     public string? TemplateType { get; init; }
     public string? ModelRenderer { get; init; }
     public string? RenderedTemplateText { get; init; }
@@ -2275,6 +2387,8 @@ public sealed class RenderedArtifactResult
 `ContentType` is part of the renderer contract and should use the typed `ContentType` enum, for example `ContentType.PDF`, `ContentType.HTML`, or `ContentType.TXT`. Callers can derive the MIME string through `ContentTypeExtensions.MimeType()` when needed, which avoids hard-coding MIME knowledge outside the renderer.
 
 `NativeArtifact` exists for renderer-family-specific native objects when a concrete renderer wants to expose them. Those native objects do not shape the core public API.
+
+Artifact processors are byte-oriented by default through `Content`. When a renderer can expose a useful family-specific object model as well, it may populate `NativeArtifact` alongside `Content` so processors can choose the richer path without losing the final serialized output. `NativeArtifact` is therefore optional, but populating both members is the recommended shape whenever the renderer can do so without ambiguity or excessive cost.
 
 For block-rendered templates, `RenderedTemplateText` and `TemplateDocument` should normally be populated. For model-rendered templates, those members may be `null` because the engine never materializes those intermediate representations.
 
@@ -2292,8 +2406,7 @@ builder.Services
         c.EnableValidation = true;
         c.RegisterModelTemplate(
             name: "order-export",
-            module: "Sales",
-            culture: "en-US");
+            module: "Sales");
     })
     .AddCoreTemplates()
     .AddInvoiceModule()
@@ -2317,9 +2430,9 @@ builder.Services
     .AddRenderer<ProjectTextRenderer>()
     .AddGlobalsMergeStrategy<ProjectGlobalsMergeStrategy>()
     .AddRenderDegradationStrategy<ProjectRenderDegradationStrategy>()
-    .AddModelBehavior<PreviewModelBehavior>()
-    .AddDocumentBehavior<TenantDisclaimerBehavior>()
-    .AddArtifactBehavior<EmailHtmlArtifactBehavior>()
+    .AddModelProcessor<PreviewModelProcessor>()
+    .AddDocumentProcessor<TenantDisclaimerProcessor>()
+    .AddArtifactProcessor<EmailHtmlArtifactProcessor>()
     .AddScribanConfigurer<ProjectScribanConfigurer>();
 ```
 
@@ -2455,30 +2568,32 @@ var result = await engine.RenderAsync(
 
 The same extension pattern applies to `text` or future families such as `excel`. Only the renderer `Name`, `Capabilities`, and family-specific block renderers change.
 
-### 30.7 Add strategy and behavior customizations
+### 30.7 Add strategy and processor customizations
 
 Projects may adjust the shared pipeline without replacing the engine by registering:
 
 - one globals merge strategy
 - one render degradation strategy
-- zero or more ordered model behaviors
-- zero or more ordered document behaviors
-- zero or more ordered artifact behaviors
+- zero or more ordered model processors
+- zero or more ordered document processors
+- zero or more ordered artifact processors
 
 Typical examples:
 
-- `PreviewModelBehavior` adds preview flags or derived globals before Scriban
-- `TenantDisclaimerBehavior` injects tenant-specific paragraphs or blocks before validation
-- `EmailHtmlArtifactBehavior` inlines CSS, wraps the HTML body, or minifies final HTML
+- `PreviewModelProcessor` adds preview flags or derived globals before Scriban
+- `TenantDisclaimerProcessor` injects tenant-specific paragraphs or blocks before validation
+- `EmailHtmlArtifactProcessor` reads HTML bytes from `Content` or a typed HTML object from `NativeArtifact`, then inlines CSS, wraps the HTML body, or minifies final HTML
 - `StrictRenderDegradationStrategy` turns unsupported blocks from warnings into failures
 - `CollisionRejectingGlobalsMergeStrategy` rejects conflicting globals instead of last-write-wins
 
-These behaviors do not replace block renderers, block validators, or model renderers:
+These processors do not replace block renderers, block validators, or model renderers:
 
 - block renderers still render one block for one renderer family
 - block validators still validate one block DTO
 - model renderers still own one `(renderer, templateName)` whole-document contract
-- behaviors operate at the broader pipeline stage level
+- processors operate at the broader pipeline stage level
+
+For artifact processors, the baseline contract is `Content` plus `ContentType`. When available, `NativeArtifact` provides an optional renderer-native object for richer post-processing, for example a typed HTML tree or a renderer-specific PDF object.
 
 ---
 
@@ -2508,7 +2623,7 @@ The feature baseline should include a production-relevant slice of the full desi
 - diagnostics
 - renderer abstraction
 - renderer-family capabilities
-- strategies and ordered behaviors for advanced customization
+- strategies and ordered processors for advanced customization
 - at least one concrete renderer family implementation such as PDF, HTML, or text
 
 ### 31.2 Initial built-in templates
@@ -2556,7 +2671,7 @@ This design defines an extensible document templating platform with the followin
 - culture-aware and branding-aware rendering
 - custom block support for domain-specific documents
 - fluent builder-based registration
-- strategy and behavior based pipeline customization
+- strategy and processor based pipeline customization
 - validation, diagnostics, and caching support
 - reusable architecture suitable for multiple projects and packages
 
@@ -2569,7 +2684,7 @@ The most important architectural choices are:
 5. optional whole-document model renderers keyed by `(renderer, templateName)`
 6. renderer-agnostic output generation over one validated document model where possible
 7. builder/module-based configuration for adoption across projects
-8. strategy and behavior extension points for policy and cross-cutting customization
+8. strategy and processor extension points for policy and cross-cutting customization
 
 ---
 
@@ -2648,6 +2763,11 @@ public sealed class BlockDiscoveryOptions
     public List<Assembly> Assemblies { get; } = [];
 }
 
+public sealed class DocumentKindDiscoveryOptions
+{
+    public List<Assembly> Assemblies { get; } = [];
+}
+
 public sealed class ModelRendererDiscoveryOptions
 {
     public List<Assembly> Assemblies { get; } = [];
@@ -2665,6 +2785,43 @@ public interface IBlockDiscoveryService
     Task DiscoverAsync(CancellationToken cancellationToken = default);
 }
 
+public interface IDocumentKindDefinition
+{
+    string Kind { get; }
+}
+
+public interface ITemplateDocumentKindParser
+{
+    string Kind { get; }
+
+    Schema.TemplateDocument Parse(string renderedTemplateText);
+}
+
+public interface ITemplateDocumentKindValidator
+{
+    string Kind { get; }
+
+    IReadOnlyList<TemplateValidationError> Validate(
+        Schema.TemplateDocument document);
+}
+
+public interface IDocumentKindRegistry
+{
+    void Register(
+        IDocumentKindDefinition definition,
+        ITemplateDocumentKindParser parser,
+        ITemplateDocumentKindValidator validator);
+
+    bool IsRegistered(string kind);
+    ITemplateDocumentKindParser GetParser(string kind);
+    ITemplateDocumentKindValidator GetValidator(string kind);
+}
+
+public interface IDocumentKindDiscoveryService
+{
+    Task DiscoverAsync(CancellationToken cancellationToken = default);
+}
+
 public interface IModelRendererDiscoveryService
 {
     Task DiscoverAsync(CancellationToken cancellationToken = default);
@@ -2675,7 +2832,7 @@ public sealed class TemplateCacheOptions
     public bool UseStaticInMemoryCache { get; set; } = true;
 }
 
-public interface IOrderedTemplatingBehavior
+public interface IOrderedTemplatingProcessor
 {
     int Order { get; }
 }
@@ -2712,6 +2869,7 @@ public static class TemplatingServiceCollectionExtensions
     {
         services.AddOptions<TemplatingOptions>();
         services.AddOptions<BlockDiscoveryOptions>();
+        services.AddOptions<DocumentKindDiscoveryOptions>();
         services.AddOptions<ModelRendererDiscoveryOptions>();
         services.AddOptions<TemplateCacheOptions>();
         if (configure is not null)
@@ -2722,6 +2880,9 @@ public static class TemplatingServiceCollectionExtensions
         services.TryAddSingleton<IBlockRegistry, BlockRegistry>();
         services.TryAddSingleton<IBlockDiscoveryService, ReflectionBlockDiscoveryService>();
         services.TryAddHostedService<BlockDiscoveryHostedService>();
+        services.TryAddSingleton<IDocumentKindRegistry, DocumentKindRegistry>();
+        services.TryAddSingleton<IDocumentKindDiscoveryService, ReflectionDocumentKindDiscoveryService>();
+        services.TryAddHostedService<DocumentKindDiscoveryHostedService>();
         services.TryAddSingleton<IModelRendererRegistry, ModelRendererRegistry>();
         services.TryAddSingleton<IModelRendererDiscoveryService, ReflectionModelRendererDiscoveryService>();
         services.TryAddHostedService<ModelRendererDiscoveryHostedService>();
@@ -2792,6 +2953,17 @@ public static class TemplatingServiceCollectionExtensions
         return builder;
     }
 
+    public static ITemplatingBuilder AddDocumentKinds<TMarker>(
+        this ITemplatingBuilder builder)
+    {
+        builder.Services.Configure<DocumentKindDiscoveryOptions>(options =>
+        {
+            options.Assemblies.Add(typeof(TMarker).Assembly);
+        });
+
+        return builder;
+    }
+
     public static ITemplatingBuilder AddModelRenderers<TMarker>(
         this ITemplatingBuilder builder)
     {
@@ -2829,27 +3001,27 @@ public static class TemplatingServiceCollectionExtensions
         return builder;
     }
 
-    public static ITemplatingBuilder AddModelBehavior<T>(
+    public static ITemplatingBuilder AddModelProcessor<T>(
         this ITemplatingBuilder builder)
-        where T : class, ITemplateModelBehavior
+        where T : class, ITemplateModelProcessor
     {
-        builder.Services.AddSingleton<ITemplateModelBehavior, T>();
+        builder.Services.AddSingleton<ITemplateModelProcessor, T>();
         return builder;
     }
 
-    public static ITemplatingBuilder AddDocumentBehavior<T>(
+    public static ITemplatingBuilder AddDocumentProcessor<T>(
         this ITemplatingBuilder builder)
-        where T : class, ITemplateDocumentBehavior
+        where T : class, ITemplateDocumentProcessor
     {
-        builder.Services.AddSingleton<ITemplateDocumentBehavior, T>();
+        builder.Services.AddSingleton<ITemplateDocumentProcessor, T>();
         return builder;
     }
 
-    public static ITemplatingBuilder AddArtifactBehavior<T>(
+    public static ITemplatingBuilder AddArtifactProcessor<T>(
         this ITemplatingBuilder builder)
-        where T : class, IRenderedArtifactBehavior
+        where T : class, IRenderedArtifactProcessor
     {
-        builder.Services.AddSingleton<IRenderedArtifactBehavior, T>();
+        builder.Services.AddSingleton<IRenderedArtifactProcessor, T>();
         return builder;
     }
 
@@ -3000,6 +3172,12 @@ public sealed class TemplateSource
 ```csharp
 namespace BridgingIT.DevKit.Application.Templating;
 
+public static class TemplateDocumentKinds
+{
+    public const string Page = "page";
+    public const string Workbook = "workbook";
+}
+
 public sealed class TemplateMetadata
 {
     public string Name { get; init; } = default!;
@@ -3020,6 +3198,7 @@ public sealed class TemplateExecutionDescriptor
 {
     public TemplateExecutionMode RenderMode { get; init; } =
         TemplateExecutionMode.Blocks;
+    public string? DocumentKind { get; init; }
     public string? TemplateType { get; init; }
 }
 
@@ -3243,10 +3422,13 @@ public sealed class TemplateDocument
     public int Version { get; set; } = 1;
     public TemplateExecutionMode RenderMode { get; set; } =
         TemplateExecutionMode.Blocks;
+    public string Kind { get; set; } = TemplateDocumentKinds.Page;
     public string? TemplateType { get; set; }
     public TemplateInfo? Info { get; set; }
     public List<TemplateStyle> Styles { get; set; } = [];
     public List<TemplateSection> Sections { get; set; } = [];
+    public List<TemplateSheet> Sheets { get; set; } = [];
+    public object? KindPayload { get; set; }
 }
 
 public sealed class TemplateInfo
@@ -3261,6 +3443,12 @@ public sealed class TemplateSection
     public PageSetupSpec? PageSetup { get; set; }
     public List<IBlock> Header { get; set; } = [];
     public List<IBlock> Footer { get; set; } = [];
+    public List<IBlock> Body { get; set; } = [];
+}
+
+public sealed class TemplateSheet
+{
+    public string Name { get; set; } = default!;
     public List<IBlock> Body { get; set; } = [];
 }
 ```
@@ -3857,7 +4045,7 @@ public sealed class ScribanIncludeLoader : /* Scriban template loader interface 
 
 Scriban execution should also be constrained through `LoopLimit`, `RecursiveLimit`, `TemplatingOptions.MaxIncludeDepth`, and an optional operational timeout boundary when needed.
 
-### 2.10a Strategy and behavior contracts
+### 2.10a Strategy and processor contracts
 
 ```csharp
 using BridgingIT.DevKit.Application.Templating.Schema;
@@ -3879,28 +4067,28 @@ public interface IRenderDegradationStrategy
     Result HandleUnsupportedFeature(UnsupportedFeatureContext context);
 }
 
-public interface ITemplateModelBehavior : IOrderedTemplatingBehavior
+public interface ITemplateModelProcessor : IOrderedTemplatingProcessor
 {
     Task<Result> ExecuteAsync(
-        TemplateModelBehaviorContext context,
+        TemplateModelProcessorContext context,
         CancellationToken cancellationToken = default);
 }
 
-public interface ITemplateDocumentBehavior : IOrderedTemplatingBehavior
+public interface ITemplateDocumentProcessor : IOrderedTemplatingProcessor
 {
     Task<Result> ExecuteAsync(
-        TemplateDocumentBehaviorContext context,
+        TemplateDocumentProcessorContext context,
         CancellationToken cancellationToken = default);
 }
 
-public interface IRenderedArtifactBehavior : IOrderedTemplatingBehavior
+public interface IRenderedArtifactProcessor : IOrderedTemplatingProcessor
 {
     Task<Result> ExecuteAsync(
-        RenderedArtifactBehaviorContext context,
+        RenderedArtifactProcessorContext context,
         CancellationToken cancellationToken = default);
 }
 
-public sealed class TemplateModelBehaviorContext
+public sealed class TemplateModelProcessorContext
 {
     public string TemplateName { get; init; } = default!;
     public string Renderer { get; init; } = default!;
@@ -3924,7 +4112,7 @@ public sealed class ModelRenderContext
     public TemplateDiagnostics Diagnostics { get; init; } = default!;
 }
 
-public sealed class TemplateDocumentBehaviorContext
+public sealed class TemplateDocumentProcessorContext
 {
     public string TemplateName { get; init; } = default!;
     public string Renderer { get; init; } = default!;
@@ -3934,13 +4122,15 @@ public sealed class TemplateDocumentBehaviorContext
     public TemplateDiagnostics Diagnostics { get; init; } = default!;
 }
 
-public sealed class RenderedArtifactBehaviorContext
+public sealed class RenderedArtifactProcessorContext
 {
     public string TemplateName { get; init; } = default!;
     public RenderedArtifactResult Artifact { get; set; } = default!;
     public TemplateRenderContext RenderContext { get; init; } = default!;
     public TemplateDiagnostics Diagnostics { get; init; } = default!;
 }
+
+`RenderedArtifactProcessorContext.Artifact` should contain serialized `Content` whenever the renderer can provide it. `NativeArtifact` is optional and may hold a richer renderer-native object for processors that understand that specific family.
 
 public sealed class UnsupportedBlockContext
 {
@@ -4023,7 +4213,7 @@ internal sealed class DefaultRenderDegradationStrategy
 }
 ```
 
-Strategies are single active policies. Behaviors are ordered chains and may mutate, add diagnostics, or stop the pipeline with a failed `Result`. In the default degradation flow, the strategy decides that best-effort rendering should continue and records the diagnostic, while the concrete renderer remains responsible for emitting a visible placeholder when that renderer family supports one.
+Strategies are single active policies. Processors are ordered chains and may mutate, add diagnostics, or stop the pipeline with a failed `Result`. In the default degradation flow, the strategy decides that best-effort rendering should continue and records the diagnostic, while the concrete renderer remains responsible for emitting a visible placeholder when that renderer family supports one.
 
 ### 2.11 Diagnostics
 
@@ -4036,6 +4226,7 @@ public sealed class TemplateDiagnostics
     public string? ResolvedFrom { get; set; }
     public TemplateExecutionMode ExecutionMode { get; set; } =
         TemplateExecutionMode.Blocks;
+    public string? DocumentKind { get; set; }
     public string? TemplateType { get; set; }
     public string? ModelRenderer { get; set; }
     public List<string> IncludedTemplates { get; init; } = [];
@@ -4057,7 +4248,7 @@ public sealed class TemplateRenderDiagnostic
     public string? Path { get; init; }
     public string? Renderer { get; init; }
     public string? BlockName { get; init; }
-    public string? Behavior { get; init; }
+    public string? Processor { get; init; }
     public string? Strategy { get; init; }
 }
 ```
@@ -4098,6 +4289,7 @@ public sealed class RenderedArtifactResult
     public object? NativeArtifact { get; init; }
     public TemplateExecutionMode ExecutionMode { get; init; } =
         TemplateExecutionMode.Blocks;
+    public string? DocumentKind { get; init; }
     public string? TemplateType { get; init; }
     public string? ModelRenderer { get; init; }
     public string? RenderedTemplateText { get; init; }
@@ -4126,6 +4318,8 @@ public interface IDocumentRenderer
 
 public sealed class RendererCapabilities
 {
+    public IReadOnlyCollection<string> SupportedKinds { get; init; } =
+        [TemplateDocumentKinds.Page];
     public bool SupportsPageSetup { get; init; }
     public bool SupportsHeaders { get; init; }
     public bool SupportsFooters { get; init; }
@@ -4157,6 +4351,8 @@ public interface IDocumentModelRenderer<TModel> : IDocumentModelRenderer
 ```
 
 The engine resolves the requested block renderer from the registered `IDocumentRenderer` services by matching `Name`. Returning `Result<RenderedArtifactResult>` lets custom renderers participate directly in fluent DevKit pipelines. For `renderMode: model`, the engine instead resolves `IDocumentModelRenderer` by `(renderer, templateName)`.
+
+For the block path, the engine must also verify that the selected renderer declares support for `TemplateDocument.Kind` through `RendererCapabilities.SupportedKinds`. Unsupported combinations should fail clearly instead of silently coercing one document kind into another.
 
 ### 2.13 Public result errors and internal exceptions
 
@@ -4380,1002 +4576,6 @@ public sealed class InvoiceLineItemRow
 
 ---
 
-## Appendix A. End-to-end Order PDF walkthrough
+## 35. Usage walkthroughs
 
-This appendix shows a slightly contrived but complete example for a novice developer.
-
-The goal is to render an order confirmation PDF with:
-
-- a normal business model (`OrderDocumentModel`)
-- two custom blocks (`orderSummary` and `orderLineItems`)
-- a module-specific template (`Module = "Sales"`)
-- the standard templating pipeline
-- the public `Result<T>` based engine API
-
-Important:
-For this block-rendered order example, you do not create a brand-new root document type. The root stays `TemplateDocument`. The domain-specific customization happens through the business model, template content, and registered custom blocks.
-
-### A.1 What we are building
-
-We want a developer to be able to call:
-
-```csharp
-var result = await orderDocumentService.RenderOrderConfirmationPdfAsync(order, cancellationToken);
-```
-
-and receive:
-
-- `Result<byte[]>` on success with PDF bytes
-- typed errors on failure
-
-The rendered document should contain:
-
-- a heading
-- customer/order metadata
-- a line items table
-- a totals section
-
-### A.2 Step 1: define the business model
-
-Start with a simple model that the application already understands.
-
-```csharp
-namespace MyProject.Orders.Documents;
-
-public sealed class OrderDocumentModel
-{
-    public string OrderNumber { get; set; } = default!;
-    public string CustomerName { get; set; } = default!;
-    public string CustomerNumber { get; set; } = default!;
-    public DateTimeOffset OrderedAtUtc { get; set; }
-    public string Currency { get; set; } = "EUR";
-    public string ShippingMethod { get; set; } = default!;
-    public string PaymentMethod { get; set; } = default!;
-    public decimal Subtotal { get; set; }
-    public decimal Tax { get; set; }
-    public decimal GrandTotal { get; set; }
-    public List<OrderLineItemModel> LineItems { get; set; } = [];
-}
-
-public sealed class OrderLineItemModel
-{
-    public string Sku { get; set; } = default!;
-    public string Description { get; set; } = default!;
-    public decimal Quantity { get; set; }
-    public decimal UnitPrice { get; set; }
-    public decimal Total { get; set; }
-}
-```
-
-Novice note:
-Keep the business model focused on your application data. Do not mix concrete renderer objects or rendering concerns into it.
-
-### A.3 Step 2: define the custom blocks
-
-The template should stay readable, so we introduce two custom blocks:
-
-- `orderSummary` for the header-like metadata area
-- `orderLineItems` for the tabular lines and totals
-
-```csharp
-using BridgingIT.DevKit.Application.Templating.Schema;
-
-namespace MyProject.Orders.Documents.Blocks;
-
-public sealed class OrderSummaryBlock : IBlock
-{
-    public string Name => "orderSummary";
-    public string OrderNumber { get; set; } = default!;
-    public string CustomerName { get; set; } = default!;
-    public string CustomerNumber { get; set; } = default!;
-    public string OrderedAt { get; set; } = default!;
-    public string ShippingMethod { get; set; } = default!;
-    public string PaymentMethod { get; set; } = default!;
-}
-
-public sealed class OrderLineItemsBlock : IBlock
-{
-    public string Name => "orderLineItems";
-    public string Currency { get; set; } = "EUR";
-    public bool ShowSku { get; set; } = true;
-    public decimal Subtotal { get; set; }
-    public decimal Tax { get; set; }
-    public decimal GrandTotal { get; set; }
-    public List<OrderLineItemBlockRow> Items { get; set; } = [];
-}
-
-public sealed class OrderLineItemBlockRow
-{
-    public string Sku { get; set; } = default!;
-    public string Description { get; set; } = default!;
-    public decimal Quantity { get; set; }
-    public decimal UnitPrice { get; set; }
-    public decimal Total { get; set; }
-}
-```
-
-Novice note:
-These block classes describe the YAML schema after Scriban rendering. They are not the original business model.
-
-The important separation is:
-
-- `OrderDocumentModel` is the full input model for the whole document
-- `OrderSummaryBlock` and `OrderLineItemsBlock` are smaller fragment DTOs for specific parts of that document
-
-The template is what performs that decomposition. Scriban reads `OrderDocumentModel` and emits block-shaped YAML. YAML deserialization then materializes those emitted fragments into typed block objects.
-
-### A.4 Step 3: implement validators for the custom blocks
-
-Validation keeps bad templates from reaching the renderer.
-
-```csharp
-using BridgingIT.DevKit.Application.Templating;
-using BridgingIT.DevKit.Application.Templating.Schema;
-
-namespace MyProject.Orders.Documents.Blocks;
-
-public sealed class OrderSummaryBlockValidator : BlockValidator<OrderSummaryBlock>
-{
-    public override string Name => "orderSummary";
-
-    public override IEnumerable<TemplateValidationError> Validate(
-        OrderSummaryBlock block,
-        ValidationContext context)
-    {
-        if (string.IsNullOrWhiteSpace(block.OrderNumber))
-        {
-            yield return new TemplateValidationError("Order number is required")
-            {
-                Path = context.Path,
-                Code = "orders.summary.orderNumber.required"
-            };
-        }
-    }
-}
-
-public sealed class OrderLineItemsBlockValidator : BlockValidator<OrderLineItemsBlock>
-{
-    public override string Name => "orderLineItems";
-
-    public override IEnumerable<TemplateValidationError> Validate(
-        OrderLineItemsBlock block,
-        ValidationContext context)
-    {
-        if (block.Items.Count == 0)
-        {
-            yield return new TemplateValidationError("At least one line item is required")
-            {
-                Path = context.Path,
-                Code = "orders.lineItems.empty"
-            };
-        }
-    }
-}
-```
-
-Novice note:
-Put template-related validation here. Keep domain validation in your normal application/domain layer.
-
-### A.5 Step 4: implement the custom block renderers
-
-Each renderer family translates the same block into its own target format.
-
-The example below is intentionally simple. It shows one block rendered by `pdf`, `html`, and `text`, and one block that only has a `pdf` implementation.
-
-```csharp
-using BridgingIT.DevKit.Application.Templating;
-using BridgingIT.DevKit.Application.Templating.Schema;
-using HtmlTags;
-
-namespace MyProject.Orders.Documents.Blocks;
-
-public sealed class OrderSummaryPdfBlockRenderer
-    : BlockRenderer<OrderSummaryBlock, MigraDocSectionTarget>
-{
-    public override string Renderer => "pdf";
-    public override string BlockName => "orderSummary";
-
-    public override Task RenderAsync(
-        OrderSummaryBlock block,
-        MigraDocSectionTarget target,
-        BlockRenderContext context,
-        CancellationToken cancellationToken = default)
-    {
-        target.Section.AddParagraph($"Order {block.OrderNumber}", "Heading2");
-        target.Section.AddParagraph($"Customer: {block.CustomerName} ({block.CustomerNumber})");
-        target.Section.AddParagraph($"Ordered: {block.OrderedAt}");
-        target.Section.AddParagraph($"Shipping: {block.ShippingMethod}");
-        target.Section.AddParagraph($"Payment: {block.PaymentMethod}");
-        target.Section.AddParagraph();
-
-        return Task.CompletedTask;
-    }
-}
-
-public sealed class OrderSummaryHtmlBlockRenderer
-    : BlockRenderer<OrderSummaryBlock, HtmlRenderTarget>
-{
-    public override string Renderer => "html";
-    public override string BlockName => "orderSummary";
-
-    public override Task RenderAsync(
-        OrderSummaryBlock block,
-        HtmlRenderTarget target,
-        BlockRenderContext context,
-        CancellationToken cancellationToken = default)
-    {
-        var section = new HtmlTag("section").AddClass("order-summary");
-        section.Append(new HtmlTag("h2").Text($"Order {block.OrderNumber}"));
-        section.Append(new HtmlTag("p").Text($"Customer: {block.CustomerName} ({block.CustomerNumber})"));
-        section.Append(new HtmlTag("p").Text($"Ordered: {block.OrderedAt}"));
-        section.Append(new HtmlTag("p").Text($"Shipping: {block.ShippingMethod}"));
-        section.Append(new HtmlTag("p").Text($"Payment: {block.PaymentMethod}"));
-
-        target.Root.Append(section);
-
-        return Task.CompletedTask;
-    }
-}
-
-public sealed class OrderSummaryTextBlockRenderer
-    : BlockRenderer<OrderSummaryBlock, TextRenderTarget>
-{
-    public override string Renderer => "text";
-    public override string BlockName => "orderSummary";
-
-    public override Task RenderAsync(
-        OrderSummaryBlock block,
-        TextRenderTarget target,
-        BlockRenderContext context,
-        CancellationToken cancellationToken = default)
-    {
-        target.WriteLine($"Order {block.OrderNumber}");
-        target.WriteLine($"Customer: {block.CustomerName} ({block.CustomerNumber})");
-        target.WriteLine($"Ordered: {block.OrderedAt}");
-        target.WriteLine($"Shipping: {block.ShippingMethod}");
-        target.WriteLine($"Payment: {block.PaymentMethod}");
-        target.WriteLine(string.Empty);
-
-        return Task.CompletedTask;
-    }
-}
-
-public sealed class OrderLineItemsPdfBlockRenderer
-    : BlockRenderer<OrderLineItemsBlock, MigraDocSectionTarget>
-{
-    public override string Renderer => "pdf";
-    public override string BlockName => "orderLineItems";
-
-    public override Task RenderAsync(
-        OrderLineItemsBlock block,
-        MigraDocSectionTarget target,
-        BlockRenderContext context,
-        CancellationToken cancellationToken = default)
-    {
-        // Same PDF table rendering as before, omitted here for brevity.
-        target.Section.AddParagraph($"Grand total: {block.GrandTotal:0.00} {block.Currency}", "Heading3");
-
-        return Task.CompletedTask;
-    }
-}
-```
-
-Novice note:
-The block is defined once in YAML, but it can have multiple renderers. Here `orderSummary` supports `pdf`, `html`, and `text`, while `orderLineItems` only supports `pdf`. If `html` or `text` is selected for `orderLineItems`, the chosen renderer should emit a visible placeholder plus diagnostics.
-
-The same rule applies to built-in blocks. A YAML entry like `type: paragraph` does not bypass the registry. It is resolved to `ParagraphBlock`, and then the selected renderer family uses its own built-in block renderer such as `ParagraphPdfBlockRenderer`, `ParagraphHtmlBlockRenderer`, or `ParagraphTextBlockRenderer`. For the HTML family, those renderers should preferably append typed `HtmlTag` nodes rather than writing raw strings.
-
-The casts now live only inside the generic adapter base classes `BlockRenderer<TBlock, TTarget>` and `BlockValidator<TBlock>`. Normal extension implementations stay strongly typed.
-
-### A.6 Step 5: use global block discovery in startup
-
-Block discovery should work like this:
-
-- built-in blocks follow the same pattern, for example `ParagraphBlock` plus `ParagraphPdfBlockRenderer`, `ParagraphHtmlBlockRenderer`, and `ParagraphTextBlockRenderer`
-- built-in validators may follow the same pattern, for example `ParagraphBlockValidator : BlockValidator<ParagraphBlock>`
-- `OrderSummaryBlock` exposes `Name = "orderSummary"`
-- `OrderSummaryPdfBlockRenderer` exposes `Renderer = "pdf"` and `BlockName = "orderSummary"`
-- `OrderSummaryHtmlBlockRenderer` exposes `Renderer = "html"` and `BlockName = "orderSummary"`
-- `OrderSummaryTextBlockRenderer` exposes `Renderer = "text"` and `BlockName = "orderSummary"`
-- `OrderSummaryBlockValidator` exposes `Name = "orderSummary"` if validation is needed
-- the feature setup wires them together automatically by block name and renderer family (see `.AddBlocks()`)
-
-Validators stay optional. If no validator is discovered for a block name, the block is still registered and renderable.
-
-### A.7 Step 6: create the Scriban YAML template
-
-The resolver loads candidate templates, then the template cache reads the static `metadata` section and indexes the template by that metadata. A template can optionally declare `tenantId` when it should only apply to one tenant.
-
-Example template:
-
-```yaml
-metadata:
-  name: order-confirmation
-  tenantId: tenant-42
-  module: Sales
-  culture: en-US
-
-document:
-  version: 1
-  templateType: orderConfirmation
-
-  styles:
-    - name: Heading1
-      font:
-        size: 18
-        bold: true
-    - name: Heading2
-      font:
-        size: 12
-        bold: true
-    - name: Heading3
-      font:
-        size: 11
-        bold: true
-
-  sections:
-    - body:
-        - type: paragraph # built in block
-          style: Heading1
-          text: "Order confirmation"
-
-        - type: paragraph # built in block
-          text: "Thank you for your purchase, {{ model.customerName }}."
-
-        - type: orderSummary # custom block name
-          orderNumber: "{{ model.orderNumber }}"
-          customerName: "{{ model.customerName }}"
-          customerNumber: "{{ model.customerNumber }}"
-          orderedAt: "{{ format_date model.orderedAtUtc 'yyyy-MM-dd' }}"
-          shippingMethod: "{{ model.shippingMethod }}"
-          paymentMethod: "{{ model.paymentMethod }}"
-
-        - type: orderLineItems # custom block name
-          currency: "{{ model.currency }}"
-          showSku: true
-          subtotal: {{ model.subtotal }}
-          tax: {{ model.tax }}
-          grandTotal: {{ model.grandTotal }}
-          items:
-            {{ for item in model.lineItems }}
-            - sku: "{{ item.sku }}"
-              description: "{{ item.description }}"
-              quantity: {{ item.quantity }}
-              unitPrice: {{ item.unitPrice }}
-              total: {{ item.total }}
-            {{ end }}
-
-        - type: paragraph # built in block
-          text: "Generated by {{ globals.generatedBy }}."
-```
-
-Novice note:
-The `metadata` section must stay static. The `document` section uses normal YAML plus Scriban expressions. The custom part is the `type` value for each entry, and that value is the registered block name.
-
-This YAML is the decomposition step. The template takes the full `OrderDocumentModel` and projects it into smaller document fragments. For example, the `orderSummary` entry materializes into an `OrderSummaryBlock`, and the `orderLineItems` entry materializes into an `OrderLineItemsBlock`.
-
-### A.8 Step 7: wire the services in startup
-
-This is the application setup a developer would typically do in `Program.cs`.
-
-```csharp
-builder.Services
-    .AddTemplating(c =>
-    {
-        c.Enabled = true;
-        c.DefaultCulture = "en-US";
-        c.EnableCaching = true;
-        c.EnableValidation = true;
-    })
-    .AddCoreTemplates()
-    .AddBlocks<OrderDocumentAssemblyMarker>()
-    .AddBlocks<SharedSalesDocumentAssemblyMarker>()
-    .AddModelRenderers<SharedSalesDocumentAssemblyMarker>()
-    .AddEmbeddedResourceResolver(
-        typeof(OrderTemplatesAssemblyMarker).Assembly)
-    .AddGlobalsProvider<ProjectTemplateGlobalsProvider>()
-    .AddAssetResolver<ProjectAssetResolver>()
-    .AddRenderer<MigraDocPdfRenderer>()
-    .AddRenderer<ProjectHtmlRenderer>()
-    .AddRenderer<ProjectTextRenderer>();
-```
-
-Novice note:
-The exact renderer type names can differ in the final implementation. The important idea is that each registered renderer exposes a family `Name` such as `pdf`, `html`, or `text` and knows how to traverse the document for that family. The `AddBlocks<TMarker>()` calls are the global discovery setup for all block types, family-specific block renderers, and optional validators found in those assemblies. `AddModelRenderers<TMarker>()` does the same for whole-document model renderers keyed by `(renderer, templateName)`. `AddEmbeddedResourceResolver(assembly)` scans that assembly for embedded `*.yaml.scriban` templates automatically.
-
-### A.9 Step 8: call the engine from an application service
-
-Now the caller does not need to know about YAML, renderer internals, or template lookup details.
-
-```csharp
-using BridgingIT.DevKit.Application.Templating;
-using BridgingIT.DevKit.Common;
-
-namespace MyProject.Orders.Documents;
-
-public sealed class OrderDocumentService
-{
-    private readonly IDocumentTemplateEngine _engine;
-
-    public OrderDocumentService(IDocumentTemplateEngine engine)
-    {
-        _engine = engine;
-    }
-
-    public Task<Result<byte[]>> RenderOrderConfirmationPdfAsync(
-        OrderDocumentModel model,
-        CancellationToken cancellationToken = default)
-    {
-        var context = new TemplateRenderContext
-        {
-            Culture = "en-US",
-            TenantId = "tenant-42",
-            Brand = "default",
-            Module = "Sales",
-            Globals = new Dictionary<string, object?>
-            {
-                ["generatedBy"] = "Orders"
-            }
-        };
-
-        return _engine.RenderPdfAsync(
-            templateName: "order-confirmation",
-            model: model,
-            context: context,
-            cancellationToken: cancellationToken);
-    }
-}
-```
-
-If the render succeeds, `Result<byte[]>.Value` contains the PDF.
-
-If it fails, the caller can inspect:
-
-- `result.Messages`
-- `result.Errors`
-- `result.GetErrors<TemplateValidationError>()`
-- `result.GetError<TemplateNotFoundError>()`
-
-### A.10 Step 9: understand the runtime flow
-
-This Appendix A example uses the normal block-rendered path.
-
-At runtime the sequence is:
-
-1. The application calls `RenderPdfAsync`.
-2. The engine builds a resolution context from `TemplateRenderContext`.
-3. On first use, the template cache loads templates from the configured sources.
-4. The cache parses YAML metadata where needed and indexes templates by name/tenant/module/culture.
-5. The engine resolves the best matching cached template, preferring `TenantId = "tenant-42"` and `Module = "Sales"` and then falling back to non-tenant and global templates.
-6. Scriban renders the cached template using `OrderDocumentModel` and `Globals`.
-7. The rendered YAML wrapper is deserialized and the inner `document` becomes `TemplateDocument`.
-8. The validator checks both standard and custom blocks.
-9. The selected renderer family creates its native target and dispatches block renderers by `(renderer, blockName)`.
-10. The renderer emits the final artifact and diagnostics, for example PDF bytes, HTML, or plain text.
-11. The engine returns `Result<T>` in the shape of the selected convenience API or `RenderedArtifactResult`.
-
-If another loaded template has the same full logical key, the later-loaded one overwrites the earlier cached entry.
-
-The assembly point that is easy to miss is that all blocks end up in the same `TemplateDocument`, and the selected renderer family appends them in order into its own native target.
-
-```mermaid
-flowchart TD
-    A[OrderDocumentModel] --> B[Scriban template]
-    B --> C[Rendered YAML]
-    C --> D[TemplateDocument]
-
-    D --> E[TemplateSection Body]
-    E --> F1["Block 1: paragraph"]
-    E --> F2["Block 2: orderSummary"]
-    E --> F3["Block 3: orderLineItems"]
-    E --> F4["Block 4: paragraph"]
-
-    F1 --> G[Block registry finds renderer]
-    F2 --> G
-    F3 --> G
-    F4 --> G
-
-    G --> H1["pdf target"]
-    G --> H2["html target"]
-    G --> H3["text target"]
-
-    H1 --> I1[Final PDF artifact]
-    H2 --> I2[Final HTML artifact]
-    H3 --> I3[Final text artifact]
-```
-
-Read this diagram from top to bottom:
-
-- the business model does not render the final output directly
-- the template first becomes one `TemplateDocument`
-- that document contains one or more ordered block lists
-- each block is rendered in sequence into the selected renderer family's native target
-- the final PDF, HTML, or text artifact is the accumulated result of those block renderers
-
-This is why the setup feels larger than a plain string template:
-
-- the model describes business data
-- the YAML template describes document structure
-- the blocks describe reusable document parts
-- the block renderers translate those parts into the selected renderer family
-
-Most of the complexity is one-time setup. After the blocks, templates, and resolver setup exist, normal application code usually only calls the engine with a model and context.
-
-### A.11 Step 10: beginner checklist
-
-If a novice developer wants to add another document like `delivery-note`, the checklist is:
-
-1. Create or reuse a business model.
-2. Decide whether standard blocks are enough.
-3. If yes, continue with blocks as shown in Appendix A.
-4. If no, jump to Appendix B and use the code-first model template path.
-5. For the block path, add custom block classes as needed.
-6. Add optional validators for those blocks.
-7. Add block renderers for each renderer family that should support those blocks.
-8. Ensure the relevant assemblies are included in block discovery and resolver setup.
-9. Add the Scriban YAML template as an embedded resource or another resolver source.
-10. Call the engine with the correct `templateName`, `renderer`, and optional `module`.
-
-This is the main mental model for the block path:
-the business model feeds Scriban, Scriban produces YAML, YAML becomes `TemplateDocument`, custom blocks extend that document, and the selected renderer family turns it into the final artifact.
-
-## Appendix B. Model-renderer walkthrough for a novice developer
-
-Appendix B shows the simpler code-first model path where a template resolves normally, but the engine does not build blocks or a `TemplateDocument`. Instead, it picks one whole-document model renderer by `(renderer, templateName)`.
-
-This is the right choice when:
-
-- the output is naturally renderer-native, such as `excel`
-- the document is mostly one big family-specific layout
-- forcing the shape into blocks would feel artificial or would lose useful renderer features
-
-This is not the right choice when:
-
-- standard blocks already express the document well
-- you want the same document structure reused across `pdf`, `html`, and `text`
-- you want normal block validators and block degradation behavior
-
-### B.1 The mental model
-
-Appendix A mental model:
-
-- model -> Scriban -> YAML blocks -> `TemplateDocument` -> block renderers -> final artifact
-
-Appendix B mental model:
-
-- model -> template resolution -> model renderer -> final artifact
-
-Shared pieces still stay the same:
-
-- template lookup by `name + tenantId + module + culture`
-- globals
-- model behaviors
-- artifact behaviors
-- diagnostics
-
-Skipped pieces in the model path:
-
-- Scriban rendering
-- YAML-to-`TemplateDocument` deserialization
-- document behaviors
-- block validation
-- block renderer dispatch
-
-### B.2 Example use case
-
-Assume a novice developer needs an Excel export for orders.
-
-That export:
-
-- has one worksheet with tabular rows
-- wants native Excel cells and formats
-- does not need reusable paragraph/table/image blocks
-
-That is a good candidate for a code-first template registration with `RenderMode = Model`.
-
-### B.3 Example template registration
-
-The template still participates in normal logical resolution, but it is registered directly in `AddTemplating(...)` instead of being defined in a YAML wrapper:
-
-```csharp
-builder.Services
-    .AddTemplating(c =>
-    {
-        c.Enabled = true;
-        c.DefaultCulture = "en-US";
-        c.EnableCaching = true;
-        c.EnableValidation = true;
-        c.RegisterModelTemplate(
-            name: "order-export",
-            module: "Sales");
-    })
-    .AddModelRenderers<OrderExportsAssemblyMarker>();
-```
-
-Novice note:
-The important values are still the logical identity plus execution mode:
-
-- `name: order-export`
-- `module: Sales`
-- `culture: chosen at render time` in the renderer, not in registration. The renderer reads it from `RenderContext` and falls back to the template's `culture` if needed, and then to the engine default culture.
-- `renderMode: model`
-
-The difference is that those values now live in code instead of in YAML. This registration is culture-neutral. The shared renderer reads the requested culture from the render context and loads localized labels from resource files.
-
-### B.4 Example business model
-
-```csharp
-public sealed class OrderExportModel
-{
-    public string TenantId { get; init; } = default!;
-    public string Currency { get; init; } = "EUR";
-    public List<OrderExportRowModel> Rows { get; init; } = [];
-}
-
-public sealed class OrderExportRowModel
-{
-    public string OrderNumber { get; init; } = default!;
-    public string CustomerName { get; init; } = default!;
-    public decimal TotalAmount { get; init; }
-}
-```
-
-### B.4a Package reference
-
-If the renderer lives in its own project, reference `ClosedXML`:
-
-```xml
-<ItemGroup>
-  <PackageReference Include="ClosedXML" />
-</ItemGroup>
-```
-
-In this repo, the package version is already managed centrally in `Directory.Packages.props`.
-
-### B.4b Fictional resource files
-
-Assume the Excel project also contains these resource files:
-
-- `Resources/OrderExportExcelResources.resx`
-- `Resources/OrderExportExcelResources.de-DE.resx`
-
-With generated strongly typed accessors such as:
-
-- `WorksheetName`
-- `OrderNumberHeader`
-- `CustomerHeader`
-- `TotalAmountHeader`
-- `GrandTotalLabel`
-
-### B.5 Example model renderer
-
-```csharp
-using System;
-using System.IO;
-using System.Globalization;
-using BridgingIT.DevKit.Common;
-using ClosedXML.Excel;
-using BridgingIT.DevKit.Application.Templating.Excel.Resources;
-
-namespace BridgingIT.DevKit.Application.Templating.Excel;
-
-public sealed class OrderExportExcelRenderer
-    : IDocumentModelRenderer<OrderExportModel>
-{
-    public string Renderer => "excel";
-    public string TemplateName => "order-export";
-
-    public Task<Result<RenderedArtifactResult>> RenderAsync(
-        OrderExportModel model,
-        ModelRenderContext context,
-        CancellationToken cancellationToken = default)
-    {
-        var cultureName = context.RenderContext.Culture ?? context.Template.Culture ?? "en-US";
-        var culture = CultureInfo.GetCultureInfo(cultureName);
-        var worksheetName = OrderExportExcelResources.ResourceManager.GetString(
-                nameof(OrderExportExcelResources.WorksheetName), culture)
-            ?? "Orders";
-        var orderNumberLabel = OrderExportExcelResources.ResourceManager.GetString(
-                nameof(OrderExportExcelResources.OrderNumberHeader), culture)
-            ?? "Order Number";
-        var customerLabel = OrderExportExcelResources.ResourceManager.GetString(
-                nameof(OrderExportExcelResources.CustomerHeader), culture)
-            ?? "Customer";
-        var totalAmountLabel = OrderExportExcelResources.ResourceManager.GetString(
-                nameof(OrderExportExcelResources.TotalAmountHeader), culture)
-            ?? "Total Amount";
-        var grandTotalLabel = OrderExportExcelResources.ResourceManager.GetString(
-                nameof(OrderExportExcelResources.GrandTotalLabel), culture)
-            ?? "Grand Total";
-        var amountFormat = model.Currency == "USD"
-            ? "$#,##0.00"
-            : culture.Name == "de-DE" ? "#.##0,00" : "#,##0.00";
-
-        using var workbook = new XLWorkbook();
-        var worksheet = workbook.Worksheets.Add(worksheetName);
-
-        worksheet.Cell(1, 1).Value = orderNumberLabel;
-        worksheet.Cell(1, 2).Value = customerLabel;
-        worksheet.Cell(1, 3).Value = totalAmountLabel;
-
-        var headerRange = worksheet.Range(1, 1, 1, 3);
-        headerRange.Style.Font.SetBold(true);
-        headerRange.Style.Fill.BackgroundColor = XLColor.LightGray;
-
-        var currentRow = 2;
-        foreach (var row in model.Rows)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-
-            worksheet.Cell(currentRow, 1).Value = row.OrderNumber;
-            worksheet.Cell(currentRow, 2).Value = row.CustomerName;
-            worksheet.Cell(currentRow, 3).Value = row.TotalAmount;
-            worksheet.Cell(currentRow, 3).Style.NumberFormat.Format = amountFormat;
-
-            currentRow++;
-        }
-
-        var lastDataRow = currentRow - 1;
-        var totalRow = currentRow;
-
-        worksheet.Cell(totalRow, 1).Value = grandTotalLabel;
-        worksheet.Cell(totalRow, 1).Style.Font.SetBold(true);
-
-        if (model.Rows.Count > 0)
-        {
-            worksheet.Cell(totalRow, 3).FormulaA1 = $"=SUM(C2:C{lastDataRow})";
-
-            var dataRange = worksheet.Range(1, 1, lastDataRow, 3);
-            dataRange.CreateTable("Orders");
-        }
-        else
-        {
-            worksheet.Cell(totalRow, 3).Value = 0m;
-        }
-
-        worksheet.Cell(totalRow, 3).Style.Font.SetBold(true);
-        worksheet.Cell(totalRow, 3).Style.NumberFormat.Format = amountFormat;
-
-        worksheet.SheetView.FreezeRows(1);
-        worksheet.Columns(1, 3).AdjustToContents();
-
-        context.Diagnostics.RenderDiagnostics.Add(
-            new TemplateRenderDiagnostic
-            {
-                Code = "templating.model.closedxml.workbook_created",
-                Message = $"Created ClosedXML workbook for culture '{culture.Name}' with {model.Rows.Count} order rows.",
-                Renderer = Renderer
-            });
-
-        using var stream = new MemoryStream();
-        workbook.SaveAs(stream);
-        var bytes = stream.ToArray();
-
-        return Task.FromResult(
-            Result<RenderedArtifactResult>.Success(
-                new RenderedArtifactResult
-                {
-                    Renderer = Renderer,
-                    ContentType = ContentType.XLSX,
-                    Content = bytes,
-                    ExecutionMode = TemplateExecutionMode.Model,
-                    ModelRenderer = nameof(OrderExportExcelRenderer),
-                    Diagnostics = context.Diagnostics
-                }));
-    }
-
-    Task<Result<RenderedArtifactResult>> IDocumentModelRenderer.RenderAsync(
-        object model,
-        ModelRenderContext context,
-        CancellationToken cancellationToken)
-    {
-        if (model is not OrderExportModel typedModel)
-        {
-            return Task.FromResult(
-                Result<RenderedArtifactResult>.Failure(
-                    new TemplateRenderError(
-                        "Model type mismatch for model renderer 'excel/order-export'.",
-                        Renderer)));
-        }
-
-        return RenderAsync(typedModel, context, cancellationToken);
-    }
-}
-```
-
-Novice note:
-This renderer does not receive a `TemplateDocument`. It receives the original `OrderExportModel` directly and builds a real `.xlsx` workbook with `ClosedXML`. The same renderer handles both `en-US` and `de-DE` by reading `context.RenderContext.Culture` and loading localized labels from `OrderExportExcelResources.resx` and `OrderExportExcelResources.de-DE.resx`.
-
-### B.6 Optional validator
-
-If the model path needs validation, add a validator for the same `(renderer, templateName)` pair:
-
-```csharp
-public sealed class OrderExportExcelValidator
-    : IModelRendererValidator<OrderExportModel>
-{
-    public string Renderer => "excel";
-    public string TemplateName => "order-export";
-
-    public IReadOnlyList<TemplateValidationError> Validate(
-        OrderExportModel model,
-        ModelRenderContext context)
-    {
-        var errors = new List<TemplateValidationError>();
-
-        if (model.Rows.Count == 0)
-        {
-            errors.Add(new TemplateValidationError
-            {
-                Path = "model.rows",
-                Code = "templating.model.empty_rows",
-                Message = "At least one export row is required."
-            });
-        }
-
-        return errors;
-    }
-
-    IReadOnlyList<TemplateValidationError> IModelRendererValidator.Validate(
-        object model,
-        ModelRenderContext context)
-    {
-        if (model is OrderExportModel typedModel)
-        {
-            return Validate(typedModel, context);
-        }
-
-        return new List<TemplateValidationError>
-        {
-            new()
-            {
-                Path = "model",
-                Code = "templating.model.invalid_type",
-                Message = "The model type does not match the validator."
-            }
-        };
-    }
-}
-```
-
-### B.7 Registration
-
-```csharp
-builder.Services
-    .AddTemplating(c =>
-    {
-        c.Enabled = true;
-        c.DefaultCulture = "en-US";
-        c.EnableCaching = true;
-        c.EnableValidation = true;
-        c.RegisterModelTemplate(
-            name: "order-export",
-            module: "Sales");
-    })
-    .AddModelRenderers<OrderExportsAssemblyMarker>();
-```
-
-Novice note:
-`RegisterModelTemplate(...)` defines one culture-neutral model template. `AddModelRenderers<TMarker>()` still discovers only one renderer implementation for `("excel", "order-export")`, and that renderer is responsible for localization.
-
-### B.8 Calling the engine
-
-Rendering:
-
-```csharp
-var resultEn = await engine.RenderAsync(
-    templateName: "order-export",
-    renderer: "excel",
-    model: exportModel,
-    context: new TemplateRenderContext
-    {
-        Module = "Sales",
-        Culture = "en-US"
-    },
-    cancellationToken: cancellationToken);
-```
-
-German rendering uses the same renderer with a different culture:
-
-```csharp
-var resultDe = await engine.RenderAsync(
-    templateName: "order-export",
-    renderer: "excel",
-    model: exportModel,
-    context: new TemplateRenderContext
-    {
-        Module = "Sales",
-        Culture = "de-DE"
-    },
-    cancellationToken: cancellationToken);
-```
-
-Renderer-aware validation:
-
-```csharp
-var validation = await engine.ValidateAsync(
-    templateName: "order-export",
-    renderer: "excel",
-    model: exportModel,
-    context: new TemplateRenderContext
-    {
-        Module = "Sales",
-        Culture = "en-US"
-    },
-    cancellationToken: cancellationToken);
-```
-
-### B.9 Runtime flow
-
-At runtime the sequence is:
-
-1. The application calls `RenderAsync(..., renderer: "excel", ...)`.
-2. On first use, the cache loads both resolver-backed templates and code-first template registrations.
-3. The engine resolves the `order-export` template through the normal cache lookup rules.
-4. The engine reads the configured execution descriptor `RenderMode = Model`.
-5. The engine merges globals and runs model behaviors.
-6. The engine resolves the model renderer with key `("excel", "order-export")`.
-7. The engine optionally runs the matching model-renderer validator.
-8. The shared model renderer reads the requested culture from the render context, loads the matching resources, and builds the localized workbook directly from the input model.
-9. Artifact behaviors run.
-10. The engine returns the final artifact and diagnostics.
-
-### B.10 Beginner checklist
-
-If a novice developer wants to add a model-rendered document:
-
-1. Confirm that the document does not fit the shared block model well.
-2. Create the business model.
-3. Register the model template in `AddTemplating(...)` with a stable name.
-4. Implement one `IDocumentModelRenderer<TModel>` for the target renderer family.
-5. If the renderer is shared across cultures, load translated labels from resource files and read the requested culture from `TemplateRenderContext`.
-6. Register discovery with `AddModelRenderers<TMarker>()`.
-7. Call `RenderAsync(templateName, renderer, model, context)`.
-8. Add an optional `IModelRendererValidator<TModel>` and use the renderer-aware `ValidateAsync(templateName, renderer, model, context)` overload when you want validation before rendering.
-
-This is the main mental model:
-the template still helps the engine find the correct document definition, but the actual output is produced directly by one renderer-native model renderer instead of by YAML blocks.
-
-### B.11 Advanced option: separate renderers per culture
-
-If you truly need different renderer implementations per culture, the current simple key of `(renderer, templateName)` is not enough. In that case, the design should add an optional culture qualifier to the model-renderer contract and registry.
-
-One reasonable shape is:
-
-```csharp
-public interface ICultureAwareDocumentModelRenderer : IDocumentModelRenderer
-{
-    string? Culture { get; }
-}
-```
-
-With discovery and lookup rules changed to:
-
-- prefer an exact `(renderer, templateName, culture)` match
-- fall back to a neutral renderer where `Culture = null`
-- fail fast on duplicate exact matches
-
-Example:
-
-```csharp
-public sealed class OrderExportExcelRendererEnUs
-    : IDocumentModelRenderer<OrderExportModel>, ICultureAwareDocumentModelRenderer
-{
-    public string Renderer => "excel";
-    public string TemplateName => "order-export";
-    public string? Culture => "en-US";
-}
-
-public sealed class OrderExportExcelRendererDeDe
-    : IDocumentModelRenderer<OrderExportModel>, ICultureAwareDocumentModelRenderer
-{
-    public string Renderer => "excel";
-    public string TemplateName => "order-export";
-    public string? Culture => "de-DE";
-}
-```
-
-Recommendation:
-
-- use one shared renderer plus resource files for normal localization
-- only introduce culture-specific renderer classes when the rendering logic itself diverges substantially between cultures
+Usage-oriented walkthroughs and appendices have been moved to [usage-application-templating.md](usage-application-templating.md).

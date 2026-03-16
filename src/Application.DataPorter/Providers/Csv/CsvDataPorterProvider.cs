@@ -217,14 +217,24 @@ public sealed class CsvDataPorterProvider(
             try
             {
                 var rowValues = this.ReadRowValues(csv, plan.Columns);
-                var item = this.GetOrCreateItem(rowValues, plan, importConfiguration, groupedResults, results);
                 var rowErrors = new List<ImportRowError>();
-                var success = this.MapRow(rowValues, item, plan, importConfiguration, rowNumber, rowErrors);
+                var pendingItem = this.GetOrCreateItem(rowValues, plan, importConfiguration, groupedResults);
+                var success = this.MapRow(rowValues, pendingItem.Item, plan, importConfiguration, rowNumber, rowErrors);
 
                 if (!success && importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport)
                 {
                     errors.AddRange(rowErrors);
                     break;
+                }
+
+                if (success && pendingItem.IsNew)
+                {
+                    if (pendingItem.Key is not null)
+                    {
+                        groupedResults[pendingItem.Key] = pendingItem.Item;
+                    }
+
+                    results.Add(pendingItem.Item);
                 }
 
                 errors.AddRange(rowErrors);
@@ -266,20 +276,15 @@ public sealed class CsvDataPorterProvider(
     {
         var result = await this.ImportAsync<TTarget>(inputStream, importConfiguration, cancellationToken);
 
-        if (result.Errors.Count > 0 && result.Data.Count == 0)
-        {
-            foreach (var error in result.Errors)
-            {
-                yield return Result<TTarget>.Failure()
-                    .WithError(new ImportValidationError(error.RowNumber, error.Column, error.Message));
-            }
-
-            yield break;
-        }
-
         foreach (var item in result.Data)
         {
             yield return Result<TTarget>.Success(item);
+        }
+
+        foreach (var error in result.Errors)
+        {
+            yield return Result<TTarget>.Failure()
+                .WithError(new ImportValidationError(error.RowNumber, error.Column, error.Message));
         }
     }
 
@@ -560,12 +565,11 @@ public sealed class CsvDataPorterProvider(
         return values;
     }
 
-    private TTarget GetOrCreateItem<TTarget>(
+    private PendingCsvItem<TTarget> GetOrCreateItem<TTarget>(
         IReadOnlyDictionary<string, string> rowValues,
         CsvImportPlan plan,
         ImportConfiguration config,
-        IDictionary<string, TTarget> groupedResults,
-        ICollection<TTarget> results)
+        IDictionary<string, TTarget> groupedResults)
         where TTarget : class, new()
     {
         if (plan.CollectionProperty is null)
@@ -573,22 +577,19 @@ public sealed class CsvDataPorterProvider(
             var item = config.Factory is not null
                 ? (TTarget)config.Factory()
                 : new TTarget();
-            results.Add(item);
-            return item;
+            return new PendingCsvItem<TTarget>(item, null, true);
         }
 
         var key = this.GetGroupingKey(rowValues, plan);
         if (groupedResults.TryGetValue(key, out var existing))
         {
-            return existing;
+            return new PendingCsvItem<TTarget>(existing, key, false);
         }
 
         var created = config.Factory is not null
             ? (TTarget)config.Factory()
             : new TTarget();
-        groupedResults[key] = created;
-        results.Add(created);
-        return created;
+        return new PendingCsvItem<TTarget>(created, key, true);
     }
 
     private string GetGroupingKey(IReadOnlyDictionary<string, string> rowValues, CsvImportPlan plan)
@@ -616,6 +617,7 @@ public sealed class CsvDataPorterProvider(
         var hasErrors = false;
         var collectionColumns = plan.Columns.Where(column => column.IsCollection).ToList();
         var collectionItem = this.CreateCollectionItem(plan.CollectionProperty, collectionColumns, rowValues);
+        var assignments = new List<Action>();
 
         foreach (var column in plan.Columns)
         {
@@ -672,11 +674,11 @@ public sealed class CsvDataPorterProvider(
                         continue;
                     }
 
-                    this.SetNestedValue(collectionItem, [.. column.PropertyPath.Skip(1)], convertedValue);
+                    assignments.Add(() => this.SetNestedValue(collectionItem, [.. column.PropertyPath.Skip(1)], convertedValue));
                 }
                 else
                 {
-                    this.SetNestedValue(item, column.PropertyPath, convertedValue);
+                    assignments.Add(() => this.SetNestedValue(item, column.PropertyPath, convertedValue));
                 }
             }
             catch (Exception ex)
@@ -693,12 +695,22 @@ public sealed class CsvDataPorterProvider(
             }
         }
 
+        if (hasErrors)
+        {
+            return false;
+        }
+
+        foreach (var assignment in assignments)
+        {
+            assignment();
+        }
+
         if (collectionItem is not null)
         {
             this.AddCollectionItem(item, plan.CollectionProperty, collectionItem);
         }
 
-        return !(hasErrors && config.ValidationBehavior == ImportValidationBehavior.SkipRow);
+        return true;
     }
 
     private object ConvertImportValue(CsvImportColumn column, string rawValue)
@@ -939,4 +951,7 @@ public sealed class CsvDataPorterProvider(
     }
 
     private sealed record CsvImportColumn(ImportColumnConfiguration SourceColumn, string HeaderName, PropertyInfo[] PropertyPath, bool IsCollection);
+
+    private sealed record PendingCsvItem<TTarget>(TTarget Item, string Key, bool IsNew)
+        where TTarget : class;
 }

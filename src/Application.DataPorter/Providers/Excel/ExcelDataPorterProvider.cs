@@ -329,16 +329,20 @@ public sealed class ExcelDataPorterProvider(
 
             try
             {
-                var item = this.MapRow<TTarget>(row, columnMap, importConfiguration, rowNum, errors);
+                var rowErrors = new List<ImportRowError>();
+                var item = this.MapRow<TTarget>(row, columnMap, importConfiguration, rowNum, rowErrors);
 
                 if (item is not null)
                 {
                     results.Add(item);
                 }
-                else if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport)
+                else if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport && rowErrors.Count > 0)
                 {
+                    errors.AddRange(rowErrors);
                     break;
                 }
+
+                errors.AddRange(rowErrors);
             }
             catch (Exception ex)
             {
@@ -601,7 +605,7 @@ public sealed class ExcelDataPorterProvider(
 
         foreach (var column in config.Columns)
         {
-            if (column.Ignore)
+            if (column.Ignore || this.ShouldIgnoreNestedColumn(column))
             {
                 continue;
             }
@@ -643,6 +647,12 @@ public sealed class ExcelDataPorterProvider(
         return new HeaderMappingResult(map, missingColumns);
     }
 
+    private bool ShouldIgnoreNestedColumn(ImportColumnConfiguration column)
+    {
+        return column.Converter is null
+            && column.PropertyInfo?.PropertyType.SupportsStructuredValue() == true;
+    }
+
     private List<ImportRowError> CreateMissingColumnErrors(
         IReadOnlyList<ImportColumnConfiguration> missingColumns,
         int headerRowIndex)
@@ -671,6 +681,7 @@ public sealed class ExcelDataPorterProvider(
             : new TTarget();
 
         var hasErrors = false;
+        var assignments = new List<Action>();
 
         foreach (var (columnConfig, cellIndex) in columnMap)
         {
@@ -719,7 +730,7 @@ public sealed class ExcelDataPorterProvider(
 
                 // Convert and set value
                 var convertedValue = columnConfig.ConvertValue(rawValue);
-                columnConfig.SetValue(item, convertedValue);
+                assignments.Add(() => columnConfig.SetValue(item, convertedValue));
             }
             catch (Exception ex)
             {
@@ -735,9 +746,17 @@ public sealed class ExcelDataPorterProvider(
             }
         }
 
-        return hasErrors && config.ValidationBehavior == ImportValidationBehavior.SkipRow
-            ? null
-            : item;
+        if (hasErrors)
+        {
+            return null;
+        }
+
+        foreach (var assignment in assignments)
+        {
+            assignment();
+        }
+
+        return item;
     }
 
     private void SetCellValue(

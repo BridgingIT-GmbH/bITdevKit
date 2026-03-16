@@ -156,15 +156,19 @@ public sealed class XmlDataPorterProvider(
 
                 try
                 {
-                    var item = this.MapElement<TTarget>(element, importConfiguration, rowNumber, errors);
+                    var rowErrors = new List<ImportRowError>();
+                    var item = this.MapElement<TTarget>(element, importConfiguration, rowNumber, rowErrors);
                     if (item is not null)
                     {
                         results.Add(item);
                     }
-                    else if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport && errors.Count > 0)
+                    else if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport && rowErrors.Count > 0)
                     {
+                        errors.AddRange(rowErrors);
                         break;
                     }
+
+                    errors.AddRange(rowErrors);
                 }
                 catch (Exception ex)
                 {
@@ -446,6 +450,7 @@ public sealed class XmlDataPorterProvider(
             : new TTarget();
 
         var hasErrors = false;
+        var assignments = new List<Action>();
 
         foreach (var column in config.Columns)
         {
@@ -518,7 +523,7 @@ public sealed class XmlDataPorterProvider(
                     convertedValue = column.ConvertValue(childElement?.Value ?? attributeValue);
                 }
 
-                column.SetValue(item, convertedValue);
+                assignments.Add(() => column.SetValue(item, convertedValue));
             }
             catch (Exception ex)
             {
@@ -534,9 +539,17 @@ public sealed class XmlDataPorterProvider(
             }
         }
 
-        return hasErrors && config.ValidationBehavior == ImportValidationBehavior.SkipRow
-            ? null
-            : item;
+        if (hasErrors)
+        {
+            return null;
+        }
+
+        foreach (var assignment in assignments)
+        {
+            assignment();
+        }
+
+        return item;
     }
 
     private string SanitizeElementName(string name)

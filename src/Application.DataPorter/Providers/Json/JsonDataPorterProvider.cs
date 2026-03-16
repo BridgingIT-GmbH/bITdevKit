@@ -146,15 +146,19 @@ public sealed class JsonDataPorterProvider(
 
                 try
                 {
-                    var item = this.MapRow<TTarget>(row, importConfiguration, rowNumber, errors);
+                    var rowErrors = new List<ImportRowError>();
+                    var item = this.MapRow<TTarget>(row, importConfiguration, rowNumber, rowErrors);
                     if (item is not null)
                     {
                         results.Add(item);
                     }
-                    else if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport && errors.Count > 0)
+                    else if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport && rowErrors.Count > 0)
                     {
+                        errors.AddRange(rowErrors);
                         break;
                     }
+
+                    errors.AddRange(rowErrors);
                 }
                 catch (Exception ex)
                 {
@@ -419,6 +423,7 @@ public sealed class JsonDataPorterProvider(
             : new TTarget();
 
         var hasErrors = false;
+        var assignments = new List<Action>();
 
         foreach (var column in config.Columns)
         {
@@ -478,7 +483,7 @@ public sealed class JsonDataPorterProvider(
 
                 // Convert and set value
                 var convertedValue = this.ConvertJsonElement(jsonValue, column);
-                column.SetValue(item, convertedValue);
+                assignments.Add(() => column.SetValue(item, convertedValue));
             }
             catch (Exception ex)
             {
@@ -494,9 +499,17 @@ public sealed class JsonDataPorterProvider(
             }
         }
 
-        return hasErrors && config.ValidationBehavior == ImportValidationBehavior.SkipRow
-            ? null
-            : item;
+        if (hasErrors)
+        {
+            return null;
+        }
+
+        foreach (var assignment in assignments)
+        {
+            assignment();
+        }
+
+        return item;
     }
 
     private object ConvertJsonElement(JsonElement element, ImportColumnConfiguration column)

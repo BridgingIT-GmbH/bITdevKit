@@ -387,6 +387,57 @@ public class DataPorterServiceImportTests
         result.Value.Data[0].Name.ShouldBeNull();
     }
 
+    [Theory]
+    [InlineData(Format.Csv)]
+    [InlineData(Format.Excel)]
+    [InlineData(Format.Json)]
+    [InlineData(Format.Xml)]
+    public async Task ImportAsync_WithCollectErrors_SkipsInvalidRowsAndKeepsValidRows(Format format)
+    {
+        // Arrange
+        var sut = new DataPorterService([CreateProvider(format)], this.configurationMerger);
+        await using var stream = CreateMixedValidityStream(format);
+        var options = new ImportOptions { Format = format };
+
+        // Act
+        var result = await sut.ImportAsync<EntityWithRequiredColumn>(stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Data.Count.ShouldBe(1);
+        result.Value.Data[0].Id.ShouldBe(1);
+        result.Value.Data[0].RequiredField.ShouldBe("value");
+        result.Value.Errors.Count.ShouldBe(1);
+        result.Value.Errors[0].Column.ShouldBe(nameof(EntityWithRequiredColumn.RequiredField));
+    }
+
+    [Theory]
+    [InlineData(Format.Csv)]
+    [InlineData(Format.Excel)]
+    [InlineData(Format.Json)]
+    [InlineData(Format.Xml)]
+    public async Task ImportStreamAsync_WithCollectErrors_YieldsSuccessForValidRowAndFailureForInvalidRow(Format format)
+    {
+        // Arrange
+        var sut = new DataPorterService([CreateProvider(format)], this.configurationMerger);
+        await using var stream = CreateMixedValidityStream(format);
+        var options = new ImportOptions { Format = format };
+
+        // Act
+        var results = new List<Result<EntityWithRequiredColumn>>();
+        await foreach (var result in sut.ImportAsyncEnumerable<EntityWithRequiredColumn>(stream, options))
+        {
+            results.Add(result);
+        }
+
+        // Assert
+        results.Count.ShouldBe(2);
+        results.Count(r => r.IsSuccess).ShouldBe(1);
+        results.Count(r => r.IsFailure).ShouldBe(1);
+        results.Single(r => r.IsSuccess).Value.RequiredField.ShouldBe("value");
+        results.Single(r => r.IsFailure).Errors[0].Message.ShouldContain("required");
+    }
+
     [Fact]
     public async Task ImportStreamAsync_WithMalformedXml_YieldsFailureResult()
     {
@@ -454,6 +505,8 @@ public class DataPorterServiceImportTests
         {
             Format.Csv => new CsvDataPorterProvider(),
             Format.Excel => new ExcelDataPorterProvider(),
+            Format.Json => new JsonDataPorterProvider(),
+            Format.Xml => new XmlDataPorterProvider(),
             _ => throw new NotSupportedException()
         };
     }
@@ -474,6 +527,35 @@ public class DataPorterServiceImportTests
         {
             Format.Csv => new MemoryStream("Id\r\n1\r\n"u8.ToArray()),
             Format.Excel => CreateExcelStream([nameof(SimpleEntity.Id)], [new object[] { 1 }]),
+            _ => throw new NotSupportedException()
+        };
+    }
+
+    private static MemoryStream CreateMixedValidityStream(Format format)
+    {
+        return format switch
+        {
+            Format.Csv => new MemoryStream("Id,RequiredField\r\n1,value\r\n2,\r\n"u8.ToArray()),
+            Format.Excel => CreateExcelStream(
+                [nameof(EntityWithRequiredColumn.Id), nameof(EntityWithRequiredColumn.RequiredField)],
+                [new object[] { 1, "value" }, new object[] { 2, null }]),
+            Format.Json => new MemoryStream("""
+[
+  { "Id": 1, "RequiredField": "value" },
+  { "Id": 2 }
+]
+"""u8.ToArray()),
+            Format.Xml => new MemoryStream("""
+<Root>
+  <Item>
+    <Id>1</Id>
+    <RequiredField>value</RequiredField>
+  </Item>
+  <Item>
+    <Id>2</Id>
+  </Item>
+</Root>
+"""u8.ToArray()),
             _ => throw new NotSupportedException()
         };
     }

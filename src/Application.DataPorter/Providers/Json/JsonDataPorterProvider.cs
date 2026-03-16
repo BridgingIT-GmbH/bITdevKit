@@ -57,33 +57,9 @@ public sealed class JsonDataPorterProvider(
         };
 
         // Transform data if columns are configured
-        var exportData = dataList.Select(item =>
-        {
-            var dict = new Dictionary<string, object>();
-            foreach (var column in exportConfiguration.Columns)
-            {
-                var value = column.GetValue(item);
-
-                // Apply converter if present
-                if (column.Converter is not null)
-                {
-                    var context = new ValueConversionContext
-                    {
-                        PropertyName = column.PropertyName,
-                        PropertyType = column.PropertyInfo?.PropertyType ?? typeof(object),
-                        EntityType = exportConfiguration.SourceType,
-                        Format = column.Format,
-                        Culture = exportConfiguration.Culture
-                    };
-
-                    value = column.Converter.ConvertToExport(value, context);
-                }
-
-                dict[column.HeaderName ?? column.PropertyName] = value;
-            }
-
-            return dict;
-        }).ToList();
+        var exportData = dataList
+            .Select(item => this.CreateExportRow(item, exportConfiguration))
+            .ToList();
 
         await JsonSerializer.SerializeAsync(outputStream, exportData, jsonOptions, cancellationToken);
 
@@ -115,17 +91,9 @@ public sealed class JsonDataPorterProvider(
             var sheetName = exportConfiguration.SheetName ?? $"Sheet{result.Count + 1}";
             var dataList = data.ToList();
 
-            var exportData = dataList.Select(item =>
-            {
-                var dict = new Dictionary<string, object>();
-                foreach (var column in exportConfiguration.Columns)
-                {
-                    var value = column.GetValue(item);
-                    dict[column.HeaderName ?? column.PropertyName] = value;
-                }
-
-                return dict;
-            }).ToList();
+            var exportData = dataList
+                .Select(item => this.CreateExportRow(item, exportConfiguration))
+                .ToList();
 
             result[sheetName] = exportData;
             totalRows += dataList.Count;
@@ -408,6 +376,35 @@ public sealed class JsonDataPorterProvider(
                 Severity = ErrorSeverity.Critical
             }]);
         }
+    }
+
+    private Dictionary<string, object> CreateExportRow(
+        object item,
+        ExportConfiguration exportConfiguration)
+    {
+        var dict = new Dictionary<string, object>();
+        foreach (var column in exportConfiguration.Columns)
+        {
+            var value = column.GetValue(item);
+
+            if (column.Converter is not null)
+            {
+                var context = new ValueConversionContext
+                {
+                    PropertyName = column.PropertyName,
+                    PropertyType = column.PropertyInfo?.PropertyType ?? typeof(object),
+                    EntityType = exportConfiguration.SourceType,
+                    Format = column.Format,
+                    Culture = exportConfiguration.Culture
+                };
+
+                value = column.Converter.ConvertToExport(value, context);
+            }
+
+            dict[column.HeaderName ?? column.PropertyName] = value;
+        }
+
+        return dict;
     }
 
     private TTarget MapRow<TTarget>(

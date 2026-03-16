@@ -409,6 +409,48 @@ public class DataPorterServiceRoundtripTests
         AssertNestedData([.. importResult.Value.Data], data);
     }
 
+    [Theory]
+    [InlineData(Format.Json)]
+    [InlineData(Format.Xml)]
+    public async Task ExportMultipleAsync_WithConverterBackedColumn_AppliesConverters(Format format)
+    {
+        // Arrange
+        var provider = format switch
+        {
+            Format.Json => (IDataPorterProvider)new JsonDataPorterProvider(),
+            Format.Xml => new XmlDataPorterProvider(),
+            _ => throw new NotSupportedException()
+        };
+        var sut = new DataPorterService([provider], this.configurationMerger);
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var options = new ExportOptions { Format = format, UseAttributes = false };
+        var dataSets = new[]
+        {
+            new ExportDataSet
+            {
+                Data = data.Cast<object>().ToList(),
+                ItemType = typeof(PersonEntity),
+                SheetName = "Persons"
+            }
+        };
+
+        // Act
+        var result = await sut.ExportAsync(dataSets, stream, options);
+        var exportedContent = ReadTextContent(stream);
+
+        // Assert
+        result.ShouldBeSuccess();
+        if (format == Format.Json)
+        {
+            exportedContent.ShouldContain("\"BillingAddress\": \"Ada Lovelace|Analytical Engine Way 1|A1 100|London|UK\"");
+        }
+        else
+        {
+            exportedContent.ShouldContain("<BillingAddress>Ada Lovelace|Analytical Engine Way 1|A1 100|London|UK</BillingAddress>");
+        }
+    }
+
     private static PersonEntity[] CreatePersons()
     {
         return

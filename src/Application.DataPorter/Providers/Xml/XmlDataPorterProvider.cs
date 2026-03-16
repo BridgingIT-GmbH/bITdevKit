@@ -70,49 +70,7 @@ public sealed class XmlDataPorterProvider(
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            await writer.WriteStartElementAsync(null, itemName, null);
-
-            foreach (var column in exportConfiguration.Columns)
-            {
-                var value = column.GetValue(item);
-                var propertyType = column.PropertyInfo?.PropertyType ?? value?.GetType() ?? typeof(object);
-
-                // Apply converter if present
-                if (column.Converter is not null)
-                {
-                    var context = new ValueConversionContext
-                    {
-                        PropertyName = column.PropertyName,
-                        PropertyType = column.PropertyInfo?.PropertyType ?? typeof(object),
-                        EntityType = exportConfiguration.SourceType,
-                        Format = column.Format,
-                        Culture = exportConfiguration.Culture
-                    };
-
-                    value = column.Converter.ConvertToExport(value, context);
-                }
-
-                var elementName = this.SanitizeElementName(column.HeaderName ?? column.PropertyName);
-
-                if (column.Converter is null && propertyType.SupportsStructuredValue())
-                {
-                    await this.WriteStructuredElementAsync(writer, elementName, value, propertyType, new HashSet<object>(ReferenceEqualityComparer.Instance));
-                    continue;
-                }
-
-                if (this.configuration.UseAttributes && this.IsSimpleType(value))
-                {
-                    await writer.WriteAttributeStringAsync(null, elementName, null, this.FormatValue(value));
-                }
-                else
-                {
-                    await writer.WriteStartElementAsync(null, elementName, null);
-                    await writer.WriteStringAsync(this.FormatValue(value));
-                    await writer.WriteEndElementAsync();
-                }
-            }
-
-            await writer.WriteEndElementAsync();
+            await this.WriteExportItemAsync(writer, item, itemName, exportConfiguration, cancellationToken);
         }
 
         await writer.WriteEndElementAsync();
@@ -155,25 +113,7 @@ public sealed class XmlDataPorterProvider(
 
             foreach (var item in dataList)
             {
-                await writer.WriteStartElementAsync(null, this.configuration.ItemElementName, null);
-
-                foreach (var column in exportConfiguration.Columns)
-                {
-                    var value = column.GetValue(item);
-                    var elementName = this.SanitizeElementName(column.HeaderName ?? column.PropertyName);
-
-                    if (column.Converter is null && (column.PropertyInfo?.PropertyType ?? value?.GetType() ?? typeof(object)).SupportsStructuredValue())
-                    {
-                        await this.WriteStructuredElementAsync(writer, elementName, value, column.PropertyInfo?.PropertyType ?? typeof(object), new HashSet<object>(ReferenceEqualityComparer.Instance));
-                        continue;
-                    }
-
-                    await writer.WriteStartElementAsync(null, elementName, null);
-                    await writer.WriteStringAsync(this.FormatValue(value));
-                    await writer.WriteEndElementAsync();
-                }
-
-                await writer.WriteEndElementAsync();
+                await this.WriteExportItemAsync(writer, item, this.configuration.ItemElementName, exportConfiguration, cancellationToken);
             }
 
             await writer.WriteEndElementAsync();
@@ -429,6 +369,69 @@ public sealed class XmlDataPorterProvider(
                 Severity = ErrorSeverity.Critical
             }]);
         }
+    }
+
+    private async Task WriteExportItemAsync(
+        XmlWriter writer,
+        object item,
+        string itemElementName,
+        ExportConfiguration exportConfiguration,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        await writer.WriteStartElementAsync(null, itemElementName, null);
+
+        foreach (var column in exportConfiguration.Columns)
+        {
+            await this.WriteExportColumnAsync(writer, item, column, exportConfiguration, cancellationToken);
+        }
+
+        await writer.WriteEndElementAsync();
+    }
+
+    private async Task WriteExportColumnAsync(
+        XmlWriter writer,
+        object item,
+        ColumnConfiguration column,
+        ExportConfiguration exportConfiguration,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var value = column.GetValue(item);
+        var propertyType = column.PropertyInfo?.PropertyType ?? value?.GetType() ?? typeof(object);
+
+        if (column.Converter is not null)
+        {
+            var context = new ValueConversionContext
+            {
+                PropertyName = column.PropertyName,
+                PropertyType = column.PropertyInfo?.PropertyType ?? typeof(object),
+                EntityType = exportConfiguration.SourceType,
+                Format = column.Format,
+                Culture = exportConfiguration.Culture
+            };
+
+            value = column.Converter.ConvertToExport(value, context);
+        }
+
+        var elementName = this.SanitizeElementName(column.HeaderName ?? column.PropertyName);
+
+        if (column.Converter is null && propertyType.SupportsStructuredValue())
+        {
+            await this.WriteStructuredElementAsync(writer, elementName, value, propertyType, new HashSet<object>(ReferenceEqualityComparer.Instance));
+            return;
+        }
+
+        if (this.configuration.UseAttributes && this.IsSimpleType(value))
+        {
+            await writer.WriteAttributeStringAsync(null, elementName, null, this.FormatValue(value));
+            return;
+        }
+
+        await writer.WriteStartElementAsync(null, elementName, null);
+        await writer.WriteStringAsync(this.FormatValue(value));
+        await writer.WriteEndElementAsync();
     }
 
     private TTarget MapElement<TTarget>(

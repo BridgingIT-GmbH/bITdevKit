@@ -183,6 +183,20 @@ public sealed class CsvDataPorterProvider(
         csv.ReadHeader();
 
         var plan = this.BuildImportPlan(importConfiguration, csv.HeaderRecord ?? []);
+        var headerErrors = this.CreateMissingColumnErrors(plan.MissingColumns, importConfiguration.HeaderRowIndex);
+        if (headerErrors.Count > 0)
+        {
+            return new ImportResult<TTarget>
+            {
+                Data = [],
+                TotalRows = 0,
+                SuccessfulRows = 0,
+                FailedRows = headerErrors.Count,
+                Duration = TimeSpan.Zero,
+                Errors = headerErrors
+            };
+        }
+
         var rowNumber = importConfiguration.HeaderRowIndex + importConfiguration.SkipRows;
         var groupedResults = new Dictionary<string, TTarget>(StringComparer.OrdinalIgnoreCase);
 
@@ -305,6 +319,7 @@ public sealed class CsvDataPorterProvider(
     private CsvImportPlan BuildImportPlan(ImportConfiguration config, IReadOnlyList<string> headers)
     {
         var columns = new List<CsvImportColumn>();
+        var missingColumns = new List<ImportColumnConfiguration>();
         PropertyInfo collectionProperty = null;
         var typePath = new HashSet<Type> { config.TargetType };
 
@@ -322,7 +337,13 @@ public sealed class CsvDataPorterProvider(
             .Select(column =>
             {
                 var header = headers.FirstOrDefault(h => h.Equals(column.HeaderName, StringComparison.OrdinalIgnoreCase));
-                return header is null ? null : column with { HeaderName = header };
+                if (header is null)
+                {
+                    missingColumns.Add(column.SourceColumn);
+                    return null;
+                }
+
+                return column with { HeaderName = header };
             })
             .Where(column => column is not null)
             .Cast<CsvImportColumn>()
@@ -333,7 +354,22 @@ public sealed class CsvDataPorterProvider(
             collectionProperty = null;
         }
 
-        return new CsvImportPlan(mappedColumns, collectionProperty);
+        return new CsvImportPlan(mappedColumns, missingColumns, collectionProperty);
+    }
+
+    private List<ImportRowError> CreateMissingColumnErrors(
+        IReadOnlyList<ImportColumnConfiguration> missingColumns,
+        int headerRowIndex)
+    {
+        return [.. missingColumns
+            .Where(column => column.IsRequired)
+            .Select(column => new ImportRowError
+            {
+                RowNumber = headerRowIndex + 1,
+                Column = column.SourceName ?? column.PropertyName,
+                Message = column.RequiredMessage ?? $"Required column header '{column.SourceName ?? column.PropertyName}' was not found.",
+                Severity = ErrorSeverity.Error
+            })];
     }
 
     private void AddExportColumns(
@@ -877,7 +913,10 @@ public sealed class CsvDataPorterProvider(
 
     private sealed record CsvExportPlan(IReadOnlyList<CsvExportColumn> Columns, PropertyInfo CollectionProperty);
 
-    private sealed record CsvImportPlan(IReadOnlyList<CsvImportColumn> Columns, PropertyInfo CollectionProperty);
+    private sealed record CsvImportPlan(
+        IReadOnlyList<CsvImportColumn> Columns,
+        IReadOnlyList<ImportColumnConfiguration> MissingColumns,
+        PropertyInfo CollectionProperty);
 
     private sealed record CsvExportColumn(ColumnConfiguration SourceColumn, string HeaderName, PropertyInfo[] PropertyPath, bool IsCollection)
     {

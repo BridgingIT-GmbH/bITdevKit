@@ -293,7 +293,22 @@ public sealed class ExcelDataPorterProvider(
 
         // Read headers
         var headerRow = worksheet.Row(importConfiguration.HeaderRowIndex + 1);
-        var columnMap = this.BuildColumnMap(headerRow, importConfiguration);
+        var columnMapResult = this.BuildColumnMap(headerRow, importConfiguration);
+        var headerErrors = this.CreateMissingColumnErrors(columnMapResult.MissingColumns, importConfiguration.HeaderRowIndex);
+        if (headerErrors.Count > 0)
+        {
+            return new ImportResult<TTarget>
+            {
+                Data = [],
+                TotalRows = 0,
+                SuccessfulRows = 0,
+                FailedRows = headerErrors.Count,
+                Duration = TimeSpan.Zero,
+                Errors = headerErrors
+            };
+        }
+
+        var columnMap = columnMapResult.ColumnMap;
 
         var firstDataRow = importConfiguration.HeaderRowIndex + importConfiguration.SkipRows + 2;
         var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? firstDataRow;
@@ -393,7 +408,20 @@ public sealed class ExcelDataPorterProvider(
 
             // Read headers
             var headerRow = worksheet.Row(importConfiguration.HeaderRowIndex + 1);
-            var columnMap = this.BuildColumnMap(headerRow, importConfiguration);
+            var columnMapResult = this.BuildColumnMap(headerRow, importConfiguration);
+            var headerErrors = this.CreateMissingColumnErrors(columnMapResult.MissingColumns, importConfiguration.HeaderRowIndex);
+            if (headerErrors.Count > 0)
+            {
+                foreach (var error in headerErrors)
+                {
+                    yield return Result<TTarget>.Failure()
+                        .WithError(new ImportValidationError(error.RowNumber, error.Column, error.Message));
+                }
+
+                yield break;
+            }
+
+            var columnMap = columnMapResult.ColumnMap;
 
             var firstDataRow = importConfiguration.HeaderRowIndex + importConfiguration.SkipRows + 2;
             var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? firstDataRow;
@@ -470,7 +498,14 @@ public sealed class ExcelDataPorterProvider(
 
         // Read headers
         var headerRow = worksheet.Row(importConfiguration.HeaderRowIndex + 1);
-        var columnMap = this.BuildColumnMap(headerRow, importConfiguration);
+        var columnMapResult = this.BuildColumnMap(headerRow, importConfiguration);
+        var headerErrors = this.CreateMissingColumnErrors(columnMapResult.MissingColumns, importConfiguration.HeaderRowIndex);
+        if (headerErrors.Count > 0)
+        {
+            return ValidationResult.Failure(0, 0, headerErrors);
+        }
+
+        var columnMap = columnMapResult.ColumnMap;
 
         var firstDataRow = importConfiguration.HeaderRowIndex + importConfiguration.SkipRows + 2;
         var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? firstDataRow;
@@ -556,11 +591,13 @@ public sealed class ExcelDataPorterProvider(
         return workbook.Worksheets.FirstOrDefault();
     }
 
-    private Dictionary<ImportColumnConfiguration, int> BuildColumnMap(
+    private HeaderMappingResult BuildColumnMap(
         IXLRow headerRow,
         ImportConfiguration config)
     {
         var map = new Dictionary<ImportColumnConfiguration, int>();
+        var missingColumns = new List<ImportColumnConfiguration>();
+        var lastColumnNumber = headerRow.LastCellUsed()?.Address.ColumnNumber ?? 0;
 
         foreach (var column in config.Columns)
         {
@@ -571,11 +608,20 @@ public sealed class ExcelDataPorterProvider(
 
             if (column.SourceIndex >= 0)
             {
-                map[column] = column.SourceIndex + 1;
+                if (column.SourceIndex + 1 <= lastColumnNumber)
+                {
+                    map[column] = column.SourceIndex + 1;
+                }
+                else
+                {
+                    missingColumns.Add(column);
+                }
+
                 continue;
             }
 
             // Find column by header name
+            var found = false;
             foreach (var cell in headerRow.CellsUsed())
             {
                 var headerValue = cell.GetValue<string>();
@@ -583,12 +629,33 @@ public sealed class ExcelDataPorterProvider(
                     headerValue.Equals(column.PropertyName, StringComparison.OrdinalIgnoreCase))
                 {
                     map[column] = cell.Address.ColumnNumber;
+                    found = true;
                     break;
                 }
             }
+
+            if (!found)
+            {
+                missingColumns.Add(column);
+            }
         }
 
-        return map;
+        return new HeaderMappingResult(map, missingColumns);
+    }
+
+    private List<ImportRowError> CreateMissingColumnErrors(
+        IReadOnlyList<ImportColumnConfiguration> missingColumns,
+        int headerRowIndex)
+    {
+        return [.. missingColumns
+            .Where(column => column.IsRequired)
+            .Select(column => new ImportRowError
+            {
+                RowNumber = headerRowIndex + 1,
+                Column = column.SourceName ?? column.PropertyName,
+                Message = column.RequiredMessage ?? $"Required column header '{column.SourceName ?? column.PropertyName}' was not found.",
+                Severity = ErrorSeverity.Error
+            })];
     }
 
     private TTarget MapRow<TTarget>(
@@ -764,4 +831,8 @@ public sealed class ExcelDataPorterProvider(
             }
         }
     }
+
+    private sealed record HeaderMappingResult(
+        Dictionary<ImportColumnConfiguration, int> ColumnMap,
+        IReadOnlyList<ImportColumnConfiguration> MissingColumns);
 }

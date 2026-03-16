@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
 using BridgingIT.DevKit.Application.DataPorter;
+using ClosedXML.Excel;
 
 [UnitTest("Common")]
 public class DataPorterServiceImportTests
@@ -301,6 +302,91 @@ public class DataPorterServiceImportTests
         results.All(r => r.IsSuccess).ShouldBeTrue();
     }
 
+    [Theory]
+    [InlineData(Format.Csv)]
+    [InlineData(Format.Excel)]
+    public async Task ImportAsync_WithMissingRequiredHeader_ReturnsSchemaError(Format format)
+    {
+        // Arrange
+        var sut = new DataPorterService([CreateProvider(format)], this.configurationMerger);
+        await using var stream = CreateMissingRequiredHeaderStream(format);
+        var options = new ImportOptions { Format = format };
+
+        // Act
+        var result = await sut.ImportAsync<EntityWithRequiredColumn>(stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Data.ShouldBeEmpty();
+        result.Value.Errors.Count.ShouldBe(1);
+        result.Value.Errors[0].Column.ShouldBe(nameof(EntityWithRequiredColumn.RequiredField));
+        result.Value.Errors[0].Message.ShouldContain("Required");
+    }
+
+    [Theory]
+    [InlineData(Format.Csv)]
+    [InlineData(Format.Excel)]
+    public async Task ValidateAsync_WithMissingRequiredHeader_ReturnsInvalidResult(Format format)
+    {
+        // Arrange
+        var sut = new DataPorterService([CreateProvider(format)], this.configurationMerger);
+        await using var stream = CreateMissingRequiredHeaderStream(format);
+        var options = new ImportOptions { Format = format };
+
+        // Act
+        var result = await sut.ValidateAsync<EntityWithRequiredColumn>(stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.IsValid.ShouldBeFalse();
+        result.Value.Errors.Count.ShouldBe(1);
+        result.Value.Errors[0].Column.ShouldBe(nameof(EntityWithRequiredColumn.RequiredField));
+    }
+
+    [Theory]
+    [InlineData(Format.Csv)]
+    [InlineData(Format.Excel)]
+    public async Task ImportStreamAsync_WithMissingRequiredHeader_YieldsFailure(Format format)
+    {
+        // Arrange
+        var sut = new DataPorterService([CreateProvider(format)], this.configurationMerger);
+        await using var stream = CreateMissingRequiredHeaderStream(format);
+        var options = new ImportOptions { Format = format };
+
+        // Act
+        var results = new List<Result<EntityWithRequiredColumn>>();
+        await foreach (var result in sut.ImportAsyncEnumerable<EntityWithRequiredColumn>(stream, options))
+        {
+            results.Add(result);
+        }
+
+        // Assert
+        results.Count.ShouldBe(1);
+        results[0].ShouldBeFailure();
+        results[0].Errors[0].Message.ShouldContain("Required");
+    }
+
+    [Theory]
+    [InlineData(Format.Csv)]
+    [InlineData(Format.Excel)]
+    public async Task ImportAsync_WithMissingOptionalHeader_ContinuesImport(Format format)
+    {
+        // Arrange
+        var sut = new DataPorterService([CreateProvider(format)], this.configurationMerger);
+        await using var stream = CreateMissingOptionalHeaderStream(format);
+        var options = new ImportOptions { Format = format };
+
+        // Act
+        var result = await sut.ImportAsync<SimpleEntity>(stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Errors.ShouldBeEmpty();
+        result.Value.Data.Count.ShouldBe(1);
+        result.Value.Data[0].Id.ShouldBe(1);
+        result.Value.Data[0].Name.ShouldBeNull();
+    }
+
     [Fact]
     public async Task ImportStreamAsync_WithMalformedXml_YieldsFailureResult()
     {
@@ -360,5 +446,63 @@ public class DataPorterServiceImportTests
     private static TestStreamingImportProvider CreateMockStreamingProvider()
     {
         return new TestStreamingImportProvider();
+    }
+
+    private static IDataPorterProvider CreateProvider(Format format)
+    {
+        return format switch
+        {
+            Format.Csv => new CsvDataPorterProvider(),
+            Format.Excel => new ExcelDataPorterProvider(),
+            _ => throw new NotSupportedException()
+        };
+    }
+
+    private static MemoryStream CreateMissingRequiredHeaderStream(Format format)
+    {
+        return format switch
+        {
+            Format.Csv => new MemoryStream("Id\r\n1\r\n"u8.ToArray()),
+            Format.Excel => CreateExcelStream([nameof(EntityWithRequiredColumn.Id)], [new object[] { 1 }]),
+            _ => throw new NotSupportedException()
+        };
+    }
+
+    private static MemoryStream CreateMissingOptionalHeaderStream(Format format)
+    {
+        return format switch
+        {
+            Format.Csv => new MemoryStream("Id\r\n1\r\n"u8.ToArray()),
+            Format.Excel => CreateExcelStream([nameof(SimpleEntity.Id)], [new object[] { 1 }]),
+            _ => throw new NotSupportedException()
+        };
+    }
+
+    private static MemoryStream CreateExcelStream(string[] headers, object[][] rows)
+    {
+        var stream = new MemoryStream();
+        using (var workbook = new XLWorkbook())
+        {
+            var worksheet = workbook.Worksheets.Add("Sheet1");
+
+            for (var i = 0; i < headers.Length; i++)
+            {
+                worksheet.Cell(1, i + 1).Value = headers[i];
+            }
+
+            for (var rowIndex = 0; rowIndex < rows.Length; rowIndex++)
+            {
+                var row = rows[rowIndex];
+                for (var columnIndex = 0; columnIndex < row.Length; columnIndex++)
+                {
+                    worksheet.Cell(rowIndex + 2, columnIndex + 1).Value = row[columnIndex]?.ToString();
+                }
+            }
+
+            workbook.SaveAs(stream);
+        }
+
+        stream.Position = 0;
+        return stream;
     }
 }

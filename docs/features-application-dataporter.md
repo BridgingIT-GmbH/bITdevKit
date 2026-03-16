@@ -55,7 +55,7 @@ public class MyService
 
         if (result.IsSuccess)
         {
-            Console.WriteLine($"Exported {result.Value.RowsExported} rows");
+            Console.WriteLine($"Exported {result.Value.TotalRows} rows");
         }
     }
 }
@@ -71,15 +71,17 @@ public async Task<IEnumerable<Order>> ImportOrdersAsync(Stream input)
         Format = Format.Csv
     });
 
-    if (result.IsSuccess)
+    if (result.IsSuccess && !result.Value.HasErrors)
     {
         return result.Value.Data;
     }
 
-    // Handle errors
-    foreach (var error in result.Value.Errors)
+    if (result.IsSuccess)
     {
-        Console.WriteLine($"Row {error.RowNumber}: {error.Message}");
+        foreach (var error in result.Value.Errors)
+        {
+            Console.WriteLine($"Row {error.RowNumber}: {error.Message}");
+        }
     }
 
     return [];
@@ -229,8 +231,6 @@ services.AddDataPorter()
         config.DefaultTableStyleName = "TableStyleMedium2";
         config.AutoFitColumns = true;
         config.FreezeHeaderRow = true;
-        config.DefaultFontName = "Calibri";
-        config.DefaultFontSize = 11;
         config.MaxColumnWidth = 100;
     });
 ```
@@ -471,9 +471,9 @@ else
 }
 ```
 
-### Multi-Sheet Export
+### Multi-Dataset Export
 
-Export multiple data sets to different sheets (Excel) or sections (JSON/XML):
+Export multiple data sets in a single operation. Depending on the provider this becomes worksheets, top-level sections, or sequential sections in the generated output:
 
 ```csharp
 var dataSets = new[]
@@ -608,11 +608,13 @@ Control how validation errors are handled during import:
 ```csharp
 public enum ImportValidationBehavior
 {
-    CollectErrors,  // Continue import, collect all errors
+    CollectErrors,  // Continue processing, collect errors, return only valid rows
     SkipRow,        // Skip invalid rows, continue with valid ones
     StopImport      // Stop on first error
 }
 ```
+
+With `CollectErrors`, invalid rows are reported in `ImportResult.Errors` and excluded from `ImportResult.Data`. They are not partially materialized into the returned data set.
 
 ### Conditional Styling (Excel)
 

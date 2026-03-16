@@ -1,4 +1,8 @@
-	# DataPorter
+# DataPorter Feature Documentation
+
+[TOC]
+
+## Overview
 
 A flexible, extensible data export/import framework for .NET supporting multiple file formats with both profile-based and attribute-based configuration.
 
@@ -11,14 +15,6 @@ A flexible, extensible data export/import framework for .NET supporting multiple
 - **Value Converters**: Transform values during import/export with custom converters
 - **Result Pattern**: Integrated with bIT.bITdevKit Result pattern for consistent error handling
 - **Conditional Styling**: Apply styles based on cell values (Excel)
-
-## Installation
-
-Add the package to your project:
-
-```xml
-<PackageReference Include="BridgingIT.DevKit.Application.DataPorter" />
-```
 
 ## Quick Start
 
@@ -251,6 +247,7 @@ services.AddDataPorter()
 ```
 
 **What the typed-rows pattern is:**
+
 - one CSV row represents exactly one logical node in the object graph
 - root entities, nested objects, and collection items each get their own row
 - `RecordType` identifies what kind of node the row represents
@@ -259,6 +256,7 @@ services.AddDataPorter()
 This is preferable to flattening unbounded collections into `Item1`, `Item2`, `Item3` columns because the schema stays stable when collection sizes change. It is also preferable to embedding JSON in a cell because the file remains plain CSV, tabular, and easy to inspect with standard tools.
 
 **Base columns:**
+
 - `RecordType` - logical node kind such as `Person`, `Address`, `BillingAddress`, `PreviousAddress`
 - `RootId` - identifier of the root aggregate row
 - `RecordId` - identifier of the current row/node
@@ -267,6 +265,7 @@ This is preferable to flattening unbounded collections into `Item1`, `Item2`, `I
 - `Index` - collection order for repeated child items
 
 **Mapping rules for export:**
+
 - the root `PersonEntity` is emitted as `RecordType = Person`
 - the nested `Address` is emitted as a child row with `RecordType = Address`, `ParentId = <person id>`, `Collection = Address`
 - the nested `BillingAddress` value object is emitted as a child row with `RecordType = BillingAddress`, `ParentId = <person id>`, `Collection = BillingAddress`
@@ -274,12 +273,14 @@ This is preferable to flattening unbounded collections into `Item1`, `Item2`, `I
 - value objects without their own persisted identifier should use a deterministic synthetic `RecordId`, for example `<RootId>:BillingAddress`
 
 **Parsing and rehydration rules for import:**
-- read all rows into a typed-row model first
-- group rows by `RootId`
+
+- `ImportAsync(...)` reads the typed rows and reconstructs the object graph by grouping rows by `RootId`
+- `ImportAsyncEnumerable(...)` buffers rows until the next `RootId` is seen, then emits one completed aggregate
 - materialize the root row first
 - attach direct child rows by matching `ParentId`
 - rebuild collections by grouping child rows by `Collection` and ordering by `Index`
 - use invariant parsing for `Guid`, enum, integer, and nullable values
+- streaming assumes all rows for one `RootId` are contiguous; if a completed `RootId` appears again later, streaming import fails explicitly
 
 **Typed CSV example:**
 
@@ -297,6 +298,7 @@ PreviousAddress,person-2,prev-3,person-2,PreviousAddresses,0,,,,,,,,Cobol Lane 1
 ```
 
 **Features:**
+
 - Table formatting with styles
 - Auto-fit columns
 - Freeze header row
@@ -320,6 +322,7 @@ services.AddDataPorter()
 ```
 
 **Features:**
+
 - Standard flat CSV export/import
 - Optional flattened nesting for structured properties
 - Optional row expansion for a single nested collection
@@ -354,6 +357,12 @@ Id,FirstName,LastName,Address_Street,Address_City,PreviousAddresses_Street,Previ
 
 During import, repeated rows are grouped back into a single aggregate and the nested collection is hydrated again.
 
+`ImportAsyncEnumerable(...)` works incrementally:
+
+- if there is no nested collection grouping, it yields one result per physical CSV row
+- if a nested collection is being reconstructed, it buffers consecutive rows for the current aggregate and yields one completed aggregate when the grouping key changes
+- streaming grouped import assumes rows for the same aggregate are contiguous; if a completed grouping key appears again later, the stream fails explicitly
+
 When `UseNesting` is disabled, nested structured properties without explicit converters are ignored for CSV export/import. This is useful when only scalar columns should participate.
 
 ### JSON Provider
@@ -370,6 +379,13 @@ services.AddDataPorter()
     });
 ```
 
+Import behavior:
+
+- `ImportAsyncEnumerable(...)` reads the top-level JSON array incrementally and processes one item at a time
+- each array item is mapped and validated independently
+- malformed JSON after earlier valid items produces earlier successes first and then a failed result
+- `ImportAsync(...)` and `ValidateAsync(...)` use the same incremental item-processing pipeline
+
 ### XML Provider
 
 Uses System.Xml for XML handling.
@@ -385,6 +401,13 @@ services.AddDataPorter()
         config.DateFormat = "yyyy-MM-dd";
     });
 ```
+
+Import behavior:
+
+- `ImportAsyncEnumerable(...)` reads direct child elements under the configured root one item at a time using forward-only XML reading
+- each item element is mapped and validated independently
+- malformed XML after earlier valid items produces earlier successes first and then a failed result
+- `ImportAsync(...)` and `ValidateAsync(...)` use the same incremental item-processing pipeline
 
 ### PDF Provider (Export Only)
 
@@ -613,6 +636,15 @@ public enum ImportValidationBehavior
     StopImport      // Stop on first error
 }
 ```
+
+Streaming behavior depends on the provider:
+
+- **JSON** streams top-level array items incrementally
+- **XML** streams top-level item elements incrementally
+- **CSV** streams flat rows directly, and streams nested-collection imports as completed aggregates once the grouping key changes
+- **Typed CSV** streams one completed aggregate once the next `RootId` is seen
+
+For grouped CSV and typed CSV streaming, rows for the same logical aggregate must be contiguous in the input. If an already completed aggregate key or `RootId` appears again later, streaming import fails explicitly because the stream can no longer be reconstructed with bounded buffering.
 
 With `CollectErrors`, invalid rows are reported in `ImportResult.Errors` and excluded from `ImportResult.Data`. They are not partially materialized into the returned data set.
 

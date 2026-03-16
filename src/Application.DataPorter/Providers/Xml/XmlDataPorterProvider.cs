@@ -142,82 +142,48 @@ public sealed class XmlDataPorterProvider(
     {
         var results = new List<TTarget>();
         var errors = new List<ImportRowError>();
+        var totalRows = 0;
+        var failedRows = 0;
 
-        try
+        await foreach (var result in this.ProcessElementsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
         {
-            var document = await XDocument.LoadAsync(inputStream, LoadOptions.None, cancellationToken);
-            var items = document.Root?.Elements().ToList() ?? [];
-
-            var rowNumber = 0;
-            foreach (var element in items)
+            if (result.FatalError is not null)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                rowNumber++;
-
-                try
+                failedRows++;
+                totalRows += result.RowNumber > 0 ? 1 : 0;
+                errors.Add(new ImportRowError
                 {
-                    var rowErrors = new List<ImportRowError>();
-                    var item = this.MapElement<TTarget>(element, importConfiguration, rowNumber, rowErrors);
-                    if (item is not null)
-                    {
-                        results.Add(item);
-                    }
-                    else if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport && rowErrors.Count > 0)
-                    {
-                        errors.AddRange(rowErrors);
-                        break;
-                    }
-
-                    errors.AddRange(rowErrors);
-                }
-                catch (Exception ex)
-                {
-                    errors.Add(new ImportRowError
-                    {
-                        RowNumber = rowNumber,
-                        Column = "N/A",
-                        Message = ex.Message,
-                        Severity = ErrorSeverity.Error
-                    });
-
-                    if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport)
-                    {
-                        break;
-                    }
-                }
+                    RowNumber = result.RowNumber,
+                    Column = "N/A",
+                    Message = result.FatalError.Message,
+                    Severity = ErrorSeverity.Critical
+                });
+                break;
             }
 
-            return new ImportResult<TTarget>
+            totalRows++;
+
+            if (result.Item is not null)
             {
-                Data = results,
-                TotalRows = items.Count,
-                SuccessfulRows = results.Count,
-                FailedRows = items.Count - results.Count,
-                Duration = TimeSpan.Zero,
-                Errors = errors
-            };
+                results.Add(result.Item);
+            }
+
+            if (result.Errors.Count > 0)
+            {
+                failedRows++;
+                errors.AddRange(result.Errors);
+            }
         }
-        catch (XmlException ex)
+
+        return new ImportResult<TTarget>
         {
-            return new ImportResult<TTarget>
-            {
-                Data = [],
-                TotalRows = 0,
-                SuccessfulRows = 0,
-                FailedRows = 0,
-                Duration = TimeSpan.Zero,
-                Errors =
-                [
-                    new ImportRowError
-                    {
-                        RowNumber = 0,
-                        Column = "N/A",
-                        Message = $"Invalid XML: {ex.Message}",
-                        Severity = ErrorSeverity.Critical
-                    }
-                ]
-            };
-        }
+            Data = results,
+            TotalRows = totalRows,
+            SuccessfulRows = results.Count,
+            FailedRows = failedRows,
+            Duration = TimeSpan.Zero,
+            Errors = errors
+        };
     }
 
     /// <inheritdoc/>
@@ -227,56 +193,27 @@ public sealed class XmlDataPorterProvider(
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
         where TTarget : class, new()
     {
-        XDocument document;
-        Result<TTarget>? loadError = null;
-        try
+        await foreach (var result in this.ProcessElementsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
         {
-            // Load and validate XML document outside iterator block
-            document = await XDocument.LoadAsync(inputStream, LoadOptions.None, cancellationToken).ConfigureAwait(false);
-        }
-        catch (XmlException ex)
-        {
-            loadError = Result<TTarget>.Failure()
-                .WithError(new ImportError($"Invalid XML: {ex.Message}", ex));
-            document = null;
-        }
-
-        if (loadError.HasValue)
-        {
-            yield return loadError.Value;
-            yield break;
-        }
-
-        if (document.Root is null)
-        {
-            yield return Result<TTarget>.Failure()
-                .WithError(new ImportError("Invalid XML: Root element not found"));
-            yield break;
-        }
-
-        var items = document.Root.Elements().ToList();
-
-        var rowNumber = 0;
-        foreach (var element in items)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            rowNumber++;
-
-            var errors = new List<ImportRowError>();
-
-            var item = this.MapElement<TTarget>(element, importConfiguration, rowNumber, errors);
-
-            if (item is not null)
+            if (result.FatalError is not null)
             {
-                yield return Result<TTarget>.Success(item);
+                yield return Result<TTarget>.Failure()
+                    .WithError(result.FatalError);
+                yield break;
             }
-            else if (errors.Count > 0)
+
+            if (result.Item is not null)
+            {
+                yield return Result<TTarget>.Success(result.Item);
+            }
+            else if (result.Errors.Count > 0)
             {
                 yield return Result<TTarget>.Failure()
                     .WithError(new ImportValidationError(
-                        errors[0].RowNumber,
-                        errors[0].Column,
-                        errors[0].Message));
+                        result.Errors[0].RowNumber,
+                        result.Errors[0].Column,
+                        result.Errors[0].Message,
+                        result.Errors[0].RawValue));
             }
         }
     }
@@ -289,89 +226,140 @@ public sealed class XmlDataPorterProvider(
         where TTarget : class, new()
     {
         var errors = new List<ImportRowError>();
+        var totalRows = 0;
+        var validRows = 0;
+
+        await foreach (var result in this.ProcessElementsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
+        {
+            if (result.FatalError is not null)
+            {
+                totalRows += result.RowNumber > 0 ? 1 : 0;
+                errors.Add(new ImportRowError
+                {
+                    RowNumber = result.RowNumber,
+                    Column = "N/A",
+                    Message = result.FatalError.Message,
+                    Severity = ErrorSeverity.Critical
+                });
+                break;
+            }
+
+            totalRows++;
+            if (result.Errors.Count == 0)
+            {
+                validRows++;
+            }
+            else
+            {
+                errors.AddRange(result.Errors);
+            }
+        }
+
+        return errors.Count == 0
+            ? ValidationResult.Success(totalRows)
+            : ValidationResult.Failure(totalRows, validRows, errors);
+    }
+
+    private async IAsyncEnumerable<XmlImportRowResult<TTarget>> ProcessElementsAsync<TTarget>(
+        Stream inputStream,
+        ImportConfiguration importConfiguration,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        var settings = this.configuration.GetReaderSettings();
+        settings.Async = true;
+        var rowNumber = 0;
+        var fatalResult = default(XmlImportRowResult<TTarget>);
+
+        using var reader = XmlReader.Create(inputStream, settings);
+        XmlNodeType rootNodeType;
 
         try
         {
-            var document = await XDocument.LoadAsync(inputStream, LoadOptions.None, cancellationToken);
-            var items = document.Root?.Elements().ToList() ?? [];
-
-            var validRows = 0;
-            var rowNumber = 0;
-
-            foreach (var element in items)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                rowNumber++;
-
-                var rowErrors = new List<ImportRowError>();
-
-                foreach (var column in importConfiguration.Columns)
-                {
-                    if (column.Ignore)
-                    {
-                        continue;
-                    }
-
-                    var key = column.SourceName ?? column.PropertyName;
-                    var childElement = element.Element(key);
-                    var attributeValue = element.Attribute(key)?.Value;
-                    var hasValue = childElement is not null || attributeValue is not null;
-                    var rawValue = childElement?.ToString(SaveOptions.DisableFormatting) ?? attributeValue;
-                    var targetType = column.PropertyInfo?.PropertyType ?? typeof(string);
-
-                    // Validate required
-                    if (column.IsRequired && !hasValue)
-                    {
-                        rowErrors.Add(new ImportRowError
-                        {
-                            RowNumber = rowNumber,
-                            Column = key,
-                            Message = column.RequiredMessage ?? $"{column.PropertyName} is required",
-                            RawValue = rawValue,
-                            Severity = ErrorSeverity.Error
-                        });
-                    }
-
-                    // Run custom validators
-                    foreach (var validator in column.Validators)
-                    {
-                        if (!validator.Validate(rawValue))
-                        {
-                            rowErrors.Add(new ImportRowError
-                            {
-                                RowNumber = rowNumber,
-                                Column = key,
-                                Message = validator.ErrorMessage,
-                                RawValue = rawValue,
-                                Severity = ErrorSeverity.Error
-                            });
-                        }
-                    }
-                }
-
-                if (rowErrors.Count == 0)
-                {
-                    validRows++;
-                }
-                else
-                {
-                    errors.AddRange(rowErrors);
-                }
-            }
-
-            return errors.Count == 0
-                ? ValidationResult.Success(items.Count)
-                : ValidationResult.Failure(items.Count, validRows, errors);
+            rootNodeType = await reader.MoveToContentAsync();
         }
         catch (XmlException ex)
         {
-            return ValidationResult.Failure(0, 0, [new ImportRowError
+            fatalResult = new XmlImportRowResult<TTarget>(0, null, [], new ImportError($"Invalid XML: {ex.Message}", ex));
+            rootNodeType = XmlNodeType.None;
+        }
+
+        if (fatalResult is not null)
+        {
+            yield return fatalResult;
+            yield break;
+        }
+
+        if (rootNodeType != XmlNodeType.Element)
+        {
+            yield break;
+        }
+
+        if (reader.IsEmptyElement)
+        {
+            yield break;
+        }
+
+        var rootDepth = reader.Depth;
+        await reader.ReadAsync();
+
+        while (!reader.EOF)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (reader.NodeType == XmlNodeType.Element && reader.Depth == rootDepth + 1)
             {
-                RowNumber = 0,
-                Column = "N/A",
-                Message = $"Invalid XML: {ex.Message}",
-                Severity = ErrorSeverity.Critical
-            }]);
+                rowNumber++;
+
+                XElement element = null;
+                try
+                {
+                    element = (XElement)await XNode.ReadFromAsync(reader, cancellationToken);
+                }
+                catch (XmlException ex)
+                {
+                    fatalResult = new XmlImportRowResult<TTarget>(
+                        rowNumber,
+                        null,
+                        [],
+                        new ImportError($"Invalid XML: {ex.Message}", ex));
+                    break;
+                }
+
+                var rowErrors = new List<ImportRowError>();
+                TTarget item = null;
+                ImportError fatalError = null;
+
+                try
+                {
+                    item = this.MapElement<TTarget>(element, importConfiguration, rowNumber, rowErrors);
+                }
+                catch (Exception ex)
+                {
+                    fatalError = new ImportError($"Row {rowNumber}: {ex.Message}", ex);
+                }
+
+                var result = new XmlImportRowResult<TTarget>(rowNumber, item, rowErrors, fatalError);
+                yield return result;
+
+                if (result.FatalError is not null ||
+                    (result.Errors.Count > 0 && importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport))
+                {
+                    yield break;
+                }
+
+                continue;
+            }
+
+            if (!await reader.ReadAsync())
+            {
+                break;
+            }
+        }
+
+        if (fatalResult is not null)
+        {
+            yield return fatalResult;
         }
     }
 
@@ -841,4 +829,11 @@ public sealed class XmlDataPorterProvider(
 
         return value.GetType().IsSimpleType();
     }
+
+    private sealed record XmlImportRowResult<TTarget>(
+        int RowNumber,
+        TTarget Item,
+        IReadOnlyList<ImportRowError> Errors,
+        ImportError FatalError)
+        where TTarget : class;
 }

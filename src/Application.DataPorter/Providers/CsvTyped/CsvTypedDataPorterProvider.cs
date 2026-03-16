@@ -39,7 +39,7 @@ public sealed class CsvTypedDataPorterProvider(
     public bool SupportsExport => true;
 
     /// <inheritdoc/>
-    public bool SupportsStreaming => false;
+    public bool SupportsStreaming => true;
 
     /// <inheritdoc/>
     public async Task<ExportResult> ExportAsync<TSource>(
@@ -215,11 +215,85 @@ public sealed class CsvTypedDataPorterProvider(
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
         where TTarget : class, new()
     {
-        var result = await this.ImportAsync<TTarget>(inputStream, importConfiguration, cancellationToken);
-
-        foreach (var item in result.Data)
+        using var reader = new StreamReader(inputStream, this.configuration.Encoding);
+        using var csv = new CsvReader(reader, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
         {
-            yield return Result<TTarget>.Success(item);
+            Delimiter = this.configuration.Delimiter,
+            HasHeaderRecord = true,
+            MissingFieldFound = null,
+            BadDataFound = null,
+            TrimOptions = this.configuration.TrimFields ? TrimOptions.Trim : TrimOptions.None
+        });
+
+        if (!await csv.ReadAsync())
+        {
+            yield break;
+        }
+
+        csv.ReadHeader();
+        var headers = csv.HeaderRecord ?? [];
+        var completedRootIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var currentRows = new List<CsvTypedRow>();
+        var currentRootId = default(string);
+
+        while (await csv.ReadAsync())
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            CsvTypedRow row = null;
+            ImportError readError = null;
+            try
+            {
+                row = this.ReadRow(csv, headers);
+            }
+            catch (Exception ex)
+            {
+                readError = new ImportError($"Failed to read typed CSV row: {ex.Message}", ex);
+            }
+
+            if (readError is not null)
+            {
+                yield return Result<TTarget>.Failure()
+                    .WithError(readError);
+                yield break;
+            }
+
+            if (currentRootId is null)
+            {
+                currentRootId = row.RootId;
+                currentRows.Add(row);
+                continue;
+            }
+
+            if (string.Equals(currentRootId, row.RootId, StringComparison.OrdinalIgnoreCase))
+            {
+                currentRows.Add(row);
+                continue;
+            }
+
+            foreach (var result in this.MaterializeStreamGroup<TTarget>(currentRows, importConfiguration))
+            {
+                yield return result;
+            }
+
+            completedRootIds.Add(currentRootId);
+            if (completedRootIds.Contains(row.RootId))
+            {
+                yield return Result<TTarget>.Failure()
+                    .WithError(new ImportError($"Non-contiguous RootId '{row.RootId}' is not supported for streaming typed CSV import."));
+                yield break;
+            }
+
+            currentRows = [row];
+            currentRootId = row.RootId;
+        }
+
+        if (currentRows.Count > 0)
+        {
+            foreach (var result in this.MaterializeStreamGroup<TTarget>(currentRows, importConfiguration))
+            {
+                yield return result;
+            }
         }
     }
 
@@ -472,6 +546,26 @@ public sealed class CsvTypedDataPorterProvider(
         }
 
         return results;
+    }
+
+    private IEnumerable<Result<TTarget>> MaterializeStreamGroup<TTarget>(
+        IReadOnlyList<CsvTypedRow> rows,
+        ImportConfiguration importConfiguration)
+        where TTarget : class, new()
+    {
+        var errors = new List<ImportRowError>();
+        var imported = this.Materialize<TTarget>(rows, importConfiguration, errors);
+
+        foreach (var error in errors)
+        {
+            yield return Result<TTarget>.Failure()
+                .WithError(new ImportValidationError(error.RowNumber, error.Column, error.Message, error.RawValue));
+        }
+
+        foreach (var item in imported)
+        {
+            yield return Result<TTarget>.Success(item);
+        }
     }
 
     private void ApplyRootPayload(

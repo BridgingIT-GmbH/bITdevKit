@@ -117,97 +117,50 @@ public sealed class JsonDataPorterProvider(
         CancellationToken cancellationToken = default)
         where TTarget : class, new()
     {
-        var options = this.configuration.GetSerializerOptions();
         var results = new List<TTarget>();
         var errors = new List<ImportRowError>();
+        var totalRows = 0;
+        var failedRows = 0;
 
-        try
+        await foreach (var result in this.ProcessRowsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
         {
-            var jsonData = await JsonSerializer.DeserializeAsync<List<Dictionary<string, JsonElement>>>(
-                inputStream, options, cancellationToken);
-
-            if (jsonData is null)
+            if (result.FatalError is not null)
             {
-                return new ImportResult<TTarget>
+                failedRows++;
+                totalRows += result.RowNumber > 0 ? 1 : 0;
+                errors.Add(new ImportRowError
                 {
-                    Data = [],
-                    TotalRows = 0,
-                    SuccessfulRows = 0,
-                    FailedRows = 0,
-                    Duration = TimeSpan.Zero
-                };
+                    RowNumber = result.RowNumber,
+                    Column = "N/A",
+                    Message = result.FatalError.Message,
+                    Severity = ErrorSeverity.Critical
+                });
+                break;
             }
 
-            var rowNumber = 0;
-            foreach (var row in jsonData)
+            totalRows++;
+
+            if (result.Item is not null)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                rowNumber++;
-
-                try
-                {
-                    var rowErrors = new List<ImportRowError>();
-                    var item = this.MapRow<TTarget>(row, importConfiguration, rowNumber, rowErrors);
-                    if (item is not null)
-                    {
-                        results.Add(item);
-                    }
-                    else if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport && rowErrors.Count > 0)
-                    {
-                        errors.AddRange(rowErrors);
-                        break;
-                    }
-
-                    errors.AddRange(rowErrors);
-                }
-                catch (Exception ex)
-                {
-                    errors.Add(new ImportRowError
-                    {
-                        RowNumber = rowNumber,
-                        Column = "N/A",
-                        Message = ex.Message,
-                        Severity = ErrorSeverity.Error
-                    });
-
-                    if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport)
-                    {
-                        break;
-                    }
-                }
+                results.Add(result.Item);
             }
 
-            return new ImportResult<TTarget>
+            if (result.Errors.Count > 0)
             {
-                Data = results,
-                TotalRows = jsonData.Count,
-                SuccessfulRows = results.Count,
-                FailedRows = jsonData.Count - results.Count,
-                Duration = TimeSpan.Zero,
-                Errors = errors
-            };
+                failedRows++;
+                errors.AddRange(result.Errors);
+            }
         }
-        catch (JsonException ex)
+
+        return new ImportResult<TTarget>
         {
-            return new ImportResult<TTarget>
-            {
-                Data = [],
-                TotalRows = 0,
-                SuccessfulRows = 0,
-                FailedRows = 0,
-                Duration = TimeSpan.Zero,
-                Errors =
-                [
-                    new ImportRowError
-                    {
-                        RowNumber = 0,
-                        Column = "N/A",
-                        Message = $"Invalid JSON: {ex.Message}",
-                        Severity = ErrorSeverity.Critical
-                    }
-                ]
-            };
-        }
+            Data = results,
+            TotalRows = totalRows,
+            SuccessfulRows = results.Count,
+            FailedRows = failedRows,
+            Duration = TimeSpan.Zero,
+            Errors = errors
+        };
     }
 
     /// <inheritdoc/>
@@ -217,70 +170,27 @@ public sealed class JsonDataPorterProvider(
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
         where TTarget : class, new()
     {
-        var options = this.configuration.GetSerializerOptions();
-
-        List<Dictionary<string, JsonElement>> jsonData = null;
-        Result<TTarget>? deserializationError = null;
-
-        try
+        await foreach (var result in this.ProcessRowsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
         {
-            jsonData = await JsonSerializer.DeserializeAsync<List<Dictionary<string, JsonElement>>>(
-                inputStream, options, cancellationToken);
-        }
-        catch (JsonException ex)
-        {
-            deserializationError = Result<TTarget>.Failure()
-                .WithError(new ImportError($"Invalid JSON: {ex.Message}"));
-        }
-
-        if (deserializationError.HasValue)
-        {
-            yield return deserializationError.Value;
-            yield break;
-        }
-
-        if (jsonData is null)
-        {
-            yield break;
-        }
-
-        var rowNumber = 0;
-        foreach (var row in jsonData)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            rowNumber++;
-
-            var errors = new List<ImportRowError>();
-            TTarget item = null;
-            Result<TTarget>? rowError = null;
-
-            try
+            if (result.FatalError is not null)
             {
-                item = this.MapRow<TTarget>(row, importConfiguration, rowNumber, errors);
-            }
-            catch (Exception ex)
-            {
-                rowError = Result<TTarget>.Failure()
-                    .WithError(new ImportError($"Row {rowNumber}: {ex.Message}", ex));
+                yield return Result<TTarget>.Failure()
+                    .WithError(result.FatalError);
+                yield break;
             }
 
-            if (rowError.HasValue)
+            if (result.Item is not null)
             {
-                yield return rowError.Value;
-                continue;
+                yield return Result<TTarget>.Success(result.Item);
             }
-
-            if (item is not null)
-            {
-                yield return Result<TTarget>.Success(item);
-            }
-            else if (errors.Count > 0)
+            else if (result.Errors.Count > 0)
             {
                 yield return Result<TTarget>.Failure()
                     .WithError(new ImportValidationError(
-                        errors[0].RowNumber,
-                        errors[0].Column,
-                        errors[0].Message));
+                        result.Errors[0].RowNumber,
+                        result.Errors[0].Column,
+                        result.Errors[0].Message,
+                        result.Errors[0].RawValue));
             }
         }
     }
@@ -292,94 +202,39 @@ public sealed class JsonDataPorterProvider(
         CancellationToken cancellationToken = default)
         where TTarget : class, new()
     {
-        var options = this.configuration.GetSerializerOptions();
         var errors = new List<ImportRowError>();
+        var totalRows = 0;
+        var validRows = 0;
 
-        try
+        await foreach (var result in this.ProcessRowsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
         {
-            var jsonData = await JsonSerializer.DeserializeAsync<List<Dictionary<string, JsonElement>>>(
-                inputStream, options, cancellationToken);
-
-            if (jsonData is null)
+            if (result.FatalError is not null)
             {
-                return ValidationResult.Success(0);
+                totalRows += result.RowNumber > 0 ? 1 : 0;
+                errors.Add(new ImportRowError
+                {
+                    RowNumber = result.RowNumber,
+                    Column = "N/A",
+                    Message = result.FatalError.Message,
+                    Severity = ErrorSeverity.Critical
+                });
+                break;
             }
 
-            var validRows = 0;
-            var rowNumber = 0;
-
-            foreach (var row in jsonData)
+            totalRows++;
+            if (result.Errors.Count == 0)
             {
-                cancellationToken.ThrowIfCancellationRequested();
-                rowNumber++;
-
-                var rowErrors = new List<ImportRowError>();
-
-                foreach (var column in importConfiguration.Columns)
-                {
-                    if (column.Ignore)
-                    {
-                        continue;
-                    }
-
-                    var key = column.SourceName ?? column.PropertyName;
-                    var hasValue = row.TryGetValue(key, out var jsonValue);
-                    var rawValue = hasValue ? jsonValue.ToString() : null;
-
-                    // Validate required
-                    if (column.IsRequired && (!hasValue || jsonValue.ValueKind == JsonValueKind.Null))
-                    {
-                        rowErrors.Add(new ImportRowError
-                        {
-                            RowNumber = rowNumber,
-                            Column = key,
-                            Message = column.RequiredMessage ?? $"{column.PropertyName} is required",
-                            RawValue = rawValue,
-                            Severity = ErrorSeverity.Error
-                        });
-                    }
-
-                    // Run custom validators
-                    foreach (var validator in column.Validators)
-                    {
-                        if (!validator.Validate(rawValue))
-                        {
-                            rowErrors.Add(new ImportRowError
-                            {
-                                RowNumber = rowNumber,
-                                Column = key,
-                                Message = validator.ErrorMessage,
-                                RawValue = rawValue,
-                                Severity = ErrorSeverity.Error
-                            });
-                        }
-                    }
-                }
-
-                if (rowErrors.Count == 0)
-                {
-                    validRows++;
-                }
-                else
-                {
-                    errors.AddRange(rowErrors);
-                }
+                validRows++;
             }
-
-            return errors.Count == 0
-                ? ValidationResult.Success(jsonData.Count)
-                : ValidationResult.Failure(jsonData.Count, validRows, errors);
-        }
-        catch (JsonException ex)
-        {
-            return ValidationResult.Failure(0, 0, [new ImportRowError
+            else
             {
-                RowNumber = 0,
-                Column = "N/A",
-                Message = $"Invalid JSON: {ex.Message}",
-                Severity = ErrorSeverity.Critical
-            }]);
+                errors.AddRange(result.Errors);
+            }
         }
+
+        return errors.Count == 0
+            ? ValidationResult.Success(totalRows)
+            : ValidationResult.Failure(totalRows, validRows, errors);
     }
 
     private Dictionary<string, object> CreateExportRow(
@@ -411,8 +266,91 @@ public sealed class JsonDataPorterProvider(
         return dict;
     }
 
+    private async IAsyncEnumerable<JsonImportRowResult<TTarget>> ProcessRowsAsync<TTarget>(
+        Stream inputStream,
+        ImportConfiguration importConfiguration,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        var options = this.configuration.GetSerializerOptions();
+        var rowNumber = 0;
+        var fatalResult = default(JsonImportRowResult<TTarget>);
+
+        await using var rows = JsonSerializer.DeserializeAsyncEnumerable<JsonElement>(
+            inputStream,
+            options,
+            cancellationToken: cancellationToken).GetAsyncEnumerator(cancellationToken);
+
+        while (true)
+        {
+            JsonElement row;
+            try
+            {
+                if (!await rows.MoveNextAsync())
+                {
+                    yield break;
+                }
+
+                row = rows.Current;
+            }
+            catch (JsonException ex)
+            {
+                fatalResult = new JsonImportRowResult<TTarget>(
+                    rowNumber > 0 ? rowNumber + 1 : 0,
+                    null,
+                    [],
+                    new ImportError($"Invalid JSON: {ex.Message}", ex));
+                break;
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+            rowNumber++;
+
+            JsonImportRowResult<TTarget> result;
+
+            if (row.ValueKind != JsonValueKind.Object)
+            {
+                result = new JsonImportRowResult<TTarget>(
+                    rowNumber,
+                    null,
+                    [],
+                    new ImportError($"Invalid JSON row {rowNumber}: each JSON array item must be an object."));
+            }
+            else
+            {
+                var rowErrors = new List<ImportRowError>();
+                TTarget item = null;
+                ImportError fatalError = null;
+
+                try
+                {
+                    item = this.MapRow<TTarget>(row.Clone(), importConfiguration, rowNumber, rowErrors);
+                }
+                catch (Exception ex)
+                {
+                    fatalError = new ImportError($"Row {rowNumber}: {ex.Message}", ex);
+                }
+
+                result = new JsonImportRowResult<TTarget>(rowNumber, item, rowErrors, fatalError);
+            }
+
+            yield return result;
+
+            if (result.FatalError is not null ||
+                (result.Errors.Count > 0 && importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport))
+            {
+                yield break;
+            }
+        }
+
+        if (fatalResult is not null)
+        {
+            yield return fatalResult;
+        }
+    }
+
     private TTarget MapRow<TTarget>(
-        Dictionary<string, JsonElement> row,
+        JsonElement row,
         ImportConfiguration config,
         int rowNumber,
         List<ImportRowError> errors)
@@ -433,7 +371,7 @@ public sealed class JsonDataPorterProvider(
             }
 
             var key = column.SourceName ?? column.PropertyName;
-            var hasValue = row.TryGetValue(key, out var jsonValue);
+            var hasValue = row.TryGetProperty(key, out var jsonValue);
             var rawValue = hasValue ? jsonValue.ToString() : null;
 
             try
@@ -544,4 +482,11 @@ public sealed class JsonDataPorterProvider(
             _ => element.ToString()
         };
     }
+
+    private sealed record JsonImportRowResult<TTarget>(
+        int RowNumber,
+        TTarget Item,
+        IReadOnlyList<ImportRowError> Errors,
+        ImportError FatalError)
+        where TTarget : class;
 }

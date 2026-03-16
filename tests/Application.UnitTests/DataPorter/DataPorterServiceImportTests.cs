@@ -482,6 +482,69 @@ public class DataPorterServiceImportTests
         results[0].Errors[0].Message.ShouldContain("Invalid Excel workbook");
     }
 
+    [Fact]
+    public async Task ImportStreamAsync_WithMalformedXmlAfterValidRow_YieldsSuccessThenFailure()
+    {
+        // Arrange
+        var sut = new DataPorterService([new XmlDataPorterProvider()], this.configurationMerger);
+        await using var stream = new MemoryStream("""
+<Root>
+  <Item>
+    <Id>1</Id>
+    <RequiredField>value</RequiredField>
+  </Item>
+  <Item>
+    <Id>2</Id>
+</Root>
+"""u8.ToArray());
+        var options = new ImportOptions { Format = Format.Xml };
+
+        // Act
+        var results = new List<Result<EntityWithRequiredColumn>>();
+        await foreach (var result in sut.ImportAsyncEnumerable<EntityWithRequiredColumn>(stream, options))
+        {
+            results.Add(result);
+        }
+
+        // Assert
+        results.Count.ShouldBe(2);
+        results[0].ShouldBeSuccess();
+        results[0].Value.Id.ShouldBe(1);
+        results[0].Value.RequiredField.ShouldBe("value");
+        results[1].ShouldBeFailure();
+        results[1].HasError<ImportError>().ShouldBeTrue();
+        results[1].Errors[0].Message.ShouldContain("Invalid XML");
+    }
+
+    [Fact]
+    public async Task ImportStreamAsync_WithMalformedJsonAfterValidRow_YieldsSuccessThenFailure()
+    {
+        // Arrange
+        var sut = new DataPorterService([new JsonDataPorterProvider()], this.configurationMerger);
+        await using var stream = new MemoryStream("""
+[
+  { "Id": 1, "RequiredField": "value" },
+  { "Id": 2
+"""u8.ToArray());
+        var options = new ImportOptions { Format = Format.Json };
+
+        // Act
+        var results = new List<Result<EntityWithRequiredColumn>>();
+        await foreach (var result in sut.ImportAsyncEnumerable<EntityWithRequiredColumn>(stream, options))
+        {
+            results.Add(result);
+        }
+
+        // Assert
+        results.Count.ShouldBe(2);
+        results[0].ShouldBeSuccess();
+        results[0].Value.Id.ShouldBe(1);
+        results[0].Value.RequiredField.ShouldBe("value");
+        results[1].ShouldBeFailure();
+        results[1].HasError<ImportError>().ShouldBeTrue();
+        results[1].Errors[0].Message.ShouldContain("Invalid JSON");
+    }
+
     private static TestImportProvider CreateMockImportProvider(
         Format format = Format.Excel,
         bool throwOnCancel = false)

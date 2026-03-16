@@ -128,6 +128,68 @@ public class DataPorterServiceRoundtripTests
         AssertNestedData([.. importResult.Value.Data], data);
     }
 
+    [Fact]
+    public async Task ExportAndImportStreamAsync_WithCsvProviderAndNestingEnabled_YieldsCompletedAggregates()
+    {
+        // Arrange
+        var sut = new DataPorterService(
+            [new CsvDataPorterProvider(new CsvConfiguration { UseNesting = true })],
+            this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.Csv, UseAttributes = false };
+        var importOptions = new ImportOptions { Format = Format.Csv, UseAttributes = false };
+
+        // Act
+        var exportResult = await sut.ExportAsync(data, stream, exportOptions);
+        stream.Position = 0;
+        var results = new List<Result<PersonEntity>>();
+        await foreach (var result in sut.ImportAsyncEnumerable<PersonEntity>(stream, importOptions))
+        {
+            results.Add(result);
+        }
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        results.Count.ShouldBe(data.Length);
+        results.All(result => result.IsSuccess).ShouldBeTrue();
+        AssertPersons([.. results.Select(result => result.Value)], data);
+        AssertNestedData([.. results.Select(result => result.Value)], data);
+    }
+
+    [Fact]
+    public async Task ImportStreamAsync_WithCsvProviderAndNonContiguousGroupedRows_YieldsFailure()
+    {
+        // Arrange
+        var sut = new DataPorterService(
+            [new CsvDataPorterProvider(new CsvConfiguration { UseNesting = true })],
+            this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var exportStream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.Csv, UseAttributes = false };
+        var importOptions = new ImportOptions { Format = Format.Csv, UseAttributes = false };
+
+        var exportResult = await sut.ExportAsync(data, exportStream, exportOptions);
+        var lines = ReadTextContent(exportStream)
+            .Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries);
+        var content = string.Join("\r\n", [lines[0], lines[1], lines[3], lines[2]]) + "\r\n";
+        await using var importStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(content));
+
+        // Act
+        var results = new List<Result<PersonEntity>>();
+        await foreach (var result in sut.ImportAsyncEnumerable<PersonEntity>(importStream, importOptions))
+        {
+            results.Add(result);
+        }
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        results.Count.ShouldBe(3);
+        results.Count(result => result.IsSuccess).ShouldBe(2);
+        results.Count(result => result.IsFailure).ShouldBe(1);
+        results[^1].Errors[0].Message.ShouldContain("non-contiguous");
+    }
+
     [Theory]
     [InlineData(Format.Csv)]
     [InlineData(Format.CsvTyped)]
@@ -288,6 +350,71 @@ public class DataPorterServiceRoundtripTests
         importResult.ShouldBeSuccess();
         AssertPersons([.. importResult.Value.Data], data);
         AssertNestedData([.. importResult.Value.Data], data);
+    }
+
+    [Fact]
+    public async Task ExportAndImportStreamAsync_WithCsvTypedProvider_YieldsCompletedAggregates()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvTypedDataPorterProvider()], this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.CsvTyped, UseAttributes = false };
+        var importOptions = new ImportOptions { Format = Format.CsvTyped, UseAttributes = false };
+
+        // Act
+        var exportResult = await sut.ExportAsync(data, stream, exportOptions);
+        stream.Position = 0;
+        var results = new List<Result<PersonEntity>>();
+        await foreach (var result in sut.ImportAsyncEnumerable<PersonEntity>(stream, importOptions))
+        {
+            results.Add(result);
+        }
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        results.Count.ShouldBe(data.Length);
+        results.All(result => result.IsSuccess).ShouldBeTrue();
+        AssertPersons([.. results.Select(result => result.Value)], data);
+        AssertNestedData([.. results.Select(result => result.Value)], data);
+    }
+
+    [Fact]
+    public async Task ImportStreamAsync_WithCsvTypedProviderAndNonContiguousRootIds_YieldsFailure()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvTypedDataPorterProvider()], this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var exportStream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.CsvTyped, UseAttributes = false };
+        var importOptions = new ImportOptions { Format = Format.CsvTyped, UseAttributes = false };
+
+        var exportResult = await sut.ExportAsync(data, exportStream, exportOptions);
+        var lines = ReadTextContent(exportStream)
+            .Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries)
+            .ToList();
+        var firstRootId = lines[1].Split(',')[1];
+        var secondRootStartIndex = lines.FindIndex(2, line => line.Split(',')[1] != firstRootId);
+        var lastFirstRootIndex = lines.FindLastIndex(line => line.Split(',')[1] == firstRootId);
+        var movedLine = lines[lastFirstRootIndex];
+        lines.RemoveAt(lastFirstRootIndex);
+        lines.Insert(secondRootStartIndex + 1, movedLine);
+        var content = string.Join("\r\n", lines) + "\r\n";
+        await using var importStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(content));
+
+        // Act
+        var results = new List<Result<PersonEntity>>();
+        await foreach (var result in sut.ImportAsyncEnumerable<PersonEntity>(importStream, importOptions))
+        {
+            results.Add(result);
+        }
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        results.Count.ShouldBe(3);
+        results.Count(result => result.IsSuccess).ShouldBe(2);
+        results.Count(result => result.IsFailure).ShouldBe(1);
+        results[^1].Errors[0].Message.ShouldContain("Non-contiguous RootId");
     }
 
     [Fact]

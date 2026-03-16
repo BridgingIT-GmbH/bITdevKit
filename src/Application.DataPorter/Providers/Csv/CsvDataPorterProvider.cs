@@ -168,100 +168,44 @@ public sealed class CsvDataPorterProvider(
     {
         var results = new List<TTarget>();
         var errors = new List<ImportRowError>();
+        var totalRows = 0;
+        var failedRows = 0;
 
-        using var reader = new StreamReader(inputStream, this.configuration.Encoding);
-        using var csv = new CsvReader(reader, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
+        await foreach (var result in this.ProcessRowsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
         {
-            Delimiter = this.configuration.Delimiter,
-            HasHeaderRecord = true,
-            MissingFieldFound = null,
-            BadDataFound = null,
-            TrimOptions = this.configuration.TrimFields ? TrimOptions.Trim : TrimOptions.None
-        });
+            totalRows += result.ProcessedRows;
 
-        await csv.ReadAsync();
-        csv.ReadHeader();
-
-        var plan = this.BuildImportPlan(importConfiguration, csv.HeaderRecord ?? []);
-        var headerErrors = this.CreateMissingColumnErrors(plan.MissingColumns, importConfiguration.HeaderRowIndex);
-        if (headerErrors.Count > 0)
-        {
-            return new ImportResult<TTarget>
+            if (result.Item is not null)
             {
-                Data = [],
-                TotalRows = 0,
-                SuccessfulRows = 0,
-                FailedRows = headerErrors.Count,
-                Duration = TimeSpan.Zero,
-                Errors = headerErrors
-            };
-        }
-
-        var rowNumber = importConfiguration.HeaderRowIndex + importConfiguration.SkipRows;
-        var groupedResults = new Dictionary<string, TTarget>(StringComparer.OrdinalIgnoreCase);
-
-        // Skip initial rows
-        for (var i = 0; i < importConfiguration.SkipRows; i++)
-        {
-            if (!await csv.ReadAsync())
-            {
-                break;
+                results.Add(result.Item);
             }
-        }
 
-        while (await csv.ReadAsync())
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            rowNumber++;
-
-            try
+            if (result.FatalError is not null)
             {
-                var rowValues = this.ReadRowValues(csv, plan.Columns);
-                var rowErrors = new List<ImportRowError>();
-                var pendingItem = this.GetOrCreateItem(rowValues, plan, importConfiguration, groupedResults);
-                var success = this.MapRow(rowValues, pendingItem.Item, plan, importConfiguration, rowNumber, rowErrors);
-
-                if (!success && importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport)
-                {
-                    errors.AddRange(rowErrors);
-                    break;
-                }
-
-                if (success && pendingItem.IsNew)
-                {
-                    if (pendingItem.Key is not null)
-                    {
-                        groupedResults[pendingItem.Key] = pendingItem.Item;
-                    }
-
-                    results.Add(pendingItem.Item);
-                }
-
-                errors.AddRange(rowErrors);
-            }
-            catch (Exception ex)
-            {
+                failedRows += result.ProcessedRows > 0 ? result.ProcessedRows : 1;
                 errors.Add(new ImportRowError
                 {
-                    RowNumber = rowNumber,
+                    RowNumber = result.RowNumber,
                     Column = "N/A",
-                    Message = ex.Message,
-                    Severity = ErrorSeverity.Error
+                    Message = result.FatalError.Message,
+                    Severity = ErrorSeverity.Critical
                 });
+                break;
+            }
 
-                if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport)
-                {
-                    break;
-                }
+            if (result.Errors.Count > 0)
+            {
+                failedRows += result.ProcessedRows > 0 ? result.ProcessedRows : result.Errors.Count;
+                errors.AddRange(result.Errors);
             }
         }
 
         return new ImportResult<TTarget>
         {
             Data = results,
-            TotalRows = rowNumber - importConfiguration.HeaderRowIndex - importConfiguration.SkipRows,
+            TotalRows = totalRows,
             SuccessfulRows = results.Count,
-            FailedRows = errors.Count,
+            FailedRows = failedRows,
             Duration = TimeSpan.Zero,
             Errors = errors
         };
@@ -274,17 +218,28 @@ public sealed class CsvDataPorterProvider(
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
         where TTarget : class, new()
     {
-        var result = await this.ImportAsync<TTarget>(inputStream, importConfiguration, cancellationToken);
-
-        foreach (var item in result.Data)
+        await foreach (var result in this.ProcessRowsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
         {
-            yield return Result<TTarget>.Success(item);
-        }
+            if (result.FatalError is not null)
+            {
+                yield return Result<TTarget>.Failure()
+                    .WithError(result.FatalError);
+                yield break;
+            }
 
-        foreach (var error in result.Errors)
-        {
-            yield return Result<TTarget>.Failure()
-                .WithError(new ImportValidationError(error.RowNumber, error.Column, error.Message));
+            if (result.Item is not null)
+            {
+                yield return Result<TTarget>.Success(result.Item);
+            }
+            else if (result.Errors.Count > 0)
+            {
+                yield return Result<TTarget>.Failure()
+                    .WithError(new ImportValidationError(
+                        result.Errors[0].RowNumber,
+                        result.Errors[0].Column,
+                        result.Errors[0].Message,
+                        result.Errors[0].RawValue));
+            }
         }
     }
 
@@ -295,11 +250,251 @@ public sealed class CsvDataPorterProvider(
         CancellationToken cancellationToken = default)
         where TTarget : class, new()
     {
-        var result = await this.ImportAsync<TTarget>(inputStream, importConfiguration, cancellationToken);
+        var errors = new List<ImportRowError>();
+        var totalRows = 0;
+        var validRows = 0;
 
-        return result.Errors.Count == 0
-            ? ValidationResult.Success(result.TotalRows)
-            : ValidationResult.Failure(result.TotalRows, result.SuccessfulRows, result.Errors);
+        await foreach (var result in this.ProcessRowsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
+        {
+            totalRows += result.ProcessedRows;
+
+            if (result.FatalError is not null)
+            {
+                errors.Add(new ImportRowError
+                {
+                    RowNumber = result.RowNumber,
+                    Column = "N/A",
+                    Message = result.FatalError.Message,
+                    Severity = ErrorSeverity.Critical
+                });
+                break;
+            }
+
+            if (result.Errors.Count > 0)
+            {
+                errors.AddRange(result.Errors);
+            }
+            else
+            {
+                validRows += result.ProcessedRows;
+            }
+        }
+
+        return errors.Count == 0
+            ? ValidationResult.Success(totalRows)
+            : ValidationResult.Failure(totalRows, validRows, errors);
+    }
+
+    private async IAsyncEnumerable<CsvImportRowResult<TTarget>> ProcessRowsAsync<TTarget>(
+        Stream inputStream,
+        ImportConfiguration importConfiguration,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        using var reader = new StreamReader(inputStream, this.configuration.Encoding);
+        using var csv = new CsvReader(reader, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
+        {
+            Delimiter = this.configuration.Delimiter,
+            HasHeaderRecord = true,
+            MissingFieldFound = null,
+            BadDataFound = null,
+            TrimOptions = this.configuration.TrimFields ? TrimOptions.Trim : TrimOptions.None
+        });
+
+        if (!await csv.ReadAsync())
+        {
+            yield break;
+        }
+
+        csv.ReadHeader();
+
+        var plan = this.BuildImportPlan(importConfiguration, csv.HeaderRecord ?? []);
+        var headerErrors = this.CreateMissingColumnErrors(plan.MissingColumns, importConfiguration.HeaderRowIndex);
+        if (headerErrors.Count > 0)
+        {
+            foreach (var error in headerErrors)
+            {
+                yield return new CsvImportRowResult<TTarget>(error.RowNumber, 0, null, [error], null);
+            }
+
+            yield break;
+        }
+
+        for (var i = 0; i < importConfiguration.SkipRows; i++)
+        {
+            if (!await csv.ReadAsync())
+            {
+                yield break;
+            }
+        }
+
+        if (plan.CollectionProperty is null)
+        {
+            var rowNumber = importConfiguration.HeaderRowIndex + importConfiguration.SkipRows;
+
+            while (await csv.ReadAsync())
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                rowNumber++;
+
+                var result = this.ProcessFlatRow<TTarget>(csv, plan, importConfiguration, rowNumber);
+                yield return result;
+
+                if ((result.FatalError is not null || result.Errors.Count > 0) &&
+                    importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport)
+                {
+                    yield break;
+                }
+            }
+
+            yield break;
+        }
+
+        var completedKeys = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var currentKey = default(string);
+        var currentItem = default(TTarget);
+        var currentHasSuccessfulRows = false;
+        var rowNumberForGroup = importConfiguration.HeaderRowIndex + importConfiguration.SkipRows;
+
+        while (await csv.ReadAsync())
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            rowNumberForGroup++;
+
+            IReadOnlyDictionary<string, string> rowValues = null;
+            CsvImportRowResult<TTarget> rowResult = null;
+
+            try
+            {
+                rowValues = this.ReadRowValues(csv, plan.Columns);
+            }
+            catch (Exception ex)
+            {
+                rowResult = new CsvImportRowResult<TTarget>(
+                    rowNumberForGroup,
+                    1,
+                    null,
+                    [],
+                    new ImportError($"Row {rowNumberForGroup}: {ex.Message}", ex));
+            }
+
+            if (rowResult is not null)
+            {
+                yield return rowResult;
+
+                if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport)
+                {
+                    yield break;
+                }
+
+                continue;
+            }
+
+            var rowKey = this.GetGroupingKey(rowValues, plan);
+
+            if (currentKey is null)
+            {
+                currentKey = rowKey;
+                currentItem = importConfiguration.Factory is not null
+                    ? (TTarget)importConfiguration.Factory()
+                    : new TTarget();
+            }
+            else if (!string.Equals(currentKey, rowKey, StringComparison.OrdinalIgnoreCase))
+            {
+                if (currentHasSuccessfulRows)
+                {
+                    yield return new CsvImportRowResult<TTarget>(rowNumberForGroup - 1, 0, currentItem, [], null);
+                }
+
+                completedKeys.Add(currentKey);
+
+                if (completedKeys.Contains(rowKey))
+                {
+                    yield return new CsvImportRowResult<TTarget>(
+                        rowNumberForGroup,
+                        1,
+                        null,
+                        [],
+                        new ImportError($"Row {rowNumberForGroup}: non-contiguous grouped rows are not supported for streaming CSV import."));
+                    yield break;
+                }
+
+                currentKey = rowKey;
+                currentItem = importConfiguration.Factory is not null
+                    ? (TTarget)importConfiguration.Factory()
+                    : new TTarget();
+                currentHasSuccessfulRows = false;
+            }
+
+            var rowErrors = new List<ImportRowError>();
+
+            try
+            {
+                var success = this.MapRow(rowValues, currentItem, plan, importConfiguration, rowNumberForGroup, rowErrors);
+                rowResult = success
+                    ? new CsvImportRowResult<TTarget>(rowNumberForGroup, 1, null, [], null)
+                    : new CsvImportRowResult<TTarget>(rowNumberForGroup, 1, null, rowErrors, null);
+
+                if (success)
+                {
+                    currentHasSuccessfulRows = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                rowResult = new CsvImportRowResult<TTarget>(
+                    rowNumberForGroup,
+                    1,
+                    null,
+                    [],
+                    new ImportError($"Row {rowNumberForGroup}: {ex.Message}", ex));
+            }
+
+            yield return rowResult;
+
+            if ((rowResult.FatalError is not null || rowResult.Errors.Count > 0) &&
+                importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport)
+            {
+                yield break;
+            }
+        }
+
+        if (currentKey is not null && currentHasSuccessfulRows)
+        {
+            yield return new CsvImportRowResult<TTarget>(rowNumberForGroup, 0, currentItem, [], null);
+        }
+    }
+
+    private CsvImportRowResult<TTarget> ProcessFlatRow<TTarget>(
+        CsvReader csv,
+        CsvImportPlan plan,
+        ImportConfiguration importConfiguration,
+        int rowNumber)
+        where TTarget : class, new()
+    {
+        var rowErrors = new List<ImportRowError>();
+
+        try
+        {
+            var rowValues = this.ReadRowValues(csv, plan.Columns);
+            var item = importConfiguration.Factory is not null
+                ? (TTarget)importConfiguration.Factory()
+                : new TTarget();
+            var success = this.MapRow(rowValues, item, plan, importConfiguration, rowNumber, rowErrors);
+
+            return success
+                ? new CsvImportRowResult<TTarget>(rowNumber, 1, item, [], null)
+                : new CsvImportRowResult<TTarget>(rowNumber, 1, null, rowErrors, null);
+        }
+        catch (Exception ex)
+        {
+            return new CsvImportRowResult<TTarget>(
+                rowNumber,
+                1,
+                null,
+                [],
+                new ImportError($"Row {rowNumber}: {ex.Message}", ex));
+        }
     }
 
     private CsvExportPlan BuildExportPlan(ExportConfiguration config)
@@ -951,6 +1146,14 @@ public sealed class CsvDataPorterProvider(
     }
 
     private sealed record CsvImportColumn(ImportColumnConfiguration SourceColumn, string HeaderName, PropertyInfo[] PropertyPath, bool IsCollection);
+
+    private sealed record CsvImportRowResult<TTarget>(
+        int RowNumber,
+        int ProcessedRows,
+        TTarget Item,
+        IReadOnlyList<ImportRowError> Errors,
+        ImportError FatalError)
+        where TTarget : class;
 
     private sealed record PendingCsvItem<TTarget>(TTarget Item, string Key, bool IsNew)
         where TTarget : class;

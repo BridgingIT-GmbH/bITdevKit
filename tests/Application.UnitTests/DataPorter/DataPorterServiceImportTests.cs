@@ -411,6 +411,24 @@ public class DataPorterServiceImportTests
         result.Value.Errors[0].Column.ShouldBe(nameof(EntityWithRequiredColumn.RequiredField));
     }
 
+    [Fact]
+    public async Task ImportAsync_WithCsvTypedConversionError_DoesNotReturnPartialAggregate()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvTypedDataPorterProvider()], this.configurationMerger);
+        await using var stream = CreateInvalidCsvTypedStream();
+        var options = new ImportOptions { Format = Format.CsvTyped };
+
+        // Act
+        var result = await sut.ImportAsync<SimpleEntity>(stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Data.ShouldBeEmpty();
+        result.Value.Errors.Count.ShouldBe(1);
+        result.Value.Errors[0].Column.ShouldBe(nameof(SimpleEntity.Id));
+    }
+
     [Theory]
     [InlineData(Format.Csv)]
     [InlineData(Format.Excel)]
@@ -621,6 +639,14 @@ public class DataPorterServiceImportTests
 """u8.ToArray()),
             _ => throw new NotSupportedException()
         };
+    }
+
+    private static MemoryStream CreateInvalidCsvTypedStream()
+    {
+        return new MemoryStream("""
+RecordType,RootId,RecordId,ParentId,Collection,Index,Id,Name
+SimpleEntity,root-1,root-1,,,,abc,Broken
+"""u8.ToArray());
     }
 
     private static MemoryStream CreateExcelStream(string[] headers, object[][] rows)

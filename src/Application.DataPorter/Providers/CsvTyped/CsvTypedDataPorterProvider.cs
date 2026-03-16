@@ -817,10 +817,20 @@ public sealed class CsvTypedDataPorterProvider(
             var rowLookup = group.ToDictionary(row => row.RecordId, StringComparer.OrdinalIgnoreCase);
             var rootRow = group.FirstOrDefault(row => string.Equals(row.RecordId, row.RootId, StringComparison.OrdinalIgnoreCase))
                 ?? group.First();
+            var groupErrors = new List<ImportRowError>();
 
-            this.ApplyRootPayload(item, rootRow, rootColumns, importConfiguration, errors);
-            this.ApplyChildren(item, group.ToList(), rowLookup, rootColumns, importConfiguration, errors);
-            results.Add(item);
+            this.ApplyRootPayload(item, rootRow, rootColumns, importConfiguration, groupErrors);
+            this.ApplyChildren(item, group.ToList(), rowLookup, rootColumns, importConfiguration, groupErrors);
+
+            foreach (var error in groupErrors)
+            {
+                errors.Add(error);
+            }
+
+            if (groupErrors.Count == 0)
+            {
+                results.Add(item);
+            }
         }
 
         return results;

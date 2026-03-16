@@ -557,7 +557,7 @@ public sealed class JsonDataPorterProvider(
                 }
 
                 // Convert and set value
-                var convertedValue = this.ConvertJsonElement(jsonValue, column);
+                var convertedValue = this.ConvertJsonElement(jsonValue, column, config);
                 assignments.Add(() => column.SetValue(item, convertedValue));
             }
             catch (Exception ex)
@@ -587,7 +587,7 @@ public sealed class JsonDataPorterProvider(
         return item;
     }
 
-    private object ConvertJsonElement(JsonElement element, ImportColumnConfiguration column)
+    private object ConvertJsonElement(JsonElement element, ImportColumnConfiguration column, ImportConfiguration config)
     {
         var options = this.configuration.GetSerializerOptions();
         var targetType = column.PropertyInfo?.PropertyType ?? typeof(string);
@@ -595,8 +595,8 @@ public sealed class JsonDataPorterProvider(
         if (column.Converter is not null)
         {
             return element.ValueKind == JsonValueKind.String
-                ? column.ConvertValue(element.GetString())
-                : column.ConvertValue(element.GetRawText());
+                ? column.ConvertValue(element.GetString(), config.Culture)
+                : column.ConvertValue(element.GetRawText(), config.Culture);
         }
 
         if (targetType.SupportsStructuredValue())
@@ -606,7 +606,7 @@ public sealed class JsonDataPorterProvider(
 
         return element.ValueKind switch
         {
-            JsonValueKind.String => column.ConvertValue(element.GetString()),
+            JsonValueKind.String => column.ConvertValue(element.GetString(), config.Culture),
             JsonValueKind.Number when targetType == typeof(int) || targetType == typeof(int?) => element.GetInt32(),
             JsonValueKind.Number when targetType == typeof(long) || targetType == typeof(long?) => element.GetInt64(),
             JsonValueKind.Number when targetType == typeof(decimal) || targetType == typeof(decimal?) => element.GetDecimal(),

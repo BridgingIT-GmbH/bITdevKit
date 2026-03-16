@@ -64,7 +64,8 @@ public async Task<IEnumerable<Order>> ImportOrdersAsync(Stream input)
 {
     var result = await this.importer.ImportAsync<Order>(input, new ImportOptions
     {
-        Format = Format.Csv
+        Format = Format.Csv,
+        Culture = new CultureInfo("de-DE")
     });
 
     if (result.IsSuccess && !result.Value.HasErrors)
@@ -83,6 +84,35 @@ public async Task<IEnumerable<Order>> ImportOrdersAsync(Stream input)
     return [];
 }
 ```
+
+### Import Culture And Header Rows
+
+`ImportOptions` controls runtime parsing behavior for a specific import request:
+
+- `ImportOptions.Culture` is used by the default import conversion pipeline, not only by custom converters.
+- This means localized numbers and dates such as `1,23` or `31.12.2026` can be parsed without a custom `ParseWith(...)` handler when the target type is compatible.
+- `HeaderRowIndex` selects the actual header row for providers that support row-oriented tabular imports such as CSV and Excel.
+- `SkipRows` skips rows after the configured header row, not before it.
+
+```csharp
+var result = await importer.ImportAsync<Order>(input, new ImportOptions
+{
+    Format = Format.Csv,
+    Culture = new CultureInfo("de-DE"),
+    HeaderRowIndex = 1, // row 0 contains a title/preamble
+    SkipRows = 0
+});
+```
+
+Example CSV with a preamble row:
+
+```text
+Order export generated on 2026-03-17
+Order ID;Customer;Total
+ORD-1001;Ada;1,23
+```
+
+In this example, `HeaderRowIndex = 1` tells the importer to use the second line as the header row, and `Culture = new CultureInfo("de-DE")` allows the default decimal parser to read `1,23` correctly.
 
 ## Configuration Approaches
 
@@ -264,6 +294,12 @@ This is preferable to flattening unbounded collections into `Item1`, `Item2`, `I
 - `Collection` - relationship name for child rows when applicable
 - `Index` - collection order for repeated child items
 
+**Validation behavior for typed-row CSV imports:**
+
+- required fields and configured validators are enforced during import the same way as in the other import providers
+- invalid aggregates are reported through import/validation errors and are excluded from the returned data set
+- failed rows are not partially materialized into `ImportResult.Data`
+
 **Mapping rules for export:**
 
 - the root `PersonEntity` is emitted as `RecordType = Person`
@@ -280,7 +316,7 @@ This is preferable to flattening unbounded collections into `Item1`, `Item2`, `I
 - materialize the root row first
 - attach direct child rows by matching `ParentId`
 - rebuild collections by grouping child rows by `Collection` and ordering by `Index`
-- use invariant parsing for `Guid`, enum, integer, and nullable values
+- use the configured import culture for culture-sensitive primitives, while still parsing stable identifiers such as `Guid` and enums consistently
 - streaming assumes all rows for one `RootId` are contiguous; if a completed `RootId` appears again later, streaming import fails explicitly
 
 **Typed CSV example:**
@@ -646,6 +682,12 @@ ForColumn(o => o.TotalAmount)
     });
 ```
 
+Runtime culture can also be set per import/export operation through `ImportOptions.Culture` and `ExportOptions.Culture`. Provider configuration and runtime options serve different purposes:
+
+- provider `Culture` config controls format-specific behavior such as CSV reader/writer defaults
+- `ImportOptions.Culture` controls default value parsing for imported numbers, dates, and other culture-sensitive primitives
+- `ExportOptions.Culture` controls default formatting when exporting values without an explicit converter override
+
 Example using mapping-based converters for external codes:
 
 ```csharp
@@ -746,6 +788,12 @@ Providers can be configured via configuration:
     },
     "Csv": {
       "Delimiter": ";",
+      "Culture": "de-DE",
+      "TrimFields": true
+    },
+    "CsvTyped": {
+      "Delimiter": ";",
+      "Culture": "de-DE",
       "TrimFields": true
     },
     "Pdf": {
@@ -760,8 +808,11 @@ Providers can be configured via configuration:
 services.AddDataPorter(configuration)
     .WithExcel()  // Reads from DataPorter:Excel
     .WithCsv()    // Reads from DataPorter:Csv
+    .WithCsvTyped() // Reads from DataPorter:CsvTyped
     .WithPdf();   // Reads from DataPorter:Pdf
 ```
+
+Use provider configuration for application-wide defaults, and `ImportOptions`/`ExportOptions` when a specific import or export request needs a different culture, header row, or validation policy.
 
 ## Architecture
 

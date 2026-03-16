@@ -121,6 +121,14 @@ public class EntityWithValidation
 }
 
 /// <summary>
+/// Entity with decimal value for culture-aware import tests.
+/// </summary>
+public class EntityWithDecimalAmount
+{
+    public decimal Amount { get; set; }
+}
+
+/// <summary>
 /// Entity with import disabled on a property.
 /// </summary>
 public class EntityWithImportDisabled

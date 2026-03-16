@@ -409,6 +409,14 @@ public sealed class CsvDataPorterProvider(
             TrimOptions = this.configuration.TrimFields ? TrimOptions.Trim : TrimOptions.None
         });
 
+        for (var i = 0; i < importConfiguration.HeaderRowIndex; i++)
+        {
+            if (!await csv.ReadAsync())
+            {
+                yield break;
+            }
+        }
+
         if (!await csv.ReadAsync())
         {
             yield break;
@@ -438,7 +446,7 @@ public sealed class CsvDataPorterProvider(
 
         if (plan.CollectionProperty is null)
         {
-            var rowNumber = importConfiguration.HeaderRowIndex + importConfiguration.SkipRows;
+            var rowNumber = importConfiguration.HeaderRowIndex + importConfiguration.SkipRows + 1;
 
             while (await csv.ReadAsync())
             {
@@ -462,7 +470,7 @@ public sealed class CsvDataPorterProvider(
         var currentKey = default(string);
         var currentItem = default(TTarget);
         var currentHasSuccessfulRows = false;
-        var rowNumberForGroup = importConfiguration.HeaderRowIndex + importConfiguration.SkipRows;
+        var rowNumberForGroup = importConfiguration.HeaderRowIndex + importConfiguration.SkipRows + 1;
 
         while (await csv.ReadAsync())
         {
@@ -969,7 +977,7 @@ public sealed class CsvDataPorterProvider(
                     continue;
                 }
 
-                var convertedValue = this.ConvertImportValue(column, rawValue);
+                var convertedValue = this.ConvertImportValue(column, rawValue, config);
                 if (column.IsCollection)
                 {
                     if (collectionItem is null)
@@ -1016,14 +1024,14 @@ public sealed class CsvDataPorterProvider(
         return true;
     }
 
-    private object ConvertImportValue(CsvImportColumn column, string rawValue)
+    private object ConvertImportValue(CsvImportColumn column, string rawValue, ImportConfiguration config)
     {
         if (column.SourceColumn.Converter is not null || column.SourceColumn.Parser is not null)
         {
-            return column.SourceColumn.ConvertValue(rawValue);
+            return column.SourceColumn.ConvertValue(rawValue, config.Culture);
         }
 
-        return ConvertToType(rawValue, column.PropertyPath[^1].PropertyType);
+        return ConvertToType(rawValue, column.PropertyPath[^1].PropertyType, config.Culture);
     }
 
     private object CreateCollectionItem(
@@ -1155,7 +1163,7 @@ public sealed class CsvDataPorterProvider(
             && column.PropertyInfo?.PropertyType.SupportsStructuredValue() == true;
     }
 
-    private static object ConvertToType(string value, Type targetType)
+    private static object ConvertToType(string value, Type targetType, CultureInfo culture)
     {
         if (targetType == typeof(string))
         {
@@ -1175,27 +1183,27 @@ public sealed class CsvDataPorterProvider(
 
         if (targetType == typeof(int))
         {
-            return int.Parse(value, CultureInfo.InvariantCulture);
+            return int.Parse(value, culture);
         }
 
         if (targetType == typeof(long))
         {
-            return long.Parse(value, CultureInfo.InvariantCulture);
+            return long.Parse(value, culture);
         }
 
         if (targetType == typeof(decimal))
         {
-            return decimal.Parse(value, CultureInfo.InvariantCulture);
+            return decimal.Parse(value, culture);
         }
 
         if (targetType == typeof(double))
         {
-            return double.Parse(value, CultureInfo.InvariantCulture);
+            return double.Parse(value, culture);
         }
 
         if (targetType == typeof(float))
         {
-            return float.Parse(value, CultureInfo.InvariantCulture);
+            return float.Parse(value, culture);
         }
 
         if (targetType == typeof(bool))
@@ -1205,12 +1213,12 @@ public sealed class CsvDataPorterProvider(
 
         if (targetType == typeof(DateTime))
         {
-            return DateTime.Parse(value, CultureInfo.InvariantCulture);
+            return DateTime.Parse(value, culture);
         }
 
         if (targetType == typeof(DateTimeOffset))
         {
-            return DateTimeOffset.Parse(value, CultureInfo.InvariantCulture);
+            return DateTimeOffset.Parse(value, culture);
         }
 
         if (targetType == typeof(Guid))
@@ -1223,7 +1231,7 @@ public sealed class CsvDataPorterProvider(
             return Enum.Parse(targetType, value, ignoreCase: true);
         }
 
-        return Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture);
+        return Convert.ChangeType(value, targetType, culture);
     }
 
     private sealed record CsvExportPlan(IReadOnlyList<CsvExportColumn> Columns, PropertyInfo CollectionProperty);

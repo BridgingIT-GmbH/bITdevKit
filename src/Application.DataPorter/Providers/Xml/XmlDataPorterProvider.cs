@@ -591,11 +591,11 @@ public sealed class XmlDataPorterProvider(
 
                 if (column.Converter is null && childElement is not null && targetType.SupportsStructuredValue())
                 {
-                    convertedValue = this.DeserializeStructuredValue(childElement, targetType);
+                    convertedValue = this.DeserializeStructuredValue(childElement, targetType, config.Culture);
                 }
                 else
                 {
-                    convertedValue = column.ConvertValue(childElement?.Value ?? attributeValue);
+                    convertedValue = column.ConvertValue(childElement?.Value ?? attributeValue, config.Culture);
                 }
 
                 assignments.Add(() => column.SetValue(item, convertedValue));
@@ -748,7 +748,7 @@ public sealed class XmlDataPorterProvider(
         }
     }
 
-    private object DeserializeStructuredValue(XElement element, Type targetType)
+    private object DeserializeStructuredValue(XElement element, Type targetType, CultureInfo culture)
     {
         if (!element.HasElements && !element.HasAttributes && string.IsNullOrWhiteSpace(element.Value))
         {
@@ -763,8 +763,8 @@ public sealed class XmlDataPorterProvider(
             foreach (var child in element.Elements())
             {
                 var item = elementType.SupportsStructuredValue()
-                    ? this.DeserializeStructuredValue(child, elementType)
-                    : this.ConvertToType(child.Value, elementType);
+                    ? this.DeserializeStructuredValue(child, elementType, culture)
+                    : this.ConvertToType(child.Value, elementType, culture);
 
                 this.AddCollectionItem(collection, item);
             }
@@ -774,7 +774,7 @@ public sealed class XmlDataPorterProvider(
 
         if (!targetType.SupportsStructuredValue())
         {
-            return this.ConvertToType(element.Value, targetType);
+            return this.ConvertToType(element.Value, targetType, culture);
         }
 
         var instance = Activator.CreateInstance(targetType);
@@ -788,8 +788,8 @@ public sealed class XmlDataPorterProvider(
             }
 
             var value = property.PropertyType.SupportsStructuredValue()
-                ? this.DeserializeStructuredValue(child, property.PropertyType)
-                : this.ConvertToType(child.Value, property.PropertyType);
+                ? this.DeserializeStructuredValue(child, property.PropertyType, culture)
+                : this.ConvertToType(child.Value, property.PropertyType, culture);
 
             property.SetValue(instance, value);
         }
@@ -836,7 +836,7 @@ public sealed class XmlDataPorterProvider(
             ?.GetGenericArguments()[0];
     }
 
-    private object ConvertToType(string value, Type targetType)
+    private object ConvertToType(string value, Type targetType, CultureInfo culture)
     {
         if (targetType == typeof(string))
         {
@@ -856,27 +856,27 @@ public sealed class XmlDataPorterProvider(
 
         if (targetType == typeof(int))
         {
-            return int.Parse(value, CultureInfo.InvariantCulture);
+            return int.Parse(value, culture);
         }
 
         if (targetType == typeof(long))
         {
-            return long.Parse(value, CultureInfo.InvariantCulture);
+            return long.Parse(value, culture);
         }
 
         if (targetType == typeof(decimal))
         {
-            return decimal.Parse(value, CultureInfo.InvariantCulture);
+            return decimal.Parse(value, culture);
         }
 
         if (targetType == typeof(double))
         {
-            return double.Parse(value, CultureInfo.InvariantCulture);
+            return double.Parse(value, culture);
         }
 
         if (targetType == typeof(float))
         {
-            return float.Parse(value, CultureInfo.InvariantCulture);
+            return float.Parse(value, culture);
         }
 
         if (targetType == typeof(bool))
@@ -886,12 +886,12 @@ public sealed class XmlDataPorterProvider(
 
         if (targetType == typeof(DateTime))
         {
-            return DateTime.Parse(value, CultureInfo.InvariantCulture);
+            return DateTime.Parse(value, culture);
         }
 
         if (targetType == typeof(DateTimeOffset))
         {
-            return DateTimeOffset.Parse(value, CultureInfo.InvariantCulture);
+            return DateTimeOffset.Parse(value, culture);
         }
 
         if (targetType == typeof(Guid))
@@ -904,7 +904,7 @@ public sealed class XmlDataPorterProvider(
             return Enum.Parse(targetType, value, ignoreCase: true);
         }
 
-        return Convert.ChangeType(value, targetType, CultureInfo.InvariantCulture);
+        return Convert.ChangeType(value, targetType, culture);
     }
 
     private bool IsSimpleType(object value)

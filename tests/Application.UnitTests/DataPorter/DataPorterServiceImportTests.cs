@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
+using System.Globalization;
 using BridgingIT.DevKit.Application.DataPorter;
 using ClosedXML.Excel;
 
@@ -430,6 +431,115 @@ public class DataPorterServiceImportTests
     }
 
     [Theory]
+    [InlineData(Format.Excel)]
+    [InlineData(Format.Json)]
+    [InlineData(Format.Xml)]
+    public async Task ImportAsync_WithCultureSpecificDecimal_UsesConfiguredCulture(Format format)
+    {
+        // Arrange
+        var sut = new DataPorterService([CreateProvider(format)], this.configurationMerger);
+        await using var stream = CreateLocalizedDecimalStream(format);
+        var options = new ImportOptions
+        {
+            Format = format,
+            Culture = CultureInfo.GetCultureInfo("de-DE")
+        };
+
+        // Act
+        var result = await sut.ImportAsync<EntityWithDecimalAmount>(stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Errors.ShouldBeEmpty();
+        result.Value.Data.Count.ShouldBe(1);
+        result.Value.Data[0].Amount.ShouldBe(1.23m);
+    }
+
+    [Fact]
+    public async Task ImportAsync_WithCultureSpecificCsvDecimal_UsesConfiguredCulture()
+    {
+        // Arrange
+        var provider = new CsvDataPorterProvider(new CsvConfiguration { Delimiter = ";" });
+        var sut = new DataPorterService([provider], this.configurationMerger);
+        await using var stream = CreateLocalizedDecimalStream(Format.Csv);
+        var options = new ImportOptions
+        {
+            Format = Format.Csv,
+            Culture = CultureInfo.GetCultureInfo("de-DE")
+        };
+
+        // Act
+        var result = await sut.ImportAsync<EntityWithDecimalAmount>(stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Errors.ShouldBeEmpty();
+        result.Value.Data.Count.ShouldBe(1);
+        result.Value.Data[0].Amount.ShouldBe(1.23m);
+    }
+
+    [Fact]
+    public async Task ImportAsync_WithCsvHeaderRowIndex_UsesConfiguredHeaderRow()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvDataPorterProvider()], this.configurationMerger);
+        await using var stream = CreateCsvWithPreambleStream();
+        var options = new ImportOptions
+        {
+            Format = Format.Csv,
+            HeaderRowIndex = 1
+        };
+
+        // Act
+        var result = await sut.ImportAsync<EntityWithRequiredColumn>(stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Errors.ShouldBeEmpty();
+        result.Value.Data.Count.ShouldBe(1);
+        result.Value.Data[0].Id.ShouldBe(1);
+        result.Value.Data[0].RequiredField.ShouldBe("value");
+    }
+
+    [Fact]
+    public async Task ImportAsync_WithCsvTypedMissingRequiredValue_ReturnsErrorAndNoData()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvTypedDataPorterProvider()], this.configurationMerger);
+        await using var stream = CreateCsvTypedMissingRequiredStream();
+        var options = new ImportOptions { Format = Format.CsvTyped };
+
+        // Act
+        var result = await sut.ImportAsync<EntityWithRequiredColumn>(stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Data.ShouldBeEmpty();
+        result.Value.Errors.Count.ShouldBe(1);
+        result.Value.Errors[0].Column.ShouldBe(nameof(EntityWithRequiredColumn.RequiredField));
+        result.Value.Errors[0].Message.ShouldContain("required");
+    }
+
+    [Fact]
+    public async Task ImportAsync_WithCsvTypedInvalidValidatorValue_ReturnsErrorAndNoData()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvTypedDataPorterProvider()], this.configurationMerger);
+        await using var stream = CreateCsvTypedInvalidValidatorStream();
+        var options = new ImportOptions { Format = Format.CsvTyped };
+
+        // Act
+        var result = await sut.ImportAsync<EntityWithValidation>(stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Data.ShouldBeEmpty();
+        result.Value.Errors.Count.ShouldBe(2);
+        result.Value.Errors.Select(e => e.Column).ShouldContain(nameof(EntityWithValidation.Email));
+        result.Value.Errors.Select(e => e.Column).ShouldContain(nameof(EntityWithValidation.MinLengthField));
+    }
+
+    [Theory]
     [InlineData(Format.Csv)]
     [InlineData(Format.Excel)]
     [InlineData(Format.Json)]
@@ -646,6 +756,53 @@ public class DataPorterServiceImportTests
         return new MemoryStream("""
 RecordType,RootId,RecordId,ParentId,Collection,Index,Id,Name
 SimpleEntity,root-1,root-1,,,,abc,Broken
+"""u8.ToArray());
+    }
+
+    private static MemoryStream CreateLocalizedDecimalStream(Format format)
+    {
+        return format switch
+        {
+            Format.Csv => new MemoryStream("Amount\r\n1,23\r\n"u8.ToArray()),
+            Format.Excel => CreateExcelStream([nameof(EntityWithDecimalAmount.Amount)], [new object[] { "1,23" }]),
+            Format.Json => new MemoryStream("""
+[
+  { "Amount": "1,23" }
+]
+"""u8.ToArray()),
+            Format.Xml => new MemoryStream("""
+<Root>
+  <Item>
+    <Amount>1,23</Amount>
+  </Item>
+</Root>
+"""u8.ToArray()),
+            _ => throw new NotSupportedException()
+        };
+    }
+
+    private static MemoryStream CreateCsvWithPreambleStream()
+    {
+        return new MemoryStream("""
+Report for import
+Id,RequiredField
+1,value
+"""u8.ToArray());
+    }
+
+    private static MemoryStream CreateCsvTypedMissingRequiredStream()
+    {
+        return new MemoryStream("""
+RecordType,RootId,RecordId,ParentId,Collection,Index,Id,RequiredField
+EntityWithRequiredColumn,root-1,root-1,,,,1,
+"""u8.ToArray());
+    }
+
+    private static MemoryStream CreateCsvTypedInvalidValidatorStream()
+    {
+        return new MemoryStream("""
+RecordType,RootId,RecordId,ParentId,Collection,Index,Id,Email,MinLengthField
+EntityWithValidation,root-1,root-1,,,,1,not-an-email,no
 """u8.ToArray());
     }
 

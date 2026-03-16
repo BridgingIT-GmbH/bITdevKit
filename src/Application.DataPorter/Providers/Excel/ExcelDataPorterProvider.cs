@@ -757,7 +757,7 @@ public sealed class ExcelDataPorterProvider(
                 }
 
                 // Convert and set value
-                var convertedValue = columnConfig.ConvertValue(rawValue);
+                var convertedValue = columnConfig.ConvertValue(rawValue, config.Culture);
                 assignments.Add(() => columnConfig.SetValue(item, convertedValue));
             }
             catch (Exception ex)

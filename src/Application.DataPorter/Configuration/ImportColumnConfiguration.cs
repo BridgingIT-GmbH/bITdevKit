@@ -132,7 +132,7 @@ public sealed class ImportColumnConfiguration : IColumnConfiguration
     /// </summary>
     /// <param name="rawValue">The raw value from the import source.</param>
     /// <returns>The converted value.</returns>
-    public object ConvertValue(string rawValue)
+    public object ConvertValue(string rawValue, System.Globalization.CultureInfo culture = null)
     {
         if (string.IsNullOrEmpty(rawValue))
         {
@@ -151,7 +151,8 @@ public sealed class ImportColumnConfiguration : IColumnConfiguration
                 PropertyName = this.PropertyName,
                 PropertyType = this.PropertyInfo?.PropertyType ?? typeof(string),
                 EntityType = this.PropertyInfo?.DeclaringType ?? typeof(object),
-                Format = this.Format
+                Format = this.Format,
+                Culture = culture ?? System.Globalization.CultureInfo.InvariantCulture
             };
 
             return this.Converter.ConvertFromImport(rawValue, context);
@@ -159,10 +160,10 @@ public sealed class ImportColumnConfiguration : IColumnConfiguration
 
         // Default conversion
         var targetType = this.PropertyInfo?.PropertyType ?? typeof(string);
-        return ConvertToType(rawValue, targetType);
+        return ConvertToType(rawValue, targetType, culture ?? System.Globalization.CultureInfo.InvariantCulture);
     }
 
-    private static object ConvertToType(string value, Type targetType)
+    private static object ConvertToType(string value, Type targetType, System.Globalization.CultureInfo culture)
     {
         if (targetType == typeof(string))
         {
@@ -182,27 +183,27 @@ public sealed class ImportColumnConfiguration : IColumnConfiguration
 
         if (targetType == typeof(int))
         {
-            return int.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+            return int.Parse(value, culture);
         }
 
         if (targetType == typeof(long))
         {
-            return long.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+            return long.Parse(value, culture);
         }
 
         if (targetType == typeof(decimal))
         {
-            return decimal.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+            return decimal.Parse(value, culture);
         }
 
         if (targetType == typeof(double))
         {
-            return double.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+            return double.Parse(value, culture);
         }
 
         if (targetType == typeof(float))
         {
-            return float.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+            return float.Parse(value, culture);
         }
 
         if (targetType == typeof(bool))
@@ -212,12 +213,12 @@ public sealed class ImportColumnConfiguration : IColumnConfiguration
 
         if (targetType == typeof(DateTime))
         {
-            return DateTime.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+            return DateTime.Parse(value, culture);
         }
 
         if (targetType == typeof(DateTimeOffset))
         {
-            return DateTimeOffset.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+            return DateTimeOffset.Parse(value, culture);
         }
 
         if (targetType == typeof(Guid))
@@ -230,6 +231,6 @@ public sealed class ImportColumnConfiguration : IColumnConfiguration
             return Enum.Parse(targetType, value, ignoreCase: true);
         }
 
-        return Convert.ChangeType(value, targetType, System.Globalization.CultureInfo.InvariantCulture);
+        return Convert.ChangeType(value, targetType, culture);
     }
 }

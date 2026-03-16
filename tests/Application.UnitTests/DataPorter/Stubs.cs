@@ -282,6 +282,31 @@ public class TestExportProvider : IDataExportProvider
         });
     }
 
+    public async Task<ExportResult> ExportAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        Stream outputStream,
+        ExportConfiguration configuration,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        if (this.throwOnCancel)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+        }
+
+        var dataList = await data.ToListAsync(cancellationToken);
+        var bytes = System.Text.Encoding.UTF8.GetBytes("test export data");
+        await outputStream.WriteAsync(bytes, cancellationToken);
+
+        return new ExportResult
+        {
+            BytesWritten = bytes.Length,
+            TotalRows = dataList.Count,
+            Duration = TimeSpan.Zero,
+            Format = this.Format
+        };
+    }
+
     public Task<ExportResult> ExportAsync(
         IEnumerable<(IEnumerable<object> Data, ExportConfiguration Configuration)> dataSets,
         Stream outputStream,
@@ -298,6 +323,30 @@ public class TestExportProvider : IDataExportProvider
             Duration = TimeSpan.Zero,
             Format = this.Format
         });
+    }
+
+    public async Task<ExportResult> ExportAsync(
+        IEnumerable<(IAsyncEnumerable<object> Data, ExportConfiguration Configuration)> dataSets,
+        Stream outputStream,
+        CancellationToken cancellationToken = default)
+    {
+        var totalRows = 0;
+
+        foreach (var (data, _) in dataSets)
+        {
+            totalRows += (await data.ToListAsync(cancellationToken)).Count;
+        }
+
+        var bytes = System.Text.Encoding.UTF8.GetBytes("test multi export data");
+        await outputStream.WriteAsync(bytes, cancellationToken);
+
+        return new ExportResult
+        {
+            BytesWritten = bytes.Length,
+            TotalRows = totalRows,
+            Duration = TimeSpan.Zero,
+            Format = this.Format
+        };
     }
 }
 

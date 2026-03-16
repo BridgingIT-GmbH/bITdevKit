@@ -10,7 +10,7 @@ A flexible, extensible data export/import framework for .NET supporting multiple
 
 - **Multiple Format Support**: Excel (.xlsx), CSV, typed-row CSV, JSON, XML, and PDF (export only)
 - **Dual Configuration Approaches**: Profile-based (similar to AutoMapper) or attribute-based
-- **Streaming Support**: Memory-efficient import for large files using `IAsyncEnumerable`
+- **Streaming Support**: Incremental import and export using `IAsyncEnumerable`
 - **Validation**: Built-in validation with customizable rules and error handling
 - **Value Converters**: Transform values during import/export with custom converters
 - **Result Pattern**: Integrated with bIT.bITdevKit Result pattern for consistent error handling
@@ -217,7 +217,7 @@ services.AddDataPorter(configuration)
 
 ### Excel Provider
 
-Uses ClosedXML for Excel file handling.
+Uses [ClosedXML](https://github.com/ClosedXML/ClosedXML) for Excel file handling.
 
 ```csharp
 services.AddDataPorter()
@@ -233,7 +233,7 @@ services.AddDataPorter()
 
 ### Typed-Row CSV Provider
 
-Uses CsvHelper with a typed-rows schema for hierarchical object graphs in a single CSV file.
+Uses [CsvHelper](https://joshclose.github.io/CsvHelper/) with a typed-rows schema for hierarchical object graphs in a single CSV file.
 
 ```csharp
 services.AddDataPorter()
@@ -271,6 +271,7 @@ This is preferable to flattening unbounded collections into `Item1`, `Item2`, `I
 - the nested `BillingAddress` value object is emitted as a child row with `RecordType = BillingAddress`, `ParentId = <person id>`, `Collection = BillingAddress`
 - each `PreviousAddresses` item is emitted as its own child row with `RecordType = PreviousAddress`, `ParentId = <person id>`, `Collection = PreviousAddresses`, and `Index = 0..n`
 - value objects without their own persisted identifier should use a deterministic synthetic `RecordId`, for example `<RootId>:BillingAddress`
+- export computes the payload header schema up front from the configured root columns and reachable child types, then writes rows incrementally without buffering the full object graph
 
 **Parsing and rehydration rules for import:**
 
@@ -357,6 +358,12 @@ Id,FirstName,LastName,Address_Street,Address_City,PreviousAddresses_Street,Previ
 
 During import, repeated rows are grouped back into a single aggregate and the nested collection is hydrated again.
 
+Export behavior:
+
+- `ExportAsync(IEnumerable<T> ...)` writes CSV rows directly as source items are enumerated
+- `ExportAsync(IAsyncEnumerable<T> ...)` writes rows directly from the async source without materializing the full result set
+- multi-dataset export writes each section sequentially to the target stream
+
 `ImportAsyncEnumerable(...)` works incrementally:
 
 - if there is no nested collection grouping, it yields one result per physical CSV row
@@ -367,7 +374,7 @@ When `UseNesting` is disabled, nested structured properties without explicit con
 
 ### JSON Provider
 
-Uses System.Text.Json for JSON handling.
+Uses [System.Text.Json](https://learn.microsoft.com/en-us/dotnet/api/system.text.json?view=net-10.0) for JSON handling.
 
 ```csharp
 services.AddDataPorter()
@@ -379,8 +386,11 @@ services.AddDataPorter()
     });
 ```
 
-Import behavior:
+Behavior:
 
+- `ExportAsync(IEnumerable<T> ...)` writes the top-level JSON array incrementally, one object at a time
+- `ExportAsync(IAsyncEnumerable<T> ...)` writes the top-level JSON array incrementally from the async source
+- multi-dataset export writes the top-level JSON object incrementally, one dataset array at a time
 - `ImportAsyncEnumerable(...)` reads the top-level JSON array incrementally and processes one item at a time
 - each array item is mapped and validated independently
 - malformed JSON after earlier valid items produces earlier successes first and then a failed result
@@ -388,7 +398,7 @@ Import behavior:
 
 ### XML Provider
 
-Uses System.Xml for XML handling.
+Uses [System.Xml](https://learn.microsoft.com/en-us/dotnet/api/system.xml?view=net-10.0) for XML handling.
 
 ```csharp
 services.AddDataPorter()
@@ -402,8 +412,11 @@ services.AddDataPorter()
     });
 ```
 
-Import behavior:
+Behavior:
 
+- `ExportAsync(IEnumerable<T> ...)` writes the XML document incrementally using `XmlWriter`
+- `ExportAsync(IAsyncEnumerable<T> ...)` writes item elements incrementally from the async source
+- multi-dataset export writes dataset sections sequentially within the output document
 - `ImportAsyncEnumerable(...)` reads direct child elements under the configured root one item at a time using forward-only XML reading
 - each item element is mapped and validated independently
 - malformed XML after earlier valid items produces earlier successes first and then a failed result
@@ -411,7 +424,7 @@ Import behavior:
 
 ### PDF Provider (Export Only)
 
-Uses PDFsharp-MigraDoc for PDF generation (MIT licensed).
+Uses [PDFsharp-MigraDoc](https://www.pdfsharp.com/) for PDF generation (MIT licensed).
 
 ```csharp
 services.AddDataPorter()
@@ -456,9 +469,18 @@ The PDF provider now uses a platform-aware font resolver so exports can work on 
 
 ## Advanced Features
 
-### Streaming Import
+### Streaming APIs
 
-For large files, use async enumerables to avoid loading every result into memory:
+For large files or export sources produced asynchronously, use the async APIs to process items incrementally:
+
+```csharp
+await exporter.ExportAsync(GetOrdersAsync(), stream, new ExportOptions
+{
+    Format = Format.Xml
+});
+```
+
+For import, async enumerables avoid loading every result into memory:
 
 ```csharp
 await foreach (var result in importer.ImportAsyncEnumerable<Order>(stream, options))
@@ -473,6 +495,10 @@ await foreach (var result in importer.ImportAsyncEnumerable<Order>(stream, optio
     }
 }
 ```
+
+### Advanced Streaming Scenarios
+
+Advanced usage samples such as HTTP streaming endpoints, background file processing, and scheduled partner-feed exports are collected in the appendix so the main flow can stay focused on the core dataporter concepts.
 
 ### Validation Without Import
 
@@ -509,6 +535,21 @@ var dataSets = new[]
 await exporter.ExportAsync(dataSets, stream, new ExportOptions
 {
     Format = Format.Excel
+});
+```
+
+Async multi-dataset export is also supported:
+
+```csharp
+var dataSets = new[]
+{
+    AsyncExportDataSet.Create(GetOrdersAsync(), "Orders"),
+    AsyncExportDataSet.Create(GetProductsAsync(), "Products")
+};
+
+await exporter.ExportAsync(dataSets, stream, new ExportOptions
+{
+    Format = Format.Json
 });
 ```
 
@@ -639,6 +680,10 @@ public enum ImportValidationBehavior
 
 Streaming behavior depends on the provider:
 
+- **CSV** exports rows directly as they are enumerated
+- **Typed CSV** exports rows directly after computing the header schema from the configured type graph
+- **JSON** exports top-level array items incrementally
+- **XML** exports top-level item elements incrementally
 - **JSON** streams top-level array items incrementally
 - **XML** streams top-level item elements incrementally
 - **CSV** streams flat rows directly, and streams nested-collection imports as completed aggregates once the grouping key changes
@@ -737,6 +782,7 @@ This separation keeps the public API stable while allowing each file format to h
 - **Service layer**
   - `DataPorterService` is the façade used by application code.
   - It selects providers by `Format`, applies logging, timing, cancellation, and error handling.
+  - It supports both `IEnumerable<T>` and `IAsyncEnumerable<T>` export sources.
 
 - **Provider model**
   - `IDataPorterProvider` describes provider capabilities such as supported format, file extensions, import/export support, and streaming support.
@@ -786,6 +832,16 @@ Application code
   -> matching export provider
   -> per-column value access + converter execution
   -> format-specific writer
+```
+
+With async export, the source can stay incremental all the way into the provider writer:
+
+```text
+IAsyncEnumerable<T>
+  -> DataPorterService
+  -> matching export provider
+  -> row/item transformation
+  -> output stream
 ```
 
 Typical import flow:
@@ -861,3 +917,289 @@ The result is an architecture where:
 | PDFsharp-MigraDoc | 6.2.0    | PDF generation (MIT licensed) |
 | System.Text.Json  | Built-in | JSON handling                 |
 | System.Xml.Linq   | Built-in | XML handling                  |
+
+## Appendix A: Advanced Usage Scenarios
+
+### HTTP API Streaming
+
+This scenario shows a modern ASP.NET Core Minimal API that streams export data directly into the HTTP response body and streams import data directly from the HTTP request body.
+
+```csharp
+using BridgingIT.DevKit.Application.DataPorter;
+using BridgingIT.DevKit.Common;
+
+app.MapGet("/api/orders/export", async Task<IResult> (
+    HttpContext httpContext,
+    IDataExporter exporter,
+    OrderRepository repository,
+    ILoggerFactory loggerFactory,
+    CancellationToken cancellationToken) =>
+{
+    httpContext.Response.StatusCode = StatusCodes.Status200OK;
+    httpContext.Response.ContentType = ContentType.CSV.MimeType();
+    httpContext.Response.Headers.ContentDisposition = "attachment; filename=orders.csv";
+
+    var result = await exporter.ExportAsync(
+        repository.StreamOrdersAsync(cancellationToken),
+        httpContext.Response.Body, // write directly in the response stream without buffering
+        new ExportOptions
+        {
+            Format = Format.Csv,
+            UseAttributes = false
+        },
+        cancellationToken);
+
+    if (result.IsFailure)
+    {
+        var logger = loggerFactory.CreateLogger("OrdersExport");
+        logger.LogError(
+            "Order export failed: {Errors}",
+            string.Join(", ", result.Errors.Select(e => e.Message)));
+
+        if (!httpContext.Response.HasStarted)
+        {
+            return TypedResults.Problem(
+                title: "Order export failed",
+                detail: string.Join("; ", result.Errors.Select(e => e.Message)));
+        }
+
+        httpContext.Abort();
+    }
+
+    return Results.Empty;
+})
+.WithName("ExportOrders")
+.Produces(StatusCodes.Status200OK, contentType: ContentType.CSV.MimeType())
+.ProducesProblem(StatusCodes.Status500InternalServerError);
+
+app.MapPost("/api/orders/import", async Task<IResult> (
+    HttpRequest request,
+    IDataImporter importer,
+    OrderRepository repository,
+    CancellationToken cancellationToken) =>
+{
+    var requestContentType = ContentTypeExtensions.FromMimeType(
+        request.ContentType?.Split(';', 2)[0].Trim() ?? string.Empty);
+
+    if (requestContentType != ContentType.CSV)
+    {
+        return TypedResults.BadRequest(new
+        {
+            error = $"Expected '{ContentType.CSV.MimeType()}' request content type."
+        });
+    }
+
+    var imported = 0;
+    var failed = 0;
+    var errors = new List<string>();
+
+    await foreach (var row in importer.ImportAsyncEnumerable<Order>(
+        request.Body, // read directly from the request stream without buffering
+        new ImportOptions
+        {
+            Format = Format.Csv,
+            UseAttributes = false
+        },
+        cancellationToken))
+    {
+        if (row.IsSuccess)
+        {
+            var upsertResult = await repository.UpsertAsync(row.Value, cancellationToken);
+
+            if (upsertResult.IsSuccess)
+            {
+                imported++;
+            }
+            else
+            {
+                failed++;
+                errors.AddRange(upsertResult.Errors.Select(e => e.Message));
+            }
+        }
+        else
+        {
+            failed++;
+            errors.AddRange(row.Errors.Select(e => e.Message));
+        }
+    }
+
+    return TypedResults.Ok(new
+    {
+        imported,
+        failed,
+        errors
+    });
+})
+.WithName("ImportOrders")
+.Accepts<Stream>(ContentType.CSV.MimeType())
+.Produces(StatusCodes.Status200OK)
+.Produces(StatusCodes.Status400BadRequest);
+```
+
+HTTP usage for the export endpoint:
+
+- `GET /api/orders/export`
+- response content type: `text/csv`
+- response body: streamed CSV rows written incrementally by the dataporter
+
+```http
+GET /api/orders/export HTTP/1.1
+Host: api.example.com
+Accept: text/csv
+```
+
+HTTP usage for the import endpoint:
+
+- `POST /api/orders/import`
+- request content type: `text/csv`
+- request body: streamed CSV rows of orders
+- response body: import summary with success and failure counts
+
+```http
+POST /api/orders/import HTTP/1.1
+Host: api.example.com
+Content-Type: text/csv
+
+Id,CustomerName,Total
+ORD-1001,Ada,42.50
+ORD-1002,Linus,18.25
+```
+
+What happens in this scenario:
+
+- export streams `IAsyncEnumerable<Order>` directly into `Response.Body`
+- import passes `Request.Body` directly into `ImportAsyncEnumerable<Order>(...)`
+- the endpoint handles each imported row as soon as it is parsed
+- the same pattern also works with `Format.Xml`, `Format.Csv`, and `Format.CsvTyped`
+
+### Background File Import Pipeline
+
+This scenario fits a worker service that watches a drop folder or object store and imports large partner files without loading the whole file into memory first.
+
+```csharp
+public sealed class PartnerOrderImportWorker : BackgroundService
+{
+    private readonly IDataImporter importer;
+    private readonly PartnerInbox inbox;
+    private readonly OrderImportService importService;
+    private readonly ILogger<PartnerOrderImportWorker> logger;
+
+    public PartnerOrderImportWorker(
+        IDataImporter importer,
+        PartnerInbox inbox,
+        OrderImportService importService,
+        ILogger<PartnerOrderImportWorker> logger)
+    {
+        this.importer = importer;
+        this.inbox = inbox;
+        this.importService = importService;
+        this.logger = logger;
+    }
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        await foreach (var file in this.inbox.StreamPendingFilesAsync(stoppingToken))
+        {
+            await using var input = await file.OpenReadAsync(stoppingToken);
+
+            await foreach (var row in this.importer.ImportAsyncEnumerable<Order>(
+                input, // read directly from the file stream without buffering
+                new ImportOptions
+                {
+                    Format = Format.CsvTyped,
+                    ValidationBehavior = ImportValidationBehavior.CollectErrors
+                },
+                stoppingToken))
+            {
+                if (row.IsSuccess)
+                {
+                    await this.importService.UpsertAsync(row.Value, stoppingToken);
+                }
+                else
+                {
+                    this.logger.LogWarning(
+                        "Import error in {FileName}: {Errors}",
+                        file.Name,
+                        string.Join("; ", row.Errors.Select(e => e.Message)));
+                }
+            }
+
+            await file.MarkProcessedAsync(stoppingToken);
+        }
+    }
+}
+```
+
+What happens in this scenario:
+
+- each partner file is opened as a stream only when it is ready to process
+- the dataporter reads rows or aggregates incrementally from the input stream
+- successful rows are persisted immediately instead of waiting for the whole file
+- invalid rows can be logged or dead-lettered while valid rows continue to flow through
+
+### Scheduled Partner Feed Export
+
+This scenario fits a scheduled job that produces a large outbound feed and writes it directly into object storage without first creating a full in-memory document.
+
+```csharp
+using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using BridgingIT.DevKit.Common;
+
+public sealed class PartnerFeedJob
+{
+    private readonly IDataExporter exporter;
+    private readonly OrderRepository repository;
+    private readonly BlobContainerClient containerClient;
+
+    public PartnerFeedJob(
+        IDataExporter exporter,
+        OrderRepository repository,
+        BlobContainerClient containerClient)
+    {
+        this.exporter = exporter;
+        this.repository = repository;
+        this.containerClient = containerClient;
+    }
+
+    public async Task RunAsync(CancellationToken cancellationToken)
+    {
+        var blobClient = this.containerClient.GetBlobClient(
+            $"feeds/orders-{DateTime.UtcNow:yyyyMMdd}.csv");
+
+        await using var output = await blobClient.OpenWriteAsync( // write directly to the blob stream without buffering
+            overwrite: true,
+            new BlobOpenWriteOptions
+            {
+                HttpHeaders = new BlobHttpHeaders
+                {
+                    ContentType = ContentType.CSV.MimeType()
+                }
+            },
+            cancellationToken);
+
+        var result = await this.exporter.ExportAsync(
+            this.repository.StreamPartnerOrdersAsync(cancellationToken), // stream directly from the repository without buffering
+            output, // stream directly into the blob storage without buffering
+            new ExportOptions
+            {
+                Format = Format.Csv,
+                UseAttributes = false
+            },
+            cancellationToken);
+
+        if (result.IsFailure)
+        {
+            throw new InvalidOperationException(
+                $"Partner feed export failed: {string.Join("; ", result.Errors.Select(e => e.Message))}");
+        }
+    }
+}
+```
+
+What happens in this scenario:
+
+- the repository produces an `IAsyncEnumerable<Order>`
+- the exporter writes each row directly into the destination stream
+- the object store receives the feed incrementally as bytes are produced
+- peak memory usage stays bounded by the provider writer and stream buffers instead of the full export size

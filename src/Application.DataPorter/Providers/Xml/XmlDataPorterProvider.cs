@@ -54,7 +54,6 @@ public sealed class XmlDataPorterProvider(
         CancellationToken cancellationToken = default)
         where TSource : class
     {
-        var dataList = data.ToList();
         var settings = this.configuration.GetWriterSettings();
         settings.Async = true;
 
@@ -66,11 +65,14 @@ public sealed class XmlDataPorterProvider(
         await writer.WriteStartDocumentAsync();
         await writer.WriteStartElementAsync(null, rootName, null);
 
-        foreach (var item in dataList)
+        var totalRows = 0;
+
+        foreach (var item in data)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
             await this.WriteExportItemAsync(writer, item, itemName, exportConfiguration, cancellationToken);
+            totalRows++;
         }
 
         await writer.WriteEndElementAsync();
@@ -80,7 +82,47 @@ public sealed class XmlDataPorterProvider(
         return new ExportResult
         {
             BytesWritten = outputStream.Length,
-            TotalRows = dataList.Count,
+            TotalRows = totalRows,
+            Duration = TimeSpan.Zero,
+            Format = this.Format
+        };
+    }
+
+    /// <inheritdoc/>
+    public async Task<ExportResult> ExportAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        Stream outputStream,
+        ExportConfiguration exportConfiguration,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        var settings = this.configuration.GetWriterSettings();
+        settings.Async = true;
+
+        var rootName = this.configuration.RootElementName;
+        var itemName = this.configuration.ItemElementName;
+
+        await using var writer = XmlWriter.Create(outputStream, settings);
+
+        await writer.WriteStartDocumentAsync();
+        await writer.WriteStartElementAsync(null, rootName, null);
+
+        var totalRows = 0;
+
+        await foreach (var item in data.WithCancellation(cancellationToken))
+        {
+            await this.WriteExportItemAsync(writer, item, itemName, exportConfiguration, cancellationToken);
+            totalRows++;
+        }
+
+        await writer.WriteEndElementAsync();
+        await writer.WriteEndDocumentAsync();
+        await writer.FlushAsync();
+
+        return new ExportResult
+        {
+            BytesWritten = outputStream.Length,
+            TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format
         };
@@ -107,17 +149,62 @@ public sealed class XmlDataPorterProvider(
             cancellationToken.ThrowIfCancellationRequested();
 
             var sheetName = this.SanitizeElementName(exportConfiguration.SheetName ?? $"Sheet{totalRows + 1}");
-            var dataList = data.ToList();
 
             await writer.WriteStartElementAsync(null, sheetName, null);
 
-            foreach (var item in dataList)
+            foreach (var item in data)
             {
                 await this.WriteExportItemAsync(writer, item, this.configuration.ItemElementName, exportConfiguration, cancellationToken);
+                totalRows++;
             }
 
             await writer.WriteEndElementAsync();
-            totalRows += dataList.Count;
+        }
+
+        await writer.WriteEndElementAsync();
+        await writer.WriteEndDocumentAsync();
+        await writer.FlushAsync();
+
+        return new ExportResult
+        {
+            BytesWritten = outputStream.Length,
+            TotalRows = totalRows,
+            Duration = TimeSpan.Zero,
+            Format = this.Format
+        };
+    }
+
+    /// <inheritdoc/>
+    public async Task<ExportResult> ExportAsync(
+        IEnumerable<(IAsyncEnumerable<object> Data, ExportConfiguration Configuration)> dataSets,
+        Stream outputStream,
+        CancellationToken cancellationToken = default)
+    {
+        var settings = this.configuration.GetWriterSettings();
+        settings.Async = true;
+
+        var totalRows = 0;
+
+        await using var writer = XmlWriter.Create(outputStream, settings);
+
+        await writer.WriteStartDocumentAsync();
+        await writer.WriteStartElementAsync(null, "DataSets", null);
+
+        foreach (var (data, exportConfiguration) in dataSets)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var sheetName = this.SanitizeElementName(exportConfiguration.SheetName ?? $"Sheet{totalRows + 1}");
+
+            await writer.WriteStartElementAsync(null, sheetName, null);
+
+            await foreach (var item in data.WithCancellation(cancellationToken))
+            {
+                await this.WriteExportItemAsync(writer, item, this.configuration.ItemElementName, exportConfiguration, cancellationToken);
+                totalRows++;
+            }
+
+            await writer.WriteEndElementAsync();
         }
 
         await writer.WriteEndElementAsync();

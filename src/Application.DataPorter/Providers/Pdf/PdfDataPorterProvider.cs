@@ -94,6 +94,18 @@ public sealed class PdfDataPorterProvider(
     }
 
     /// <inheritdoc/>
+    public async Task<ExportResult> ExportAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        Stream outputStream,
+        ExportConfiguration exportConfiguration,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        var dataList = await data.ToListAsync(cancellationToken);
+        return await this.ExportAsync(dataList, outputStream, exportConfiguration, cancellationToken);
+    }
+
+    /// <inheritdoc/>
     public Task<ExportResult> ExportAsync(
         IEnumerable<(IEnumerable<object> Data, ExportConfiguration Configuration)> dataSets,
         Stream outputStream,
@@ -135,6 +147,22 @@ public sealed class PdfDataPorterProvider(
             Duration = TimeSpan.Zero,
             Format = this.Format
         });
+    }
+
+    /// <inheritdoc/>
+    public async Task<ExportResult> ExportAsync(
+        IEnumerable<(IAsyncEnumerable<object> Data, ExportConfiguration Configuration)> dataSets,
+        Stream outputStream,
+        CancellationToken cancellationToken = default)
+    {
+        var materializedDataSets = new List<(IEnumerable<object> Data, ExportConfiguration Configuration)>();
+
+        foreach (var (data, configuration) in dataSets)
+        {
+            materializedDataSets.Add((await data.ToListAsync(cancellationToken), configuration));
+        }
+
+        return await this.ExportAsync(materializedDataSets, outputStream, cancellationToken);
     }
 
     private Document CreateDocument()

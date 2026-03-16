@@ -49,12 +49,7 @@ public sealed class CsvTypedDataPorterProvider(
         CancellationToken cancellationToken = default)
         where TSource : class
     {
-        var rows = this.BuildRows(data.Cast<object>().ToList(), exportConfiguration);
-        var payloadColumns = rows
-            .SelectMany(row => row.Payload.Keys)
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
-            .ToList();
+        var payloadColumns = this.BuildPayloadColumns([exportConfiguration]);
 
         await using var writer = new StreamWriter(outputStream, this.configuration.Encoding, leaveOpen: true);
         await using var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
@@ -63,30 +58,15 @@ public sealed class CsvTypedDataPorterProvider(
             HasHeaderRecord = true
         });
 
-        foreach (var column in baseColumnNames.Concat(payloadColumns))
-        {
-            csv.WriteField(column);
-        }
+        await this.WriteHeaderAsync(csv, payloadColumns);
 
-        await csv.NextRecordAsync();
+        var rowsWritten = 0;
+        var rootColumns = exportConfiguration.Columns.Where(column => !column.Ignore).OrderBy(column => column.Order).ToList();
 
-        foreach (var row in rows)
+        foreach (var item in data)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
-            csv.WriteField(row.RecordType);
-            csv.WriteField(row.RootId);
-            csv.WriteField(row.RecordId);
-            csv.WriteField(row.ParentId);
-            csv.WriteField(row.Collection);
-            csv.WriteField(row.Index?.ToString(CultureInfo.InvariantCulture));
-
-            foreach (var column in payloadColumns)
-            {
-                csv.WriteField(row.Payload.TryGetValue(column, out var value) ? value : string.Empty);
-            }
-
-            await csv.NextRecordAsync();
+            rowsWritten += await this.WriteRootRowsAsync(csv, item, rootColumns, exportConfiguration, payloadColumns, cancellationToken);
         }
 
         await csv.FlushAsync();
@@ -95,7 +75,46 @@ public sealed class CsvTypedDataPorterProvider(
         return new ExportResult
         {
             BytesWritten = outputStream.Length,
-            TotalRows = rows.Count,
+            TotalRows = rowsWritten,
+            Duration = TimeSpan.Zero,
+            Format = this.Format
+        };
+    }
+
+    /// <inheritdoc/>
+    public async Task<ExportResult> ExportAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        Stream outputStream,
+        ExportConfiguration exportConfiguration,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        var payloadColumns = this.BuildPayloadColumns([exportConfiguration]);
+
+        await using var writer = new StreamWriter(outputStream, this.configuration.Encoding, leaveOpen: true);
+        await using var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
+        {
+            Delimiter = this.configuration.Delimiter,
+            HasHeaderRecord = true
+        });
+
+        await this.WriteHeaderAsync(csv, payloadColumns);
+
+        var rowsWritten = 0;
+        var rootColumns = exportConfiguration.Columns.Where(column => !column.Ignore).OrderBy(column => column.Order).ToList();
+
+        await foreach (var item in data.WithCancellation(cancellationToken))
+        {
+            rowsWritten += await this.WriteRootRowsAsync(csv, item, rootColumns, exportConfiguration, payloadColumns, cancellationToken);
+        }
+
+        await csv.FlushAsync();
+        await writer.FlushAsync(cancellationToken);
+
+        return new ExportResult
+        {
+            BytesWritten = outputStream.Length,
+            TotalRows = rowsWritten,
             Duration = TimeSpan.Zero,
             Format = this.Format
         };
@@ -107,19 +126,8 @@ public sealed class CsvTypedDataPorterProvider(
         Stream outputStream,
         CancellationToken cancellationToken = default)
     {
-        var rows = new List<CsvTypedRow>();
-
-        foreach (var (data, configuration) in dataSets)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            rows.AddRange(this.BuildRows(data.ToList(), configuration));
-        }
-
-        var payloadColumns = rows
-            .SelectMany(row => row.Payload.Keys)
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
-            .ToList();
+        var dataSetList = dataSets.ToList();
+        var payloadColumns = this.BuildPayloadColumns(dataSetList.Select(dataSet => dataSet.Configuration));
 
         await using var writer = new StreamWriter(outputStream, this.configuration.Encoding, leaveOpen: true);
         await using var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
@@ -128,28 +136,19 @@ public sealed class CsvTypedDataPorterProvider(
             HasHeaderRecord = true
         });
 
-        foreach (var column in baseColumnNames.Concat(payloadColumns))
+        await this.WriteHeaderAsync(csv, payloadColumns);
+
+        var rowsWritten = 0;
+
+        foreach (var (data, configuration) in dataSetList)
         {
-            csv.WriteField(column);
-        }
+            cancellationToken.ThrowIfCancellationRequested();
+            var rootColumns = configuration.Columns.Where(column => !column.Ignore).OrderBy(column => column.Order).ToList();
 
-        await csv.NextRecordAsync();
-
-        foreach (var row in rows)
-        {
-            csv.WriteField(row.RecordType);
-            csv.WriteField(row.RootId);
-            csv.WriteField(row.RecordId);
-            csv.WriteField(row.ParentId);
-            csv.WriteField(row.Collection);
-            csv.WriteField(row.Index?.ToString(CultureInfo.InvariantCulture));
-
-            foreach (var column in payloadColumns)
+            foreach (var item in data)
             {
-                csv.WriteField(row.Payload.TryGetValue(column, out var value) ? value : string.Empty);
+                rowsWritten += await this.WriteRootRowsAsync(csv, item, rootColumns, configuration, payloadColumns, cancellationToken);
             }
-
-            await csv.NextRecordAsync();
         }
 
         await csv.FlushAsync();
@@ -158,10 +157,289 @@ public sealed class CsvTypedDataPorterProvider(
         return new ExportResult
         {
             BytesWritten = outputStream.Length,
-            TotalRows = rows.Count,
+            TotalRows = rowsWritten,
             Duration = TimeSpan.Zero,
             Format = this.Format
         };
+    }
+
+    /// <inheritdoc/>
+    public async Task<ExportResult> ExportAsync(
+        IEnumerable<(IAsyncEnumerable<object> Data, ExportConfiguration Configuration)> dataSets,
+        Stream outputStream,
+        CancellationToken cancellationToken = default)
+    {
+        var dataSetList = dataSets.ToList();
+        var payloadColumns = this.BuildPayloadColumns(dataSetList.Select(dataSet => dataSet.Configuration));
+
+        await using var writer = new StreamWriter(outputStream, this.configuration.Encoding, leaveOpen: true);
+        await using var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
+        {
+            Delimiter = this.configuration.Delimiter,
+            HasHeaderRecord = true
+        });
+
+        await this.WriteHeaderAsync(csv, payloadColumns);
+
+        var rowsWritten = 0;
+
+        foreach (var (data, configuration) in dataSetList)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var rootColumns = configuration.Columns.Where(column => !column.Ignore).OrderBy(column => column.Order).ToList();
+
+            await foreach (var item in data.WithCancellation(cancellationToken))
+            {
+                rowsWritten += await this.WriteRootRowsAsync(csv, item, rootColumns, configuration, payloadColumns, cancellationToken);
+            }
+        }
+
+        await csv.FlushAsync();
+        await writer.FlushAsync(cancellationToken);
+
+        return new ExportResult
+        {
+            BytesWritten = outputStream.Length,
+            TotalRows = rowsWritten,
+            Duration = TimeSpan.Zero,
+            Format = this.Format
+        };
+    }
+
+    private async Task WriteHeaderAsync(CsvWriter csv, IReadOnlyList<string> payloadColumns)
+    {
+        foreach (var column in baseColumnNames.Concat(payloadColumns))
+        {
+            csv.WriteField(column);
+        }
+
+        await csv.NextRecordAsync();
+    }
+
+    private IReadOnlyList<string> BuildPayloadColumns(IEnumerable<ExportConfiguration> configurations)
+    {
+        var columns = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var configuration in configurations)
+        {
+            var rootColumns = configuration.Columns.Where(column => !column.Ignore).OrderBy(column => column.Order).ToList();
+
+            foreach (var column in rootColumns)
+            {
+                var propertyType = column.PropertyInfo?.PropertyType ?? typeof(object);
+                if (column.Converter is not null || !propertyType.SupportsStructuredValue())
+                {
+                    columns.Add(column.HeaderName ?? column.PropertyName);
+                    continue;
+                }
+
+                var nestedType = propertyType.IsCollectionType()
+                    ? this.GetCollectionElementType(propertyType)
+                    : propertyType;
+
+                if (nestedType is not null)
+                {
+                    this.CollectPayloadColumns(nestedType, columns, new HashSet<Type>());
+                }
+            }
+        }
+
+        return [.. columns.OrderBy(name => name, StringComparer.OrdinalIgnoreCase)];
+    }
+
+    private void CollectPayloadColumns(Type sourceType, ISet<string> payloadColumns, ISet<Type> visitedTypes)
+    {
+        if (!visitedTypes.Add(sourceType))
+        {
+            return;
+        }
+
+        foreach (var property in this.GetFlattenableProperties(sourceType))
+        {
+            if (property.PropertyType.SupportsStructuredValue())
+            {
+                var nestedType = property.PropertyType.IsCollectionType()
+                    ? this.GetCollectionElementType(property.PropertyType)
+                    : property.PropertyType;
+
+                if (nestedType is not null)
+                {
+                    this.CollectPayloadColumns(nestedType, payloadColumns, visitedTypes);
+                }
+
+                continue;
+            }
+
+            payloadColumns.Add(this.GetPayloadColumnName(property.Name));
+        }
+    }
+
+    private async Task<int> WriteRootRowsAsync(
+        CsvWriter csv,
+        object item,
+        IReadOnlyList<ColumnConfiguration> rootColumns,
+        ExportConfiguration configuration,
+        IReadOnlyList<string> payloadColumns,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        var rootId = this.GetIdentifier(item) ?? Guid.NewGuid().ToString("D", CultureInfo.InvariantCulture);
+        var rootRecordType = this.GetRecordTypeName(configuration.SourceType, rootColumns, isCollectionItem: false);
+        var rootPayload = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var visited = new HashSet<object>(ReferenceEqualityComparer.Instance);
+        visited.Add(item);
+
+        this.WriteRootPayload(rootPayload, item, rootColumns, configuration);
+        await this.WriteCsvTypedRowAsync(csv, new CsvTypedRow(rootRecordType, rootId, rootId, null, null, null, rootPayload), payloadColumns);
+
+        return 1 + await this.WriteChildRowsAsync(csv, item, rootId, rootId, rootColumns, configuration, visited, payloadColumns, cancellationToken);
+    }
+
+    private async Task<int> WriteChildRowsAsync(
+        CsvWriter csv,
+        object parent,
+        string rootId,
+        string parentId,
+        IReadOnlyList<ColumnConfiguration> columns,
+        ExportConfiguration configuration,
+        HashSet<object> visited,
+        IReadOnlyList<string> payloadColumns,
+        CancellationToken cancellationToken)
+    {
+        var rowsWritten = 0;
+
+        foreach (var column in columns)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (column.Ignore || column.Converter is not null)
+            {
+                continue;
+            }
+
+            var propertyType = column.PropertyInfo?.PropertyType;
+            if (propertyType is null || !propertyType.SupportsStructuredValue())
+            {
+                continue;
+            }
+
+            var value = column.GetValue(parent);
+            if (value is null)
+            {
+                continue;
+            }
+
+            if (propertyType.IsCollectionType())
+            {
+                var index = 0;
+                foreach (var item in (IEnumerable)value)
+                {
+                    cancellationToken.ThrowIfCancellationRequested();
+
+                    if (item is null)
+                    {
+                        index++;
+                        continue;
+                    }
+
+                    if (!item.GetType().IsValueType && !visited.Add(item))
+                    {
+                        index++;
+                        continue;
+                    }
+
+                    var itemType = item.GetType();
+                    var recordType = this.GetRecordTypeName(itemType, [], isCollectionItem: true, propertyName: column.PropertyName);
+                    var recordId = this.GetIdentifier(item) ?? $"{rootId}:{column.PropertyName}:{index}";
+                    var payload = this.BuildPayload(item, itemType, configuration.Culture);
+                    await this.WriteCsvTypedRowAsync(csv, new CsvTypedRow(recordType, rootId, recordId, parentId, column.PropertyName, index, payload), payloadColumns);
+                    rowsWritten++;
+
+                    try
+                    {
+                        rowsWritten += await this.WriteNestedStructuredRowsAsync(csv, item, rootId, recordId, itemType, configuration, visited, payloadColumns, cancellationToken);
+                    }
+                    finally
+                    {
+                        if (!itemType.IsValueType)
+                        {
+                            visited.Remove(item);
+                        }
+                    }
+
+                    index++;
+                }
+
+                continue;
+            }
+
+            if (!value.GetType().IsValueType && !visited.Add(value))
+            {
+                continue;
+            }
+
+            var nestedRecordType = this.GetRecordTypeName(propertyType, [], isCollectionItem: false, propertyName: column.PropertyName);
+            var nestedRecordId = this.GetIdentifier(value) ?? $"{rootId}:{column.PropertyName}";
+            var rowPayload = this.BuildPayload(value, propertyType, configuration.Culture);
+            await this.WriteCsvTypedRowAsync(csv, new CsvTypedRow(nestedRecordType, rootId, nestedRecordId, parentId, column.PropertyName, null, rowPayload), payloadColumns);
+            rowsWritten++;
+
+            try
+            {
+                rowsWritten += await this.WriteNestedStructuredRowsAsync(csv, value, rootId, nestedRecordId, propertyType, configuration, visited, payloadColumns, cancellationToken);
+            }
+            finally
+            {
+                if (!propertyType.IsValueType)
+                {
+                    visited.Remove(value);
+                }
+            }
+        }
+
+        return rowsWritten;
+    }
+
+    private async Task<int> WriteNestedStructuredRowsAsync(
+        CsvWriter csv,
+        object value,
+        string rootId,
+        string parentId,
+        Type sourceType,
+        ExportConfiguration configuration,
+        HashSet<object> visited,
+        IReadOnlyList<string> payloadColumns,
+        CancellationToken cancellationToken)
+    {
+        var nestedColumns = this.GetFlattenableProperties(sourceType)
+            .Select((property, order) => new ColumnConfiguration
+            {
+                PropertyName = property.Name,
+                HeaderName = this.GetPayloadColumnName(property.Name),
+                Order = order,
+                PropertyInfo = property
+            })
+            .ToList();
+
+        return await this.WriteChildRowsAsync(csv, value, rootId, parentId, nestedColumns, configuration, visited, payloadColumns, cancellationToken);
+    }
+
+    private async Task WriteCsvTypedRowAsync(CsvWriter csv, CsvTypedRow row, IReadOnlyList<string> payloadColumns)
+    {
+        csv.WriteField(row.RecordType);
+        csv.WriteField(row.RootId);
+        csv.WriteField(row.RecordId);
+        csv.WriteField(row.ParentId);
+        csv.WriteField(row.Collection);
+        csv.WriteField(row.Index?.ToString(CultureInfo.InvariantCulture));
+
+        foreach (var column in payloadColumns)
+        {
+            csv.WriteField(row.Payload.TryGetValue(column, out var value) ? value : string.Empty);
+        }
+
+        await csv.NextRecordAsync();
     }
 
     /// <inheritdoc/>

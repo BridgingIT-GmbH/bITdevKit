@@ -49,24 +49,64 @@ public sealed class JsonDataPorterProvider(
         CancellationToken cancellationToken = default)
         where TSource : class
     {
-        var options = this.configuration.GetSerializerOptions();
-        var dataList = data.ToList();
-        var jsonOptions = new JsonSerializerOptions(options)
+        var jsonOptions = this.CreateJsonSerializerOptions();
+        using var writer = new Utf8JsonWriter(outputStream, new JsonWriterOptions
         {
-            ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
-        };
+            Indented = jsonOptions.WriteIndented
+        });
 
-        // Transform data if columns are configured
-        var exportData = dataList
-            .Select(item => this.CreateExportRow(item, exportConfiguration))
-            .ToList();
+        writer.WriteStartArray();
+        var totalRows = 0;
 
-        await JsonSerializer.SerializeAsync(outputStream, exportData, jsonOptions, cancellationToken);
+        foreach (var item in data)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            this.WriteExportRow(writer, item, exportConfiguration, jsonOptions);
+            totalRows++;
+        }
+
+        writer.WriteEndArray();
+        await writer.FlushAsync(cancellationToken);
 
         return new ExportResult
         {
             BytesWritten = outputStream.Length,
-            TotalRows = dataList.Count,
+            TotalRows = totalRows,
+            Duration = TimeSpan.Zero,
+            Format = this.Format
+        };
+    }
+
+    /// <inheritdoc/>
+    public async Task<ExportResult> ExportAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        Stream outputStream,
+        ExportConfiguration exportConfiguration,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        var jsonOptions = this.CreateJsonSerializerOptions();
+        using var writer = new Utf8JsonWriter(outputStream, new JsonWriterOptions
+        {
+            Indented = jsonOptions.WriteIndented
+        });
+
+        writer.WriteStartArray();
+        var totalRows = 0;
+
+        await foreach (var item in data.WithCancellation(cancellationToken))
+        {
+            this.WriteExportRow(writer, item, exportConfiguration, jsonOptions);
+            totalRows++;
+        }
+
+        writer.WriteEndArray();
+        await writer.FlushAsync(cancellationToken);
+
+        return new ExportResult
+        {
+            BytesWritten = outputStream.Length,
+            TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format
         };
@@ -78,28 +118,79 @@ public sealed class JsonDataPorterProvider(
         Stream outputStream,
         CancellationToken cancellationToken = default)
     {
-        var options = this.configuration.GetSerializerOptions();
-        var jsonOptions = new JsonSerializerOptions(options)
+        var jsonOptions = this.CreateJsonSerializerOptions();
+        using var writer = new Utf8JsonWriter(outputStream, new JsonWriterOptions
         {
-            ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
-        };
-        var result = new Dictionary<string, List<Dictionary<string, object>>>();
+            Indented = jsonOptions.WriteIndented
+        });
         var totalRows = 0;
+        var index = 0;
+
+        writer.WriteStartObject();
 
         foreach (var (data, exportConfiguration) in dataSets)
         {
-            var sheetName = exportConfiguration.SheetName ?? $"Sheet{result.Count + 1}";
-            var dataList = data.ToList();
+            cancellationToken.ThrowIfCancellationRequested();
+            var sheetName = exportConfiguration.SheetName ?? $"Sheet{++index}";
+            writer.WritePropertyName(sheetName);
+            writer.WriteStartArray();
 
-            var exportData = dataList
-                .Select(item => this.CreateExportRow(item, exportConfiguration))
-                .ToList();
+            foreach (var item in data)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                this.WriteExportRow(writer, item, exportConfiguration, jsonOptions);
+                totalRows++;
+            }
 
-            result[sheetName] = exportData;
-            totalRows += dataList.Count;
+            writer.WriteEndArray();
         }
 
-        await JsonSerializer.SerializeAsync(outputStream, result, jsonOptions, cancellationToken);
+        writer.WriteEndObject();
+        await writer.FlushAsync(cancellationToken);
+
+        return new ExportResult
+        {
+            BytesWritten = outputStream.Length,
+            TotalRows = totalRows,
+            Duration = TimeSpan.Zero,
+            Format = this.Format
+        };
+    }
+
+    /// <inheritdoc/>
+    public async Task<ExportResult> ExportAsync(
+        IEnumerable<(IAsyncEnumerable<object> Data, ExportConfiguration Configuration)> dataSets,
+        Stream outputStream,
+        CancellationToken cancellationToken = default)
+    {
+        var jsonOptions = this.CreateJsonSerializerOptions();
+        using var writer = new Utf8JsonWriter(outputStream, new JsonWriterOptions
+        {
+            Indented = jsonOptions.WriteIndented
+        });
+        var totalRows = 0;
+        var index = 0;
+
+        writer.WriteStartObject();
+
+        foreach (var (data, exportConfiguration) in dataSets)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var sheetName = exportConfiguration.SheetName ?? $"Sheet{++index}";
+            writer.WritePropertyName(sheetName);
+            writer.WriteStartArray();
+
+            await foreach (var item in data.WithCancellation(cancellationToken))
+            {
+                this.WriteExportRow(writer, item, exportConfiguration, jsonOptions);
+                totalRows++;
+            }
+
+            writer.WriteEndArray();
+        }
+
+        writer.WriteEndObject();
+        await writer.FlushAsync(cancellationToken);
 
         return new ExportResult
         {
@@ -264,6 +355,52 @@ public sealed class JsonDataPorterProvider(
         }
 
         return dict;
+    }
+
+    private JsonSerializerOptions CreateJsonSerializerOptions()
+    {
+        var options = this.configuration.GetSerializerOptions();
+        return new JsonSerializerOptions(options)
+        {
+            ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles
+        };
+    }
+
+    private void WriteExportRow(
+        Utf8JsonWriter writer,
+        object item,
+        ExportConfiguration exportConfiguration,
+        JsonSerializerOptions options)
+    {
+        var row = this.CreateExportRow(item, exportConfiguration);
+        writer.WriteStartObject();
+
+        foreach (var entry in row)
+        {
+            if (entry.Value is null && options.DefaultIgnoreCondition == System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)
+            {
+                continue;
+            }
+
+            writer.WritePropertyName(entry.Key);
+            this.WriteJsonValue(writer, entry.Value, options);
+        }
+
+        writer.WriteEndObject();
+    }
+
+    private void WriteJsonValue(
+        Utf8JsonWriter writer,
+        object value,
+        JsonSerializerOptions options)
+    {
+        if (value is null)
+        {
+            writer.WriteNullValue();
+            return;
+        }
+
+        JsonSerializer.Serialize(writer, value, value.GetType(), options);
     }
 
     private async IAsyncEnumerable<JsonImportRowResult<TTarget>> ProcessRowsAsync<TTarget>(

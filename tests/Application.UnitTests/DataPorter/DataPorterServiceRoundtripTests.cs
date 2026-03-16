@@ -69,6 +69,124 @@ public class DataPorterServiceRoundtripTests
     }
 
     [Fact]
+    public async Task ExportAndImportStreamAsync_WithAsyncJsonProvider_RoundTripsAggregateRootEntity()
+    {
+        // Arrange
+        var sut = new DataPorterService([new JsonDataPorterProvider()], this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.Json, UseAttributes = false };
+        var importOptions = new ImportOptions { Format = Format.Json, UseAttributes = false };
+
+        // Act
+        var exportResult = await sut.ExportAsync(data.ToAsyncEnumerable(), stream, exportOptions);
+        stream.Position = 0;
+        var results = await this.ReadStreamingResultsAsync(sut, stream, importOptions);
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        results.Count.ShouldBe(data.Length);
+        results.All(result => result.IsSuccess).ShouldBeTrue();
+        AssertPersons([.. results.Select(result => result.Value)], data);
+        AssertNestedData([.. results.Select(result => result.Value)], data);
+    }
+
+    [Fact]
+    public async Task ExportAndImportStreamAsync_WithAsyncXmlProvider_RoundTripsAggregateRootEntity()
+    {
+        // Arrange
+        var sut = new DataPorterService([new XmlDataPorterProvider()], this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.Xml, UseAttributes = false };
+        var importOptions = new ImportOptions { Format = Format.Xml, UseAttributes = false };
+
+        // Act
+        var exportResult = await sut.ExportAsync(data.ToAsyncEnumerable(), stream, exportOptions);
+        stream.Position = 0;
+        var results = await this.ReadStreamingResultsAsync(sut, stream, importOptions);
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        results.Count.ShouldBe(data.Length);
+        results.All(result => result.IsSuccess).ShouldBeTrue();
+        AssertPersons([.. results.Select(result => result.Value)], data);
+        AssertNestedData([.. results.Select(result => result.Value)], data);
+    }
+
+    [Fact]
+    public async Task ExportAndImportStreamAsync_WithAsyncCsvProviderAndNestingEnabled_RoundTripsChildEntityAndCollection()
+    {
+        // Arrange
+        var sut = new DataPorterService(
+            [new CsvDataPorterProvider(new CsvConfiguration { UseNesting = true })],
+            this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.Csv, UseAttributes = false };
+        var importOptions = new ImportOptions { Format = Format.Csv, UseAttributes = false };
+
+        // Act
+        var exportResult = await sut.ExportAsync(data.ToAsyncEnumerable(), stream, exportOptions);
+        stream.Position = 0;
+        var results = await this.ReadStreamingResultsAsync(sut, stream, importOptions);
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        results.Count.ShouldBe(data.Length);
+        results.All(result => result.IsSuccess).ShouldBeTrue();
+        AssertPersons([.. results.Select(result => result.Value)], data);
+        AssertNestedData([.. results.Select(result => result.Value)], data);
+    }
+
+    [Fact]
+    public async Task ExportAndImportStreamAsync_WithAsyncCsvTypedProvider_RoundTripsTypedHierarchy()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvTypedDataPorterProvider()], this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.CsvTyped, UseAttributes = false };
+        var importOptions = new ImportOptions { Format = Format.CsvTyped, UseAttributes = false };
+
+        // Act
+        var exportResult = await sut.ExportAsync(data.ToAsyncEnumerable(), stream, exportOptions);
+        stream.Position = 0;
+        var results = await this.ReadStreamingResultsAsync(sut, stream, importOptions);
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        results.Count.ShouldBe(data.Length);
+        results.All(result => result.IsSuccess).ShouldBeTrue();
+        AssertPersons([.. results.Select(result => result.Value)], data);
+        AssertNestedData([.. results.Select(result => result.Value)], data);
+    }
+
+    [Fact]
+    public async Task ExportAsync_WithAsyncCsvTypedProvider_UsesSchemaFirstHeaderForChildRows()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvTypedDataPorterProvider()], this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        data[0].Address = null;
+        data[0].PreviousAddresses.Clear();
+        await using var stream = new MemoryStream();
+        var exportOptions = new ExportOptions { Format = Format.CsvTyped, UseAttributes = false };
+
+        // Act
+        var exportResult = await sut.ExportAsync(data.ToAsyncEnumerable(), stream, exportOptions);
+        var exportedContent = ReadTextContent(stream);
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        exportedContent.ShouldContain("AddressName");
+        exportedContent.ShouldContain("Street");
+        exportedContent.ShouldContain("PostalCode");
+        exportedContent.ShouldContain("City");
+        exportedContent.ShouldContain("Country");
+    }
+
+    [Fact]
     public async Task ExportAndImportAsync_WithCsvProviderAndChildEntityColumn_DoesNotRoundTripChildEntity()
     {
         // Arrange
@@ -578,6 +696,63 @@ public class DataPorterServiceRoundtripTests
         }
     }
 
+    [Theory]
+    [InlineData(Format.Csv)]
+    [InlineData(Format.CsvTyped)]
+    [InlineData(Format.Json)]
+    [InlineData(Format.Xml)]
+    public async Task ExportMultipleAsync_WithAsyncDataSets_WritesExpectedContent(Format format)
+    {
+        // Arrange
+        var provider = format switch
+        {
+            Format.Csv => (IDataPorterProvider)new CsvDataPorterProvider(new CsvConfiguration { UseNesting = true }),
+            Format.CsvTyped => new CsvTypedDataPorterProvider(),
+            Format.Json => new JsonDataPorterProvider(),
+            Format.Xml => new XmlDataPorterProvider(),
+            _ => throw new NotSupportedException()
+        };
+        var sut = new DataPorterService([provider], this.CreateChildEntityConfigurationMerger());
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var options = new ExportOptions { Format = format, UseAttributes = false };
+        var dataSets = new[]
+        {
+            AsyncExportDataSet.Create(new[] { data[0] }.ToAsyncEnumerable(), "Persons"),
+            AsyncExportDataSet.Create(new[] { data[1] }.ToAsyncEnumerable(), "Contacts")
+        };
+
+        // Act
+        var result = await sut.ExportAsync(dataSets, stream, options);
+        var exportedContent = ReadTextContent(stream);
+
+        // Assert
+        result.ShouldBeSuccess();
+        exportedContent.ShouldNotBeNullOrWhiteSpace();
+
+        if (format == Format.Csv)
+        {
+            exportedContent.ShouldContain("# Persons");
+            exportedContent.ShouldContain("# Contacts");
+        }
+        else if (format == Format.Json)
+        {
+            exportedContent.ShouldContain("\"Persons\"");
+            exportedContent.ShouldContain("\"Contacts\"");
+        }
+        else if (format == Format.Xml)
+        {
+            exportedContent.ShouldContain("<Persons>");
+            exportedContent.ShouldContain("<Contacts>");
+        }
+        else
+        {
+            exportedContent.ShouldContain("RecordType,RootId,RecordId,ParentId,Collection,Index");
+            exportedContent.ShouldContain("Ada");
+            exportedContent.ShouldContain("Grace");
+        }
+    }
+
     private static PersonEntity[] CreatePersons()
     {
         return
@@ -639,6 +814,21 @@ public class DataPorterServiceRoundtripTests
                 Status = PersonStatus.Inactive
             }
         ];
+    }
+
+    private async Task<List<Result<PersonEntity>>> ReadStreamingResultsAsync(
+        DataPorterService sut,
+        Stream stream,
+        ImportOptions options)
+    {
+        var results = new List<Result<PersonEntity>>();
+
+        await foreach (var result in sut.ImportAsyncEnumerable<PersonEntity>(stream, options))
+        {
+            results.Add(result);
+        }
+
+        return results;
     }
 
     private static void AssertPersons(PersonEntity[] imported, PersonEntity[] expected)

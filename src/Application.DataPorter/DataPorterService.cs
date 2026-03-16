@@ -59,10 +59,84 @@ public sealed class DataPorterService(
 
         var configuration = configurationMerger.BuildExportConfiguration<TSource>(options);
         var provider = providerResult.Value;
+        this.LogSyncExportStart(data, options.Format, typeof(TSource));
+
+        var stopwatch = Stopwatch.StartNew();
+
+        try
+        {
+            if (provider is not IDataExportProvider exportProvider)
+            {
+                return Result<ExportResult>.Failure()
+                    .WithError(new FormatNotSupportedError(
+                        options.Format.ToString(),
+                        this.providers.Where(p => p.SupportsExport).Select(p => p.Format.ToString())));
+            }
+
+            var result = await exportProvider.ExportAsync(
+                data,
+                outputStream,
+                configuration,
+                cancellationToken);
+
+            stopwatch.Stop();
+
+            this.logger.LogInformation(
+                "Exported {Rows} rows to {Format} in {Duration}ms",
+                result.TotalRows,
+                options.Format,
+                stopwatch.ElapsedMilliseconds);
+
+            return Result<ExportResult>.Success(result with { Duration = stopwatch.Elapsed });
+        }
+        catch (OperationCanceledException)
+        {
+            this.logger.LogWarning("Export operation was cancelled");
+            return Result<ExportResult>.Failure()
+                .WithError(new DataPorterError("Export operation was cancelled."));
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogError(ex, "Export failed for type {Type}", typeof(TSource).Name);
+            return Result<ExportResult>.Failure()
+                .WithError(new ExportError($"Export failed: {ex.Message}", ex));
+        }
+    }
+
+    /// <inheritdoc/>
+    public async Task<Result<ExportResult>> ExportAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        Stream outputStream,
+        ExportOptions options = null,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        options ??= new ExportOptions();
+
+        if (data is null)
+        {
+            return Result<ExportResult>.Failure()
+                .WithError(new DataPorterError("Data cannot be null."));
+        }
+
+        if (outputStream is null)
+        {
+            return Result<ExportResult>.Failure()
+                .WithError(new DataPorterError("Output stream cannot be null."));
+        }
+
+        var providerResult = this.GetProvider(options.Format, requiresExport: true);
+        if (providerResult.IsFailure)
+        {
+            return Result<ExportResult>.Failure()
+                .WithErrors(providerResult.Errors);
+        }
+
+        var configuration = configurationMerger.BuildExportConfiguration<TSource>(options);
+        var provider = providerResult.Value;
 
         this.logger.LogInformation(
-            "Exporting {Count} {Type} records to {Format}",
-            data.Count(),
+            "Exporting async {Type} records to {Format}",
             typeof(TSource).Name,
             options.Format);
 
@@ -128,6 +202,26 @@ public sealed class DataPorterService(
         return Result<byte[]>.Success(stream.ToArray());
     }
 
+    /// <inheritdoc/>
+    public async Task<Result<byte[]>> ExportToBytesAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        ExportOptions options = null,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        await using var stream = new MemoryStream();
+        var result = await this.ExportAsync(data, stream, options, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            return Result<byte[]>.Failure()
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
+        }
+
+        return Result<byte[]>.Success(stream.ToArray());
+    }
+
     // /// <inheritdoc/>
     // public Task<Result> ExportToStreamAsync<TSource>(
     //     IEnumerable<TSource> data,
@@ -149,7 +243,7 @@ public sealed class DataPorterService(
     {
         options ??= new ExportOptions();
 
-        if (dataSets?.Any() != true)
+        if (dataSets is null)
         {
             return Result<ExportResult>.Failure()
                 .WithError(new DataPorterError("Data sets cannot be null or empty."));
@@ -182,6 +276,12 @@ public sealed class DataPorterService(
                 return (ds.Data, config);
             }).ToList();
 
+            if (configurations.Count == 0)
+            {
+                return Result<ExportResult>.Failure()
+                    .WithError(new DataPorterError("Data sets cannot be null or empty."));
+            }
+
             var result = await exportProvider.ExportAsync(
                 configurations,
                 outputStream,
@@ -194,6 +294,71 @@ public sealed class DataPorterService(
         catch (Exception ex)
         {
             this.logger.LogError(ex, "Multi-sheet export failed");
+            return Result<ExportResult>.Failure()
+                .WithError(new ExportError($"Export failed: {ex.Message}", ex));
+        }
+    }
+
+    /// <inheritdoc/>
+    public async Task<Result<ExportResult>> ExportAsync(
+        IEnumerable<AsyncExportDataSet> dataSets,
+        Stream outputStream,
+        ExportOptions options = null,
+        CancellationToken cancellationToken = default)
+    {
+        options ??= new ExportOptions();
+
+        if (dataSets is null)
+        {
+            return Result<ExportResult>.Failure()
+                .WithError(new DataPorterError("Data sets cannot be null or empty."));
+        }
+
+        var providerResult = this.GetProvider(options.Format, requiresExport: true);
+        if (providerResult.IsFailure)
+        {
+            return Result<ExportResult>.Failure()
+                .WithErrors(providerResult.Errors);
+        }
+
+        var provider = providerResult.Value;
+        var stopwatch = Stopwatch.StartNew();
+
+        try
+        {
+            if (provider is not IDataExportProvider exportProvider)
+            {
+                return Result<ExportResult>.Failure()
+                    .WithError(new FormatNotSupportedError(
+                        options.Format.ToString(),
+                        this.providers.Where(p => p.SupportsExport).Select(p => p.Format.ToString())));
+            }
+
+            var configurations = dataSets.Select(ds =>
+            {
+                var config = configurationMerger.BuildExportConfiguration(ds.ItemType, options);
+                config.SheetName = ds.SheetName;
+                return (ds.Data, config);
+            }).ToList();
+
+            if (configurations.Count == 0)
+            {
+                return Result<ExportResult>.Failure()
+                    .WithError(new DataPorterError("Data sets cannot be null or empty."));
+            }
+
+            var result = await exportProvider.ExportAsync(
+                configurations,
+                outputStream,
+                cancellationToken);
+
+            stopwatch.Stop();
+
+            return Result<ExportResult>.Success(result with { Duration = stopwatch.Elapsed });
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogError(ex, "Async multi-sheet export failed");
             return Result<ExportResult>.Failure()
                 .WithError(new ExportError($"Export failed: {ex.Message}", ex));
         }
@@ -397,5 +562,47 @@ public sealed class DataPorterService(
         }
 
         return Result<IDataPorterProvider>.Success(provider);
+    }
+
+    private void LogSyncExportStart<TSource>(IEnumerable<TSource> data, Format format, Type sourceType)
+    {
+        if (this.TryGetCount(data, out var count))
+        {
+            this.logger.LogInformation(
+                "Exporting {Count} {Type} records to {Format}",
+                count,
+                sourceType.Name,
+                format);
+            return;
+        }
+
+        this.logger.LogInformation(
+            "Exporting {Type} records to {Format}",
+            sourceType.Name,
+            format);
+    }
+
+    private bool TryGetCount<TSource>(IEnumerable<TSource> data, out int count)
+    {
+        if (data is ICollection<TSource> typedCollection)
+        {
+            count = typedCollection.Count;
+            return true;
+        }
+
+        if (data is IReadOnlyCollection<TSource> typedReadOnlyCollection)
+        {
+            count = typedReadOnlyCollection.Count;
+            return true;
+        }
+
+        if (data is System.Collections.ICollection collection)
+        {
+            count = collection.Count;
+            return true;
+        }
+
+        count = 0;
+        return false;
     }
 }

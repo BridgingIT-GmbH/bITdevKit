@@ -27,10 +27,28 @@ public interface IDataExportProvider : IDataPorterProvider
         where TSource : class;
 
     /// <summary>
+    /// Exports asynchronous data to a stream.
+    /// </summary>
+    Task<ExportResult> ExportAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        Stream outputStream,
+        ExportConfiguration configuration,
+        CancellationToken cancellationToken = default)
+        where TSource : class;
+
+    /// <summary>
     /// Exports multiple data sets to a stream.
     /// </summary>
     Task<ExportResult> ExportAsync(
         IEnumerable<(IEnumerable<object> Data, ExportConfiguration Configuration)> dataSets,
+        Stream outputStream,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Exports multiple asynchronous data sets to a stream.
+    /// </summary>
+    Task<ExportResult> ExportAsync(
+        IEnumerable<(IAsyncEnumerable<object> Data, ExportConfiguration Configuration)> dataSets,
         Stream outputStream,
         CancellationToken cancellationToken = default);
 }

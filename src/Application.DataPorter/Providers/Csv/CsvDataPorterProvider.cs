@@ -100,6 +100,57 @@ public sealed class CsvDataPorterProvider(
     }
 
     /// <inheritdoc/>
+    public async Task<ExportResult> ExportAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        Stream outputStream,
+        ExportConfiguration exportConfiguration,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        var plan = this.BuildExportPlan(exportConfiguration);
+
+        await using var writer = new StreamWriter(outputStream, this.configuration.Encoding, leaveOpen: true);
+        await using var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
+        {
+            Delimiter = this.configuration.Delimiter,
+            HasHeaderRecord = exportConfiguration.IncludeHeaders
+        });
+
+        if (exportConfiguration.IncludeHeaders)
+        {
+            foreach (var column in plan.Columns)
+            {
+                csv.WriteField(column.HeaderName);
+            }
+
+            await csv.NextRecordAsync();
+        }
+
+        var rowsExported = 0;
+
+        await foreach (var item in data.WithCancellation(cancellationToken))
+        {
+            foreach (var collectionItem in this.GetCollectionItems(item, plan.CollectionProperty))
+            {
+                this.WriteExportRow(csv, plan, item, collectionItem, exportConfiguration);
+                await csv.NextRecordAsync();
+                rowsExported++;
+            }
+        }
+
+        await csv.FlushAsync();
+        await writer.FlushAsync(cancellationToken);
+
+        return new ExportResult
+        {
+            BytesWritten = outputStream.Length,
+            TotalRows = rowsExported,
+            Duration = TimeSpan.Zero,
+            Format = this.Format
+        };
+    }
+
+    /// <inheritdoc/>
     public async Task<ExportResult> ExportAsync(
         IEnumerable<(IEnumerable<object> Data,
         ExportConfiguration Configuration)> dataSets,
@@ -139,6 +190,62 @@ public sealed class CsvDataPorterProvider(
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
+                foreach (var collectionItem in this.GetCollectionItems(item, plan.CollectionProperty))
+                {
+                    this.WriteExportRow(csv, plan, item, collectionItem, exportConfiguration);
+                    await csv.NextRecordAsync();
+                    totalRows++;
+                }
+            }
+
+            await csv.FlushAsync();
+            await writer.WriteLineAsync();
+        }
+
+        return new ExportResult
+        {
+            BytesWritten = outputStream.Length,
+            TotalRows = totalRows,
+            Duration = TimeSpan.Zero,
+            Format = this.Format
+        };
+    }
+
+    /// <inheritdoc/>
+    public async Task<ExportResult> ExportAsync(
+        IEnumerable<(IAsyncEnumerable<object> Data, ExportConfiguration Configuration)> dataSets,
+        Stream outputStream,
+        CancellationToken cancellationToken = default)
+    {
+        var totalRows = 0;
+
+        await using var writer = new StreamWriter(outputStream, this.configuration.Encoding, leaveOpen: true);
+
+        foreach (var (data, exportConfiguration) in dataSets)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var plan = this.BuildExportPlan(exportConfiguration);
+
+            await writer.WriteLineAsync($"# {exportConfiguration.SheetName ?? "Data"}");
+
+            await using var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
+            {
+                Delimiter = this.configuration.Delimiter,
+                HasHeaderRecord = exportConfiguration.IncludeHeaders
+            }, leaveOpen: true);
+
+            if (exportConfiguration.IncludeHeaders)
+            {
+                foreach (var column in plan.Columns)
+                {
+                    csv.WriteField(column.HeaderName);
+                }
+
+                await csv.NextRecordAsync();
+            }
+
+            await foreach (var item in data.WithCancellation(cancellationToken))
+            {
                 foreach (var collectionItem in this.GetCollectionItems(item, plan.CollectionProperty))
                 {
                     this.WriteExportRow(csv, plan, item, collectionItem, exportConfiguration);

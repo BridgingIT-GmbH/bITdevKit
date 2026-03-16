@@ -30,7 +30,7 @@ public class DataPorterServiceExportTests
         await using var stream = new MemoryStream();
 
         // Act
-        var result = await sut.ExportAsync<SimpleEntity>(null, stream);
+        var result = await sut.ExportAsync<SimpleEntity>((IEnumerable<SimpleEntity>)null, stream);
 
         // Assert
         result.ShouldBeFailure();
@@ -120,6 +120,22 @@ public class DataPorterServiceExportTests
     }
 
     [Fact]
+    public async Task ExportAsync_WithAsyncDataAndProvider_ReturnsSuccess()
+    {
+        // Arrange
+        var mockProvider = CreateMockExportProvider();
+        var sut = new DataPorterService([mockProvider], this.configurationMerger);
+        await using var stream = new MemoryStream();
+
+        // Act
+        var result = await sut.ExportAsync(new[] { new SimpleEntity { Id = 1, Name = "Test" } }.ToAsyncEnumerable(), stream);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.TotalRows.ShouldBe(1);
+    }
+
+    [Fact]
     public async Task ExportAsync_WithCancellationToken_ReturnsFailureOnCancellation()
     {
         // Arrange
@@ -154,6 +170,21 @@ public class DataPorterServiceExportTests
     }
 
     [Fact]
+    public async Task ExportToBytesAsync_WithAsyncData_ReturnsByteArray()
+    {
+        // Arrange
+        var mockProvider = CreateMockExportProvider();
+        var sut = new DataPorterService([mockProvider], this.configurationMerger);
+
+        // Act
+        var result = await sut.ExportToBytesAsync(new[] { new SimpleEntity { Id = 1, Name = "Test" } }.ToAsyncEnumerable());
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.ShouldNotBeNull();
+    }
+
+    [Fact]
     public async Task ExportToBytesAsync_WithNullData_ReturnsFailure()
     {
         // Arrange
@@ -161,7 +192,7 @@ public class DataPorterServiceExportTests
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
 
         // Act
-        var result = await sut.ExportToBytesAsync<SimpleEntity>(null);
+        var result = await sut.ExportToBytesAsync<SimpleEntity>((IEnumerable<SimpleEntity>)null);
 
         // Assert
         result.ShouldBeFailure();
@@ -176,7 +207,7 @@ public class DataPorterServiceExportTests
         await using var stream = new MemoryStream();
 
         // Act
-        var result = await sut.ExportAsync(null, stream);
+        var result = await sut.ExportAsync((IEnumerable<ExportDataSet>)null, stream);
 
         // Assert
         result.ShouldBeFailure();
@@ -191,10 +222,31 @@ public class DataPorterServiceExportTests
         await using var stream = new MemoryStream();
 
         // Act
-        var result = await sut.ExportAsync([], stream);
+        var result = await sut.ExportAsync(Array.Empty<ExportDataSet>(), stream);
 
         // Assert
         result.ShouldBeFailure();
+    }
+
+    [Fact]
+    public async Task ExportMultipleAsync_WithAsyncDataSets_ReturnsSuccess()
+    {
+        // Arrange
+        var mockProvider = CreateMockExportProvider();
+        var sut = new DataPorterService([mockProvider], this.configurationMerger);
+        await using var stream = new MemoryStream();
+        var dataSets = new[]
+        {
+            AsyncExportDataSet.Create(new[] { new SimpleEntity { Id = 1, Name = "Test1" } }.ToAsyncEnumerable(), "Sheet1"),
+            AsyncExportDataSet.Create(new[] { new SimpleEntity { Id = 2, Name = "Test2" } }.ToAsyncEnumerable(), "Sheet2")
+        };
+
+        // Act
+        var result = await sut.ExportAsync(dataSets, stream);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.TotalRows.ShouldBe(2);
     }
 
     [Fact]
@@ -219,6 +271,23 @@ public class DataPorterServiceExportTests
         result.ShouldBeSuccess();
     }
 
+    [Fact]
+    public async Task ExportAsync_WithSingleUseEnumerable_DoesNotPreEnumerateInService()
+    {
+        // Arrange
+        var mockProvider = CreateMockExportProvider();
+        var sut = new DataPorterService([mockProvider], this.configurationMerger);
+        var data = new SingleUseEnumerable<SimpleEntity>([new SimpleEntity { Id = 1, Name = "Test" }]);
+        await using var stream = new MemoryStream();
+
+        // Act
+        var result = await sut.ExportAsync(data, stream);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.TotalRows.ShouldBe(1);
+    }
+
     private static TestExportProvider CreateMockExportProvider(
         Format format = Format.Excel,
         bool throwOnCancel = false)
@@ -229,5 +298,23 @@ public class DataPorterServiceExportTests
     private static TestImportOnlyProvider CreateMockImportOnlyProvider()
     {
         return new TestImportOnlyProvider();
+    }
+
+    private sealed class SingleUseEnumerable<T>(IReadOnlyList<T> items) : IEnumerable<T>
+    {
+        private bool enumerated;
+
+        public IEnumerator<T> GetEnumerator()
+        {
+            if (this.enumerated)
+            {
+                throw new InvalidOperationException("Sequence was enumerated more than once.");
+            }
+
+            this.enumerated = true;
+            return items.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }

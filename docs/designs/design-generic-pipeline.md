@@ -1,4 +1,4 @@
-# Design Document: Generic Pipeline Feature
+# Design Document: Generic Processing Pipeline Feature
 
 **Pipeline features:**
 
@@ -17,6 +17,11 @@
 - Allows for dynamic behavior based on the context, enabling handlers to make decisions at runtime about how to process the data or whether to continue processing.
 - Pipeline setup is done statically with a fluent builder, allowing for compile-time configuration and ensuring that the pipeline structure is defined clearly in code.
 - Besides interfaces for handlers and context, the pipeline also includes a base implementation of the pipeline itself, providing common functionality and reducing boilerplate code for developers implementing their own pipelines.
+- The pipeline processing allows for extension points where custom logic can be injected, such as pre-processing or post-processing steps, without modifying the core pipeline implementation. This promotes a clean separation of concerns and makes it easier to maintain and extend the processing logic over time.
+- The pipeline does not replace full workflow or orchestration engines, but rather provides a lightweight and flexible way to structure processing logic within an application.
+- The pipeline can be used in various scenarios, such as data processing, request handling, or any situation where a series of operations need to be performed on data in a structured and maintainable way.
+- The pipeline is designed to be agnostic of the specific types of data being processed, allowing it to be used in a wide range of applications and contexts. Handlers can be implemented to work with any type of data, and the pipeline can be configured to handle different processing scenarios as needed.
+- The pipeline can be integrated with other features of the application, such as logging, error handling, and monitoring, to provide a comprehensive solution for processing data in a structured and maintainable way.
 
 **References:**
 

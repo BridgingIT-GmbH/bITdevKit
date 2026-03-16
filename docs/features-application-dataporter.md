@@ -113,13 +113,13 @@ public class ProductDto
 
 **Available Attributes:**
 
-| Attribute | Target | Description |
-|-----------|--------|-------------|
-| `[DataPorterSheet]` | Class | Sets the sheet/section name |
-| `[DataPorterColumn]` | Property | Configures column settings |
-| `[DataPorterIgnore]` | Property | Excludes property from export/import |
-| `[DataPorterConverter]` | Property | Specifies a custom value converter |
-| `[DataPorterValidation]` | Property | Adds validation rules |
+| Attribute                | Target   | Description                          |
+| ------------------------ | -------- | ------------------------------------ |
+| `[DataPorterSheet]`      | Class    | Sets the sheet/section name          |
+| `[DataPorterColumn]`     | Property | Configures column settings           |
+| `[DataPorterIgnore]`     | Property | Excludes property from export/import |
+| `[DataPorterConverter]`  | Property | Specifies a custom value converter   |
+| `[DataPorterValidation]` | Property | Adds validation rules                |
 
 ### 2. Profile-Based Configuration
 
@@ -572,20 +572,20 @@ Converters can be configured per column, which allows different representations 
 
 ### Built-in Converters
 
-| Converter | Description |
-|-----------|-------------|
-| `BooleanYesNoConverter` | Converts `bool` values to and from configurable `"Yes"` / `"No"` strings |
-| `DateOnlyFormatConverter` | Converts `DateOnly` values using custom culture-aware or ISO 8601 date formats |
-| `DateTimeFormatConverter` | Converts `DateTime` values using custom culture-aware or ISO 8601 formats with optional UTC conversion |
-| `DateTimeOffsetFormatConverter` | Converts `DateTimeOffset` values using custom culture-aware or ISO 8601 formats with optional UTC conversion |
-| `DecimalFormatConverter` | Converts `decimal` values using configurable format strings, cultures, invariant culture, and number styles |
-| `EnumDisplayNameConverter<T>` | Converts enums using their `[Display]` attribute names |
-| `EnumerationConverter<T...>` | Converts smart enumerations (`Enumeration`, `Enumeration<TValue>`, `Enumeration<TId, TValue>`) using their `Id` or `Value` |
-| `EnumValueConverter<T>` | Converts enums using enum names or underlying numeric values |
-| `GuidFormatConverter` | Converts `Guid` values using standard GUID format specifiers such as `D` or `N` |
-| `StringMapConverter<T>` | Maps external string values to typed values and back using configurable import/export mappings |
-| `StringTrimConverter` | Trims and normalizes string values during import and export |
-| `TimeOnlyFormatConverter` | Converts `TimeOnly` values using custom culture-aware or ISO 8601 time formats |
+| Converter                       | Description                                                                                                                |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `BooleanYesNoConverter`         | Converts `bool` values to and from configurable `"Yes"` / `"No"` strings                                                   |
+| `DateOnlyFormatConverter`       | Converts `DateOnly` values using custom culture-aware or ISO 8601 date formats                                             |
+| `DateTimeFormatConverter`       | Converts `DateTime` values using custom culture-aware or ISO 8601 formats with optional UTC conversion                     |
+| `DateTimeOffsetFormatConverter` | Converts `DateTimeOffset` values using custom culture-aware or ISO 8601 formats with optional UTC conversion               |
+| `DecimalFormatConverter`        | Converts `decimal` values using configurable format strings, cultures, invariant culture, and number styles                |
+| `EnumDisplayNameConverter<T>`   | Converts enums using their `[Display]` attribute names                                                                     |
+| `EnumerationConverter<T...>`    | Converts smart enumerations (`Enumeration`, `Enumeration<TValue>`, `Enumeration<TId, TValue>`) using their `Id` or `Value` |
+| `EnumValueConverter<T>`         | Converts enums using enum names or underlying numeric values                                                               |
+| `GuidFormatConverter`           | Converts `Guid` values using standard GUID format specifiers such as `D` or `N`                                            |
+| `StringMapConverter<T>`         | Maps external string values to typed values and back using configurable import/export mappings                             |
+| `StringTrimConverter`           | Trims and normalizes string values during import and export                                                                |
+| `TimeOnlyFormatConverter`       | Converts `TimeOnly` values using custom culture-aware or ISO 8601 time formats                                             |
 
 Example using format and culture-aware converters in a profile:
 
@@ -854,10 +854,10 @@ The result is an architecture where:
 
 ## Dependencies
 
-| Package | Version | Purpose |
-|---------|---------|---------|
-| ClosedXML | Latest | Excel file handling |
-| CsvHelper | Latest | CSV file handling |
-| PDFsharp-MigraDoc | 6.2.0 | PDF generation (MIT licensed) |
-| System.Text.Json | Built-in | JSON handling |
-| System.Xml.Linq | Built-in | XML handling |
+| Package           | Version  | Purpose                       |
+| ----------------- | -------- | ----------------------------- |
+| ClosedXML         | Latest   | Excel file handling           |
+| CsvHelper         | Latest   | CSV file handling             |
+| PDFsharp-MigraDoc | 6.2.0    | PDF generation (MIT licensed) |
+| System.Text.Json  | Built-in | JSON handling                 |
+| System.Xml.Linq   | Built-in | XML handling                  |

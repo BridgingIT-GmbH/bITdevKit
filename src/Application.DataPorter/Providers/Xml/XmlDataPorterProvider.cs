@@ -284,9 +284,24 @@ public sealed class XmlDataPorterProvider(
         where TTarget : class, new()
     {
         XDocument document;
+        Result<TTarget>? loadError = null;
+        try
+        {
+            // Load and validate XML document outside iterator block
+            document = await XDocument.LoadAsync(inputStream, LoadOptions.None, cancellationToken).ConfigureAwait(false);
+        }
+        catch (XmlException ex)
+        {
+            loadError = Result<TTarget>.Failure()
+                .WithError(new ImportError($"Invalid XML: {ex.Message}", ex));
+            document = null;
+        }
 
-        // Load and validate XML document outside iterator block
-        document = await XDocument.LoadAsync(inputStream, LoadOptions.None, cancellationToken).ConfigureAwait(false);
+        if (loadError.HasValue)
+        {
+            yield return loadError.Value;
+            yield break;
+        }
 
         if (document.Root is null)
         {

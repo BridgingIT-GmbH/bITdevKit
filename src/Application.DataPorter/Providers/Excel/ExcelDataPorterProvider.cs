@@ -361,64 +361,85 @@ public sealed class ExcelDataPorterProvider(
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
         where TTarget : class, new()
     {
-        using var workbook = new XLWorkbook(inputStream);
-        var worksheet = this.GetWorksheet(workbook, importConfiguration);
-
-        if (worksheet is null)
+        XLWorkbook workbook;
+        Result<TTarget>? loadError = null;
+        try
         {
-            yield return Result<TTarget>.Failure()
-                .WithError(new ImportError("Worksheet not found"));
+            workbook = new XLWorkbook(inputStream);
+        }
+        catch (Exception ex)
+        {
+            loadError = Result<TTarget>.Failure()
+                .WithError(new ImportError($"Invalid Excel workbook: {ex.Message}", ex));
+            workbook = null;
+        }
+
+        if (loadError.HasValue)
+        {
+            yield return loadError.Value;
             yield break;
         }
 
-        // Read headers
-        var headerRow = worksheet.Row(importConfiguration.HeaderRowIndex + 1);
-        var columnMap = this.BuildColumnMap(headerRow, importConfiguration);
-
-        var firstDataRow = importConfiguration.HeaderRowIndex + importConfiguration.SkipRows + 2;
-        var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? firstDataRow;
-
-        for (var rowNum = firstDataRow; rowNum <= lastRow; rowNum++)
+        using (workbook)
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            var worksheet = this.GetWorksheet(workbook, importConfiguration);
 
-            var row = worksheet.Row(rowNum);
-
-            // Skip empty rows
-            if (row.IsEmpty())
+            if (worksheet is null)
             {
-                continue;
+                yield return Result<TTarget>.Failure()
+                    .WithError(new ImportError("Worksheet not found"));
+                yield break;
             }
 
-            var errors = new List<ImportRowError>();
+            // Read headers
+            var headerRow = worksheet.Row(importConfiguration.HeaderRowIndex + 1);
+            var columnMap = this.BuildColumnMap(headerRow, importConfiguration);
 
-            Result<TTarget>? result = null;
-            try
+            var firstDataRow = importConfiguration.HeaderRowIndex + importConfiguration.SkipRows + 2;
+            var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? firstDataRow;
+
+            for (var rowNum = firstDataRow; rowNum <= lastRow; rowNum++)
             {
-                var item = this.MapRow<TTarget>(row, columnMap, importConfiguration, rowNum, errors);
+                cancellationToken.ThrowIfCancellationRequested();
 
-                if (item is not null)
+                var row = worksheet.Row(rowNum);
+
+                // Skip empty rows
+                if (row.IsEmpty())
                 {
-                    result = Result<TTarget>.Success(item);
+                    continue;
                 }
-                else if (errors.Count > 0)
+
+                var errors = new List<ImportRowError>();
+
+                Result<TTarget>? result = null;
+                try
+                {
+                    var item = this.MapRow<TTarget>(row, columnMap, importConfiguration, rowNum, errors);
+
+                    if (item is not null)
+                    {
+                        result = Result<TTarget>.Success(item);
+                    }
+                    else if (errors.Count > 0)
+                    {
+                        result = Result<TTarget>.Failure()
+                            .WithError(new ImportValidationError(
+                                errors[0].RowNumber,
+                                errors[0].Column,
+                                errors[0].Message));
+                    }
+                }
+                catch (Exception ex)
                 {
                     result = Result<TTarget>.Failure()
-                        .WithError(new ImportValidationError(
-                            errors[0].RowNumber,
-                            errors[0].Column,
-                            errors[0].Message));
+                        .WithError(new ImportError($"Row {rowNum}: {ex.Message}", ex));
                 }
-            }
-            catch (Exception ex)
-            {
-                result = Result<TTarget>.Failure()
-                    .WithError(new ImportError($"Row {rowNum}: {ex.Message}", ex));
-            }
 
-            if (result.HasValue)
-            {
-                yield return await Task.FromResult(result.Value);
+                if (result.HasValue)
+                {
+                    yield return await Task.FromResult(result.Value);
+                }
             }
         }
     }

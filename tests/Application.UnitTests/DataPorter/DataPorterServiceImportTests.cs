@@ -301,6 +301,50 @@ public class DataPorterServiceImportTests
         results.All(r => r.IsSuccess).ShouldBeTrue();
     }
 
+    [Fact]
+    public async Task ImportStreamAsync_WithMalformedXml_YieldsFailureResult()
+    {
+        // Arrange
+        var sut = new DataPorterService([new XmlDataPorterProvider()], this.configurationMerger);
+        await using var stream = new MemoryStream("<items><item></items>"u8.ToArray());
+        var options = new ImportOptions { Format = Format.Xml };
+
+        // Act
+        var results = new List<Result<SimpleEntity>>();
+        await foreach (var result in sut.ImportAsyncEnumerable<SimpleEntity>(stream, options))
+        {
+            results.Add(result);
+        }
+
+        // Assert
+        results.Count.ShouldBe(1);
+        results[0].ShouldBeFailure();
+        results[0].HasError<ImportError>().ShouldBeTrue();
+        results[0].Errors[0].Message.ShouldContain("Invalid XML");
+    }
+
+    [Fact]
+    public async Task ImportStreamAsync_WithMalformedExcel_YieldsFailureResult()
+    {
+        // Arrange
+        var sut = new DataPorterService([new ExcelDataPorterProvider()], this.configurationMerger);
+        await using var stream = new MemoryStream([1, 2, 3, 4]);
+        var options = new ImportOptions { Format = Format.Excel };
+
+        // Act
+        var results = new List<Result<SimpleEntity>>();
+        await foreach (var result in sut.ImportAsyncEnumerable<SimpleEntity>(stream, options))
+        {
+            results.Add(result);
+        }
+
+        // Assert
+        results.Count.ShouldBe(1);
+        results[0].ShouldBeFailure();
+        results[0].HasError<ImportError>().ShouldBeTrue();
+        results[0].Errors[0].Message.ShouldContain("Invalid Excel workbook");
+    }
+
     private static TestImportProvider CreateMockImportProvider(
         Format format = Format.Excel,
         bool throwOnCancel = false)

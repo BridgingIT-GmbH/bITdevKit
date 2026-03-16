@@ -128,17 +128,17 @@ public sealed class DataPorterService(
         return Result<byte[]>.Success(stream.ToArray());
     }
 
-    /// <inheritdoc/>
-    public Task<Result> ExportToStreamAsync<TSource>(
-        IEnumerable<TSource> data,
-        Stream outputStream,
-        ExportOptions options = null,
-        CancellationToken cancellationToken = default) where TSource : class
-    {
-        options ??= new ExportOptions();
+    // /// <inheritdoc/>
+    // public Task<Result> ExportToStreamAsync<TSource>(
+    //     IEnumerable<TSource> data,
+    //     Stream outputStream,
+    //     ExportOptions options = null,
+    //     CancellationToken cancellationToken = default) where TSource : class
+    // {
+    //     options ??= new ExportOptions();
 
-        throw new NotImplementedException();
-    }
+    //     throw new NotImplementedException();
+    // }
 
     /// <inheritdoc/>
     public async Task<Result<ExportResult>> ExportAsync(

@@ -88,7 +88,7 @@ public sealed class DataPorterService(
 
             this.logger.LogInformation(
                 "Exported {Rows} rows to {Format} in {Duration}ms",
-                result.RowsExported,
+                result.TotalRows,
                 options.Format,
                 stopwatch.ElapsedMilliseconds);
 

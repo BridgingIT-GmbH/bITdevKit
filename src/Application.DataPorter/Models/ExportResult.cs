@@ -18,7 +18,7 @@ public sealed record ExportResult
     /// <summary>
     /// Gets the number of rows exported.
     /// </summary>
-    public required int RowsExported { get; init; }
+    public required int TotalRows { get; init; }
 
     /// <summary>
     /// Gets the duration of the export operation.

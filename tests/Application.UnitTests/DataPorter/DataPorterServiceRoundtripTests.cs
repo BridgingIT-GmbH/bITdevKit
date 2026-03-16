@@ -158,7 +158,7 @@ public class DataPorterServiceRoundtripTests
 
         // Assert
         result.ShouldBeSuccess();
-        result.Value.RowsExported.ShouldBeGreaterThan(0);
+        result.Value.TotalRows.ShouldBeGreaterThan(0);
     }
 
     [Fact]

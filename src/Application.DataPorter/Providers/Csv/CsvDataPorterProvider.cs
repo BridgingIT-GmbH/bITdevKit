@@ -93,7 +93,7 @@ public sealed class CsvDataPorterProvider(
         return new ExportResult
         {
             BytesWritten = outputStream.Length,
-            RowsExported = rowsExported,
+            TotalRows = rowsExported,
             Duration = TimeSpan.Zero,
             Format = this.Format
         };
@@ -153,7 +153,7 @@ public sealed class CsvDataPorterProvider(
         return new ExportResult
         {
             BytesWritten = outputStream.Length,
-            RowsExported = totalRows,
+            TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format
         };

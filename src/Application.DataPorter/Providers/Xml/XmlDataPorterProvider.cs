@@ -80,7 +80,7 @@ public sealed class XmlDataPorterProvider(
         return new ExportResult
         {
             BytesWritten = outputStream.Length,
-            RowsExported = dataList.Count,
+            TotalRows = dataList.Count,
             Duration = TimeSpan.Zero,
             Format = this.Format
         };
@@ -127,7 +127,7 @@ public sealed class XmlDataPorterProvider(
         return new ExportResult
         {
             BytesWritten = outputStream.Length,
-            RowsExported = totalRows,
+            TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format
         };

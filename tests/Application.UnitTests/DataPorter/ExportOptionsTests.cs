@@ -115,14 +115,14 @@ public class ExportResultTests
         var sut = new ExportResult
         {
             BytesWritten = 1024,
-            RowsExported = 100,
+            TotalRows = 100,
             Duration = TimeSpan.FromSeconds(5),
             Format = Format.Excel
         };
 
         // Assert
         sut.BytesWritten.ShouldBe(1024);
-        sut.RowsExported.ShouldBe(100);
+        sut.TotalRows.ShouldBe(100);
         sut.Duration.ShouldBe(TimeSpan.FromSeconds(5));
         sut.Format.ShouldBe(Format.Excel);
         sut.Warnings.ShouldNotBeNull();
@@ -138,7 +138,7 @@ public class ExportResultTests
         var sut = new ExportResult
         {
             BytesWritten = 2048,
-            RowsExported = 50,
+            TotalRows = 50,
             Duration = TimeSpan.FromMilliseconds(500),
             Format = Format.Csv,
             Warnings = ["Warning 1", "Warning 2"],

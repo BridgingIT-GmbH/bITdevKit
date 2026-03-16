@@ -116,7 +116,7 @@ public class DataPorterServiceExportTests
 
         // Assert
         result.ShouldBeSuccess();
-        result.Value.RowsExported.ShouldBe(1);
+        result.Value.TotalRows.ShouldBe(1);
     }
 
     [Fact]

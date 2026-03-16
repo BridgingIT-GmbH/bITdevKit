@@ -276,7 +276,7 @@ public class TestExportProvider : IDataExportProvider
         return Task.FromResult(new ExportResult
         {
             BytesWritten = bytes.Length,
-            RowsExported = dataList.Count,
+            TotalRows = dataList.Count,
             Duration = TimeSpan.Zero,
             Format = this.Format
         });
@@ -294,7 +294,7 @@ public class TestExportProvider : IDataExportProvider
         return Task.FromResult(new ExportResult
         {
             BytesWritten = bytes.Length,
-            RowsExported = totalRows,
+            TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format
         });

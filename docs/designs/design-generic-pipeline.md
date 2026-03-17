@@ -1036,3 +1036,12 @@ https://medium.com/@bonnotguillaume/software-architecture-the-pipeline-design-pa
 https://github.com/guillaumebonnot/software-architecture/tree/master/Helios.Architecture.Pipeline
 
 https://www.devleader.ca/2026/03/14/decorator-design-pattern-in-c-complete-guide-with-examples
+
+---
+
+## TODOS
+
+- add pipeline execution options such as:
+  - whether to continue on failure or short-circuit
+  - whether to accumulate diagnostics on failure or short-circuit
+- add progress reporting like Requester/Notifier implementations to support long-running pipelines

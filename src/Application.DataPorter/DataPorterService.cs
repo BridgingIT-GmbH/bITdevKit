@@ -58,8 +58,10 @@ public sealed class DataPorterService(
         }
 
         var configuration = configurationMerger.BuildExportConfiguration<TSource>(options);
+        configuration.ProgressTracker = options.Progress is null ? null : new ExportProgressTracker(options.Progress, options.Format);
         var provider = providerResult.Value;
         this.LogSyncExportStart(data, options.Format, typeof(TSource));
+        configuration.ProgressTracker?.ReportStart();
 
         var stopwatch = Stopwatch.StartNew();
 
@@ -86,6 +88,7 @@ public sealed class DataPorterService(
                 result.TotalRows,
                 options.Format,
                 stopwatch.ElapsedMilliseconds);
+            configuration.ProgressTracker?.ReportCompleted(result with { Duration = stopwatch.Elapsed });
 
             return Result<ExportResult>.Success(result with { Duration = stopwatch.Elapsed });
         }
@@ -133,12 +136,14 @@ public sealed class DataPorterService(
         }
 
         var configuration = configurationMerger.BuildExportConfiguration<TSource>(options);
+        configuration.ProgressTracker = options.Progress is null ? null : new ExportProgressTracker(options.Progress, options.Format);
         var provider = providerResult.Value;
 
         this.logger.LogInformation(
             "Exporting async {Type} records to {Format}",
             typeof(TSource).Name,
             options.Format);
+        configuration.ProgressTracker?.ReportStart();
 
         var stopwatch = Stopwatch.StartNew();
 
@@ -165,6 +170,7 @@ public sealed class DataPorterService(
                 result.TotalRows,
                 options.Format,
                 stopwatch.ElapsedMilliseconds);
+            configuration.ProgressTracker?.ReportCompleted(result with { Duration = stopwatch.Elapsed });
 
             return Result<ExportResult>.Success(result with { Duration = stopwatch.Elapsed });
         }
@@ -258,6 +264,7 @@ public sealed class DataPorterService(
 
         var provider = providerResult.Value;
         var stopwatch = Stopwatch.StartNew();
+        var progressTracker = options.Progress is null ? null : new ExportProgressTracker(options.Progress, options.Format);
 
         try
         {
@@ -273,6 +280,7 @@ public sealed class DataPorterService(
             {
                 var config = configurationMerger.BuildExportConfiguration(ds.ItemType, options);
                 config.SheetName = ds.SheetName;
+                config.ProgressTracker = progressTracker;
                 return (ds.Data, config);
             }).ToList();
 
@@ -282,12 +290,15 @@ public sealed class DataPorterService(
                     .WithError(new DataPorterError("Data sets cannot be null or empty."));
             }
 
+            progressTracker?.ReportStart();
+
             var result = await exportProvider.ExportAsync(
                 configurations,
                 outputStream,
                 cancellationToken);
 
             stopwatch.Stop();
+            progressTracker?.ReportCompleted(result with { Duration = stopwatch.Elapsed });
 
             return Result<ExportResult>.Success(result with { Duration = stopwatch.Elapsed });
         }
@@ -323,6 +334,7 @@ public sealed class DataPorterService(
 
         var provider = providerResult.Value;
         var stopwatch = Stopwatch.StartNew();
+        var progressTracker = options.Progress is null ? null : new ExportProgressTracker(options.Progress, options.Format);
 
         try
         {
@@ -338,6 +350,7 @@ public sealed class DataPorterService(
             {
                 var config = configurationMerger.BuildExportConfiguration(ds.ItemType, options);
                 config.SheetName = ds.SheetName;
+                config.ProgressTracker = progressTracker;
                 return (ds.Data, config);
             }).ToList();
 
@@ -347,12 +360,15 @@ public sealed class DataPorterService(
                     .WithError(new DataPorterError("Data sets cannot be null or empty."));
             }
 
+            progressTracker?.ReportStart();
+
             var result = await exportProvider.ExportAsync(
                 configurations,
                 outputStream,
                 cancellationToken);
 
             stopwatch.Stop();
+            progressTracker?.ReportCompleted(result with { Duration = stopwatch.Elapsed });
 
             return Result<ExportResult>.Success(result with { Duration = stopwatch.Elapsed });
         }
@@ -387,9 +403,11 @@ public sealed class DataPorterService(
         }
 
         var configuration = configurationMerger.BuildImportConfiguration<TTarget>(options);
+        configuration.ProgressTracker = options.Progress is null ? null : new ImportProgressTracker(options.Progress, options.Format);
         var provider = providerResult.Value;
 
         this.logger.LogInformation("Importing {Type} from {Format}", typeof(TTarget).Name, options.Format);
+        configuration.ProgressTracker?.ReportStart();
         var stopwatch = Stopwatch.StartNew();
 
         try
@@ -407,6 +425,7 @@ public sealed class DataPorterService(
             stopwatch.Stop();
 
             this.logger.LogInformation("Imported {Success}/{Total} rows from {Format} in {Duration}ms", result.SuccessfulRows, result.TotalRows, options.Format, stopwatch.ElapsedMilliseconds);
+            configuration.ProgressTracker?.ReportCompleted(result with { Duration = stopwatch.Elapsed });
 
             return Result<ImportResult<TTarget>>.Success(result with { Duration = stopwatch.Elapsed });
         }
@@ -466,6 +485,7 @@ public sealed class DataPorterService(
         }
 
         var configuration = configurationMerger.BuildImportConfiguration<TTarget>(options);
+        configuration.ProgressTracker = options.Progress is null ? null : new ImportProgressTracker(options.Progress, options.Format);
         var provider = providerResult.Value;
 
         if (provider is not IDataImportProvider importProvider || !provider.SupportsStreaming)
@@ -477,10 +497,13 @@ public sealed class DataPorterService(
             yield break;
         }
 
+        configuration.ProgressTracker?.ReportStart();
         await foreach (var item in importProvider.ImportStreamAsync<TTarget>(inputStream, configuration, cancellationToken))
         {
             yield return item;
         }
+
+        configuration.ProgressTracker?.ReportCompleted();
     }
 
     /// <inheritdoc/>

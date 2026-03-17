@@ -117,6 +117,7 @@ public sealed class ExcelDataPorterProvider(
 
             currentRow++;
             rowsExported++;
+            exportConfiguration.ProgressTracker?.ReportProgress(rowsExported, writeStream.BytesWritten, totalRows: dataList.Count);
         }
 
         // Write footer rows (if configured)
@@ -217,6 +218,7 @@ public sealed class ExcelDataPorterProvider(
 
             var sheetName = exportConfiguration.SheetName ?? "Sheet" + (workbook.Worksheets.Count + 1);
             var worksheet = workbook.Worksheets.Add(sheetName);
+            var dataList = data.ToList();
 
             var currentRow = 1;
 
@@ -236,7 +238,7 @@ public sealed class ExcelDataPorterProvider(
             }
 
             // Write data rows
-            foreach (var item in data)
+            foreach (var item in dataList)
             {
                 for (var col = 0; col < exportConfiguration.Columns.Count; col++)
                 {
@@ -249,6 +251,7 @@ public sealed class ExcelDataPorterProvider(
 
                 currentRow++;
                 totalRows++;
+                exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {sheetName}");
             }
 
             // Auto-fit columns
@@ -346,6 +349,7 @@ public sealed class ExcelDataPorterProvider(
         var firstDataRow = importConfiguration.HeaderRowIndex + importConfiguration.SkipRows + 2;
         var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? firstDataRow;
         var totalRows = 0;
+        var knownTotalRows = Math.Max(0, lastRow - firstDataRow + 1);
 
         for (var rowNum = firstDataRow; rowNum <= lastRow; rowNum++)
         {
@@ -377,6 +381,7 @@ public sealed class ExcelDataPorterProvider(
 
                 if (ImportErrorLimit.TryAddRange(errors, rowErrors, importConfiguration))
                 {
+                    importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, totalRows - results.Count, errors.Count, knownTotalRows);
                     break;
                 }
             }
@@ -393,9 +398,12 @@ public sealed class ExcelDataPorterProvider(
                 if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport ||
                     ImportErrorLimit.IsReached(importConfiguration, errors.Count))
                 {
+                    importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, totalRows - results.Count, errors.Count, knownTotalRows);
                     break;
                 }
             }
+
+            importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, totalRows - results.Count, errors.Count, knownTotalRows);
         }
 
         return await Task.FromResult(new ImportResult<TTarget>
@@ -473,10 +481,15 @@ public sealed class ExcelDataPorterProvider(
 
             var firstDataRow = importConfiguration.HeaderRowIndex + importConfiguration.SkipRows + 2;
             var lastRow = worksheet.LastRowUsed()?.RowNumber() ?? firstDataRow;
+            var knownTotalRows = Math.Max(0, lastRow - firstDataRow + 1);
+            var processedRows = 0;
+            var successfulRows = 0;
+            var failedRows = 0;
 
             for (var rowNum = firstDataRow; rowNum <= lastRow; rowNum++)
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                processedRows++;
 
                 var row = worksheet.Row(rowNum);
 
@@ -514,11 +527,21 @@ public sealed class ExcelDataPorterProvider(
 
                 if (result.HasValue)
                 {
+                    if (result.Value.IsSuccess)
+                    {
+                        successfulRows++;
+                    }
+                    else
+                    {
+                        failedRows++;
+                        errorCount++;
+                    }
+
+                    importConfiguration.ProgressTracker?.ReportProgress(processedRows, successfulRows, failedRows, errorCount, knownTotalRows);
                     yield return await Task.FromResult(result.Value);
 
                     if (result.Value.IsFailure)
                     {
-                        errorCount++;
                         if (ImportErrorLimit.IsReached(importConfiguration, errorCount))
                         {
                             yield break;

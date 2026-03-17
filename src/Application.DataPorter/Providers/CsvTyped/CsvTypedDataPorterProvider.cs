@@ -68,6 +68,7 @@ public sealed class CsvTypedDataPorterProvider(
         {
             cancellationToken.ThrowIfCancellationRequested();
             rowsWritten += await this.WriteRootRowsAsync(csv, item, rootColumns, exportConfiguration, payloadColumns, cancellationToken);
+            exportConfiguration.ProgressTracker?.ReportProgress(rowsWritten, writeStream.BytesWritten);
         }
 
         await csv.FlushAsync();
@@ -108,6 +109,7 @@ public sealed class CsvTypedDataPorterProvider(
         await foreach (var item in data.WithCancellation(cancellationToken))
         {
             rowsWritten += await this.WriteRootRowsAsync(csv, item, rootColumns, exportConfiguration, payloadColumns, cancellationToken);
+            exportConfiguration.ProgressTracker?.ReportProgress(rowsWritten, writeStream.BytesWritten);
         }
 
         await csv.FlushAsync();
@@ -151,6 +153,7 @@ public sealed class CsvTypedDataPorterProvider(
             foreach (var item in data)
             {
                 rowsWritten += await this.WriteRootRowsAsync(csv, item, rootColumns, configuration, payloadColumns, cancellationToken);
+                configuration.ProgressTracker?.ReportProgress(rowsWritten, writeStream.BytesWritten, message: $"Exported {rowsWritten} rows from {configuration.SheetName ?? "Data"}");
             }
         }
 
@@ -195,6 +198,7 @@ public sealed class CsvTypedDataPorterProvider(
             await foreach (var item in data.WithCancellation(cancellationToken))
             {
                 rowsWritten += await this.WriteRootRowsAsync(csv, item, rootColumns, configuration, payloadColumns, cancellationToken);
+                configuration.ProgressTracker?.ReportProgress(rowsWritten, writeStream.BytesWritten, message: $"Exported {rowsWritten} rows from {configuration.SheetName ?? "Data"}");
             }
         }
 
@@ -474,6 +478,7 @@ public sealed class CsvTypedDataPorterProvider(
             cancellationToken.ThrowIfCancellationRequested();
             rowNumber++;
             rows.Add(this.ReadRow(csv, headers));
+            importConfiguration.ProgressTracker?.ReportProgress(rows.Count, 0, 0, 0);
         }
 
         var errors = new List<ImportRowError>();
@@ -518,6 +523,9 @@ public sealed class CsvTypedDataPorterProvider(
         var currentRows = new List<CsvTypedRow>();
         var currentRootId = default(string);
         var errorCount = 0;
+        var processedRows = 0;
+        var successfulRows = 0;
+        var failedRows = 0;
 
         while (await csv.ReadAsync())
         {
@@ -545,26 +553,41 @@ public sealed class CsvTypedDataPorterProvider(
             {
                 currentRootId = row.RootId;
                 currentRows.Add(row);
+                processedRows++;
+                importConfiguration.ProgressTracker?.ReportProgress(processedRows, successfulRows, failedRows, errorCount);
                 continue;
             }
 
             if (string.Equals(currentRootId, row.RootId, StringComparison.OrdinalIgnoreCase))
             {
                 currentRows.Add(row);
+                processedRows++;
+                importConfiguration.ProgressTracker?.ReportProgress(processedRows, successfulRows, failedRows, errorCount);
                 continue;
             }
 
             foreach (var result in this.MaterializeStreamGroup<TTarget>(currentRows, importConfiguration))
             {
+                if (result.IsSuccess)
+                {
+                    successfulRows++;
+                }
+
                 yield return result;
 
                 if (result.IsFailure)
                 {
+                    failedRows++;
                     errorCount++;
+                    importConfiguration.ProgressTracker?.ReportProgress(processedRows, successfulRows, failedRows, errorCount);
                     if (ImportErrorLimit.IsReached(importConfiguration, errorCount))
                     {
                         yield break;
                     }
+                }
+                else
+                {
+                    importConfiguration.ProgressTracker?.ReportProgress(processedRows, successfulRows, failedRows, errorCount);
                 }
             }
 
@@ -578,21 +601,34 @@ public sealed class CsvTypedDataPorterProvider(
 
             currentRows = [row];
             currentRootId = row.RootId;
+            processedRows++;
+            importConfiguration.ProgressTracker?.ReportProgress(processedRows, successfulRows, failedRows, errorCount);
         }
 
         if (currentRows.Count > 0)
         {
             foreach (var result in this.MaterializeStreamGroup<TTarget>(currentRows, importConfiguration))
             {
+                if (result.IsSuccess)
+                {
+                    successfulRows++;
+                }
+
                 yield return result;
 
                 if (result.IsFailure)
                 {
+                    failedRows++;
                     errorCount++;
+                    importConfiguration.ProgressTracker?.ReportProgress(processedRows, successfulRows, failedRows, errorCount);
                     if (ImportErrorLimit.IsReached(importConfiguration, errorCount))
                     {
                         yield break;
                     }
+                }
+                else
+                {
+                    importConfiguration.ProgressTracker?.ReportProgress(processedRows, successfulRows, failedRows, errorCount);
                 }
             }
         }

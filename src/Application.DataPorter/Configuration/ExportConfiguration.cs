@@ -44,4 +44,11 @@ public sealed class ExportConfiguration
     /// Gets or sets a value indicating whether to include column headers.
     /// </summary>
     public bool IncludeHeaders { get; set; } = true;
+
+    /// <summary>
+    /// Gets or sets the progress reporter for export operations.
+    /// </summary>
+    public IProgress<ExportProgressReport> Progress { get; set; }
+
+    internal ExportProgressTracker ProgressTracker { get; set; }
 }

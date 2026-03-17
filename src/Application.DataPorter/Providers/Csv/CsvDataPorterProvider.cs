@@ -85,6 +85,7 @@ public sealed class CsvDataPorterProvider(
                 this.WriteExportRow(csv, plan, item, collectionItem, exportConfiguration);
                 await csv.NextRecordAsync();
                 rowsExported++;
+                exportConfiguration.ProgressTracker?.ReportProgress(rowsExported, writeStream.BytesWritten);
             }
         }
 
@@ -137,6 +138,7 @@ public sealed class CsvDataPorterProvider(
                 this.WriteExportRow(csv, plan, item, collectionItem, exportConfiguration);
                 await csv.NextRecordAsync();
                 rowsExported++;
+                exportConfiguration.ProgressTracker?.ReportProgress(rowsExported, writeStream.BytesWritten);
             }
         }
 
@@ -198,6 +200,7 @@ public sealed class CsvDataPorterProvider(
                     this.WriteExportRow(csv, plan, item, collectionItem, exportConfiguration);
                     await csv.NextRecordAsync();
                     totalRows++;
+                    exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {exportConfiguration.SheetName ?? "Data"}");
                 }
             }
 
@@ -255,6 +258,7 @@ public sealed class CsvDataPorterProvider(
                     this.WriteExportRow(csv, plan, item, collectionItem, exportConfiguration);
                     await csv.NextRecordAsync();
                     totalRows++;
+                    exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {exportConfiguration.SheetName ?? "Data"}");
                 }
             }
 
@@ -310,9 +314,12 @@ public sealed class CsvDataPorterProvider(
                 failedRows += result.ProcessedRows > 0 ? result.ProcessedRows : result.Errors.Count;
                 if (ImportErrorLimit.TryAddRange(errors, result.Errors, importConfiguration))
                 {
+                    importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, failedRows, errors.Count);
                     break;
                 }
             }
+
+            importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, failedRows, errors.Count);
         }
 
         return new ImportResult<TTarget>
@@ -334,11 +341,18 @@ public sealed class CsvDataPorterProvider(
         where TTarget : class, new()
     {
         var errorCount = 0;
+        var totalRows = 0;
+        var successfulRows = 0;
+        var failedRows = 0;
 
         await foreach (var result in this.ProcessRowsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
         {
             if (result.FatalError is not null)
             {
+                totalRows += result.ProcessedRows > 0 ? result.ProcessedRows : 1;
+                failedRows += result.ProcessedRows > 0 ? result.ProcessedRows : 1;
+                errorCount++;
+                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount);
                 yield return Result<TTarget>.Failure()
                     .WithError(result.FatalError);
                 yield break;
@@ -346,10 +360,17 @@ public sealed class CsvDataPorterProvider(
 
             if (result.Item is not null)
             {
+                totalRows += result.ProcessedRows;
+                successfulRows += result.ProcessedRows;
+                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount);
                 yield return Result<TTarget>.Success(result.Item);
             }
             else if (result.Errors.Count > 0)
             {
+                totalRows += result.ProcessedRows > 0 ? result.ProcessedRows : result.Errors.Count;
+                failedRows += result.ProcessedRows > 0 ? result.ProcessedRows : result.Errors.Count;
+                errorCount += result.Errors.Count;
+                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount);
                 yield return Result<TTarget>.Failure()
                     .WithError(new ImportValidationError(
                         result.Errors[0].RowNumber,
@@ -357,7 +378,6 @@ public sealed class CsvDataPorterProvider(
                         result.Errors[0].Message,
                         result.Errors[0].RawValue));
 
-                errorCount++;
                 if (ImportErrorLimit.IsReached(importConfiguration, errorCount))
                 {
                     yield break;

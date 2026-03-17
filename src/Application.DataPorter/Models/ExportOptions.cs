@@ -41,6 +41,11 @@ public sealed record ExportOptions
     public bool IncludeHeaders { get; init; } = true;
 
     /// <summary>
+    /// Gets or sets the progress reporter for export operations.
+    /// </summary>
+    public IProgress<ExportProgressReport> Progress { get; init; }
+
+    /// <summary>
     /// Gets or sets provider-specific options.
     /// </summary>
     public IReadOnlyDictionary<string, object> ProviderOptions { get; init; } = new Dictionary<string, object>();

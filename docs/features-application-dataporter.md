@@ -46,7 +46,11 @@ public class MyService
     {
         var result = await this.exporter.ExportAsync(orders, output, new ExportOptions
         {
-            Format = Format.Excel
+            Format = Format.Excel,
+            Progress = new Progress<ExportProgressReport>(report =>
+            {
+                Console.WriteLine($"Exported {report.ProcessedRows} rows");
+            })
         });
 
         if (result.IsSuccess)
@@ -65,7 +69,11 @@ public async Task<IEnumerable<Order>> ImportOrdersAsync(Stream input)
     var result = await this.importer.ImportAsync<Order>(input, new ImportOptions
     {
         Format = Format.Csv,
-        Culture = new CultureInfo("de-DE")
+        Culture = new CultureInfo("de-DE"),
+        Progress = new Progress<ImportProgressReport>(report =>
+        {
+            Console.WriteLine($"Processed {report.ProcessedRows} rows");
+        })
     });
 
     if (result.IsSuccess && !result.Value.HasErrors)
@@ -84,6 +92,38 @@ public async Task<IEnumerable<Order>> ImportOrdersAsync(Stream input)
     return [];
 }
 ```
+
+### Progress Reporting
+
+`ExportOptions` and `ImportOptions` support optional runtime progress reporting through `IProgress<TReport>`.
+
+- Export uses `IProgress<ExportProgressReport>`
+- Import uses `IProgress<ImportProgressReport>`
+- Progress is reported when the operation starts, every 25 processed rows, and when the operation completes successfully
+
+```csharp
+var exportOptions = new ExportOptions
+{
+    Format = Format.Json,
+    Progress = new Progress<ExportProgressReport>(report =>
+    {
+        Console.WriteLine(
+            $"Rows={report.ProcessedRows}, Bytes={report.BytesWritten}, Percent={report.PercentageComplete}");
+    })
+};
+
+var importOptions = new ImportOptions
+{
+    Format = Format.Csv,
+    Progress = new Progress<ImportProgressReport>(report =>
+    {
+        Console.WriteLine(
+            $"Processed={report.ProcessedRows}, Success={report.SuccessfulRows}, Errors={report.ErrorCount}");
+    })
+};
+```
+
+For true streaming operations, `TotalRows` and `PercentageComplete` can remain `null` until the final completion report because the total row count is not always known up front.
 
 ### Import Culture And Header Rows
 

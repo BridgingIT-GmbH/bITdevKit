@@ -61,6 +61,11 @@ public sealed record ImportOptions
     public int? MaxErrors { get; init; }
 
     /// <summary>
+    /// Gets or sets the progress reporter for import operations.
+    /// </summary>
+    public IProgress<ImportProgressReport> Progress { get; init; }
+
+    /// <summary>
     /// Gets or sets provider-specific options.
     /// </summary>
     public IReadOnlyDictionary<string, object> ProviderOptions { get; init; } = new Dictionary<string, object>();

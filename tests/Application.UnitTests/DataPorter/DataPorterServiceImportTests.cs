@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
+using System.Text;
 using System.Globalization;
 using BridgingIT.DevKit.Application.DataPorter;
 using ClosedXML.Excel;
@@ -158,6 +159,28 @@ public class DataPorterServiceImportTests
 
         // Assert
         result.ShouldBeSuccess();
+    }
+
+    [Fact]
+    public async Task ImportFromBytesAsync_WithProgress_ForwardsProgressReports()
+    {
+        // Arrange
+        var sut = new DataPorterService([new ExcelDataPorterProvider()], this.configurationMerger);
+        var progress = new TestProgress<ImportProgressReport>();
+        var data = CreateExcelStream(
+            [nameof(SimpleEntity.Id), nameof(SimpleEntity.Name)],
+            Enumerable.Range(1, 30).Select(i => new object[] { i, $"Item {i}" }).ToArray()).ToArray();
+
+        // Act
+        var result = await sut.ImportAsync<SimpleEntity>(data, new ImportOptions { Format = Format.Excel, Progress = progress });
+
+        // Assert
+        result.ShouldBeSuccess();
+        progress.Reports.Count.ShouldBeGreaterThanOrEqualTo(3);
+        progress.Reports[0].Messages.ShouldContain("Starting import");
+        progress.Reports.ShouldContain(report => !report.IsCompleted && report.ProcessedRows == 25);
+        progress.Reports[^1].IsCompleted.ShouldBeTrue();
+        progress.Reports[^1].ProcessedRows.ShouldBe(30);
     }
 
     [Fact]
@@ -484,6 +507,29 @@ public class DataPorterServiceImportTests
         result.Value.Errors[0].Column.ShouldBe(nameof(SimpleEntity.Id));
     }
 
+    [Fact]
+    public async Task ImportAsync_WithProgress_ReportsKnownTotalAndCompletion()
+    {
+        // Arrange
+        var sut = new DataPorterService([new ExcelDataPorterProvider()], this.configurationMerger);
+        var progress = new TestProgress<ImportProgressReport>();
+        await using var stream = CreateExcelStream(
+            [nameof(SimpleEntity.Id), nameof(SimpleEntity.Name)],
+            Enumerable.Range(1, 30).Select(i => new object[] { i, $"Item {i}" }).ToArray());
+
+        // Act
+        var result = await sut.ImportAsync<SimpleEntity>(stream, new ImportOptions { Format = Format.Excel, Progress = progress });
+
+        // Assert
+        result.ShouldBeSuccess();
+        progress.Reports.Count.ShouldBeGreaterThanOrEqualTo(3);
+        progress.Reports[0].Messages.ShouldContain("Starting import");
+        progress.Reports.ShouldContain(report => !report.IsCompleted && report.ProcessedRows == 25 && report.TotalRows == 30 && report.PercentageComplete.HasValue);
+        progress.Reports[^1].IsCompleted.ShouldBeTrue();
+        progress.Reports[^1].ProcessedRows.ShouldBe(30);
+        progress.Reports[^1].SuccessfulRows.ShouldBe(30);
+    }
+
     [Theory]
     [InlineData(Format.Excel)]
     [InlineData(Format.Json)]
@@ -692,6 +738,29 @@ public class DataPorterServiceImportTests
         results[0].ShouldBeFailure();
         results[0].HasError<ImportError>().ShouldBeTrue();
         results[0].Errors[0].Message.ShouldContain("Invalid XML");
+    }
+
+    [Fact]
+    public async Task ImportStreamAsync_WithProgress_ReportsUnknownTotalAndCompletion()
+    {
+        // Arrange
+        var sut = new DataPorterService([new JsonDataPorterProvider()], this.configurationMerger);
+        var progress = new TestProgress<ImportProgressReport>();
+        await using var stream = CreateLargeJsonImportStream(30);
+
+        // Act
+        var results = new List<Result<SimpleEntity>>();
+        await foreach (var result in sut.ImportAsyncEnumerable<SimpleEntity>(stream, new ImportOptions { Format = Format.Json, Progress = progress }))
+        {
+            results.Add(result);
+        }
+
+        // Assert
+        results.Count.ShouldBe(30);
+        progress.Reports.ShouldContain(report => !report.IsCompleted && report.ProcessedRows == 25 && report.PercentageComplete == null);
+        progress.Reports[^1].IsCompleted.ShouldBeTrue();
+        progress.Reports[^1].ProcessedRows.ShouldBe(30);
+        progress.Reports[^1].SuccessfulRows.ShouldBe(30);
     }
 
     [Fact]
@@ -923,6 +992,14 @@ SimpleEntity,root-1,root-1,,,,abc,Broken
 """u8.ToArray()),
             _ => throw new NotSupportedException()
         };
+    }
+
+    private static MemoryStream CreateLargeJsonImportStream(int count)
+    {
+        var items = Enumerable.Range(1, count)
+            .Select(i => $$"""  { "Id": {{i}}, "Name": "Item {{i}}" }""");
+
+        return new MemoryStream(Encoding.UTF8.GetBytes("[\n" + string.Join(",\n", items) + "\n]"));
     }
 
     private static MemoryStream CreateCsvWithPreambleStream()

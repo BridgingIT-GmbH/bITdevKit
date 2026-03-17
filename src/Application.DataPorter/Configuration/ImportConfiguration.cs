@@ -51,6 +51,11 @@ public sealed class ImportConfiguration
     public int? MaxErrors { get; set; }
 
     /// <summary>
+    /// Gets or sets the progress reporter for import operations.
+    /// </summary>
+    public IProgress<ImportProgressReport> Progress { get; set; }
+
+    /// <summary>
     /// Gets or sets the factory function for creating target instances.
     /// </summary>
     public Func<object> Factory { get; set; }
@@ -59,4 +64,6 @@ public sealed class ImportConfiguration
     /// Gets or sets the culture to use for parsing.
     /// </summary>
     public System.Globalization.CultureInfo Culture { get; set; } = System.Globalization.CultureInfo.InvariantCulture;
+
+    internal ImportProgressTracker ProgressTracker { get; set; }
 }

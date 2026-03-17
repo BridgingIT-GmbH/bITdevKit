@@ -92,6 +92,37 @@ public class ConfigurationMergerTests
     }
 
     [Fact]
+    public void BuildExportConfiguration_WithProgress_SetsProgress()
+    {
+        // Arrange
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+        var progress = new TestProgress<ExportProgressReport>();
+        var options = new ExportOptions { Progress = progress };
+
+        // Act
+        var result = sut.BuildExportConfiguration<SimpleEntity>(options);
+
+        // Assert
+        result.Progress.ShouldBeSameAs(progress);
+    }
+
+    [Fact]
+    public void BuildExportConfiguration_WithDifferentSheetNames_ReturnsIndependentConfigurations()
+    {
+        // Arrange
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+
+        // Act
+        var first = sut.BuildExportConfiguration<SimpleEntity>(new ExportOptions { SheetName = "Sheet1" });
+        var second = sut.BuildExportConfiguration<SimpleEntity>(new ExportOptions { SheetName = "Sheet2" });
+
+        // Assert
+        first.ShouldNotBeSameAs(second);
+        first.SheetName.ShouldBe("Sheet1");
+        second.SheetName.ShouldBe("Sheet2");
+    }
+
+    [Fact]
     public void BuildExportConfiguration_WithProfile_MergesProfileSettings()
     {
         // Arrange
@@ -217,6 +248,37 @@ public class ConfigurationMergerTests
 
         // Assert
         result.MaxErrors.ShouldBe(3);
+    }
+
+    [Fact]
+    public void BuildImportConfiguration_WithProgress_SetsProgress()
+    {
+        // Arrange
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+        var progress = new TestProgress<ImportProgressReport>();
+        var options = new ImportOptions { Progress = progress };
+
+        // Act
+        var result = sut.BuildImportConfiguration<SimpleEntity>(options);
+
+        // Assert
+        result.Progress.ShouldBeSameAs(progress);
+    }
+
+    [Fact]
+    public void BuildImportConfiguration_WithDifferentSheetNames_ReturnsIndependentConfigurations()
+    {
+        // Arrange
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+
+        // Act
+        var first = sut.BuildImportConfiguration<SimpleEntity>(new ImportOptions { SheetName = "Sheet1" });
+        var second = sut.BuildImportConfiguration<SimpleEntity>(new ImportOptions { SheetName = "Sheet2" });
+
+        // Assert
+        first.ShouldNotBeSameAs(second);
+        first.SheetName.ShouldBe("Sheet1");
+        second.SheetName.ShouldBe("Sheet2");
     }
 
     [Fact]

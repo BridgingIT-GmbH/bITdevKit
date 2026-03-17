@@ -76,6 +76,7 @@ public sealed class PdfDataPorterProvider(
         }
 
         this.AddContent(section, dataList, columns, exportConfiguration);
+        exportConfiguration.ProgressTracker?.ReportProgress(dataList.Count, writeStream.BytesWritten, dataList.Count);
 
         // Footer
         this.AddFooter(section);
@@ -132,6 +133,7 @@ public sealed class PdfDataPorterProvider(
             this.AddHeader(section, exportConfiguration, dataList.Count);
 
             this.AddContent(section, dataList, columns, exportConfiguration);
+            exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {exportConfiguration.SheetName ?? "Data"}");
 
             // Footer
             this.AddFooter(section);

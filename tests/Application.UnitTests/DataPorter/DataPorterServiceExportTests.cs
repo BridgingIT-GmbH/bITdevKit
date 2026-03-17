@@ -185,6 +185,26 @@ public class DataPorterServiceExportTests
     }
 
     [Fact]
+    public async Task ExportToBytesAsync_WithProgress_ForwardsProgressReports()
+    {
+        // Arrange
+        var sut = new DataPorterService([new ExcelDataPorterProvider()], this.configurationMerger);
+        var progress = new TestProgress<ExportProgressReport>();
+        var data = Enumerable.Range(1, 30).Select(i => new SimpleEntity { Id = i, Name = $"Item {i}" }).ToArray();
+
+        // Act
+        var result = await sut.ExportToBytesAsync(data, new ExportOptions { Format = Format.Excel, Progress = progress });
+
+        // Assert
+        result.ShouldBeSuccess();
+        progress.Reports.Count.ShouldBeGreaterThanOrEqualTo(3);
+        progress.Reports[0].Messages.ShouldContain("Starting export");
+        progress.Reports.ShouldContain(report => !report.IsCompleted && report.ProcessedRows == 25);
+        progress.Reports[^1].IsCompleted.ShouldBeTrue();
+        progress.Reports[^1].ProcessedRows.ShouldBe(30);
+    }
+
+    [Fact]
     public async Task ExportToBytesAsync_WithNullData_ReturnsFailure()
     {
         // Arrange
@@ -339,6 +359,72 @@ public class DataPorterServiceExportTests
         result.Value.TotalRows.ShouldBe(1);
         result.Value.BytesWritten.ShouldBeGreaterThan(0);
         stream.ToArray().Length.ShouldBe((int)result.Value.BytesWritten);
+    }
+
+    [Fact]
+    public async Task ExportAsync_WithProgress_ReportsStartRunningAndCompletion()
+    {
+        // Arrange
+        var sut = new DataPorterService([new ExcelDataPorterProvider()], this.configurationMerger);
+        var progress = new TestProgress<ExportProgressReport>();
+        var data = Enumerable.Range(1, 30).Select(i => new SimpleEntity { Id = i, Name = $"Item {i}" }).ToArray();
+        await using var stream = new MemoryStream();
+
+        // Act
+        var result = await sut.ExportAsync(data, stream, new ExportOptions { Format = Format.Excel, Progress = progress });
+
+        // Assert
+        result.ShouldBeSuccess();
+        progress.Reports.Count.ShouldBeGreaterThanOrEqualTo(3);
+        progress.Reports[0].Messages.ShouldContain("Starting export");
+        progress.Reports[0].IsCompleted.ShouldBeFalse();
+        progress.Reports.ShouldContain(report => !report.IsCompleted && report.ProcessedRows == 25 && report.TotalRows == 30 && report.PercentageComplete.HasValue);
+        progress.Reports[^1].IsCompleted.ShouldBeTrue();
+        progress.Reports[^1].ProcessedRows.ShouldBe(30);
+        progress.Reports[^1].PercentageComplete.ShouldBe(100d);
+    }
+
+    [Fact]
+    public async Task ExportAsync_WithAsyncProgressAndUnknownTotal_ReportsCountsWithoutIntermediatePercentages()
+    {
+        // Arrange
+        var sut = new DataPorterService([new JsonDataPorterProvider()], this.configurationMerger);
+        var progress = new TestProgress<ExportProgressReport>();
+        await using var stream = new MemoryStream();
+
+        // Act
+        var result = await sut.ExportAsync(
+            Enumerable.Range(1, 30).Select(i => new SimpleEntity { Id = i, Name = $"Item {i}" }).ToAsyncEnumerable(),
+            stream,
+            new ExportOptions { Format = Format.Json, Progress = progress });
+
+        // Assert
+        result.ShouldBeSuccess();
+        progress.Reports.ShouldContain(report => !report.IsCompleted && report.ProcessedRows == 25 && report.PercentageComplete == null);
+        progress.Reports[^1].IsCompleted.ShouldBeTrue();
+        progress.Reports[^1].ProcessedRows.ShouldBe(30);
+    }
+
+    [Fact]
+    public async Task ExportAsync_WithMultipleDataSets_ReportsAggregatedDatasetProgress()
+    {
+        // Arrange
+        var sut = new DataPorterService([new JsonDataPorterProvider()], this.configurationMerger);
+        var progress = new TestProgress<ExportProgressReport>();
+        await using var stream = new MemoryStream();
+        var dataSets = new[]
+        {
+            ExportDataSet.Create(Enumerable.Range(1, 25).Select(i => new SimpleEntity { Id = i, Name = $"First {i}" }), "Sheet1"),
+            ExportDataSet.Create(Enumerable.Range(26, 25).Select(i => new SimpleEntity { Id = i, Name = $"Second {i}" }), "Sheet2")
+        };
+
+        // Act
+        var result = await sut.ExportAsync(dataSets, stream, new ExportOptions { Format = Format.Json, Progress = progress });
+
+        // Assert
+        result.ShouldBeSuccess();
+        progress.Reports.ShouldContain(report => !report.IsCompleted && report.ProcessedRows == 25);
+        progress.Reports[^1].ProcessedRows.ShouldBe(50);
     }
 
     private static TestExportProvider CreateMockExportProvider(

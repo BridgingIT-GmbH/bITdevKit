@@ -21,6 +21,7 @@ public class ExportOptionsTests
         sut.UseAttributes.ShouldBeTrue();
         sut.IncludeHeaders.ShouldBeTrue();
         sut.Culture.ShouldBe(System.Globalization.CultureInfo.InvariantCulture);
+        sut.Progress.ShouldBeNull();
         sut.ProviderOptions.ShouldNotBeNull();
         sut.ProviderOptions.ShouldBeEmpty();
     }
@@ -37,6 +38,7 @@ public class ExportOptionsTests
             Culture = new System.Globalization.CultureInfo("de-DE"),
             SheetName = "Custom Sheet",
             IncludeHeaders = false,
+            Progress = new TestProgress<ExportProgressReport>(),
             ProviderOptions = new Dictionary<string, object> { { "key", "value" } }
         };
 
@@ -47,6 +49,7 @@ public class ExportOptionsTests
         sut.Culture.Name.ShouldBe("de-DE");
         sut.SheetName.ShouldBe("Custom Sheet");
         sut.IncludeHeaders.ShouldBeFalse();
+        sut.Progress.ShouldNotBeNull();
         sut.ProviderOptions["key"].ShouldBe("value");
     }
 }
@@ -67,6 +70,7 @@ public class ImportOptionsTests
         sut.SkipRows.ShouldBe(0);
         sut.ValidationBehavior.ShouldBe(ImportValidationBehavior.CollectErrors);
         sut.Culture.ShouldBe(System.Globalization.CultureInfo.InvariantCulture);
+        sut.Progress.ShouldBeNull();
         sut.ProviderOptions.ShouldNotBeNull();
         sut.ProviderOptions.ShouldBeEmpty();
     }
@@ -87,6 +91,7 @@ public class ImportOptionsTests
             SkipRows = 3,
             ValidationBehavior = ImportValidationBehavior.StopImport,
             MaxErrors = 10,
+            Progress = new TestProgress<ImportProgressReport>(),
             ProviderOptions = new Dictionary<string, object> { { "strict", true } }
         };
 
@@ -101,7 +106,78 @@ public class ImportOptionsTests
         sut.SkipRows.ShouldBe(3);
         sut.ValidationBehavior.ShouldBe(ImportValidationBehavior.StopImport);
         sut.MaxErrors.ShouldBe(10);
+        sut.Progress.ShouldNotBeNull();
         sut.ProviderOptions["strict"].ShouldBe(true);
+    }
+}
+
+[UnitTest("Common")]
+public class ExportProgressReportTests
+{
+    [Fact]
+    public void ExportProgressReport_WithRequiredProperties_CreatesInstance()
+    {
+        var sut = new ExportProgressReport
+        {
+            Operation = "Export",
+            Format = Format.Csv,
+            ProcessedRows = 25,
+            TotalRows = 100,
+            PercentageComplete = 25d,
+            BytesWritten = 1024,
+            IsCompleted = false
+        };
+
+        sut.Operation.ShouldBe("Export");
+        sut.Format.ShouldBe(Format.Csv);
+        sut.ProcessedRows.ShouldBe(25);
+        sut.TotalRows.ShouldBe(100);
+        sut.PercentageComplete.ShouldBe(25d);
+        sut.BytesWritten.ShouldBe(1024);
+        sut.IsCompleted.ShouldBeFalse();
+        sut.Messages.ShouldBeEmpty();
+    }
+}
+
+[UnitTest("Common")]
+public class ImportProgressReportTests
+{
+    [Fact]
+    public void ImportProgressReport_WithRequiredProperties_CreatesInstance()
+    {
+        var sut = new ImportProgressReport
+        {
+            Operation = "Import",
+            Format = Format.Json,
+            ProcessedRows = 25,
+            TotalRows = 100,
+            PercentageComplete = 25d,
+            SuccessfulRows = 20,
+            FailedRows = 5,
+            ErrorCount = 5,
+            IsCompleted = false
+        };
+
+        sut.Operation.ShouldBe("Import");
+        sut.Format.ShouldBe(Format.Json);
+        sut.ProcessedRows.ShouldBe(25);
+        sut.TotalRows.ShouldBe(100);
+        sut.PercentageComplete.ShouldBe(25d);
+        sut.SuccessfulRows.ShouldBe(20);
+        sut.FailedRows.ShouldBe(5);
+        sut.ErrorCount.ShouldBe(5);
+        sut.IsCompleted.ShouldBeFalse();
+        sut.Messages.ShouldBeEmpty();
+    }
+}
+
+internal sealed class TestProgress<T> : IProgress<T>
+{
+    public List<T> Reports { get; } = [];
+
+    public void Report(T value)
+    {
+        this.Reports.Add(value);
     }
 }
 

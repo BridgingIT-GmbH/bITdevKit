@@ -1,7 +1,5 @@
 # Design Document: Generic Processing Pipeline Feature (Common.Utilities\Pipeline)
 
-[TOC]
-
 ## 1. Introduction
 
 The generic processing pipeline is a reusable framework feature for structuring ordered in-process processing logic as a sequence of focused steps. It is intended for scenarios where data or requests must pass through multiple stages of processing while preserving consistency, extensibility, testability, and observability.
@@ -307,7 +305,21 @@ A step may determine that it should not participate in the current execution. Th
 
 A step may determine that the final successful result has already been reached and that no further processing is required.
 
-Short-circuiting represents successful early completion.
+Short-circuiting represents successful early completion and produces a valid final result.
+
+### 8.4 Fail
+
+A step may fail with an error outcome aligned with the framework’s result model.
+
+Failure is explicit and structured. It is not merely an incidental control-flow side effect.
+
+### 8.5 Request termination
+
+A step may request termination of the remaining pipeline.
+
+Termination ends further execution without implying a successful final result.
+
+This concept is distinct from both failure and short-circuiting. It allows policy-driven or context-driven termination conditions to be represented intentionally.
 
 ### 8.4 Fail
 
@@ -371,8 +383,6 @@ Control outcomes therefore determine whether execution continues, stops successf
 
 ---
 
----
-
 ## 9. Pipeline Definition and Execution Model
 
 The design distinguishes clearly between pipeline definition and pipeline execution.
@@ -400,6 +410,8 @@ Execution describes how the pipeline behaves for one processing request.
 ### 9.3 Ordered progression
 
 Pipeline execution proceeds through the defined step sequence in order, with each step participating according to current runtime conditions and prior outcomes.
+
+The order of steps is defined by the order in which they are registered in the static fluent builder. This registration order represents the canonical execution order of the pipeline.
 
 Order is part of the meaning of the pipeline and must be treated as intentional.
 
@@ -456,6 +468,18 @@ Naming turns the pipeline from a generic internal mechanism into a reusable fram
 
 The pipeline name should also be part of the shared execution context and execution diagnostics.
 
+### 11.3 Variants
+
+Pipeline variants are intentionally not part of the design.
+
+Named pipelines are considered sufficient to represent different processing flows. Variations in behavior should be expressed through:
+
+* distinct named pipelines
+* conditional processing within the pipeline
+* execution policies
+
+This keeps the conceptual model simple and avoids introducing an additional abstraction layer for variants.
+
 ---
 
 ## 12. Conditional Processing
@@ -493,7 +517,7 @@ Step participation is determined through a two-stage decision process combining 
 
 #### Stage 1 – Definition-level evaluation
 
-During pipeline definition, structural conditions determine whether a step is considered part of the pipeline structure. These conditions express design intent and may depend on configuration or pipeline variants.
+During pipeline definition, structural conditions determine whether a step is considered part of the pipeline structure. These conditions express design intent and may depend on configuration or configuration or environment conditions.
 
 If a step does not satisfy definition-level conditions, it is excluded from the pipeline structure entirely.
 
@@ -541,9 +565,38 @@ This model keeps **pipeline structure deterministic** while still allowing **run
 
 ---
 
+## 13. Execution Policies
+
+Execution policies define how the pipeline reacts to control outcomes produced by processing steps.
+
+Processing steps determine *what happened* during execution, while execution policies determine *how the pipeline responds* to those outcomes.
+
+### 13.1 Purpose of execution policies
+
+Execution policies ensure that pipeline behavior remains consistent and predictable across different use cases without requiring individual steps to implement control-flow rules.
+
+### 13.2 Policy-controlled behavior
+
+Execution policies may define behavior such as:
+
+* whether execution continues after a (specific) failure(s) or stops immediately
+* whether execution continues after a short-circuit or stops immediately
+* whether multiple errors are accumulated or execution fails fast
+* whether diagnostics are collected on failure or short-circuit
+* whether termination or short-circuit outcomes can be overridden or enforced
+
+### 13.3 Separation of concerns
+
+Execution policies separate decision-making responsibilities:
+
+* steps are responsible for producing outcomes (continue, skip, short-circuit, terminate, fail)
+* policies are responsible for interpreting those outcomes and determining pipeline progression
+
+This separation prevents processing logic from becoming entangled with control-flow rules and ensures consistent behavior across pipelines.
+
 ---
 
-## 13. Result Handling Concept
+## 14. Result Handling Concept
 
 The pipeline integrates with the framework’s established result model.
 

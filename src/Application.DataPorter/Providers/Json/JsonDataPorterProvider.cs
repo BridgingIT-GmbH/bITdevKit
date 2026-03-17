@@ -64,6 +64,7 @@ public sealed class JsonDataPorterProvider(
             cancellationToken.ThrowIfCancellationRequested();
             this.WriteExportRow(writer, item, exportConfiguration, jsonOptions);
             totalRows++;
+            exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten);
         }
 
         writer.WriteEndArray();
@@ -100,6 +101,7 @@ public sealed class JsonDataPorterProvider(
         {
             this.WriteExportRow(writer, item, exportConfiguration, jsonOptions);
             totalRows++;
+            exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten);
         }
 
         writer.WriteEndArray();
@@ -143,6 +145,7 @@ public sealed class JsonDataPorterProvider(
                 cancellationToken.ThrowIfCancellationRequested();
                 this.WriteExportRow(writer, item, exportConfiguration, jsonOptions);
                 totalRows++;
+                exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {sheetName}");
             }
 
             writer.WriteEndArray();
@@ -188,6 +191,7 @@ public sealed class JsonDataPorterProvider(
             {
                 this.WriteExportRow(writer, item, exportConfiguration, jsonOptions);
                 totalRows++;
+                exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {sheetName}");
             }
 
             writer.WriteEndArray();
@@ -245,9 +249,12 @@ public sealed class JsonDataPorterProvider(
                 failedRows++;
                 if (ImportErrorLimit.TryAddRange(errors, result.Errors, importConfiguration))
                 {
+                    importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, failedRows, errors.Count);
                     break;
                 }
             }
+
+            importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, failedRows, errors.Count);
         }
 
         return new ImportResult<TTarget>
@@ -269,22 +276,35 @@ public sealed class JsonDataPorterProvider(
         where TTarget : class, new()
     {
         var errorCount = 0;
+        var totalRows = 0;
+        var successfulRows = 0;
+        var failedRows = 0;
 
         await foreach (var result in this.ProcessRowsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
         {
             if (result.FatalError is not null)
             {
+                totalRows += result.RowNumber > 0 ? 1 : 0;
+                failedRows++;
+                errorCount++;
+                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount);
                 yield return Result<TTarget>.Failure()
                     .WithError(result.FatalError);
                 yield break;
             }
 
+            totalRows++;
             if (result.Item is not null)
             {
+                successfulRows++;
+                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount);
                 yield return Result<TTarget>.Success(result.Item);
             }
             else if (result.Errors.Count > 0)
             {
+                failedRows++;
+                errorCount += result.Errors.Count;
+                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount);
                 yield return Result<TTarget>.Failure()
                     .WithError(new ImportValidationError(
                         result.Errors[0].RowNumber,
@@ -292,7 +312,6 @@ public sealed class JsonDataPorterProvider(
                         result.Errors[0].Message,
                         result.Errors[0].RawValue));
 
-                errorCount++;
                 if (ImportErrorLimit.IsReached(importConfiguration, errorCount))
                 {
                     yield break;

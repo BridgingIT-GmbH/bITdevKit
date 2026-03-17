@@ -44,6 +44,7 @@ public sealed class ConfigurationMerger(
         var config = options.UseAttributes
             ? attributeReader.ReadExportConfiguration(sourceType)
             : new ExportConfiguration { SourceType = sourceType };
+        config = this.CloneExportConfiguration(config);
 
         // Override with profile configuration if available
         var profile = profileRegistry.GetExportProfile(sourceType);
@@ -60,6 +61,7 @@ public sealed class ConfigurationMerger(
 
         config.Culture = options.Culture;
         config.IncludeHeaders = options.IncludeHeaders;
+        config.Progress = options.Progress;
 
         return config;
     }
@@ -90,6 +92,7 @@ public sealed class ConfigurationMerger(
         var config = options.UseAttributes
             ? attributeReader.ReadImportConfiguration(targetType)
             : new ImportConfiguration { TargetType = targetType };
+        config = this.CloneImportConfiguration(config);
 
         // Override with profile configuration if available
         var profile = profileRegistry.GetImportProfile(targetType);
@@ -114,6 +117,7 @@ public sealed class ConfigurationMerger(
         config.ValidationBehavior = options.ValidationBehavior;
         config.MaxErrors = options.MaxErrors;
         config.Culture = options.Culture;
+        config.Progress = options.Progress;
 
         return config;
     }
@@ -216,6 +220,127 @@ public sealed class ConfigurationMerger(
         {
             target.ConditionalStyles.AddRange(source.ConditionalStyles);
         }
+    }
+
+    private ExportConfiguration CloneExportConfiguration(ExportConfiguration source)
+    {
+        return new ExportConfiguration
+        {
+            SourceType = source.SourceType,
+            SheetName = source.SheetName,
+            Columns = [.. source.Columns.Select(this.CloneColumnConfiguration)],
+            HeaderRows = [.. source.HeaderRows.Select(this.CloneHeaderRowConfiguration)],
+            FooterRows = [.. source.FooterRows.Select(this.CloneFooterRowConfiguration)],
+            Culture = source.Culture,
+            IncludeHeaders = source.IncludeHeaders,
+            Progress = source.Progress
+        };
+    }
+
+    private ImportConfiguration CloneImportConfiguration(ImportConfiguration source)
+    {
+        return new ImportConfiguration
+        {
+            TargetType = source.TargetType,
+            SheetName = source.SheetName,
+            SheetIndex = source.SheetIndex,
+            Columns = [.. source.Columns.Select(this.CloneImportColumnConfiguration)],
+            HeaderRowIndex = source.HeaderRowIndex,
+            SkipRows = source.SkipRows,
+            ValidationBehavior = source.ValidationBehavior,
+            MaxErrors = source.MaxErrors,
+            Culture = source.Culture,
+            Progress = source.Progress
+        };
+    }
+
+    private ColumnConfiguration CloneColumnConfiguration(ColumnConfiguration source)
+    {
+        return new ColumnConfiguration
+        {
+            PropertyName = source.PropertyName,
+            HeaderName = source.HeaderName,
+            Order = source.Order,
+            Format = source.Format,
+            Width = source.Width,
+            NullValue = source.NullValue,
+            Ignore = source.Ignore,
+            HorizontalAlignment = source.HorizontalAlignment,
+            VerticalAlignment = source.VerticalAlignment,
+            Converter = source.Converter,
+            PropertyInfo = source.PropertyInfo,
+            ValueGetter = source.ValueGetter,
+            ConditionalStyles = [.. source.ConditionalStyles.Select(this.CloneConditionalStyle)]
+        };
+    }
+
+    private ImportColumnConfiguration CloneImportColumnConfiguration(ImportColumnConfiguration source)
+    {
+        return new ImportColumnConfiguration
+        {
+            PropertyName = source.PropertyName,
+            SourceName = source.SourceName,
+            SourceIndex = source.SourceIndex,
+            Order = source.Order,
+            Format = source.Format,
+            Width = source.Width,
+            NullValue = source.NullValue,
+            Ignore = source.Ignore,
+            IsRequired = source.IsRequired,
+            RequiredMessage = source.RequiredMessage,
+            HorizontalAlignment = source.HorizontalAlignment,
+            VerticalAlignment = source.VerticalAlignment,
+            Converter = source.Converter,
+            PropertyInfo = source.PropertyInfo,
+            ValueSetter = source.ValueSetter,
+            Validators = [.. source.Validators.Select(this.CloneColumnValidator)],
+            Parser = source.Parser
+        };
+    }
+
+    private HeaderRowConfiguration CloneHeaderRowConfiguration(HeaderRowConfiguration source)
+    {
+        return new HeaderRowConfiguration
+        {
+            Content = source.Content,
+            IsBold = source.IsBold,
+            FontSize = source.FontSize,
+            HorizontalAlignment = source.HorizontalAlignment
+        };
+    }
+
+    private FooterRowConfiguration CloneFooterRowConfiguration(FooterRowConfiguration source)
+    {
+        return new FooterRowConfiguration
+        {
+            Content = source.Content,
+            ContentFactory = source.ContentFactory,
+            IsBold = source.IsBold,
+            IsItalic = source.IsItalic,
+            FontSize = source.FontSize,
+            HorizontalAlignment = source.HorizontalAlignment
+        };
+    }
+
+    private ConditionalStyle CloneConditionalStyle(ConditionalStyle source)
+    {
+        return new ConditionalStyle
+        {
+            Condition = source.Condition,
+            IsBold = source.IsBold,
+            IsItalic = source.IsItalic,
+            ForegroundColor = source.ForegroundColor,
+            BackgroundColor = source.BackgroundColor
+        };
+    }
+
+    private ColumnValidator CloneColumnValidator(ColumnValidator source)
+    {
+        return new ColumnValidator
+        {
+            Validate = source.Validate,
+            ErrorMessage = source.ErrorMessage
+        };
     }
 
     private void MergeProfileIntoImportConfig(ImportConfiguration config, IImportProfile profile)

@@ -21,6 +21,11 @@ public sealed record ExportResult
     public required int TotalRows { get; init; }
 
     /// <summary>
+    /// Gets the number of rows skipped by interceptors.
+    /// </summary>
+    public int SkippedRows { get; init; }
+
+    /// <summary>
     /// Gets the duration of the export operation.
     /// </summary>
     public required TimeSpan Duration { get; init; }

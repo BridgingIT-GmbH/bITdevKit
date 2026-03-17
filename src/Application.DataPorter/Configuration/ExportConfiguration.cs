@@ -51,4 +51,5 @@ public sealed class ExportConfiguration
     public IProgress<ExportProgressReport> Progress { get; set; }
 
     internal ExportProgressTracker ProgressTracker { get; set; }
+    internal object RowInterceptionExecutor { get; set; }
 }

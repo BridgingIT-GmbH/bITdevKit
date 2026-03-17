@@ -51,6 +51,11 @@ public sealed record ImportProgressReport
     public required int ErrorCount { get; init; }
 
     /// <summary>
+    /// Gets the number of rows skipped so far.
+    /// </summary>
+    public int SkippedRows { get; init; }
+
+    /// <summary>
     /// Gets a value indicating whether the import has completed successfully.
     /// </summary>
     public required bool IsCompleted { get; init; }

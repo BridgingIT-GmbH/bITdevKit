@@ -66,4 +66,5 @@ public sealed class ImportConfiguration
     public System.Globalization.CultureInfo Culture { get; set; } = System.Globalization.CultureInfo.InvariantCulture;
 
     internal ImportProgressTracker ProgressTracker { get; set; }
+    internal object RowInterceptionExecutor { get; set; }
 }

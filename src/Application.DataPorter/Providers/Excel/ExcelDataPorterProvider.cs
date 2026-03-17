@@ -51,6 +51,10 @@ public sealed class ExcelDataPorterProvider(
     {
         var writeStream = new WriteStreamWrapper(outputStream);
         using var workbook = new XLWorkbook();
+        var warnings = new List<string>();
+        var skippedRows = 0;
+        var logicalRowNumber = 0;
+        var executor = exportConfiguration.GetExportRowInterceptionExecutor<TSource>();
 
         var sheetName = exportConfiguration.SheetName ?? typeof(TSource).Name;
         var worksheet = workbook.Worksheets.Add(sheetName);
@@ -104,11 +108,31 @@ public sealed class ExcelDataPorterProvider(
         foreach (var item in dataList)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            logicalRowNumber++;
+
+            var interception = executor is not null
+                ? await executor.BeforeAsync(item, logicalRowNumber, this.Format, sheetName, false, cancellationToken)
+                : null;
+
+            if (interception?.Outcome == RowInterceptionOutcome.Skip)
+            {
+                skippedRows++;
+                warnings.Add($"Row {logicalRowNumber} skipped by export interceptor: {interception.Reason}");
+                exportConfiguration.ProgressTracker?.ReportProgress(rowsExported, writeStream.BytesWritten, totalRows: dataList.Count, skippedRows: skippedRows);
+                continue;
+            }
+
+            if (interception?.Outcome == RowInterceptionOutcome.Abort)
+            {
+                throw new ExportInterceptionAbortedException(interception.Reason);
+            }
+
+            var exportItem = interception?.Item ?? item;
 
             for (var col = 0; col < exportConfiguration.Columns.Count; col++)
             {
                 var column = exportConfiguration.Columns[col];
-                var value = column.GetValue(item);
+                var value = column.GetValue(exportItem);
                 var cell = worksheet.Cell(currentRow, col + 1);
 
                 this.SetCellValue(cell, value, column, exportConfiguration);
@@ -117,7 +141,11 @@ public sealed class ExcelDataPorterProvider(
 
             currentRow++;
             rowsExported++;
-            exportConfiguration.ProgressTracker?.ReportProgress(rowsExported, writeStream.BytesWritten, totalRows: dataList.Count);
+            exportConfiguration.ProgressTracker?.ReportProgress(rowsExported, writeStream.BytesWritten, totalRows: dataList.Count, skippedRows: skippedRows);
+            if (interception is not null)
+            {
+                await executor.AfterAsync(interception, cancellationToken);
+            }
         }
 
         // Write footer rows (if configured)
@@ -185,8 +213,10 @@ public sealed class ExcelDataPorterProvider(
         {
             BytesWritten = writeStream.BytesWritten,
             TotalRows = rowsExported,
+            SkippedRows = skippedRows,
             Duration = TimeSpan.Zero,
-            Format = this.Format
+            Format = this.Format,
+            Warnings = warnings
         };
     }
 
@@ -211,6 +241,9 @@ public sealed class ExcelDataPorterProvider(
         var writeStream = new WriteStreamWrapper(outputStream);
         using var workbook = new XLWorkbook();
         var totalRows = 0;
+        var warnings = new List<string>();
+        var skippedRows = 0;
+        var logicalRowNumber = 0;
 
         foreach (var (data, exportConfiguration) in dataSets)
         {
@@ -240,10 +273,33 @@ public sealed class ExcelDataPorterProvider(
             // Write data rows
             foreach (var item in dataList)
             {
+                logicalRowNumber++;
+                var interception = await ObjectExportRowInterceptionInvoker.BeforeAsync(
+                    exportConfiguration.RowInterceptionExecutor,
+                    item,
+                    logicalRowNumber,
+                    this.Format,
+                    sheetName,
+                    false,
+                    cancellationToken);
+
+                if (interception.Outcome == RowInterceptionOutcome.Skip)
+                {
+                    skippedRows++;
+                    warnings.Add($"Row {logicalRowNumber} skipped by export interceptor: {interception.Reason}");
+                    exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {sheetName}", skippedRows: skippedRows);
+                    continue;
+                }
+
+                if (interception.Outcome == RowInterceptionOutcome.Abort)
+                {
+                    throw new ExportInterceptionAbortedException(interception.Reason);
+                }
+
                 for (var col = 0; col < exportConfiguration.Columns.Count; col++)
                 {
                     var column = exportConfiguration.Columns[col];
-                    var value = column.GetValue(item);
+                    var value = column.GetValue(interception.Item);
                     var cell = worksheet.Cell(currentRow, col + 1);
 
                     this.SetCellValue(cell, value, column, exportConfiguration);
@@ -251,7 +307,8 @@ public sealed class ExcelDataPorterProvider(
 
                 currentRow++;
                 totalRows++;
-                exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {sheetName}");
+                exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {sheetName}", skippedRows: skippedRows);
+                await ObjectExportRowInterceptionInvoker.AfterAsync(exportConfiguration.RowInterceptionExecutor, interception.State, cancellationToken);
             }
 
             // Auto-fit columns
@@ -270,8 +327,10 @@ public sealed class ExcelDataPorterProvider(
         {
             BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
+            SkippedRows = skippedRows,
             Duration = TimeSpan.Zero,
-            Format = this.Format
+            Format = this.Format,
+            Warnings = warnings
         };
     }
 
@@ -301,6 +360,8 @@ public sealed class ExcelDataPorterProvider(
         var results = new List<TTarget>();
         var errors = new List<ImportRowError>();
         var warnings = new List<string>();
+        var skippedRows = 0;
+        var executor = importConfiguration.GetImportRowInterceptionExecutor<TTarget>();
 
         using var workbook = new XLWorkbook(inputStream);
         var worksheet = this.GetWorksheet(workbook, importConfiguration);
@@ -371,7 +432,27 @@ public sealed class ExcelDataPorterProvider(
 
                 if (item is not null)
                 {
-                    results.Add(item);
+                    var interception = executor is not null
+                        ? await executor.BeforeAsync(item, rowNum, this.Format, worksheet.Name, false, cancellationToken)
+                        : null;
+
+                    if (interception?.Outcome == RowInterceptionOutcome.Skip)
+                    {
+                        skippedRows++;
+                        warnings.Add($"Row {rowNum} skipped by import interceptor: {interception.Reason}");
+                    }
+                    else if (interception?.Outcome == RowInterceptionOutcome.Abort)
+                    {
+                        throw new ImportInterceptionAbortedException(interception.Reason);
+                    }
+                    else
+                    {
+                        results.Add(interception?.Item ?? item);
+                        if (interception is not null)
+                        {
+                            await executor.AfterAsync(interception, cancellationToken);
+                        }
+                    }
                 }
                 else if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport && rowErrors.Count > 0)
                 {
@@ -381,7 +462,7 @@ public sealed class ExcelDataPorterProvider(
 
                 if (ImportErrorLimit.TryAddRange(errors, rowErrors, importConfiguration))
                 {
-                    importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, totalRows - results.Count, errors.Count, knownTotalRows);
+                    importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, totalRows - results.Count, errors.Count, knownTotalRows, skippedRows: skippedRows);
                     break;
                 }
             }
@@ -398,12 +479,12 @@ public sealed class ExcelDataPorterProvider(
                 if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport ||
                     ImportErrorLimit.IsReached(importConfiguration, errors.Count))
                 {
-                    importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, totalRows - results.Count, errors.Count, knownTotalRows);
+                    importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, totalRows - results.Count, errors.Count, knownTotalRows, skippedRows: skippedRows);
                     break;
                 }
             }
 
-            importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, totalRows - results.Count, errors.Count, knownTotalRows);
+            importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, totalRows - results.Count, errors.Count, knownTotalRows, skippedRows: skippedRows);
         }
 
         return await Task.FromResult(new ImportResult<TTarget>
@@ -412,6 +493,7 @@ public sealed class ExcelDataPorterProvider(
             TotalRows = totalRows,
             SuccessfulRows = results.Count,
             FailedRows = totalRows - results.Count,
+            SkippedRows = skippedRows,
             Duration = TimeSpan.Zero,
             Errors = errors,
             Warnings = warnings
@@ -485,6 +567,8 @@ public sealed class ExcelDataPorterProvider(
             var processedRows = 0;
             var successfulRows = 0;
             var failedRows = 0;
+            var skippedRows = 0;
+            var executor = importConfiguration.GetImportRowInterceptionExecutor<TTarget>();
 
             for (var rowNum = firstDataRow; rowNum <= lastRow; rowNum++)
             {
@@ -508,7 +592,31 @@ public sealed class ExcelDataPorterProvider(
 
                     if (item is not null)
                     {
-                        result = Result<TTarget>.Success(item);
+                        var interception = executor is not null
+                            ? await executor.BeforeAsync(item, rowNum, this.Format, worksheet.Name, true, cancellationToken)
+                            : null;
+
+                        if (interception?.Outcome == RowInterceptionOutcome.Skip)
+                        {
+                            skippedRows++;
+                            failedRows++;
+                            importConfiguration.ProgressTracker?.ReportProgress(processedRows, successfulRows, failedRows, errorCount, knownTotalRows, skippedRows: skippedRows);
+                            continue;
+                        }
+                        else if (interception?.Outcome == RowInterceptionOutcome.Abort)
+                        {
+                            result = Result<TTarget>.Failure()
+                                .WithError(new ImportInterceptionAbortedError(interception.Reason));
+                        }
+                        else
+                        {
+                            if (interception is not null)
+                            {
+                                await executor.AfterAsync(interception, cancellationToken);
+                            }
+
+                            result = Result<TTarget>.Success(interception?.Item ?? item);
+                        }
                     }
                     else if (errors.Count > 0)
                     {
@@ -531,17 +639,26 @@ public sealed class ExcelDataPorterProvider(
                     {
                         successfulRows++;
                     }
+                    else if (result.Value.HasError<ImportInterceptionAbortedError>())
+                    {
+                        failedRows++;
+                    }
                     else
                     {
                         failedRows++;
                         errorCount++;
                     }
 
-                    importConfiguration.ProgressTracker?.ReportProgress(processedRows, successfulRows, failedRows, errorCount, knownTotalRows);
+                    importConfiguration.ProgressTracker?.ReportProgress(processedRows, successfulRows, failedRows, errorCount, knownTotalRows, skippedRows: skippedRows);
                     yield return await Task.FromResult(result.Value);
 
                     if (result.Value.IsFailure)
                     {
+                        if (result.Value.HasError<ImportInterceptionAbortedError>())
+                        {
+                            yield break;
+                        }
+
                         if (ImportErrorLimit.IsReached(importConfiguration, errorCount))
                         {
                             yield break;

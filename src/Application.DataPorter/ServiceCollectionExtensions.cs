@@ -36,6 +36,7 @@ public static partial class ServiceCollectionExtensions
         services.TryAddSingleton<IProfileRegistry, ProfileRegistry>();
         services.TryAddSingleton<AttributeConfigurationReader>();
         services.TryAddSingleton<ConfigurationMerger>();
+        services.TryAddScoped<IRowInterceptorsProvider, RowInterceptorsProvider>();
         services.TryAddScoped<DataPorterService>();
         services.TryAddScoped<IDataExporter>(sp => sp.GetRequiredService<DataPorterService>());
         services.TryAddScoped<IDataImporter>(sp => sp.GetRequiredService<DataPorterService>());
@@ -123,6 +124,67 @@ public static partial class ServiceCollectionExtensions
             EnsureArg.IsNotNull(context, nameof(context));
             context.Services.AddSingleton<IImportProfile, TProfile>();
             return context;
+        }
+
+        /// <summary>
+        /// Registers a typed import row interceptor.
+        /// </summary>
+        /// <typeparam name="TInterceptor">The interceptor type.</typeparam>
+        /// <returns>The builder context for method chaining.</returns>
+        public DataPorterBuilderContext AddImportRowInterceptor<TInterceptor>()
+            where TInterceptor : class
+        {
+            EnsureArg.IsNotNull(context, nameof(context));
+            RegisterRowInterceptor<TInterceptor>(context.Services, typeof(IImportRowInterceptor<>));
+            return context;
+        }
+
+        /// <summary>
+        /// Registers a typed export row interceptor.
+        /// </summary>
+        /// <typeparam name="TInterceptor">The interceptor type.</typeparam>
+        /// <returns>The builder context for method chaining.</returns>
+        public DataPorterBuilderContext AddExportRowInterceptor<TInterceptor>()
+            where TInterceptor : class
+        {
+            EnsureArg.IsNotNull(context, nameof(context));
+            RegisterRowInterceptor<TInterceptor>(context.Services, typeof(IExportRowInterceptor<>));
+            return context;
+        }
+
+        /// <summary>
+        /// Registers a typed import/export row interceptor.
+        /// </summary>
+        /// <typeparam name="TInterceptor">The interceptor type.</typeparam>
+        /// <returns>The builder context for method chaining.</returns>
+        public DataPorterBuilderContext AddRowInterceptor<TInterceptor>()
+            where TInterceptor : class
+        {
+            EnsureArg.IsNotNull(context, nameof(context));
+            RegisterRowInterceptor<TInterceptor>(context.Services, typeof(IImportRowInterceptor<>));
+            RegisterRowInterceptor<TInterceptor>(context.Services, typeof(IExportRowInterceptor<>));
+            return context;
+        }
+    }
+
+    private static void RegisterRowInterceptor<TInterceptor>(IServiceCollection services, Type interfaceType)
+        where TInterceptor : class
+    {
+        var interceptorType = typeof(TInterceptor);
+        var implementedInterfaces = interceptorType.GetInterfaces()
+            .Where(t => t.IsGenericType && t.GetGenericTypeDefinition() == interfaceType)
+            .ToList();
+
+        if (implementedInterfaces.Count == 0)
+        {
+            return;
+        }
+
+        services.AddScoped<TInterceptor>();
+
+        foreach (var implementedInterface in implementedInterfaces)
+        {
+            services.AddScoped(implementedInterface, sp => sp.GetRequiredService<TInterceptor>());
         }
     }
 }

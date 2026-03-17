@@ -125,7 +125,61 @@ var importOptions = new ImportOptions
 
 For true streaming operations, `TotalRows` and `PercentageComplete` can remain `null` until the final completion report because the total row count is not always known up front.
 
-### Import Culture And Header Rows
+### Row Interceptors
+
+`ExportOptions` and `ImportOptions` can flow through typed row interceptors that are resolved from dependency injection.
+
+- Register one or more `IExportRowInterceptor<T>` implementations to enrich, audit, skip, or abort exported rows.
+- Register one or more `IImportRowInterceptor<T>` implementations to enrich, audit, skip, or abort imported rows after mapping produced a typed item.
+- Interceptors are executed in registration order.
+- Closed generic interceptors are type-specific. For example, `IExportRowInterceptor<Order>` only runs for `Order` exports, not for `Person` exports.
+- A skip is tracked as a warning and increments `SkippedRows`.
+- An abort returns `ExportInterceptionAbortedError` or `ImportInterceptionAbortedError`.
+- Skip and abort decisions are logged as warnings by the interceptor executor pipeline.
+
+```csharp
+services.AddDataPorter()
+    .AddRowInterceptor<OrderAuditInterceptor>()
+    .AddExportRowInterceptor<SkipCancelledOrdersInterceptor>()
+    .AddImportRowInterceptor<NormalizeCustomerNameInterceptor>();
+
+public sealed class SkipCancelledOrdersInterceptor : IExportRowInterceptor<Order>
+{
+    public Task<RowInterceptionDecision> BeforeExportAsync(
+        ExportRowContext<Order> context,
+        CancellationToken cancellationToken = default)
+    {
+        if (context.Item.Status == OrderStatus.Cancelled)
+        {
+            return Task.FromResult(RowInterceptionDecision.Skip("Cancelled orders are not exported."));
+        }
+
+        context.Item.ExportTimestamp = DateTimeOffset.UtcNow;
+        return Task.FromResult(RowInterceptionDecision.Continue());
+    }
+}
+
+public sealed class NormalizeCustomerNameInterceptor : IImportRowInterceptor<Order>
+{
+    public Task<RowInterceptionDecision> BeforeImportAsync(
+        ImportRowContext<Order> context,
+        CancellationToken cancellationToken = default)
+    {
+        context.Item.CustomerName = context.Item.CustomerName?.Trim();
+
+        if (string.IsNullOrWhiteSpace(context.Item.CustomerName))
+        {
+            return Task.FromResult(RowInterceptionDecision.Skip("CustomerName is empty after normalization."));
+        }
+
+        return Task.FromResult(RowInterceptionDecision.Continue());
+    }
+}
+```
+
+Both `ExportResult` and `ImportResult<T>` expose `SkippedRows` and `Warnings`, and the progress reports also include the current skipped-row count.
+
+### Import Options
 
 `ImportOptions` controls runtime parsing behavior for a specific import request:
 

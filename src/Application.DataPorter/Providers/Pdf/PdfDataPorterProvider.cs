@@ -51,7 +51,7 @@ public sealed class PdfDataPorterProvider(
     public bool SupportsStreaming => false;
 
     /// <inheritdoc/>
-    public Task<ExportResult> ExportAsync<TSource>(
+    public async Task<ExportResult> ExportAsync<TSource>(
         IEnumerable<TSource> data,
         Stream outputStream,
         ExportConfiguration exportConfiguration,
@@ -60,8 +60,40 @@ public sealed class PdfDataPorterProvider(
     {
         this.EnsureFontResolution();
         var writeStream = new WriteStreamWrapper(outputStream);
+        var warnings = new List<string>();
+        var skippedRows = 0;
+        var logicalRowNumber = 0;
+        var executor = exportConfiguration.GetExportRowInterceptionExecutor<TSource>();
+        var dataList = new List<TSource>();
 
-        var dataList = data.ToList();
+        foreach (var item in data)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            logicalRowNumber++;
+            var interception = executor is not null
+                ? await executor.BeforeAsync(item, logicalRowNumber, this.Format, exportConfiguration.SheetName, false, cancellationToken)
+                : null;
+
+            if (interception?.Outcome == RowInterceptionOutcome.Skip)
+            {
+                skippedRows++;
+                warnings.Add($"Row {logicalRowNumber} skipped by export interceptor: {interception.Reason}");
+                exportConfiguration.ProgressTracker?.ReportProgress(dataList.Count, writeStream.BytesWritten, dataList.Count, skippedRows: skippedRows);
+                continue;
+            }
+
+            if (interception?.Outcome == RowInterceptionOutcome.Abort)
+            {
+                throw new ExportInterceptionAbortedException(interception.Reason);
+            }
+
+            dataList.Add(interception?.Item ?? item);
+            if (interception is not null)
+            {
+                await executor.AfterAsync(interception, cancellationToken);
+            }
+        }
+
         var columns = this.GetExportColumns(exportConfiguration);
 
         var document = this.CreateDocument();
@@ -76,7 +108,7 @@ public sealed class PdfDataPorterProvider(
         }
 
         this.AddContent(section, dataList, columns, exportConfiguration);
-        exportConfiguration.ProgressTracker?.ReportProgress(dataList.Count, writeStream.BytesWritten, dataList.Count);
+        exportConfiguration.ProgressTracker?.ReportProgress(dataList.Count, writeStream.BytesWritten, dataList.Count, skippedRows: skippedRows);
 
         // Footer
         this.AddFooter(section);
@@ -86,13 +118,15 @@ public sealed class PdfDataPorterProvider(
         renderer.RenderDocument();
         renderer.PdfDocument.Save(writeStream, false);
 
-        return Task.FromResult(new ExportResult
+        return new ExportResult
         {
             BytesWritten = writeStream.BytesWritten,
             TotalRows = dataList.Count,
+            SkippedRows = skippedRows,
             Duration = TimeSpan.Zero,
-            Format = this.Format
-        });
+            Format = this.Format,
+            Warnings = warnings
+        };
     }
 
     /// <inheritdoc/>
@@ -108,13 +142,15 @@ public sealed class PdfDataPorterProvider(
     }
 
     /// <inheritdoc/>
-    public Task<ExportResult> ExportAsync(
+    public async Task<ExportResult> ExportAsync(
         IEnumerable<(IEnumerable<object> Data, ExportConfiguration Configuration)> dataSets,
         Stream outputStream,
         CancellationToken cancellationToken = default)
     {
         this.EnsureFontResolution();
         var writeStream = new WriteStreamWrapper(outputStream);
+        var warnings = new List<string>();
+        var skippedRows = 0;
 
         var dataSetsList = dataSets.ToList();
         var totalRows = 0;
@@ -123,7 +159,39 @@ public sealed class PdfDataPorterProvider(
 
         foreach (var (data, exportConfiguration) in dataSetsList)
         {
-            var dataList = data.ToList();
+            var dataList = new List<object>();
+            var logicalRowNumber = 0;
+
+            foreach (var item in data)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                logicalRowNumber++;
+                var interception = await ObjectExportRowInterceptionInvoker.BeforeAsync(
+                    exportConfiguration.RowInterceptionExecutor,
+                    item,
+                    logicalRowNumber,
+                    this.Format,
+                    exportConfiguration.SheetName,
+                    false,
+                    cancellationToken);
+
+                if (interception.Outcome == RowInterceptionOutcome.Skip)
+                {
+                    skippedRows++;
+                    warnings.Add($"Row {logicalRowNumber} skipped by export interceptor: {interception.Reason}");
+                    exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {exportConfiguration.SheetName ?? "Data"}", skippedRows: skippedRows);
+                    continue;
+                }
+
+                if (interception.Outcome == RowInterceptionOutcome.Abort)
+                {
+                    throw new ExportInterceptionAbortedException(interception.Reason);
+                }
+
+                dataList.Add(interception.Item);
+                await ObjectExportRowInterceptionInvoker.AfterAsync(exportConfiguration.RowInterceptionExecutor, interception.State, cancellationToken);
+            }
+
             var columns = this.GetExportColumns(exportConfiguration);
             totalRows += dataList.Count;
 
@@ -133,7 +201,7 @@ public sealed class PdfDataPorterProvider(
             this.AddHeader(section, exportConfiguration, dataList.Count);
 
             this.AddContent(section, dataList, columns, exportConfiguration);
-            exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {exportConfiguration.SheetName ?? "Data"}");
+            exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {exportConfiguration.SheetName ?? "Data"}", skippedRows: skippedRows);
 
             // Footer
             this.AddFooter(section);
@@ -144,13 +212,15 @@ public sealed class PdfDataPorterProvider(
         renderer.RenderDocument();
         renderer.PdfDocument.Save(writeStream, false);
 
-        return Task.FromResult(new ExportResult
+        return new ExportResult
         {
             BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
+            SkippedRows = skippedRows,
             Duration = TimeSpan.Zero,
-            Format = this.Format
-        });
+            Format = this.Format,
+            Warnings = warnings
+        };
     }
 
     /// <inheritdoc/>

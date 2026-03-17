@@ -51,6 +51,10 @@ public sealed class JsonDataPorterProvider(
     {
         var jsonOptions = this.CreateJsonSerializerOptions();
         var writeStream = new WriteStreamWrapper(outputStream);
+        var warnings = new List<string>();
+        var skippedRows = 0;
+        var logicalRowNumber = 0;
+        var executor = exportConfiguration.GetExportRowInterceptionExecutor<TSource>();
         using var writer = new Utf8JsonWriter(writeStream, new JsonWriterOptions
         {
             Indented = jsonOptions.WriteIndented
@@ -62,9 +66,31 @@ public sealed class JsonDataPorterProvider(
         foreach (var item in data)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            this.WriteExportRow(writer, item, exportConfiguration, jsonOptions);
+            logicalRowNumber++;
+            var interception = executor is not null
+                ? await executor.BeforeAsync(item, logicalRowNumber, this.Format, exportConfiguration.SheetName, false, cancellationToken)
+                : null;
+
+            if (interception?.Outcome == RowInterceptionOutcome.Skip)
+            {
+                skippedRows++;
+                warnings.Add($"Row {logicalRowNumber} skipped by export interceptor: {interception.Reason}");
+                exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, skippedRows: skippedRows);
+                continue;
+            }
+
+            if (interception?.Outcome == RowInterceptionOutcome.Abort)
+            {
+                throw new ExportInterceptionAbortedException(interception.Reason);
+            }
+
+            this.WriteExportRow(writer, interception?.Item ?? item, exportConfiguration, jsonOptions);
             totalRows++;
-            exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten);
+            exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, skippedRows: skippedRows);
+            if (interception is not null)
+            {
+                await executor.AfterAsync(interception, cancellationToken);
+            }
         }
 
         writer.WriteEndArray();
@@ -74,8 +100,10 @@ public sealed class JsonDataPorterProvider(
         {
             BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
+            SkippedRows = skippedRows,
             Duration = TimeSpan.Zero,
-            Format = this.Format
+            Format = this.Format,
+            Warnings = warnings
         };
     }
 
@@ -89,6 +117,10 @@ public sealed class JsonDataPorterProvider(
     {
         var jsonOptions = this.CreateJsonSerializerOptions();
         var writeStream = new WriteStreamWrapper(outputStream);
+        var warnings = new List<string>();
+        var skippedRows = 0;
+        var logicalRowNumber = 0;
+        var executor = exportConfiguration.GetExportRowInterceptionExecutor<TSource>();
         using var writer = new Utf8JsonWriter(writeStream, new JsonWriterOptions
         {
             Indented = jsonOptions.WriteIndented
@@ -99,9 +131,31 @@ public sealed class JsonDataPorterProvider(
 
         await foreach (var item in data.WithCancellation(cancellationToken))
         {
-            this.WriteExportRow(writer, item, exportConfiguration, jsonOptions);
+            logicalRowNumber++;
+            var interception = executor is not null
+                ? await executor.BeforeAsync(item, logicalRowNumber, this.Format, exportConfiguration.SheetName, true, cancellationToken)
+                : null;
+
+            if (interception?.Outcome == RowInterceptionOutcome.Skip)
+            {
+                skippedRows++;
+                warnings.Add($"Row {logicalRowNumber} skipped by export interceptor: {interception.Reason}");
+                exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, skippedRows: skippedRows);
+                continue;
+            }
+
+            if (interception?.Outcome == RowInterceptionOutcome.Abort)
+            {
+                throw new ExportInterceptionAbortedException(interception.Reason);
+            }
+
+            this.WriteExportRow(writer, interception?.Item ?? item, exportConfiguration, jsonOptions);
             totalRows++;
-            exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten);
+            exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, skippedRows: skippedRows);
+            if (interception is not null)
+            {
+                await executor.AfterAsync(interception, cancellationToken);
+            }
         }
 
         writer.WriteEndArray();
@@ -111,8 +165,10 @@ public sealed class JsonDataPorterProvider(
         {
             BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
+            SkippedRows = skippedRows,
             Duration = TimeSpan.Zero,
-            Format = this.Format
+            Format = this.Format,
+            Warnings = warnings
         };
     }
 
@@ -124,6 +180,9 @@ public sealed class JsonDataPorterProvider(
     {
         var jsonOptions = this.CreateJsonSerializerOptions();
         var writeStream = new WriteStreamWrapper(outputStream);
+        var warnings = new List<string>();
+        var skippedRows = 0;
+        var logicalRowNumber = 0;
         using var writer = new Utf8JsonWriter(writeStream, new JsonWriterOptions
         {
             Indented = jsonOptions.WriteIndented
@@ -143,9 +202,33 @@ public sealed class JsonDataPorterProvider(
             foreach (var item in data)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                this.WriteExportRow(writer, item, exportConfiguration, jsonOptions);
+                logicalRowNumber++;
+                var interception = await ObjectExportRowInterceptionInvoker.BeforeAsync(
+                    exportConfiguration.RowInterceptionExecutor,
+                    item,
+                    logicalRowNumber,
+                    this.Format,
+                    sheetName,
+                    false,
+                    cancellationToken);
+
+                if (interception.Outcome == RowInterceptionOutcome.Skip)
+                {
+                    skippedRows++;
+                    warnings.Add($"Row {logicalRowNumber} skipped by export interceptor: {interception.Reason}");
+                    exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {sheetName}", skippedRows: skippedRows);
+                    continue;
+                }
+
+                if (interception.Outcome == RowInterceptionOutcome.Abort)
+                {
+                    throw new ExportInterceptionAbortedException(interception.Reason);
+                }
+
+                this.WriteExportRow(writer, interception.Item, exportConfiguration, jsonOptions);
                 totalRows++;
-                exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {sheetName}");
+                exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {sheetName}", skippedRows: skippedRows);
+                await ObjectExportRowInterceptionInvoker.AfterAsync(exportConfiguration.RowInterceptionExecutor, interception.State, cancellationToken);
             }
 
             writer.WriteEndArray();
@@ -158,8 +241,10 @@ public sealed class JsonDataPorterProvider(
         {
             BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
+            SkippedRows = skippedRows,
             Duration = TimeSpan.Zero,
-            Format = this.Format
+            Format = this.Format,
+            Warnings = warnings
         };
     }
 
@@ -171,6 +256,9 @@ public sealed class JsonDataPorterProvider(
     {
         var jsonOptions = this.CreateJsonSerializerOptions();
         var writeStream = new WriteStreamWrapper(outputStream);
+        var warnings = new List<string>();
+        var skippedRows = 0;
+        var logicalRowNumber = 0;
         using var writer = new Utf8JsonWriter(writeStream, new JsonWriterOptions
         {
             Indented = jsonOptions.WriteIndented
@@ -189,9 +277,33 @@ public sealed class JsonDataPorterProvider(
 
             await foreach (var item in data.WithCancellation(cancellationToken))
             {
-                this.WriteExportRow(writer, item, exportConfiguration, jsonOptions);
+                logicalRowNumber++;
+                var interception = await ObjectExportRowInterceptionInvoker.BeforeAsync(
+                    exportConfiguration.RowInterceptionExecutor,
+                    item,
+                    logicalRowNumber,
+                    this.Format,
+                    sheetName,
+                    true,
+                    cancellationToken);
+
+                if (interception.Outcome == RowInterceptionOutcome.Skip)
+                {
+                    skippedRows++;
+                    warnings.Add($"Row {logicalRowNumber} skipped by export interceptor: {interception.Reason}");
+                    exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {sheetName}", skippedRows: skippedRows);
+                    continue;
+                }
+
+                if (interception.Outcome == RowInterceptionOutcome.Abort)
+                {
+                    throw new ExportInterceptionAbortedException(interception.Reason);
+                }
+
+                this.WriteExportRow(writer, interception.Item, exportConfiguration, jsonOptions);
                 totalRows++;
-                exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {sheetName}");
+                exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {sheetName}", skippedRows: skippedRows);
+                await ObjectExportRowInterceptionInvoker.AfterAsync(exportConfiguration.RowInterceptionExecutor, interception.State, cancellationToken);
             }
 
             writer.WriteEndArray();
@@ -204,8 +316,10 @@ public sealed class JsonDataPorterProvider(
         {
             BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
+            SkippedRows = skippedRows,
             Duration = TimeSpan.Zero,
-            Format = this.Format
+            Format = this.Format,
+            Warnings = warnings
         };
     }
 
@@ -218,8 +332,11 @@ public sealed class JsonDataPorterProvider(
     {
         var results = new List<TTarget>();
         var errors = new List<ImportRowError>();
+        var warnings = new List<string>();
         var totalRows = 0;
         var failedRows = 0;
+        var skippedRows = 0;
+        var executor = importConfiguration.GetImportRowInterceptionExecutor<TTarget>();
 
         await foreach (var result in this.ProcessRowsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
         {
@@ -241,7 +358,29 @@ public sealed class JsonDataPorterProvider(
 
             if (result.Item is not null)
             {
-                results.Add(result.Item);
+                var interception = executor is not null
+                    ? await executor.BeforeAsync(result.Item, result.RowNumber, this.Format, importConfiguration.SheetName, false, cancellationToken)
+                    : null;
+
+                if (interception?.Outcome == RowInterceptionOutcome.Skip)
+                {
+                    skippedRows++;
+                    failedRows++;
+                    warnings.Add($"Row {result.RowNumber} skipped by import interceptor: {interception.Reason}");
+                    importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, failedRows, errors.Count, skippedRows: skippedRows);
+                    continue;
+                }
+
+                if (interception?.Outcome == RowInterceptionOutcome.Abort)
+                {
+                    throw new ImportInterceptionAbortedException(interception.Reason);
+                }
+
+                results.Add(interception?.Item ?? result.Item);
+                if (interception is not null)
+                {
+                    await executor.AfterAsync(interception, cancellationToken);
+                }
             }
 
             if (result.Errors.Count > 0)
@@ -254,7 +393,7 @@ public sealed class JsonDataPorterProvider(
                 }
             }
 
-            importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, failedRows, errors.Count);
+            importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, failedRows, errors.Count, skippedRows: skippedRows);
         }
 
         return new ImportResult<TTarget>
@@ -263,8 +402,10 @@ public sealed class JsonDataPorterProvider(
             TotalRows = totalRows,
             SuccessfulRows = results.Count,
             FailedRows = failedRows,
+            SkippedRows = skippedRows,
             Duration = TimeSpan.Zero,
-            Errors = errors
+            Errors = errors,
+            Warnings = warnings
         };
     }
 
@@ -279,6 +420,8 @@ public sealed class JsonDataPorterProvider(
         var totalRows = 0;
         var successfulRows = 0;
         var failedRows = 0;
+        var skippedRows = 0;
+        var executor = importConfiguration.GetImportRowInterceptionExecutor<TTarget>();
 
         await foreach (var result in this.ProcessRowsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
         {
@@ -287,7 +430,7 @@ public sealed class JsonDataPorterProvider(
                 totalRows += result.RowNumber > 0 ? 1 : 0;
                 failedRows++;
                 errorCount++;
-                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount);
+                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount, skippedRows: skippedRows);
                 yield return Result<TTarget>.Failure()
                     .WithError(result.FatalError);
                 yield break;
@@ -296,15 +439,38 @@ public sealed class JsonDataPorterProvider(
             totalRows++;
             if (result.Item is not null)
             {
+                var interception = executor is not null
+                    ? await executor.BeforeAsync(result.Item, result.RowNumber, this.Format, importConfiguration.SheetName, true, cancellationToken)
+                    : null;
+
+                if (interception?.Outcome == RowInterceptionOutcome.Skip)
+                {
+                    skippedRows++;
+                    failedRows++;
+                    importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount, skippedRows: skippedRows);
+                    continue;
+                }
+
+                if (interception?.Outcome == RowInterceptionOutcome.Abort)
+                {
+                    yield return Result<TTarget>.Failure()
+                        .WithError(new ImportInterceptionAbortedError(interception.Reason));
+                    yield break;
+                }
+
                 successfulRows++;
-                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount);
-                yield return Result<TTarget>.Success(result.Item);
+                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount, skippedRows: skippedRows);
+                if (interception is not null)
+                {
+                    await executor.AfterAsync(interception, cancellationToken);
+                }
+                yield return Result<TTarget>.Success(interception?.Item ?? result.Item);
             }
             else if (result.Errors.Count > 0)
             {
                 failedRows++;
                 errorCount += result.Errors.Count;
-                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount);
+                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount, skippedRows: skippedRows);
                 yield return Result<TTarget>.Failure()
                     .WithError(new ImportValidationError(
                         result.Errors[0].RowNumber,

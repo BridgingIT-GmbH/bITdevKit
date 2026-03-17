@@ -55,6 +55,10 @@ public sealed class CsvDataPorterProvider(
     {
         var plan = this.BuildExportPlan(exportConfiguration);
         var writeStream = new WriteStreamWrapper(outputStream);
+        var warnings = new List<string>();
+        var skippedRows = 0;
+        var logicalRowNumber = 0;
+        var executor = exportConfiguration.GetExportRowInterceptionExecutor<TSource>();
 
         await using var writer = new StreamWriter(writeStream, this.configuration.Encoding, leaveOpen: true);
         await using var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
@@ -80,12 +84,37 @@ public sealed class CsvDataPorterProvider(
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            foreach (var collectionItem in this.GetCollectionItems(item, plan.CollectionProperty))
+            logicalRowNumber++;
+            var interception = executor is not null
+                ? await executor.BeforeAsync(item, logicalRowNumber, this.Format, exportConfiguration.SheetName, false, cancellationToken)
+                : null;
+
+            if (interception?.Outcome == RowInterceptionOutcome.Skip)
             {
-                this.WriteExportRow(csv, plan, item, collectionItem, exportConfiguration);
+                skippedRows++;
+                warnings.Add($"Row {logicalRowNumber} skipped by export interceptor: {interception.Reason}");
+                exportConfiguration.ProgressTracker?.ReportProgress(rowsExported, writeStream.BytesWritten, skippedRows: skippedRows);
+                continue;
+            }
+
+            if (interception?.Outcome == RowInterceptionOutcome.Abort)
+            {
+                throw new ExportInterceptionAbortedException(interception.Reason);
+            }
+
+            var exportItem = interception?.Item ?? item;
+
+            foreach (var collectionItem in this.GetCollectionItems(exportItem, plan.CollectionProperty))
+            {
+                this.WriteExportRow(csv, plan, exportItem, collectionItem, exportConfiguration);
                 await csv.NextRecordAsync();
                 rowsExported++;
-                exportConfiguration.ProgressTracker?.ReportProgress(rowsExported, writeStream.BytesWritten);
+                exportConfiguration.ProgressTracker?.ReportProgress(rowsExported, writeStream.BytesWritten, skippedRows: skippedRows);
+            }
+
+            if (interception is not null)
+            {
+                await executor.AfterAsync(interception, cancellationToken);
             }
         }
 
@@ -96,8 +125,10 @@ public sealed class CsvDataPorterProvider(
         {
             BytesWritten = writeStream.BytesWritten,
             TotalRows = rowsExported,
+            SkippedRows = skippedRows,
             Duration = TimeSpan.Zero,
-            Format = this.Format
+            Format = this.Format,
+            Warnings = warnings
         };
     }
 
@@ -111,6 +142,10 @@ public sealed class CsvDataPorterProvider(
     {
         var plan = this.BuildExportPlan(exportConfiguration);
         var writeStream = new WriteStreamWrapper(outputStream);
+        var warnings = new List<string>();
+        var skippedRows = 0;
+        var logicalRowNumber = 0;
+        var executor = exportConfiguration.GetExportRowInterceptionExecutor<TSource>();
 
         await using var writer = new StreamWriter(writeStream, this.configuration.Encoding, leaveOpen: true);
         await using var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
@@ -133,12 +168,37 @@ public sealed class CsvDataPorterProvider(
 
         await foreach (var item in data.WithCancellation(cancellationToken))
         {
-            foreach (var collectionItem in this.GetCollectionItems(item, plan.CollectionProperty))
+            logicalRowNumber++;
+            var interception = executor is not null
+                ? await executor.BeforeAsync(item, logicalRowNumber, this.Format, exportConfiguration.SheetName, true, cancellationToken)
+                : null;
+
+            if (interception?.Outcome == RowInterceptionOutcome.Skip)
             {
-                this.WriteExportRow(csv, plan, item, collectionItem, exportConfiguration);
+                skippedRows++;
+                warnings.Add($"Row {logicalRowNumber} skipped by export interceptor: {interception.Reason}");
+                exportConfiguration.ProgressTracker?.ReportProgress(rowsExported, writeStream.BytesWritten, skippedRows: skippedRows);
+                continue;
+            }
+
+            if (interception?.Outcome == RowInterceptionOutcome.Abort)
+            {
+                throw new ExportInterceptionAbortedException(interception.Reason);
+            }
+
+            var exportItem = interception?.Item ?? item;
+
+            foreach (var collectionItem in this.GetCollectionItems(exportItem, plan.CollectionProperty))
+            {
+                this.WriteExportRow(csv, plan, exportItem, collectionItem, exportConfiguration);
                 await csv.NextRecordAsync();
                 rowsExported++;
-                exportConfiguration.ProgressTracker?.ReportProgress(rowsExported, writeStream.BytesWritten);
+                exportConfiguration.ProgressTracker?.ReportProgress(rowsExported, writeStream.BytesWritten, skippedRows: skippedRows);
+            }
+
+            if (interception is not null)
+            {
+                await executor.AfterAsync(interception, cancellationToken);
             }
         }
 
@@ -149,8 +209,10 @@ public sealed class CsvDataPorterProvider(
         {
             BytesWritten = writeStream.BytesWritten,
             TotalRows = rowsExported,
+            SkippedRows = skippedRows,
             Duration = TimeSpan.Zero,
-            Format = this.Format
+            Format = this.Format,
+            Warnings = warnings
         };
     }
 
@@ -163,6 +225,9 @@ public sealed class CsvDataPorterProvider(
     {
         var totalRows = 0;
         var writeStream = new WriteStreamWrapper(outputStream);
+        var warnings = new List<string>();
+        var skippedRows = 0;
+        var logicalRowNumber = 0;
 
         await using var writer = new StreamWriter(writeStream, this.configuration.Encoding, leaveOpen: true);
 
@@ -194,14 +259,38 @@ public sealed class CsvDataPorterProvider(
             foreach (var item in data)
             {
                 cancellationToken.ThrowIfCancellationRequested();
+                logicalRowNumber++;
+                var interception = await ObjectExportRowInterceptionInvoker.BeforeAsync(
+                    exportConfiguration.RowInterceptionExecutor,
+                    item,
+                    logicalRowNumber,
+                    this.Format,
+                    exportConfiguration.SheetName,
+                    false,
+                    cancellationToken);
 
-                foreach (var collectionItem in this.GetCollectionItems(item, plan.CollectionProperty))
+                if (interception.Outcome == RowInterceptionOutcome.Skip)
                 {
-                    this.WriteExportRow(csv, plan, item, collectionItem, exportConfiguration);
+                    skippedRows++;
+                    warnings.Add($"Row {logicalRowNumber} skipped by export interceptor: {interception.Reason}");
+                    exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {exportConfiguration.SheetName ?? "Data"}", skippedRows: skippedRows);
+                    continue;
+                }
+
+                if (interception.Outcome == RowInterceptionOutcome.Abort)
+                {
+                    throw new ExportInterceptionAbortedException(interception.Reason);
+                }
+
+                foreach (var collectionItem in this.GetCollectionItems(interception.Item, plan.CollectionProperty))
+                {
+                    this.WriteExportRow(csv, plan, interception.Item, collectionItem, exportConfiguration);
                     await csv.NextRecordAsync();
                     totalRows++;
-                    exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {exportConfiguration.SheetName ?? "Data"}");
+                    exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {exportConfiguration.SheetName ?? "Data"}", skippedRows: skippedRows);
                 }
+
+                await ObjectExportRowInterceptionInvoker.AfterAsync(exportConfiguration.RowInterceptionExecutor, interception.State, cancellationToken);
             }
 
             await csv.FlushAsync();
@@ -212,8 +301,10 @@ public sealed class CsvDataPorterProvider(
         {
             BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
+            SkippedRows = skippedRows,
             Duration = TimeSpan.Zero,
-            Format = this.Format
+            Format = this.Format,
+            Warnings = warnings
         };
     }
 
@@ -225,6 +316,9 @@ public sealed class CsvDataPorterProvider(
     {
         var totalRows = 0;
         var writeStream = new WriteStreamWrapper(outputStream);
+        var warnings = new List<string>();
+        var skippedRows = 0;
+        var logicalRowNumber = 0;
 
         await using var writer = new StreamWriter(writeStream, this.configuration.Encoding, leaveOpen: true);
 
@@ -253,13 +347,38 @@ public sealed class CsvDataPorterProvider(
 
             await foreach (var item in data.WithCancellation(cancellationToken))
             {
-                foreach (var collectionItem in this.GetCollectionItems(item, plan.CollectionProperty))
+                logicalRowNumber++;
+                var interception = await ObjectExportRowInterceptionInvoker.BeforeAsync(
+                    exportConfiguration.RowInterceptionExecutor,
+                    item,
+                    logicalRowNumber,
+                    this.Format,
+                    exportConfiguration.SheetName,
+                    true,
+                    cancellationToken);
+
+                if (interception.Outcome == RowInterceptionOutcome.Skip)
                 {
-                    this.WriteExportRow(csv, plan, item, collectionItem, exportConfiguration);
+                    skippedRows++;
+                    warnings.Add($"Row {logicalRowNumber} skipped by export interceptor: {interception.Reason}");
+                    exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {exportConfiguration.SheetName ?? "Data"}", skippedRows: skippedRows);
+                    continue;
+                }
+
+                if (interception.Outcome == RowInterceptionOutcome.Abort)
+                {
+                    throw new ExportInterceptionAbortedException(interception.Reason);
+                }
+
+                foreach (var collectionItem in this.GetCollectionItems(interception.Item, plan.CollectionProperty))
+                {
+                    this.WriteExportRow(csv, plan, interception.Item, collectionItem, exportConfiguration);
                     await csv.NextRecordAsync();
                     totalRows++;
-                    exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {exportConfiguration.SheetName ?? "Data"}");
+                    exportConfiguration.ProgressTracker?.ReportProgress(totalRows, writeStream.BytesWritten, message: $"Exported {totalRows} rows from {exportConfiguration.SheetName ?? "Data"}", skippedRows: skippedRows);
                 }
+
+                await ObjectExportRowInterceptionInvoker.AfterAsync(exportConfiguration.RowInterceptionExecutor, interception.State, cancellationToken);
             }
 
             await csv.FlushAsync();
@@ -270,8 +389,10 @@ public sealed class CsvDataPorterProvider(
         {
             BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
+            SkippedRows = skippedRows,
             Duration = TimeSpan.Zero,
-            Format = this.Format
+            Format = this.Format,
+            Warnings = warnings
         };
     }
 
@@ -284,8 +405,11 @@ public sealed class CsvDataPorterProvider(
     {
         var results = new List<TTarget>();
         var errors = new List<ImportRowError>();
+        var warnings = new List<string>();
         var totalRows = 0;
         var failedRows = 0;
+        var skippedRows = 0;
+        var executor = importConfiguration.GetImportRowInterceptionExecutor<TTarget>();
 
         await foreach (var result in this.ProcessRowsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
         {
@@ -293,7 +417,29 @@ public sealed class CsvDataPorterProvider(
 
             if (result.Item is not null)
             {
-                results.Add(result.Item);
+                var interception = executor is not null
+                    ? await executor.BeforeAsync(result.Item, result.RowNumber, this.Format, importConfiguration.SheetName, false, cancellationToken)
+                    : null;
+
+                if (interception?.Outcome == RowInterceptionOutcome.Skip)
+                {
+                    skippedRows++;
+                    failedRows += result.ProcessedRows > 0 ? result.ProcessedRows : 1;
+                    warnings.Add($"Row {result.RowNumber} skipped by import interceptor: {interception.Reason}");
+                    importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, failedRows, errors.Count, skippedRows: skippedRows);
+                    continue;
+                }
+
+                if (interception?.Outcome == RowInterceptionOutcome.Abort)
+                {
+                    throw new ImportInterceptionAbortedException(interception.Reason);
+                }
+
+                results.Add(interception?.Item ?? result.Item);
+                if (interception is not null)
+                {
+                    await executor.AfterAsync(interception, cancellationToken);
+                }
             }
 
             if (result.FatalError is not null)
@@ -314,12 +460,12 @@ public sealed class CsvDataPorterProvider(
                 failedRows += result.ProcessedRows > 0 ? result.ProcessedRows : result.Errors.Count;
                 if (ImportErrorLimit.TryAddRange(errors, result.Errors, importConfiguration))
                 {
-                    importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, failedRows, errors.Count);
+                    importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, failedRows, errors.Count, skippedRows: skippedRows);
                     break;
                 }
             }
 
-            importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, failedRows, errors.Count);
+            importConfiguration.ProgressTracker?.ReportProgress(totalRows, results.Count, failedRows, errors.Count, skippedRows: skippedRows);
         }
 
         return new ImportResult<TTarget>
@@ -328,8 +474,10 @@ public sealed class CsvDataPorterProvider(
             TotalRows = totalRows,
             SuccessfulRows = results.Count,
             FailedRows = failedRows,
+            SkippedRows = skippedRows,
             Duration = TimeSpan.Zero,
-            Errors = errors
+            Errors = errors,
+            Warnings = warnings
         };
     }
 
@@ -344,6 +492,8 @@ public sealed class CsvDataPorterProvider(
         var totalRows = 0;
         var successfulRows = 0;
         var failedRows = 0;
+        var skippedRows = 0;
+        var executor = importConfiguration.GetImportRowInterceptionExecutor<TTarget>();
 
         await foreach (var result in this.ProcessRowsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
         {
@@ -352,7 +502,7 @@ public sealed class CsvDataPorterProvider(
                 totalRows += result.ProcessedRows > 0 ? result.ProcessedRows : 1;
                 failedRows += result.ProcessedRows > 0 ? result.ProcessedRows : 1;
                 errorCount++;
-                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount);
+                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount, skippedRows: skippedRows);
                 yield return Result<TTarget>.Failure()
                     .WithError(result.FatalError);
                 yield break;
@@ -360,17 +510,41 @@ public sealed class CsvDataPorterProvider(
 
             if (result.Item is not null)
             {
+                var interception = executor is not null
+                    ? await executor.BeforeAsync(result.Item, result.RowNumber, this.Format, importConfiguration.SheetName, true, cancellationToken)
+                    : null;
+
+                if (interception?.Outcome == RowInterceptionOutcome.Skip)
+                {
+                    totalRows += result.ProcessedRows;
+                    skippedRows++;
+                    failedRows += result.ProcessedRows > 0 ? result.ProcessedRows : 1;
+                    importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount, skippedRows: skippedRows);
+                    continue;
+                }
+
+                if (interception?.Outcome == RowInterceptionOutcome.Abort)
+                {
+                    yield return Result<TTarget>.Failure()
+                        .WithError(new ImportInterceptionAbortedError(interception.Reason));
+                    yield break;
+                }
+
                 totalRows += result.ProcessedRows;
                 successfulRows += result.ProcessedRows;
-                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount);
-                yield return Result<TTarget>.Success(result.Item);
+                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount, skippedRows: skippedRows);
+                if (interception is not null)
+                {
+                    await executor.AfterAsync(interception, cancellationToken);
+                }
+                yield return Result<TTarget>.Success(interception?.Item ?? result.Item);
             }
             else if (result.Errors.Count > 0)
             {
                 totalRows += result.ProcessedRows > 0 ? result.ProcessedRows : result.Errors.Count;
                 failedRows += result.ProcessedRows > 0 ? result.ProcessedRows : result.Errors.Count;
                 errorCount += result.Errors.Count;
-                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount);
+                importConfiguration.ProgressTracker?.ReportProgress(totalRows, successfulRows, failedRows, errorCount, skippedRows: skippedRows);
                 yield return Result<TTarget>.Failure()
                     .WithError(new ImportValidationError(
                         result.Errors[0].RowNumber,

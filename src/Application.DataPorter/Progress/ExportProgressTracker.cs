@@ -16,6 +16,7 @@ internal sealed class ExportProgressTracker(IProgress<ExportProgressReport> prog
     private readonly IProgress<ExportProgressReport> progress = progress;
     private readonly Format format = format;
     private int lastReportedBucket;
+    private int skippedRows;
 
     public void ReportStart(string message = "Starting export")
     {
@@ -27,13 +28,16 @@ internal sealed class ExportProgressTracker(IProgress<ExportProgressReport> prog
             TotalRows = null,
             PercentageComplete = null,
             BytesWritten = 0,
+            SkippedRows = 0,
             IsCompleted = false,
             Messages = [message]
         });
     }
 
-    public void ReportProgress(int processedRows, long bytesWritten, int? totalRows = null, string message = null)
+    public void ReportProgress(int processedRows, long bytesWritten, int? totalRows = null, string message = null, int? skippedRows = null)
     {
+        this.skippedRows = skippedRows ?? this.skippedRows;
+
         if (this.progress is null || processedRows < ReportInterval)
         {
             return;
@@ -54,6 +58,7 @@ internal sealed class ExportProgressTracker(IProgress<ExportProgressReport> prog
             TotalRows = totalRows,
             PercentageComplete = GetPercentage(processedRows, totalRows),
             BytesWritten = bytesWritten,
+            SkippedRows = this.skippedRows,
             IsCompleted = false,
             Messages = [message ?? $"Exported {processedRows.ToString(CultureInfo.InvariantCulture)} rows"]
         });
@@ -69,6 +74,7 @@ internal sealed class ExportProgressTracker(IProgress<ExportProgressReport> prog
             TotalRows = result.TotalRows,
             PercentageComplete = 100d,
             BytesWritten = result.BytesWritten,
+            SkippedRows = result.SkippedRows,
             IsCompleted = true,
             Messages = [message]
         });

@@ -41,6 +41,11 @@ public sealed record ExportProgressReport
     public required long BytesWritten { get; init; }
 
     /// <summary>
+    /// Gets the number of rows skipped so far.
+    /// </summary>
+    public int SkippedRows { get; init; }
+
+    /// <summary>
     /// Gets a value indicating whether the export has completed successfully.
     /// </summary>
     public required bool IsCompleted { get; init; }

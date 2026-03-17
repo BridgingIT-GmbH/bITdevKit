@@ -23,10 +23,13 @@ using System.Runtime.CompilerServices;
 public sealed class DataPorterService(
     IEnumerable<IDataPorterProvider> providers,
     ConfigurationMerger configurationMerger,
+    IRowInterceptorsProvider rowInterceptorsProvider = null,
     ILoggerFactory loggerFactory = null) : IDataExporter, IDataImporter
 {
     private readonly IEnumerable<IDataPorterProvider> providers = providers ?? [];
+    private readonly IRowInterceptorsProvider rowInterceptorsProvider = rowInterceptorsProvider ?? NullRowInterceptorsProvider.Instance;
     private readonly ILogger<DataPorterService> logger = loggerFactory?.CreateLogger<DataPorterService>() ?? NullLogger<DataPorterService>.Instance;
+    private readonly ILoggerFactory loggerFactory = loggerFactory;
 
     /// <inheritdoc/>
     public async Task<Result<ExportResult>> ExportAsync<TSource>(
@@ -59,6 +62,9 @@ public sealed class DataPorterService(
 
         var configuration = configurationMerger.BuildExportConfiguration<TSource>(options);
         configuration.ProgressTracker = options.Progress is null ? null : new ExportProgressTracker(options.Progress, options.Format);
+        configuration.RowInterceptionExecutor = new ExportRowInterceptionExecutor<TSource>(
+            this.rowInterceptorsProvider.GetExportInterceptors<TSource>(),
+            this.loggerFactory?.CreateLogger(typeof(ExportRowInterceptionExecutor<TSource>).FullName ?? typeof(ExportRowInterceptionExecutor<TSource>).Name));
         var provider = providerResult.Value;
         this.LogSyncExportStart(data, options.Format, typeof(TSource));
         configuration.ProgressTracker?.ReportStart();
@@ -97,6 +103,12 @@ public sealed class DataPorterService(
             this.logger.LogWarning("Export operation was cancelled");
             return Result<ExportResult>.Failure()
                 .WithError(new DataPorterError("Export operation was cancelled."));
+        }
+        catch (ExportInterceptionAbortedException ex)
+        {
+            this.logger.LogWarning(ex, "Export operation was aborted by a row interceptor");
+            return Result<ExportResult>.Failure()
+                .WithError(new ExportInterceptionAbortedError(ex.Message));
         }
         catch (Exception ex)
         {
@@ -137,6 +149,9 @@ public sealed class DataPorterService(
 
         var configuration = configurationMerger.BuildExportConfiguration<TSource>(options);
         configuration.ProgressTracker = options.Progress is null ? null : new ExportProgressTracker(options.Progress, options.Format);
+        configuration.RowInterceptionExecutor = new ExportRowInterceptionExecutor<TSource>(
+            this.rowInterceptorsProvider.GetExportInterceptors<TSource>(),
+            this.loggerFactory?.CreateLogger(typeof(ExportRowInterceptionExecutor<TSource>).FullName ?? typeof(ExportRowInterceptionExecutor<TSource>).Name));
         var provider = providerResult.Value;
 
         this.logger.LogInformation(
@@ -179,6 +194,12 @@ public sealed class DataPorterService(
             this.logger.LogWarning("Export operation was cancelled");
             return Result<ExportResult>.Failure()
                 .WithError(new DataPorterError("Export operation was cancelled."));
+        }
+        catch (ExportInterceptionAbortedException ex)
+        {
+            this.logger.LogWarning(ex, "Export operation was aborted by a row interceptor");
+            return Result<ExportResult>.Failure()
+                .WithError(new ExportInterceptionAbortedError(ex.Message));
         }
         catch (Exception ex)
         {
@@ -281,6 +302,7 @@ public sealed class DataPorterService(
                 var config = configurationMerger.BuildExportConfiguration(ds.ItemType, options);
                 config.SheetName = ds.SheetName;
                 config.ProgressTracker = progressTracker;
+                config.RowInterceptionExecutor = this.CreateExportRowInterceptionExecutor(ds.ItemType);
                 return (ds.Data, config);
             }).ToList();
 
@@ -304,6 +326,13 @@ public sealed class DataPorterService(
         }
         catch (Exception ex)
         {
+            if (ex is ExportInterceptionAbortedException abortedException)
+            {
+                this.logger.LogWarning(abortedException, "Multi-sheet export was aborted by a row interceptor");
+                return Result<ExportResult>.Failure()
+                    .WithError(new ExportInterceptionAbortedError(abortedException.Message));
+            }
+
             this.logger.LogError(ex, "Multi-sheet export failed");
             return Result<ExportResult>.Failure()
                 .WithError(new ExportError($"Export failed: {ex.Message}", ex));
@@ -351,6 +380,7 @@ public sealed class DataPorterService(
                 var config = configurationMerger.BuildExportConfiguration(ds.ItemType, options);
                 config.SheetName = ds.SheetName;
                 config.ProgressTracker = progressTracker;
+                config.RowInterceptionExecutor = this.CreateExportRowInterceptionExecutor(ds.ItemType);
                 return (ds.Data, config);
             }).ToList();
 
@@ -374,6 +404,13 @@ public sealed class DataPorterService(
         }
         catch (Exception ex)
         {
+            if (ex is ExportInterceptionAbortedException abortedException)
+            {
+                this.logger.LogWarning(abortedException, "Async multi-sheet export was aborted by a row interceptor");
+                return Result<ExportResult>.Failure()
+                    .WithError(new ExportInterceptionAbortedError(abortedException.Message));
+            }
+
             this.logger.LogError(ex, "Async multi-sheet export failed");
             return Result<ExportResult>.Failure()
                 .WithError(new ExportError($"Export failed: {ex.Message}", ex));
@@ -404,6 +441,9 @@ public sealed class DataPorterService(
 
         var configuration = configurationMerger.BuildImportConfiguration<TTarget>(options);
         configuration.ProgressTracker = options.Progress is null ? null : new ImportProgressTracker(options.Progress, options.Format);
+        configuration.RowInterceptionExecutor = new ImportRowInterceptionExecutor<TTarget>(
+            this.rowInterceptorsProvider.GetImportInterceptors<TTarget>(),
+            this.loggerFactory?.CreateLogger(typeof(ImportRowInterceptionExecutor<TTarget>).FullName ?? typeof(ImportRowInterceptionExecutor<TTarget>).Name));
         var provider = providerResult.Value;
 
         this.logger.LogInformation("Importing {Type} from {Format}", typeof(TTarget).Name, options.Format);
@@ -434,6 +474,12 @@ public sealed class DataPorterService(
             this.logger.LogWarning("Import operation was cancelled");
             return Result<ImportResult<TTarget>>.Failure()
                 .WithError(new DataPorterError("Import operation was cancelled."));
+        }
+        catch (ImportInterceptionAbortedException ex)
+        {
+            this.logger.LogWarning(ex, "Import operation was aborted by a row interceptor");
+            return Result<ImportResult<TTarget>>.Failure()
+                .WithError(new ImportInterceptionAbortedError(ex.Message));
         }
         catch (Exception ex)
         {
@@ -486,6 +532,9 @@ public sealed class DataPorterService(
 
         var configuration = configurationMerger.BuildImportConfiguration<TTarget>(options);
         configuration.ProgressTracker = options.Progress is null ? null : new ImportProgressTracker(options.Progress, options.Format);
+        configuration.RowInterceptionExecutor = new ImportRowInterceptionExecutor<TTarget>(
+            this.rowInterceptorsProvider.GetImportInterceptors<TTarget>(),
+            this.loggerFactory?.CreateLogger(typeof(ImportRowInterceptionExecutor<TTarget>).FullName ?? typeof(ImportRowInterceptionExecutor<TTarget>).Name));
         var provider = providerResult.Value;
 
         if (provider is not IDataImportProvider importProvider || !provider.SupportsStreaming)
@@ -627,5 +676,17 @@ public sealed class DataPorterService(
 
         count = 0;
         return false;
+    }
+
+    private object CreateExportRowInterceptionExecutor(Type itemType)
+    {
+        var getInterceptorsMethod = typeof(IRowInterceptorsProvider)
+            .GetMethod(nameof(IRowInterceptorsProvider.GetExportInterceptors))
+            ?.MakeGenericMethod(itemType);
+        var interceptors = getInterceptorsMethod?.Invoke(this.rowInterceptorsProvider, null);
+        var executorType = typeof(ExportRowInterceptionExecutor<>).MakeGenericType(itemType);
+        var logger = this.loggerFactory?.CreateLogger(executorType.FullName ?? executorType.Name);
+
+        return Activator.CreateInstance(executorType, interceptors, logger);
     }
 }

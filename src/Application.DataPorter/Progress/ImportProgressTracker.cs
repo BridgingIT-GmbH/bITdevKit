@@ -20,6 +20,7 @@ internal sealed class ImportProgressTracker(IProgress<ImportProgressReport> prog
     private int successfulRows;
     private int failedRows;
     private int errorCount;
+    private int skippedRows;
     private int? totalRows;
 
     public void ReportStart(string message = "Starting import")
@@ -28,6 +29,7 @@ internal sealed class ImportProgressTracker(IProgress<ImportProgressReport> prog
         this.successfulRows = 0;
         this.failedRows = 0;
         this.errorCount = 0;
+        this.skippedRows = 0;
         this.totalRows = null;
         this.lastReportedBucket = 0;
 
@@ -41,6 +43,7 @@ internal sealed class ImportProgressTracker(IProgress<ImportProgressReport> prog
             SuccessfulRows = 0,
             FailedRows = 0,
             ErrorCount = 0,
+            SkippedRows = 0,
             IsCompleted = false,
             Messages = [message]
         });
@@ -52,26 +55,38 @@ internal sealed class ImportProgressTracker(IProgress<ImportProgressReport> prog
         int failedRows,
         int errorCount,
         int? totalRows = null,
-        string message = null)
+        string message = null,
+        int? skippedRows = null,
+        bool force = false)
     {
         this.processedRows = processedRows;
         this.successfulRows = successfulRows;
         this.failedRows = failedRows;
         this.errorCount = errorCount;
+        this.skippedRows = skippedRows ?? this.skippedRows;
         this.totalRows = totalRows ?? this.totalRows;
 
-        if (this.progress is null || processedRows < ReportInterval)
+        if (this.progress is null)
+        {
+            return;
+        }
+
+        if (!force && processedRows < ReportInterval)
         {
             return;
         }
 
         var bucket = processedRows / ReportInterval;
-        if (bucket <= this.lastReportedBucket)
+        if (!force && bucket <= this.lastReportedBucket)
         {
             return;
         }
 
-        this.lastReportedBucket = bucket;
+        if (!force)
+        {
+            this.lastReportedBucket = bucket;
+        }
+
         this.progress.Report(new ImportProgressReport
         {
             Operation = "Import",
@@ -82,6 +97,7 @@ internal sealed class ImportProgressTracker(IProgress<ImportProgressReport> prog
             SuccessfulRows = successfulRows,
             FailedRows = failedRows,
             ErrorCount = errorCount,
+            SkippedRows = this.skippedRows,
             IsCompleted = false,
             Messages = [message ?? $"Processed {processedRows.ToString(CultureInfo.InvariantCulture)} rows"]
         });
@@ -94,6 +110,7 @@ internal sealed class ImportProgressTracker(IProgress<ImportProgressReport> prog
         this.successfulRows = result.SuccessfulRows;
         this.failedRows = result.FailedRows;
         this.errorCount = result.Errors.Count;
+        this.skippedRows = result.SkippedRows;
         this.totalRows = result.TotalRows;
 
         this.progress?.Report(new ImportProgressReport
@@ -106,6 +123,7 @@ internal sealed class ImportProgressTracker(IProgress<ImportProgressReport> prog
             SuccessfulRows = result.SuccessfulRows,
             FailedRows = result.FailedRows,
             ErrorCount = result.Errors.Count,
+            SkippedRows = result.SkippedRows,
             IsCompleted = true,
             Messages = [message]
         });
@@ -123,6 +141,7 @@ internal sealed class ImportProgressTracker(IProgress<ImportProgressReport> prog
             SuccessfulRows = this.successfulRows,
             FailedRows = this.failedRows,
             ErrorCount = this.errorCount,
+            SkippedRows = this.skippedRows,
             IsCompleted = true,
             Messages = [message]
         });

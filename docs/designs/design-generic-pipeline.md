@@ -106,7 +106,7 @@ It is intended to be:
 * suitable for application and domain processing flows
 * reusable across multiple scenarios
 
-It is not intended to be:
+It is NOT intended to be:
 
 * a workflow engine
 * a business process management platform

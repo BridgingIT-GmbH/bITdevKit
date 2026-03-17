@@ -105,6 +105,7 @@ It is intended to be:
 * deterministic in ordering
 * suitable for application and domain processing flows
 * reusable across multiple scenarios
+* no external dependencies beyond the framework’s core libraries
 
 It is NOT intended to be:
 

@@ -1,4 +1,4 @@
-﻿# Design Document: Extensible Document Templating Feature
+﻿# Design Document: Extensible Document Templating Feature (Application.Templating)
 
 [TOC]
 

@@ -288,6 +288,59 @@ public class DataPorterServiceExportTests
         result.Value.TotalRows.ShouldBe(1);
     }
 
+    public static TheoryData<Func<IDataPorterProvider>, Format> StreamingExportProviders =>
+        new()
+        {
+            { () => new CsvDataPorterProvider(), Format.Csv },
+            { () => new CsvTypedDataPorterProvider(), Format.CsvTyped },
+            { () => new JsonDataPorterProvider(), Format.Json },
+            { () => new XmlDataPorterProvider(), Format.Xml }
+        };
+
+    [Theory]
+    [MemberData(nameof(StreamingExportProviders))] // like http response stream that doesn't support seeking
+    public async Task ExportAsync_WithNonSeekableOutputStream_ReturnsSuccess(
+        Func<IDataPorterProvider> providerFactory,
+        Format format)
+    {
+        // Arrange
+        var sut = new DataPorterService([providerFactory()], this.configurationMerger);
+        var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
+        await using var stream = new NonSeekableWriteStream();
+
+        // Act
+        var result = await sut.ExportAsync(data, stream, new ExportOptions { Format = format });
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.TotalRows.ShouldBe(1);
+        result.Value.BytesWritten.ShouldBeGreaterThan(0);
+        stream.ToArray().Length.ShouldBe((int)result.Value.BytesWritten);
+    }
+
+    [Theory]
+    [MemberData(nameof(StreamingExportProviders))]
+    public async Task ExportAsync_WithAsyncDataAndNonSeekableOutputStream_ReturnsSuccess(
+        Func<IDataPorterProvider> providerFactory,
+        Format format)
+    {
+        // Arrange
+        var sut = new DataPorterService([providerFactory()], this.configurationMerger);
+        await using var stream = new NonSeekableWriteStream();
+
+        // Act
+        var result = await sut.ExportAsync(
+            new[] { new SimpleEntity { Id = 1, Name = "Test" } }.ToAsyncEnumerable(),
+            stream,
+            new ExportOptions { Format = format });
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.TotalRows.ShouldBe(1);
+        result.Value.BytesWritten.ShouldBeGreaterThan(0);
+        stream.ToArray().Length.ShouldBe((int)result.Value.BytesWritten);
+    }
+
     private static TestExportProvider CreateMockExportProvider(
         Format format = Format.Excel,
         bool throwOnCancel = false)

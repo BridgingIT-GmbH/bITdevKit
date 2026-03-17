@@ -50,8 +50,9 @@ public sealed class CsvTypedDataPorterProvider(
         where TSource : class
     {
         var payloadColumns = this.BuildPayloadColumns([exportConfiguration]);
+        var writeStream = new WriteStreamWrapper(outputStream);
 
-        await using var writer = new StreamWriter(outputStream, this.configuration.Encoding, leaveOpen: true);
+        await using var writer = new StreamWriter(writeStream, this.configuration.Encoding, leaveOpen: true);
         await using var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
         {
             Delimiter = this.configuration.Delimiter,
@@ -74,7 +75,7 @@ public sealed class CsvTypedDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = rowsWritten,
             Duration = TimeSpan.Zero,
             Format = this.Format
@@ -90,8 +91,9 @@ public sealed class CsvTypedDataPorterProvider(
         where TSource : class
     {
         var payloadColumns = this.BuildPayloadColumns([exportConfiguration]);
+        var writeStream = new WriteStreamWrapper(outputStream);
 
-        await using var writer = new StreamWriter(outputStream, this.configuration.Encoding, leaveOpen: true);
+        await using var writer = new StreamWriter(writeStream, this.configuration.Encoding, leaveOpen: true);
         await using var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
         {
             Delimiter = this.configuration.Delimiter,
@@ -113,7 +115,7 @@ public sealed class CsvTypedDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = rowsWritten,
             Duration = TimeSpan.Zero,
             Format = this.Format
@@ -128,8 +130,9 @@ public sealed class CsvTypedDataPorterProvider(
     {
         var dataSetList = dataSets.ToList();
         var payloadColumns = this.BuildPayloadColumns(dataSetList.Select(dataSet => dataSet.Configuration));
+        var writeStream = new WriteStreamWrapper(outputStream);
 
-        await using var writer = new StreamWriter(outputStream, this.configuration.Encoding, leaveOpen: true);
+        await using var writer = new StreamWriter(writeStream, this.configuration.Encoding, leaveOpen: true);
         await using var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
         {
             Delimiter = this.configuration.Delimiter,
@@ -156,7 +159,7 @@ public sealed class CsvTypedDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = rowsWritten,
             Duration = TimeSpan.Zero,
             Format = this.Format
@@ -171,8 +174,9 @@ public sealed class CsvTypedDataPorterProvider(
     {
         var dataSetList = dataSets.ToList();
         var payloadColumns = this.BuildPayloadColumns(dataSetList.Select(dataSet => dataSet.Configuration));
+        var writeStream = new WriteStreamWrapper(outputStream);
 
-        await using var writer = new StreamWriter(outputStream, this.configuration.Encoding, leaveOpen: true);
+        await using var writer = new StreamWriter(writeStream, this.configuration.Encoding, leaveOpen: true);
         await using var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
         {
             Delimiter = this.configuration.Delimiter,
@@ -199,7 +203,7 @@ public sealed class CsvTypedDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = rowsWritten,
             Duration = TimeSpan.Zero,
             Format = this.Format

@@ -522,4 +522,65 @@ public class TestStreamingImportProvider : IDataImportProvider
     }
 }
 
+public sealed class NonSeekableWriteStream : Stream
+{
+    private readonly MemoryStream innerStream = new();
+
+    public byte[] ToArray() => this.innerStream.ToArray();
+
+    public override bool CanRead => false;
+
+    public override bool CanSeek => false;
+
+    public override bool CanWrite => true;
+
+    public override long Length => throw new NotSupportedException();
+
+    public override long Position
+    {
+        get => throw new NotSupportedException();
+        set => throw new NotSupportedException();
+    }
+
+    public override void Flush() => this.innerStream.Flush();
+
+    public override Task FlushAsync(CancellationToken cancellationToken) => this.innerStream.FlushAsync(cancellationToken);
+
+    public override int Read(byte[] buffer, int offset, int count) => throw new NotSupportedException();
+
+    public override int Read(Span<byte> buffer) => throw new NotSupportedException();
+
+    public override long Seek(long offset, SeekOrigin origin) => throw new NotSupportedException();
+
+    public override void SetLength(long value) => throw new NotSupportedException();
+
+    public override void Write(byte[] buffer, int offset, int count) => this.innerStream.Write(buffer, offset, count);
+
+    public override void Write(ReadOnlySpan<byte> buffer) => this.innerStream.Write(buffer);
+
+    public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken) =>
+        this.innerStream.WriteAsync(buffer, offset, count, cancellationToken);
+
+    public override ValueTask WriteAsync(ReadOnlyMemory<byte> buffer, CancellationToken cancellationToken = default) =>
+        this.innerStream.WriteAsync(buffer, cancellationToken);
+
+    public override void WriteByte(byte value) => this.innerStream.WriteByte(value);
+
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            this.innerStream.Dispose();
+        }
+
+        base.Dispose(disposing);
+    }
+
+    public override async ValueTask DisposeAsync()
+    {
+        await this.innerStream.DisposeAsync();
+        await base.DisposeAsync();
+    }
+}
+
 #endregion

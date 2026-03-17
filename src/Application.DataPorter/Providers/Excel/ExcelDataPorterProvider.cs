@@ -49,6 +49,7 @@ public sealed class ExcelDataPorterProvider(
         CancellationToken cancellationToken = default)
         where TSource : class
     {
+        var writeStream = new WriteStreamWrapper(outputStream);
         using var workbook = new XLWorkbook();
 
         var sheetName = exportConfiguration.SheetName ?? typeof(TSource).Name;
@@ -177,11 +178,11 @@ public sealed class ExcelDataPorterProvider(
             worksheet.SheetView.FreezeRows(headerRowIndex);
         }
 
-        await Task.Run(() => workbook.SaveAs(outputStream), cancellationToken);
+        await Task.Run(() => workbook.SaveAs(writeStream), cancellationToken);
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = rowsExported,
             Duration = TimeSpan.Zero,
             Format = this.Format
@@ -206,6 +207,7 @@ public sealed class ExcelDataPorterProvider(
         Stream outputStream,
         CancellationToken cancellationToken = default)
     {
+        var writeStream = new WriteStreamWrapper(outputStream);
         using var workbook = new XLWorkbook();
         var totalRows = 0;
 
@@ -259,11 +261,11 @@ public sealed class ExcelDataPorterProvider(
             }
         }
 
-        await Task.Run(() => workbook.SaveAs(outputStream), cancellationToken);
+        await Task.Run(() => workbook.SaveAs(writeStream), cancellationToken);
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format

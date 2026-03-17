@@ -56,11 +56,12 @@ public sealed class XmlDataPorterProvider(
     {
         var settings = this.configuration.GetWriterSettings();
         settings.Async = true;
+        var writeStream = new WriteStreamWrapper(outputStream);
 
         var rootName = this.configuration.RootElementName;
         var itemName = this.configuration.ItemElementName;
 
-        await using var writer = XmlWriter.Create(outputStream, settings);
+        await using var writer = XmlWriter.Create(writeStream, settings);
 
         await writer.WriteStartDocumentAsync();
         await writer.WriteStartElementAsync(null, rootName, null);
@@ -81,7 +82,7 @@ public sealed class XmlDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format
@@ -98,11 +99,12 @@ public sealed class XmlDataPorterProvider(
     {
         var settings = this.configuration.GetWriterSettings();
         settings.Async = true;
+        var writeStream = new WriteStreamWrapper(outputStream);
 
         var rootName = this.configuration.RootElementName;
         var itemName = this.configuration.ItemElementName;
 
-        await using var writer = XmlWriter.Create(outputStream, settings);
+        await using var writer = XmlWriter.Create(writeStream, settings);
 
         await writer.WriteStartDocumentAsync();
         await writer.WriteStartElementAsync(null, rootName, null);
@@ -121,7 +123,7 @@ public sealed class XmlDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format
@@ -138,8 +140,9 @@ public sealed class XmlDataPorterProvider(
         settings.Async = true;
 
         var totalRows = 0;
+        var writeStream = new WriteStreamWrapper(outputStream);
 
-        await using var writer = XmlWriter.Create(outputStream, settings);
+        await using var writer = XmlWriter.Create(writeStream, settings);
 
         await writer.WriteStartDocumentAsync();
         await writer.WriteStartElementAsync(null, "DataSets", null);
@@ -167,7 +170,7 @@ public sealed class XmlDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format
@@ -184,8 +187,9 @@ public sealed class XmlDataPorterProvider(
         settings.Async = true;
 
         var totalRows = 0;
+        var writeStream = new WriteStreamWrapper(outputStream);
 
-        await using var writer = XmlWriter.Create(outputStream, settings);
+        await using var writer = XmlWriter.Create(writeStream, settings);
 
         await writer.WriteStartDocumentAsync();
         await writer.WriteStartElementAsync(null, "DataSets", null);
@@ -213,7 +217,7 @@ public sealed class XmlDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format

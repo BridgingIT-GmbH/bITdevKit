@@ -54,8 +54,9 @@ public sealed class CsvDataPorterProvider(
         where TSource : class
     {
         var plan = this.BuildExportPlan(exportConfiguration);
+        var writeStream = new WriteStreamWrapper(outputStream);
 
-        await using var writer = new StreamWriter(outputStream, this.configuration.Encoding, leaveOpen: true);
+        await using var writer = new StreamWriter(writeStream, this.configuration.Encoding, leaveOpen: true);
         await using var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
         {
             Delimiter = this.configuration.Delimiter,
@@ -92,7 +93,7 @@ public sealed class CsvDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = rowsExported,
             Duration = TimeSpan.Zero,
             Format = this.Format
@@ -108,8 +109,9 @@ public sealed class CsvDataPorterProvider(
         where TSource : class
     {
         var plan = this.BuildExportPlan(exportConfiguration);
+        var writeStream = new WriteStreamWrapper(outputStream);
 
-        await using var writer = new StreamWriter(outputStream, this.configuration.Encoding, leaveOpen: true);
+        await using var writer = new StreamWriter(writeStream, this.configuration.Encoding, leaveOpen: true);
         await using var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(this.configuration.Culture)
         {
             Delimiter = this.configuration.Delimiter,
@@ -143,7 +145,7 @@ public sealed class CsvDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = rowsExported,
             Duration = TimeSpan.Zero,
             Format = this.Format
@@ -158,8 +160,9 @@ public sealed class CsvDataPorterProvider(
         CancellationToken cancellationToken = default)
     {
         var totalRows = 0;
+        var writeStream = new WriteStreamWrapper(outputStream);
 
-        await using var writer = new StreamWriter(outputStream, this.configuration.Encoding, leaveOpen: true);
+        await using var writer = new StreamWriter(writeStream, this.configuration.Encoding, leaveOpen: true);
 
         foreach (var (data, exportConfiguration) in dataSets)
         {
@@ -204,7 +207,7 @@ public sealed class CsvDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format
@@ -218,8 +221,9 @@ public sealed class CsvDataPorterProvider(
         CancellationToken cancellationToken = default)
     {
         var totalRows = 0;
+        var writeStream = new WriteStreamWrapper(outputStream);
 
-        await using var writer = new StreamWriter(outputStream, this.configuration.Encoding, leaveOpen: true);
+        await using var writer = new StreamWriter(writeStream, this.configuration.Encoding, leaveOpen: true);
 
         foreach (var (data, exportConfiguration) in dataSets)
         {
@@ -260,7 +264,7 @@ public sealed class CsvDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format

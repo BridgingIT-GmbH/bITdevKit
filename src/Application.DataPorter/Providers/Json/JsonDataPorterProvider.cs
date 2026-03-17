@@ -50,7 +50,8 @@ public sealed class JsonDataPorterProvider(
         where TSource : class
     {
         var jsonOptions = this.CreateJsonSerializerOptions();
-        using var writer = new Utf8JsonWriter(outputStream, new JsonWriterOptions
+        var writeStream = new WriteStreamWrapper(outputStream);
+        using var writer = new Utf8JsonWriter(writeStream, new JsonWriterOptions
         {
             Indented = jsonOptions.WriteIndented
         });
@@ -70,7 +71,7 @@ public sealed class JsonDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format
@@ -86,7 +87,8 @@ public sealed class JsonDataPorterProvider(
         where TSource : class
     {
         var jsonOptions = this.CreateJsonSerializerOptions();
-        using var writer = new Utf8JsonWriter(outputStream, new JsonWriterOptions
+        var writeStream = new WriteStreamWrapper(outputStream);
+        using var writer = new Utf8JsonWriter(writeStream, new JsonWriterOptions
         {
             Indented = jsonOptions.WriteIndented
         });
@@ -105,7 +107,7 @@ public sealed class JsonDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format
@@ -119,7 +121,8 @@ public sealed class JsonDataPorterProvider(
         CancellationToken cancellationToken = default)
     {
         var jsonOptions = this.CreateJsonSerializerOptions();
-        using var writer = new Utf8JsonWriter(outputStream, new JsonWriterOptions
+        var writeStream = new WriteStreamWrapper(outputStream);
+        using var writer = new Utf8JsonWriter(writeStream, new JsonWriterOptions
         {
             Indented = jsonOptions.WriteIndented
         });
@@ -150,7 +153,7 @@ public sealed class JsonDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format
@@ -164,7 +167,8 @@ public sealed class JsonDataPorterProvider(
         CancellationToken cancellationToken = default)
     {
         var jsonOptions = this.CreateJsonSerializerOptions();
-        using var writer = new Utf8JsonWriter(outputStream, new JsonWriterOptions
+        var writeStream = new WriteStreamWrapper(outputStream);
+        using var writer = new Utf8JsonWriter(writeStream, new JsonWriterOptions
         {
             Indented = jsonOptions.WriteIndented
         });
@@ -194,7 +198,7 @@ public sealed class JsonDataPorterProvider(
 
         return new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format

@@ -59,6 +59,7 @@ public sealed class PdfDataPorterProvider(
         where TSource : class
     {
         this.EnsureFontResolution();
+        var writeStream = new WriteStreamWrapper(outputStream);
 
         var dataList = data.ToList();
         var columns = this.GetExportColumns(exportConfiguration);
@@ -82,11 +83,11 @@ public sealed class PdfDataPorterProvider(
         // Render to stream
         var renderer = new PdfDocumentRenderer { Document = document };
         renderer.RenderDocument();
-        renderer.PdfDocument.Save(outputStream, false);
+        renderer.PdfDocument.Save(writeStream, false);
 
         return Task.FromResult(new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = dataList.Count,
             Duration = TimeSpan.Zero,
             Format = this.Format
@@ -112,6 +113,7 @@ public sealed class PdfDataPorterProvider(
         CancellationToken cancellationToken = default)
     {
         this.EnsureFontResolution();
+        var writeStream = new WriteStreamWrapper(outputStream);
 
         var dataSetsList = dataSets.ToList();
         var totalRows = 0;
@@ -138,11 +140,11 @@ public sealed class PdfDataPorterProvider(
         // Render to stream
         var renderer = new PdfDocumentRenderer { Document = document };
         renderer.RenderDocument();
-        renderer.PdfDocument.Save(outputStream, false);
+        renderer.PdfDocument.Save(writeStream, false);
 
         return Task.FromResult(new ExportResult
         {
-            BytesWritten = outputStream.Length,
+            BytesWritten = writeStream.BytesWritten,
             TotalRows = totalRows,
             Duration = TimeSpan.Zero,
             Format = this.Format

@@ -46,6 +46,11 @@ public sealed class ImportConfiguration
     public ImportValidationBehavior ValidationBehavior { get; set; } = ImportValidationBehavior.CollectErrors;
 
     /// <summary>
+    /// Gets or sets the maximum number of errors to collect before stopping.
+    /// </summary>
+    public int? MaxErrors { get; set; }
+
+    /// <summary>
     /// Gets or sets the factory function for creating target instances.
     /// </summary>
     public Func<object> Factory { get; set; }

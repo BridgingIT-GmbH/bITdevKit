@@ -206,6 +206,20 @@ public class ConfigurationMergerTests
     }
 
     [Fact]
+    public void BuildImportConfiguration_WithMaxErrors_SetsMaxErrors()
+    {
+        // Arrange
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+        var options = new ImportOptions { MaxErrors = 3 };
+
+        // Act
+        var result = sut.BuildImportConfiguration<SimpleEntity>(options);
+
+        // Assert
+        result.MaxErrors.ShouldBe(3);
+    }
+
+    [Fact]
     public void BuildImportConfiguration_WithProfile_MergesProfileSettings()
     {
         // Arrange

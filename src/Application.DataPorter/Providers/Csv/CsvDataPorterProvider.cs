@@ -295,20 +295,23 @@ public sealed class CsvDataPorterProvider(
             if (result.FatalError is not null)
             {
                 failedRows += result.ProcessedRows > 0 ? result.ProcessedRows : 1;
-                errors.Add(new ImportRowError
+                ImportErrorLimit.TryAdd(errors, new ImportRowError
                 {
                     RowNumber = result.RowNumber,
                     Column = "N/A",
                     Message = result.FatalError.Message,
                     Severity = ErrorSeverity.Critical
-                });
+                }, importConfiguration);
                 break;
             }
 
             if (result.Errors.Count > 0)
             {
                 failedRows += result.ProcessedRows > 0 ? result.ProcessedRows : result.Errors.Count;
-                errors.AddRange(result.Errors);
+                if (ImportErrorLimit.TryAddRange(errors, result.Errors, importConfiguration))
+                {
+                    break;
+                }
             }
         }
 
@@ -330,6 +333,8 @@ public sealed class CsvDataPorterProvider(
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
         where TTarget : class, new()
     {
+        var errorCount = 0;
+
         await foreach (var result in this.ProcessRowsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
         {
             if (result.FatalError is not null)
@@ -351,6 +356,12 @@ public sealed class CsvDataPorterProvider(
                         result.Errors[0].Column,
                         result.Errors[0].Message,
                         result.Errors[0].RawValue));
+
+                errorCount++;
+                if (ImportErrorLimit.IsReached(importConfiguration, errorCount))
+                {
+                    yield break;
+                }
             }
         }
     }
@@ -372,19 +383,22 @@ public sealed class CsvDataPorterProvider(
 
             if (result.FatalError is not null)
             {
-                errors.Add(new ImportRowError
+                ImportErrorLimit.TryAdd(errors, new ImportRowError
                 {
                     RowNumber = result.RowNumber,
                     Column = "N/A",
                     Message = result.FatalError.Message,
                     Severity = ErrorSeverity.Critical
-                });
+                }, importConfiguration);
                 break;
             }
 
             if (result.Errors.Count > 0)
             {
-                errors.AddRange(result.Errors);
+                if (ImportErrorLimit.TryAddRange(errors, result.Errors, importConfiguration))
+                {
+                    break;
+                }
             }
             else
             {

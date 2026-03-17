@@ -112,6 +112,7 @@ public sealed class ConfigurationMerger(
         config.HeaderRowIndex = options.HeaderRowIndex;
         config.SkipRows = options.SkipRows;
         config.ValidationBehavior = options.ValidationBehavior;
+        config.MaxErrors = options.MaxErrors;
         config.Culture = options.Culture;
 
         return config;

@@ -176,6 +176,7 @@ public class ImportConfigurationTests
         sut.HeaderRowIndex.ShouldBe(0);
         sut.SkipRows.ShouldBe(0);
         sut.ValidationBehavior.ShouldBe(ImportValidationBehavior.CollectErrors);
+        sut.MaxErrors.ShouldBeNull();
         sut.Culture.ShouldBe(System.Globalization.CultureInfo.InvariantCulture);
     }
 }

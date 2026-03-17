@@ -327,14 +327,17 @@ public sealed class ExcelDataPorterProvider(
         var headerErrors = this.CreateMissingColumnErrors(columnMapResult.MissingColumns, importConfiguration.HeaderRowIndex);
         if (headerErrors.Count > 0)
         {
+            var limitedHeaderErrors = new List<ImportRowError>();
+            ImportErrorLimit.TryAddRange(limitedHeaderErrors, headerErrors, importConfiguration);
+
             return new ImportResult<TTarget>
             {
                 Data = [],
                 TotalRows = 0,
                 SuccessfulRows = 0,
-                FailedRows = headerErrors.Count,
+                FailedRows = limitedHeaderErrors.Count,
                 Duration = TimeSpan.Zero,
-                Errors = headerErrors
+                Errors = limitedHeaderErrors
             };
         }
 
@@ -368,23 +371,27 @@ public sealed class ExcelDataPorterProvider(
                 }
                 else if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport && rowErrors.Count > 0)
                 {
-                    errors.AddRange(rowErrors);
+                    ImportErrorLimit.TryAddRange(errors, rowErrors, importConfiguration);
                     break;
                 }
 
-                errors.AddRange(rowErrors);
+                if (ImportErrorLimit.TryAddRange(errors, rowErrors, importConfiguration))
+                {
+                    break;
+                }
             }
             catch (Exception ex)
             {
-                errors.Add(new ImportRowError
+                ImportErrorLimit.TryAdd(errors, new ImportRowError
                 {
                     RowNumber = rowNum,
                     Column = "N/A",
                     Message = ex.Message,
                     Severity = ErrorSeverity.Error
-                });
+                }, importConfiguration);
 
-                if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport)
+                if (importConfiguration.ValidationBehavior == ImportValidationBehavior.StopImport ||
+                    ImportErrorLimit.IsReached(importConfiguration, errors.Count))
                 {
                     break;
                 }
@@ -431,6 +438,7 @@ public sealed class ExcelDataPorterProvider(
 
         using (workbook)
         {
+            var errorCount = 0;
             var worksheet = this.GetWorksheet(workbook, importConfiguration);
 
             if (worksheet is null)
@@ -450,6 +458,12 @@ public sealed class ExcelDataPorterProvider(
                 {
                     yield return Result<TTarget>.Failure()
                         .WithError(new ImportValidationError(error.RowNumber, error.Column, error.Message));
+
+                    errorCount++;
+                    if (ImportErrorLimit.IsReached(importConfiguration, errorCount))
+                    {
+                        yield break;
+                    }
                 }
 
                 yield break;
@@ -501,6 +515,15 @@ public sealed class ExcelDataPorterProvider(
                 if (result.HasValue)
                 {
                     yield return await Task.FromResult(result.Value);
+
+                    if (result.Value.IsFailure)
+                    {
+                        errorCount++;
+                        if (ImportErrorLimit.IsReached(importConfiguration, errorCount))
+                        {
+                            yield break;
+                        }
+                    }
                 }
             }
         }
@@ -536,7 +559,9 @@ public sealed class ExcelDataPorterProvider(
         var headerErrors = this.CreateMissingColumnErrors(columnMapResult.MissingColumns, importConfiguration.HeaderRowIndex);
         if (headerErrors.Count > 0)
         {
-            return ValidationResult.Failure(0, 0, headerErrors);
+            var limitedHeaderErrors = new List<ImportRowError>();
+            ImportErrorLimit.TryAddRange(limitedHeaderErrors, headerErrors, importConfiguration);
+            return ValidationResult.Failure(0, 0, limitedHeaderErrors);
         }
 
         var columnMap = columnMapResult.ColumnMap;
@@ -600,7 +625,10 @@ public sealed class ExcelDataPorterProvider(
             }
             else
             {
-                errors.AddRange(rowErrors);
+                if (ImportErrorLimit.TryAddRange(errors, rowErrors, importConfiguration))
+                {
+                    break;
+                }
             }
         }
 

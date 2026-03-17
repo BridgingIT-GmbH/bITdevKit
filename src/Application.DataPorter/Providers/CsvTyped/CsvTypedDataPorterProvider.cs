@@ -517,6 +517,7 @@ public sealed class CsvTypedDataPorterProvider(
         var completedRootIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var currentRows = new List<CsvTypedRow>();
         var currentRootId = default(string);
+        var errorCount = 0;
 
         while (await csv.ReadAsync())
         {
@@ -556,6 +557,15 @@ public sealed class CsvTypedDataPorterProvider(
             foreach (var result in this.MaterializeStreamGroup<TTarget>(currentRows, importConfiguration))
             {
                 yield return result;
+
+                if (result.IsFailure)
+                {
+                    errorCount++;
+                    if (ImportErrorLimit.IsReached(importConfiguration, errorCount))
+                    {
+                        yield break;
+                    }
+                }
             }
 
             completedRootIds.Add(currentRootId);
@@ -575,6 +585,15 @@ public sealed class CsvTypedDataPorterProvider(
             foreach (var result in this.MaterializeStreamGroup<TTarget>(currentRows, importConfiguration))
             {
                 yield return result;
+
+                if (result.IsFailure)
+                {
+                    errorCount++;
+                    if (ImportErrorLimit.IsReached(importConfiguration, errorCount))
+                    {
+                        yield break;
+                    }
+                }
             }
         }
     }
@@ -815,6 +834,11 @@ public sealed class CsvTypedDataPorterProvider(
 
         foreach (var group in groupedRows)
         {
+            if (ImportErrorLimit.IsReached(importConfiguration, errors.Count))
+            {
+                break;
+            }
+
             var item = importConfiguration.Factory is not null
                 ? (TTarget)importConfiguration.Factory()
                 : new TTarget();
@@ -828,12 +852,20 @@ public sealed class CsvTypedDataPorterProvider(
 
             foreach (var error in groupErrors)
             {
-                errors.Add(error);
+                if (ImportErrorLimit.TryAdd(errors, error, importConfiguration))
+                {
+                    break;
+                }
             }
 
             if (groupErrors.Count == 0)
             {
                 results.Add(item);
+            }
+
+            if (ImportErrorLimit.IsReached(importConfiguration, errors.Count))
+            {
+                break;
             }
         }
 
@@ -869,6 +901,11 @@ public sealed class CsvTypedDataPorterProvider(
     {
         foreach (var column in columns)
         {
+            if (ImportErrorLimit.IsReached(configuration, errors.Count))
+            {
+                return;
+            }
+
             if (column.Ignore)
             {
                 continue;
@@ -885,14 +922,18 @@ public sealed class CsvTypedDataPorterProvider(
 
             if (column.IsRequired && !hasValue)
             {
-                errors.Add(new ImportRowError
+                if (ImportErrorLimit.TryAdd(errors, new ImportRowError
                 {
                     RowNumber = 0,
                     Column = key,
                     Message = column.RequiredMessage ?? $"{column.PropertyName} is required",
                     RawValue = rawValue,
                     Severity = ErrorSeverity.Error
-                });
+                }, configuration))
+                {
+                    return;
+                }
+
                 continue;
             }
 
@@ -908,14 +949,17 @@ public sealed class CsvTypedDataPorterProvider(
                 if (!validator.Validate(rawValue))
                 {
                     hasErrors = true;
-                    errors.Add(new ImportRowError
+                    if (ImportErrorLimit.TryAdd(errors, new ImportRowError
                     {
                         RowNumber = 0,
                         Column = key,
                         Message = validator.ErrorMessage,
                         RawValue = rawValue,
                         Severity = ErrorSeverity.Error
-                    });
+                    }, configuration))
+                    {
+                        return;
+                    }
                 }
             }
 
@@ -931,14 +975,17 @@ public sealed class CsvTypedDataPorterProvider(
             }
             catch (Exception ex)
             {
-                errors.Add(new ImportRowError
+                if (ImportErrorLimit.TryAdd(errors, new ImportRowError
                 {
                     RowNumber = 0,
                     Column = column.SourceName ?? column.PropertyName,
                     Message = ex.Message,
                     RawValue = rawValue,
                     Severity = ErrorSeverity.Error
-                });
+                }, configuration))
+                {
+                    return;
+                }
             }
         }
     }
@@ -956,6 +1003,11 @@ public sealed class CsvTypedDataPorterProvider(
 
         foreach (var column in columns)
         {
+            if (ImportErrorLimit.IsReached(configuration, errors.Count))
+            {
+                return;
+            }
+
             if (column.Ignore || column.Converter is not null)
             {
                 continue;
@@ -978,8 +1030,13 @@ public sealed class CsvTypedDataPorterProvider(
                 var elementType = this.GetCollectionElementType(propertyType);
                 foreach (var childRow in collectionRows)
                 {
+                    if (ImportErrorLimit.IsReached(configuration, errors.Count))
+                    {
+                        return;
+                    }
+
                     var childItem = Activator.CreateInstance(elementType);
-                    this.ApplyStructuredPayload(childItem, childRow, elementType, configuration.Culture, rowLookup, errors);
+                    this.ApplyStructuredPayload(childItem, childRow, elementType, configuration, rowLookup, errors);
                     this.AddCollectionItem(collection, childItem);
                 }
 
@@ -994,7 +1051,7 @@ public sealed class CsvTypedDataPorterProvider(
                 }
 
                 var childItem = Activator.CreateInstance(propertyType);
-                this.ApplyStructuredPayload(childItem, childRow, propertyType, configuration.Culture, rowLookup, errors);
+                this.ApplyStructuredPayload(childItem, childRow, propertyType, configuration, rowLookup, errors);
                 column.SetValue(target, childItem);
             }
         }
@@ -1004,12 +1061,17 @@ public sealed class CsvTypedDataPorterProvider(
         object target,
         CsvTypedRow row,
         Type targetType,
-        CultureInfo culture,
+        ImportConfiguration configuration,
         IReadOnlyDictionary<string, CsvTypedRow> rowLookup,
         ICollection<ImportRowError> errors)
     {
         foreach (var property in this.GetFlattenableProperties(targetType))
         {
+            if (ImportErrorLimit.IsReached(configuration, errors.Count))
+            {
+                return;
+            }
+
             if (property.PropertyType.SupportsStructuredValue())
             {
                 if (property.PropertyType.IsCollectionType())
@@ -1024,8 +1086,13 @@ public sealed class CsvTypedDataPorterProvider(
 
                     foreach (var childRow in collectionRows)
                     {
+                        if (ImportErrorLimit.IsReached(configuration, errors.Count))
+                        {
+                            return;
+                        }
+
                         var child = Activator.CreateInstance(elementType);
-                        this.ApplyStructuredPayload(child, childRow, elementType, culture, rowLookup, errors);
+                        this.ApplyStructuredPayload(child, childRow, elementType, configuration, rowLookup, errors);
                         this.AddCollectionItem(collection, child);
                     }
 
@@ -1043,7 +1110,7 @@ public sealed class CsvTypedDataPorterProvider(
                     }
 
                     var child = Activator.CreateInstance(property.PropertyType);
-                    this.ApplyStructuredPayload(child, childRow, property.PropertyType, culture, rowLookup, errors);
+                    this.ApplyStructuredPayload(child, childRow, property.PropertyType, configuration, rowLookup, errors);
                     property.SetValue(target, child);
                 }
 
@@ -1057,18 +1124,21 @@ public sealed class CsvTypedDataPorterProvider(
 
             try
             {
-                property.SetValue(target, this.ConvertToType(rawValue, property.PropertyType, culture));
+                property.SetValue(target, this.ConvertToType(rawValue, property.PropertyType, configuration.Culture));
             }
             catch (Exception ex)
             {
-                errors.Add(new ImportRowError
+                if (ImportErrorLimit.TryAdd(errors, new ImportRowError
                 {
                     RowNumber = 0,
                     Column = property.Name,
                     Message = ex.Message,
                     RawValue = rawValue,
                     Severity = ErrorSeverity.Error
-                });
+                }, configuration))
+                {
+                    return;
+                }
             }
         }
     }

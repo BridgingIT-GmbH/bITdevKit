@@ -242,13 +242,13 @@ public sealed class XmlDataPorterProvider(
             {
                 failedRows++;
                 totalRows += result.RowNumber > 0 ? 1 : 0;
-                errors.Add(new ImportRowError
+                ImportErrorLimit.TryAdd(errors, new ImportRowError
                 {
                     RowNumber = result.RowNumber,
                     Column = "N/A",
                     Message = result.FatalError.Message,
                     Severity = ErrorSeverity.Critical
-                });
+                }, importConfiguration);
                 break;
             }
 
@@ -262,7 +262,10 @@ public sealed class XmlDataPorterProvider(
             if (result.Errors.Count > 0)
             {
                 failedRows++;
-                errors.AddRange(result.Errors);
+                if (ImportErrorLimit.TryAddRange(errors, result.Errors, importConfiguration))
+                {
+                    break;
+                }
             }
         }
 
@@ -284,6 +287,8 @@ public sealed class XmlDataPorterProvider(
         [EnumeratorCancellation] CancellationToken cancellationToken = default)
         where TTarget : class, new()
     {
+        var errorCount = 0;
+
         await foreach (var result in this.ProcessElementsAsync<TTarget>(inputStream, importConfiguration, cancellationToken))
         {
             if (result.FatalError is not null)
@@ -305,6 +310,12 @@ public sealed class XmlDataPorterProvider(
                         result.Errors[0].Column,
                         result.Errors[0].Message,
                         result.Errors[0].RawValue));
+
+                errorCount++;
+                if (ImportErrorLimit.IsReached(importConfiguration, errorCount))
+                {
+                    yield break;
+                }
             }
         }
     }
@@ -325,13 +336,13 @@ public sealed class XmlDataPorterProvider(
             if (result.FatalError is not null)
             {
                 totalRows += result.RowNumber > 0 ? 1 : 0;
-                errors.Add(new ImportRowError
+                ImportErrorLimit.TryAdd(errors, new ImportRowError
                 {
                     RowNumber = result.RowNumber,
                     Column = "N/A",
                     Message = result.FatalError.Message,
                     Severity = ErrorSeverity.Critical
-                });
+                }, importConfiguration);
                 break;
             }
 
@@ -342,7 +353,10 @@ public sealed class XmlDataPorterProvider(
             }
             else
             {
-                errors.AddRange(result.Errors);
+                if (ImportErrorLimit.TryAddRange(errors, result.Errors, importConfiguration))
+                {
+                    break;
+                }
             }
         }
 

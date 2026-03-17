@@ -412,6 +412,60 @@ public class DataPorterServiceImportTests
         result.Value.Errors[0].Column.ShouldBe(nameof(EntityWithRequiredColumn.RequiredField));
     }
 
+    [Theory]
+    [InlineData(Format.Csv)]
+    [InlineData(Format.Excel)]
+    [InlineData(Format.Json)]
+    [InlineData(Format.Xml)]
+    public async Task ImportAsync_WithMaxErrors_StopsAfterConfiguredErrorLimit(Format format)
+    {
+        // Arrange
+        var sut = new DataPorterService([CreateProvider(format)], this.configurationMerger);
+        await using var stream = CreateMultipleInvalidRowsStream(format);
+        var options = new ImportOptions
+        {
+            Format = format,
+            MaxErrors = 1
+        };
+
+        // Act
+        var result = await sut.ImportAsync<EntityWithRequiredColumn>(stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Data.Count.ShouldBe(1);
+        result.Value.Data[0].Id.ShouldBe(1);
+        result.Value.Errors.Count.ShouldBe(1);
+        result.Value.TotalRows.ShouldBe(2);
+    }
+
+    [Theory]
+    [InlineData(Format.Csv)]
+    [InlineData(Format.Excel)]
+    [InlineData(Format.Json)]
+    [InlineData(Format.Xml)]
+    public async Task ValidateAsync_WithMaxErrors_StopsAfterConfiguredErrorLimit(Format format)
+    {
+        // Arrange
+        var sut = new DataPorterService([CreateProvider(format)], this.configurationMerger);
+        await using var stream = CreateMultipleInvalidRowsStream(format);
+        var options = new ImportOptions
+        {
+            Format = format,
+            MaxErrors = 1
+        };
+
+        // Act
+        var result = await sut.ValidateAsync<EntityWithRequiredColumn>(stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.IsValid.ShouldBeFalse();
+        result.Value.Errors.Count.ShouldBe(1);
+        result.Value.TotalRows.ShouldBe(2);
+        result.Value.ValidRows.ShouldBe(1);
+    }
+
     [Fact]
     public async Task ImportAsync_WithCsvTypedConversionError_DoesNotReturnPartialAggregate()
     {
@@ -539,6 +593,27 @@ public class DataPorterServiceImportTests
         result.Value.Errors.Select(e => e.Column).ShouldContain(nameof(EntityWithValidation.MinLengthField));
     }
 
+    [Fact]
+    public async Task ImportAsync_WithCsvTypedMaxErrors_StopsAtConfiguredLimit()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvTypedDataPorterProvider()], this.configurationMerger);
+        await using var stream = CreateCsvTypedInvalidValidatorStream();
+        var options = new ImportOptions
+        {
+            Format = Format.CsvTyped,
+            MaxErrors = 1
+        };
+
+        // Act
+        var result = await sut.ImportAsync<EntityWithValidation>(stream, options);
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Data.ShouldBeEmpty();
+        result.Value.Errors.Count.ShouldBe(1);
+    }
+
     [Theory]
     [InlineData(Format.Csv)]
     [InlineData(Format.Excel)]
@@ -564,6 +639,37 @@ public class DataPorterServiceImportTests
         results.Count(r => r.IsFailure).ShouldBe(1);
         results.Single(r => r.IsSuccess).Value.RequiredField.ShouldBe("value");
         results.Single(r => r.IsFailure).Errors[0].Message.ShouldContain("required");
+    }
+
+    [Theory]
+    [InlineData(Format.Csv)]
+    [InlineData(Format.Excel)]
+    [InlineData(Format.Json)]
+    [InlineData(Format.Xml)]
+    public async Task ImportStreamAsync_WithMaxErrors_StopsAfterConfiguredErrorLimit(Format format)
+    {
+        // Arrange
+        var sut = new DataPorterService([CreateProvider(format)], this.configurationMerger);
+        await using var stream = CreateMultipleInvalidRowsStream(format);
+        var options = new ImportOptions
+        {
+            Format = format,
+            MaxErrors = 1
+        };
+
+        // Act
+        var results = new List<Result<EntityWithRequiredColumn>>();
+        await foreach (var result in sut.ImportAsyncEnumerable<EntityWithRequiredColumn>(stream, options))
+        {
+            results.Add(result);
+        }
+
+        // Assert
+        results.Count.ShouldBe(2);
+        results[0].ShouldBeSuccess();
+        results[0].Value.Id.ShouldBe(1);
+        results[1].ShouldBeFailure();
+        results[1].Errors[0].Message.ShouldContain("required");
     }
 
     [Fact]
@@ -744,6 +850,44 @@ public class DataPorterServiceImportTests
   </Item>
   <Item>
     <Id>2</Id>
+  </Item>
+</Root>
+"""u8.ToArray()),
+            _ => throw new NotSupportedException()
+        };
+    }
+
+    private static MemoryStream CreateMultipleInvalidRowsStream(Format format)
+    {
+        return format switch
+        {
+            Format.Csv => new MemoryStream("Id,RequiredField\r\n1,value\r\n2,\r\n3,after-limit\r\n4,\r\n"u8.ToArray()),
+            Format.Excel => CreateExcelStream(
+                [nameof(EntityWithRequiredColumn.Id), nameof(EntityWithRequiredColumn.RequiredField)],
+                [new object[] { 1, "value" }, new object[] { 2, null }, new object[] { 3, "after-limit" }, new object[] { 4, null }]),
+            Format.Json => new MemoryStream("""
+[
+  { "Id": 1, "RequiredField": "value" },
+  { "Id": 2 },
+  { "Id": 3, "RequiredField": "after-limit" },
+  { "Id": 4 }
+]
+"""u8.ToArray()),
+            Format.Xml => new MemoryStream("""
+<Root>
+  <Item>
+    <Id>1</Id>
+    <RequiredField>value</RequiredField>
+  </Item>
+  <Item>
+    <Id>2</Id>
+  </Item>
+  <Item>
+    <Id>3</Id>
+    <RequiredField>after-limit</RequiredField>
+  </Item>
+  <Item>
+    <Id>4</Id>
   </Item>
 </Root>
 """u8.ToArray()),

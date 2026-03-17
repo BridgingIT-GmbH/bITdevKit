@@ -153,6 +153,20 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
         }
     }
 
+    public async Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            return await this.ExecuteWithRetryAsync(() => this.innerProvider.OpenWriteFileAsync(path, useTemporaryWrite, progress, cancellationToken), "open write", path, cancellationToken);
+        }
+        catch (InvalidOperationException ex)
+        {
+            return Result<Stream>.Failure()
+                .WithError(ex.InnerException as IResultError ?? new ExceptionError(ex))
+                .WithMessage($"Failed to open file for writing at '{path}' after retries");
+        }
+    }
+
     public async Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try

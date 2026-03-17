@@ -276,6 +276,103 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         }
     }
 
+    public override async Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result<Stream>.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result<Stream>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled opening file for writing at '{path}'");
+        }
+
+        var fullPath = this.GetFullPath(path);
+        var semaphore = this.GetSemaphore(fullPath);
+
+        try
+        {
+            if (!await semaphore.WaitAsync(this.lockTimeout, cancellationToken))
+            {
+                return Result<Stream>.Failure()
+                    .WithError(new TimeoutError("Timeout waiting for file access"))
+                    .WithMessage($"Failed to acquire lock for opening file at '{path}'");
+            }
+
+            this.Initialize();
+            var directory = Path.GetDirectoryName(fullPath);
+            if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            var filePath = useTemporaryWrite ? this.GetTemporaryFilePath(fullPath) : fullPath;
+            var stream = new FileStream(
+                filePath,
+                FileMode.Create,
+                FileAccess.Write,
+                useTemporaryWrite ? FileShare.None : FileShare.Read,
+                bufferSize: 81920,
+                useAsync: true);
+
+            return Result<Stream>.Success(new OpenWriteFileStream(
+                stream,
+                progress,
+                cancellationToken,
+                onSuccessAsync: useTemporaryWrite
+                    ? () =>
+                    {
+                        File.Move(filePath, fullPath, overwrite: true);
+                        return Task.CompletedTask;
+                    }
+                    : null,
+                onFinalizeAsync: success =>
+                {
+                    if (useTemporaryWrite && !success && File.Exists(filePath))
+                    {
+                        File.Delete(filePath);
+                    }
+
+                    this.ReleaseSemaphore(fullPath, semaphore);
+                    return Task.CompletedTask;
+                }))
+                .WithMessage($"Opened file for writing at '{path}'");
+        }
+        catch (OperationCanceledException)
+        {
+            this.ReleaseSemaphore(fullPath, semaphore);
+            return Result<Stream>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled during open for write"))
+                .WithMessage($"Cancelled opening file for writing at '{path}'");
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            this.ReleaseSemaphore(fullPath, semaphore);
+            return Result<Stream>.Failure()
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'");
+        }
+        catch (IOException ex)
+        {
+            this.ReleaseSemaphore(fullPath, semaphore);
+            return Result<Stream>.Failure()
+                .WithError(new FileSystemError("Disk or file system error", path, ex))
+                .WithMessage($"Failed to open file for writing at '{path}'");
+        }
+        catch (Exception ex)
+        {
+            this.ReleaseSemaphore(fullPath, semaphore);
+            return Result<Stream>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error opening file for writing at '{path}'");
+        }
+    }
+
     public override async Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -1347,4 +1444,12 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
     private string GetFullPath(string path) => Path.Combine(this.RootPath, path.Replace("/", "\\").TrimStart('\\'));
 
     private string GetRelativePath(string fullPath) => fullPath[this.RootPath.Length..].TrimStart('\\').Replace("\\", "/");
+
+    private string GetTemporaryFilePath(string fullPath)
+    {
+        var directory = Path.GetDirectoryName(fullPath) ?? this.RootPath;
+        var fileName = Path.GetFileName(fullPath);
+
+        return Path.Combine(directory, $".{fileName}.{Guid.NewGuid():N}.tmp");
+    }
 }

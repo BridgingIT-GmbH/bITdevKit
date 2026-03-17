@@ -255,6 +255,60 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         }
     }
 
+    public override async Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            return Result<Stream>.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided");
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Result<Stream>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled opening file for writing at '{path}'");
+        }
+
+        if (useTemporaryWrite)
+        {
+            return Result<Stream>.Failure()
+                .WithError(new ExceptionError(new NotSupportedException("Temporary write mode is not supported by Azure Blob storage.")))
+                .WithMessage($"Opening file for writing at '{path}' with temporary write is not supported");
+        }
+
+        var normalizedPath = this.NormalizePath(path);
+        var containerClient = await this.GetContainerClientAsync();
+
+        try
+        {
+            var blobClient = containerClient.GetBlobClient(normalizedPath);
+            var stream = await blobClient.OpenWriteAsync(overwrite: true, cancellationToken: cancellationToken);
+
+            return Result<Stream>.Success(new OpenWriteFileStream(stream, progress, cancellationToken))
+                .WithMessage($"Opened file for writing at '{path}'");
+        }
+        catch (OperationCanceledException)
+        {
+            return Result<Stream>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled during open for write"))
+                .WithMessage($"Cancelled opening file for writing at '{path}'");
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Result<Stream>.Failure()
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'");
+        }
+        catch (Exception ex)
+        {
+            return Result<Stream>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error opening file for writing at '{path}'");
+        }
+    }
+
     public override async Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))

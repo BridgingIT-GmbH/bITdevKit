@@ -16,6 +16,7 @@
 - Provides extensibility points for custom handlers and context, allowing developers to implement specific processing logic as needed while still leveraging the benefits of the pipeline architecture.
 - Allows for dynamic behavior based on the context, enabling handlers to make decisions at runtime about how to process the data or whether to continue processing.
 - Pipeline setup is done statically with a fluent builder, allowing for compile-time configuration and ensuring that the pipeline structure is defined clearly in code.
+- Pipeline construction is done at runtime with a factory, allowing for dynamic configuration and flexibility in how the pipeline is assembled based on runtime conditions or configurations.
 - Besides interfaces for handlers and context, the pipeline also includes a base implementation of the pipeline itself, providing common functionality and reducing boilerplate code for developers implementing their own pipelines.
 - The pipeline processing allows for extension points like decorators or hooks where custom logic can be injected, such as pre-processing or post-processing steps, without modifying the core pipeline implementation. This promotes a clean separation of concerns and makes it easier to maintain and extend the processing logic over time.
 - The pipeline does not replace full workflow or orchestration engines, but rather provides a lightweight and flexible way to structure processing logic within an application.

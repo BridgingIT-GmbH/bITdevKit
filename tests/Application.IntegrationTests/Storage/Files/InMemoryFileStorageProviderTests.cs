@@ -17,6 +17,8 @@ public class InMemoryFileStorageProviderTests(ITestOutputHelper output, TestEnvi
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
     private readonly ITestOutputHelper output = output;
 
+    protected override bool SupportsTemporaryOpenWrite => true;
+
     protected override IFileStorageProvider CreateProvider()
     {
         return new LoggingFileStorageBehavior(
@@ -52,6 +54,36 @@ public class InMemoryFileStorageProviderTests(ITestOutputHelper output, TestEnvi
     public override async Task WriteFileAsync_ValidInput_Succeeds()
     {
         await base.WriteFileAsync_ValidInput_Succeeds();
+    }
+
+    [Fact]
+    public override async Task OpenWriteFileAsync_DirectWrite_Succeeds()
+    {
+        await base.OpenWriteFileAsync_DirectWrite_Succeeds();
+    }
+
+    [Fact]
+    public override async Task OpenWriteFileAsync_CreatesParentDirectories()
+    {
+        await base.OpenWriteFileAsync_CreatesParentDirectories();
+    }
+
+    [Fact]
+    public override async Task OpenWriteFileAsync_Cancelled_Fails()
+    {
+        await base.OpenWriteFileAsync_Cancelled_Fails();
+    }
+
+    [Fact]
+    public override async Task OpenWriteFileAsync_ReportsProgress()
+    {
+        await base.OpenWriteFileAsync_ReportsProgress();
+    }
+
+    [Fact]
+    public override async Task OpenWriteFileAsync_TemporaryWrite_BehaviorMatchesSupport()
+    {
+        await base.OpenWriteFileAsync_TemporaryWrite_BehaviorMatchesSupport();
     }
 
     [Fact]

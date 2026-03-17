@@ -72,11 +72,19 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         var result = await this.InnerProvider.WriteFileAsync(path, content, progress, cancellationToken);
         if (result.IsSuccess)
         {
-            this.cache.Remove($"exists_{path}");
-            this.cache.Remove($"read_{path}");
-            this.cache.Remove($"checksum_{path}");
-            this.cache.Remove($"info_{path}");
+            this.InvalidatePathCache(path);
         }
+        return result;
+    }
+
+    public async Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        var result = await this.InnerProvider.OpenWriteFileAsync(path, useTemporaryWrite, progress, cancellationToken);
+        if (result.IsSuccess)
+        {
+            this.InvalidatePathCache(path);
+        }
+
         return result;
     }
 
@@ -85,10 +93,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         var result = await this.InnerProvider.DeleteFileAsync(path, progress, cancellationToken);
         if (result.IsSuccess)
         {
-            this.cache.Remove($"exists_{path}");
-            this.cache.Remove($"read_{path}");
-            this.cache.Remove($"checksum_{path}");
-            this.cache.Remove($"info_{path}");
+            this.InvalidatePathCache(path);
         }
         return result;
     }
@@ -172,14 +177,8 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         var result = await this.InnerProvider.CopyFileAsync(sourcePath, destinationPath, progress, cancellationToken);
         if (result.IsSuccess)
         {
-            this.cache.Remove($"exists_{sourcePath}");
-            this.cache.Remove($"read_{sourcePath}");
-            this.cache.Remove($"checksum_{sourcePath}");
-            this.cache.Remove($"info_{sourcePath}");
-            this.cache.Remove($"exists_{destinationPath}");
-            this.cache.Remove($"read_{destinationPath}");
-            this.cache.Remove($"checksum_{destinationPath}");
-            this.cache.Remove($"info_{destinationPath}");
+            this.InvalidatePathCache(sourcePath);
+            this.InvalidatePathCache(destinationPath);
         }
         return result;
     }
@@ -189,14 +188,8 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         var result = await this.InnerProvider.RenameFileAsync(oldPath, newPath, progress, cancellationToken);
         if (result.IsSuccess)
         {
-            this.cache.Remove($"exists_{oldPath}");
-            this.cache.Remove($"read_{oldPath}");
-            this.cache.Remove($"checksum_{oldPath}");
-            this.cache.Remove($"info_{oldPath}");
-            this.cache.Remove($"exists_{newPath}");
-            this.cache.Remove($"read_{newPath}");
-            this.cache.Remove($"checksum_{newPath}");
-            this.cache.Remove($"info_{newPath}");
+            this.InvalidatePathCache(oldPath);
+            this.InvalidatePathCache(newPath);
         }
         return result;
     }
@@ -206,14 +199,8 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         var result = await this.InnerProvider.RenameDirectoryAsync(path, destinationPath, cancellationToken);
         if (result.IsSuccess)
         {
-            this.cache.Remove($"exists_{path}");
-            this.cache.Remove($"read_{path}");
-            this.cache.Remove($"checksum_{path}");
-            this.cache.Remove($"info_{path}");
-            this.cache.Remove($"exists_{destinationPath}");
-            this.cache.Remove($"read_{destinationPath}");
-            this.cache.Remove($"checksum_{destinationPath}");
-            this.cache.Remove($"info_{destinationPath}");
+            this.InvalidatePathCache(path);
+            this.InvalidatePathCache(destinationPath);
         }
         return result;
     }
@@ -223,14 +210,8 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         var result = await this.InnerProvider.MoveFileAsync(sourcePath, destinationPath, progress, cancellationToken);
         if (result.IsSuccess)
         {
-            this.cache.Remove($"exists_{sourcePath}");
-            this.cache.Remove($"read_{sourcePath}");
-            this.cache.Remove($"checksum_{sourcePath}");
-            this.cache.Remove($"info_{sourcePath}");
-            this.cache.Remove($"exists_{destinationPath}");
-            this.cache.Remove($"read_{destinationPath}");
-            this.cache.Remove($"checksum_{destinationPath}");
-            this.cache.Remove($"info_{destinationPath}");
+            this.InvalidatePathCache(sourcePath);
+            this.InvalidatePathCache(destinationPath);
         }
         return result;
     }
@@ -242,14 +223,8 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         {
             foreach (var (source, dest) in filePairs)
             {
-                this.cache.Remove($"exists_{source}");
-                this.cache.Remove($"read_{source}");
-                this.cache.Remove($"checksum_{source}");
-                this.cache.Remove($"info_{source}");
-                this.cache.Remove($"exists_{dest}");
-                this.cache.Remove($"read_{dest}");
-                this.cache.Remove($"checksum_{dest}");
-                this.cache.Remove($"info_{dest}");
+                this.InvalidatePathCache(source);
+                this.InvalidatePathCache(dest);
             }
         }
         return result;
@@ -262,14 +237,8 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         {
             foreach (var (source, dest) in filePairs)
             {
-                this.cache.Remove($"exists_{source}");
-                this.cache.Remove($"read_{source}");
-                this.cache.Remove($"checksum_{source}");
-                this.cache.Remove($"info_{source}");
-                this.cache.Remove($"exists_{dest}");
-                this.cache.Remove($"read_{dest}");
-                this.cache.Remove($"checksum_{dest}");
-                this.cache.Remove($"info_{dest}");
+                this.InvalidatePathCache(source);
+                this.InvalidatePathCache(dest);
             }
         }
         return result;
@@ -282,10 +251,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
         {
             foreach (var path in paths)
             {
-                this.cache.Remove($"exists_{path}");
-                this.cache.Remove($"read_{path}");
-                this.cache.Remove($"checksum_{path}");
-                this.cache.Remove($"info_{path}");
+                this.InvalidatePathCache(path);
             }
         }
         return result;
@@ -349,6 +315,14 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
     public async Task<Result> CheckHealthAsync(CancellationToken cancellationToken = default)
     {
         return await this.InnerProvider.CheckHealthAsync(cancellationToken);
+    }
+
+    private void InvalidatePathCache(string path)
+    {
+        this.cache.Remove($"exists_{path}");
+        this.cache.Remove($"read_{path}");
+        this.cache.Remove($"checksum_{path}");
+        this.cache.Remove($"info_{path}");
     }
 
     public void Dispose()

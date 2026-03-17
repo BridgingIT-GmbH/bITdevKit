@@ -73,6 +73,21 @@ public partial class LoggingFileStorageBehavior(IFileStorageProvider innerProvid
         return result;
     }
 
+    public async Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        this.logger.LogInformation("{LogKey} file storage: open write (type={LocationName}, path={Path}, temporary={UseTemporaryWrite})", Constants.LogKey, this.innerProvider.LocationName, path, useTemporaryWrite);
+        var result = await this.innerProvider.OpenWriteFileAsync(path, useTemporaryWrite, progress, cancellationToken);
+        if (result.IsSuccess)
+        {
+            this.logger.LogInformation("{LogKey} file storage: successfully opened file for writing at '{Path}' (temporary={UseTemporaryWrite})", Constants.LogKey, path, useTemporaryWrite);
+        }
+        else
+        {
+            this.logger.LogWarning("{LogKey} file storage: failed to open file for writing at '{Path}' (temporary={UseTemporaryWrite}): {Errors}", Constants.LogKey, path, useTemporaryWrite, result.Errors);
+        }
+        return result;
+    }
+
     public async Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogDelete(this.logger, Constants.LogKey, this.innerProvider.LocationName, path);

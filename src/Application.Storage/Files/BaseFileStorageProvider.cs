@@ -103,6 +103,38 @@ public abstract class BaseFileStorageProvider(string locationName) : IFileStorag
         }
     }
 
+    public virtual Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            throw new NotImplementedException("OpenWriteFileAsync must be implemented by concrete providers.");
+        }
+        catch (IOException ex) when (ex is DirectoryNotFoundException or DriveNotFoundException)
+        {
+            return Task.FromResult(Result<Stream>.Failure()
+                .WithError(new FileSystemError("Directory or drive not found", path, ex))
+                .WithMessage($"Failed to open file for writing at '{path}' due to directory/drive issue"));
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            return Task.FromResult(Result<Stream>.Failure()
+                .WithError(new FileSystemPermissionError("Access denied", path, ex))
+                .WithMessage($"Permission denied for file at '{path}'"));
+        }
+        catch (NotSupportedException ex)
+        {
+            return Task.FromResult(Result<Stream>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Opening file for writing at '{path}' is not supported"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result<Stream>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error opening file for writing at '{path}'"));
+        }
+    }
+
     public virtual Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         try

@@ -231,6 +231,66 @@ public class InMemoryFileStorageProvider(string locationName)
         }, cancellationToken);
     }
 
+    public override Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrEmpty(path))
+        {
+            return Task.FromResult(Result<Stream>.Failure()
+                .WithError(new FileSystemError("Path cannot be null or empty", path))
+                .WithMessage("Invalid path provided"));
+        }
+
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Task.FromResult(Result<Stream>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled"))
+                .WithMessage($"Cancelled opening file for writing at '{path}'"));
+        }
+
+        var normalizedPath = this.NormalizePath(path);
+
+        try
+        {
+            if (!this.semaphore.Wait(0, cancellationToken))
+            {
+                return Task.FromResult(Result<Stream>.Failure()
+                    .WithError(new ExceptionError(new TimeoutException("Operation timed out due to concurrent access")))
+                    .WithMessage($"Failed to acquire lock for opening file at '{path}'"));
+            }
+
+            var exists = this.files.ContainsKey(normalizedPath);
+            var stream = new MemoryStream();
+
+            return Task.FromResult(Result<Stream>.Success(new OpenWriteFileStream(
+                stream,
+                progress,
+                cancellationToken,
+                onSuccessAsync: () =>
+                {
+                    this.CommitOpenWrite(normalizedPath, stream.ToArray(), exists);
+                    return Task.CompletedTask;
+                },
+                onFinalizeAsync: _ =>
+                {
+                    this.semaphore.Release();
+                    return Task.CompletedTask;
+                }))
+                .WithMessage($"Opened file for writing at '{path}'"));
+        }
+        catch (OperationCanceledException)
+        {
+            return Task.FromResult(Result<Stream>.Failure()
+                .WithError(new OperationCancelledError("Operation cancelled during open for write"))
+                .WithMessage($"Cancelled opening file for writing at '{path}'"));
+        }
+        catch (Exception ex)
+        {
+            return Task.FromResult(Result<Stream>.Failure()
+                .WithError(new ExceptionError(ex))
+                .WithMessage($"Unexpected error opening file for writing at '{path}'"));
+        }
+    }
+
     public override async Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrEmpty(path))
@@ -1537,5 +1597,32 @@ public class InMemoryFileStorageProvider(string locationName)
         parts.RemoveAt(parts.Count - 1);
 
         return string.Join("/", parts);
+    }
+
+    private void CommitOpenWrite(string normalizedPath, byte[] contentBytes, bool exists)
+    {
+        var parentPath = this.GetParentPath(normalizedPath);
+        while (!string.IsNullOrEmpty(parentPath))
+        {
+            if (!this.directories.Contains(parentPath) && !this.files.ContainsKey(parentPath))
+            {
+                this.directories.Add(parentPath);
+            }
+
+            parentPath = this.GetParentPath(parentPath);
+        }
+
+        this.directories.Remove(normalizedPath);
+        this.files[normalizedPath] = contentBytes;
+
+        this.OnFileEvent?.Invoke(this, new FileEventArgs(
+            new FileEvent
+            {
+                LocationName = this.LocationName,
+                FilePath = normalizedPath,
+                EventType = !exists ? FileEventType.Added : FileEventType.Changed,
+                FileSize = contentBytes.Length,
+                DetectedDate = DateTimeOffset.UtcNow
+            }));
     }
 }

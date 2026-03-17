@@ -10,6 +10,7 @@ using Shouldly;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 using BridgingIT.DevKit.Infrastructure.Windows;
@@ -259,6 +260,49 @@ public class NetworkFileStorageProviderTests : IDisposable
         catch (Exception ex)
         {
             // Skip if impersonation fails - this is expected in some test environments
+            Skip.If(true, $"Impersonation failed: {ex.Message}");
+        }
+    }
+
+    [SkippableFact]
+    public async Task OpenWriteFileAsync_WritesContentCorrectly_WithCurrentUserImpersonation()
+    {
+        Skip.IfNot(RuntimeInformation.IsOSPlatform(OSPlatform.Windows), "windows only");
+
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            throw new PlatformNotSupportedException("Windows impersonation is only supported on Windows.");
+        }
+
+        try
+        {
+            this.mockAuthenticator
+                .Authenticate()
+                .Returns((IntPtr.Zero, System.Security.Principal.WindowsIdentity.GetCurrent()));
+
+            var provider = new NetworkFileStorageProvider(
+                "TestLocation",
+                this.path,
+                this.impersonationService);
+
+            const string testFilePath = "open-write-test.txt";
+            const string expectedContent = "Content written through OpenWriteFileAsync";
+            var content = Encoding.UTF8.GetBytes(expectedContent);
+
+            var openResult = await provider.OpenWriteFileAsync(testFilePath);
+
+            openResult.IsSuccess.ShouldBeTrue();
+
+            await using (var stream = openResult.Value)
+            {
+                await stream.WriteAsync(content);
+            }
+
+            var writtenContent = await File.ReadAllTextAsync(Path.Combine(this.path, testFilePath));
+            writtenContent.ShouldBe(expectedContent);
+        }
+        catch (Exception ex)
+        {
             Skip.If(true, $"Impersonation failed: {ex.Message}");
         }
     }

@@ -1190,48 +1190,48 @@ What happens in this scenario:
 
 ### Scheduled Partner Feed Export
 
-This scenario fits a scheduled job that produces a large outbound feed and writes it directly into object storage without first creating a full in-memory document.
+This scenario fits a scheduled job that produces a large outbound feed and writes it directly into storage without first creating a full in-memory document.
 
 ```csharp
-using Azure.Storage.Blobs;
-using Azure.Storage.Blobs.Models;
+using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
 
 public sealed class PartnerFeedJob
 {
     private readonly IDataExporter exporter;
     private readonly OrderRepository repository;
-    private readonly BlobContainerClient containerClient;
+    private readonly IFileStorageProvider fileStorageProvider;
 
     public PartnerFeedJob(
         IDataExporter exporter,
         OrderRepository repository,
-        BlobContainerClient containerClient)
+        IFileStorageProvider fileStorageProvider)
     {
         this.exporter = exporter;
         this.repository = repository;
-        this.containerClient = containerClient;
+        this.fileStorageProvider = fileStorageProvider;
     }
 
     public async Task RunAsync(CancellationToken cancellationToken)
     {
-        var blobClient = this.containerClient.GetBlobClient(
-            $"feeds/orders-{DateTime.UtcNow:yyyyMMdd}.csv");
-
-        await using var output = await blobClient.OpenWriteAsync( // write directly to the blob stream without buffering
-            overwrite: true,
-            new BlobOpenWriteOptions
-            {
-                HttpHeaders = new BlobHttpHeaders
-                {
-                    ContentType = ContentType.CSV.MimeType()
-                }
-            },
+        var path = $"feeds/orders-{DateTime.UtcNow:yyyyMMdd}.csv";
+        var openResult = await this.fileStorageProvider.OpenWriteFileAsync(
+            path,
+            useTemporaryWrite: false,
+            progress: null,
             cancellationToken);
+
+        if (openResult.IsFailure)
+        {
+            throw new InvalidOperationException(
+                $"Unable to open partner feed output '{path}': {string.Join("; ", openResult.Errors.Select(e => e.Message))}");
+        }
+
+        await using var output = openResult.Value; // write directly to the provider stream without buffering
 
         var result = await this.exporter.ExportAsync(
             this.repository.StreamPartnerOrdersAsync(cancellationToken), // stream directly from the repository without buffering
-            output, // stream directly into the blob storage without buffering
+            output, // stream directly into the storage provider without buffering
             new ExportOptions
             {
                 Format = Format.Csv,
@@ -1252,5 +1252,107 @@ What happens in this scenario:
 
 - the repository produces an `IAsyncEnumerable<Order>`
 - the exporter writes each row directly into the destination stream
-- the object store receives the feed incrementally as bytes are produced
+- the storage provider receives the feed incrementally as bytes are produced
 - peak memory usage stays bounded by the provider writer and stream buffers instead of the full export size
+
+### FileStorage Export/Import Roundtrip
+
+This scenario fits a simpler buffered workflow where the exported payload is materialized once, persisted through `IFileStorageProvider.WriteFileAsync(...)`, and later read back through `IFileStorageProvider.ReadFileAsync(...)` for import.
+
+```csharp
+using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Common;
+
+public sealed class OrderFeedRoundtripService
+{
+    private readonly IDataExporter exporter;
+    private readonly IDataImporter importer;
+    private readonly IFileStorageProvider fileStorageProvider;
+    private readonly OrderRepository repository;
+
+    public OrderFeedRoundtripService(
+        IDataExporter exporter,
+        IDataImporter importer,
+        IFileStorageProvider fileStorageProvider,
+        OrderRepository repository)
+    {
+        this.exporter = exporter;
+        this.importer = importer;
+        this.fileStorageProvider = fileStorageProvider;
+        this.repository = repository;
+    }
+
+    public async Task ExportThenImportAsync(CancellationToken cancellationToken)
+    {
+        const string path = "roundtrip/orders.csv";
+
+        await using (var buffer = new MemoryStream())
+        {
+            var exportResult = await this.exporter.ExportAsync(
+                this.repository.StreamPartnerOrdersAsync(cancellationToken),
+                buffer,
+                new ExportOptions
+                {
+                    Format = Format.Csv,
+                    UseAttributes = false
+                },
+                cancellationToken);
+
+            if (exportResult.IsFailure)
+            {
+                throw new InvalidOperationException(
+                    $"Export failed: {string.Join("; ", exportResult.Errors.Select(e => e.Message))}");
+            }
+
+            buffer.Position = 0;
+
+            var writeResult = await this.fileStorageProvider.WriteFileAsync(
+                path,
+                buffer,
+                progress: null,
+                cancellationToken);
+
+            if (writeResult.IsFailure)
+            {
+                throw new InvalidOperationException(
+                    $"Persisting export failed: {string.Join("; ", writeResult.Errors.Select(e => e.Message))}");
+            }
+        }
+
+        var readResult = await this.fileStorageProvider.ReadFileAsync(path, progress: null, cancellationToken);
+
+        if (readResult.IsFailure)
+        {
+            throw new InvalidOperationException(
+                $"Opening exported file failed: {string.Join("; ", readResult.Errors.Select(e => e.Message))}");
+        }
+
+        await using var input = readResult.Value;
+
+        await foreach (var row in this.importer.ImportAsyncEnumerable<Order>(
+            input,
+            new ImportOptions
+            {
+                Format = Format.Csv,
+                UseAttributes = false
+            },
+            cancellationToken))
+        {
+            if (row.IsFailure)
+            {
+                throw new InvalidOperationException(
+                    $"Import failed: {string.Join("; ", row.Errors.Select(e => e.Message))}");
+            }
+
+            await this.repository.UpsertAsync(row.Value, cancellationToken);
+        }
+    }
+}
+```
+
+What happens in this scenario:
+
+- the exporter writes the feed into an intermediate `MemoryStream`
+- `WriteFileAsync(...)` persists that buffered content through the storage abstraction
+- `ReadFileAsync(...)` opens the persisted file again as a regular readable stream
+- the importer consumes that stream row by row for the roundtrip back into the repository

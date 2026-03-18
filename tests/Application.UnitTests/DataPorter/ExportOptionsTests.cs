@@ -57,6 +57,38 @@ public class ExportOptionsTests
         sut.Compression.CompressionLevel.ShouldBe(CompressionLevel.Fastest);
         sut.ProviderOptions["key"].ShouldBe("value");
     }
+
+    [Fact]
+    public void ExportOptionsBuilder_WithFluentConfiguration_BuildsExpectedOptions()
+    {
+        // Arrange
+        var progress = new TestProgress<ExportProgressReport>();
+
+        // Act
+        var sut = new ExportOptionsBuilder()
+            .AsCsv()
+            .WithProfileName("ExportProfile")
+            .UseAttributes(false)
+            .WithCulture(new System.Globalization.CultureInfo("nl-NL"))
+            .WithSheetName("Orders")
+            .IncludeHeaders(false)
+            .WithProgress(progress)
+            .WithZipCompression("orders.csv")
+            .WithProviderOption("strict", true)
+            .Build();
+
+        // Assert
+        sut.Format.ShouldBe(Format.Csv);
+        sut.ProfileName.ShouldBe("ExportProfile");
+        sut.UseAttributes.ShouldBeFalse();
+        sut.Culture.Name.ShouldBe("nl-NL");
+        sut.SheetName.ShouldBe("Orders");
+        sut.IncludeHeaders.ShouldBeFalse();
+        sut.Progress.ShouldBe(progress);
+        sut.Compression.Kind.ShouldBe(PayloadCompressionKind.Zip);
+        sut.Compression.ZipEntryName.ShouldBe("orders.csv");
+        sut.ProviderOptions["strict"].ShouldBe(true);
+    }
 }
 
 [UnitTest("Common")]
@@ -116,6 +148,46 @@ public class ImportOptionsTests
         sut.Progress.ShouldNotBeNull();
         sut.Compression.Kind.ShouldBe(PayloadCompressionKind.Zip);
         sut.Compression.ZipEntryName.ShouldBe("payload.json");
+        sut.ProviderOptions["strict"].ShouldBe(true);
+    }
+
+    [Fact]
+    public void ImportOptionsBuilder_WithFluentConfiguration_BuildsExpectedOptions()
+    {
+        // Arrange
+        var progress = new TestProgress<ImportProgressReport>();
+
+        // Act
+        var sut = new ImportOptionsBuilder()
+            .AsJson()
+            .WithProfileName("ImportProfile")
+            .UseAttributes(false)
+            .WithCulture(new System.Globalization.CultureInfo("fr-FR"))
+            .WithSheetName("Orders")
+            .WithSheetIndex(1)
+            .WithHeaderRowIndex(2)
+            .WithSkipRows(3)
+            .WithValidationBehavior(ImportValidationBehavior.StopImport)
+            .WithMaxErrors(7)
+            .WithProgress(progress)
+            .WithGZipCompression(CompressionLevel.Fastest)
+            .WithProviderOption("strict", true)
+            .Build();
+
+        // Assert
+        sut.Format.ShouldBe(Format.Json);
+        sut.ProfileName.ShouldBe("ImportProfile");
+        sut.UseAttributes.ShouldBeFalse();
+        sut.Culture.Name.ShouldBe("fr-FR");
+        sut.SheetName.ShouldBe("Orders");
+        sut.SheetIndex.ShouldBe(1);
+        sut.HeaderRowIndex.ShouldBe(2);
+        sut.SkipRows.ShouldBe(3);
+        sut.ValidationBehavior.ShouldBe(ImportValidationBehavior.StopImport);
+        sut.MaxErrors.ShouldBe(7);
+        sut.Progress.ShouldBe(progress);
+        sut.Compression.Kind.ShouldBe(PayloadCompressionKind.GZip);
+        sut.Compression.CompressionLevel.ShouldBe(CompressionLevel.Fastest);
         sut.ProviderOptions["strict"].ShouldBe(true);
     }
 }

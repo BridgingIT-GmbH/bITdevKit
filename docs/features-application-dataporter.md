@@ -39,6 +39,8 @@ services.AddDataPorter(configuration)
     .AddProvider<EdiX12DataPorterProvider>();
 ```
 
+For import and export calls, DataPorter supports both the regular options objects and a fluent builder lambda. The examples below prefer the fluent builder syntax.
+
 ### Basic Export
 
 ```csharp
@@ -53,14 +55,14 @@ public class MyService
 
     public async Task ExportOrdersAsync(IEnumerable<Order> orders, Stream output)
     {
-        var result = await this.exporter.ExportAsync(orders, output, new ExportOptions
-        {
-            Format = Format.Excel,
-            Progress = new Progress<ExportProgressReport>(report =>
-            {
-                Console.WriteLine($"Exported {report.ProcessedRows} rows");
-            })
-        });
+        var result = await this.exporter.ExportAsync(
+            orders,
+            output,
+            o => o.AsExcel()
+                .WithProgress(report =>
+                {
+                    Console.WriteLine($"Exported {report.ProcessedRows} rows");
+                }));
 
         if (result.IsSuccess)
         {
@@ -75,15 +77,14 @@ public class MyService
 ```csharp
 public async Task<IEnumerable<Order>> ImportOrdersAsync(Stream input)
 {
-    var result = await this.importer.ImportAsync<Order>(input, new ImportOptions
-    {
-        Format = Format.Csv,
-        Culture = new CultureInfo("de-DE"),
-        Progress = new Progress<ImportProgressReport>(report =>
-        {
-            Console.WriteLine($"Processed {report.ProcessedRows} rows");
-        })
-    });
+    var result = await this.importer.ImportAsync<Order>(
+        input,
+        o => o.AsCsv()
+            .WithCulture(new CultureInfo("de-DE"))
+            .WithProgress(report =>
+            {
+                Console.WriteLine($"Processed {report.ProcessedRows} rows");
+            }));
 
     if (result.IsSuccess && !result.Value.HasErrors)
     {
@@ -111,25 +112,24 @@ public async Task<IEnumerable<Order>> ImportOrdersAsync(Stream input)
 - Progress is reported when the operation starts, every 25 processed rows, and when the operation completes successfully
 
 ```csharp
-var exportOptions = new ExportOptions
-{
-    Format = Format.Json,
-    Progress = new Progress<ExportProgressReport>(report =>
-    {
-        Console.WriteLine(
-            $"Rows={report.ProcessedRows}, Bytes={report.BytesWritten}, Percent={report.PercentageComplete}");
-    })
-};
+await exporter.ExportAsync(
+    orders,
+    output,
+    o => o.AsJson()
+        .WithProgress(report =>
+        {
+            Console.WriteLine(
+                $"Rows={report.ProcessedRows}, Bytes={report.BytesWritten}, Percent={report.PercentageComplete}");
+        }));
 
-var importOptions = new ImportOptions
-{
-    Format = Format.Csv,
-    Progress = new Progress<ImportProgressReport>(report =>
-    {
-        Console.WriteLine(
-            $"Processed={report.ProcessedRows}, Success={report.SuccessfulRows}, Errors={report.ErrorCount}");
-    })
-};
+await importer.ImportAsync<Order>(
+    input,
+    o => o.AsCsv()
+        .WithProgress(report =>
+        {
+            Console.WriteLine(
+                $"Processed={report.ProcessedRows}, Success={report.SuccessfulRows}, Errors={report.ErrorCount}");
+        }));
 ```
 
 For true streaming operations, `TotalRows` and `PercentageComplete` can remain `null` until the final completion report because the total row count is not always known up front.
@@ -146,27 +146,12 @@ For true streaming operations, `TotalRows` and `PercentageComplete` can remain `
 var exportResult = await exporter.ExportAsync(
     orders,
     output,
-    new ExportOptions
-    {
-        Format = Format.Csv,
-        Compression = new PayloadCompressionOptions
-        {
-            Kind = PayloadCompressionKind.GZip
-        }
-    },
+    o => o.AsCsv().WithGZipCompression(),
     cancellationToken);
 
 var importResult = await importer.ImportAsync<Order>(
     input,
-    new ImportOptions
-    {
-        Format = Format.Csv,
-        Compression = new PayloadCompressionOptions
-        {
-            Kind = PayloadCompressionKind.Zip,
-            ZipEntryName = "orders.csv"
-        }
-    },
+    o => o.AsCsv().WithZipCompression("orders.csv"),
     cancellationToken);
 ```
 
@@ -270,10 +255,7 @@ services.AddDataPorter()
 var exportResult = await exporter.ExportAsync(
     orders,
     output,
-    new ExportOptions
-    {
-        Format = MyFormats.EdiX12
-    });
+    o => o.As(MyFormats.EdiX12));
 ```
 
 When ZIP packaging is enabled, DataPorter derives the default payload entry name from the selected provider's first supported extension. A custom provider with `[".edi"]` therefore produces `export.edi` inside the archive unless `ZipEntryName` is set explicitly.
@@ -316,13 +298,12 @@ Both `ExportResult` and `ImportResult<T>` expose `SkippedRows` and `Warnings`, a
 - `SkipRows` skips rows after the configured header row, not before it.
 
 ```csharp
-var result = await importer.ImportAsync<Order>(input, new ImportOptions
-{
-    Format = Format.Csv,
-    Culture = new CultureInfo("de-DE"),
-    HeaderRowIndex = 1, // row 0 contains a title/preamble
-    SkipRows = 0
-});
+var result = await importer.ImportAsync<Order>(
+    input,
+    o => o.AsCsv()
+        .WithCulture(new CultureInfo("de-DE"))
+        .WithHeaderRowIndex(1) // row 0 contains a title/preamble
+        .WithSkipRows(0));
 ```
 
 Example CSV with a preamble row:
@@ -731,10 +712,7 @@ The PDF provider now uses a platform-aware font resolver so exports can work on 
 For large files or export sources produced asynchronously, use the async APIs to process items incrementally:
 
 ```csharp
-await exporter.ExportAsync(GetOrdersAsync(), stream, new ExportOptions
-{
-    Format = Format.Xml
-});
+await exporter.ExportAsync(GetOrdersAsync(), stream, o => o.AsXml());
 ```
 
 For import, async enumerables avoid loading every result into memory:
@@ -789,10 +767,7 @@ var dataSets = new[]
     ExportDataSet.Create(customers, "Customers")
 };
 
-await exporter.ExportAsync(dataSets, stream, new ExportOptions
-{
-    Format = Format.Excel
-});
+await exporter.ExportAsync(dataSets, stream, o => o.AsExcel());
 ```
 
 Async multi-dataset export is also supported:
@@ -804,10 +779,7 @@ var dataSets = new[]
     AsyncExportDataSet.Create(GetProductsAsync(), "Products")
 };
 
-await exporter.ExportAsync(dataSets, stream, new ExportOptions
-{
-    Format = Format.Json
-});
+await exporter.ExportAsync(dataSets, stream, o => o.AsJson());
 ```
 
 ### Custom Value Converters
@@ -1214,11 +1186,7 @@ app.MapGet("/api/orders/export", async Task<IResult> (
     var result = await exporter.ExportAsync(
         repository.StreamOrdersAsync(cancellationToken),
         httpContext.Response.Body, // write directly in the response stream without buffering
-        new ExportOptions
-        {
-            Format = Format.Csv,
-            UseAttributes = false
-        },
+        o => o.AsCsv().UseAttributes(false),
         cancellationToken);
 
     if (result.IsFailure)
@@ -1267,11 +1235,7 @@ app.MapPost("/api/orders/import", async Task<IResult> (
 
     await foreach (var row in importer.ImportAsyncEnumerable<Order>(
         request.Body, // read directly from the request stream without buffering
-        new ImportOptions
-        {
-            Format = Format.Csv,
-            UseAttributes = false
-        },
+        o => o.AsCsv().UseAttributes(false),
         cancellationToken))
     {
         if (row.IsSuccess)
@@ -1376,11 +1340,7 @@ public sealed class PartnerOrderImportWorker : BackgroundService
 
             await foreach (var row in this.importer.ImportAsyncEnumerable<Order>(
                 input, // read directly from the file stream without buffering
-                new ImportOptions
-                {
-                    Format = Format.CsvTyped,
-                    ValidationBehavior = ImportValidationBehavior.CollectErrors
-                },
+                o => o.AsCsvTyped().WithValidationBehavior(ImportValidationBehavior.CollectErrors),
                 stoppingToken))
             {
                 if (row.IsSuccess)
@@ -1453,11 +1413,7 @@ public sealed class PartnerFeedJob
         var result = await this.exporter.ExportAsync(
             this.repository.StreamPartnerOrdersAsync(cancellationToken), // stream directly from the repository without buffering
             output, // stream directly into the storage provider without buffering
-            new ExportOptions
-            {
-                Format = Format.Csv,
-                UseAttributes = false
-            },
+            o => o.AsCsv().UseAttributes(false),
             cancellationToken);
 
         if (result.IsFailure)
@@ -1512,11 +1468,7 @@ public sealed class OrderFeedRoundtripService
             var exportResult = await this.exporter.ExportAsync(
                 this.repository.StreamPartnerOrdersAsync(cancellationToken),
                 buffer,
-                new ExportOptions
-                {
-                    Format = Format.Csv,
-                    UseAttributes = false
-                },
+                o => o.AsCsv().UseAttributes(false),
                 cancellationToken);
 
             if (exportResult.IsFailure)
@@ -1552,11 +1504,7 @@ public sealed class OrderFeedRoundtripService
 
         await foreach (var row in this.importer.ImportAsyncEnumerable<Order>(
             input,
-            new ImportOptions
-            {
-                Format = Format.Csv,
-                UseAttributes = false
-            },
+            o => o.AsCsv().UseAttributes(false),
             cancellationToken))
         {
             if (row.IsFailure)

@@ -169,6 +169,22 @@ public class DataPorterServiceImportTests
     }
 
     [Fact]
+    public async Task ImportFromBytesAsync_WithBuilderOptions_ForwardsBuiltOptions()
+    {
+        // Arrange
+        IDataImporter sut = new DataPorterService([new CsvDataPorterProvider()], this.configurationMerger);
+        var data = Encoding.UTF8.GetBytes("Id,Name\r\n1,Test\r\n");
+
+        // Act
+        var result = await sut.ImportAsync<SimpleEntity>(data, o => o.AsCsv().WithMaxErrors(5));
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Data.Count.ShouldBe(1);
+        result.Value.Data[0].Name.ShouldBe("Test");
+    }
+
+    [Fact]
     public async Task ImportFromBytesAsync_WithGZipCompression_ReadsCompressedBytes()
     {
         // Arrange

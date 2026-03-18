@@ -124,6 +124,17 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
+    public Task<Result<ExportResult>> ExportAsync<TSource>(
+        IEnumerable<TSource> data,
+        Stream outputStream,
+        Builder<ExportOptionsBuilder, ExportOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        return this.ExportAsync(data, outputStream, Build(optionsBuilder), cancellationToken);
+    }
+
+    /// <inheritdoc/>
     public async Task<Result<ExportResult>> ExportAsync<TSource>(
         IAsyncEnumerable<TSource> data,
         Stream outputStream,
@@ -216,6 +227,17 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
+    public Task<Result<ExportResult>> ExportAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        Stream outputStream,
+        Builder<ExportOptionsBuilder, ExportOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        return this.ExportAsync(data, outputStream, Build(optionsBuilder), cancellationToken);
+    }
+
+    /// <inheritdoc/>
     public async Task<Result<byte[]>> ExportToBytesAsync<TSource>(
         IEnumerable<TSource> data,
         ExportOptions options = null,
@@ -236,6 +258,16 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
+    public Task<Result<byte[]>> ExportToBytesAsync<TSource>(
+        IEnumerable<TSource> data,
+        Builder<ExportOptionsBuilder, ExportOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        return this.ExportToBytesAsync(data, Build(optionsBuilder), cancellationToken);
+    }
+
+    /// <inheritdoc/>
     public async Task<Result<byte[]>> ExportToBytesAsync<TSource>(
         IAsyncEnumerable<TSource> data,
         ExportOptions options = null,
@@ -253,6 +285,16 @@ public sealed class DataPorterService(
         }
 
         return Result<byte[]>.Success(stream.ToArray());
+    }
+
+    /// <inheritdoc/>
+    public Task<Result<byte[]>> ExportToBytesAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        Builder<ExportOptionsBuilder, ExportOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        return this.ExportToBytesAsync(data, Build(optionsBuilder), cancellationToken);
     }
 
     // /// <inheritdoc/>
@@ -363,6 +405,16 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
+    public Task<Result<ExportResult>> ExportAsync(
+        IEnumerable<ExportDataSet> dataSets,
+        Stream outputStream,
+        Builder<ExportOptionsBuilder, ExportOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+    {
+        return this.ExportAsync(dataSets, outputStream, Build(optionsBuilder), cancellationToken);
+    }
+
+    /// <inheritdoc/>
     public async Task<Result<ExportResult>> ExportAsync(
         IEnumerable<AsyncExportDataSet> dataSets,
         Stream outputStream,
@@ -458,6 +510,16 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
+    public Task<Result<ExportResult>> ExportAsync(
+        IEnumerable<AsyncExportDataSet> dataSets,
+        Stream outputStream,
+        Builder<ExportOptionsBuilder, ExportOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+    {
+        return this.ExportAsync(dataSets, outputStream, Build(optionsBuilder), cancellationToken);
+    }
+
+    /// <inheritdoc/>
     public async Task<Result<ImportResult<TTarget>>> ImportAsync<TTarget>(
         Stream inputStream,
         ImportOptions options = null,
@@ -536,6 +598,16 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
+    public Task<Result<ImportResult<TTarget>>> ImportAsync<TTarget>(
+        Stream inputStream,
+        Builder<ImportOptionsBuilder, ImportOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        return this.ImportAsync<TTarget>(inputStream, Build(optionsBuilder), cancellationToken);
+    }
+
+    /// <inheritdoc/>
     public async Task<Result<ImportResult<TTarget>>> ImportAsync<TTarget>(
         byte[] data,
         ImportOptions options = null,
@@ -550,6 +622,16 @@ public sealed class DataPorterService(
 
         await using var stream = new MemoryStream(data);
         return await this.ImportAsync<TTarget>(stream, options, cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public Task<Result<ImportResult<TTarget>>> ImportAsync<TTarget>(
+        byte[] data,
+        Builder<ImportOptionsBuilder, ImportOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        return this.ImportAsync<TTarget>(data, Build(optionsBuilder), cancellationToken);
     }
 
     /// <inheritdoc/>
@@ -645,6 +727,16 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
+    public IAsyncEnumerable<Result<TTarget>> ImportAsyncEnumerable<TTarget>(
+        Stream inputStream,
+        Builder<ImportOptionsBuilder, ImportOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        return this.ImportAsyncEnumerable<TTarget>(inputStream, Build(optionsBuilder), cancellationToken);
+    }
+
+    /// <inheritdoc/>
     public async Task<Result<ValidationResult>> ValidateAsync<TTarget>(
         Stream inputStream,
         ImportOptions options = null,
@@ -699,6 +791,16 @@ public sealed class DataPorterService(
             return Result<ValidationResult>.Failure()
                 .WithError(new ImportValidationError($"Validation failed: {ex.Message}"));
         }
+    }
+
+    /// <inheritdoc/>
+    public Task<Result<ValidationResult>> ValidateAsync<TTarget>(
+        Stream inputStream,
+        Builder<ImportOptionsBuilder, ImportOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        return this.ValidateAsync<TTarget>(inputStream, Build(optionsBuilder), cancellationToken);
     }
 
     private Result<IDataPorterProvider> GetProvider(
@@ -822,6 +924,16 @@ public sealed class DataPorterService(
         var entryName = string.IsNullOrWhiteSpace(compression.ZipEntryName) ? "<single-entry>" : compression.ZipEntryName;
         this.logger.LogDebug("{LogKey} payload compression selected (operation={Operation}, compression={Compression}, zipEntryName={ZipEntryName}, format={Format})", Constants.LogKeyImport, "import", compression.Kind, entryName, format);
         return CompressionHelper.OpenZipEntryReadStream(inputStream, compression.ZipEntryName, leaveOpen: true);
+    }
+
+    private static ExportOptions Build(Builder<ExportOptionsBuilder, ExportOptions> optionsBuilder)
+    {
+        return optionsBuilder is null ? null : optionsBuilder(new ExportOptionsBuilder()).Build();
+    }
+
+    private static ImportOptions Build(Builder<ImportOptionsBuilder, ImportOptions> optionsBuilder)
+    {
+        return optionsBuilder is null ? null : optionsBuilder(new ImportOptionsBuilder()).Build();
     }
 
     private static string GetDefaultZipEntryName(IDataPorterProvider provider)

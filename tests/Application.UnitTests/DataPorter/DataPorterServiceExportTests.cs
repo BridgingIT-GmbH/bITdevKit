@@ -185,6 +185,21 @@ public class DataPorterServiceExportTests
     }
 
     [Fact]
+    public async Task ExportToBytesAsync_WithBuilderOptions_ForwardsBuiltOptions()
+    {
+        // Arrange
+        IDataExporter sut = new DataPorterService([new CsvDataPorterProvider()], this.configurationMerger);
+        var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
+
+        // Act
+        var result = await sut.ExportToBytesAsync(data, o => o.AsCsv().WithGZipCompression());
+
+        // Assert
+        result.ShouldBeSuccess();
+        CompressionHelper.IsCompressed(result.Value).ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task ExportToBytesAsync_WithGZipCompression_ReturnsCompressedBytes()
     {
         // Arrange

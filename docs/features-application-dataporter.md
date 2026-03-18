@@ -221,6 +221,32 @@ public sealed class NormalizeCustomerNameInterceptor : IImportRowInterceptor<Ord
 }
 ```
 
+A very common import scenario is to process and store rows directly while they are being imported. `IImportRowInterceptor<T>` can be used for that too:
+
+```csharp
+services.AddDataPorter()
+    .AddImportRowInterceptor<StoreOrderImportInterceptor>();
+
+public sealed class StoreOrderImportInterceptor(IOrderRepository repository) : IImportRowInterceptor<Order>
+{
+    public async Task<RowInterceptionDecision> BeforeImportAsync(
+        ImportRowContext<Order> context,
+        CancellationToken cancellationToken = default)
+    {
+        await repository.UpsertAsync(context.Item, cancellationToken);
+        return RowInterceptionDecision.Continue();
+    }
+}
+```
+
+This pattern works especially well with `ImportAsyncEnumerable(...)` for large uploads:
+
+- DataPorter parses and maps one row into a typed item
+- the interceptor can persist that item immediately
+- the import continues with the next row without requiring the whole file to be held in memory
+
+If database persistence fails for a row, the interceptor can either return `Skip(...)` or `Abort(...)`, depending on whether the import should continue or stop.
+
 Both `ExportResult` and `ImportResult<T>` expose `SkippedRows` and `Warnings`, and the progress reports also include the current skipped-row count.
 
 ### Import Options

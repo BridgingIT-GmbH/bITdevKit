@@ -260,7 +260,10 @@ public class DataPorterServiceRowInterceptionTests
 
         // Assert
         result.Outcome.ShouldBe(RowInterceptionOutcome.Skip);
-        logger.Messages.ShouldContain(entry => entry.Level == LogLevel.Warning && entry.Message.Contains("skipped row 2", StringComparison.OrdinalIgnoreCase));
+        logger.Messages.ShouldContain(entry =>
+            entry.Level == LogLevel.Warning &&
+            entry.Message.Contains("row interceptor skipped", StringComparison.OrdinalIgnoreCase) &&
+            entry.Message.Contains("rowNumber=2", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -276,7 +279,10 @@ public class DataPorterServiceRowInterceptionTests
 
         // Assert
         result.Outcome.ShouldBe(RowInterceptionOutcome.Abort);
-        logger.Messages.ShouldContain(entry => entry.Level == LogLevel.Warning && entry.Message.Contains("aborted row 3", StringComparison.OrdinalIgnoreCase));
+        logger.Messages.ShouldContain(entry =>
+            entry.Level == LogLevel.Warning &&
+            entry.Message.Contains("row interceptor aborted", StringComparison.OrdinalIgnoreCase) &&
+            entry.Message.Contains("rowNumber=3", StringComparison.OrdinalIgnoreCase));
     }
 
     private sealed class TestRowInterceptorsProvider : IRowInterceptorsProvider

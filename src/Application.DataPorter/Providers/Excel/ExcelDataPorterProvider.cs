@@ -197,7 +197,7 @@ public sealed class ExcelDataPorterProvider(
             }
             catch (Exception ex)
             {
-                this.logger.LogWarning(ex, "Failed to create table formatting, continuing without it");
+                this.logger.LogWarning(ex, "{LogKey} table formatting skipped (format={Format}, tableStyle={TableStyle}, reason={Reason})", Constants.LogKeyExport, this.Format, this.configuration.DefaultTableStyleName, ex.Message);
             }
         }
 

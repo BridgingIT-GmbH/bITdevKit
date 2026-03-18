@@ -371,7 +371,7 @@ public sealed class PdfDataPorterProvider(
             }
             catch (Exception ex)
             {
-                this.logger.LogDebug(ex, "Could not initialize PDFsharp font resolution.");
+                this.logger.LogWarning(ex, "{LogKey} pdf font resolution initialization failed (format={Format}, reason={Reason})", Constants.LogKeyExport, this.Format, ex.Message);
             }
         }
     }

@@ -50,6 +50,11 @@ public sealed class ExportConfiguration
     /// </summary>
     public IProgress<ExportProgressReport> Progress { get; set; }
 
+    /// <summary>
+    /// Gets or sets the payload compression or packaging settings.
+    /// </summary>
+    public PayloadCompressionOptions Compression { get; set; } = PayloadCompressionOptions.None;
+
     internal ExportProgressTracker ProgressTracker { get; set; }
     internal object RowInterceptionExecutor { get; set; }
 }

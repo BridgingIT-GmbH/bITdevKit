@@ -24,6 +24,15 @@ public class DataPorterServiceRoundtripTests
         { new XmlDataPorterProvider(), Format.Xml }
     };
 
+    public static TheoryData<IDataPorterProvider, Format, PayloadCompressionKind> CompressedRoundtripProviders => new()
+    {
+        { new CsvDataPorterProvider(), Format.Csv, PayloadCompressionKind.GZip },
+        { new JsonDataPorterProvider(), Format.Json, PayloadCompressionKind.GZip },
+        { new XmlDataPorterProvider(), Format.Xml, PayloadCompressionKind.GZip },
+        { new CsvDataPorterProvider(), Format.Csv, PayloadCompressionKind.Zip },
+        { new JsonDataPorterProvider(), Format.Json, PayloadCompressionKind.Zip }
+    };
+
     private readonly ProfileRegistry profileRegistry;
     private readonly AttributeConfigurationReader attributeReader;
     private readonly ConfigurationMerger configurationMerger;
@@ -65,6 +74,34 @@ public class DataPorterServiceRoundtripTests
         this.output.WriteLine("Imported data:");
         this.output.WriteLine(importResult.Value.Data.DumpText());
 
+        AssertPersons([.. importResult.Value.Data], data);
+    }
+
+    [Theory]
+    [MemberData(nameof(CompressedRoundtripProviders))]
+    public async Task ExportAndImportAsync_WithCompressedPayload_RoundTripsAggregateRootEntity(
+        IDataPorterProvider provider,
+        Format format,
+        PayloadCompressionKind compressionKind)
+    {
+        // Arrange
+        var sut = new DataPorterService([provider], this.configurationMerger);
+        var data = CreatePersons();
+        await using var stream = new MemoryStream();
+        var compression = new PayloadCompressionOptions { Kind = compressionKind };
+        var exportOptions = new ExportOptions { Format = format, UseAttributes = false, Compression = compression };
+        var importOptions = new ImportOptions { Format = format, UseAttributes = false, Compression = compression };
+
+        // Act
+        var exportResult = await sut.ExportAsync(data, stream, exportOptions);
+        stream.Position = 0;
+        var importResult = await sut.ImportAsync<PersonEntity>(stream, importOptions);
+
+        // Assert
+        exportResult.ShouldBeSuccess();
+        exportResult.Value.BytesWritten.ShouldBeGreaterThan(0);
+        importResult.ShouldBeSuccess();
+        importResult.Value.Data.Count.ShouldBe(data.Length);
         AssertPersons([.. importResult.Value.Data], data);
     }
 

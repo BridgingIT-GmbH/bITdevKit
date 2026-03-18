@@ -62,6 +62,7 @@ public sealed class ConfigurationMerger(
         config.Culture = options.Culture;
         config.IncludeHeaders = options.IncludeHeaders;
         config.Progress = options.Progress;
+        config.Compression = options.Compression ?? PayloadCompressionOptions.None;
 
         return config;
     }
@@ -118,6 +119,7 @@ public sealed class ConfigurationMerger(
         config.MaxErrors = options.MaxErrors;
         config.Culture = options.Culture;
         config.Progress = options.Progress;
+        config.Compression = options.Compression ?? PayloadCompressionOptions.None;
 
         return config;
     }
@@ -233,7 +235,8 @@ public sealed class ConfigurationMerger(
             FooterRows = [.. source.FooterRows.Select(this.CloneFooterRowConfiguration)],
             Culture = source.Culture,
             IncludeHeaders = source.IncludeHeaders,
-            Progress = source.Progress
+            Progress = source.Progress,
+            Compression = source.Compression
         };
     }
 
@@ -250,7 +253,8 @@ public sealed class ConfigurationMerger(
             ValidationBehavior = source.ValidationBehavior,
             MaxErrors = source.MaxErrors,
             Culture = source.Culture,
-            Progress = source.Progress
+            Progress = source.Progress,
+            Compression = source.Compression
         };
     }
 

@@ -185,6 +185,27 @@ public class DataPorterServiceExportTests
     }
 
     [Fact]
+    public async Task ExportToBytesAsync_WithGZipCompression_ReturnsCompressedBytes()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvDataPorterProvider()], this.configurationMerger);
+        var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
+
+        // Act
+        var result = await sut.ExportToBytesAsync(data, new ExportOptions
+        {
+            Format = Format.Csv,
+            Compression = new PayloadCompressionOptions { Kind = PayloadCompressionKind.GZip }
+        });
+
+        // Assert
+        result.ShouldBeSuccess();
+        CompressionHelper.IsCompressed(result.Value).ShouldBeTrue();
+        var decompressed = await CompressionHelper.DecompressAsync(result.Value);
+        Encoding.UTF8.GetString(decompressed).ShouldContain("Test");
+    }
+
+    [Fact]
     public async Task ExportToBytesAsync_WithProgress_ForwardsProgressReports()
     {
         // Arrange

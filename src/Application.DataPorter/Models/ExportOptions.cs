@@ -46,6 +46,11 @@ public sealed record ExportOptions
     public IProgress<ExportProgressReport> Progress { get; init; }
 
     /// <summary>
+    /// Gets or sets the payload compression or packaging settings.
+    /// </summary>
+    public PayloadCompressionOptions Compression { get; init; } = PayloadCompressionOptions.None;
+
+    /// <summary>
     /// Gets or sets provider-specific options.
     /// </summary>
     public IReadOnlyDictionary<string, object> ProviderOptions { get; init; } = new Dictionary<string, object>();

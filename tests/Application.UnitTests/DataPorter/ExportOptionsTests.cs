@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
 using BridgingIT.DevKit.Application.DataPorter;
+using System.IO.Compression;
 
 [UnitTest("Common")]
 public class ExportOptionsTests
@@ -22,6 +23,7 @@ public class ExportOptionsTests
         sut.IncludeHeaders.ShouldBeTrue();
         sut.Culture.ShouldBe(System.Globalization.CultureInfo.InvariantCulture);
         sut.Progress.ShouldBeNull();
+        sut.Compression.ShouldBe(PayloadCompressionOptions.None);
         sut.ProviderOptions.ShouldNotBeNull();
         sut.ProviderOptions.ShouldBeEmpty();
     }
@@ -39,6 +41,7 @@ public class ExportOptionsTests
             SheetName = "Custom Sheet",
             IncludeHeaders = false,
             Progress = new TestProgress<ExportProgressReport>(),
+            Compression = new PayloadCompressionOptions { Kind = PayloadCompressionKind.GZip, CompressionLevel = CompressionLevel.Fastest },
             ProviderOptions = new Dictionary<string, object> { { "key", "value" } }
         };
 
@@ -50,6 +53,8 @@ public class ExportOptionsTests
         sut.SheetName.ShouldBe("Custom Sheet");
         sut.IncludeHeaders.ShouldBeFalse();
         sut.Progress.ShouldNotBeNull();
+        sut.Compression.Kind.ShouldBe(PayloadCompressionKind.GZip);
+        sut.Compression.CompressionLevel.ShouldBe(CompressionLevel.Fastest);
         sut.ProviderOptions["key"].ShouldBe("value");
     }
 }
@@ -71,6 +76,7 @@ public class ImportOptionsTests
         sut.ValidationBehavior.ShouldBe(ImportValidationBehavior.CollectErrors);
         sut.Culture.ShouldBe(System.Globalization.CultureInfo.InvariantCulture);
         sut.Progress.ShouldBeNull();
+        sut.Compression.ShouldBe(PayloadCompressionOptions.None);
         sut.ProviderOptions.ShouldNotBeNull();
         sut.ProviderOptions.ShouldBeEmpty();
     }
@@ -92,6 +98,7 @@ public class ImportOptionsTests
             ValidationBehavior = ImportValidationBehavior.StopImport,
             MaxErrors = 10,
             Progress = new TestProgress<ImportProgressReport>(),
+            Compression = new PayloadCompressionOptions { Kind = PayloadCompressionKind.Zip, ZipEntryName = "payload.json" },
             ProviderOptions = new Dictionary<string, object> { { "strict", true } }
         };
 
@@ -107,6 +114,8 @@ public class ImportOptionsTests
         sut.ValidationBehavior.ShouldBe(ImportValidationBehavior.StopImport);
         sut.MaxErrors.ShouldBe(10);
         sut.Progress.ShouldNotBeNull();
+        sut.Compression.Kind.ShouldBe(PayloadCompressionKind.Zip);
+        sut.Compression.ZipEntryName.ShouldBe("payload.json");
         sut.ProviderOptions["strict"].ShouldBe(true);
     }
 }

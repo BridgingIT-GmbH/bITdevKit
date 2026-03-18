@@ -56,6 +56,11 @@ public sealed class ImportConfiguration
     public IProgress<ImportProgressReport> Progress { get; set; }
 
     /// <summary>
+    /// Gets or sets the payload compression or packaging settings.
+    /// </summary>
+    public PayloadCompressionOptions Compression { get; set; } = PayloadCompressionOptions.None;
+
+    /// <summary>
     /// Gets or sets the factory function for creating target instances.
     /// </summary>
     public Func<object> Factory { get; set; }

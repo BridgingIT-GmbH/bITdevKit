@@ -9,6 +9,7 @@ using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Runtime.CompilerServices;
 
 /// <summary>
@@ -66,12 +67,13 @@ public sealed class DataPorterService(
             this.rowInterceptorsProvider.GetExportInterceptors<TSource>(),
             this.loggerFactory?.CreateLogger(typeof(ExportRowInterceptionExecutor<TSource>).FullName ?? typeof(ExportRowInterceptionExecutor<TSource>).Name));
         var provider = providerResult.Value;
-        this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, configuration={Configuration})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, configuration);
+        this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, configuration.Compression, configuration);
         this.logger.LogDebug("{LogKey} provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, provider.GetType().Name, "sync");
         this.LogSyncExportStart(data, options.Format, typeof(TSource));
         configuration.ProgressTracker?.ReportStart();
 
         var stopwatch = Stopwatch.StartNew();
+        var artifactStream = new WriteStreamWrapper(outputStream);
 
         try
         {
@@ -83,13 +85,18 @@ public sealed class DataPorterService(
                         this.providers.Where(p => p.SupportsExport).Select(p => p.Format.ToString())));
             }
 
-            var result = await exportProvider.ExportAsync(
-                data,
-                outputStream,
-                configuration,
-                cancellationToken);
+            ExportResult result;
+            await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configuration.Compression, options.Format))
+            {
+                result = await exportProvider.ExportAsync(
+                    data,
+                    compressedOutputStream ?? artifactStream,
+                    configuration,
+                    cancellationToken);
+            }
 
             stopwatch.Stop();
+            result = result with { BytesWritten = artifactStream.BytesWritten };
 
             this.logger.LogInformation("{LogKey} export finished (type={Type}, format={Format}, provider={Provider}, rowCount={RowCount}, skippedRows={SkippedRows}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, typeof(TSource).Name, options.Format, provider.GetType().Name, result.TotalRows, result.SkippedRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);
             configuration.ProgressTracker?.ReportCompleted(result with { Duration = stopwatch.Elapsed });
@@ -151,13 +158,14 @@ public sealed class DataPorterService(
             this.rowInterceptorsProvider.GetExportInterceptors<TSource>(),
             this.loggerFactory?.CreateLogger(typeof(ExportRowInterceptionExecutor<TSource>).FullName ?? typeof(ExportRowInterceptionExecutor<TSource>).Name));
         var provider = providerResult.Value;
-        this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, configuration={Configuration})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, configuration);
+        this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, configuration.Compression, configuration);
         this.logger.LogDebug("{LogKey} provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, provider.GetType().Name, "async");
 
         this.logger.LogDebug("{LogKey} export started (type={Type}, format={Format}, mode={Mode})", Constants.LogKeyExport, typeof(TSource).Name, options.Format, "async");
         configuration.ProgressTracker?.ReportStart();
 
         var stopwatch = Stopwatch.StartNew();
+        var artifactStream = new WriteStreamWrapper(outputStream);
 
         try
         {
@@ -169,13 +177,18 @@ public sealed class DataPorterService(
                         this.providers.Where(p => p.SupportsExport).Select(p => p.Format.ToString())));
             }
 
-            var result = await exportProvider.ExportAsync(
-                data,
-                outputStream,
-                configuration,
-                cancellationToken);
+            ExportResult result;
+            await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configuration.Compression, options.Format))
+            {
+                result = await exportProvider.ExportAsync(
+                    data,
+                    compressedOutputStream ?? artifactStream,
+                    configuration,
+                    cancellationToken);
+            }
 
             stopwatch.Stop();
+            result = result with { BytesWritten = artifactStream.BytesWritten };
 
             this.logger.LogInformation("{LogKey} export finished (type={Type}, format={Format}, provider={Provider}, rowCount={RowCount}, skippedRows={SkippedRows}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, typeof(TSource).Name, options.Format, provider.GetType().Name, result.TotalRows, result.SkippedRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);
             configuration.ProgressTracker?.ReportCompleted(result with { Duration = stopwatch.Elapsed });
@@ -280,6 +293,7 @@ public sealed class DataPorterService(
         var stopwatch = Stopwatch.StartNew();
         var progressTracker = options.Progress is null ? null : new ExportProgressTracker(options.Progress, options.Format);
         List<(IEnumerable<object> Data, ExportConfiguration Configuration)> configurations = null;
+        var artifactStream = new WriteStreamWrapper(outputStream);
 
         try
         {
@@ -297,7 +311,7 @@ public sealed class DataPorterService(
                 config.SheetName = ds.SheetName;
                 config.ProgressTracker = progressTracker;
                 config.RowInterceptionExecutor = this.CreateExportRowInterceptionExecutor(ds.ItemType);
-                this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, sheetName={SheetName}, configuration={Configuration})", Constants.LogKeyExport, "multi dataset export", ds.ItemType.Name, options.Format, config.SheetName, config);
+                this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, sheetName={SheetName}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "multi dataset export", ds.ItemType.Name, options.Format, config.SheetName, config.Compression, config);
                 return (ds.Data, config);
             }).ToList();
 
@@ -311,12 +325,17 @@ public sealed class DataPorterService(
             this.logger.LogDebug("{LogKey} multi dataset export started (format={Format}, provider={Provider}, dataSetCount={DataSetCount}, mode={Mode})", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations.Count, "sync");
             progressTracker?.ReportStart();
 
-            var result = await exportProvider.ExportAsync(
-                configurations,
-                outputStream,
-                cancellationToken);
+            ExportResult result;
+            await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configurations[0].Configuration.Compression, options.Format))
+            {
+                result = await exportProvider.ExportAsync(
+                    configurations,
+                    compressedOutputStream ?? artifactStream,
+                    cancellationToken);
+            }
 
             stopwatch.Stop();
+            result = result with { BytesWritten = artifactStream.BytesWritten };
             this.logger.LogInformation("{LogKey} multi dataset export finished (format={Format}, provider={Provider}, dataSetCount={DataSetCount}, rowCount={RowCount}, skippedRows={SkippedRows}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations.Count, result.TotalRows, result.SkippedRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);
             progressTracker?.ReportCompleted(result with { Duration = stopwatch.Elapsed });
 
@@ -369,6 +388,7 @@ public sealed class DataPorterService(
         var stopwatch = Stopwatch.StartNew();
         var progressTracker = options.Progress is null ? null : new ExportProgressTracker(options.Progress, options.Format);
         List<(IAsyncEnumerable<object> Data, ExportConfiguration Configuration)> configurations = null;
+        var artifactStream = new WriteStreamWrapper(outputStream);
 
         try
         {
@@ -386,7 +406,7 @@ public sealed class DataPorterService(
                 config.SheetName = ds.SheetName;
                 config.ProgressTracker = progressTracker;
                 config.RowInterceptionExecutor = this.CreateExportRowInterceptionExecutor(ds.ItemType);
-                this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, sheetName={SheetName}, configuration={Configuration})", Constants.LogKeyExport, "multi dataset export", ds.ItemType.Name, options.Format, config.SheetName, config);
+                this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, sheetName={SheetName}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "multi dataset export", ds.ItemType.Name, options.Format, config.SheetName, config.Compression, config);
                 return (ds.Data, config);
             }).ToList();
 
@@ -400,12 +420,17 @@ public sealed class DataPorterService(
             this.logger.LogDebug("{LogKey} multi dataset export started (format={Format}, provider={Provider}, dataSetCount={DataSetCount}, mode={Mode})", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations.Count, "async");
             progressTracker?.ReportStart();
 
-            var result = await exportProvider.ExportAsync(
-                configurations,
-                outputStream,
-                cancellationToken);
+            ExportResult result;
+            await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configurations[0].Configuration.Compression, options.Format))
+            {
+                result = await exportProvider.ExportAsync(
+                    configurations,
+                    compressedOutputStream ?? artifactStream,
+                    cancellationToken);
+            }
 
             stopwatch.Stop();
+            result = result with { BytesWritten = artifactStream.BytesWritten };
             this.logger.LogInformation("{LogKey} multi dataset export finished (format={Format}, provider={Provider}, dataSetCount={DataSetCount}, rowCount={RowCount}, skippedRows={SkippedRows}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations.Count, result.TotalRows, result.SkippedRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);
             progressTracker?.ReportCompleted(result with { Duration = stopwatch.Elapsed });
 
@@ -460,7 +485,7 @@ public sealed class DataPorterService(
             this.rowInterceptorsProvider.GetImportInterceptors<TTarget>(),
             this.loggerFactory?.CreateLogger(typeof(ImportRowInterceptionExecutor<TTarget>).FullName ?? typeof(ImportRowInterceptionExecutor<TTarget>).Name));
         var provider = providerResult.Value;
-        this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, configuration={Configuration})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, configuration);
+        this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, configuration.Compression, configuration);
         this.logger.LogDebug("{LogKey} provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, provider.GetType().Name, "aggregate");
 
         this.logger.LogDebug("{LogKey} import started (type={Type}, format={Format})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format);
@@ -477,7 +502,11 @@ public sealed class DataPorterService(
                         this.providers.Where(p => p.SupportsImport).Select(p => p.Format.ToString())));
             }
 
-            var result = await importProvider.ImportAsync<TTarget>(inputStream, configuration, cancellationToken);
+            ImportResult<TTarget> result;
+            await using (var decompressedInputStream = this.OpenCompressionReadStream(inputStream, configuration.Compression, options.Format))
+            {
+                result = await importProvider.ImportAsync<TTarget>(decompressedInputStream ?? inputStream, configuration, cancellationToken);
+            }
 
             stopwatch.Stop();
 
@@ -567,11 +596,12 @@ public sealed class DataPorterService(
             yield break;
         }
 
-        this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, configuration={Configuration})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, configuration);
+        this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, configuration.Compression, configuration);
         this.logger.LogDebug("{LogKey} provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, provider.GetType().Name, "streaming");
         this.logger.LogDebug("{LogKey} streaming import started (type={Type}, format={Format}, provider={Provider})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name);
         configuration.ProgressTracker?.ReportStart();
-        await using var enumerator = importProvider.ImportStreamAsync<TTarget>(inputStream, configuration, cancellationToken).GetAsyncEnumerator(cancellationToken);
+        await using var decompressedInputStream = this.OpenCompressionReadStream(inputStream, configuration.Compression, options.Format);
+        await using var enumerator = importProvider.ImportStreamAsync<TTarget>(decompressedInputStream ?? inputStream, configuration, cancellationToken).GetAsyncEnumerator(cancellationToken);
         while (true)
         {
             Result<TTarget> item;
@@ -650,10 +680,14 @@ public sealed class DataPorterService(
                         this.providers.Where(p => p.SupportsImport).Select(p => p.Format.ToString())));
             }
 
-            this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, configuration={Configuration})", Constants.LogKeyImport, "validation", typeof(TTarget).Name, options.Format, configuration);
+            this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyImport, "validation", typeof(TTarget).Name, options.Format, configuration.Compression, configuration);
             this.logger.LogDebug("{LogKey} provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyImport, "validation", typeof(TTarget).Name, options.Format, provider.GetType().Name, "aggregate");
             this.logger.LogDebug("{LogKey} validation started (type={Type}, format={Format}, provider={Provider})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name);
-            var result = await importProvider.ValidateAsync<TTarget>(inputStream, configuration, cancellationToken);
+            ValidationResult result;
+            await using (var decompressedInputStream = this.OpenCompressionReadStream(inputStream, configuration.Compression, options.Format))
+            {
+                result = await importProvider.ValidateAsync<TTarget>(decompressedInputStream ?? inputStream, configuration, cancellationToken);
+            }
             stopwatch.Stop();
             this.logger.LogInformation("{LogKey} validation finished (type={Type}, format={Format}, provider={Provider}, isValid={IsValid}, rowCount={RowCount}, validRows={ValidRows}, invalidRows={InvalidRows}, errorCount={ErrorCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name, result.IsValid, result.TotalRows, result.ValidRows, result.InvalidRows, result.Errors.Count, stopwatch.Elapsed.TotalMilliseconds);
 
@@ -746,5 +780,61 @@ public sealed class DataPorterService(
         var logger = this.loggerFactory?.CreateLogger(executorType.FullName ?? executorType.Name);
 
         return Activator.CreateInstance(executorType, interceptors, logger);
+    }
+
+    private Stream CreateCompressionWriteStream(Stream outputStream, PayloadCompressionOptions compression, Format format)
+    {
+        compression ??= PayloadCompressionOptions.None;
+
+        if (compression.Kind == PayloadCompressionKind.None)
+        {
+            return null;
+        }
+
+        var compressionLevel = compression.CompressionLevel ?? CompressionLevel.Optimal;
+
+        if (compression.Kind == PayloadCompressionKind.GZip)
+        {
+            this.logger.LogDebug("{LogKey} payload compression selected (operation={Operation}, compression={Compression}, compressionLevel={CompressionLevel})", Constants.LogKeyExport, "export", compression.Kind, compressionLevel);
+            return CompressionHelper.CreateGZipCompressionStream(outputStream, compressionLevel, leaveOpen: true);
+        }
+
+        var entryName = string.IsNullOrWhiteSpace(compression.ZipEntryName) ? GetDefaultZipEntryName(format) : compression.ZipEntryName;
+        this.logger.LogDebug("{LogKey} payload compression selected (operation={Operation}, compression={Compression}, compressionLevel={CompressionLevel}, zipEntryName={ZipEntryName})", Constants.LogKeyExport, "export", compression.Kind, compressionLevel, entryName);
+        return CompressionHelper.CreateZipEntryWriteStream(outputStream, entryName, compressionLevel, leaveOpen: true);
+    }
+
+    private Stream OpenCompressionReadStream(Stream inputStream, PayloadCompressionOptions compression, Format format)
+    {
+        compression ??= PayloadCompressionOptions.None;
+
+        if (compression.Kind == PayloadCompressionKind.None)
+        {
+            return null;
+        }
+
+        if (compression.Kind == PayloadCompressionKind.GZip)
+        {
+            this.logger.LogDebug("{LogKey} payload compression selected (operation={Operation}, compression={Compression})", Constants.LogKeyImport, "import", compression.Kind);
+            return CompressionHelper.CreateGZipDecompressionStream(inputStream, leaveOpen: true);
+        }
+
+        var entryName = string.IsNullOrWhiteSpace(compression.ZipEntryName) ? "<single-entry>" : compression.ZipEntryName;
+        this.logger.LogDebug("{LogKey} payload compression selected (operation={Operation}, compression={Compression}, zipEntryName={ZipEntryName}, format={Format})", Constants.LogKeyImport, "import", compression.Kind, entryName, format);
+        return CompressionHelper.OpenZipEntryReadStream(inputStream, compression.ZipEntryName, leaveOpen: true);
+    }
+
+    private static string GetDefaultZipEntryName(Format format)
+    {
+        return format switch
+        {
+            Format.Csv => "export.csv",
+            Format.CsvTyped => "export.csv",
+            Format.Json => "export.json",
+            Format.Xml => "export.xml",
+            Format.Excel => "export.xlsx",
+            Format.Pdf => "export.pdf",
+            _ => "export.dat"
+        };
     }
 }

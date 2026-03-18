@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
 using BridgingIT.DevKit.Application.DataPorter;
+using System.IO.Compression;
 
 [UnitTest("Common")]
 public class ConfigurationMergerTests
@@ -104,6 +105,25 @@ public class ConfigurationMergerTests
 
         // Assert
         result.Progress.ShouldBeSameAs(progress);
+    }
+
+    [Fact]
+    public void BuildExportConfiguration_WithCompression_SetsCompression()
+    {
+        // Arrange
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+        var options = new ExportOptions
+        {
+            Compression = new PayloadCompressionOptions { Kind = PayloadCompressionKind.Zip, CompressionLevel = CompressionLevel.Fastest, ZipEntryName = "payload.csv" }
+        };
+
+        // Act
+        var result = sut.BuildExportConfiguration<SimpleEntity>(options);
+
+        // Assert
+        result.Compression.Kind.ShouldBe(PayloadCompressionKind.Zip);
+        result.Compression.CompressionLevel.ShouldBe(CompressionLevel.Fastest);
+        result.Compression.ZipEntryName.ShouldBe("payload.csv");
     }
 
     [Fact]
@@ -263,6 +283,24 @@ public class ConfigurationMergerTests
 
         // Assert
         result.Progress.ShouldBeSameAs(progress);
+    }
+
+    [Fact]
+    public void BuildImportConfiguration_WithCompression_SetsCompression()
+    {
+        // Arrange
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+        var options = new ImportOptions
+        {
+            Compression = new PayloadCompressionOptions { Kind = PayloadCompressionKind.GZip, CompressionLevel = CompressionLevel.SmallestSize }
+        };
+
+        // Act
+        var result = sut.BuildImportConfiguration<SimpleEntity>(options);
+
+        // Assert
+        result.Compression.Kind.ShouldBe(PayloadCompressionKind.GZip);
+        result.Compression.CompressionLevel.ShouldBe(CompressionLevel.SmallestSize);
     }
 
     [Fact]

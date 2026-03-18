@@ -125,6 +125,50 @@ var importOptions = new ImportOptions
 
 For true streaming operations, `TotalRows` and `PercentageComplete` can remain `null` until the final completion report because the total row count is not always known up front.
 
+### Compression And Packaging
+
+`ExportOptions` and `ImportOptions` support explicit payload compression or packaging through `PayloadCompressionOptions`.
+
+- `PayloadCompressionKind.GZip` produces or consumes a compressed single payload stream such as `orders.csv.gz`
+- `PayloadCompressionKind.Zip` produces or consumes a single-entry ZIP archive such as `orders.zip`
+- `Format` still describes the inner payload format such as CSV, JSON, or XML
+
+```csharp
+var exportResult = await exporter.ExportAsync(
+    orders,
+    output,
+    new ExportOptions
+    {
+        Format = Format.Csv,
+        Compression = new PayloadCompressionOptions
+        {
+            Kind = PayloadCompressionKind.GZip
+        }
+    },
+    cancellationToken);
+
+var importResult = await importer.ImportAsync<Order>(
+    input,
+    new ImportOptions
+    {
+        Format = Format.Csv,
+        Compression = new PayloadCompressionOptions
+        {
+            Kind = PayloadCompressionKind.Zip,
+            ZipEntryName = "orders.csv"
+        }
+    },
+    cancellationToken);
+```
+
+For ZIP packaging, DataPorter currently supports one payload entry per archive.
+
+HTTP transport compression is a separate concern:
+
+- for normal HTTP APIs, use response/request compression middleware with `Content-Encoding: gzip`
+- in that mode, DataPorter still reads and writes the plain CSV/JSON/XML stream
+- use DataPorter compression only when the artifact itself should be downloadable or uploadable as `.gz` or `.zip`
+
 ### Row Interceptors
 
 `ExportOptions` and `ImportOptions` can flow through typed row interceptors that are resolved from dependency injection.

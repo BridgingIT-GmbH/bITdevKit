@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
 using System.Text;
 using System.Globalization;
+using System.IO.Compression;
 using BridgingIT.DevKit.Application.DataPorter;
 using ClosedXML.Excel;
 
@@ -159,6 +160,65 @@ public class DataPorterServiceImportTests
 
         // Assert
         result.ShouldBeSuccess();
+    }
+
+    [Fact]
+    public async Task ImportFromBytesAsync_WithGZipCompression_ReadsCompressedBytes()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvDataPorterProvider()], this.configurationMerger);
+        var csvBytes = Encoding.UTF8.GetBytes("Id,Name\r\n1,Test\r\n");
+        var compressedBytes = await CompressionHelper.CompressAsync(csvBytes);
+
+        // Act
+        var result = await sut.ImportAsync<SimpleEntity>(compressedBytes, new ImportOptions
+        {
+            Format = Format.Csv,
+            Compression = new PayloadCompressionOptions { Kind = PayloadCompressionKind.GZip }
+        });
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Data.Count.ShouldBe(1);
+        result.Value.Data[0].Name.ShouldBe("Test");
+    }
+
+    [Fact]
+    public async Task ImportFromBytesAsync_WithZipCompression_ReadsCompressedBytes()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvDataPorterProvider()], this.configurationMerger);
+        var archiveBytes = await CreateZipBytesAsync("payload.csv", "Id,Name\r\n1,Test\r\n");
+
+        // Act
+        var result = await sut.ImportAsync<SimpleEntity>(archiveBytes, new ImportOptions
+        {
+            Format = Format.Csv,
+            Compression = new PayloadCompressionOptions { Kind = PayloadCompressionKind.Zip, ZipEntryName = "payload.csv" }
+        });
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Data.Count.ShouldBe(1);
+        result.Value.Data[0].Name.ShouldBe("Test");
+    }
+
+    [Fact]
+    public async Task ImportFromBytesAsync_WithWrongCompression_ReturnsFailure()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvDataPorterProvider()], this.configurationMerger);
+        var csvBytes = Encoding.UTF8.GetBytes("Id,Name\r\n1,Test\r\n");
+
+        // Act
+        var result = await sut.ImportAsync<SimpleEntity>(csvBytes, new ImportOptions
+        {
+            Format = Format.Csv,
+            Compression = new PayloadCompressionOptions { Kind = PayloadCompressionKind.GZip }
+        });
+
+        // Assert
+        result.ShouldBeFailure();
     }
 
     [Fact]
@@ -1025,6 +1085,19 @@ EntityWithRequiredColumn,root-1,root-1,,,,1,
 RecordType,RootId,RecordId,ParentId,Collection,Index,Id,Email,MinLengthField
 EntityWithValidation,root-1,root-1,,,,1,not-an-email,no
 """u8.ToArray());
+    }
+
+    private static async Task<byte[]> CreateZipBytesAsync(string entryName, string content)
+    {
+        await using var stream = new MemoryStream();
+        await using (var entryStream = CompressionHelper.CreateZipEntryWriteStream(stream, entryName))
+        {
+            await using var writer = new StreamWriter(entryStream, Encoding.UTF8, leaveOpen: true);
+            await writer.WriteAsync(content);
+            await writer.FlushAsync();
+        }
+
+        return stream.ToArray();
     }
 
     private static MemoryStream CreateExcelStream(string[] headers, object[][] rows)

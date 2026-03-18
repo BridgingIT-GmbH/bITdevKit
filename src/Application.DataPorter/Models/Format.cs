@@ -6,37 +6,106 @@
 namespace BridgingIT.DevKit.Application.DataPorter;
 
 /// <summary>
-/// Specifies the supported data porter formats for import and export operations.
+/// Represents an extensible DataPorter format identifier.
 /// </summary>
-public enum Format
+public readonly record struct Format
 {
     /// <summary>
-    /// Microsoft Excel format (.xlsx).
+    /// Initializes a new instance of the <see cref="Format"/> struct.
     /// </summary>
-    Excel,
+    /// <param name="key">The unique format key.</param>
+    public Format(string key)
+    {
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            throw new ArgumentException("Format key cannot be null or whitespace.", nameof(key));
+        }
+
+        this.Key = key.Trim().ToLowerInvariant();
+    }
 
     /// <summary>
-    /// Comma-Separated Values format (.csv).
+    /// Gets the normalized format key.
     /// </summary>
-    Csv,
+    public string Key { get; }
 
     /// <summary>
-    /// Typed-row Comma-Separated Values format (.csv) for hierarchical object graphs.
+    /// Gets the Microsoft Excel format identifier.
     /// </summary>
-    CsvTyped,
+    public static Format Excel { get; } = new("excel");
 
     /// <summary>
-    /// JavaScript Object Notation format (.json).
+    /// Gets the Comma-Separated Values format identifier.
     /// </summary>
-    Json,
+    public static Format Csv { get; } = new("csv");
 
     /// <summary>
-    /// Extensible Markup Language format (.xml).
+    /// Gets the typed-row Comma-Separated Values format identifier.
     /// </summary>
-    Xml,
+    public static Format CsvTyped { get; } = new("csvtyped");
 
     /// <summary>
-    /// Portable Document Format (.pdf). Export only.
+    /// Gets the JavaScript Object Notation format identifier.
     /// </summary>
-    Pdf
+    public static Format Json { get; } = new("json");
+
+    /// <summary>
+    /// Gets the Extensible Markup Language format identifier.
+    /// </summary>
+    public static Format Xml { get; } = new("xml");
+
+    /// <summary>
+    /// Gets the Portable Document Format identifier.
+    /// </summary>
+    public static Format Pdf { get; } = new("pdf");
+
+    private static readonly Format[] BuiltInFormats = [Excel, Csv, CsvTyped, Json, Xml, Pdf];
+
+    /// <summary>
+    /// Gets the built-in DataPorter formats.
+    /// </summary>
+    public static IReadOnlyCollection<Format> BuiltIns => BuiltInFormats;
+
+    /// <summary>
+    /// Attempts to parse the specified value into a <see cref="Format"/>.
+    /// </summary>
+    /// <param name="value">The value to parse.</param>
+    /// <param name="format">The parsed format.</param>
+    /// <returns><see langword="true"/> if parsing succeeded; otherwise <see langword="false"/>.</returns>
+    public static bool TryParse(string value, out Format format)
+    {
+        format = default;
+
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return false;
+        }
+
+        try
+        {
+            format = new Format(value);
+            return true;
+        }
+        catch (ArgumentException)
+        {
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Determines whether this format is one of the built-in DataPorter formats.
+    /// </summary>
+    /// <returns><see langword="true"/> if the format is built in; otherwise <see langword="false"/>.</returns>
+    public bool IsBuiltIn()
+    {
+        return BuiltInFormats.Contains(this);
+    }
+
+    /// <summary>
+    /// Returns the normalized format key.
+    /// </summary>
+    public override string ToString()
+    {
+        return this.Key;
+    }
 }

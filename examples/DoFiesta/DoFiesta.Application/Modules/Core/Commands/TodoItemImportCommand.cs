@@ -24,7 +24,7 @@ public class TodoItemImportCommand(Stream stream, Format format) : RequestBase<I
                 .WithMessage("Stream is required");
 
             this.RuleFor(x => x.Format)
-                .IsInEnum()
+                .Must(x => x.IsBuiltIn())
                 .WithMessage("Invalid import format");
         }
     }

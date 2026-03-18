@@ -18,6 +18,12 @@ public class DataPorterServiceImportTests
     private readonly AttributeConfigurationReader attributeReader;
     private readonly ConfigurationMerger configurationMerger;
 
+    public static TheoryData<Format> TabularFormats => [Format.Csv, Format.Excel];
+
+    public static TheoryData<Format> AggregateFormats => [Format.Csv, Format.Excel, Format.Json, Format.Xml];
+
+    public static TheoryData<Format> CultureSpecificFormats => [Format.Excel, Format.Json, Format.Xml];
+
     public DataPorterServiceImportTests()
     {
         this.profileRegistry = new ProfileRegistry();
@@ -387,8 +393,7 @@ public class DataPorterServiceImportTests
     }
 
     [Theory]
-    [InlineData(Format.Csv)]
-    [InlineData(Format.Excel)]
+    [MemberData(nameof(TabularFormats))]
     public async Task ImportAsync_WithMissingRequiredHeader_ReturnsSchemaError(Format format)
     {
         // Arrange
@@ -408,8 +413,7 @@ public class DataPorterServiceImportTests
     }
 
     [Theory]
-    [InlineData(Format.Csv)]
-    [InlineData(Format.Excel)]
+    [MemberData(nameof(TabularFormats))]
     public async Task ValidateAsync_WithMissingRequiredHeader_ReturnsInvalidResult(Format format)
     {
         // Arrange
@@ -428,8 +432,7 @@ public class DataPorterServiceImportTests
     }
 
     [Theory]
-    [InlineData(Format.Csv)]
-    [InlineData(Format.Excel)]
+    [MemberData(nameof(TabularFormats))]
     public async Task ImportStreamAsync_WithMissingRequiredHeader_YieldsFailure(Format format)
     {
         // Arrange
@@ -451,8 +454,7 @@ public class DataPorterServiceImportTests
     }
 
     [Theory]
-    [InlineData(Format.Csv)]
-    [InlineData(Format.Excel)]
+    [MemberData(nameof(TabularFormats))]
     public async Task ImportAsync_WithMissingOptionalHeader_ContinuesImport(Format format)
     {
         // Arrange
@@ -472,10 +474,7 @@ public class DataPorterServiceImportTests
     }
 
     [Theory]
-    [InlineData(Format.Csv)]
-    [InlineData(Format.Excel)]
-    [InlineData(Format.Json)]
-    [InlineData(Format.Xml)]
+    [MemberData(nameof(AggregateFormats))]
     public async Task ImportAsync_WithCollectErrors_SkipsInvalidRowsAndKeepsValidRows(Format format)
     {
         // Arrange
@@ -496,10 +495,7 @@ public class DataPorterServiceImportTests
     }
 
     [Theory]
-    [InlineData(Format.Csv)]
-    [InlineData(Format.Excel)]
-    [InlineData(Format.Json)]
-    [InlineData(Format.Xml)]
+    [MemberData(nameof(AggregateFormats))]
     public async Task ImportAsync_WithMaxErrors_StopsAfterConfiguredErrorLimit(Format format)
     {
         // Arrange
@@ -523,10 +519,7 @@ public class DataPorterServiceImportTests
     }
 
     [Theory]
-    [InlineData(Format.Csv)]
-    [InlineData(Format.Excel)]
-    [InlineData(Format.Json)]
-    [InlineData(Format.Xml)]
+    [MemberData(nameof(AggregateFormats))]
     public async Task ValidateAsync_WithMaxErrors_StopsAfterConfiguredErrorLimit(Format format)
     {
         // Arrange
@@ -591,9 +584,7 @@ public class DataPorterServiceImportTests
     }
 
     [Theory]
-    [InlineData(Format.Excel)]
-    [InlineData(Format.Json)]
-    [InlineData(Format.Xml)]
+    [MemberData(nameof(CultureSpecificFormats))]
     public async Task ImportAsync_WithCultureSpecificDecimal_UsesConfiguredCulture(Format format)
     {
         // Arrange
@@ -721,10 +712,7 @@ public class DataPorterServiceImportTests
     }
 
     [Theory]
-    [InlineData(Format.Csv)]
-    [InlineData(Format.Excel)]
-    [InlineData(Format.Json)]
-    [InlineData(Format.Xml)]
+    [MemberData(nameof(AggregateFormats))]
     public async Task ImportStreamAsync_WithCollectErrors_YieldsSuccessForValidRowAndFailureForInvalidRow(Format format)
     {
         // Arrange
@@ -748,10 +736,7 @@ public class DataPorterServiceImportTests
     }
 
     [Theory]
-    [InlineData(Format.Csv)]
-    [InlineData(Format.Excel)]
-    [InlineData(Format.Json)]
-    [InlineData(Format.Xml)]
+    [MemberData(nameof(AggregateFormats))]
     public async Task ImportStreamAsync_WithMaxErrors_StopsAfterConfiguredErrorLimit(Format format)
     {
         // Arrange
@@ -909,7 +894,7 @@ public class DataPorterServiceImportTests
     }
 
     private static TestImportProvider CreateMockImportProvider(
-        Format format = Format.Excel,
+        Format? format = null,
         bool throwOnCancel = false)
     {
         return new TestImportProvider(format, throwOnCancel);
@@ -927,51 +912,51 @@ public class DataPorterServiceImportTests
 
     private static IDataPorterProvider CreateProvider(Format format)
     {
-        return format switch
+        return format.Key switch
         {
-            Format.Csv => new CsvDataPorterProvider(),
-            Format.Excel => new ExcelDataPorterProvider(),
-            Format.Json => new JsonDataPorterProvider(),
-            Format.Xml => new XmlDataPorterProvider(),
+            "csv" => new CsvDataPorterProvider(),
+            "excel" => new ExcelDataPorterProvider(),
+            "json" => new JsonDataPorterProvider(),
+            "xml" => new XmlDataPorterProvider(),
             _ => throw new NotSupportedException()
         };
     }
 
     private static MemoryStream CreateMissingRequiredHeaderStream(Format format)
     {
-        return format switch
+        return format.Key switch
         {
-            Format.Csv => new MemoryStream("Id\r\n1\r\n"u8.ToArray()),
-            Format.Excel => CreateExcelStream([nameof(EntityWithRequiredColumn.Id)], [new object[] { 1 }]),
+            "csv" => new MemoryStream("Id\r\n1\r\n"u8.ToArray()),
+            "excel" => CreateExcelStream([nameof(EntityWithRequiredColumn.Id)], [new object[] { 1 }]),
             _ => throw new NotSupportedException()
         };
     }
 
     private static MemoryStream CreateMissingOptionalHeaderStream(Format format)
     {
-        return format switch
+        return format.Key switch
         {
-            Format.Csv => new MemoryStream("Id\r\n1\r\n"u8.ToArray()),
-            Format.Excel => CreateExcelStream([nameof(SimpleEntity.Id)], [new object[] { 1 }]),
+            "csv" => new MemoryStream("Id\r\n1\r\n"u8.ToArray()),
+            "excel" => CreateExcelStream([nameof(SimpleEntity.Id)], [new object[] { 1 }]),
             _ => throw new NotSupportedException()
         };
     }
 
     private static MemoryStream CreateMixedValidityStream(Format format)
     {
-        return format switch
+        return format.Key switch
         {
-            Format.Csv => new MemoryStream("Id,RequiredField\r\n1,value\r\n2,\r\n"u8.ToArray()),
-            Format.Excel => CreateExcelStream(
+            "csv" => new MemoryStream("Id,RequiredField\r\n1,value\r\n2,\r\n"u8.ToArray()),
+            "excel" => CreateExcelStream(
                 [nameof(EntityWithRequiredColumn.Id), nameof(EntityWithRequiredColumn.RequiredField)],
                 [new object[] { 1, "value" }, new object[] { 2, null }]),
-            Format.Json => new MemoryStream("""
+            "json" => new MemoryStream("""
 [
   { "Id": 1, "RequiredField": "value" },
   { "Id": 2 }
 ]
 """u8.ToArray()),
-            Format.Xml => new MemoryStream("""
+            "xml" => new MemoryStream("""
 <Root>
   <Item>
     <Id>1</Id>
@@ -988,13 +973,13 @@ public class DataPorterServiceImportTests
 
     private static MemoryStream CreateMultipleInvalidRowsStream(Format format)
     {
-        return format switch
+        return format.Key switch
         {
-            Format.Csv => new MemoryStream("Id,RequiredField\r\n1,value\r\n2,\r\n3,after-limit\r\n4,\r\n"u8.ToArray()),
-            Format.Excel => CreateExcelStream(
+            "csv" => new MemoryStream("Id,RequiredField\r\n1,value\r\n2,\r\n3,after-limit\r\n4,\r\n"u8.ToArray()),
+            "excel" => CreateExcelStream(
                 [nameof(EntityWithRequiredColumn.Id), nameof(EntityWithRequiredColumn.RequiredField)],
                 [new object[] { 1, "value" }, new object[] { 2, null }, new object[] { 3, "after-limit" }, new object[] { 4, null }]),
-            Format.Json => new MemoryStream("""
+            "json" => new MemoryStream("""
 [
   { "Id": 1, "RequiredField": "value" },
   { "Id": 2 },
@@ -1002,7 +987,7 @@ public class DataPorterServiceImportTests
   { "Id": 4 }
 ]
 """u8.ToArray()),
-            Format.Xml => new MemoryStream("""
+            "xml" => new MemoryStream("""
 <Root>
   <Item>
     <Id>1</Id>
@@ -1034,16 +1019,16 @@ SimpleEntity,root-1,root-1,,,,abc,Broken
 
     private static MemoryStream CreateLocalizedDecimalStream(Format format)
     {
-        return format switch
+        return format.Key switch
         {
-            Format.Csv => new MemoryStream("Amount\r\n1,23\r\n"u8.ToArray()),
-            Format.Excel => CreateExcelStream([nameof(EntityWithDecimalAmount.Amount)], [new object[] { "1,23" }]),
-            Format.Json => new MemoryStream("""
+            "csv" => new MemoryStream("Amount\r\n1,23\r\n"u8.ToArray()),
+            "excel" => CreateExcelStream([nameof(EntityWithDecimalAmount.Amount)], [new object[] { "1,23" }]),
+            "json" => new MemoryStream("""
 [
   { "Amount": "1,23" }
 ]
 """u8.ToArray()),
-            Format.Xml => new MemoryStream("""
+            "xml" => new MemoryStream("""
 <Root>
   <Item>
     <Amount>1,23</Amount>

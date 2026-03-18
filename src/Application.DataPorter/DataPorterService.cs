@@ -86,7 +86,7 @@ public sealed class DataPorterService(
             }
 
             ExportResult result;
-            await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configuration.Compression, options.Format))
+            await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configuration.Compression, provider))
             {
                 result = await exportProvider.ExportAsync(
                     data,
@@ -178,7 +178,7 @@ public sealed class DataPorterService(
             }
 
             ExportResult result;
-            await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configuration.Compression, options.Format))
+            await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configuration.Compression, provider))
             {
                 result = await exportProvider.ExportAsync(
                     data,
@@ -326,7 +326,7 @@ public sealed class DataPorterService(
             progressTracker?.ReportStart();
 
             ExportResult result;
-            await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configurations[0].Configuration.Compression, options.Format))
+            await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configurations[0].Configuration.Compression, provider))
             {
                 result = await exportProvider.ExportAsync(
                     configurations,
@@ -421,7 +421,7 @@ public sealed class DataPorterService(
             progressTracker?.ReportStart();
 
             ExportResult result;
-            await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configurations[0].Configuration.Compression, options.Format))
+            await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configurations[0].Configuration.Compression, provider))
             {
                 result = await exportProvider.ExportAsync(
                     configurations,
@@ -782,7 +782,7 @@ public sealed class DataPorterService(
         return Activator.CreateInstance(executorType, interceptors, logger);
     }
 
-    private Stream CreateCompressionWriteStream(Stream outputStream, PayloadCompressionOptions compression, Format format)
+    private Stream CreateCompressionWriteStream(Stream outputStream, PayloadCompressionOptions compression, IDataPorterProvider provider)
     {
         compression ??= PayloadCompressionOptions.None;
 
@@ -799,7 +799,7 @@ public sealed class DataPorterService(
             return CompressionHelper.CreateGZipCompressionStream(outputStream, compressionLevel, leaveOpen: true);
         }
 
-        var entryName = string.IsNullOrWhiteSpace(compression.ZipEntryName) ? GetDefaultZipEntryName(format) : compression.ZipEntryName;
+        var entryName = string.IsNullOrWhiteSpace(compression.ZipEntryName) ? GetDefaultZipEntryName(provider) : compression.ZipEntryName;
         this.logger.LogDebug("{LogKey} payload compression selected (operation={Operation}, compression={Compression}, compressionLevel={CompressionLevel}, zipEntryName={ZipEntryName})", Constants.LogKeyExport, "export", compression.Kind, compressionLevel, entryName);
         return CompressionHelper.CreateZipEntryWriteStream(outputStream, entryName, compressionLevel, leaveOpen: true);
     }
@@ -824,17 +824,20 @@ public sealed class DataPorterService(
         return CompressionHelper.OpenZipEntryReadStream(inputStream, compression.ZipEntryName, leaveOpen: true);
     }
 
-    private static string GetDefaultZipEntryName(Format format)
+    private static string GetDefaultZipEntryName(IDataPorterProvider provider)
     {
-        return format switch
+        var extension = provider?.SupportedExtensions?.FirstOrDefault(e => !string.IsNullOrWhiteSpace(e))?.Trim();
+
+        if (string.IsNullOrWhiteSpace(extension))
         {
-            Format.Csv => "export.csv",
-            Format.CsvTyped => "export.csv",
-            Format.Json => "export.json",
-            Format.Xml => "export.xml",
-            Format.Excel => "export.xlsx",
-            Format.Pdf => "export.pdf",
-            _ => "export.dat"
-        };
+            return "export.dat";
+        }
+
+        if (!extension.StartsWith('.'))
+        {
+            extension = "." + extension;
+        }
+
+        return "export" + extension.ToLowerInvariant();
     }
 }

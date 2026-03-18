@@ -449,7 +449,7 @@ public class DataPorterServiceExportTests
     }
 
     private static TestExportProvider CreateMockExportProvider(
-        Format format = Format.Excel,
+        Format? format = null,
         bool throwOnCancel = false)
     {
         return new TestExportProvider(format, throwOnCancel);

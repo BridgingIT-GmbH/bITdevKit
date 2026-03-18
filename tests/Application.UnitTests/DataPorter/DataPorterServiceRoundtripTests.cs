@@ -33,6 +33,12 @@ public class DataPorterServiceRoundtripTests
         { new JsonDataPorterProvider(), Format.Json, PayloadCompressionKind.Zip }
     };
 
+    public static TheoryData<Format> RecursiveFormats => [Format.Csv, Format.CsvTyped, Format.Json, Format.Xml, Format.Pdf];
+
+    public static TheoryData<Format> ConverterFormats => [Format.Json, Format.Xml];
+
+    public static TheoryData<Format> AsyncDataSetFormats => [Format.Csv, Format.CsvTyped, Format.Json, Format.Xml];
+
     private readonly ProfileRegistry profileRegistry;
     private readonly AttributeConfigurationReader attributeReader;
     private readonly ConfigurationMerger configurationMerger;
@@ -346,21 +352,17 @@ public class DataPorterServiceRoundtripTests
     }
 
     [Theory]
-    [InlineData(Format.Csv)]
-    [InlineData(Format.CsvTyped)]
-    [InlineData(Format.Json)]
-    [InlineData(Format.Xml)]
-    [InlineData(Format.Pdf)]
+    [MemberData(nameof(RecursiveFormats))]
     public async Task ExportAsync_WithRecursiveChildBackReference_DoesNotRecurseInfinitely(Format format)
     {
         // Arrange
-        var provider = format switch
+        var provider = format.Key switch
         {
-            Format.Csv => (IDataPorterProvider)new CsvDataPorterProvider(new CsvConfiguration { UseNesting = true }),
-            Format.CsvTyped => new CsvTypedDataPorterProvider(),
-            Format.Json => new JsonDataPorterProvider(),
-            Format.Xml => new XmlDataPorterProvider(),
-            Format.Pdf => new PdfDataPorterProvider(new PdfConfiguration { UseNesting = true }),
+            "csv" => (IDataPorterProvider)new CsvDataPorterProvider(new CsvConfiguration { UseNesting = true }),
+            "csvtyped" => new CsvTypedDataPorterProvider(),
+            "json" => new JsonDataPorterProvider(),
+            "xml" => new XmlDataPorterProvider(),
+            "pdf" => new PdfDataPorterProvider(new PdfConfiguration { UseNesting = true }),
             _ => throw new NotSupportedException()
         };
         var sut = new DataPorterService([provider], this.CreateRecursiveConfigurationMerger());
@@ -692,15 +694,14 @@ public class DataPorterServiceRoundtripTests
     }
 
     [Theory]
-    [InlineData(Format.Json)]
-    [InlineData(Format.Xml)]
+    [MemberData(nameof(ConverterFormats))]
     public async Task ExportMultipleAsync_WithConverterBackedColumn_AppliesConverters(Format format)
     {
         // Arrange
-        var provider = format switch
+        var provider = format.Key switch
         {
-            Format.Json => (IDataPorterProvider)new JsonDataPorterProvider(),
-            Format.Xml => new XmlDataPorterProvider(),
+            "json" => (IDataPorterProvider)new JsonDataPorterProvider(),
+            "xml" => new XmlDataPorterProvider(),
             _ => throw new NotSupportedException()
         };
         var sut = new DataPorterService([provider], this.configurationMerger);
@@ -734,19 +735,16 @@ public class DataPorterServiceRoundtripTests
     }
 
     [Theory]
-    [InlineData(Format.Csv)]
-    [InlineData(Format.CsvTyped)]
-    [InlineData(Format.Json)]
-    [InlineData(Format.Xml)]
+    [MemberData(nameof(AsyncDataSetFormats))]
     public async Task ExportMultipleAsync_WithAsyncDataSets_WritesExpectedContent(Format format)
     {
         // Arrange
-        var provider = format switch
+        var provider = format.Key switch
         {
-            Format.Csv => (IDataPorterProvider)new CsvDataPorterProvider(new CsvConfiguration { UseNesting = true }),
-            Format.CsvTyped => new CsvTypedDataPorterProvider(),
-            Format.Json => new JsonDataPorterProvider(),
-            Format.Xml => new XmlDataPorterProvider(),
+            "csv" => (IDataPorterProvider)new CsvDataPorterProvider(new CsvConfiguration { UseNesting = true }),
+            "csvtyped" => new CsvTypedDataPorterProvider(),
+            "json" => new JsonDataPorterProvider(),
+            "xml" => new XmlDataPorterProvider(),
             _ => throw new NotSupportedException()
         };
         var sut = new DataPorterService([provider], this.CreateChildEntityConfigurationMerger());
@@ -976,15 +974,15 @@ public class DataPorterServiceRoundtripTests
 
     private void WriteExportToOutput(Format format, MemoryStream stream)
     {
-        switch (format)
+        switch (format.Key)
         {
-            case Format.Csv:
-            case Format.CsvTyped:
-            case Format.Json:
-            case Format.Xml:
+            case "csv":
+            case "csvtyped":
+            case "json":
+            case "xml":
                 this.WriteTextContentToOutput(format, stream);
                 break;
-            case Format.Excel:
+            case "excel":
                 this.WriteExcelContentToOutput(stream);
                 break;
         }

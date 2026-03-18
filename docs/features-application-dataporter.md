@@ -9,6 +9,7 @@ A flexible, extensible data export/import framework for .NET supporting multiple
 ## Features
 
 - **Multiple Format Support**: Excel (.xlsx), CSV, typed-row CSV, JSON, XML, and PDF (export only)
+- **Extensible Format Selection**: Built-in formats plus custom project-defined providers
 - **Dual Configuration Approaches**: Profile-based (similar to AutoMapper) or attribute-based
 - **Streaming Support**: Incremental import and export using `IAsyncEnumerable`
 - **Validation**: Built-in validation with customizable rules and error handling
@@ -28,6 +29,14 @@ services.AddDataPorter(configuration)
     .WithJson()
     .WithXml()
     .WithPdf();
+```
+
+Custom providers can be registered through the same builder:
+
+```csharp
+services.AddDataPorter(configuration)
+    .WithCsv()
+    .AddProvider<EdiX12DataPorterProvider>();
 ```
 
 ### Basic Export
@@ -220,6 +229,54 @@ public sealed class NormalizeCustomerNameInterceptor : IImportRowInterceptor<Ord
     }
 }
 ```
+
+### Custom Formats
+
+DataPorter format selection is not limited to the built-in CSV, CsvTyped, Excel, JSON, XML, and PDF providers. Projects can add their own import/export providers for domain-specific formats without changing the DataPorter pipeline.
+
+- `Format` is an extensible identifier type rather than a closed enum.
+- Built-in providers expose static values such as `Format.Csv` and `Format.Json`.
+- Custom providers can return their own format identifiers such as `new Format("edi-x12")`.
+- Provider selection stays explicit through `ExportOptions.Format` and `ImportOptions.Format`.
+
+```csharp
+public static class MyFormats
+{
+    public static readonly Format EdiX12 = new("edi-x12");
+}
+
+public sealed class EdiX12DataPorterProvider : IDataExportProvider, IDataImportProvider
+{
+    public Format Format => MyFormats.EdiX12;
+
+    public IReadOnlyCollection<string> SupportedExtensions => [".edi"];
+
+    public bool SupportsImport => true;
+
+    public bool SupportsExport => true;
+
+    public bool SupportsStreaming => false;
+
+    // Implement IDataExportProvider / IDataImportProvider members
+}
+```
+
+Register the provider and select it explicitly per operation:
+
+```csharp
+services.AddDataPorter()
+    .AddProvider<EdiX12DataPorterProvider>();
+
+var exportResult = await exporter.ExportAsync(
+    orders,
+    output,
+    new ExportOptions
+    {
+        Format = MyFormats.EdiX12
+    });
+```
+
+When ZIP packaging is enabled, DataPorter derives the default payload entry name from the selected provider's first supported extension. A custom provider with `[".edi"]` therefore produces `export.edi` inside the archive unless `ZipEntryName` is set explicitly.
 
 A very common import scenario is to process and store rows directly while they are being imported. `IImportRowInterceptor<T>` can be used for that too:
 

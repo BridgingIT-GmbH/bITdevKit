@@ -249,9 +249,9 @@ public class TestExportProvider : IDataExportProvider
 {
     private readonly bool throwOnCancel;
 
-    public TestExportProvider(Format format = Format.Excel, bool throwOnCancel = false)
+    public TestExportProvider(Format? format = null, bool throwOnCancel = false)
     {
-        this.Format = format;
+        this.Format = format ?? Format.Excel;
         this.throwOnCancel = throwOnCancel;
     }
 
@@ -365,9 +365,9 @@ public class TestImportProvider : IDataImportProvider
 {
     private readonly bool throwOnCancel;
 
-    public TestImportProvider(Format format = Format.Excel, bool throwOnCancel = false)
+    public TestImportProvider(Format? format = null, bool throwOnCancel = false)
     {
-        this.Format = format;
+        this.Format = format ?? Format.Excel;
         this.throwOnCancel = throwOnCancel;
     }
 

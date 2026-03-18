@@ -18,7 +18,7 @@ public class TodoItemExportQuery(Format format) : RequestBase<Stream>
         public Validator()
         {
             this.RuleFor(x => x.Format)
-                .IsInEnum()
+                .Must(x => x.IsBuiltIn())
                 .WithMessage("Invalid export format");
         }
     }

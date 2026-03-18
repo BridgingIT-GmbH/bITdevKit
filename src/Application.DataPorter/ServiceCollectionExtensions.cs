@@ -165,6 +165,20 @@ public static partial class ServiceCollectionExtensions
             RegisterRowInterceptor<TInterceptor>(context.Services, typeof(IExportRowInterceptor<>));
             return context;
         }
+
+        /// <summary>
+        /// Registers a custom DataPorter provider.
+        /// </summary>
+        /// <typeparam name="TProvider">The provider type.</typeparam>
+        /// <returns>The builder context for method chaining.</returns>
+        public DataPorterBuilderContext AddProvider<TProvider>()
+            where TProvider : class, IDataPorterProvider
+        {
+            EnsureArg.IsNotNull(context, nameof(context));
+            context.Services.TryAddSingleton<TProvider>();
+            context.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IDataPorterProvider, TProvider>());
+            return context;
+        }
     }
 
     private static void RegisterRowInterceptor<TInterceptor>(IServiceCollection services, Type interfaceType)

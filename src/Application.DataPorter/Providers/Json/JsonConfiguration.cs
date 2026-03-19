@@ -13,6 +13,12 @@ using System.Text.Json;
 public sealed class JsonConfiguration
 {
     /// <summary>
+    /// Gets or sets the full serializer options instance to use.
+    /// When set, these options take precedence over the simpler configuration properties.
+    /// </summary>
+    public JsonSerializerOptions SerializerOptions { get; set; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether to format the JSON with indentation.
     /// </summary>
     public bool WriteIndented { get; set; } = true;
@@ -37,6 +43,11 @@ public sealed class JsonConfiguration
     /// </summary>
     public JsonSerializerOptions GetSerializerOptions()
     {
+        if (this.SerializerOptions is not null)
+        {
+            return new JsonSerializerOptions(this.SerializerOptions);
+        }
+
         var options = new JsonSerializerOptions
         {
             WriteIndented = this.WriteIndented,

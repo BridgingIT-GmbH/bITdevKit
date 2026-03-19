@@ -145,38 +145,44 @@ public class CoreModule : WebModuleBase
 
         // dataporter - register export/import capabilities
         services.AddDataPorter(configuration)
-            .WithExcel(config =>
+            .WithExcel(c =>
             {
-                config.UseTableFormatting = true;
-                config.DefaultTableStyleName = "TableStyleMedium2";
-                config.AutoFitColumns = true;
-                config.FreezeHeaderRow = true;
+                c.UseTableFormatting = true;
+                c.DefaultTableStyleName = "TableStyleMedium2";
+                c.AutoFitColumns = true;
+                c.FreezeHeaderRow = true;
             })
-            .WithCsv(config =>
+            .WithCsv(c =>
             {
-                config.Delimiter = ",";
-                config.IncludeHeader = true;
-                config.TrimFields = true;
+                c.Delimiter = ",";
+                c.IncludeHeader = true;
+                c.TrimFields = true;
             })
-            .WithJson(config =>
+            .WithJson(c =>
             {
-                config.WriteIndented = true;
-                config.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+                c.WriteIndented = true;
+                c.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+                // c.SerializerOptions = new System.Text.Json.JsonSerializerOptions
+                // {
+                //     WriteIndented = true,
+                //     PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
+                //     DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                // };
             })
-            .WithXml(config =>
+            .WithXml(c =>
             {
-                config.RootElementName = "TodoItems";
-                config.ItemElementName = "TodoItem";
-                config.WriteIndented = true;
+                c.RootElementName = "TodoItems";
+                c.ItemElementName = "TodoItem";
+                c.WriteIndented = true;
             })
-            .WithPdf(config =>
+            .WithPdf(c =>
             {
-                config.PageSize = PdfPageSize.A4;
-                config.Orientation = PdfPageOrientation.Landscape;
-                config.Title = "DoFiesta Todo Items";
-                config.HeaderText = "DoFiesta Todo Items Export";
-                config.ShowPageNumbers = true;
-                config.ShowGenerationDate = true;
+                c.PageSize = PdfPageSize.A4;
+                c.Orientation = PdfPageOrientation.Landscape;
+                c.Title = "DoFiesta Todo Items";
+                c.HeaderText = "DoFiesta Todo Items Export";
+                c.ShowPageNumbers = true;
+                c.ShowGenerationDate = true;
             })
             .AddExportProfile<TodoItemExportProfile>()
             .AddImportProfile<TodoItemImportProfile>();

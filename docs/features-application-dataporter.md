@@ -6,6 +6,18 @@
 
 A flexible, extensible data export/import framework for .NET supporting multiple file formats with both profile-based and attribute-based configuration.
 
+```mermaid
+flowchart LR
+    App[Application code] --> Api[IDataExporter / IDataImporter]
+    Api --> Service[DataPorterService]
+    Service --> Config[Effective configuration]
+    Service --> Hooks[Optional row interception]
+    Service --> Provider[Selected provider]
+    Provider --> Result[Typed result]
+```
+
+At a glance, application code talks to `IDataExporter` or `IDataImporter`, `DataPorterService` builds the effective configuration, applies optional row interception, delegates to the selected provider, and returns a typed result.
+
 ## Features
 
 - **Multiple Format Support**: Excel (.xlsx), CSV, typed-row CSV, JSON, XML, and PDF (export only)
@@ -397,6 +409,64 @@ ORD-1001;Ada;1,23
 ```
 
 In this example, `HeaderRowIndex = 1` tells the importer to use the second line as the header row, and `Culture = new CultureInfo("de-DE")` allows the default decimal parser to read `1,23` correctly.
+
+## Architecture Overview
+
+`Application.DataPorter` is built around a small orchestration core with pluggable format providers. For developers working on the feature, the key idea is that `DataPorterService` owns the workflow, while providers own the format-specific reading and writing logic. The service validates the request, resolves the provider for the selected `Format`, builds the effective configuration, applies optional progress reporting, compression, and row interception, and then delegates the actual import or export work.
+
+This separation keeps the public API stable while letting each provider optimize for its own format. CSV and Excel stay row-oriented, JSON and XML stay document-oriented, PDF remains export-only, and custom project providers can plug in without changing the orchestration flow. The shared configuration and converter pipeline makes those providers feel consistent even though their internals differ.
+
+```mermaid
+flowchart LR
+    App[Application code] --> Service[DataPorterService]
+    Service --> Resolve[Resolve provider by Format]
+    Service --> Merge[ConfigurationMerger]
+    Merge --> Profiles[Profiles]
+    Merge --> Attributes[Attributes]
+    Merge --> Options[Runtime options]
+    Service --> Hooks[Row interceptors]
+    Service --> Compression[Compression wrapper]
+    Service --> Provider[Format provider]
+    Provider --> Result[ImportResult / ExportResult]
+```
+
+At runtime, maintainers can think about the feature in four layers:
+
+- **Public API layer**: `IDataExporter` and `IDataImporter` expose the fluent and object-based entry points.
+- **Orchestration layer**: `DataPorterService` handles validation, logging, timing, provider selection, progress, and compression.
+- **Configuration layer**: `ConfigurationMerger`, profiles, and attributes produce the provider-ready `ImportConfiguration`, `ExportConfiguration`, or `TemplateConfiguration`.
+- **Provider layer**: concrete providers implement the actual format mechanics and call the shared converter and interception pipelines.
+
+The shared configuration model is what keeps import and export aligned. Profiles and attributes define columns, formatting, validation, converters, and sheet names once, then the service merges that metadata with per-call options before handing it to the selected provider. That means a custom provider can stay focused on transport details rather than rebuilding column discovery, validation policy, or runtime-option precedence.
+
+```mermaid
+sequenceDiagram
+    participant App
+    participant Service as DataPorterService
+    participant Merger as ConfigurationMerger
+    participant Provider as IDataPorterProvider
+    participant Hooks as Row Interceptors
+    participant Stream
+
+    App->>Service: ImportAsync / ExportAsync
+    Service->>Merger: Build effective configuration
+    Merger-->>Service: Import/Export configuration
+    Service->>Provider: Resolve matching provider
+    Service->>Hooks: Create row interception pipeline
+    Service->>Stream: Wrap compression if needed
+    Service->>Provider: Execute import/export
+    Provider-->>Service: ImportResult / ExportResult
+    Service-->>App: Result<T>
+```
+
+For export, the provider iterates rows or items, applies converters, applies export interceptors, and writes the outgoing representation into the target stream. For import, the provider reads raw fields, applies converters and validation, materializes typed items, runs import interceptors, and returns either an aggregate `ImportResult<T>` or a streaming sequence. The provider should not re-implement cross-cutting concerns that already belong to the service.
+
+When extending DataPorter, a useful rule of thumb is:
+
+- add behavior to `DataPorterService` when it is cross-format and orchestration-related
+- add behavior to `ConfigurationMerger` when it changes how metadata is built or combined
+- add behavior to a provider when it is truly format-specific
+- add a new provider when you need a new external representation, not when you only need different configuration for an existing one
 
 ## Configuration Approaches
 
@@ -1089,151 +1159,6 @@ services.AddDataPorter(configuration)
 
 Use provider configuration for application-wide defaults, and `ImportOptions`/`ExportOptions` when a specific import or export request needs a different culture, header row, or validation policy.
 
-## Architecture
-
-`Application.DataPorter` is built around a small orchestration core with pluggable format providers and column-level transformation/configuration.
-
-At the center is `DataPorterService`, which implements both `IDataExporter` and `IDataImporter`. It does not know how to read or write CSV, Excel, JSON, XML, or PDF itself. Instead, it coordinates the workflow:
-
-1. validate the request and selected `Format`
-2. resolve the matching provider from the registered `IDataPorterProvider` implementations
-3. build the effective import or export configuration for the requested type
-4. delegate the actual read/write work to the selected provider
-5. wrap the outcome in `Result`, `ExportResult`, `ImportResult<T>`, or `ValidationResult`
-
-This separation keeps the public API stable while allowing each file format to have its own optimized implementation.
-
-### Core building blocks
-
-- **Service layer**
-  - `DataPorterService` is the façade used by application code.
-  - It selects providers by `Format`, applies logging, timing, cancellation, and error handling.
-  - It supports both `IEnumerable<T>` and `IAsyncEnumerable<T>` export sources.
-
-- **Provider model**
-  - `IDataPorterProvider` describes provider capabilities such as supported format, file extensions, import/export support, and streaming support.
-  - `IDataExportProvider` and `IDataImportProvider` add the actual export/import operations.
-  - Concrete providers such as CSV, Excel, JSON, XML, and PDF encapsulate all format-specific logic.
-
-- **Configuration model**
-  - `ExportOptions` and `ImportOptions` define runtime choices like format, culture, sheet selection, validation behavior, and whether attributes should be used.
-  - `ExportConfiguration` and `ImportConfiguration` represent the fully merged configuration that providers consume.
-  - `ConfigurationMerger` combines configuration sources with this precedence: **Profile > Attributes > Options > Defaults**.
-
-- **Metadata sources**
-  - **Profiles** (`IExportProfile`, `IImportProfile`) provide explicit, code-based configuration for columns, formats, headers, sheet names, validation, and converters.
-  - **Attributes** (`DataPorterSheet`, `DataPorterColumn`, `DataPorterConverter`, `DataPorterValidation`, `DataPorterIgnore`) provide declarative configuration directly on types and properties.
-  - `ProfileRegistry` stores registered profiles.
-  - `AttributeConfigurationReader` scans types and builds configuration from attributes.
-
-- **Converter pipeline**
-  - `IValueConverter` and `IValueConverter<T>` allow per-column transformation between domain values and external representations.
-  - Providers call converters while reading or writing individual column values.
-  - `ValueConversionContext` passes property metadata plus optional `Format`, `Culture`, and additional parameters into the converter.
-  - This makes converters reusable across formats because the provider handles transport concerns while the converter handles value semantics.
-
-- **Validation pipeline**
-  - During import, column validators can be created from attributes or profiles.
-  - Validation behavior is controlled through `ImportValidationBehavior`, allowing callers to collect errors, skip invalid rows, or stop the import.
-
-### Provider responsibilities
-
-Providers are intentionally responsible only for format-specific concerns, for example:
-
-- **CSV provider**: delimiter handling, text encoding, row-by-row streaming, header writing/reading
-- **Excel provider**: worksheets, styling, widths, header/footer rows, conditional formatting
-- **JSON/XML providers**: document serialization shape and structured parsing
-- **PDF provider**: tabular rendering and document layout for export-only scenarios
-
-Because the configuration and converter pipeline are shared, the same domain type can be exported to multiple formats with consistent column naming, formatting, validation, and transformation rules.
-
-### Runtime flow
-
-Typical export flow:
-
-```text
-Application code
-  -> DataPorterService
-  -> ConfigurationMerger
-  -> matching export provider
-  -> per-column value access + converter execution
-  -> format-specific writer
-```
-
-With async export, the source can stay incremental all the way into the provider writer:
-
-```text
-IAsyncEnumerable<T>
-  -> DataPorterService
-  -> matching export provider
-  -> row/item transformation
-  -> output stream
-```
-
-Typical import flow:
-
-```text
-Input stream
-  -> DataPorterService
-  -> ConfigurationMerger
-  -> matching import provider
-  -> raw field extraction
-  -> converter execution
-  -> validation
-  -> object materialization
-```
-
-Mermaid sequence diagram:
-
-```mermaid
-sequenceDiagram
-    autonumber
-    participant App as Client
-    participant Service as DataPorterService
-    participant Merger as ConfigurationMerger
-    participant Registry as ProfileRegistry
-    participant Provider as Format Provider
-    participant Converter as IValueConverter
-
-    alt Export
-        App->>Service: ExportAsync(data, stream, options)
-        Service->>Service: Validate request and resolve Format
-        Service->>Merger: BuildExportConfiguration(type, options)
-        Merger->>Registry: Read profiles and attributes
-        Registry-->>Merger: Column and sheet metadata
-        Merger-->>Service: ExportConfiguration
-        Service->>Provider: ExportAsync(data, stream, configuration)
-        loop For each row / configured column
-            Provider->>Converter: ConvertToExport(value, context)
-            Converter-->>Provider: External representation
-        end
-        Provider-->>Service: ExportResult
-        Service-->>App: Result<ExportResult>
-    else Import
-        App->>Service: ImportAsync(stream, options)
-        Service->>Service: Validate request and resolve Format
-        Service->>Merger: BuildImportConfiguration(type, options)
-        Merger->>Registry: Read profiles and attributes
-        Registry-->>Merger: Column and validation metadata
-        Merger-->>Service: ImportConfiguration
-        Service->>Provider: ImportAsync(stream, configuration)
-        loop For each row / configured column
-            Provider->>Converter: ConvertFromImport(rawValue, context)
-            Converter-->>Provider: Typed value
-        end
-        Provider-->>Service: ImportResult<T>
-        Service-->>App: Result<ImportResult<T>>
-    end
-```
-
-The result is an architecture where:
-
-- **formats are pluggable**
-- **configuration is composable**
-- **value transformation is isolated in converters**
-- **domain models stay independent from file-format details**
-- **import and export share the same conceptual model**
-
 ## Dependencies
 
 | Package           | Version  | Purpose                       |
@@ -1249,6 +1174,21 @@ The result is an architecture where:
 ### HTTP API Streaming
 
 This scenario shows a modern ASP.NET Core Minimal API that streams export data directly into the HTTP response body and streams import data directly from the HTTP request body.
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Endpoint
+    participant DataPorter
+    participant Provider
+    participant Repository
+
+    Client->>Endpoint: GET /api/orders/export
+    Endpoint->>Repository: StreamOrdersAsync()
+    Endpoint->>DataPorter: ExportAsync(orders, Response.Body, AsCsv)
+    DataPorter->>Provider: Export stream
+    Provider-->>Client: CSV bytes on response body
+```
 
 ```csharp
 using BridgingIT.DevKit.Application.DataPorter;
@@ -1393,6 +1333,24 @@ What happens in this scenario:
 ### Background File Import Pipeline
 
 This scenario fits a worker service that watches a drop folder or object store and imports large partner files without loading the whole file into memory first.
+
+```mermaid
+sequenceDiagram
+    participant Worker
+    participant Inbox
+    participant Storage
+    participant DataPorter
+    participant ImportService
+
+    Worker->>Inbox: StreamPendingFilesAsync()
+    Inbox-->>Worker: next file
+    Worker->>Storage: OpenRead(file)
+    Worker->>DataPorter: ImportAsyncEnumerable(stream, AsCsv)
+    loop each parsed row
+        DataPorter-->>Worker: row result
+        Worker->>ImportService: Process row
+    end
+```
 
 ```csharp
 public sealed class PartnerOrderImportWorker : BackgroundService

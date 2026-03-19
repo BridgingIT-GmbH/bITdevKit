@@ -29,7 +29,7 @@ public class CoreDataPorterEndpoints : EndpointsBase
                    [FromQuery] string fileName = null,
                    CancellationToken ct = default) =>
             {
-                if (!Format.TryParse(format, out var dataPorterFormat))
+                if (!Format.TryParse(format, out var dataFormat))
                 {
                     return Results.Problem(
                         title: "Invalid format",
@@ -38,7 +38,7 @@ public class CoreDataPorterEndpoints : EndpointsBase
                 }
 
                 var result = await requester.SendAsync(
-                    new TodoItemExportQuery(dataPorterFormat),
+                    new TodoItemExportQuery(dataFormat),
                     cancellationToken: ct);
 
                 if (result.IsFailure)
@@ -50,7 +50,7 @@ public class CoreDataPorterEndpoints : EndpointsBase
                 }
 
                 var stream = result.Value;
-                var (contentType, extension) = dataPorterFormat.Key switch
+                var (contentType, extension) = dataFormat.Key switch
                 {
                     "excel" => ("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "xlsx"),
                     "csv" => ("text/csv", "csv"),
@@ -124,7 +124,7 @@ public class CoreDataPorterEndpoints : EndpointsBase
                         statusCode: StatusCodes.Status400BadRequest);
                 }
 
-                if (!Format.TryParse(format, out var dataPorterFormat))
+                if (!Format.TryParse(format, out var dataFormat))
                 {
                     return Results.Problem(
                         title: "Invalid format",
@@ -134,7 +134,7 @@ public class CoreDataPorterEndpoints : EndpointsBase
 
                 await using var stream = file.OpenReadStream();
                 var result = await requester.SendAsync(
-                    new TodoItemImportCommand(stream, dataPorterFormat),
+                    new TodoItemImportCommand(stream, dataFormat),
                     cancellationToken: ct);
 
                 if (result.IsFailure)
@@ -198,7 +198,7 @@ public class CoreDataPorterEndpoints : EndpointsBase
                         statusCode: StatusCodes.Status400BadRequest);
                 }
 
-                if (!Format.TryParse(format, out var dataPorterFormat))
+                if (!Format.TryParse(format, out var dataFormat))
                 {
                     return Results.Problem(
                         title: "Invalid format",
@@ -208,7 +208,7 @@ public class CoreDataPorterEndpoints : EndpointsBase
 
                 await using var stream = file.OpenReadStream();
                 var result = await requester.SendAsync(
-                    new TodoItemValidateImportQuery(stream, dataPorterFormat),
+                    new TodoItemValidateImportQuery(stream, dataFormat),
                     cancellationToken: ct);
 
                 if (result.IsFailure)

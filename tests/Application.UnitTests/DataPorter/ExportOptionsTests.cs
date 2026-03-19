@@ -67,7 +67,7 @@ public class ExportOptionsTests
         // Act
         var sut = new ExportOptionsBuilder()
             .AsCsv()
-            .WithProfileName("ExportProfile")
+            .WithProfile("ExportProfile")
             .UseAttributes(false)
             .WithCulture(new System.Globalization.CultureInfo("nl-NL"))
             .WithSheetName("Orders")
@@ -160,7 +160,7 @@ public class ImportOptionsTests
         // Act
         var sut = new ImportOptionsBuilder()
             .AsJson()
-            .WithProfileName("ImportProfile")
+            .WithProfile("ImportProfile")
             .UseAttributes(false)
             .WithCulture(new System.Globalization.CultureInfo("fr-FR"))
             .WithSheetName("Orders")
@@ -309,7 +309,7 @@ public class TemplateOptionsTests
     {
         var sut = new TemplateOptionsBuilder()
             .AsJson()
-            .WithProfileName("TemplateProfile")
+            .WithProfile("TemplateProfile")
             .UseAttributes(false)
             .WithCulture(new System.Globalization.CultureInfo("de-DE"))
             .WithSheetName("Orders")

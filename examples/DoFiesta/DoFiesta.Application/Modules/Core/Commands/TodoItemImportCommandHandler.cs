@@ -23,13 +23,10 @@ public class TodoItemImportCommandHandler(
         SendOptions options,
         CancellationToken cancellationToken)
     {
-        var importResult = await importer.ImportAsync<TodoItemModel>(request.Stream, new ImportOptions
-        {
-            Format = request.Format,
-            ProfileName = "TodoItemImportProfile",
-            ValidationBehavior = ImportValidationBehavior.CollectErrors // Continue importing despite errors
-        },
-        cancellationToken);
+        var importResult = await importer.ImportAsync<TodoItemModel>(request.Stream, o => o
+            .As(request.Format)
+            .WithProfile("TodoItemImportProfile")
+            .WithValidationBehavior(ImportValidationBehavior.CollectErrors), cancellationToken);
 
         return await importResult
             .Ensure(result => result.HasErrors == false || result.SuccessfulRows > 0,
@@ -39,15 +36,15 @@ public class TodoItemImportCommandHandler(
                 // Only persist successfully imported rows
                 if (result.SuccessfulRows > 0)
                 {
-                    var importedEntities = result.Data
+                    var entities = result.Data
                         .Select(mapper.Map<TodoItemModel, TodoItem>)
                         .ToList();
 
-                    foreach (var imported in importedEntities)
+                    foreach (var entity in entities)
                     {
                         // Always scope imported data to the current user.
-                        imported.UserId = currentUserAccessor.UserId;
-                        await repository.UpsertAsync(imported, ct);
+                        entity.UserId = currentUserAccessor.UserId;
+                        await repository.UpsertAsync(entity, ct);
                     }
                 }
 

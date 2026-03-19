@@ -91,11 +91,11 @@ public sealed class ImportOptionsBuilder : IOptionsBuilder<ImportOptions>
     /// <summary>
     /// Sets the profile name to use for the import.
     /// </summary>
-    /// <param name="profileName">The profile name.</param>
+    /// <param name="name">The profile name.</param>
     /// <returns>The builder instance for chaining.</returns>
-    public ImportOptionsBuilder WithProfileName(string profileName)
+    public ImportOptionsBuilder WithProfile(string name)
     {
-        this.target = this.target with { ProfileName = profileName };
+        this.target = this.target with { ProfileName = name };
         return this;
     }
 

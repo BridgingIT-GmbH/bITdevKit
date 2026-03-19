@@ -102,7 +102,7 @@ public sealed class ExportOptionsBuilder : IOptionsBuilder<ExportOptions>
     /// </summary>
     /// <param name="profileName">The profile name.</param>
     /// <returns>The builder instance for chaining.</returns>
-    public ExportOptionsBuilder WithProfileName(string profileName)
+    public ExportOptionsBuilder WithProfile(string profileName)
     {
         this.target = this.target with { ProfileName = profileName };
         return this;

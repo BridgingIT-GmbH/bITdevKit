@@ -30,14 +30,12 @@ public class TodoItemExportQueryHandler(
             .BindAsync(async (models, ct) =>
             {
                 var memoryStream = new MemoryStream();
-                var exportResult = await exporter.ExportAsync(models, memoryStream, new ExportOptions
-                {
-                    Format = request.Format
-                }, ct);
+                var exportResult = await exporter.ExportAsync(models, memoryStream, o => o
+                    .As(request.Format), ct);
 
                 return exportResult.IsSuccess
                     ? Result<Stream>.Success(memoryStream)
-                    : Result<Stream>.Failure().WithError(exportResult.Errors.FirstOrDefault());
+                    : Result<Stream>.Failure().WithErrors(exportResult.Errors);
             }, cancellationToken)
             .Tap(stream => stream.Position = 0);
     }

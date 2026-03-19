@@ -78,7 +78,7 @@ public sealed class TemplateOptionsBuilder : IOptionsBuilder<TemplateOptions>
     /// </summary>
     /// <param name="profileName">The profile name.</param>
     /// <returns>The builder instance for chaining.</returns>
-    public TemplateOptionsBuilder WithProfileName(string profileName)
+    public TemplateOptionsBuilder WithProfile(string profileName)
     {
         this.target = this.target with { ProfileName = profileName };
         return this;

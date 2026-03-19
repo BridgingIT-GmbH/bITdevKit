@@ -25,7 +25,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// <param name="loggerFactory">The logger factory.</param>
 public sealed class CsvDataPorterProvider(
     CsvConfiguration configuration = null,
-    ILoggerFactory loggerFactory = null) : IDataExportProvider, IDataImportProvider
+    ILoggerFactory loggerFactory = null) : IDataExportProvider, IDataImportProvider, IDataTemplateProvider
 {
     private readonly CsvConfiguration configuration = configuration ?? new CsvConfiguration();
     private readonly ILogger<CsvDataPorterProvider> logger = loggerFactory?.CreateLogger<CsvDataPorterProvider>() ?? NullLogger<CsvDataPorterProvider>.Instance;
@@ -44,6 +44,9 @@ public sealed class CsvDataPorterProvider(
 
     /// <inheritdoc/>
     public bool SupportsStreaming => true;
+
+    /// <inheritdoc/>
+    public bool SupportsTemplateExport => true;
 
     /// <inheritdoc/>
     public async Task<ExportResult> ExportAsync<TSource>(
@@ -393,6 +396,53 @@ public sealed class CsvDataPorterProvider(
             Duration = TimeSpan.Zero,
             Format = this.Format,
             Warnings = warnings
+        };
+    }
+
+    /// <inheritdoc/>
+    public async Task<ExportResult> GenerateTemplateAsync<TTarget>(
+        Stream outputStream,
+        TemplateConfiguration configuration,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        var writeStream = new WriteStreamWrapper(outputStream);
+        var fields = this.GetOrderedTemplateFields(configuration);
+
+        await using var writer = new StreamWriter(writeStream, this.configuration.Encoding, leaveOpen: true);
+        await using var csv = new CsvWriter(writer, new CsvHelper.Configuration.CsvConfiguration(configuration.Culture)
+        {
+            Delimiter = this.configuration.Delimiter,
+            HasHeaderRecord = true
+        });
+
+        foreach (var field in fields)
+        {
+            csv.WriteField(field.HeaderName ?? field.PropertyName);
+        }
+
+        await csv.NextRecordAsync();
+
+        if (configuration.IncludeHints && configuration.AnnotationStyle == TemplateAnnotationStyle.Annotated)
+        {
+            foreach (var field in fields)
+            {
+                csv.WriteField(field.BuildHintText());
+            }
+
+            await csv.NextRecordAsync();
+        }
+
+        await csv.FlushAsync();
+        await writer.FlushAsync(cancellationToken);
+
+        return new ExportResult
+        {
+            BytesWritten = writeStream.BytesWritten,
+            TotalRows = 0,
+            Duration = TimeSpan.Zero,
+            Format = this.Format,
+            Metadata = new Dictionary<string, object> { ["template"] = true }
         };
     }
 
@@ -1373,6 +1423,13 @@ public sealed class CsvDataPorterProvider(
         return !this.configuration.UseNesting
             && column.Converter is null
             && column.PropertyInfo?.PropertyType.SupportsStructuredValue() == true;
+    }
+
+    private IReadOnlyList<TemplateFieldConfiguration> GetOrderedTemplateFields(TemplateConfiguration configuration)
+    {
+        return [.. configuration.Fields
+            .OrderBy(field => field.Order >= 0 ? field.Order : int.MaxValue)
+            .ThenBy(field => field.HeaderName ?? field.PropertyName, StringComparer.OrdinalIgnoreCase)];
     }
 
     private static object ConvertToType(string value, Type targetType, CultureInfo culture)

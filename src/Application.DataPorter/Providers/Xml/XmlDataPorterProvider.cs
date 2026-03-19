@@ -26,7 +26,7 @@ using System.Xml.Serialization;
 /// <param name="loggerFactory">The logger factory.</param>
 public sealed class XmlDataPorterProvider(
     XmlConfiguration configuration = null,
-    ILoggerFactory loggerFactory = null) : IDataExportProvider, IDataImportProvider
+    ILoggerFactory loggerFactory = null) : IDataExportProvider, IDataImportProvider, IDataTemplateProvider
 {
     private readonly XmlConfiguration configuration = configuration ?? new XmlConfiguration();
     private readonly ILogger<XmlDataPorterProvider> logger = loggerFactory?.CreateLogger<XmlDataPorterProvider>() ?? NullLogger<XmlDataPorterProvider>.Instance;
@@ -45,6 +45,9 @@ public sealed class XmlDataPorterProvider(
 
     /// <inheritdoc/>
     public bool SupportsStreaming => true;
+
+    /// <inheritdoc/>
+    public bool SupportsTemplateExport => true;
 
     /// <inheritdoc/>
     public async Task<ExportResult> ExportAsync<TSource>(
@@ -339,6 +342,102 @@ public sealed class XmlDataPorterProvider(
             Duration = TimeSpan.Zero,
             Format = this.Format,
             Warnings = warnings
+        };
+    }
+
+    /// <inheritdoc/>
+    public async Task<ExportResult> GenerateTemplateAsync<TTarget>(
+        Stream outputStream,
+        TemplateConfiguration configuration,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        var settings = this.configuration.GetWriterSettings();
+        settings.Async = true;
+        var writeStream = new WriteStreamWrapper(outputStream);
+        var fields = this.GetOrderedTemplateFields(configuration);
+
+        await using var writer = XmlWriter.Create(writeStream, settings);
+
+        await writer.WriteStartDocumentAsync();
+
+        if (configuration.UseMetadataWrapper)
+        {
+            await writer.WriteStartElementAsync(null, "Template", null);
+            await writer.WriteStartElementAsync(null, "Metadata", null);
+            await writer.WriteElementStringAsync(null, "TargetType", null, configuration.TargetType.Name);
+            await writer.WriteElementStringAsync(null, "Format", null, this.Format.ToString());
+            await writer.WriteElementStringAsync(null, "AnnotationStyle", null, configuration.AnnotationStyle.ToString());
+
+            if (!string.IsNullOrWhiteSpace(configuration.SheetName))
+            {
+                await writer.WriteElementStringAsync(null, "SheetName", null, configuration.SheetName);
+            }
+
+            await writer.WriteStartElementAsync(null, "Fields", null);
+            foreach (var field in fields)
+            {
+                await writer.WriteStartElementAsync(null, "Field", null);
+                await writer.WriteAttributeStringAsync(null, "name", null, field.HeaderName ?? field.PropertyName);
+                await writer.WriteAttributeStringAsync(null, "propertyName", null, field.PropertyName);
+                await writer.WriteAttributeStringAsync(null, "type", null, field.TypeName);
+                await writer.WriteAttributeStringAsync(null, "required", null, field.IsRequired.ToString().ToLowerInvariant());
+
+                if (!string.IsNullOrWhiteSpace(field.RequiredMessage))
+                {
+                    await writer.WriteElementStringAsync(null, "RequiredMessage", null, field.RequiredMessage);
+                }
+
+                if (!string.IsNullOrWhiteSpace(field.Format))
+                {
+                    await writer.WriteElementStringAsync(null, "FormatHint", null, field.Format);
+                }
+
+                if (configuration.IncludeHints && field.ValidationHints.Count > 0)
+                {
+                    await writer.WriteStartElementAsync(null, "ValidationHints", null);
+                    foreach (var hint in field.ValidationHints)
+                    {
+                        await writer.WriteElementStringAsync(null, "Hint", null, hint);
+                    }
+
+                    await writer.WriteEndElementAsync();
+                }
+
+                await writer.WriteEndElementAsync();
+            }
+
+            await writer.WriteEndElementAsync();
+            await writer.WriteStartElementAsync(null, "Data", null);
+            for (var index = 0; index < configuration.SampleItemCount; index++)
+            {
+                await this.WriteTemplatePayloadAsync(writer, this.configuration.ItemElementName, fields, cancellationToken);
+            }
+
+            await writer.WriteEndElementAsync();
+            await writer.WriteEndElementAsync();
+        }
+        else
+        {
+            await writer.WriteStartElementAsync(null, this.configuration.RootElementName, null);
+            for (var index = 0; index < configuration.SampleItemCount; index++)
+            {
+                await this.WriteTemplatePayloadAsync(writer, this.configuration.ItemElementName, fields, cancellationToken);
+            }
+
+            await writer.WriteEndElementAsync();
+        }
+
+        await writer.WriteEndDocumentAsync();
+        await writer.FlushAsync();
+
+        return new ExportResult
+        {
+            BytesWritten = writeStream.BytesWritten,
+            TotalRows = configuration.SampleItemCount,
+            Duration = TimeSpan.Zero,
+            Format = this.Format,
+            Metadata = new Dictionary<string, object> { ["template"] = true }
         };
     }
 
@@ -831,6 +930,24 @@ public sealed class XmlDataPorterProvider(
         return item;
     }
 
+    private async Task WriteTemplatePayloadAsync(
+        XmlWriter writer,
+        string elementName,
+        IReadOnlyList<TemplateFieldConfiguration> fields,
+        CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        await writer.WriteStartElementAsync(null, elementName, null);
+
+        foreach (var field in fields)
+        {
+            await writer.WriteStartElementAsync(null, this.SanitizeElementName(field.HeaderName ?? field.PropertyName), null);
+            await writer.WriteEndElementAsync();
+        }
+
+        await writer.WriteEndElementAsync();
+    }
+
     private string SanitizeElementName(string name)
     {
         if (string.IsNullOrEmpty(name))
@@ -1119,6 +1236,13 @@ public sealed class XmlDataPorterProvider(
         }
 
         return value.GetType().IsSimpleType();
+    }
+
+    private IReadOnlyList<TemplateFieldConfiguration> GetOrderedTemplateFields(TemplateConfiguration configuration)
+    {
+        return [.. configuration.Fields
+            .OrderBy(field => field.Order >= 0 ? field.Order : int.MaxValue)
+            .ThenBy(field => field.HeaderName ?? field.PropertyName, StringComparer.OrdinalIgnoreCase)];
     }
 
     private sealed record XmlImportRowResult<TTarget>(

@@ -6,6 +6,9 @@
 namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
 using BridgingIT.DevKit.Application.DataPorter;
+using ClosedXML.Excel;
+using System.Text.Json;
+using System.Xml.Linq;
 
 [UnitTest("Common")]
 public class DataPorterServiceExportTests
@@ -461,6 +464,118 @@ public class DataPorterServiceExportTests
         result.ShouldBeSuccess();
         progress.Reports.ShouldContain(report => !report.IsCompleted && report.ProcessedRows == 25);
         progress.Reports[^1].ProcessedRows.ShouldBe(50);
+    }
+
+    [Fact]
+    public async Task GenerateTemplateToBytesAsync_WithCsvProvider_ReturnsHeaderAndHintRows()
+    {
+        var sut = new DataPorterService([new CsvDataPorterProvider()], this.configurationMerger);
+
+        var result = await sut.GenerateTemplateToBytesAsync<EntityWithRequiredColumn>(new TemplateOptions { Format = Format.Csv });
+
+        result.ShouldBeSuccess();
+        var content = Encoding.UTF8.GetString(result.Value);
+        content.ShouldContain("Id,RequiredField");
+        content.ShouldContain("type: integer");
+        content.ShouldContain("required");
+    }
+
+    [Fact]
+    public async Task GenerateTemplateAsync_WithBuilderOptions_ForwardsBuiltOptions()
+    {
+        IDataExporter sut = new DataPorterService([new JsonDataPorterProvider()], this.configurationMerger);
+        await using var stream = new MemoryStream();
+
+        var result = await sut.GenerateTemplateAsync<SimpleEntity>(stream, o => o.AsJson().WithSampleItemCount(2).WithGZipCompression());
+
+        result.ShouldBeSuccess();
+        CompressionHelper.IsCompressed(stream.ToArray()).ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task GenerateTemplateToBytesAsync_WithUnsupportedProvider_ReturnsFailure()
+    {
+        var sut = new DataPorterService([CreateMockExportProvider(Format.Excel)], this.configurationMerger);
+
+        var result = await sut.GenerateTemplateToBytesAsync<SimpleEntity>(new TemplateOptions { Format = Format.Excel });
+
+        result.ShouldBeFailure();
+        result.HasError<FormatNotSupportedError>().ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task GenerateTemplateToBytesAsync_WithCompression_ReturnsCompressedBytes()
+    {
+        var sut = new DataPorterService([new CsvDataPorterProvider()], this.configurationMerger);
+
+        var result = await sut.GenerateTemplateToBytesAsync<SimpleEntity>(new TemplateOptions
+        {
+            Format = Format.Csv,
+            Compression = new PayloadCompressionOptions { Kind = PayloadCompressionKind.GZip }
+        });
+
+        result.ShouldBeSuccess();
+        CompressionHelper.IsCompressed(result.Value).ShouldBeTrue();
+        var decompressed = await CompressionHelper.DecompressAsync(result.Value);
+        Encoding.UTF8.GetString(decompressed).ShouldContain("Id,Name");
+    }
+
+    [Fact]
+    public async Task GenerateTemplateToBytesAsync_WithExcelProvider_ReturnsWorkbookWithHeadersAndHints()
+    {
+        var sut = new DataPorterService([new ExcelDataPorterProvider()], this.configurationMerger);
+
+        var result = await sut.GenerateTemplateToBytesAsync<EntityWithRequiredColumn>(new TemplateOptions { Format = Format.Excel });
+
+        result.ShouldBeSuccess();
+        using var workbook = new XLWorkbook(new MemoryStream(result.Value));
+        var worksheet = workbook.Worksheet(1);
+        worksheet.Cell(1, 1).GetString().ShouldBe("Id");
+        worksheet.Cell(1, 2).GetString().ShouldBe("RequiredField");
+        worksheet.Cell(2, 2).GetString().ShouldContain("required");
+    }
+
+    [Fact]
+    public async Task GenerateTemplateToBytesAsync_WithJsonProvider_ReturnsMetadataWrapper()
+    {
+        var sut = new DataPorterService([new JsonDataPorterProvider()], this.configurationMerger);
+
+        var result = await sut.GenerateTemplateToBytesAsync<SimpleEntity>(new TemplateOptions { Format = Format.Json });
+
+        result.ShouldBeSuccess();
+        using var document = JsonDocument.Parse(result.Value);
+        document.RootElement.TryGetProperty("metadata", out var metadata).ShouldBeTrue();
+        metadata.TryGetProperty("fields", out var fields).ShouldBeTrue();
+        fields.GetArrayLength().ShouldBeGreaterThan(0);
+        document.RootElement.TryGetProperty("data", out var data).ShouldBeTrue();
+        data.GetArrayLength().ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task GenerateTemplateToBytesAsync_WithXmlProvider_ReturnsMetadataWrapper()
+    {
+        var sut = new DataPorterService([new XmlDataPorterProvider()], this.configurationMerger);
+
+        var result = await sut.GenerateTemplateToBytesAsync<SimpleEntity>(new TemplateOptions { Format = Format.Xml });
+
+        result.ShouldBeSuccess();
+        var document = XDocument.Load(new MemoryStream(result.Value));
+        document.Root?.Name.LocalName.ShouldBe("Template");
+        document.Root?.Element("Metadata").ShouldNotBeNull();
+        document.Root?.Element("Data")?.Elements().Count().ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task GenerateTemplateToBytesAsync_WithCsvTypedProvider_ReturnsTypedHeaderAndHints()
+    {
+        var sut = new DataPorterService([new CsvTypedDataPorterProvider()], this.configurationMerger);
+
+        var result = await sut.GenerateTemplateToBytesAsync<SimpleEntity>(new TemplateOptions { Format = Format.CsvTyped });
+
+        result.ShouldBeSuccess();
+        var content = Encoding.UTF8.GetString(result.Value);
+        content.ShouldContain("RecordType,RootId,RecordId,ParentId,Collection,Index");
+        content.ShouldContain("type: integer");
     }
 
     private static TestExportProvider CreateMockExportProvider(

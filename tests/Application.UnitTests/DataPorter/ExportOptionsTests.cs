@@ -252,6 +252,90 @@ public class ImportProgressReportTests
     }
 }
 
+[UnitTest("Common")]
+public class TemplateOptionsTests
+{
+    [Fact]
+    public void TemplateOptions_DefaultValues_AreCorrect()
+    {
+        var sut = new TemplateOptions();
+
+        sut.Format.ShouldBe(Format.Excel);
+        sut.UseAttributes.ShouldBeTrue();
+        sut.Culture.ShouldBe(System.Globalization.CultureInfo.InvariantCulture);
+        sut.Compression.ShouldBe(PayloadCompressionOptions.None);
+        sut.ProviderOptions.ShouldNotBeNull();
+        sut.ProviderOptions.ShouldBeEmpty();
+        sut.AnnotationStyle.ShouldBe(TemplateAnnotationStyle.Annotated);
+        sut.IncludeHints.ShouldBeTrue();
+        sut.SampleItemCount.ShouldBe(1);
+        sut.UseMetadataWrapper.ShouldBeTrue();
+    }
+
+    [Fact]
+    public void TemplateOptions_WithCustomValues_AreSet()
+    {
+        var sut = new TemplateOptions
+        {
+            Format = Format.Json,
+            ProfileName = "TemplateProfile",
+            UseAttributes = false,
+            Culture = new System.Globalization.CultureInfo("nl-NL"),
+            SheetName = "OrdersTemplate",
+            Compression = new PayloadCompressionOptions { Kind = PayloadCompressionKind.Zip, ZipEntryName = "orders.json" },
+            ProviderOptions = new Dictionary<string, object> { ["strict"] = true },
+            AnnotationStyle = TemplateAnnotationStyle.StructureOnly,
+            IncludeHints = false,
+            SampleItemCount = 3,
+            UseMetadataWrapper = false
+        };
+
+        sut.Format.ShouldBe(Format.Json);
+        sut.ProfileName.ShouldBe("TemplateProfile");
+        sut.UseAttributes.ShouldBeFalse();
+        sut.Culture.Name.ShouldBe("nl-NL");
+        sut.SheetName.ShouldBe("OrdersTemplate");
+        sut.Compression.Kind.ShouldBe(PayloadCompressionKind.Zip);
+        sut.Compression.ZipEntryName.ShouldBe("orders.json");
+        sut.ProviderOptions["strict"].ShouldBe(true);
+        sut.AnnotationStyle.ShouldBe(TemplateAnnotationStyle.StructureOnly);
+        sut.IncludeHints.ShouldBeFalse();
+        sut.SampleItemCount.ShouldBe(3);
+        sut.UseMetadataWrapper.ShouldBeFalse();
+    }
+
+    [Fact]
+    public void TemplateOptionsBuilder_WithFluentConfiguration_BuildsExpectedOptions()
+    {
+        var sut = new TemplateOptionsBuilder()
+            .AsJson()
+            .WithProfileName("TemplateProfile")
+            .UseAttributes(false)
+            .WithCulture(new System.Globalization.CultureInfo("de-DE"))
+            .WithSheetName("Orders")
+            .WithAnnotationStyle(TemplateAnnotationStyle.StructureOnly)
+            .IncludeHints(false)
+            .WithSampleItemCount(2)
+            .UseMetadataWrapper(false)
+            .WithZipCompression("orders.json")
+            .WithProviderOption("strict", true)
+            .Build();
+
+        sut.Format.ShouldBe(Format.Json);
+        sut.ProfileName.ShouldBe("TemplateProfile");
+        sut.UseAttributes.ShouldBeFalse();
+        sut.Culture.Name.ShouldBe("de-DE");
+        sut.SheetName.ShouldBe("Orders");
+        sut.AnnotationStyle.ShouldBe(TemplateAnnotationStyle.StructureOnly);
+        sut.IncludeHints.ShouldBeFalse();
+        sut.SampleItemCount.ShouldBe(2);
+        sut.UseMetadataWrapper.ShouldBeFalse();
+        sut.Compression.Kind.ShouldBe(PayloadCompressionKind.Zip);
+        sut.Compression.ZipEntryName.ShouldBe("orders.json");
+        sut.ProviderOptions["strict"].ShouldBe(true);
+    }
+}
+
 internal sealed class TestProgress<T> : IProgress<T>
 {
     public List<T> Reports { get; } = [];

@@ -124,6 +124,69 @@ public sealed class ConfigurationMerger(
         return config;
     }
 
+    /// <summary>
+    /// Builds the template configuration for a type.
+    /// </summary>
+    /// <typeparam name="TTarget">The target type.</typeparam>
+    /// <param name="options">The template options.</param>
+    /// <returns>The merged template configuration.</returns>
+    public TemplateConfiguration BuildTemplateConfiguration<TTarget>(TemplateOptions options = null)
+        where TTarget : class, new()
+    {
+        return this.BuildTemplateConfiguration(typeof(TTarget), options);
+    }
+
+    /// <summary>
+    /// Builds the template configuration for a type.
+    /// </summary>
+    /// <param name="targetType">The target type.</param>
+    /// <param name="options">The template options.</param>
+    /// <returns>The merged template configuration.</returns>
+    public TemplateConfiguration BuildTemplateConfiguration(Type targetType, TemplateOptions options = null)
+    {
+        options ??= new TemplateOptions();
+
+        var importConfiguration = this.BuildImportConfiguration(targetType, new ImportOptions
+        {
+            Format = options.Format,
+            UseAttributes = options.UseAttributes,
+            Culture = options.Culture,
+            SheetName = options.SheetName,
+            Compression = options.Compression,
+            ProviderOptions = options.ProviderOptions
+        });
+        var exportConfiguration = this.BuildExportConfiguration(targetType, new ExportOptions
+        {
+            Format = options.Format,
+            UseAttributes = options.UseAttributes,
+            Culture = options.Culture,
+            SheetName = options.SheetName,
+            Compression = options.Compression,
+            ProviderOptions = options.ProviderOptions
+        });
+
+        var fields = this.BuildTemplateFields(importConfiguration, exportConfiguration);
+        var sheetName = !string.IsNullOrWhiteSpace(importConfiguration.SheetName)
+            ? importConfiguration.SheetName
+            : !string.IsNullOrWhiteSpace(exportConfiguration.SheetName)
+                ? exportConfiguration.SheetName
+                : targetType.Name;
+
+        return new TemplateConfiguration
+        {
+            TargetType = targetType,
+            SheetName = sheetName,
+            Fields = fields,
+            Culture = options.Culture,
+            Compression = options.Compression ?? PayloadCompressionOptions.None,
+            AnnotationStyle = options.AnnotationStyle,
+            IncludeHints = options.IncludeHints,
+            SampleItemCount = options.SampleItemCount,
+            UseMetadataWrapper = options.UseMetadataWrapper,
+            ProviderOptions = options.ProviderOptions ?? new Dictionary<string, object>()
+        };
+    }
+
     private void MergeProfileIntoExportConfig(ExportConfiguration config, IExportProfile profile)
     {
         // Override sheet name from profile
@@ -453,5 +516,66 @@ public sealed class ConfigurationMerger(
         {
             target.Validators.AddRange(source.Validators);
         }
+    }
+
+    private List<TemplateFieldConfiguration> BuildTemplateFields(ImportConfiguration importConfiguration, ExportConfiguration exportConfiguration)
+    {
+        var exportColumnsByProperty = exportConfiguration.Columns
+            .Where(column => !column.Ignore)
+            .GroupBy(column => column.PropertyName, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(group => group.Key, group => group.First(), StringComparer.OrdinalIgnoreCase);
+        var importColumns = importConfiguration.Columns.Where(column => !column.Ignore).ToList();
+
+        if (importColumns.Count > 0)
+        {
+            return [.. importColumns
+                .OrderBy(column => column.Order >= 0 ? column.Order : int.MaxValue)
+                .ThenBy(column => column.SourceName ?? column.PropertyName, StringComparer.OrdinalIgnoreCase)
+                .Select(column => this.CreateTemplateField(column, exportColumnsByProperty))];
+        }
+
+        return [.. exportConfiguration.Columns
+            .Where(column => !column.Ignore)
+            .OrderBy(column => column.Order >= 0 ? column.Order : int.MaxValue)
+            .ThenBy(column => column.HeaderName ?? column.PropertyName, StringComparer.OrdinalIgnoreCase)
+            .Select(this.CreateTemplateField)];
+    }
+
+    private TemplateFieldConfiguration CreateTemplateField(
+        ImportColumnConfiguration importColumn,
+        IReadOnlyDictionary<string, ColumnConfiguration> exportColumnsByProperty)
+    {
+        exportColumnsByProperty.TryGetValue(importColumn.PropertyName, out var exportColumn);
+
+        var validationHints = importColumn.Validators
+            .Select(validator => validator.ErrorMessage)
+            .Where(message => !string.IsNullOrWhiteSpace(message))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        var propertyType = importColumn.PropertyInfo?.PropertyType ?? exportColumn?.PropertyInfo?.PropertyType ?? typeof(string);
+
+        return new TemplateFieldConfiguration
+        {
+            PropertyName = importColumn.PropertyName,
+            HeaderName = importColumn.SourceName ?? exportColumn?.HeaderName ?? importColumn.PropertyName,
+            Order = importColumn.Order >= 0 ? importColumn.Order : exportColumn?.Order ?? -1,
+            PropertyType = propertyType,
+            IsRequired = importColumn.IsRequired,
+            RequiredMessage = importColumn.RequiredMessage,
+            Format = importColumn.Format ?? exportColumn?.Format,
+            ValidationHints = validationHints
+        };
+    }
+
+    private TemplateFieldConfiguration CreateTemplateField(ColumnConfiguration exportColumn)
+    {
+        return new TemplateFieldConfiguration
+        {
+            PropertyName = exportColumn.PropertyName,
+            HeaderName = exportColumn.HeaderName ?? exportColumn.PropertyName,
+            Order = exportColumn.Order,
+            PropertyType = exportColumn.PropertyInfo?.PropertyType ?? typeof(string),
+            Format = exportColumn.Format
+        };
     }
 }

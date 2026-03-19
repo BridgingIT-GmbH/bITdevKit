@@ -187,4 +187,56 @@ public interface IDataExporter
         Stream outputStream,
         Builder<ExportOptionsBuilder, ExportOptions> optionsBuilder,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Generates a template to a stream using the specified options.
+    /// </summary>
+    /// <typeparam name="TTarget">The type the template is for.</typeparam>
+    /// <param name="outputStream">The stream to write the generated template to.</param>
+    /// <param name="options">Optional template generation options.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A result containing export information or error details.</returns>
+    Task<Result<ExportResult>> GenerateTemplateAsync<TTarget>(
+        Stream outputStream,
+        TemplateOptions options = null,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new();
+
+    /// <summary>
+    /// Generates a template to a stream using a fluent template options builder.
+    /// </summary>
+    /// <typeparam name="TTarget">The type the template is for.</typeparam>
+    /// <param name="outputStream">The stream to write the generated template to.</param>
+    /// <param name="optionsBuilder">The fluent options builder.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A result containing export information or error details.</returns>
+    Task<Result<ExportResult>> GenerateTemplateAsync<TTarget>(
+        Stream outputStream,
+        Builder<TemplateOptionsBuilder, TemplateOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new();
+
+    /// <summary>
+    /// Generates a template to a byte array using the specified options.
+    /// </summary>
+    /// <typeparam name="TTarget">The type the template is for.</typeparam>
+    /// <param name="options">Optional template generation options.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A result containing the generated template as bytes or error details.</returns>
+    Task<Result<byte[]>> GenerateTemplateToBytesAsync<TTarget>(
+        TemplateOptions options = null,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new();
+
+    /// <summary>
+    /// Generates a template to a byte array using a fluent template options builder.
+    /// </summary>
+    /// <typeparam name="TTarget">The type the template is for.</typeparam>
+    /// <param name="optionsBuilder">The fluent options builder.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A result containing the generated template as bytes or error details.</returns>
+    Task<Result<byte[]>> GenerateTemplateToBytesAsync<TTarget>(
+        Builder<TemplateOptionsBuilder, TemplateOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new();
 }

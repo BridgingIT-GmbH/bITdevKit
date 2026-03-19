@@ -361,4 +361,57 @@ public class ConfigurationMergerTests
         result.ShouldNotBeNull();
         result.TargetType.ShouldBe(typeof(SimpleEntity));
     }
+
+    [Fact]
+    public void BuildTemplateConfiguration_WithImportMetadata_PrefersImportConfiguration()
+    {
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+
+        var result = sut.BuildTemplateConfiguration<EntityWithRequiredColumn>();
+
+        result.TargetType.ShouldBe(typeof(EntityWithRequiredColumn));
+        result.Fields.Count.ShouldBe(2);
+        result.Fields.ShouldContain(field => field.PropertyName == nameof(EntityWithRequiredColumn.RequiredField) && field.IsRequired);
+    }
+
+    [Fact]
+    public void BuildTemplateConfiguration_WithNoImportMetadata_FallsBackToExportConfiguration()
+    {
+        this.profileRegistry.RegisterExportProfile(new TestExportProfile());
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+
+        var result = sut.BuildTemplateConfiguration(typeof(TestExportEntity), new TemplateOptions { UseAttributes = false });
+
+        result.Fields.Count.ShouldBe(3);
+        result.Fields[0].HeaderName.ShouldBe("Identifier");
+        result.Fields[2].Format.ShouldBe("C2");
+    }
+
+    [Fact]
+    public void BuildTemplateConfiguration_WithOptions_MapsTemplateSettings()
+    {
+        var sut = new ConfigurationMerger(this.profileRegistry, this.attributeReader);
+        var culture = new System.Globalization.CultureInfo("nl-NL");
+
+        var result = sut.BuildTemplateConfiguration<SimpleEntity>(new TemplateOptions
+        {
+            Culture = culture,
+            SheetName = "TemplateSheet",
+            Compression = new PayloadCompressionOptions { Kind = PayloadCompressionKind.GZip },
+            IncludeHints = false,
+            AnnotationStyle = TemplateAnnotationStyle.StructureOnly,
+            SampleItemCount = 2,
+            UseMetadataWrapper = false,
+            ProviderOptions = new Dictionary<string, object> { ["strict"] = true }
+        });
+
+        result.Culture.ShouldBe(culture);
+        result.SheetName.ShouldBe("TemplateSheet");
+        result.Compression.Kind.ShouldBe(PayloadCompressionKind.GZip);
+        result.IncludeHints.ShouldBeFalse();
+        result.AnnotationStyle.ShouldBe(TemplateAnnotationStyle.StructureOnly);
+        result.SampleItemCount.ShouldBe(2);
+        result.UseMetadataWrapper.ShouldBeFalse();
+        result.ProviderOptions["strict"].ShouldBe(true);
+    }
 }

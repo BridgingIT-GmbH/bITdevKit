@@ -21,7 +21,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// <param name="loggerFactory">The logger factory.</param>
 public sealed class ExcelDataPorterProvider(
     ExcelConfiguration configuration = null,
-    ILoggerFactory loggerFactory = null) : IDataExportProvider, IDataImportProvider
+    ILoggerFactory loggerFactory = null) : IDataExportProvider, IDataImportProvider, IDataTemplateProvider
 {
     private readonly ExcelConfiguration configuration = configuration ?? new ExcelConfiguration();
     private readonly ILogger<ExcelDataPorterProvider> logger = loggerFactory?.CreateLogger<ExcelDataPorterProvider>() ?? NullLogger<ExcelDataPorterProvider>.Instance;
@@ -40,6 +40,9 @@ public sealed class ExcelDataPorterProvider(
 
     /// <inheritdoc/>
     public bool SupportsStreaming => true;
+
+    /// <inheritdoc/>
+    public bool SupportsTemplateExport => true;
 
     /// <inheritdoc/>
     public async Task<ExportResult> ExportAsync<TSource>(
@@ -348,6 +351,71 @@ public sealed class ExcelDataPorterProvider(
         }
 
         return await this.ExportAsync(materializedDataSets, outputStream, cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public async Task<ExportResult> GenerateTemplateAsync<TTarget>(
+        Stream outputStream,
+        TemplateConfiguration configuration,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        var writeStream = new WriteStreamWrapper(outputStream);
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add(configuration.SheetName ?? typeof(TTarget).Name);
+        var fields = this.GetOrderedTemplateFields(configuration);
+        var currentRow = 1;
+
+        for (var columnIndex = 0; columnIndex < fields.Count; columnIndex++)
+        {
+            var field = fields[columnIndex];
+            var cell = worksheet.Cell(currentRow, columnIndex + 1);
+            cell.Value = field.HeaderName ?? field.PropertyName;
+            cell.Style.Font.SetBold(true);
+            cell.Style.Fill.BackgroundColor = field.IsRequired ? XLColor.LightGoldenrodYellow : XLColor.LightGray;
+        }
+
+        if (configuration.IncludeHints && configuration.AnnotationStyle == TemplateAnnotationStyle.Annotated)
+        {
+            currentRow++;
+            for (var columnIndex = 0; columnIndex < fields.Count; columnIndex++)
+            {
+                var field = fields[columnIndex];
+                var cell = worksheet.Cell(currentRow, columnIndex + 1);
+                cell.Value = field.BuildHintText();
+                cell.Style.Font.SetItalic(true);
+                cell.Style.Fill.BackgroundColor = XLColor.WhiteSmoke;
+                cell.Style.Alignment.WrapText = true;
+            }
+        }
+
+        if (this.configuration.AutoFitColumns)
+        {
+            foreach (var column in worksheet.ColumnsUsed())
+            {
+                column.AdjustToContents();
+                if (column.Width > this.configuration.MaxColumnWidth)
+                {
+                    column.Width = this.configuration.MaxColumnWidth;
+                }
+            }
+        }
+
+        if (this.configuration.FreezeHeaderRow)
+        {
+            worksheet.SheetView.FreezeRows(configuration.IncludeHints && configuration.AnnotationStyle == TemplateAnnotationStyle.Annotated ? 2 : 1);
+        }
+
+        await Task.Run(() => workbook.SaveAs(writeStream), cancellationToken);
+
+        return new ExportResult
+        {
+            BytesWritten = writeStream.BytesWritten,
+            TotalRows = 0,
+            Duration = TimeSpan.Zero,
+            Format = this.Format,
+            Metadata = new Dictionary<string, object> { ["template"] = true }
+        };
     }
 
     /// <inheritdoc/>
@@ -1052,4 +1120,11 @@ public sealed class ExcelDataPorterProvider(
     private sealed record HeaderMappingResult(
         Dictionary<ImportColumnConfiguration, int> ColumnMap,
         IReadOnlyList<ImportColumnConfiguration> MissingColumns);
+
+    private IReadOnlyList<TemplateFieldConfiguration> GetOrderedTemplateFields(TemplateConfiguration configuration)
+    {
+        return [.. configuration.Fields
+            .OrderBy(field => field.Order >= 0 ? field.Order : int.MaxValue)
+            .ThenBy(field => field.HeaderName ?? field.PropertyName, StringComparer.OrdinalIgnoreCase)];
+    }
 }

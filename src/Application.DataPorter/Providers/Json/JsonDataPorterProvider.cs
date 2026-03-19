@@ -21,7 +21,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// <param name="loggerFactory">The logger factory.</param>
 public sealed class JsonDataPorterProvider(
     JsonConfiguration configuration = null,
-    ILoggerFactory loggerFactory = null) : IDataExportProvider, IDataImportProvider
+    ILoggerFactory loggerFactory = null) : IDataExportProvider, IDataImportProvider, IDataTemplateProvider
 {
     private readonly JsonConfiguration configuration = configuration ?? new JsonConfiguration();
     private readonly ILogger<JsonDataPorterProvider> logger = loggerFactory?.CreateLogger<JsonDataPorterProvider>() ?? NullLogger<JsonDataPorterProvider>.Instance;
@@ -40,6 +40,9 @@ public sealed class JsonDataPorterProvider(
 
     /// <inheritdoc/>
     public bool SupportsStreaming => true;
+
+    /// <inheritdoc/>
+    public bool SupportsTemplateExport => true;
 
     /// <inheritdoc/>
     public async Task<ExportResult> ExportAsync<TSource>(
@@ -324,6 +327,47 @@ public sealed class JsonDataPorterProvider(
     }
 
     /// <inheritdoc/>
+    public async Task<ExportResult> GenerateTemplateAsync<TTarget>(
+        Stream outputStream,
+        TemplateConfiguration configuration,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        var jsonOptions = this.CreateJsonSerializerOptions();
+        var writeStream = new WriteStreamWrapper(outputStream);
+        var fields = this.GetOrderedTemplateFields(configuration);
+        using var writer = new Utf8JsonWriter(writeStream, new JsonWriterOptions
+        {
+            Indented = jsonOptions.WriteIndented
+        });
+
+        if (configuration.UseMetadataWrapper)
+        {
+            writer.WriteStartObject();
+            writer.WritePropertyName("metadata");
+            this.WriteTemplateMetadata(writer, configuration, fields);
+            writer.WritePropertyName("data");
+            this.WriteTemplateSamples(writer, configuration, fields);
+            writer.WriteEndObject();
+        }
+        else
+        {
+            this.WriteTemplateSamples(writer, configuration, fields);
+        }
+
+        await writer.FlushAsync(cancellationToken);
+
+        return new ExportResult
+        {
+            BytesWritten = writeStream.BytesWritten,
+            TotalRows = configuration.SampleItemCount,
+            Duration = TimeSpan.Zero,
+            Format = this.Format,
+            Metadata = new Dictionary<string, object> { ["template"] = true }
+        };
+    }
+
+    /// <inheritdoc/>
     public async Task<ImportResult<TTarget>> ImportAsync<TTarget>(
         Stream inputStream,
         ImportConfiguration importConfiguration,
@@ -604,6 +648,90 @@ public sealed class JsonDataPorterProvider(
         }
 
         JsonSerializer.Serialize(writer, value, value.GetType(), options);
+    }
+
+    private void WriteTemplateMetadata(
+        Utf8JsonWriter writer,
+        TemplateConfiguration configuration,
+        IReadOnlyList<TemplateFieldConfiguration> fields)
+    {
+        writer.WriteStartObject();
+        writer.WriteString("targetType", configuration.TargetType.Name);
+        writer.WriteString("format", this.Format.ToString());
+        writer.WriteString("annotationStyle", configuration.AnnotationStyle.ToString());
+
+        if (!string.IsNullOrWhiteSpace(configuration.SheetName))
+        {
+            writer.WriteString("sheetName", configuration.SheetName);
+        }
+
+        writer.WritePropertyName("fields");
+        writer.WriteStartArray();
+
+        foreach (var field in fields)
+        {
+            writer.WriteStartObject();
+            writer.WriteString("name", field.HeaderName ?? field.PropertyName);
+            writer.WriteString("propertyName", field.PropertyName);
+            writer.WriteString("type", field.TypeName);
+            writer.WriteBoolean("required", field.IsRequired);
+
+            if (!string.IsNullOrWhiteSpace(field.RequiredMessage))
+            {
+                writer.WriteString("requiredMessage", field.RequiredMessage);
+            }
+
+            if (!string.IsNullOrWhiteSpace(field.Format))
+            {
+                writer.WriteString("format", field.Format);
+            }
+
+            if (configuration.IncludeHints && field.ValidationHints.Count > 0)
+            {
+                writer.WritePropertyName("validationHints");
+                writer.WriteStartArray();
+                foreach (var hint in field.ValidationHints)
+                {
+                    writer.WriteStringValue(hint);
+                }
+
+                writer.WriteEndArray();
+            }
+
+            writer.WriteEndObject();
+        }
+
+        writer.WriteEndArray();
+        writer.WriteEndObject();
+    }
+
+    private void WriteTemplateSamples(
+        Utf8JsonWriter writer,
+        TemplateConfiguration configuration,
+        IReadOnlyList<TemplateFieldConfiguration> fields)
+    {
+        writer.WriteStartArray();
+
+        for (var index = 0; index < configuration.SampleItemCount; index++)
+        {
+            writer.WriteStartObject();
+            foreach (var field in fields)
+            {
+                writer.WritePropertyName(field.HeaderName ?? field.PropertyName);
+                writer.WriteNullValue();
+            }
+
+            writer.WriteEndObject();
+        }
+
+        writer.WriteEndArray();
+    }
+
+    private IReadOnlyList<TemplateFieldConfiguration> GetOrderedTemplateFields(TemplateConfiguration configuration)
+    {
+        return [.. configuration.Fields
+            .OrderBy(field => field.Order >= 0 ? field.Order : int.MaxValue)
+            .ThenBy(field => field.HeaderName ?? field.PropertyName, StringComparer.OrdinalIgnoreCase)];
     }
 
     private async IAsyncEnumerable<JsonImportRowResult<TTarget>> ProcessRowsAsync<TTarget>(

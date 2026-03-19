@@ -163,6 +163,88 @@ HTTP transport compression is a separate concern:
 - in that mode, DataPorter still reads and writes the plain CSV/JSON/XML stream
 - use DataPorter compression only when the artifact itself should be downloadable or uploadable as `.gz` or `.zip`
 
+### Template Generation
+
+`IDataExporter` can generate annotated import templates through dedicated template-generation methods and `TemplateOptions`.
+
+- template generation is single-type in v1
+- import metadata is preferred when building template fields, with export metadata as a fallback
+- CSV, Excel, and CsvTyped templates render headers plus an optional hint row
+- JSON and XML templates can render a metadata wrapper plus one or more empty sample payload items
+- annotated templates are guidance artifacts for people and partner integrations, not raw import payloads as-is
+- built-in template support currently exists for `Format.Csv`, `Format.Excel`, `Format.CsvTyped`, `Format.Json`, and `Format.Xml`
+- `Format.Pdf` does not support template generation in v1
+- custom providers can participate by implementing `IDataTemplateProvider`
+
+Main API surface:
+
+- `GenerateTemplateAsync<T>(Stream output, TemplateOptions options = null, ...)`
+- `GenerateTemplateAsync<T>(Stream output, o => ..., ...)`
+- `GenerateTemplateToBytesAsync<T>(TemplateOptions options = null, ...)`
+- `GenerateTemplateToBytesAsync<T>(o => ..., ...)`
+
+```csharp
+await exporter.GenerateTemplateAsync<Order>(
+    output,
+    o => o.AsExcel()
+        .WithSheetName("Orders")
+        .IncludeHints()
+        .WithAnnotationStyle(TemplateAnnotationStyle.Annotated));
+
+var jsonTemplate = await exporter.GenerateTemplateToBytesAsync<Order>(
+    o => o.AsJson()
+        .WithSampleItemCount(1)
+        .UseMetadataWrapper());
+```
+
+Common options:
+
+- `AsExcel()`, `AsCsv()`, `AsCsvTyped()`, `AsJson()`, `AsXml()`, or `As(new Format("custom-format"))`
+- `WithSheetName(...)`
+- `IncludeHints(...)`
+- `WithAnnotationStyle(...)`
+- `WithSampleItemCount(...)`
+- `UseMetadataWrapper(...)`
+- `WithGZipCompression(...)` or `WithZipCompression(...)`
+
+Format behavior:
+
+- `Format.Csv`: header row plus hint row such as `type: string | required`
+- `Format.Excel`: header row plus hint row with required columns visually emphasized
+- `Format.CsvTyped`: typed base columns plus payload columns and optional hint row
+- `Format.Json`: `metadata` plus `data`
+- `Format.Xml`: `<Template>` plus `<Metadata>` and `<Data>`
+
+Custom provider support:
+
+```csharp
+public sealed class EdiX12TemplateProvider : IDataExportProvider, IDataTemplateProvider
+{
+    public Format Format => new("edi-x12");
+
+    public IReadOnlyCollection<string> SupportedExtensions => [".edi"];
+
+    public bool SupportsImport => false;
+
+    public bool SupportsExport => true;
+
+    public bool SupportsStreaming => false;
+
+    public bool SupportsTemplateExport => true;
+
+    public Task<ExportResult> GenerateTemplateAsync<TTarget>(
+        Stream outputStream,
+        TemplateConfiguration configuration,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        // put domain-specific template here
+    }
+
+    // regular export members omitted
+}
+```
+
 ### Row Interceptors
 
 `ExportOptions` and `ImportOptions` can flow through typed row interceptors that are resolved from dependency injection.

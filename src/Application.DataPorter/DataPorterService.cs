@@ -520,6 +520,125 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
+    public async Task<Result<ExportResult>> GenerateTemplateAsync<TTarget>(
+        Stream outputStream,
+        TemplateOptions options = null,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        options ??= new TemplateOptions();
+
+        if (outputStream is null)
+        {
+            return Result<ExportResult>.Failure()
+                .WithError(new DataPorterError("Output stream cannot be null."));
+        }
+
+        var providerResult = this.GetProvider(options.Format);
+        if (providerResult.IsFailure)
+        {
+            return Result<ExportResult>.Failure()
+                .WithErrors(providerResult.Errors);
+        }
+
+        var provider = providerResult.Value;
+        if (provider is not IDataTemplateProvider templateProvider || !templateProvider.SupportsTemplateExport)
+        {
+            return Result<ExportResult>.Failure()
+                .WithError(new FormatNotSupportedError(
+                    $"{options.Format} (template)",
+                    this.providers
+                        .OfType<IDataTemplateProvider>()
+                        .Where(p => p.SupportsTemplateExport)
+                        .Select(p => p.Format.ToString())));
+        }
+
+        var configuration = configurationMerger.BuildTemplateConfiguration<TTarget>(options);
+        this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "template generation", typeof(TTarget).Name, options.Format, configuration.Compression, configuration);
+        this.logger.LogDebug("{LogKey} provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyExport, "template generation", typeof(TTarget).Name, options.Format, provider.GetType().Name, "sync");
+        this.logger.LogDebug("{LogKey} template generation started (type={Type}, format={Format}, provider={Provider}, annotationStyle={AnnotationStyle}, includeHints={IncludeHints}, sampleItemCount={SampleItemCount})", Constants.LogKeyExport, typeof(TTarget).Name, options.Format, provider.GetType().Name, configuration.AnnotationStyle, configuration.IncludeHints, configuration.SampleItemCount);
+
+        var stopwatch = Stopwatch.StartNew();
+        var artifactStream = new WriteStreamWrapper(outputStream);
+
+        try
+        {
+            ExportResult result;
+            await using (var compressedOutputStream = this.CreateCompressionWriteStream(artifactStream, configuration.Compression, provider))
+            {
+                result = await templateProvider.GenerateTemplateAsync<TTarget>(
+                    compressedOutputStream ?? artifactStream,
+                    configuration,
+                    cancellationToken);
+            }
+
+            stopwatch.Stop();
+            result = result with
+            {
+                BytesWritten = artifactStream.BytesWritten,
+                Duration = stopwatch.Elapsed,
+                Metadata = new Dictionary<string, object>(result.Metadata ?? new Dictionary<string, object>())
+                {
+                    ["template"] = true
+                }
+            };
+
+            this.logger.LogInformation("{LogKey} template generation finished (type={Type}, format={Format}, provider={Provider}, rowCount={RowCount}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, typeof(TTarget).Name, options.Format, provider.GetType().Name, result.TotalRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);
+            return Result<ExportResult>.Success(result);
+        }
+        catch (OperationCanceledException)
+        {
+            this.logger.LogWarning("{LogKey} template generation canceled (type={Type}, format={Format})", Constants.LogKeyExport, typeof(TTarget).Name, options.Format);
+            return Result<ExportResult>.Failure()
+                .WithError(new DataPorterError("Template generation operation was cancelled."));
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogError(ex, "{LogKey} template generation failed (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyExport, typeof(TTarget).Name, options.Format, ex.Message);
+            return Result<ExportResult>.Failure()
+                .WithError(new ExportError($"Template generation failed: {ex.Message}", ex));
+        }
+    }
+
+    /// <inheritdoc/>
+    public Task<Result<ExportResult>> GenerateTemplateAsync<TTarget>(
+        Stream outputStream,
+        Builder<TemplateOptionsBuilder, TemplateOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        return this.GenerateTemplateAsync<TTarget>(outputStream, Build(optionsBuilder), cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public async Task<Result<byte[]>> GenerateTemplateToBytesAsync<TTarget>(
+        TemplateOptions options = null,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        await using var stream = new MemoryStream();
+        var result = await this.GenerateTemplateAsync<TTarget>(stream, options, cancellationToken);
+
+        if (result.IsFailure)
+        {
+            return Result<byte[]>.Failure()
+                .WithErrors(result.Errors)
+                .WithMessages(result.Messages);
+        }
+
+        return Result<byte[]>.Success(stream.ToArray());
+    }
+
+    /// <inheritdoc/>
+    public Task<Result<byte[]>> GenerateTemplateToBytesAsync<TTarget>(
+        Builder<TemplateOptionsBuilder, TemplateOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TTarget : class, new()
+    {
+        return this.GenerateTemplateToBytesAsync<TTarget>(Build(optionsBuilder), cancellationToken);
+    }
+
+    /// <inheritdoc/>
     public async Task<Result<ImportResult<TTarget>>> ImportAsync<TTarget>(
         Stream inputStream,
         ImportOptions options = null,
@@ -934,6 +1053,11 @@ public sealed class DataPorterService(
     private static ImportOptions Build(Builder<ImportOptionsBuilder, ImportOptions> optionsBuilder)
     {
         return optionsBuilder is null ? null : optionsBuilder(new ImportOptionsBuilder()).Build();
+    }
+
+    private static TemplateOptions Build(Builder<TemplateOptionsBuilder, TemplateOptions> optionsBuilder)
+    {
+        return optionsBuilder is null ? null : optionsBuilder(new TemplateOptionsBuilder()).Build();
     }
 
     private static string GetDefaultZipEntryName(IDataPorterProvider provider)

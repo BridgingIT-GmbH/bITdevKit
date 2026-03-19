@@ -28,6 +28,9 @@ public class CustomBehavior(IFileStorageProvider innerProvider) : IFileStorageBe
     public Task<Result> WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default) =>
         this.innerProvider.WriteFileAsync(path, content, progress, cancellationToken);
 
+    public Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default) =>
+        this.innerProvider.OpenWriteFileAsync(path, useTemporaryWrite, progress, cancellationToken);
+
     public Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default) =>
         this.innerProvider.DeleteFileAsync(path, progress, cancellationToken);
 

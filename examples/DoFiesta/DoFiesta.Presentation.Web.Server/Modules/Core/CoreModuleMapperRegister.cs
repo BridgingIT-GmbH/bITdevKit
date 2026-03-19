@@ -76,6 +76,6 @@ public class CoreModuleMapperRegister : IRegister
             .MapWith(src => src.Id);
 
         config.NewConfig<int, T>()
-            .MapWith(src => Enumeration.GetAll<T>().First(x => x.Id == src));
+            .MapWith(src => Enumeration.GetAll<T>().FirstOrDefault(x => x.Id == src) ?? Enumeration.GetAll<T>().First());
     }
 }

@@ -63,6 +63,11 @@ public class NetworkFileStorageProvider : LocalFileStorageProvider
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.WriteFileAsync(path, content, progress, cancellationToken));
     }
 
+    public override async Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        return await this.impersonationService.ExecuteImpersonatedAsync(() => base.OpenWriteFileAsync(path, useTemporaryWrite, progress, cancellationToken));
+    }
+
     public override async Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         return await this.impersonationService.ExecuteImpersonatedAsync(() => base.DeleteFileAsync(path, progress, cancellationToken));

@@ -6,7 +6,7 @@
 
 Managing file storage presents challenges due to inconsistent APIs across storage systems, complex requirements for secure file handling, the need for progress reporting during long operations, robust error handling, thread safety concerns, and the demand for extensibility to support new providers or custom functionality.
 
-The `FileStorage` feature addresses these through the `IFileStorageProvider` interface for abstracting file operations, a fluent DI setup with `AddFileStorage`, and the `Result` pattern for error handling and messaging. It supports progress reporting via `IProgress<FileProgress>` and metadata management with `FileMetadata`. The feature is designed to be extensible, allowing developers to implement custom providers or extend functionality with behaviors. Additionally, it supports notifications for real-time monitoring (used by `FileMonitoring`) through the `SupportsNotifications` property.
+The `FileStorage` feature addresses these through the `IFileStorageProvider` interface for abstracting file operations, a fluent DI setup with `AddFileStorage`, and the `Result` pattern for error handling and messaging. It supports progress reporting via `IProgress<FileProgress>` and metadata management with `FileMetadata`. The feature is designed to be extensible, allowing developers to implement custom providers or extend functionality with behaviors. Additionally, it supports notifications for real-time monitoring (used by `FileMonitoring`) through the `SupportsNotifications` property. Besides the existing `WriteFileAsync` push model, the abstraction also supports `OpenWriteFileAsync` for scenarios where callers want to stream bytes directly into the destination.
 
 ### Architecture
 
@@ -20,6 +20,7 @@ classDiagram
         +FileExistsAsync(path, progress, token) Task~Result~
         +ReadFileAsync(path, progress, token) Task~Result~Stream~~
         +WriteFileAsync(path, content, progress, token) Task~Result~
+        +OpenWriteFileAsync(path, useTemporaryWrite, progress, token) Task~Result~Stream~~
         +DeleteFileAsync(path, progress, token) Task~Result~
         +GetChecksumAsync(path, token) Task~Result~string~~
         +GetFileMetadataAsync(path, token) Task~Result~FileMetadata~~
@@ -150,11 +151,23 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   new StreamReader(stream).ReadToEnd().ShouldBe("Test content");
   ```
 
-- **WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress, CancellationToken token)**: Writes `content` to `path`. Returns `Task<Result>` with success or errors (e.g., `FileSystemError`).
+- **WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress, CancellationToken token)**: Writes `content` to `path`. Use this when the caller already has a source stream. Returns `Task<Result>` with success or errors (e.g., `FileSystemError`).
 
   ```csharp
   var writeResult = await provider.WriteFileAsync("data.txt", new MemoryStream(Encoding.UTF8.GetBytes("Test content")), null, CancellationToken.None);
   writeResult.ShouldBeSuccess("Write should succeed");
+  ```
+
+- **OpenWriteFileAsync(string path, bool useTemporaryWrite, IProgress<FileProgress> progress, CancellationToken token)**: Opens a writable stream for `path`. Use this when the caller wants to write directly into the provider without first materializing a full source stream. Open failures are returned in the `Result`; write, flush, or dispose failures surface from the returned stream. `useTemporaryWrite: false` writes directly to the final path and may expose partial content, while `useTemporaryWrite: true` requests staged publish semantics when the provider supports it.
+
+  ```csharp
+  var openResult = await provider.OpenWriteFileAsync("feeds/data.csv", useTemporaryWrite: false, progress: null, CancellationToken.None);
+  openResult.ShouldBeSuccess("Open write should succeed");
+
+  await using var output = openResult.Value;
+  await using var writer = new StreamWriter(output, Encoding.UTF8, leaveOpen: false);
+  await writer.WriteLineAsync("id,name");
+  await writer.WriteLineAsync("1,Sample");
   ```
 
 - **DeleteFileAsync(string path, IProgress<FileProgress> progress, CancellationToken token)**: Deletes a file at `path`. Returns `Task<Result>` with success or errors (e.g., `PermissionError`).

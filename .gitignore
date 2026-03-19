@@ -422,3 +422,4 @@ FodyWeavers.xsd
 
 /.tmp/
 .claude
+_tmp**

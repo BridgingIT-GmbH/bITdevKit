@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Runtime.CompilerServices;
+
 public static class EnumerableExtensions
 {
     /// <summary>
@@ -91,5 +93,30 @@ public static class EnumerableExtensions
         }
 
         return result;
+    }
+
+    /// <summary>
+    ///    Converts the enumerable to an asynchronous enumerable.
+    /// </summary>
+    /// <param name="source">The source enumerable.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <typeparam name="T">The type of the elements in the enumerable.</typeparam>
+    /// <returns>An asynchronous enumerable representing the source enumerable.</returns>
+    public static async IAsyncEnumerable<T> ToAsyncEnumerable<T>(
+        this IEnumerable<T> source,
+        [EnumeratorCancellation] CancellationToken cancellationToken = default)
+    {
+        if (source is null)
+        {
+            yield break;
+        }
+
+        foreach (var item in source)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            await Task.Yield();
+
+            yield return item;
+        }
     }
 }

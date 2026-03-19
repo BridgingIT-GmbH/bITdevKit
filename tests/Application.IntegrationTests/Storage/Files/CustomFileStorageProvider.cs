@@ -30,6 +30,11 @@ public class CustomFileStorageProvider : IFileStorageProvider
         return Task.FromResult(Result.Failure().WithError(new FileSystemError("Not implemented")));
     }
 
+    public Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(Result<Stream>.Failure().WithError(new FileSystemError("Not implemented")));
+    }
+
     public Task<Result> DeleteFileAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         return Task.FromResult(Result.Failure().WithError(new FileSystemError("Not implemented")));

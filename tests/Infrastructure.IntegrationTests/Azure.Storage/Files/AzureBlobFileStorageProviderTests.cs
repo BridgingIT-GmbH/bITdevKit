@@ -57,6 +57,36 @@ public class AzureBlobFileStorageProviderTests(ITestOutputHelper output, TestEnv
     }
 
     [Fact]
+    public override async Task OpenWriteFileAsync_DirectWrite_Succeeds()
+    {
+        await base.OpenWriteFileAsync_DirectWrite_Succeeds();
+    }
+
+    [Fact]
+    public override async Task OpenWriteFileAsync_CreatesParentDirectories()
+    {
+        await base.OpenWriteFileAsync_CreatesParentDirectories();
+    }
+
+    [Fact]
+    public override async Task OpenWriteFileAsync_Cancelled_Fails()
+    {
+        await base.OpenWriteFileAsync_Cancelled_Fails();
+    }
+
+    [Fact]
+    public override async Task OpenWriteFileAsync_ReportsProgress()
+    {
+        await base.OpenWriteFileAsync_ReportsProgress();
+    }
+
+    [Fact]
+    public override async Task OpenWriteFileAsync_TemporaryWrite_BehaviorMatchesSupport()
+    {
+        await base.OpenWriteFileAsync_TemporaryWrite_BehaviorMatchesSupport();
+    }
+
+    [Fact]
     public override async Task DeleteFileAsync_ExistingFile_Succeeds()
     {
         await base.DeleteFileAsync_ExistingFile_Succeeds();

@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Application.DataPorter</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Application.DataPorter</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ClosedXML"/>
+    <PackageReference Include="CsvHelper"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions"/>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder"/>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"/>
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
+    <PackageReference Include="PDFsharp-MigraDoc"/>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Results\Common.Results.csproj"/>
+    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj"/>
+  </ItemGroup>
+
+</Project>

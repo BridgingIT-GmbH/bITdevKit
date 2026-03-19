@@ -14,6 +14,7 @@ using Shouldly;
 public abstract class FileStorageTestsBase
 {
     protected abstract IFileStorageProvider CreateProvider();
+    protected virtual bool SupportsTemporaryOpenWrite => false;
     //protected abstract FileStorageFactory CreateFactory(IServiceProvider serviceProvider = null);
 
     public virtual async Task ExistsAsync_ExistingFile_FileFound()
@@ -96,6 +97,110 @@ public abstract class FileStorageTestsBase
         result.ShouldContainMessage($"Wrote file at '{path}'");
         var existsResult = await provider.FileExistsAsync(path, null, CancellationToken.None);
         existsResult.ShouldBeSuccess();
+    }
+
+    public virtual async Task OpenWriteFileAsync_DirectWrite_Succeeds()
+    {
+        var provider = this.CreateProvider();
+        const string path = "test/open-write.txt";
+        var content = Encoding.UTF8.GetBytes("Open write content");
+
+        var openResult = await provider.OpenWriteFileAsync(path, false, null, CancellationToken.None);
+
+        openResult.ShouldBeSuccess();
+        await using (var stream = openResult.Value)
+        {
+            await stream.WriteAsync(content, CancellationToken.None);
+        }
+
+        var readResult = await provider.ReadFileAsync(path, null, CancellationToken.None);
+        readResult.ShouldBeSuccess();
+        await using var readStream = readResult.Value;
+        var readBytes = new byte[content.Length];
+        await readStream.ReadExactlyAsync(readBytes, 0, content.Length, CancellationToken.None);
+        readBytes.ShouldBe(content);
+    }
+
+    public virtual async Task OpenWriteFileAsync_CreatesParentDirectories()
+    {
+        var provider = this.CreateProvider();
+        const string path = "nested/path/open-write.txt";
+        var content = Encoding.UTF8.GetBytes("Nested content");
+
+        var openResult = await provider.OpenWriteFileAsync(path, false, null, CancellationToken.None);
+
+        openResult.ShouldBeSuccess();
+        await using (var stream = openResult.Value)
+        {
+            await stream.WriteAsync(content, CancellationToken.None);
+        }
+
+        var existsResult = await provider.FileExistsAsync(path, null, CancellationToken.None);
+        existsResult.ShouldBeSuccess();
+    }
+
+    public virtual async Task OpenWriteFileAsync_Cancelled_Fails()
+    {
+        var provider = this.CreateProvider();
+        using var cts = new CancellationTokenSource();
+        cts.Cancel();
+
+        var result = await provider.OpenWriteFileAsync("test/cancelled.txt", false, null, cts.Token);
+
+        result.ShouldBeFailure();
+        result.ShouldContainError<OperationCancelledError>();
+    }
+
+    public virtual async Task OpenWriteFileAsync_ReportsProgress()
+    {
+        var provider = this.CreateProvider();
+        const string path = "test/progress.txt";
+        var content = Encoding.UTF8.GetBytes("Progress content");
+        var progressItems = new List<FileProgress>();
+        var progress = new Progress<FileProgress>(p => progressItems.Add(p));
+
+        var openResult = await provider.OpenWriteFileAsync(path, false, progress, CancellationToken.None);
+
+        openResult.ShouldBeSuccess();
+        await using (var stream = openResult.Value)
+        {
+            await stream.WriteAsync(content.AsMemory(0, 8), CancellationToken.None);
+            await stream.WriteAsync(content.AsMemory(8), CancellationToken.None);
+        }
+
+        progressItems.ShouldNotBeEmpty();
+        progressItems.ShouldContain(p => p.BytesProcessed >= content.Length);
+        progressItems.Last().FilesProcessed.ShouldBe(1);
+    }
+
+    public virtual async Task OpenWriteFileAsync_TemporaryWrite_BehaviorMatchesSupport()
+    {
+        var provider = this.CreateProvider();
+        const string path = "test/temp-write.txt";
+        var content = Encoding.UTF8.GetBytes("Temporary write content");
+
+        var openResult = await provider.OpenWriteFileAsync(path, true, null, CancellationToken.None);
+
+        if (this.SupportsTemporaryOpenWrite)
+        {
+            openResult.ShouldBeSuccess();
+            await using (var stream = openResult.Value)
+            {
+                await stream.WriteAsync(content, CancellationToken.None);
+            }
+
+            var readResult = await provider.ReadFileAsync(path, null, CancellationToken.None);
+            readResult.ShouldBeSuccess();
+            await using var readStream = readResult.Value;
+            var readBytes = new byte[content.Length];
+            await readStream.ReadExactlyAsync(readBytes, 0, content.Length, CancellationToken.None);
+            readBytes.ShouldBe(content);
+        }
+        else
+        {
+            openResult.ShouldBeFailure();
+            openResult.Errors.ShouldContain(e => e.Message.Contains("not supported", StringComparison.OrdinalIgnoreCase));
+        }
     }
 
     public virtual async Task DeleteFileAsync_ExistingFile_Succeeds()

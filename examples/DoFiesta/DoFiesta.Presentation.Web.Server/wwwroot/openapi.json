@@ -444,6 +444,209 @@
           }
         }
       }
+    },
+    "/api/core/todoitems/dataporter/export/{format}": {
+      "get": {
+        "tags": [
+          "CoreModule.TodoItems.DataPorter"
+        ],
+        "summary": "CoreModule.TodoItems.DataPorter.Export",
+        "description": "Exports TodoItems in the specified format (excel, csv, json, xml, pdf).",
+        "operationId": "CoreModule.TodoItems.DataPorter.Export",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fileName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/todoitems/dataporter/export/multi": {
+      "get": {
+        "tags": [
+          "CoreModule.TodoItems.DataPorter"
+        ],
+        "summary": "CoreModule.TodoItems.DataPorter.ExportMulti",
+        "description": "Exports TodoItems grouped by status in separate Excel sheets.",
+        "operationId": "CoreModule.TodoItems.DataPorter.ExportMulti",
+        "parameters": [
+          {
+            "name": "fileName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/todoitems/dataporter/import/{format}": {
+      "post": {
+        "tags": [
+          "CoreModule.TodoItems.DataPorter"
+        ],
+        "summary": "CoreModule.TodoItems.DataPorter.Import",
+        "description": "Imports TodoItems from the specified format (excel, csv, json, xml).",
+        "operationId": "CoreModule.TodoItems.DataPorter.Import",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "$ref": "#/components/schemas/IFormFile"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "422": {
+            "description": "Unprocessable Entity"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/todoitems/dataporter/validate/{format}": {
+      "post": {
+        "tags": [
+          "CoreModule.TodoItems.DataPorter"
+        ],
+        "summary": "CoreModule.TodoItems.DataPorter.Validate",
+        "description": "Validates an import file without actually importing the data.",
+        "operationId": "CoreModule.TodoItems.DataPorter.Validate",
+        "parameters": [
+          {
+            "name": "format",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "$ref": "#/components/schemas/IFormFile"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -865,6 +1068,10 @@
           }
         }
       },
+      "IFormFile": {
+        "type": "string",
+        "format": "binary"
+      },
       "OrderDirection": {
         "enum": [
           "asc",
@@ -1284,6 +1491,9 @@
     },
     {
       "name": "Core.Enumerations"
+    },
+    {
+      "name": "CoreModule.TodoItems.DataPorter"
     }
   ]
 }

@@ -77,6 +77,18 @@ public interface IFileStorageProvider
     Task<Result> WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Opens a writable stream for the file or blob at the specified path, returning a Result with the stream or errors.
+    /// Opening failures are returned in the result; write, flush, and dispose failures surface from the returned stream.
+    /// Example: `var result = await provider.OpenWriteFileAsync("folder/file.txt", false, null, CancellationToken.None); if (result.IsSuccess) await using (var stream = result.Value) { /* Write to stream */ }`
+    /// </summary>
+    /// <param name="path">The path to write to (e.g., "folder/file.txt").</param>
+    /// <param name="useTemporaryWrite">Whether the provider should stage writes in a temporary file/blob and publish on successful close.</param>
+    /// <param name="progress">Optional progress reporter for tracking bytes and files processed.</param>
+    /// <param name="cancellationToken">Cancellation token to abort the operation.</param>
+    /// <returns>A Result containing the writable stream on success or failure with typed errors (e.g., DiskFullError, PermissionError).</returns>
+    Task<Result<Stream>> OpenWriteFileAsync(string path, bool useTemporaryWrite = false, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Deletes the file or blob at the specified path, returning a Result with success or errors.
     /// Example: `var result = await provider.DeleteFileAsync("folder/file.txt", null, CancellationToken.None); if (result.IsSuccess) Console.WriteLine("File deleted");`
     /// </summary>

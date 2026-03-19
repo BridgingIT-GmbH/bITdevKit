@@ -16,6 +16,7 @@
     <ProjectReference Include="..\..\..\src\Application.Messaging\Application.Messaging.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Storage\Application.Storage.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Caching\Common.Caching.csproj" />
+    <ProjectReference Include="..\..\..\src\Application.DataPorter/Application.DataPorter.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Mapping\Common.Mapping.csproj" />
     <ProjectReference Include="..\..\..\src\Application.JobScheduling\Application.JobScheduling.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Utilities\Common.Utilities.csproj" />

@@ -1,9 +1,14 @@
 ﻿@page "/todos"
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.JSInterop
+@using System.Net.Http.Headers
 @inject BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.BackendApiClient Api
 @* @inject IStringLocalizer<Global> localizer *@
 @inject IApiClient ApiClient
 @inject ISnackbar Snackbar
+@inject IJSRuntime JS
+@inject HttpClient Http
 @attribute [Authorize]
 
 <PageTitle>DoFiesta - Todos</PageTitle>
@@ -43,6 +48,20 @@
                                Color="Color.Success"
                                Size="Size.Large"
                                OnClick="@(() => CompleteAll())" />
+            </MudTooltip>
+
+            <MudTooltip Text="Export TodoItems">
+                <MudIconButton Icon="@Icons.Material.Filled.FileUpload"
+                               Color="Color.Info"
+                               Size="Size.Large"
+                               OnClick="@(() => showExportDialog = true)" />
+            </MudTooltip>
+
+            <MudTooltip Text="Import TodoItems">
+                <MudIconButton Icon="@Icons.Material.Filled.FileDownload"
+                               Color="Color.Warning"
+                               Size="Size.Large"
+                               OnClick="@(() => showImportDialog = true)" />
             </MudTooltip>
         </MudItem>
 
@@ -145,6 +164,63 @@
     </MudGrid>
 </MudContainer>
 
+@* Export Dialog *@
+<MudDialog @bind-Visible="showExportDialog" Options="new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small }">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Export TodoItems</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudSelect @bind-Value="exportFormat" Label="Export Format" Variant="Variant.Outlined">
+            <MudSelectItem Value="@("csv")">CSV</MudSelectItem>
+            <MudSelectItem Value="@("json")">JSON</MudSelectItem>
+            <MudSelectItem Value="@("xml")">XML</MudSelectItem>
+            <MudSelectItem Value="@("excel")">Excel (Single Sheet)</MudSelectItem>
+            <MudSelectItem Value="@("pdf")">PDF</MudSelectItem>
+        </MudSelect>
+        <MudTextField @bind-Value="exportFileName" Label="File Name (optional)" Variant="Variant.Outlined" Margin="Margin.Dense" Class="mt-3" />
+        <MudButton OnClick="ExportMulti" Variant="Variant.Outlined" Color="Color.Secondary" FullWidth="true" Class="mt-3">
+            Export Multi-Sheet Excel (Grouped by Status)
+        </MudButton>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => showExportDialog = false)">Cancel</MudButton>
+        <MudButton OnClick="Export" Variant="Variant.Filled" Color="Color.Primary">Export</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@* Import Dialog *@
+<MudDialog @bind-Visible="showImportDialog" Options="new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small }">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Import TodoItems</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudSelect @bind-Value="importFormat" Label="Import Format" Variant="Variant.Outlined">
+            <MudSelectItem Value="@("csv")">CSV</MudSelectItem>
+            <MudSelectItem Value="@("json")">JSON</MudSelectItem>
+            <MudSelectItem Value="@("xml")">XML</MudSelectItem>
+            <MudSelectItem Value="@("excel")">Excel</MudSelectItem>
+        </MudSelect>
+        <MudFileUpload T="IBrowserFile" @bind-Files="importFile" Accept=".csv,.json,.xml,.xlsx" MaxFileSize="10485760" Class="mt-3">
+            <CustomContent Context="fileUpload">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                           OnClick="@(async () => await fileUpload.OpenFilePickerAsync())">
+                    @(importFile == null ? "Select File" : importFile.Name)
+                </MudButton>
+            </CustomContent>
+        </MudFileUpload>
+        @if (!string.IsNullOrEmpty(importMessage))
+        {
+            <MudAlert Severity="@importSeverity" Class="mt-3">@importMessage</MudAlert>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => { showImportDialog = false; importMessage = string.Empty; })">Cancel</MudButton>
+        <MudButton OnClick="Import" Variant="Variant.Filled" Color="Color.Warning" Disabled="@(importFile == null)">Import</MudButton>
+    </DialogActions>
+</MudDialog>
+
 @code {
     private bool loading = true;
     private ICollection<TodoItemModel> items;
@@ -155,6 +231,15 @@
     private int? filterPriorityId;
     private string filterTitle = string.Empty;
     private SortDirection currentSortDirection = SortDirection.Ascending;
+
+    private bool showExportDialog = false;
+    private bool showImportDialog = false;
+    private string exportFormat = "csv";
+    private string exportFileName = string.Empty;
+    private string importFormat = "csv";
+    private IBrowserFile importFile;
+    private string importMessage = string.Empty;
+    private Severity importSeverity = Severity.Info;
 
     protected override async Task OnInitializedAsync()
     {
@@ -406,5 +491,129 @@
             3 => (Icons.Material.Filled.CheckCircle, Color.Success),  // Completed
             _ => (Icons.Material.Filled.Circle, Color.Default)        // Default
         };
+    }
+
+    private async Task Export()
+    {
+        try
+        {
+            var fileName = string.IsNullOrWhiteSpace(exportFileName)
+                ? $"todoitems-{DateTime.Now:yyyy-MM-dd}.{exportFormat}"
+                : exportFileName;
+
+            var url = $"api/core/todoitems/dataporter/export/{exportFormat}?fileName={Uri.EscapeDataString(fileName)}";
+            var response = await Http.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var stream = await response.Content.ReadAsStreamAsync();
+                await DownloadFile(stream, fileName);
+                Snackbar.Add($"Exported successfully to {exportFormat.ToUpper()}", Severity.Success);
+                showExportDialog = false;
+            }
+            else
+            {
+                Snackbar.Add($"Export failed: {response.StatusCode}", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error exporting: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task ExportMulti()
+    {
+        try
+        {
+            var fileName = string.IsNullOrWhiteSpace(exportFileName)
+                ? $"todoitems-multi-{DateTime.Now:yyyy-MM-dd}.xlsx"
+                : exportFileName;
+
+            var url = $"api/core/todoitems/dataporter/export/multi?fileName={Uri.EscapeDataString(fileName)}";
+            var response = await Http.GetAsync(url);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var stream = await response.Content.ReadAsStreamAsync();
+                await DownloadFile(stream, fileName);
+                Snackbar.Add("Exported successfully to multi-sheet Excel", Severity.Success);
+                showExportDialog = false;
+            }
+            else
+            {
+                Snackbar.Add($"Export failed: {response.StatusCode}", Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            Snackbar.Add($"Error exporting: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task Import()
+    {
+        if (importFile == null)
+        {
+            importMessage = "Please select a file";
+            importSeverity = Severity.Warning;
+            return;
+        }
+
+        loading = true;
+        importMessage = "Importing...";
+        importSeverity = Severity.Info;
+
+        try
+        {
+            using var content = new MultipartFormDataContent();
+            using var stream = importFile.OpenReadStream(maxAllowedSize: 10485760);
+            using var streamContent = new StreamContent(stream);
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue(importFile.ContentType ?? "application/octet-stream");
+            content.Add(streamContent, "file", importFile.Name);
+
+            var url = $"api/core/todoitems/dataporter/import/{importFormat}";
+            var response = await Http.PostAsync(url, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                var responseContent = await response.Content.ReadAsStringAsync();
+                importMessage = $"Import successful! Processed data from {importFormat.ToUpper()} file.";
+                importSeverity = Severity.Success;
+                Snackbar.Add(importMessage, Severity.Success);
+                await LoadItems();
+                showImportDialog = false;
+                importMessage = string.Empty;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.BadRequest)
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                importMessage = $"Import completed with warnings: {errorContent}";
+                importSeverity = Severity.Warning;
+                Snackbar.Add(importMessage, Severity.Warning);
+            }
+            else
+            {
+                importMessage = $"Import failed: {response.StatusCode}";
+                importSeverity = Severity.Error;
+                Snackbar.Add(importMessage, Severity.Error);
+            }
+        }
+        catch (Exception ex)
+        {
+            importMessage = $"Error importing: {ex.Message}";
+            importSeverity = Severity.Error;
+            Snackbar.Add(importMessage, Severity.Error);
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private async Task DownloadFile(Stream stream, string fileName)
+    {
+        using var streamRef = new DotNetStreamReference(stream);
+        await JS.InvokeVoidAsync("downloadFileFromStream", fileName, streamRef);
     }
 }

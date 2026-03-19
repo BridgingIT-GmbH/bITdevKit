@@ -6,8 +6,10 @@
 namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 
 using Application.Modules.Core;
+using Application.Modules.Core.DataPorter;
 using BridgingIT.DevKit.Application;
 using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Application.DataPorter;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
@@ -141,9 +143,55 @@ public class CoreModule : WebModuleBase
             .WithBehavior<RepositoryOutboxDomainEventBehavior<Subscription, CoreDbContext>>();
         //.WithBehavior<RepositoryDomainEventPublisherBehavior<Subscription>>();
 
+        // dataporter - register export/import capabilities
+        services.AddDataPorter(configuration)
+            .WithExcel(c =>
+            {
+                c.UseTableFormatting = true;
+                c.DefaultTableStyleName = "TableStyleMedium2";
+                c.AutoFitColumns = true;
+                c.FreezeHeaderRow = true;
+            })
+            .WithCsv(c =>
+            {
+                c.Delimiter = ",";
+                c.IncludeHeader = true;
+                c.TrimFields = true;
+            })
+            .WithJson(c =>
+            {
+                c.WriteIndented = true;
+                c.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase;
+                // c.SerializerOptions = new System.Text.Json.JsonSerializerOptions
+                // {
+                //     WriteIndented = true,
+                //     PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase,
+                //     DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+                // };
+            })
+            .WithXml(c =>
+            {
+                c.RootElementName = "TodoItems";
+                c.ItemElementName = "TodoItem";
+                c.WriteIndented = true;
+            })
+            .WithPdf(c =>
+            {
+                c.PageSize = PdfPageSize.A4;
+                c.Orientation = PdfPageOrientation.Landscape;
+                c.Title = "DoFiesta Todo Items";
+                c.HeaderText = "DoFiesta Todo Items Export";
+                c.ShowPageNumbers = true;
+                c.ShowGenerationDate = true;
+            })
+            .AddExportProfile<TodoItemExportProfile>()
+            .AddImportProfile<TodoItemImportProfile>()
+            .AddImportRowInterceptor<TodoItemImportPersistenceInterceptor>();
+
         // endpoints
         services.AddEndpoints<CoreTodoItemEndpoints>();
         services.AddEndpoints<CoreEnumerationEndpoints>();
+        services.AddEndpoints<CoreDataPorterEndpoints>();
 
         return services;
     }

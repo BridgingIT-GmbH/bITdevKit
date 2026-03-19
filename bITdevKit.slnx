@@ -27,7 +27,9 @@
     <Project Path="benchmarks/Common.Benchmarks/Common.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/docs/">
+    <File Path="docs/design-application-templating.md" />
     <File Path="docs/features-application-commands-queries.md" />
+    <File Path="docs/features-application-dataporter.md" />
     <File Path="docs/features-domain-activeentity.md" />
     <File Path="docs/features-domain-repositories.md" />
     <File Path="docs/features-domain.md" />
@@ -126,6 +128,7 @@
     <Project Path="src/Application.Commands.EventSourcing/Application.Commands.EventSourcing.csproj" />
     <Project Path="src/Application.Commands.Outbox/Application.Commands.Outbox.csproj" />
     <Project Path="src/Application.Commands/Application.Commands.csproj" />
+    <Project Path="src/Application.DataPorter/Application.DataPorter.csproj" />
     <Project Path="src/Application.Entities.Messaging/Application.Entities.Messaging.csproj" />
     <Project Path="src/Application.Entities/Application.Entities.csproj" />
     <Project Path="src/Application.Identity/Application.Identity.csproj" />

@@ -97,6 +97,16 @@ public class PropertyBagTests
         {
             ["foo"] = 100
         };
+
+        bag["foo"].ShouldBe(100);
+        bag["bar"].ShouldBeNull();
+    }
+
+    [Fact]
+    public void Indexer_Get_Set_Works_Alt()
+    {
+        var bag = new PropertyBag { ["foo"] = 100 };
+
         bag["foo"].ShouldBe(100);
         bag["bar"].ShouldBeNull();
     }

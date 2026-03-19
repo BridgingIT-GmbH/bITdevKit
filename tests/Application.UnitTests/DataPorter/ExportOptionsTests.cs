@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
 using BridgingIT.DevKit.Application.DataPorter;
+using BridgingIT.DevKit.Common;
 using System.IO.Compression;
 
 [UnitTest("Common")]
@@ -356,8 +357,8 @@ public class ExportResultTests
         sut.Format.ShouldBe(Format.Excel);
         sut.Warnings.ShouldNotBeNull();
         sut.Warnings.ShouldBeEmpty();
-        sut.Metadata.ShouldNotBeNull();
-        sut.Metadata.ShouldBeEmpty();
+        sut.Properties.ShouldNotBeNull();
+        sut.Properties.ShouldBeEmpty();
     }
 
     [Fact]
@@ -371,12 +372,12 @@ public class ExportResultTests
             Duration = TimeSpan.FromMilliseconds(500),
             Format = Format.Csv,
             Warnings = ["Warning 1", "Warning 2"],
-            Metadata = new Dictionary<string, object> { { "source", "test" } }
+            Properties = { ["source"] = "test" }
         };
 
         // Assert
         sut.Warnings.Count.ShouldBe(2);
-        sut.Metadata["source"].ShouldBe("test");
+        sut.Properties["source"].ShouldBe("test");
     }
 }
 

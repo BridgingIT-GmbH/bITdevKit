@@ -171,7 +171,7 @@ public class CoreDataPorterEndpoints : EndpointsBase
                     totalRows = importResult.TotalRows,
                     successfulRows = importResult.SuccessfulRows,
                     failedRows = importResult.FailedRows,
-                    data = importResult.Data
+                    data = importResult.Data // not really needed in a real scenario, but included here for demonstration purposes
                 });
             })
             .WithName("CoreModule.TodoItems.DataPorter.Import")

@@ -573,14 +573,13 @@ public sealed class DataPorterService(
             }
 
             stopwatch.Stop();
+            var properties = result.Properties?.Clone() ?? [];
+            properties.Set("template", true);
             result = result with
             {
                 BytesWritten = artifactStream.BytesWritten,
                 Duration = stopwatch.Elapsed,
-                Metadata = new Dictionary<string, object>(result.Metadata ?? new Dictionary<string, object>())
-                {
-                    ["template"] = true
-                }
+                Properties = properties
             };
 
             this.logger.LogInformation("{LogKey} template generation finished (type={Type}, format={Format}, provider={Provider}, rowCount={RowCount}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, typeof(TTarget).Name, options.Format, provider.GetType().Name, result.TotalRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);

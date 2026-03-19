@@ -287,8 +287,8 @@ public class DataPorterServiceRowInterceptionTests
 
     private sealed class TestRowInterceptorsProvider : IRowInterceptorsProvider
     {
-        private readonly Dictionary<Type, object> importInterceptors = new();
-        private readonly Dictionary<Type, object> exportInterceptors = new();
+        private readonly Dictionary<Type, object> importInterceptors = [];
+        private readonly Dictionary<Type, object> exportInterceptors = [];
 
         public TestRowInterceptorsProvider AddImport<TTarget>(params IImportRowInterceptor<TTarget>[] interceptors)
             where TTarget : class

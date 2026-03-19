@@ -185,7 +185,8 @@ public class CoreModule : WebModuleBase
                 c.ShowGenerationDate = true;
             })
             .AddExportProfile<TodoItemExportProfile>()
-            .AddImportProfile<TodoItemImportProfile>();
+            .AddImportProfile<TodoItemImportProfile>()
+            .AddImportRowInterceptor<TodoItemImportPersistenceInterceptor>();
 
         // endpoints
         services.AddEndpoints<CoreTodoItemEndpoints>();

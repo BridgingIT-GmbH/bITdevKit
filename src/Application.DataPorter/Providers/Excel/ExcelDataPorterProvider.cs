@@ -414,7 +414,7 @@ public sealed class ExcelDataPorterProvider(
             TotalRows = 0,
             Duration = TimeSpan.Zero,
             Format = this.Format,
-            Metadata = new Dictionary<string, object> { ["template"] = true }
+            Properties = [.. new Dictionary<string, object> { ["template"] = true }]
         };
     }
 

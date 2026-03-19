@@ -48,7 +48,7 @@
       "type": "process",
       "args": [
         "build",
-        "${workspaceFolder}/examples/DoFiesta/Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
+        "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
         "--nologo",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
@@ -65,7 +65,7 @@
       "type": "process",
       "args": [
         "publish",
-        "${workspaceFolder}/examples/DoFiesta/Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
+        "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
         "--nologo",
         "/property:GenerateFullPaths=true",
         "/consoleloggerparameters:NoSummary"
@@ -80,7 +80,19 @@
         "watch",
         "run",
         "--project",
-        "${workspaceFolder}/examples/DoFiesta/Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
+        "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
+        "--nologo"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "DoFiesta - run",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
         "--nologo"
       ],
       "problemMatcher": "$msCompile"

@@ -211,7 +211,7 @@ public sealed class ExportOptionsBuilder : IOptionsBuilder<ExportOptions>
     /// <returns>The builder instance for chaining.</returns>
     public ExportOptionsBuilder WithProviderOption(string key, object value)
     {
-        var options = this.target.ProviderOptions?.ToDictionary(x => x.Key, x => x.Value) ?? new Dictionary<string, object>();
+        var options = this.target.ProviderOptions?.ToDictionary(x => x.Key, x => x.Value) ?? [];
         options[key] = value;
         this.target = this.target with { ProviderOptions = options };
         return this;
@@ -224,7 +224,7 @@ public sealed class ExportOptionsBuilder : IOptionsBuilder<ExportOptions>
     /// <returns>The builder instance for chaining.</returns>
     public ExportOptionsBuilder WithProviderOptions(IReadOnlyDictionary<string, object> providerOptions)
     {
-        var options = this.target.ProviderOptions?.ToDictionary(x => x.Key, x => x.Value) ?? new Dictionary<string, object>();
+        var options = this.target.ProviderOptions?.ToDictionary(x => x.Key, x => x.Value) ?? [];
 
         if (providerOptions is not null)
         {

@@ -437,7 +437,7 @@ public sealed class XmlDataPorterProvider(
             TotalRows = configuration.SampleItemCount,
             Duration = TimeSpan.Zero,
             Format = this.Format,
-            Metadata = new Dictionary<string, object> { ["template"] = true }
+            Properties = [.. new Dictionary<string, object> { ["template"] = true }]
         };
     }
 

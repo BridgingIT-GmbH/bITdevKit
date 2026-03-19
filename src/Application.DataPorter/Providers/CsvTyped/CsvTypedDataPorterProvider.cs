@@ -384,7 +384,7 @@ public sealed class CsvTypedDataPorterProvider(
             TotalRows = 0,
             Duration = TimeSpan.Zero,
             Format = this.Format,
-            Metadata = new Dictionary<string, object> { ["template"] = true }
+            Properties = [.. new Dictionary<string, object> { ["template"] = true }]
         };
     }
 
@@ -469,8 +469,10 @@ public sealed class CsvTypedDataPorterProvider(
         var rootId = this.GetIdentifier(item) ?? Guid.NewGuid().ToString("D", CultureInfo.InvariantCulture);
         var rootRecordType = this.GetRecordTypeName(configuration.SourceType, rootColumns, isCollectionItem: false);
         var rootPayload = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        var visited = new HashSet<object>(ReferenceEqualityComparer.Instance);
-        visited.Add(item);
+        var visited = new HashSet<object>(ReferenceEqualityComparer.Instance)
+        {
+            item
+        };
 
         this.WriteRootPayload(rootPayload, item, rootColumns, configuration);
         await this.WriteCsvTypedRowAsync(csv, new CsvTypedRow(rootRecordType, rootId, rootId, null, null, null, rootPayload), payloadColumns);
@@ -948,8 +950,10 @@ public sealed class CsvTypedDataPorterProvider(
             var rootId = this.GetIdentifier(item) ?? Guid.NewGuid().ToString("D", CultureInfo.InvariantCulture);
             var rootRecordType = this.GetRecordTypeName(configuration.SourceType, rootColumns, isCollectionItem: false);
             var rootPayload = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            var visited = new HashSet<object>(ReferenceEqualityComparer.Instance);
-            visited.Add(item);
+            var visited = new HashSet<object>(ReferenceEqualityComparer.Instance)
+            {
+                item
+            };
 
             rows.Add(new CsvTypedRow(rootRecordType, rootId, rootId, null, null, null, rootPayload));
             this.WriteRootPayload(rootPayload, item, rootColumns, configuration);

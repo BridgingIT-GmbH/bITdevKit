@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.DataPorter;
 
+using BridgingIT.DevKit.Common;
+
 /// <summary>
 /// Represents the result of an export operation.
 /// </summary>
@@ -41,7 +43,7 @@ public sealed record ExportResult
     public IReadOnlyList<string> Warnings { get; init; } = [];
 
     /// <summary>
-    /// Gets additional metadata about the export operation.
+    /// Gets additional properties about the export operation.
     /// </summary>
-    public IReadOnlyDictionary<string, object> Metadata { get; init; } = new Dictionary<string, object>();
+    public PropertyBag Properties { get; init; } = [];
 }

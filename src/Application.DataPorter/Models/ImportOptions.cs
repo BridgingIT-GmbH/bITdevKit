@@ -16,11 +16,6 @@ public sealed record ImportOptions
     public Format Format { get; init; } = Format.Excel;
 
     /// <summary>
-    /// Gets or sets the name of a specific profile to use.
-    /// </summary>
-    public string ProfileName { get; init; }
-
-    /// <summary>
     /// Gets or sets a value indicating whether to use attribute-based configuration.
     /// </summary>
     public bool UseAttributes { get; init; } = true;

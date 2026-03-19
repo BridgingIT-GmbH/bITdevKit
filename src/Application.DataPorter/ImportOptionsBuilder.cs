@@ -89,17 +89,6 @@ public sealed class ImportOptionsBuilder : IOptionsBuilder<ImportOptions>
     }
 
     /// <summary>
-    /// Sets the profile name to use for the import.
-    /// </summary>
-    /// <param name="name">The profile name.</param>
-    /// <returns>The builder instance for chaining.</returns>
-    public ImportOptionsBuilder WithProfile(string name)
-    {
-        this.target = this.target with { ProfileName = name };
-        return this;
-    }
-
-    /// <summary>
     /// Sets whether attribute-based configuration should be used.
     /// </summary>
     /// <param name="value">A value indicating whether attributes should be used.</param>

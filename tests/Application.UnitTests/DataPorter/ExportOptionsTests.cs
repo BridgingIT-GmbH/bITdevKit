@@ -35,7 +35,6 @@ public class ExportOptionsTests
         var sut = new ExportOptions
         {
             Format = Format.Csv,
-            ProfileName = "TestProfile",
             UseAttributes = false,
             Culture = new System.Globalization.CultureInfo("de-DE"),
             SheetName = "Custom Sheet",
@@ -47,7 +46,6 @@ public class ExportOptionsTests
 
         // Assert
         sut.Format.ShouldBe(Format.Csv);
-        sut.ProfileName.ShouldBe("TestProfile");
         sut.UseAttributes.ShouldBeFalse();
         sut.Culture.Name.ShouldBe("de-DE");
         sut.SheetName.ShouldBe("Custom Sheet");
@@ -67,7 +65,6 @@ public class ExportOptionsTests
         // Act
         var sut = new ExportOptionsBuilder()
             .AsCsv()
-            .WithProfile("ExportProfile")
             .UseAttributes(false)
             .WithCulture(new System.Globalization.CultureInfo("nl-NL"))
             .WithSheetName("Orders")
@@ -79,7 +76,6 @@ public class ExportOptionsTests
 
         // Assert
         sut.Format.ShouldBe(Format.Csv);
-        sut.ProfileName.ShouldBe("ExportProfile");
         sut.UseAttributes.ShouldBeFalse();
         sut.Culture.Name.ShouldBe("nl-NL");
         sut.SheetName.ShouldBe("Orders");
@@ -120,7 +116,6 @@ public class ImportOptionsTests
         var sut = new ImportOptions
         {
             Format = Format.Json,
-            ProfileName = "TestProfile",
             UseAttributes = false,
             Culture = new System.Globalization.CultureInfo("fr-FR"),
             SheetName = "Import Sheet",
@@ -136,7 +131,6 @@ public class ImportOptionsTests
 
         // Assert
         sut.Format.ShouldBe(Format.Json);
-        sut.ProfileName.ShouldBe("TestProfile");
         sut.UseAttributes.ShouldBeFalse();
         sut.Culture.Name.ShouldBe("fr-FR");
         sut.SheetName.ShouldBe("Import Sheet");
@@ -160,7 +154,6 @@ public class ImportOptionsTests
         // Act
         var sut = new ImportOptionsBuilder()
             .AsJson()
-            .WithProfile("ImportProfile")
             .UseAttributes(false)
             .WithCulture(new System.Globalization.CultureInfo("fr-FR"))
             .WithSheetName("Orders")
@@ -176,7 +169,6 @@ public class ImportOptionsTests
 
         // Assert
         sut.Format.ShouldBe(Format.Json);
-        sut.ProfileName.ShouldBe("ImportProfile");
         sut.UseAttributes.ShouldBeFalse();
         sut.Culture.Name.ShouldBe("fr-FR");
         sut.SheetName.ShouldBe("Orders");
@@ -278,7 +270,6 @@ public class TemplateOptionsTests
         var sut = new TemplateOptions
         {
             Format = Format.Json,
-            ProfileName = "TemplateProfile",
             UseAttributes = false,
             Culture = new System.Globalization.CultureInfo("nl-NL"),
             SheetName = "OrdersTemplate",
@@ -291,7 +282,6 @@ public class TemplateOptionsTests
         };
 
         sut.Format.ShouldBe(Format.Json);
-        sut.ProfileName.ShouldBe("TemplateProfile");
         sut.UseAttributes.ShouldBeFalse();
         sut.Culture.Name.ShouldBe("nl-NL");
         sut.SheetName.ShouldBe("OrdersTemplate");
@@ -309,7 +299,6 @@ public class TemplateOptionsTests
     {
         var sut = new TemplateOptionsBuilder()
             .AsJson()
-            .WithProfile("TemplateProfile")
             .UseAttributes(false)
             .WithCulture(new System.Globalization.CultureInfo("de-DE"))
             .WithSheetName("Orders")
@@ -322,7 +311,6 @@ public class TemplateOptionsTests
             .Build();
 
         sut.Format.ShouldBe(Format.Json);
-        sut.ProfileName.ShouldBe("TemplateProfile");
         sut.UseAttributes.ShouldBeFalse();
         sut.Culture.Name.ShouldBe("de-DE");
         sut.SheetName.ShouldBe("Orders");

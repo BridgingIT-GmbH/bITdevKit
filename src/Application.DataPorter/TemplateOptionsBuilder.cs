@@ -74,17 +74,6 @@ public sealed class TemplateOptionsBuilder : IOptionsBuilder<TemplateOptions>
     public TemplateOptionsBuilder AsPdf() => this.As(Format.Pdf);
 
     /// <summary>
-    /// Sets the profile name to use.
-    /// </summary>
-    /// <param name="profileName">The profile name.</param>
-    /// <returns>The builder instance for chaining.</returns>
-    public TemplateOptionsBuilder WithProfile(string profileName)
-    {
-        this.target = this.target with { ProfileName = profileName };
-        return this;
-    }
-
-    /// <summary>
     /// Sets whether attribute-based configuration should be used.
     /// </summary>
     /// <param name="value">A value indicating whether attributes should be used.</param>

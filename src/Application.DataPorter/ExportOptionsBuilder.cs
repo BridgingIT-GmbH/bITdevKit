@@ -98,17 +98,6 @@ public sealed class ExportOptionsBuilder : IOptionsBuilder<ExportOptions>
     }
 
     /// <summary>
-    /// Sets the profile name to use for the export.
-    /// </summary>
-    /// <param name="profileName">The profile name.</param>
-    /// <returns>The builder instance for chaining.</returns>
-    public ExportOptionsBuilder WithProfile(string profileName)
-    {
-        this.target = this.target with { ProfileName = profileName };
-        return this;
-    }
-
-    /// <summary>
     /// Sets whether attribute-based configuration should be used.
     /// </summary>
     /// <param name="value">A value indicating whether attributes should be used.</param>

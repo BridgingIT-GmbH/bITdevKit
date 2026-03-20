@@ -108,6 +108,24 @@ The project maintains comprehensive ADRs documenting key architectural decisions
 - Include tests and docs updates where applicable.
 - Avoid unrelated formatting changes; use `Solution [format apply]` for targeted formatting.
 
+### Commit Guidance
+
+When a user asks to create a commit or mentions `/commit`, use the [`.agents/skills/git-commit/SKILL.md`](./.agents/skills/git-commit/SKILL.md) workflow.
+
+Excerpt:
+
+> Create standardized, semantic git commits using the Conventional Commits specification. Analyze the actual diff to determine appropriate type, scope, and message.
+
+Agent expectations:
+
+- Use the Conventional Commits format: `<type>[optional scope]: <description>`
+- Analyze `git diff --staged` first, or `git diff` when nothing is staged
+- Check `git status --porcelain` before committing
+- Keep the description imperative and under 72 characters
+- Prefer one logical change per commit
+- Never commit secrets
+- Never update git config, skip hooks, force push, or run destructive git commands unless the user explicitly asks
+
 ## Guidance for Agent Prompts
 
 When asking an agent to implement something, include:

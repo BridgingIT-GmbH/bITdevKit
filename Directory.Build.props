@@ -28,7 +28,7 @@
     </PropertyGroup>
 
   <!--<PropertyGroup Condition="$(MSBuildProjectDirectory.Contains('src'))">
-    <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../../RELEASES.md"))</PackageReleaseNotes>
+    <PackageReleaseNotes>$([System.IO.File]::ReadAllText("$(MSBuildProjectDirectory)/../../CHANGELOG.md"))</PackageReleaseNotes>
   </PropertyGroup>-->
 
   <!--<ItemGroup>

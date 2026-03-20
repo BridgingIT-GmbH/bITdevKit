@@ -21,7 +21,7 @@
     <File Path="LICENSE" />
     <File Path="nuget.config" />
     <File Path="README.md" />
-    <File Path="RELEASES.md" />
+    <File Path="CHANGELOG.md" />
   </Folder>
   <Folder Name="/benchmarks/">
     <Project Path="benchmarks/Common.Benchmarks/Common.Benchmarks.csproj" />

@@ -14,6 +14,6 @@ components are available
 as [nuget packages](https://www.nuget.org/packages?q=bitDevKit&packagetype=&prerel=true&sortby=relevance).
 
 For the latest updates and release notes, please refer to
-the [RELEASES](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/RELEASES.md).
+the [CHANGELOG](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/CHANGELOG.md).
 
 Join us in advancing the world of software development with the bITDevKit!

@@ -15,6 +15,7 @@
 * [Libraries used](#libraries-used-excerpt)
 * [Example projects](#example-projects)
 * [Collaboration](#collaboration)
+* [Commit Policy](#commit-policy)
 
 <!-- TOC -->
 
@@ -31,7 +32,7 @@ components are available
 as [nuget packages](https://www.nuget.org/packages?q=bitDevKit&packagetype=&prerel=true&sortby=relevance).
 
 For the latest updates and release notes, please refer to
-the [RELEASES](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/RELEASES.md).
+the [CHANGELOG](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/CHANGELOG.md).
 
 Join us in advancing the world of software development with the bITDevKit!
 
@@ -123,7 +124,30 @@ For more details, see the `Common.Benchmarks` project in the `benchmarks/` folde
 Simply create a pull request with your ideas or contact us.
 Please refer to the [CONTRIBUTING](./CONTRIBUTION.md) guidelines for more information.
 
---- 
+## Commit Policy
+
+To keep history clear and searchable, contributions should use semantic commit messages based on the Conventional Commits specification.
+
+Format:
+
+`<type>[optional scope]: <description>`
+
+Examples:
+
+- `feat(modules): add startup task registration`
+- `fix(jobs): prevent duplicate scheduling on startup`
+- `docs(readme): clarify contribution workflow`
+
+Policy:
+
+- Use the Conventional Commits format for all repository contributions
+- Keep the description in imperative mood and under 72 characters
+- Prefer one logical change per commit
+- Review `git diff --staged` before committing, or `git diff` if nothing is staged
+- Check `git status --porcelain` to confirm the exact files included
+- Never commit secrets or credentials
+
+---
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.

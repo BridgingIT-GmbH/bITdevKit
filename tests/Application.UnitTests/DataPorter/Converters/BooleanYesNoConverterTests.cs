@@ -86,6 +86,8 @@ public class BooleanYesNoConverterTests
     [InlineData("yes")]
     [InlineData("YES")]
     [InlineData("Yes")]
+    [InlineData("ja")]
+    [InlineData("JA")]
     public void ConvertFromImport_WithYesCaseInsensitive_ReturnsTrue(string value)
     {
         // Arrange
@@ -120,6 +122,8 @@ public class BooleanYesNoConverterTests
     [InlineData("1")]
     [InlineData("y")]
     [InlineData("Y")]
+    [InlineData("j")]
+    [InlineData("J")]
     public void ConvertFromImport_WithAlternativeTrueValues_ReturnsTrue(string value)
     {
         // Arrange

@@ -43,7 +43,9 @@ public sealed class BooleanYesNoConverter : IValueConverter<bool>
         return stringValue.Equals(this.YesValue, StringComparison.OrdinalIgnoreCase) ||
                stringValue.Equals("true", StringComparison.OrdinalIgnoreCase) ||
                stringValue.Equals("1", StringComparison.OrdinalIgnoreCase) ||
-               stringValue.Equals("y", StringComparison.OrdinalIgnoreCase);
+               stringValue.Equals("y", StringComparison.OrdinalIgnoreCase) ||
+               stringValue.Equals("j", StringComparison.OrdinalIgnoreCase) ||
+               stringValue.Equals("ja", StringComparison.OrdinalIgnoreCase);
     }
 
     /// <inheritdoc/>

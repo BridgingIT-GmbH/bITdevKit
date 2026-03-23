@@ -43,6 +43,7 @@ The `[TypedEntityId<Guid>]` attribute automatically generates a strongly-typed `
 A **Value Object** is an immutable object identified by its attributes rather than identity. It encapsulates a domain concept without its own lifecycle. Value objects are ideal for concepts that don't need to be tracked individually.
 
 Benefits of value objects:
+
 - Self-validation on creation ensures validity
 - Prevents primitive obsession (overusing strings and primitives)
 - Enhances readability and type safety
@@ -82,6 +83,7 @@ The factory method `Create()` returns a `Result<EmailAddress>`, ensuring invalid
 ### 2.3 Smart Enumerations
 
 Traditional C# enums have significant limitations:
+
 - No behavior or methods
 - Limited to numeric values
 - Cannot store additional metadata
@@ -109,6 +111,7 @@ public class CustomerStatus : Enumeration
 ```
 
 Smart enumerations can:
+
 - Store additional properties like `Description`
 - Contain business logic methods
 - Be used in switch expressions like regular enums
@@ -143,6 +146,7 @@ public async Task<Customer> GetCustomerAsync(Guid id)   // ❌ Wrong - could be 
 ```
 
 Benefits of typed IDs:
+
 - Compile-time type checking prevents mixing entity IDs
 - Self-documenting code (parameter names indicate entity type)
 - Easy to refactor (change from Guid to int without affecting callers)
@@ -155,6 +159,7 @@ Benefits of typed IDs:
 **Domain Events** capture significant domain occurrences in past-tense, immutable records. They decouple producers from consumers, enabling event-driven architecture and maintaining the single responsibility principle.
 
 When a domain event is raised:
+
 - The producer doesn't need to know who handles it
 - Multiple handlers can respond to the same event
 - Handlers can run asynchronously (e.g., sending email, updating cache)
@@ -195,16 +200,19 @@ Domain events are collected in the aggregate's `DomainEvents` collection and pub
 The **CQRS pattern** separates read and write operations into distinct models. While this can mean separate read/write models in complex systems, bITDevKit uses a simplified approach where the same domain model serves both, but operations are clearly separated.
 
 **Commands** modify state (Create, Update, Delete):
+
 - Always return void or a result indicating success/failure
 - Execute use cases that change the system
 - Validate business rules before executing
 
 **Queries** read data without side effects:
+
 - Return data (typically DTOs or domain models)
 - Never modify state
 - Can be optimized for specific read scenarios
 
 Benefits of CQRS:
+
 - Clear separation of concerns (write vs read paths)
 - Independent scalability (optimize reads and writes differently)
 - Simplified handler testing (each has single responsibility)
@@ -268,12 +276,14 @@ The `IRequester` interface acts as a mediator, dispatching commands and queries 
 The **Result pattern** replaces exception-based error handling with explicit success/failure types. This enables **railway-oriented programming** - operations compose cleanly with automatic error propagation.
 
 **Problems with exception-based error handling**:
+
 - Exceptions break control flow unexpectedly
 - Hard to distinguish business errors from technical failures
 - Try-catch blocks add noise to business logic
 - Error context gets lost as exceptions bubble up
 
 **Benefits of Result pattern**:
+
 - Explicit success/failure states
 - Error context preserved through call chain
 - Composable operations (functions can be chained)
@@ -298,6 +308,7 @@ return await repository.InsertResultAsync(customer)
 ```
 
 **Key Result operations**:
+
 - `Bind()`: Transform success value, returns Result
 - `Map()`: Convert to different type, returns Result
 - `Ensure()`: Validate condition, fails if false
@@ -321,12 +332,14 @@ var result = Rule
 ```
 
 Benefits of the Rules feature:
+
 - Reusable rules across different contexts
 - Composable rule chains
 - Clear separation of validation from domain logic
 - Integration with Result pattern for consistent error handling
 
 Rules can be:
+
 - Sync: Evaluate immediately
 - Async: Support asynchronous validation (e.g., checking external API)
 - Conditional: Only apply based on runtime conditions
@@ -341,6 +354,7 @@ Rules can be:
 The repository pattern abstracts data access while the **behavior pattern** (decorator) adds cross-cutting concerns. This separation keeps business logic clean while automatically applying logging, tracing, auditing, and event publishing.
 
 Behaviors wrap repository calls in a chain, executing in a specific order. Each behavior can:
+
 - Pre-process the operation
 - Execute the operation
 - Post-process the result
@@ -357,6 +371,7 @@ graph LR
 ```
 
 **Behavior chain order** (important for correctness):
+
 1. **TracingBehavior**: Starts OpenTelemetry span for distributed tracing
 2. **LoggingBehavior**: Logs operation start/end with duration
 3. **AuditStateBehavior**: Sets audit metadata (CreatedBy, UpdatedDate, etc.)
@@ -372,6 +387,7 @@ services.AddEntityFrameworkRepository<Customer, CoreModuleDbContext>()
 ```
 
 **Why this order matters**:
+
 - Audit state must be set before persistence (so database has audit fields)
 - Outbox needs committed events (runs after repository saves)
 - Tracing spans the entire operation
@@ -392,18 +408,21 @@ bITDevKit supports both persistence patterns. Choose based on your project's com
 | **Query Complexity** | Limited to embedded queries | Supports specifications, filtering |
 
 **When to use ActiveEntity**:
+
 - Simple CRUD scenarios
 - Rapid prototyping or MVP
 - Teams prefer code over abstractions
 - Query logic is straightforward
 
 **When to use Repository**:
+
 - Complex domain with multiple aggregates
 - Need for specifications and filtering
 - Strict separation of concerns required
 - Comprehensive test coverage needed
 
 Both patterns support:
+
 - Behaviors for cross-cutting concerns
 - Domain events
 - Typed entity IDs
@@ -426,12 +445,14 @@ src/Modules/CoreModule/
 ```
 
 **Module characteristics**:
+
 - Self-contained DbContext and migrations
 - Own domain model, commands, queries, handlers
 - Independent endpoints and DTOs
 - Can be extracted to microservice if needed
 
 **Benefits of modular monolith**:
+
 - Clear ownership of business capabilities
 - Easier to understand and maintain
 - Gradual path to microservices if needed
@@ -448,11 +469,13 @@ Critical rules enforced by architecture tests (these tests run as part of your C
 4. **Presentation → Application**: Presentation uses application through `IRequester` mediator
 
 **Module boundaries**:
+
 - Modules cannot directly reference other modules' internal layers (Domain, Application, Infrastructure)
 - Modules can reference other modules' `.Contracts` projects for public APIs
 - Cross-module communication via integration events (async) or public APIs (sync)
 
 **Why these rules matter**:
+
 - Prevents circular dependencies
 - Keeps domain logic pure and testable
 - Makes refactoring safer (boundaries are clear)
@@ -519,6 +542,7 @@ sequenceDiagram
 For new developers joining a bITDevKit project, follow this checklist to understand and extend the codebase:
 
 **Domain Layer**:
+
 - [ ] Create new aggregate inheriting from `AggregateRoot<TId>`
 - [ ] Add `[TypedEntityId<T>]` attribute for type-safe IDs
 - [ ] Register domain events in `DomainEvents` collection
@@ -527,6 +551,7 @@ For new developers joining a bITDevKit project, follow this checklist to underst
 - [ ] Implement factory methods (e.g., `Create()`) that validate invariants
 
 **Application Layer**:
+
 - [ ] Create commands for write operations (inherit `RequestBase<TResponse>`)
 - [ ] Create queries for read operations (inherit `RequestBase<TResponse>`)
 - [ ] Implement handlers inheriting `RequestHandlerBase<TRequest, TResponse>`)
@@ -535,6 +560,7 @@ For new developers joining a bITDevKit project, follow this checklist to underst
 - [ ] Orchestrate domain logic in handlers (not repositories)
 
 **Infrastructure Layer**:
+
 - [ ] Configure DbContext with `AddDbContext<T>()`
 - [ ] Register repositories with `AddEntityFrameworkRepository<T, TContext>()`
 - [ ] Add behaviors: Tracing, Logging, Audit, Outbox
@@ -542,6 +568,7 @@ For new developers joining a bITDevKit project, follow this checklist to underst
 - [ ] Ensure migrations are applied via startup task
 
 **Presentation Layer**:
+
 - [ ] Create endpoints class inheriting from `EndpointsBase`
 - [ ] Use `IRequester.SendAsync()` to dispatch commands/queries
 - [ ] Map Results to HTTP responses (`.MapHttpCreated()`, `.MapHttpOk()`)
@@ -566,6 +593,7 @@ public Result<Customer> ChangeEmail(string email)
 ```
 
 **Builder methods**:
+
 - `Set()`: Change a property value
 - `Check()`: Validate condition before applying
 - `Register()`: Add domain event
@@ -585,6 +613,7 @@ var customers = await repository.FindAllAsync(spec);
 ```
 
 Benefits of specifications:
+
 - Reusable across queries and handlers
 - Composable (can combine with AND/OR)
 - Testable in isolation
@@ -606,6 +635,7 @@ await Result<Customer>.Success(customer)
 ```
 
 **How it works**:
+
 - Transaction starts lazily (on first async operation)
 - All operations execute within the transaction
 - On success: transaction commits

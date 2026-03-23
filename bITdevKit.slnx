@@ -27,6 +27,8 @@
     <Project Path="benchmarks/Common.Benchmarks/Common.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/docs/">
+    <File Path="README.md" />
+    <File Path="docs/INDEX.md" />
     <File Path="docs/design-application-templating.md" />
     <File Path="docs/features-application-commands-queries.md" />
     <File Path="docs/features-application-dataporter.md" />
@@ -51,8 +53,7 @@
     <File Path="docs/features-storage-documents.md" />
     <File Path="docs/features-storage-files.md" />
     <File Path="docs/features-utilities.md" />
-    <File Path="docs/introduction-guide.md" />
-    <File Path="README.md" />
+    <File Path="docs/introduction-ddd-guide.md" />
   </Folder>
   <Folder Name="/docs/assets/">
     <File Path="docs/assets/bITDevKit_Icon.png" />

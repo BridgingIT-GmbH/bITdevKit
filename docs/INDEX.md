@@ -1,6 +1,15 @@
 # Documentation Index
 
-This lists all feature documentation pages in `docs/features-*.md` and groups them by the area of the devkit they support. If you are new to the kit, a good starting path is `Domain` -> `Results` -> `Requester and Notifier` -> `Modules` -> `Presentation Endpoints`.
+This lists the feature documentation pages in `docs/features-*.md` plus the shared building-block and contributor guides that support them. If you are new to the kit, a good starting path is `Domain` -> `Results` -> `Requester and Notifier` -> `Modules` -> `Presentation Endpoints`.
+
+## Common Infrastructure
+
+- [Common Extensions](./common-extensions.md): Provides a package-level map of the extension helpers in `Common.Abstractions/Extensions`, grouped by collection, fluent composition, date/time, text, reflection, configuration, and async utility areas.
+- [Common Serialization](./common-serialization.md): Documents the shared serializer abstraction, built-in serializers, default JSON conventions, and the converters that make devkit types serialize consistently.
+- [Common Options Builders](./common-options-builders.md): Explains the lightweight fluent options-builder pattern reused across many devkit packages and how it differs from `Microsoft.Extensions.Options`.
+- [Common Mapping](./common-mapping.md): Covers the devkit's boundary mapping abstraction, Mapster registration, result mapping helpers, and the explicit manual mapper fallback.
+- [Common Caching](./common-caching.md): Covers the in-process cache abstraction, the default memory-cache provider, expiration settings, and prefix-based invalidation patterns.
+- [Common Observability Tracing](./common-observability-tracing.md): Covers the activity decorator, tracing attributes, naming schemas, OpenTelemetry expectations, and the practical limits of the low-level tracing helper.
 
 ## Core Domain and Application
 
@@ -41,3 +50,8 @@ This lists all feature documentation pages in `docs/features-*.md` and groups th
 - [DocumentStorage](./features-storage-documents.md): Provides a typed document-store abstraction with pluggable providers and optional client behaviors for caching, retries, logging, and fault handling.
 - [FileStorage](./features-storage-files.md): Exposes a provider-based file storage abstraction for file operations, metadata, compression, health checks, and cross-provider transfers with progress reporting.
 - [Utilities](./features-utilities.md): Collects shared utility features such as time-provider abstractions and resiliency primitives including retries, throttling, circuit breaking, lightweight background work, and timeout helpers.
+
+## Testing and Contributor Guides
+
+- [Fake Authentication for Integration Tests](./testing-fake-authentication.md): Documents the lightweight ASP.NET Core fake-auth scheme used in integration tests, including setup, request headers, claim composition, and default-user behavior.
+- [Testing Common XUnit](./testing-common-xunit.md): Documents the contributor-facing xUnit utilities for test setup, web host factories, fake time, traits, and `Result` assertion helpers.

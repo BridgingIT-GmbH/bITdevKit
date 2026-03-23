@@ -13,10 +13,13 @@
 ## Appendix A: Smart Enumerations
 
 ### Overview
+
 In domain modeling, representing a fixed set of options or states is a common requirement. While C# provides the enum type for this purpose, it often proves too limiting for real-world domain models. The Smart Enumeration pattern offers a more powerful alternative that combines the simplicity of enums with the flexibility of full-fledged objects.
 
 ### Challenge
+
 Traditional C# enums work well for simple flags or states but fall short when requirements grow:
+
 - Cannot include additional data like descriptions or metadata
 - No support for business rules or behavior
 - Limited to numeric values
@@ -63,6 +66,7 @@ public class TodoStatus : Enumeration
 ```
 
 #### Entity Framework Configuration
+
 ```csharp
 public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem>
 {
@@ -130,6 +134,7 @@ The source generator creates ID classes with:
 ### Usage
 
 #### Domain Entity
+
 ```csharp
 [TypedEntityId<Guid>] // triggers the generator
 public class TodoItem : Entity<TodoId> // generated id
@@ -140,6 +145,7 @@ public class TodoItem : Entity<TodoId> // generated id
 ```
 
 #### Application Code
+
 ```csharp
 // Type safety prevents mixing different ID types
 public async Task<Todo> GetTodo(TodoId id) // ✅
@@ -191,10 +197,11 @@ The TypedEntityId pattern transforms primitive identifiers into first-class doma
 ### Overview
 
 In Domain-Driven Design, Aggregate Roots are responsible for maintaining consistency boundaries. Modifying state often involves complex logic:
-1.  **Change Tracking**: Only applying updates if the value actually changed.
-2.  **Event Sourcing**: Raising Domain Events when specific state changes occur.
-3.  **Invariants**: Ensuring business rules (guards) are met before and after changes.
-4.  **Side Effects**: Handling interactions with child entities.
+
+1. **Change Tracking**: Only applying updates if the value actually changed.
+2. **Event Sourcing**: Raising Domain Events when specific state changes occur.
+3. **Invariants**: Ensuring business rules (guards) are met before and after changes.
+4. **Side Effects**: Handling interactions with child entities.
 
 Implementing this logic manually in every setter or update method leads to repetitive, error-prone boilerplate code (the "check-change-notify" pattern).
 
@@ -203,16 +210,17 @@ Implementing this logic manually in every setter or update method leads to repet
 Writing consistent update logic for every property is tedious. Developers often forget to check if the value actually changed before raising an event, or they duplicate validation logic.
 
 **Anti-Pattern (Manual Implementation):**
+
 ```csharp
 public void ChangeEmail(string newEmail)
 {
     if (string.IsNullOrEmpty(newEmail)) throw new ArgumentException(...); // Guard
-    
+
     if (this.Email != newEmail) // Check difference
     {
         var oldEmail = this.Email;
         this.Email = newEmail; // Set
-        
+
         // Notify
         this.DomainEvents.Register(new EmailChangedEvent(oldEmail, newEmail));
         this.DomainEvents.Register(new CustomerUpdatedEvent(this));
@@ -271,6 +279,7 @@ sequenceDiagram
 ### Usage
 
 #### Basic Property Update
+
 ```csharp
 public Result<Customer> ChangeName(string firstName, string lastName)
 {
@@ -283,6 +292,7 @@ public Result<Customer> ChangeName(string firstName, string lastName)
 ```
 
 #### Conditional Logic with When (Circuit Breaker)
+
 The `When` method acts as a circuit breaker at its declared position. Operations **before** When execute normally, operations **after** When only execute if the condition is true.
 
 ```csharp
@@ -317,6 +327,7 @@ public Result<Customer> ChangeStatus(CustomerStatus status)
 ```
 
 #### Validation with Check and Ensure
+
 - **`Ensure`**: Pre-condition check - aborts **before** making changes if false
 - **`Check`**: Post-condition validation - executes **immediately** at its position, after changes
 
@@ -334,6 +345,7 @@ public Result<Customer> UpdateProfile(string name, int age)
 ```
 
 #### Using Result-Returning Factories (Fail Fast)
+
 If the value generation itself can fail (e.g., creating a Value Object), the builder handles the `Result` automatically. If `EmailAddress.Create` returns a Failure, the chain stops, and `Apply()` returns that failure.
 
 ```csharp
@@ -343,13 +355,14 @@ public Result<Customer> ChangeEmail(string emailString)
         // If Create returns Failure, the chain aborts here
         .Set(c => c.Email, EmailAddress.Create(emailString))
         .Regisiter((c, ctx) => new EmailChangedEvent(
-             ctx.GetOldValue<EmailAddress>(nameof(Email)), 
+             ctx.GetOldValue<EmailAddress>(nameof(Email)),
              c.Email))
         .Apply();
 }
 ```
 
 #### Collection Management
+
 ```csharp
 // Add/Remove items
 public Result<Customer> AddTag(string tag)
@@ -397,6 +410,7 @@ public Result<Customer> SetPrimaryAddress(AddressId addressId)
 ```
 
 #### Executing Methods with Result Propagation
+
 When you need to call other domain methods that return `Result`, use `Set` to chain them. If any method fails, the entire chain stops and returns that failure.
 
 ```csharp
@@ -444,7 +458,7 @@ public Result<Customer> PromoteToAdult()
         .Set(c => c.Status, CustomerStatus.Adult)
         .Execute(r => r.Map(c => { c.PromotedDate = DateTime.UtcNow; return c; }))  // Additional field update
         .Execute(r => r.Ensure(
-            c => !string.IsNullOrEmpty(c.Email), 
+            c => !string.IsNullOrEmpty(c.Email),
             new ValidationError("Adults must have an email")))  // Post-operation validation
         .Execute(r => r.Tap(c => logger.LogInformation($"Promoted {c.Name} to Adult")))  // Logging
         .Apply();
@@ -452,6 +466,7 @@ public Result<Customer> PromoteToAdult()
 ```
 
 **Key behaviors:**
+
 - `Execute` transformations execute **at their declared position** in the operation chain
 - Multiple `Execute` calls execute sequentially in declaration order
 - If any `Execute` transformation returns a failure Result, remaining operations are **short-circuited**
@@ -459,6 +474,7 @@ public Result<Customer> PromoteToAdult()
 - Can be used standalone without any Set/Add operations: `.Change().Execute(r => r.Tap(...)).Apply()`
 
 **Execution order example:**
+
 ```csharp
 return this.Change()
     .Set(c => c.Field1, "A")               // 1. Executes
@@ -469,6 +485,7 @@ return this.Change()
 ```
 
 **Common use cases:**
+
 - **Logging**: Use `.Execute(r => r.Tap(...))` for side effects without changing the value
 - **Additional validation**: Use `.Execute(r => r.Ensure(...))` for complex post-operation checks
 - **Transformations**: Use `.Execute(r => r.Map(...))` to modify additional fields based on the final state
@@ -514,11 +531,13 @@ public Result<Customer> ComplexUpdate(string name, int age)
 ### Execution Model
 
 **Declaration Order Guarantee:**
+
 - All operations execute in the **exact order they are declared**
 - No batching or phase-based execution
 - "What you see is what executes"
 
 **When as Circuit Breaker:**
+
 ```csharp
 .Set(prop1)       // Always executes
 .Register(event1) // Always queues
@@ -530,6 +549,7 @@ public Result<Customer> ComplexUpdate(string name, int age)
 ```
 
 **Check Executes Immediately:**
+
 ```csharp
 .Set(c => c.Age, 25)
 .Check(c => c.Age > 0, "Age must be positive")  // Validates immediately after Set
@@ -538,9 +558,9 @@ public Result<Customer> ComplexUpdate(string name, int age)
 
 ### Benefits
 
-1.  **Declarative Syntax**: Reads like a sentence describing the business transaction.
-2.  **Automatic Change Detection**: Properties are only updated if values actually differ; events are only raised if updates occurred.
-3.  **Consistency**: Enforces a standard pattern for all aggregate updates.
-4.  **Reduced Boilerplate**: Removes repetitive `if (old != new)` checks and event registration code.
-5.  **Fail-Fast Safety**: Integrates seamlessly with the `Result` pattern to abort operations on validation errors.
-6.  **Context Awareness**: Easy access to "Old Value" vs "New Value" when creating domain events.
+1. **Declarative Syntax**: Reads like a sentence describing the business transaction.
+2. **Automatic Change Detection**: Properties are only updated if values actually differ; events are only raised if updates occurred.
+3. **Consistency**: Enforces a standard pattern for all aggregate updates.
+4. **Reduced Boilerplate**: Removes repetitive `if (old != new)` checks and event registration code.
+5. **Fail-Fast Safety**: Integrates seamlessly with the `Result` pattern to abort operations on validation errors.
+6. **Context Awareness**: Easy access to "Old Value" vs "New Value" when creating domain events.

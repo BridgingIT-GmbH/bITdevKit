@@ -26,6 +26,7 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 
 - [Requester and Notifier](./features-requester-notifier.md): Defines the in-process request/response and pub/sub abstractions with typed handlers, metadata, and configurable pipeline behaviors for cross-cutting concerns.
 - [Messaging](./features-messaging.md): Provides transport-backed asynchronous messaging with broker abstractions, publisher and handler behaviors, and an outbox pattern for reliable delivery.
+- [Notifications](./features-notifications.md): Covers the application-level notification contracts for email delivery, fake SMTP, queued sending, and optional outbox-backed background processing.
 - [Modules](./features-modules.md): Explains how the devkit structures a modular monolith through self-contained modules that register their own services and endpoints while staying isolated.
 - [Filtering](./features-filtering.md): Describes the JSON-based filter model for expressing filtering, sorting, paging, includes, and advanced predicates that translate into repository queries.
 - [Extensions](./features-extensions.md): Documents fluent helper extensions for null-safe composition, conditional query building, sync and async chaining, and async-enumerable processing.
@@ -49,7 +50,9 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 - [JobScheduling](./features-jobscheduling.md): Wraps Quartz.NET in fluent ASP.NET Core integration for registering, persisting, monitoring, and controlling scheduled background jobs.
 - [DocumentStorage](./features-storage-documents.md): Provides a typed document-store abstraction with pluggable providers and optional client behaviors for caching, retries, logging, and fault handling.
 - [FileStorage](./features-storage-files.md): Exposes a provider-based file storage abstraction for file operations, metadata, compression, health checks, and cross-provider transfers with progress reporting.
+- [Storage Monitoring](./features-storage-monitoring.md): Documents the monitored-location subsystem built on file storage for real-time watching, on-demand scans, processor pipelines, and scheduled reconciliation jobs.
 - [Utilities](./features-utilities.md): Collects shared utility features such as time-provider abstractions and resiliency primitives including retries, throttling, circuit breaking, lightweight background work, and timeout helpers.
+- [Log Entries](./features-log-entries.md): Covers the application contract for querying, streaming, exporting, and cleaning up persisted log entries together with the operational web endpoints built on that contract.
 
 ## Testing and Contributor Guides
 

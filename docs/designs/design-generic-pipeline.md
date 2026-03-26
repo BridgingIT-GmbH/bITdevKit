@@ -1,12 +1,14 @@
 # Design Document: Generic Processing Pipeline Feature (Common.Utilities\Pipeline)
 
+[TOC]
+
 ## 1. Introduction
 
 The generic processing pipeline is a reusable framework feature for structuring ordered in-process processing logic as a sequence of focused steps. It is intended for scenarios where data or requests must pass through multiple stages of processing while preserving consistency, extensibility, testability, and observability.
 
 A pipeline is defined as:
 
-> A pipeline is an ordered sequence of processing steps that operate on an input, shared context, and evolving result. Each step may continue, short-circuit, skip itself, fail, or request termination of the remaining pipeline.
+> A pipeline is an ordered sequence of processing steps that operate on an optional mutable execution context. The context may contain input, result-related state, and any other execution state needed by the pipeline. Across the execution, the pipeline carries an accumulated `Result` that collects messages and errors from step to step. Each step may continue, short-circuit, skip itself, or request termination of the remaining pipeline.
 
 This feature is designed to provide a lightweight, strongly structured processing model that sits between simple service methods and full workflow or orchestration engines.
 
@@ -42,19 +44,17 @@ The pipeline shall provide a generic processing abstraction that can be reused a
 
 The pipeline shall model processing as an ordered sequence of steps where execution order is meaningful and explicit.
 
-### 3.3 Strongly typed shared context
+### 3.3 Strongly typed optional execution context
 
-Each pipeline execution shall use a strongly typed context specific to the pipeline type, while inheriting from a common conceptual base for general execution metadata.
+When a pipeline requires execution state, it shall use a strongly typed context specific to the pipeline type, while inheriting from a common conceptual base for general execution metadata.
 
-### 3.4 Hybrid processing model
+The design shall also support pipelines that do not require a context at all.
 
-The pipeline shall distinguish between:
+### 3.4 Context-centric processing model
 
-* the stable input
-* the shared execution context
-* the evolving result
+The pipeline shall use an optional execution context as the primary carrier of execution data.
 
-This separation is a core design decision and avoids collapsing all concerns into a single mutable object.
+This context-centric model allows consumers to decide whether the context contains input, result, both, or any other execution-scoped state relevant to the pipeline.
 
 ### 3.5 Explicit control semantics
 
@@ -63,7 +63,6 @@ The design shall explicitly support the following step outcomes:
 * continue
 * skip self
 * short-circuit with a successful result
-* fail with an error result
 * request termination of the remaining pipeline
 
 ### 3.6 Consistent result handling
@@ -76,7 +75,7 @@ The pipeline shall support custom steps, custom contexts, and extension points f
 
 ### 3.8 Runtime flexibility
 
-The pipeline shall allow runtime decisions based on input, context, and evolving result without losing the clarity of static structure.
+The pipeline shall allow runtime decisions based on optional context, the accumulated carried `Result`, and execution metadata without losing the clarity of static structure.
 
 ### 3.9 Static definition with runtime construction
 
@@ -90,6 +89,18 @@ The design shall support isolated testing of steps and deterministic testing of 
 
 The design shall support meaningful execution diagnostics and stage-level visibility.
 
+### 3.12 Dependency injection friendly construction
+
+The design shall support runtime construction through dependency injection so that pipeline steps can use constructor injection for repositories, services, policies, and other collaborators.
+
+### 3.13 Explicit fire-and-forget execution
+
+The design shall support an explicit fire-and-forget execution option so a caller can start a pipeline without waiting for the pipeline to finish, while the pipeline continues in the background.
+
+### 3.14 Progress reporting for long-running execution
+
+The design shall support progress reporting through execution options so long-running pipelines can provide structured feedback to the initiating caller while execution is in progress.
+
 ---
 
 ## 4. Scope and Boundaries
@@ -101,6 +112,7 @@ It is intended to be:
 * lightweight
 * in-process
 * deterministic in ordering
+* optionally executable in a background fire-and-forget mode within the host process
 * suitable for application and domain processing flows
 * reusable across multiple scenarios
 * no external dependencies beyond the framework’s core libraries
@@ -126,48 +138,50 @@ The pipeline consists of a small set of core conceptual elements.
 
 ### 5.1 Pipeline
 
-A pipeline is an ordered processing flow composed of multiple steps. It governs how execution progresses from one step to the next and how the final result is produced.
+A pipeline is an ordered processing flow composed of multiple steps. It governs how execution progresses from one step to the next and how the accumulated execution `Result` reaches completion.
 
-### 5.2 Input
+### 5.2 Execution context
 
-The input is the original subject of processing. It is stable for the lifetime of the execution and serves as the reference point for the flow.
+The execution context is the primary carrier of execution data when a pipeline uses context.
 
-The input is not the primary carrier of processing state.
+It is an optional strongly typed execution-scoped object that may contain:
 
-### 5.3 Shared context
+* input data
+* result data
+* execution metadata
+* shared mutable state
+* diagnostics or execution-scoped helper information
 
-The shared context is a strongly typed execution-scoped object that carries execution metadata and shared state accessible to all steps.
+Pipelines that do not require execution state should be able to execute without creating or passing a context.
 
-Each pipeline type defines its own specialized context, but all contexts share a sane conceptual base that provides common properties such as:
+Each context-aware pipeline type defines its own specialized context, but all contexts share a sane conceptual base that provides common properties such as:
 
+* a dedicated `Pipeline` child object for framework-owned execution metadata
 * pipeline name
 * correlation identifier
-* general-purpose item bag
+* execution identifier
+* execution timing and simple pipeline metrics such as UTC started/completed timestamps
+* general-purpose property bag
 * shared execution metadata relevant to all pipelines
-
-### 5.4 Evolving result
-
-The evolving result is the current state of the processing outcome as it moves through the ordered steps.
-
-Steps may transform, enrich, validate, or finalize the evolving result. It is distinct from both the input and the shared context.
 
 ### 5.5 Processing step
 
 A processing step is a focused unit of work within the pipeline. A step may:
 
-* inspect the stable input
-* inspect or update the shared context
-* act on the evolving result
+* inspect or update the execution context when one is present
 * produce diagnostics
+* report progress from inside the step when execution options provide a progress reporter
 * influence pipeline control flow
 
 Steps should remain narrow in responsibility and aligned with the principle of separation of concerns.
 
 ### 5.6 Pipeline execution
 
-A pipeline execution is a single runtime instance of a pipeline processing a specific input using a specific context.
+A pipeline execution is a single runtime instance of a pipeline processing with an optional context.
 
-Each execution is independent and carries its own context and evolving result.
+Each execution is independent and carries its own context when a context is used.
+
+Execution may be initiated either as a caller-awaited execution or as an explicit fire-and-forget background execution.
 
 ### 5.7 Conceptual Processing Model
 
@@ -175,15 +189,8 @@ The relationship between the core elements of the pipeline can be visualized con
 
 ```text
           +--------------------+
-          |       INPUT        |
-          |  (stable request)  |
-          +---------+----------+
-                    |
-                    v
-          +--------------------+
-          |   SHARED CONTEXT   |
-          | execution metadata |
-          | correlation, state |
+          |  EXECUTION CONTEXT |
+          | input/result/state |
           +---------+----------+
                     |
                     v
@@ -198,67 +205,67 @@ The relationship between the core elements of the pipeline can be visualized con
                     |
                     v
           +--------------------+
-          |  EVOLVING RESULT   |
+          |  UPDATED CONTEXT   |
           | progressively      |
-          | transformed state  |
+          | changed state      |
           +---------+----------+
                     |
                     v
           +--------------------+
           |     FINAL RESULT   |
-          | success / failure  |
+          | from context and   |
+          | execution outcome  |
           +--------------------+
 ```
 
 In this conceptual model:
 
-* the **input** remains stable
-* the **shared context** carries execution state and metadata
-* the **pipeline steps** progressively act on the evolving result
-* the **final result** represents the outcome of the complete processing flow
+* the **execution context**, when present, carries execution state and metadata
+* the **pipeline steps** progressively act on that context while contributing to the carried `Result`
+* the **final result** is the accumulated `Result` for the complete processing flow and may be interpreted alongside the final context
 
 ---
 
-## 6. Hybrid Processing Model
+## 6. Context-Centric Processing Model
 
-The pipeline follows a hybrid model consisting of three distinct conceptual elements.
+The pipeline follows a context-centric model where the optional execution context is the primary carrier of pipeline data.
 
-### 6.1 Stable input
+### 6.1 Optional execution context
 
-The stable input represents the original request, payload, or source data that triggered processing.
+When present, the execution context contains the execution-scoped state needed by the pipeline.
 
-It remains conceptually unchanged throughout the pipeline.
+Depending on the scenario, that context may include:
 
-### 6.2 Strongly typed shared context
+* original input or request data
+* intermediate state
+* result-related state
+* diagnostics or progress-relevant state
 
-The shared context represents execution state and shared metadata. It supports communication between steps and enables runtime decision-making.
+### 6.2 Pipelines without context
 
-### 6.3 Evolving result
+Some pipelines may intentionally omit context when no shared execution state is needed.
 
-The evolving result represents the current processing outcome. It is the object most directly shaped by the ordered participation of steps.
+In those cases, execution is driven only by the pipeline definition, the execution engine, the supplied execution options, and the engine-managed accumulated `Result`.
 
-### 6.4 Why this model matters
+As an implementation detail, such pipelines may still be normalized internally onto a shared execution path by using an internal `NullPipelineContext`.
 
-This hybrid model is preferred because it creates a clean separation between:
+### 6.3 Why this model matters
 
-* what came into the pipeline
-* what the pipeline is currently producing
-* what all steps need to know about the execution
+This model is preferred because it keeps the framework simple:
 
-This prevents the design from collapsing into either:
-
-* a mutable request object carrying too many concerns, or
-* an oversized context object acting as an unstructured state bag
+* the pipeline framework only needs to understand optional context plus execution behavior
+* consumers remain free to model input and result inside the context when that is useful
+* the framework avoids imposing a mandatory distinction between input, mutable state, and result-related data when consumers do not need that separation
 
 ---
 
-## 7. Shared Context Design Concept
+## 7. Context Design Concept
 
-The context is one of the most important parts of the feature.
+For context-aware pipelines, the context is the central part of the feature.
 
 ### 7.1 Strong typing by pipeline type
 
-Each pipeline shall define its own strongly typed context. This ensures discoverability, correctness, and maintainability.
+Each context-aware pipeline shall define its own strongly typed context. This ensures discoverability, correctness, and maintainability.
 
 ### 7.2 Common base context
 
@@ -266,10 +273,13 @@ All specialized contexts conceptually derive from a common base that captures sh
 
 This common base should include concepts such as:
 
+* a dedicated child object for pipeline execution metadata
 * pipeline identity
 * correlation identity
+* execution identity
+* UTC started/completed timestamps and simple execution metrics
 * general execution metadata
-* general-purpose item storage
+* general-purpose property bag storage
 
 ### 7.3 Role of the context
 
@@ -279,7 +289,10 @@ The context exists to:
 * support communication between steps
 * support runtime decision-making
 * enable correlation and diagnostics
-* carry auxiliary state needed across the flow
+* make execution-scoped capabilities such as progress reporting available to steps
+* carry any input, result, or auxiliary state needed across the flow
+
+Pipelines without shared execution state may omit the context entirely and rely only on execution options, the carried `Result`, and execution metadata managed by the engine.
 
 ### 7.4 Context discipline
 
@@ -293,53 +306,51 @@ The general-purpose item bag exists as a flexibility mechanism, not as the prima
 
 Clear control semantics are a defining characteristic of the pipeline design.
 
+The pipeline should treat step control as an integral combination of two parts:
+
+* the carried non-generic `Result`, which communicates success, failure, messages, and errors
+* the step control outcome, which communicates how the pipeline should proceed
+
+Taken together, these form the full step-control contract. The pipeline should never evaluate the outcome without also evaluating the returned `Result`, and it should never evaluate the `Result` without also considering the requested control outcome.
+
 ### 8.1 Continue
 
 A step may complete its work and allow processing to continue normally to the next step.
 
 ### 8.2 Skip self
 
-A step may determine that it should not participate in the current execution. This is a valid runtime outcome and not a failure.
+A step may determine that it should not participate meaningfully in the current execution. This is a valid runtime outcome and not a failure.
 
 ### 8.3 Short-circuit
 
-A step may determine that the final successful result has already been reached and that no further processing is required.
+A step may determine that the pipeline has already reached a valid completion point and that no further processing is required.
 
-Short-circuiting represents successful early completion and produces a valid final result.
+Short-circuiting represents successful early completion unless the carried `Result` already indicates failure.
 
-### 8.4 Fail
-
-A step may fail with an error outcome aligned with the framework’s result model.
-
-Failure is explicit and structured. It is not merely an incidental control-flow side effect.
-
-### 8.5 Request termination
+### 8.4 Request termination
 
 A step may request termination of the remaining pipeline.
 
-Termination ends further execution without implying a successful final result.
+Termination ends further execution intentionally and is distinct from both short-circuiting and failure.
 
-This concept is distinct from both failure and short-circuiting. It allows policy-driven or context-driven termination conditions to be represented intentionally.
+### 8.5 Failure through the carried result
 
-### 8.4 Fail
+Failure should be represented through the framework’s untyped `Result`, not as a separate control outcome.
 
-A step may fail with an error outcome aligned with the framework’s result model.
+A step may therefore:
 
-Failure is explicit and structured. It is not merely an incidental control-flow side effect.
+* return `Continue` while also returning an accumulated `Result` that is now in a failure state
+* allow execution policy to decide whether that failure stops the pipeline immediately or permits later steps to continue
 
-### 8.5 Request termination
+This keeps success/failure semantics aligned with the framework’s existing result model while preserving explicit pipeline control flow.
 
-A step may request termination of the remaining pipeline.
+### 8.6 Context-aware and result-aware decision making
 
-This concept is distinct from both failure and short-circuiting. It allows policy-driven or context-driven termination conditions to be represented intentionally.
-
-### 8.6 Context-aware decision making
-
-All control outcomes may be based on the current input, context, and evolving result. This enables runtime flexibility while preserving a stable structural definition.
+Step control decisions may be based on the current context, the current accumulated `Result`, and other execution metadata. This enables runtime flexibility while preserving a stable structural definition.
 
 ### 8.7 Control Flow Model
 
-The following diagram illustrates how pipeline control outcomes influence execution progression.
+The following diagram illustrates how step control outcomes and the carried `Result` influence execution progression.
 
 ```text
                 +-------------------+
@@ -347,39 +358,39 @@ The following diagram illustrates how pipeline control outcomes influence execut
                 +---------+---------+
                           |
                           v
-                 +------------------+
-                 |  Determine Step  |
-                 |   Control Outcome|
-                 +---------+--------+
-                           |
-        +------------------+------------------+
-        |                  |                  |
-        v                  v                  v
-   +-----------+     +-----------+      +-----------+
-   | Continue  |     | Skip Self |      | Short-    |
-   |           |     |           |      | circuit   |
-   +-----+-----+     +-----+-----+      +-----+-----+
-         |                 |                  |
-         v                 v                  v
-  Next Step        Next Step          Final Result
-                                           |
-                                           v
-                                     Pipeline End
+                 +-----------------------+
+                 | Return Updated Result |
+                 | + Control Outcome     |
+                 +-----------+-----------+
+                             |
+                             v
+                 +-----------------------+
+                 | Evaluate Result State |
+                 | and Execution Policy  |
+                 +-----------+-----------+
+                             |
+        +--------------------+--------------------+
+        |                    |                    |
+        v                    v                    v
+   +-----------+       +-----------+        +-----------+
+   | Continue  |       | Skip Self |        | Short-    |
+   |           |       |           |        | circuit   |
+   +-----+-----+       +-----+-----+        +-----+-----+
+         |                   |                    |
+         v                   v                    v
+    Next Step           Next Step           Pipeline End
 
-Additional outcomes:
+Additional outcome:
 
-   +-----------+      +-----------+
-   | Terminate |      |   Fail    |
-   +-----+-----+      +-----+-----+
-         |                  |
-         v                  v
-   Pipeline End       Error Result
-                          |
-                          v
-                     Pipeline End
+   +-----------+
+   | Terminate |
+   +-----+-----+
+         |
+         v
+   Pipeline End
 ```
 
-Control outcomes therefore determine whether execution continues, stops successfully, stops intentionally, or fails with an error.
+Step control therefore determines whether execution continues, stops successfully, or stops intentionally by interpreting both the returned control outcome and the returned carried `Result` together.
 
 ---
 
@@ -403,9 +414,13 @@ The definition describes what the pipeline is.
 
 ### 9.2 Pipeline execution
 
-A pipeline execution is a concrete runtime instance of the pipeline processing a specific input with a specific context.
+A pipeline execution is a concrete runtime instance of the pipeline carrying a specific accumulated `Result` and, when relevant, a specific context.
 
 Execution describes how the pipeline behaves for one processing request.
+
+Pipeline execution also includes runtime execution options that influence how control outcomes such as failure and short-circuiting are handled for that specific run.
+
+Pipeline execution may also differ by initiation mode, including an explicit fire-and-forget mode where the caller starts the execution but does not wait for final completion.
 
 ### 9.3 Ordered progression
 
@@ -414,6 +429,17 @@ Pipeline execution proceeds through the defined step sequence in order, with eac
 The order of steps is defined by the order in which they are registered in the static fluent builder. This registration order represents the canonical execution order of the pipeline.
 
 Order is part of the meaning of the pipeline and must be treated as intentional.
+
+### 9.4 Execution initiation modes
+
+The design should support at least two execution initiation modes:
+
+* awaited execution, where the caller waits for the final result
+* fire-and-forget execution, where the caller explicitly starts the pipeline and returns without waiting for completion
+
+Fire-and-forget execution is a deliberate API choice on pipeline execution rather than an implicit policy side effect. The caller should opt into it explicitly.
+
+In fire-and-forget mode, the pipeline still executes according to the same ordered definition and execution policies, but the final result is produced asynchronously in the background rather than being returned directly to the initiating caller.
 
 ---
 
@@ -438,12 +464,750 @@ Runtime construction enables:
 * contextual configuration
 * integration with application infrastructure
 
+Runtime construction must also integrate with dependency injection. Pipeline definitions should describe step identity and order without requiring pre-created step instances. Concrete step instances should be resolved at runtime through the active service provider so constructor-injected dependencies are honored.
+
+This means the construction model should treat steps as DI-managed components, typically resolved by type or by a factory that itself participates in dependency injection, rather than as manually `new`-created objects captured in the static definition.
+
+Where execution uses scoped services such as repositories or unit-of-work abstractions, step resolution should occur within the appropriate execution scope so lifetimes remain correct and consistent with the rest of the application.
+
+For fire-and-forget execution, runtime construction and execution must use a scope whose lifetime is owned by the background execution itself rather than by the initiating caller. Background execution must not depend on the caller's request scope remaining alive.
+
 ### 10.3 Rationale for the separation
 
 This separation keeps the design conceptually clean:
 
 * definition describes the intended processing structure
 * construction produces an executable form for a concrete runtime scenario
+* runtime construction can resolve DI-managed step instances and other execution services safely
+
+### 10.4 High-Level Interface Direction
+
+To steer the design toward implementation without over-committing to low-level details, the first interface cut should make the following ideas explicit:
+
+* pipeline definitions are immutable blueprints
+* step definitions store step descriptors, not step instances
+* concrete steps are DI-resolved runtime components
+* execution options remain execution-scoped and are not baked into the static definition
+* hooks and decorators are attached at definition time, but participate at execution time
+
+The following interfaces are a suitable high-level starting point:
+
+```csharp
+public sealed class PipelineExecutionContext
+{
+    public string Name { get; set; }
+
+    public Guid ExecutionId { get; set; }
+
+    public string CorrelationId { get; set; }
+
+    public DateTimeOffset StartedUtc { get; set; }
+
+    public DateTimeOffset? CompletedUtc { get; set; }
+
+    public string CurrentStepName { get; set; }
+
+    public int ExecutedStepCount { get; set; }
+
+    public int TotalStepCount { get; set; }
+
+    public TimeSpan? Duration =>
+        this.CompletedUtc is { } completedUtc
+            ? completedUtc - this.StartedUtc
+            : null;
+
+    public PropertyBag Items { get; } = new();
+}
+
+public abstract class PipelineContextBase
+{
+    public PipelineExecutionContext Pipeline { get; } = new();
+}
+
+public sealed class NullPipelineContext : PipelineContextBase;
+
+public interface IPipelineHook<TContext>
+    where TContext : PipelineContextBase
+{
+    ValueTask OnPipelineStartingAsync(
+        TContext context,
+        CancellationToken cancellationToken);
+
+    ValueTask OnStepStartingAsync(
+        TContext context,
+        IPipelineStepDefinition step,
+        CancellationToken cancellationToken);
+
+    ValueTask OnStepCompletedAsync(
+        TContext context,
+        IPipelineStepDefinition step,
+        PipelineControl control,
+        CancellationToken cancellationToken);
+
+    ValueTask OnPipelineCompletedAsync(
+        TContext context,
+        Result result,
+        CancellationToken cancellationToken);
+
+    ValueTask OnPipelineFailedAsync(
+        TContext context,
+        Result result,
+        CancellationToken cancellationToken);
+}
+
+public abstract class PipelineHook<TContext> : IPipelineHook<TContext>
+    where TContext : PipelineContextBase
+{
+    public virtual ValueTask OnPipelineStartingAsync(
+        TContext context,
+        CancellationToken cancellationToken) =>
+        ValueTask.CompletedTask;
+
+    public virtual ValueTask OnStepStartingAsync(
+        TContext context,
+        IPipelineStepDefinition step,
+        CancellationToken cancellationToken) =>
+        ValueTask.CompletedTask;
+
+    public virtual ValueTask OnStepCompletedAsync(
+        TContext context,
+        IPipelineStepDefinition step,
+        PipelineControl control,
+        CancellationToken cancellationToken) =>
+        ValueTask.CompletedTask;
+
+    public virtual ValueTask OnPipelineCompletedAsync(
+        TContext context,
+        Result result,
+        CancellationToken cancellationToken) =>
+        ValueTask.CompletedTask;
+
+    public virtual ValueTask OnPipelineFailedAsync(
+        TContext context,
+        Result result,
+        CancellationToken cancellationToken) =>
+        ValueTask.CompletedTask;
+}
+
+public interface IPipelineDecorator<TContext>
+    where TContext : PipelineContextBase
+{
+    ValueTask<Result> ExecuteAsync(
+        TContext context,
+        Func<ValueTask<Result>> next,
+        CancellationToken cancellationToken);
+}
+
+public interface IPipelineStep
+{
+    ValueTask<PipelineControl> ExecuteAsync(
+        PipelineContextBase context,
+        Result result,
+        PipelineExecutionOptions options,
+        CancellationToken cancellationToken);
+}
+
+public abstract class PipelineStep : PipelineStep<NullPipelineContext>
+{
+    protected abstract PipelineControl Execute(
+        Result result,
+        PipelineExecutionOptions options);
+
+    protected sealed override PipelineControl Execute(
+        NullPipelineContext context,
+        Result result,
+        PipelineExecutionOptions options) =>
+        this.Execute(result, options);
+}
+
+public abstract class PipelineStep<TContext> : IPipelineStep
+    where TContext : PipelineContextBase
+{
+    ValueTask<PipelineControl> IPipelineStep.ExecuteAsync(
+        PipelineContextBase context,
+        Result result,
+        PipelineExecutionOptions options,
+        CancellationToken cancellationToken) =>
+        ValueTask.FromResult(this.Execute((TContext)context, result, options));
+
+    protected abstract PipelineControl Execute(
+        TContext context,
+        Result result,
+        PipelineExecutionOptions options);
+}
+
+public abstract class AsyncPipelineStep : AsyncPipelineStep<NullPipelineContext>
+{
+    protected abstract ValueTask<PipelineControl> ExecuteAsync(
+        Result result,
+        PipelineExecutionOptions options,
+        CancellationToken cancellationToken);
+
+    protected sealed override ValueTask<PipelineControl> ExecuteAsync(
+        NullPipelineContext context,
+        Result result,
+        PipelineExecutionOptions options,
+        CancellationToken cancellationToken) =>
+        this.ExecuteAsync(result, options, cancellationToken);
+}
+
+public abstract class AsyncPipelineStep<TContext> : IPipelineStep
+    where TContext : PipelineContextBase
+{
+    ValueTask<PipelineControl> IPipelineStep.ExecuteAsync(
+        PipelineContextBase context,
+        Result result,
+        PipelineExecutionOptions options,
+        CancellationToken cancellationToken) =>
+        this.ExecuteAsync((TContext)context, result, options, cancellationToken);
+
+    protected abstract ValueTask<PipelineControl> ExecuteAsync(
+        TContext context,
+        Result result,
+        PipelineExecutionOptions options,
+        CancellationToken cancellationToken);
+}
+
+public enum PipelineControlOutcome
+{
+    Continue,
+    Skip,
+    ShortCircuit,
+    Terminate
+}
+
+public sealed class PipelineControl
+{
+    public Result Result { get; }
+
+    public PipelineControlOutcome Outcome { get; }
+
+    public static PipelineControl Continue(Result result);
+
+    public static PipelineControl Skip(Result result, string message = null);
+
+    public static PipelineControl ShortCircuit(Result result, string message = null);
+
+    public static PipelineControl Terminate(Result result, string message = null);
+}
+
+public interface IPipelineDefinition
+{
+    string Name { get; }
+
+    Type ContextType { get; }
+
+    IReadOnlyList<IPipelineStepDefinition> Steps { get; }
+
+    IReadOnlyList<Type> HookTypes { get; }
+
+    IReadOnlyList<Type> DecoratorTypes { get; }
+}
+
+public interface IPipelineStepDefinition
+{
+    string Name { get; }
+
+    Type StepType { get; }
+
+    IPipelineDefinitionCondition Condition { get; }
+
+    IReadOnlyDictionary<string, object> Metadata { get; }
+}
+
+public interface IPipelineDefinitionBuilder
+{
+    IPipelineDefinitionBuilder WithName(string name);
+
+    IPipelineDefinitionBuilder AddStep<TStep>(
+        Action<IPipelineStepDefinitionBuilder> configure = null)
+        where TStep : class, IPipelineStep;
+
+    IPipelineDefinitionBuilder AddHook<THook>()
+        where THook : class;
+
+    IPipelineDefinitionBuilder AddDecorator<TDecorator>()
+        where TDecorator : class;
+
+    IPipelineDefinition Build();
+}
+
+public interface IPipelineDefinitionBuilder<TContext>
+    where TContext : PipelineContextBase
+{
+    IPipelineDefinitionBuilder<TContext> WithName(string name);
+
+    IPipelineDefinitionBuilder<TContext> AddStep<TStep>(
+        Action<IPipelineStepDefinitionBuilder> configure = null)
+        where TStep : class, IPipelineStep;
+
+    IPipelineDefinitionBuilder<TContext> AddHook<THook>()
+        where THook : class;
+
+    IPipelineDefinitionBuilder<TContext> AddDecorator<TDecorator>()
+        where TDecorator : class;
+
+    IPipelineDefinition Build();
+}
+
+public sealed class PipelineDefinitionBuilder : IPipelineDefinitionBuilder;
+
+public sealed class PipelineDefinitionBuilder<TContext> : IPipelineDefinitionBuilder<TContext>
+    where TContext : PipelineContextBase;
+
+public interface IPipelineStepDefinitionBuilder
+{
+    IPipelineStepDefinitionBuilder WithName(string name);
+
+    IPipelineStepDefinitionBuilder When(IPipelineDefinitionCondition condition);
+
+    IPipelineStepDefinitionBuilder WithMetadata(string key, object value);
+}
+
+public interface IPipelineDefinitionCondition
+{
+    bool IsSatisfied(PipelineDefinitionContext context);
+}
+
+public sealed class PipelineExecutionOptions
+{
+    public IProgress<ProgressReport> Progress { get; set; }
+
+    public Func<PipelineCompletion, ValueTask> CompletionCallback { get; set; }
+
+    public bool ContinueOnFailure { get; set; }
+
+    public bool AccumulateDiagnosticsOnFailure { get; set; } = true;
+
+    public bool AccumulateDiagnosticsOnShortCircuit { get; set; } = true;
+}
+
+public interface IPipelineExecutionOptionsBuilder
+{
+    IPipelineExecutionOptionsBuilder WithProgress(IProgress<ProgressReport> progress);
+
+    IPipelineExecutionOptionsBuilder WhenCompleted(Func<PipelineCompletion, ValueTask> callback);
+
+    IPipelineExecutionOptionsBuilder ContinueOnFailure(bool value = true);
+
+    IPipelineExecutionOptionsBuilder AccumulateDiagnosticsOnFailure(bool value = true);
+
+    IPipelineExecutionOptionsBuilder AccumulateDiagnosticsOnShortCircuit(bool value = true);
+
+    PipelineExecutionOptions Build();
+}
+
+public interface IPipeline
+{
+    string Name { get; }
+
+    Type ContextType { get; }
+
+    Task<Result> ExecuteAsync(
+        PipelineExecutionOptions options = null,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> ExecuteAsync(
+        PipelineContextBase context,
+        PipelineExecutionOptions options = null,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> ExecuteAsync(
+        Action<IPipelineExecutionOptionsBuilder> configure,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> ExecuteAsync(
+        PipelineContextBase context,
+        Action<IPipelineExecutionOptionsBuilder> configure,
+        CancellationToken cancellationToken = default);
+
+    Task<PipelineExecutionHandle> ExecuteAndForgetAsync(
+        PipelineExecutionOptions options = null,
+        CancellationToken cancellationToken = default);
+
+    Task<PipelineExecutionHandle> ExecuteAndForgetAsync(
+        PipelineContextBase context,
+        PipelineExecutionOptions options = null,
+        CancellationToken cancellationToken = default);
+
+    Task<PipelineExecutionHandle> ExecuteAndForgetAsync(
+        Action<IPipelineExecutionOptionsBuilder> configure,
+        CancellationToken cancellationToken = default);
+
+    Task<PipelineExecutionHandle> ExecuteAndForgetAsync(
+        PipelineContextBase context,
+        Action<IPipelineExecutionOptionsBuilder> configure,
+        CancellationToken cancellationToken = default);
+}
+
+public interface IPipeline<TContext> : IPipeline
+    where TContext : PipelineContextBase
+{
+    Task<Result> ExecuteAsync(
+        TContext context,
+        PipelineExecutionOptions options = null,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> ExecuteAsync(
+        TContext context,
+        Action<IPipelineExecutionOptionsBuilder> configure,
+        CancellationToken cancellationToken = default);
+
+    Task<PipelineExecutionHandle> ExecuteAndForgetAsync(
+        TContext context,
+        PipelineExecutionOptions options = null,
+        CancellationToken cancellationToken = default);
+
+    Task<PipelineExecutionHandle> ExecuteAndForgetAsync(
+        TContext context,
+        Action<IPipelineExecutionOptionsBuilder> configure,
+        CancellationToken cancellationToken = default);
+}
+
+public interface IPipelineFactory
+{
+    IPipeline Create(string name);
+
+    IPipeline<TContext> Create<TContext>(string name)
+        where TContext : PipelineContextBase;
+}
+
+public interface IPipelineExecutionTracker
+{
+    Task<PipelineExecutionSnapshot> GetAsync(
+        Guid executionId,
+        CancellationToken cancellationToken = default);
+}
+
+public sealed class PipelineExecutionHandle
+{
+    public Guid ExecutionId { get; }
+}
+
+public enum PipelineExecutionStatus
+{
+    Accepted,
+    Running,
+    Completed,
+    Failed,
+    Cancelled
+}
+
+public sealed class PipelineCompletion
+{
+    public Guid ExecutionId { get; }
+
+    public PipelineExecutionStatus Status { get; }
+
+    public Result Result { get; }
+}
+
+public sealed class PipelineExecutionSnapshot
+{
+    public Guid ExecutionId { get; }
+
+    public string PipelineName { get; }
+
+    public PipelineExecutionStatus Status { get; }
+
+    public string CurrentStepName { get; }
+
+    public DateTimeOffset StartedUtc { get; }
+
+    public DateTimeOffset? CompletedUtc { get; }
+
+    public Result Result { get; }
+}
+```
+
+This first cut intentionally keeps some supporting types lightweight, but the runtime contracts are now explicit:
+
+* `PipelineContextBase` stays clean for client usage by exposing a dedicated `Pipeline` child object that contains shared execution metadata, simple engine-managed metrics, and a reusable `PropertyBag`
+* `NullPipelineContext` is the no-context implementation used to normalize no-context pipelines onto the same execution path
+* `IPipelineHook<TContext>` defines the observable execution events, while `PipelineHook<TContext>` offers no-op defaults so hooks can override only the moments they care about
+* `IPipelineDecorator<TContext>` defines the around-execution wrapper contract for full pipeline decoration
+* `PipelineControl` represents the full step-control contract: the updated accumulated `Result` together with the step control outcome
+* `PipelineDefinitionContext` represents configuration or environment data used for structural step inclusion
+* `PipelineExecutionHandle` represents the acknowledgement returned when background execution is accepted, without carrying the final `Result` directly
+* `PipelineCompletion` is the callback payload for `WhenCompleted(...)`
+* `PipelineExecutionSnapshot` represents the tracked state for a previously started execution
+
+The important implementation direction is that `StepType` represents the DI-registered step type, while the static definition remains a pure descriptor model that is safe to cache and reuse.
+
+For execution, the important direction is that awaited execution and background execution are expressed as separate explicit methods rather than as an implicit mode switch hidden inside execution options.
+
+The important context direction is:
+
+* the engine uses one non-generic context-based execution path internally
+* context-aware pipelines still declare their expected context through `ContextType` internally
+* context-aware definitions set their context explicitly through `PipelineDefinitionBuilder<TContext>`, while no-context definitions default internally to `NullPipelineContext`
+* no-context pipelines therefore default internally to `NullPipelineContext`
+* callers still use no-context execution overloads and do not need to know about `NullPipelineContext`
+* `PipelineContextBase` should expose a `Pipeline` child object that holds common execution metadata such as pipeline name, execution identity, correlation identity, UTC start/completion timestamps, current step name, and simple execution counters
+* engine-managed lifecycle values on `context.Pipeline` should be populated by the pipeline engine as execution progresses rather than by individual steps
+* `context.Pipeline.TotalStepCount` should be initialized by the engine from the resolved definition before step processing begins
+* specialized derived contexts should add pipeline-specific data at the top level, while the `Pipeline` child object remains focused on cross-pipeline execution concerns
+* `context.Pipeline.Items` should use the existing `PropertyBag` abstraction as the fallback for execution-scoped data that is not worth modeling strongly, but strongly typed members on derived contexts should remain the default
+* execution options remain focused on execution behavior, not on carrying the core execution data
+
+The important authoring direction is:
+
+* infrastructure-facing contracts are non-generic
+* client-facing entry points may still use generic facades where that improves clarity and explicitness
+* client-facing definition authoring should use `PipelineDefinitionBuilder<TContext>` for context-aware pipelines and `PipelineDefinitionBuilder` for no-context pipelines
+* `IPipelineDefinitionBuilder<TContext>` should expose real typed fluent methods so context-aware builder usage stays explicit all the way through definition authoring
+* typed sync step authoring remains available through `PipelineStep<TContext>`
+* typed async step authoring remains available through `AsyncPipelineStep<TContext>`
+* no-context sync step authoring remains explicit through `PipelineStep`, which internally maps to `PipelineStep<NullPipelineContext>`
+* no-context async step authoring remains explicit through `AsyncPipelineStep`, which internally maps to `AsyncPipelineStep<NullPipelineContext>`
+* generic factory calls such as `Create<TContext>(...)` should validate that `TContext` matches the registered pipeline definition `ContextType`
+* the engine should validate that the provided runtime context matches the definition `ContextType`
+* calling a no-context execution overload for a context-aware pipeline should fail fast with a clear configuration/runtime error rather than relying on an invalid cast
+* the definition builder should validate that added steps are compatible with the configured pipeline context type by inferring step context from the closed generic `PipelineStep<TContext>` or `AsyncPipelineStep<TContext>` base type, while non-generic step bases imply `NullPipelineContext`
+* the definition builder should validate hook and decorator compatibility by inspecting their closed generic `IPipelineHook<TContext>` and `IPipelineDecorator<TContext>` interfaces
+* hook and decorator compatibility should use context assignability rather than exact type equality so reusable cross-cutting components such as `PipelineHook<PipelineContextBase>` or `IPipelineDecorator<PipelineContextBase>` can participate in pipelines with more specific derived contexts
+* if a step, hook, or decorator does not expose a determinable supported context type through those patterns, validation should fail explicitly rather than deferring to runtime casts
+* step-context mismatches should surface as explicit pipeline validation errors rather than raw `InvalidCastException` behavior
+
+The important validation direction is:
+
+* pipeline definitions should be validated before execution
+* validation should include duplicate step names, incompatible step/context combinations, missing required context configuration, and unresolved DI step registrations
+* validation failures should surface as explicit pipeline configuration/validation errors
+
+The important sync/async direction is:
+
+* the engine should use one internal execution contract based on `ValueTask<PipelineControl>`
+* sync and async steps should be freely mixable within the same pipeline definition
+* sync steps should not be wrapped in `Task.Run` just to fit the pipeline model
+* the engine should simply await every step through the unified `ValueTask` contract
+* sync step bases exist for ergonomics and lower overhead, not to create a second engine path
+
+The important result direction is:
+
+* the pipeline starts each execution with an accumulated untyped `Result`
+* because `Result` is immutable, each step receives the current accumulated `Result` and returns the updated accumulated `Result` inside `PipelineControl`
+* step code can keep reassigning the same local `result` variable, even though each assignment produces a new immutable `Result`
+* the final awaited result returned by the pipeline is the last carried `Result`
+* success or failure is expressed through the carried `Result`, while `PipelineControl.Outcome` expresses control semantics such as continue, skip, short-circuit, or terminate
+* `PipelineControl` should be understood as one integral control object, not as a primary outcome plus secondary metadata
+
+The important options direction is:
+
+* callers may still provide a ready-made `PipelineExecutionOptions` instance
+* callers should also be able to configure execution options inline through a fluent builder callback
+* the fluent builder is a convenience for execution-time ergonomics and should produce the same final options model
+* `CompletionCallback` is especially useful for `ExecuteAndForgetAsync`, where no final `Result` is awaited directly
+* `WhenCompleted(...)` on the execution options builder should populate that same `CompletionCallback` with a `PipelineCompletion` payload
+
+### 10.5 Fictional Example
+
+The following fictional example shows how a pipeline could be defined and then executed with a typed context.
+
+In this example:
+
+* the context is `OrderImportContext`
+* that context contains request data and result data
+* the pipeline is named `order-import`
+
+```csharp
+public sealed class OrderImportContext : PipelineContextBase
+{
+    public string SourceFileName { get; init; }
+
+    public Guid RequestedByUserId { get; init; }
+
+    public string TenantId { get; init; }
+
+    public int ImportedOrderCount { get; set; }
+
+    public bool IsValidated { get; set; }
+
+    public bool IsPersisted { get; set; }
+
+    public List<string> Warnings { get; } = [];
+}
+```
+
+Each step is a DI-managed type deriving from either the sync or async typed authoring base class while still participating in the single internal engine contract:
+
+```csharp
+public sealed class ValidateOrderImportStep : PipelineStep<OrderImportContext>
+{
+    protected override PipelineControl Execute(
+        OrderImportContext context,
+        Result result,
+        PipelineExecutionOptions options)
+    {
+        if (string.IsNullOrWhiteSpace(context.SourceFileName))
+        {
+            context.Warnings.Add("Source file name is missing.");
+            result = result
+                .WithMessage("Validation failed.")
+                .WithError(new ValidationError("A source file name is required for import."));
+
+            // The carried Result is now failed; runtime policy decides whether execution stops here.
+            return PipelineControl.Continue(result);
+        }
+
+        options.Progress?.Report(new ProgressReport(
+            "order-import",
+            ["Validating import request"],
+            10));
+
+        context.IsValidated = true;
+        result = result.WithMessage("Validation succeeded.");
+
+        return PipelineControl.Continue(result);
+    }
+}
+
+public sealed class LoadOrdersStep(IOrderImportRepository repository)
+    : AsyncPipelineStep<OrderImportContext>
+{
+    protected override async ValueTask<PipelineControl> ExecuteAsync(
+        OrderImportContext context,
+        Result result,
+        PipelineExecutionOptions options,
+        CancellationToken cancellationToken)
+    {
+        var orders = await repository.LoadAsync(context.SourceFileName, cancellationToken);
+
+        context.ImportedOrderCount = orders.Count;
+        result = result.WithMessage($"Loaded {orders.Count} orders.");
+
+        options.Progress?.Report(new ProgressReport(
+            "order-import",
+            [$"Loaded {orders.Count} orders"],
+            50));
+
+        return PipelineControl.Continue(result);
+    }
+}
+
+public sealed class PersistOrdersStep(IOrderRepository repository)
+    : AsyncPipelineStep<OrderImportContext>
+{
+    protected override async ValueTask<PipelineControl> ExecuteAsync(
+        OrderImportContext context,
+        Result result,
+        PipelineExecutionOptions options,
+        CancellationToken cancellationToken)
+    {
+        await repository.SaveImportedOrdersAsync(context.TenantId, cancellationToken);
+
+        context.IsPersisted = true;
+        result = result.WithMessage($"Persisted {context.ImportedOrderCount} orders.");
+
+        options.Progress?.Report(new ProgressReport(
+            "order-import",
+            [$"Persisted {context.ImportedOrderCount} orders"],
+            90));
+
+        return PipelineControl.Continue(result);
+    }
+}
+```
+
+The static definition is built as a named blueprint using step types rather than step instances:
+
+```csharp
+var definition =
+    new PipelineDefinitionBuilder<OrderImportContext>()
+        .WithName("order-import")
+        .AddStep<ValidateOrderImportStep>(step => step.WithName("validate"))
+        .AddStep<LoadOrdersStep>(step => step.WithName("load"))
+        .AddStep<PersistOrdersStep>(step => step.WithName("persist"))
+        .AddHook<PipelineAuditHook>()
+        .AddDecorator<PipelineTimingDecorator>()
+        .Build();
+```
+
+At runtime, the executable pipeline is resolved by name, a concrete context is created for the execution, and awaited execution returns the shared accumulated `Result` instance:
+
+```csharp
+var pipeline = pipelineFactory.Create<OrderImportContext>("order-import");
+
+var context = new OrderImportContext
+{
+    SourceFileName = "orders-2026-03.csv",
+    RequestedByUserId = Guid.Parse("aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee"),
+    TenantId = "tenant-acme",
+    Pipeline =
+    {
+        CorrelationId = Guid.NewGuid().ToString("N")
+    }
+};
+
+var result = await pipeline.ExecuteAsync(
+    context,
+    o => o
+        .WithProgress(new Progress<ProgressReport>(report =>
+            Console.WriteLine($"{report.Operation}: {report.PercentageComplete}% - {string.Join(", ", report.Messages)}")))
+        .ContinueOnFailure(false)
+        .AccumulateDiagnosticsOnFailure(),
+    cancellationToken);
+```
+
+The same pipeline can also be started explicitly in the background:
+
+```csharp
+var handle = await pipeline.ExecuteAndForgetAsync(
+    context,
+    o => o
+        .WithProgress(new Progress<ProgressReport>(report =>
+            Console.WriteLine($"{report.Operation}: {report.PercentageComplete}% - {string.Join(", ", report.Messages)}")))
+        .WhenCompleted(completion =>
+        {
+            Console.WriteLine(
+                $"Background pipeline completed (executionId={completion.ExecutionId}, success={completion.Result.IsSuccess}).");
+            return ValueTask.CompletedTask;
+        })
+        .ContinueOnFailure(false)
+        .AccumulateDiagnosticsOnFailure(),
+    cancellationToken);
+
+var snapshot = await executionTracker.GetAsync(handle.ExecutionId, cancellationToken);
+```
+
+This example illustrates the intended split of responsibilities:
+
+* step classes contain focused processing logic and may report progress
+* a single pipeline may freely mix synchronous `PipelineStep...` and asynchronous `AsyncPipelineStep...` implementations
+* the definition builder captures a reusable static blueprint with an explicit generic context at the client-facing API
+* the factory resolves an executable pipeline at runtime
+* the caller provides a single mutable context when the pipeline is context-aware
+* that context may carry request data, result data, and any other execution state
+* one accumulated `Result` is carried forward through all steps, with each step reassigning and returning the updated immutable result
+* a step may return `Continue` with a failed `Result`, leaving `ContinueOnFailure` policy to decide whether later steps still run
+* the engine internally normalizes no-context execution to `NullPipelineContext` so the execution path stays unified
+* execution options carry the per-run behavior settings and may be configured inline through a builder
+* awaited and background execution remain explicit caller choices
+
+A pipeline that does not need shared execution state still uses the same `IPipeline` interface, but the caller can omit context entirely and the engine will use its internal `NullPipelineContext`:
+
+```csharp
+public sealed class CleanupTempFilesStep(IFileCleanupService cleanupService)
+    : PipelineStep
+{
+    protected override PipelineControl Execute(
+        Result result,
+        PipelineExecutionOptions options)
+    {
+        var deletedFiles = cleanupService.DeleteExpired();
+
+        result = result.WithMessage($"Deleted {deletedFiles} expired temp files.");
+
+        return PipelineControl.Continue(result);
+    }
+}
+
+var cleanupPipeline = pipelineFactory.Create("file-cleanup");
+
+var cleanupResult = await cleanupPipeline.ExecuteAsync(
+    o => o.WithProgress(new Progress<ProgressReport>(report => Console.WriteLine(report.Messages[0]))),
+    cancellationToken);
+```
 
 ---
 
@@ -466,7 +1230,7 @@ Pipeline names allow:
 
 Naming turns the pipeline from a generic internal mechanism into a reusable framework-level feature with explicit identity.
 
-The pipeline name should also be part of the shared execution context and execution diagnostics.
+The pipeline name should also be part of the shared execution context, when present, and the execution diagnostics.
 
 ### 11.3 Variants
 
@@ -499,7 +1263,7 @@ Even when a step is part of the pipeline definition, the step may still decide a
 * execute normally
 * skip itself
 * short-circuit
-* fail
+* return a failed `Result`
 * terminate the remaining pipeline
 
 ### 12.3 Two levels of conditionality
@@ -513,7 +1277,7 @@ This allows both clarity of design and flexibility of behavior.
 
 ### 12.4 Step Participation Decision Model
 
-Step participation is determined through a two-stage decision process combining **definition-level conditions** and **runtime evaluation**.
+Step participation and progression are determined through a two-stage decision process combining **definition-level conditions** and **runtime evaluation**.
 
 #### Stage 1 – Definition-level evaluation
 
@@ -523,22 +1287,29 @@ If a step does not satisfy definition-level conditions, it is excluded from the 
 
 #### Stage 2 – Runtime evaluation
 
-Even when a step is structurally present in the pipeline, it may still decide at execution time whether it should participate.
+Even when a step is structurally present in the pipeline, the runtime still evaluates both whether the step should participate and what the step result means for the remainder of execution.
 
 Runtime evaluation may depend on:
 
-* input characteristics
-* shared context state
-* evolving result state
+* shared context state when a context is present
+* accumulated `Result` state
 * policy conditions
 
-A runtime evaluation may produce the following outcomes:
+After a step runs, runtime evaluation considers both:
+
+* the returned control outcome
+* the returned accumulated `Result`, including whether it is now in a failure state
+
+This is important because `Continue` does not imply success. A step may return `Continue` while also returning a failed `Result`.
+
+The combined evaluation may then produce the following effects:
 
 * execute normally
 * skip self
 * short‑circuit the pipeline
 * terminate remaining steps
-* fail with an error
+* continue with a failed carried `Result`
+* stop because the carried `Result` is failed and execution policy treats that as terminal
 
 #### Combined effect
 
@@ -558,7 +1329,7 @@ Include   Exclude
 Runtime Step Evaluation
    |
    v
-Execute / Skip / Short‑circuit / Terminate / Fail
+Evaluate Control Outcome + Result State
 ```
 
 This model keeps **pipeline structure deterministic** while still allowing **runtime adaptive behavior**.
@@ -567,9 +1338,16 @@ This model keeps **pipeline structure deterministic** while still allowing **run
 
 ## 13. Execution Policies
 
-Execution policies define how the pipeline reacts to control outcomes produced by processing steps.
+Execution policies define how the pipeline reacts to the combined evaluation of the full processing-step control result.
 
-Processing steps determine *what happened* during execution, while execution policies determine *how the pipeline responds* to those outcomes.
+Processing steps determine *what happened* during execution by returning:
+
+* a control outcome
+* an updated accumulated `Result`
+
+Execution policies then determine *how the pipeline responds* to that combination.
+
+In other words, step evaluation is based on `PipelineControl` as a whole. The non-generic `Result` is not incidental metadata attached to step execution; it is an integral part of the step-control decision.
 
 ### 13.1 Purpose of execution policies
 
@@ -580,19 +1358,75 @@ Execution policies ensure that pipeline behavior remains consistent and predicta
 Execution policies may define behavior such as:
 
 * whether execution continues after a (specific) failure(s) or stops immediately
-* whether execution continues after a short-circuit or stops immediately
 * whether multiple errors are accumulated or execution fails fast
 * whether diagnostics are collected on failure or short-circuit
-* whether termination or short-circuit outcomes can be overridden or enforced
+* how terminal control outcomes such as short-circuit and terminate are reflected in diagnostics and final reporting
 
-### 13.3 Separation of concerns
+### 13.3 Runtime execution options
+
+The design should support runtime execution options for a concrete pipeline execution.
+
+These options are execution-scoped and allow the same named pipeline definition to behave differently when appropriate without changing its structural step definition.
+
+Examples of runtime execution options include:
+
+* whether execution continues after a failure or stops immediately
+* whether diagnostics are accumulated when a failure occurs
+* whether diagnostics are accumulated when a short-circuit occurs
+* whether a progress reporter is supplied for execution feedback
+* whether a completion callback is supplied for background execution completion
+
+These options are part of execution policy, but they are supplied for a specific runtime execution rather than being hard-coded into the pipeline structure itself. The choice between awaited execution and fire-and-forget execution remains an explicit method-level initiation decision rather than an option flag.
+
+### 13.4 Progress reporting
+
+Execution options should support progress reporting for long-running pipelines in a way that is conceptually aligned with the existing `Requester` and `Notifier` patterns.
+
+Conceptually, execution options should allow a progress reporter similar to `SendOptions.Progress`, preferably using the same `IProgress<ProgressReport>` model so progress semantics remain consistent across the framework.
+
+This allows the pipeline engine and individual steps to provide structured feedback such as:
+
+* notable milestones or messages from the step implementation
+* percentage completion when meaningful and explicitly reported by the step implementation
+
+Pipeline steps should be able to report progress directly from inside their processing logic. Conceptually, the active progress reporter should therefore be available to the running step through the execution options, execution context, or an equivalent execution-scoped abstraction.
+
+This is important for long-running steps whose internal work cannot be represented adequately by only step-start and step-end notifications from the pipeline engine.
+
+The pipeline engine should not synthesize automatic caller-facing progress percentages or step-by-step progress reports on its own. Progress reporting is owned by step implementations, while the engine’s own progression is covered through internal structured logging.
+
+Progress reporting is intended to provide caller feedback during execution. It complements diagnostics and final results, but it does not replace them.
+
+### 13.5 Effect on execution behavior
+
+Runtime execution options determine how the pipeline interprets a step once it has produced its `PipelineControl`, including both its control outcome and its updated accumulated `Result`.
+
+For example:
+
+* a step may return `Continue` while also returning a failed accumulated `Result`, and policy then decides whether execution stops or later steps still run
+* a short-circuit finalizes the pipeline successfully and always stops later step execution
+* diagnostics may either stop at the terminating outcome or continue to be accumulated into the final execution report
+* execution may either hold the caller until completion or continue in the background after an explicit fire-and-forget invocation
+* progress may be reported continuously to the caller while execution is in progress
+
+This makes the pipeline execution model adaptable while preserving a stable and deterministic definition model.
+
+If a step throws an exception instead of returning `PipelineControl`, the engine should catch that exception, log it, append `new ExceptionError(exception)` to the current accumulated `Result`, and then evaluate continuation based on the resulting failed `Result` and the active failure policy.
+
+If `ContinueOnFailure` is enabled for that execution, later steps run against the context state exactly as it was left by the failing step. The engine should not attempt to roll back or reconstruct context state automatically, so pipelines should only opt into failure continuation when partially updated context is acceptable and later steps are designed to tolerate it.
+
+### 13.6 Separation of concerns
 
 Execution policies separate decision-making responsibilities:
 
-* steps are responsible for producing outcomes (continue, skip, short-circuit, terminate, fail)
+* steps are responsible for producing `PipelineControl`, including both directional outcomes and failed/successful carried `Result` state
 * policies are responsible for interpreting those outcomes and determining pipeline progression
 
 This separation prevents processing logic from becoming entangled with control-flow rules and ensures consistent behavior across pipelines.
+
+Fire-and-forget initiation does not change the responsibilities of steps. It changes only how execution is initiated and how the initiating caller relates to completion of the pipeline.
+
+Progress reporting also does not change the responsibilities of steps. It is a feedback mechanism around execution and step advancement, not a substitute for domain outcomes or diagnostics.
 
 ---
 
@@ -600,27 +1434,60 @@ This separation prevents processing logic from becoming entangled with control-f
 
 The pipeline integrates with the framework’s established result model.
 
-### 13.1 Pipeline-level outcome
+### 14.1 Pipeline-level outcome
 
-A pipeline execution produces a structured final result representing the outcome of the processing flow.
+A pipeline execution produces a final untyped `Result` representing the complete outcome of the processing flow.
 
-### 13.2 Step-level contribution
+The pipeline should initialize that `Result` at execution start and carry it forward step by step until execution completes.
 
-Each step contributes to the overall result by affecting the evolving result, control outcome, and diagnostics.
+Because the framework’s `Result` type is immutable, this carried result should progress by replacing the current value with the next `Result` returned from each step rather than by mutating a shared object in place.
 
-### 13.3 Supported outcome forms
+When execution is awaited, this final accumulated `Result` can be returned directly to the caller. When execution is started in fire-and-forget mode, the initiating call should instead return an acknowledgement of accepted background execution, ideally including execution identity such as a correlation identifier or execution identifier that can be used for diagnostics and tracking.
+
+If the caller needs the final `Result` of a fire-and-forget execution without awaiting it directly, the design should allow an optional completion callback to receive a `PipelineCompletion` payload when background execution finishes.
+
+That completion callback should run only after the pipeline execution has fully finished and its final accumulated `Result` has been determined.
+
+The callback should be treated as a plain caller-supplied delegate captured at execution start rather than as part of the background pipeline execution itself. It should therefore execute outside the background DI scope that was used for the pipeline run and should not rely on any ambient request or caller scope.
+
+That also means the callback should not assume request-scoped or background-scoped services from the original execution are still available.
+
+If the completion callback throws, that callback failure should be logged, but it must not overwrite, replace, or downgrade the pipeline's final `Result` or tracked execution outcome.
+
+When a progress reporter is supplied, the initiating caller may also receive incremental progress feedback while the pipeline is running.
+
+### 14.2 Step-level contribution
+
+Each step receives the current accumulated `Result` and returns the next accumulated `Result` together with its control outcome.
+
+This allows all steps in the flow to contribute messages, warnings, and errors into one carried result model without inventing a second success/failure abstraction beside the framework’s normal `Result`.
+
+In other words, the pipeline carries one logical execution result through the flow, while each step creates the next immutable `Result` value from the previous one.
+
+That carried `Result` is also part of step control itself because the pipeline evaluates the returned `PipelineControl` as a whole.
+
+No separate result-merging mechanism is required. The framework’s immutable `Result` already retains prior messages and errors when a step creates the next result from the current one.
+
+When a step fails by throwing an exception, the engine should translate that into the carried result by creating the next `Result` from the current one and appending `new ExceptionError(exception)` through the normal result API.
+
+### 14.3 Supported outcome forms
 
 At the conceptual level, result handling should support:
 
 * success
 * failure
 * warnings or notable non-fatal issues where relevant
-* final output
 * structured error information
 * execution diagnostics
 * knowledge of early completion or early termination
 
-### 13.4 Importance of consistency
+The final result should also reflect the effect of runtime execution options, including whether accumulated failure state stopped execution immediately or allowed later steps to continue and whether diagnostics were accumulated beyond short-circuit or termination outcomes.
+
+For fire-and-forget execution, the final result remains important, but it is observed through execution tracking, diagnostics, hooks, logs, or other monitoring mechanisms rather than through the immediate initiating call.
+
+In fire-and-forget mode, live progress callbacks may still be supported when a suitable progress reporter is supplied, but the design should not treat such callbacks as the sole source of truth for execution status because the initiating caller may no longer be actively awaiting completion.
+
+### 14.4 Importance of consistency
 
 This unified result approach is important because it makes pipeline behavior consistent with the rest of the framework and improves both developer understanding and operational supportability.
 
@@ -635,11 +1502,14 @@ The pipeline feature should provide meaningful insight into execution behavior.
 The design should support visibility into:
 
 * which pipeline ran
+* whether the execution was awaited or fire-and-forget
+* what progress was reported during execution
 * which steps were part of the definition
 * which steps actually executed
 * which steps were skipped
 * which step ended the flow, if any
 * whether execution completed normally, short-circuited, terminated, or failed
+* whether a fire-and-forget execution was accepted, running, completed, or failed
 * what notable execution events occurred
 
 ### 14.2 Diagnostic value
@@ -652,9 +1522,30 @@ Diagnostics are valuable for:
 * operational analysis
 * traceability
 
-### 14.3 Beyond logging
+### 14.3 Engine-internal logging
+
+The pipeline execution engine itself should provide extensive built-in structured logging.
+
+This logging should be part of the core engine behavior rather than something delegated only to hooks, decorators, or consumer-written steps. Hooks and decorators may enrich logging, but they should not be the only mechanism by which pipeline flow becomes understandable.
+
+At a conceptual level, engine logging should make the following visible:
+
+* pipeline execution started, including pipeline name, execution identity, and initiation mode
+* step selected for execution, skipped, short-circuited, or terminated
+* step execution started and step execution completed
+* the returned `PipelineControl`
+* the returned non-generic `Result`, including success/failure state and notable message/error summaries
+* exceptions thrown by steps and their translation into `ExceptionError` on the carried `Result`
+* policy decisions taken by the engine after evaluating a step
+* pipeline execution completed, including final `Result` state
+
+This internal logging should make it possible to reconstruct how the pipeline flowed through its steps and why the engine continued, stopped, short-circuited, or terminated.
+
+### 14.4 Beyond logging
 
 Observability is broader than logging. The pipeline should conceptually support structured execution insight that can later be surfaced through logging, metrics, traces, or other monitoring mechanisms.
+
+Progress reporting is part of this observability model, but it is specifically caller-oriented and execution-time oriented rather than only operational or post-execution.
 
 ---
 
@@ -669,6 +1560,8 @@ Consumers of the framework must be able to define custom steps that participate 
 ### 15.2 Custom contexts
 
 Consumers must be able to define pipeline-specific shared contexts while still benefiting from the common base semantics.
+
+The design should also support pipelines that intentionally have no shared context.
 
 ### 15.3 Runtime extensibility
 
@@ -700,6 +1593,61 @@ Examples of conceptual hook moments include:
 
 Hooks are primarily observational or event-like in nature.
 
+Hooks should run in registration order.
+
+By default, hook failures should be logged and ignored so observational extensions such as auditing do not unexpectedly change pipeline success or failure behavior.
+
+Hooks should also remain reusable across pipelines where possible. A hook declared for `PipelineContextBase` should be considered compatible with any more specific derived pipeline context because it depends only on the common framework-owned execution metadata.
+
+For example, if a consumer wants to audit pipeline execution by logging only pipeline start, completion, and failure, a hook is a good fit because it reacts to lifecycle events without wrapping or changing execution behavior:
+
+```csharp
+public sealed class PipelineAuditHook(ILogger<PipelineAuditHook> logger)
+    : PipelineHook<OrderImportContext>
+{
+    public override ValueTask OnPipelineStartingAsync(
+        OrderImportContext context,
+        CancellationToken cancellationToken)
+    {
+        logger.LogInformation(
+            "[PipelineAudit] pipeline started (name={PipelineName}, executionId={ExecutionId}, correlationId={CorrelationId})",
+            context.Pipeline.Name,
+            context.Pipeline.ExecutionId,
+            context.Pipeline.CorrelationId);
+
+        return ValueTask.CompletedTask;
+    }
+
+    public override ValueTask OnPipelineCompletedAsync(
+        OrderImportContext context,
+        Result result,
+        CancellationToken cancellationToken)
+    {
+        logger.LogInformation(
+            "[PipelineAudit] pipeline completed (name={PipelineName}, executionId={ExecutionId}, success={Success})",
+            context.Pipeline.Name,
+            context.Pipeline.ExecutionId,
+            result.IsSuccess);
+
+        return ValueTask.CompletedTask;
+    }
+
+    public override ValueTask OnPipelineFailedAsync(
+        OrderImportContext context,
+        Result result,
+        CancellationToken cancellationToken)
+    {
+        logger.LogWarning(
+            "[PipelineAudit] pipeline failed (name={PipelineName}, executionId={ExecutionId}, errorCount={ErrorCount})",
+            context.Pipeline.Name,
+            context.Pipeline.ExecutionId,
+            result.Errors.Count);
+
+        return ValueTask.CompletedTask;
+    }
+}
+```
+
 ### 16.2 Decorators
 
 Decorators wrap pipeline or step execution with additional cross-cutting behavior.
@@ -711,6 +1659,56 @@ Decorators are intended for concerns such as:
 * timing
 * monitoring
 * policy enforcement
+
+Engine-internal logging remains a core execution responsibility even when decorators are present. Decorators may enrich or redirect logging behavior, but they should not replace the baseline structured logging provided by the pipeline engine itself.
+
+Pipeline decorators should compose in registration order around the full pipeline execution.
+
+If a decorator throws, the engine should treat that the same way it treats a step exception: log it, translate it into `ExceptionError` on the carried `Result`, and then apply the active execution policy.
+
+Decorators should follow the same compatibility principle as hooks. A decorator declared for `PipelineContextBase` should be reusable across pipelines with more specific derived contexts when it only relies on the shared execution metadata.
+
+For example, a timing decorator is a good fit when the concern must wrap the full pipeline execution and measure elapsed time around the actual work:
+
+```csharp
+public sealed class PipelineTimingDecorator(ILogger<PipelineTimingDecorator> logger)
+    : IPipelineDecorator<OrderImportContext>
+{
+    public async ValueTask<Result> ExecuteAsync(
+        OrderImportContext context,
+        Func<ValueTask<Result>> next,
+        CancellationToken cancellationToken)
+    {
+        var stopwatch = Stopwatch.StartNew();
+
+        try
+        {
+            var result = await next();
+
+            logger.LogInformation(
+                "[PipelineTiming] pipeline completed (name={PipelineName}, executionId={ExecutionId}, durationMs={DurationMs}, success={Success})",
+                context.Pipeline.Name,
+                context.Pipeline.ExecutionId,
+                stopwatch.ElapsedMilliseconds,
+                result.IsSuccess);
+
+            return result;
+        }
+        catch
+        {
+            logger.LogWarning(
+                "[PipelineTiming] pipeline failed (name={PipelineName}, executionId={ExecutionId}, durationMs={DurationMs})",
+                context.Pipeline.Name,
+                context.Pipeline.ExecutionId,
+                stopwatch.ElapsedMilliseconds);
+
+            throw;
+        }
+    }
+}
+```
+
+This example shows the intended low-level contract directly: the decorator wraps `next()` and therefore participates around execution instead of merely observing events after they happen.
 
 ### 16.3 Why the distinction matters
 
@@ -729,9 +1727,8 @@ The pipeline feature can be understood as a set of architectural phases or conce
 This phase defines the foundational vocabulary:
 
 * pipeline
-* input
 * context
-* evolving result
+* accumulated result
 * processing step
 * control outcomes
 * final result
@@ -743,6 +1740,7 @@ It establishes the conceptual language of the feature.
 This phase describes how the pipeline behaves at runtime:
 
 * ordered progression through steps
+* execution initiation mode selection
 * runtime participation decisions
 * control outcome handling
 * result progression
@@ -761,6 +1759,8 @@ This phase describes how a pipeline is structurally declared:
 
 This phase describes how an executable pipeline is created from its static definition at runtime.
 
+An important responsibility of this phase is resolving pipeline steps through dependency injection. The static definition provides the ordered blueprint, while the construction phase materializes DI-backed step instances for the current execution environment and service scope.
+
 ### 17.5 Extension phase
 
 This phase describes how additional behaviors, diagnostics, and cross-cutting concerns attach around the core execution model.
@@ -775,23 +1775,23 @@ This section defines the key terms used throughout the design. The glossary esta
 
 | Term                         | Definition                                                                                                                                                |
 | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Pipeline**                 | An ordered sequence of processing steps operating on a stable input, a shared context, and an evolving result.                                            |
-| **Pipeline Execution**       | A single runtime instance of pipeline processing for a specific input and context.                                                                        |
+| **Pipeline**                 | An ordered sequence of processing steps operating on an optional shared context and a carried accumulated `Result`.                                        |
+| **Pipeline Execution**       | A single runtime instance of pipeline processing with its own carried `Result` and, when relevant, its own specific context.                              |
 | **Pipeline Definition**      | The static blueprint describing the structure, order, and conceptual behavior of a pipeline.                                                              |
 | **Named Pipeline**           | A pipeline definition identified by a logical name that distinguishes it from other pipelines within the system.                                          |
-| **Processing Step**          | A focused unit of work within the pipeline that can inspect the input, interact with the context, modify the evolving result, and influence control flow. |
-| **Input**                    | The original stable subject of processing that enters the pipeline and remains conceptually unchanged during execution.                                   |
-| **Shared Context**           | A strongly typed execution-scoped object shared by all steps that carries execution metadata and shared state.                                            |
-| **Evolving Result**          | The current state of the processing outcome as it progresses through the pipeline steps.                                                                  |
-| **Control Outcome**          | The runtime decision made by a step that determines how pipeline execution should proceed.                                                                |
+| **Processing Step**          | A focused unit of work within the pipeline that can inspect or update the context, contribute messages and errors to the carried `Result`, and influence control flow. |
+| **Shared Context**           | An optional strongly typed execution-scoped object shared by all steps that carries execution metadata and shared state when needed.                      |
+| **Accumulated Result**       | The untyped framework `Result` that is initialized at execution start and carried forward across all pipeline steps.                                      |
+| **Control Outcome**          | The directional part of step control that indicates how pipeline execution should proceed when interpreted together with the returned `Result`.           |
+| **Pipeline Control**         | The full step-control object combining the returned control outcome and the returned accumulated non-generic `Result`.                                    |
 | **Short-circuit**            | Early successful completion of the pipeline when a step determines that no further processing is required.                                                |
-| **Termination**              | Intentional ending of remaining pipeline execution without necessarily indicating a successful final result.                                              |
-| **Failure**                  | An explicit error outcome produced by a processing step and propagated through the result model.                                                          |
+| **Termination**              | Intentional ending of remaining pipeline execution without by itself defining success or failure.                                                         |
+| **Failure**                  | A failure state represented through the carried `Result`, typically by accumulated errors and failure status.                                             |
 | **Conditional Processing**   | Structural or runtime conditions that determine whether a step participates in pipeline execution.                                                        |
 | **Hooks**                    | Execution observation points that react to events occurring during pipeline execution, such as before or after steps.                                     |
 | **Decorators**               | Wrappers around pipeline or step execution that introduce cross-cutting behavior such as diagnostics, logging, or monitoring.                             |
 | **Observability**            | The ability to understand pipeline execution behavior through structured diagnostics, traces, and execution insight.                                      |
-| **Pipeline Execution State** | The runtime state of an executing pipeline including current step, accumulated diagnostics, control outcomes, and the current evolving result.            |
+| **Pipeline Execution State** | The runtime state of an executing pipeline including current step, accumulated diagnostics, control outcomes, and the current carried `Result`.           |
 
 ---
 
@@ -813,9 +1813,8 @@ The logical architecture describes the structural building blocks of the pipelin
 The core processing model defines the essential concepts of the pipeline system:
 
 * pipelines
-* inputs
-* shared contexts
-* evolving results
+* optional shared contexts
+* accumulated results
 * processing steps
 * control outcomes
 * final results
@@ -849,7 +1848,11 @@ The composition model defines **what a pipeline is** without describing how it e
 
 The construction mechanism creates executable pipeline instances from pipeline definitions.
 
-It resolves the blueprint into a runtime pipeline capable of processing input with a specific context.
+It resolves the blueprint into a runtime pipeline capable of processing with a carried accumulated `Result` and, when applicable, a specific context.
+
+The construction mechanism must account for step dependencies explicitly. Because processing steps are expected to use constructor injection, the mechanism should resolve steps from dependency injection rather than instantiate them directly. This keeps pipeline steps aligned with the framework's normal service model and allows them to depend on repositories, validators, policies, loggers, and other collaborators.
+
+Conceptually, the pipeline definition should therefore retain step descriptors such as step types, registration metadata, or DI-aware factories, while the runtime construction mechanism uses the current service provider or service scope to obtain the executable step instances.
 
 This separation between **definition** and **construction** keeps the design flexible while preserving clarity.
 
@@ -880,15 +1883,38 @@ A named pipeline definition describes the structure of the processing flow inclu
 
 A runtime component constructs an executable pipeline instance based on the pipeline definition and execution environment.
 
+During this step, the runtime component resolves the concrete processing step instances through dependency injection so that constructor-injected dependencies are available for the current execution.
+
+The construction and initialization path should also validate that the runtime context and all configured steps are compatible with the pipeline definition’s declared `ContextType`.
+
+This validation phase should also ensure that step registrations are resolvable, step names are structurally valid, and the pipeline definition is internally coherent before execution proceeds.
+
+If execution is initiated in fire-and-forget mode, the runtime component also establishes the background execution ownership and service scope required to let the pipeline complete independently of the initiating caller.
+
 ### Step 3 – Execution Initialization
 
 Pipeline execution begins with:
 
-* a stable input
-* a newly created shared context
-* an initial evolving result
+* an optional shared context when the pipeline requires one
+* an initial accumulated `Result`, typically starting as success
 
-Execution metadata such as correlation identifiers and pipeline identity are established in the context.
+Execution metadata such as correlation identifiers and pipeline identity are established in the context when a context is present.
+
+At this point, the engine should also initialize the common `context.Pipeline` lifecycle fields, including `StartedUtc`, `ExecutionId`, `Name`, `TotalStepCount`, and an initial `ExecutedStepCount` of zero.
+
+If the caller omits context, the engine should create its internal `NullPipelineContext`. If the caller supplies a context that does not match the declared `ContextType`, execution should fail fast with a clear pipeline validation/configuration error.
+
+If the execution was started in fire-and-forget mode, the initialization phase should also establish enough execution identity to support later diagnostics, monitoring, and completion tracking.
+
+If a progress reporter is supplied through execution options, the initialization phase should also establish the reporting channel so the engine and steps can emit progress updates consistently throughout execution.
+
+If a completion callback is supplied through execution options, the engine should retain it and invoke it only after the background execution finishes, its final accumulated `Result` has been determined, and the final tracked execution snapshot has been updated.
+
+That callback invocation should happen outside the background DI scope used by the pipeline execution and should be treated as a plain caller-supplied delegate invocation rather than as another pipeline step.
+
+The callback should therefore not depend on request-scoped or background-scoped services from the original execution path still being available, and it should receive a `PipelineCompletion` payload rather than relying on any ambient runtime state.
+
+If the completion callback throws, the engine should log that callback failure but preserve the already-determined final pipeline result and tracked execution state.
 
 ### Step 4 – Ordered Step Processing
 
@@ -896,21 +1922,26 @@ The pipeline progresses through its ordered processing steps.
 
 Each step may:
 
-* inspect input
-* read or update context
-* modify the evolving result
+* read or update context when one is present
+* contribute messages or errors to the accumulated `Result`
 * produce diagnostics
 * determine a control outcome
 
-### Step 5 – Control Outcome Handling
+As step processing advances, the engine should keep the common `context.Pipeline` metrics up to date, for example by setting `CurrentStepName` before step execution and incrementing `ExecutedStepCount` after each completed step attempt.
 
-After each step, the pipeline evaluates the control outcome which may cause execution to:
+### Step 5 – Step Evaluation
+
+After each step, the pipeline evaluates the updated accumulated `Result`, the control outcome, and the active execution policy together.
+
+This evaluation may cause execution to:
 
 * continue to the next step
 * skip a step
 * short‑circuit successfully
 * terminate remaining steps
-* fail with an error result
+* stop because the accumulated `Result` is now in a failure state
+
+In particular, `Continue` does not by itself mean the step succeeded. It only means the step did not request an alternate control outcome such as skip, short-circuit, or terminate.
 
 ### Step 6 – Completion
 
@@ -919,18 +1950,20 @@ Pipeline execution ends when:
 * all steps have executed successfully
 * a step short‑circuits the pipeline
 * a step terminates remaining execution
-* a failure occurs
+* the accumulated `Result` is treated as terminal according to policy
+
+When execution reaches completion, the engine should set `CompletedUtc` on `context.Pipeline` so the final context reflects both the UTC end timestamp and the derived execution `Duration`.
 
 ### Step 7 – Final Result Production
 
-The pipeline produces a structured final result that includes:
+The pipeline produces a structured final `Result` that includes:
 
 * success or failure status
-* final evolving result
+* accumulated messages and errors
 * accumulated diagnostics
 * execution metadata
 
-This result represents the complete outcome of the processing flow.
+This result represents the complete outcome of the processing flow and may be interpreted together with the final context when a context-aware pipeline was used.
 
 ---
 
@@ -944,25 +1977,43 @@ The execution state conceptually contains the runtime information necessary to u
 
 The execution state provides a structured representation of pipeline progress and enables observability, diagnostics, and runtime decision-making.
 
+For implementation, this state should be surfaced through `PipelineExecutionSnapshot` with a stable minimum contract rather than being left entirely open-ended.
+
 ### Conceptual contents of execution state
 
 A pipeline execution state typically includes:
 
 * pipeline identity
 * correlation identifier
+* execution initiation mode
+* engine log correlation data
+* progress reporting configuration
+* latest known progress state
 * current processing step
 * ordered list of executed steps
 * skipped steps
 * accumulated diagnostics
-* control outcomes produced so far
-* the current evolving result
+* step-control decisions produced so far
+* the current carried `Result`
 * execution start and completion indicators
+
+At minimum, the tracked snapshot contract should expose:
+
+* `ExecutionId`
+* `PipelineName`
+* `Status`
+* `CurrentStepName`
+* `StartedUtc`
+* `CompletedUtc`
+* final `Result` when execution has completed
 
 ### Role during execution
 
 During pipeline execution, the execution state evolves as steps participate in the processing flow.
 
-Each step may read the current state and contribute updates such as diagnostics, control outcomes, or modifications to the evolving result.
+Each step may read the current state and contribute updates such as diagnostics, step-control decisions, or the next accumulated `Result`.
+
+The tracker should move through clearly defined statuses such as `Accepted`, `Running`, `Completed`, `Failed`, and `Cancelled`.
 
 ### Role for observability
 
@@ -972,6 +2023,7 @@ The execution state also provides a structured representation that can be used t
 * generate diagnostics
 * support debugging and support analysis
 * enable monitoring and tracing systems
+* support lookup of fire-and-forget execution status and final outcome
 
 By modeling execution state explicitly, the pipeline feature maintains a clear representation of processing progress and decisions made during execution.
 
@@ -983,7 +2035,7 @@ Testability is a design goal and a natural consequence of the conceptual structu
 
 ### 20.1 Step-level testing
 
-Each processing step should be testable in isolation with controlled input, context, and evolving result.
+Each processing step should be testable in isolation with controlled context when applicable, a known incoming `Result`, and clear assertions against the returned `PipelineControl`.
 
 ### 20.2 Pipeline-level testing
 
@@ -1058,9 +2110,8 @@ Named pipelines and a shared conceptual model should make the feature broadly re
 
 The generic processing pipeline is a reusable framework feature for expressing ordered processing flows as a sequence of focused steps working on:
 
-* a stable input
-* a strongly typed shared context
-* an evolving result
+* an optional strongly typed shared context
+* an accumulated carried `Result`
 
 Its defining characteristics are:
 
@@ -1069,6 +2120,9 @@ Its defining characteristics are:
 * explicit control semantics
 * named pipeline support
 * static structural definition with runtime construction
+* runtime execution options for continuation and diagnostic accumulation behavior
+* explicit fire-and-forget execution initiation for background processing
+* progress reporting through execution options for long-running pipelines
 * integration with the framework’s result model
 * support for diagnostics and observability
 * extension points for hooks, decorators, and other cross-cutting concerns
@@ -1089,12 +2143,3 @@ https://medium.com/@bonnotguillaume/software-architecture-the-pipeline-design-pa
 https://github.com/guillaumebonnot/software-architecture/tree/master/Helios.Architecture.Pipeline
 
 https://www.devleader.ca/2026/03/14/decorator-design-pattern-in-c-complete-guide-with-examples
-
----
-
-## TODOS
-
-- add pipeline execution options such as:
-  - whether to continue on failure or short-circuit
-  - whether to accumulate diagnostics on failure or short-circuit
-- add progress reporting like Requester/Notifier implementations to support long-running pipelines

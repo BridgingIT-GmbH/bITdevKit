@@ -2,7 +2,7 @@
 
 [TOC]
 
-## 1. Overview
+## 1. Introduction
 
 This document describes the design of a reusable document templating platform for .NET based on:
 

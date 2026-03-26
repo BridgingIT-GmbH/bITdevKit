@@ -4,6 +4,8 @@
 
 The LINQ Extensions provide a comprehensive set of methods to work with sequences, async enumerables, and optional values. They are organized into functional groups based on their purpose and context of use.
 
+This page focuses on the LINQ-oriented extension families. For a broader package-level overview of the extension helpers available from `Common.Abstractions`, see [Common Extensions](./common-extensions.md).
+
 ---
 
 # Fluent Extensions

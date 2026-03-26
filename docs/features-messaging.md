@@ -6,6 +6,8 @@
 
 Messaging provides asynchronous publish/subscribe communication between parts of your application and across modules. It decouples producers from consumers, improves resilience, enables eventual consistency, and scales background work without blocking request flows.
 
+Messaging payloads and outbox messages build on the shared serializer abstractions and JSON conventions documented in [Common Serialization](./common-serialization.md), while correlation and trace instrumentation are closely related to [Common Observability / Tracing](./common-observability-tracing.md).
+
 ## Challenges
 
 - Coupling: Direct calls create tight dependencies between components and modules.

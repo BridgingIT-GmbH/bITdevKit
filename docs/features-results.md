@@ -1125,6 +1125,8 @@ var result = await Result<TripBooking>.Success(new TripBooking())
 > pattern. These extensions wrap standard repository operations in Result objects, providing
 > consistent error handling and operation results across your application.
 
+This appendix shows Result-based repository usage. For the repository abstraction itself, see [Domain Repositories](./features-domain-repositories.md), and for reusable query criteria, see [Domain Specifications](./features-domain-specifications.md).
+
 ### Available Extensions
 
 1. Read-Only Repository Extensions (`GenericReadOnlyRepositoryResultExtensions`):

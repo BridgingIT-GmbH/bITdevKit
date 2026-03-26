@@ -18,6 +18,8 @@ flowchart LR
 
 At a glance, application code talks to `IDataExporter` or `IDataImporter`, `DataPorterService` builds the effective configuration, applies optional row interception, delegates to the selected provider, and returns a typed result.
 
+For the lower-level serializer abstractions and JSON converter conventions that sit underneath parts of the import/export stack, see [Common Serialization](./common-serialization.md).
+
 ## Features
 
 - **Multiple Format Support**: Excel (.xlsx), CSV, typed-row CSV, JSON, XML, and PDF (export only)

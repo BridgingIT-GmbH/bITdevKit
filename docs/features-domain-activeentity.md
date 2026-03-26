@@ -16,13 +16,13 @@ This contemporary ActiveEntity implementation tackles these issues by embedding 
 
 ## Key Features
 
--   **Persistence Neutrality**: Supports multiple providers (e.g., EF Core, InMemory) per entity without altering entity code.
--   **Embedded Operations**: Entities include CRUD and query methods, minimizing boilerplate.
--   **Pluggable Behaviors**: Extensible hooks for logging, auditing and domain event publishing.
--   **DI Integration**: Seamless integration with ASP.NET Core DI for provider and behavior resolution.
--   **Result Pattern**: Consistent success/failure handling with `Result`, `Result<T>` and `ResultPaged<T>`.
--   **Testability**: InMemory provider facilitates unit testing.
--   **Concurrency and Auditing**: Optional support via `IConcurrency` and `IAuditable` interfaces.
+- **Persistence Neutrality**: Supports multiple providers (e.g., EF Core, InMemory) per entity without altering entity code.
+- **Embedded Operations**: Entities include CRUD and query methods, minimizing boilerplate.
+- **Pluggable Behaviors**: Extensible hooks for logging, auditing and domain event publishing.
+- **DI Integration**: Seamless integration with ASP.NET Core DI for provider and behavior resolution.
+- **Result Pattern**: Consistent success/failure handling with `Result`, `Result<T>` and `ResultPaged<T>`.
+- **Testability**: InMemory provider facilitates unit testing.
+- **Concurrency and Auditing**: Optional support via `IConcurrency` and `IAuditable` interfaces.
 
 ## Architecture
 
@@ -540,6 +540,7 @@ else
 ```
 
 This diagram illustrates how multiple operations are executed within a single transaction using WithTransactionAsync.
+
 ```mermaid
 sequenceDiagram
     participant Client
@@ -567,7 +568,8 @@ Behaviors enhance entities with cross-cutting concerns, executed in registration
 
 Logs all operations for debugging purposes.
 
--   **Example**:
+- **Example**:
+
     ```csharp
     services.AddActiveEntity(cfg =>
     {
@@ -583,7 +585,10 @@ Logs all operations for debugging purposes.
 
 Publishes domain events before or after operations.
 
--   **Example**:
+For the aggregate event model and the repository-based domain-event outbox, see [Domain Events](./features-domain-events.md).
+
+- **Example**:
+
     ```csharp
     services.AddActiveEntity(cfg =>
     {
@@ -599,7 +604,8 @@ Publishes domain events before or after operations.
 
 Manages audit trails and optional soft deletes.
 
--   **Example**:
+- **Example**:
+
     ```csharp
     services.AddActiveEntity(cfg =>
     {
@@ -614,15 +620,17 @@ Manages audit trails and optional soft deletes.
 ### AnnotationsValidatorBehavior (DataAnnotations)
 
 Validates entity properties using System.ComponentModel.DataAnnotations attributes before persistence operations. Supported annotations include:
--   [Required]: Ensures a property is not null or empty.
--   [MinLength], [MaxLength], [StringLength]: Enforce minimum and/or maximum length for strings.
--   [Range]: Ensures a numeric value falls within a specified range.
--   [RegularExpression]: Validates a string against a regex pattern.
--   [EmailAddress]: Checks for a valid email format.
--   [Compare]: Ensures two properties have the same value.
--   [Url], [Phone]: Validate URL or phone number formats.
 
--   **Example**:
+- [Required]: Ensures a property is not null or empty.
+- [MinLength], [MaxLength], [StringLength]: Enforce minimum and/or maximum length for strings.
+- [Range]: Ensures a numeric value falls within a specified range.
+- [RegularExpression]: Validates a string against a regex pattern.
+- [EmailAddress]: Checks for a valid email format.
+- [Compare]: Ensures two properties have the same value.
+- [Url], [Phone]: Validate URL or phone number formats.
+
+- **Example**:
+
     ```csharp
     services.AddActiveEntity(cfg =>
     {
@@ -677,7 +685,8 @@ Validates entity properties using System.ComponentModel.DataAnnotations attribut
 
 Enables custom validation logic using FluentValidation validators, allowing complex business rules to be applied selectively to insert, update, or delete operations.
 
--   **Example**:
+- **Example**:
+
     ```csharp
     // Custom FluentValidation validator
     public class BasicCustomerValidator : AbstractValidator<Customer>
@@ -740,7 +749,8 @@ Enables custom validation logic using FluentValidation validators, allowing comp
 
 Extend `ActiveEntityEntityBehaviorBase` to simplify custom logic implementation.
 
--   **Example**:
+- **Example**:
+
     ```csharp
     public class CustomBehavior<T> : ActiveEntityEntityBehaviorBase<T> where T : class, IEntity
     {
@@ -802,8 +812,8 @@ If you omit the parameters, all available features are enabled by default (`Acti
 
 When enabled, this feature provides static "finder" methods on your entity for each supported property, following a simple naming convention. This is ideal for quick, common lookups without needing to write a full query.
 
--   **`FindAllBy<PropertyName>Async(value)`**: Returns all entities matching the property's value.
--   **`FindOneBy<PropertyName>Async(value)`**: Returns the first entity matching the property's value.
+- **`FindAllBy<PropertyName>Async(value)`**: Returns all entities matching the property's value.
+- **`FindOneBy<PropertyName>Async(value)`**: Returns the first entity matching the property's value.
 
 These methods are automatically available for primitives, `ValueObject`s, `Enumeration` types, and Typed IDs.
 
@@ -823,6 +833,8 @@ var customerOrdersResult = await Order.FindAllByCustomerIdAsync(janeResult.Value
 #### Feature: Specifications
 
 This feature provides a nested static `Specifications` class inside your entity, providing a rich set of pre-built, reusable `ISpecification<T>` objects for each property. This promotes a clean, reusable, and type-safe way to define query criteria, fully aligned with the `FilterOperator` model.
+
+For the underlying specification model beyond ActiveEntity-generated helpers, see [Domain Specifications](./features-domain-specifications.md).
 
 **Usage Example:**
 
@@ -847,12 +859,13 @@ var johnsAndJanes = await Customer.FindAllAsync(johnOrJaneSpec);
 For more complex queries, the Query feature provides a powerful, LINQ-like fluent API that starts with the `Query()` static method on your entity. It allows you to chain together filters, ordering, includes, and projections in a highly readable way, while still returning a `Result<T>`.
 
 **Key Methods:**
--   `.Where(expression)` / `.Where(specification)`
--   `.And(specification)` / `.Or(specification)`
--   `.Include(navigationProperty)`
--   `.OrderBy(keySelector)` / `.OrderByDescending(keySelector)`
--   `.Skip(count)` / `.Take(count)`
--   **Execution Methods**: `.ToListAsync()`, `.ToPagedListAsync()`, `.FirstOrDefaultAsync()`, `.FirstAsync()`, `.AnyAsync()`, `.CountAsync()`, `.ProjectAllAsync(selector)`.
+
+- `.Where(expression)` / `.Where(specification)`
+- `.And(specification)` / `.Or(specification)`
+- `.Include(navigationProperty)`
+- `.OrderBy(keySelector)` / `.OrderByDescending(keySelector)`
+- `.Skip(count)` / `.Take(count)`
+- **Execution Methods**: `.ToListAsync()`, `.ToPagedListAsync()`, `.FirstOrDefaultAsync()`, `.FirstAsync()`, `.AnyAsync()`, `.CountAsync()`, `.ProjectAllAsync(selector)`.
 
 **Usage Example:**
 
@@ -882,13 +895,15 @@ if (pagedDoesWithOrders.IsSuccess)
 This feature allows the definition of custom, reusable query logic as extension methods and have them appear as if they were native static methods on the entity itself. This is perfect for encapsulating complex, domain-specific queries.
 
 **How it works:**
-1.  Define a static extension method on `ActiveEntity<TEntity, TId>` in a seperate extension class.
-2.  Enable the `Forwarders` feature.
-3.  Call the method directly on the entity class.
+
+1. Define a static extension method on `ActiveEntity<TEntity, TId>` in a seperate extension class.
+2. Enable the `Forwarders` feature.
+3. Call the method directly on the entity class.
 
 **Usage Example:**
 
 **1. Define a Custom Extension Method:**
+
 ```csharp
 public static class CustomerQueryExtensions
 {
@@ -906,6 +921,7 @@ public static class CustomerQueryExtensions
 ```
 
 **2. Call it Directly on the Entity:**
+
 ```csharp
 // No need for awkward extension method syntax. It feels like a built-in method.
 var recentCustomersResult = await Customer.FindAllRecentCustomersAsync();
@@ -962,22 +978,24 @@ The Active Record (AR) pattern embeds data access and domain logic directly into
 ### Characteristics of Each Pattern
 
 #### Active Record Pattern
--   **Approach**: Entities manage their own persistence via embedded methods, supported by pluggable providers configurable per entity.
--   **Strengths**: Simplifies development with fewer layers, enhances cohesion by uniting domain and persistence logic and supports rapid setup with discoverable methods (e.g., `customer.InsertAsync()`).
--   **Considerations**: Requires providers for flexibility, may grow complex with extensive behaviors and relies on DI for testability.
+
+- **Approach**: Entities manage their own persistence via embedded methods, supported by pluggable providers configurable per entity.
+- **Strengths**: Simplifies development with fewer layers, enhances cohesion by uniting domain and persistence logic and supports rapid setup with discoverable methods (e.g., `customer.InsertAsync()`).
+- **Considerations**: Requires providers for flexibility, may grow complex with extensive behaviors and relies on DI for testability.
 
 #### Repository Pattern
--   **Approach**: A separate interface (e.g., `IGenericRepository<TEntity>`) handles persistence, keeping entities free of data access code.
--   **Strengths**: Offers clear separation of concerns, facilitates mocking for unit tests and scales well for complex queries or multiple data stores.
--   **Considerations**: Introduces additional layers, potentially leading to anemic models and requires more setup for simple CRUD operations.
+
+- **Approach**: A separate interface (e.g., `IGenericRepository<TEntity>`) handles persistence, keeping entities free of data access code.
+- **Strengths**: Offers clear separation of concerns, facilitates mocking for unit tests and scales well for complex queries or multiple data stores.
+- **Considerations**: Introduces additional layers, potentially leading to anemic models and requires more setup for simple CRUD operations.
 
 ### Tradeoffs
 
--   **Simplicity vs. Abstraction**: AR reduces setup complexity by embedding logic, ideal for straightforward scenarios, while Repository adds abstraction for better isolation, suited for layered architectures.
--   **Cohesion vs. Separation**: AR fosters cohesive entities but may mix concerns without careful behavior design; Repository separates concerns but can fragment domain logic across layers.
--   **Testability**: AR leverages providers (e.g., InMemory) for testing, requiring DI setup, whereas Repository allows easy mocking without database ties (or re-configure repository implementation).
--   **Extensibility**: Both AR and Repository offer extensibility through behaviors.
--   **Domain-Driven Design (DDD)**: Both support DDD with typed IDs, domain events and aggregates. They leverages EF Core features like owned entities and auto-includes for complete aggregates, matching Repository�s capability for complex domain models.
+- **Simplicity vs. Abstraction**: AR reduces setup complexity by embedding logic, ideal for straightforward scenarios, while Repository adds abstraction for better isolation, suited for layered architectures.
+- **Cohesion vs. Separation**: AR fosters cohesive entities but may mix concerns without careful behavior design; Repository separates concerns but can fragment domain logic across layers.
+- **Testability**: AR leverages providers (e.g., InMemory) for testing, requiring DI setup, whereas Repository allows easy mocking without database ties (or re-configure repository implementation).
+- **Extensibility**: Both AR and Repository offer extensibility through behaviors.
+- **Domain-Driven Design (DDD)**: Both support DDD with typed IDs, domain events and aggregates. They leverages EF Core features like owned entities and auto-includes for complete aggregates, matching Repository�s capability for complex domain models.
 
 ### Practical Considerations
 
@@ -992,9 +1010,10 @@ The robustness and predictability of ActiveEntity operations in bITDevKit are ro
 ### The Problem of Scope Mismatch
 
 When combining domain logic with persistence, ensuring that all related components (like a database provider and associated behaviors) operate within the same "unit of work" (e.g., an EF Core `DbContext` or a database transaction) is critical. Without proper management, components might inadvertently resolve their dependencies from different DI scopes. This can lead to:
--   Inconsistent `DbContext` instances being used for a single logical operation, causing data integrity issues.
--   `ObjectDisposedException` if a parent scope is disposed while a child operation is still attempting to use its resources.
--   Complex, error-prone manual transaction management across different layers.
+
+- Inconsistent `DbContext` instances being used for a single logical operation, causing data integrity issues.
+- `ObjectDisposedException` if a parent scope is disposed while a child operation is still attempting to use its resources.
+- Complex, error-prone manual transaction management across different layers.
 
 ### The Solution: Consistent Context and Scoping
 
@@ -1003,8 +1022,9 @@ To resolve these, `ActiveEntityContext` and `ActiveEntityContextScope` work toge
 #### `ActiveEntityContext<TEntity, TId>`
 
 This sealed, immutable container bundles the essential services for an ActiveEntity operation within a consistent DI scope:
--   **`Provider`**: The `IActiveEntityEntityProvider<TEntity, TId>` instance, acting as the transactional anchor.
--   **`Behaviors`**: A collection of `IActiveEntityEntityBehavior<TEntity>` instances, representing the lifecycle hooks.
+
+- **`Provider`**: The `IActiveEntityEntityProvider<TEntity, TId>` instance, acting as the transactional anchor.
+- **`Behaviors`**: A collection of `IActiveEntityEntityBehavior<TEntity>` instances, representing the lifecycle hooks.
 
 Crucially, both `Provider` and `Behaviors` are always resolved **from the *same* underlying `IServiceProvider` instance**. This guarantees they share the same scoped dependencies (e.g., a single `DbContext` instance) and are valid for the same duration.
 
@@ -1022,8 +1042,9 @@ public static Task<TResult> UseAsync<TEntity, TId, TResult>(
 ```
 
 `UseAsync` dynamicaly provides an `ActiveEntityContext` to your operations:
--   **If `context` is provided (not null)**: It directly passes this existing context to the `action`. This is vital for scenarios like transactions, where a context is already managing an active scope and must be reused. The `ActiveEntityContextScope` does *not* create or dispose a new scope in this case.
--   **If `context` is `null`**: It automatically creates a new, dedicated DI scope, resolves the `Provider` and `Behaviors` from it, constructs an `ActiveEntityContext`, and invokes the `action`. It then reliably disposes this new scope after the `action` completes, even if errors occur, using `await using` and `try/finally` semantics.
+
+- **If `context` is provided (not null)**: It directly passes this existing context to the `action`. This is vital for scenarios like transactions, where a context is already managing an active scope and must be reused. The `ActiveEntityContextScope` does *not* create or dispose a new scope in this case.
+- **If `context` is `null`**: It automatically creates a new, dedicated DI scope, resolves the `Provider` and `Behaviors` from it, constructs an `ActiveEntityContext`, and invokes the `action`. It then reliably disposes this new scope after the `action` completes, even if errors occur, using `await using` and `try/finally` semantics.
 
 This abstraction frees individual ActiveEntity CRUD methods from managing DI plumbing. They simply require an `ActiveEntityContext` (which can be null), and `ActiveEntityContextScope` ensures the environment is correctly set up—either by reusing an existing context/scope or by safely creating and managing a new one. This design guarantees consistent, scope-safe operations across the entire ActiveEntity feature.
 

@@ -4,9 +4,10 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 
 ## Common Infrastructure
 
-- [Common Extensions](./common-extensions.md): Provides a package-level map of the extension helpers in `Common.Abstractions/Extensions`, grouped by collection, fluent composition, date/time, text, reflection, configuration, and async utility areas.
+- [Common Extensions](./common-extensions.md): Provides an overview of the extensions and helpers, grouped by collection, fluent composition, date/time, text, reflection, configuration, and async utility areas.
+- [Common Utilities](./common-utilities.md): Provides an overview of the resiliency helpers, requester/startup-task internals, activity helpers, reflection, content-type, compression, hashing, cloning, and id/key generation utilities.
 - [Common Serialization](./common-serialization.md): Documents the shared serializer abstraction, built-in serializers, default JSON conventions, and the converters that make devkit types serialize consistently.
-- [Common Options Builders](./common-options-builders.md): Explains the lightweight fluent options-builder pattern reused across many devkit packages and how it differs from `Microsoft.Extensions.Options`.
+- [Common Options Builders](./common-options-builders.md): Explains the lightweight fluent options-builder pattern reused across many devkit features and how it differs from `Microsoft.Extensions.Options`.
 - [Common Mapping](./common-mapping.md): Covers the devkit's boundary mapping abstraction, Mapster registration, result mapping helpers, and the explicit manual mapper fallback.
 - [Common Caching](./common-caching.md): Covers the in-process cache abstraction, the default memory-cache provider, expiration settings, and prefix-based invalidation patterns.
 - [Common Observability Tracing](./common-observability-tracing.md): Covers the activity decorator, tracing attributes, naming schemas, OpenTelemetry expectations, and the practical limits of the low-level tracing helper.
@@ -14,9 +15,12 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 ## Core Domain and Application
 
 - [Domain](./features-domain.md): Introduces the core DDD building blocks in the devkit, including smart enumerations, strongly typed entity IDs, and fluent aggregate update patterns for enforcing invariants.
-- [Domain Events](./features-domain-events.md): Explains how aggregates raise immutable domain events so side effects can be handled asynchronously and with low coupling.
+- [Domain Events](./features-domain-events.md): Explains how aggregates raise immutable domain events and how repository behaviors publish them either directly in-process or through the reliable domain-event outbox.
+- [Event Sourcing](./features-event-sourcing.md): Documents the aggregate-event stream model, event-store registration, snapshots, and the separate outbox flow used for durable downstream event distribution.
 - [Domain Repositories](./features-domain-repositories.md): Covers the repository abstractions, specifications, includes, paging, optimistic concurrency, and sequence support used to query and persist aggregates.
+- [Domain Specifications](./features-domain-specifications.md): Documents the reusable query and selection criteria model with expression translation, in-memory evaluation, composition, and built-in uniqueness specifications.
 - [ActiveEntity](./features-domain-activeentity.md): Describes an optional active-record-style model where entities perform their own CRUD and query operations through pluggable providers and behaviors.
+- [Domain Policies](./features-domain-policies.md): Documents reusable domain decision policies, conditional execution, aggregated policy results, and the available failure-processing modes.
 - [Rules](./features-rules.md): Documents the fluent rule engine for business validation, conditional checks, and collection processing that returns structured `Result` failures instead of exceptions.
 - [Results](./features-results.md): Describes the devkit's `Result` pattern for explicit success and failure flows, typed errors, paged results, functional chaining, and HTTP mapping helpers.
 - [Application Commands and Queries](./features-application-commands-queries.md): Shows how application use cases are modeled as command and query handlers dispatched through the request pipeline.
@@ -33,7 +37,7 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 
 ## Security and Access
 
-- [Entity Permissions](./features-entitypermissions.md): Covers fine-grained entity authorization with type-level and instance-level permissions, inheritance, runtime grant management, and ASP.NET Core authorization integration.
+- [Entity Permissions](./features-entitypermissions.md): Covers entity-level authorization with evaluator and provider abstractions, hierarchical inheritance, default permission providers, caching, rules integration, and ASP.NET Core endpoint protection.
 - [Fake Identity Provider](./features-identityprovider.md): Documents the lightweight development identity provider for OAuth2 and OpenID Connect flows, JWT issuance, and test users and clients.
 
 ## Presentation and Host
@@ -51,7 +55,6 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 - [DocumentStorage](./features-storage-documents.md): Provides a typed document-store abstraction with pluggable providers and optional client behaviors for caching, retries, logging, and fault handling.
 - [FileStorage](./features-storage-files.md): Exposes a provider-based file storage abstraction for file operations, metadata, compression, health checks, and cross-provider transfers with progress reporting.
 - [Storage Monitoring](./features-storage-monitoring.md): Documents the monitored-location subsystem built on file storage for real-time watching, on-demand scans, processor pipelines, and scheduled reconciliation jobs.
-- [Utilities](./features-utilities.md): Collects shared utility features such as time-provider abstractions and resiliency primitives including retries, throttling, circuit breaking, lightweight background work, and timeout helpers.
 - [Log Entries](./features-log-entries.md): Covers the application contract for querying, streaming, exporting, and cleaning up persisted log entries together with the operational web endpoints built on that contract.
 
 ## Testing and Contributor Guides

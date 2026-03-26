@@ -13,6 +13,8 @@ Two kinds of messages are supported:
 
 Using these components (requests for commands/queries and notifications for domain events) helps decrease coupling in the application by isolating message handling logic from the business logic of the application. For instance, a service can publish a domain event via the `Notifier` without knowing which components will handle it, and a command can be dispatched via the `Requester` without the caller needing to know the implementation details of the handler.
 
+Some of the cross-cutting behaviors described on this page rely on shared common infrastructure, especially [Common Caching](./common-caching.md) for cache-related behaviors and [Common Observability / Tracing](./common-observability-tracing.md) for broader instrumentation conventions around message processing flows.
+
 ### Challenges
 
 Managing the core mechanics of message dispatching and handler execution presents several challenges:

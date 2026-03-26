@@ -8,6 +8,13 @@
 
 The Filtering feature provides a flexible and powerful way to filter, sort, and paginate data through API requests. It allows clients to construct complex queries using a JSON-based filter model that gets translated into domain specifications and FindOptions on the server side. The translated filter model can easily be handled by the bITdevKit repositories.
 
+Filtering is a consumer of two lower-level domain features:
+
+- [Domain Specifications](./features-domain-specifications.md) for reusable criteria and named specifications
+- [Domain Repositories](./features-domain-repositories.md) for query execution, includes, paging, and ordering
+
+Its JSON-based filter payloads and converter conventions are also closely related to the shared infrastructure documented in [Common Serialization](./common-serialization.md).
+
 ```mermaid
 graph LR
     R[Client Request]-->|filter|E[API Endpoint]-->|filter|Q[QueryHandler or Service]-->|filter|P[Repository]
@@ -856,6 +863,8 @@ Explicit non-null check filter
 ### Named Specification
 
 Use pre-registered domain specifications
+
+For the underlying specification model itself, including `ISpecification<T>`, composition, and built-in uniqueness specifications, see [Domain Specifications](./features-domain-specifications.md).
 
 ```json
 {

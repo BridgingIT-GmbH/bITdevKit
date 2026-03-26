@@ -577,7 +577,7 @@ var customers = await repository.ExecuteQuery(query);
 ## References
 
 - [Specification Pattern (Martin Fowler)](https://www.martinfowler.com/apsupp/spec.pdf)
-- [bITdevKit Specifications](https://github.com/BridgingIT-GmbH/bITdevKit/blob/main/docs/domain-specifications.md)
+- [bITdevKit Domain Specifications](../features-domain-specifications.md)
 - [Repository Pattern](https://learn.microsoft.com/en-us/dotnet/architecture/microservices/microservice-ddd-cqrs-patterns/infrastructure-persistence-layer-design)
 
 ## Notes

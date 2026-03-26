@@ -13,6 +13,8 @@ The [Command Query Separation](https://en.wikipedia.org/wiki/Command%E2%80%93que
 
 In Domain-Driven Design (DDD), commands and queries align with application services, encapsulating business logic and data access. The `Requester` feature in bITDevKit implements CQS using a mediator-like pattern, dispatching requests to handlers with type-safe `Result<T>` outcomes and extensible pipeline behaviors (e.g., validation, retries). This reduces coupling, as callers are unaware of handler implementations, minimizes dependency injection in handlers, and enables consistent handling of cross-cutting concerns, making the codebase more modular and testable.
 
+Many handlers also depend on the shared mapping abstraction to translate between request models, domain objects, and response DTOs; see [Common Mapping](./common-mapping.md).
+
 ### Challenges
 
 - **Inconsistent Handling**: Ad hoc implementations lead to unpredictable behavior.
@@ -23,6 +25,7 @@ In Domain-Driven Design (DDD), commands and queries align with application servi
 ### Solution
 
 The `Requester` system provides:
+
 - **Requests**: Inherit from `RequestBase<TResponse>`, defining inputs and outputs.
 - **Handlers**: Implement `RequestHandlerBase<TRequest, TResponse>`, returning `Result<TResponse>`.
 - **Dispatching**: Via `IRequester.SendAsync()`, routing requests through a pipeline of behaviors.
@@ -50,7 +53,7 @@ sequenceDiagram
     Database-->>Repository: Result
     Repository-->>Handler: Result<T>
     Handler-->>Pipeline: Result<T>
-    Pipeline-->>Requester: Result<T> 
+    Pipeline-->>Requester: Result<T>
     Requester-->>Client: Result<T>
 ```
 
@@ -68,6 +71,7 @@ services.AddRequester()
 ## Basic Usage
 
 ### Defining a Command
+
 Commands modify state and return `Result<T>` (e.g., a DTO or `Unit`).
 
 ```csharp
@@ -89,6 +93,7 @@ public class CustomerCreateCommand(CustomerModel model) : RequestBase<CustomerMo
 ```
 
 ### Command Handler
+
 Handlers implement business logic, often using repositories.
 
 ```csharp
@@ -114,6 +119,7 @@ public class CustomerCreateCommandHandler(
 ```
 
 ### Defining a Query
+
 Queries retrieve data and return `Result<T>`.
 
 ```csharp
@@ -132,6 +138,7 @@ public class CustomerFindOneQuery(string customerId) : RequestBase<CustomerModel
 ```
 
 ### Query Handler
+
 ```csharp
 [HandlerRetry(2, 100)]
 [HandlerTimeout(500)]
@@ -151,17 +158,18 @@ public class CustomerFindOneQueryHandler(
 ```
 
 ### Dispatching
+
 Inject and use the `IRequester`:
 
 ```csharp
 var requester = serviceProvider.GetRequiredService<IRequester>();
 
 // Command
-var command = new CustomerCreateCommand(new CustomerModel 
-{ 
-    FirstName = "John", 
-    LastName = "Doe", 
-    Email = "john.doe@example.com" 
+var command = new CustomerCreateCommand(new CustomerModel
+{
+    FirstName = "John",
+    LastName = "Doe",
+    Email = "john.doe@example.com"
 });
 
 var commandResult = await requester.SendAsync(command);

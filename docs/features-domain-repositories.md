@@ -26,6 +26,8 @@ The repository pattern implementation provides:
 - **Multiple Implementations**: EntityFramework, Cosmos, Azure Storage, and in-memory implementations
 - **Specification Pattern**: Reusable query specifications for complex business rules
 
+This page focuses on how repositories consume specifications. For the specification model itself, see [Domain Specifications](./features-domain-specifications.md).
+
 ### Use Cases
 
 - Loading entities with deeply nested navigation properties (e.g., Customer → Orders → OrderItems → Product)

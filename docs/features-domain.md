@@ -4,6 +4,19 @@
 
 ## Overview
 
+The `Domain` feature is the foundation for the devkit's domain model. It covers the core tactical building blocks used to express business concepts in code, such as aggregates, value objects, typed ids, enumerations, and fluent aggregate state changes.
+
+This page focuses on those core primitives. Related domain concepts have their own dedicated feature pages:
+
+- [Domain Events](./features-domain-events.md) for aggregate-raised events and the domain-event outbox
+- [Event Sourcing](./features-event-sourcing.md) for aggregate-event streams and event-store-based modeling
+- [Domain Specifications](./features-domain-specifications.md) for reusable query and selection criteria
+- [Domain Policies](./features-domain-policies.md) for contextual business decisions over a domain context
+- [Domain Repositories](./features-domain-repositories.md) for repository abstractions, find options, includes, and behaviors
+- [ActiveEntity](./features-domain-activeentity.md) for the optional active-record-style alternative
+
+Typed ids and smart enumerations from the domain layer also integrate with the shared serializer infrastructure described in [Common Serialization](./common-serialization.md).
+
 ## Challenges
 
 ## Solution

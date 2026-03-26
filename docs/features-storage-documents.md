@@ -6,6 +6,8 @@
 
 Document Storage provides a simple, type-safe abstraction for storing and retrieving JSON-like documents keyed by a `DocumentKey` (partitionKey + rowKey). It focuses on straightforward CRUD operations, filtered lookups, and pluggable provider implementations, with optional client-side behaviors for resilience, caching, logging, and timeouts.
 
+The cache behavior described here builds on the shared abstractions documented in [Common Caching](./common-caching.md), and document payload serialization follows the serializer conventions covered in [Common Serialization](./common-serialization.md).
+
 ## Challenges
 
 - Consistent access: Unified API across providers (in-memory, EF-backed, cloud) without leaking implementation details.

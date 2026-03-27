@@ -101,6 +101,10 @@ The design shall support an explicit fire-and-forget execution option so a calle
 
 The design shall support progress reporting through execution options so long-running pipelines can provide structured feedback to the initiating caller while execution is in progress.
 
+### 3.15 Low-friction developer experience
+
+The design shall optimize for low-friction adoption by pipeline authors through sensible defaults, lightweight conventions, and fluent registration/building APIs so common scenarios require minimal configuration.
+
 ---
 
 ## 4. Scope and Boundaries
@@ -598,8 +602,34 @@ public interface IPipelineDecorator<TContext>
         CancellationToken cancellationToken);
 }
 
+public static class PipelineStepNameConvention
+{
+    public static string FromType(Type stepType)
+    {
+        var name = stepType.Name.EndsWith("Step", StringComparison.Ordinal)
+            ? stepType.Name[..^4]
+            : stepType.Name;
+
+        return Regex.Replace(name, "(?<!^)([A-Z])", "-$1").ToLowerInvariant();
+    }
+}
+
+public static class PipelineNameConvention
+{
+    public static string FromType(Type pipelineType)
+    {
+        var name = pipelineType.Name.EndsWith("Pipeline", StringComparison.Ordinal)
+            ? pipelineType.Name[..^8]
+            : pipelineType.Name;
+
+        return Regex.Replace(name, "(?<!^)([A-Z])", "-$1").ToLowerInvariant();
+    }
+}
+
 public interface IPipelineStep
 {
+    string Name { get; }
+
     ValueTask<PipelineControl> ExecuteAsync(
         PipelineContextBase context,
         Result result,
@@ -623,6 +653,8 @@ public abstract class PipelineStep : PipelineStep<NullPipelineContext>
 public abstract class PipelineStep<TContext> : IPipelineStep
     where TContext : PipelineContextBase
 {
+    public virtual string Name => PipelineStepNameConvention.FromType(this.GetType());
+
     ValueTask<PipelineControl> IPipelineStep.ExecuteAsync(
         PipelineContextBase context,
         Result result,
@@ -654,6 +686,8 @@ public abstract class AsyncPipelineStep : AsyncPipelineStep<NullPipelineContext>
 public abstract class AsyncPipelineStep<TContext> : IPipelineStep
     where TContext : PipelineContextBase
 {
+    public virtual string Name => PipelineStepNameConvention.FromType(this.GetType());
+
     ValueTask<PipelineControl> IPipelineStep.ExecuteAsync(
         PipelineContextBase context,
         Result result,
@@ -717,16 +751,15 @@ public interface IPipelineStepDefinition
 
 public interface IPipelineDefinitionBuilder
 {
-    IPipelineDefinitionBuilder WithName(string name);
-
     IPipelineDefinitionBuilder AddStep<TStep>(
+        bool enabled = true,
         Action<IPipelineStepDefinitionBuilder> configure = null)
         where TStep : class, IPipelineStep;
 
-    IPipelineDefinitionBuilder AddHook<THook>()
+    IPipelineDefinitionBuilder AddHook<THook>(bool enabled = true)
         where THook : class;
 
-    IPipelineDefinitionBuilder AddDecorator<TDecorator>()
+    IPipelineDefinitionBuilder AddDecorator<TDecorator>(bool enabled = true)
         where TDecorator : class;
 
     IPipelineDefinition Build();
@@ -735,30 +768,27 @@ public interface IPipelineDefinitionBuilder
 public interface IPipelineDefinitionBuilder<TContext>
     where TContext : PipelineContextBase
 {
-    IPipelineDefinitionBuilder<TContext> WithName(string name);
-
     IPipelineDefinitionBuilder<TContext> AddStep<TStep>(
+        bool enabled = true,
         Action<IPipelineStepDefinitionBuilder> configure = null)
         where TStep : class, IPipelineStep;
 
-    IPipelineDefinitionBuilder<TContext> AddHook<THook>()
+    IPipelineDefinitionBuilder<TContext> AddHook<THook>(bool enabled = true)
         where THook : class;
 
-    IPipelineDefinitionBuilder<TContext> AddDecorator<TDecorator>()
+    IPipelineDefinitionBuilder<TContext> AddDecorator<TDecorator>(bool enabled = true)
         where TDecorator : class;
 
     IPipelineDefinition Build();
 }
 
-public sealed class PipelineDefinitionBuilder : IPipelineDefinitionBuilder;
+public sealed class PipelineDefinitionBuilder(string name) : IPipelineDefinitionBuilder;
 
-public sealed class PipelineDefinitionBuilder<TContext> : IPipelineDefinitionBuilder<TContext>
+public sealed class PipelineDefinitionBuilder<TContext>(string name) : IPipelineDefinitionBuilder<TContext>
     where TContext : PipelineContextBase;
 
 public interface IPipelineStepDefinitionBuilder
 {
-    IPipelineStepDefinitionBuilder WithName(string name);
-
     IPipelineStepDefinitionBuilder When(IPipelineDefinitionCondition condition);
 
     IPipelineStepDefinitionBuilder WithMetadata(string key, object value);
@@ -868,7 +898,14 @@ public interface IPipelineFactory
 {
     IPipeline Create(string name);
 
+    IPipeline Create<TPipelineDefinition>()
+        where TPipelineDefinition : class, IPipelineDefinitionSource;
+
     IPipeline<TContext> Create<TContext>(string name)
+        where TContext : PipelineContextBase;
+
+    IPipeline<TContext> Create<TPipelineDefinition, TContext>()
+        where TPipelineDefinition : class, IPipelineDefinitionSource<TContext>
         where TContext : PipelineContextBase;
 }
 
@@ -918,6 +955,50 @@ public sealed class PipelineExecutionSnapshot
 
     public Result Result { get; }
 }
+
+public interface IPipelineDefinitionSource
+{
+    string Name { get; }
+
+    IPipelineDefinition Build();
+}
+
+public interface IPipelineDefinitionSource<TContext> : IPipelineDefinitionSource
+    where TContext : PipelineContextBase;
+
+public abstract class PipelineDefinition<TContext> : IPipelineDefinitionSource<TContext>
+    where TContext : PipelineContextBase
+{
+    public virtual string Name => PipelineNameConvention.FromType(this.GetType());
+
+    public IPipelineDefinition Build()
+    {
+        var builder = new PipelineDefinitionBuilder<TContext>(this.Name);
+
+        this.Configure(builder);
+
+        return builder.Build();
+    }
+
+    protected abstract void Configure(IPipelineDefinitionBuilder<TContext> builder);
+}
+
+public interface IPipelineRegistrationBuilder
+{
+    IPipelineRegistrationBuilder WithPipeline<TPipelineDefinition>()
+        where TPipelineDefinition : class, IPipelineDefinitionSource;
+
+    IPipelineRegistrationBuilder WithPipeline<TContext>(
+        string name,
+        Action<IPipelineDefinitionBuilder<TContext>> configure)
+        where TContext : PipelineContextBase;
+}
+
+public static class PipelineServiceCollectionExtensions
+{
+    public static IPipelineRegistrationBuilder AddPipelines(
+        this IServiceCollection services);
+}
 ```
 
 This first cut intentionally keeps some supporting types lightweight, but the runtime contracts are now explicit:
@@ -931,10 +1012,14 @@ This first cut intentionally keeps some supporting types lightweight, but the ru
 * `PipelineExecutionHandle` represents the acknowledgement returned when background execution is accepted, without carrying the final `Result` directly
 * `PipelineCompletion` is the callback payload for `WhenCompleted(...)`
 * `PipelineExecutionSnapshot` represents the tracked state for a previously started execution
+* `IPipelineDefinitionSource<TContext>` / `PipelineDefinition<TContext>` provide an optional strongly typed higher-level packaging model for keeping a named pipeline definition, its nested steps, and its configuration together in one class
+* `IPipelineRegistrationBuilder` represents the application setup API for registering packaged or inline pipeline definitions
 
 The important implementation direction is that `StepType` represents the DI-registered step type, while the static definition remains a pure descriptor model that is safe to cache and reuse.
 
 For execution, the important direction is that awaited execution and background execution are expressed as separate explicit methods rather than as an implicit mode switch hidden inside execution options.
+
+The important usability direction is that the framework should keep author friction low by combining explicit structure with sane defaults. Conventions such as default pipeline names, default step names, no-op hook base methods, and fluent builders should reduce ceremony for the common case while still allowing explicit overrides where needed.
 
 The important context direction is:
 
@@ -954,13 +1039,24 @@ The important authoring direction is:
 
 * infrastructure-facing contracts are non-generic
 * client-facing entry points may still use generic facades where that improves clarity and explicitness
-* client-facing definition authoring should use `PipelineDefinitionBuilder<TContext>` for context-aware pipelines and `PipelineDefinitionBuilder` for no-context pipelines
+* client-facing definition authoring should support both direct builder usage with `PipelineDefinitionBuilder<TContext>` and packaged definition usage with `PipelineDefinition<TContext>`
 * `IPipelineDefinitionBuilder<TContext>` should expose real typed fluent methods so context-aware builder usage stays explicit all the way through definition authoring
+* packaged definitions should also stay strongly typed through `IPipelineDefinitionSource<TContext>` so the definition itself carries its declared context type
+* packaged pipeline definitions should default their `Name` from the class name with a trailing `Pipeline` removed and converted to kebab-case, so `OrderImportPipeline` becomes `order-import`, while still allowing explicit override when needed
+* `PipelineDefinition<TContext>` should remain a definition source only; the executable runtime contract remains `IPipeline<TContext>` resolved from the factory
+* direct builder usage should require the pipeline name in the builder constructor so named pipelines stay first-class and cannot be forgotten
+* step names should belong directly to the step type through `IPipelineStep.Name` rather than optional `WithName(...)` calls inside fluent registration
+* the default step name should come from the class name with a trailing `Step` removed and converted to kebab-case, so `PersistOrdersStep` becomes `persist-orders`, while still allowing explicit override when a different stable step identity is needed
+* the step builder callback remains useful for optional structural concerns such as conditions and metadata, but not for mandatory step identity
+* `AddStep(...)`, `AddHook(...)`, and `AddDecorator(...)` should all support a simple optional `enabled` boolean for low-friction conditional registration when richer structural conditions are not needed
+* when `enabled` is `false`, the step, hook, or decorator should not be added to the registered pipeline definition at all and therefore should not participate in execution later
 * typed sync step authoring remains available through `PipelineStep<TContext>`
 * typed async step authoring remains available through `AsyncPipelineStep<TContext>`
 * no-context sync step authoring remains explicit through `PipelineStep`, which internally maps to `PipelineStep<NullPipelineContext>`
 * no-context async step authoring remains explicit through `AsyncPipelineStep`, which internally maps to `AsyncPipelineStep<NullPipelineContext>`
 * generic factory calls such as `Create<TContext>(...)` should validate that `TContext` matches the registered pipeline definition `ContextType`
+* `Create<TPipelineDefinition>()` should support ergonomic lookup by packaged definition type for packaged pipelines that execute without a shared context
+* `Create<TPipelineDefinition, TContext>()` should remain available when the caller wants both packaged definition lookup and an explicitly typed runtime pipeline contract
 * the engine should validate that the provided runtime context matches the definition `ContextType`
 * calling a no-context execution overload for a context-aware pipeline should fail fast with a clear configuration/runtime error rather than relying on an invalid cast
 * the definition builder should validate that added steps are compatible with the configured pipeline context type by inferring step context from the closed generic `PipelineStep<TContext>` or `AsyncPipelineStep<TContext>` base type, while non-generic step bases imply `NullPipelineContext`
@@ -973,6 +1069,7 @@ The important validation direction is:
 
 * pipeline definitions should be validated before execution
 * validation should include duplicate step names, incompatible step/context combinations, missing required context configuration, and unresolved DI step registrations
+* validation should also include duplicate pipeline names across all registered definitions
 * validation failures should surface as explicit pipeline configuration/validation errors
 
 The important sync/async direction is:
@@ -999,6 +1096,15 @@ The important options direction is:
 * the fluent builder is a convenience for execution-time ergonomics and should produce the same final options model
 * `CompletionCallback` is especially useful for `ExecuteAndForgetAsync`, where no final `Result` is awaited directly
 * `WhenCompleted(...)` on the execution options builder should populate that same `CompletionCallback` with a `PipelineCompletion` payload
+
+The important registration direction is:
+
+* application setup should support packaged registration through `services.AddPipelines().WithPipeline<TPipelineDefinition>()`
+* application setup should also support inline registration through `services.AddPipelines().WithPipeline<TContext>(name, builder => ...)`
+* both registration styles should produce the same underlying immutable `IPipelineDefinition` model
+* registration should reject duplicate pipeline names immediately during setup instead of allowing ambiguous runtime lookup
+* attempting to register a second pipeline with the same logical name should throw an explicit configuration/registration exception
+* because pipeline names are mandatory, both inline registration and direct builder usage should require the logical name up front rather than relying on a later `WithName(...)` call
 
 ### 10.5 Fictional Example
 
@@ -1112,21 +1218,99 @@ public sealed class PersistOrdersStep(IOrderRepository repository)
 The static definition is built as a named blueprint using step types rather than step instances:
 
 ```csharp
+var loadEnabled = true;
+
 var definition =
-    new PipelineDefinitionBuilder<OrderImportContext>()
-        .WithName("order-import")
-        .AddStep<ValidateOrderImportStep>(step => step.WithName("validate"))
-        .AddStep<LoadOrdersStep>(step => step.WithName("load"))
-        .AddStep<PersistOrdersStep>(step => step.WithName("persist"))
+    new PipelineDefinitionBuilder<OrderImportContext>("order-import")
+        .AddStep<ValidateOrderImportStep>()
+        .AddStep<LoadOrdersStep>(loadEnabled)
+        .AddStep<PersistOrdersStep>()
         .AddHook<PipelineAuditHook>()
         .AddDecorator<PipelineTimingDecorator>()
         .Build();
 ```
 
-At runtime, the executable pipeline is resolved by name, a concrete context is created for the execution, and awaited execution returns the shared accumulated `Result` instance:
+The same definition can also be packaged into a dedicated class so the pipeline name, related steps, and structural configuration stay grouped together:
 
 ```csharp
-var pipeline = pipelineFactory.Create<OrderImportContext>("order-import");
+public sealed class OrderImportPipeline : PipelineDefinition<OrderImportContext>
+{
+    protected override void Configure(IPipelineDefinitionBuilder<OrderImportContext> builder)
+    {
+        var loadEnabled = true;
+
+        builder
+            .AddStep<ValidateOrderImportStep>()
+            .AddStep<LoadOrdersStep>(loadEnabled)
+            .AddStep<PersistOrdersStep>()
+            .AddHook<PipelineAuditHook>()
+            .AddDecorator<PipelineTimingDecorator>();
+    }
+
+    public sealed class ValidateOrderImportStep : PipelineStep<OrderImportContext>
+    {
+        protected override PipelineControl Execute(
+            OrderImportContext context,
+            Result result,
+            PipelineExecutionOptions options)
+        {
+            result = result.WithMessage("Validation from packaged pipeline definition.");
+            return PipelineControl.Continue(result);
+        }
+    }
+
+    public sealed class LoadOrdersStep(IOrderImportRepository repository)
+        : AsyncPipelineStep<OrderImportContext>
+    {
+        protected override async ValueTask<PipelineControl> ExecuteAsync(
+            OrderImportContext context,
+            Result result,
+            PipelineExecutionOptions options,
+            CancellationToken cancellationToken)
+        {
+            var orders = await repository.LoadAsync(context.SourceFileName, cancellationToken);
+            context.ImportedOrderCount = orders.Count;
+
+            return PipelineControl.Continue(result.WithMessage($"Loaded {orders.Count} orders."));
+        }
+    }
+
+    public sealed class PersistOrdersStep(IOrderRepository repository)
+        : AsyncPipelineStep<OrderImportContext>
+    {
+        protected override async ValueTask<PipelineControl> ExecuteAsync(
+            OrderImportContext context,
+            Result result,
+            PipelineExecutionOptions options,
+            CancellationToken cancellationToken)
+        {
+            await repository.SaveImportedOrdersAsync(context.TenantId, cancellationToken);
+            context.IsPersisted = true;
+
+            return PipelineControl.Continue(result.WithMessage("Persisted imported orders."));
+        }
+    }
+}
+```
+
+Application setup should support both registration styles:
+
+```csharp
+services.AddPipelines()
+    .WithPipeline<OrderImportPipeline>()
+    .WithPipeline<OrderImportContext>("order-import-inline", builder => builder
+        .AddStep<ValidateOrderImportStep>()
+        .AddStep<LoadOrdersStep>(enabled: true)
+        .AddStep<PersistOrdersStep>()
+        .AddHook<PipelineAuditHook>()
+        .AddDecorator<PipelineTimingDecorator>());
+```
+
+At runtime, a context-aware executable pipeline should be resolved either by name plus context type or by packaged definition type plus explicit context type. The one-generic packaged-definition overload is best reserved for no-context pipelines where no typed context contract is needed:
+
+```csharp
+var typedPipeline = pipelineFactory.Create<OrderImportPipeline, OrderImportContext>();
+var namedPipeline = pipelineFactory.Create<OrderImportContext>("order-import");
 
 var context = new OrderImportContext
 {
@@ -1139,13 +1323,23 @@ var context = new OrderImportContext
     }
 };
 
-var result = await pipeline.ExecuteAsync(
+var result = await typedPipeline.ExecuteAsync(
     context,
     o => o
         .WithProgress(new Progress<ProgressReport>(report =>
             Console.WriteLine($"{report.Operation}: {report.PercentageComplete}% - {string.Join(", ", report.Messages)}")))
         .ContinueOnFailure(false)
         .AccumulateDiagnosticsOnFailure(),
+    cancellationToken);
+```
+
+For packaged pipelines without shared context, the definition-type overload can stay ergonomic:
+
+```csharp
+var typedPipeline = pipelineFactory.Create<FileCleanupPipeline>(); // no context, so no generic context type needed
+
+var cleanupResult = await typedPipeline.ExecuteAsync(
+    o => o.AccumulateDiagnosticsOnFailure(),
     cancellationToken);
 ```
 
@@ -1174,8 +1368,11 @@ This example illustrates the intended split of responsibilities:
 
 * step classes contain focused processing logic and may report progress
 * a single pipeline may freely mix synchronous `PipelineStep...` and asynchronous `AsyncPipelineStep...` implementations
+* direct builder usage remains available when a definition should be created inline
+* `PipelineDefinition<TContext>` offers a higher-level packaging model when a pipeline should be kept together with its related step types
+* packaged definitions are also strongly typed through `IPipelineDefinitionSource<TContext>`
 * the definition builder captures a reusable static blueprint with an explicit generic context at the client-facing API
-* the factory resolves an executable pipeline at runtime
+* the factory resolves an executable pipeline at runtime, with one-generic definition lookup mainly useful for no-context packaged pipelines
 * the caller provides a single mutable context when the pipeline is context-aware
 * that context may carry request data, result data, and any other execution state
 * one accumulated `Result` is carried forward through all steps, with each step reassigning and returning the updated immutable result
@@ -1226,6 +1423,8 @@ Pipeline names allow:
 * more meaningful diagnostics and monitoring
 * reuse of the generic pipeline mechanism across many scenarios
 
+Pipeline names should therefore be unique within a registration scope. Registering two pipelines with the same logical name should be treated as a configuration error and should throw immediately during application setup rather than allowing ambiguous runtime resolution later.
+
 ### 11.2 Conceptual value
 
 Naming turns the pipeline from a generic internal mechanism into a reusable framework-level feature with explicit identity.
@@ -1255,6 +1454,10 @@ Conditional processing is part of the core concept.
 A pipeline definition may express that some steps only participate under certain structural conditions.
 
 This allows the blueprint to represent optional participation clearly.
+
+For simple cases, the fluent builder should also support lightweight boolean inclusion flags such as `.AddStep<LoadOrdersStep>(enabled)`, `.AddHook<PipelineAuditHook>(enabled)`, or `.AddDecorator<PipelineTimingDecorator>(enabled)` so authors do not need to create a richer condition object for every basic toggle.
+
+These boolean flags are definition-time or registration-time inclusion decisions. If `enabled` is `false`, the corresponding step, hook, or decorator is omitted from the built pipeline definition and is therefore not present during execution at all.
 
 ### 12.2 Runtime conditions
 
@@ -1538,6 +1741,8 @@ At a conceptual level, engine logging should make the following visible:
 * exceptions thrown by steps and their translation into `ExceptionError` on the carried `Result`
 * policy decisions taken by the engine after evaluating a step
 * pipeline execution completed, including final `Result` state
+
+Engine logging should use the resolved pipeline and step names that come from the pipeline/step naming conventions or explicit overrides. It should not default to CLR type names when a framework-level pipeline or step name is available.
 
 This internal logging should make it possible to reconstruct how the pipeline flowed through its steps and why the engine continued, stopped, short-circuited, or terminated.
 
@@ -1889,6 +2094,8 @@ The construction and initialization path should also validate that the runtime c
 
 This validation phase should also ensure that step registrations are resolvable, step names are structurally valid, and the pipeline definition is internally coherent before execution proceeds.
 
+The resolved pipeline name and resolved step names should also become the canonical names used by engine logging, execution tracking, diagnostics, and current-step reporting.
+
 If execution is initiated in fire-and-forget mode, the runtime component also establishes the background execution ownership and service scope required to let the pipeline complete independently of the initiating caller.
 
 ### Step 3 – Execution Initialization
@@ -2103,6 +2310,10 @@ The feature should remain intentionally smaller and simpler than workflow and or
 ### 22.7 Reuse through explicit identity
 
 Named pipelines and a shared conceptual model should make the feature broadly reusable across the framework.
+
+### 22.8 Low-friction defaults
+
+The framework should prefer sensible defaults and conventions for common cases so developers can adopt pipelines with minimal ceremony, while still being able to override those defaults when a more explicit or specialized setup is needed.
 
 ---
 

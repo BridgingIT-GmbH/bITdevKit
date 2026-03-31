@@ -7,8 +7,16 @@ namespace BridgingIT.DevKit.Common;
 
 using System.Text;
 
+/// <summary>
+/// Emits C# source for validated Requester generation models.
+/// </summary>
 public static class RequesterSourceEmitter
 {
+    /// <summary>
+    /// Emits the generated source for a validated Requester model.
+    /// </summary>
+    /// <param name="model">The validated Requester generation model.</param>
+    /// <returns>The generated C# source.</returns>
     public static string Emit(RequesterGenerationModel model)
     {
         var builder = new StringBuilder();
@@ -91,6 +99,8 @@ public static class RequesterSourceEmitter
             builder.Append("return ");
         }
 
+        // The request partial owns the bridge because that keeps the authored handle method close to
+        // the generated convenience helpers while still letting the runtime handler stay framework-shaped.
         builder.Append("request.")
             .Append(model.HandleMethod.MethodSymbol.Name)
             .Append('(')

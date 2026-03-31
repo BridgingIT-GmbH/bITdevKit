@@ -9,6 +9,9 @@ using System.Collections.Immutable;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
+/// <summary>
+/// Builds validated semantic models for Requester source generation.
+/// </summary>
 public static class RequesterGenerationModelBuilder
 {
     private const string CommandAttributeName = "BridgingIT.DevKit.Common.CommandAttribute";
@@ -23,6 +26,11 @@ public static class RequesterGenerationModelBuilder
     private const string TaskOfTName = "System.Threading.Tasks.Task`1";
     private const string InlineValidatorOfTName = "FluentValidation.InlineValidator`1";
 
+    /// <summary>
+    /// Returns the attributed request type symbol when the current syntax node is a Requester code-generation candidate.
+    /// </summary>
+    /// <param name="context">The generator syntax context for the candidate node.</param>
+    /// <returns>The attributed request type symbol, or <see langword="null"/> when the node is not a Requester candidate.</returns>
     public static INamedTypeSymbol GetCandidate(GeneratorSyntaxContext context)
     {
         if (context.Node is not ClassDeclarationSyntax classDeclaration)
@@ -41,6 +49,13 @@ public static class RequesterGenerationModelBuilder
             : null;
     }
 
+    /// <summary>
+    /// Creates a validated generation model for a Requester command or query.
+    /// </summary>
+    /// <param name="context">The source-production context used to report diagnostics.</param>
+    /// <param name="compilation">The current compilation.</param>
+    /// <param name="classSymbol">The attributed request type.</param>
+    /// <returns>A generation model when the request is valid; otherwise <see langword="null"/>.</returns>
     public static RequesterGenerationModel Create(SourceProductionContext context, Compilation compilation, INamedTypeSymbol classSymbol)
     {
         var commandAttribute = classSymbol.GetAttributes()
@@ -67,6 +82,8 @@ public static class RequesterGenerationModelBuilder
             return null;
         }
 
+        // The handle method is validated first because its Result<T> return determines
+        // the inferred response type when [Command] or [Query] omit an explicit typeof(...).
         var handleMethod = GetHandleMethod(context, compilation, classSymbol);
         if (handleMethod is null)
         {
@@ -80,6 +97,8 @@ public static class RequesterGenerationModelBuilder
             return null;
         }
 
+        // Partial requests can omit RequestBase<TResponse>; the generator only needs to
+        // reject authored base types that would conflict with the resolved response shape.
         if (!TryResolveRequestBaseStrategy(compilation, classSymbol, responseType, out var emitRequestBase))
         {
             context.ReportDiagnostic(Diagnostic.Create(
@@ -221,6 +240,8 @@ public static class RequesterGenerationModelBuilder
                 return null;
             }
 
+            // Queries may use the short [Query] form, but if an explicit response type is present
+            // it must still agree with the Result<T> shape returned by the authored handle method.
             if (explicitResponseType is not null &&
                 !SymbolEqualityComparer.Default.Equals(explicitResponseType, inferredResponseType))
             {
@@ -380,6 +401,8 @@ public static class RequesterGenerationModelBuilder
                 return null;
             }
 
+            // Only a very small set of runtime-supplied parameters are recognized here.
+            // Everything else is treated as a DI dependency resolved by the generated handler.
             if (SymbolEqualityComparer.Default.Equals(parameter.Type, sendOptionsType))
             {
                 sendOptionsCount++;

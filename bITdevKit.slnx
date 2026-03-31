@@ -159,6 +159,7 @@
     <Project Path="src/Common.Results/Common.Results.csproj" />
     <Project Path="src/Common.Rules/Common.Rules.csproj" />
     <Project Path="src/Common.Serialization/Common.Serialization.csproj" />
+    <Project Path="src/Common.Utilities.CodeGen/Common.Utilities.CodeGen.csproj" />
     <Project Path="src/Common.Utilities.Tracing/Common.Utilities.Tracing.csproj" />
     <Project Path="src/Common.Utilities.Xunit/Common.Utilities.Xunit.csproj" />
     <Project Path="src/Common.Utilities/Common.Utilities.csproj" />

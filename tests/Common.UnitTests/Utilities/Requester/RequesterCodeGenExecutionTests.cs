@@ -62,6 +62,51 @@ public class RequesterCodeGenExecutionTests
     }
 
     [Fact]
+    public async Task GeneratedCommand_WithPropertyValidationAttributes_UsesGeneratedValidator()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddSingleton<GeneratedRequesterProbe>();
+        services.AddRequester()
+            .AddHandlers()
+            .WithBehavior(typeof(ValidationPipelineBehavior<,>));
+
+        var provider = services.BuildServiceProvider();
+        var requester = provider.GetRequiredService<IRequester>();
+        var probe = provider.GetRequiredService<GeneratedRequesterProbe>();
+
+        var invalidResult = await requester.SendAsync(new GeneratedAttributedValidatedCommand { Message = string.Empty });
+        var validResult = await requester.SendAsync(new GeneratedAttributedValidatedCommand { Message = "hello" });
+
+        invalidResult.IsFailure.ShouldBeTrue();
+        invalidResult.Errors.ShouldNotBeEmpty();
+        probe.ValidatedCommandCalls.ShouldBe(1);
+        validResult.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task GeneratedCommand_WithPropertyValidationAttributesAndValidateMethod_UsesBothRuleSources()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddSingleton<GeneratedRequesterProbe>();
+        services.AddRequester()
+            .AddHandlers()
+            .WithBehavior(typeof(ValidationPipelineBehavior<,>));
+
+        var provider = services.BuildServiceProvider();
+        var requester = provider.GetRequiredService<IRequester>();
+
+        var shortNameResult = await requester.SendAsync(new GeneratedMixedValidatedCommand { Message = "hi" });
+        var emptyNameResult = await requester.SendAsync(new GeneratedMixedValidatedCommand { Message = string.Empty });
+        var validResult = await requester.SendAsync(new GeneratedMixedValidatedCommand { Message = "hello" });
+
+        shortNameResult.IsFailure.ShouldBeTrue();
+        emptyNameResult.IsFailure.ShouldBeTrue();
+        validResult.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task GeneratedCommand_WithRetryBehavior_UsesCopiedHandlerAttributes()
     {
         var services = new ServiceCollection();
@@ -158,6 +203,39 @@ public partial class GeneratedValidatedCommand
     private Result<Unit> Handle(GeneratedRequesterProbe probe)
     {
         probe.ValidatedCommandCalls++;
+        return Success();
+    }
+}
+
+[Command]
+public partial class GeneratedAttributedValidatedCommand
+{
+    [ValidateNotEmpty("Message is required.")]
+    public string Message { get; set; }
+
+    [Handle]
+    private Result<Unit> Handle(GeneratedRequesterProbe probe)
+    {
+        probe.ValidatedCommandCalls++;
+        return Success();
+    }
+}
+
+[Command]
+public partial class GeneratedMixedValidatedCommand
+{
+    [ValidateNotEmpty]
+    public string Message { get; set; }
+
+    [Validate]
+    private static void Validate(InlineValidator<GeneratedMixedValidatedCommand> validator)
+    {
+        validator.RuleFor(x => x.Message).MinimumLength(3);
+    }
+
+    [Handle]
+    private Result<Unit> Handle()
+    {
         return Success();
     }
 }

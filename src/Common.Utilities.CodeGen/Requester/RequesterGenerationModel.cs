@@ -101,6 +101,7 @@ public sealed class RequesterGenerationModel(
     bool emitRequestBase,
     RequesterHandleMethodModel handleMethod,
     IMethodSymbol validateMethod,
+    ImmutableArray<ValidationPropertyRuleModel> propertyValidationRules,
     ImmutableArray<AttributeData> policyAttributes,
     string namespaceName,
     string requestTypeName,
@@ -143,6 +144,11 @@ public sealed class RequesterGenerationModel(
     public IMethodSymbol ValidateMethod { get; } = validateMethod;
 
     /// <summary>
+    /// Gets the generated property-validation rules collected from validation attributes.
+    /// </summary>
+    public ImmutableArray<ValidationPropertyRuleModel> PropertyValidationRules { get; } = propertyValidationRules;
+
+    /// <summary>
     /// Gets the handler policy attributes that should be copied to the generated handler.
     /// </summary>
     public ImmutableArray<AttributeData> PolicyAttributes { get; } = policyAttributes;
@@ -170,7 +176,7 @@ public sealed class RequesterGenerationModel(
     /// <summary>
     /// Gets a value indicating whether a generated validator should be emitted.
     /// </summary>
-    public bool HasValidation => this.ValidateMethod is not null;
+    public bool HasValidation => this.ValidateMethod is not null || this.PropertyValidationRules.Length > 0;
 
     /// <summary>
     /// Gets a value indicating whether the resolved response type is <see cref="Unit"/>.

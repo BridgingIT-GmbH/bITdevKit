@@ -1606,15 +1606,6 @@ var result = await notifier.PublishAsync(userNotification); // Logs: "Handled: u
 The Requester feature also supports a convenience authoring model for commands and queries through source generation.
 This path keeps the existing Requester runtime intact while reducing the amount of boilerplate developers need to write.
 
-### What Stays the Same
-
-- The generated request type still becomes a normal `RequestBase<TResponse>` request at compile time.
-- Generated handlers still derive from `RequestHandlerBase<TRequest, TResponse>`.
-- Validation still integrates with the existing `ValidationPipelineBehavior`.
-- Existing handler policy attributes like retry, timeout, authorization, and database transaction handling still apply to the generated handler type.
-
-The generator only adds the usual Requester plumbing. It does not introduce a second request model or a different runtime behavior.
-
 ### Source-Generated Authoring Model
 
 Use these attributes on a partial request type:
@@ -1624,12 +1615,18 @@ Use these attributes on a partial request type:
 - `[Query]` for queries with a response inferred from the `[Handle]` return type
 - `[Query(typeof(TResponse))]` when you want to state the query response type explicitly
 - `[Handle]` on exactly one developer-authored business-logic method
-- `[Validate]` on an optional validator method
+- property-level validation attributes for simple FluentValidation rules
+- `[Validate]` on an optional validator method for complex rules
 
 The `[Handle]` method is an instance method on the request type, so request members can be accessed directly inside the method body.
 Additional parameters on the `[Handle]` method are resolved from dependency injection, while `CancellationToken` and optional `SendOptions` are supplied by the runtime.
 The generator also supplies the `RequestBase<TResponse>` inheritance automatically, so authors do not need to write it explicitly.
 When an explicit response type is present on `[Command]` or `[Query]`, it must match the `Result<TResponse>` returned by the `[Handle]` method.
+
+For validation, the intended split is:
+
+- property attributes for simple per-property rules such as required values, lengths, numeric ranges, regexes, and `RuleForEach(...)` element checks
+- `[Validate]` for cross-property rules, custom predicates, nested object validation, or any FluentValidation logic that should remain explicit
 
 ### Command Without Response
 
@@ -1737,6 +1734,42 @@ public partial class GetUserQuery
 }
 ```
 
+### Attribute-Based Validation For Simple Cases
+
+For straightforward property validation, the generator can emit the nested FluentValidation validator directly from property attributes:
+
+```csharp
+[Command]
+public partial class CreateOrderCommand
+{
+    [ValidateNotEmpty("At least one item is required.")]
+    public List<OrderItem> Items { get; init; }
+
+    [ValidateEachNotEmpty]
+    public List<string> Tags { get; init; }
+
+    [Validate]
+    private static void Validate(InlineValidator<CreateOrderCommand> validator)
+    {
+        validator.RuleFor(x => x.Items)
+            .Must(items => items.Count <= 100)
+            .WithMessage("A maximum of 100 items is allowed.");
+    }
+
+    [Handle]
+    private Result<Unit> Handle()
+    {
+        return Success();
+    }
+}
+```
+
+This produces the same kind of nested `Validator` type used by handwritten requests:
+
+- `RuleFor(x => x.Items).NotEmpty()` validates the collection itself
+- `RuleForEach(x => x.Tags).NotEmpty()` validates each collection element
+- the optional `[Validate]` method is still included for the more complex rule
+
 ### Generated Output
 
 For a valid source-generated request, the generator emits:
@@ -1757,5 +1790,14 @@ return user != null
 
 ### Validation Behavior
 
-When `[Validate]` is present, the generator emits a nested `Validator` type compatible with FluentValidation and the existing Requester validation pipeline.
+When property validation attributes or `[Validate]` are present, the generator emits a nested `Validator` type compatible with FluentValidation and the existing Requester validation pipeline.
 This means the generated validator is discovered the same way as a handwritten nested `Validator` class and runs through `ValidationPipelineBehavior` without any additional registration mechanism.
+
+### Key Points
+
+- The generated request type still becomes a normal `RequestBase<TResponse>` request at compile time.
+- Generated handlers still derive from `RequestHandlerBase<TRequest, TResponse>`.
+- Validation still integrates with the existing `ValidationPipelineBehavior`.
+- Existing handler policy attributes like retry, timeout, authorization, and database transaction handling still apply to the generated handler type.
+
+The generator only adds the usual Requester plumbing. It does not introduce a second request model or a different runtime behavior.

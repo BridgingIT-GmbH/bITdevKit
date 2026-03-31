@@ -130,6 +130,125 @@ public partial class InvalidCommand
     }
 
     [Fact]
+    public void Generator_PropertyValidationAttributes_EmitRuleForAndRuleForEach()
+    {
+        const string source = """
+using System.Collections.Generic;
+using BridgingIT.DevKit.Common;
+
+namespace TestNamespace;
+
+[Command]
+public partial class CreateOrderCommand
+{
+    [ValidateNotEmpty("At least one item is required.")]
+    internal List<int> Items { get; init; }
+
+    [ValidateEachNotEmpty]
+    public List<string> Tags { get; init; }
+
+    [Handle]
+    private Result<Unit> Handle() => Success();
+}
+""";
+
+        var result = RunGenerator(source);
+        var generatedSource = string.Join(
+            Environment.NewLine,
+            result.GeneratedSources.Select(sourceResult => sourceResult.SourceText.ToString()));
+
+        result.Diagnostics.ShouldBeEmpty();
+        result.CompilationDiagnostics.Where(static d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
+        generatedSource.ShouldContain("this.RuleFor(x => x.Items)");
+        generatedSource.ShouldContain(".NotEmpty()");
+        generatedSource.ShouldContain(".WithMessage(\"At least one item is required.\")");
+        generatedSource.ShouldContain("this.RuleForEach(x => x.Tags)");
+    }
+
+    [Fact]
+    public void Generator_PropertyValidationAttributesAndValidateMethod_AreMergedIntoGeneratedValidator()
+    {
+        const string source = """
+using BridgingIT.DevKit.Common;
+using FluentValidation;
+
+namespace TestNamespace;
+
+[Command]
+public partial class CreateCustomerCommand
+{
+    [ValidateNotEmpty]
+    public string Name { get; init; }
+
+    [Validate]
+    private static void Validate(InlineValidator<CreateCustomerCommand> validator)
+    {
+        validator.RuleFor(x => x.Name).MinimumLength(3);
+    }
+
+    [Handle]
+    private Result<Unit> Handle() => Success();
+}
+""";
+
+        var result = RunGenerator(source);
+        var generatedSource = string.Join(
+            Environment.NewLine,
+            result.GeneratedSources.Select(sourceResult => sourceResult.SourceText.ToString()));
+
+        result.Diagnostics.ShouldBeEmpty();
+        result.CompilationDiagnostics.Where(static d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
+        generatedSource.ShouldContain("this.RuleFor(x => x.Name)");
+        generatedSource.ShouldContain("var validator = new global::FluentValidation.InlineValidator<global::TestNamespace.CreateCustomerCommand>();");
+        generatedSource.ShouldContain("global::TestNamespace.CreateCustomerCommand.Validate(validator);");
+        generatedSource.ShouldContain("this.Include(validator);");
+    }
+
+    [Fact]
+    public void Generator_ValidateEachOnScalarProperty_ReportsDiagnostic()
+    {
+        const string source = """
+using BridgingIT.DevKit.Common;
+
+[Command]
+public partial class InvalidCommand
+{
+    [ValidateEachNotEmpty]
+    public string Message { get; set; }
+
+    [Handle]
+    private Result<Unit> Handle() => Success();
+}
+""";
+
+        var result = RunGenerator(source);
+
+        result.Diagnostics.Any(d => d.Id == "RQGEN024").ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Generator_NumericComparisonOnUnsupportedType_ReportsDiagnostic()
+    {
+        const string source = """
+using BridgingIT.DevKit.Common;
+
+[Command]
+public partial class InvalidCommand
+{
+    [ValidateGreaterThan(0)]
+    public object Value { get; set; }
+
+    [Handle]
+    private Result<Unit> Handle() => Success();
+}
+""";
+
+        var result = RunGenerator(source);
+
+        result.Diagnostics.Any(d => d.Id == "RQGEN022").ShouldBeTrue();
+    }
+
+    [Fact]
     public void Generator_ValidQuery_EmitsHandlerHelpersValidatorAndPolicyAttributes()
     {
         const string source = """

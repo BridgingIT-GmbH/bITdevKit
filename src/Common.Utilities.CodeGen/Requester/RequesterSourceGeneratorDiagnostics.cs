@@ -202,6 +202,42 @@ public static class RequesterSourceGeneratorDiagnostics
         DiagnosticSeverity.Error,
         true,
         description: "When [Command(typeof(TResponse))] or [Query(typeof(TResponse))] specifies an explicit response type, it must match the Result<TResponse> returned by the handle method.");
+
+    public static readonly DiagnosticDescriptor UnsupportedValidationAttributeUsage = new(
+        "RQGEN022",
+        "Validation attribute usage is not supported",
+        "Validation attribute '{0}' on property '{1}' is not supported for type '{2}'. Use [Validate] on request '{3}' for advanced validation.",
+        "Requester.CodeGen",
+        DiagnosticSeverity.Error,
+        true,
+        description: "Simple property validation attributes only support a conservative set of property and collection-element validation scenarios.");
+
+    public static readonly DiagnosticDescriptor InvalidValidationAttributeArguments = new(
+        "RQGEN023",
+        "Validation attribute arguments are invalid",
+        "Validation attribute '{0}' on property '{1}' has invalid arguments",
+        "Requester.CodeGen",
+        DiagnosticSeverity.Error,
+        true,
+        description: "Validation attributes must provide the argument shape expected by the generated FluentValidation mapping.");
+
+    public static readonly DiagnosticDescriptor EachValidationRequiresCollection = new(
+        "RQGEN024",
+        "Element validation requires a collection property",
+        "Validation attribute '{0}' on property '{1}' requires a collection property",
+        "Requester.CodeGen",
+        DiagnosticSeverity.Error,
+        true,
+        description: "RuleForEach-based validation attributes can only be applied to collection properties.");
+
+    public static readonly DiagnosticDescriptor ConflictingValidationAttributes = new(
+        "RQGEN025",
+        "Validation attributes conflict",
+        "Request '{0}' property '{1}' declares conflicting validation attributes '{2}' and '{3}'",
+        "Requester.CodeGen",
+        DiagnosticSeverity.Error,
+        true,
+        description: "Remove the conflicting validation attributes or move the rule into the explicit [Validate] method.");
 #pragma warning restore RS2008
 #pragma warning restore RS1032
 }

@@ -114,6 +114,11 @@ public static class RequesterGenerationModelBuilder
             return null;
         }
 
+        if (!ValidationGenerationModelBuilder.TryCreate(context, classSymbol, out var propertyValidationRules))
+        {
+            return null;
+        }
+
         var generatedHandlerName = classSymbol.Name + "GeneratedHandler";
         if (HasTypeNameCollision(classSymbol, generatedHandlerName))
         {
@@ -140,7 +145,7 @@ public static class RequesterGenerationModelBuilder
             return null;
         }
 
-        if (validateMethod is not null && HasTypeNameCollision(classSymbol, "Validator"))
+        if ((validateMethod is not null || propertyValidationRules.Length > 0) && HasTypeNameCollision(classSymbol, "Validator"))
         {
             context.ReportDiagnostic(Diagnostic.Create(
                 RequesterSourceGeneratorDiagnostics.GeneratedNameCollision,
@@ -157,6 +162,7 @@ public static class RequesterGenerationModelBuilder
             emitRequestBase,
             handleMethod,
             validateMethod,
+            propertyValidationRules,
             RequesterGeneratorSymbolHelper.GetPolicyAttributes(classSymbol),
             classSymbol.ContainingNamespace.IsGlobalNamespace ? string.Empty : classSymbol.ContainingNamespace.ToDisplayString(),
             classSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat),

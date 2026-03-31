@@ -32,6 +32,7 @@ public static class GuidGenerator
     public static Guid CreateSequential()
     {
         //TODO: use new dotnet 9 Guid version 7 which are sequential
+        //      return Guid.CreateVersion7();
         return NewId.Next().ToGuid();
     }
 }

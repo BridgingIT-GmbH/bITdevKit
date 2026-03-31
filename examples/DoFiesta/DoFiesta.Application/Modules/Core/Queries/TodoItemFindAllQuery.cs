@@ -8,26 +8,24 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.DoFiesta.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 
-public class TodoItemFindAllQuery
-    : RequestBase<IEnumerable<TodoItemModel>>
-{
-    public FilterModel Filter { get; set; }
-}
-
+[Query]
 [HandlerRetry(2, 100)]
 [HandlerTimeout(500)]
-public class TodoItemFindAllQueryHandler(
-    IMapper mapper,
-    IGenericRepository<TodoItem> repository,
-    ICurrentUserAccessor currentUserAccessor,
-    IEntityPermissionEvaluator<TodoItem> permissionEvaluator) : RequestHandlerBase<TodoItemFindAllQuery, IEnumerable<TodoItemModel>>()
+public partial class TodoItemFindAllQuery
 {
-    protected override async Task<Result<IEnumerable<TodoItemModel>>> HandleAsync(TodoItemFindAllQuery request, SendOptions options, CancellationToken cancellationToken) =>
+    public FilterModel Filter { get; set; }
+
+    [Handle]
+    private async Task<Result<IEnumerable<TodoItemModel>>> HandleAsync(
+        IMapper mapper,
+        IGenericRepository<TodoItem> repository,
+        ICurrentUserAccessor currentUserAccessor,
+        IEntityPermissionEvaluator<TodoItem> permissionEvaluator,
+        CancellationToken cancellationToken) =>
         await repository.FindAllResultAsync( // repo takes care of the filter
-                request.Filter,
+                this.Filter,
                 /*[new ForUserSpecification(currentUserAccessor.UserId), new TodoItemIsNotDeletedSpecification()],*/ cancellationToken: cancellationToken)
             .FilterItemsAsync(async (e, ct) =>
                 await permissionEvaluator.HasPermissionAsync(currentUserAccessor, e.Id, Permission.Read, cancellationToken: ct), null, cancellationToken)

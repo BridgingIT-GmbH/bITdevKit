@@ -62,6 +62,24 @@ public class NoOpRequester(ILoggerFactory loggerFactory = null) : IRequester
     /// <summary>
     /// Logs a warning and returns a successful result without processing the request.
     /// </summary>
+    /// <typeparam name="TValue">The type of the response value.</typeparam>
+    /// <param name="request">The request to dispatch.</param>
+    /// <param name="options">The options for request processing.</param>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+    /// <returns>A successful result indicating the request was not processed.</returns>
+    public Task<Result<TValue>> SendAsync<TValue>(
+        RequestBase<TValue> request,
+        SendOptions options = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        return this.SendAsync((IRequest<TValue>)request, options, cancellationToken);
+    }
+
+    /// <summary>
+    /// Logs a warning and returns a successful result without processing the request.
+    /// </summary>
     /// <param name="request">The request to dispatch.</param>
     /// <param name="options">The options for request processing, including context and progress reporting.</param>
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>

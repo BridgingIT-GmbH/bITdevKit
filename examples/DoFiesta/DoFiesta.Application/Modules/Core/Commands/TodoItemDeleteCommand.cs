@@ -8,34 +8,36 @@ using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
-using FluentValidation;
 
-public class TodoItemDeleteCommand(string id) : RequestBase<Unit>
-{
-    public string Id { get; } = id;
-
-    public class Validator : AbstractValidator<TodoItemDeleteCommand>
-    {
-        public Validator()
-        {
-            this.RuleFor(c => c.Id).MustBeValidGuid().WithMessage("Invalid guid.");
-        }
-    }
-}
-
+[Command]
 [HandlerRetry(2, 100)]
 [HandlerTimeout(500)]
-public class TodoItemDeleteCommandHandler(
-    IGenericRepository<TodoItem> repository,
-    ICurrentUserAccessor currentUserAccessor,
-    IEntityPermissionEvaluator<TodoItem> permissionEvaluator) : RequestHandlerBase<TodoItemDeleteCommand, Unit>
+public partial class TodoItemDeleteCommand
 {
-    protected override async Task<Result<Unit>> HandleAsync(TodoItemDeleteCommand request, SendOptions options, CancellationToken cancellationToken) =>
+    public TodoItemDeleteCommand()
+    {
+    }
+
+    public TodoItemDeleteCommand(string id)
+    {
+        this.Id = id;
+    }
+
+    [ValidateNotEmpty("Id is required.")]
+    [ValidateValidGuid("Invalid guid.")]
+    public string Id { get; private set; }
+
+    [Handle]
+    private async Task<Result<Unit>> HandleAsync(
+        IGenericRepository<TodoItem> repository,
+        ICurrentUserAccessor currentUserAccessor,
+        IEntityPermissionEvaluator<TodoItem> permissionEvaluator,
+        CancellationToken cancellationToken) =>
         await Result<Unit>.Success()
             .EnsureAsync(async (e, ct) => // check permissions
-                await permissionEvaluator.HasPermissionAsync(currentUserAccessor, request.Id, Permission.Delete, cancellationToken: ct), new UnauthorizedError(), cancellationToken)
+                await permissionEvaluator.HasPermissionAsync(currentUserAccessor, this.Id, Permission.Delete, cancellationToken: ct), new UnauthorizedError(), cancellationToken)
             .BindAsync(async (e, ct) =>
-                await repository.DeleteResultAsync(TodoItemId.Create(request.Id), cancellationToken)
+                await repository.DeleteResultAsync(TodoItemId.Create(this.Id), cancellationToken)
             .Ensure(e => e == RepositoryActionResult.Deleted, new EntityNotFoundError())
             .Tap(e => Console.WriteLine("AUDIT")) // do something
             .Map(_ => Unit.Value), cancellationToken: cancellationToken);

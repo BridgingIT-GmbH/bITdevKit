@@ -468,6 +468,20 @@ public interface IRequester
         CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Dispatches a request to its handler asynchronously, inferring the response type from a
+    /// <see cref="RequestBase{TValue}"/> request instance.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the response value.</typeparam>
+    /// <param name="request">The request to dispatch.</param>
+    /// <param name="options">The options for request processing, including context and progress reporting.</param>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+    /// <returns>A task representing the result of the request, returning a <see cref="Result{TValue}"/>.</returns>
+    Task<Result<TValue>> SendAsync<TValue>(
+        RequestBase<TValue> request,
+        SendOptions options = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Dispatches a request to its handler asynchronously
     /// </summary>
     /// <param name="request">The request to dispatch.</param>
@@ -649,6 +663,26 @@ public partial class Requester(
         // Create the generic method with the runtime requestType and TValue
         var genericMethod = method.MakeGenericMethod(requestType, typeof(TValue));
         return (Task<Result<TValue>>)genericMethod.Invoke(this, [request, options, cancellationToken]);
+    }
+
+    /// <summary>
+    /// Dispatches a request to its handler asynchronously, inferring the response type from a
+    /// <see cref="RequestBase{TValue}"/> request instance.
+    /// </summary>
+    /// <typeparam name="TValue">The type of the response value.</typeparam>
+    /// <param name="request">The request to dispatch.</param>
+    /// <param name="options">The options for request processing, including context and progress reporting.</param>
+    /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
+    /// <returns>A task representing the result of the request, returning a <see cref="Result{TValue}"/>.</returns>
+    public Task<Result<TValue>> SendAsync<TValue>(
+        RequestBase<TValue> request,
+        SendOptions options = null,
+        CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        // Route through the IRequest<TValue> overload so the existing runtime dispatch path stays unchanged.
+        return this.SendAsync((IRequest<TValue>)request, options, cancellationToken);
     }
 
     /// <summary>

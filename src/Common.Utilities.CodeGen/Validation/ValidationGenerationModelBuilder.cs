@@ -31,6 +31,12 @@ public static class ValidationGenerationModelBuilder
             ["BridgingIT.DevKit.Common.ValidateNotEqualAttribute"] = new(ValidationRuleKind.NotEqual, ValidationRuleTargetKind.Property),
             ["BridgingIT.DevKit.Common.ValidateInclusiveBetweenAttribute"] = new(ValidationRuleKind.InclusiveBetween, ValidationRuleTargetKind.Property),
             ["BridgingIT.DevKit.Common.ValidateExclusiveBetweenAttribute"] = new(ValidationRuleKind.ExclusiveBetween, ValidationRuleTargetKind.Property),
+            ["BridgingIT.DevKit.Common.ValidateNotEmptyGuidAttribute"] = new(ValidationRuleKind.NotEmptyGuid, ValidationRuleTargetKind.Property),
+            ["BridgingIT.DevKit.Common.ValidateNotDefaultOrEmptyGuidAttribute"] = new(ValidationRuleKind.NotDefaultOrEmptyGuid, ValidationRuleTargetKind.Property),
+            ["BridgingIT.DevKit.Common.ValidateValidGuidAttribute"] = new(ValidationRuleKind.ValidGuid, ValidationRuleTargetKind.Property),
+            ["BridgingIT.DevKit.Common.ValidateEmptyGuidAttribute"] = new(ValidationRuleKind.EmptyGuid, ValidationRuleTargetKind.Property),
+            ["BridgingIT.DevKit.Common.ValidateDefaultOrEmptyGuidAttribute"] = new(ValidationRuleKind.DefaultOrEmptyGuid, ValidationRuleTargetKind.Property),
+            ["BridgingIT.DevKit.Common.ValidateGuidFormatAttribute"] = new(ValidationRuleKind.GuidFormat, ValidationRuleTargetKind.Property),
             ["BridgingIT.DevKit.Common.ValidateEmailAttribute"] = new(ValidationRuleKind.Email, ValidationRuleTargetKind.Property),
             ["BridgingIT.DevKit.Common.ValidateMatchesAttribute"] = new(ValidationRuleKind.Matches, ValidationRuleTargetKind.Property),
             ["BridgingIT.DevKit.Common.ValidateEachNotNullAttribute"] = new(ValidationRuleKind.NotNull, ValidationRuleTargetKind.EachElement),
@@ -149,7 +155,7 @@ public static class ValidationGenerationModelBuilder
     {
         return kind switch
         {
-            ValidationRuleKind.NotNull or ValidationRuleKind.NotEmpty or ValidationRuleKind.Empty or ValidationRuleKind.Email
+            ValidationRuleKind.NotNull or ValidationRuleKind.NotEmpty or ValidationRuleKind.Empty or ValidationRuleKind.NotEmptyGuid or ValidationRuleKind.NotDefaultOrEmptyGuid or ValidationRuleKind.ValidGuid or ValidationRuleKind.EmptyGuid or ValidationRuleKind.DefaultOrEmptyGuid or ValidationRuleKind.GuidFormat or ValidationRuleKind.Email
                 => arguments.Length == 1 ? arguments[0] : null,
             ValidationRuleKind.Length
                 => arguments.Length == 3 ? arguments[2] : null,
@@ -185,7 +191,7 @@ public static class ValidationGenerationModelBuilder
                 => arguments.Length is not 1 and not 2 || HasInvalidString(arguments[0]),
             ValidationRuleKind.InclusiveBetween or ValidationRuleKind.ExclusiveBetween
                 => arguments.Length is not 2 and not 3 || HasInvalidString(arguments[0]) || HasInvalidString(arguments[1]),
-            _ => arguments.Length > 1 || (arguments.Length == 1 && kind is not (ValidationRuleKind.NotNull or ValidationRuleKind.NotEmpty or ValidationRuleKind.Empty or ValidationRuleKind.Email)),
+            _ => arguments.Length > 1 || (arguments.Length == 1 && kind is not (ValidationRuleKind.NotNull or ValidationRuleKind.NotEmpty or ValidationRuleKind.Empty or ValidationRuleKind.NotEmptyGuid or ValidationRuleKind.NotDefaultOrEmptyGuid or ValidationRuleKind.ValidGuid or ValidationRuleKind.EmptyGuid or ValidationRuleKind.DefaultOrEmptyGuid or ValidationRuleKind.GuidFormat or ValidationRuleKind.Email)),
         };
 
         if (!hasInvalidArguments && message is not null && string.IsNullOrWhiteSpace(message))
@@ -219,7 +225,7 @@ public static class ValidationGenerationModelBuilder
 
         var isSupported = kind switch
         {
-            ValidationRuleKind.Length or ValidationRuleKind.MinLength or ValidationRuleKind.MaxLength or ValidationRuleKind.Email or ValidationRuleKind.Matches
+            ValidationRuleKind.Length or ValidationRuleKind.MinLength or ValidationRuleKind.MaxLength or ValidationRuleKind.Email or ValidationRuleKind.Matches or ValidationRuleKind.NotEmptyGuid or ValidationRuleKind.NotDefaultOrEmptyGuid or ValidationRuleKind.ValidGuid or ValidationRuleKind.EmptyGuid or ValidationRuleKind.DefaultOrEmptyGuid or ValidationRuleKind.GuidFormat
                 => validatedType.SpecialType == SpecialType.System_String,
             ValidationRuleKind.GreaterThan or ValidationRuleKind.GreaterThanOrEqualTo or ValidationRuleKind.LessThan or ValidationRuleKind.LessThanOrEqualTo or ValidationRuleKind.InclusiveBetween or ValidationRuleKind.ExclusiveBetween
                 => IsComparableSupported(validatedType),

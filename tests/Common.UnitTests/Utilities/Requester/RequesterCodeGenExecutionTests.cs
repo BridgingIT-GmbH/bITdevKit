@@ -107,6 +107,63 @@ public class RequesterCodeGenExecutionTests
     }
 
     [Fact]
+    public async Task GeneratedCommand_WithGuidValidationAttributes_UsesGeneratedValidator()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddRequester()
+            .AddHandlers()
+            .WithBehavior(typeof(ValidationPipelineBehavior<,>));
+
+        var provider = services.BuildServiceProvider();
+        var requester = provider.GetRequiredService<IRequester>();
+
+        var invalidResult = await requester.SendAsync(new GeneratedGuidValidatedCommand { Id = "not-a-guid", ParentId = Guid.NewGuid().ToString() });
+        var validResult = await requester.SendAsync(new GeneratedGuidValidatedCommand { Id = Guid.NewGuid().ToString(), ParentId = string.Empty });
+
+        invalidResult.IsFailure.ShouldBeTrue();
+        invalidResult.Errors.ShouldNotBeEmpty();
+        validResult.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task GeneratedCommand_WithAllGuidValidationAttributes_UsesGeneratedValidator()
+    {
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddRequester()
+            .AddHandlers()
+            .WithBehavior(typeof(ValidationPipelineBehavior<,>));
+
+        var provider = services.BuildServiceProvider();
+        var requester = provider.GetRequiredService<IRequester>();
+
+        var invalidResult = await requester.SendAsync(new GeneratedAllGuidValidatedCommand
+        {
+            RequiredGuid = Guid.Empty.ToString(),
+            RequiredNonDefaultGuid = Guid.Empty.ToString(),
+            ValidGuid = "not-a-guid",
+            EmptyGuid = Guid.NewGuid().ToString(),
+            DefaultOrEmptyGuid = Guid.NewGuid().ToString(),
+            GuidFormatOnly = "bad"
+        });
+
+        var validResult = await requester.SendAsync(new GeneratedAllGuidValidatedCommand
+        {
+            RequiredGuid = Guid.NewGuid().ToString(),
+            RequiredNonDefaultGuid = Guid.NewGuid().ToString(),
+            ValidGuid = Guid.NewGuid().ToString(),
+            EmptyGuid = string.Empty,
+            DefaultOrEmptyGuid = string.Empty,
+            GuidFormatOnly = Guid.NewGuid().ToString()
+        });
+
+        invalidResult.IsFailure.ShouldBeTrue();
+        invalidResult.Errors.ShouldNotBeEmpty();
+        validResult.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task GeneratedCommand_WithRetryBehavior_UsesCopiedHandlerAttributes()
     {
         var services = new ServiceCollection();
@@ -232,6 +289,50 @@ public partial class GeneratedMixedValidatedCommand
     {
         validator.RuleFor(x => x.Message).MinimumLength(3);
     }
+
+    [Handle]
+    private Result<Unit> Handle()
+    {
+        return Success();
+    }
+}
+
+[Command]
+public partial class GeneratedGuidValidatedCommand
+{
+    [ValidateValidGuid("Invalid guid.")]
+    public string Id { get; set; }
+
+    [ValidateDefaultOrEmptyGuid]
+    public string ParentId { get; set; }
+
+    [Handle]
+    private Result<Unit> Handle()
+    {
+        return Success();
+    }
+}
+
+[Command]
+public partial class GeneratedAllGuidValidatedCommand
+{
+    [ValidateNotEmptyGuid]
+    public string RequiredGuid { get; set; }
+
+    [ValidateNotDefaultOrEmptyGuid]
+    public string RequiredNonDefaultGuid { get; set; }
+
+    [ValidateValidGuid]
+    public string ValidGuid { get; set; }
+
+    [ValidateEmptyGuid]
+    public string EmptyGuid { get; set; }
+
+    [ValidateDefaultOrEmptyGuid]
+    public string DefaultOrEmptyGuid { get; set; }
+
+    [ValidateGuidFormat]
+    public string GuidFormatOnly { get; set; }
 
     [Handle]
     private Result<Unit> Handle()

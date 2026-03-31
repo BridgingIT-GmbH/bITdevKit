@@ -9,20 +9,26 @@ using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 
-public class TodoItemCompleteAllCommand(DateTime? from = null) : RequestBase<Unit>
-{
-    public DateTime? From { get; } = from;
-}
-
+[Command]
 [HandlerRetry(2, 100)]
 [HandlerTimeout(500)]
-public class TodoItemCompleteAllCommandHandler(
-    IGenericRepository<TodoItem> repository,
-    ICurrentUserAccessor currentUserAccessor) : RequestHandlerBase<TodoItemCompleteAllCommand, Unit>
+public partial class TodoItemCompleteAllCommand
 {
-    protected override async Task<Result<Unit>> HandleAsync(
-        TodoItemCompleteAllCommand request,
-        SendOptions options,
+    public TodoItemCompleteAllCommand()
+    {
+    }
+
+    public TodoItemCompleteAllCommand(DateTime? from)
+    {
+        this.From = from;
+    }
+
+    public DateTime? From { get; private set; }
+
+    [Handle]
+    private async Task<Result<Unit>> HandleAsync(
+        IGenericRepository<TodoItem> repository,
+        ICurrentUserAccessor currentUserAccessor,
         CancellationToken cancellationToken)
     {
         var filter = FilterModelBuilder.For<TodoItem>()
@@ -38,7 +44,9 @@ public class TodoItemCompleteAllCommandHandler(
             .Build();
 
         return await repository.FindAllResultAsync(
-            filter, [new ForUserSpecification(currentUserAccessor.UserId), new TodoItemIsNotDeletedSpecification()], cancellationToken: cancellationToken)
+                filter,
+                [new ForUserSpecification(currentUserAccessor.UserId), new TodoItemIsNotDeletedSpecification()],
+                cancellationToken: cancellationToken)
             .Tap(e => Console.WriteLine("COMPLETEALL: #" + e.Count())) // do something
             .Unless(e => e.Any(s => s.Status != TodoStatus.InProgress), new Error("invalid todoitem status")) // extra check
             .Tap(e => e.ForEach(f => f.SetCompleted())) // logic

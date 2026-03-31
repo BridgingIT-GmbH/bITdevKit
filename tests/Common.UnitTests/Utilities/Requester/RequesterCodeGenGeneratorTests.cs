@@ -205,6 +205,58 @@ public partial class CreateCustomerCommand
     }
 
     [Fact]
+    public void Generator_GuidValidationAttributes_EmitCustomGuidRules()
+    {
+        const string source = """
+using BridgingIT.DevKit.Common;
+
+namespace TestNamespace;
+
+[Command]
+public partial class SaveCommand
+{
+    [ValidateNotEmptyGuid]
+    public string RequiredGuid { get; init; }
+
+    [ValidateNotDefaultOrEmptyGuid]
+    public string RequiredNonDefaultGuid { get; init; }
+
+    [ValidateValidGuid("Invalid guid.")]
+    public string Id { get; init; }
+
+    [ValidateEmptyGuid]
+    public string EmptyGuid { get; init; }
+
+    [ValidateDefaultOrEmptyGuid]
+    public string ParentId { get; init; }
+
+    [ValidateGuidFormat]
+    public string GuidFormatOnly { get; init; }
+
+    [Handle]
+    private Result<Unit> Handle() => Success();
+}
+""";
+
+        var result = RunGenerator(source);
+        var generatedSource = string.Join(
+            Environment.NewLine,
+            result.GeneratedSources.Select(sourceResult => sourceResult.SourceText.ToString()));
+
+        result.Diagnostics.ShouldBeEmpty();
+        result.CompilationDiagnostics.Where(static d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
+        generatedSource.ShouldContain("global::BridgingIT.DevKit.Common.GuidValidationExtensions.MustNotBeEmptyGuid(this.RuleFor(x => x.RequiredGuid))");
+        generatedSource.ShouldContain("global::BridgingIT.DevKit.Common.GuidValidationExtensions.MustNotBeDefaultOrEmptyGuid(this.RuleFor(x => x.RequiredNonDefaultGuid))");
+        generatedSource.ShouldContain("this.RuleFor(x => x.Id)");
+        generatedSource.ShouldContain("global::BridgingIT.DevKit.Common.GuidValidationExtensions.MustBeValidGuid(this.RuleFor(x => x.Id))");
+        generatedSource.ShouldContain(".WithMessage(\"Invalid guid.\")");
+        generatedSource.ShouldContain("global::BridgingIT.DevKit.Common.GuidValidationExtensions.MustBeEmptyGuid(this.RuleFor(x => x.EmptyGuid))");
+        generatedSource.ShouldContain("this.RuleFor(x => x.ParentId)");
+        generatedSource.ShouldContain("global::BridgingIT.DevKit.Common.GuidValidationExtensions.MustBeDefaultOrEmptyGuid(this.RuleFor(x => x.ParentId))");
+        generatedSource.ShouldContain("global::BridgingIT.DevKit.Common.GuidValidationExtensions.MustBeInGuidFormat(this.RuleFor(x => x.GuidFormatOnly))");
+    }
+
+    [Fact]
     public void Generator_ValidateEachOnScalarProperty_ReportsDiagnostic()
     {
         const string source = """

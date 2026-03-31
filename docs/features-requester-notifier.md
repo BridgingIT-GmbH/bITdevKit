@@ -1607,6 +1607,8 @@ The source-generated authoring model lets you write a command or query as a sing
 
 ### Quick Start
 
+> Add the `BridgingIT.DevKit.Common.Utilities.CodeGen` package as an analyzer reference in the application project that contains the commands and queries.
+
 - Use `[Command]` for commands.
 - Use `[Query]` for queries.
 - Add one `[Handle]` method with your business logic.
@@ -1615,6 +1617,14 @@ The source-generated authoring model lets you write a command or query as a sing
 
 The `[Handle]` method is an instance method, so request properties can be used directly inside the method body.
 Services can be added as parameters and are resolved from DI.
+
+For a package reference, use:
+
+```xml
+<PackageReference Include="BridgingIT.DevKit.Common.Utilities.CodeGen"
+                  Version="x.y.z"
+                  PrivateAssets="all" />
+```
 
 ### Command Without Response
 

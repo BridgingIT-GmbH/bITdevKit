@@ -27,6 +27,12 @@ public enum ValidationRuleKind
     NotEqual,
     InclusiveBetween,
     ExclusiveBetween,
+    NotEmptyGuid,
+    NotDefaultOrEmptyGuid,
+    ValidGuid,
+    EmptyGuid,
+    DefaultOrEmptyGuid,
+    GuidFormat,
     Email,
     Matches,
 }

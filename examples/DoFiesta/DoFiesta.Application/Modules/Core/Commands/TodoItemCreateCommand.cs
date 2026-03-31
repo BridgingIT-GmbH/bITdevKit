@@ -12,33 +12,31 @@ using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;
 using FluentValidation;
 
-public class TodoItemCreateCommand : RequestBase<TodoItemModel>
-{
-    public TodoItemModel Model { get; set; }
-
-    public class Validator : AbstractValidator<TodoItemCreateCommand>
-    {
-        public Validator()
-        {
-            this.RuleFor(c => c.Model).NotNull();
-            this.RuleFor(c => c.Model.Id).MustBeDefaultOrEmptyGuid();
-            this.RuleFor(c => c.Model.Title).NotNull().NotEmpty();
-        }
-    }
-}
-
+[Command]
 [HandlerRetry(2, 100)]
 [HandlerTimeout(500)]
-public class TodoItemCreateCommandHandler(
-    IMapper mapper,
-    IGenericRepository<TodoItem> repository,
-    IEntityPermissionProvider permissionProvider,
-    ISequenceNumberGenerator numberGenerator,
-    ICurrentUserAccessor currentUserAccessor,
-    IRepositoryTransaction<TodoItem> transaction) : RequestHandlerBase<TodoItemCreateCommand, TodoItemModel>
+public partial class TodoItemCreateCommand
 {
-    protected override async Task<Result<TodoItemModel>> HandleAsync(TodoItemCreateCommand request, SendOptions options, CancellationToken cancellationToken) =>
-        await Result<TodoItem>.Success(mapper.Map<TodoItemModel, TodoItem>(request.Model))
+    [ValidateNotNull]
+    public TodoItemModel Model { get; set; }
+
+    [Validate]
+    private static void Validate(InlineValidator<TodoItemCreateCommand> validator)
+    {
+        validator.RuleFor(c => c.Model.Id).MustBeDefaultOrEmptyGuid();
+        validator.RuleFor(c => c.Model.Title).NotNull().NotEmpty();
+    }
+
+    [Handle]
+    private async Task<Result<TodoItemModel>> HandleAsync(
+        IMapper mapper,
+        IGenericRepository<TodoItem> repository,
+        IEntityPermissionProvider permissionProvider,
+        ISequenceNumberGenerator numberGenerator,
+        ICurrentUserAccessor currentUserAccessor,
+        IRepositoryTransaction<TodoItem> transaction,
+        CancellationToken cancellationToken) =>
+        await Result<TodoItem>.Success(mapper.Map<TodoItemModel, TodoItem>(this.Model))
 
             // Start transaction scope using repository transaction
             .StartOperation(transaction.BeginAsync)

@@ -11,32 +11,30 @@ using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;
 using FluentValidation;
 
-public class TodoItemUpdateCommand : RequestBase<TodoItemModel>
-{
-    public TodoItemModel Model { get; set; }
-
-    public class Validator : AbstractValidator<TodoItemUpdateCommand>
-    {
-        public Validator()
-        {
-            this.RuleFor(c => c.Model).NotNull();
-            this.RuleFor(c => c.Model.Id).MustBeValidGuid().WithMessage("Invalid guid.");
-            this.RuleFor(c => c.Model.Title).NotNull().NotEmpty();
-        }
-    }
-}
-
+[Command]
 [HandlerRetry(2, 100)]
 [HandlerTimeout(500)]
-public class TodoItemUpdateCommandHandler(
-    IMapper mapper,
-    IGenericRepository<TodoItem> repository,
-    ICurrentUserAccessor currentUserAccessor,
-    IEntityPermissionEvaluator<TodoItem> permissionEvaluator) : RequestHandlerBase<TodoItemUpdateCommand, TodoItemModel>
+public partial class TodoItemUpdateCommand
 {
-    protected override async Task<Result<TodoItemModel>> HandleAsync(TodoItemUpdateCommand request, SendOptions options, CancellationToken cancellationToken) =>
+    [ValidateNotNull]
+    public TodoItemModel Model { get; set; }
+
+    [Validate]
+    private static void Validate(InlineValidator<TodoItemUpdateCommand> validator)
+    {
+        validator.RuleFor(c => c.Model.Id).MustBeValidGuid().WithMessage("Invalid guid.");
+        validator.RuleFor(c => c.Model.Title).NotNull().NotEmpty();
+    }
+
+    [Handle]
+    private async Task<Result<TodoItemModel>> HandleAsync(
+        IMapper mapper,
+        IGenericRepository<TodoItem> repository,
+        ICurrentUserAccessor currentUserAccessor,
+        IEntityPermissionEvaluator<TodoItem> permissionEvaluator,
+        CancellationToken cancellationToken) =>
         await Result.Success()
-            .Map(mapper.Map<TodoItemModel, TodoItem>(request.Model))
+            .Map(mapper.Map<TodoItemModel, TodoItem>(this.Model))
             .EnsureAsync(async (e, ct) => // check permissions
                 await permissionEvaluator.HasPermissionAsync(currentUserAccessor, e.Id, Permission.Write, cancellationToken: ct), new UnauthorizedError(), cancellationToken)
             .UnlessAsync(async (e, ct) => await Rule // check rules

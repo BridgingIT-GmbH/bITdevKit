@@ -27,21 +27,26 @@ public static class ValidationSourceEmitter
         {
             var propertyName = ValidationGeneratorSymbolHelper.EscapeIdentifier(rule.PropertySymbol.Name);
             var ruleForMethod = rule.TargetKind == ValidationRuleTargetKind.Property ? "RuleFor" : "RuleForEach";
+            var ruleBuilderExpression = $"this.{ruleForMethod}(x => x.{propertyName})";
 
-            builder.Append(indent)
-                .Append("this.")
-                .Append(ruleForMethod)
-                .Append("(x => x.")
-                .Append(propertyName)
-                .Append(')')
-                .AppendLine();
+            if (rule.Kind is ValidationRuleKind.NotEmptyGuid or ValidationRuleKind.NotDefaultOrEmptyGuid or ValidationRuleKind.ValidGuid or ValidationRuleKind.EmptyGuid or ValidationRuleKind.DefaultOrEmptyGuid or ValidationRuleKind.GuidFormat)
+            {
+                builder.Append(indent)
+                    .Append(GetGuidValidationInvocation(rule, ruleBuilderExpression));
+            }
+            else
+            {
+                builder.Append(indent)
+                    .Append(ruleBuilderExpression)
+                    .AppendLine();
 
-            builder.Append(indent)
-                .Append("    .")
-                .Append(GetMethodName(rule.Kind))
-                .Append('(')
-                .Append(string.Join(", ", GetArguments(rule)))
-                .Append(')');
+                builder.Append(indent)
+                    .Append("    .")
+                    .Append(GetMethodName(rule.Kind))
+                    .Append('(')
+                    .Append(string.Join(", ", GetArguments(rule)))
+                    .Append(')');
+            }
 
             if (!string.IsNullOrWhiteSpace(rule.Message))
             {
@@ -75,17 +80,39 @@ public static class ValidationSourceEmitter
             ValidationRuleKind.NotEqual => "NotEqual",
             ValidationRuleKind.InclusiveBetween => "InclusiveBetween",
             ValidationRuleKind.ExclusiveBetween => "ExclusiveBetween",
+            ValidationRuleKind.NotEmptyGuid => "MustNotBeEmptyGuid",
+            ValidationRuleKind.NotDefaultOrEmptyGuid => "MustNotBeDefaultOrEmptyGuid",
+            ValidationRuleKind.ValidGuid => "MustBeValidGuid",
+            ValidationRuleKind.EmptyGuid => "MustBeEmptyGuid",
+            ValidationRuleKind.DefaultOrEmptyGuid => "MustBeDefaultOrEmptyGuid",
+            ValidationRuleKind.GuidFormat => "MustBeInGuidFormat",
             ValidationRuleKind.Email => "EmailAddress",
             ValidationRuleKind.Matches => "Matches",
             _ => throw new InvalidOperationException($"Unsupported rule kind '{kind}'."),
         };
     }
 
+    private static string GetGuidValidationInvocation(ValidationPropertyRuleModel rule, string ruleBuilderExpression)
+    {
+        var methodName = rule.Kind switch
+        {
+            ValidationRuleKind.NotEmptyGuid => "MustNotBeEmptyGuid",
+            ValidationRuleKind.NotDefaultOrEmptyGuid => "MustNotBeDefaultOrEmptyGuid",
+            ValidationRuleKind.ValidGuid => "MustBeValidGuid",
+            ValidationRuleKind.EmptyGuid => "MustBeEmptyGuid",
+            ValidationRuleKind.DefaultOrEmptyGuid => "MustBeDefaultOrEmptyGuid",
+            ValidationRuleKind.GuidFormat => "MustBeInGuidFormat",
+            _ => throw new InvalidOperationException($"Unsupported GUID validation rule kind '{rule.Kind}'."),
+        };
+
+        return $"global::BridgingIT.DevKit.Common.GuidValidationExtensions.{methodName}({ruleBuilderExpression})";
+    }
+
     private static IEnumerable<string> GetArguments(ValidationPropertyRuleModel rule)
     {
         return rule.Kind switch
         {
-            ValidationRuleKind.NotNull or ValidationRuleKind.NotEmpty or ValidationRuleKind.Empty or ValidationRuleKind.Email
+            ValidationRuleKind.NotNull or ValidationRuleKind.NotEmpty or ValidationRuleKind.Empty or ValidationRuleKind.NotEmptyGuid or ValidationRuleKind.NotDefaultOrEmptyGuid or ValidationRuleKind.ValidGuid or ValidationRuleKind.EmptyGuid or ValidationRuleKind.DefaultOrEmptyGuid or ValidationRuleKind.GuidFormat or ValidationRuleKind.Email
                 => [],
             ValidationRuleKind.Length or ValidationRuleKind.MinLength or ValidationRuleKind.MaxLength or ValidationRuleKind.Matches
                 => rule.Arguments

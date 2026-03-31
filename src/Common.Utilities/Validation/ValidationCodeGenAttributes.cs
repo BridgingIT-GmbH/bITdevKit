@@ -434,6 +434,144 @@ public sealed class ValidateExclusiveBetweenAttribute : ValidationCodeGenAttribu
 }
 
 /// <summary>
+/// Marks a string property to generate a FluentValidation <c>MustNotBeEmptyGuid</c> rule.
+/// </summary>
+[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+public sealed class ValidateNotEmptyGuidAttribute : ValidationCodeGenAttribute
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidateNotEmptyGuidAttribute"/> class.
+    /// </summary>
+    public ValidateNotEmptyGuidAttribute()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidateNotEmptyGuidAttribute"/> class.
+    /// </summary>
+    /// <param name="message">The optional custom validation message.</param>
+    public ValidateNotEmptyGuidAttribute(string message)
+        : base(message)
+    {
+    }
+}
+
+/// <summary>
+/// Marks a string property to generate a FluentValidation <c>MustNotBeDefaultOrEmptyGuid</c> rule.
+/// </summary>
+[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+public sealed class ValidateNotDefaultOrEmptyGuidAttribute : ValidationCodeGenAttribute
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidateNotDefaultOrEmptyGuidAttribute"/> class.
+    /// </summary>
+    public ValidateNotDefaultOrEmptyGuidAttribute()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidateNotDefaultOrEmptyGuidAttribute"/> class.
+    /// </summary>
+    /// <param name="message">The optional custom validation message.</param>
+    public ValidateNotDefaultOrEmptyGuidAttribute(string message)
+        : base(message)
+    {
+    }
+}
+
+/// <summary>
+/// Marks a string property to generate a FluentValidation <c>MustBeValidGuid</c> rule.
+/// </summary>
+[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+public sealed class ValidateValidGuidAttribute : ValidationCodeGenAttribute
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidateValidGuidAttribute"/> class.
+    /// </summary>
+    public ValidateValidGuidAttribute()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidateValidGuidAttribute"/> class.
+    /// </summary>
+    /// <param name="message">The optional custom validation message.</param>
+    public ValidateValidGuidAttribute(string message)
+        : base(message)
+    {
+    }
+}
+
+/// <summary>
+/// Marks a string property to generate a FluentValidation <c>MustBeEmptyGuid</c> rule.
+/// </summary>
+[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+public sealed class ValidateEmptyGuidAttribute : ValidationCodeGenAttribute
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidateEmptyGuidAttribute"/> class.
+    /// </summary>
+    public ValidateEmptyGuidAttribute()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidateEmptyGuidAttribute"/> class.
+    /// </summary>
+    /// <param name="message">The optional custom validation message.</param>
+    public ValidateEmptyGuidAttribute(string message)
+        : base(message)
+    {
+    }
+}
+
+/// <summary>
+/// Marks a string property to generate a FluentValidation <c>MustBeDefaultOrEmptyGuid</c> rule.
+/// </summary>
+[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+public sealed class ValidateDefaultOrEmptyGuidAttribute : ValidationCodeGenAttribute
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidateDefaultOrEmptyGuidAttribute"/> class.
+    /// </summary>
+    public ValidateDefaultOrEmptyGuidAttribute()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidateDefaultOrEmptyGuidAttribute"/> class.
+    /// </summary>
+    /// <param name="message">The optional custom validation message.</param>
+    public ValidateDefaultOrEmptyGuidAttribute(string message)
+        : base(message)
+    {
+    }
+}
+
+/// <summary>
+/// Marks a string property to generate a FluentValidation <c>MustBeInGuidFormat</c> rule.
+/// </summary>
+[AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
+public sealed class ValidateGuidFormatAttribute : ValidationCodeGenAttribute
+{
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidateGuidFormatAttribute"/> class.
+    /// </summary>
+    public ValidateGuidFormatAttribute()
+    {
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidateGuidFormatAttribute"/> class.
+    /// </summary>
+    /// <param name="message">The optional custom validation message.</param>
+    public ValidateGuidFormatAttribute(string message)
+        : base(message)
+    {
+    }
+}
+
+/// <summary>
 /// Marks a string property to generate a FluentValidation <c>EmailAddress</c> rule.
 /// </summary>
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]

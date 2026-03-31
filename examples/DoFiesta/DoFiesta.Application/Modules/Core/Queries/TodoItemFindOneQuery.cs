@@ -8,31 +8,33 @@ using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
-using FluentValidation;
 
-public class TodoItemFindOneQuery(string id) : RequestBase<TodoItemModel>
-{
-    public string Id { get; } = id;
-
-    public class Validator : AbstractValidator<TodoItemFindOneQuery>
-    {
-        public Validator()
-        {
-            this.RuleFor(c => c.Id).MustBeValidGuid().WithMessage("Invalid guid.");
-        }
-    }
-}
-
+[Query]
 [HandlerRetry(2, 100)]
 [HandlerTimeout(500)]
-public class TodoItemFindOneQueryHandler(
-    IMapper mapper,
-    IGenericRepository<TodoItem> repository,
-    ICurrentUserAccessor currentUserAccessor,
-    IEntityPermissionEvaluator<TodoItem> permissionEvaluator) : RequestHandlerBase<TodoItemFindOneQuery, TodoItemModel>
+public partial class TodoItemFindOneQuery
 {
-    protected override async Task<Result<TodoItemModel>> HandleAsync(TodoItemFindOneQuery request, SendOptions options, CancellationToken cancellationToken) =>
-        await repository.FindOneResultAsync(TodoItemId.Create(request.Id), cancellationToken: cancellationToken)
+    public TodoItemFindOneQuery()
+    {
+    }
+
+    public TodoItemFindOneQuery(string id)
+    {
+        this.Id = id;
+    }
+
+    [ValidateNotEmpty("Id is required.")]
+    [ValidateValidGuid("Invalid guid.")]
+    public string Id { get; private set; }
+
+    [Handle]
+    private async Task<Result<TodoItemModel>> HandleAsync(
+        IMapper mapper,
+        IGenericRepository<TodoItem> repository,
+        ICurrentUserAccessor currentUserAccessor,
+        IEntityPermissionEvaluator<TodoItem> permissionEvaluator,
+        CancellationToken cancellationToken) =>
+        await repository.FindOneResultAsync(TodoItemId.Create(this.Id), cancellationToken: cancellationToken)
             .EnsureAsync(async (e, ct) =>
                 await permissionEvaluator.HasPermissionAsync(currentUserAccessor, e.Id, Permission.Read, cancellationToken: ct), new UnauthorizedError(), cancellationToken)
             .Tap(e => Console.WriteLine("AUDIT")) // do something

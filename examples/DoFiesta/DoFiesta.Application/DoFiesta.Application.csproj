@@ -21,6 +21,9 @@
     <ProjectReference Include="..\..\..\src\Application.JobScheduling\Application.JobScheduling.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Utilities\Common.Utilities.csproj" />
     <ProjectReference Include="..\DoFiesta.Domain\DoFiesta.Domain.csproj" />
+    <ProjectReference Include="..\..\..\src\Common.Utilities.CodeGen\Common.Utilities.CodeGen.csproj"
+                      OutputItemType="Analyzer"
+                      ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>

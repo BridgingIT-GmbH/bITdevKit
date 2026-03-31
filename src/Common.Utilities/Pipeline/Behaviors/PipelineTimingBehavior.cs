@@ -41,7 +41,7 @@ public class PipelineTimingBehavior(ILogger<PipelineTimingBehavior> logger) : IP
 
             logger.LogDebug(
                 "[{LogKey}] pipeline timing finished (pipeline={PipelineName}, executionId={ExecutionId}, success={Success}) -> took {DurationMs}ms",
-                Constants.LogKey,
+                PipelineConstants.LogKey,
                 context.Pipeline.Name,
                 context.Pipeline.ExecutionId,
                 result.IsSuccess,
@@ -53,7 +53,7 @@ public class PipelineTimingBehavior(ILogger<PipelineTimingBehavior> logger) : IP
         {
             logger.LogWarning(
                 "[{LogKey}] pipeline timing failed (pipeline={PipelineName}, executionId={ExecutionId}) -> took {DurationMs}ms",
-                Constants.LogKey,
+                PipelineConstants.LogKey,
                 context.Pipeline.Name,
                 context.Pipeline.ExecutionId,
                 stopwatch.Elapsed.TotalMilliseconds);

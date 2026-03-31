@@ -116,5 +116,4 @@ public class PipelineRegistrationTests
             builder.AddStep(() => { });
         }
     }
-
 }

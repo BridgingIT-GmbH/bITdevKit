@@ -135,7 +135,7 @@ public class PipelineRuntime(
         context.Pipeline.TotalStepCount = definition.Steps.Count;
 
         tracker.MarkRunning(executionId, context, state.Result);
-        PipelineTypedLogger.LogPipelineStarted(this.logger, Constants.LogKey, definition.Name, executionId, correlationId);
+        PipelineTypedLogger.LogPipelineStarted(this.logger, PipelineConstants.LogKey, definition.Name, executionId, correlationId);
 
         var hooks = this.ResolveHooks(serviceProvider, definition);
         var behaviors = this.ResolveBehaviors(serviceProvider, definition);
@@ -166,7 +166,7 @@ public class PipelineRuntime(
         }
         catch (Exception ex)
         {
-            PipelineTypedLogger.LogPipelineException(this.logger, Constants.LogKey, definition.Name, executionId, ex);
+            PipelineTypedLogger.LogPipelineException(this.logger, PipelineConstants.LogKey, definition.Name, executionId, ex);
             state.Result = this.AppendException(state.Result, ex);
             state.Status = PipelineExecutionStatus.Failed;
         }
@@ -185,7 +185,7 @@ public class PipelineRuntime(
             }
 
             tracker.MarkFinished(executionId, context, state.Status, state.Result);
-            PipelineTypedLogger.LogPipelineFinished(this.logger, Constants.LogKey, definition.Name, executionId, state.Status, context.Pipeline.Duration?.TotalMilliseconds ?? 0);
+            PipelineTypedLogger.LogPipelineFinished(this.logger, PipelineConstants.LogKey, definition.Name, executionId, state.Status, context.Pipeline.Duration?.TotalMilliseconds ?? 0);
         }
 
         return new PipelineRunResult(state.Result, state.Status);
@@ -214,7 +214,7 @@ public class PipelineRuntime(
 
                 // The engine owns the canonical current-step tracking and step-level logging.
                 context.Pipeline.CurrentStepName = stepDefinition.Name;
-                PipelineTypedLogger.LogStepStarted(this.logger, Constants.LogKey, definition.Name, stepDefinition.Name, context.Pipeline.ExecutionId);
+                PipelineTypedLogger.LogStepStarted(this.logger, PipelineConstants.LogKey, definition.Name, stepDefinition.Name, context.Pipeline.ExecutionId);
                 await this.InvokeHooksAsync(hooks, context, (hook, ctx, ct) => hook.OnStepStartingAsync(ctx, stepDefinition, ct), cancellationToken);
 
                 var stopwatch = Stopwatch.StartNew();
@@ -225,7 +225,7 @@ public class PipelineRuntime(
                 carriedResult = control.Result;
                 state.Result = carriedResult;
 
-                PipelineTypedLogger.LogStepFinished(this.logger, Constants.LogKey, definition.Name, stepDefinition.Name, context.Pipeline.ExecutionId, control.Outcome, stopwatch.Elapsed.TotalMilliseconds);
+                PipelineTypedLogger.LogStepFinished(this.logger, PipelineConstants.LogKey, definition.Name, stepDefinition.Name, context.Pipeline.ExecutionId, control.Outcome, stopwatch.Elapsed.TotalMilliseconds);
                 tracker.MarkRunning(context.Pipeline.ExecutionId, context, carriedResult);
                 await this.InvokeHooksAsync(hooks, context, (hook, ctx, ct) => hook.OnStepCompletedAsync(ctx, stepDefinition, control, ct), cancellationToken);
 
@@ -235,7 +235,7 @@ public class PipelineRuntime(
                     // Retry stays on the same step and reuses the returned result/context state.
                     if (attempts <= options.MaxRetryAttemptsPerStep)
                     {
-                        PipelineTypedLogger.LogStepRetrying(this.logger, Constants.LogKey, definition.Name, stepDefinition.Name, context.Pipeline.ExecutionId, attempts, options.MaxRetryAttemptsPerStep, control.Message);
+                        PipelineTypedLogger.LogStepRetrying(this.logger, PipelineConstants.LogKey, definition.Name, stepDefinition.Name, context.Pipeline.ExecutionId, attempts, options.MaxRetryAttemptsPerStep, control.Message);
                         continue;
                     }
 
@@ -299,7 +299,7 @@ public class PipelineRuntime(
         }
         catch (Exception ex)
         {
-            PipelineTypedLogger.LogStepException(this.logger, Constants.LogKey, context.Pipeline.Name, stepDefinition.Name, context.Pipeline.ExecutionId, ex);
+            PipelineTypedLogger.LogStepException(this.logger, PipelineConstants.LogKey, context.Pipeline.Name, stepDefinition.Name, context.Pipeline.ExecutionId, ex);
             return PipelineControl.Continue(this.AppendException(result, ex));
         }
     }
@@ -352,7 +352,7 @@ public class PipelineRuntime(
             }
             catch (Exception ex)
             {
-                PipelineTypedLogger.LogHookFailure(this.logger, Constants.LogKey, context.Pipeline.Name, context.Pipeline.ExecutionId, ex);
+                PipelineTypedLogger.LogHookFailure(this.logger, PipelineConstants.LogKey, context.Pipeline.Name, context.Pipeline.ExecutionId, ex);
             }
         }
     }
@@ -368,7 +368,7 @@ public class PipelineRuntime(
         }
         catch (Exception ex)
         {
-            PipelineTypedLogger.LogCompletionCallbackFailed(this.logger, Constants.LogKey, pipelineName, completion.ExecutionId, ex);
+            PipelineTypedLogger.LogCompletionCallbackFailed(this.logger, PipelineConstants.LogKey, pipelineName, completion.ExecutionId, ex);
         }
     }
 

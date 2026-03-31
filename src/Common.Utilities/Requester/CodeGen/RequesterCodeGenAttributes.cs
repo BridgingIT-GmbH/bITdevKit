@@ -77,7 +77,7 @@ public sealed class QueryAttribute : Attribute
 public sealed class HandleAttribute : Attribute;
 
 /// <summary>
-/// Marks the developer-authored validation method that the Requester source generator should expose through FluentValidation.
+/// Marks the developer-authored validation method that source generators should expose through FluentValidation.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]
 public sealed class ValidateAttribute : Attribute;

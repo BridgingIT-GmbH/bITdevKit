@@ -99,14 +99,15 @@ There are three main ways to define pipelines:
 Packaged definitions are a good default when a pipeline is reusable or belongs clearly to one feature.
 
 ```csharp
-public sealed class OrderImportContext : PipelineContextBase
+public partial class OrderImportContext : PipelineContextBase
 {
+    [ValidateNotEmpty("Source file name is required.")]
     public string SourceFileName { get; set; }
 
     public int ImportedOrderCount { get; set; }
 }
 
-public sealed class OrderImportPipeline : PipelineDefinition<OrderImportContext>
+public class OrderImportPipeline : PipelineDefinition<OrderImportContext>
 {
     protected override void Configure(IPipelineDefinitionBuilder<OrderImportContext> builder)
     {
@@ -120,7 +121,7 @@ public sealed class OrderImportPipeline : PipelineDefinition<OrderImportContext>
     }
 }
 
-public sealed class ValidateOrderImportStep : PipelineStep<OrderImportContext>
+public class ValidateOrderImportStep : PipelineStep<OrderImportContext>
 {
     protected override PipelineControl Execute(
         OrderImportContext context,
@@ -137,7 +138,7 @@ public sealed class ValidateOrderImportStep : PipelineStep<OrderImportContext>
     }
 }
 
-public sealed class LoadOrdersStep : AsyncPipelineStep<OrderImportContext>
+public class LoadOrdersStep : AsyncPipelineStep<OrderImportContext>
 {
     protected override async ValueTask<PipelineControl> ExecuteAsync(
         OrderImportContext context,
@@ -151,6 +152,34 @@ public sealed class LoadOrdersStep : AsyncPipelineStep<OrderImportContext>
         return PipelineControl.Continue(result.WithMessage("Orders loaded."));
     }
 }
+```
+
+### Context Validation
+
+When the context type declares validation attributes or a static `[Validate]` method, the pipeline engine validates the context before hooks, behaviors, and steps run.
+
+```csharp
+public partial class OrderImportContext : PipelineContextBase
+{
+    [ValidateNotEmpty("Source file name is required.")]
+    public string SourceFileName { get; set; }
+
+    public int ImportedOrderCount { get; set; }
+
+    [Validate]
+    private static void Validate(InlineValidator<OrderImportContext> validator)
+    {
+        validator.RuleFor(x => x.ImportedOrderCount).GreaterThanOrEqualTo(0);
+    }
+}
+```
+
+Add the code-generation analyzer package to the project that contains the pipeline context:
+
+```xml
+<PackageReference Include="BridgingIT.DevKit.Common.Utilities.CodeGen"
+                  Version="x.y.z"
+                  PrivateAssets="all" />
 ```
 
 ### Authoring and Registration Options
@@ -363,7 +392,7 @@ sequenceDiagram
 Use class-based steps for reusable or non-trivial workflow logic.
 
 ```csharp
-public sealed class PersistOrdersStep : AsyncPipelineStep<OrderImportContext>
+public class PersistOrdersStep : AsyncPipelineStep<OrderImportContext>
 {
     protected override async ValueTask<PipelineControl> ExecuteAsync(
         OrderImportContext context,
@@ -492,7 +521,7 @@ Use hooks for:
 - step lifecycle observation
 
 ```csharp
-public sealed class PipelineAuditHook : PipelineHook<PipelineContextBase>
+public class PipelineAuditHook : PipelineHook<PipelineContextBase>
 {
     public override ValueTask OnPipelineStartingAsync(
         PipelineContextBase context,

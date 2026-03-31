@@ -18,7 +18,8 @@ using Microsoft.Extensions.Logging;
 public class PipelineRuntime(
     IServiceScopeFactory scopeFactory,
     InMemoryPipelineExecutionTracker tracker,
-    ILoggerFactory loggerFactory) : IPipelineRuntime
+    ILoggerFactory loggerFactory,
+    IPipelineContextValidationInvoker validationInvoker) : IPipelineRuntime
 {
     private readonly ILogger logger = loggerFactory.CreateLogger<PipelineRuntime>();
 
@@ -124,6 +125,9 @@ public class PipelineRuntime(
     {
         var state = new PipelineRunState(executionId, Result.Success());
         var correlationId = Activity.Current?.TraceId.ToString() ?? executionId.ToString("N");
+        var pipelineStarted = false;
+        IReadOnlyList<IPipelineHookInvoker> hooks = Array.Empty<IPipelineHookInvoker>();
+        IReadOnlyList<IPipelineBehaviorInvoker> behaviors = Array.Empty<IPipelineBehaviorInvoker>();
 
         context.Pipeline.Name = definition.Name;
         context.Pipeline.ExecutionId = executionId;
@@ -137,20 +141,29 @@ public class PipelineRuntime(
         tracker.MarkRunning(executionId, context, state.Result);
         PipelineTypedLogger.LogPipelineStarted(this.logger, PipelineConstants.LogKey, definition.Name, executionId, correlationId);
 
-        var hooks = this.ResolveHooks(serviceProvider, definition);
-        var behaviors = this.ResolveBehaviors(serviceProvider, definition);
-
-        // Behaviors wrap the core step loop from outermost to innermost.
-        Func<ValueTask<Result>> next = () => this.ExecuteStepsCoreAsync(definition, context, options, serviceProvider, state, hooks, behaviors, cancellationToken);
-        foreach (var behavior in behaviors.Reverse<IPipelineBehaviorInvoker>())
-        {
-            var capturedNext = next;
-            next = () => behavior.ExecuteAsync(context, capturedNext, cancellationToken);
-        }
-
         try
         {
+            var validationResult = await validationInvoker.ValidateAsync(context, serviceProvider, cancellationToken);
+            if (validationResult.IsFailure)
+            {
+                state.Result = validationResult;
+                state.Status = PipelineExecutionStatus.Failed;
+                return new PipelineRunResult(state.Result, state.Status);
+            }
+
+            hooks = this.ResolveHooks(serviceProvider, definition);
+            behaviors = this.ResolveBehaviors(serviceProvider, definition);
+
+            // Behaviors wrap the core step loop from outermost to innermost.
+            Func<ValueTask<Result>> next = () => this.ExecuteStepsCoreAsync(definition, context, options, serviceProvider, state, hooks, behaviors, cancellationToken);
+            foreach (var behavior in behaviors.Reverse<IPipelineBehaviorInvoker>())
+            {
+                var capturedNext = next;
+                next = () => behavior.ExecuteAsync(context, capturedNext, cancellationToken);
+            }
+
             await this.InvokeHooksAsync(hooks, context, static (hook, ctx, ct) => hook.OnPipelineStartingAsync(ctx, ct), cancellationToken);
+            pipelineStarted = true;
 
             state.Result = await next();
             state.Status = state.Result.IsFailure ? PipelineExecutionStatus.Failed : PipelineExecutionStatus.Completed;
@@ -175,11 +188,11 @@ public class PipelineRuntime(
             context.Pipeline.CurrentStepName = null;
             context.Pipeline.CompletedUtc = DateTimeOffset.UtcNow;
 
-            if (state.Status == PipelineExecutionStatus.Completed)
+            if (pipelineStarted && state.Status == PipelineExecutionStatus.Completed)
             {
                 await this.InvokeHooksAsync(hooks, context, (hook, ctx, ct) => hook.OnPipelineCompletedAsync(ctx, state.Result, ct), cancellationToken);
             }
-            else if (state.Status == PipelineExecutionStatus.Failed)
+            else if (pipelineStarted && state.Status == PipelineExecutionStatus.Failed)
             {
                 await this.InvokeHooksAsync(hooks, context, (hook, ctx, ct) => hook.OnPipelineFailedAsync(ctx, state.Result, ct), cancellationToken);
             }

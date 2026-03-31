@@ -114,7 +114,11 @@ public static class RequesterGenerationModelBuilder
             return null;
         }
 
-        if (!ValidationGenerationModelBuilder.TryCreate(context, classSymbol, out var propertyValidationRules))
+        if (!ValidationGenerationModelBuilder.TryCreate(
+                context,
+                classSymbol,
+                RequesterSourceGeneratorDiagnostics.ValidationGeneration,
+                out var propertyValidationRules))
         {
             return null;
         }

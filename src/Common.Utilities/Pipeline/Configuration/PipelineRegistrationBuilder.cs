@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Common;
 
 using System.Reflection;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -43,6 +44,7 @@ public static class PipelineServiceCollectionExtensions
         services.TryAddSingleton<IPipelineRuntime, PipelineRuntime>();
         services.TryAddSingleton<IPipelineExecutionTracker>(sp => sp.GetRequiredService<InMemoryPipelineExecutionTracker>());
         services.TryAddSingleton<IPipelineFactory, PipelineFactory>();
+        services.TryAddSingleton<IPipelineContextValidationInvoker, PipelineContextValidationInvoker>();
 
         return new PipelineRegistrationBuilder(services, state);
     }
@@ -63,6 +65,7 @@ public class PipelineRegistrationBuilder(
     {
         services.TryAddTransient<TPipelineDefinition>();
         state.AddDefinitionSourceType(typeof(TPipelineDefinition));
+        TryRegisterContextValidator(services, GetContextTypes(typeof(TPipelineDefinition)));
         return this;
     }
 
@@ -75,6 +78,7 @@ public class PipelineRegistrationBuilder(
         var builder = new PipelineDefinitionBuilder<TContext>(name);
         configure?.Invoke(builder);
         state.AddDefinition(builder.Build());
+        TryRegisterContextValidator(services, typeof(TContext));
         return this;
     }
 
@@ -97,9 +101,43 @@ public class PipelineRegistrationBuilder(
             {
                 services.TryAddTransient(type);
                 state.AddDefinitionSourceType(type);
+                TryRegisterContextValidator(services, GetContextTypes(type));
             }
         }
 
         return this;
+    }
+
+    private static IEnumerable<Type> GetContextTypes(Type definitionSourceType)
+    {
+        return definitionSourceType.GetInterfaces()
+            .Where(static type => type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IPipelineDefinitionSource<>))
+            .Select(static type => type.GetGenericArguments()[0])
+            .Distinct();
+    }
+
+    private static void TryRegisterContextValidator(IServiceCollection services, params Type[] contextTypes)
+    {
+        TryRegisterContextValidator(services, (IEnumerable<Type>)contextTypes);
+    }
+
+    private static void TryRegisterContextValidator(IServiceCollection services, IEnumerable<Type> contextTypes)
+    {
+        foreach (var contextType in contextTypes.SafeNull().Where(static type => type is not null).Distinct())
+        {
+            var validatorType = contextType.GetNestedType("Validator", BindingFlags.Public | BindingFlags.NonPublic);
+            var serviceType = typeof(IValidator<>).MakeGenericType(contextType);
+            if (validatorType?.GetInterfaces().Any(interfaceType => interfaceType == serviceType) != true)
+            {
+                continue;
+            }
+
+            if (services.Any(descriptor => descriptor.ServiceType == serviceType && descriptor.ImplementationType == validatorType))
+            {
+                continue;
+            }
+
+            services.AddScoped(serviceType, validatorType);
+        }
     }
 }

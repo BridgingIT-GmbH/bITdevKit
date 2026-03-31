@@ -14,6 +14,15 @@ public static class RequesterSourceGeneratorDiagnostics
 {
 #pragma warning disable RS1032
 #pragma warning disable RS2008
+    /// <summary>
+    /// Gets the shared property-validation diagnostics used by Requester source generation.
+    /// </summary>
+    public static ValidationGenerationDiagnostics ValidationGeneration => new(
+        UnsupportedValidationAttributeUsage,
+        InvalidValidationAttributeArguments,
+        EachValidationRequiresCollection,
+        ConflictingValidationAttributes);
+
     public static readonly DiagnosticDescriptor RequestMustBePartial = new(
         "RQGEN001",
         "Requester request must be partial",

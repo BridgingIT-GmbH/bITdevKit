@@ -53,6 +53,7 @@ public static class ValidationGenerationModelBuilder
     public static bool TryCreate(
         SourceProductionContext context,
         INamedTypeSymbol classSymbol,
+        ValidationGenerationDiagnostics diagnostics,
         out ImmutableArray<ValidationPropertyRuleModel> rules)
     {
         var builder = ImmutableArray.CreateBuilder<ValidationPropertyRuleModel>();
@@ -67,7 +68,7 @@ public static class ValidationGenerationModelBuilder
                     continue;
                 }
 
-                if (!TryCreateRule(context, classSymbol, property, attribute, metadata, out var rule))
+                if (!TryCreateRule(context, classSymbol, property, attribute, metadata, diagnostics, out var rule))
                 {
                     rules = [];
                     return false;
@@ -76,7 +77,7 @@ public static class ValidationGenerationModelBuilder
                 builder.Add(rule);
             }
 
-            if (!TryValidateRuleConflicts(context, classSymbol, property, builder))
+            if (!TryValidateRuleConflicts(context, classSymbol, property, builder, diagnostics))
             {
                 rules = [];
                 return false;
@@ -93,6 +94,7 @@ public static class ValidationGenerationModelBuilder
         IPropertySymbol property,
         AttributeData attribute,
         ValidationRuleMetadata metadata,
+        ValidationGenerationDiagnostics diagnostics,
         out ValidationPropertyRuleModel rule)
     {
         rule = null;
@@ -105,7 +107,7 @@ public static class ValidationGenerationModelBuilder
             if (!TryGetEnumerableElementType(property.Type, out validatedType))
             {
                 context.ReportDiagnostic(Diagnostic.Create(
-                    RequesterSourceGeneratorDiagnostics.EachValidationRequiresCollection,
+                    diagnostics.EachValidationRequiresCollection,
                     attribute.ApplicationSyntaxReference?.GetSyntax().GetLocation() ?? property.Locations.FirstOrDefault(),
                     attributeName,
                     propertyName));
@@ -116,12 +118,12 @@ public static class ValidationGenerationModelBuilder
         var arguments = GetArguments(attribute);
         var message = GetOptionalMessage(attribute, metadata.Kind, arguments);
 
-        if (!TryValidateAttributeArguments(context, attribute, property, arguments, message, metadata.Kind, attributeName))
+        if (!TryValidateAttributeArguments(context, attribute, property, arguments, message, metadata.Kind, attributeName, diagnostics))
         {
             return false;
         }
 
-        if (!TryValidateTargetType(context, classSymbol, property, validatedType, metadata.Kind, metadata.TargetKind, attributeName))
+        if (!TryValidateTargetType(context, classSymbol, property, validatedType, metadata.Kind, metadata.TargetKind, attributeName, diagnostics))
         {
             return false;
         }
@@ -176,7 +178,8 @@ public static class ValidationGenerationModelBuilder
         ImmutableArray<string> arguments,
         string message,
         ValidationRuleKind kind,
-        string attributeName)
+        string attributeName,
+        ValidationGenerationDiagnostics diagnostics)
     {
         var syntaxLocation = attribute.ApplicationSyntaxReference?.GetSyntax().GetLocation() ?? property.Locations.FirstOrDefault();
 
@@ -205,7 +208,7 @@ public static class ValidationGenerationModelBuilder
         }
 
         context.ReportDiagnostic(Diagnostic.Create(
-            RequesterSourceGeneratorDiagnostics.InvalidValidationAttributeArguments,
+            diagnostics.InvalidValidationAttributeArguments,
             syntaxLocation,
             attributeName,
             property.Name));
@@ -219,7 +222,8 @@ public static class ValidationGenerationModelBuilder
         ITypeSymbol validatedType,
         ValidationRuleKind kind,
         ValidationRuleTargetKind targetKind,
-        string attributeName)
+        string attributeName,
+        ValidationGenerationDiagnostics diagnostics)
     {
         var syntaxLocation = property.Locations.FirstOrDefault();
 
@@ -242,7 +246,7 @@ public static class ValidationGenerationModelBuilder
         }
 
         context.ReportDiagnostic(Diagnostic.Create(
-            RequesterSourceGeneratorDiagnostics.UnsupportedValidationAttributeUsage,
+            diagnostics.UnsupportedValidationAttributeUsage,
             syntaxLocation,
             attributeName,
             property.Name,
@@ -255,7 +259,8 @@ public static class ValidationGenerationModelBuilder
         SourceProductionContext context,
         INamedTypeSymbol classSymbol,
         IPropertySymbol property,
-        ImmutableArray<ValidationPropertyRuleModel>.Builder rules)
+        ImmutableArray<ValidationPropertyRuleModel>.Builder rules,
+        ValidationGenerationDiagnostics diagnostics)
     {
         var propertyRules = rules.Where(rule => SymbolEqualityComparer.Default.Equals(rule.PropertySymbol, property)).ToArray();
         if (propertyRules.Length < 2)
@@ -271,7 +276,7 @@ public static class ValidationGenerationModelBuilder
             if (hasEmpty && hasNotEmpty)
             {
                 context.ReportDiagnostic(Diagnostic.Create(
-                    RequesterSourceGeneratorDiagnostics.ConflictingValidationAttributes,
+                    diagnostics.ConflictingValidationAttributes,
                     property.Locations.FirstOrDefault(),
                     classSymbol.Name,
                     property.Name,

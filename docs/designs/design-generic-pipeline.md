@@ -8,7 +8,7 @@ The generic processing pipeline is a reusable framework feature for structuring 
 
 A pipeline is defined as:
 
-> A pipeline is an ordered sequence of processing steps that operate on an optional mutable execution context. The context may contain input, result-related state, and any other execution state needed by the pipeline. Across the execution, the pipeline carries an accumulated `Result` that collects messages and errors from step to step. Each step may continue, short-circuit, skip itself, or request termination of the remaining pipeline.
+> A pipeline is an ordered sequence of processing steps that operate on an optional mutable execution context. The context may contain input, result-related state, and any other execution state needed by the pipeline. Across the execution, the pipeline carries an accumulated `Result` that collects messages and errors from step to step. Each step may continue, retry, break, skip itself, or request termination of the remaining pipeline.
 
 This feature is designed to provide a lightweight, strongly structured processing model that sits between simple service methods and full workflow or orchestration engines.
 
@@ -61,8 +61,9 @@ This context-centric model allows consumers to decide whether the context contai
 The design shall explicitly support the following step outcomes:
 
 * continue
+* retry the current step
 * skip self
-* short-circuit with a successful result
+* break the pipeline with a successful result
 * request termination of the remaining pipeline
 
 ### 3.6 Consistent result handling
@@ -325,19 +326,27 @@ A step may complete its work and allow processing to continue normally to the ne
 
 A step may determine that it should not participate meaningfully in the current execution. This is a valid runtime outcome and not a failure.
 
-### 8.3 Short-circuit
+### 8.3 Retry
+
+A step may determine that the current step should be attempted again.
+
+Retrying re-executes the same step and is typically used for transient conditions. The carried `Result` returned with `Retry` becomes the new carried `Result` for the next attempt, and the current context state is preserved exactly as the previous attempt left it.
+
+Retries must be bounded by execution policy. If the configured retry limit for the current step is exhausted, the engine should append a descriptive retry-exhausted error to the carried `Result` and then evaluate continuation through the normal failure policy.
+
+### 8.4 Break
 
 A step may determine that the pipeline has already reached a valid completion point and that no further processing is required.
 
-Short-circuiting represents successful early completion unless the carried `Result` already indicates failure.
+Breaking represents successful early completion unless the carried `Result` already indicates failure.
 
-### 8.4 Request termination
+### 8.5 Request termination
 
 A step may request termination of the remaining pipeline.
 
-Termination ends further execution intentionally and is distinct from both short-circuiting and failure.
+Termination ends further execution intentionally and is distinct from both breaking and failure.
 
-### 8.5 Failure through the carried result
+### 8.6 Failure through the carried result
 
 Failure should be represented through the framework’s untyped `Result`, not as a separate control outcome.
 
@@ -348,11 +357,11 @@ A step may therefore:
 
 This keeps success/failure semantics aligned with the framework’s existing result model while preserving explicit pipeline control flow.
 
-### 8.6 Context-aware and result-aware decision making
+### 8.7 Context-aware and result-aware decision making
 
 Step control decisions may be based on the current context, the current accumulated `Result`, and other execution metadata. This enables runtime flexibility while preserving a stable structural definition.
 
-### 8.7 Control Flow Model
+### 8.8 Control Flow Model
 
 The following diagram illustrates how step control outcomes and the carried `Result` influence execution progression.
 
@@ -377,14 +386,21 @@ The following diagram illustrates how step control outcomes and the carried `Res
         |                    |                    |
         v                    v                    v
    +-----------+       +-----------+        +-----------+
-   | Continue  |       | Skip Self |        | Short-    |
-   |           |       |           |        | circuit   |
+   | Continue  |       | Skip Self |        | Break     |
+   |           |       |           |        |           |
    +-----+-----+       +-----+-----+        +-----+-----+
          |                   |                    |
          v                   v                    v
     Next Step           Next Step           Pipeline End
 
-Additional outcome:
+Additional outcomes:
+
+   +-----------+
+   | Retry     |
+   +-----+-----+
+         |
+         v
+     Same Step
 
    +-----------+
    | Terminate |
@@ -422,7 +438,7 @@ A pipeline execution is a concrete runtime instance of the pipeline carrying a s
 
 Execution describes how the pipeline behaves for one processing request.
 
-Pipeline execution also includes runtime execution options that influence how control outcomes such as failure and short-circuiting are handled for that specific run.
+Pipeline execution also includes runtime execution options that influence how control outcomes such as failure, retry, and break are handled for that specific run.
 
 Pipeline execution may also differ by initiation mode, including an explicit fire-and-forget mode where the caller starts the execution but does not wait for final completion.
 
@@ -492,7 +508,7 @@ To steer the design toward implementation without over-committing to low-level d
 * step definitions store step descriptors, not step instances
 * concrete steps are DI-resolved runtime components
 * execution options remain execution-scoped and are not baked into the static definition
-* hooks and decorators are attached at definition time, but participate at execution time
+* hooks and behaviors are attached at definition time, but participate at execution time
 
 The following interfaces are a suitable high-level starting point:
 
@@ -593,7 +609,7 @@ public abstract class PipelineHook<TContext> : IPipelineHook<TContext>
         ValueTask.CompletedTask;
 }
 
-public interface IPipelineDecorator<TContext>
+public interface IPipelineBehavior<TContext>
     where TContext : PipelineContextBase
 {
     ValueTask<Result> ExecuteAsync(
@@ -706,7 +722,8 @@ public enum PipelineControlOutcome
 {
     Continue,
     Skip,
-    ShortCircuit,
+    Retry,
+    Break,
     Terminate
 }
 
@@ -720,7 +737,9 @@ public sealed class PipelineControl
 
     public static PipelineControl Skip(Result result, string message = null);
 
-    public static PipelineControl ShortCircuit(Result result, string message = null);
+    public static PipelineControl Retry(Result result, string message = null);
+
+    public static PipelineControl Break(Result result, string message = null);
 
     public static PipelineControl Terminate(Result result, string message = null);
 }
@@ -735,14 +754,18 @@ public interface IPipelineDefinition
 
     IReadOnlyList<Type> HookTypes { get; }
 
-    IReadOnlyList<Type> DecoratorTypes { get; }
+    IReadOnlyList<Type> BehaviorTypes { get; }
 }
 
 public interface IPipelineStepDefinition
 {
     string Name { get; }
 
-    Type StepType { get; }
+    PipelineStepSourceKind SourceKind { get; }
+
+    Type StepType { get; } // populated when SourceKind is Type
+
+    PipelineInlineStepDescriptor InlineStep { get; } // populated when SourceKind is Inline
 
     IPipelineDefinitionCondition Condition { get; }
 
@@ -756,11 +779,35 @@ public interface IPipelineDefinitionBuilder
         Action<IPipelineStepDefinitionBuilder> configure = null)
         where TStep : class, IPipelineStep;
 
+    IPipelineDefinitionBuilder AddStep(
+        Action step,
+        string name = null,
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null);
+
+    IPipelineDefinitionBuilder AddAsyncStep(
+        Func<Task> step,
+        string name = null,
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null);
+
+    IPipelineDefinitionBuilder AddStep(
+        Func<IPipelineInlineStepExecution, PipelineControl> step,
+        string name = null,
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null);
+
+    IPipelineDefinitionBuilder AddAsyncStep(
+        Func<IPipelineInlineStepExecution, Task<PipelineControl>> step,
+        string name = null,
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null);
+
     IPipelineDefinitionBuilder AddHook<THook>(bool enabled = true)
         where THook : class;
 
-    IPipelineDefinitionBuilder AddDecorator<TDecorator>(bool enabled = true)
-        where TDecorator : class;
+    IPipelineDefinitionBuilder AddBehavior<TBehavior>(bool enabled = true)
+        where TBehavior : class;
 
     IPipelineDefinition Build();
 }
@@ -773,11 +820,59 @@ public interface IPipelineDefinitionBuilder<TContext>
         Action<IPipelineStepDefinitionBuilder> configure = null)
         where TStep : class, IPipelineStep;
 
+    IPipelineDefinitionBuilder<TContext> AddStep(
+        Action step,
+        string name = null,
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null);
+
+    IPipelineDefinitionBuilder<TContext> AddAsyncStep(
+        Func<Task> step,
+        string name = null,
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null);
+
+    IPipelineDefinitionBuilder<TContext> AddStep(
+        Action<TContext> step,
+        string name = null,
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null);
+
+    IPipelineDefinitionBuilder<TContext> AddAsyncStep(
+        Func<TContext, Task> step,
+        string name = null,
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null);
+
+    IPipelineDefinitionBuilder<TContext> AddStep(
+        Func<IPipelineInlineStepExecution, PipelineControl> step,
+        string name = null,
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null);
+
+    IPipelineDefinitionBuilder<TContext> AddAsyncStep(
+        Func<IPipelineInlineStepExecution, Task<PipelineControl>> step,
+        string name = null,
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null);
+
+    IPipelineDefinitionBuilder<TContext> AddStep(
+        Func<IPipelineInlineStepExecution<TContext>, PipelineControl> step,
+        string name = null,
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null);
+
+    IPipelineDefinitionBuilder<TContext> AddAsyncStep(
+        Func<IPipelineInlineStepExecution<TContext>, Task<PipelineControl>> step,
+        string name = null,
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null);
+
     IPipelineDefinitionBuilder<TContext> AddHook<THook>(bool enabled = true)
         where THook : class;
 
-    IPipelineDefinitionBuilder<TContext> AddDecorator<TDecorator>(bool enabled = true)
-        where TDecorator : class;
+    IPipelineDefinitionBuilder<TContext> AddBehavior<TBehavior>(bool enabled = true)
+        where TBehavior : class;
 
     IPipelineDefinition Build();
 }
@@ -786,6 +881,73 @@ public sealed class PipelineDefinitionBuilder(string name) : IPipelineDefinition
 
 public sealed class PipelineDefinitionBuilder<TContext>(string name) : IPipelineDefinitionBuilder<TContext>
     where TContext : PipelineContextBase;
+
+public enum PipelineStepSourceKind
+{
+    Type,
+    Inline
+}
+
+public interface IPipelineServiceResolver
+{
+    T GetRequiredService<T>();
+
+    object GetRequiredService(Type serviceType);
+
+    IEnumerable<T> GetServices<T>();
+
+    IEnumerable<object> GetServices(Type serviceType);
+
+    object GetService(Type serviceType);
+}
+
+public interface IPipelineInlineStepExecution
+{
+    string Name { get; }
+
+    Result Result { get; }
+
+    PipelineExecutionOptions Options { get; }
+
+    CancellationToken CancellationToken { get; }
+
+    IPipelineServiceResolver Services { get; }
+
+    PipelineControl Continue();
+
+    PipelineControl Continue(Result result);
+
+    PipelineControl Skip(string message = null);
+
+    PipelineControl Skip(Result result, string message = null);
+
+    PipelineControl Retry(string message = null);
+
+    PipelineControl Retry(Result result, string message = null);
+
+    PipelineControl Break(string message = null);
+
+    PipelineControl Break(Result result, string message = null);
+
+    PipelineControl Terminate(string message = null);
+
+    PipelineControl Terminate(Result result, string message = null);
+}
+
+public interface IPipelineInlineStepExecution<TContext> : IPipelineInlineStepExecution
+    where TContext : PipelineContextBase
+{
+    TContext Context { get; }
+}
+
+public sealed class PipelineInlineStepDescriptor
+{
+    public Type ContextType { get; }
+
+    public bool IsAsync { get; }
+
+    public Delegate Handler { get; }
+}
 
 public interface IPipelineStepDefinitionBuilder
 {
@@ -809,7 +971,9 @@ public sealed class PipelineExecutionOptions
 
     public bool AccumulateDiagnosticsOnFailure { get; set; } = true;
 
-    public bool AccumulateDiagnosticsOnShortCircuit { get; set; } = true;
+    public bool AccumulateDiagnosticsOnBreak { get; set; } = true;
+
+    public int MaxRetryAttemptsPerStep { get; set; } = 3;
 }
 
 public interface IPipelineExecutionOptionsBuilder
@@ -822,7 +986,9 @@ public interface IPipelineExecutionOptionsBuilder
 
     IPipelineExecutionOptionsBuilder AccumulateDiagnosticsOnFailure(bool value = true);
 
-    IPipelineExecutionOptionsBuilder AccumulateDiagnosticsOnShortCircuit(bool value = true);
+    IPipelineExecutionOptionsBuilder AccumulateDiagnosticsOnBreak(bool value = true);
+
+    IPipelineExecutionOptionsBuilder MaxRetryAttemptsPerStep(int value);
 
     PipelineExecutionOptions Build();
 }
@@ -992,6 +1158,11 @@ public interface IPipelineRegistrationBuilder
         string name,
         Action<IPipelineDefinitionBuilder<TContext>> configure)
         where TContext : PipelineContextBase;
+
+    IPipelineRegistrationBuilder WithPipelinesFromAssembly<TMarker>();
+
+    IPipelineRegistrationBuilder WithPipelinesFromAssemblies(
+        params Assembly[] assemblies);
 }
 
 public static class PipelineServiceCollectionExtensions
@@ -1006,16 +1177,19 @@ This first cut intentionally keeps some supporting types lightweight, but the ru
 * `PipelineContextBase` stays clean for client usage by exposing a dedicated `Pipeline` child object that contains shared execution metadata, simple engine-managed metrics, and a reusable `PropertyBag`
 * `NullPipelineContext` is the no-context implementation used to normalize no-context pipelines onto the same execution path
 * `IPipelineHook<TContext>` defines the observable execution events, while `PipelineHook<TContext>` offers no-op defaults so hooks can override only the moments they care about
-* `IPipelineDecorator<TContext>` defines the around-execution wrapper contract for full pipeline decoration
+* `IPipelineBehavior<TContext>` defines the around-execution wrapper contract for full pipeline behavior composition
 * `PipelineControl` represents the full step-control contract: the updated accumulated `Result` together with the step control outcome
+* `IPipelineInlineStepExecution` / `IPipelineInlineStepExecution<TContext>` define the full-parity execution object exposed to advanced inline step delegates
+* `IPipelineServiceResolver` keeps inline step DI access lightweight while still sharing the active pipeline execution scope, including support for resolving single services and multi-registration collections
+* `PipelineInlineStepDescriptor` represents an immutable delegate-backed step descriptor for inline step registrations
 * `PipelineDefinitionContext` represents configuration or environment data used for structural step inclusion
 * `PipelineExecutionHandle` represents the acknowledgement returned when background execution is accepted, without carrying the final `Result` directly
 * `PipelineCompletion` is the callback payload for `WhenCompleted(...)`
 * `PipelineExecutionSnapshot` represents the tracked state for a previously started execution
 * `IPipelineDefinitionSource<TContext>` / `PipelineDefinition<TContext>` provide an optional strongly typed higher-level packaging model for keeping a named pipeline definition, its nested steps, and its configuration together in one class
-* `IPipelineRegistrationBuilder` represents the application setup API for registering packaged or inline pipeline definitions
+* `IPipelineRegistrationBuilder` represents the application setup API for registering packaged or inline pipeline definitions, whether they are added one by one or discovered from one or more assemblies
 
-The important implementation direction is that `StepType` represents the DI-registered step type, while the static definition remains a pure descriptor model that is safe to cache and reuse.
+The important implementation direction is that a pipeline step definition may describe either a DI-backed step type or an inline delegate-backed step descriptor, while the static definition remains a pure immutable descriptor model that is safe to cache and reuse.
 
 For execution, the important direction is that awaited execution and background execution are expressed as separate explicit methods rather than as an implicit mode switch hidden inside execution options.
 
@@ -1041,34 +1215,39 @@ The important authoring direction is:
 * client-facing entry points may still use generic facades where that improves clarity and explicitness
 * client-facing definition authoring should support both direct builder usage with `PipelineDefinitionBuilder<TContext>` and packaged definition usage with `PipelineDefinition<TContext>`
 * `IPipelineDefinitionBuilder<TContext>` should expose real typed fluent methods so context-aware builder usage stays explicit all the way through definition authoring
+* the same inline step authoring surface should be available everywhere the definition builder is exposed: direct builder usage, packaged `PipelineDefinition<TContext>.Configure(...)`, and inline application registration via `services.AddPipelines().WithPipeline(..., builder => ...)`
 * packaged definitions should also stay strongly typed through `IPipelineDefinitionSource<TContext>` so the definition itself carries its declared context type
 * packaged pipeline definitions should default their `Name` from the class name with a trailing `Pipeline` removed and converted to kebab-case, so `OrderImportPipeline` becomes `order-import`, while still allowing explicit override when needed
 * `PipelineDefinition<TContext>` should remain a definition source only; the executable runtime contract remains `IPipeline<TContext>` resolved from the factory
 * direct builder usage should require the pipeline name in the builder constructor so named pipelines stay first-class and cannot be forgotten
 * step names should belong directly to the step type through `IPipelineStep.Name` rather than optional `WithName(...)` calls inside fluent registration
 * the default step name should come from the class name with a trailing `Step` removed and converted to kebab-case, so `PersistOrdersStep` becomes `persist-orders`, while still allowing explicit override when a different stable step identity is needed
+* inline steps should also have stable names for logging, diagnostics, and tracking; if no explicit name is provided, the builder should generate names such as `inline-step-1`, `inline-step-2`, and so on within the built pipeline definition
 * the step builder callback remains useful for optional structural concerns such as conditions and metadata, but not for mandatory step identity
-* `AddStep(...)`, `AddHook(...)`, and `AddDecorator(...)` should all support a simple optional `enabled` boolean for low-friction conditional registration when richer structural conditions are not needed
-* when `enabled` is `false`, the step, hook, or decorator should not be added to the registered pipeline definition at all and therefore should not participate in execution later
+* `AddStep(...)`, `AddAsyncStep(...)`, `AddHook(...)`, and `AddBehavior(...)` should all support a simple optional `enabled` boolean for low-friction conditional registration when richer structural conditions are not needed
+* when `enabled` is `false`, the step, hook, or behavior should not be added to the registered pipeline definition at all and therefore should not participate in execution later
 * typed sync step authoring remains available through `PipelineStep<TContext>`
 * typed async step authoring remains available through `AsyncPipelineStep<TContext>`
 * no-context sync step authoring remains explicit through `PipelineStep`, which internally maps to `PipelineStep<NullPipelineContext>`
 * no-context async step authoring remains explicit through `AsyncPipelineStep`, which internally maps to `AsyncPipelineStep<NullPipelineContext>`
+* inline step authoring should support both low-friction shorthand delegates and advanced execution-object delegates without creating a second runtime model
+* shorthand delegates such as `Action`, `Func<Task>`, `Action<TContext>`, and `Func<TContext, Task>` should adapt into the same internal inline step model and automatically return `PipelineControl.Continue(...)` with the unchanged carried `Result`
+* advanced inline delegates should receive an execution object that exposes the carried `Result`, execution options, cancellation token, typed context when available, and lightweight scoped service resolution for both single services and multi-service collections
 * generic factory calls such as `Create<TContext>(...)` should validate that `TContext` matches the registered pipeline definition `ContextType`
 * `Create<TPipelineDefinition>()` should support ergonomic lookup by packaged definition type for packaged pipelines that execute without a shared context
 * `Create<TPipelineDefinition, TContext>()` should remain available when the caller wants both packaged definition lookup and an explicitly typed runtime pipeline contract
 * the engine should validate that the provided runtime context matches the definition `ContextType`
 * calling a no-context execution overload for a context-aware pipeline should fail fast with a clear configuration/runtime error rather than relying on an invalid cast
-* the definition builder should validate that added steps are compatible with the configured pipeline context type by inferring step context from the closed generic `PipelineStep<TContext>` or `AsyncPipelineStep<TContext>` base type, while non-generic step bases imply `NullPipelineContext`
-* the definition builder should validate hook and decorator compatibility by inspecting their closed generic `IPipelineHook<TContext>` and `IPipelineDecorator<TContext>` interfaces
-* hook and decorator compatibility should use context assignability rather than exact type equality so reusable cross-cutting components such as `PipelineHook<PipelineContextBase>` or `IPipelineDecorator<PipelineContextBase>` can participate in pipelines with more specific derived contexts
-* if a step, hook, or decorator does not expose a determinable supported context type through those patterns, validation should fail explicitly rather than deferring to runtime casts
+* the definition builder should validate that added steps are compatible with the configured pipeline context type by inferring step context from the closed generic `PipelineStep<TContext>` or `AsyncPipelineStep<TContext>` base type for type-backed steps, while inline step descriptors carry their own context type and non-generic step bases imply `NullPipelineContext`
+* the definition builder should validate hook and behavior compatibility by inspecting their closed generic `IPipelineHook<TContext>` and `IPipelineBehavior<TContext>` interfaces
+* hook and behavior compatibility should use context assignability rather than exact type equality so reusable cross-cutting components such as `PipelineHook<PipelineContextBase>` or `IPipelineBehavior<PipelineContextBase>` can participate in pipelines with more specific derived contexts
+* if a step, hook, or behavior does not expose a determinable supported context type through those patterns, validation should fail explicitly rather than deferring to runtime casts
 * step-context mismatches should surface as explicit pipeline validation errors rather than raw `InvalidCastException` behavior
 
 The important validation direction is:
 
 * pipeline definitions should be validated before execution
-* validation should include duplicate step names, incompatible step/context combinations, missing required context configuration, and unresolved DI step registrations
+* validation should include duplicate step names, incompatible step/context combinations, missing required context configuration, unresolved DI step registrations, and invalid inline step descriptors
 * validation should also include duplicate pipeline names across all registered definitions
 * validation failures should surface as explicit pipeline configuration/validation errors
 
@@ -1086,7 +1265,7 @@ The important result direction is:
 * because `Result` is immutable, each step receives the current accumulated `Result` and returns the updated accumulated `Result` inside `PipelineControl`
 * step code can keep reassigning the same local `result` variable, even though each assignment produces a new immutable `Result`
 * the final awaited result returned by the pipeline is the last carried `Result`
-* success or failure is expressed through the carried `Result`, while `PipelineControl.Outcome` expresses control semantics such as continue, skip, short-circuit, or terminate
+* success or failure is expressed through the carried `Result`, while `PipelineControl.Outcome` expresses control semantics such as continue, skip, retry, break, or terminate
 * `PipelineControl` should be understood as one integral control object, not as a primary outcome plus secondary metadata
 
 The important options direction is:
@@ -1101,8 +1280,13 @@ The important registration direction is:
 
 * application setup should support packaged registration through `services.AddPipelines().WithPipeline<TPipelineDefinition>()`
 * application setup should also support inline registration through `services.AddPipelines().WithPipeline<TContext>(name, builder => ...)`
+* application setup should also support packaged bulk registration through `services.AddPipelines().WithPipelinesFromAssembly<TMarker>()` and `services.AddPipelines().WithPipelinesFromAssemblies(params Assembly[] assemblies)`
 * both registration styles should produce the same underlying immutable `IPipelineDefinition` model
+* `services.AddPipelines()` should be additive and safe to call multiple times in the same host so each module can register its own pipelines independently
+* repeated `AddPipelines()` calls should contribute to one shared pipeline registration set rather than resetting or replacing earlier registrations
+* assembly-based registration should discover concrete packaged pipeline definition types only; it should not auto-register steps, hooks, or behaviors
 * registration should reject duplicate pipeline names immediately during setup instead of allowing ambiguous runtime lookup
+* duplicate pipeline-name validation should apply across the full combined registration set built from all `AddPipelines()` calls and all assembly scans in the host
 * attempting to register a second pipeline with the same logical name should throw an explicit configuration/registration exception
 * because pipeline names are mandatory, both inline registration and direct builder usage should require the logical name up front rather than relying on a later `WithName(...)` call
 
@@ -1135,7 +1319,7 @@ public sealed class OrderImportContext : PipelineContextBase
 }
 ```
 
-Each step is a DI-managed type deriving from either the sync or async typed authoring base class while still participating in the single internal engine contract:
+Steps may be authored either as DI-managed types deriving from the sync or async typed base classes, or inline delegates attached directly to the pipeline definition builder. Both paths still participate in the same single internal engine contract:
 
 ```csharp
 public sealed class ValidateOrderImportStep : PipelineStep<OrderImportContext>
@@ -1168,29 +1352,6 @@ public sealed class ValidateOrderImportStep : PipelineStep<OrderImportContext>
     }
 }
 
-public sealed class LoadOrdersStep(IOrderImportRepository repository)
-    : AsyncPipelineStep<OrderImportContext>
-{
-    protected override async ValueTask<PipelineControl> ExecuteAsync(
-        OrderImportContext context,
-        Result result,
-        PipelineExecutionOptions options,
-        CancellationToken cancellationToken)
-    {
-        var orders = await repository.LoadAsync(context.SourceFileName, cancellationToken);
-
-        context.ImportedOrderCount = orders.Count;
-        result = result.WithMessage($"Loaded {orders.Count} orders.");
-
-        options.Progress?.Report(new ProgressReport(
-            "order-import",
-            [$"Loaded {orders.Count} orders"],
-            50));
-
-        return PipelineControl.Continue(result);
-    }
-}
-
 public sealed class PersistOrdersStep(IOrderRepository repository)
     : AsyncPipelineStep<OrderImportContext>
 {
@@ -1215,7 +1376,7 @@ public sealed class PersistOrdersStep(IOrderRepository repository)
 }
 ```
 
-The static definition is built as a named blueprint using step types rather than step instances:
+The static definition is built as a named blueprint using step descriptors rather than live step instances. Those descriptors may point either to DI-backed step types or to inline delegates:
 
 ```csharp
 var loadEnabled = true;
@@ -1223,10 +1384,52 @@ var loadEnabled = true;
 var definition =
     new PipelineDefinitionBuilder<OrderImportContext>("order-import")
         .AddStep<ValidateOrderImportStep>()
-        .AddStep<LoadOrdersStep>(loadEnabled)
+        .AddStep(
+            () => Console.WriteLine("Preparing order import"),
+            name: "prepare-inline")
+        .AddAsyncStep(
+            async () =>
+            {
+                await Task.Delay(10);
+            },
+            name: "warm-up-inline")
+        .AddStep(context =>
+        {
+            context.Warnings.Add("Inline context step executed.");
+        })
+        .AddAsyncStep(
+            async execution =>
+            {
+                var repository = execution.Services.GetRequiredService<IOrderImportRepository>();
+                var orders = await repository.LoadAsync(
+                    execution.Context.SourceFileName,
+                    execution.CancellationToken);
+
+                execution.Context.ImportedOrderCount = orders.Count;
+
+                var result = execution.Result
+                    .WithMessage($"Loaded {orders.Count} orders inline.");
+
+                if (orders.Count == 0)
+                {
+                    return execution.Break(
+                        result.WithMessage("No orders were found for import."),
+                        "Nothing to import.");
+                }
+
+                execution.Options.Progress?.Report(new ProgressReport(
+                    "order-import",
+                    [$"Loaded {orders.Count} orders inline"],
+                    50));
+
+                return execution.Continue(result);
+            },
+            name: "load-inline",
+            enabled: loadEnabled)
         .AddStep<PersistOrdersStep>()
         .AddHook<PipelineAuditHook>()
-        .AddDecorator<PipelineTimingDecorator>()
+        .AddBehavior<PipelineTracingBehavior>()
+        .AddBehavior<PipelineTimingBehavior>()
         .Build();
 ```
 
@@ -1241,10 +1444,40 @@ public sealed class OrderImportPipeline : PipelineDefinition<OrderImportContext>
 
         builder
             .AddStep<ValidateOrderImportStep>()
-            .AddStep<LoadOrdersStep>(loadEnabled)
+            .AddStep(
+                () => Console.WriteLine("Packaged pipeline setup inline step"),
+                name: "packaged-prepare")
+            .AddAsyncStep(
+                async () =>
+                {
+                    await Task.Delay(10);
+                },
+                name: "packaged-warm-up")
+            .AddStep(context =>
+            {
+                context.Warnings.Add("Packaged inline context step executed.");
+            })
+            .AddAsyncStep(
+                async execution =>
+                {
+                    var repository = execution.Services.GetRequiredService<IOrderImportRepository>();
+                    var orders = await repository.LoadAsync(
+                        execution.Context.SourceFileName,
+                        execution.CancellationToken);
+
+                    execution.Context.ImportedOrderCount = orders.Count;
+
+                    var result = execution.Result.WithMessage(
+                        $"Loaded {orders.Count} orders from packaged inline step.");
+
+                    return execution.Continue(result);
+                },
+                name: "packaged-load-inline",
+                enabled: loadEnabled)
             .AddStep<PersistOrdersStep>()
             .AddHook<PipelineAuditHook>()
-            .AddDecorator<PipelineTimingDecorator>();
+            .AddBehavior<PipelineTracingBehavior>()
+            .AddBehavior<PipelineTimingBehavior>();
     }
 
     public sealed class ValidateOrderImportStep : PipelineStep<OrderImportContext>
@@ -1256,22 +1489,6 @@ public sealed class OrderImportPipeline : PipelineDefinition<OrderImportContext>
         {
             result = result.WithMessage("Validation from packaged pipeline definition.");
             return PipelineControl.Continue(result);
-        }
-    }
-
-    public sealed class LoadOrdersStep(IOrderImportRepository repository)
-        : AsyncPipelineStep<OrderImportContext>
-    {
-        protected override async ValueTask<PipelineControl> ExecuteAsync(
-            OrderImportContext context,
-            Result result,
-            PipelineExecutionOptions options,
-            CancellationToken cancellationToken)
-        {
-            var orders = await repository.LoadAsync(context.SourceFileName, cancellationToken);
-            context.ImportedOrderCount = orders.Count;
-
-            return PipelineControl.Continue(result.WithMessage($"Loaded {orders.Count} orders."));
         }
     }
 
@@ -1297,13 +1514,77 @@ Application setup should support both registration styles:
 
 ```csharp
 services.AddPipelines()
-    .WithPipeline<OrderImportPipeline>()
+    .WithPipeline<OrderImportPipeline>();
+
+services.AddPipelines()
     .WithPipeline<OrderImportContext>("order-import-inline", builder => builder
         .AddStep<ValidateOrderImportStep>()
-        .AddStep<LoadOrdersStep>(enabled: true)
+        .AddStep(
+            () => Console.WriteLine("Registration-time inline step"),
+            name: "registration-prepare")
+        .AddAsyncStep(
+            async () =>
+            {
+                await Task.Delay(10);
+            },
+            name: "registration-warm-up")
+        .AddStep(context =>
+        {
+            context.Warnings.Add("Inline registration context step executed.");
+        })
+        .AddAsyncStep(
+            async execution =>
+            {
+                var repository = execution.Services.GetRequiredService<IOrderImportRepository>();
+                var orders = await repository.LoadAsync(
+                    execution.Context.SourceFileName,
+                    execution.CancellationToken);
+
+                execution.Context.ImportedOrderCount = orders.Count;
+
+                return execution.Continue(
+                    execution.Result.WithMessage($"Loaded {orders.Count} orders from registration inline step."));
+            },
+            name: "registration-load-inline",
+            enabled: true)
         .AddStep<PersistOrdersStep>()
         .AddHook<PipelineAuditHook>()
-        .AddDecorator<PipelineTimingDecorator>());
+        .AddBehavior<PipelineTracingBehavior>()
+        .AddBehavior<PipelineTimingBehavior>());
+
+services.AddPipelines()
+    .WithPipelinesFromAssembly<OrderImportPipeline>();
+
+services.AddPipelines()
+    .WithPipelinesFromAssemblies(
+        typeof(OrderImportPipeline).Assembly,
+        typeof(FileCleanupPipeline).Assembly);
+```
+
+This additive registration model is especially important for modular hosts, where each module should be able to register its own pipelines without coordinating one large central pipeline-registration block:
+
+```csharp
+public static class OrdersModuleServiceCollectionExtensions
+{
+    public static IServiceCollection AddOrdersModule(this IServiceCollection services)
+    {
+        services.AddPipelines()
+            .WithPipelinesFromAssembly<OrderImportPipeline>();
+
+        return services;
+    }
+}
+
+public static class MaintenanceModuleServiceCollectionExtensions
+{
+    public static IServiceCollection AddMaintenanceModule(this IServiceCollection services)
+    {
+        services.AddPipelines()
+            .WithPipeline<FileCleanupPipeline>();
+
+        return services;
+    }
+}
 ```
 
 At runtime, a context-aware executable pipeline should be resolved either by name plus context type or by packaged definition type plus explicit context type. The one-generic packaged-definition overload is best reserved for no-context pipelines where no typed context contract is needed:
@@ -1367,7 +1648,10 @@ var snapshot = await executionTracker.GetAsync(handle.ExecutionId, cancellationT
 This example illustrates the intended split of responsibilities:
 
 * step classes contain focused processing logic and may report progress
+* inline steps provide a low-friction authoring alternative when creating a dedicated class would add more ceremony than value
 * a single pipeline may freely mix synchronous `PipelineStep...` and asynchronous `AsyncPipelineStep...` implementations
+* the same inline step API is available everywhere a pipeline definition builder is exposed, including direct builder usage, packaged pipeline definitions, and `AddPipelines().WithPipeline(..., builder => ...)`
+* `PipelineTracingBehavior` is the optional switch that enables OpenTelemetry-friendly pipeline activities with nested step activities
 * direct builder usage remains available when a definition should be created inline
 * `PipelineDefinition<TContext>` offers a higher-level packaging model when a pipeline should be kept together with its related step types
 * packaged definitions are also strongly typed through `IPipelineDefinitionSource<TContext>`
@@ -1378,10 +1662,11 @@ This example illustrates the intended split of responsibilities:
 * one accumulated `Result` is carried forward through all steps, with each step reassigning and returning the updated immutable result
 * a step may return `Continue` with a failed `Result`, leaving `ContinueOnFailure` policy to decide whether later steps still run
 * the engine internally normalizes no-context execution to `NullPipelineContext` so the execution path stays unified
+* advanced inline steps receive an execution object that exposes the current `Result`, lightweight service resolution, execution options, and the cancellation token
 * execution options carry the per-run behavior settings and may be configured inline through a builder
 * awaited and background execution remain explicit caller choices
 
-A pipeline that does not need shared execution state still uses the same `IPipeline` interface, but the caller can omit context entirely and the engine will use its internal `NullPipelineContext`:
+A pipeline that does not need shared execution state still uses the same `IPipeline` interface, and its definition builder can use either class-based or inline no-context steps. The caller can omit context entirely and the engine will use its internal `NullPipelineContext`:
 
 ```csharp
 public sealed class CleanupTempFilesStep(IFileCleanupService cleanupService)
@@ -1398,6 +1683,22 @@ public sealed class CleanupTempFilesStep(IFileCleanupService cleanupService)
         return PipelineControl.Continue(result);
     }
 }
+
+var cleanupDefinition =
+    new PipelineDefinitionBuilder("file-cleanup")
+        .AddStep(() => Console.WriteLine("Preparing file cleanup"))
+        .AddAsyncStep(async execution =>
+        {
+            var cleanupService = execution.Services.GetRequiredService<IFileCleanupService>();
+            var deletedFiles = cleanupService.DeleteExpired();
+
+            var result = execution.Result.WithMessage(
+                $"Deleted {deletedFiles} expired temp files from inline cleanup step.");
+
+            return execution.Continue(result);
+        })
+        .AddStep<CleanupTempFilesStep>()
+        .Build();
 
 var cleanupPipeline = pipelineFactory.Create("file-cleanup");
 
@@ -1455,9 +1756,9 @@ A pipeline definition may express that some steps only participate under certain
 
 This allows the blueprint to represent optional participation clearly.
 
-For simple cases, the fluent builder should also support lightweight boolean inclusion flags such as `.AddStep<LoadOrdersStep>(enabled)`, `.AddHook<PipelineAuditHook>(enabled)`, or `.AddDecorator<PipelineTimingDecorator>(enabled)` so authors do not need to create a richer condition object for every basic toggle.
+For simple cases, the fluent builder should also support lightweight boolean inclusion flags such as `.AddStep<LoadOrdersStep>(enabled)`, `.AddAsyncStep(async execution => { ... }, enabled: enabled)`, `.AddHook<PipelineAuditHook>(enabled)`, or `.AddBehavior<PipelineTimingBehavior>(enabled)` so authors do not need to create a richer condition object for every basic toggle.
 
-These boolean flags are definition-time or registration-time inclusion decisions. If `enabled` is `false`, the corresponding step, hook, or decorator is omitted from the built pipeline definition and is therefore not present during execution at all.
+These boolean flags are definition-time or registration-time inclusion decisions. If `enabled` is `false`, the corresponding step, hook, or behavior is omitted from the built pipeline definition and is therefore not present during execution at all.
 
 ### 12.2 Runtime conditions
 
@@ -1465,7 +1766,8 @@ Even when a step is part of the pipeline definition, the step may still decide a
 
 * execute normally
 * skip itself
-* short-circuit
+* retry
+* break
 * return a failed `Result`
 * terminate the remaining pipeline
 
@@ -1509,7 +1811,8 @@ The combined evaluation may then produce the following effects:
 
 * execute normally
 * skip self
-* short‑circuit the pipeline
+* retry the current step
+* break the pipeline
 * terminate remaining steps
 * continue with a failed carried `Result`
 * stop because the carried `Result` is failed and execution policy treats that as terminal
@@ -1562,8 +1865,9 @@ Execution policies may define behavior such as:
 
 * whether execution continues after a (specific) failure(s) or stops immediately
 * whether multiple errors are accumulated or execution fails fast
-* whether diagnostics are collected on failure or short-circuit
-* how terminal control outcomes such as short-circuit and terminate are reflected in diagnostics and final reporting
+* whether retry requests are honored and how many attempts are allowed per step
+* whether diagnostics are collected on failure or break
+* how terminal control outcomes such as break and terminate are reflected in diagnostics and final reporting
 
 ### 13.3 Runtime execution options
 
@@ -1575,7 +1879,8 @@ Examples of runtime execution options include:
 
 * whether execution continues after a failure or stops immediately
 * whether diagnostics are accumulated when a failure occurs
-* whether diagnostics are accumulated when a short-circuit occurs
+* whether diagnostics are accumulated when a break occurs
+* how many retry attempts are allowed per step before retry exhaustion becomes a failure
 * whether a progress reporter is supplied for execution feedback
 * whether a completion callback is supplied for background execution completion
 
@@ -1607,7 +1912,8 @@ Runtime execution options determine how the pipeline interprets a step once it h
 For example:
 
 * a step may return `Continue` while also returning a failed accumulated `Result`, and policy then decides whether execution stops or later steps still run
-* a short-circuit finalizes the pipeline successfully and always stops later step execution
+* a `Retry` outcome re-executes the current step with the returned carried `Result` and the current context state, subject to the configured retry limit
+* a break finalizes the pipeline successfully and always stops later step execution
 * diagnostics may either stop at the terminating outcome or continue to be accumulated into the final execution report
 * execution may either hold the caller until completion or continue in the background after an explicit fire-and-forget invocation
 * progress may be reported continuously to the caller while execution is in progress
@@ -1684,7 +1990,7 @@ At the conceptual level, result handling should support:
 * execution diagnostics
 * knowledge of early completion or early termination
 
-The final result should also reflect the effect of runtime execution options, including whether accumulated failure state stopped execution immediately or allowed later steps to continue and whether diagnostics were accumulated beyond short-circuit or termination outcomes.
+The final result should also reflect the effect of runtime execution options, including whether accumulated failure state stopped execution immediately or allowed later steps to continue, whether retries were attempted before the final outcome, and whether diagnostics were accumulated beyond break or termination outcomes.
 
 For fire-and-forget execution, the final result remains important, but it is observed through execution tracking, diagnostics, hooks, logs, or other monitoring mechanisms rather than through the immediate initiating call.
 
@@ -1711,7 +2017,7 @@ The design should support visibility into:
 * which steps actually executed
 * which steps were skipped
 * which step ended the flow, if any
-* whether execution completed normally, short-circuited, terminated, or failed
+* whether execution completed normally, broke early, terminated, or failed
 * whether a fire-and-forget execution was accepted, running, completed, or failed
 * what notable execution events occurred
 
@@ -1729,12 +2035,85 @@ Diagnostics are valuable for:
 
 The pipeline execution engine itself should provide extensive built-in structured logging.
 
-This logging should be part of the core engine behavior rather than something delegated only to hooks, decorators, or consumer-written steps. Hooks and decorators may enrich logging, but they should not be the only mechanism by which pipeline flow becomes understandable.
+This logging should be part of the core engine behavior rather than something delegated only to hooks, behaviors, or consumer-written steps. Hooks and behaviors may enrich logging, but they should not be the only mechanism by which pipeline flow becomes understandable.
+
+The implementation should follow the existing devkit logging pattern:
+
+* define a feature-local `Constants.cs` with `public const string LogKey = "PLN";`
+* use source-generated `TypedLogger` partial methods with `[LoggerMessage(...)]` for the internal pipeline and step logs
+* prefer the same high-performance logging style already used across devkit features such as commands, queries, jobs, and identity
+
+The log message shape should follow the pipeline-specific general template:
+
+* `[PLN] message (prop1=abc, prop2=xyz, ...)`
+* `[PLN] message finished (prop1=abc, prop2=xyz, ...) -> took 12.23ms`
+
+In implementation terms, the internal message templates should use the `Constants.LogKey` placeholder and produce that standardized shape consistently for both pipeline-level and step-level logs.
+
+Illustrative examples:
+
+```csharp
+public struct Constants
+{
+    public const string LogKey = "PLN";
+}
+
+public static partial class TypedLogger
+{
+    [LoggerMessage(
+        EventId = 0,
+        Level = LogLevel.Information,
+        Message = "[{LogKey}] pipeline executing (pipeline={PipelineName}, executionId={ExecutionId}, mode={Mode})")]
+    public static partial void LogPipelineExecuting(
+        ILogger logger,
+        string logKey,
+        string pipelineName,
+        string executionId,
+        string mode);
+
+    [LoggerMessage(
+        EventId = 1,
+        Level = LogLevel.Information,
+        Message = "[{LogKey}] pipeline executed (pipeline={PipelineName}, executionId={ExecutionId}, success={Success}) -> took {ElapsedMilliseconds:0.00}ms")]
+    public static partial void LogPipelineExecuted(
+        ILogger logger,
+        string logKey,
+        string pipelineName,
+        string executionId,
+        bool success,
+        double elapsedMilliseconds);
+
+    [LoggerMessage(
+        EventId = 2,
+        Level = LogLevel.Debug,
+        Message = "[{LogKey}] step executing (pipeline={PipelineName}, step={StepName}, executionId={ExecutionId})")]
+    public static partial void LogStepExecuting(
+        ILogger logger,
+        string logKey,
+        string pipelineName,
+        string stepName,
+        string executionId);
+
+    [LoggerMessage(
+        EventId = 3,
+        Level = LogLevel.Debug,
+        Message = "[{LogKey}] step executed (pipeline={PipelineName}, step={StepName}, executionId={ExecutionId}, outcome={Outcome}, resultSuccess={ResultSuccess}) -> took {ElapsedMilliseconds:0.00}ms")]
+    public static partial void LogStepExecuted(
+        ILogger logger,
+        string logKey,
+        string pipelineName,
+        string stepName,
+        string executionId,
+        string outcome,
+        bool resultSuccess,
+        double elapsedMilliseconds);
+}
+```
 
 At a conceptual level, engine logging should make the following visible:
 
 * pipeline execution started, including pipeline name, execution identity, and initiation mode
-* step selected for execution, skipped, short-circuited, or terminated
+* step selected for execution, retried, skipped, broke early, or terminated
 * step execution started and step execution completed
 * the returned `PipelineControl`
 * the returned non-generic `Result`, including success/failure state and notable message/error summaries
@@ -1744,11 +2123,21 @@ At a conceptual level, engine logging should make the following visible:
 
 Engine logging should use the resolved pipeline and step names that come from the pipeline/step naming conventions or explicit overrides. It should not default to CLR type names when a framework-level pipeline or step name is available.
 
-This internal logging should make it possible to reconstruct how the pipeline flowed through its steps and why the engine continued, stopped, short-circuited, or terminated.
+Step-level and pipeline-level internal logs should use the same general template and the same `PLN` log key so they remain easy to scan, correlate, and query consistently across the feature.
+
+This internal logging should make it possible to reconstruct how the pipeline flowed through its steps and why the engine continued, retried, stopped, broke early, or terminated.
 
 ### 14.4 Beyond logging
 
 Observability is broader than logging. The pipeline should conceptually support structured execution insight that can later be surfaced through logging, metrics, traces, or other monitoring mechanisms.
+
+For tracing specifically, the pipeline design should support OpenTelemetry-friendly activity tracing through `ActivitySource` and the shared `ActivityHelper.StartActvity(...)` pattern already used in other devkit features.
+
+Tracing should be modeled as an optional behavior rather than as an always-on engine responsibility. When that tracing behavior is registered, it should establish a pipeline-level activity around the whole execution and the engine should create nested step activities inside that active pipeline activity for each executed step.
+
+Tracing should use the resolved pipeline and step names, not CLR type names, so trace spans align with the same canonical names used by logging and diagnostics.
+
+The pipeline-specific tracing model should not depend on module names. Instead, it should use pipeline execution metadata such as pipeline name, execution id, correlation id, and step name.
 
 Progress reporting is part of this observability model, but it is specifically caller-oriented and execution-time oriented rather than only operational or post-execution.
 
@@ -1780,9 +2169,9 @@ This keeps the step model focused and preserves separation of concerns.
 
 ---
 
-## 16. Hooks and Decorators
+## 16. Hooks and Behaviors
 
-The design should distinguish conceptually between hooks and decorators.
+The design should distinguish conceptually between hooks and behaviors.
 
 ### 16.1 Hooks
 
@@ -1853,31 +2242,36 @@ public sealed class PipelineAuditHook(ILogger<PipelineAuditHook> logger)
 }
 ```
 
-### 16.2 Decorators
+### 16.2 Behaviors
 
-Decorators wrap pipeline or step execution with additional cross-cutting behavior.
+Behaviors wrap pipeline execution with additional cross-cutting behavior.
 
-Decorators are intended for concerns such as:
+Behaviors are the devkit-facing name for this extension point because they describe the added execution behavior in familiar framework terms.
+
+Internally, behaviors follow the decorator pattern: each behavior receives `next()` and can run logic before, after, or around the inner execution.
+
+Behaviors are intended for concerns such as:
 
 * diagnostics
 * logging
 * timing
 * monitoring
+* tracing
 * policy enforcement
 
-Engine-internal logging remains a core execution responsibility even when decorators are present. Decorators may enrich or redirect logging behavior, but they should not replace the baseline structured logging provided by the pipeline engine itself.
+Engine-internal logging remains a core execution responsibility even when behaviors are present. Behaviors may enrich or redirect logging behavior, but they should not replace the baseline structured logging provided by the pipeline engine itself.
 
-Pipeline decorators should compose in registration order around the full pipeline execution.
+Pipeline behaviors should compose in registration order around the full pipeline execution.
 
-If a decorator throws, the engine should treat that the same way it treats a step exception: log it, translate it into `ExceptionError` on the carried `Result`, and then apply the active execution policy.
+If a behavior throws, the engine should treat that the same way it treats a step exception: log it, translate it into `ExceptionError` on the carried `Result`, and then apply the active execution policy.
 
-Decorators should follow the same compatibility principle as hooks. A decorator declared for `PipelineContextBase` should be reusable across pipelines with more specific derived contexts when it only relies on the shared execution metadata.
+Behaviors should follow the same compatibility principle as hooks. A behavior declared for `PipelineContextBase` should be reusable across pipelines with more specific derived contexts when it only relies on the shared execution metadata.
 
-For example, a timing decorator is a good fit when the concern must wrap the full pipeline execution and measure elapsed time around the actual work:
+For example, a timing behavior is a good fit when the concern must wrap the full pipeline execution and measure elapsed time around the actual work:
 
 ```csharp
-public sealed class PipelineTimingDecorator(ILogger<PipelineTimingDecorator> logger)
-    : IPipelineDecorator<OrderImportContext>
+public sealed class PipelineTimingBehavior(ILogger<PipelineTimingBehavior> logger)
+    : IPipelineBehavior<OrderImportContext>
 {
     public async ValueTask<Result> ExecuteAsync(
         OrderImportContext context,
@@ -1913,11 +2307,63 @@ public sealed class PipelineTimingDecorator(ILogger<PipelineTimingDecorator> log
 }
 ```
 
-This example shows the intended low-level contract directly: the decorator wraps `next()` and therefore participates around execution instead of merely observing events after they happen.
+This example shows the intended low-level contract directly: the behavior follows the decorator pattern by wrapping `next()` and therefore participates around execution instead of merely observing events after they happen.
+
+Another useful optional behavior is tracing. A `PipelineTracingBehavior` should apply the existing devkit activity pattern to pipeline execution by creating one outer pipeline activity and letting the engine create nested step activities inside that scope.
+
+Tracing should follow the established `ActivityHelper.StartActvity(...)` helper pattern and use `ActivitySourceExtensions.Find(...)` to resolve an `ActivitySource` by pipeline name, falling back to `default` or the current activity source when necessary. Module-specific concepts are not relevant here; the tracing identity should come from the pipeline itself.
+
+```csharp
+public sealed class PipelineTracingBehavior(
+    IEnumerable<ActivitySource> activitySources)
+    : IPipelineBehavior<PipelineContextBase>
+{
+    public async ValueTask<Result> ExecuteAsync(
+        PipelineContextBase context,
+        Func<ValueTask<Result>> next,
+        CancellationToken cancellationToken)
+    {
+        var activitySource = activitySources.Find(context.Pipeline.Name);
+
+        return await activitySource.StartActvity(
+            $"PIPELINE Execute {context.Pipeline.Name}",
+            async (activity, ct) =>
+            {
+                activity?.AddEvent(new ActivityEvent(
+                    $"executing (pipeline={context.Pipeline.Name}, executionId={context.Pipeline.ExecutionId})"));
+
+                return await next();
+            },
+            ActivityKind.Internal,
+            tags: new Dictionary<string, string>
+            {
+                ["pipeline.name"] = context.Pipeline.Name,
+                ["pipeline.execution_id"] = context.Pipeline.ExecutionId.ToString("N")
+            },
+            baggages: new Dictionary<string, string>
+            {
+                [ActivityConstants.CorrelationIdTagKey] = context.Pipeline.CorrelationId,
+                ["pipeline.execution_id"] = context.Pipeline.ExecutionId.ToString("N"),
+                ["pipeline.name"] = context.Pipeline.Name
+            },
+            cancellationToken: cancellationToken);
+    }
+}
+```
+
+When `PipelineTracingBehavior` is registered, the engine should create nested step activities under the current pipeline activity for every executed step, for example `PIPELINE STEP persist-orders`, and include tags such as:
+
+* `pipeline.name`
+* `pipeline.execution_id`
+* `pipeline.step`
+* `pipeline.result_success`
+* `pipeline.control_outcome`
+
+Exceptions inside the pipeline or a step activity should be recorded through the shared `ActivityHelper` behavior so trace status and exception metadata remain aligned with the logging and result-handling model.
 
 ### 16.3 Why the distinction matters
 
-Hooks observe execution events. Decorators wrap and influence execution behavior.
+Hooks observe execution events. Behaviors wrap and influence execution behavior.
 
 Keeping these concepts separate improves clarity and avoids mixing passive observation with active behavioral extension.
 
@@ -1989,12 +2435,13 @@ This section defines the key terms used throughout the design. The glossary esta
 | **Accumulated Result**       | The untyped framework `Result` that is initialized at execution start and carried forward across all pipeline steps.                                      |
 | **Control Outcome**          | The directional part of step control that indicates how pipeline execution should proceed when interpreted together with the returned `Result`.           |
 | **Pipeline Control**         | The full step-control object combining the returned control outcome and the returned accumulated non-generic `Result`.                                    |
-| **Short-circuit**            | Early successful completion of the pipeline when a step determines that no further processing is required.                                                |
+| **Retry**                    | Re-execution of the current step when a step requests another attempt under the active retry policy.                                                      |
+| **Break**                    | Early successful completion of the pipeline when a step determines that no further processing is required.                                                |
 | **Termination**              | Intentional ending of remaining pipeline execution without by itself defining success or failure.                                                         |
 | **Failure**                  | A failure state represented through the carried `Result`, typically by accumulated errors and failure status.                                             |
 | **Conditional Processing**   | Structural or runtime conditions that determine whether a step participates in pipeline execution.                                                        |
 | **Hooks**                    | Execution observation points that react to events occurring during pipeline execution, such as before or after steps.                                     |
-| **Decorators**               | Wrappers around pipeline or step execution that introduce cross-cutting behavior such as diagnostics, logging, or monitoring.                             |
+| **Behaviors**                | Wrappers around pipeline execution that introduce cross-cutting behavior such as diagnostics, logging, or monitoring. They are implemented using the decorator pattern. |
 | **Observability**            | The ability to understand pipeline execution behavior through structured diagnostics, traces, and execution insight.                                      |
 | **Pipeline Execution State** | The runtime state of an executing pipeline including current step, accumulated diagnostics, control outcomes, and the current carried `Result`.           |
 
@@ -2068,7 +2515,7 @@ The extension model allows additional behavior to attach around pipeline executi
 Examples include:
 
 * hooks observing execution events
-* decorators introducing cross‑cutting behavior
+* behaviors introducing cross-cutting behavior
 * diagnostic integrations
 * monitoring or instrumentation
 
@@ -2144,18 +2591,19 @@ This evaluation may cause execution to:
 
 * continue to the next step
 * skip a step
-* short‑circuit successfully
+* retry the current step
+* break successfully
 * terminate remaining steps
 * stop because the accumulated `Result` is now in a failure state
 
-In particular, `Continue` does not by itself mean the step succeeded. It only means the step did not request an alternate control outcome such as skip, short-circuit, or terminate.
+In particular, `Continue` does not by itself mean the step succeeded. It only means the step did not request an alternate control outcome such as skip, retry, break, or terminate.
 
 ### Step 6 – Completion
 
 Pipeline execution ends when:
 
 * all steps have executed successfully
-* a step short‑circuits the pipeline
+* a step breaks the pipeline
 * a step terminates remaining execution
 * the accumulated `Result` is treated as terminal according to policy
 
@@ -2336,7 +2784,7 @@ Its defining characteristics are:
 * progress reporting through execution options for long-running pipelines
 * integration with the framework’s result model
 * support for diagnostics and observability
-* extension points for hooks, decorators, and other cross-cutting concerns
+* extension points for hooks, behaviors, and other cross-cutting concerns
 * deliberate boundaries that keep it lightweight and distinct from workflow engines
 
 This makes it a strong foundational feature for a devkit framework, enabling structured, reusable, and maintainable processing logic across multiple application areas.
@@ -2354,3 +2802,261 @@ https://medium.com/@bonnotguillaume/software-architecture-the-pipeline-design-pa
 https://github.com/guillaumebonnot/software-architecture/tree/master/Helios.Architecture.Pipeline
 
 https://www.devleader.ca/2026/03/14/decorator-design-pattern-in-c-complete-guide-with-examples
+
+---
+
+## Appendix A. Pipeline Code Generation Design
+
+This appendix captures a possible future enhancement for the pipeline feature. It is intentionally deferred until after the main manual pipeline implementation and its testing are complete.
+
+The goal is to reduce declaration boilerplate for packaged pipelines while preserving the current runtime model, registration shape, execution semantics, and debugging clarity.
+
+### A.1 Purpose
+
+Pipeline code generation is intended to:
+
+* reduce repetitive plumbing for packaged pipeline definitions
+* improve developer ergonomics for common pipeline declaration scenarios
+* preserve the existing explicit runtime concepts rather than replacing them with a second hidden model
+
+This appendix does not change the main implementation scope. It documents a future direction that should reuse the same runtime engine, the same `PipelineControl`, the same carried immutable `Result`, the same hook/behavior model, and the same registration and factory APIs already described in the main design.
+
+### A.2 Design Goals
+
+The code generation design should optimize for:
+
+* less boilerplate for pipeline authors
+* clear generated code and predictable conventions
+* compile-time diagnostics for invalid pipeline authoring
+* full compatibility with the manual packaged pipeline model
+
+The design should remain intentionally conservative. It should help authors write less plumbing, but it should not make pipeline behavior magical or opaque.
+
+### A.3 Authoring Model
+
+The recommended future direction is a method-based source generation model.
+
+The developer writes a `partial` packaged pipeline class and annotates:
+
+* the class with pipeline-level attributes
+* methods with step-level attributes
+
+At a conceptual level, the attribute model should include:
+
+* `PipelineAttribute`
+* `PipelineStepAttribute`
+* `PipelineHookAttribute`
+* `PipelineBehaviorAttribute`
+
+The class-level pipeline attribute should declare whether the generated pipeline is:
+
+* a no-context packaged pipeline, or
+* a context-aware packaged pipeline with an explicit `TContext`
+
+Class-level hook and behavior attributes should declare optional generated additions such as:
+
+* `PipelineAuditHook`
+* `PipelineTracingBehavior`
+* `PipelineTimingBehavior`
+
+Method-level step attributes should declare step participation and order. Step order should be explicit through `PipelineStepAttribute(order)` and should not rely on source-file order as the primary contract.
+
+### A.4 Generated Output
+
+The generator should be implemented as a Roslyn source generator, following the same devkit style already used by existing generators such as those in `Domain.CodeGen`. A separate generator project is recommended, for example:
+
+* `src/Common.Utilities.CodeGen`
+
+The generated output should include:
+
+* generated wrapper step classes for attributed step methods
+* generated packaged pipeline-definition plumbing implementing `IPipelineDefinitionSource` or `IPipelineDefinitionSource<TContext>`
+* generated use of the existing naming conventions for pipeline names and step names
+* generated compile-time diagnostics for invalid authoring
+
+The generated wrappers should remain conceptually normal pipeline steps. In other words, code generation should remove author boilerplate, but it should still target the normal runtime model described in this design.
+
+Default naming should remain aligned with the existing conventions:
+
+* pipeline class name with trailing `Pipeline` removed and converted to kebab-case
+* generated step name from the method name, with a trailing `Async` removed before kebab-case conversion unless an explicit step name is supplied through the attribute
+
+The generator should also support one escape hatch:
+
+* a partial extension point such as `OnConfigureGenerated(builder)` so manual additions can still be appended when needed
+
+That escape hatch should make it possible to add extra manual steps, hooks, behaviors, or definition-time conditions without abandoning generation entirely.
+
+### A.5 Registration and Resolution
+
+Generated packaged pipelines should register exactly like normal packaged pipelines.
+
+That means the fluent application setup remains:
+
+```csharp
+services.AddPipelines()
+    .WithPipeline<OrderImportPipeline>();
+```
+
+The same additive modular registration model should apply here as well, so repeated `AddPipelines()` calls and assembly-based registration should work for generated packaged pipelines exactly as they do for hand-written packaged pipelines.
+
+There should be no separate generated registration API in the first code generation iteration.
+
+This is intentional because generated pipelines should not create a second registration mental model. Registration should stay identical to manual packaged pipelines so that generated and hand-written packaged definitions can coexist cleanly.
+
+Factory resolution should also remain unchanged:
+
+* `pipelineFactory.Create<OrderImportPipeline>()` for no-context packaged pipelines
+* `pipelineFactory.Create<OrderImportPipeline, OrderImportContext>()` for context-aware packaged pipelines
+
+### A.6 Supported Method Signatures
+
+The first code generation iteration should focus on packaged pipelines and support method signatures that cover the common step shapes while remaining predictable.
+
+Supported method inputs may include:
+
+* `TContext`
+* `Result`
+* `CancellationToken`
+
+Additional method parameters should be treated as DI services and should become constructor-injected dependencies on the generated wrapper step classes.
+
+Supported return types should include:
+
+* `void`
+* `Task`
+* `Result`
+* `Task<Result>`
+* `PipelineControl`
+* `Task<PipelineControl>`
+
+This provides a useful balance:
+
+* low-friction generated methods for simple processing
+* full pipeline-control support when retry, break, or termination semantics are needed
+
+### A.7 Runtime Semantics
+
+Generated pipelines should preserve the same runtime semantics as manual pipelines.
+
+The generated wrapper behavior should be:
+
+* `void` / `Task` => keep the incoming carried `Result` unchanged and return `PipelineControl.Continue(...)`
+* `Result` / `Task<Result>` => use the returned `Result` as the next carried `Result` and return `PipelineControl.Continue(...)`
+* `PipelineControl` / `Task<PipelineControl>` => use the returned control object directly
+
+This is especially important for early completion semantics:
+
+* generated methods that return `PipelineControl` or `Task<PipelineControl>` may explicitly return `Retry(...)`
+* generated methods that return `PipelineControl` or `Task<PipelineControl>` may explicitly return `Break(...)`
+* generated methods that return `PipelineControl` or `Task<PipelineControl>` may explicitly return `Terminate(...)`
+
+That means retry, break, and termination remain explicit and are not inferred heuristically by the generator.
+
+Exceptions in generated steps should be handled exactly like exceptions in manually authored step classes:
+
+* the engine catches the exception
+* logs it
+* appends `new ExceptionError(exception)` to the carried `Result`
+* evaluates continuation according to the normal execution policy
+
+### A.8 Diagnostics
+
+The generator should produce strong compile-time diagnostics for invalid authoring patterns.
+
+Examples include:
+
+* pipeline class is not `partial`
+* unsupported attributed step method signatures
+* `async void` step methods
+* duplicate explicit step orders
+* duplicate generated step names
+* invalid hook or behavior types
+* context mismatches between the declared generated pipeline context and generated step method usage
+* no declared steps on a generated pipeline class
+
+These diagnostics are important because they preserve developer trust and keep code generation aligned with the rest of the explicit pipeline model.
+
+### A.9 Deferred Scope
+
+This appendix is intentionally future-facing and not part of the first implementation of the pipeline feature.
+
+The deferred scope assumptions are:
+
+* code generation is documented here only and is not required for the first implementation
+* the first code generation iteration focuses on packaged pipelines, not direct builder pipelines
+* registration remains intentionally identical to manual packaged pipelines
+* the main manual implementation and testing of the pipeline feature should come first
+
+Possible later extensions, after the first generator iteration, could include:
+
+* generated registration/discovery helpers
+* additional compile-time analyzers around pipeline graphs
+* richer generated support for direct builder authoring scenarios
+
+### A.10 Fictional Example
+
+The following compact example illustrates the intended generated authoring experience:
+
+```csharp
+[Pipeline(typeof(OrderImportContext))]
+[PipelineHook(typeof(PipelineAuditHook))]
+[PipelineBehavior(typeof(PipelineTracingBehavior))]
+[PipelineBehavior(typeof(PipelineTimingBehavior))]
+public partial class OrderImportPipeline
+{
+    [PipelineStep(10)]
+    public Result Validate(OrderImportContext context, Result result)
+    {
+        if (string.IsNullOrWhiteSpace(context.SourceFileName))
+        {
+            return result
+                .WithMessage("Validation failed.")
+                .WithError(new ValidationError("A source file name is required for import."));
+        }
+
+        return result.WithMessage("Validation succeeded.");
+    }
+
+    [PipelineStep(20)]
+    public async Task<Result> LoadAsync(
+        OrderImportContext context,
+        Result result,
+        IOrderImportRepository repository,
+        CancellationToken cancellationToken)
+    {
+        var orders = await repository.LoadAsync(context.SourceFileName, cancellationToken);
+        context.ImportedOrderCount = orders.Count;
+
+        return result.WithMessage($"Loaded {orders.Count} orders.");
+    }
+
+    [PipelineStep(30)]
+    public async Task<PipelineControl> PersistAsync(
+        OrderImportContext context,
+        Result result,
+        IOrderRepository repository,
+        CancellationToken cancellationToken)
+    {
+        if (context.ImportedOrderCount == 0)
+        {
+            return PipelineControl.Break(
+                result.WithMessage("Nothing to persist."),
+                "no imported orders");
+        }
+
+        await repository.SaveImportedOrdersAsync(context.TenantId, cancellationToken);
+        context.IsPersisted = true;
+
+        return PipelineControl.Continue(
+            result.WithMessage("Persisted imported orders."));
+    }
+
+    partial void OnConfigureGenerated(IPipelineDefinitionBuilder<OrderImportContext> builder);
+}
+
+services.AddPipelines()
+    .WithPipeline<OrderImportPipeline>();
+```
+
+In this future model, the generator would emit the wrapper step classes and packaged pipeline-definition plumbing, but runtime registration and execution would remain the same as for any other packaged pipeline.

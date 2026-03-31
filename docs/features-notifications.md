@@ -1,5 +1,7 @@
 # Notifications Feature Documentation
 
+> Send and queue application notifications through transport-agnostic contracts with clear delivery boundaries.
+
 [TOC]
 
 ## Overview

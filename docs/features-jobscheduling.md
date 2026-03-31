@@ -1,5 +1,7 @@
 # JobScheduling Feature Documentation
 
+> Schedule and run background jobs with flexible timing, DI integration, and operational visibility.
+
 [TOC]
 
 ## Overview

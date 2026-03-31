@@ -1,5 +1,7 @@
 # Common Mapping
 
+> Keep boundary mapping explicit and testable through a small mapper abstraction with Mapster integration.
+
 `Common.Mapping` provides the devkit's object-mapping building block. It sits at the boundary between domain/application code and presentation models, and it is designed to keep mapping logic explicit, testable, and easy to register per module.
 
 The package uses Mapster as the default engine, but it keeps a small abstraction layer in front of it so application code depends on `IMapper` instead of a concrete mapper implementation.

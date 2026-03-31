@@ -1,4 +1,6 @@
-﻿# Requester and Notifier Feature Documentation
+# Requester and Notifier Feature Documentation
+
+> Dispatch requests and notifications through handler pipelines with reusable cross-cutting behaviors.
 
 [TOC]
 

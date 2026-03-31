@@ -1,5 +1,7 @@
 # Domain Specifications Feature Documentation
 
+> Model reusable business criteria as composable specifications for queries and in-memory evaluation.
+
 [TOC]
 
 ## Overview

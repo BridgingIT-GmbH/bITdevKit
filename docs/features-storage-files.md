@@ -1,5 +1,7 @@
 # FileStorage Feature Documentation
 
+> Read, write, move, and monitor files through extensible storage providers and behaviors.
+
 [TOC]
 
 ## Overview

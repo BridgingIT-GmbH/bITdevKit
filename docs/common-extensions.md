@@ -1,5 +1,7 @@
 # Common Extensions
 
+> Reuse a broad set of shared helper extensions for composition, collections, async flows, and more.
+
 `Common.Abstractions` contains a broad extensions layer under [Extensions](/f:/projects/bit/bITdevKit/src/Common.Abstractions/Extensions). This is the shared utility surface that many other devkit packages build on.
 
 This page is intentionally an overview, not an API catalog. The goal is to show what kinds of extensions are available and where to look when you need them.

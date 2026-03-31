@@ -1,5 +1,7 @@
 # DocumentStorage Feature Documentation
 
+> Store and query JSON-like documents through a simple, provider-agnostic abstraction.
+
 [TOC]
 
 ## Overview

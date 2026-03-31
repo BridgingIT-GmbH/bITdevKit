@@ -1,5 +1,7 @@
 # Messaging Feature Documentation
 
+> Decouple producers and consumers with resilient asynchronous messaging and outbox-backed delivery.
+
 [TOC]
 
 ## Overview

@@ -1,5 +1,7 @@
 # Results Feature Documentation
 
+> Represent success, failure, messages, and errors explicitly with immutable Result types.
+
 [TOC]
 
 ## Overview

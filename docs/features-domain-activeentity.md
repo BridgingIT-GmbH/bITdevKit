@@ -1,5 +1,7 @@
 # ActiveEntity Feature Documentation
 
+> Combine entity-centric CRUD convenience with provider-based persistence and Result-driven outcomes.
+
 [TOC]
 
 ## Overview

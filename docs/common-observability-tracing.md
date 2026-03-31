@@ -1,5 +1,7 @@
 # Common Observability Tracing
 
+> Add lightweight `Activity`-based tracing around services without pulling in a full observability framework.
+
 `Common.Utilities.Tracing` provides a small tracing utility for wrapping services in `Activity` instrumentation. It is a low-level building block rather than a complete observability stack.
 
 The package is built around `TraceActivityDecorator<TDecorated>`, which creates a proxy around a service and starts activities for method calls.

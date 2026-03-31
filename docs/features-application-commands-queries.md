@@ -1,5 +1,7 @@
 # Application Commands and Queries Feature Documentation
 
+> Separate application writes and reads into focused handlers with shared behaviors and clear boundaries.
+
 [TOC]
 
 ## Overview

@@ -1,5 +1,7 @@
 # Log Entries Feature Documentation
 
+> Query, stream, export, and manage persisted application logs through a stable application API.
+
 [TOC]
 
 ## Overview

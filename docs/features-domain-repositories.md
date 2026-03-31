@@ -1,5 +1,7 @@
 # Domain Repositories Feature Documentation
 
+> Access aggregates through type-safe repositories with rich querying, paging, and loading options.
+
 [TOC]
 
 ## Overview

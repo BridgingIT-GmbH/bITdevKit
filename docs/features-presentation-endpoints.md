@@ -1,5 +1,7 @@
 # Presentation Endpoints Feature Documentation
 
+> Define minimal API endpoints as modular classes with automatic discovery and mapping.
+
 [TOC]
 
 ## Overview

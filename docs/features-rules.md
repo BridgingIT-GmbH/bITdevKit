@@ -1,5 +1,7 @@
 # Rules Feature Documentation
 
+> Express business rules as composable validations with consistent Result-based outcomes.
+
 [TOC]
 
 ## Overview

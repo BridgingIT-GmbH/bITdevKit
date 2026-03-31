@@ -1,5 +1,7 @@
 # Domain Feature Documentation
 
+> Build domain models with the core tactical patterns of DDD, from aggregates to typed ids and value objects.
+
 [TOC]
 
 ## Overview

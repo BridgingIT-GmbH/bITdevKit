@@ -4,60 +4,61 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 
 ## Common Infrastructure
 
-- [Common Extensions](./common-extensions.md): Provides an overview of the extensions and helpers, grouped by collection, fluent composition, date/time, text, reflection, configuration, and async utility areas.
-- [Common Utilities](./common-utilities.md): Provides an overview of the resiliency helpers, requester/startup-task internals, activity helpers, reflection, content-type, compression, hashing, cloning, and id/key generation utilities.
-- [Common Serialization](./common-serialization.md): Documents the shared serializer abstraction, built-in serializers, default JSON conventions, and the converters that make devkit types serialize consistently.
-- [Common Options Builders](./common-options-builders.md): Explains the lightweight fluent options-builder pattern reused across many devkit features and how it differs from `Microsoft.Extensions.Options`.
-- [Common Mapping](./common-mapping.md): Covers the devkit's boundary mapping abstraction, Mapster registration, result mapping helpers, and the explicit manual mapper fallback.
-- [Common Caching](./common-caching.md): Covers the in-process cache abstraction, the default memory-cache provider, expiration settings, and prefix-based invalidation patterns.
-- [Common Observability Tracing](./common-observability-tracing.md): Covers the activity decorator, tracing attributes, naming schemas, OpenTelemetry expectations, and the practical limits of the low-level tracing helper.
+- [Common Extensions](./common-extensions.md): Reuse a broad set of shared helper extensions for composition, collections, async flows, and more.
+- [Common Utilities](./common-utilities.md): Collect low-level utility building blocks for resiliency, activity helpers, ids, hashing, cloning, and more.
+- [Common Serialization](./common-serialization.md): Share consistent serializer abstractions and JSON conventions across the devkit.
+- [Common Options Builders](./common-options-builders.md): Use a lightweight fluent builder convention for feature-specific configuration objects.
+- [Common Mapping](./common-mapping.md): Keep boundary mapping explicit and testable through a small mapper abstraction with Mapster integration.
+- [Common Caching](./common-caching.md): Provide a small, shared in-process caching abstraction with a default memory-cache implementation.
+- [Common Observability Tracing](./common-observability-tracing.md): Add lightweight `Activity`-based tracing around services without pulling in a full observability framework.
 
 ## Core Domain and Application
 
-- [Domain](./features-domain.md): Introduces the core DDD building blocks in the devkit, including smart enumerations, strongly typed entity IDs, and fluent aggregate update patterns for enforcing invariants.
-- [Domain Events](./features-domain-events.md): Explains how aggregates raise immutable domain events and how repository behaviors publish them either directly in-process or through the reliable domain-event outbox.
-- [Event Sourcing](./features-event-sourcing.md): Documents the aggregate-event stream model, event-store registration, snapshots, and the separate outbox flow used for durable downstream event distribution.
-- [Domain Repositories](./features-domain-repositories.md): Covers the repository abstractions, specifications, includes, paging, optimistic concurrency, and sequence support used to query and persist aggregates.
-- [Domain Specifications](./features-domain-specifications.md): Documents the reusable query and selection criteria model with expression translation, in-memory evaluation, composition, and built-in uniqueness specifications.
-- [ActiveEntity](./features-domain-activeentity.md): Describes an optional active-record-style model where entities perform their own CRUD and query operations through pluggable providers and behaviors.
-- [Domain Policies](./features-domain-policies.md): Documents reusable domain decision policies, conditional execution, aggregated policy results, and the available failure-processing modes.
-- [Rules](./features-rules.md): Documents the fluent rule engine for business validation, conditional checks, and collection processing that returns structured `Result` failures instead of exceptions.
-- [Results](./features-results.md): Describes the devkit's `Result` pattern for explicit success and failure flows, typed errors, paged results, functional chaining, and HTTP mapping helpers.
-- [Application Commands and Queries](./features-application-commands-queries.md): Shows how application use cases are modeled as command and query handlers dispatched through the request pipeline.
-- [DataPorter](./features-application-dataporter.md): Provides a configurable import and export pipeline for formats like Excel, CSV, JSON, XML, and PDF with profiles, converters, validation, and streaming.
+- [Domain](./features-domain.md): Build domain models with the core tactical patterns of DDD, from aggregates to typed ids and value objects.
+- [Domain Events](./features-domain-events.md): Capture business-significant events in aggregates and publish side effects outside the domain model.
+- [Event Sourcing](./features-event-sourcing.md): Persist aggregates as immutable event streams and rebuild state through replay and snapshots.
+- [Domain Repositories](./features-domain-repositories.md): Access aggregates through type-safe repositories with rich querying, paging, and loading options.
+- [Domain Specifications](./features-domain-specifications.md): Model reusable business criteria as composable specifications for queries and in-memory evaluation.
+- [ActiveEntity](./features-domain-activeentity.md): Combine entity-centric CRUD convenience with provider-based persistence and Result-driven outcomes.
+- [Domain Policies](./features-domain-policies.md): Encapsulate domain decisions as reusable, context-aware policy objects.
+- [Rules](./features-rules.md): Express business rules as composable validations with consistent `Result`-based outcomes.
+- [Results](./features-results.md): Represent success, failure, messages, and errors explicitly with immutable `Result` types.
+- [Application Commands and Queries](./features-application-commands-queries.md): Separate application writes and reads into focused handlers with shared behaviors and clear boundaries.
+- [DataPorter](./features-application-dataporter.md): Import and export structured data through a flexible, format-agnostic data transfer framework.
 
 ## Execution, Messaging, and Modularity
 
-- [Requester and Notifier](./features-requester-notifier.md): Defines the in-process request/response and pub/sub abstractions with typed handlers, metadata, and configurable pipeline behaviors for cross-cutting concerns.
-- [Messaging](./features-messaging.md): Provides transport-backed asynchronous messaging with broker abstractions, publisher and handler behaviors, and an outbox pattern for reliable delivery.
-- [Notifications](./features-notifications.md): Covers the application-level notification contracts for email delivery, fake SMTP, queued sending, and optional outbox-backed background processing.
-- [Modules](./features-modules.md): Explains how the devkit structures a modular monolith through self-contained modules that register their own services and endpoints while staying isolated.
-- [Filtering](./features-filtering.md): Describes the JSON-based filter model for expressing filtering, sorting, paging, includes, and advanced predicates that translate into repository queries.
-- [Extensions](./features-extensions.md): Documents fluent helper extensions for null-safe composition, conditional query building, sync and async chaining, and async-enumerable processing.
+- [Requester and Notifier](./features-requester-notifier.md): Dispatch requests and notifications through handler pipelines with reusable cross-cutting behaviors.
+- [Messaging](./features-messaging.md): Decouple producers and consumers with resilient asynchronous messaging and outbox-backed delivery.
+- [Notifications](./features-notifications.md): Send and queue application notifications through transport-agnostic contracts with clear delivery boundaries.
+- [Modules](./features-modules.md): Structure modular monoliths as independently configurable feature modules within one host.
+- [Pipelines](./features-pipelines.md): Build structured, observable multi-step workflows with low-friction defaults.
+- [Filtering](./features-filtering.md): Simplify complex entity queries with a unified filtering solution.
+- [Extensions](./features-extensions.md): Use focused LINQ and helper extensions to write cleaner, more expressive application code.
 
 ## Security and Access
 
-- [Entity Permissions](./features-entitypermissions.md): Covers entity-level authorization with evaluator and provider abstractions, hierarchical inheritance, default permission providers, caching, rules integration, and ASP.NET Core endpoint protection.
+- [Entity Permissions](./features-entitypermissions.md): Enforce fine-grained, entity-level authorization with fluent configuration and runtime evaluation.
 - [Fake Identity Provider](./features-identityprovider.md): Documents the lightweight development identity provider for OAuth2 and OpenID Connect flows, JWT issuance, and test users and clients.
 
 ## Presentation and Host
 
-- [Presentation Endpoints](./features-presentation-endpoints.md): Defines the composable Minimal API endpoint model with DI discovery, route grouping, authorization options, and `Result` to HTTP mapping helpers.
-- [Console Commands](./features-presentation-console-commands.md): Adds a DI-driven command framework for non-interactive and interactive console workflows with argument binding, help output, and grouped commands.
-- [CORS Configuration](./features-presentation-cors.md): Provides configuration-driven CORS registration with named policies, environment-specific defaults, wildcard subdomain support, and global or per-endpoint usage.
-- [Exception Handling](./features-presentation-exception-handling.md): Standardizes exception-to-HTTP handling through configurable handler chains, fluent mappings, Problem Details responses, logging, and database exception support.
-- [AppState](./features-presentation-appstate.md): Supplies a Blazor-oriented application state base class with persistence, debounced saving, change notifications, and undo/redo history.
+- [Presentation Endpoints](./features-presentation-endpoints.md): Define minimal API endpoints as modular classes with automatic discovery and mapping.
+- [Console Commands](./features-presentation-console-commands.md): Expose operational and administrative actions through discoverable console commands and an interactive shell.
+- [CORS Configuration](./features-presentation-cors.md): Configure browser cross-origin access through fluent, settings-driven CORS policies.
+- [Exception Handling](./features-presentation-exception-handling.md): Convert exceptions into consistent Problem Details responses with configurable handlers and mappings.
+- [AppState](./features-presentation-appstate.md): Manage Blazor application state with persistence, history, and change notifications.
 
 ## Storage, Scheduling, and Utilities
 
-- [StartupTasks](./features-startuptasks.md): Defines an ordered startup pipeline for initialization work such as seeding, validation, warm-up tasks, and environment-specific bootstrap behavior.
-- [JobScheduling](./features-jobscheduling.md): Wraps Quartz.NET in fluent ASP.NET Core integration for registering, persisting, monitoring, and controlling scheduled background jobs.
-- [DocumentStorage](./features-storage-documents.md): Provides a typed document-store abstraction with pluggable providers and optional client behaviors for caching, retries, logging, and fault handling.
-- [FileStorage](./features-storage-files.md): Exposes a provider-based file storage abstraction for file operations, metadata, compression, health checks, and cross-provider transfers with progress reporting.
-- [Storage Monitoring](./features-storage-monitoring.md): Documents the monitored-location subsystem built on file storage for real-time watching, on-demand scans, processor pipelines, and scheduled reconciliation jobs.
-- [Log Entries](./features-log-entries.md): Covers the application contract for querying, streaming, exporting, and cleaning up persisted log entries together with the operational web endpoints built on that contract.
+- [StartupTasks](./features-startuptasks.md): Run application startup work in a structured, observable, and dependency-aware way.
+- [JobScheduling](./features-jobscheduling.md): Schedule and run background jobs with flexible timing, DI integration, and operational visibility.
+- [DocumentStorage](./features-storage-documents.md): Store and query JSON-like documents through a simple, provider-agnostic abstraction.
+- [FileStorage](./features-storage-files.md): Read, write, move, and monitor files through extensible storage providers and behaviors.
+- [Storage Monitoring](./features-storage-monitoring.md): Detect file changes and process storage events through configurable monitoring pipelines.
+- [Log Entries](./features-log-entries.md): Query, stream, export, and manage persisted application logs through a stable application API.
 
 ## Testing and Contributor Guides
 
-- [Fake Authentication for Integration Tests](./testing-fake-authentication.md): Documents the lightweight ASP.NET Core fake-auth scheme used in integration tests, including setup, request headers, claim composition, and default-user behavior.
-- [Testing Common XUnit](./testing-common-xunit.md): Documents the contributor-facing xUnit utilities for test setup, web host factories, fake time, traits, and `Result` assertion helpers.
+- [Fake Authentication for Integration Tests](./testing-fake-authentication.md): Simulate authenticated ASP.NET Core requests in integration tests with a lightweight fake-auth scheme.
+- [Testing Common XUnit](./testing-common-xunit.md): Reuse shared xUnit test helpers for setup, web hosts, fake time, traits, and `Result` assertions.

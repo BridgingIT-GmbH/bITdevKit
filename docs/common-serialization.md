@@ -1,5 +1,7 @@
 # Common Serialization
 
+> Share consistent serializer abstractions and JSON conventions across the devkit.
+
 `Common.Serialization` is the shared serialization layer used across the devkit. It provides a small serializer abstraction, several concrete serializers, and the devkit's default JSON conventions for results, filtering, smart enumerations, and metadata objects.
 
 This package matters because many higher-level features depend on consistent serialization behavior:

@@ -1,5 +1,7 @@
 # Console Commands Feature Documentation
 
+> Expose operational and administrative actions through discoverable console commands and an interactive shell.
+
 [TOC]
 
 ## Overview

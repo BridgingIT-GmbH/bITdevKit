@@ -1,5 +1,7 @@
 # StartupTasks Feature Documentation
 
+> Run application startup work in a structured, observable, and dependency-aware way.
+
 [TOC]
 
 ## Overview

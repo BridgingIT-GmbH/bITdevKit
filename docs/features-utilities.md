@@ -1,5 +1,7 @@
 # Utilities Feature Documentation
 
+> Group small but essential application-layer support services and contracts in one lightweight package.
+
 [TOC]
 
 ## Overview

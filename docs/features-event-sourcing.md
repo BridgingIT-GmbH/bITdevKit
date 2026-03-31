@@ -1,5 +1,7 @@
 # Event Sourcing Feature Documentation
 
+> Persist aggregates as immutable event streams and rebuild state through replay and snapshots.
+
 [TOC]
 
 ## Overview

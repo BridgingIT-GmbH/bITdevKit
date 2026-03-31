@@ -1,5 +1,7 @@
 # LINQ Extensions Feature Documentation
 
+> Use focused LINQ and helper extensions to write cleaner, more expressive application code.
+
 ## Overview
 
 The LINQ Extensions provide a comprehensive set of methods to work with sequences, async enumerables, and optional values. They are organized into functional groups based on their purpose and context of use.

@@ -1,5 +1,7 @@
 # Entity Permissions Feature Documentation
 
+> Enforce fine-grained, entity-level authorization with fluent configuration and runtime evaluation.
+
 [TOC]
 
 ## Overview

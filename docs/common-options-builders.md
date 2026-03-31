@@ -1,5 +1,7 @@
 # Common Options Builders
 
+> Use a lightweight fluent builder convention for feature-specific configuration objects.
+
 `Common.Options` provides the lightweight builder pattern that many devkit packages use for configuration objects. It is not a replacement for `Microsoft.Extensions.Options`; it is a small, reusable convention for constructing feature-specific options with fluent APIs.
 
 This explains why many devkit packages expose configuration like:

@@ -1,5 +1,7 @@
 # Testing Common XUnit
 
+> Reuse shared xUnit test helpers for setup, web hosts, fake time, traits, and Result assertions.
+
 [TOC]
 
 ## Overview
@@ -92,4 +94,3 @@ It is a good fit for:
 - end-to-end tests that need a real server address
 - tests that assert devkit `Result` types directly
 - test suites that want stable trait names across projects
-

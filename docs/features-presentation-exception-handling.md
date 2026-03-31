@@ -1,4 +1,6 @@
-﻿# Exception Handler Configuration Feature Documentation
+# Exception Handler Configuration Feature Documentation
+
+> Convert exceptions into consistent Problem Details responses with configurable handlers and mappings.
 
 ## Overview
 

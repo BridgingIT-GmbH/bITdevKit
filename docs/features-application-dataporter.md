@@ -1,5 +1,7 @@
 # DataPorter Feature Documentation
 
+> Import and export structured data through a flexible, format-agnostic data transfer framework.
+
 [TOC]
 
 ## Overview

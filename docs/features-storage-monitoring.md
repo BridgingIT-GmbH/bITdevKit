@@ -1,5 +1,7 @@
 # Storage Monitoring Feature Documentation
 
+> Detect file changes and process storage events through configurable monitoring pipelines.
+
 [TOC]
 
 ## Overview

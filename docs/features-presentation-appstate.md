@@ -1,5 +1,7 @@
 # AppState Feature Documentation
 
+> Manage Blazor application state with persistence, history, and change notifications.
+
 ## Overview
 
 `AppState<T>` is an abstract base class designed for state management in Blazor applications. It provides features for persistence, history (undo/redo), and change notifications, making it ideal for managing application state in a robust and scalable way. Developers can create strongly-typed state classes that persist to storage (e.g., local storage), support undo/redo operations, and notify subscribers of state changes.
@@ -74,7 +76,7 @@ sequenceDiagram
 - **User Interaction**: The user updates the `SearchText` filter, triggering `SetSearchText`.
 - **State Update**: `SetSearchText` updates the state via `RestoreSnapshot`, which calls `SetCurrentState`.
 - **Notification**: `SetCurrentState` fires the `StateChanged` event, notifying the component.
-- **Reaction**: The component’s `OnFilterStateChanged` handler is called with the new state.
+- **Reaction**: The componentï¿½s `OnFilterStateChanged` handler is called with the new state.
 - **Persistence**: The debouncer saves the updated state to storage.
 - **Cleanup**: The component unsubscribes from events during disposal.
 
@@ -350,7 +352,7 @@ private async Task LoadCustomers()
 
 ### 10. Lifecycle Management
 
-- **Scoped Lifetime**: `AppState<T>` instances are typically scoped, meaning they’re created when a new DI scope begins (e.g., a new page load) and disposed when the scope ends.
+- **Scoped Lifetime**: `AppState<T>` instances are typically scoped, meaning theyï¿½re created when a new DI scope begins (e.g., a new page load) and disposed when the scope ends.
 - **Disposal**: Ensure components unsubscribe from events in `Dispose` to avoid memory leaks. `AppState<T>` itself disposes the debouncer in its `Dispose` method.
 
 ## Best Practices

@@ -1,5 +1,7 @@
 # Domain Policies Feature Documentation
 
+> Encapsulate domain decisions as reusable, context-aware policy objects.
+
 [TOC]
 
 ## Overview

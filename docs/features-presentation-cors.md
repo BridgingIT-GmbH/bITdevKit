@@ -1,5 +1,7 @@
 # Cors Configuration Feature Documentation
 
+> Configure browser cross-origin access through fluent, settings-driven CORS policies.
+
 ## Overview
 
 CORS (Cross-Origin Resource Sharing) is a security mechanism that controls which origins (domains) can access your API from a browser. By default, browsers block cross-origin requests to protect users from malicious websites.

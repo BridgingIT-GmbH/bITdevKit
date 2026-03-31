@@ -1,5 +1,7 @@
 # Domain Events Feature Documentation
 
+> Capture business-significant events in aggregates and publish side effects outside the domain model.
+
 [TOC]
 
 ## Overview

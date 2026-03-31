@@ -1,5 +1,7 @@
 # Common Utilities Documentation
 
+> Collect low-level utility building blocks for resiliency, activity helpers, ids, hashing, cloning, and more.
+
 [TOC]
 
 ## Overview

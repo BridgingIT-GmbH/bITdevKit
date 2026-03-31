@@ -1,5 +1,7 @@
 # Common Caching
 
+> Provide a small, shared in-process caching abstraction with a default memory-cache implementation.
+
 `Common.Caching` provides the devkit's in-process caching building block. It centers around the shared `ICacheProvider` contract from `Common.Abstractions` and ships the default `IMemoryCache` implementation plus the DI wiring needed to register it.
 
 The package is intentionally small. It gives other packages a consistent cache abstraction without forcing them to depend directly on `IMemoryCache`.

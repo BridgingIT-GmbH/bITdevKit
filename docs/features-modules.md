@@ -1,5 +1,7 @@
 # Modules Feature Documentation
 
+> Structure modular monoliths as independently configurable feature modules within one host.
+
 [TOC]
 
 ## Overview

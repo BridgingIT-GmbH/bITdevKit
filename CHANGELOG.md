@@ -5,6 +5,8 @@ This changelog includes unreleased changes on `main` and the full tagged release
 ## [10.0.104] - 2026-03-31
 
 - Added a new Pipeline feature in `Common.Utilities` with fluent definition and registration APIs, runtime behaviors, hooks, execution tracking, inline step support, and source-generated attributes to reduce registration boilerplate.
+- Added source-generated Requester authoring for commands and queries so handlers, request wiring, and validation integration can be defined from a single partial request type.
+- Added attribute-based FluentValidation authoring for simple command and query property rules, including collection element validation, while keeping full `[Validate]` support for more complex scenarios.
 
 ## [10.0.103] - 2026-03-19
 

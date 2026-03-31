@@ -1603,30 +1603,18 @@ var result = await notifier.PublishAsync(userNotification); // Logs: "Handled: u
 
 ## Appendix D: Source-Generated Commands and Queries
 
-The Requester feature also supports a convenience authoring model for commands and queries through source generation.
-This path keeps the existing Requester runtime intact while reducing the amount of boilerplate developers need to write.
+The source-generated authoring model lets you write a command or query as a single partial type. This is a convenient way to define simple requests without needing separate request and handler classes. The source generator creates the necessary boilerplate code, allowing you to focus on the business logic.
 
-### Source-Generated Authoring Model
+### Quick Start
 
-Use these attributes on a partial request type:
+- Use `[Command]` for commands.
+- Use `[Query]` for queries.
+- Add one `[Handle]` method with your business logic.
+- Use validation attributes for simple property rules.
+- Use `[Validate]` when the validation needs full FluentValidation code.
 
-- `[Command]` for commands with a response inferred from the `[Handle]` return type
-- `[Command(typeof(TResponse))]` when you want to state the command response type explicitly
-- `[Query]` for queries with a response inferred from the `[Handle]` return type
-- `[Query(typeof(TResponse))]` when you want to state the query response type explicitly
-- `[Handle]` on exactly one developer-authored business-logic method
-- property-level validation attributes for simple FluentValidation rules
-- `[Validate]` on an optional validator method for complex rules
-
-The `[Handle]` method is an instance method on the request type, so request members can be accessed directly inside the method body.
-Additional parameters on the `[Handle]` method are resolved from dependency injection, while `CancellationToken` and optional `SendOptions` are supplied by the runtime.
-The generator also supplies the `RequestBase<TResponse>` inheritance automatically, so authors do not need to write it explicitly.
-When an explicit response type is present on `[Command]` or `[Query]`, it must match the `Result<TResponse>` returned by the `[Handle]` method.
-
-For validation, the intended split is:
-
-- property attributes for simple per-property rules such as required values, lengths, numeric ranges, regexes, and `RuleForEach(...)` element checks
-- `[Validate]` for cross-property rules, custom predicates, nested object validation, or any FluentValidation logic that should remain explicit
+The `[Handle]` method is an instance method, so request properties can be used directly inside the method body.
+Services can be added as parameters and are resolved from DI.
 
 ### Command Without Response
 
@@ -1635,19 +1623,11 @@ For validation, the intended split is:
 [HandlerRetry(3, 200)]
 public partial class DoSomethingCommand
 {
+    [ValidateNotEmpty("Message cannot be empty.")]
     public string Message { get; set; }
 
-    [Validate]
-    private static void Validate(InlineValidator<DoSomethingCommand> validator)
-    {
-        validator.RuleFor(x => x.Message)
-            .NotEmpty()
-            .WithMessage("Message cannot be empty.");
-    }
-
     [Handle]
-    private async Task<Result<Unit>> HandleAsync(
-        CancellationToken cancellationToken)
+    private async Task<Result<Unit>> HandleAsync(CancellationToken cancellationToken)
     {
         await Task.Delay(100, cancellationToken);
         return Success();
@@ -1669,19 +1649,12 @@ public sealed class CreateUserCommandResult
 [HandlerDatabaseTransaction(contextName: "Core")]
 public partial class CreateUserCommand
 {
+    [ValidateNotEmpty("Username cannot be empty.")]
     public string Username { get; set; }
-
-    [Validate]
-    private static void Validate(InlineValidator<CreateUserCommand> validator)
-    {
-        validator.RuleFor(x => x.Username)
-            .NotEmpty()
-            .WithMessage("Username cannot be empty.");
-    }
 
     [Handle]
     private async Task<Result<CreateUserCommandResult>> HandleAsync(
-        IGenericRepository<User> userRepository,
+        IGenericRepository<User> userRepository, // DI services can be injected as parameters
         CancellationToken cancellationToken)
     {
         var user = new User
@@ -1708,19 +1681,12 @@ public partial class CreateUserCommand
 [HandlerTimeout(500)]
 public partial class GetUserQuery
 {
+    [ValidateNotEmpty("UserId cannot be empty.")]
     public Guid UserId { get; set; }
-
-    [Validate]
-    private static void Validate(InlineValidator<GetUserQuery> validator)
-    {
-        validator.RuleFor(x => x.UserId)
-            .NotEmpty()
-            .WithMessage("UserId cannot be empty.");
-    }
 
     [Handle]
     private async Task<Result<User>> HandleAsync(
-        IGenericReadOnlyRepository<User> userRepository,
+        IGenericReadOnlyRepository<User> userRepository, // DI services can be injected as parameters
         CancellationToken cancellationToken)
     {
         var user = await userRepository.FindOneAsync(
@@ -1734,24 +1700,21 @@ public partial class GetUserQuery
 }
 ```
 
-### Attribute-Based Validation For Simple Cases
+### Complex Validation With `[Validate]`
 
-For straightforward property validation, the generator can emit the nested FluentValidation validator directly from property attributes:
+When a rule is more complex than a simple property validator, use `[Validate]`:
 
 ```csharp
 [Command]
 public partial class CreateOrderCommand
 {
-    [ValidateNotEmpty("At least one item is required.")]
+    [ValidateNotEmpty]
     public List<OrderItem> Items { get; init; }
-
-    [ValidateEachNotEmpty]
-    public List<string> Tags { get; init; }
 
     [Validate]
     private static void Validate(InlineValidator<CreateOrderCommand> validator)
     {
-        validator.RuleFor(x => x.Items)
+        validator.RuleFor(x => x.Items) // Supports validation of the entire request object graph
             .Must(items => items.Count <= 100)
             .WithMessage("A maximum of 100 items is allowed.");
     }
@@ -1764,40 +1727,9 @@ public partial class CreateOrderCommand
 }
 ```
 
-This produces the same kind of nested `Validator` type used by handwritten requests:
+### Notes
 
-- `RuleFor(x => x.Items).NotEmpty()` validates the collection itself
-- `RuleForEach(x => x.Tags).NotEmpty()` validates each collection element
-- the optional `[Validate]` method is still included for the more complex rule
-
-### Generated Output
-
-For a valid source-generated request, the generator emits:
-
-- the `RequestBase<TResponse>` inheritance when the authored type does not already specify a compatible base
-- a Requester-compatible handler class
-- convenience `Success(...)` and `Failure(...)` helper methods
-- an optional nested `Validator` type when `[Validate]` is present
-- XML documentation on generated types and members
-
-The convenience helpers are available directly inside the authored `[Handle]` method, so common result paths stay compact and readable:
-
-```csharp
-return user != null
-    ? Success(user)
-    : Failure($"User with ID {UserId} not found.");
-```
-
-### Validation Behavior
-
-When property validation attributes or `[Validate]` are present, the generator emits a nested `Validator` type compatible with FluentValidation and the existing Requester validation pipeline.
-This means the generated validator is discovered the same way as a handwritten nested `Validator` class and runs through `ValidationPipelineBehavior` without any additional registration mechanism.
-
-### Key Points
-
-- The generated request type still becomes a normal `RequestBase<TResponse>` request at compile time.
-- Generated handlers still derive from `RequestHandlerBase<TRequest, TResponse>`.
-- Validation still integrates with the existing `ValidationPipelineBehavior`.
-- Existing handler policy attributes like retry, timeout, authorization, and database transaction handling still apply to the generated handler type.
-
-The generator only adds the usual Requester plumbing. It does not introduce a second request model or a different runtime behavior.
+- The response type is inferred from the `Result<T>` returned by `[Handle]`.
+- `Success(...)` and `Failure(...)` can be used directly inside `[Handle]`.
+- Existing handler policy attributes such as retry, timeout, authorization, and transactions still apply.
+- Generated validators continue to run through the normal Requester validation pipeline.

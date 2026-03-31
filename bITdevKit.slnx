@@ -36,7 +36,6 @@
     <File Path="docs/common-serialization.md" />
     <File Path="docs/common-utilities.md" />
     <File Path="docs/INDEX.md" />
-    <File Path="docs/design-application-templating.md" />
     <File Path="docs/features-application-commands-queries.md" />
     <File Path="docs/features-application-dataporter.md" />
     <File Path="docs/features-domain-activeentity.md" />
@@ -55,6 +54,7 @@
     <File Path="docs/features-messaging.md" />
     <File Path="docs/features-modules.md" />
     <File Path="docs/features-notifications.md" />
+    <File Path="docs/features-pipelines.md" />
     <File Path="docs/features-presentation-appstate.md" />
     <File Path="docs/features-presentation-console-commands.md" />
     <File Path="docs/features-presentation-cors.md" />

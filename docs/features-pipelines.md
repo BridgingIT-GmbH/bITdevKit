@@ -286,6 +286,43 @@ var handle = await pipeline.ExecuteAndForgetAsync(
 var snapshot = await tracker.GetAsync(handle.ExecutionId);
 ```
 
+### Execution Options
+
+Pipeline execution can be configured per run through `PipelineExecutionOptions` or the fluent
+options builder passed to `ExecuteAsync(...)` and `ExecuteAndForgetAsync(...)`.
+
+The main options are:
+
+- `ContinueOnFailure()`
+  Allows later steps to continue even when the carried `Result` is already failed.
+- `MaxRetryAttemptsPerStep(int value)`
+  Controls how many times a step may return `Retry(...)` before the runtime stops and marks the
+  execution as failed.
+- `WithProgress(IProgress<ProgressReport>)`
+  Exposes a progress reporter to steps through `options.Progress`, so step implementations can
+  report their own progress.
+- `AccumulateDiagnosticsOnFailure(bool value = true)`
+  Controls whether messages and errors are preserved when execution stops because of failure.
+- `AccumulateDiagnosticsOnBreak(bool value = true)`
+  Controls whether messages and errors are preserved when execution stops because of a `Break(...)`
+  outcome.
+- `WhenCompleted(Func<PipelineCompletion, ValueTask>)`
+  Registers a completion callback for fire-and-forget execution after the tracked snapshot has been
+  finalized.
+
+Example:
+
+```csharp
+var result = await pipeline.ExecuteAsync(
+    context,
+    options => options
+        .ContinueOnFailure()
+        .MaxRetryAttemptsPerStep(5)
+        .AccumulateDiagnosticsOnFailure()
+        .WithProgress(new Progress<ProgressReport>(report =>
+            Console.WriteLine($"{report.Operation}: {report.PercentageComplete}%"))));
+```
+
 ### Runtime Execution Flow
 
 ```mermaid

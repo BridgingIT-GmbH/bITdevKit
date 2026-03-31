@@ -52,6 +52,9 @@ public class PipelineRegistrationTests
     {
         var services = new ServiceCollection();
         services.AddLogging();
+        services.AddSingleton<PipelineCodeGenExecutionTests.GeneratedDependency>();
+        services.AddSingleton<PipelineCodeGenExecutionTests.GeneratedProbe>();
+        services.AddSingleton<PipelineCodeGenExecutionTests.NoContextDependency>();
 
         services.AddPipelines()
             .WithPipelinesFromAssembly<OrdersPipeline>();

@@ -1,10 +1,14 @@
 # Changelog
 
-This changelog is maintained from version tags in the `main` branch. It covers the full tagged release history on `main`.
+This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
+
+## [10.0.104] - 2026-03-31
+
+- Added a new Pipeline feature in `Common.Utilities` with fluent definition and registration APIs, runtime behaviors, hooks, execution tracking, inline step support, and source-generated attributes to reduce registration boilerplate.
 
 ## [10.0.103] - 2026-03-19
 
-- Added the new `Application.DataPorter` framework for multi-format import and export.
+- Added the new `Application.DataPorter` feature for multi-format import and export.
 - Introduced profile-based and attribute-based configuration, validation, streaming, compression, templates, typed row interception, progress reporting, and extensible custom formats.
 - Added fluent import, export, and template option builders for a more discoverable API.
 

@@ -28,6 +28,25 @@ public interface IPipelineDefinitionBuilder
         where TStep : class, IPipelineStep;
 
     /// <summary>
+    /// Adds a class-based step to the pipeline definition with an explicit structural step name.
+    /// </summary>
+    /// <typeparam name="TStep">The step type to add.</typeparam>
+    /// <param name="name">The explicit step name to store in the built definition.</param>
+    /// <param name="enabled">A value indicating whether the step should be added to the built definition.</param>
+    /// <param name="configure">Optional step-definition customization.</param>
+    /// <returns>The same builder instance for fluent chaining.</returns>
+    /// <example>
+    /// <code>
+    /// builder.AddStep&lt;ValidateOrderImportStep&gt;("validate-order-import");
+    /// </code>
+    /// </example>
+    IPipelineDefinitionBuilder AddStep<TStep>(
+        string name,
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null)
+        where TStep : class, IPipelineStep;
+
+    /// <summary>
     /// Adds a synchronous inline no-context step to the pipeline definition.
     /// </summary>
     /// <param name="step">The inline delegate to execute.</param>
@@ -157,6 +176,13 @@ public interface IPipelineDefinitionBuilder<TContext>
 {
     /// <inheritdoc cref="IPipelineDefinitionBuilder.AddStep{TStep}(bool, Action{IPipelineStepDefinitionBuilder})"/>
     IPipelineDefinitionBuilder<TContext> AddStep<TStep>(
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null)
+        where TStep : class, IPipelineStep;
+
+    /// <inheritdoc cref="IPipelineDefinitionBuilder.AddStep{TStep}(string, bool, Action{IPipelineStepDefinitionBuilder})"/>
+    IPipelineDefinitionBuilder<TContext> AddStep<TStep>(
+        string name,
         bool enabled = true,
         Action<IPipelineStepDefinitionBuilder> configure = null)
         where TStep : class, IPipelineStep;

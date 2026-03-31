@@ -800,3 +800,123 @@ The Pipelines feature integrates especially well with:
 
 Together, these features support explicit flow control, rich validation, and consistent outcome
 handling without introducing a heavyweight orchestration framework.
+
+## Appendix A: Pipeline Code Generation
+
+The Pipelines feature also offers an optional source-generation layer for packaged pipelines. It is
+meant to remove repetitive authoring boilerplate, while still using the same runtime, the same
+registration model, and the same execution semantics described above.
+
+### What It Adds
+
+Code generation is focused on packaged pipeline definitions:
+
+- declare a `partial` pipeline class with `[Pipeline]`
+- declare step methods with `[PipelineStep(order)]`
+- add class-level hooks with `[PipelineHook(typeof(...))]`
+- add class-level behaviors with `[PipelineBehavior(typeof(...))]`
+
+The generator then emits the normal packaged pipeline definition plumbing for you. Generated
+pipelines still register like manual packaged pipelines:
+
+```csharp
+services.AddPipelines()
+    .WithPipeline<OrderImportPipeline>();
+```
+
+and resolve the same way:
+
+```csharp
+var pipeline = pipelineFactory.Create<OrderImportPipeline, OrderImportContext>();
+```
+
+### Example
+
+```csharp
+[Pipeline(typeof(OrderImportContext))]
+[PipelineHook(typeof(PipelineAuditHook))]
+[PipelineBehavior(typeof(PipelineTracingBehavior))]
+[PipelineBehavior(typeof(PipelineTimingBehavior))]
+public partial class OrderImportPipeline : PipelineDefinition<OrderImportContext>
+{
+    [PipelineStep(10)]
+    public Result Validate(OrderImportContext context, Result result)
+    {
+        return result.WithMessage("validated");
+    }
+
+    [PipelineStep(20)]
+    public async Task<Result> LoadAsync(
+        OrderImportContext context,
+        Result result,
+        IOrderImportRepository repository,
+        CancellationToken cancellationToken)
+    {
+        var orders = await repository.LoadAsync(context.SourceFileName, cancellationToken);
+        context.ImportedOrderCount = orders.Count;
+        return result.WithMessage($"loaded {orders.Count} orders");
+    }
+
+    [PipelineStep(30, Name = "persist-generated")]
+    public PipelineControl Persist(
+        OrderImportContext context,
+        Result result,
+        IOrderRepository repository)
+    {
+        repository.SaveImportedOrders(context.TenantId);
+        return PipelineControl.Continue(result.WithMessage("persisted"));
+    }
+
+    partial void OnConfigureGenerated(IPipelineDefinitionBuilder<OrderImportContext> builder)
+    {
+        builder.AddStep(ctx => ctx.Pipeline.Items.Set("extended", true), name: "manual-extension");
+    }
+}
+```
+
+### Supported Step Signatures
+
+Generated step methods may use these runtime inputs:
+
+- `TContext`
+- `Result`
+- `CancellationToken`
+
+Any additional method parameters are treated as DI services and resolved through the normal
+container.
+
+Supported return types are:
+
+- `void`
+- `Task`
+- `Result`
+- `Task<Result>`
+- `PipelineControl`
+- `Task<PipelineControl>`
+
+The runtime behavior matches manual steps:
+
+- `void` and `Task` keep the current carried `Result` and continue
+- `Result` and `Task<Result>` replace the carried `Result` and continue
+- `PipelineControl` and `Task<PipelineControl>` provide full flow control, including `Retry(...)`,
+  `Break(...)`, and `Terminate(...)`
+
+### Naming and Diagnostics
+
+Generated pipelines follow the same naming conventions as manual pipelines:
+
+- pipeline names default from the class name, for example `OrderImportPipeline` -> `order-import`
+- step names default from the method name, for example `LoadAsync` -> `load`
+- explicit names can still be provided through `PipelineStepAttribute.Name`
+
+The generator also emits compile-time diagnostics for invalid authoring, including:
+
+- pipeline class is not `partial`
+- pipeline does not inherit `PipelineDefinition` or `PipelineDefinition<TContext>`
+- unsupported step method signatures
+- `async void` step methods
+- duplicate generated step orders
+- duplicate generated step names
+- incompatible hook or behavior types
+
+The source generation acts as a thin authoring convenience layer instead of a second hidden pipeline model.

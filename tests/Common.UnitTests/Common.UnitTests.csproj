@@ -46,6 +46,7 @@
     <ProjectReference Include="..\..\src\Common.Rules\Common.Rules.csproj" />
     <ProjectReference Include="..\..\src\Common.Serialization\Common.Serialization.csproj" />
     <ProjectReference Include="..\..\src\Common.Utilities\Common.Utilities.csproj" />
+    <ProjectReference Include="..\..\src\Common.Utilities.CodeGen\Common.Utilities.CodeGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="true" />
     <ProjectReference Include="..\..\src\Common.Utilities.Tracing\Common.Utilities.Tracing.csproj" />
     <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
     <ProjectReference Include="..\..\src\Domain\Domain.csproj" />

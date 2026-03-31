@@ -24,6 +24,17 @@ public class PipelineDefinitionBuilder(string name) : IPipelineDefinitionBuilder
     }
 
     /// <inheritdoc />
+    public IPipelineDefinitionBuilder AddStep<TStep>(
+        string name,
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null)
+        where TStep : class, IPipelineStep
+    {
+        this.inner.AddStep<TStep>(name, enabled, configure);
+        return this;
+    }
+
+    /// <inheritdoc />
     public IPipelineDefinitionBuilder AddStep(
         Action step,
         string name = null,
@@ -107,13 +118,25 @@ public class PipelineDefinitionBuilder<TContext>(string name) : IPipelineDefinit
         Action<IPipelineStepDefinitionBuilder> configure = null)
         where TStep : class, IPipelineStep
     {
+        return this.AddStep<TStep>(null, enabled, configure);
+    }
+
+    /// <inheritdoc />
+    public IPipelineDefinitionBuilder<TContext> AddStep<TStep>(
+        string name,
+        bool enabled = true,
+        Action<IPipelineStepDefinitionBuilder> configure = null)
+        where TStep : class, IPipelineStep
+    {
         if (!enabled)
         {
             return this;
         }
 
         this.steps.Add(this.CreateStepDefinition(
-            PipelineStepNameConvention.FromType(typeof(TStep)),
+            string.IsNullOrWhiteSpace(name)
+                ? PipelineStepNameConvention.FromType(typeof(TStep))
+                : name,
             PipelineStepSourceKind.Type,
             typeof(TStep),
             null,

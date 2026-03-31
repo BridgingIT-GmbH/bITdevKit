@@ -995,11 +995,11 @@ The Active Record (AR) pattern embeds data access and domain logic directly into
 - **Cohesion vs. Separation**: AR fosters cohesive entities but may mix concerns without careful behavior design; Repository separates concerns but can fragment domain logic across layers.
 - **Testability**: AR leverages providers (e.g., InMemory) for testing, requiring DI setup, whereas Repository allows easy mocking without database ties (or re-configure repository implementation).
 - **Extensibility**: Both AR and Repository offer extensibility through behaviors.
-- **Domain-Driven Design (DDD)**: Both support DDD with typed IDs, domain events and aggregates. They leverages EF Core features like owned entities and auto-includes for complete aggregates, matching Repository�s capability for complex domain models.
+- **Domain-Driven Design (DDD)**: Both support DDD with typed IDs, domain events and aggregates. They leverages EF Core features like owned entities and auto-includes for complete aggregates, matching Repository's capability for complex domain models.
 
 ### Practical Considerations
 
-AR�s design mitigates classic limitations through per-entity providers and behaviors, aligning with Repository features like specifications and paging. It handles complete aggregates (e.g., `Order` with `OrderBooks`) using EF Core�s owned entities and auto-includes, making it suitable for DDD scenarios alongside Repository. Developers can choose AR for simplicity and reduced dependencies or Repository for strict separation, with the option to use both in hybrid setups for maximum flexibility.
+AR's design mitigates classic limitations through per-entity providers and behaviors, aligning with Repository features like specifications and paging. It handles complete aggregates (e.g., `Order` with `OrderBooks`) using EF Core's owned entities and auto-includes, making it suitable for DDD scenarios alongside Repository. Developers can choose AR for simplicity and reduced dependencies or Repository for strict separation, with the option to use both in hybrid setups for maximum flexibility.
 
 ---
 

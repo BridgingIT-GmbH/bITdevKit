@@ -10,7 +10,7 @@ Designed for .NET developers, this feature supports parallel development, featur
 
 ### Background
 
-A modular monolith combines the simplicity of a monolithic application—single deployment, shared runtime, unified codebase—with the modularity of microservices. By dividing the application into logical modules aligned with business domains, it avoids the "big ball of mud" problem of traditional monoliths, where code becomes tangled and hard to maintain. This approach allows teams to develop and test features independently within the same repository, reducing coordination overhead compared to microservices while enabling scalability and potential migration to distributed systems. The `Modules` feature supports this by providing tools to define, configure and manage modules, ensuring each operates as a cohesive unit with minimal dependencies, enhancing testability and maintainability.
+A modular monolith combines the simplicity of a monolithic application, with single deployment, shared runtime, and a unified codebase, with the modularity of microservices. By dividing the application into logical modules aligned with business domains, it avoids the "big ball of mud" problem of traditional monoliths, where code becomes tangled and hard to maintain. This approach allows teams to develop and test features independently within the same repository, reducing coordination overhead compared to microservices while enabling scalability and potential migration to distributed systems. The `Modules` feature supports this by providing tools to define, configure and manage modules, ensuring each operates as a cohesive unit with minimal dependencies, enhancing testability and maintainability.
 
 ### Challenges
 
@@ -244,4 +244,4 @@ Modules in a monolith contrast with microservices, which are independently deplo
 
 ### Practical Considerations
 
-The Modules feature is ideal for teams seeking modularity without microservices’ overhead. It supports rapid development and testing, with a clear path to distributed systems if needed. For complex, high-scale systems, microservices may be more suitable, but modules offer a simpler starting point.
+The Modules feature is ideal for teams seeking modularity without microservicesâ€™ overhead. It supports rapid development and testing, with a clear path to distributed systems if needed. For complex, high-scale systems, microservices may be more suitable, but modules offer a simpler starting point.

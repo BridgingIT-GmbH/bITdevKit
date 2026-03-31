@@ -1992,7 +1992,7 @@ Avoid using Either for simple boolean conditions or null checks, as these scenar
 
 Either is implemented as a value type, providing thread-safety and immutability by design. It's memory-efficient and supports both synchronous and asynchronous operations. The implementation ensures that you can't accidentally access the wrong type without explicitly handling both cases, providing robust type safety at compile time.
 
-Here�s the updated appendix with `MapHttpOkAll` added to the list of mapping methods. It remains concise and includes C# usage examples, tailored for minimal API usage with `Mediator` responses.
+Here's the updated appendix with `MapHttpOkAll` added to the list of mapping methods. It remains concise and includes C# usage examples, tailored for minimal API usage with `Mediator` responses.
 
 ---
 

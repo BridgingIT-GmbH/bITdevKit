@@ -5,21 +5,63 @@
 
 namespace BridgingIT.DevKit.Common;
 
-internal interface IPipelineHookInvoker
+/// <summary>
+/// Invokes pipeline hooks through a non-generic runtime contract.
+/// </summary>
+public interface IPipelineHookInvoker
 {
+    /// <summary>
+    /// Invokes the hook callback before the pipeline starts processing steps.
+    /// </summary>
+    /// <param name="context">The current pipeline context.</param>
+    /// <param name="cancellationToken">The cancellation token for the execution.</param>
     ValueTask OnPipelineStartingAsync(PipelineContextBase context, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Invokes the hook callback before an individual step attempt starts.
+    /// </summary>
+    /// <param name="context">The current pipeline context.</param>
+    /// <param name="step">The step definition being executed.</param>
+    /// <param name="cancellationToken">The cancellation token for the execution.</param>
     ValueTask OnStepStartingAsync(PipelineContextBase context, IPipelineStepDefinition step, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Invokes the hook callback after an individual step attempt completes.
+    /// </summary>
+    /// <param name="context">The current pipeline context.</param>
+    /// <param name="step">The step definition that completed.</param>
+    /// <param name="control">The control outcome returned by the step execution.</param>
+    /// <param name="cancellationToken">The cancellation token for the execution.</param>
     ValueTask OnStepCompletedAsync(PipelineContextBase context, IPipelineStepDefinition step, PipelineControl control, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Invokes the hook callback when the pipeline completes successfully.
+    /// </summary>
+    /// <param name="context">The current pipeline context.</param>
+    /// <param name="result">The final pipeline result.</param>
+    /// <param name="cancellationToken">The cancellation token for the execution.</param>
     ValueTask OnPipelineCompletedAsync(PipelineContextBase context, Result result, CancellationToken cancellationToken);
 
+    /// <summary>
+    /// Invokes the hook callback when the pipeline completes with a failed result.
+    /// </summary>
+    /// <param name="context">The current pipeline context.</param>
+    /// <param name="result">The final failed pipeline result.</param>
+    /// <param name="cancellationToken">The cancellation token for the execution.</param>
     ValueTask OnPipelineFailedAsync(PipelineContextBase context, Result result, CancellationToken cancellationToken);
 }
 
-internal static class PipelineHookInvoker
+/// <summary>
+/// Creates runtime invokers for typed pipeline hooks.
+/// </summary>
+public static class PipelineHookInvoker
 {
+    /// <summary>
+    /// Creates an <see cref="IPipelineHookInvoker"/> for the specified typed hook instance.
+    /// </summary>
+    /// <param name="hook">The typed pipeline hook instance.</param>
+    /// <param name="contextType">The pipeline context type handled by the hook.</param>
+    /// <returns>A runtime adapter for the specified hook.</returns>
     public static IPipelineHookInvoker Create(object hook, Type contextType)
     {
         ArgumentNullException.ThrowIfNull(hook);

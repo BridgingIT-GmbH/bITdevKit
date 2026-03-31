@@ -7,8 +7,19 @@ namespace BridgingIT.DevKit.Common;
 
 using Microsoft.Extensions.Logging;
 
-internal static partial class PipelineTypedLogger
+/// <summary>
+/// Provides source-generated logging helpers for pipeline execution events.
+/// </summary>
+public static partial class PipelineTypedLogger
 {
+    /// <summary>
+    /// Logs that a pipeline execution has started.
+    /// </summary>
+    /// <param name="logger">The logger to write to.</param>
+    /// <param name="logKey">The structured log key.</param>
+    /// <param name="pipelineName">The pipeline name.</param>
+    /// <param name="executionId">The pipeline execution identifier.</param>
+    /// <param name="correlationId">The correlation identifier for the execution.</param>
     [LoggerMessage(
         EventId = 1,
         Level = LogLevel.Debug,
@@ -20,6 +31,15 @@ internal static partial class PipelineTypedLogger
         Guid executionId,
         string correlationId);
 
+    /// <summary>
+    /// Logs that a pipeline execution has finished.
+    /// </summary>
+    /// <param name="logger">The logger to write to.</param>
+    /// <param name="logKey">The structured log key.</param>
+    /// <param name="pipelineName">The pipeline name.</param>
+    /// <param name="executionId">The pipeline execution identifier.</param>
+    /// <param name="status">The final execution status.</param>
+    /// <param name="durationMs">The elapsed duration in milliseconds.</param>
     [LoggerMessage(
         EventId = 2,
         Level = LogLevel.Debug,
@@ -32,10 +52,18 @@ internal static partial class PipelineTypedLogger
         PipelineExecutionStatus status,
         double durationMs);
 
+    /// <summary>
+    /// Logs that a pipeline step has started.
+    /// </summary>
+    /// <param name="logger">The logger to write to.</param>
+    /// <param name="logKey">The structured log key.</param>
+    /// <param name="pipelineName">The pipeline name.</param>
+    /// <param name="stepName">The step name.</param>
+    /// <param name="executionId">The pipeline execution identifier.</param>
     [LoggerMessage(
         EventId = 3,
         Level = LogLevel.Debug,
-        Message = "[{LogKey}] step started (pipeline={PipelineName}, step={StepName}, executionId={ExecutionId})")]
+        Message = "[{LogKey}] pipeline step started (pipeline={PipelineName}, step={StepName}, executionId={ExecutionId})")]
     public static partial void LogStepStarted(
         ILogger logger,
         string logKey,
@@ -43,10 +71,20 @@ internal static partial class PipelineTypedLogger
         string stepName,
         Guid executionId);
 
+    /// <summary>
+    /// Logs that a pipeline step has finished.
+    /// </summary>
+    /// <param name="logger">The logger to write to.</param>
+    /// <param name="logKey">The structured log key.</param>
+    /// <param name="pipelineName">The pipeline name.</param>
+    /// <param name="stepName">The step name.</param>
+    /// <param name="executionId">The pipeline execution identifier.</param>
+    /// <param name="outcome">The final step outcome.</param>
+    /// <param name="durationMs">The elapsed duration in milliseconds.</param>
     [LoggerMessage(
         EventId = 4,
         Level = LogLevel.Debug,
-        Message = "[{LogKey}] step finished (pipeline={PipelineName}, step={StepName}, executionId={ExecutionId}, outcome={Outcome}) -> took {DurationMs}ms")]
+        Message = "[{LogKey}] pipeline step finished (pipeline={PipelineName}, step={StepName}, executionId={ExecutionId}, outcome={Outcome}) -> took {DurationMs}ms")]
     public static partial void LogStepFinished(
         ILogger logger,
         string logKey,
@@ -56,10 +94,21 @@ internal static partial class PipelineTypedLogger
         PipelineControlOutcome outcome,
         double durationMs);
 
+    /// <summary>
+    /// Logs that a pipeline step requested a retry.
+    /// </summary>
+    /// <param name="logger">The logger to write to.</param>
+    /// <param name="logKey">The structured log key.</param>
+    /// <param name="pipelineName">The pipeline name.</param>
+    /// <param name="stepName">The step name.</param>
+    /// <param name="executionId">The pipeline execution identifier.</param>
+    /// <param name="attempt">The current attempt number.</param>
+    /// <param name="maxAttempts">The configured maximum number of attempts.</param>
+    /// <param name="message">The retry reason.</param>
     [LoggerMessage(
         EventId = 5,
         Level = LogLevel.Warning,
-        Message = "[{LogKey}] step retry requested (pipeline={PipelineName}, step={StepName}, executionId={ExecutionId}, attempt={Attempt}, maxAttempts={MaxAttempts}, message={Message})")]
+        Message = "[{LogKey}] pipeline step retry requested (pipeline={PipelineName}, step={StepName}, executionId={ExecutionId}, attempt={Attempt}, maxAttempts={MaxAttempts}, message={Message})")]
     public static partial void LogStepRetrying(
         ILogger logger,
         string logKey,
@@ -70,10 +119,19 @@ internal static partial class PipelineTypedLogger
         int maxAttempts,
         string message);
 
+    /// <summary>
+    /// Logs that a pipeline step threw an exception.
+    /// </summary>
+    /// <param name="logger">The logger to write to.</param>
+    /// <param name="logKey">The structured log key.</param>
+    /// <param name="pipelineName">The pipeline name.</param>
+    /// <param name="stepName">The step name.</param>
+    /// <param name="executionId">The pipeline execution identifier.</param>
+    /// <param name="exception">The exception that was thrown.</param>
     [LoggerMessage(
         EventId = 6,
         Level = LogLevel.Error,
-        Message = "[{LogKey}] step exception (pipeline={PipelineName}, step={StepName}, executionId={ExecutionId})")]
+        Message = "[{LogKey}] pipeline step failure (pipeline={PipelineName}, step={StepName}, executionId={ExecutionId})")]
     public static partial void LogStepException(
         ILogger logger,
         string logKey,
@@ -82,6 +140,14 @@ internal static partial class PipelineTypedLogger
         Guid executionId,
         Exception exception);
 
+    /// <summary>
+    /// Logs that the pipeline execution threw an exception.
+    /// </summary>
+    /// <param name="logger">The logger to write to.</param>
+    /// <param name="logKey">The structured log key.</param>
+    /// <param name="pipelineName">The pipeline name.</param>
+    /// <param name="executionId">The pipeline execution identifier.</param>
+    /// <param name="exception">The exception that was thrown.</param>
     [LoggerMessage(
         EventId = 7,
         Level = LogLevel.Error,
@@ -93,10 +159,18 @@ internal static partial class PipelineTypedLogger
         Guid executionId,
         Exception exception);
 
+    /// <summary>
+    /// Logs that a pipeline hook threw an exception that was ignored.
+    /// </summary>
+    /// <param name="logger">The logger to write to.</param>
+    /// <param name="logKey">The structured log key.</param>
+    /// <param name="pipelineName">The pipeline name.</param>
+    /// <param name="executionId">The pipeline execution identifier.</param>
+    /// <param name="exception">The exception that was ignored.</param>
     [LoggerMessage(
         EventId = 8,
         Level = LogLevel.Warning,
-        Message = "[{LogKey}] hook failure ignored (pipeline={PipelineName}, executionId={ExecutionId})")]
+        Message = "[{LogKey}] pipeline hook failure ignored (pipeline={PipelineName}, executionId={ExecutionId})")]
     public static partial void LogHookFailure(
         ILogger logger,
         string logKey,
@@ -104,10 +178,18 @@ internal static partial class PipelineTypedLogger
         Guid executionId,
         Exception exception);
 
+    /// <summary>
+    /// Logs that a pipeline completion callback failed.
+    /// </summary>
+    /// <param name="logger">The logger to write to.</param>
+    /// <param name="logKey">The structured log key.</param>
+    /// <param name="pipelineName">The pipeline name.</param>
+    /// <param name="executionId">The pipeline execution identifier.</param>
+    /// <param name="exception">The exception that was thrown by the callback.</param>
     [LoggerMessage(
         EventId = 9,
         Level = LogLevel.Error,
-        Message = "[{LogKey}] completion callback failed (pipeline={PipelineName}, executionId={ExecutionId})")]
+        Message = "[{LogKey}] pipeline completion callback failed (pipeline={PipelineName}, executionId={ExecutionId})")]
     public static partial void LogCompletionCallbackFailed(
         ILogger logger,
         string logKey,

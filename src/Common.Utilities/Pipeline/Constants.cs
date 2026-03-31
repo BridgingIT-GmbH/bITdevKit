@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Common;
 /// <summary>
 /// Provides constants used by the pipeline feature.
 /// </summary>
-internal static class Constants
+public static class Constants
 {
     /// <summary>
     /// Gets the structured log key used by internal pipeline logging.

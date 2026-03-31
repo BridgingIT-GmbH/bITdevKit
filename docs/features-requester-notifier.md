@@ -1600,3 +1600,162 @@ public class GenericNotificationHandler<TData> : NotificationHandlerBase<Generic
 var userNotification = new GenericNotification<UserData> { Data = new UserData { Id = "user123" } };
 var result = await notifier.PublishAsync(userNotification); // Logs: "Handled: user123"
 ```
+
+## Appendix D: Source-Generated Commands and Queries
+
+The Requester feature also supports a convenience authoring model for commands and queries through source generation.
+This path keeps the existing Requester runtime intact while reducing the amount of boilerplate developers need to write.
+
+### What Stays the Same
+
+- The generated request type still becomes a normal `RequestBase<TResponse>` request at compile time.
+- Generated handlers still derive from `RequestHandlerBase<TRequest, TResponse>`.
+- Validation still integrates with the existing `ValidationPipelineBehavior`.
+- Existing handler policy attributes like retry, timeout, authorization, and database transaction handling still apply to the generated handler type.
+
+The generator only adds the usual Requester plumbing. It does not introduce a second request model or a different runtime behavior.
+
+### Source-Generated Authoring Model
+
+Use these attributes on a partial request type:
+
+- `[Command]` for commands with a response inferred from the `[Handle]` return type
+- `[Command(typeof(TResponse))]` when you want to state the command response type explicitly
+- `[Query]` for queries with a response inferred from the `[Handle]` return type
+- `[Query(typeof(TResponse))]` when you want to state the query response type explicitly
+- `[Handle]` on exactly one developer-authored business-logic method
+- `[Validate]` on an optional validator method
+
+The `[Handle]` method is an instance method on the request type, so request members can be accessed directly inside the method body.
+Additional parameters on the `[Handle]` method are resolved from dependency injection, while `CancellationToken` and optional `SendOptions` are supplied by the runtime.
+The generator also supplies the `RequestBase<TResponse>` inheritance automatically, so authors do not need to write it explicitly.
+When an explicit response type is present on `[Command]` or `[Query]`, it must match the `Result<TResponse>` returned by the `[Handle]` method.
+
+### Command Without Response
+
+```csharp
+[Command]
+[HandlerRetry(3, 200)]
+public partial class DoSomethingCommand
+{
+    public string Message { get; set; }
+
+    [Validate]
+    private static void Validate(InlineValidator<DoSomethingCommand> validator)
+    {
+        validator.RuleFor(x => x.Message)
+            .NotEmpty()
+            .WithMessage("Message cannot be empty.");
+    }
+
+    [Handle]
+    private async Task<Result<Unit>> HandleAsync(
+        CancellationToken cancellationToken)
+    {
+        await Task.Delay(100, cancellationToken);
+        return Success();
+    }
+}
+```
+
+### Command With Response
+
+```csharp
+public sealed class CreateUserCommandResult
+{
+    public Guid UserId { get; set; }
+
+    public string Username { get; set; }
+}
+
+[Command]
+[HandlerDatabaseTransaction(contextName: "Core")]
+public partial class CreateUserCommand
+{
+    public string Username { get; set; }
+
+    [Validate]
+    private static void Validate(InlineValidator<CreateUserCommand> validator)
+    {
+        validator.RuleFor(x => x.Username)
+            .NotEmpty()
+            .WithMessage("Username cannot be empty.");
+    }
+
+    [Handle]
+    private async Task<Result<CreateUserCommandResult>> HandleAsync(
+        IGenericRepository<User> userRepository,
+        CancellationToken cancellationToken)
+    {
+        var user = new User
+        {
+            Id = Guid.NewGuid(),
+            Username = Username
+        };
+
+        await userRepository.InsertAsync(user, cancellationToken);
+
+        return Success(new CreateUserCommandResult
+        {
+            UserId = user.Id,
+            Username = user.Username
+        });
+    }
+}
+```
+
+### Query With Response
+
+```csharp
+[Query]
+[HandlerTimeout(500)]
+public partial class GetUserQuery
+{
+    public Guid UserId { get; set; }
+
+    [Validate]
+    private static void Validate(InlineValidator<GetUserQuery> validator)
+    {
+        validator.RuleFor(x => x.UserId)
+            .NotEmpty()
+            .WithMessage("UserId cannot be empty.");
+    }
+
+    [Handle]
+    private async Task<Result<User>> HandleAsync(
+        IGenericReadOnlyRepository<User> userRepository,
+        CancellationToken cancellationToken)
+    {
+        var user = await userRepository.FindOneAsync(
+            UserId,
+            cancellationToken: cancellationToken);
+
+        return user != null
+            ? Success(user)
+            : Failure($"User with ID {UserId} not found.");
+    }
+}
+```
+
+### Generated Output
+
+For a valid source-generated request, the generator emits:
+
+- the `RequestBase<TResponse>` inheritance when the authored type does not already specify a compatible base
+- a Requester-compatible handler class
+- convenience `Success(...)` and `Failure(...)` helper methods
+- an optional nested `Validator` type when `[Validate]` is present
+- XML documentation on generated types and members
+
+The convenience helpers are available directly inside the authored `[Handle]` method, so common result paths stay compact and readable:
+
+```csharp
+return user != null
+    ? Success(user)
+    : Failure($"User with ID {UserId} not found.");
+```
+
+### Validation Behavior
+
+When `[Validate]` is present, the generator emits a nested `Validator` type compatible with FluentValidation and the existing Requester validation pipeline.
+This means the generated validator is discovered the same way as a handwritten nested `Validator` class and runs through `ValidationPipelineBehavior` without any additional registration mechanism.

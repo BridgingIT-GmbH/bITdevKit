@@ -58,6 +58,47 @@ public class PipelineExecutionTests
     }
 
     [Fact]
+    public async Task ExecuteAsync_FailedResult_DefaultStopsRemainingSteps()
+    {
+        var services = CreateServices();
+        services.AddPipelines()
+            .WithPipeline<ContinueOnFailurePipeline>();
+
+        var provider = services.BuildServiceProvider();
+        var pipeline = provider.GetRequiredService<IPipelineFactory>()
+            .Create<ContinueOnFailurePipeline, TestContext>();
+        var context = new TestContext();
+
+        var result = await pipeline.ExecuteAsync(context);
+
+        result.IsFailure.ShouldBeTrue();
+        result.Messages.ShouldContain("failed-step");
+        context.AfterFailureExecuted.ShouldBeFalse();
+        context.Pipeline.ExecutedStepCount.ShouldBe(1);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_FailedResult_WhenContinueOnFailure_ContinuesRemainingSteps()
+    {
+        var services = CreateServices();
+        services.AddPipelines()
+            .WithPipeline<ContinueOnFailurePipeline>();
+
+        var provider = services.BuildServiceProvider();
+        var pipeline = provider.GetRequiredService<IPipelineFactory>()
+            .Create<ContinueOnFailurePipeline, TestContext>();
+        var context = new TestContext();
+
+        var result = await pipeline.ExecuteAsync(context, builder => builder.ContinueOnFailure());
+
+        result.IsFailure.ShouldBeTrue();
+        result.Messages.ShouldContain("failed-step");
+        result.Messages.ShouldContain("after-failure");
+        context.AfterFailureExecuted.ShouldBeTrue();
+        context.Pipeline.ExecutedStepCount.ShouldBe(2);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_Retry_ReexecutesStepUntilSuccess()
     {
         var services = CreateServices();
@@ -79,6 +120,26 @@ public class PipelineExecutionTests
     }
 
     [Fact]
+    public async Task ExecuteAsync_RetryExhaustion_ReturnsFailedResultWithRetryError()
+    {
+        var services = CreateServices();
+        services.AddPipelines()
+            .WithPipeline<RetryExhaustionPipeline>();
+
+        var provider = services.BuildServiceProvider();
+        var pipeline = provider.GetRequiredService<IPipelineFactory>()
+            .Create<RetryExhaustionPipeline, TestContext>();
+        var context = new TestContext();
+
+        var result = await pipeline.ExecuteAsync(context, builder => builder.MaxRetryAttemptsPerStep(2));
+
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.OfType<Error>().Any(e => e.Message.Contains("exhausted retry attempts")).ShouldBeTrue();
+        context.RetryAttempts.ShouldBe(3);
+        context.Pipeline.ExecutedStepCount.ShouldBe(3);
+    }
+
+    [Fact]
     public async Task ExecuteAsync_Break_StopsRemainingSteps()
     {
         var services = CreateServices();
@@ -95,6 +156,46 @@ public class PipelineExecutionTests
         result.IsSuccess.ShouldBeTrue();
         context.AfterBreakExecuted.ShouldBeFalse();
         context.Pipeline.ExecutedStepCount.ShouldBe(2);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AccumulateDiagnosticsOnFailureFalse_StripsFailureDiagnostics()
+    {
+        var services = CreateServices();
+        services.AddPipelines()
+            .WithPipeline<ContinueOnFailurePipeline>();
+
+        var provider = services.BuildServiceProvider();
+        var pipeline = provider.GetRequiredService<IPipelineFactory>()
+            .Create<ContinueOnFailurePipeline, TestContext>();
+
+        var result = await pipeline.ExecuteAsync(
+            new TestContext(),
+            builder => builder.AccumulateDiagnosticsOnFailure(false));
+
+        result.IsFailure.ShouldBeTrue();
+        result.Messages.ShouldBeEmpty();
+        result.Errors.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_AccumulateDiagnosticsOnBreakFalse_StripsBreakDiagnostics()
+    {
+        var services = CreateServices();
+        services.AddPipelines()
+            .WithPipeline<BreakDiagnosticsPipeline>();
+
+        var provider = services.BuildServiceProvider();
+        var pipeline = provider.GetRequiredService<IPipelineFactory>()
+            .Create<BreakDiagnosticsPipeline, TestContext>();
+
+        var result = await pipeline.ExecuteAsync(
+            new TestContext(),
+            builder => builder.AccumulateDiagnosticsOnBreak(false));
+
+        result.IsSuccess.ShouldBeTrue();
+        result.Messages.ShouldBeEmpty();
+        result.Errors.ShouldBeEmpty();
     }
 
     [Fact]
@@ -132,6 +233,40 @@ public class PipelineExecutionTests
         context.ContextStepCount.ShouldBe(2);
         result.Messages.ShouldContain("advanced-inline");
         context.Pipeline.ExecutedStepCount.ShouldBe(5);
+    }
+
+    [Fact]
+    public async Task ExecuteAsync_ProgressReporter_IsExposedToClassAndInlineSteps()
+    {
+        var services = CreateServices();
+        var progress = new RecordingProgress();
+
+        services.AddPipelines()
+            .WithPipeline<TestContext>("progress", builder => builder
+                .AddStep<ProgressStep>()
+                .AddStep(execution =>
+                {
+                    execution.Options.Progress?.Report(new ProgressReport(
+                        execution.Name,
+                        ["inline-progress"],
+                        100,
+                        isCompleted: true));
+
+                    return execution.Continue();
+                }));
+
+        var provider = services.BuildServiceProvider();
+        var pipeline = provider.GetRequiredService<IPipelineFactory>()
+            .Create<TestContext>("progress");
+
+        var result = await pipeline.ExecuteAsync(
+            new TestContext(),
+            builder => builder.WithProgress(progress));
+
+        result.IsSuccess.ShouldBeTrue();
+        progress.Reports.Count.ShouldBe(2);
+        progress.Reports[0].Messages.ShouldContain("class-progress");
+        progress.Reports[1].Messages.ShouldContain("inline-progress");
     }
 
     [Fact]
@@ -205,6 +340,51 @@ public class PipelineExecutionTests
     }
 
     [Fact]
+    public async Task ExecuteAndForgetAsync_CompletionCallbackFailure_DoesNotOverwriteCompletedSnapshot()
+    {
+        var services = CreateServices();
+        services.AddPipelines()
+            .WithPipeline<BackgroundPipeline>();
+
+        var provider = services.BuildServiceProvider();
+        var factory = provider.GetRequiredService<IPipelineFactory>();
+        var tracker = provider.GetRequiredService<IPipelineExecutionTracker>();
+        var pipeline = factory.Create<BackgroundPipeline, TestContext>();
+        var callbackSource = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        PipelineExecutionSnapshot snapshotObservedInCallback = null;
+
+        var handle = await pipeline.ExecuteAndForgetAsync(
+            new TestContext(),
+            builder => builder.WhenCompleted(async completion =>
+            {
+                snapshotObservedInCallback = await tracker.GetAsync(completion.ExecutionId);
+                callbackSource.TrySetResult();
+                throw new InvalidOperationException("callback boom");
+            }));
+
+        await callbackSource.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        PipelineExecutionSnapshot snapshot = null;
+        for (var i = 0; i < 40; i++)
+        {
+            snapshot = await tracker.GetAsync(handle.ExecutionId);
+            if (snapshot?.Status == PipelineExecutionStatus.Completed)
+            {
+                break;
+            }
+
+            await Task.Delay(25);
+        }
+
+        snapshot.ShouldNotBeNull();
+        snapshot.Status.ShouldBe(PipelineExecutionStatus.Completed);
+        snapshot.Result.IsSuccess.ShouldBeTrue();
+        snapshotObservedInCallback.ShouldNotBeNull();
+        snapshotObservedInCallback.Status.ShouldBe(PipelineExecutionStatus.Completed);
+        snapshotObservedInCallback.Result.IsSuccess.ShouldBeTrue();
+    }
+
+    [Fact]
     public async Task ExecuteAsync_TracingBehavior_CreatesPipelineAndStepActivities()
     {
         using var source = new ActivitySource("trace-pipeline");
@@ -251,6 +431,8 @@ public class PipelineExecutionTests
 
         public bool AfterBreakExecuted { get; set; }
 
+        public bool AfterFailureExecuted { get; set; }
+
         public int ContextStepCount { get; set; }
     }
 
@@ -289,6 +471,32 @@ public class PipelineExecutionTests
         }
     }
 
+    public sealed class ContinueOnFailurePipeline : PipelineDefinition<TestContext>
+    {
+        protected override void Configure(IPipelineDefinitionBuilder<TestContext> builder)
+        {
+            builder.AddStep<FailedResultStep>()
+                .AddStep<AfterFailureStep>();
+        }
+    }
+
+    public sealed class RetryExhaustionPipeline : PipelineDefinition<TestContext>
+    {
+        protected override void Configure(IPipelineDefinitionBuilder<TestContext> builder)
+        {
+            builder.AddStep<AlwaysRetryStep>();
+        }
+    }
+
+    public sealed class BreakDiagnosticsPipeline : PipelineDefinition<TestContext>
+    {
+        protected override void Configure(IPipelineDefinitionBuilder<TestContext> builder)
+        {
+            builder.AddStep<BreakWithDiagnosticsStep>()
+                .AddStep<AfterBreakStep>();
+        }
+    }
+
     public sealed class BackgroundPipeline : PipelineDefinition<TestContext>
     {
         protected override void Configure(IPipelineDefinitionBuilder<TestContext> builder)
@@ -322,6 +530,26 @@ public class PipelineExecutionTests
         }
     }
 
+    public sealed class FailedResultStep : PipelineStep<TestContext>
+    {
+        protected override PipelineControl Execute(TestContext context, Result result, PipelineExecutionOptions options)
+        {
+            return PipelineControl.Continue(
+                Result.Failure()
+                    .WithMessage("failed-step")
+                    .WithError(new Error("failed-error")));
+        }
+    }
+
+    public sealed class AfterFailureStep : PipelineStep<TestContext>
+    {
+        protected override PipelineControl Execute(TestContext context, Result result, PipelineExecutionOptions options)
+        {
+            context.AfterFailureExecuted = true;
+            return PipelineControl.Continue(result.WithMessage("after-failure"));
+        }
+    }
+
     public sealed class RetryStep : PipelineStep<TestContext>
     {
         protected override PipelineControl Execute(TestContext context, Result result, PipelineExecutionOptions options)
@@ -333,6 +561,15 @@ public class PipelineExecutionTests
         }
     }
 
+    public sealed class AlwaysRetryStep : PipelineStep<TestContext>
+    {
+        protected override PipelineControl Execute(TestContext context, Result result, PipelineExecutionOptions options)
+        {
+            context.RetryAttempts++;
+            return PipelineControl.Retry(result.WithMessage($"retry-{context.RetryAttempts}"), "retry");
+        }
+    }
+
     public sealed class BreakStep : PipelineStep<TestContext>
     {
         protected override PipelineControl Execute(TestContext context, Result result, PipelineExecutionOptions options)
@@ -341,11 +578,28 @@ public class PipelineExecutionTests
         }
     }
 
+    public sealed class BreakWithDiagnosticsStep : PipelineStep<TestContext>
+    {
+        protected override PipelineControl Execute(TestContext context, Result result, PipelineExecutionOptions options)
+        {
+            return PipelineControl.Break(result.WithMessage("break-diagnostic"), "break");
+        }
+    }
+
     public sealed class AfterBreakStep : PipelineStep<TestContext>
     {
         protected override PipelineControl Execute(TestContext context, Result result, PipelineExecutionOptions options)
         {
             context.AfterBreakExecuted = true;
+            return PipelineControl.Continue(result);
+        }
+    }
+
+    public sealed class ProgressStep : PipelineStep<TestContext>
+    {
+        protected override PipelineControl Execute(TestContext context, Result result, PipelineExecutionOptions options)
+        {
+            options.Progress?.Report(new ProgressReport(this.Name, ["class-progress"], 50));
             return PipelineControl.Continue(result);
         }
     }
@@ -368,6 +622,16 @@ public class PipelineExecutionTests
         public int BehaviorCount { get; set; }
 
         public int StepBehaviorCount { get; set; }
+    }
+
+    public sealed class RecordingProgress : IProgress<ProgressReport>
+    {
+        public List<ProgressReport> Reports { get; } = [];
+
+        public void Report(ProgressReport value)
+        {
+            this.Reports.Add(value);
+        }
     }
 
     public sealed class ProbeHook(ExecutionProbe probe) : PipelineHook<PipelineContextBase>

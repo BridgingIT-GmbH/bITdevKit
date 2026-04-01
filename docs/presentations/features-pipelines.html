@@ -437,7 +437,7 @@ builder.AddAsyncStep(async execution =>
               <pre><code class="language-csharp">[Pipeline(typeof(OrderImportContext))]
 [PipelineHook(typeof(PipelineAuditHook))]
 [PipelineBehavior(typeof(PipelineTracingBehavior))]
-public partial class OrderImportPipeline : PipelineDefinition&lt;OrderImportContext&gt;
+public partial class OrderImportPipeline
 {
     [PipelineStep(10)]
     public Result Validate(OrderImportContext context, Result result)
@@ -462,7 +462,7 @@ public partial class OrderImportPipeline : PipelineDefinition&lt;OrderImportCont
               <div class="panel">
                 <p class="card-tag">WHAT IT ADDS</p>
                 <ul>
-                  <li><code>[Pipeline]</code> for packaged definition boilerplate</li>
+                  <li><code>[Pipeline]</code> removes packaged definition boilerplate and the explicit base type</li>
                   <li><code>[PipelineStep(order)]</code> for generated step wiring</li>
                   <li>Class-level hooks and behaviors stay declarative</li>
                 </ul>

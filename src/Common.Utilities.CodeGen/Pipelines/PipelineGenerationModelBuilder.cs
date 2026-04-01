@@ -71,10 +71,10 @@ public static class PipelineGenerationModelBuilder
             return null;
         }
 
-        if (!TryGetPipelineShape(compilation, classSymbol, out var isGenericPipeline, out var inheritedContextType))
+        if (HasExplicitBaseType(classSymbol))
         {
             context.ReportDiagnostic(Diagnostic.Create(
-                PipelineSourceGeneratorDiagnostics.PipelineMustInheritPipelineDefinition,
+                PipelineSourceGeneratorDiagnostics.PipelineMustNotDeclareBaseType,
                 classSymbol.Locations.FirstOrDefault(),
                 classSymbol.Name));
             return null;
@@ -84,40 +84,20 @@ public static class PipelineGenerationModelBuilder
             ? pipelineAttribute.ConstructorArguments[0].Value as ITypeSymbol
             : null;
 
-        // The pipeline attribute must agree with the authored inheritance model so the generated
-        // Configure(...) signature and registered components target the same context type.
-        if (isGenericPipeline && declaredContextType is null)
+        var pipelineContextBaseType = compilation.GetTypeByMetadataName(PipelineSourceGenerator.PipelineContextBaseName);
+        var nullContextType = compilation.GetTypeByMetadataName(PipelineSourceGenerator.NullPipelineContextName);
+        if (declaredContextType is not null && !IsAssignableFrom(pipelineContextBaseType, declaredContextType))
         {
             context.ReportDiagnostic(Diagnostic.Create(
-                PipelineSourceGeneratorDiagnostics.GenericPipelineRequiresContextAttribute,
+                PipelineSourceGeneratorDiagnostics.InvalidPipelineContextType,
                 classSymbol.Locations.FirstOrDefault(),
                 classSymbol.Name,
-                inheritedContextType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)));
+                declaredContextType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)));
             return null;
         }
 
-        if (!isGenericPipeline && declaredContextType is not null)
-        {
-            context.ReportDiagnostic(Diagnostic.Create(
-                PipelineSourceGeneratorDiagnostics.PipelineContextMismatch,
-                classSymbol.Locations.FirstOrDefault(),
-                classSymbol.Name,
-                declaredContextType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat),
-                "no context"));
-            return null;
-        }
-
-        if (declaredContextType is not null &&
-            !SymbolEqualityComparer.Default.Equals(declaredContextType, inheritedContextType))
-        {
-            context.ReportDiagnostic(Diagnostic.Create(
-                PipelineSourceGeneratorDiagnostics.PipelineContextMismatch,
-                classSymbol.Locations.FirstOrDefault(),
-                classSymbol.Name,
-                declaredContextType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat),
-                inheritedContextType.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)));
-            return null;
-        }
+        var isGenericPipeline = declaredContextType is not null;
+        var pipelineContextType = declaredContextType ?? nullContextType;
 
         var hooks = GetRegistrations(
             context,
@@ -126,7 +106,7 @@ public static class PipelineGenerationModelBuilder
             PipelineSourceGenerator.PipelineHookAttributeName,
             PipelineSourceGenerator.PipelineHookOfTName,
             PipelineSourceGeneratorDiagnostics.InvalidHookType,
-            inheritedContextType);
+            pipelineContextType);
         if (hooks.IsDefault)
         {
             return null;
@@ -139,7 +119,7 @@ public static class PipelineGenerationModelBuilder
             PipelineSourceGenerator.PipelineBehaviorAttributeName,
             PipelineSourceGenerator.PipelineBehaviorOfTName,
             PipelineSourceGeneratorDiagnostics.InvalidBehaviorType,
-            inheritedContextType);
+            pipelineContextType);
         if (behaviors.IsDefault)
         {
             return null;
@@ -162,7 +142,7 @@ public static class PipelineGenerationModelBuilder
                 compilation,
                 method,
                 stepAttribute,
-                inheritedContextType,
+                pipelineContextType,
                 isGenericPipeline);
             if (step is null)
             {
@@ -198,40 +178,10 @@ public static class PipelineGenerationModelBuilder
         return new PipelineGenerationModel(
             classSymbol,
             isGenericPipeline,
-            inheritedContextType,
+            pipelineContextType,
             hooks,
             behaviors,
             steps.OrderBy(static step => step.Order).ToImmutableArray());
-    }
-
-    private static bool TryGetPipelineShape(Compilation compilation, INamedTypeSymbol classSymbol, out bool isGenericPipeline, out ITypeSymbol contextType)
-    {
-        var genericPipelineType = compilation.GetTypeByMetadataName(PipelineSourceGenerator.PipelineDefinitionOfTName);
-        var nonGenericPipelineType = compilation.GetTypeByMetadataName(PipelineSourceGenerator.PipelineDefinitionName);
-        var nullContextType = compilation.GetTypeByMetadataName(PipelineSourceGenerator.NullPipelineContextName);
-
-        for (var current = classSymbol; current is not null; current = current.BaseType)
-        {
-            if (genericPipelineType is not null &&
-                SymbolEqualityComparer.Default.Equals(current.OriginalDefinition, genericPipelineType))
-            {
-                isGenericPipeline = true;
-                contextType = current.TypeArguments[0];
-                return true;
-            }
-
-            if (nonGenericPipelineType is not null &&
-                SymbolEqualityComparer.Default.Equals(current, nonGenericPipelineType))
-            {
-                isGenericPipeline = false;
-                contextType = nullContextType;
-                return true;
-            }
-        }
-
-        isGenericPipeline = false;
-        contextType = null;
-        return false;
     }
 
     private static ImmutableArray<PipelineTypeRegistration> GetRegistrations(
@@ -313,6 +263,11 @@ public static class PipelineGenerationModelBuilder
             .Select(static reference => reference.GetSyntax())
             .OfType<ClassDeclarationSyntax>()
             .All(static declaration => declaration.Modifiers.Any(modifier => modifier.IsKind(Microsoft.CodeAnalysis.CSharp.SyntaxKind.PartialKeyword)));
+    }
+
+    private static bool HasExplicitBaseType(INamedTypeSymbol classSymbol)
+    {
+        return classSymbol.BaseType is { SpecialType: not SpecialType.System_Object };
     }
 
     private static bool HasManualConfigure(INamedTypeSymbol classSymbol)

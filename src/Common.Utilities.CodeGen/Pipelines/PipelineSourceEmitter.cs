@@ -23,6 +23,9 @@ public static class PipelineSourceEmitter
             ? null
             : model.ClassSymbol.ContainingNamespace.ToDisplayString();
         var className = model.ClassSymbol.Name;
+        var baseType = model.IsGenericPipeline
+            ? $"global::BridgingIT.DevKit.Common.PipelineDefinition<{PipelineGeneratorSymbolHelper.ToTypeDisplay(model.ContextType)}>"
+            : "global::BridgingIT.DevKit.Common.PipelineDefinition";
         var builderType = model.IsGenericPipeline
             ? $"global::BridgingIT.DevKit.Common.IPipelineDefinitionBuilder<{PipelineGeneratorSymbolHelper.ToTypeDisplay(model.ContextType)}>"
             : "global::BridgingIT.DevKit.Common.IPipelineDefinitionBuilder";
@@ -37,7 +40,7 @@ public static class PipelineSourceEmitter
             source.AppendLine("{");
         }
 
-        source.AppendLine($"partial class {className}");
+        source.AppendLine($"partial class {className} : {baseType}");
         source.AppendLine("{");
         source.AppendLine($"    partial void OnConfigureGenerated({builderType} builder);");
         source.AppendLine();

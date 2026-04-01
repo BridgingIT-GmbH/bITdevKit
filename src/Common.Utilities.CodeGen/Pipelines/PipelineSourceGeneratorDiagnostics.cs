@@ -22,18 +22,18 @@ public static class PipelineSourceGeneratorDiagnostics
         DiagnosticSeverity.Error,
         true);
 
-    public static readonly DiagnosticDescriptor PipelineMustInheritPipelineDefinition = new(
+    public static readonly DiagnosticDescriptor PipelineMustNotDeclareBaseType = new(
         "PLNGEN002",
-        "Pipeline must inherit PipelineDefinition",
-        "Pipeline '{0}' must inherit PipelineDefinition or PipelineDefinition<TContext> to use [Pipeline]",
+        "Pipeline must not declare an explicit base type",
+        "Pipeline '{0}' must not declare an explicit base type to use [Pipeline]; the generator supplies PipelineDefinition",
         "Pipeline.CodeGen",
         DiagnosticSeverity.Error,
         true);
 
-    public static readonly DiagnosticDescriptor GenericPipelineRequiresContextAttribute = new(
+    public static readonly DiagnosticDescriptor InvalidPipelineContextType = new(
         "PLNGEN003",
-        "Generic pipeline requires explicit context attribute",
-        "Pipeline '{0}' inherits PipelineDefinition<TContext> and must declare [Pipeline(typeof({1}))]",
+        "Pipeline context type is invalid",
+        "Pipeline '{0}' declares context '{1}' in [Pipeline], but it must derive from PipelineContextBase",
         "Pipeline.CodeGen",
         DiagnosticSeverity.Error,
         true);

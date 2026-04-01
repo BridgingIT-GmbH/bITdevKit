@@ -39,7 +39,7 @@ public class InvalidGeneratedPipeline : PipelineDefinition
 using BridgingIT.DevKit.Common;
 
 [Pipeline]
-public partial class InvalidGeneratedPipeline : PipelineDefinition
+public partial class InvalidGeneratedPipeline
 {
     [PipelineStep(10)]
     public void StepOne() { }
@@ -65,7 +65,7 @@ public class SampleContext : PipelineContextBase
 }
 
 [Pipeline(typeof(SampleContext))]
-public partial class InvalidGeneratedPipeline : PipelineDefinition<SampleContext>
+public partial class InvalidGeneratedPipeline
 {
     [PipelineStep(10)]
     public int InvalidStep(SampleContext context) => 42;
@@ -75,6 +75,86 @@ public partial class InvalidGeneratedPipeline : PipelineDefinition<SampleContext
         var diagnostics = RunGenerator(source);
 
         diagnostics.Any(d => d.Id == "PLNGEN007").ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Generator_NoContextPipelineWithoutBase_ProducesNoDiagnostics()
+    {
+        const string source = """
+using BridgingIT.DevKit.Common;
+
+[Pipeline]
+public partial class ValidGeneratedPipeline
+{
+    [PipelineStep(10)]
+    public void ExecuteStep() { }
+}
+""";
+
+        var diagnostics = RunGenerator(source);
+
+        diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Generator_ContextPipelineWithoutBase_ProducesNoDiagnostics()
+    {
+        const string source = """
+using BridgingIT.DevKit.Common;
+
+public class SampleContext : PipelineContextBase
+{
+}
+
+[Pipeline(typeof(SampleContext))]
+public partial class ValidGeneratedPipeline
+{
+    [PipelineStep(10)]
+    public Result ExecuteStep(SampleContext context, Result result) => result;
+}
+""";
+
+        var diagnostics = RunGenerator(source);
+
+        diagnostics.ShouldBeEmpty();
+    }
+
+    [Fact]
+    public void Generator_ExplicitBaseType_ReportsDiagnostic()
+    {
+        const string source = """
+using BridgingIT.DevKit.Common;
+
+[Pipeline]
+public partial class InvalidGeneratedPipeline : PipelineDefinition
+{
+    [PipelineStep(10)]
+    public void ExecuteStep() { }
+}
+""";
+
+        var diagnostics = RunGenerator(source);
+
+        diagnostics.Any(d => d.Id == "PLNGEN002").ShouldBeTrue();
+    }
+
+    [Fact]
+    public void Generator_InvalidContextType_ReportsDiagnostic()
+    {
+        const string source = """
+using BridgingIT.DevKit.Common;
+
+[Pipeline(typeof(string))]
+public partial class InvalidGeneratedPipeline
+{
+    [PipelineStep(10)]
+    public void ExecuteStep() { }
+}
+""";
+
+        var diagnostics = RunGenerator(source);
+
+        diagnostics.Any(d => d.Id == "PLNGEN003").ShouldBeTrue();
     }
 
     private static ImmutableArray<Diagnostic> RunGenerator(string source)

@@ -840,13 +840,15 @@ registration model, and the same execution semantics described above.
 
 Code generation is focused on packaged pipeline definitions:
 
-- declare a `partial` pipeline class with `[Pipeline]`
+- declare a `partial` pipeline class with `[Pipeline]` and no explicit base class
 - declare step methods with `[PipelineStep(order)]`
 - add class-level hooks with `[PipelineHook(typeof(...))]`
 - add class-level behaviors with `[PipelineBehavior(typeof(...))]`
 
-The generator then emits the normal packaged pipeline definition plumbing for you. Generated
-pipelines still register like manual packaged pipelines:
+Use `[Pipeline]` for no-context pipelines and `[Pipeline(typeof(TContext))]` for context-aware
+pipelines. The generator then emits the normal packaged pipeline definition plumbing, including the
+appropriate `PipelineDefinition` base class, for you. Generated pipelines still register like
+manual packaged pipelines:
 
 ```csharp
 services.AddPipelines()
@@ -866,7 +868,7 @@ var pipeline = pipelineFactory.Create<OrderImportPipeline, OrderImportContext>()
 [PipelineHook(typeof(PipelineAuditHook))]
 [PipelineBehavior(typeof(PipelineTracingBehavior))]
 [PipelineBehavior(typeof(PipelineTimingBehavior))]
-public partial class OrderImportPipeline : PipelineDefinition<OrderImportContext>
+public partial class OrderImportPipeline
 {
     [PipelineStep(10)]
     public Result Validate(OrderImportContext context, Result result)
@@ -941,7 +943,8 @@ Generated pipelines follow the same naming conventions as manual pipelines:
 The generator also emits compile-time diagnostics for invalid authoring, including:
 
 - pipeline class is not `partial`
-- pipeline does not inherit `PipelineDefinition` or `PipelineDefinition<TContext>`
+- pipeline class declares an explicit base class
+- declared pipeline context does not derive from `PipelineContextBase`
 - unsupported step method signatures
 - `async void` step methods
 - duplicate generated step orders

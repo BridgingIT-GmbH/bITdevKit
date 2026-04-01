@@ -140,7 +140,7 @@ public class PipelineCodeGenExecutionTests
 [Pipeline(typeof(PipelineCodeGenExecutionTests.GeneratedContext))]
 [PipelineHook(typeof(PipelineCodeGenExecutionTests.GeneratedHook))]
 [PipelineBehavior(typeof(PipelineCodeGenExecutionTests.GeneratedBehavior))]
-public partial class GeneratedContextPipeline : PipelineDefinition<PipelineCodeGenExecutionTests.GeneratedContext>
+public partial class GeneratedContextPipeline
 {
     [PipelineStep(20)]
     public void Validate(PipelineCodeGenExecutionTests.GeneratedContext context, PipelineCodeGenExecutionTests.GeneratedDependency dependency)
@@ -180,7 +180,7 @@ public partial class GeneratedContextPipeline : PipelineDefinition<PipelineCodeG
 }
 
 [Pipeline]
-public partial class GeneratedNoContextPipeline : PipelineDefinition
+public partial class GeneratedNoContextPipeline
 {
     [PipelineStep(10)]
     public void Prepare(PipelineCodeGenExecutionTests.NoContextDependency dependency)

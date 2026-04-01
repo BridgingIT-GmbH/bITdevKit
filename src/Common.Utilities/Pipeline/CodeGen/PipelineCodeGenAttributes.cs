@@ -9,14 +9,17 @@ namespace BridgingIT.DevKit.Common;
 /// Marks a packaged pipeline definition class for source-generated pipeline authoring support.
 /// </summary>
 /// <remarks>
-/// The attributed class must be declared as <c>partial</c> and inherit from <see cref="PipelineDefinition"/>
-/// or <see cref="PipelineDefinition{TContext}"/>. The pipeline runtime itself is unchanged; the generator
-/// only produces the usual packaged pipeline definition plumbing and generated wrapper step classes.
+/// The attributed class must be declared as <c>partial</c> and must not declare an explicit base type.
+/// Use <c>[Pipeline]</c> for a no-context pipeline or <c>[Pipeline(typeof(TContext))]</c> for a
+/// context-aware pipeline, and the generator supplies the appropriate <see cref="PipelineDefinition"/>
+/// or <see cref="PipelineDefinition{TContext}"/> base class. The pipeline runtime itself is unchanged;
+/// the generator only produces the usual packaged pipeline definition plumbing and generated wrapper
+/// step classes.
 /// </remarks>
 /// <example>
 /// <code>
 /// [Pipeline(typeof(OrderImportContext))]
-/// public partial class OrderImportPipeline : PipelineDefinition&lt;OrderImportContext&gt;
+/// public partial class OrderImportPipeline
 /// {
 ///     [PipelineStep(10)]
 ///     public Result Validate(OrderImportContext context, Result result) => result;
@@ -89,7 +92,7 @@ public class PipelineStepAttribute(int order) : Attribute
 /// <example>
 /// <code>
 /// [PipelineHook(typeof(PipelineAuditHook))]
-/// public partial class OrderImportPipeline : PipelineDefinition&lt;OrderImportContext&gt;
+/// public partial class OrderImportPipeline
 /// {
 /// }
 /// </code>
@@ -111,7 +114,7 @@ public class PipelineHookAttribute(Type hookType) : Attribute
 /// <code>
 /// [PipelineBehavior(typeof(PipelineTracingBehavior))]
 /// [PipelineBehavior(typeof(PipelineTimingBehavior))]
-/// public partial class OrderImportPipeline : PipelineDefinition&lt;OrderImportContext&gt;
+/// public partial class OrderImportPipeline
 /// {
 /// }
 /// </code>

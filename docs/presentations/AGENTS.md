@@ -10,6 +10,9 @@ Use the [`revealjs` skill](/mnt/f/projects/bit/bIT.bITdevKit/.agents/skills/reve
 - Use Reveal.js with `RevealMarkdown`, `RevealHighlight`, and `RevealMenu`
 - Use Monokai for code highlighting
 - Keep the left-side menu enabled with title-based entries
+- Use `KEY TAKEAWAYS` as the closing summary panel tag instead of `THROUGH-LINE`
+- Render doc references as real clickable links, preferably with the shared `doc-link` styling and trailing link marker
+- Add a link back to `docs/presentations/index.html` on the closing slide of each deck
 - Use realistic C# examples with `language-csharp` where code helps explain the feature
 - Include a concrete flow slide when the feature has a runtime flow
 - Cross-reference only the most relevant docs

@@ -6,6 +6,7 @@
   <title>Domain ActiveEntity</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/monokai.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -98,7 +99,7 @@
           <div class="two-col code-layout">
             <div class="code-window">
               <p class="code-caption">Entity definition</p>
-              <pre><code>[TypedEntityId&lt;Guid&gt;]
+              <pre><code class="language-csharp">[TypedEntityId&lt;Guid&gt;]
 public class Customer : ActiveEntity&lt;Customer, CustomerId&gt;,
     IAuditable,
     IConcurrency
@@ -137,7 +138,7 @@ public class Customer : ActiveEntity&lt;Customer, CustomerId&gt;,
           <div class="two-col code-layout">
             <div class="code-window">
               <p class="code-caption">DI setup</p>
-              <pre><code>services.AddDbContext&lt;DbContext&gt;(options =>
+              <pre><code class="language-csharp">services.AddDbContext&lt;DbContext&gt;(options =>
     options.UseSqlServer(connectionString));
 
 services.AddActiveEntity(cfg =>
@@ -298,7 +299,7 @@ app.UseActiveEntity(app.Services);</code></pre>
           <div class="two-col code-layout">
             <div class="code-window">
               <p class="code-caption">[ActiveEntityFeatures]</p>
-              <pre><code>[TypedEntityId&lt;Guid&gt;]
+              <pre><code class="language-csharp">[TypedEntityId&lt;Guid&gt;]
 [ActiveEntityFeatures(
     ActiveEntityFeatures.ConventionFinders |
     ActiveEntityFeatures.QueryDsl)]
@@ -387,7 +388,7 @@ public partial class Customer
           <div class="two-col code-layout">
             <div class="code-window">
               <p class="code-caption">Entity-intrinsic rule</p>
-              <pre><code>protected override async Task&lt;Result&gt;
+              <pre><code class="language-csharp">protected override async Task&lt;Result&gt;
 OnBeforeInsertAsync(
     ActiveEntityContext&lt;Order, OrderId&gt; context,
     CancellationToken ct)
@@ -488,6 +489,9 @@ OnBeforeInsertAsync(
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-menu@2.1.0/menu.js"></script>
   <script>
     Reveal.initialize({
       width: 1280,
@@ -499,7 +503,15 @@ OnBeforeInsertAsync(
       hash: true,
       transition: 'none',
       backgroundTransition: 'none',
-      center: false
+      center: false,
+      plugins: [ RevealMarkdown, RevealHighlight, RevealMenu ],
+      menu: {
+        side: 'left',
+        numbers: true,
+        titleSelector: 'h1, h2',
+        openButton: true,
+        sticky: true
+      }
     });
   </script>
 </body>

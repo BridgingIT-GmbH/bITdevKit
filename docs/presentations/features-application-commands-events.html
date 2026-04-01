@@ -6,6 +6,7 @@
   <title>Application Commands, Queries, and Events</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/monokai.min.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -96,7 +97,7 @@
           <div class="two-col code-layout">
             <div class="code-window">
               <p class="code-caption">[Command] / source-generated request</p>
-              <pre><code>[Command]
+              <pre><code class="language-csharp">[Command]
 public partial class CustomerRenameCommand
 {
     [ValidateNotEmptyGuid("CustomerId is required.")]
@@ -211,7 +212,7 @@ public partial class CustomerRenameCommand
           <div class="two-col code-layout">
             <div class="code-window">
               <p class="code-caption">[Query] / source-generated request</p>
-              <pre><code>[Query]
+              <pre><code class="language-csharp">[Query]
 public partial class CustomerDetailsQuery
 {
     [ValidateNotEmptyGuid("CustomerId is required.")]
@@ -321,7 +322,7 @@ public partial class CustomerDetailsQuery
           <div class="two-col code-layout">
             <div class="code-window">
               <p class="code-caption">[Event] / multiple generated handlers</p>
-              <pre><code>[Event]
+              <pre><code class="language-csharp">[Event]
 [HandlerRetry(2, 100)]
 public partial class UserRegisteredEvent
 {
@@ -510,6 +511,9 @@ public partial class UserRegisteredEvent
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-menu@2.1.0/menu.js"></script>
   <script>
     Reveal.initialize({
       width: 1280,
@@ -521,7 +525,15 @@ public partial class UserRegisteredEvent
       hash: true,
       transition: 'none',
       backgroundTransition: 'none',
-      center: false
+      center: false,
+      plugins: [ RevealMarkdown, RevealHighlight, RevealMenu ],
+      menu: {
+        side: 'left',
+        numbers: true,
+        titleSelector: 'h1, h2',
+        openButton: true,
+        sticky: true
+      }
     });
   </script>
 </body>

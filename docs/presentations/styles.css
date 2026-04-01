@@ -138,10 +138,16 @@
   padding: 0;
   background: transparent;
   border: 0;
-  color: var(--paper-color);
+  color: inherit;
   font-size: 11.1pt;
   line-height: 1.42;
   white-space: pre-wrap;
+}
+
+.reveal pre code.hljs {
+  color: inherit;
+  background: #272822;
+  padding: 14px 16px;
 }
 
 .reveal .slides section {

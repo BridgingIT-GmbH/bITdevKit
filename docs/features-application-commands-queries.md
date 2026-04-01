@@ -85,25 +85,26 @@ Add the code generation package to the project that contains the commands and qu
 Commands modify state and return `Result<Unit>` or `Result<T>`.
 
 ```csharp
-[Command]
+[Command] // Marker attribute to indicate this is a command
 public partial class CustomerCreateCommand
 {
-    public string FirstName { get; init; }
+    public string FirstName { get; init; } // Properties are defined normally
 
     public string LastName { get; init; }
 
     public string Email { get; init; }
 
     [Handle]
-    private async Task<Result<CustomerModel>> HandleAsync(
-        IMapper mapper,
+    private async Task<Result<Customer>> HandleAsync(
+        // DI services declared as parameters are resolved automatically
         IGenericRepository<Customer> repository,
         CancellationToken cancellationToken)
     {
         var customer = mapper.Map<CustomerCreateCommand, Customer>(this);
         await repository.InsertAsync(customer, cancellationToken);
 
-        return Success(mapper.Map<Customer, CustomerModel>(customer));
+        // Returning Success with a value, which will be the Result<Customer> type of the command
+        return Success(customer);
     }
 }
 ```
@@ -134,7 +135,7 @@ public partial class CustomerRenameCommand
 For more complex rules, the `[Validate]` marker can be used:
 
 ```csharp
-[Command]
+[Command] // Marker attribute to indicate this is a command
 public partial class CustomerImportCommand
 {
     [ValidateNotEmpty("At least one email address is required.")]
@@ -161,22 +162,23 @@ public partial class CustomerImportCommand
 Queries retrieve data and return `Result<T>`.
 
 ```csharp
-[Query]
+[Query] // Marker attribute to indicate this is a query
 public partial class CustomerFindOneQuery
 {
     [ValidateNotEmptyGuid("CustomerId is required.")]
     public string CustomerId { get; }
 
     [Handle]
-    private async Task<Result<CustomerModel>> HandleAsync(
+    private async Task<Result<Customer>> HandleAsync(
         IMapper mapper,
         IGenericRepository<Customer> repository,
         CancellationToken cancellationToken)
     {
         var customer = await repository.FindOneAsync(CustomerId, cancellationToken: cancellationToken);
 
+        // Returning Success with a value, which will be the Result<Customer> type of the query
         return customer != null
-            ? Success(mapper.Map<Customer, CustomerModel>(customer))
+            ? Success(customer)
             : Failure($"Customer with ID {CustomerId} was not found.");
     }
 }
@@ -187,6 +189,7 @@ public partial class CustomerFindOneQuery
 Inject and use `IRequester`:
 
 ```csharp
+// In a controller, service, or any class with DI
 var requester = serviceProvider.GetRequiredService<IRequester>();
 
 var command = new CustomerCreateCommand
@@ -196,7 +199,7 @@ var command = new CustomerCreateCommand
     Email = "john.doe@example.com"
 };
 
-var commandResult = await requester.SendAsync(command);
+var commandResult = await requester.SendAsync(command); // Returns Result<Customer>
 if (commandResult.IsSuccess)
 {
     Console.WriteLine($"Created customer: {commandResult.Value.Id}");
@@ -207,7 +210,7 @@ else
 }
 
 var query = new CustomerFindOneQuery("some-guid");
-var queryResult = await requester.SendAsync(query);
+var queryResult = await requester.SendAsync(query); // Returns Result<Customer>
 if (queryResult.IsSuccess)
 {
     Console.WriteLine($"Found customer: {queryResult.Value.FirstName}");

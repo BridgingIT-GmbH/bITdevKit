@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Domain ActiveEntity</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section id="title" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">bITdevKit / Developer Usage</p>
+        <h1>Domain ActiveEntity</h1>
+        <p class="text-xl">20-slide field guide for using entity-centric CRUD, providers, behaviors, and scoped operations without falling into accidental complexity.</p>
+        <p class="footnote">Based on <code>features-domain-activeentity.md</code>, plus <code>features-results.md</code> and <code>features-domain-specifications.md</code>.</p>
+      </section>
+
+      <section id="slide-2">
+        <h2>What ActiveEntity Is</h2>
+        <div class="content">
+          <div class="triple-grid">
+            <div class="brutal-card brutal-command">
+              <p class="card-tag">01 / ENTITY-CENTRIC</p>
+              <h3>Persistence methods live on the entity</h3>
+              <ul>
+                <li><code>InsertAsync()</code></li>
+                <li><code>UpdateAsync()</code></li>
+                <li><code>DeleteAsync()</code></li>
+                <li>Static find/query helpers</li>
+              </ul>
+            </div>
+            <div class="brutal-card brutal-query">
+              <p class="card-tag">02 / PROVIDER-BASED</p>
+              <h3>Persistence is still pluggable</h3>
+              <ul>
+                <li>EF Core provider</li>
+                <li>InMemory provider</li>
+                <li>Custom data source support</li>
+              </ul>
+            </div>
+            <div class="brutal-card brutal-event">
+              <p class="card-tag">03 / RESULT-DRIVEN</p>
+              <h3>Operations return explicit outcomes</h3>
+              <ul>
+                <li><code>Result</code></li>
+                <li><code>Result&lt;T&gt;</code></li>
+                <li><code>ResultPaged&lt;T&gt;</code></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-3">
+        <h2>Where It Fits</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">GOOD FIT</p>
+              <h3>Choose ActiveEntity when simplicity is the point</h3>
+              <ul>
+                <li>CRUD-heavy modules</li>
+                <li>Rapid prototypes and admin workflows</li>
+                <li>Domain-rich apps that still want direct entity-centric operations</li>
+                <li>Tests that benefit from provider swapping</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">NOT A UNIVERSAL DEFAULT</p>
+              <h3>Do not force it everywhere</h3>
+              <ul>
+                <li>Complex reporting or batch workloads may fit repositories better</li>
+                <li>Cross-entity orchestration still belongs in app services or commands</li>
+                <li>High-complexity persistence models still need architectural judgment</li>
+              </ul>
+            </div>
+          </div>
+          <div class="metrics-row">
+            <div class="metric-box"><span>CRUD</span><p>optimized path</p></div>
+            <div class="metric-box"><span>PLUGGABLE</span><p>providers and behaviors</p></div>
+            <div class="metric-box"><span>RESULT</span><p>explicit success/failure</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-basics" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 1</p>
+        <h1>Basic Model</h1>
+        <p>Entity definition, setup, and the core CRUD path.</p>
+      </section>
+
+      <section id="slide-5">
+        <h2>Defining An ActiveEntity</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Entity definition</p>
+              <pre><code>[TypedEntityId&lt;Guid&gt;]
+public class Customer : ActiveEntity&lt;Customer, CustomerId&gt;,
+    IAuditable,
+    IConcurrency
+{
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string Title { get; set; }
+    public EmailAddressStub Email { get; set; }
+    public int Visits { get; set; } = 0;
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">BASE TYPE</p>
+                <ul>
+                  <li>Inherits from <code>ActiveEntity&lt;TEntity, TId&gt;</code></li>
+                  <li>Still builds on the standard entity/id model</li>
+                  <li>Supports typed IDs cleanly</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">OPTIONAL INTERFACES</p>
+                <ul>
+                  <li><code>IAuditable</code> for audit state</li>
+                  <li><code>IConcurrency</code> for concurrency support</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-6">
+        <h2>Wiring Providers And Behaviors</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">DI setup</p>
+              <pre><code>services.AddDbContext&lt;DbContext&gt;(options =>
+    options.UseSqlServer(connectionString));
+
+services.AddActiveEntity(cfg =>
+{
+    cfg.For&lt;Customer, CustomerId&gt;()
+        .UseEntityFrameworkProvider(o => o.UseContext&lt;DbContext&gt;())
+        .AddLoggingBehavior()
+        .AddAuditStateBehavior(
+            new ActiveEntityEntityAuditStateBehaviorOptions
+            {
+                SoftDeleteEnabled = true
+            });
+});
+
+app.UseActiveEntity(app.Services);</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">PER ENTITY</p>
+                <ul>
+                  <li>Choose provider per entity</li>
+                  <li>Add behaviors in registration order</li>
+                  <li>Swap data stores without rewriting entity code</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">MENTAL MODEL</p>
+                <p class="text-lg">The entity surface feels direct, but the actual persistence work is delegated through provider and behavior infrastructure resolved from DI.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-7">
+        <h2>Core CRUD Surface</h2>
+        <div class="content">
+          <div class="flow-grid">
+            <div class="flow-box brutal-command"><span>INSERT</span><h3>New entity</h3><p><code>customer.InsertAsync()</code></p></div>
+            <div class="flow-box brutal-command"><span>UPDATE</span><h3>Loaded entity</h3><p><code>customer.UpdateAsync()</code></p></div>
+            <div class="flow-box brutal-command"><span>DELETE</span><h3>Instance or id</h3><p><code>customer.DeleteAsync()</code> or static delete</p></div>
+            <div class="flow-box brutal-query"><span>READ</span><h3>Static helpers</h3><p><code>FindOneAsync</code>, <code>FindAllAsync</code>, paging, count, exists</p></div>
+          </div>
+          <div class="panel">
+            <p class="card-tag">PATTERN</p>
+            <p class="text-lg">The entity carries the public API, while providers and behaviors carry the infrastructure details.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-pipeline" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 2</p>
+        <h1>Pipeline And Scope</h1>
+        <p>Providers, behaviors, context reuse, and transactions.</p>
+      </section>
+
+      <section id="slide-11">
+        <h2>How An Operation Executes</h2>
+        <div class="content">
+          <div class="diagram-frame">
+            <div class="flow-line">
+              <div class="flow-box brutal-command"><span>1</span><h3>Entity method called</h3><p><code>UpdateAsync()</code></p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>2</span><h3>Resolve context</h3><p>provider + behaviors from one scope</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>3</span><h3>Run hooks</h3><p>before/after behavior pipeline</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box brutal-result"><span>4</span><h3>Return Result</h3><p>explicit operation outcome</p></div>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="card-tag">KEY IDEA</p>
+            <p class="text-lg">The provider does persistence. Behaviors add cross-cutting concerns. The entity remains the developer-facing entry point.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-12">
+        <h2>Behaviors Are The Extension Layer</h2>
+        <div class="content">
+          <div class="flow-grid">
+            <div class="flow-box"><span>LOGGING</span><h3>Trace operations</h3><p>observe CRUD outcomes and state transitions</p></div>
+            <div class="flow-box"><span>AUDIT</span><h3>Track changes</h3><p>audit state and optional soft delete</p></div>
+            <div class="flow-box"><span>DOMAIN EVENTS</span><h3>Publish around persistence</h3><p>before or after successful operations</p></div>
+            <div class="flow-box"><span>VALIDATION</span><h3>Stop bad writes</h3><p>DataAnnotations or FluentValidation</p></div>
+          </div>
+          <blockquote>
+            <p>Use behaviors for reusable cross-cutting concerns. Do not bury those concerns inside every entity method manually.</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section id="slide-13">
+        <h2>Validation Options</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">DATA ANNOTATIONS</p>
+              <ul>
+                <li><code>[Required]</code></li>
+                <li><code>[MinLength]</code>, <code>[MaxLength]</code></li>
+                <li><code>[Range]</code>, <code>[EmailAddress]</code></li>
+                <li>Good for simple entity property rules</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">FLUENTVALIDATION</p>
+              <ul>
+                <li>Attach validators per operation type</li>
+                <li>Insert/update/delete can each have different rules</li>
+                <li>Good for richer business validation</li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="card-tag">PRACTICE</p>
+            <p class="text-lg">Keep validation where it best fits: simple property rules in annotations, richer or operation-specific rules in dedicated validators.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-14">
+        <h2>WithContextAsync And WithTransactionAsync</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">WITH CONTEXT</p>
+              <h3>Reuse one provider scope</h3>
+              <ul>
+                <li>Use when multiple operations must share one consistent context</li>
+                <li>Does not automatically imply a transaction</li>
+                <li>Pass the provided <code>ctx</code> to nested operations</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">WITH TRANSACTION</p>
+              <h3>Run atomically</h3>
+              <ul>
+                <li>Uses one transaction-aware context</li>
+                <li>Commit on success, rollback on failure</li>
+                <li>All operations inside the block must use the provided <code>ctx</code></li>
+              </ul>
+            </div>
+          </div>
+          <p class="footnote">This scope discipline is one of the most important details in the feature. It prevents mismatched providers, disposed scopes, and inconsistent DbContext usage.</p>
+        </div>
+      </section>
+
+      <section id="divider-queries" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 3</p>
+        <h1>Query Features</h1>
+        <p>Convention finders, specifications, DSL, and forwarders.</p>
+      </section>
+
+      <section id="slide-17">
+        <h2>Opt-In Features Per Entity</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">[ActiveEntityFeatures]</p>
+              <pre><code>[TypedEntityId&lt;Guid&gt;]
+[ActiveEntityFeatures(
+    ActiveEntityFeatures.ConventionFinders |
+    ActiveEntityFeatures.QueryDsl)]
+public partial class Customer
+    : ActiveEntity&lt;Customer, CustomerId&gt;
+{
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">AVAILABLE FLAGS</p>
+                <ul>
+                  <li><code>Forwarders</code></li>
+                  <li><code>ConventionFinders</code></li>
+                  <li><code>Specifications</code></li>
+                  <li><code>QueryDsl</code></li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">DEFAULT</p>
+                <p class="text-lg">If no parameters are provided, all available features are enabled by default.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-18">
+        <h2>Convention Finders And Specifications</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">CONVENTION FINDERS</p>
+              <ul>
+                <li><code>FindAllByLastNameAsync("Doe")</code></li>
+                <li><code>FindOneByEmailAsync(...)</code></li>
+                <li>Best for common lookups with clear property names</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">SPECIFICATIONS</p>
+              <ul>
+                <li><code>Customer.Specifications.LastNameEquals("Doe")</code></li>
+                <li>Composable with <code>And</code> and <code>Or</code></li>
+                <li>Best for reusable query criteria</li>
+              </ul>
+            </div>
+          </div>
+          <p class="footnote">For the underlying specification model beyond the generated helpers, see <code>features-domain-specifications.md</code>.</p>
+        </div>
+      </section>
+
+      <section id="slide-19">
+        <h2>Query DSL And Custom Forwarders</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">QUERY DSL</p>
+              <ul>
+                <li>Start with <code>Customer.Query()</code></li>
+                <li>Chain <code>Where</code>, <code>Include</code>, <code>OrderBy</code>, <code>Skip</code>, <code>Take</code></li>
+                <li>Finish with <code>ToListAsync()</code>, <code>ToPagedListAsync()</code>, <code>CountAsync()</code>, or projections</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">FORWARDERS</p>
+              <ul>
+                <li>Expose custom static queries as if they were built into the entity</li>
+                <li>Useful for reusable domain-specific query shortcuts</li>
+                <li>Keep the caller syntax direct without hiding the implementation pattern</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-boundaries" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 4</p>
+        <h1>Boundaries And Tradeoffs</h1>
+        <p>Callbacks, cautions, repository comparison, and adoption guidance.</p>
+      </section>
+
+      <section id="slide-21">
+        <h2>Lifecycle Callbacks</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Entity-intrinsic rule</p>
+              <pre><code>protected override async Task&lt;Result&gt;
+OnBeforeInsertAsync(
+    ActiveEntityContext&lt;Order, OrderId&gt; context,
+    CancellationToken ct)
+{
+    var customerResult = await Customer.FindOneAsync(
+        context,
+        e => e.Id == customerId && e.IsActive,
+        null,
+        ct);
+
+    if (customerResult.IsFailure)
+    {
+        return Result.Failure(
+            "Order cannot be placed for an inactive or non-existent customer.");
+    }
+
+    return Result.Success();
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">GOOD USE</p>
+                <ul>
+                  <li>Simple rules intrinsic to the entity</li>
+                  <li>Hooks directly into insert/update/delete lifecycle</li>
+                  <li>Can stop an operation with <code>Result.Failure</code></li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">CAUTION</p>
+                <ul>
+                  <li>Do not turn callbacks into a dumping ground</li>
+                  <li>Cross-cutting concerns belong in behaviors</li>
+                  <li>Broader workflows belong in app services or commands</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-22">
+        <h2>ActiveEntity Vs Repository</h2>
+        <div class="content">
+          <div class="decision-table">
+            <div class="decision-row">
+              <p class="decision-label">Fast, direct CRUD surface on the entity</p>
+              <p class="decision-answer">ActiveEntity</p>
+            </div>
+            <div class="decision-row">
+              <p class="decision-label">Clear persistence abstraction boundary</p>
+              <p class="decision-answer">Repository</p>
+            </div>
+            <div class="decision-row">
+              <p class="decision-label">Per-entity provider flexibility with minimal ceremony</p>
+              <p class="decision-answer">ActiveEntity</p>
+            </div>
+            <div class="decision-row">
+              <p class="decision-label">Very complex queries or heavy data access orchestration</p>
+              <p class="decision-answer">Repository</p>
+            </div>
+            <div class="decision-row">
+              <p class="decision-label">Hybrid use in one solution</p>
+              <p class="decision-answer">Valid</p>
+            </div>
+          </div>
+          <p class="footnote">The docs explicitly frame this as a tradeoff, not a winner-takes-all pattern decision.</p>
+        </div>
+      </section>
+
+      <section id="slide-24">
+        <h2>Read Next</h2>
+        <div class="content">
+          <div class="panel">
+            <p class="card-tag">REFERENCE DOCS</p>
+            <ul>
+              <li><code>docs/features-domain-activeentity.md</code></li>
+              <li><code>docs/features-results.md</code></li>
+              <li><code>docs/features-domain-specifications.md</code></li>
+              <li><code>docs/features-domain-events.md</code></li>
+            </ul>
+          </div>
+          <div class="panel panel-callout">
+            <p class="card-tag">ADOPTION SHORTLIST</p>
+            <ul>
+              <li>Use it where direct entity-centric CRUD improves clarity</li>
+              <li>Configure providers and behaviors intentionally</li>
+              <li>Reuse <code>ctx</code> correctly in scoped composite operations</li>
+              <li>Do not treat it as a universal repository replacement</li>
+            </ul>
+          </div>
+          <blockquote>
+            <p>ActiveEntity is strongest when the directness is honest: simple CRUD, explicit results, pluggable persistence, and scope-safe execution.</p>
+          </blockquote>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1280,
+      height: 720,
+      margin: 0,
+      controls: true,
+      progress: true,
+      slideNumber: false,
+      hash: true,
+      transition: 'none',
+      backgroundTransition: 'none',
+      center: false
+    });
+  </script>
+</body>
+</html>

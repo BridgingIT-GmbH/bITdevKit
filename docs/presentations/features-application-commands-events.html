@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Commands, Queries, and Events</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section id="title" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">bITdevKit / Developer Usage</p>
+        <h1>Application Commands, Queries, and Events</h1>
+        <p class="text-xl">20-slide field guide for using <code>IRequester</code> and <code>INotifier</code> cleanly in app-layer code.</p>
+        <p class="footnote">Based on <code>features-application-commands-queries.md</code>, <code>features-application-events.md</code>, and <code>features-requester-notifier.md</code>.</p>
+      </section>
+
+      <section id="slide-2">
+        <h2>The Three Shapes</h2>
+        <div class="content">
+          <div class="triple-grid">
+            <div class="brutal-card brutal-command">
+              <p class="card-tag">01 / COMMAND</p>
+              <h3>One owner. State change.</h3>
+              <p class="text-lg">Use when the app is asked to do work and give back one explicit outcome.</p>
+              <ul>
+                <li>Write intent</li>
+                <li>Exactly one handler</li>
+                <li><code>Result&lt;Unit&gt;</code> or <code>Result&lt;T&gt;</code></li>
+              </ul>
+            </div>
+            <div class="brutal-card brutal-query">
+              <p class="card-tag">02 / QUERY</p>
+              <h3>One owner. Typed read.</h3>
+              <p class="text-lg">Use when the app is asked to answer a question without changing state.</p>
+              <ul>
+                <li>Read intent</li>
+                <li>Exactly one handler</li>
+                <li>Usually <code>Result&lt;T&gt;</code></li>
+              </ul>
+            </div>
+            <div class="brutal-card brutal-event">
+              <p class="card-tag">03 / EVENT</p>
+              <h3>One publisher. Many reactions.</h3>
+              <p class="text-lg">Use when the app announces something and subscribers decide what happens next.</p>
+              <ul>
+                <li>Fan-out intent</li>
+                <li>One or many handlers</li>
+                <li>Aggregated <code>Result</code></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-commands" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 1</p>
+        <h1>Commands</h1>
+        <p>State-changing requests with one handler and one outcome.</p>
+      </section>
+
+      <section id="slide-5">
+        <h2>Command Mental Model</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">WHEN TO USE</p>
+              <h3>Commands are application writes</h3>
+              <ul>
+                <li>The caller wants business work executed now.</li>
+                <li>The operation has one clear owner.</li>
+                <li>You want an explicit success/failure contract.</li>
+                <li>The next step depends on the returned result.</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">SMELL</p>
+              <h3>A command is not a broadcast</h3>
+              <p class="text-lg">If the main behavior is "tell other parts of the app something happened", that is an event. A command should still feel like an API operation with one primary handler.</p>
+            </div>
+          </div>
+          <div class="metrics-row">
+            <div class="metric-box"><span>1</span><p>handler</p></div>
+            <div class="metric-box"><span>WRITE</span><p>intent</p></div>
+            <div class="metric-box"><span>Result</span><p>explicit outcome</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-6">
+        <h2>Authoring A Command</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">[Command] / source-generated request</p>
+              <pre><code>[Command]
+public partial class CustomerRenameCommand
+{
+    [ValidateNotEmptyGuid("CustomerId is required.")]
+    public string CustomerId { get; init; }
+
+    [ValidateNotEmpty("DisplayName is required.")]
+    public string DisplayName { get; init; }
+
+    [Handle]
+    private async Task&lt;Result&lt;Unit&gt;&gt; HandleAsync(
+        ICustomerRepository repository,
+        CancellationToken cancellationToken)
+    {
+        await repository.RenameAsync(CustomerId, DisplayName, cancellationToken);
+        return Success();
+    }
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">GENERATOR GIVES YOU</p>
+                <ul>
+                  <li>Handler plumbing</li>
+                  <li><code>Success(...)</code> and <code>Failure(...)</code></li>
+                  <li>Validation bridge</li>
+                  <li>Request base type when needed</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">RULES</p>
+                <ul>
+                  <li>One instance <code>[Handle]</code> method</li>
+                  <li>DI parameters are allowed</li>
+                  <li><code>SendOptions</code> and <code>CancellationToken</code> are supported</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-7">
+        <h2>Command Flow</h2>
+        <div class="content">
+          <div class="diagram-frame">
+            <div class="flow-line">
+              <div class="flow-box brutal-command"><span>1</span><h3>Caller sends command</h3><p><code>SendAsync(command)</code></p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>2</span><h3>Requester pipeline</h3><p>validation, retry, timeout, auth</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>3</span><h3>Single handler</h3><p>executes business write</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box brutal-result"><span>4</span><h3>Result back</h3><p>success or failure</p></div>
+            </div>
+          </div>
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">GOOD FIT</p>
+              <ul>
+                <li>Create, update, delete, schedule, assign</li>
+                <li>Use cases where writes are the point</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <p class="card-tag">RETURN STYLE</p>
+              <ul>
+                <li><code>Result&lt;Unit&gt;</code> when the caller only needs completion</li>
+                <li><code>Result&lt;T&gt;</code> when the caller needs a small response model</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-queries" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 2</p>
+        <h1>Queries</h1>
+        <p>Typed reads with one handler and no state change.</p>
+      </section>
+
+      <section id="slide-10">
+        <h2>Query Mental Model</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">WHEN TO USE</p>
+              <h3>Queries answer questions</h3>
+              <ul>
+                <li>The caller wants data, not a write.</li>
+                <li>You still want a single owner.</li>
+                <li>The result shape matters to the caller.</li>
+                <li>Pipeline behaviors still apply around the handler.</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout brutal-query">
+              <p class="card-tag">KEY DISTINCTION</p>
+              <h3>A query shares infrastructure, not intent</h3>
+              <p class="text-lg">Queries and commands both use <code>IRequester</code>, but they should not be treated as interchangeable in design. A query is a read contract first.</p>
+            </div>
+          </div>
+          <div class="metrics-row">
+            <div class="metric-box"><span>1</span><p>handler</p></div>
+            <div class="metric-box"><span>READ</span><p>intent</p></div>
+            <div class="metric-box"><span>TYPED</span><p>response model</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-11">
+        <h2>Authoring A Query</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">[Query] / source-generated request</p>
+              <pre><code>[Query]
+public partial class CustomerDetailsQuery
+{
+    [ValidateNotEmptyGuid("CustomerId is required.")]
+    public string CustomerId { get; init; }
+
+    [Handle]
+    private async Task&lt;Result&lt;CustomerDetailsModel&gt;&gt; HandleAsync(
+        ICustomerReadRepository repository,
+        CancellationToken cancellationToken)
+    {
+        return await repository.GetDetailsAsync(CustomerId, cancellationToken);
+    }
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">QUERY RULES</p>
+                <ul>
+                  <li>One instance <code>[Handle]</code> method</li>
+                  <li>Return <code>Result&lt;T&gt;</code> for the response model</li>
+                  <li>Property validation still works the same</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">PRACTICE</p>
+                <ul>
+                  <li>Prefer query-specific response models</li>
+                  <li>Keep side effects out of the read path</li>
+                  <li>Let the handler own query composition</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-12">
+        <h2>Query Flow</h2>
+        <div class="content">
+          <div class="diagram-frame">
+            <div class="flow-line">
+              <div class="flow-box brutal-query"><span>1</span><h3>Caller asks a question</h3><p><code>SendAsync(query)</code></p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>2</span><h3>Requester pipeline</h3><p>validation and policies still apply</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>3</span><h3>Single query handler</h3><p>builds typed read result</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box brutal-result"><span>4</span><h3>Result&lt;T&gt;</h3><p>data for the caller</p></div>
+            </div>
+          </div>
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">GOOD FIT</p>
+              <ul>
+                <li>Details screens</li>
+                <li>Search results</li>
+                <li>Availability checks</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <p class="card-tag">NOT THE PLACE FOR</p>
+              <ul>
+                <li>Writes, retries with side effects, or notifications</li>
+                <li>Hidden cache invalidation or audit mutations</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-events" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 3</p>
+        <h1>Application Events</h1>
+        <p>App-layer pub/sub through <code>INotifier</code>.</p>
+      </section>
+
+      <section id="slide-15">
+        <h2>Event Mental Model</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">WHEN TO USE</p>
+              <h3>Events announce, they do not ask</h3>
+              <ul>
+                <li>The publisher should not know all subscribers.</li>
+                <li>Multiple follow-up reactions can grow independently.</li>
+                <li>The main value is fan-out inside the application layer.</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout brutal-event">
+              <p class="card-tag">MIXED MODE</p>
+              <h3>Generated and manual handlers can coexist</h3>
+              <p class="text-lg">Use generated <code>[Handle]</code> methods for the default path, then add manual <code>INotificationHandler&lt;TEvent&gt;</code> classes when a subscriber deserves its own boundary.</p>
+            </div>
+          </div>
+          <div class="metrics-row">
+            <div class="metric-box"><span>N</span><p>handlers</p></div>
+            <div class="metric-box"><span>FAN OUT</span><p>intent</p></div>
+            <div class="metric-box"><span>Result</span><p>aggregated outcome</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-16">
+        <h2>Authoring An Event</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">[Event] / multiple generated handlers</p>
+              <pre><code>[Event]
+[HandlerRetry(2, 100)]
+public partial class UserRegisteredEvent
+{
+    [ValidateNotEmptyGuid]
+    public string UserId { get; init; }
+
+    [ValidateEmail]
+    public string Email { get; init; }
+
+    [Handle]
+    private Result Audit() =&gt; Success();
+
+    [Handle]
+    private async Task&lt;Result&gt; SendWelcomeEmailAsync(
+        INotificationService&lt;EmailMessage&gt; notifications,
+        CancellationToken cancellationToken)
+    {
+        return Success();
+    }
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">EVENT RULES</p>
+                <ul>
+                  <li>One or more <code>[Handle]</code> methods</li>
+                  <li>Validation runs once per publish</li>
+                  <li>Class-level policy attributes apply to generated handlers</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">RESULT</p>
+                <ul>
+                  <li>Each generated handle becomes its own notifier handler</li>
+                  <li>Publish returns aggregated <code>Result</code></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-17">
+        <h2>Event Fan-Out</h2>
+        <div class="content">
+          <div class="flow-grid">
+            <div class="flow-box brutal-event"><span>1</span><h3>Publisher calls <code>PublishAsync(...)</code></h3><p>endpoint, app service, or request handler</p></div>
+            <div class="flow-box"><span>2</span><h3>Validation runs once</h3><p>property rules and optional <code>[Validate]</code></p></div>
+            <div class="flow-box brutal-event"><span>3a</span><h3>Generated handlers run</h3><p>one generated subscriber per <code>[Handle]</code></p></div>
+            <div class="flow-box"><span>3b</span><h3>Manual handlers run too</h3><p>extra <code>INotificationHandler&lt;TEvent&gt;</code> classes still participate</p></div>
+            <div class="flow-box brutal-result flow-box-wide"><span>4</span><h3>Notifier returns aggregated <code>Result</code></h3><p>publisher gets one outcome, subscribers stay decoupled</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-18">
+        <h2>Generated Vs Manual Event Handlers</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">PREFER GENERATED</p>
+              <ul>
+                <li>The behavior belongs next to the event authoring surface.</li>
+                <li>You want the shortest path from message to reaction.</li>
+                <li>The event and its default reactions evolve together.</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">PREFER MANUAL</p>
+              <ul>
+                <li>The subscriber deserves its own file and name.</li>
+                <li>The reaction belongs to another module boundary.</li>
+                <li>The handler has enough weight to stand alone.</li>
+              </ul>
+            </div>
+          </div>
+          <blockquote>
+            <p>Generated event handlers reduce boilerplate. Manual handlers preserve explicit boundaries. Use both when the design asks for both.</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section id="divider-playbook" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 4</p>
+        <h1>Developer Playbook</h1>
+        <p>How to pick the right shape and keep the boundaries sharp.</p>
+      </section>
+
+      <section id="slide-21">
+        <h2>Commands Vs Queries Vs Events</h2>
+        <div class="content">
+          <div class="decision-table">
+            <div class="decision-row">
+              <p class="decision-label">Need to change state</p>
+              <p class="decision-answer">Command</p>
+            </div>
+            <div class="decision-row">
+              <p class="decision-label">Need typed data back</p>
+              <p class="decision-answer">Query</p>
+            </div>
+            <div class="decision-row">
+              <p class="decision-label">Need many in-process reactions</p>
+              <p class="decision-answer">Application Event</p>
+            </div>
+            <div class="decision-row">
+              <p class="decision-label">Business fact raised by an aggregate</p>
+              <p class="decision-answer">Domain Event</p>
+            </div>
+            <div class="decision-row">
+              <p class="decision-label">Cross-process durable delivery</p>
+              <p class="decision-answer">Messaging / Outbox</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-22">
+        <h2>Return Types Matter</h2>
+        <div class="content">
+          <div class="triple-grid">
+            <div class="panel">
+              <p class="card-tag">COMMAND</p>
+              <h3><code>Result&lt;Unit&gt;</code> or <code>Result&lt;T&gt;</code></h3>
+              <p>Return completion or a small post-write response.</p>
+            </div>
+            <div class="panel">
+              <p class="card-tag">QUERY</p>
+              <h3><code>Result&lt;T&gt;</code></h3>
+              <p>Return the read model the caller actually needs.</p>
+            </div>
+            <div class="panel">
+              <p class="card-tag">EVENT</p>
+              <h3><code>Result</code></h3>
+              <p>Notifier aggregates subscriber outcomes for the publisher.</p>
+            </div>
+          </div>
+          <blockquote>
+            <p>The return type should tell the truth about the interaction shape. That is part of the API design, not just plumbing.</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section id="slide-23">
+        <h2>Wiring Checklist</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">SETUP</p>
+              <ul>
+                <li>Register <code>AddRequester()</code> for commands and queries.</li>
+                <li>Register <code>AddNotifier()</code> for application events.</li>
+                <li>Call <code>AddHandlers()</code> so generated and manual handlers are discovered.</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">PIPELINE</p>
+              <ul>
+                <li>Add validation centrally.</li>
+                <li>Add retry, timeout, auth, and related behaviors centrally.</li>
+                <li>Keep handlers focused on business logic, not cross-cutting plumbing.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-24">
+        <h2>Read Next</h2>
+        <div class="content">
+          <div class="panel">
+            <p class="card-tag">REFERENCE DOCS</p>
+            <ul>
+              <li><code>docs/features-application-commands-queries.md</code></li>
+              <li><code>docs/features-application-events.md</code></li>
+              <li><code>docs/features-requester-notifier.md</code></li>
+              <li><code>docs/features-results.md</code></li>
+              <li><code>docs/features-domain-events.md</code></li>
+            </ul>
+          </div>
+          <blockquote>
+            <p>Small messages. Honest intent. Explicit results. That combination is the through-line across commands, queries, and application events.</p>
+          </blockquote>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({
+      width: 1280,
+      height: 720,
+      margin: 0,
+      controls: true,
+      progress: true,
+      slideNumber: false,
+      hash: true,
+      transition: 'none',
+      backgroundTransition: 'none',
+      center: false
+    });
+  </script>
+</body>
+</html>

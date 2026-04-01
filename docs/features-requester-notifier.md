@@ -1603,9 +1603,9 @@ var result = await notifier.PublishAsync(userNotification); // Logs: "Handled: u
 
 ---
 
-## Appendix D: Source-Generated Commands and Queries
+## Appendix D: Source-Generated Commands, Queries, and Events
 
-The source-generated authoring model lets you write a command or query as a single partial type. This is a convenient way to define simple requests without needing separate request and handler classes. The source generator creates the necessary boilerplate code, allowing you to focus on the business logic.
+The source-generated authoring model lets you write a command, query, or event as a single partial type. This is a convenient way to define simple request/notification flows without needing separate message and handler classes. The source generators create the necessary boilerplate code, allowing you to focus on the business logic.
 
 ### Quick Start
 
@@ -1613,11 +1613,12 @@ The source-generated authoring model lets you write a command or query as a sing
 
 - Use `[Command]` for commands.
 - Use `[Query]` for queries.
-- Add one `[Handle]` method with your business logic.
+- Use `[Event]` for notifications published through `INotifier`.
+- Add one or more `[Handle]` methods with your business logic.
 - Use validation attributes for simple property rules.
 - Use `[Validate]` when the validation needs full FluentValidation code.
 
-The `[Handle]` method is an instance method, so request properties can be used directly inside the method body.
+The `[Handle]` method is an instance method, so message properties can be used directly inside the method body.
 Services can be added as parameters and are resolved from DI.
 
 For a package reference, use:
@@ -1745,3 +1746,108 @@ public partial class CreateOrderCommand
 - `Success(...)` and `Failure(...)` can be used directly inside `[Handle]`.
 - Existing handler policy attributes such as retry, timeout, authorization, and transactions still apply.
 - Generated validators continue to run through the normal Requester validation pipeline.
+
+### Event Quick Start
+
+Use `[Event]` to author a notification as a single partial type. Each `[Handle]` method becomes a generated `NotificationHandlerBase<TEvent>` implementation.
+
+```csharp
+[Event]
+[HandlerRetry(2, 100)]
+public partial class UserRegisteredEvent
+{
+    [ValidateNotEmpty("Email is required.")]
+    [ValidateEmail("Email must be valid.")]
+    public string Email { get; init; }
+
+    [Handle]
+    private Result Audit()
+    {
+        Console.WriteLine($"Audit user registration for {Email}");
+        return Success();
+    }
+
+    [Handle]
+    private async Task<Result> SendWelcomeEmailAsync(
+        IEmailService emailService,
+        CancellationToken cancellationToken)
+    {
+        await emailService.SendAsync(Email, cancellationToken);
+        return Success();
+    }
+}
+```
+
+### Event Validation With `[Validate]`
+
+For more complex event validation, use `[Validate]` with an `InlineValidator<TEvent>`:
+
+```csharp
+[Event]
+public partial class OrderImportedEvent
+{
+    [ValidateNotEmpty]
+    public List<string> OrderIds { get; init; }
+
+    [Validate]
+    private static void Validate(InlineValidator<OrderImportedEvent> validator)
+    {
+        validator.RuleFor(x => x.OrderIds)
+            .Must(ids => ids.Count <= 100)
+            .WithMessage("A maximum of 100 order ids is allowed.");
+    }
+
+    [Handle]
+    private Result Handle()
+    {
+        return Success();
+    }
+}
+```
+
+### Combining Generated and Manual Event Handlers
+
+Generated handlers do not replace the normal notifier pub/sub model. You can use multiple generated `[Handle]` methods and still add more manual `INotificationHandler<TEvent>` subscribers.
+
+```csharp
+[Event]
+public partial class CustomerSignedUpEvent
+{
+    public string Email { get; init; }
+
+    [Handle]
+    private Result Audit()
+    {
+        Console.WriteLine($"Audit: {Email}");
+        return Success();
+    }
+
+    [Handle]
+    private Result UpdateReadModel()
+    {
+        Console.WriteLine($"Projection updated for {Email}");
+        return Success();
+    }
+}
+
+public class CustomerSignedUpMetricsHandler : NotificationHandlerBase<CustomerSignedUpEvent>
+{
+    protected override Task<Result> HandleAsync(CustomerSignedUpEvent notification, PublishOptions options, CancellationToken cancellationToken)
+    {
+        Console.WriteLine($"Metrics tracked for {notification.Email}");
+        return Task.FromResult(Result.Success());
+    }
+}
+```
+
+### Event Notes
+
+- `[Event]` requires a top-level, non-generic, `partial` class.
+- Events can declare one or more `[Handle]` methods.
+- `[Handle]` methods must return `Result` or `Task<Result>`.
+- `PublishOptions` and `CancellationToken` can be declared as `[Handle]` parameters when needed.
+- Any other `[Handle]` parameters are resolved from DI.
+- If the event does not explicitly inherit `NotificationBase`, the generator adds it automatically.
+- Class-level notifier policy attributes such as retry, timeout, authorization, chaos, circuit breaker, and cache invalidation are copied to each generated handler.
+- Generated validators continue to run through the normal Notifier validation pipeline.
+- Manual `INotificationHandler<TEvent>` implementations continue to work alongside generated handlers.

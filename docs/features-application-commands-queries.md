@@ -17,6 +17,8 @@ In Domain-Driven Design (DDD), commands and queries align with application servi
 
 Many handlers also depend on the shared mapping abstraction to translate between request models, domain objects, and response DTOs; see [Common Mapping](./common-mapping.md).
 
+For application-layer pub/sub workflows that do not fit a single request/response interaction, see [Application Events](./features-application-events.md).
+
 ### Challenges
 
 - **Inconsistent Handling**: Ad hoc implementations lead to unpredictable behavior.
@@ -225,4 +227,4 @@ if (queryResult.IsSuccess)
 - `CancellationToken` and `SendOptions` can also be declared as `[Handle]` parameters when needed.
 - Handler policy attributes such as retry, timeout, authorization, and transactions can be applied at the command or query definition.
 
-See [features-requester-notifier.md](./features-requester-notifier.md) for more details (Appendix D: Source-Generated Commands and Queries).
+See [features-requester-notifier.md](./features-requester-notifier.md) for more details (Appendix D: Source-Generated Commands, Queries, and Events).

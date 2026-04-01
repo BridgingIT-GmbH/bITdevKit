@@ -36,6 +36,7 @@
     <File Path="docs/common-serialization.md" />
     <File Path="docs/common-utilities.md" />
     <File Path="docs/INDEX.md" />
+    <File Path="docs/features-application-events.md" />
     <File Path="docs/features-application-commands-queries.md" />
     <File Path="docs/features-application-dataporter.md" />
     <File Path="docs/features-domain-activeentity.md" />

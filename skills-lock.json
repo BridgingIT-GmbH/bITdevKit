@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "revealjs": {
+      "source": "ryanbbrown/revealjs-skill",
+      "sourceType": "github",
+      "computedHash": "bf952b815ea09df53f18c8757bd2a6b45e7caf8b7e5cc64f54cabeb734635364"
+    }
+  }
+}

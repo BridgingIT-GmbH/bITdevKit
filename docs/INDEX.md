@@ -24,6 +24,7 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 - [Rules](./features-rules.md): Express business rules as composable validations with consistent `Result`-based outcomes.
 - [Results](./features-results.md): Represent success, failure, messages, and errors explicitly with immutable `Result` types.
 - [Application Commands and Queries](./features-application-commands-queries.md): Separate application writes and reads into focused handlers with shared behaviors and clear boundaries.
+- [Application Events](./features-application-events.md): Publish and handle application-layer events through `INotifier` with explicit `Result`-based outcomes.
 - [DataPorter](./features-application-dataporter.md): Import and export structured data through a flexible, format-agnostic data transfer framework.
 
 ## Execution, Messaging, and Modularity

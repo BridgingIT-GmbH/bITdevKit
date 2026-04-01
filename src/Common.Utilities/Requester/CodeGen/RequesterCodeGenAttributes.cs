@@ -71,6 +71,18 @@ public sealed class QueryAttribute : Attribute
 }
 
 /// <summary>
+/// Marks a partial notification type as a source-generated event.
+/// </summary>
+/// <remarks>
+/// The source generator emits the Notifier plumbing, validator glue, and one generated
+/// notification handler per <see cref="HandleAttribute"/> method declared on the event type.
+/// Additional manual <c>INotificationHandler&lt;TEvent&gt;</c> subscribers can still be authored alongside
+/// the generated handlers.
+/// </remarks>
+[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+public sealed class EventAttribute : Attribute;
+
+/// <summary>
 /// Marks the developer-authored business-logic method that the Requester source generator should invoke.
 /// </summary>
 [AttributeUsage(AttributeTargets.Method, Inherited = false, AllowMultiple = false)]

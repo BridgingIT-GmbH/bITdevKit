@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application DataPorter</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/monokai.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section id="title" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">bITdevKit / Feature Presentation</p>
+        <h1>Application DataPorter</h1>
+        <p class="text-xl">Guide to importing, exporting, validating, and streaming structured application data through format-agnostic DataPorter APIs.</p>
+        <p class="footnote">Based on <code>features-application-dataporter.md</code>, with related references to <code>features-results.md</code> and <code>common-serialization.md</code>.</p>
+      </section>
+
+      <section id="slide-2">
+        <h2>DataPorter At A Glance</h2>
+        <div class="content">
+          <div class="triple-grid">
+            <div class="brutal-card brutal-command">
+              <p class="card-tag">01 / API SURFACE</p>
+              <h3>Import and export through application services</h3>
+              <ul>
+                <li><code>IDataExporter</code> and <code>IDataImporter</code></li>
+                <li>Typed results and errors</li>
+                <li>Fluent per-call options</li>
+              </ul>
+            </div>
+            <div class="brutal-card brutal-query">
+              <p class="card-tag">02 / CONFIGURATION</p>
+              <h3>Attributes, profiles, and runtime options merge</h3>
+              <ul>
+                <li>Simple DTO annotations</li>
+                <li>Profiles for richer mapping and styling</li>
+                <li>Provider defaults plus per-call overrides</li>
+              </ul>
+            </div>
+            <div class="brutal-card brutal-event">
+              <p class="card-tag">03 / FORMAT FLEXIBILITY</p>
+              <h3>One orchestration model, many providers</h3>
+              <ul>
+                <li>Excel, CSV, typed CSV, JSON, XML, PDF</li>
+                <li>Streaming where supported</li>
+                <li>Custom providers can plug in</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-3">
+        <h2>Runtime Shape</h2>
+        <div class="content">
+          <div class="diagram-frame">
+            <div class="flow-line">
+              <div class="flow-box brutal-command"><span>1</span><h3>Application code calls importer or exporter</h3><p><code>IDataImporter</code> / <code>IDataExporter</code></p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>2</span><h3>DataPorter builds effective configuration</h3><p>profiles, attributes, runtime options</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>3</span><h3>Provider executes the format work</h3><p>CSV, Excel, JSON, XML, PDF, or custom</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box brutal-result"><span>4</span><h3>Typed result returns</h3><p>export/import result, rows, errors, diagnostics</p></div>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="card-tag">KEY IDEA</p>
+            <p class="text-lg">Application code stays on typed import/export APIs while DataPorter handles provider selection, configuration precedence, validation, progress reporting, and compression around the edges.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-getting-started" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 1</p>
+        <h1>Getting Started</h1>
+        <p>Register providers, choose a format, and call import or export through the shared APIs.</p>
+      </section>
+
+      <section id="slide-5">
+        <h2>Service Registration</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Provider registration through the builder</p>
+              <pre><code class="language-csharp">services.AddDataPorter(configuration)
+    .WithExcel(c => c.UseTableFormatting = true)
+    .WithCsv(c => c.Delimiter = ",")
+    .WithCsvTyped(c => c.Delimiter = ",")
+    .WithJson()
+    .WithXml()
+    .WithPdf();
+
+services.AddDataPorter(configuration)
+    .WithCsv()
+    .AddProvider&lt;EdiX12DataPorterProvider&gt;();</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">DEFAULT MOVE</p>
+                <ul>
+                  <li>Register the built-in formats your app actually needs</li>
+                  <li>Use builder config for application-wide defaults</li>
+                  <li>Add custom providers only for genuinely new external formats</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">BOUNDARY</p>
+                <p class="text-lg">Keep DataPorter registration in composition root code. Application services should depend on <code>IDataExporter</code> or <code>IDataImporter</code>, not on provider implementations.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-6">
+        <h2>Basic Export Flow</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Export with fluent options</p>
+              <pre><code class="language-csharp">public class OrderExportService
+{
+    private readonly IDataExporter exporter;
+
+    public OrderExportService(IDataExporter exporter)
+    {
+        this.exporter = exporter;
+    }
+
+    public async Task ExportOrdersAsync(IEnumerable&lt;Order&gt; orders, Stream output)
+    {
+        var result = await this.exporter.ExportAsync(
+            orders,
+            output,
+            o => o.AsExcel()
+                .WithProgress(report =>
+                {
+                    Console.WriteLine($"Exported {report.ProcessedRows} rows");
+                }));
+
+        if (result.IsSuccess)
+        {
+            Console.WriteLine($"Exported {result.Value.TotalRows} rows");
+        }
+    }
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">FLOW</p>
+                <ul>
+                  <li>Pass source data and target stream</li>
+                  <li>Select a format with the fluent options builder</li>
+                  <li>Read a typed export result instead of guessing outcome from exceptions</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">GOOD FIT</p>
+                <p class="text-lg">Use export when the app needs to produce partner feeds, user downloads, reports, templates, or structured outbound payloads without hand-writing format logic for each case.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-7">
+        <h2>Basic Import Flow</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Import with culture and progress options</p>
+              <pre><code class="language-csharp">public async Task&lt;IEnumerable&lt;Order&gt;&gt; ImportOrdersAsync(Stream input)
+{
+    var result = await this.importer.ImportAsync&lt;Order&gt;(
+        input,
+        o => o.AsCsv()
+            .WithCulture(new CultureInfo("de-DE"))
+            .WithProgress(report =>
+            {
+                Console.WriteLine($"Processed {report.ProcessedRows} rows");
+            }));
+
+    if (result.IsSuccess && !result.Value.HasErrors)
+    {
+        return result.Value.Data;
+    }
+
+    if (result.IsSuccess)
+    {
+        foreach (var error in result.Value.Errors)
+        {
+            Console.WriteLine($"Row {error.RowNumber}: {error.Message}");
+        }
+    }
+
+    return [];
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">FLOW</p>
+                <ul>
+                  <li>Pass the input stream and target type</li>
+                  <li>Set culture and other per-run parsing options</li>
+                  <li>Handle both operation failure and row-level validation feedback</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">IMPORT SHAPE</p>
+                <p class="text-lg">Successful import can still carry row errors depending on validation behavior. Treat the returned import result as the full picture, not just a pass/fail flag.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-8">
+        <h2>Runtime Options That Matter</h2>
+        <div class="content">
+          <div class="flow-grid">
+            <div class="flow-box"><span>PROGRESS</span><h3>Observe long-running operations</h3><p>export and import can report row counts, bytes, percent, and validation progress</p></div>
+            <div class="flow-box"><span>COMPRESSION</span><h3>Wrap payloads as <code>.gz</code> or single-entry ZIP</h3><p>use DataPorter compression when the artifact itself should be compressed</p></div>
+            <div class="flow-box"><span>TEMPLATES</span><h3>Generate import-ready guidance artifacts</h3><p>Excel, CSV, typed CSV, JSON, and XML template support</p></div>
+            <div class="flow-box"><span>MULTI-DATASET</span><h3>Export several data sets in one call</h3><p>works as sheets, sections, or document groups depending on provider</p></div>
+          </div>
+          <blockquote>
+            <p>Provider config sets application-wide defaults. Per-call options are where one specific import or export request becomes tailored to a concrete workflow.</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section id="divider-configuration" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 2</p>
+        <h1>Configuration</h1>
+        <p>Choose attributes for simple DTO cases or profiles for richer mapping, validation, and formatting rules.</p>
+      </section>
+
+      <section id="slide-10">
+        <h2>Attribute-Based Configuration</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Attributes directly on the DTO</p>
+              <pre><code class="language-csharp">[DataPorterSheet("Products")]
+public class ProductDto
+{
+    [DataPorterColumn("Product ID", Order = 0)]
+    public string Id { get; set; }
+
+    [DataPorterColumn("Name", Order = 1, Required = true)]
+    public string Name { get; set; }
+
+    [DataPorterColumn("Price", Format = "C2")]
+    public decimal Price { get; set; }
+
+    [DataPorterIgnore]
+    public string InternalCode { get; set; }
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">USE ATTRIBUTES WHEN</p>
+                <ul>
+                  <li>The mapping is simple and local to one DTO</li>
+                  <li>You only need straightforward column naming and ordering</li>
+                  <li>You want the metadata close to the type definition</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">AVAILABLE SHAPES</p>
+                <ul>
+                  <li><code>[DataPorterSheet]</code></li>
+                  <li><code>[DataPorterColumn]</code></li>
+                  <li><code>[DataPorterIgnore]</code></li>
+                  <li><code>[DataPorterConverter]</code> and <code>[DataPorterValidation]</code></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-11">
+        <h2>Profile-Based Configuration</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Profiles for richer export and import rules</p>
+              <pre><code class="language-csharp">public class OrderExportProfile : ExportProfileBase&lt;Order&gt;
+{
+    protected override void Configure()
+    {
+        ToSheet("Orders");
+
+        ForColumn(o => o.TotalAmount)
+            .HasName("Total")
+            .HasFormat("C2")
+            .StyleWhen(amount => amount &gt; 1000, style => style.Bold());
+    }
+}
+
+public class OrderImportProfile : ImportProfileBase&lt;Order&gt;
+{
+    protected override void Configure()
+    {
+        FromSheet("Orders");
+        OnValidationFailure(ImportValidationBehavior.CollectErrors);
+
+        ForColumn(o => o.CustomerName)
+            .FromHeader("Customer")
+            .IsRequired();
+    }
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">USE PROFILES WHEN</p>
+                <ul>
+                  <li>You need full control over formatting, parsing, validation, and styling</li>
+                  <li>Several import/export cases share the same mapping rules</li>
+                  <li>You want configuration outside the DTO or entity type</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">REGISTRATION</p>
+                <p class="text-lg">Register explicit profiles or scan assemblies through the DataPorter builder. Profiles and attributes are merged with runtime options before the provider sees the final configuration.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-12">
+        <h2>Choosing A Format Provider</h2>
+        <div class="content">
+          <div class="triple-grid">
+            <div class="panel brutal-command">
+              <p class="card-tag">EXCEL / PDF</p>
+              <ul>
+                <li>Best for human-facing downloads and reports</li>
+                <li>Excel adds styling, widths, frozen headers, conditional formatting</li>
+                <li>PDF is export-only and presentation-oriented</li>
+              </ul>
+            </div>
+            <div class="panel brutal-query">
+              <p class="card-tag">CSV / TYPED CSV</p>
+              <ul>
+                <li>Best for tabular exchange and partner feeds</li>
+                <li>CSV can flatten nested members and one nested collection</li>
+                <li>Typed CSV models object graphs with stable row schemas</li>
+              </ul>
+            </div>
+            <div class="panel brutal-event">
+              <p class="card-tag">JSON / XML</p>
+              <ul>
+                <li>Best for document-style payloads and integration boundaries</li>
+                <li>Incremental read/write support for large streams</li>
+                <li>Custom providers are available when none of the built-ins fit</li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="card-tag">RULE OF THUMB</p>
+            <p class="text-lg">Pick the provider for the external representation, not for a mapping preference. Mapping and validation belong in profiles, attributes, and converters.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-advanced" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 3</p>
+        <h1>Advanced Usage</h1>
+        <p>Stream large payloads, customize value conversion, and decide how import validation should behave.</p>
+      </section>
+
+      <section id="slide-14">
+        <h2>Streaming, Templates, And Validation Without Import</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">STREAMING</p>
+              <ul>
+                <li><code>ExportAsync(IAsyncEnumerable&lt;T&gt;...)</code> writes items incrementally</li>
+                <li><code>ImportAsyncEnumerable&lt;T&gt;(...)</code> yields items or row results incrementally</li>
+                <li>Use it for large files and HTTP streaming scenarios</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">OTHER HIGH-VALUE CALLS</p>
+              <ul>
+                <li><code>GenerateTemplateAsync&lt;T&gt;(...)</code> for guided import artifacts</li>
+                <li><code>ValidateAsync&lt;T&gt;(...)</code> for preflight checks without importing</li>
+                <li>Multi-dataset export for sheets or grouped sections</li>
+              </ul>
+            </div>
+          </div>
+          <blockquote>
+            <p>For grouped CSV and typed CSV streaming imports, logical rows for the same aggregate must stay contiguous. If they reappear later, the stream cannot be reconstructed safely.</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section id="slide-15">
+        <h2>Converters And Validation Behaviors</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Custom converter and validation behavior</p>
+              <pre><code class="language-csharp">ForColumn(o => o.Status)
+    .UseConverter(new StringMapConverter&lt;OrderStatus&gt;
+    {
+        ImportMappings = new Dictionary&lt;string, OrderStatus&gt;
+        {
+            ["P"] = OrderStatus.Pending,
+            ["S"] = OrderStatus.Shipped
+        },
+        ExportMappings = new Dictionary&lt;OrderStatus, string&gt;
+        {
+            [OrderStatus.Pending] = "P",
+            [OrderStatus.Shipped] = "S"
+        }
+    });
+
+OnValidationFailure(ImportValidationBehavior.CollectErrors);</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">CONVERTERS</p>
+                <ul>
+                  <li>Translate one property value between .NET shape and external representation</li>
+                  <li>Use them for external codes, localized formats, trimming, enum display names, or smart-enum mapping</li>
+                  <li>Keep provider code focused on transport, not business conversion rules</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">IMPORT VALIDATION</p>
+                <ul>
+                  <li><code>CollectErrors</code> keeps valid rows and reports invalid ones</li>
+                  <li><code>SkipRow</code> ignores invalid rows and continues</li>
+                  <li><code>StopImport</code> fails on the first validation problem</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-16">
+        <h2>Read Next</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">REFERENCE DOCS</p>
+              <ul>
+                <li><code>docs/features-application-dataporter.md</code></li>
+                <li><code>docs/features-results.md</code></li>
+                <li><code>docs/common-serialization.md</code></li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">THROUGH-LINE</p>
+              <ul>
+                <li>Import and export stay typed</li>
+                <li>Configuration stays explicit</li>
+                <li>Provider choice stays isolated</li>
+                <li>Validation and errors stay visible in results</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-menu@2.1.0/menu.js"></script>
+  <script>
+    Reveal.initialize({
+      view: 'scroll',
+      scrollProgress: true,
+      width: 1280,
+      height: 720,
+      margin: 0,
+      controls: true,
+      progress: true,
+      slideNumber: false,
+      hash: true,
+      transition: 'none',
+      backgroundTransition: 'none',
+      center: false,
+      plugins: [ RevealMarkdown, RevealHighlight, RevealMenu ],
+      menu: {
+        side: 'left',
+        numbers: true,
+        titleSelector: 'h1, h2',
+        openButton: true,
+        sticky: true
+      }
+    });
+  </script>
+</body>
+</html>

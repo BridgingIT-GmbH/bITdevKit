@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pipelines</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/monokai.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section id="title" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">bITdevKit / Feature Presentation</p>
+        <h1>Pipelines</h1>
+        <p class="text-xl">Guide to defining ordered multi-step workflows with shared context, explicit control flow, hooks, behaviors, and tracked execution.</p>
+        <p class="footnote">Based on <code>features-pipelines.md</code>, with related references to <code>features-results.md</code> and <code>features-rules.md</code>.</p>
+      </section>
+
+      <section id="slide-2">
+        <h2>Pipelines At A Glance</h2>
+        <div class="content">
+          <div class="triple-grid">
+            <div class="brutal-card brutal-command">
+              <p class="card-tag">01 / WORKFLOW</p>
+              <h3>Explicit ordered steps</h3>
+              <ul>
+                <li>Known step sequence</li>
+                <li>Shared context object</li>
+                <li>One carried result through the flow</li>
+              </ul>
+            </div>
+            <div class="brutal-card brutal-query">
+              <p class="card-tag">02 / CONTROL</p>
+              <h3>Each step decides what happens next</h3>
+              <ul>
+                <li><code>Continue</code></li>
+                <li><code>Retry</code>, <code>Break</code>, <code>Terminate</code></li>
+                <li>Consistent failure handling</li>
+              </ul>
+            </div>
+            <div class="brutal-card brutal-event">
+              <p class="card-tag">03 / OBSERVABILITY</p>
+              <h3>Built for tracing and background tracking</h3>
+              <ul>
+                <li>Hooks and behaviors</li>
+                <li>Progress and logging</li>
+                <li>Background execution snapshots</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-3">
+        <h2>Where Pipelines Fit</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">GOOD FIT</p>
+              <ul>
+                <li>Import or synchronization flows</li>
+                <li>Background processing workflows</li>
+                <li>Validation and enrichment sequences</li>
+                <li>Operational scripts and integration calls</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">NOT THE GOAL</p>
+              <ul>
+                <li>Not a visual workflow designer</li>
+                <li>Not distributed orchestration</li>
+                <li>Not enterprise BPM</li>
+                <li>Use it when the work is meaningfully step-based</li>
+              </ul>
+            </div>
+          </div>
+          <div class="metrics-row">
+            <div class="metric-box"><span>STEP-BASED</span><p>ordered work</p></div>
+            <div class="metric-box"><span>RESULT</span><p>carried state</p></div>
+            <div class="metric-box"><span>TRACKED</span><p>runtime visibility</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-4">
+        <h2>High-Level Flow</h2>
+        <div class="content">
+          <div class="diagram-frame">
+            <div class="flow-line">
+              <div class="flow-box brutal-command"><span>1</span><h3>Define and register pipeline</h3><p>packaged class, builder, or inline registration</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>2</span><h3>Resolve pipeline from the factory</h3><p>by name or packaged definition type</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>3</span><h3>Execute through the runtime</h3><p>hooks, behaviors, and steps run in order</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box brutal-result"><span>4</span><h3>Result or execution handle returns</h3><p>awaited result or tracked background run</p></div>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="card-tag">KEY IDEA</p>
+            <p class="text-lg">Pipelines make workflow sequencing visible in one place instead of scattering order, retry, exit, and tracking logic across services and handlers.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-authoring" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 1</p>
+        <h1>Authoring</h1>
+        <p>Start with a pipeline context, pick an authoring style, and define the ordered steps explicitly.</p>
+      </section>
+
+      <section id="slide-6">
+        <h2>Packaged Pipeline Definition</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Reusable packaged pipeline</p>
+              <pre><code class="language-csharp">public partial class OrderImportContext : PipelineContextBase
+{
+    [ValidateNotEmpty("Source file name is required.")]
+    public string SourceFileName { get; set; }
+
+    public int ImportedOrderCount { get; set; }
+}
+
+public class OrderImportPipeline : PipelineDefinition&lt;OrderImportContext&gt;
+{
+    protected override void Configure(IPipelineDefinitionBuilder&lt;OrderImportContext&gt; builder)
+    {
+        builder
+            .AddStep&lt;ValidateOrderImportStep&gt;()
+            .AddStep&lt;LoadOrdersStep&gt;()
+            .AddStep&lt;PersistOrdersStep&gt;()
+            .AddHook&lt;PipelineAuditHook&gt;()
+            .AddBehavior&lt;PipelineTracingBehavior&gt;();
+    }
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">DEFAULT CHOICE</p>
+                <ul>
+                  <li>Use packaged definitions when a flow belongs clearly to one feature</li>
+                  <li>Keep shared workflow state on the context type</li>
+                  <li>Use hooks and behaviors during definition, not buried inside steps</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">CONTEXT FIRST</p>
+                <p class="text-lg">The context is the shared execution state. If transient data needs to flow across steps, it belongs on the context instead of in hidden locals or service fields.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-7">
+        <h2>Basic Execution Flow</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Resolve and execute a pipeline</p>
+              <pre><code class="language-csharp">var pipeline = pipelineFactory.Create&lt;OrderImportPipeline, OrderImportContext&gt;();
+
+var context = new OrderImportContext
+{
+    SourceFileName = "orders.csv"
+};
+
+var result = await pipeline.ExecuteAsync(
+    context,
+    options => options
+        .ContinueOnFailure()
+        .MaxRetryAttemptsPerStep(3));</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">FLOW</p>
+                <ul>
+                  <li>Resolve a named or packaged pipeline from <code>IPipelineFactory</code></li>
+                  <li>Pass a concrete context object into execution</li>
+                  <li>Configure per-run execution options at the call site</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">RESULT MODEL</p>
+                <p class="text-lg">Awaited execution returns the carried <code>Result</code>. The pipeline abstraction is about workflow control, not about inventing a second success/failure model.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-8">
+        <h2>Context Validation And Authoring Options</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">CONTEXT VALIDATION</p>
+              <ul>
+                <li>Validation attributes and static <code>[Validate]</code> methods can live on the context type</li>
+                <li>Validation runs before hooks, behaviors, and steps</li>
+                <li>Add the code-generation analyzer package where pipeline contexts live</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">AUTHORING OPTIONS</p>
+              <ul>
+                <li><code>PipelineDefinition&lt;TContext&gt;</code> for reusable pipelines</li>
+                <li><code>PipelineDefinitionBuilder&lt;TContext&gt;</code> for programmatic definitions</li>
+                <li><code>AddPipelines().WithPipeline(...)</code> for small local flows</li>
+              </ul>
+            </div>
+          </div>
+          <blockquote>
+            <p>Packaged definitions are the best default. Builder and inline registration are there when the pipeline is smaller, dynamic, or tightly local to composition setup.</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section id="slide-9">
+        <h2>Builder And Inline Registration</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Direct builder and DI-time registration</p>
+              <pre><code class="language-csharp">var definition = new PipelineDefinitionBuilder&lt;OrderImportContext&gt;("order-import")
+    .AddStep&lt;ValidateOrderImportStep&gt;()
+    .AddStep&lt;LoadOrdersStep&gt;()
+    .AddStep(context => context.ImportedOrderCount++)
+    .AddAsyncStep(async execution =>
+    {
+        await Task.Yield();
+        return execution.Continue(execution.Result.WithMessage("Inline step finished."));
+    })
+    .Build();
+
+services.AddPipelines()
+    .WithPipeline&lt;OrderImportContext&gt;("order-import", builder => builder
+        .AddStep&lt;ValidateOrderImportStep&gt;()
+        .AddBehavior&lt;PipelineTracingBehavior&gt;());</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">WHEN TO USE</p>
+                <ul>
+                  <li>Builder for programmatic definition composition</li>
+                  <li>Inline registration for small feature-local workflows</li>
+                  <li>Inline steps for small orchestration fragments, not large business flows</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-execution" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 2</p>
+        <h1>Execution</h1>
+        <p>Decide whether to await the result, run in the background, or customize retry and continuation behavior per execution.</p>
+      </section>
+
+      <section id="slide-11">
+        <h2>Awaited And Background Execution</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Await the result or track background execution</p>
+              <pre><code class="language-csharp">var result = await pipeline.ExecuteAsync(
+    context,
+    options => options
+        .ContinueOnFailure()
+        .MaxRetryAttemptsPerStep(5));
+
+var handle = await pipeline.ExecuteAndForgetAsync(
+    context,
+    options => options.WhenCompleted(completion =>
+    {
+        Console.WriteLine($"Pipeline {completion.ExecutionId} finished with {completion.Status}");
+        return ValueTask.CompletedTask;
+    }));
+
+var snapshot = await tracker.GetAsync(handle.ExecutionId);</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">AWAITED</p>
+                <ul>
+                  <li>Best when the caller needs the final result now</li>
+                  <li>Natural fit for in-request orchestration</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">BACKGROUND</p>
+                <ul>
+                  <li>Best for long-running flows that should return quickly</li>
+                  <li>Execution handle plus tracker snapshot becomes the query surface</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-12">
+        <h2>Flow Control Through PipelineControl</h2>
+        <div class="content">
+          <div class="flow-grid">
+            <div class="flow-box"><span>CONTINUE</span><h3>Move to the next step</h3><p>default success path and final completion path</p></div>
+            <div class="flow-box"><span>RETRY</span><h3>Repeat the same step attempt</h3><p>bounded by <code>MaxRetryAttemptsPerStep</code></p></div>
+            <div class="flow-box"><span>BREAK</span><h3>Finish early in a controlled way</h3><p>use when there is intentionally no more work to do</p></div>
+            <div class="flow-box"><span>TERMINATE</span><h3>Stop immediately</h3><p>use when the flow should be blocked or intentionally ended</p></div>
+          </div>
+          <div class="panel">
+            <p class="card-tag">FAILURES AND EXCEPTIONS</p>
+            <p class="text-lg">Exceptions are caught and appended as errors to the carried <code>Result</code>. Normal control flow should still prefer explicit <code>PipelineControl</code> and result-based failure state.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-13">
+        <h2>Hooks Versus Behaviors</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">HOOKS</p>
+              <ul>
+                <li>Observe lifecycle events</li>
+                <li>Pipeline start, step start, step completion, pipeline completion/failure</li>
+                <li>Good for auditing and notifications</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">BEHAVIORS</p>
+              <ul>
+                <li>Wrap execution around the whole pipeline and each step attempt</li>
+                <li>Good for tracing, timing, scopes, and other cross-cutting concerns</li>
+                <li>Behaviors affect execution; hooks observe it</li>
+              </ul>
+            </div>
+          </div>
+          <blockquote>
+            <p>If the concern should wrap execution, use a behavior. If it should listen to lifecycle moments, use a hook.</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section id="slide-14">
+        <h2>Tracking, Logging, And Tracing</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">TRACKING</p>
+              <ul>
+                <li><code>IPipelineExecutionTracker</code> stores background execution snapshots</li>
+                <li>Track status, current step, timestamps, and latest carried result</li>
+                <li>Use it as the canonical query surface for background runs</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">OBSERVABILITY</p>
+              <ul>
+                <li>Internal logging uses pipeline and step names rather than CLR type names</li>
+                <li><code>PipelineTracingBehavior</code> creates one outer activity plus nested step activities</li>
+                <li>Progress can flow through <code>PipelineExecutionOptions</code></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-advanced" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 3</p>
+        <h1>Advanced Usage</h1>
+        <p>Mix class-based and inline steps, keep naming predictable, and use code generation when packaged pipeline boilerplate starts to dominate.</p>
+      </section>
+
+      <section id="slide-16">
+        <h2>Step Authoring Styles</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Class-based and inline steps</p>
+              <pre><code class="language-csharp">public class PersistOrdersStep : AsyncPipelineStep&lt;OrderImportContext&gt;
+{
+    protected override async ValueTask&lt;PipelineControl&gt; ExecuteAsync(
+        OrderImportContext context,
+        Result result,
+        PipelineExecutionOptions options,
+        CancellationToken cancellationToken)
+    {
+        await repository.SaveAsync(context.ImportedOrderCount, cancellationToken);
+        return PipelineControl.Continue(result.WithMessage("Orders persisted."));
+    }
+}
+
+builder.AddAsyncStep(async execution =>
+{
+    if (execution.Result.IsFailure)
+    {
+        return execution.Break();
+    }
+
+    await repository.SaveAsync(execution.CancellationToken);
+    return execution.Continue(execution.Result.WithMessage("Saved from inline step."));
+});</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">CLASS-BASED</p>
+                <ul>
+                  <li>Better for reusable or non-trivial workflow logic</li>
+                  <li>Clear separation and testability</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">INLINE</p>
+                <ul>
+                  <li>Better for small local orchestration fragments</li>
+                  <li>Use the execution object when you need services, cancellation, or control helpers</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-17">
+        <h2>Pipeline Code Generation</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Generated packaged pipeline authoring</p>
+              <pre><code class="language-csharp">[Pipeline(typeof(OrderImportContext))]
+[PipelineHook(typeof(PipelineAuditHook))]
+[PipelineBehavior(typeof(PipelineTracingBehavior))]
+public partial class OrderImportPipeline : PipelineDefinition&lt;OrderImportContext&gt;
+{
+    [PipelineStep(10)]
+    public Result Validate(OrderImportContext context, Result result)
+    {
+        return result.WithMessage("validated");
+    }
+
+    [PipelineStep(20)]
+    public async Task&lt;Result&gt; LoadAsync(
+        OrderImportContext context,
+        Result result,
+        IOrderImportRepository repository,
+        CancellationToken cancellationToken)
+    {
+        var orders = await repository.LoadAsync(context.SourceFileName, cancellationToken);
+        context.ImportedOrderCount = orders.Count;
+        return result.WithMessage($"loaded {orders.Count} orders");
+    }
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">WHAT IT ADDS</p>
+                <ul>
+                  <li><code>[Pipeline]</code> for packaged definition boilerplate</li>
+                  <li><code>[PipelineStep(order)]</code> for generated step wiring</li>
+                  <li>Class-level hooks and behaviors stay declarative</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">WHEN TO USE</p>
+                <p class="text-lg">Use code generation when the packaged pipeline shape is right but hand-authoring the definition plumbing is adding more ceremony than value.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-18">
+        <h2>Read Next</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">REFERENCE DOCS</p>
+              <ul>
+                <li><code>docs/features-pipelines.md</code></li>
+                <li><code>docs/features-results.md</code></li>
+                <li><code>docs/features-rules.md</code></li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">THROUGH-LINE</p>
+              <ul>
+                <li>Workflows stay explicit</li>
+                <li>Control flow stays visible</li>
+                <li>Background runs stay observable</li>
+                <li>Cross-cutting concerns stay reusable</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-menu@2.1.0/menu.js"></script>
+  <script>
+    Reveal.initialize({
+      view: 'scroll',
+      scrollProgress: true,
+      width: 1280,
+      height: 720,
+      margin: 0,
+      controls: true,
+      progress: true,
+      slideNumber: false,
+      hash: true,
+      transition: 'none',
+      backgroundTransition: 'none',
+      center: false,
+      plugins: [ RevealMarkdown, RevealHighlight, RevealMenu ],
+      menu: {
+        side: 'left',
+        numbers: true,
+        titleSelector: 'h1, h2',
+        openButton: true,
+        sticky: true
+      }
+    });
+  </script>
+</body>
+</html>

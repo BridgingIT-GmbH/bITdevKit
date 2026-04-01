@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Requester and Notifier</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/monokai.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section id="title" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">bITdevKit / Feature Presentation</p>
+        <h1>Requester And Notifier</h1>
+        <p class="text-xl">Guide to dispatching requests and notifications through shared pipelines, reusable behaviors, and source-generated message authoring.</p>
+        <p class="footnote">Based on <code>features-requester-notifier.md</code>, with related references to <code>features-results.md</code>.</p>
+      </section>
+
+      <section id="slide-2">
+        <h2>Requester And Notifier At A Glance</h2>
+        <div class="content">
+          <div class="triple-grid">
+            <div class="brutal-card brutal-command">
+              <p class="card-tag">01 / REQUESTER</p>
+              <h3>One message. One handler.</h3>
+              <ul>
+                <li>Commands and queries</li>
+                <li>Dispatch through <code>IRequester</code></li>
+                <li>Return <code>Result&lt;T&gt;</code></li>
+              </ul>
+            </div>
+            <div class="brutal-card brutal-event">
+              <p class="card-tag">02 / NOTIFIER</p>
+              <h3>One message. Many handlers.</h3>
+              <ul>
+                <li>Publish/subscribe notifications</li>
+                <li>Dispatch through <code>INotifier</code></li>
+                <li>Return aggregated <code>Result</code></li>
+              </ul>
+            </div>
+            <div class="brutal-card brutal-query">
+              <p class="card-tag">03 / SHARED PIPELINE</p>
+              <h3>Cross-cutting concerns stay outside handlers</h3>
+              <ul>
+                <li>Validation</li>
+                <li>Retry, timeout, chaos, authorization</li>
+                <li>Progress reporting and metadata</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-3">
+        <h2>Core Architecture</h2>
+        <div class="content">
+          <div class="diagram-frame">
+            <div class="flow-line">
+              <div class="flow-box brutal-command"><span>1</span><h3>Caller sends or publishes</h3><p><code>IRequester</code> or <code>INotifier</code></p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>2</span><h3>Pipeline behaviors run</h3><p>validation, retry, timeout, auth, custom logic</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>3</span><h3>Handlers execute</h3><p>one request handler or multiple notification handlers</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box brutal-result"><span>4</span><h3>Explicit result returns</h3><p><code>Result&lt;T&gt;</code> or <code>Result</code></p></div>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="card-tag">KEY IDEA</p>
+            <p class="text-lg">Both systems standardize message dispatching, error propagation, metadata, and extensibility without forcing technical concerns into handler bodies.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-requester" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 1</p>
+        <h1>Requester</h1>
+        <p>Single-handler request/response flow for commands and queries.</p>
+      </section>
+
+      <section id="slide-5">
+        <h2>Requester Mental Model</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">COMMANDS</p>
+              <ul>
+                <li>Modify state</li>
+                <li>Usually return <code>Result&lt;Unit&gt;</code> or a small response model</li>
+                <li>One request maps to one primary business operation</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">QUERIES</p>
+              <ul>
+                <li>Read data without changing state</li>
+                <li>Return <code>Result&lt;T&gt;</code></li>
+                <li>Still use the same requester pipeline</li>
+              </ul>
+            </div>
+          </div>
+          <div class="metrics-row">
+            <div class="metric-box"><span>1</span><p>handler</p></div>
+            <div class="metric-box"><span>TYPE-SAFE</span><p>request + response</p></div>
+            <div class="metric-box"><span>TRACKED</span><p>request id + timestamp</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-6">
+        <h2>Basic Request Flow</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Requester dispatch and handler</p>
+              <pre><code class="language-csharp">public class DoSomethingCommand : RequestBase&lt;Unit&gt;
+{
+    public string Message { get; set; }
+}
+
+public class DoSomethingCommandHandler
+    : RequestHandlerBase&lt;DoSomethingCommand, Unit&gt;
+{
+    protected override async Task&lt;Result&lt;Unit&gt;&gt; HandleAsync(
+        DoSomethingCommand request,
+        SendOptions options,
+        CancellationToken cancellationToken)
+    {
+        await Task.Delay(100, cancellationToken);
+        return Result&lt;Unit&gt;.Success(Unit.Value);
+    }
+}
+
+var result = await requester.SendAsync(new DoSomethingCommand
+{
+    Message = "Performing task..."
+});</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">FLOW</p>
+                <ul>
+                  <li>Caller creates request message</li>
+                  <li><code>IRequester.SendAsync(...)</code> dispatches it</li>
+                  <li>One handler returns a typed result</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">VALIDATORS</p>
+                <p class="text-lg">Nested FluentValidation validators are discovered automatically and can run through the normal validation behavior.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-7">
+        <h2>Policies, Metadata, And SendOptions</h2>
+        <div class="content">
+          <div class="flow-grid">
+            <div class="flow-box"><span>METADATA</span><h3>Built into <code>RequestBase&lt;T&gt;</code></h3><p><code>RequestId</code> and <code>RequestTimestamp</code></p></div>
+            <div class="flow-box"><span>SEND OPTIONS</span><h3>Control dispatch-time behavior</h3><p>progress reporting, exception handling, cancellation</p></div>
+            <div class="flow-box"><span>HANDLER POLICIES</span><h3>Attach on the handler surface</h3><p>retry, timeout, circuit breaker, chaos, transaction</p></div>
+            <div class="flow-box"><span>BEHAVIOR OPTIONS</span><h3>Configure globally</h3><p>fluent API for defaults and priorities</p></div>
+          </div>
+          <blockquote>
+            <p>Requester gives you both local control at the message/handler level and central control through builder configuration.</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section id="slide-8">
+        <h2>Source-Generated Commands And Queries</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">[Command] and [Query]</p>
+              <pre><code class="language-csharp">[Command]
+public partial class DoSomethingCommand
+{
+    [ValidateNotEmpty("Message cannot be empty.")]
+    public string Message { get; set; }
+
+    [Handle]
+    private async Task&lt;Result&lt;Unit&gt;&gt; HandleAsync(CancellationToken cancellationToken)
+    {
+        await Task.Delay(100, cancellationToken);
+        return Success();
+    }
+}
+
+[Query]
+public partial class GetUserQuery
+{
+    public Guid UserId { get; set; }
+
+    [Handle]
+    private async Task&lt;Result&lt;User&gt;&gt; HandleAsync(IGenericReadOnlyRepository&lt;User&gt; userRepository, CancellationToken cancellationToken)
+    {
+        var user = await userRepository.FindOneAsync(UserId, cancellationToken: cancellationToken);
+        return user != null ? Success(user) : Failure($"User with ID {UserId} not found.");
+    }
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">AUTHORING MODEL</p>
+                <ul>
+                  <li>Single partial type instead of separate message + handler classes</li>
+                  <li><code>[Handle]</code> methods infer result type</li>
+                  <li>Simple validation via attributes, richer rules via <code>[Validate]</code></li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">STILL THE SAME PIPELINE</p>
+                <p class="text-lg">Source-generated requests still run through the standard Requester validation and policy behaviors.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-notifier" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 2</p>
+        <h1>Notifier</h1>
+        <p>Publish/subscribe notification flow with aggregated outcomes.</p>
+      </section>
+
+      <section id="slide-10">
+        <h2>Notifier Mental Model</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">PUB/SUB</p>
+              <ul>
+                <li>One notification can trigger many handlers</li>
+                <li>Publisher does not need to know subscribers</li>
+                <li>Cross-cutting behaviors are shared with Requester</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">RESULT MODEL</p>
+              <ul>
+                <li>Returns non-generic <code>Result</code></li>
+                <li>Aggregates outcomes from all handlers</li>
+                <li>Supports sequential, concurrent, and fire-and-forget execution</li>
+              </ul>
+            </div>
+          </div>
+          <div class="metrics-row">
+            <div class="metric-box"><span>N</span><p>handlers</p></div>
+            <div class="metric-box"><span>EXECUTION</span><p>sequential / concurrent / fire-and-forget</p></div>
+            <div class="metric-box"><span>TRACKED</span><p>notification id + timestamp</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-11-basic">
+        <h2>Basic Notification Flow</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Publish one notification to multiple handlers</p>
+              <pre><code class="language-csharp">public class UserRegisteredNotification : NotificationBase
+{
+    public Guid UserId { get; set; }
+    public string Email { get; set; }
+}
+
+public class SendWelcomeEmailHandler
+    : NotificationHandlerBase&lt;UserRegisteredNotification&gt;
+{
+    protected override async Task&lt;Result&gt; HandleAsync(
+        UserRegisteredNotification notification,
+        PublishOptions options,
+        CancellationToken cancellationToken)
+    {
+        await Task.Delay(100, cancellationToken);
+        return Result.Success();
+    }
+}
+
+public class AuditRegistrationHandler
+    : NotificationHandlerBase&lt;UserRegisteredNotification&gt;
+{
+    protected override Task&lt;Result&gt; HandleAsync(
+        UserRegisteredNotification notification,
+        PublishOptions options,
+        CancellationToken cancellationToken)
+    {
+        return Task.FromResult(Result.Success());
+    }
+}
+
+var result = await notifier.PublishAsync(new UserRegisteredNotification
+{
+    UserId = Guid.NewGuid(),
+    Email = "user@example.com"
+});</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">FLOW</p>
+                <ul>
+                  <li>Caller creates one notification message</li>
+                  <li><code>INotifier.PublishAsync(...)</code> dispatches it to all matching handlers</li>
+                  <li>Each handler returns a <code>Result</code> instead of a response payload</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">WHY IT FITS</p>
+                <p class="text-lg">Use this shape for side effects like audit, email, cache invalidation, metrics, and other reactions that should stay decoupled from the publisher.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-11">
+        <h2>Notification Flow And Result Aggregation</h2>
+        <div class="content">
+          <div class="diagram-frame">
+            <div class="flow-line">
+              <div class="flow-box brutal-event"><span>1</span><h3>Publisher calls <code>PublishAsync(...)</code></h3><p>dispatch notification</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>2</span><h3>Behaviors run</h3><p>validation and shared cross-cutting logic</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>3</span><h3>Multiple handlers execute</h3><p>one after another, in parallel, or fire-and-forget</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box brutal-result"><span>4</span><h3>Aggregate result returns</h3><p>success or accumulated failures</p></div>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="card-tag">USE IT FOR</p>
+            <p class="text-lg">Reactions like email, logging, cache updates, metrics, and other side effects where multiple subscribers should be able to respond independently.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-12">
+        <h2>Execution Modes</h2>
+        <div class="content">
+          <div class="three-stack">
+            <div class="panel brutal-event">
+              <p class="card-tag">SEQUENTIAL</p>
+              <h3>Ordered and fail-fast</h3>
+              <p>Default mode. Runs handlers one after another and stops on the first failure.</p>
+            </div>
+            <div class="panel brutal-event">
+              <p class="card-tag">CONCURRENT</p>
+              <h3>Parallel fan-out</h3>
+              <p>Runs handlers independently and aggregates the outcomes.</p>
+            </div>
+            <div class="panel brutal-event">
+              <p class="card-tag">FIRE-AND-FORGET</p>
+              <h3>Returns immediately</h3>
+              <p>Invokes handlers without waiting for completion when the publish call should not block.</p>
+            </div>
+          </div>
+          <blockquote>
+            <p>Execution mode is part of the design choice, not just a performance toggle. Pick it based on ordering, isolation, and whether the publisher depends on completion.</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section id="slide-13">
+        <h2>Source-Generated Events</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">[Event] with generated and manual handlers</p>
+              <pre><code class="language-csharp">[Event]
+[HandlerRetry(2, 100)]
+public partial class UserRegisteredEvent
+{
+    [ValidateNotEmpty("Email is required.")]
+    [ValidateEmail("Email must be valid.")]
+    public string Email { get; init; }
+
+    [Handle]
+    private Result Audit()
+    {
+        Console.WriteLine($"Audit user registration for {Email}");
+        return Success();
+    }
+
+    [Handle]
+    private async Task&lt;Result&gt; SendWelcomeEmailAsync(
+        IEmailService emailService,
+        CancellationToken cancellationToken)
+    {
+        await emailService.SendAsync(Email, cancellationToken);
+        return Success();
+    }
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">EVENT AUTHORING</p>
+                <ul>
+                  <li>One partial type can declare one or more <code>[Handle]</code> methods</li>
+                  <li>Each handle becomes a generated notification handler</li>
+                  <li>Generated handlers do not replace manual subscribers</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">VALIDATION</p>
+                <p class="text-lg">Property validators and optional <code>[Validate]</code> methods still run through the standard Notifier validation pipeline.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-behaviors" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 3</p>
+        <h1>Pipeline Behaviors</h1>
+        <p>Shared cross-cutting logic for both Requester and Notifier.</p>
+      </section>
+
+      <section id="slide-15">
+        <h2>Shared Behavior Model</h2>
+        <div class="content">
+          <div class="flow-grid">
+            <div class="flow-box"><span>VALIDATION</span><h3>Stop invalid messages early</h3><p>nested validators and generated validators plug in here</p></div>
+            <div class="flow-box"><span>RETRY / TIMEOUT</span><h3>Protect critical operations</h3><p>can be configured globally or per handler</p></div>
+            <div class="flow-box"><span>AUTH / CHAOS / CACHE</span><h3>Reusable policy layer</h3><p>shared behavior surface for technical concerns</p></div>
+            <div class="flow-box"><span>CUSTOM</span><h3>Extend with your own logic</h3><p>write once and apply to both systems</p></div>
+          </div>
+          <p class="footnote">Behaviors are registered through the fluent builder and run in registration order, so ordering is part of the design.</p>
+        </div>
+      </section>
+
+      <section id="slide-16">
+        <h2>Custom Behaviors And Progress Reporting</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Custom behavior sketch</p>
+              <pre><code class="language-csharp">public class LoggingPipelineBehavior&lt;TRequest, TResponse&gt;
+    : PipelineBehaviorBase&lt;TRequest, TResponse&gt;
+    where TRequest : class
+{
+    protected override async Task&lt;TResponse&gt; HandleAsync(
+        TRequest request,
+        object options,
+        Type responseType,
+        Func&lt;Task&lt;TResponse&gt;&gt; next,
+        CancellationToken cancellationToken)
+    {
+        Console.WriteLine($"Handling {typeof(TRequest).Name}");
+        return await next();
+    }
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">CUSTOM BEHAVIORS</p>
+                <ul>
+                  <li>One implementation can serve both Requester and Notifier</li>
+                  <li>Ideal for logging, correlation, tracing, and other cross-cutting concerns</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">PROGRESS</p>
+                <ul>
+                  <li><code>IProgress&lt;ProgressReport&gt;</code> can flow through <code>SendOptions</code> and <code>PublishOptions</code></li>
+                  <li>Useful for long-running operations without polluting handler contracts</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-17">
+        <h2>Built-In Policies And Behavior Options</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">PER-HANDLER ATTRIBUTES</p>
+              <ul>
+                <li><code>[HandlerRetry]</code></li>
+                <li><code>[HandlerTimeout]</code></li>
+                <li><code>[HandlerCircuitBreaker]</code></li>
+                <li><code>[HandlerChaos]</code></li>
+                <li><code>[HandlerDatabaseTransaction]</code></li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">BUILDER OPTIONS</p>
+              <ul>
+                <li>Configure defaults globally</li>
+                <li>Chain behaviors fluently</li>
+                <li>Control priorities and override behavior centrally</li>
+                <li>Separate Requester and Notifier options where needed</li>
+              </ul>
+            </div>
+          </div>
+          <blockquote>
+            <p>The feature gives you both tactical per-handler policies and strategic global defaults. Use both intentionally.</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section id="divider-advanced" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 4</p>
+        <h1>Advanced Usage</h1>
+        <p>Generic handlers, comparisons, and adoption guidance.</p>
+      </section>
+
+      <section id="slide-19">
+        <h2>Generic Handlers, CQS, And Adoption Notes</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">GENERIC HANDLERS</p>
+              <ul>
+                <li><code>AddGenericHandlers()</code> discovers open generic handlers</li>
+                <li>Registers closed handlers when constraints are satisfied</li>
+                <li>Works for both Requester and Notifier</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">ADOPTION NOTES</p>
+              <ul>
+                <li>Use Requester when one caller needs one answer</li>
+                <li>Use Notifier when one message should fan out to many subscribers</li>
+                <li>Keep handlers small and let behaviors carry the shared technical concerns</li>
+              </ul>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="card-tag">COMPARISON</p>
+            <p class="text-lg">Compared with MediatR-style setups, this feature bakes in results, metadata, notification execution modes, and behavior/policy conventions instead of leaving those concerns to separate custom infrastructure.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-20">
+        <h2>Read Next</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">REFERENCE DOCS</p>
+              <ul>
+                <li><code>docs/features-requester-notifier.md</code></li>
+                <li><code>docs/features-results.md</code></li>
+                <li><code>docs/features-application-commands-queries.md</code></li>
+                <li><code>docs/features-application-events.md</code></li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">THROUGH-LINE</p>
+              <ul>
+                <li>Messages are explicit</li>
+                <li>Outcomes are explicit</li>
+                <li>Cross-cutting concerns are reusable</li>
+                <li>Handlers stay focused on business logic</li>
+              </ul>
+            </div>
+          </div>
+          <blockquote>
+            <p>Requester and Notifier are the shared message-handling substrate. The app-layer command/query/event authoring model is one convenient way to use them, not the whole feature.</p>
+          </blockquote>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-menu@2.1.0/menu.js"></script>
+  <script>
+    Reveal.initialize({
+      view: 'scroll',
+      scrollProgress: true,
+      width: 1280,
+      height: 720,
+      margin: 0,
+      controls: true,
+      progress: true,
+      slideNumber: false,
+      hash: true,
+      transition: 'none',
+      backgroundTransition: 'none',
+      center: false,
+      plugins: [ RevealMarkdown, RevealHighlight, RevealMenu ],
+      menu: {
+        side: 'left',
+        numbers: true,
+        titleSelector: 'h1, h2',
+        openButton: true,
+        sticky: true
+      }
+    });
+  </script>
+</body>
+</html>

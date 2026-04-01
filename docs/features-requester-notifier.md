@@ -1494,20 +1494,20 @@ The `Requester` and `Notifier` systems share similarities with the popular **Med
 
 ---
 
-# Appendix C: Generic Handlers in Requester and Notifier
+## Appendix C: Generic Handlers in Requester and Notifier
 
-## Overview
+### Overview
 
 Generic handlers in the `Requester` and `Notifier` systems enable handling of generic request/notification types (e.g., `GenericRequest<TData>`, `GenericNotification<TData>`) with a single handler, reducing code duplication. They are registered using `AddGenericHandlers`, which discovers open generic handlers, validates constraints, and registers closed handlers (e.g., `GenericDataProcessor<UserData>`).
 
-## Key Features
+### Key Features
 
 - **Automatic Discovery**: `AddGenericHandlers` scans assemblies for open generic handlers and discovers type arguments based on constraints.
 - **Constraint Validation**: Ensures type arguments meet constraints (e.g., `where TData : class, IDataItem`).
 
-## Setup with `AddGenericHandlers`
+### Setup with `AddGenericHandlers`
 
-### Requester
+#### Requester
 
 ```csharp
 services.AddRequester()
@@ -1516,7 +1516,7 @@ services.AddRequester()
     .WithBehavior<ValidationPipelineBehavior<,>>();
 ```
 
-### Notifier
+#### Notifier
 
 ```csharp
 services.AddNotifier()
@@ -1527,9 +1527,9 @@ services.AddNotifier()
 
 `AddGenericHandlers` discovers open generic handlers (e.g., `GenericDataProcessor<TData>`), finds type arguments (e.g., `UserData`, `OrderData`) that satisfy constraints, and registers closed handlers.
 
-## Examples
+### Examples
 
-### Generic Request Handler (Requester)
+#### Generic Request Handler (Requester)
 
 ```csharp
 public class ProcessDataRequest<TData> : RequestBase<string>
@@ -1566,7 +1566,7 @@ var userRequest = new ProcessDataRequest<UserData> { Data = new UserData { Id = 
 var result = await requester.SendAsync(userRequest); // "Processed: user123"
 ```
 
-### Generic Notification Handler (Notifier)
+#### Generic Notification Handler (Notifier)
 
 ```csharp
 public class GenericNotification<TData> : NotificationBase
@@ -1600,6 +1600,8 @@ public class GenericNotificationHandler<TData> : NotificationHandlerBase<Generic
 var userNotification = new GenericNotification<UserData> { Data = new UserData { Id = "user123" } };
 var result = await notifier.PublishAsync(userNotification); // Logs: "Handled: user123"
 ```
+
+---
 
 ## Appendix D: Source-Generated Commands and Queries
 

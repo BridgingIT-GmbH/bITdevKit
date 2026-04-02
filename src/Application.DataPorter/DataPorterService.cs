@@ -268,6 +268,46 @@ public sealed class DataPorterService(
     }
 
     /// <inheritdoc/>
+    public async Task<Result<FileContent>> ExportToFileContentAsync<TSource>(
+        IEnumerable<TSource> data,
+        ExportOptions options = null,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        options ??= new ExportOptions();
+
+        var providerResult = this.GetProvider(options.Format, requiresExport: true);
+        if (providerResult.IsFailure)
+        {
+            return Result<FileContent>.Failure()
+                .WithErrors(providerResult.Errors);
+        }
+
+        var bytesResult = await this.ExportToBytesAsync(data, options, cancellationToken);
+        if (bytesResult.IsFailure)
+        {
+            return Result<FileContent>.Failure()
+                .WithErrors(bytesResult.Errors)
+                .WithMessages(bytesResult.Messages);
+        }
+
+        return Result<FileContent>.Success(new FileContent(
+            bytesResult.Value,
+            GetFileName(providerResult.Value, options),
+            GetContentType(providerResult.Value, options.Compression)));
+    }
+
+    /// <inheritdoc/>
+    public Task<Result<FileContent>> ExportToFileContentAsync<TSource>(
+        IEnumerable<TSource> data,
+        Builder<ExportOptionsBuilder, ExportOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        return this.ExportToFileContentAsync(data, Build(optionsBuilder), cancellationToken);
+    }
+
+    /// <inheritdoc/>
     public async Task<Result<byte[]>> ExportToBytesAsync<TSource>(
         IAsyncEnumerable<TSource> data,
         ExportOptions options = null,
@@ -295,6 +335,46 @@ public sealed class DataPorterService(
         where TSource : class
     {
         return this.ExportToBytesAsync(data, Build(optionsBuilder), cancellationToken);
+    }
+
+    /// <inheritdoc/>
+    public async Task<Result<FileContent>> ExportToFileContentAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        ExportOptions options = null,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        options ??= new ExportOptions();
+
+        var providerResult = this.GetProvider(options.Format, requiresExport: true);
+        if (providerResult.IsFailure)
+        {
+            return Result<FileContent>.Failure()
+                .WithErrors(providerResult.Errors);
+        }
+
+        var bytesResult = await this.ExportToBytesAsync(data, options, cancellationToken);
+        if (bytesResult.IsFailure)
+        {
+            return Result<FileContent>.Failure()
+                .WithErrors(bytesResult.Errors)
+                .WithMessages(bytesResult.Messages);
+        }
+
+        return Result<FileContent>.Success(new FileContent(
+            bytesResult.Value,
+            GetFileName(providerResult.Value, options),
+            GetContentType(providerResult.Value, options.Compression)));
+    }
+
+    /// <inheritdoc/>
+    public Task<Result<FileContent>> ExportToFileContentAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        Builder<ExportOptionsBuilder, ExportOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TSource : class
+    {
+        return this.ExportToFileContentAsync(data, Build(optionsBuilder), cancellationToken);
     }
 
     // /// <inheritdoc/>
@@ -1074,5 +1154,81 @@ public sealed class DataPorterService(
         }
 
         return "export" + extension.ToLowerInvariant();
+    }
+
+    private static string GetDefaultFileName(IDataPorterProvider provider, PayloadCompressionOptions compression)
+    {
+        compression ??= PayloadCompressionOptions.None;
+
+        if (compression.Kind == PayloadCompressionKind.GZip)
+        {
+            return GetDefaultZipEntryName(provider) + ".gz";
+        }
+
+        if (compression.Kind == PayloadCompressionKind.Zip)
+        {
+            return ".zip".Equals(Path.GetExtension(GetDefaultZipEntryName(provider)), StringComparison.OrdinalIgnoreCase)
+                ? GetDefaultZipEntryName(provider)
+                : "export.zip";
+        }
+
+        return GetDefaultZipEntryName(provider);
+    }
+
+    private static string GetFileName(IDataPorterProvider provider, ExportOptions options)
+    {
+        var defaultFileName = GetDefaultFileName(provider, options?.Compression);
+        if (string.IsNullOrWhiteSpace(options?.FileName))
+        {
+            return defaultFileName;
+        }
+
+        return EnsureFileNameHasExpectedExtension(options.FileName.Trim(), provider, options.Compression);
+    }
+
+    private static string EnsureFileNameHasExpectedExtension(string fileName, IDataPorterProvider provider, PayloadCompressionOptions compression)
+    {
+        compression ??= PayloadCompressionOptions.None;
+
+        if (compression.Kind == PayloadCompressionKind.GZip)
+        {
+            var innerExtension = Path.GetExtension(GetDefaultZipEntryName(provider));
+            var expectedSuffix = string.Concat(innerExtension, ".gz");
+            return fileName.EndsWith(expectedSuffix, StringComparison.OrdinalIgnoreCase)
+                ? fileName
+                : fileName.EndsWith(".gz", StringComparison.OrdinalIgnoreCase)
+                    ? Path.GetFileNameWithoutExtension(fileName) + expectedSuffix
+                    : fileName + expectedSuffix;
+        }
+
+        if (compression.Kind == PayloadCompressionKind.Zip)
+        {
+            return fileName.EndsWith(".zip", StringComparison.OrdinalIgnoreCase)
+                ? fileName
+                : fileName + ".zip";
+        }
+
+        var extension = Path.GetExtension(GetDefaultZipEntryName(provider));
+        return fileName.EndsWith(extension, StringComparison.OrdinalIgnoreCase)
+            ? fileName
+            : fileName + extension;
+    }
+
+    private static string GetContentType(IDataPorterProvider provider, PayloadCompressionOptions compression)
+    {
+        compression ??= PayloadCompressionOptions.None;
+
+        if (compression.Kind == PayloadCompressionKind.GZip)
+        {
+            return "application/gzip";
+        }
+
+        if (compression.Kind == PayloadCompressionKind.Zip)
+        {
+            return "application/zip";
+        }
+
+        var extension = provider?.SupportedExtensions?.FirstOrDefault(e => !string.IsNullOrWhiteSpace(e))?.Trim().TrimStart('.');
+        return ContentTypeExtensions.FromExtension(extension, ContentType.BIN).MimeType();
     }
 }

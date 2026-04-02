@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 public static class ResultMapHttpExtensions
@@ -1040,7 +1041,7 @@ public static class ResultMapHttpExtensions
                 fileDownloadName: fileContent.FileName,
                 enableRangeProcessing: fileContent.EnableRangeProcessing,
                 lastModified: fileContent.LastModified,
-                entityTag: fileContent.EntityTag),
+                entityTag: string.IsNullOrWhiteSpace(fileContent.EntityTag) ? null : EntityTagHeaderValue.Parse(fileContent.EntityTag)),
 
             { IsFailure: true, Errors: var errors } when errors.Has<UnauthorizedError>() || errors.Has<ForbiddenError>() => MapUnauthorizedError<UnauthorizedHttpResult>(logger, result),
             { IsFailure: true, Errors: var errors } when errors.Has<EntityNotFoundError>() || errors.Has<NotFoundError>() => MapNotFoundError<NotFound>(logger, result),

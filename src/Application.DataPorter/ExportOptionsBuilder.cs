@@ -131,6 +131,17 @@ public sealed class ExportOptionsBuilder : IOptionsBuilder<ExportOptions>
     }
 
     /// <summary>
+    /// Sets the file name to use when exporting to <see cref="FileContent"/>.
+    /// </summary>
+    /// <param name="fileName">The file name.</param>
+    /// <returns>The builder instance for chaining.</returns>
+    public ExportOptionsBuilder WithFileName(string fileName)
+    {
+        this.target = this.target with { FileName = fileName };
+        return this;
+    }
+
+    /// <summary>
     /// Sets whether headers should be included in the export.
     /// </summary>
     /// <param name="value">A value indicating whether headers should be included.</param>

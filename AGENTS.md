@@ -45,6 +45,31 @@ This document provides AI agents with concise, high-signal context about this re
 
 This ensures all agents follow the same high-quality, tested patterns that the project relies on.
 
+## Commit Guidance
+
+- Use conventional commit format: type(scope): description
+- Use imperative mood: 'Add feature' not 'Added feature'
+- Keep subject line under 50 characters
+- Use types: feat, fix, docs, style, refactor, perf, test, chore, ci
+- Include scope when relevant (e.g., api, ui, auth, docs, frontend, backend, database, config)
+- Reference issue numbers with # prefix
+
+When committing changes:
+
+Commit messages should follow:
+
+```text
+type: short description
+```
+
+Examples
+
+```text
+feat: implement task creation use case
+fix: correct repository filtering behavior
+test: add domain tests for task status transitions
+```
+
 ## Coding Standards
 
 - Please follow the rules in [.editorconfig](.editorconfig).

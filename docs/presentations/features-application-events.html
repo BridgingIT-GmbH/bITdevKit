@@ -1,0 +1,575 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Application Events</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/monokai.min.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+      <section id="title" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">bITdevKit / Developer Usage</p>
+        <h1>Application Events</h1>
+        <p class="text-xl">20-slide field guide for publishing application-layer events through <code>INotifier</code> with generated handlers, explicit results, and clear boundaries.</p>
+        <p class="footnote">Based on <a class="doc-link" href="../features-application-events.md"><code>features-application-events.md</code></a>, <a class="doc-link" href="../features-requester-notifier.md"><code>features-requester-notifier.md</code></a>, and <a class="doc-link" href="../features-domain-events.md"><code>features-domain-events.md</code></a>.</p>
+      </section>
+
+      <section id="slide-2">
+        <h2>Event Shape</h2>
+        <div class="content">
+          <div class="triple-grid">
+            <div class="brutal-card brutal-event">
+              <p class="card-tag">01 / PUBLISH</p>
+              <h3>One publisher. Many in-process reactions.</h3>
+              <p class="text-lg">The application layer announces something and subscribers decide what happens next.</p>
+              <ul>
+                <li>Publish through <code>INotifier</code></li>
+                <li>One or many handlers</li>
+                <li>Publisher stays decoupled</li>
+              </ul>
+            </div>
+            <div class="brutal-card brutal-query">
+              <p class="card-tag">02 / PIPELINE</p>
+              <h3>Validation and resiliency stay shared</h3>
+              <p class="text-lg">Application events reuse the same notifier pipeline infrastructure as the rest of the feature set.</p>
+              <ul>
+                <li>Validation, retry, timeout, authorization</li>
+                <li>Generated and manual handlers together</li>
+                <li>Class-level policy attributes</li>
+              </ul>
+            </div>
+            <div class="brutal-card brutal-command">
+              <p class="card-tag">03 / RESULT</p>
+              <h3>Publication still returns an explicit outcome</h3>
+              <p class="text-lg">Handlers do not disappear into hidden background behavior by default.</p>
+              <ul>
+                <li>Handlers return <code>Result</code></li>
+                <li>Notifier aggregates the outcome</li>
+                <li>Failures stay visible at the call site</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-model" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 1</p>
+        <h1>Event Model</h1>
+        <p>What application events are, when they fit, and how they are authored.</p>
+      </section>
+
+      <section id="slide-5">
+        <h2>Event Mental Model</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">WHEN TO USE</p>
+              <h3>Application events announce follow-up work</h3>
+              <ul>
+                <li>A command or endpoint should trigger several in-process reactions.</li>
+                <li>The publisher should not know concrete subscribers.</li>
+                <li>The work belongs to the application layer, not the aggregate.</li>
+                <li>Handlers should share the same policy pipeline as other app messages.</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout brutal-event">
+              <p class="card-tag">NOT THE SAME AS</p>
+              <h3>Do not collapse all signals into one model</h3>
+              <p class="text-lg">Application events are not domain events and they are not durable external messaging. They are app-layer pub/sub inside one process.</p>
+            </div>
+          </div>
+          <div class="metrics-row">
+            <div class="metric-box"><span>N</span><p>handlers</p></div>
+            <div class="metric-box"><span>FAN OUT</span><p>intent</p></div>
+            <div class="metric-box"><span>Result</span><p>aggregated outcome</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-6">
+        <h2>Authoring An Event</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">[Event] / source-generated notification</p>
+              <pre><code class="language-csharp">[Event]
+public partial class UserRegisteredEvent
+{
+    [ValidateNotEmptyGuid("UserId is required.")]
+    public string UserId { get; init; }
+
+    [ValidateNotEmpty("Email is required.")]
+    [ValidateEmail("Email must be valid.")]
+    public string Email { get; init; }
+
+    [Handle]
+    private Result Audit()
+    {
+        Console.WriteLine($"Audit registration for {UserId}");
+        return Success();
+    }
+
+    [Handle]
+    private async Task&lt;Result&gt; SendWelcomeEmailAsync(
+        INotificationService&lt;EmailMessage&gt; notifications,
+        CancellationToken cancellationToken)
+    {
+        var sendResult = await notifications.SendAsync(
+            new EmailMessage { To = [Email] },
+            cancellationToken: cancellationToken);
+
+        return sendResult.IsSuccess ? Success() : Failure("Welcome email could not be sent.");
+    }
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">GENERATOR GIVES YOU</p>
+                <ul>
+                  <li>One generated handler per <code>[Handle]</code> method</li>
+                  <li><code>NotificationBase</code> if you do not inherit it manually</li>
+                  <li><code>Success(...)</code> and <code>Failure(...)</code></li>
+                  <li>Validation bridge for property rules and <code>[Validate]</code></li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">PAYOFF</p>
+                <ul>
+                  <li>One partial type can fan out to many subscribers</li>
+                  <li>Default reactions stay close to the event surface</li>
+                  <li>Boilerplate drops sharply without changing runtime behavior</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-7">
+        <h2>Handle Methods And DI</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">HANDLE METHOD RULES</p>
+              <ul>
+                <li>One or more instance <code>[Handle]</code> methods are allowed</li>
+                <li>Methods must return <code>Result</code> or <code>Task&lt;Result&gt;</code></li>
+                <li>Event data is accessed directly through <code>this</code></li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">DI PARAMETERS</p>
+              <ul>
+                <li>DI services can be declared as parameters and are resolved automatically</li>
+                <li><code>CancellationToken</code> and <code>PublishOptions</code> are supported too</li>
+                <li>This follows the same ergonomic pattern as commands and queries</li>
+              </ul>
+            </div>
+          </div>
+          <div class="code-window">
+            <p class="code-caption">DI inside a generated event handler method</p>
+            <pre><code class="language-csharp">[Handle]
+private async Task&lt;Result&gt; InvalidateCacheAsync(
+    ICache cache,
+    PublishOptions options,
+    CancellationToken cancellationToken)
+{
+    await cache.RemoveAsync($"user:{UserId}", cancellationToken);
+    return Success();
+}</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-publishing" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 2</p>
+        <h1>Publishing</h1>
+        <p>Dispatch flow, mixed generated/manual handlers, and the returned result.</p>
+      </section>
+
+      <section id="slide-10">
+        <h2>Publication Flow</h2>
+        <div class="content">
+          <div class="diagram-frame">
+            <div class="flow-line">
+              <div class="flow-box brutal-event"><span>1</span><h3>Application code publishes</h3><p><code>PublishAsync(event)</code></p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>2</span><h3>Notifier pipeline runs</h3><p>validation, retry, timeout, authorization</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box"><span>3</span><h3>Subscribers execute</h3><p>generated and manual handlers both participate</p></div>
+              <div class="flow-glyph">-&gt;</div>
+              <div class="flow-box brutal-result"><span>4</span><h3>Aggregated result returns</h3><p>publisher gets one explicit outcome</p></div>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="card-tag">KEY IDEA</p>
+            <p class="text-lg">Application events keep the publisher thin while preserving the same policy pipeline and explicit outcome model used elsewhere in the application layer.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-11">
+        <h2>Generated And Manual Handlers Together</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Manual handler beside generated ones</p>
+              <pre><code class="language-csharp">public class UserRegisteredMetricsHandler
+    : NotificationHandlerBase&lt;UserRegisteredEvent&gt;
+{
+    protected override Task&lt;Result&gt; HandleAsync(
+        UserRegisteredEvent notification,
+        PublishOptions options,
+        CancellationToken cancellationToken)
+    {
+        Console.WriteLine($"Metrics tracked for {notification.UserId}");
+        return Task.FromResult(Result.Success());
+    }
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">PREFER GENERATED</p>
+                <ul>
+                  <li>The default reactions belong next to the event surface</li>
+                  <li>You want the lowest ceremony authoring model</li>
+                  <li>The event and its default subscribers evolve together</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">PREFER MANUAL</p>
+                <ul>
+                  <li>The subscriber deserves its own file and name</li>
+                  <li>The reaction belongs to a different module boundary</li>
+                  <li>The handler has enough weight to stand alone</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-12">
+        <h2>Publishing From Application Code</h2>
+        <div class="content">
+          <div class="two-col code-layout">
+            <div class="code-window">
+              <p class="code-caption">Publishing through <code>INotifier</code></p>
+              <pre><code class="language-csharp">public class RegistrationService(INotifier notifier)
+{
+    public async Task&lt;Result&gt; RegisterAsync(
+        string userId,
+        string email,
+        CancellationToken cancellationToken)
+    {
+        // application logic omitted
+
+        return (Result)await notifier.PublishAsync(
+            new UserRegisteredEvent
+            {
+                UserId = userId,
+                Email = email
+            },
+            cancellationToken: cancellationToken);
+    }
+}</code></pre>
+            </div>
+            <div>
+              <div class="panel">
+                <p class="card-tag">CALL-SITE TRUTH</p>
+                <ul>
+                  <li>The publisher only depends on <code>INotifier</code></li>
+                  <li>Subscriber details stay hidden from the publisher</li>
+                  <li>The returned <code>Result</code> keeps follow-up failure explicit</li>
+                </ul>
+              </div>
+              <div class="panel panel-callout">
+                <p class="card-tag">DO NOT ASSUME</p>
+                <ul>
+                  <li>Publishing is not the same as durable background delivery</li>
+                  <li>It is still an application-layer interaction with a real outcome</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-validation" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 3</p>
+        <h1>Validation And Boundaries</h1>
+        <p>Validation shapes, handler policies, and the boundary line versus domain events and messaging.</p>
+      </section>
+
+      <section id="slide-15">
+        <h2>Validation Model</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">SIMPLE RULES</p>
+              <pre><code class="language-csharp">[Event]
+public partial class InvoiceApprovedEvent
+{
+    [ValidateNotEmptyGuid("InvoiceId is required.")]
+    public string InvoiceId { get; init; }
+
+    [ValidateNotEmpty("ApprovedBy is required.")]
+    public string ApprovedBy { get; init; }
+
+    [Handle]
+    private Result Handle() => Success();
+}</code></pre>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">RICHER RULES</p>
+              <pre><code class="language-csharp">[Validate]
+private static void Validate(
+    InlineValidator&lt;CustomerImportCompletedEvent&gt; validator)
+{
+    validator.RuleFor(x =&gt; x.ImportedCustomerIds)
+        .Must(ids =&gt; ids.Count &lt;= 1000)
+        .WithMessage("A maximum of 1000 imported customers is allowed.");
+}</code></pre>
+            </div>
+          </div>
+          <blockquote>
+            <p>The generated validator plugs into the normal notifier validation behavior, so event authoring stays aligned with the rest of the application message model.</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section id="slide-16">
+        <h2>Handler Policies</h2>
+        <div class="content">
+          <div class="flow-grid">
+            <div class="flow-box"><span>RETRY</span><h3>Recover transient work</h3><p><code>[HandlerRetry(...)]</code></p></div>
+            <div class="flow-box"><span>TIMEOUT</span><h3>Bound execution</h3><p><code>[HandlerTimeout(...)]</code></p></div>
+            <div class="flow-box"><span>AUTH</span><h3>Protect subscriber behavior</h3><p>authorization and related policies</p></div>
+            <div class="flow-box"><span>GENERATOR</span><h3>Copies class-level policies</h3><p>each generated handler receives the same policy attributes</p></div>
+          </div>
+          <div class="code-window">
+            <p class="code-caption">Policy attributes on a generated event</p>
+            <pre><code class="language-csharp">[Event]
+[HandlerRetry(2, 100)]
+[HandlerTimeout(500)]
+public partial class ReportGeneratedEvent
+{
+    public string ReportId { get; init; }
+
+    [Handle]
+    private async Task&lt;Result&gt; InvalidateCacheAsync(
+        ICache cache,
+        CancellationToken cancellationToken)
+    {
+        await cache.RemoveAsync($"report:{ReportId}", cancellationToken);
+        return Success();
+    }
+}</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-17">
+        <h2>Application Events Vs Domain Events</h2>
+        <div class="content">
+          <div class="decision-table">
+            <div class="decision-row">
+              <p class="decision-label">Aggregate records a business-significant state transition</p>
+              <p class="decision-answer">Domain event</p>
+            </div>
+            <div class="decision-row">
+              <p class="decision-label">Application layer decides to trigger follow-up reactions</p>
+              <p class="decision-answer">Application event</p>
+            </div>
+            <div class="decision-row">
+              <p class="decision-label">Publisher should not know which in-process subscribers react</p>
+              <p class="decision-answer">Application event</p>
+            </div>
+            <div class="decision-row">
+              <p class="decision-label">Signal originates as part of the aggregate model itself</p>
+              <p class="decision-answer">Domain event</p>
+            </div>
+          </div>
+          <div class="panel">
+            <p class="card-tag">RULE OF THUMB</p>
+            <p class="text-lg"><code>CustomerCreatedDomainEvent</code> is aggregate-originated. <code>WelcomeEmailRequestedEvent</code> is application-layer orchestration after the main use case completes.</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-18">
+        <h2>Application Events Vs Messaging</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">APPLICATION EVENTS</p>
+              <ul>
+                <li>In-process reactions</li>
+                <li>Coupled to the running application instance</li>
+                <li>Fast orchestration and side effects</li>
+                <li>Explicit notifier result back to the publisher</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">MESSAGING</p>
+              <ul>
+                <li>Durable cross-process delivery</li>
+                <li>Transport concerns and reliability semantics</li>
+                <li>Use when the signal must survive process boundaries</li>
+                <li>Often pairs with outbox or broker infrastructure</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="divider-playbook" class="section-divider" data-state="is-section-divider">
+        <p class="eyebrow">Part 4</p>
+        <h1>Developer Playbook</h1>
+        <p>Rules, setup, and practical decision guidance.</p>
+      </section>
+
+      <section id="slide-21">
+        <h2>Authoring Rules</h2>
+        <div class="content">
+          <div class="three-stack">
+            <div class="panel">
+              <p class="card-tag">TYPE SHAPE</p>
+              <ul>
+                <li><code>[Event]</code> requires a top-level, non-generic, partial class</li>
+                <li>If the event does not inherit <code>NotificationBase</code>, the generator adds it</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <p class="card-tag">HANDLE METHODS</p>
+              <ul>
+                <li>One or more <code>[Handle]</code> methods are allowed</li>
+                <li>Return <code>Result</code> or <code>Task&lt;Result&gt;</code></li>
+                <li>DI services, <code>PublishOptions</code>, and <code>CancellationToken</code> are supported</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">COMPATIBILITY</p>
+              <ul>
+                <li>Manual <code>INotificationHandler&lt;TEvent&gt;</code> subscribers remain fully supported</li>
+                <li>Generated and manual handlers still share the same runtime model</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-22">
+        <h2>Wiring Checklist</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">SETUP</p>
+              <ul>
+                <li>Register <code>AddNotifier()</code></li>
+                <li>Call <code>AddHandlers()</code> so generated and manual handlers are discovered</li>
+                <li>Add the code generation package where source-generated events live</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">PIPELINE</p>
+              <ul>
+                <li>Add validation centrally</li>
+                <li>Add retry, timeout, and related policies centrally</li>
+                <li>Keep handlers focused on business reactions, not plumbing</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-23">
+        <h2>When Not To Use Application Events</h2>
+        <div class="content">
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">PICK SOMETHING ELSE WHEN</p>
+              <ul>
+                <li>The operation has one clear owner and should behave like an API call</li>
+                <li>The signal originates from aggregate state change inside the domain model</li>
+                <li>Delivery must be durable across process boundaries</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">PRACTICE</p>
+              <ul>
+                <li>Use commands for owned business operations</li>
+                <li>Use domain events for aggregate-originated business facts</li>
+                <li>Use messaging for external or durable delivery needs</li>
+              </ul>
+            </div>
+          </div>
+          <blockquote>
+            <p>Application events are strongest when the primary need is app-layer fan-out with explicit results, not just “some sort of event.”</p>
+          </blockquote>
+        </div>
+      </section>
+
+      <section id="slide-24">
+        <h2>Read Next</h2>
+        <div class="content">
+          <div class="panel">
+            <p class="card-tag">REFERENCE DOCS</p>
+            <ul>
+              <li><a class="doc-link" href="../features-application-events.md"><code>docs/features-application-events.md</code></a></li>
+              <li><a class="doc-link" href="../features-requester-notifier.md"><code>docs/features-requester-notifier.md</code></a></li>
+              <li><a class="doc-link" href="../features-results.md"><code>docs/features-results.md</code></a></li>
+              <li><a class="doc-link" href="../features-domain-events.md"><code>docs/features-domain-events.md</code></a></li>
+              <li><a class="doc-link" href="../features-messaging.md"><code>docs/features-messaging.md</code></a></li>
+            </ul>
+          </div>
+          <div class="panel panel-callout">
+            <p class="card-tag">KEY TAKEAWAYS</p>
+            <ul>
+              <li>Application events are app-layer pub/sub, not domain events</li>
+              <li><code>[Event]</code> removes most authoring boilerplate while preserving notifier behavior</li>
+              <li>DI inside <code>[Handle]</code> methods works the same way as commands and queries</li>
+              <li>Generated and manual handlers can coexist cleanly</li>
+            </ul>
+          </div>
+          <p class="presentation-nav">Back to <a class="doc-link" href="./index.html"><code>docs/presentations/index.html</code></a>.</p>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/markdown/markdown.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/plugin/highlight/highlight.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/reveal.js-menu@2.1.0/menu.js"></script>
+  <script>
+    Reveal.initialize({
+      // view: 'scroll',
+      // scrollProgress: true,
+      width: 1280,
+      height: 720,
+      margin: 0,
+      controls: true,
+      progress: true,
+      slideNumber: false,
+      hash: true,
+      transition: 'none',
+      backgroundTransition: 'none',
+      center: false,
+      plugins: [ RevealMarkdown, RevealHighlight, RevealMenu ],
+      menu: {
+        side: 'left',
+        numbers: true,
+        titleSelector: 'h1, h2',
+        openButton: true,
+        sticky: true
+      }
+    });
+  </script>
+</body>
+</html>

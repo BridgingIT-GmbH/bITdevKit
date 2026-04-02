@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Application Commands, Queries, and Events</title>
+  <title>Application Commands and Queries</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reset.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@5.1.0/dist/reveal.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/monokai.min.css">
@@ -14,19 +14,19 @@
     <div class="slides">
       <section id="title" class="section-divider" data-state="is-section-divider">
         <p class="eyebrow">bITdevKit / Developer Usage</p>
-        <h1>Application Commands, Queries, and Events</h1>
-        <p class="text-xl">20-slide field guide for using <code>IRequester</code> and <code>INotifier</code> cleanly in app-layer code.</p>
-        <p class="footnote">Based on <a class="doc-link" href="../features-application-commands-queries.md"><code>features-application-commands-queries.md</code></a>, <a class="doc-link" href="../features-application-events.md"><code>features-application-events.md</code></a>, and <a class="doc-link" href="../features-requester-notifier.md"><code>features-requester-notifier.md</code></a>.</p>
+        <h1>Application Commands And Queries</h1>
+        <p class="text-xl">20-slide field guide for using <code>IRequester</code> cleanly for application-layer writes and reads.</p>
+        <p class="footnote">Based on <a class="doc-link" href="../features-application-commands-queries.md"><code>features-application-commands-queries.md</code></a>, with related references to <a class="doc-link" href="../features-requester-notifier.md"><code>features-requester-notifier.md</code></a>, <a class="doc-link" href="../features-results.md"><code>features-results.md</code></a>, and <a class="doc-link" href="../common-mapping.md"><code>common-mapping.md</code></a>.</p>
       </section>
 
       <section id="slide-2">
-        <h2>The Three Shapes</h2>
+        <h2>The Two Shapes</h2>
         <div class="content">
           <div class="triple-grid">
             <div class="brutal-card brutal-command">
               <p class="card-tag">01 / COMMAND</p>
               <h3>One owner. State change.</h3>
-              <p class="text-lg">Use when the app is asked to do work and give back one explicit outcome.</p>
+              <p class="text-lg">Use when the app is asked to do work and return one explicit write outcome.</p>
               <ul>
                 <li>Write intent</li>
                 <li>Exactly one handler</li>
@@ -36,7 +36,7 @@
             <div class="brutal-card brutal-query">
               <p class="card-tag">02 / QUERY</p>
               <h3>One owner. Typed read.</h3>
-              <p class="text-lg">Use when the app is asked to answer a question without changing state.</p>
+              <p class="text-lg">Use when the app is asked a question and should return data without changing state.</p>
               <ul>
                 <li>Read intent</li>
                 <li>Exactly one handler</li>
@@ -44,13 +44,13 @@
               </ul>
             </div>
             <div class="brutal-card brutal-event">
-              <p class="card-tag">03 / EVENT</p>
-              <h3>One publisher. Many reactions.</h3>
-              <p class="text-lg">Use when the app announces something and subscribers decide what happens next.</p>
+              <p class="card-tag">03 / SHARED REQUESTER</p>
+              <h3>Infrastructure is shared, intent is not</h3>
+              <p class="text-lg">Commands and queries both use <code>IRequester</code>, but they should still tell the truth about whether the caller wants a write or a read.</p>
               <ul>
-                <li>Fan-out intent</li>
-                <li>One or many handlers</li>
-                <li>Aggregated <code>Result</code></li>
+                <li>Validation and retry</li>
+                <li>Type-safe dispatch</li>
+                <li>Focused handler boundaries</li>
               </ul>
             </div>
           </div>
@@ -79,8 +79,8 @@
             </div>
             <div class="panel panel-callout">
               <p class="card-tag">SMELL</p>
-              <h3>A command is not a broadcast</h3>
-              <p class="text-lg">If the main behavior is "tell other parts of the app something happened", that is an event. A command should still feel like an API operation with one primary handler.</p>
+              <h3>A command is not a read shortcut</h3>
+              <p class="text-lg">If the main need is to return data without changing state, that is a query. A command should still feel like an owned business operation.</p>
             </div>
           </div>
           <div class="metrics-row">
@@ -146,9 +146,9 @@ public partial class CustomerRenameCommand
             <div class="flow-line">
               <div class="flow-box brutal-command"><span>1</span><h3>Caller sends command</h3><p><code>SendAsync(command)</code></p></div>
               <div class="flow-glyph">-&gt;</div>
-              <div class="flow-box"><span>2</span><h3>Requester pipeline</h3><p>validation, retry, timeout, auth</p></div>
+              <div class="flow-box"><span>2</span><h3>Requester pipeline</h3><p>validation, retry, timeout, authorization</p></div>
               <div class="flow-glyph">-&gt;</div>
-              <div class="flow-box"><span>3</span><h3>Single handler</h3><p>executes business write</p></div>
+              <div class="flow-box"><span>3</span><h3>Single handler</h3><p>executes the business write</p></div>
               <div class="flow-glyph">-&gt;</div>
               <div class="flow-box brutal-result"><span>4</span><h3>Result back</h3><p>success or failure</p></div>
             </div>
@@ -157,15 +157,15 @@ public partial class CustomerRenameCommand
             <div class="panel">
               <p class="card-tag">GOOD FIT</p>
               <ul>
-                <li>Create, update, delete, schedule, assign</li>
-                <li>Use cases where writes are the point</li>
+                <li>Create, update, delete, assign, schedule</li>
+                <li>Use cases where the write is the point</li>
               </ul>
             </div>
             <div class="panel">
               <p class="card-tag">RETURN STYLE</p>
               <ul>
                 <li><code>Result&lt;Unit&gt;</code> when the caller only needs completion</li>
-                <li><code>Result&lt;T&gt;</code> when the caller needs a small response model</li>
+                <li><code>Result&lt;T&gt;</code> when the caller needs a small post-write response model</li>
               </ul>
             </div>
           </div>
@@ -195,7 +195,7 @@ public partial class CustomerRenameCommand
             <div class="panel panel-callout brutal-query">
               <p class="card-tag">KEY DISTINCTION</p>
               <h3>A query shares infrastructure, not intent</h3>
-              <p class="text-lg">Queries and commands both use <code>IRequester</code>, but they should not be treated as interchangeable in design. A query is a read contract first.</p>
+              <p class="text-lg">Queries and commands both use <code>IRequester</code>, but they should not be treated as interchangeable. A query is a read contract first.</p>
             </div>
           </div>
           <div class="metrics-row">
@@ -220,6 +220,7 @@ public partial class CustomerDetailsQuery
 
     [Handle]
     private async Task&lt;Result&lt;CustomerDetailsModel&gt;&gt; HandleAsync(
+        IMapper mapper,
         ICustomerReadRepository repository,
         CancellationToken cancellationToken)
     {
@@ -233,7 +234,7 @@ public partial class CustomerDetailsQuery
                 <ul>
                   <li>One instance <code>[Handle]</code> method</li>
                   <li>Return <code>Result&lt;T&gt;</code> for the response model</li>
-                  <li>Property validation still works the same</li>
+                  <li>DI parameters are allowed just like commands</li>
                 </ul>
               </div>
               <div class="panel panel-callout">
@@ -258,7 +259,7 @@ public partial class CustomerDetailsQuery
               <div class="flow-glyph">-&gt;</div>
               <div class="flow-box"><span>2</span><h3>Requester pipeline</h3><p>validation and policies still apply</p></div>
               <div class="flow-glyph">-&gt;</div>
-              <div class="flow-box"><span>3</span><h3>Single query handler</h3><p>builds typed read result</p></div>
+              <div class="flow-box"><span>3</span><h3>Single query handler</h3><p>builds the typed read result</p></div>
               <div class="flow-glyph">-&gt;</div>
               <div class="flow-box brutal-result"><span>4</span><h3>Result&lt;T&gt;</h3><p>data for the caller</p></div>
             </div>
@@ -275,144 +276,134 @@ public partial class CustomerDetailsQuery
             <div class="panel">
               <p class="card-tag">NOT THE PLACE FOR</p>
               <ul>
-                <li>Writes, retries with side effects, or notifications</li>
-                <li>Hidden cache invalidation or audit mutations</li>
+                <li>Writes or hidden mutations</li>
+                <li>Subscriber-style fan-out work</li>
+                <li>Side effects disguised as reads</li>
               </ul>
             </div>
           </div>
         </div>
       </section>
 
-      <section id="divider-events" class="section-divider" data-state="is-section-divider">
+      <section id="divider-requester" class="section-divider" data-state="is-section-divider">
         <p class="eyebrow">Part 3</p>
-        <h1>Application Events</h1>
-        <p>App-layer pub/sub through <code>INotifier</code>.</p>
+        <h1>Shared Requester Model</h1>
+        <p>Validation, DI, policies, and result design for both message shapes.</p>
       </section>
 
       <section id="slide-15">
-        <h2>Event Mental Model</h2>
+        <h2>Shared Requester Pipeline</h2>
         <div class="content">
-          <div class="two-col">
-            <div class="panel">
-              <p class="card-tag">WHEN TO USE</p>
-              <h3>Events announce, they do not ask</h3>
-              <ul>
-                <li>The publisher should not know all subscribers.</li>
-                <li>Multiple follow-up reactions can grow independently.</li>
-                <li>The main value is fan-out inside the application layer.</li>
-              </ul>
-            </div>
-            <div class="panel panel-callout brutal-event">
-              <p class="card-tag">MIXED MODE</p>
-              <h3>Generated and manual handlers can coexist</h3>
-              <p class="text-lg">Use generated <code>[Handle]</code> methods for the default path, then add manual <code>INotificationHandler&lt;TEvent&gt;</code> classes when a subscriber deserves its own boundary.</p>
-            </div>
+          <div class="flow-grid">
+            <div class="flow-box"><span>VALIDATION</span><h3>Fail early on bad input</h3><p>property attributes or explicit <code>[Validate]</code> methods</p></div>
+            <div class="flow-box"><span>RETRY</span><h3>Recover transient faults</h3><p>policy behavior, not handler boilerplate</p></div>
+            <div class="flow-box"><span>TIMEOUT</span><h3>Bound execution</h3><p>handler policies and builder defaults</p></div>
+            <div class="flow-box"><span>AUTH</span><h3>Protect the request surface</h3><p>authorization and related cross-cutting concerns</p></div>
           </div>
-          <div class="metrics-row">
-            <div class="metric-box"><span>N</span><p>handlers</p></div>
-            <div class="metric-box"><span>FAN OUT</span><p>intent</p></div>
-            <div class="metric-box"><span>Result</span><p>aggregated outcome</p></div>
-          </div>
+          <blockquote>
+            <p>The main value of <code>IRequester</code> is not just dispatch. It is the consistent execution model around handlers.</p>
+          </blockquote>
         </div>
       </section>
 
       <section id="slide-16">
-        <h2>Authoring An Event</h2>
+        <h2>Handle Methods, DI, And Policies</h2>
         <div class="content">
-          <div class="two-col code-layout">
-            <div class="code-window">
-              <p class="code-caption">[Event] / multiple generated handlers</p>
-              <pre><code class="language-csharp">[Event]
-[HandlerRetry(2, 100)]
-public partial class UserRegisteredEvent
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">HANDLE METHOD INPUTS</p>
+              <ul>
+                <li>Request properties are accessed through <code>this</code></li>
+                <li>DI services can be declared as parameters and are resolved automatically</li>
+                <li><code>CancellationToken</code> and <code>SendOptions</code> are supported</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">POLICIES</p>
+              <ul>
+                <li>Retry, timeout, authorization, transaction, and related policies can be attached declaratively</li>
+                <li>Keep technical plumbing out of the handler body</li>
+                <li>The goal is smaller, focused handlers</li>
+              </ul>
+            </div>
+          </div>
+          <div class="code-window">
+            <p class="code-caption">DI inside a generated request handler method</p>
+            <pre><code class="language-csharp">[Handle]
+private async Task&lt;Result&lt;CustomerDetailsModel&gt;&gt; HandleAsync(
+    IMapper mapper,
+    ICustomerReadRepository repository,
+    SendOptions options,
+    CancellationToken cancellationToken)
 {
-    [ValidateNotEmptyGuid]
-    public string UserId { get; init; }
-
-    [ValidateEmail]
-    public string Email { get; init; }
-
-    [Handle]
-    private Result Audit() =&gt; Success();
-
-    [Handle]
-    private async Task&lt;Result&gt; SendWelcomeEmailAsync(
-        INotificationService&lt;EmailMessage&gt; notifications,
-        CancellationToken cancellationToken)
-    {
-        return Success();
-    }
+    var customer = await repository.GetDetailsAsync(CustomerId, cancellationToken);
+    return customer;
 }</code></pre>
-            </div>
-            <div>
-              <div class="panel">
-                <p class="card-tag">EVENT RULES</p>
-                <ul>
-                  <li>One or more <code>[Handle]</code> methods</li>
-                  <li>Validation runs once per publish</li>
-                  <li>Class-level policy attributes apply to generated handlers</li>
-                </ul>
-              </div>
-              <div class="panel panel-callout">
-                <p class="card-tag">RESULT</p>
-                <ul>
-                  <li>Each generated handle becomes its own notifier handler</li>
-                  <li>Publish returns aggregated <code>Result</code></li>
-                </ul>
-              </div>
-            </div>
           </div>
         </div>
       </section>
 
       <section id="slide-17">
-        <h2>Event Fan-Out</h2>
+        <h2>Validation Model</h2>
         <div class="content">
-          <div class="flow-grid">
-            <div class="flow-box brutal-event"><span>1</span><h3>Publisher calls <code>PublishAsync(...)</code></h3><p>endpoint, app service, or request handler</p></div>
-            <div class="flow-box"><span>2</span><h3>Validation runs once</h3><p>property rules and optional <code>[Validate]</code></p></div>
-            <div class="flow-box brutal-event"><span>3a</span><h3>Generated handlers run</h3><p>one generated subscriber per <code>[Handle]</code></p></div>
-            <div class="flow-box"><span>3b</span><h3>Manual handlers run too</h3><p>extra <code>INotificationHandler&lt;TEvent&gt;</code> classes still participate</p></div>
-            <div class="flow-box brutal-result flow-box-wide"><span>4</span><h3>Notifier returns aggregated <code>Result</code></h3><p>publisher gets one outcome, subscribers stay decoupled</p></div>
+          <div class="two-col">
+            <div class="panel">
+              <p class="card-tag">SIMPLE RULES</p>
+              <pre><code class="language-csharp">[Command]
+public partial class CustomerRenameCommand
+{
+    [ValidateNotEmptyGuid("CustomerId is required.")]
+    public string CustomerId { get; init; }
+
+    [ValidateNotEmpty("Display name is required.")]
+    [ValidateLength(3, 100)]
+    public string DisplayName { get; init; }
+
+    [Handle]
+    private Result&lt;Unit&gt; Handle() => Success();
+}</code></pre>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">RICHER RULES</p>
+              <pre><code class="language-csharp">[Validate]
+private static void Validate(
+    InlineValidator&lt;CustomerImportCommand&gt; validator)
+{
+    validator.RuleFor(x => x.Emails)
+        .Must(x => x.Count <= 100)
+        .WithMessage("A maximum of 100 email addresses is allowed.");
+}</code></pre>
+            </div>
           </div>
         </div>
       </section>
 
       <section id="slide-18">
-        <h2>Generated Vs Manual Event Handlers</h2>
+        <h2>Return Types Matter</h2>
         <div class="content">
           <div class="two-col">
             <div class="panel">
-              <p class="card-tag">PREFER GENERATED</p>
-              <ul>
-                <li>The behavior belongs next to the event authoring surface.</li>
-                <li>You want the shortest path from message to reaction.</li>
-                <li>The event and its default reactions evolve together.</li>
-              </ul>
+              <p class="card-tag">COMMAND</p>
+              <h3><code>Result&lt;Unit&gt;</code> or <code>Result&lt;T&gt;</code></h3>
+              <p class="text-lg">Return completion or a small post-write response model. The type should tell the truth about the write contract.</p>
             </div>
             <div class="panel panel-callout">
-              <p class="card-tag">PREFER MANUAL</p>
-              <ul>
-                <li>The subscriber deserves its own file and name.</li>
-                <li>The reaction belongs to another module boundary.</li>
-                <li>The handler has enough weight to stand alone.</li>
-              </ul>
+              <p class="card-tag">QUERY</p>
+              <h3><code>Result&lt;T&gt;</code></h3>
+              <p class="text-lg">Return the read model the caller actually needs. The type should reflect the data contract, not internal domain shape by accident.</p>
             </div>
           </div>
-          <blockquote>
-            <p>Generated event handlers reduce boilerplate. Manual handlers preserve explicit boundaries. Use both when the design asks for both.</p>
-          </blockquote>
         </div>
       </section>
 
       <section id="divider-playbook" class="section-divider" data-state="is-section-divider">
         <p class="eyebrow">Part 4</p>
         <h1>Developer Playbook</h1>
-        <p>How to pick the right shape and keep the boundaries sharp.</p>
+        <p>How to choose the right shape and keep the boundaries sharp.</p>
       </section>
 
       <section id="slide-21">
-        <h2>Commands Vs Queries Vs Events</h2>
+        <h2>Commands Vs Queries</h2>
         <div class="content">
           <div class="decision-table">
             <div class="decision-row">
@@ -424,65 +415,66 @@ public partial class UserRegisteredEvent
               <p class="decision-answer">Query</p>
             </div>
             <div class="decision-row">
-              <p class="decision-label">Need many in-process reactions</p>
-              <p class="decision-answer">Application Event</p>
+              <p class="decision-label">Need one clear owner</p>
+              <p class="decision-answer">Both</p>
             </div>
             <div class="decision-row">
-              <p class="decision-label">Business fact raised by an aggregate</p>
-              <p class="decision-answer">Domain Event</p>
-            </div>
-            <div class="decision-row">
-              <p class="decision-label">Cross-process durable delivery</p>
-              <p class="decision-answer">Messaging / Outbox</p>
+              <p class="decision-label">Need fan-out to many subscribers</p>
+              <p class="decision-answer">Application Event, not this deck</p>
             </div>
           </div>
         </div>
       </section>
 
       <section id="slide-22">
-        <h2>Return Types Matter</h2>
-        <div class="content">
-          <div class="triple-grid">
-            <div class="panel">
-              <p class="card-tag">COMMAND</p>
-              <h3><code>Result&lt;Unit&gt;</code> or <code>Result&lt;T&gt;</code></h3>
-              <p>Return completion or a small post-write response.</p>
-            </div>
-            <div class="panel">
-              <p class="card-tag">QUERY</p>
-              <h3><code>Result&lt;T&gt;</code></h3>
-              <p>Return the read model the caller actually needs.</p>
-            </div>
-            <div class="panel">
-              <p class="card-tag">EVENT</p>
-              <h3><code>Result</code></h3>
-              <p>Notifier aggregates subscriber outcomes for the publisher.</p>
-            </div>
-          </div>
-          <blockquote>
-            <p>The return type should tell the truth about the interaction shape. That is part of the API design, not just plumbing.</p>
-          </blockquote>
-        </div>
-      </section>
-
-      <section id="slide-23">
         <h2>Wiring Checklist</h2>
         <div class="content">
           <div class="two-col">
             <div class="panel">
               <p class="card-tag">SETUP</p>
               <ul>
-                <li>Register <code>AddRequester()</code> for commands and queries.</li>
-                <li>Register <code>AddNotifier()</code> for application events.</li>
-                <li>Call <code>AddHandlers()</code> so generated and manual handlers are discovered.</li>
+                <li>Register <code>AddRequester()</code></li>
+                <li>Call <code>AddHandlers()</code> so generated and manual handlers are discovered</li>
+                <li>Add the code generation package where source-generated requests live</li>
               </ul>
             </div>
             <div class="panel panel-callout">
               <p class="card-tag">PIPELINE</p>
               <ul>
-                <li>Add validation centrally.</li>
-                <li>Add retry, timeout, auth, and related behaviors centrally.</li>
-                <li>Keep handlers focused on business logic, not cross-cutting plumbing.</li>
+                <li>Add validation centrally</li>
+                <li>Add retry, timeout, and related behaviors centrally</li>
+                <li>Keep handlers focused on business logic, not cross-cutting plumbing</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="slide-23">
+        <h2>Common Design Rules</h2>
+        <div class="content">
+          <div class="three-stack">
+            <div class="panel">
+              <p class="card-tag">COMMAND</p>
+              <ul>
+                <li>Do not hide reads as writes</li>
+                <li>Keep one clear owner</li>
+                <li>Return the smallest truthful outcome</li>
+              </ul>
+            </div>
+            <div class="panel">
+              <p class="card-tag">QUERY</p>
+              <ul>
+                <li>Do not hide writes in the read path</li>
+                <li>Prefer response models over leaking persistence shape</li>
+                <li>Keep side effects out of query handlers</li>
+              </ul>
+            </div>
+            <div class="panel panel-callout">
+              <p class="card-tag">BOUNDARY</p>
+              <ul>
+                <li>Use application events for fan-out, not request/response</li>
+                <li>Use domain events for aggregate-originated business facts</li>
               </ul>
             </div>
           </div>
@@ -496,15 +488,21 @@ public partial class UserRegisteredEvent
             <p class="card-tag">REFERENCE DOCS</p>
             <ul>
               <li><a class="doc-link" href="../features-application-commands-queries.md"><code>docs/features-application-commands-queries.md</code></a></li>
-              <li><a class="doc-link" href="../features-application-events.md"><code>docs/features-application-events.md</code></a></li>
               <li><a class="doc-link" href="../features-requester-notifier.md"><code>docs/features-requester-notifier.md</code></a></li>
               <li><a class="doc-link" href="../features-results.md"><code>docs/features-results.md</code></a></li>
-              <li><a class="doc-link" href="../features-domain-events.md"><code>docs/features-domain-events.md</code></a></li>
+              <li><a class="doc-link" href="../common-mapping.md"><code>docs/common-mapping.md</code></a></li>
+              <li><a class="doc-link" href="../features-application-events.md"><code>docs/features-application-events.md</code></a></li>
             </ul>
           </div>
-          <blockquote>
-            <p>Small messages. Honest intent. Explicit results. That combination is the through-line across commands, queries, and application events.</p>
-          </blockquote>
+          <div class="panel panel-callout">
+            <p class="card-tag">KEY TAKEAWAYS</p>
+            <ul>
+              <li>Commands and queries share <code>IRequester</code>, not the same intent</li>
+              <li>Generated <code>[Handle]</code> methods support DI cleanly</li>
+              <li>Validation and policies belong in the shared pipeline, not in handler boilerplate</li>
+              <li>Use application events only when you actually need app-layer fan-out</li>
+            </ul>
+          </div>
           <p class="presentation-nav">Back to <a class="doc-link" href="./index.html"><code>docs/presentations/index.html</code></a>.</p>
         </div>
       </section>

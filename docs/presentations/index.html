@@ -18,13 +18,13 @@
       <!-- <h2>Available Presentations</h2> -->
       <div class="index-grid">
         <article class="deck-card command">
-          <p class="index-card-tag">01 / Application Messaging</p>
-          <h3>Application Commands, Queries, and Events</h3>
-          <p>Guide for choosing between commands, queries, and application events, including requester/notifier usage and source-generated authoring.</p>
+          <p class="index-card-tag">01 / Application Requests</p>
+          <h3>Application Commands And Queries</h3>
+          <p>Guide for structuring application-layer writes and reads through <code>IRequester</code> with generated authoring, DI-friendly handlers, and clear intent boundaries.</p>
           <ul>
-            <li>Request vs pub/sub interaction shapes</li>
-            <li>Separate command and query guidance</li>
-            <li>Generated and manual event handlers</li>
+            <li>Command vs query interaction shapes</li>
+            <li>Generated <code>[Handle]</code> methods with DI</li>
+            <li>Shared validation and policy pipeline</li>
             <li>Result-driven app-layer contracts</li>
           </ul>
           <a class="deck-card-action" href="./features-application-commands-events.html">Open deck</a>
@@ -80,6 +80,19 @@
             <li>Generated packaged pipelines</li>
           </ul>
           <a class="deck-card-action" href="./features-pipelines.html">Open deck</a>
+        </article>
+
+        <article class="deck-card requesternotifier">
+          <p class="index-card-tag">06 / Application Events</p>
+          <h3>Application Events</h3>
+          <p>Guide for publishing application-layer events through <code>INotifier</code> with generated handlers, explicit results, validation, and clear boundaries.</p>
+          <ul>
+            <li><code>[Event]</code> and generated subscribers</li>
+            <li>Notifier pipeline behaviors and validation</li>
+            <li>Manual handlers plus generated handlers together</li>
+            <li>Application events vs domain events vs messaging</li>
+          </ul>
+          <a class="deck-card-action" href="./features-application-events.html">Open deck</a>
         </article>
       </div>
     </section>

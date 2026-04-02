@@ -92,8 +92,8 @@ public class FakeIdentityProviderEndpoints(
 
     private Task<IResult> HandleIndex()
     {
-        return Task.FromResult<IResult>(
-            Results.Extensions.RazorSlice<Pages.Index>());
+        return Task.FromResult(
+            Results.RazorSlice<Pages.Index>());
     }
 
     private Task<IResult> HandleAuthorize(
@@ -149,8 +149,8 @@ public class FakeIdentityProviderEndpoints(
             State = state
         };
 
-        return Task.FromResult<IResult>(
-            Results.Extensions.RazorSlice<Signin, SigninViewModel>(new SigninViewModel { Request = request, Options = options }));
+        return Task.FromResult(
+            Results.RazorSlice<Signin, SigninViewModel>(new SigninViewModel { Request = request, Options = options }));
     }
 
     private Task<IResult> HandleAuthorizeCallBack(

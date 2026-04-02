@@ -134,16 +134,12 @@ public static class ConfigurationBuilderExtensions
             // https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-integrate-azure-managed-service-identity?tabs=core6x&pivots=framework-dotnet
             var managedIdentityClientId = tmpCfg["AzureAppConfig:ManagedIdentityClientId"];
 
-            Log.Logger.Information(
-                "{LogKey} settings (azureAppConfiguration={AzureAppConfigEnabled}, env={HostingEnvironment})",
-                ModuleConstants.LogKey,
-                true,
-                environment);
+            Log.Logger.Information("{LogKey} settings (azureAppConfiguration={AzureAppConfigEnabled}, env={HostingEnvironment})", ModuleConstants.LogKey, true, environment);
 
-            builder.AddAzureAppConfiguration(o => o.Connect(new Uri(azureAppConfigEndpoint),
-                string.IsNullOrEmpty(managedIdentityClientId)
-                    ? new ManagedIdentityCredential()
-                    : new ManagedIdentityCredential(managedIdentityClientId)));
+            var identity = ManagedIdentityId.FromUserAssignedClientId(managedIdentityClientId);
+
+            builder.AddAzureAppConfiguration(o => o
+                .Connect(new Uri(azureAppConfigEndpoint), new ManagedIdentityCredential(identity)));
         }
 
         return builder;

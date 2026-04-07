@@ -10,43 +10,32 @@ using System.Globalization;
 /// <summary>
 /// Provides the optional error message shared by source-generated validation attributes.
 /// </summary>
-public abstract class ValidationCodeGenAttribute : Attribute
+/// <remarks>
+/// Initializes a new instance of the <see cref="ValidationCodeGenAttribute"/> class.
+/// </remarks>
+/// <param name="message">The optional custom validation message.</param>
+public abstract class ValidationCodeGenAttribute(string message = null) : Attribute
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="ValidationCodeGenAttribute"/> class.
-    /// </summary>
-    /// <param name="message">The optional custom validation message.</param>
-    protected ValidationCodeGenAttribute(string message = null)
-    {
-        this.Message = message;
-    }
-
     /// <summary>
     /// Gets the optional custom validation message.
     /// </summary>
-    public string Message { get; }
+    public string Message { get; } = message;
 }
 
 /// <summary>
 /// Provides a shared string-backed comparison value for source-generated validation attributes.
 /// </summary>
-public abstract class SingleValueValidationCodeGenAttribute : ValidationCodeGenAttribute
+/// <remarks>
+/// Initializes a new instance of the <see cref="SingleValueValidationCodeGenAttribute"/> class.
+/// </remarks>
+/// <param name="value">The invariant string comparison value.</param>
+/// <param name="message">The optional custom validation message.</param>
+public abstract class SingleValueValidationCodeGenAttribute(string value, string message = null) : ValidationCodeGenAttribute(message)
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="SingleValueValidationCodeGenAttribute"/> class.
-    /// </summary>
-    /// <param name="value">The invariant string comparison value.</param>
-    /// <param name="message">The optional custom validation message.</param>
-    protected SingleValueValidationCodeGenAttribute(string value, string message = null)
-        : base(message)
-    {
-        this.Value = value;
-    }
-
     /// <summary>
     /// Gets the invariant string comparison value.
     /// </summary>
-    public string Value { get; }
+    public string Value { get; } = value;
 
     /// <summary>
     /// Formats a numeric attribute argument using invariant culture.
@@ -183,10 +172,7 @@ public sealed class ValidateMinLengthAttribute : ValidationCodeGenAttribute
     /// Initializes a new instance of the <see cref="ValidateMinLengthAttribute"/> class.
     /// </summary>
     /// <param name="length">The inclusive minimum length.</param>
-    public ValidateMinLengthAttribute(int length)
-    {
-        this.Length = length;
-    }
+    public ValidateMinLengthAttribute(int length) => this.Length = length;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ValidateMinLengthAttribute"/> class.
@@ -194,10 +180,7 @@ public sealed class ValidateMinLengthAttribute : ValidationCodeGenAttribute
     /// <param name="length">The inclusive minimum length.</param>
     /// <param name="message">The optional custom validation message.</param>
     public ValidateMinLengthAttribute(int length, string message)
-        : base(message)
-    {
-        this.Length = length;
-    }
+        : base(message) => this.Length = length;
 
     /// <summary>
     /// Gets the inclusive minimum length.
@@ -215,10 +198,7 @@ public sealed class ValidateMaxLengthAttribute : ValidationCodeGenAttribute
     /// Initializes a new instance of the <see cref="ValidateMaxLengthAttribute"/> class.
     /// </summary>
     /// <param name="length">The inclusive maximum length.</param>
-    public ValidateMaxLengthAttribute(int length)
-    {
-        this.Length = length;
-    }
+    public ValidateMaxLengthAttribute(int length) => this.Length = length;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ValidateMaxLengthAttribute"/> class.
@@ -226,10 +206,7 @@ public sealed class ValidateMaxLengthAttribute : ValidationCodeGenAttribute
     /// <param name="length">The inclusive maximum length.</param>
     /// <param name="message">The optional custom validation message.</param>
     public ValidateMaxLengthAttribute(int length, string message)
-        : base(message)
-    {
-        this.Length = length;
-    }
+        : base(message) => this.Length = length;
 
     /// <summary>
     /// Gets the inclusive maximum length.
@@ -587,16 +564,10 @@ public sealed class ValidateEmailAttribute : ValidationCodeGenAttribute
 [AttributeUsage(AttributeTargets.Property, Inherited = false, AllowMultiple = false)]
 public sealed class ValidateMatchesAttribute : ValidationCodeGenAttribute
 {
-    public ValidateMatchesAttribute(string pattern)
-    {
-        this.Pattern = pattern;
-    }
+    public ValidateMatchesAttribute(string pattern) => this.Pattern = pattern;
 
     public ValidateMatchesAttribute(string pattern, string message)
-        : base(message)
-    {
-        this.Pattern = pattern;
-    }
+        : base(message) => this.Pattern = pattern;
 
     /// <summary>
     /// Gets the regex pattern.

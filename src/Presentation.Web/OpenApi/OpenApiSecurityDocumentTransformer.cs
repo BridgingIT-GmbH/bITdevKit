@@ -58,7 +58,7 @@ public sealed class OpenApiSecurityDocumentTransformer : IOpenApiDocumentTransfo
         document.Components.SecuritySchemes.Remove(options.OAuth2SchemeName);
         document.Components.SecuritySchemes.Remove(options.BearerSchemeName);
 
-        if (options.AddOAuth2AuthorizationCodeScheme &&
+        if (options.AddOAuth2Scheme &&
             !string.IsNullOrWhiteSpace(options.AuthorizationUrl) &&
             !string.IsNullOrWhiteSpace(options.TokenUrl))
         {
@@ -81,7 +81,7 @@ public sealed class OpenApiSecurityDocumentTransformer : IOpenApiDocumentTransfo
             };
         }
 
-        if (options.AddHttpBearerScheme)
+        if (options.AddBearerScheme)
         {
             document.Components.SecuritySchemes[options.BearerSchemeName] = new OpenApiSecurityScheme
             {
@@ -105,7 +105,7 @@ public sealed class OpenApiSecurityDocumentTransformer : IOpenApiDocumentTransfo
                         string.Equals(scheme.Reference?.Id, options.BearerSchemeName, StringComparison.OrdinalIgnoreCase))),
             ];
 
-        if (options.AddOAuth2AuthorizationCodeScheme &&
+        if (options.AddOAuth2Scheme &&
             !string.IsNullOrWhiteSpace(options.AuthorizationUrl) &&
             !string.IsNullOrWhiteSpace(options.TokenUrl))
         {
@@ -115,7 +115,7 @@ public sealed class OpenApiSecurityDocumentTransformer : IOpenApiDocumentTransfo
             });
         }
 
-        if (options.AddHttpBearerScheme)
+        if (options.AddBearerScheme)
         {
             document.Security.Add(new OpenApiSecurityRequirement
             {

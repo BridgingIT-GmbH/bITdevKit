@@ -25,12 +25,12 @@ public class OpenApiSecurityOptions
     /// <summary>
     /// Gets or sets a value indicating whether a HTTP bearer security scheme should be added.
     /// </summary>
-    public bool AddHttpBearerScheme { get; set; } = true;
+    public bool AddBearerScheme { get; set; } = true;
 
     /// <summary>
     /// Gets or sets a value indicating whether an OAuth2 authorization code security scheme should be added.
     /// </summary>
-    public bool AddOAuth2AuthorizationCodeScheme { get; set; } = true;
+    public bool AddOAuth2Scheme { get; set; } = true;
 
     /// <summary>
     /// Gets or sets a value indicating whether global OpenAPI security requirements should be added.

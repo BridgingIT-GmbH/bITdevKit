@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Domain.Model;
 
 using System.Diagnostics;
 
-
 [DebuggerDisplay("{Value}")]
 public abstract class AggregateRootId<TId> : EntityId<TId> // TODO: this is obsolete with the new codegen TypedIds, remove in future (DinnerFiesta depends on it for now)
 {

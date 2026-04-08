@@ -189,7 +189,7 @@ flowchart TD
     A[Developer] --> B{How to define pipeline?}
     B -->|Reusable feature workflow| C[PipelineDefinition<TContext>]
     B -->|Programmatic definition| D[PipelineDefinitionBuilder<TContext>]
-    B -->|Small local workflow| E[services.AddPipelines().WithPipeline(...)]
+    B -->|Small local workflow| E[services.AddPipelines.WithPipeline]
 
     C --> F[Register packaged pipeline]
     D --> G[Build IPipelineDefinition]

@@ -32,71 +32,82 @@ public class JobSchedulingEndpoints(
             return;
         }
 
-        var group = this.MapGroup(app, this.options);
+        var group = this.MapGroup(app, this.options)
+            .WithTags("_System.JobScheduling"); ;
 
         group.MapGet(string.Empty, this.GetJobs)
             .Produces<IEnumerable<JobInfo>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("GetJobs")
+            .WithName("_System.JobScheduling.GetJobs")
+            .WithSummary("Get all jobs")
             .WithDescription("Retrieves a list of all scheduled jobs.");
 
         group.MapGet("{jobName}/{jobGroup}", this.GetJob)
             .Produces<JobInfo>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("GetJob")
+            .WithName("_System.JobScheduling.GetJob")
+            .WithSummary("Get job details")
             .WithDescription("Retrieves details for a specific job.");
 
         group.MapGet("{jobName}/{jobGroup}/runs", this.GetJobRuns)
             .Produces<IEnumerable<JobRun>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("GetJobRuns")
+            .WithName("_System.JobScheduling.GetJobRuns")
+            .WithSummary("Get job run history")
             .WithDescription("Retrieves execution history for a specific job with optional filters.");
 
         group.MapGet("{jobName}/{jobGroup}/stats", this.GetJobRunStats)
             .Produces<JobRunStats>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("GetJobRunStats")
+            .WithName("_System.JobScheduling.GetJobRunStats")
+            .WithSummary("Get job run statistics")
             .WithDescription("Retrieves aggregated statistics for a job’s execution history.");
 
         group.MapGet("{jobName}/{jobGroup}/triggers", this.GetJobTriggers)
             .Produces<IEnumerable<TriggerInfo>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("GetJobTriggers")
+            .WithName("_System.JobScheduling.GetJobTriggers")
+            .WithSummary("Get job triggers")
             .WithDescription("Retrieves all triggers associated with a specific job.");
 
         group.MapPost("{jobName}/{jobGroup}/trigger", this.TriggerJob)
             .Produces<string>((int)HttpStatusCode.Accepted)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("TriggerJob")
+            .WithName("_System.JobScheduling.TriggerJob")
+            .WithSummary("Trigger job immediately")
             .WithDescription("Triggers a job to run immediately with optional data.");
 
         group.MapPost("{jobName}/{jobGroup}/pause", this.PauseJob)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("PauseJob")
+            .WithName("_System.JobScheduling.PauseJob")
+            .WithSummary("Pause a job")
             .WithDescription("Pauses the execution of a specific job.");
 
         group.MapPost("{jobName}/{jobGroup}/resume", this.ResumeJob)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("ResumeJob")
+            .WithName("_System.JobScheduling.ResumeJob")
+            .WithSummary("Resume a paused job")
             .WithDescription("Resumes the execution of a paused job.");
 
         group.MapPost("{jobName}/{jobGroup}/interrupt", this.InterruptJob)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("InterruptJob")
+            .WithName("_System.JobScheduling.InterruptJob")
+            .WithSummary("Interrupt a running job")
             .WithDescription("Interrupts the execution of a currently running job.");
 
         group.MapDelete("{jobName}/{jobGroup}/runs", this.PurgeJobRuns)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("PurgeJobRuns")
+            .WithName("_System.JobScheduling.PurgeJobRuns")
+            .WithSummary("Purge old job run history")
             .WithDescription("Purges job run history older than a specified date.");
 
         this.IsRegistered = true;

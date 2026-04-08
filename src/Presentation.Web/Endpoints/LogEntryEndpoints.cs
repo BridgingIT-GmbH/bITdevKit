@@ -35,34 +35,38 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             return;
         }
 
-        var group = this.MapGroup(app, this.options);
+        var group = this.MapGroup(app, this.options).WithTags("_System.Logs");
 
         group.MapGet("", this.GetLogEntries)
             .Produces<LogEntryQueryResponse>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("System.GetLogEntries")
+            .WithName("_System.Logs.GetLogEntries")
+            .WithSummary("Get logs")
             .WithDescription("Retrieves a paged list of log entries with optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
 
         group.MapGet("stream", this.StreamLogEntries)
             .Produces<IEnumerable<LogEntryModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("System.StreamLogEntries")
+            .WithName("_System.Logs.StreamLogEntries")
+            .WithSummary("Stream logs")
             .WithDescription("Streams log entries in real-time based on optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
 
         group.MapDelete("", this.CleanupLogEntries)
             .Produces<string>((int)HttpStatusCode.Accepted)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("System.CleanupLogEntries")
+            .WithName("_System.Logs.CleanupLogEntries")
+            .WithSummary("Cleanup logs")
             .WithDescription("Queues a maintenance operation for log entries older than a specified date or age, with options to archive, set batch size, and delay interval. Date must be in ISO 8601 format (e.g., 2025-04-01T00:00:00Z).");
 
         group.MapGet("stats", this.GetLogEntriesStatistics)
             .Produces<LogEntryStatisticsModel>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("System.GetLogEntriesStatistics")
+            .WithName("_System.Logs.GetLogEntriesStatistics")
+            .WithSummary("Get log statistics")
             .WithDescription("Retrieves aggregated statistics for log entries, grouped by time intervals. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
 
         group.MapGet("export", this.ExportLogEntries)
@@ -71,7 +75,8 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             //.Produces("text/plain")
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("System.ExportLogEntries")
+            .WithName("_System.Logs.ExportLogEntries")
+            .WithSummary("Export logs")
             .WithDescription("Exports log entries as a downloadable file in the specified format (csv, json, txt). Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
     }
 
@@ -539,10 +544,10 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             var stream = await queryService.ExportAsync(request, format, cancellationToken);
             var contentType = format switch
             {
-                LogEntryExportFormat.Csv => "text/csv",
-                LogEntryExportFormat.Json => "application/json",
-                LogEntryExportFormat.Txt => "text/plain",
-                _ => "application/octet-stream"
+                LogEntryExportFormat.Csv => ContentType.CSV.MimeType(),
+                LogEntryExportFormat.Json => ContentType.JSON.MimeType(),
+                LogEntryExportFormat.Txt => ContentType.TXT.MimeType(),
+                _ => ContentType.BIN.MimeType()
             };
             var fileName = $"logs_{DateTimeOffset.UtcNow:yyyyMMddHHmmss}.{format.ToString().ToLower()}";
 

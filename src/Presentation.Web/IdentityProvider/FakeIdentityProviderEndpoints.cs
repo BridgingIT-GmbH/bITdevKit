@@ -32,60 +32,69 @@ public class FakeIdentityProviderEndpoints(
             return;
         }
 
-        var group = this.MapGroup(app, options)
+        var group = this.MapGroup(app, options).WithTags("_System.IdentityProvider")
             .DisableAntiforgery()
             .RequireCors(nameof(IdentityProvider));
         var paths = options.EndpointPaths;
 
         group.MapGet("/", this.HandleIndex)
-            .WithName("System.IdentityProvider.Index")
+            .WithName("_System.IdentityProvider.Index")
+            .WithSummary("Identity Provider Dashboard")
             .WithDescription("Shows the dashboard index page.")
             .Produces<string>((int)HttpStatusCode.OK)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest).ExcludeFromDescription();
 
         group.MapGet(paths.WellKnownConfiguration, this.GetConfiguration)
-            .WithName("System.IdentityProvider.WellKnownConfiguration")
+            .WithName("_System.IdentityProvider.WellKnownConfiguration")
+            .WithSummary("OIDC Discovery Document")
             .WithDescription("Returns the OpenID Connect discovery document.")
             .Produces<OpenIdConfiguration>().AllowAnonymous();
 
         app.MapGet(paths.WellKnownConfiguration, this.GetConfiguration)
-            .WithName("System.IdentityProvider.WellKnownConfiguration.Root")
+            .WithName("_System.IdentityProvider.WellKnownConfiguration.Root")
+            .WithSummary("OIDC Discovery Document (Root Level)")
             .WithDescription("Returns the OpenID Connect discovery document (root level).")
             .Produces<OpenIdConfiguration>().AllowAnonymous().ExcludeFromDescription();
 
         group.MapGet(paths.Authorize, this.HandleAuthorize)
-            .WithName("System.IdentityProvider.Authorize")
+            .WithName("_System.IdentityProvider.Authorize")
+            .WithSummary("Authorization")
             .WithDescription("Shows the signin page for user selection.")
             .Produces<string>((int)HttpStatusCode.OK)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest);
 
         group.MapGet(paths.AuthorizeCallback, this.HandleAuthorizeCallBack)
-            .WithName("System.IdentityProvider.AuthorizeCallback")
+            .WithName("_System.IdentityProvider.AuthorizeCallback")
+            .WithSummary("Authorization Callback")
             .WithDescription("Handles the user selection and generates authorization code.")
             .Produces((int)HttpStatusCode.Redirect)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest);
 
         group.MapPost(paths.Token, this.HandleTokenRequest)
-            .WithName("System.IdentityProvider.Token")
+            .WithName("_System.IdentityProvider.Token")
+            .WithSummary("Token")
             .WithDescription("Issues tokens for various grant types.")
             .Accepts<IFormCollection>("application/x-www-form-urlencoded")
             .Produces<TokenResponse>()
             .Produces<OAuth2Error>((int)HttpStatusCode.BadRequest);
 
         group.MapGet(paths.UserInfo, this.GetUserInfo)
-            .WithName("System.IdentityProvider.UserInfo")
+            .WithName("_System.IdentityProvider.UserInfo")
+            .WithSummary("UserInfo")
             .WithDescription("Returns information about the authenticated user.")
             .Produces<UserInfoResponse>()
             .Produces<ProblemDetails>((int)HttpStatusCode.Unauthorized);
 
         group.MapGet(paths.Logout, this.HandleLogout)
-            .WithName("System.IdentityProvider.Logout")
+            .WithName("_System.IdentityProvider.Logout")
+            .WithSummary("Logout")
             .WithDescription("Handles user logout.")
             .Produces((int)HttpStatusCode.OK)
             .Produces((int)HttpStatusCode.Redirect);
 
         group.MapGet(paths.DebugInfo, this.GetDebugInfo)
-            .WithName("System.IdentityProvider.DebugInfo")
+            .WithName("_System.IdentityProvider.DebugInfo")
+            .WithSummary("Debug Information")
             .WithDescription("Returns debug information about the identity provider configuration.")
             .Produces<DebugInfoResponse>();
     }

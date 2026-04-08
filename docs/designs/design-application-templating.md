@@ -1,4 +1,8 @@
-﻿# Design Document: Extensible Document Templating Feature (Application.Templating)
+﻿---
+status: draft
+---
+
+# Design Document: Extensible Document Templating Feature (Application.Templating)
 
 [TOC]
 
@@ -509,7 +513,7 @@ Examples:
 
 The platform shall expose a builder-style registration API.
 
-## 8.1 Example target usage
+## 8.1 Example usage
 
 ```csharp
 builder.Services
@@ -522,7 +526,7 @@ builder.Services
             culture: "en-US");
     })
     .AddCoreTemplates()
-    .AddInvoiceModule()
+    .AddInvoiceTemplates()
     .AddTemplates<AssemblyTypeMarker>()
     .AddDocumentKinds<AssemblyTypeMarker>()
     .AddResolver(

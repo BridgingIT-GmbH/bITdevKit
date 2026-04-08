@@ -1,3 +1,7 @@
+---
+status: implemented
+---
+
 # Design Document: Generic Processing Pipeline Feature (Common.Utilities\Pipeline)
 
 [TOC]

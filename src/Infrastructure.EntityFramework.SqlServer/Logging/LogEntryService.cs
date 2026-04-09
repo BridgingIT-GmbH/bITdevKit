@@ -478,7 +478,7 @@ public class LogEntryService<TContext>(
 
             if (logs.Any())
             {
-                switch (format)
+                switch (format) // TODO: better use dataporter here?
                 {
                     case LogEntryExportFormat.Csv:
                         var buffer = new StringBuilder(512);

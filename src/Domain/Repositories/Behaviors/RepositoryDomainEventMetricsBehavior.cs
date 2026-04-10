@@ -38,9 +38,38 @@ public class RepositoryDomainEventMetricsBehavior<TEntity> : IGenericRepository<
 
     protected IGenericRepository<TEntity> Inner { get; }
 
+    /// <inheritdoc />
+    public async Task<long> UpdateSetAsync(
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.Inner.UpdateSetAsync(set, options, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public async Task<long> UpdateSetAsync(
+        ISpecification<TEntity> specification,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.Inner.UpdateSetAsync(specification, set, options, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public async Task<long> UpdateSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.Inner.UpdateSetAsync(specifications, set, options, cancellationToken).AnyContext();
+    }
+
     public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
-        return await this.DeleteAsync(id, cancellationToken);
+        return await this.Inner.DeleteAsync(id, cancellationToken).AnyContext();
     }
 
     public async Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
@@ -50,6 +79,32 @@ public class RepositoryDomainEventMetricsBehavior<TEntity> : IGenericRepository<
         this.AddMetrics(entity.DomainEvents);
 
         return await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public async Task<long> DeleteSetAsync(
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.Inner.DeleteSetAsync(options, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public async Task<long> DeleteSetAsync(
+        ISpecification<TEntity> specification,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.Inner.DeleteSetAsync(specification, options, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public async Task<long> DeleteSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.Inner.DeleteSetAsync(specifications, options, cancellationToken).AnyContext();
     }
 
     public async Task<TEntity> FindOneAsync(

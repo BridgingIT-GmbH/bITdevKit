@@ -43,6 +43,63 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
 
     protected ILogger<IGenericRepository<TEntity>> Logger { get; set; }
 
+    /// <inheritdoc />
+    public Task<long> UpdateSetAsync(
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return this.UpdateSetAsync([], set, options, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public Task<long> UpdateSetAsync(
+        ISpecification<TEntity> specification,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return specification is null
+            ? this.UpdateSetAsync([], set, options, cancellationToken)
+            : this.UpdateSetAsync([specification], set, options, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public Task<long> UpdateSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        EnsureArg.IsNotNull(set, nameof(set));
+
+        var updateBuilder = new EntityUpdateSet<TEntity>();
+        set(updateBuilder);
+
+        this.@lock.EnterWriteLock();
+        try
+        {
+            var result = this.Options.Context.Entities.AsEnumerable();
+
+            foreach (var specification in specifications.SafeNull())
+            {
+                result = result.Where(this.EnsurePredicate(specification));
+            }
+
+            var entities = this.ShapeSet(result, options).ToList();
+            foreach (var entity in entities)
+            {
+                updateBuilder.Apply(entity);
+            }
+
+            return Task.FromResult((long)entities.Count);
+        }
+        finally
+        {
+            this.@lock.ExitWriteLock();
+        }
+    }
+
     public async Task<IEnumerable<TEntity>> FindAllAsync(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
@@ -281,6 +338,55 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         return await this.DeleteAsync(entity.Id, cancellationToken).AnyContext();
     }
 
+    /// <inheritdoc />
+    public Task<long> DeleteSetAsync(
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return this.DeleteSetAsync([], options, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public Task<long> DeleteSetAsync(
+        ISpecification<TEntity> specification,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return specification is null
+            ? this.DeleteSetAsync([], options, cancellationToken)
+            : this.DeleteSetAsync([specification], options, cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public Task<long> DeleteSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        this.@lock.EnterWriteLock();
+        try
+        {
+            var result = this.Options.Context.Entities.AsEnumerable();
+
+            foreach (var specification in specifications.SafeNull())
+            {
+                result = result.Where(this.EnsurePredicate(specification));
+            }
+
+            var entities = this.ShapeSet(result, options).ToList();
+            foreach (var entity in entities)
+            {
+                this.Options.Context.TryRemove(entity.Id, out _);
+            }
+
+            return Task.FromResult((long)entities.Count);
+        }
+        finally
+        {
+            this.@lock.ExitWriteLock();
+        }
+    }
+
     public async Task<long> CountAsync(CancellationToken cancellationToken = default)
     {
         return await this.CountAsync([], cancellationToken).AnyContext();
@@ -374,5 +480,50 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         {
             this.@lock.ExitReadLock();
         }
+    }
+
+    private IEnumerable<TEntity> ShapeSet(
+        IEnumerable<TEntity> entities,
+        IFindOptions<TEntity> options = null)
+    {
+        var result = entities;
+
+        if (options?.Distinct?.Expression is not null)
+        {
+            result = result.GroupBy(options.Distinct.Expression.Compile()).Select(g => g.FirstOrDefault());
+        }
+
+        if (options?.Skip.HasValue == true && options.Skip.Value > 0)
+        {
+            result = result.Skip(options.Skip.Value);
+        }
+
+        if (options?.Take.HasValue == true && options.Take.Value > 0)
+        {
+            result = result.Take(options.Take.Value);
+        }
+
+        if (options?.Distinct is not null && options.Distinct.Expression is null)
+        {
+            result = result.Distinct();
+        }
+        else if (options?.Distinct?.Expression is not null)
+        {
+            result = result.GroupBy(options.Distinct.Expression.Compile()).Select(g => g.FirstOrDefault());
+        }
+
+        IOrderedEnumerable<TEntity> orderedResult = null;
+        foreach (var order in (options?.Orders ?? []).Insert(options?.Order))
+        {
+            orderedResult = orderedResult is null
+                ? order.Direction == OrderDirection.Ascending
+                    ? result.OrderBy(order.Expression.Compile())
+                    : result.OrderByDescending(order.Expression.Compile())
+                : order.Direction == OrderDirection.Ascending
+                    ? orderedResult.ThenBy(order.Expression.Compile())
+                    : orderedResult.ThenByDescending(order.Expression.Compile());
+        }
+
+        return orderedResult ?? result;
     }
 }

@@ -54,6 +54,35 @@ public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepo
 
     protected ICosmosSqlProvider<TDatabaseEntity> Provider { get; }
 
+    /// <inheritdoc />
+    public virtual Task<long> UpdateSetAsync(
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public virtual Task<long> UpdateSetAsync(
+        ISpecification<TEntity> specification,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public virtual Task<long> UpdateSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
     public virtual async Task<IEnumerable<TEntity>> FindAllAsync(
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
@@ -257,6 +286,32 @@ public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepo
         }
 
         return RepositoryActionResult.None;
+    }
+
+    /// <inheritdoc />
+    public virtual Task<long> DeleteSetAsync(
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public virtual Task<long> DeleteSetAsync(
+        ISpecification<TEntity> specification,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public virtual Task<long> DeleteSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 
     public virtual async Task<long> CountAsync(

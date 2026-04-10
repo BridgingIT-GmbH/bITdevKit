@@ -11,7 +11,6 @@ using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;

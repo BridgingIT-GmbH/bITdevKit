@@ -16,7 +16,8 @@ current issues:
 
 improvements:
 
- - easier to inherit/extend with new query methods. including that behaviors still work.
- - better support for transactions and result types.
- - native filtering support on repositories, no queryoptions needed then.
- -
+- easier to inherit/extend with new query methods. including that behaviors still work.
+- better support for transactions and result types.
+- native filtering support on repositories, no queryoptions needed then.
+- ef only repositories, no need to support in-memory or other providers, so we can use ef features like tracking, etc. and also easier to maintain.
+- better support for testing, no need to mock extension methods, etc.

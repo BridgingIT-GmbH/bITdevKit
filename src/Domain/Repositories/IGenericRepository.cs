@@ -31,6 +31,52 @@ public interface IGenericRepository<TEntity> : IGenericReadOnlyRepository<TEntit
     Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
 
     /// <summary>
+    /// Updates all entities in the repository by applying the specified property assignments in a set-based operation.
+    /// </summary>
+    /// <param name="set">The builder action that defines which properties are updated and how their values are assigned.</param>
+    /// <param name="options">Optional query options used to shape the update operation.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the number of affected entities.
+    /// </returns>
+    Task<long> UpdateSetAsync(
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Updates all entities matching the specified specification by applying the specified property assignments in a set-based operation.
+    /// </summary>
+    /// <param name="specification">The specification used to filter the entities that should be updated.</param>
+    /// <param name="set">The builder action that defines which properties are updated and how their values are assigned.</param>
+    /// <param name="options">Optional query options used to shape the update operation.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the number of affected entities.
+    /// </returns>
+    Task<long> UpdateSetAsync(
+        ISpecification<TEntity> specification,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Updates all entities matching the specified specifications by applying the specified property assignments in a set-based operation.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter the entities that should be updated.</param>
+    /// <param name="set">The builder action that defines which properties are updated and how their values are assigned.</param>
+    /// <param name="options">Optional query options used to shape the update operation.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the number of affected entities.
+    /// </returns>
+    Task<long> UpdateSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
     ///     Insert or updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert or update.</param>
@@ -59,4 +105,44 @@ public interface IGenericRepository<TEntity> : IGenericReadOnlyRepository<TEntit
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <return>A Task representing the asynchronous operation, containing the result of the action.</return>
     Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes all entities in the repository in a single set-based operation.
+    /// </summary>
+    /// <param name="options">Optional query options used to shape the delete operation.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the number of affected entities.
+    /// </returns>
+    Task<long> DeleteSetAsync(
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes all entities matching the specified specification in a single set-based operation.
+    /// </summary>
+    /// <param name="specification">The specification used to filter the entities that should be deleted.</param>
+    /// <param name="options">Optional query options used to shape the delete operation.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the number of affected entities.
+    /// </returns>
+    Task<long> DeleteSetAsync(
+        ISpecification<TEntity> specification,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Deletes all entities matching the specified specifications in a single set-based operation.
+    /// </summary>
+    /// <param name="specifications">The specifications used to filter the entities that should be deleted.</param>
+    /// <param name="options">Optional query options used to shape the delete operation.</param>
+    /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation. The task result contains the number of affected entities.
+    /// </returns>
+    Task<long> DeleteSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default);
 }

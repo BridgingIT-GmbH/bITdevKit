@@ -30,6 +30,41 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
 
     protected IGenericRepository<TEntity> Inner { get; } = inner;
 
+    /// <inheritdoc />
+    public async Task<long> UpdateSetAsync(
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await Activity.Current.StartActvity($"REPOSITORY UpdateSet {this.type}",
+            async (a, c) => await this.Inner.UpdateSetAsync(set, options, cancellationToken).AnyContext(),
+            cancellationToken: cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<long> UpdateSetAsync(
+        ISpecification<TEntity> specification,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await Activity.Current.StartActvity($"REPOSITORY UpdateSet {this.type}",
+            async (a, c) => await this.Inner.UpdateSetAsync(specification, set, options, cancellationToken).AnyContext(),
+            cancellationToken: cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<long> UpdateSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await Activity.Current.StartActvity($"REPOSITORY UpdateSet {this.type}",
+            async (a, c) => await this.Inner.UpdateSetAsync(specifications, set, options, cancellationToken).AnyContext(),
+            cancellationToken: cancellationToken);
+    }
+
     public async Task<long> CountAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
         CancellationToken cancellationToken = default)
@@ -62,6 +97,38 @@ public class RepositoryTracingBehavior<TEntity>(IGenericRepository<TEntity> inne
     {
         return await Activity.Current.StartActvity($"REPOSITORY Delete {this.type}",
             async (a, c) => await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext(),
+            cancellationToken: cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<long> DeleteSetAsync(
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await Activity.Current.StartActvity($"REPOSITORY DeleteSet {this.type}",
+            async (a, c) => await this.Inner.DeleteSetAsync(options, cancellationToken).AnyContext(),
+            cancellationToken: cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<long> DeleteSetAsync(
+        ISpecification<TEntity> specification,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await Activity.Current.StartActvity($"REPOSITORY DeleteSet {this.type}",
+            async (a, c) => await this.Inner.DeleteSetAsync(specification, options, cancellationToken).AnyContext(),
+            cancellationToken: cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<long> DeleteSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await Activity.Current.StartActvity($"REPOSITORY DeleteSet {this.type}",
+            async (a, c) => await this.Inner.DeleteSetAsync(specifications, options, cancellationToken).AnyContext(),
             cancellationToken: cancellationToken);
     }
 

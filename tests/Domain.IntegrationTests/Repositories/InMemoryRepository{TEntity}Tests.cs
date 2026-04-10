@@ -152,6 +152,103 @@ public class InMemoryRepositoryTests
         findResult.FirstName.ShouldBe(modifiedFirstName);
     }
 
+    [Fact]
+    public async Task UpdateSetAsync_WithSpecification_ShouldUpdateMatchingEntities()
+    {
+        // Arrange
+        var entities = new[]
+        {
+            new StubEntityString { Id = "1", FirstName = "John", LastName = "Doe", Country = "USA", Age = 17 },
+            new StubEntityString { Id = "2", FirstName = "Jane", LastName = "Doe", Country = "USA", Age = 18 },
+            new StubEntityString { Id = "3", FirstName = "Max", LastName = "Doe", Country = "USA", Age = 19 }
+        };
+        var sut = new InMemoryRepository<StubEntityString>(o => o.Context(new InMemoryContext<StubEntityString>(entities)));
+
+        // Act
+        var result = await sut.UpdateSetAsync(
+            new Specification<StubEntityString>(e => e.LastName == "Doe" && e.Age >= 18),
+            set => set.Set(e => e.FirstName, "Adult")).AnyContext();
+        var updated = (await sut.FindAllAsync(new Specification<StubEntityString>(e => e.LastName == "Doe")).AnyContext()).ToList();
+
+        // Assert
+        result.ShouldBe(2);
+        updated.Single(e => e.Id == "1").FirstName.ShouldBe("John");
+        updated.Single(e => e.Id == "2").FirstName.ShouldBe("Adult");
+        updated.Single(e => e.Id == "3").FirstName.ShouldBe("Adult");
+    }
+
+    [Fact]
+    public async Task UpdateSetAsync_WithComputedValue_ShouldUpdateMatchingEntities()
+    {
+        // Arrange
+        var entities = new[]
+        {
+            new StubEntityString { Id = "1", FirstName = "John", LastName = "Doe", Country = "USA", Age = 17 },
+            new StubEntityString { Id = "2", FirstName = "Jane", LastName = "Doe", Country = "USA", Age = 18 }
+        };
+        var sut = new InMemoryRepository<StubEntityString>(o => o.Context(new InMemoryContext<StubEntityString>(entities)));
+
+        // Act
+        var result = await sut.UpdateSetAsync(
+            set => set.Set(e => e.Age, e => e.Age + 1)).AnyContext();
+        var updated = (await sut.FindAllAsync().AnyContext()).OrderBy(e => e.Id).ToList();
+
+        // Assert
+        result.ShouldBe(2);
+        updated.Select(e => e.Age).ShouldBe([18, 19]);
+    }
+
+    [Fact]
+    public async Task DeleteSetAsync_WithSpecification_ShouldDeleteMatchingEntities()
+    {
+        // Arrange
+        var entities = new[]
+        {
+            new StubEntityString { Id = "1", FirstName = "John", LastName = "Doe", Country = "USA", Age = 17 },
+            new StubEntityString { Id = "2", FirstName = "Jane", LastName = "Doe", Country = "USA", Age = 18 },
+            new StubEntityString { Id = "3", FirstName = "Max", LastName = "Moe", Country = "USA", Age = 19 }
+        };
+        var sut = new InMemoryRepository<StubEntityString>(o => o.Context(new InMemoryContext<StubEntityString>(entities)));
+
+        // Act
+        var result = await sut.DeleteSetAsync(new Specification<StubEntityString>(e => e.LastName == "Doe")).AnyContext();
+        var remaining = (await sut.FindAllAsync().AnyContext()).ToList();
+
+        // Assert
+        result.ShouldBe(2);
+        remaining.Count.ShouldBe(1);
+        remaining.Single().Id.ShouldBe("3");
+    }
+
+    [Fact]
+    public async Task DeleteSetAsync_WithOptions_ShouldDeleteShapedSet()
+    {
+        // Arrange
+        var entities = new[]
+        {
+            new StubEntityString { Id = "1", FirstName = "John", LastName = "Doe", Country = "USA", Age = 17 },
+            new StubEntityString { Id = "2", FirstName = "Jane", LastName = "Doe", Country = "USA", Age = 18 },
+            new StubEntityString { Id = "3", FirstName = "Max", LastName = "Doe", Country = "USA", Age = 19 }
+        };
+        var sut = new InMemoryRepository<StubEntityString>(o => o.Context(new InMemoryContext<StubEntityString>(entities)));
+
+        // Act
+        var result = await sut.DeleteSetAsync(
+            new Specification<StubEntityString>(e => e.LastName == "Doe"),
+            new FindOptions<StubEntityString>
+            {
+                Order = new OrderOption<StubEntityString>(e => e.Age, OrderDirection.Descending),
+                Take = 1
+            }).AnyContext();
+        var remaining = (await sut.FindAllAsync(new Specification<StubEntityString>(e => e.LastName == "Doe")).AnyContext())
+            .OrderBy(e => e.Id)
+            .ToList();
+
+        // Assert
+        result.ShouldBe(1);
+        remaining.Select(e => e.Id).ShouldBe(["1", "2"]);
+    }
+
     private class StubEntityString : AggregateRoot<string>
     {
         public string Country { get; set; }

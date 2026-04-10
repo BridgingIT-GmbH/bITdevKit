@@ -38,6 +38,60 @@ public partial class RepositoryLoggingBehavior<TEntity>(ILoggerFactory loggerFac
 
     protected IGenericRepository<TEntity> Inner { get; } = inner;
 
+    /// <inheritdoc />
+    public async Task<long> UpdateSetAsync(
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        this.Logger.LogInformation("{LogKey} repository: updateset (type={EntityType})", Constants.LogKey, this.type);
+        this.LogOptions(options);
+
+        return await this.Inner.UpdateSetAsync(set, options, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public async Task<long> UpdateSetAsync(
+        ISpecification<TEntity> specification,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        this.Logger.LogInformation("{LogKey} repository: updateset (type={EntityType})", Constants.LogKey, this.type);
+        this.LogOptions(options);
+
+        if (specification is not null)
+        {
+            this.Logger.LogDebug("{LogKey} repository specification: {Specification} -> {SpecificationExpression}",
+                Constants.LogKey,
+                specification.GetType().PrettyName(),
+                specification.ToExpressionString());
+        }
+
+        return await this.Inner.UpdateSetAsync(specification, set, options, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public async Task<long> UpdateSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        this.Logger.LogInformation("{LogKey} repository: updateset (type={EntityType})", Constants.LogKey, this.type);
+        this.LogOptions(options);
+
+        foreach (var specification in specifications.SafeNull())
+        {
+            this.Logger.LogDebug("{LogKey} repository specification: {Specification} -> {SpecificationExpression}",
+                Constants.LogKey,
+                specification.GetType().PrettyName(),
+                specification.ToExpressionString());
+        }
+
+        return await this.Inner.UpdateSetAsync(specifications, set, options, cancellationToken).AnyContext();
+    }
+
     public async Task<long> CountAsync(CancellationToken cancellationToken = default)
     {
         return await this.CountAsync([], cancellationToken).AnyContext();
@@ -79,6 +133,57 @@ public partial class RepositoryLoggingBehavior<TEntity>(ILoggerFactory loggerFac
         TypedLogger.LogDelete(this.Logger, Constants.LogKey, this.type, entity?.Id);
 
         return await this.Inner.DeleteAsync(entity, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public async Task<long> DeleteSetAsync(
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        this.Logger.LogInformation("{LogKey} repository: deleteset (type={EntityType})", Constants.LogKey, this.type);
+        this.LogOptions(options);
+
+        return await this.Inner.DeleteSetAsync(options, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public async Task<long> DeleteSetAsync(
+        ISpecification<TEntity> specification,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        this.Logger.LogInformation("{LogKey} repository: deleteset (type={EntityType})", Constants.LogKey, this.type);
+        this.LogOptions(options);
+
+        if (specification is not null)
+        {
+            this.Logger.LogDebug("{LogKey} repository specification: {Specification} -> {SpecificationExpression}",
+                Constants.LogKey,
+                specification.GetType().PrettyName(),
+                specification.ToExpressionString());
+        }
+
+        return await this.Inner.DeleteSetAsync(specification, options, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public async Task<long> DeleteSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        this.Logger.LogInformation("{LogKey} repository: deleteset (type={EntityType})", Constants.LogKey, this.type);
+        this.LogOptions(options);
+
+        foreach (var specification in specifications.SafeNull())
+        {
+            this.Logger.LogDebug("{LogKey} repository specification: {Specification} -> {SpecificationExpression}",
+                Constants.LogKey,
+                specification.GetType().PrettyName(),
+                specification.ToExpressionString());
+        }
+
+        return await this.Inner.DeleteSetAsync(specifications, options, cancellationToken).AnyContext();
     }
 
     public async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)

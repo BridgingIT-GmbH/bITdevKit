@@ -25,7 +25,7 @@ using Xunit.Abstractions;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection5))] // https://xunit.net/docs/shared-context#collection-fixture
-public class EntityFrameworkActiveEntityTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : TestsBase(output, services =>
+public class ActiveEntityEntityFrameworkTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : TestsBase(output, services =>
 {
     fixture.EnsureSqlServerDbContext();
     services.AddLogging();

@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
+using BridgingIT.DevKit.Domain;
+
 /// <summary>
 /// Provides a repository wrapper implementation using Entity Framework for CRUD operations on entities.
 /// </summary>
@@ -49,6 +51,35 @@ public class
     /// </summary>
     protected EntityFrameworkGenericRepository(ILoggerFactory loggerFactory, DbContext context, IEntityMapper mapper)
         : base(o => o.LoggerFactory(loggerFactory).DbContext(context).Mapper(mapper)) { }
+
+    /// <inheritdoc />
+    public virtual Task<long> UpdateSetAsync(
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public virtual Task<long> UpdateSetAsync(
+        ISpecification<TEntity> specification,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public virtual Task<long> UpdateSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 
     /// <summary>
     /// Inserts the provided entity.
@@ -219,6 +250,32 @@ public class
         }
 
         return await this.DeleteAsync(entity.Id, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public virtual Task<long> DeleteSetAsync(
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public virtual Task<long> DeleteSetAsync(
+        ISpecification<TEntity> specification,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public virtual Task<long> DeleteSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 
     // Helper method to check if Id is at its default value

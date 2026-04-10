@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 
 using Common;
+using Domain;
 using Domain.Model;
 using Domain.Repositories;
 using Microsoft.Extensions.Logging;
@@ -17,6 +18,35 @@ public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
 {
     public LiteDbGenericRepository(Builder<LiteDbRepositoryOptionsBuilder, LiteDbRepositoryOptions> optionsBuilder)
         : this(optionsBuilder(new LiteDbRepositoryOptionsBuilder()).Build()) { }
+
+    /// <inheritdoc />
+    public virtual Task<long> UpdateSetAsync(
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public virtual Task<long> UpdateSetAsync(
+        ISpecification<TEntity> specification,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public virtual Task<long> UpdateSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
 
     /// <summary>
     ///     Inserts the provided entity.
@@ -118,5 +148,31 @@ public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
         }
 
         return await this.DeleteAsync(entity.Id, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public virtual Task<long> DeleteSetAsync(
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public virtual Task<long> DeleteSetAsync(
+        ISpecification<TEntity> specification,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
+    }
+
+    /// <inheritdoc />
+    public virtual Task<long> DeleteSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        throw new NotImplementedException();
     }
 }

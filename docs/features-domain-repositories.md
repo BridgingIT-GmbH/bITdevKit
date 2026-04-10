@@ -188,6 +188,90 @@ var customerNames = await repository.ProjectAllAsync(
     cancellationToken);
 ```
 
+### Bulk Updates And Deletes
+
+Use `UpdateSetAsync` and `DeleteSetAsync` for set-based operations that run directly in the repository provider without loading each entity instance first.
+
+> Bulk operations are ideal for administrative tasks or background jobs that need to update or delete large numbers of entities without loading them into memory.
+
+```csharp
+var affected = await repository.UpdateSetAsync(
+    set => set
+        .Set(c => c.IsActive, false)
+        .Set(c => c.LastName, "Archived")
+        .Set(c => c.LoginCount, c => c.LoginCount + 1),
+    cancellationToken: cancellationToken);
+
+var deleted = await repository.DeleteSetAsync(cancellationToken: cancellationToken);
+```
+
+You can limit the affected rows with one or more specifications:
+
+```csharp
+var affected = await repository.UpdateSetAsync(
+    new CustomerIsInactiveSpecification(),
+    set => set
+        .Set(c => c.IsActive, false)
+        .Set(c => c.LoginCount, c => c.LoginCount + 1),
+    cancellationToken: cancellationToken);
+
+var deleted = await repository.DeleteSetAsync(
+[
+    new CustomerCountrySpecification("DE"),
+    new CustomerIsInactiveSpecification()
+], cancellationToken: cancellationToken);
+```
+
+Expression-based forwarding overloads are also available through `RepositoryExtensions`:
+
+```csharp
+var affected = await repository.UpdateSetAsync(
+    c => c.IsActive,
+    set => set
+        .Set(c => c.LastName, "Archived")
+        .Set(c => c.LoginCount, c => c.LoginCount + 1),
+    cancellationToken: cancellationToken);
+
+var deleted = await repository.DeleteSetAsync(
+    c => !c.IsActive,
+    cancellationToken: cancellationToken);
+```
+
+`FilterModel`-based extension overloads translate the query filters into specifications before forwarding them to the repository:
+
+```csharp
+var filter = new FilterModel
+{
+    Filters =
+    [
+        new FilterCriteria
+        {
+            Field = nameof(Customer.IsActive),
+            Operator = FilterOperator.Equal,
+            Value = false
+        }
+    ]
+};
+
+var affected = await repository.UpdateSetAsync(
+    filter,
+    set => set
+        .Set(c => c.LastName, "Archived")
+        .Set(c => c.LoginCount, c => c.LoginCount + 1),
+    cancellationToken: cancellationToken);
+
+var deleted = await repository.DeleteSetAsync(filter, cancellationToken: cancellationToken);
+```
+
+#### Key Points For Bulk Set Operations
+
+- Filtering for `UpdateSetAsync` and `DeleteSetAsync` comes from specification instances, including specifications generated from a `FilterModel`.
+- `FindOptions` continue to shape the query only; they do not define the `WHERE` clause.
+- `UpdateSetAsync` supports both constant assignments such as `.Set(c => c.IsActive, false)` and computed assignments such as `.Set(c => c.LoginCount, c => c.LoginCount + 1)`.
+- Only `EntityFrameworkGenericRepository<TEntity>` and `InMemoryRepository<TEntity>` currently provides a real implementation for repository bulk updates and deletes.
+- Other repository implementations expose the same API for consistency but currently throw `NotImplementedException`.
+- With Entity Framework, set-based operations execute directly in the database and do not synchronize already tracked entities in the current `DbContext`. If you need the updated database state immediately afterwards, re-query using `NoTracking` or use a fresh context/repository instance.
+
 ## Appendix A: Optimistic Concurrency Support
 
 ### Overview
@@ -202,12 +286,12 @@ sequenceDiagram
 
     User1->>Repo: Get TodoItem (Version=A)
     User2->>Repo: Get TodoItem (Version=A)
-    
+
     User1->>Repo: Update TodoItem
     Note over Repo: Generate new Version B
     Repo->>DB: Save (Version A→B)
     DB-->>Repo: Success
-    
+
     User2->>Repo: Update TodoItem
     Note over Repo: Generate new Version C
     Repo->>DB: Save (Version A→C)
@@ -226,7 +310,7 @@ public class TodoItem : AuditableAggregateRoot<TodoItemId>, IConcurrency
     // Entity properties
     public string Title { get; set; }
     public TodoStatus Status { get; set; }
-    
+
     // Concurrency token
     public Guid ConcurrencyVersion { get; set; }
 }
@@ -244,7 +328,7 @@ public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem
         builder.Property(e => e.ConcurrencyVersion)
             .IsConcurrencyToken()
             .ValueGeneratedOnAddOrUpdate();
-            
+
         // Other configuration...
     }
 }
@@ -263,7 +347,7 @@ public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem
 ```csharp
 public async Task UpdateTodoItemAsync(TodoItem item)
 {
-    try 
+    try
     {
         await _repository.UpdateAsync(item);
     }
@@ -311,9 +395,9 @@ sequenceDiagram
     Gen->>DB: NEXT VALUE FOR OrderNumbers
     DB-->>Gen: 1001
     Gen-->>App: Result<long>.Success(1001)
-    
+
     Note over App,DB: Thread-safe with internal locking
-    
+
     App->>Gen: GetSequenceInfoAsync("OrderNumbers")
     Gen->>DB: Query metadata
     DB-->>Gen: {Current: 1001, Increment: 1, ...}
@@ -345,7 +429,7 @@ Register the appropriate generator for your database provider using the provided
 ```csharp
 // In ConfigureServices
 services.AddDbContext<YourDbContext>(options => options.UseSqlServer(connectionString))
-    .WithSequenceNumberGenerator(new SequenceNumberGeneratorOptions 
+    .WithSequenceNumberGenerator(new SequenceNumberGeneratorOptions
     {
         LockTimeout = TimeSpan.FromSeconds(60)
     });

@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore.Query;
 
 /// <summary>
 /// EF Core–specific implementation of <see cref="IEntityUpdateSet{TEntity}"/>.
@@ -123,34 +124,24 @@ public class EntityFrameworkEntityUpdateSet<TEntity> : IEntityUpdateSet<TEntity>
     /// Applies all collected assignments to the provided setters action.
     /// This method is called internally by the EF Core provider.
     /// </summary>
-    internal void ApplyTo(dynamic setters)
+    internal void ApplyTo(UpdateSettersBuilder<TEntity> setters)
     {
         foreach (var assignment in this.assignments)
         {
             if (assignment.IsComputed)
             {
-                // Call SetProperty with both expressions (for computed values)
-                InvokeSetProperty(setters, assignment.PropertySelector, assignment.ValueFactory);
+#pragma warning disable EF1001
+                setters.SetProperty(assignment.PropertySelector, assignment.ValueFactory);
+#pragma warning restore EF1001
             }
             else
             {
-                // Call SetProperty with expression and constant value
-                InvokeSetProperty(setters, assignment.PropertySelector, assignment.Value);
+#pragma warning disable EF1001
+                setters.SetProperty(
+                    assignment.PropertySelector,
+                    Expression.Constant(assignment.Value, assignment.PropertySelector.ReturnType));
+#pragma warning restore EF1001
             }
-        }
-    }
-
-    private static void InvokeSetProperty(dynamic setters, LambdaExpression propertySelector, object value)
-    {
-        // Use dynamic to call SetProperty without knowing the exact type
-        // EF Core 10 will handle the strongly-typed method resolution
-        if (value is LambdaExpression valueExpr)
-        {
-            setters.SetProperty(propertySelector, valueExpr);
-        }
-        else
-        {
-            setters.SetProperty(propertySelector, value);
         }
     }
 }

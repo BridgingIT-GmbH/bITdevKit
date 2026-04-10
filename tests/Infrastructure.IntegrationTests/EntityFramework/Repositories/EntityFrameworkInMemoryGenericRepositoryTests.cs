@@ -30,6 +30,24 @@ public class EntityFrameworkInMemoryGenericRepositoryTests(ITestOutputHelper out
         await base.DeleteAsync_ById_EntityDeleted();
     }
 
+    [Fact(Skip = "EF Core InMemory provider does not support ExecuteDeleteAsync.")]
+    public override async Task DeleteSetAsync_AllEntities_EntitiesDeleted()
+    {
+        await base.DeleteSetAsync_AllEntities_EntitiesDeleted();
+    }
+
+    [Fact(Skip = "EF Core InMemory provider does not support ExecuteDeleteAsync.")]
+    public override async Task DeleteSetAsync_EntitySpecification_EntitiesDeleted()
+    {
+        await base.DeleteSetAsync_EntitySpecification_EntitiesDeleted();
+    }
+
+    [Fact(Skip = "EF Core InMemory provider does not support ExecuteDeleteAsync.")]
+    public override async Task DeleteSetAsync_EntitySpecifications_EntitiesDeleted()
+    {
+        await base.DeleteSetAsync_EntitySpecifications_EntitiesDeleted();
+    }
+
     [Fact]
     public override async Task ExistsAsync_ExistingEntityId_EntityFound()
     {
@@ -124,6 +142,24 @@ public class EntityFrameworkInMemoryGenericRepositoryTests(ITestOutputHelper out
     public override async Task InsertAsync_NewEntity_EntityInserted()
     {
         await base.InsertAsync_NewEntity_EntityInserted();
+    }
+
+    [Fact(Skip = "EF Core InMemory provider does not support ExecuteUpdateAsync.")]
+    public override async Task UpdateSetAsync_AllEntities_EntitiesUpdated()
+    {
+        await base.UpdateSetAsync_AllEntities_EntitiesUpdated();
+    }
+
+    [Fact(Skip = "EF Core InMemory provider does not support ExecuteUpdateAsync.")]
+    public override async Task UpdateSetAsync_EntitySpecification_EntitiesUpdated()
+    {
+        await base.UpdateSetAsync_EntitySpecification_EntitiesUpdated();
+    }
+
+    [Fact(Skip = "EF Core InMemory provider does not support ExecuteUpdateAsync.")]
+    public override async Task UpdateSetAsync_EntitySpecifications_EntitiesUpdated()
+    {
+        await base.UpdateSetAsync_EntitySpecifications_EntitiesUpdated();
     }
 
     [Fact]

@@ -54,6 +54,69 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         (await sut.ExistsAsync(entity.Id)).ShouldBe(false);
     }
 
+    public virtual async Task DeleteSetAsync_AllEntities_EntitiesDeleted()
+    {
+        // Arrange
+        await this.InsertEntityAsync(17);
+        await this.InsertEntityAsync(18);
+        await this.InsertEntityAsync(19);
+        var sut = this.CreateRepository(this.GetContext());
+
+        // Act
+        var result = await sut.DeleteSetAsync();
+
+        // Assert
+        result.ShouldBeGreaterThanOrEqualTo(3);
+        var verifySut = this.CreateRepository(this.GetContext(null, true));
+        (await verifySut.FindAllAsync()).ShouldBeEmpty();
+    }
+
+    public virtual async Task DeleteSetAsync_EntitySpecification_EntitiesDeleted()
+    {
+        // Arrange
+        var marker = $"delete-spec-{Guid.NewGuid():N}";
+        var entity1 = await this.InsertEntityAsync(17, lastName: marker);
+        var entity2 = await this.InsertEntityAsync(18, lastName: marker);
+        var entity3 = await this.InsertEntityAsync(19, lastName: marker);
+        var sut = this.CreateRepository(this.GetContext());
+
+        // Act
+        var result = await sut.DeleteSetAsync(new Specification<PersonStub>(e => e.LastName == marker && e.Age >= 18));
+
+        // Assert
+        result.ShouldBe(2);
+        var verifySut = this.CreateRepository(this.GetContext(null, true));
+        var remaining = (await verifySut.FindAllAsync(new Specification<PersonStub>(e => e.LastName == marker))).ToList();
+        remaining.Count.ShouldBe(1);
+        remaining.Single().Id.ShouldBe(entity1.Id);
+    }
+
+    public virtual async Task DeleteSetAsync_EntitySpecifications_EntitiesDeleted()
+    {
+        // Arrange
+        var marker = $"delete-specs-{Guid.NewGuid():N}";
+        var entity1 = await this.InsertEntityAsync(17, lastName: marker);
+        var entity2 = await this.InsertEntityAsync(18, lastName: marker);
+        var entity3 = await this.InsertEntityAsync(19, lastName: marker);
+        var sut = this.CreateRepository(this.GetContext());
+
+        // Act
+        var result = await sut.DeleteSetAsync(
+        [
+            new Specification<PersonStub>(e => e.LastName == marker),
+            new Specification<PersonStub>(e => e.Age >= 18),
+            new Specification<PersonStub>(e => e.Age <= 18)
+        ]);
+
+        // Assert
+        result.ShouldBe(1);
+        var verifySut = this.CreateRepository(this.GetContext(null, true));
+        var remaining = (await verifySut.FindAllAsync(new Specification<PersonStub>(e => e.LastName == marker))).ToList();
+        remaining.Count.ShouldBe(2);
+        remaining.ShouldContain(e => e.Id == entity1.Id);
+        remaining.ShouldContain(e => e.Id == entity3.Id);
+    }
+
     public virtual async Task ExistsAsync_ExistingEntityId_EntityFound()
     {
         // Arrange
@@ -436,6 +499,80 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         existingEntity.Locations[3].Id.ShouldNotBe(Guid.Empty);
     }
 
+    public virtual async Task UpdateSetAsync_AllEntities_EntitiesUpdated()
+    {
+        // Arrange
+        var marker = $"update-all-{Guid.NewGuid():N}";
+        await this.InsertEntityAsync(17, lastName: marker);
+        await this.InsertEntityAsync(18, lastName: marker);
+        await this.InsertEntityAsync(19, lastName: marker);
+        var sut = this.CreateRepository(this.GetContext());
+
+        // Act
+        var result = await sut.UpdateSetAsync(set => set
+            .Set(e => e.FirstName, "Updated")
+            .Set(e => e.Age, e => e.Age + 1));
+
+        // Assert
+        result.ShouldBeGreaterThanOrEqualTo(3);
+        var verifySut = this.CreateRepository(this.GetContext(null, true));
+        var updated = (await verifySut.FindAllAsync(new Specification<PersonStub>(e => e.LastName == marker))).ToList();
+        updated.Count.ShouldBe(3);
+        updated.ShouldAllBe(e => e.FirstName == "Updated");
+        updated.Select(e => e.Age).ShouldBe([18, 19, 20], ignoreOrder: true);
+    }
+
+    public virtual async Task UpdateSetAsync_EntitySpecification_EntitiesUpdated()
+    {
+        // Arrange
+        var marker = $"update-spec-{Guid.NewGuid():N}";
+        var entity1 = await this.InsertEntityAsync(17, lastName: marker);
+        var entity2 = await this.InsertEntityAsync(18, lastName: marker);
+        var entity3 = await this.InsertEntityAsync(19, lastName: marker);
+        var sut = this.CreateRepository(this.GetContext());
+
+        // Act
+        var result = await sut.UpdateSetAsync(
+            new Specification<PersonStub>(e => e.LastName == marker && e.Age >= 18),
+            set => set.Set(e => e.FirstName, "Adult"));
+
+        // Assert
+        result.ShouldBe(2);
+        var verifySut = this.CreateRepository(this.GetContext(null, true));
+        var updated = (await verifySut.FindAllAsync(new Specification<PersonStub>(e => e.LastName == marker))).ToList();
+        updated.Single(e => e.Id == entity1.Id).FirstName.ShouldNotBe("Adult");
+        updated.Single(e => e.Id == entity2.Id).FirstName.ShouldBe("Adult");
+        updated.Single(e => e.Id == entity3.Id).FirstName.ShouldBe("Adult");
+    }
+
+    public virtual async Task UpdateSetAsync_EntitySpecifications_EntitiesUpdated()
+    {
+        // Arrange
+        var marker = $"update-specs-{Guid.NewGuid():N}";
+        var entity1 = await this.InsertEntityAsync(17, lastName: marker);
+        var entity2 = await this.InsertEntityAsync(18, lastName: marker);
+        var entity3 = await this.InsertEntityAsync(19, lastName: marker);
+        var sut = this.CreateRepository(this.GetContext());
+
+        // Act
+        var result = await sut.UpdateSetAsync(
+        [
+            new Specification<PersonStub>(e => e.LastName == marker),
+            new Specification<PersonStub>(e => e.Age >= 18),
+            new Specification<PersonStub>(e => e.Age <= 18)
+        ],
+            set => set.Set(e => e.LastName, "Matched"));
+
+        // Assert
+        result.ShouldBe(1);
+        var verifySut = this.CreateRepository(this.GetContext(null, true));
+        var updated = (await verifySut.FindAllAsync(
+            [new Specification<PersonStub>(e => e.LastName == marker || e.LastName == "Matched")])).ToList();
+        updated.Single(e => e.Id == entity1.Id).LastName.ShouldNotBe("Matched");
+        updated.Single(e => e.Id == entity2.Id).LastName.ShouldBe("Matched");
+        updated.Single(e => e.Id == entity3.Id).LastName.ShouldNotBe("Matched");
+    }
+
     public virtual async Task UpsertAsync_ExistingEntityChildRemoval_EntityUpdated()
     {
         // Arrange
@@ -671,11 +808,16 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         return new EntityFrameworkGenericRepository<PersonStub>(r => r.DbContext(context));
     }
 
-    protected async Task<PersonStub> InsertEntityAsync(int age = 24)
+    protected async Task<PersonStub> InsertEntityAsync(int age = 24, string firstName = null, string lastName = null)
     {
         var faker = new Faker();
         var ticks = DateTime.UtcNow.Ticks;
-        var entity = new PersonStub($"John {ticks}", $"Doe {ticks}", $"John.Doe{ticks}@gmail.com", age, Status.Active);
+        var entity = new PersonStub(
+            firstName ?? $"John {ticks}",
+            lastName ?? $"Doe {ticks}",
+            $"John.Doe{ticks}@gmail.com",
+            age,
+            Status.Active);
         entity.AddLocation(LocationStub.Create(faker.Company.CompanyName(),
             faker.Address.StreetAddress(),
             faker.Address.BuildingNumber(),

@@ -51,6 +51,30 @@ public class EntityFrameworkCosmosGenericRepositoryTests : EntityFrameworkGeneri
     }
 
     [SkippableFact]
+    public override async Task DeleteSetAsync_AllEntities_EntitiesDeleted()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.DeleteSetAsync_AllEntities_EntitiesDeleted();
+    }
+
+    [SkippableFact]
+    public override async Task DeleteSetAsync_EntitySpecification_EntitiesDeleted()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.DeleteSetAsync_EntitySpecification_EntitiesDeleted();
+    }
+
+    [SkippableFact]
+    public override async Task DeleteSetAsync_EntitySpecifications_EntitiesDeleted()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.DeleteSetAsync_EntitySpecifications_EntitiesDeleted();
+    }
+
+    [SkippableFact]
     public override async Task ExistsAsync_ExistingEntityId_EntityFound()
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
@@ -176,6 +200,30 @@ public class EntityFrameworkCosmosGenericRepositoryTests : EntityFrameworkGeneri
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
         await base.InsertAsync_NewEntity_EntityInserted();
+    }
+
+    [SkippableFact]
+    public override async Task UpdateSetAsync_AllEntities_EntitiesUpdated()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.UpdateSetAsync_AllEntities_EntitiesUpdated();
+    }
+
+    [SkippableFact]
+    public override async Task UpdateSetAsync_EntitySpecification_EntitiesUpdated()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.UpdateSetAsync_EntitySpecification_EntitiesUpdated();
+    }
+
+    [SkippableFact]
+    public override async Task UpdateSetAsync_EntitySpecifications_EntitiesUpdated()
+    {
+        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
+
+        await base.UpdateSetAsync_EntitySpecifications_EntitiesUpdated();
     }
 
     [SkippableFact]

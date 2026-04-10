@@ -31,6 +31,24 @@ public class EntityFrameworkSqliteGenericRepositoryTests(ITestOutputHelper outpu
     }
 
     [Fact]
+    public override async Task DeleteSetAsync_AllEntities_EntitiesDeleted()
+    {
+        await base.DeleteSetAsync_AllEntities_EntitiesDeleted();
+    }
+
+    [Fact]
+    public override async Task DeleteSetAsync_EntitySpecification_EntitiesDeleted()
+    {
+        await base.DeleteSetAsync_EntitySpecification_EntitiesDeleted();
+    }
+
+    [Fact]
+    public override async Task DeleteSetAsync_EntitySpecifications_EntitiesDeleted()
+    {
+        await base.DeleteSetAsync_EntitySpecifications_EntitiesDeleted();
+    }
+
+    [Fact]
     public override async Task ExistsAsync_ExistingEntityId_EntityFound()
     {
         await base.ExistsAsync_ExistingEntityId_EntityFound();
@@ -124,6 +142,24 @@ public class EntityFrameworkSqliteGenericRepositoryTests(ITestOutputHelper outpu
     public override async Task InsertAsync_NewEntity_EntityInserted()
     {
         await base.InsertAsync_NewEntity_EntityInserted();
+    }
+
+    [Fact]
+    public override async Task UpdateSetAsync_AllEntities_EntitiesUpdated()
+    {
+        await base.UpdateSetAsync_AllEntities_EntitiesUpdated();
+    }
+
+    [Fact]
+    public override async Task UpdateSetAsync_EntitySpecification_EntitiesUpdated()
+    {
+        await base.UpdateSetAsync_EntitySpecification_EntitiesUpdated();
+    }
+
+    [Fact]
+    public override async Task UpdateSetAsync_EntitySpecifications_EntitiesUpdated()
+    {
+        await base.UpdateSetAsync_EntitySpecifications_EntitiesUpdated();
     }
 
     [Fact]

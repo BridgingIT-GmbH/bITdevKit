@@ -45,7 +45,7 @@ public class EntityUpdateSet<TEntity> : IEntityUpdateSet<TEntity>
     /// <returns>The current <see cref="IEntityUpdateSet{TEntity}"/> for chaining.</returns>
     /// <example>
     /// <code>
-    /// set => set.Set(u => u.IsActive, _ => false);
+    /// set => set.Set(u => u.IsActive, false);
     /// </code>
     /// </example>
     public IEntityUpdateSet<TEntity> Set<TProperty>(

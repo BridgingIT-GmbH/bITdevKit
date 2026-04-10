@@ -1,9 +1,15 @@
-# Project Management System (PMS) Domain Model
+---
+status: draft
+---
+
+# Design Document:Project Management System (PMS) Domain Model with ActiveEntity
 
 ## Overview
+
 The **Project Management System (PMS)** is a Scrum-based system inspired by the Azure DevOps Scrum template, designed to manage agile projects, work items, and teams. It supports multi-project environments, where each project encapsulates Epics, Features, Product Backlog Items (PBIs), WorkTasks, Sprints, and Comments, with Teams assigned to Projects. The domain model follows Domain-Driven Design (DDD) principles, ensuring a rich, behavior-driven model with clear boundaries and consistency, including domain events for reactive workflows.
 
 This document targets all stakeholders—Product Owners, Scrum Masters, Development Team members, Stakeholders, and developers—to provide a clear understanding of the domain. It includes:
+
 - **Ubiquitous Language**: Defines key terms and concepts.
 - **Strongly-Typed IDs**: Describes the use of `[TypedEntityId<Guid>]` for type-safe identifiers.
 - **Aggregates and Entities**: Details the core components, their relationships, and associated domain events.
@@ -16,7 +22,9 @@ This document targets all stakeholders—Product Owners, Scrum Masters, Developm
 The model is implemented using Active Entity for persistence, supporting auditing (`IAuditable`) via `AuditState` (capturing creation/update timestamps and metadata) and concurrency (`IConcurrency`), with strongly-typed IDs for type safety via source generation.
 
 ## Ubiquitous Language
+
 The following terms form the core of the PMS domain, ensuring alignment between stakeholders and developers:
+
 - **Project**: A container for a specific initiative or product, grouping Epics, Sprints, one Team, and a configuration.
 - **ProjectConfiguration**: Settings for a Project, such as default sprint duration and team capacity.
 - **Epic**: A high-level business objective within a Project, grouping Features.
@@ -39,13 +47,17 @@ The following terms form the core of the PMS domain, ensuring alignment between 
 - **WorkItemStatus**, **WorkTaskType**, **WorkTaskActivity**, **SprintStatus**, **ScrumRole**, **CommentableType**: Smart enumerations for workflows, task types, activities, sprint states, roles, and commentable entities.
 
 ## Strongly-Typed IDs
+
 The PMS model uses strongly-typed IDs to enhance type safety and domain clarity, avoiding the *primitive obsession* anti-pattern where primitive types like `Guid` are used for identifiers. This is achieved through the `[TypedEntityId<Guid>]` attribute, which triggers a source generator to create wrapper classes (e.g., `ProductBacklogItemId`, `WorkTaskId`, `CommentId`) for entity IDs.
 
 ### Overview
+
 Using primitive `Guid` types for identifiers can lead to errors, such as passing a `WorkTaskId` where a `ProductBacklogItemId` is expected. The `[TypedEntityId<Guid>]` attribute generates strongly-typed ID classes that encapsulate a `Guid` value, ensuring compile-time type safety and semantic clarity.
 
 ### Source Generation
+
 The source generator scans classes marked with `[TypedEntityId<T>]` (where `T` is `Guid` in PMS) and creates ID classes with:
+
 - A `Value` property (type `Guid`).
 - Constructors and factory methods (e.g., `Create(Guid value)`).
 - Implicit/explicit conversions to/from `Guid`.
@@ -53,6 +65,7 @@ The source generator scans classes marked with `[TypedEntityId<T>]` (where `T` i
 - Equality comparison and debugging visualization.
 
 **Example Generated ID Class**:
+
 ```csharp
 public class ProductBacklogItemId
 {
@@ -66,9 +79,11 @@ public class ProductBacklogItemId
 ```
 
 ### Usage in PMS
+
 Entities like `ProductBacklogItem`, `WorkTask`, `Sprint`, `Feature`, `Epic`, `Tag`, `Team`, `User`, and `Comment` use `[TypedEntityId<Guid>]` to generate IDs (e.g., `ProductBacklogItemId`, `CommentId`). This ensures methods like `AddWorkTask(WorkTask workTask)` or `CreateComment(CommentableId id, CommentableType type)` enforce type safety.
 
 **Example**:
+
 ```csharp
 public Result AddWorkTask(WorkTask workTask) // WorkTaskId, not ProductBacklogItemId
 {
@@ -77,7 +92,9 @@ public Result AddWorkTask(WorkTask workTask) // WorkTaskId, not ProductBacklogIt
 ```
 
 ### Entity Framework Configuration
+
 Strongly-typed IDs are mapped to database columns using Entity Framework Core value converters:
+
 ```csharp
 public class ProductBacklogItemEntityTypeConfiguration : IEntityTypeConfiguration<ProductBacklogItem>
 {
@@ -97,6 +114,7 @@ public class ProductBacklogItemEntityTypeConfiguration : IEntityTypeConfiguratio
 ```
 
 ### Benefits
+
 - **Type Safety**: Prevents mixing IDs (e.g., `WorkTaskId` vs. `CommentId`).
 - **Domain Clarity**: IDs reflect their domain purpose (e.g., `CommentId` for comments).
 - **Persistence**: Seamless mapping to `Guid` columns.
@@ -104,11 +122,13 @@ public class ProductBacklogItemEntityTypeConfiguration : IEntityTypeConfiguratio
 - **Extensibility**: Supports future entities without breaking code.
 
 ## Aggregates and Entities
+
 The PMS model is organized into aggregates, each acting as a consistency boundary controlling its child entities and enforcing invariants. Entities use strongly-typed IDs via `[TypedEntityId<Guid>]`, inherit from `ActiveEntity<TEntity, TId>`, implement `IAuditable` (via `AuditState`) and `IConcurrency`, and provide private constructors with `Create` methods returning `Result<TEntity>` for validation. Update methods (e.g., `ChangeTitle`) return `Result` with `ValidationError` using `Result<TEntity>.Failure(new ValidationError(...))`, registering domain events for successful changes, batching property updates into a single `ChangedDomainEvent<TEntity>` per transaction, overwriting same-property changes. Creation methods register only `CreatedDomainEvent` and, if applicable, `AssignedDomainEvent` for initial assignments (e.g., `AssignedToId`, `SprintId`), not `ChangedDomainEvent`.
 
 Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDomainEvent` helpers and published post-persistence via `ActiveEntityDomainEventPublishingBehavior` (with `PublishBefore = false`).
 
 ### Project Aggregate
+
 - **Root**: `Project`
   - **Properties**: `Id` (ProjectId), `Name` (string), `Description` (Description), `TeamId` (TeamId), `OwnerId` (UserId), `EpicIds` (IReadOnlyCollection<EpicId>), `SprintIds` (IReadOnlyCollection<SprintId>), `Configuration` (ProjectConfiguration), `AuditState`, `ConcurrencyVersion`.
   - **Methods**: `Create(name, description, teamId, ownerId, configuration)`, `AddEpicId(epicId)`, `RemoveEpicId(epicId)`, `AddSprintId(sprintId)`, `RemoveSprintId(sprintId)`, `ChangeName(name)`, `ChangeDescription(description)`, `ChangeTeamId(teamId)`, `ChangeOwnerId(ownerId)`. Update methods return `Result` with `ValidationError` using `Result.Failure(new ValidationError(...))`. `Create` registers only `ProjectCreatedDomainEvent`.
@@ -124,6 +144,7 @@ Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDom
   - **Methods**: `Create(defaultSprintDuration, teamCapacity)`.
 
 ### Epic Aggregate
+
 - **Root**: `Epic`
   - **Properties**: `Id` (EpicId), `Title` (string), `Description` (Description), `Priority` (Priority), `Status` (WorkItemStatus), `ProjectId` (ProjectId), `OwnerId` (UserId), `FeatureIds` (IReadOnlyCollection<FeatureId>), `AuditState`, `ConcurrencyVersion`.
   - **Methods**: `Create(title, description, priority, projectId, ownerId)`, `AddFeatureId(featureId)`, `RemoveFeatureId(featureId)`, `ChangeTitle(title)`, `ChangeDescription(description)`, `ChangePriority(priority)`, `ChangeStatus(status)`, `ChangeOwnerId(ownerId)`. Update methods return `Result` with `ValidationError` using `Result.Failure(new ValidationError(...))`. `Create` registers only `EpicCreatedDomainEvent`.
@@ -134,6 +155,7 @@ Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDom
     - `EpicFeatureRemovedDomainEvent(Epic epic, FeatureId featureId)`: Triggered on `RemoveFeatureId`.
 
 ### Feature Aggregate
+
 - **Root**: `Feature`
   - **Properties**: `Id` (FeatureId), `Title` (string), `Description` (Description), `Priority` (Priority), `Status` (WorkItemStatus), `EpicId` (EpicId), `OwnerId` (UserId), `ProductBacklogItemIds` (IReadOnlyCollection<ProductBacklogItemId>), `AuditState`, `ConcurrencyVersion`.
   - **Methods**: `Create(title, description, priority, epicId, ownerId)`, `AddProductBacklogItemId(pbiId)`, `RemoveProductBacklogItemId(pbiId)`, `ChangeTitle(title)`, `ChangeDescription(description)`, `ChangePriority(priority)`, `ChangeStatus(status)`, `ChangeOwnerId(ownerId)`. Update methods return `Result` with `ValidationError` using `Result.Failure(new ValidationError(...))`. `Create` registers only `FeatureCreatedDomainEvent`.
@@ -144,9 +166,10 @@ Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDom
     - `FeaturePBIRemovedDomainEvent(Feature feature, ProductBacklogItemId pbiId)`: Triggered on `RemoveProductBacklogItemId`.
 
 ### Product Backlog Item (PBI) Aggregate
+
 - **Root**: `ProductBacklogItem`
   - **Properties**: `Id` (ProductBacklogItemId), `Title` (string), `Description` (Description), `AcceptanceCriteria` (Description), `StoryPoints` (StoryPoints), `Priority` (Priority), `Status` (WorkItemStatus), `FeatureId` (FeatureId), `SprintId` (SprintId?, optional), `AssignedToId` (UserId?, optional), `Area` (string?, optional), `WorkTasks` (IReadOnlyCollection<WorkTask>), `Tags` (IReadOnlyCollection<ProductBacklogItemTag>), `WorkTaskTags` (IReadOnlyCollection<WorkTaskTag>), `WorkTaskCount` (int), `AuditState`, `ConcurrencyVersion`.
-  - **Methods**: 
+  - **Methods**:
     - `Create(title, description, acceptanceCriteria, storyPoints, priority, featureId, area, sprintId, assignedToId)`: Returns `Result<ProductBacklogItem>` with `ValidationError` using `Result.Failure(new ValidationError(...))`. Registers only `ProductBacklogItemCreatedDomainEvent` and, if applicable, `ProductBacklogItemAssignedDomainEvent`.
     - `AddWorkTask(workTask)`, `RemoveWorkTask(workTaskId)`, `AddTag(tagId)`, `RemoveTag(tagId)`, `AddWorkTaskTag(workTaskId, tagId)`, `RemoveWorkTaskTag(workTaskId, tagId)`: Return `Result` with `ValidationError` using `Result.Failure(new ValidationError(...))`.
     - `ChangeTitle(title)`, `ChangeDescription(description)`, `ChangeAcceptanceCriteria(acceptanceCriteria)`, `ChangeStoryPoints(storyPoints)`, `ChangePriority(priority)`, `ChangeStatus(status)`, `ChangeArea(area)`, `AssignToUser(assignedToId)`, `AssignToSprint(sprintId)`: Return `Result` with `ValidationError` using `Result.Failure(new ValidationError(...))`.
@@ -166,6 +189,7 @@ Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDom
   - `WorkTaskTag` (many-to-many): `WorkTaskId` (WorkTaskId), `TagId` (TagId).
 
 ### Sprint Aggregate
+
 - **Root**: `Sprint`
   - **Properties**: `Id` (SprintId), `Name` (string), `Goal` (SprintGoal), `StartDate` (DueDate), `EndDate` (DueDate), `Status` (SprintStatus), `ProjectId` (ProjectId), `OwnerId` (UserId), `ProductBacklogItemIds` (IReadOnlyCollection<ProductBacklogItemId>), `Plan` (SprintPlan), `AuditState`, `ConcurrencyVersion`.
   - **Methods**: `Create(name, goal, startDate, endDate, projectId, ownerId, plan)`, `AddProductBacklogItemId(pbiId)`, `RemoveProductBacklogItemId(pbiId)`, `ChangeName(name)`, `ChangeGoal(goal)`, `ChangeStartDate(startDate)`, `ChangeEndDate(endDate)`, `ChangeStatus(status)`, `ChangeOwnerId(ownerId)`. Update methods return `Result` with `ValidationError` using `Result.Failure(new ValidationError(...))`. `Create` registers only `SprintCreatedDomainEvent`.
@@ -180,6 +204,7 @@ Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDom
   - **Methods**: `Create(plannedEffort, riskAssessment)`.
 
 ### Comment Aggregate
+
 - **Root**: `Comment`
   - **Properties**: `Id` (CommentId), `Text` (Description), `AuthorId` (UserId), `CommentableId` (Guid), `CommentableType` (CommentableType, e.g., ProductBacklogItem, WorkTask, Sprint, Feature, Epic), `ParentId` (CommentId?, optional for threaded replies), `AuditState`, `ConcurrencyVersion`.
   - **Methods**:
@@ -199,6 +224,7 @@ Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDom
     - `ParentId`, if set, must reference a `Comment` with the same `CommentableId` and `CommentableType`.
 
 ### Tag Aggregate
+
 - **Root**: `Tag`
   - **Properties**: `Id` (TagId), `Name` (string), `ProjectId` (ProjectId), `AuditState`, `ConcurrencyVersion`.
   - **Methods**: `Create(name, projectId)`, `ChangeName(name)`. Update methods return `Result` with `ValidationError` using `Result.Failure(new ValidationError(...))`. `Create` registers only `TagCreatedDomainEvent`.
@@ -207,6 +233,7 @@ Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDom
     - `TagChangedDomainEvent(Tag tag)`: Triggered on property updates, batching changes, exposes `TagId`.
 
 ### Team Aggregate
+
 - **Root**: `Team`
   - **Properties**: `Id` (TeamId), `Name` (string), `Members` (IReadOnlyCollection<TeamMember>), `AuditState`, `ConcurrencyVersion`.
   - **Methods**: `Create(name)`, `AddMember(userId, role)`, `RemoveMember(userId)`, `ChangeName(name)`. Update methods return `Result` with `ValidationError` using `Result.Failure(new ValidationError(...))`. `Create` registers only `TeamCreatedDomainEvent`.
@@ -219,6 +246,7 @@ Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDom
   - **Properties**: `TeamId` (TeamId), `UserId` (UserId), `Role` (ScrumRole).
 
 ### User Aggregate
+
 - **Root**: `User`
   - **Properties**: `Id` (UserId), `Name` (string), `Email` (EmailAddress), `AuditState`, `ConcurrencyVersion`.
   - **Methods**: `Create(name, email)`, `ChangeName(name)`, `ChangeEmail(email)`. Update methods return `Result` with `ValidationError` using `Result.Failure(new ValidationError(...))`. `Create` registers only `UserCreatedDomainEvent`.
@@ -227,7 +255,9 @@ Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDom
     - `UserChangedDomainEvent(User user)`: Triggered on property updates, batching changes, exposes `UserId`.
 
 ## Value Objects
+
 Value objects are immutable, identity-less types with validation, mapped as owned types in persistence:
+
 - **Priority**: `Value` (int, 1–4), `Create(value)` returns `Result<Priority>` with `ValidationError`.
 - **StoryPoints**: `Value` (int, Fibonacci-like: 1, 2, 3, 5, 8, 13, 20), `Create(value)` returns `Result<StoryPoints>`.
 - **Description**: `Value` (string, max 1000 chars), `Create(value)` returns `Result<Description>`. Used for PBI descriptions, acceptance criteria, and comment text.
@@ -236,6 +266,7 @@ Value objects are immutable, identity-less types with validation, mapped as owne
 - **SprintGoal**: `Objective` (string, max 500 chars), `SuccessCriteria` (string, max 1000 chars, optional), `Create(objective, successCriteria)` returns `Result<SprintGoal>`.
 
 ## Smart Enumerations
+
 Smart enumerations inherit from `Enumeration`, use public primary constructors, and include `Id`, `Code`, `Name`, `Description`. They provide richer domain expression than standard C# enums, with Entity Framework Core value converters for persistence.
 
 - **WorkItemStatus**: `New`, `Approved`, `Committed`, `Done`, `Removed`.
@@ -246,12 +277,15 @@ Smart enumerations inherit from `Enumeration`, use public primary constructors, 
 - **CommentableType**: `ProductBacklogItem`, `WorkTask`, `Sprint`, `Feature`, `Epic`.
 
 ## Domain Events
+
 Domain events represent significant changes in the domain, capturing "what happened" for auditing, integration, or side effects (e.g., notifications). Events inherit from `DomainEventBase`, carry the entity in the constructor (e.g., `ProductBacklogItem pbi`), and expose IDs (e.g., `ProductBacklogItemId`) and relevant data. `ChangedDomainEvent<TEntity>` events batch property changes into a `List<PropertyChange>`, overwriting same-property updates, with specific ID properties (e.g., `CommentId`) in derived classes. Creation methods register only `CreatedDomainEvent` and, if applicable, `AssignedDomainEvent`, not `ChangedDomainEvent`. Events are registered using `RegisterDomainEvent` and `RegisterChangedDomainEvent` helpers and published post-persistence via `ActiveEntityDomainEventPublishingBehavior`.
 
 For details, see the events listed under each aggregate in the **Aggregates and Entities** section.
 
 ## Relationships
+
 The model demonstrates all relationship types:
+
 - **One-to-Many**: `ProductBacklogItem` → `WorkTask`, `Team` → `TeamMember`.
 - **Many-to-Many**: PBI ↔ Tag (`ProductBacklogItemTag`), WorkTask ↔ Tag (`WorkTaskTag`), Team ↔ User (`TeamMember`).
 - **One-to-One**: `Project` → `ProjectConfiguration`, `Sprint` → `SprintPlan`.
@@ -260,6 +294,7 @@ The model demonstrates all relationship types:
 - **Owned Types**: `Priority`, `StoryPoints`, `Description`, `DueDate`, `EmailAddress`, `SprintGoal`, `AuditState`.
 
 ## Invariants
+
 - **Project**: Valid name, existing `TeamId`, `OwnerId`, non-null `ProjectConfiguration`.
 - **Epic**: Valid title, priority; existing `ProjectId`, `OwnerId`.
 - **Feature**: Valid title, priority; existing `EpicId`, `OwnerId`.
@@ -274,6 +309,7 @@ All invariants are validated via `Result` with `ValidationError` using `Result.F
 ## Diagrams
 
 ### Context Diagram
+
 This diagram shows the high-level structure of the PMS domain, illustrating how Projects encapsulate Scrum elements, interact with Teams and Users, and support Comments on collaborative entities.
 
 ```mermaid
@@ -303,6 +339,7 @@ graph TD
 ```
 
 ### Class Diagram: Project Aggregate
+
 This diagram details the `Project` aggregate and its relationships.
 
 ```mermaid
@@ -345,6 +382,7 @@ classDiagram
 ```
 
 ### Class Diagram: Product Backlog Item Aggregate
+
 This diagram shows the `ProductBacklogItem` aggregate with its relationships.
 
 ```mermaid
@@ -429,6 +467,7 @@ classDiagram
 ```
 
 ### Class Diagram: Comment Aggregate
+
 This diagram illustrates the `Comment` aggregate and its relationships.
 
 ```mermaid
@@ -458,6 +497,7 @@ classDiagram
 ```
 
 ### Class Diagram: Team and User Aggregates
+
 This diagram illustrates the `Team` and `User` aggregates with their many-to-many relationship.
 
 ```mermaid
@@ -494,6 +534,7 @@ classDiagram
 ```
 
 ### Sequence Diagram: Product Backlog Item Update
+
 This diagram illustrates the event flow when updating a `ProductBacklogItem` (e.g., changing title, priority, and assigning to a user and sprint).
 
 ```mermaid
@@ -525,4 +566,5 @@ sequenceDiagram
 ```
 
 ## Conclusion
+
 The PMS domain model provides a robust, Scrum-aligned system for managing agile projects, enhanced with a flexible comment system for collaborative discussions. It supports stakeholders with clear terminology and diagrams, and developers with a DDD-based implementation featuring Active Entity persistence, strongly-typed IDs, domain events, and comprehensive auditing via `AuditState`, ensuring scalability and maintainability.

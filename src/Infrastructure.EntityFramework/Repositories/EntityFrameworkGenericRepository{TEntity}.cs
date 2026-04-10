@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
 using BridgingIT.DevKit.Domain.Model;
+using BridgingIT.DevKit.Domain;
 using Microsoft.EntityFrameworkCore;
 
 /// <summary>
@@ -48,6 +49,46 @@ public partial class EntityFrameworkGenericRepository<TEntity>
     /// </summary>
     public EntityFrameworkGenericRepository(ILoggerFactory loggerFactory, DbContext context)
         : base(o => o.LoggerFactory(loggerFactory).DbContext(context)) { }
+
+    /// <inheritdoc />
+    public virtual async Task<long> UpdateSetAsync(
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.UpdateSetAsync([], set, options, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public virtual async Task<long> UpdateSetAsync(
+        ISpecification<TEntity> specification,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.UpdateSetAsync([specification], set, options, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public virtual async Task<long> UpdateSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        Action<IEntityUpdateSet<TEntity>> set,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        EnsureArg.IsNotNull(set, nameof(set));
+
+        var updateBuilder = new EntityFrameworkEntityUpdateSet<TEntity>();
+        set(updateBuilder);
+
+        var query = this.BuildSetQuery(specifications, options);
+
+        var affected = await query.ExecuteUpdateAsync(
+            setters => updateBuilder.ApplyTo(setters),
+            cancellationToken).AnyContext();
+
+        return affected;
+    }
 
     /// <summary>
     /// Inserts the provided entity.
@@ -241,6 +282,36 @@ public partial class EntityFrameworkGenericRepository<TEntity>
         return await this.DeleteAsync(entity.Id, cancellationToken).AnyContext();
     }
 
+    /// <inheritdoc />
+    public virtual async Task<long> DeleteSetAsync(
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.DeleteSetAsync([], options, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public virtual async Task<long> DeleteSetAsync(
+        ISpecification<TEntity> specification,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        return await this.DeleteSetAsync([specification], options, cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public virtual async Task<long> DeleteSetAsync(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        IFindOptions<TEntity> options = null,
+        CancellationToken cancellationToken = default)
+    {
+        var query = this.BuildSetQuery(specifications, options);
+
+        var affected = await query.ExecuteDeleteAsync(cancellationToken).AnyContext();
+
+        return affected;
+    }
+
     // Helper method to check if Id is at its default value
     private static bool IsDefaultId(object id)
     {
@@ -263,6 +334,58 @@ public partial class EntityFrameworkGenericRepository<TEntity>
             // Add other types as needed (e.g., short, byte, custom structs)
             _ => Equals(id, Activator.CreateInstance(idType)) // Fallback for value types
         };
+    }
+
+    private IQueryable<TEntity> BuildSetQuery(
+        IEnumerable<ISpecification<TEntity>> specifications,
+        IFindOptions<TEntity> options)
+    {
+        var query = this.Options.DbContext.Set<TEntity>().AsQueryable();
+
+        foreach (var specification in specifications.SafeNull())
+        {
+            query = query.Where(specification.ToExpression());
+        }
+
+        if (options?.NoTracking == true)
+        {
+            query = query.AsNoTracking();
+        }
+
+        if (options?.Distinct?.Expression != null)
+        {
+            query = query.GroupBy(options.Distinct.Expression).Select(g => g.FirstOrDefault());
+        }
+        else if (options?.Distinct != null)
+        {
+            query = query.Distinct();
+        }
+
+        IOrderedQueryable<TEntity> orderedQuery = null;
+        foreach (var order in (options?.Orders ?? []).Insert(options?.Order))
+        {
+            orderedQuery = orderedQuery is null
+                ? order.Direction == OrderDirection.Ascending
+                    ? query.OrderBy(order.Expression)
+                    : query.OrderByDescending(order.Expression)
+                : order.Direction == OrderDirection.Ascending
+                    ? orderedQuery.ThenBy(order.Expression)
+                    : orderedQuery.ThenByDescending(order.Expression);
+        }
+
+        query = orderedQuery ?? query;
+
+        if (options?.Skip.HasValue == true && options.Skip.Value > 0)
+        {
+            query = query.Skip(options.Skip.Value);
+        }
+
+        if (options?.Take.HasValue == true && options.Take.Value > 0)
+        {
+            query = query.Take(options.Take.Value);
+        }
+
+        return query;
     }
 
     public static partial class TypedLogger

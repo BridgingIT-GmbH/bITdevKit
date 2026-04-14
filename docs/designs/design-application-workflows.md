@@ -4,6 +4,8 @@ status: draft
 
 # Design Document: Workflow Feature (Application.Workflows)
 
+> This design document outlines the architecture and behavior of the new Workflow feature within the application. It defines the core concepts, execution model, control flow capabilities, triggers, reliability mechanisms, observability features, identity management, versioning considerations, testing strategies, and typical use cases for workflows.
+
 [TOC]
 
 ## 1. Introduction

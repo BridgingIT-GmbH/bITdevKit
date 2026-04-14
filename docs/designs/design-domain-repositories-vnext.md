@@ -4,6 +4,8 @@ status: draft
 
 # Design Document: Repositories VNext Feature (Domain)
 
+> This design document outlines the architecture and behavior of a new Repository feature within the Domain layer. It defines the core concepts, goals, non-goals, high-level architecture, core design principles, public API and configuration, implementation details, testing strategies, and typical use cases for the Repositories VNext feature.
+
 [TOC]
 
 ## 1. Introduction

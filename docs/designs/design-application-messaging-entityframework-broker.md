@@ -610,7 +610,24 @@ The same message must never be processed concurrently by two active workers. The
 
 ### 9.4 Lease renewal
 
-Lease renewal may stay optional when handlers are normally short-lived and a fixed lease duration is sufficient. If production scenarios include long-running handlers, lease extension should be supported as an explicit capability of the worker.
+Lease renewal should be a supported capability of the worker.
+
+Purpose:
+
+- allow short default lease durations for fast recovery when a node crashes
+- prevent another node from reclaiming a message that is still being processed legitimately
+
+Recommended behavior:
+
+- while a worker is actively processing a claimed message, it periodically extends `LockedUntil`
+- renewal should happen before the current lease expires, for example every `LeaseRenewalInterval`
+- renewal should only succeed when `LockedBy` still matches the current worker instance
+- if lease renewal fails, the worker should log the failure and stop assuming exclusive ownership of the message
+
+This keeps the lease model robust for both:
+
+- short-running handlers
+- legitimately long-running handlers
 
 ---
 
@@ -642,6 +659,7 @@ The broker should add `EntityFrameworkMessageBrokerOptions` with at least:
 - `ProcessingCount`
 - `MaxDeliveryAttempts`
 - `LeaseDuration`
+- `LeaseRenewalInterval`
 - `MessageExpiration`
 - `AutoArchiveAfter`
 - `AutoArchiveStatuses`

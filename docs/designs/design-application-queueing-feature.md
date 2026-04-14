@@ -40,9 +40,9 @@ The queueing feature is intended to satisfy the following goals.
 
 The feature shall provide a first-class queue abstraction rather than overloading pub/sub messaging semantics for single-consumer work.
 
-### 2.2 Exactly one logical handler per queued message type
+### 2.2 At most one logical handler per queued message type
 
-Each queue message type shall resolve to exactly one registered handler in the application. Competing application instances may process different queue items in parallel, but a single queued item shall be handled by only one handler execution.
+Each queue message type may have zero or one registered handler in the application at runtime. Competing application instances may process different queue items in parallel, but a single queued item shall be handled by only one handler execution once a compatible handler is available.
 
 ### 2.3 Reuse familiar framework concepts
 
@@ -107,14 +107,15 @@ The feature centers on a few simple rules.
 
 A queue message represents a unit of work to be processed once by one logical consumer.
 
-### 4.2 One message type, one handler
+### 4.2 One message type, at most one handler
 
-Each queue message type maps to one handler type.
+Each queue message type maps to zero or one handler type at runtime.
 
 That means:
 
 - registration must reject duplicate handlers for the same queue message type
-- operational metadata can persist the resolved handler type with the queued item
+- a queue item may be enqueued before any handler is registered
+- handler lookup happens when processing begins, not when the item is enqueued
 - retries happen at message level because there is only one handler for the work item
 
 ### 4.3 Competing consumers are still valid
@@ -132,7 +133,7 @@ Durable providers should optimize for reliability. Queue handlers must therefore
 The difference can be summarized as:
 
 - messaging = one message may be handled by many handlers
-- queueing = one queue item must be handled by one handler
+- queueing = one queue item must be handled by one handler when a compatible handler is available
 
 ### 4.6 High-level architecture
 
@@ -142,7 +143,7 @@ At runtime, the queueing flow is:
 2. enqueuer behaviors run
 3. the selected provider stores or dispatches one queue item
 4. one consumer instance claims that queue item
-5. the queue broker resolves the single registered handler
+5. the queue broker looks up the currently registered handler for the queued message type
 6. handler behaviors run
 7. the handler processes the queue item
 8. the provider marks the queue item completed, retryable, dead-lettered, expired, or archived
@@ -163,14 +164,18 @@ sequenceDiagram
     EnqBeh->>Provider: Persist or dispatch queue item
     Worker->>Provider: Claim one queue item
     Worker->>Proc: Process(QueueMessageRequest)
-    Proc->>HandBeh: Execute handle pipeline
-    HandBeh->>Handler: Handle(message, ct)
-    alt success
-        Worker->>Provider: Mark Succeeded
-    else retryable failure
-        Worker->>Provider: Increment AttemptCount / release for retry
-    else terminal failure
-        Worker->>Provider: Mark DeadLettered or Expired
+    alt handler registered
+        Proc->>HandBeh: Execute handle pipeline
+        HandBeh->>Handler: Handle(message, ct)
+        alt success
+            Worker->>Provider: Mark Succeeded
+        else retryable failure
+            Worker->>Provider: Increment AttemptCount / release for retry
+        else terminal failure
+            Worker->>Provider: Mark DeadLettered or Expired
+        end
+    else no handler registered
+        Worker->>Provider: Leave item Pending
     end
 ```
 
@@ -232,6 +237,8 @@ public interface IQueueBroker
 
     Task Enqueue(IQueueMessage message, CancellationToken cancellationToken = default);
 
+    Task EnqueueAndWait(IQueueMessage message, CancellationToken cancellationToken = default);
+
     Task Process(QueueMessageRequest messageRequest);
 }
 ```
@@ -246,6 +253,23 @@ Recommended shape:
 - `Timestamp`
 - `Properties`
 - `Validate()`
+
+To reduce repeated boilerplate in application code, the feature should also provide a reusable base record such as:
+
+```csharp
+public abstract record QueueMessageBase : IQueueMessage
+{
+    public string MessageId { get; init; } = Guid.NewGuid().ToString("N");
+
+    public DateTimeOffset Timestamp { get; init; } = DateTimeOffset.UtcNow;
+
+    public IDictionary<string, object> Properties { get; init; } = new Dictionary<string, object>();
+
+    public virtual ValidationResult Validate() => new();
+}
+```
+
+Application queue messages can then inherit from `QueueMessageBase` rather than re-declaring common metadata on every message type.
 
 ### 5.4 `IQueueMessageHandler<TMessage>`
 
@@ -269,7 +293,7 @@ Responsibilities:
 - validate enqueued messages
 - execute enqueuer behaviors
 - execute handler behaviors
-- resolve the registered handler through the handler factory
+- resolve the currently registered handler through the handler factory during processing
 - provide overridable provider hooks such as `OnEnqueue`, `OnProcess`, `OnSubscribe`, and `OnUnsubscribe`
 
 `QueueBrokerBase` is conceptually similar to `MessageBrokerBase`, but it must be implemented inside `Application.Queueing` without inheriting from or depending on the messaging feature.
@@ -281,9 +305,13 @@ Unlike messaging, the subscription map must enforce one handler per queue messag
 Recommended behavior:
 
 - first registration for a message type succeeds
-- a second distinct handler for the same message type throws a configuration exception
-- re-registering the same handler type is a no-op or explicit duplicate-registration error, but the behavior must be deterministic
-- enqueueing a queue message type without a registered handler should fail fast with a clear configuration exception
+- a second distinct handler for the same message type is not registered
+- when a second distinct handler is encountered, the system logs a warning that the additional handler competes with the already registered handler for that queue message type
+- the first registered handler remains authoritative for that queue message type
+- re-registering the same handler type is a no-op or explicit duplicate-registration warning, but the behavior must be deterministic
+- enqueueing a queue message type without a registered handler is allowed
+- processing should use the handler registration state that exists at processing time
+- if no handler is registered when processing is attempted, the queue item should remain pending rather than becoming failed only because of missing runtime registration
 
 ---
 
@@ -340,11 +368,81 @@ Recommended sections:
 - `Queueing:AzureStorage`
 - `Queueing:RabbitMQ`
 
+### 6.5 Sample usage
+
+Example with the in-process provider:
+
+```csharp
+builder.Services.AddQueueing(builder.Configuration)
+    .WithSubscription<GenerateInvoiceQueueMessage, GenerateInvoiceQueueHandler>()
+    .WithInProcessBroker(o => o
+        .MaxDegreeOfParallelism(1)
+        .EnsureOrdered(true));
+```
+
+Example with the Entity Framework provider:
+
+```csharp
+builder.Services.AddQueueing(builder.Configuration)
+    .WithSubscription<GenerateInvoiceQueueMessage, GenerateInvoiceQueueHandler>()
+    .WithEntityFrameworkBroker<AppDbContext>(o => o
+        .ProcessingInterval("00:00:05")
+        .LeaseDuration("00:00:30")
+        .EnqueueBufferCapacity(5000)
+        .EnqueueBatchSize(250)
+        .EnqueueFlushInterval("00:00:01"));
+```
+
+Example with the Azure Service Bus provider:
+
+```csharp
+builder.Services.AddQueueing(builder.Configuration)
+    .WithSubscription<GenerateInvoiceQueueMessage, GenerateInvoiceQueueHandler>()
+    .WithServiceBusBroker(o => o
+        .ConnectionString(configuration["Queueing:ServiceBus:ConnectionString"])
+        .QueueNamePrefix("bit")
+        .AutoCreateQueue(true)
+        .MaxConcurrentCalls(8));
+```
+
+Example with the Azure Storage Queue provider:
+
+```csharp
+builder.Services.AddQueueing(builder.Configuration)
+    .WithSubscription<GenerateInvoiceQueueMessage, GenerateInvoiceQueueHandler>()
+    .WithAzureStorageBroker(o => o
+        .ConnectionString(configuration["Queueing:AzureStorage:ConnectionString"])
+        .QueueNamePrefix("bit")
+        .VisibilityTimeout("00:00:30"));
+```
+
+Example with the RabbitMQ provider:
+
+```csharp
+builder.Services.AddQueueing(builder.Configuration)
+    .WithSubscription<GenerateInvoiceQueueMessage, GenerateInvoiceQueueHandler>()
+    .WithRabbitMQBroker(o => o
+        .ConnectionString(configuration["Queueing:RabbitMQ:ConnectionString"])
+        .QueueNamePrefix("bit")
+        .IsDurable(true)
+        .PrefetchCount(20));
+```
+
 ---
 
 ## 7. Provider model
 
 The feature should support multiple queue broker providers behind `IQueueBroker`.
+
+### 7.0 Provider comparison
+
+| Provider | Durability | Best for | Operational history | Runtime provisioning | Notes |
+|---|---|---|---|---|---|
+| `InProcessQueueBroker` | No | Local work, tests, simple apps | No | N/A | Fastest and simplest, process-bound |
+| `EntityFrameworkQueueBroker` | Yes | Durable app-local queues | Full | App + EF migrations | Best operational visibility and control |
+| `ServiceBusQueueBroker` | Yes | Azure enterprise workloads | Limited/provider-specific | Yes | Rich broker semantics, cloud-native |
+| `AzureStorageQueueBroker` | Yes | Simple Azure queue workloads | Limited/provider-specific | Yes | Lower-cost, simpler capabilities |
+| `RabbitMQQueueBroker` | Yes | Self-hosted broker workloads | Limited/provider-specific | Yes | Flexible broker topology and distribution |
 
 ### 7.1 `InProcessQueueBroker`
 
@@ -360,8 +458,9 @@ Recommended characteristics:
 
 Semantics:
 
-- one registered handler per queue message type
+- zero or one registered handler per queue message type
 - a queued message is handled once within the current process
+- queued items may remain buffered until a compatible handler is registered
 - failures are surfaced locally and can optionally be retried by provider-specific policy
 
 The preferred backing primitive is `Channel<T>` because it is a thread-safe, high-performance, .NET-native producer/consumer abstraction designed specifically for asynchronous in-process pipelines.
@@ -373,6 +472,13 @@ Recommended options:
 - `MaxDegreeOfParallelism`
 - `EnsureOrdered`
 
+Recommended defaults:
+
+- `ProcessDelay = 00:00:00`
+- `MessageExpiration = 1.00:00:00`
+- `MaxDegreeOfParallelism = 1`
+- `EnsureOrdered = true`
+
 ### 7.2 `EntityFrameworkQueueBroker`
 
 The Entity Framework provider is the durable SQL-backed queue transport.
@@ -381,6 +487,7 @@ Recommended characteristics:
 
 - durable queue storage in SQL
 - one row per queued message
+- optimized for high enqueue throughput and burst absorption
 - lease-based claiming for multi-node safety
 - retries, dead-lettering, expiration, and archiving
 - operational service and REST API support
@@ -392,10 +499,38 @@ Recommended options:
 - `ProcessingCount`
 - `MaxDeliveryAttempts`
 - `LeaseDuration`
+- `LeaseRenewalInterval`
+- `CircuitBreakerFailureThreshold`
+- `CircuitBreakerCooldown`
 - `MessageExpiration`
+- `EnqueueBufferCapacity`
+- `EnqueueBatchSize`
+- `EnqueueFlushInterval`
+- `EnqueueWriterCount`
 - `AutoArchiveAfter`
 - `AutoArchiveStatuses`
 - optional `ProcessDelay`
+
+These batching and staging options primarily control the throughput-oriented `Enqueue` path and the shared writer pipeline used by `EnqueueAndWait`.
+
+Recommended defaults:
+
+- `StartupDelay = 00:00:05`
+- `ProcessingInterval = 00:00:02`
+- `ProcessingCount = 100`
+- `MaxDeliveryAttempts = 5`
+- `LeaseDuration = 00:00:30`
+- `LeaseRenewalInterval = 00:00:10`
+- `CircuitBreakerFailureThreshold = 25`
+- `CircuitBreakerCooldown = 00:05:00`
+- `MessageExpiration = 7.00:00:00`
+- `EnqueueBufferCapacity = 5000`
+- `EnqueueBatchSize = 250`
+- `EnqueueFlushInterval = 00:00:01`
+- `EnqueueWriterCount = 1`
+- `AutoArchiveAfter = 30.00:00:00`
+- `AutoArchiveStatuses = Succeeded, DeadLettered, Expired`
+- `ProcessDelay = 00:00:00`
 
 ### 7.3 `ServiceBusQueueBroker`
 
@@ -420,6 +555,14 @@ Recommended options:
 - `MessageExpiration`
 - `MaxDeliveryAttempts`
 
+Recommended defaults:
+
+- `PrefetchCount = 20`
+- `MaxConcurrentCalls = 8`
+- `AutoCreateQueue = true`
+- `MessageExpiration = 7.00:00:00`
+- `MaxDeliveryAttempts = 5`
+
 ### 7.4 `AzureStorageQueueBroker`
 
 The Azure Storage Queue provider is the simpler cloud-native queue transport and should live in `Infrastructure.Azure.Storage`.
@@ -442,6 +585,14 @@ Recommended options:
 - `MessageExpiration`
 - `MaxDeliveryAttempts`
 - `AutoCreateQueue`
+
+Recommended defaults:
+
+- `VisibilityTimeout = 00:00:30`
+- `PollingInterval = 00:00:02`
+- `MessageExpiration = 7.00:00:00`
+- `MaxDeliveryAttempts = 5`
+- `AutoCreateQueue = true`
 
 ### 7.5 `RabbitMQQueueBroker`
 
@@ -467,6 +618,15 @@ Recommended options:
 - `MessageExpiration`
 - `MaxDeliveryAttempts`
 
+Recommended defaults:
+
+- `PrefetchCount = 20`
+- `IsDurable = true`
+- `AutoDeleteQueue = false`
+- `ExclusiveQueue = false`
+- `MessageExpiration = 7.00:00:00`
+- `MaxDeliveryAttempts = 5`
+
 ---
 
 ## 8. Delivery semantics
@@ -481,6 +641,17 @@ For any individual queued message:
 - only one active consumer may process that queued message at a time
 - successful completion completes the queued item
 
+### 8.1.1 Waiting-for-handler semantics
+
+When a queued item exists but no compatible handler is currently registered, the provider should move the item into a dedicated `WaitingForHandler` state rather than leaving it indistinguishable from normal pending work.
+
+This improves:
+
+- operational visibility
+- support diagnostics
+- backlog analysis
+- targeted recovery once a handler becomes available
+
 ### 8.2 Retry semantics
 
 Retries happen at message level because there is only one handler for the queued item.
@@ -488,8 +659,17 @@ Retries happen at message level because there is only one handler for the queued
 Recommended behavior:
 
 - increment `AttemptCount` on failure
+- move the queue item to `Failed` immediately after a handler execution attempt fails
+- treat `Failed` as a transient processing outcome that records the most recent unsuccessful attempt before the broker decides the next action
+- if `AttemptCount` is still below `MaxDeliveryAttempts`, clear the lease and move the item back to `Pending` for a later retry
 - retry until `MaxDeliveryAttempts` is reached
-- move to dead-letter state when retries are exhausted
+- move to `DeadLettered` when retries are exhausted
+
+This keeps the status model explicit:
+
+- `Failed` means the latest processing attempt failed
+- `Pending` means the item is eligible to be claimed again
+- `DeadLettered` means retries are exhausted and no further automatic handling should occur
 
 ### 8.3 Expiration semantics
 
@@ -509,12 +689,76 @@ Recommended behavior:
 - keep active worker queries filtered to `IsArchived = false`
 - expose archived queue messages through the operational service and API
 
+### 8.4.1 Pause and resume semantics
+
+The feature should support pausing and resuming processing by:
+
+- `QueueName`
+- queue message `Type`
+
+Recommended behavior:
+
+- pause state stops new claims for matching items
+- already running handlers may finish normally
+- paused items remain visible in operational queries
+- resume re-enables normal claiming
+
+Pause and resume are control-plane capabilities, not queue-item failure states.
+
+Pause state should be runtime-only:
+
+- it should not be stored in `QueueMessage`
+- it should not be persisted in the database
+- it should live in in-memory broker/worker control state
+- after application restart, pause state is lost unless an operator re-applies it
+- in multi-node deployments, pause and resume affect only the current process instance unless an external coordination mechanism is later introduced
+
+### 8.4.2 Circuit-breaker semantics
+
+The feature should support circuit-breaker behavior for repeatedly failing queue message types.
+
+Recommended behavior:
+
+- track repeated failures by queue message type
+- when a configured threshold is exceeded, temporarily open the circuit for that type
+- open circuits prevent additional claims for that type for a cooldown period
+- emit warning/error logs and operational metrics for open circuits
+- allow manual reset through the operational service if needed
+
+This prevents one broken handler or poison workload pattern from dominating worker capacity.
+
+Circuit-breaker state should also be runtime-only:
+
+- it should not be persisted in the queue table
+- it should be maintained in memory by the active broker/worker instance
+- after application restart, circuit state is reset
+- in multi-node deployments, an open circuit on one node does not automatically open the circuit on other nodes
+
 ### 8.5 Ordering semantics
 
 Ordering is best-effort:
 
 - preserve creation order within a queue when operationally possible
 - do not promise global total ordering across different queue message types or nodes
+
+### 8.6 Enqueue contract
+
+Durable queue providers may use internal staging mechanisms to improve throughput, but the enqueue contract must remain explicit.
+
+Recommended contract for `EntityFrameworkQueueBroker`:
+
+- `Enqueue` is the default high-throughput API
+- `Enqueue` may place the queue item into an internal in-memory staging queue and return without waiting for database commit
+- if a later batch write fails, the provider should log the failure as an error with enough context to diagnose the lost or delayed queue item
+- a database commit failure after staging must not surface back as an exception from the original `Enqueue` call because that call has already returned
+- `EnqueueAndWait` is the explicit durability-confirming API
+- `EnqueueAndWait` should wait until the queue item has been durably committed by the provider
+- `EnqueueAndWait` may fail when staging or database persistence fails
+
+This gives callers an explicit choice:
+
+- use `Enqueue` for maximum throughput and minimal latency
+- use `EnqueueAndWait` when the caller must wait for durable persistence confirmation
 
 ---
 
@@ -541,16 +785,78 @@ where TContext : DbContext, IQueueingContext
 
 As with other Entity Framework features in the repository, the application’s existing `DbContext` owns the `DbSet` and schema creation through normal migrations.
 
-### 9.2 `QueueMessage`
+### 9.2 High-throughput enqueue path
+
+The Entity Framework provider should be optimized for scenarios where many queue messages are enqueued concurrently.
+
+Recommended design:
+
+- use an internal bounded in-memory staging queue inside the provider
+- use `System.Threading.Channels` as the staging primitive
+- have one or more dedicated background writers drain staged items into the database in batches
+- amortize `DbContext` creation, change tracking, and `SaveChangesAsync` cost across multiple queued items
+- apply backpressure when the staging queue reaches capacity
+- optionally use a bulk-insert strategy when the target database and provider support it
+
+The goal is to prevent the enqueue path from degenerating into one database insert and one `SaveChangesAsync` call per queued item under burst load.
+
+Recommended internal flow:
+
+1. `Enqueue` validates and serializes the queue message
+2. `Enqueue` creates the `QueueMessage` persistence model without requiring a handler lookup
+3. `Enqueue` writes an internal work item to a bounded `Channel<T>` and returns once the item is successfully staged
+4. `EnqueueAndWait` writes the same internal work item but waits for the staged item’s commit completion signal
+5. a batch writer reads staged items until `EnqueueBatchSize` or `EnqueueFlushInterval` is reached
+6. the batch writer inserts all staged `QueueMessage` rows in one unit of work
+7. the writer completes the waiting tasks for `EnqueueAndWait` only after the batch commit succeeds
+8. if the batch commit fails, the provider logs an error for the staged items and completes waiting `EnqueueAndWait` calls with failure
+
+This design gives the provider:
+
+- burst absorption in memory
+- fewer database round-trips
+- fewer transactions
+- reduced lock and connection churn
+- explicit backpressure rather than uncontrolled memory growth
+- a non-blocking default enqueue path for very high throughput
+- an opt-in durability-confirming enqueue path when callers need it
+- an optional path to even higher write throughput through provider-specific bulk insertion
+
+### 9.3 Backpressure and batching options
+
+The Entity Framework provider should expose options that make throughput behavior tunable:
+
+- `EnqueueBufferCapacity`
+  - maximum number of staged items waiting to be written
+- `EnqueueBatchSize`
+  - maximum number of items written in one database batch
+- `EnqueueFlushInterval`
+  - maximum time to wait before flushing a partial batch
+- `EnqueueWriterCount`
+  - number of concurrent database batch writers
+
+Recommended defaults:
+
+- bounded buffer, not unbounded
+- one writer by default for predictable ordering and reduced database contention
+- batch sizes tuned for practical SQL throughput rather than extreme bulk-write behavior
+- when the in-memory enqueue buffer is full, `Enqueue` and `EnqueueAndWait` should block briefly to apply backpressure rather than dropping items immediately
+
+If higher parallelism is needed, `EnqueueWriterCount` can be increased, but the default should optimize for stable throughput and operational predictability rather than aggressive write fan-out.
+
+Bulk insert support should remain an optional optimization layer, not a hard dependency. The default implementation should work with standard EF Core batching, while allowing optimized provider-specific insertion strategies to be plugged in later.
+
+### 9.4 `QueueMessage`
 
 The durable queued work item should be represented by a single `QueueMessage` entity.
 
 Recommended semantics:
 
 - one row per queued message
-- one persisted handler type per queued message
+- no persisted handler type is required at enqueue time
 - one lease owner at a time
 - retries tracked directly on the queue item
+- handler resolution happens when the queued item is processed
 
 Recommended implementation target:
 
@@ -578,10 +884,6 @@ public class QueueMessage
     [Required]
     [MaxLength(2048)]
     public string Type { get; set; }
-
-    [Required]
-    [MaxLength(2048)]
-    public string HandlerType { get; set; }
 
     [Required]
     public string Content { get; set; }
@@ -635,13 +937,14 @@ public class QueueMessage
 
 Enum-to-string storage should be configured explicitly in model building when readable enum values in the database are preferred.
 
-### 9.3 `QueueMessageStatus`
+### 9.5 `QueueMessageStatus`
 
 `QueueMessage.Status` should be implemented as an enum.
 
 Recommended values:
 
 - `Pending`
+- `WaitingForHandler`
 - `Processing`
 - `Succeeded`
 - `Failed`
@@ -650,7 +953,9 @@ Recommended values:
 
 `IsArchived` remains a separate boolean flag rather than another status value.
 
-### 9.4 Worker behavior
+`Failed` should not be treated as a long-lived terminal state. It represents the immediate result of a failed processing attempt and normally transitions either back to `Pending` for retry or forward to `DeadLettered` when retry limits are exhausted.
+
+### 9.6 Worker behavior
 
 The durable provider requires a hosted worker:
 
@@ -658,15 +963,21 @@ The durable provider requires a hosted worker:
 
 Recommended worker flow:
 
-1. poll non-archived pending or reclaimable queue messages in batches
+1. poll non-archived `Pending`, `WaitingForHandler`, or reclaimable queue messages in batches
 2. skip and expire stale messages
-3. atomically claim messages by setting `LockedBy` and `LockedUntil`
-4. deserialize the queue message
-5. invoke `QueueBrokerBase.Process`
-6. mark success, retry, dead-letter, or expired
-7. archive terminal messages whose retention age has elapsed
+3. respect pause rules and open circuit-breakers before claiming items
+4. poll broadly regardless of which handler types are currently registered in the process
+5. atomically claim messages by setting `LockedBy` and `LockedUntil`
+6. deserialize the queue message
+7. resolve the current handler registration for the queue message type
+8. if no handler is registered, clear the lease and move the item to `WaitingForHandler` without incrementing `AttemptCount`
+9. invoke `QueueBrokerBase.Process` when a handler is available
+10. mark success, retry, dead-letter, or expired
+11. archive terminal messages whose retention age has elapsed
 
-### 9.5 Multi-node coordination
+Missing-handler behavior is not a processing failure by itself. A queue item may remain in `WaitingForHandler` until a compatible handler is registered or it expires.
+
+### 9.7 Multi-node coordination
 
 The same queue item must never be processed concurrently by two active workers.
 
@@ -678,7 +989,28 @@ Recommended mechanism:
 
 Only rows that are non-archived and not currently leased, or whose lease has expired, may be claimed.
 
-### 9.6 Indexing strategy
+### 9.7.1 Lease renewal
+
+Lease renewal should be a supported capability of the `EntityFrameworkQueueBrokerWorker<TContext>`.
+
+Purpose:
+
+- allow short default lease durations for fast crash recovery
+- prevent duplicate processing when a handler legitimately runs longer than the original `LeaseDuration`
+
+Recommended behavior:
+
+- while a worker is actively processing a claimed queue item, it periodically extends `LockedUntil`
+- renewal should happen before the current lease expires, for example every `LeaseRenewalInterval`
+- renewal should only succeed when `LockedBy` still matches the current worker instance
+- if lease renewal fails, the worker should log an error or warning and stop assuming exclusive ownership
+
+This gives the provider a safer balance between:
+
+- short leases for fast failover
+- long-running handler support without concurrent duplicate processing
+
+### 9.8 Indexing strategy
 
 For large systems, active polling and operational queries should always filter on `IsArchived = false`.
 
@@ -692,7 +1024,7 @@ The recommended indexes optimize:
 
 Provider-specific filtered indexes for `IsArchived = false` are recommended when the target database supports them.
 
-### 9.7 Operational query surface for Entity Framework
+### 9.9 Operational query surface for Entity Framework
 
 The Entity Framework provider should include a first-class query and management surface over the persisted queue table, analogous to the operational service and REST API defined for the Entity Framework messaging broker.
 
@@ -722,6 +1054,7 @@ Recommended behavior:
 - complete messages only after successful handler completion
 - abandon retryable failures
 - dead-letter terminal failures when retry policy is exhausted
+- allow queued messages to accumulate when no consumer/handler is currently registered
 
 Provisioning principle:
 
@@ -748,6 +1081,7 @@ Recommended behavior:
 - delete the queue message only after successful handler completion
 - re-surface the message for retry by allowing visibility timeout expiry or by explicit update
 - move poison messages to a dead-letter strategy after retry exhaustion
+- allow queued messages to accumulate when no consumer/handler is currently registered
 
 Recommended transport metadata:
 
@@ -808,9 +1142,11 @@ Provisioning principle:
 
 ### 11.3 Subscription behavior
 
-The broker should declare the queue when the application subscribes a queue message type and should start one consumer pipeline for the registered handler.
+The broker should declare the queue when needed and should start one consumer pipeline only when a handler for that queue message type is registered.
 
-As with all providers, duplicate handler registrations for the same queue message type must be rejected before queue creation starts.
+As with all providers, duplicate handler registrations for the same queue message type must not create competing consumers. The broker should log a warning and ignore the additional registration so the first handler remains authoritative.
+
+Queue publication must not require an active consumer. Messages may accumulate in the RabbitMQ queue until a compatible handler is registered and consuming.
 
 ### 11.4 Delivery metadata
 
@@ -835,6 +1171,8 @@ Recommended application-facing service:
 - `IQueueBrokerService`
 
 This service is specifically required for the Entity Framework / `DbContext` setup and should be implemented over `IQueueingContext` rather than exposing the EF entity directly to higher layers.
+
+Pause/resume and circuit-breaker operations exposed by this service are runtime control operations. They should act on the current application instance and should not imply durable shared state across restarts or across different nodes.
 
 Recommended contract:
 
@@ -871,6 +1209,16 @@ public interface IQueueBrokerService
 
     Task ReleaseLeaseAsync(Guid id, CancellationToken cancellationToken = default);
 
+    Task PauseQueueAsync(string queueName, CancellationToken cancellationToken = default);
+
+    Task ResumeQueueAsync(string queueName, CancellationToken cancellationToken = default);
+
+    Task PauseMessageTypeAsync(string type, CancellationToken cancellationToken = default);
+
+    Task ResumeMessageTypeAsync(string type, CancellationToken cancellationToken = default);
+
+    Task ResetMessageTypeCircuitAsync(string type, CancellationToken cancellationToken = default);
+
     Task ArchiveMessageAsync(Guid id, CancellationToken cancellationToken = default);
 
     Task PurgeMessagesAsync(
@@ -890,7 +1238,7 @@ Recommended models:
   - `MessageId`
   - `QueueName`
   - `Type`
-  - `HandlerType`
+  - `RegisteredHandlerType`
   - `Status : QueueMessageStatus`
   - `AttemptCount`
   - `IsArchived`
@@ -907,7 +1255,7 @@ Recommended models:
   - `MessageId`
   - `QueueName`
   - `Type`
-  - `HandlerType`
+  - `RegisteredHandlerType`
   - `Content`
   - `ContentHash`
   - `CreatedDate`
@@ -915,6 +1263,7 @@ Recommended models:
 - `QueueMessageStats`
   - `Total`
   - `Pending`
+  - `WaitingForHandler`
   - `Processing`
   - `Succeeded`
   - `Failed`
@@ -922,6 +1271,9 @@ Recommended models:
   - `Expired`
   - `Archived`
   - `Leased`
+  - `PausedQueues`
+  - `PausedTypes`
+  - `OpenCircuits`
 
 ### 12.3 REST endpoints
 
@@ -938,12 +1290,19 @@ Recommended routes:
 - `GET /api/_system/queueing/messages/stats`
 - `POST /api/_system/queueing/messages/{id}/retry`
 - `POST /api/_system/queueing/messages/{id}/lease/release`
+- `POST /api/_system/queueing/queues/{queueName}/pause`
+- `POST /api/_system/queueing/queues/{queueName}/resume`
+- `POST /api/_system/queueing/types/{type}/pause`
+- `POST /api/_system/queueing/types/{type}/resume`
+- `POST /api/_system/queueing/types/{type}/circuit/reset`
 - `POST /api/_system/queueing/messages/{id}/archive`
 - `DELETE /api/_system/queueing/messages`
 
 The content endpoint keeps list and summary responses compact while still exposing the stored serialized payload when needed.
 
 The full list/detail/content/history API is required for `EntityFrameworkQueueBroker`. External broker providers may later expose provider-specific inspection endpoints, but the design should not assume that Azure Service Bus, Azure Storage Queues, or RabbitMQ can provide the same retained-history experience through the same backend model.
+
+`RegisteredHandlerType` in the DTO models is runtime-derived metadata. It reflects the handler currently registered for the queue message type, if any, and is not a column persisted in `QueueMessage`.
 
 ### 12.4 Endpoint implementation pattern
 
@@ -994,7 +1353,7 @@ Use queueing when:
 - one work item should be handled once
 - retry and dead-letter behavior should be owned at work-item level
 - competing consumers should distribute load
-- one handler per queue message type is the desired model
+- zero or one handler per queue message type is the desired model, with processing starting when a handler becomes available
 
 ### 13.3 Composition
 
@@ -1029,7 +1388,7 @@ Recommended style:
 
 ```csharp
 /// <summary>
-/// Enqueues a queue message for single-consumer processing.
+/// Enqueues a queue message for high-throughput single-consumer processing.
 /// </summary>
 /// <param name="message">The queued work item to persist or dispatch.</param>
 /// <param name="cancellationToken">Token to cancel the operation.</param>
@@ -1043,6 +1402,8 @@ Recommended style:
 Task Enqueue(IQueueMessage message, CancellationToken cancellationToken = default);
 ```
 
+`EnqueueAndWait` should have equivalent XML documentation and examples that make the durability-confirming semantics explicit.
+
 ---
 
 ## 15. Testing strategy
@@ -1053,9 +1414,18 @@ The queueing feature should be covered by unit and integration tests.
 
 Unit tests should verify:
 
-- duplicate queue handler registration is rejected
+- duplicate queue handler registration logs a warning and ignores the additional handler
 - enqueue validation and behavior pipeline execution work correctly
-- only the registered handler for the queued message type is invoked
+- `Enqueue` returns after successful staging without waiting for database commit in the Entity Framework provider
+- `EnqueueAndWait` waits for durable commit in the Entity Framework provider
+- failed batch persistence is logged as an error for buffered `Enqueue` items
+- failed batch persistence fails waiting `EnqueueAndWait` calls
+- only the currently registered handler for the queued message type is invoked
+- enqueue succeeds even when no handler is currently registered
+- queue items move to `WaitingForHandler` when no handler is currently registered
+- queue items are processed once a compatible handler is later registered
+- pause/resume by queue and type prevents new claims while allowing resumed processing later
+- repeated failures can open a circuit-breaker for a queue message type
 - in-process broker handles queue items in the expected order/concurrency mode
 - Entity Framework worker claim logic prevents duplicate processing
 - retry, dead-letter, expiration, and archive transitions behave correctly
@@ -1068,8 +1438,10 @@ Integration tests should verify:
 - end-to-end enqueue and process using the in-process broker
 - end-to-end enqueue and process using the Entity Framework broker
 - restart resilience for pending durable queue messages
+- durable queue items accumulate safely before a handler is registered and are processed after registration becomes available
 - multi-instance-safe claiming for the Entity Framework broker
 - queue-specific operational endpoints expose message lists, details, content, stats, retry, archive, lease release, and purge operations for the Entity Framework provider
+- pause/resume and circuit-breaker controls are visible and effective through the operational surface
 - Azure Service Bus and Azure Storage providers honor their provider-specific complete/abandon/visibility-timeout semantics when implemented
 - RabbitMQ provider honors single-consumer queue semantics and ack/nack behavior when implemented
 
@@ -1092,6 +1464,8 @@ Planned public symbols:
 - `IQueueHandlerBehavior`
 - `IQueueBrokerService`
 - queue DTOs and request models
+
+`IQueueBroker` should expose both `Enqueue` and `EnqueueAndWait` so callers can explicitly choose throughput-oriented or durability-confirming behavior.
 
 ### 16.2 Infrastructure layer
 
@@ -1130,9 +1504,9 @@ The core decision is:
 
 - add `Application.Queueing` with its own queue-specific abstractions
 - preserve the familiar broker, behavior, registration, and provider model established by messaging
-- enforce one handler per queue message type
-- provide three providers: in-process, Entity Framework, and RabbitMQ
-- model durable queue processing through retries, expiration, dead-lettering, leasing, and archiving
+- enforce at most one handler per queue message type while allowing enqueue before handler registration
+- provide five providers: in-process, Entity Framework, Azure Service Bus, Azure Storage Queues, and RabbitMQ
+- model durable queue processing through retries, `WaitingForHandler`, expiration, dead-lettering, leasing, pause/resume controls, circuit-breaker protection, and archiving
 - expose an operational service and REST API so durable queue state can support diagnostics and UI tooling
 
 This gives the platform a clear distinction between:

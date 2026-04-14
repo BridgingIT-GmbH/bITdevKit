@@ -1,10 +1,10 @@
 ---
-status: draft
----
+
+## status: draft
 
 # Design Document: Orchestration Feature (Application.Orchestration)
 
-> This design document outlines the architecture and behavior of the orchestration feature within the application. It defines the core concepts, execution model, control flow capabilities, triggers, reliability mechanisms, observability features, identity management, versioning considerations, testing strategies, and typical use cases for orchestrations.
+> This design document outlines the architecture and behavior of the new orchestration feature within the application. It defines the core concepts, execution model, control flow capabilities, triggers, reliability mechanisms, observability features, identity management, versioning considerations, testing strategies, and typical use cases for orchestrations.
 
 ## Introduction
 
@@ -12,18 +12,20 @@ The orchestration feature provides a code-first framework for defining, executin
 
 Orchestrations are persistent, stateful, and designed to support complex coordination scenarios, including human interaction, event-driven transitions, and fault-tolerant execution.
 
+Disclaimer: this feature is not a full blown workflow engine or a business process modeling tool. It is a code-centric framework for structuring long-running processes in a maintainable and testable way. Please evaluate carefully if this feature is a good fit for your specific use case, as it can be opinionated in its execution model and may not be suitable for all scenarios. Alternatives: Elsa, Camunda, Dapr Workflows, MassTransit Courier, Temporal, Durable Functions, etc.
+
 ---
 
 ## Terminology
 
 | Term                       | Description                                                                                                            |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| **Orchestration**          | A definition that describes a long-running process composed of states, steps, and transitions.                         |
+| **Orchestration**          | A definition that describes a long-running process composed of states, activities, and transitions.                    |
 | **Orchestration Instance** | A runtime execution of an orchestration definition.                                                                    |
-| **State**                  | A logical phase within an orchestration where a set of steps is executed.                                              |
-| **Step**                   | The smallest unit of execution within a state that produces an outcome controlling progression.                        |
-| **Outcome**                | The result of a step that determines execution behavior (e.g. Continue, Retry, Wait, Complete).                        |
-| **Transition**             | A movement from one state to another based on conditions, signals, or outcomes.                                        |
+| **State**                  | A logical phase within an orchestration where a set of activities is executed.                                         |
+| **Activity**               | The smallest unit of execution within a state that produces an outcome controlling progression.                        |
+| **Outcome**                | The result of an activity that determines execution behavior (e.g. Continue, Retry, Wait, Complete).                   |
+| **Transition**             | A movement from one state to another based on conditions, signals (events) or outcomes.                                |
 | **Orchestration Context**  | The shared execution object containing runtime metadata, optional orchestration data, and execution-scoped properties. |
 
 ---
@@ -51,8 +53,8 @@ Orchestrations are persistent, stateful, and designed to support complex coordin
 
 * **Task-Based Execution**
 
-  * Each orchestration instance progresses through a sequence of steps.
-  * Steps operate on a shared orchestration context.
+  * Each orchestration instance progresses through a sequence of activities.
+  * Activities operate on a shared orchestration context.
 
 * **Long-Running Support**
 
@@ -60,24 +62,25 @@ Orchestrations are persistent, stateful, and designed to support complex coordin
 
 * **Extensibility**
 
-  * The framework is extensible, allowing custom step types, triggers, and persistence providers.
+  * The framework is extensible, allowing custom activity types, triggers, and persistence providers.
   * A REST API is provided for orchestration management and monitoring based on a common data provider model.
 
 ---
 
 ## Execution Model
 
-* **Step-Oriented Execution**
+* **Activity-Oriented Execution**
 
-  * An orchestration progresses by executing steps within its current state.
+  * An orchestration progresses by executing activities within its current state.
 
 * **Outcome-Driven Progression**
 
-  * Each step produces an outcome that determines how execution proceeds.
+  * Each activity produces an outcome that determines how execution proceeds.
+  * If no explicit outcome is returned, the default outcome is **Continue**.
 
 * **Dependency Injection**
 
-  * Orchestration steps support dependency injection for integration with application services.
+  * Orchestration activities support dependency injection for integration with application services.
 
 * **Concurrency**
 
@@ -92,10 +95,10 @@ Orchestrations are persistent, stateful, and designed to support complex coordin
 
 ## Control Flow Capabilities
 
-Orchestrations support common control flow constructs:
+Orchestrations support common control flow structures to enable complex process definitions:
 
 * Conditional branching (`if / else`)
-* Switch/case logic
+* Switch/case logic (decision points)
 * Parallel branches
 * Loops (including recurrence and `do-until`)
 
@@ -113,7 +116,7 @@ Orchestrations support common control flow constructs:
 
 * **Human Interaction**
 
-  * Manual steps (e.g., approvals) can pause execution until completed.
+  * Manual activities (e.g., approvals) can pause execution until completed.
 
 ---
 
@@ -134,7 +137,7 @@ Orchestrations support common control flow constructs:
 
 * **Auditing**
 
-  * All state transitions and step executions are logged.
+  * All state transitions and activity executions are logged.
 
 * **Monitoring**
 
@@ -153,6 +156,7 @@ Orchestrations support common control flow constructs:
 * **Extensibility**
 
   * A dashboard UI is not provided but can be built on top of the API.
+  * see [https://docs.diagrid.io/develop/diagrid-dashboard/](https://docs.diagrid.io/develop/diagrid-dashboard/)
 
 ---
 
@@ -162,27 +166,28 @@ Orchestrations support common control flow constructs:
 
 ---
 
-## Versioning (TBD)
+## Versioning
 
-* Orchestration definitions may support versioning.
-* New versions should not affect already running instances.
+* Versioning of orchestration definitions is currently not a required capability.
+* The system is designed under the assumption that definitions evolve in a controlled manner without the need to maintain multiple active versions.
+* If future requirements demand it, versioning can be introduced as an extension without impacting the core execution model.
 
 ---
 
 ## Testing
 
-* Orchestrations are fully testable.
+* Orchestrations are fully testable (xunit) with the help of test helper utilities to setup, run and assert orchestration instances in unit tests.
 * Unit testing of:
 
   * Transitions
-  * Step logic
+  * Activity logic
   * Control flow
 
 ---
 
 ## Execution Lifecycle
 
-An orchestration instance progresses through a well-defined lifecycle from creation to completion. Execution is state-driven and step-outcome-driven.
+An orchestration instance progresses through a well-defined lifecycle from creation to completion. Execution is state-driven and activity-outcome-driven.
 
 ### Lifecycle Phases
 
@@ -192,7 +197,7 @@ An orchestration instance progresses through a well-defined lifecycle from creat
 
 * **Running**
 
-  * The orchestration actively executes steps.
+  * The orchestration actively executes activities.
 
 * **Waiting**
 
@@ -225,9 +230,9 @@ An orchestration instance progresses through a well-defined lifecycle from creat
 
 ---
 
-### Step Outcomes
+### Activity Outcomes
 
-Each orchestration step produces an outcome that controls progression.
+Each orchestration activity produces an outcome that controls progression.
 
 If no explicit outcome is returned, the default outcome is **Continue**.
 
@@ -235,11 +240,11 @@ Supported outcomes:
 
 * **Continue**
 
-  * Proceed with the next step or progression.
+  * Proceed with the next activity or progression.
 
 * **Retry**
 
-  * Re-execute the current step according to retry policy.
+  * Re-execute the current activity according to retry policy.
 
 * **Break**
 
@@ -275,7 +280,7 @@ Execution interruption is modeled in two distinct ways:
   * Introduced by:
 
     * a `Wait` outcome, or
-    * an explicit wait step
+    * an explicit wait activity
 
 * **Paused**
 
@@ -290,11 +295,11 @@ Waiting is a first-class concept and can be introduced in two ways:
 
 * **Outcome-based**
 
-  * A step returns `Wait` dynamically during execution.
+  * An activity returns `Wait` dynamically during execution.
 
 * **Declarative**
 
-  * A dedicated wait step defines the pause structurally in the orchestration.
+  * A dedicated wait activity defines the pause structurally in the orchestration.
 
 Both approaches result in identical runtime behavior.
 
@@ -306,12 +311,12 @@ Both approaches result in identical runtime behavior.
 
 * Triggered by:
 
-  * Step outcomes
+  * Activity outcomes
   * Conditions
   * Signals
   * Time-based events
 
-* Step outcomes control execution behavior.
+* Activity outcomes control execution behavior.
 
 * State transitions control business progression.
 
@@ -323,6 +328,8 @@ Each orchestration instance operates with a dedicated, typed orchestration conte
 
 The orchestration context is a shared execution object available throughout the lifecycle of the orchestration.
 
+Upon starting a new orchestration instance, an optional strongly-typed data object can be provided. This data is defined by the orchestration definition and is accessible via the context during execution.
+
 ### Context Responsibilities
 
 The orchestration context contains:
@@ -333,7 +340,7 @@ The orchestration context contains:
   * Execution identifier
   * Correlation identifier
   * Start and completion timestamps
-  * Current step name
+  * Current activity name
   * Execution counters and derived runtime information
 
 * **Typed orchestration data**
@@ -349,8 +356,8 @@ The orchestration context contains:
 
 * Orchestration-specific data is optional.
 * The orchestration context itself is always present.
-* Steps interact exclusively through the context.
-* No step input or output parameters are supported; all data is accessed via the context.
+* Activities interact exclusively through the context.
+* No activity input or output parameters are supported; all data is accessed via the context.
 
 ---
 
@@ -362,12 +369,52 @@ The orchestration context contains:
 
 * **Idempotency Expectation**
 
-  * Steps should tolerate re-execution.
+  * Activities should tolerate re-execution.
 
 * **Pause and Resume**
 
   * Orchestrations may wait as part of normal execution or be paused externally.
   * Resumption continues from the persisted point.
+
+* **Programmatic API**
+
+  * Orchestrations can be started directly from application code.
+  * Supports passing initial context.
+  * Returns the orchestration instance identifier for tracking.
+  * Supports awaiting completion or specific outcomes.
+
+### Starting Orchestrations
+
+The orchestration feature supports three distinct mechanisms for starting execution, each suited to different runtime scenarios:
+
+* **Execute**
+
+  * Synchronous, inline execution within the current context.
+  * Suitable for short-running orchestrations that need to execute immediately and return results directly to the caller.
+  * Runs in the caller's context/process (same thread).
+  * Returns a task that can be awaited for completion and result retrieval.
+  * Blocks the caller until execution completes.
+  * Easy for testing and debugging due to synchronous nature.
+  * Should be restricted to orchestrations that are expected to complete inline without entering a waiting/blocking state.
+  * If execution reaches a waiting/paused condition, the call should fail fast rather than silently converting into a long-running blocking operation.
+
+* **Dispatch**
+
+  * Asynchronous, background execution via the orchestration runtime.
+  * Suitable for long-running orchestrations that may involve waiting, human interaction
+  * Returns immediately without waiting for completion
+  * Queues orchestration for background execution
+  * Does not block the caller
+  * Provides the orchestration instance identifier for tracking and correlation
+  * Supports distributed processing
+
+* **DispatchAndWait**
+
+  * A hybrid approach that dispatches the orchestration for background execution while allowing the caller to await its completion or specific outcomes.
+  * Combines asynchronous execution with synchronous waiting capabilities.
+  * Blocks the caller until execution completes or until the awaited condition is reached.
+  * Suitable when background processing is required but the result or a specific orchestration milestone is still needed by the caller.
+  * Can optionally wait for completion, specific outcomes, or one or more specific states.
 
 ---
 
@@ -386,3 +433,18 @@ The orchestration context contains:
 * Approval orchestrations
 * Data processing pipelines
 * Long-running business transactions
+
+--
+
+## XML documentation and examples
+
+All public code symbols introduced by this feature should include XML documentation comments:
+
+* public classes
+* public records
+* public interfaces
+* public enums
+* public properties
+* public methods
+
+For public or client-facing symbols, the XML comments should also include usage examples where that improves discoverability.

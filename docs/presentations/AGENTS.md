@@ -25,7 +25,10 @@ Use the [`revealjs` skill](/mnt/f/projects/bit/bIT.bITdevKit/.agents/skills/reve
 - In this presentation context, brutalist means hard-edged, flat, dense, technical, and intentionally plain rather than polished or decorative
 - Typography: IBM Plex Mono throughout, uppercase headings, strong hierarchy, no decorative font mixing
 - Surfaces: dark background, slightly lighter panels, hard borders, no rounded corners, no soft shadows
-- Color use: restrained accents for feature categories and emphasis, not decorative color washes
+- Color use: restrained monokai accents for feature categories and emphasis, not decorative color washes
 - Layout: structured grids, boxed panels, code windows, flow rows, and clear section dividers
 - Prefer the existing layout classes and presentation patterns already used in this folder
-- It does not need to be exactly 20 slides; add slides when clarity benefits
+- Avoid one-off styles or custom theming unless absolutely necessary to explain a specific point about the feature
+- Use Reveal.js features like fragments, flow, and menu to create engaging pacing and navigation without needing custom styles or animations
+- Overall, the style should serve clarity and technical communication first, with a consistent brutalist mono aesthetic that reinforces the practical, no-nonsense tone of the content
+- The goal is to create presentations that are visually cohesive, easy to follow, and focused on conveying the technical details of the features without unnecessary decoration or stylistic distractions

@@ -6,6 +6,7 @@
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
+using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Examples.DoFiesta.Infrastructure;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client.Layout;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server;
@@ -15,11 +16,14 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Host;
+using BridgingIT.DevKit.Presentation.Web.Messaging;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using MudBlazor.Services;
 using Scalar.AspNetCore;
+using BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
+using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 
 // ===============================================================================================
 // Create the webhost
@@ -51,6 +55,16 @@ builder.Services.AddNotifier()
     .WithBehavior(typeof(RetryPipelineBehavior<,>))
     .WithBehavior(typeof(TimeoutPipelineBehavior<,>));
 
+builder.Services.AddMessaging(builder.Configuration, o => o
+        .StartupDelay("00:00:10"))
+    .WithBehavior<ModuleScopeMessagePublisherBehavior>()
+    .WithBehavior<ModuleScopeMessageHandlerBehavior>()
+    .WithBehavior<MetricsMessagePublisherBehavior>()
+    .WithBehavior<MetricsMessageHandlerBehavior>()
+    .WithBehavior<RetryMessageHandlerBehavior>()
+    .WithBehavior<TimeoutMessageHandlerBehavior>()
+    .WithEntityFrameworkBroker<CoreDbContext>();
+
 builder.Services.AddMapping().WithMapster();
 
 // Register the purge queue as a singleton
@@ -67,8 +81,8 @@ if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
 // Startup Tasks ==============================
 builder.Services.AddStartupTasks(o => o
         .Enabled().StartupDelay(builder.Configuration["StartupTasks:StartupDelay"]))
-    .WithTask<JobSchedulingSqlServerSeederStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:00")) // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
-                                                                                                                                     //.WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
+    .WithTask<JobSchedulingSqlServerSeederStartupTask>(o => o.Enabled().StartupDelay("00:00:00")) // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
+     //.WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
     .WithBehavior<ModuleScopeStartupTaskBehavior>();
 
 //builder.Services.AddJobScheduling(o => o
@@ -103,6 +117,14 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
         "https://localhost:5001/authentication/login-callback", "https://localhost:5001/authentication/logout-callback",
         "https://localhost:5001/openapi/oauth2-redirect.html", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/openapi/oauth2-redirect.html") // swaggerui authorize
     .WithClient("Scalar", "scalar", $"{builder.Configuration["Authentication:Authority"]}/scalar/")); // trailing slash is needed for login popup to close!?
+
+// builder.Services.AddMessagingEndpoints(new MessagingEndpointsOptions
+// {
+//     RequireAuthorization = false,
+// });
+builder.Services.AddEndpoints<SystemEndpoints>();
+//builder.Services.AddEndpoints<JobSchedulingEndpoints>();
+builder.Services.AddEndpoints<MessagingEndpoints>();
 
 builder.Services.ConfigureJson();
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
@@ -156,8 +178,7 @@ builder.Services.AddRazorComponents()
 builder.Services.AddMudServices();
 builder.Services.AddSignalR();
 builder.Services.AddConsoleCommandsInteractive();
-//builder.Services.AddEndpoints<SystemEndpoints>(builder.Environment.IsDevelopment());
-//builder.Services.AddEndpoints<JobSchedulingEndpoints>(builder.Environment.IsDevelopment());
+
 
 // ===============================================================================================
 // Configure the HTTP request pipeline

@@ -10,9 +10,11 @@ using Domain;
 using Domain.Model;
 using Domain.Repositories;
 using Infrastructure.EntityFramework;
+using Infrastructure.EntityFramework.Messaging;
 using Infrastructure.EntityFramework.Repositories;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 public class PersonStub : AggregateRoot<Guid>
 {
@@ -48,7 +50,7 @@ public class StubMessage : MessageBase
     public string LastName { get; set; }
 }
 
-public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessageContext, IEntityPermissionContext
+public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessageContext, IMessagingContext, IEntityPermissionContext
 {
     public StubDbContext() { }
 
@@ -61,19 +63,30 @@ public class StubDbContext : DbContext, IOutboxDomainEventContext, IOutboxMessag
 
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
+    public DbSet<BrokerMessage> BrokerMessages { get; set; }
+
     public DbSet<EntityPermission> EntityPermissions { get; set; }
 }
 
 public sealed class StubDbContextFixture : IDisposable
 {
+    private readonly string databaseName = $"Test_{KeyGenerator.Create(10)}";
+    private readonly InMemoryDatabaseRoot databaseRoot = new();
+
     public StubDbContextFixture()
     {
-        var builder = new DbContextOptionsBuilder<StubDbContext>()
-            .UseInMemoryDatabase($"Test_{KeyGenerator.Create(10)}");
-        this.Context = new StubDbContext(builder.Options);
+        this.Context = this.CreateContext();
     }
 
     public StubDbContext Context { get; }
+
+    public StubDbContext CreateContext()
+    {
+        var builder = new DbContextOptionsBuilder<StubDbContext>()
+            .UseInMemoryDatabase(this.databaseName, this.databaseRoot);
+
+        return new StubDbContext(builder.Options);
+    }
 
     public void Dispose()
     {

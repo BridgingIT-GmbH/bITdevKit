@@ -373,7 +373,7 @@ var result = await notifier.PublishAsync(new UserRegisteredNotification
             <div class="code-window">
               <p class="code-caption">[Event] with generated and manual handlers</p>
               <pre><code class="language-csharp">[Event]
-[HandlerRetry(2, 100)]
+[HandlerRetry(2, 300)]
 public partial class UserRegisteredEvent
 {
     [ValidateNotEmpty("Email is required.")]

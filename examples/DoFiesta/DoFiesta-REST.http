@@ -1,1 +1,43 @@
 @baseUrl = https://localhost:5001
+@messageId = 00000000-0000-0000-0000-000000000000
+
+### Messaging stats
+GET {{baseUrl}}/api/_system/messaging/messages/stats
+
+### List active broker messages
+GET {{baseUrl}}/api/_system/messaging/messages?includeHandlers=true&take=20
+
+### Get a broker message by id
+GET {{baseUrl}}/api/_system/messaging/messages/{{messageId}}?includeHandlers=true
+
+### Get broker message payload content
+GET {{baseUrl}}/api/_system/messaging/messages/{{messageId}}/content
+
+### Retry a broker message
+POST {{baseUrl}}/api/_system/messaging/messages/{{messageId}}/retry
+Content-Type: application/json
+
+{}
+
+### Retry a single broker message handler
+POST {{baseUrl}}/api/_system/messaging/messages/{{messageId}}/handlers/retry
+Content-Type: application/json
+
+{
+	"handlerType": "BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core.TodoItemActivityMessageHandler"
+}
+
+### Release a broker message lease
+POST {{baseUrl}}/api/_system/messaging/messages/{{messageId}}/lease/release
+Content-Type: application/json
+
+{}
+
+### Archive a broker message
+POST {{baseUrl}}/api/_system/messaging/messages/{{messageId}}/archive
+Content-Type: application/json
+
+{}
+
+### Purge archived succeeded broker messages older than 30 days
+DELETE {{baseUrl}}/api/_system/messaging/messages?olderThan=2026-03-16T00:00:00Z&statuses=Succeeded&isArchived=true

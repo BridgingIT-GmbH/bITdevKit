@@ -289,7 +289,7 @@ public class GetUserQuery : RequestBase<User>
     }
 }
 
-[HandlerTimeout(500)] // Timeout after 500ms
+[HandlerTimeout(5000)] // Timeout after 500ms
 public class GetUserQueryHandler : RequestHandlerBase<GetUserQuery, User>
 {
     private readonly IGenericReadOnlyRepository<User> userRepository;
@@ -786,7 +786,7 @@ public class GetUserQuery : RequestBase<User>
     }
 }
 
-[HandlerTimeout(500)] // Timeout after 500ms
+[HandlerTimeout(5000)] // Timeout after 500ms
 public class GetUserQueryHandler : RequestHandlerBase<GetUserQuery, User>
 {
     private readonly IGenericReadOnlyRepository<User> userRepository;
@@ -1691,7 +1691,7 @@ public partial class CreateUserCommand
 
 ```csharp
 [Query]
-[HandlerTimeout(500)]
+[HandlerTimeout(5000)]
 public partial class GetUserQuery
 {
     [ValidateNotEmpty("UserId cannot be empty.")]
@@ -1753,7 +1753,7 @@ Use `[Event]` to author a notification as a single partial type. Each `[Handle]`
 
 ```csharp
 [Event]
-[HandlerRetry(2, 100)]
+[HandlerRetry(2, 300)]
 public partial class UserRegisteredEvent
 {
     [ValidateNotEmpty("Email is required.")]

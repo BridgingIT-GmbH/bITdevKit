@@ -10,6 +10,8 @@ Messaging provides asynchronous publish/subscribe communication between parts of
 
 Messaging payloads and outbox messages build on the shared serializer abstractions and JSON conventions documented in [Common Serialization](./common-serialization.md), while correlation and trace instrumentation are closely related to [Common Observability / Tracing](./common-observability-tracing.md).
 
+The feature now supports an Entity Framework backed broker for durable, database-local message transport and an accompanying operational endpoint surface for inspecting, retrying, archiving, and purging persisted broker messages from your server application.
+
 ## Challenges
 
 - Coupling: Direct calls create tight dependencies between components and modules.
@@ -17,12 +19,13 @@ Messaging payloads and outbox messages build on the shared serializer abstractio
 - Ordering: Understanding when processing order is guaranteed vs. best-effort.
 - Expiration: Dropping stale messages safely via TTL/expiration policies.
 - Observability: Correlation, tracing, metrics, and structured logging across hops.
-- Transport differences: In-process, RabbitMQ, and Azure Service Bus behave differently.
+- Transport differences: In-process, Entity Framework, RabbitMQ, and Azure Service Bus behave differently.
 
 ## Solution
 
 - Abstractions: `IMessage`, `IMessageHandler<T>`, and `IMessageBroker` decouple publishers from subscribers.
 - Behaviors: Publisher and handler behavior pipelines add cross-cutting concerns (module scoping, metrics, retry, timeout, chaos) consistently.
+- Operations: `IMessageBrokerService` and the web messaging endpoints expose persisted broker state for support and diagnostics.
 - Execution model: publish → transport → process → handle (sequence diagram below).
 
 ## Architecture
@@ -34,7 +37,7 @@ sequenceDiagram
     actor Producer
     participant Broker as IMessageBroker
     participant PubBeh as Publisher Behaviors
-    participant Transport as Broker (InProcess/RabbitMQ/ServiceBus)
+    participant Transport as Broker (InProcess/EntityFramework/RabbitMQ/ServiceBus)
     participant Proc as Process(MessageRequest)
     participant HandBeh as Handler Behaviors
     participant Handler as IMessageHandler<T>
@@ -48,6 +51,8 @@ sequenceDiagram
     HandBeh->>Handler: Handle(message, ct)
     alt Service Bus
       Handler-->>Transport: Complete on success / Abandon on failure
+    else Entity Framework
+      note right of Transport: Persisted broker rows, worker leases, retries, and operational endpoints
     else RabbitMQ
       note right of Transport: Auto-ack consumption (no broker redelivery on handler failure)
     else InProcess
@@ -62,6 +67,9 @@ sequenceDiagram
   - **Unsubscribe<TMessage,THandler>() / Unsubscribe(Type,Type) / Unsubscribe():** Remove bindings.
   - **Publish(IMessage, CancellationToken):** Validate and run publisher behaviors, then enqueue/send via the broker.
   - **Process(MessageRequest):** Resolve subscriptions, run handler behaviors, invoke each `IMessageHandler<T>`.
+- `IMessageBrokerService` ([src/Application.Messaging/IMessageBrokerService.cs](src/Application.Messaging/IMessageBrokerService.cs))
+  - Query persisted broker messages, payloads, handler states, and aggregate statistics.
+  - Retry a full message or a single failed handler, release a lease, archive terminal rows, and purge old rows.
 - `MessageRequest`: Envelope carrying the message and cancellation for processing (created by brokers when messages are consumed).
 - Validation & serialization: Message validation (FluentValidation) and serialization are configured via the messaging builder.
 
@@ -69,7 +77,7 @@ sequenceDiagram
 
 ### DI setup
 
-Minimal example that adds behaviors, the outbox, and an in-process broker:
+Minimal example that adds behaviors, the outbox, the Entity Framework broker, and the operational endpoints:
 
 ```csharp
 // In Program.cs or your composition root
@@ -86,9 +94,15 @@ builder.Services.AddMessaging(builder.Configuration, o => o.StartupDelay("00:00:
     .ProcessingInterval("00:00:30")
     .StartupDelay("00:00:05"))
   // Choose a broker
-  .WithInProcessBroker();
+  .WithEntityFrameworkBroker<AppDbContext>();
+  //.WithInProcessBroker();
   //.WithRabbitMQBroker();
   //.WithServiceBusBroker();
+
+builder.Services.AddMessagingEndpoints(new MessagingEndpointsOptions
+{
+  RequireAuthorization = true
+});
 ```
 
 ### Define a message and handler
@@ -126,6 +140,13 @@ public sealed class MessagingSubscriptionsStartupTask : IHostedService
 
   public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
 }
+```
+
+Subscribe during program  initialization (e.g. in a module's `IModule.Register`):
+
+```csharp
+services.AddMessaging(configuration)
+  .WithSubscription<UserRegisteredMessage, UserRegisteredHandler>();
 ```
 
 ### Publish a message
@@ -197,6 +218,37 @@ Best practices:
 - Options: `ProcessDelay` (simulated work), `MessageExpiration` (drop before processing).
 - See [src/Application.Messaging/Brokers/InProcessMessageBroker.cs](src/Application.Messaging/Brokers/InProcessMessageBroker.cs).
 
+### EntityFrameworkMessageBroker
+
+- Persists each published message into the current `DbContext` via `IMessagingContext.BrokerMessages` and processes it asynchronously through a background worker.
+- Uses provider-neutral optimistic concurrency (`ConcurrencyVersion`) plus renewable leases (`LockedBy`, `LockedUntil`) to coordinate multi-node workers safely.
+- Stores per-handler execution state inside the broker row, enabling aggregate status, handler-level retry, expiration, dead-lettering, and auto-archiving.
+- Exposes the persisted work through `IMessageBrokerService` and the optional server endpoints from `Presentation.Web.Messaging`.
+- See [src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBroker{TContext}.cs](src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBroker{TContext}.cs), [src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBrokerWorker{TContext}.cs](src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBrokerWorker{TContext}.cs), and [src/Presentation.Web.Messaging/MessagingEndpoints.cs](src/Presentation.Web.Messaging/MessagingEndpoints.cs).
+
+Entity Framework broker flow:
+
+```mermaid
+sequenceDiagram
+    participant Producer
+    participant Broker as EntityFrameworkMessageBroker
+    participant Table as __Messaging_BrokerMessages
+    participant Worker as EntityFrameworkMessageBrokerWorker
+    participant Handler as IMessageHandler<T>
+    participant Api as Messaging Endpoints
+
+    Producer->>Broker: Publish(message)
+    Broker->>Table: Insert BrokerMessage
+    Worker->>Table: Claim pending row lease
+    Worker->>Handler: Process subscribed handlers
+    alt success
+      Worker->>Table: Mark handler/message succeeded
+    else retryable failure
+      Worker->>Table: Leave message pending or failed handler state
+    end
+    Api->>Table: Query/retry/archive/purge persisted rows
+```
+
 ### RabbitMQMessageBroker
 
 - Direct exchange per message name; queues bound by message type name per consumer (fanout-like behavior).
@@ -235,27 +287,79 @@ flowchart LR
 ## Configuration & Options
 
 - InProcess: `ProcessDelay`, `MessageExpiration`.
+- Entity Framework: `StartupDelay`, `ProcessingInterval`, `ProcessingDelay`, `ProcessingCount`, `LeaseDuration`, `LeaseRenewalInterval`, `MaxDeliveryAttempts`, `MessageExpiration`, `AutoArchiveAfter`, `AutoArchiveStatuses`.
 - RabbitMQ: `HostName`/`ConnectionString`, `ExchangeName`, `QueueName`/`QueueNameSuffix`, `IsDurable`, `ExclusiveQueue`, `AutoDeleteQueue`, `MessageExpiration`.
 - Service Bus: `ConnectionString`, `TopicScope`, `MessageExpiration` (TTL).
 - Naming/routing: message type name is used for routing; `TopicScope` adds a suffix to Service Bus topics.
 
+Entity Framework broker configuration example:
+
+```json
+{
+  "Messaging": {
+    "StartupDelay": "00:00:10",
+    "EntityFramework": {
+      "Enabled": true,
+      "StartupDelay": "00:00:05",
+      "ProcessingInterval": "00:00:05",
+      "ProcessingDelay": "00:00:00.100",
+      "ProcessingCount": 10,
+      "LeaseDuration": "00:00:30",
+      "LeaseRenewalInterval": "00:00:10",
+      "MaxDeliveryAttempts": 3,
+      "MessageExpiration": "7.00:00:00",
+      "AutoArchiveAfter": "14.00:00:00",
+      "AutoArchiveStatuses": [ "Succeeded", "Expired", "DeadLettered" ]
+    }
+  }
+}
+```
+
+To use the broker, your `DbContext` must implement `IMessagingContext`:
+
+```csharp
+public class AppDbContext : DbContext, IMessagingContext
+{
+  public DbSet<BrokerMessage> BrokerMessages { get; set; }
+}
+```
+
+## Operational Endpoints
+
+When you add `Presentation.Web.Messaging`, the server can expose an operational API for persisted broker messages.
+
+- Base route: `/api/_system/messaging/messages`
+- `GET /stats`: aggregate statistics for the persisted working set.
+- `GET /`: filterable list of broker messages.
+- `GET /{id}`: message details with optional handler states.
+- `GET /{id}/content`: stored payload content.
+- `POST /{id}/retry`: retry all retryable handler work for a message.
+- `POST /{id}/handlers/retry`: retry one failed/expired/dead-lettered handler entry.
+- `POST /{id}/lease/release`: release the current worker lease.
+- `POST /{id}/archive`: archive a terminal broker row.
+- `DELETE /`: purge rows by age and optional status filters.
+
+These endpoints are intended for support and operations workflows. In production, prefer enabling them behind authorization and limiting access to privileged roles or policies.
+
 ## Reliability & Observability
 
 - Idempotency: design handlers to be safe on re-execution; deduplicate via `MessageId` if required.
+- Entity Framework durability: messages survive process restarts in the application database and can be retried or archived without broker-specific infrastructure.
 - Durability: enable persistent messages and durable queues (RabbitMQ) and rely on persisted topics/subscriptions (Service Bus).
 - Ordering: guaranteed with InProcess; not guaranteed across distributed consumers for RabbitMQ/Service Bus.
-- Expiration/TTL: prevent processing stale data; in-process broker drops expired messages before processing.
-- Retries/redelivery: prefer handler retry behaviors; Service Bus will redeliver after abandon; RabbitMQ auto-ack means no redelivery on failures.
+- Expiration/TTL: prevent processing stale data; in-process broker drops expired messages before processing, while the Entity Framework broker expires rows based on `MessageExpiration`.
+- Retries/redelivery: prefer handler retry behaviors; the Entity Framework broker also supports operational retries through stored handler state; Service Bus will redeliver after abandon; RabbitMQ auto-ack means no redelivery on failures.
 - Correlation/tracing: propagate correlation via Activity baggage; instrument via OpenTelemetry.
 
 ## Testing
 
 - InProcess broker for unit/integration tests: deterministic ordering and simple setup.
+- Entity Framework broker tests: validate claim/finalize, lease renewal, retry state transitions, and endpoint operations with focused broker and store-service tests.
 - Transport-backed integration tests: run RabbitMQ/Service Bus locally (containers/emulators), ensure subscriptions exist before publishing, and assert side-effects and idempotency.
 
 ## Minimal Examples
 
-- Switch brokers via DI (single lines): `.WithInProcessBroker()`, `.WithRabbitMQBroker()`, `.WithServiceBusBroker()`.
+- Switch brokers via DI (single lines): `.WithInProcessBroker()`, `.WithEntityFrameworkBroker<AppDbContext>()`, `.WithRabbitMQBroker()`, `.WithServiceBusBroker()`.
 - Subscribe in startup and publish from application services (see snippets above).
 
 ## Appendix A — Behaviors

@@ -70,6 +70,11 @@ public class CoreDomainSeederTask(
     {
         this.logger.LogInformation("{LogKey} seed todoitems (task={StartupTaskType})", "IFR", this.GetType().PrettyName());
 
+        if (await repository.AnyAsync(cancellationToken))
+        {
+            return [];
+        }
+
         var entities = CoreSeedEntities.TodoItems.Create();
         foreach (var entity in entities)
         {
@@ -101,6 +106,11 @@ public class CoreDomainSeederTask(
     private async Task<Subscription[]> SeedSubscriptions(IGenericRepository<Subscription> repository, CancellationToken cancellationToken)
     {
         this.logger.LogInformation("{LogKey} seed subscriptions (task={StartupTaskType})", "IFR", this.GetType().PrettyName());
+
+        if (await repository.AnyAsync(cancellationToken))
+        {
+            return [];
+        }
 
         var entities = CoreSeedEntities.Subscriptions.Create();
         foreach (var entity in entities)

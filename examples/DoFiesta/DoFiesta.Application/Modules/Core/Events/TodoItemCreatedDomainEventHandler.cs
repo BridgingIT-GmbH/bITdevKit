@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 
+using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;
 using Microsoft.Extensions.Logging;
@@ -20,9 +21,12 @@ using System.Threading.Tasks;
 /// Initializes a new instance of the handler with logging support.
 /// </remarks>
 /// <param name="loggerFactory">Factory used for creating loggers.</param>
-public class TodoItemCreatedDomainEventHandler(ILoggerFactory loggerFactory)
-        : DomainEventHandlerBase<TodoItemCreatedDomainEvent>(loggerFactory)
+/// <param name="broker">Message broker used to persist example activity messages.</param>
+public class TodoItemCreatedDomainEventHandler(ILoggerFactory loggerFactory, IMessageBroker broker)
+    : DomainEventHandlerBase<TodoItemCreatedDomainEvent>(loggerFactory)
 {
+    private readonly IMessageBroker broker = broker;
+
     /// <summary>
     /// Determines whether this handler can handle the given event.
     /// Returns <c>true</c> unconditionally in this template.
@@ -33,11 +37,18 @@ public class TodoItemCreatedDomainEventHandler(ILoggerFactory loggerFactory)
     /// Processes the <see cref="TodoItemCreatedDomainEvent"/>.
     /// Add custom logic here (e.g., start workflows, send welcome mails).
     /// </summary>
-    public override Task Process(TodoItemCreatedDomainEvent notification, CancellationToken cancellationToken)
+    public override async Task Process(TodoItemCreatedDomainEvent notification, CancellationToken cancellationToken)
     {
         // implement event reaction logic (audit, notify, etc.)
         this.Logger.LogInformation("DoFiesta - TodoItemCreatedDomainEvent handled in Application " + notification.Model?.Title);
 
-        return Task.CompletedTask;
+        await this.broker.Publish(
+            new TodoItemActivityMessage(
+                notification.Model?.Id?.ToString(),
+                notification.Model?.Title,
+                "Created",
+                notification.Model?.Status.ToString()),
+            cancellationToken);
+
     }
 }

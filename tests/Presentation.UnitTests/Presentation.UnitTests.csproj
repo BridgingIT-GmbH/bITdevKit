@@ -41,6 +41,7 @@
     <ProjectReference Include="..\..\src\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
     <ProjectReference Include="..\..\src\Domain.EventSourcing\Domain.EventSourcing.csproj" />
+    <ProjectReference Include="..\..\src\Presentation.Web.Messaging\Presentation.Web.Messaging.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web\Presentation.Web.csproj" />
   </ItemGroup>
 

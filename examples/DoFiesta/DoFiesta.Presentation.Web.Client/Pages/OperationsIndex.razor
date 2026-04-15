@@ -1,0 +1,68 @@
+@page "/operations"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>DoFiesta - Operations</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="mt-4">
+    <MudPaper Class="pa-6 mb-6">
+        <MudText Typo="Typo.h4" GutterBottom="true">Operations</MudText>
+        <MudText Typo="Typo.body1" Class="mb-3">
+            Operational views for the DoFiesta application.
+        </MudText>
+    </MudPaper>
+
+    <MudGrid>
+        <MudItem xs="12" md="7">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5">Messaging</MudText>
+                        <MudText Typo="Typo.body2">Inspect messages, filter by lifecycle state, and open the stored payload content.</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudAvatar Color="Color.Info" Variant="Variant.Filled">
+                            <MudIcon Icon="@Icons.Material.Filled.MailOutline" />
+                        </MudAvatar>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    @* <MudChip T="string" Color="Color.Info" Variant="Variant.Outlined" Class="mr-2 mb-2">Entity Framework Broker</MudChip>
+                    <MudChip T="string" Color="Color.Secondary" Variant="Variant.Outlined" Class="mr-2 mb-2">Generated API Client</MudChip>
+                    <MudChip T="string" Color="Color.Default" Variant="Variant.Outlined" Class="mb-2">MudBlazor</MudChip> *@
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Filled" Color="Color.Info" StartIcon="@Icons.Material.Filled.Visibility" Href="/operations/messages">
+                        Open Messages
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" md="5">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5">Job Scheduling</MudText>
+                        <MudText Typo="Typo.body2">Explore the upcoming scheduler operations surface and the capabilities planned around the job scheduling endpoints.</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudAvatar Color="Color.Warning" Variant="Variant.Filled">
+                            <MudIcon Icon="@Icons.Material.Filled.Schedule" />
+                        </MudAvatar>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    @* <MudChip T="string" Color="Color.Warning" Variant="Variant.Outlined" Class="mr-2 mb-2">Quartz-backed</MudChip>
+                    <MudChip T="string" Color="Color.Default" Variant="Variant.Outlined" Class="mr-2 mb-2">Operations Stub</MudChip>
+                    <MudChip T="string" Color="Color.Info" Variant="Variant.Outlined" Class="mb-2">Kiota hookup next</MudChip> *@
+                </MudCardContent>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Filled.Visibility" Href="/operations/jobscheduling">
+                        Open Jobs
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudContainer>

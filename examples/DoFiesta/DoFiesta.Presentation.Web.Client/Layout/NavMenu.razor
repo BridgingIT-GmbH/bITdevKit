@@ -1,7 +1,12 @@
-﻿<MudNavMenu Color="Color.Secondary">
+<MudNavMenu Color="Color.Secondary">
     <MudNavLink Href="" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
     @* <MudNavLink Href="counter" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Add">Counter</MudNavLink>
     <MudNavLink Href="culture" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Language">Culture</MudNavLink>
     <MudNavLink Href="weather" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.List">Weather</MudNavLink> *@
     <MudNavLink Href="todos" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.CheckCircle">Todos</MudNavLink>
+    <MudNavGroup Title="Operations" Icon="@Icons.Material.Filled.SettingsInputComponent">
+        <MudNavLink Href="operations" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.SpaceDashboard">Overview</MudNavLink>
+        <MudNavLink Href="operations/messages" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.MailOutline">Messages</MudNavLink>
+        <MudNavLink Href="operations/jobscheduling" Match="NavLinkMatch.Prefix" Icon="@Icons.Material.Filled.Schedule">Job Scheduling</MudNavLink>
+    </MudNavGroup>
 </MudNavMenu>

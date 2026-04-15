@@ -57,6 +57,7 @@ public class CoreModule : WebModuleBase
                 .Named("firstecho")
                 .WithData("message", "First echo")
                 .RegisterScoped()
+            .AddEndpoints()
             .AddConsoleCommands();
         //.WithJob<EchoJob>()
         //    .Cron(CronExpressions.Every5Seconds)
@@ -75,6 +76,10 @@ public class CoreModule : WebModuleBase
         // filter
         SpecificationResolver.Register<TodoItem, TodoItemIsNotDeletedSpecification>("TodoItemIsNotDeleted");
 
+        // messaging
+        services.AddMessaging(configuration)
+            .WithSubscription<TodoItemActivityMessage, TodoItemActivityMessageHandler>();
+
         // dbcontext
         services.AddSqlServerDbContext<CoreDbContext>(o => o
                 .UseConnectionString(moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default"))
@@ -82,13 +87,13 @@ public class CoreModule : WebModuleBase
             .WithSequenceNumberGenerator()
             .WithDatabaseCreatorService(o => o
                 .Enabled(environment.IsLocalDevelopment())
-                .HaltOnFailure()
-                .DeleteOnStartup(environment.IsLocalDevelopment()))
+                .HaltOnFailure())
+                //.DeleteOnStartup(environment.IsLocalDevelopment()))
             .WithOutboxDomainEventService(o => o
                 .ProcessingInterval("00:00:30")
                 //.ProcessingModeImmediate() // forwards the outbox event, through a queue, to the outbox worker
-                .StartupDelay("00:00:15")
-                .PurgeOnStartup());
+                .StartupDelay("00:00:15"));
+        //.PurgeOnStartup());
 
         //services.AddInMemoryDbContext<CoreDbContext>()
         //    .WithDatabaseCreatorService(o => o

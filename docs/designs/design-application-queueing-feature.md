@@ -857,6 +857,7 @@ Recommended semantics:
 - one row per queued message
 - no persisted handler type is required at enqueue time
 - one lease owner at a time
+- provider-neutral optimistic concurrency protection for lease and state transitions
 - retries tracked directly on the queue item
 - handler resolution happens when the queued item is processed
 
@@ -895,6 +896,10 @@ public class QueueMessage
 
     [Required]
     public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
+
+    [Required]
+    [ConcurrencyCheck]
+    public Guid ConcurrencyVersion { get; set; } = Guid.NewGuid();
 
     public DateTimeOffset? ExpiresOn { get; set; }
 
@@ -939,6 +944,8 @@ public class QueueMessage
 
 Enum-to-string storage should be configured explicitly in model building when readable enum values in the database are preferred.
 
+`ConcurrencyVersion` is the provider-neutral optimistic concurrency token for the queue row. It should be regenerated on every lease mutation and every persisted state transition so competing workers do not silently overwrite each other.
+
 ### 9.5 `QueueMessageStatus`
 
 `QueueMessage.Status` should be implemented as an enum.
@@ -969,15 +976,21 @@ Recommended worker flow:
 2. skip and expire stale messages
 3. respect pause rules and open circuit-breakers before claiming items
 4. poll broadly regardless of which handler types are currently registered in the process
-5. atomically claim messages by setting `LockedBy` and `LockedUntil`
+5. claim messages with an optimistic-concurrency-safe lease transition by setting `LockedBy`, `LockedUntil`, `Status = Processing`, and regenerating `ConcurrencyVersion`
 6. deserialize the queue message
 7. resolve the current handler registration for the queue message type
 8. if no handler is registered, clear the lease and move the item to `WaitingForHandler` without incrementing `AttemptCount`
 9. invoke `QueueBrokerBase.Process` when a handler is available
-10. mark success, retry, dead-letter, or expired
-11. archive terminal messages whose retention age has elapsed
+10. maintain the lease while processing by periodically renewing `LockedUntil` and regenerating `ConcurrencyVersion`
+11. finalize the claimed queue item by reloading the row, verifying `LockedBy` still matches the current worker instance, applying the in-memory processing result, clearing the lease, and regenerating `ConcurrencyVersion`
+12. mark success, retry, dead-letter, or expired
+13. archive terminal messages whose retention age has elapsed
 
 Missing-handler behavior is not a processing failure by itself. A queue item may remain in `WaitingForHandler` until a compatible handler is registered or it expires.
+
+The claim and finalize phases should not rely on a naive read-then-overwrite flow. Competing workers may observe the same candidate row, but only one worker should succeed in persisting the lease claim. Workers that lose the optimistic concurrency race should treat that as a normal outcome, log at debug or trace level, and continue with the next candidate.
+
+Likewise, finalization should not blindly persist the post-processing state captured earlier in memory. Before saving completion, retry, dead-letter, or waiting-for-handler results, the worker should re-read the row, confirm it still owns the lease, copy the resolved processing outcome onto the tracked entity, and then persist the change. If lease ownership has changed or optimistic concurrency fails during finalize, the worker must stop assuming exclusive ownership and avoid overwriting the newer row state.
 
 ### 9.7 Multi-node coordination
 
@@ -988,8 +1001,11 @@ Recommended mechanism:
 - lease-based claim on the row itself
 - `LockedBy`
 - `LockedUntil`
+- `ConcurrencyVersion`
 
 Only rows that are non-archived and not currently leased, or whose lease has expired, may be claimed.
+
+The row lease should be protected by EF optimistic concurrency rather than database-specific locking primitives. This keeps the provider portable across EF-supported databases while still preventing two workers from both successfully persisting the same lease acquisition or final state transition.
 
 ### 9.7.1 Lease renewal
 
@@ -1005,7 +1021,8 @@ Recommended behavior:
 - while a worker is actively processing a claimed queue item, it periodically extends `LockedUntil`
 - renewal should happen before the current lease expires, for example every `LeaseRenewalInterval`
 - renewal should only succeed when `LockedBy` still matches the current worker instance
-- if lease renewal fails, the worker should log an error or warning and stop assuming exclusive ownership
+- each successful renewal should also regenerate `ConcurrencyVersion`
+- if lease renewal fails, the worker should log an error or warning, stop assuming exclusive ownership, and avoid persisting a later finalize state based on the stale in-memory lease
 
 This gives the provider a safer balance between:
 
@@ -1430,6 +1447,8 @@ Unit tests should verify:
 - repeated failures can open a circuit-breaker for a queue message type
 - in-process broker handles queue items in the expected order/concurrency mode
 - Entity Framework worker claim logic prevents duplicate processing
+- Entity Framework worker finalize logic does not overwrite newer row state after lease ownership changes or optimistic concurrency loss
+- Entity Framework worker renews leases for long-running handlers and stops finalizing stale in-memory results when renewal ownership is lost
 - retry, dead-letter, expiration, and archive transitions behave correctly
 - `IQueueBrokerService` correctly maps entity state to DTO models
 
@@ -1442,6 +1461,7 @@ Integration tests should verify:
 - restart resilience for pending durable queue messages
 - durable queue items accumulate safely before a handler is registered and are processed after registration becomes available
 - multi-instance-safe claiming for the Entity Framework broker
+- long-running Entity Framework processing renews leases and avoids duplicate processing during legitimate handler execution
 - queue-specific operational endpoints expose message lists, details, content, stats, retry, archive, lease release, and purge operations for the Entity Framework provider
 - pause/resume and circuit-breaker controls are visible and effective through the operational surface
 - Azure Service Bus and Azure Storage providers honor their provider-specific complete/abandon/visibility-timeout semantics when implemented

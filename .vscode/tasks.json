@@ -83,7 +83,15 @@
         "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
         "--nologo"
       ],
-      "problemMatcher": "$msCompile"
+      "isBackground": true,
+      "problemMatcher": {
+        "base": "$msCompile",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^dotnet watch",
+          "endsPattern": "\\bwatch : Hot reload enabled\\.|\\bNow listening on:\\s+https?://"
+        }
+      }
     },
     {
       "label": "DoFiesta - run",

@@ -106,6 +106,19 @@ test: add domain tests for task status transitions
   - Tests: `Solution - tests (unit)`, `Solution - tests (integration)`
 - Prefer these tasks over custom scripts to maintain consistency.
 
+### DoFiesta example application Browser Testing
+
+- For local browser or Playwright testing of DoFiesta, start the app with the workspace task `DoFiesta - watch` or run:
+  - `dotnet run --project examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj --nologo --urls https://localhost:5001;http://localhost:5000`
+- Do **not** start DoFiesta for WASM/browser testing by invoking the built server DLL directly. That launch path can miss development static web assets and cause blank-page boot failures with 500s for files such as `/_framework/blazor.web.js` and `/_content/MudBlazor/MudBlazor.min.js`.
+- The repo-local Playwright helper lives in `.agents/skills/playwright-skill`. Install it in that directory with:
+  - `npm install`
+  - `npx playwright install chromium`
+- When using `node .agents/skills/playwright-skill/run.js <script>`, pass an **absolute** script path. The helper changes into its own directory before resolving inputs, so relative paths to `/.tmp` scripts may be treated as inline code instead of files.
+- For local HTTPS checks, configure Playwright with `ignoreHTTPSErrors: true` and use PowerShell `Invoke-WebRequest -SkipCertificateCheck` when probing readiness.
+- DoFiesta now keeps its development database across restarts. Browser tests can rely on previously created todos and broker messages still being available, but should still create fresh sample activity when they need deterministic assertions.
+- If builds fail with `CS2012` file-lock errors, stop existing DoFiesta `dotnet`/`dotnet watch` processes before rebuilding or relaunching tests.
+
 ## Observability & Logging
 
 - Use Serilog with structured logging.

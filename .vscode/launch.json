@@ -1,18 +1,94 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-          "name": "Launch and Debug Standalone Blazor WebAssembly App",
-          "type": "blazorwasm",
-          "request": "launch",
-          "url": "https://localhost:5001",
-          "browser": "edge",
-          "cwd": "${workspaceFolder}/examples/DinnerFiesta/Presentation.Web.Server",
-          // "hosted": true,
-          // "program": "${workspaceFolder}/examples/DinnerFiesta/Presentation.Web.Server/bin/Debug/net8.0/BridgingIT.DevKit.Examples.DinnerFiesta.Presentation.Web.Server.dll",
-          "env": {
-            "ASPNETCORE_ENVIRONMENT": "Development"
-          }
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "DoFiesta.Presentation.Web.Server Debug",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "DoFiesta - build",
+      "program": "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/bin/Debug/net10.0/BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.dll",
+      "args": ["--urls", "https://localhost:5001;http://localhost:5000"],
+      "cwd": "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server",
+      "stopAtEntry": false,
+      "justMyCode": true,
+      "console": "internalConsole",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https://localhost:5001\\S*)",
+        "uriFormat": "%s"
+      },
+      "presentation": {
+        "group": "dofiesta",
+        "order": 1,
+        "hidden": false
+      }
+    },
+    {
+      "name": "DoFiesta.Presentation.Web.Server Run",
+      "type": "coreclr",
+      "request": "launch",
+      "noDebug": true,
+      "preLaunchTask": "DoFiesta - build",
+      "program": "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/bin/Debug/net10.0/BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.dll",
+      "args": ["--urls", "https://localhost:5001;http://localhost:5000"],
+      "cwd": "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server",
+      "justMyCode": true,
+      "console": "internalConsole",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https://localhost:5001\\S*)",
+        "uriFormat": "%s"
+      },
+      "presentation": {
+        "group": "dofiesta",
+        "order": 2,
+        "hidden": false
+      }
+    },
+    {
+      "name": "DoFiesta.Presentation.Web.Server Watch + Attach",
+      "type": "coreclr",
+      "request": "attach",
+      "preLaunchTask": "DoFiesta - watch",
+      "processId": "${command:pickProcess}",
+      "justMyCode": true,
+      "presentation": {
+        "group": "dofiesta",
+        "order": 3,
+        "hidden": false
+      }
+    },
+    {
+      "name": "DoFiesta.Presentation.Web.Server Watch (hot reload only)",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "dotnet watch --project \"${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj\" run -- --urls \"https://localhost:5001;http://localhost:5000\"",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "presentation": {
+        "group": "dofiesta",
+        "order": 4,
+        "hidden": false
+      }
+    },
+    {
+      "name": "DoFiesta.Presentation.Web.Server Attach (manual)",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:pickProcess}",
+      "justMyCode": true,
+      "presentation": {
+        "group": "dofiesta",
+        "order": 5,
+        "hidden": false
+      }
+    }
+  ]
 }

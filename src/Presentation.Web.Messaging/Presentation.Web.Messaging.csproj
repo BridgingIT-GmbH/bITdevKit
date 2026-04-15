@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Presentation.Web.Messaging</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Presentation.Web.Messaging</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Messaging\Application.Messaging.csproj" />
+    <ProjectReference Include="..\Common.Extensions.Web\Common.Extensions.Web.csproj" />
+    <ProjectReference Include="..\Presentation.Web\Presentation.Web.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -15,6 +15,11 @@
         </MudLink>
         <MudIconButton Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Secondary" Href="todos" />
         <MudIconButton Icon="@Icons.Material.Filled.Help" Color="Color.Tertiary" Href="todos/help" />
+        <MudMenu Icon="@Icons.Material.Filled.SettingsInputComponent" Color="Color.Info">
+            <MudMenuItem Href="/operations">Operations</MudMenuItem>
+            <MudMenuItem Href="/operations/messages">Messages</MudMenuItem>
+            <MudMenuItem Href="/operations/jobscheduling">Job Scheduling</MudMenuItem>
+        </MudMenu>
         <MudSpacer />
 
         <AuthorizeView>

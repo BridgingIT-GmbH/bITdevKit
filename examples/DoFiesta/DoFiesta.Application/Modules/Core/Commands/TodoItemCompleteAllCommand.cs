@@ -10,8 +10,8 @@ using BridgingIT.DevKit.Examples.DoFiesta.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 
 [Command]
-[HandlerRetry(2, 100)]
-[HandlerTimeout(500)]
+[HandlerRetry(2, 300)]
+[HandlerTimeout(5000)]
 public partial class TodoItemCompleteAllCommand
 {
     public TodoItemCompleteAllCommand()

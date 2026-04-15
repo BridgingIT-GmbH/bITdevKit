@@ -1,0 +1,110 @@
+@page "/operations/jobscheduling"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
+<PageTitle>DoFiesta - Operations Job Scheduling</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+    <MudPaper Class="pa-6 mb-4">
+        <div class="d-flex flex-wrap align-center gap-4">
+            <div>
+                <MudText Typo="Typo.h4" GutterBottom="true">Job Scheduling</MudText>
+            </div>
+            <MudSpacer />
+            <MudButton Variant="Variant.Text" Color="Color.Warning" StartIcon="@Icons.Material.Filled.Construction">
+                Stub Ready
+            </MudButton>
+        </div>
+    </MudPaper>
+
+    <MudGrid Class="mb-4">
+        <MudItem xs="12" md="8">
+            <MudCard Class="fill-height">
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5">Planned Scheduler Console</MudText>
+                        <MudText Typo="Typo.body2">
+                            The page layout is ready for job inventory, trigger visibility, and recent run diagnostics without mixing scheduler operations into the todo workflow itself.
+                        </MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudAvatar Color="Color.Warning" Variant="Variant.Filled">
+                            <MudIcon Icon="@Icons.Material.Filled.Schedule" />
+                        </MudAvatar>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardContent>
+                    <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" Dense="true" Class="mb-4">
+                        The current generated Kiota client does not yet include the job scheduling endpoint surface, so this page intentionally stays read-only and explanatory for now.
+                    </MudAlert>
+
+                    <MudSimpleTable Dense="true" Hover="true">
+                        <thead>
+                            <tr>
+                                <th>Planned area</th>
+                                <th>Purpose</th>
+                                <th>Endpoint family</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Job inventory</td>
+                                <td>List scheduled jobs with name, group, next run, and state.</td>
+                                <td><code>GET /_system/jobscheduling</code></td>
+                            </tr>
+                            <tr>
+                                <td>Job details</td>
+                                <td>Inspect one job, its triggers, and run history.</td>
+                                <td><code>GET /_system/jobscheduling/{jobName}/{jobGroup}</code></td>
+                            </tr>
+                            <tr>
+                                <td>Operator actions</td>
+                                <td>Trigger, pause, resume, or interrupt jobs from the UI.</td>
+                                <td><code>POST /trigger | /pause | /resume | /interrupt</code></td>
+                            </tr>
+                            <tr>
+                                <td>Run retention</td>
+                                <td>Purge old run history when cleanup controls are added.</td>
+                                <td><code>DELETE /runs?olderThan=...</code></td>
+                            </tr>
+                        </tbody>
+                    </MudSimpleTable>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" md="4">
+            <MudCard Class="mb-4">
+                <MudCardContent>
+                    <MudText Typo="Typo.h6" GutterBottom="true">Next integration step</MudText>
+                    <MudText Typo="Typo.body2" Class="mb-3">
+                        Once the server OpenAPI document includes `JobSchedulingEndpoints`, regenerate the Kiota client and replace this stub with live scheduler data.
+                    </MudText>
+                    <MudChip T="string" Color="Color.Info" Variant="Variant.Outlined" Class="mr-2 mb-2">JobSchedulingEndpoints</MudChip>
+                    <MudChip T="string" Color="Color.Secondary" Variant="Variant.Outlined" Class="mr-2 mb-2">Kiota client</MudChip>
+                    <MudChip T="string" Color="Color.Default" Variant="Variant.Outlined" Class="mb-2">MudBlazor page</MudChip>
+                </MudCardContent>
+            </MudCard>
+
+            <MudCard>
+                <MudCardContent>
+                    <MudText Typo="Typo.h6" GutterBottom="true">Planned actions</MudText>
+                    <div class="d-flex flex-column gap-2">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Warning" Disabled="true" StartIcon="@Icons.Material.Filled.PlayArrow">
+                            Trigger Job
+                        </MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Warning" Disabled="true" StartIcon="@Icons.Material.Filled.Pause">
+                            Pause Job
+                        </MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Warning" Disabled="true" StartIcon="@Icons.Material.Filled.Refresh">
+                            Resume Job
+                        </MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Error" Disabled="true" StartIcon="@Icons.Material.Filled.DeleteSweep">
+                            Purge Old Runs
+                        </MudButton>
+                    </div>
+                </MudCardContent>
+            </MudCard>
+        </MudItem>
+    </MudGrid>
+</MudContainer>

@@ -355,8 +355,8 @@ private static void Validate(
           <div class="code-window">
             <p class="code-caption">Policy attributes on a generated event</p>
             <pre><code class="language-csharp">[Event]
-[HandlerRetry(2, 100)]
-[HandlerTimeout(500)]
+[HandlerRetry(2, 300)]
+[HandlerTimeout(5000)]
 public partial class ReportGeneratedEvent
 {
     public string ReportId { get; init; }

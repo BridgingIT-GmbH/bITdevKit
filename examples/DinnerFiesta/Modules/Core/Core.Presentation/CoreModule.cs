@@ -78,8 +78,8 @@ public class CoreModule() : WebModuleBase(nameof(CoreModule).ToLower())
                     .UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)
                     .CommandTimeout(30))
             .WithDatabaseMigratorService(o => o
-                .Enabled(environment.IsDevelopment())
-                .PurgeOnStartup())
+                .Enabled(environment.IsDevelopment()))
+                // .PurgeOnStartup())
             //.WithDatabaseCreatorService(o => o
             //    .Enabled(environment?.IsDevelopment() == true)
             //    .DeleteOnStartup())

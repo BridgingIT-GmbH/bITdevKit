@@ -8,10 +8,11 @@ using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
+using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;
 
 [Command]
-[HandlerRetry(2, 100)]
-[HandlerTimeout(500)]
+[HandlerRetry(2, 300)]
+[HandlerTimeout(5000)]
 public partial class TodoItemDeleteCommand
 {
     public TodoItemDeleteCommand()
@@ -33,12 +34,15 @@ public partial class TodoItemDeleteCommand
         ICurrentUserAccessor currentUserAccessor,
         IEntityPermissionEvaluator<TodoItem> permissionEvaluator,
         CancellationToken cancellationToken) =>
-        await Result<Unit>.Success()
+        await Result<TodoItemId>.Success(TodoItemId.Create(this.Id))
             .EnsureAsync(async (e, ct) => // check permissions
-                await permissionEvaluator.HasPermissionAsync(currentUserAccessor, this.Id, Permission.Delete, cancellationToken: ct), new UnauthorizedError(), cancellationToken)
+                await permissionEvaluator.HasPermissionAsync(currentUserAccessor, e, Permission.Delete, cancellationToken: ct), new UnauthorizedError(), cancellationToken)
             .BindAsync(async (e, ct) =>
-                await repository.DeleteResultAsync(TodoItemId.Create(this.Id), cancellationToken)
-            .Ensure(e => e == RepositoryActionResult.Deleted, new EntityNotFoundError())
+                await repository.FindOneResultAsync(e, cancellationToken: ct), cancellationToken: cancellationToken)
+            .Tap(e => e.DomainEvents.Register(new TodoItemDeletedDomainEvent(e)))
+            .BindAsync(async (e, ct) =>
+                await repository.DeleteResultAsync(e, ct), cancellationToken: cancellationToken)
+            .Ensure(e => e.action == RepositoryActionResult.Deleted, new EntityNotFoundError())
             .Tap(e => Console.WriteLine("AUDIT")) // do something
-            .Map(_ => Unit.Value), cancellationToken: cancellationToken);
+            .Map(_ => Unit.Value);
 }

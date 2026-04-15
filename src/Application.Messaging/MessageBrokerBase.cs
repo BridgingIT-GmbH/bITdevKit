@@ -161,82 +161,9 @@ public abstract partial class MessageBrokerBase : IMessageBroker
 
                 foreach (var subscription in this.Subscriptions.GetAll(messageType))
                 {
-                    try
+                    result = await this.ProcessSubscription(messageRequest, subscription, messageType);
+                    if (!result)
                     {
-                        this.Logger.LogDebug("{LogKey} handler: {MessageType} ", Constants.LogKey, subscription.HandlerType?.FullName);
-
-                        if (subscription.MessageType is null)
-                        {
-                            continue;
-                        }
-
-                        TypedLogger.LogProcessing(this.Logger, Constants.LogKey, messageType, subscription.HandlerType.FullName, messageRequest.Message.MessageId, this.GetType().Name);
-                        var watch = ValueStopwatch.StartNew();
-
-                        // construct the handler instance by using the DI container
-                        var handlerInstance = this.HandlerFactory.Create(subscription.HandlerType); // should not be null, did you forget to register your generic handler (EntityMessageHandler<T>)
-                        var handlerType = typeof(IMessageHandler<>).MakeGenericType(subscription.MessageType);
-                        var handlerMethod = handlerType.GetMethod("Handle"); // TODO: can .NET 8 new reflection improve this? https://steven-giesel.com/blogPost/05ecdd16-8dc4-490f-b1cf-780c994346a4
-                        //this.Logger.LogDebug("{LogKey} types {MessageType} > {handler} (type={MessageType}, handler={MessageHandler}, id={MessageId}, broker={MessageBroker})", Constants.LogKey, subscription.MessageType.FullName, subscription.HandlerType.FullName, messageName, subscription.HandlerType.Name, messageRequest.Message.Id, this.GetType().Name);
-
-                        if (messageRequest.CancellationToken.IsCancellationRequested)
-                        {
-                            this.Logger.LogWarning("{LogKey} process cancelled (type={MessageType}, id={MessageId}, broker={MessageBroker})", Constants.LogKey, messageType, messageRequest.Message.MessageId, this.GetType().Name);
-                            //messageRequest.CancellationToken.ThrowIfCancellationRequested();
-                            result = false;
-
-                            break;
-                        }
-
-                        if (handlerInstance is not null && handlerMethod is not null)
-                        {
-                            await Semaphore.WaitAsync(messageRequest.CancellationToken);
-
-                            try
-                            {
-                                // convert consumed message for the handler message type
-                                var message = this.Serializer.Deserialize(this.Serializer.SerializeToString(messageRequest.Message), subscription.MessageType);
-
-                                // create a behavior pipeline and run it (handler > next)
-                                this.Logger.LogDebug($"{{LogKey}} handle behaviors: {this.HandlerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {handlerInstance.GetType().Name}:Handle", Constants.LogKey);
-
-                                async Task Handler()
-                                {
-                                    await ((Task)handlerMethod.Invoke(handlerInstance, [message, messageRequest.CancellationToken])).AnyContext();
-                                }
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                                this.HandlerBehaviors.SafeNull()
-                                    .Reverse()
-                                    .Aggregate((MessageHandlerDelegate)Handler,
-                                        (next, pipeline) => async () =>
-                                        {
-                                            // Activity.Current?.SetTag("messaging.handler", handlerInstance.GetType().PrettyName());
-                                            // Activity.Current?.AddEvent(new($"handle behaviours: {this.HandlerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Handle"));
-
-                                            await pipeline.Handle(message as IMessage, messageRequest.CancellationToken, handlerInstance, next);
-                                        })();
-                            }
-                            finally
-                            {
-                                Semaphore.Release();
-                            }
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                        }
-                        else
-                        {
-                            this.Logger.LogError("{LogKey} processing error, message handler could not be created. is the handler registered? (type={MessageType}, handler={MessageHandler}, id={MessageId})", Constants.LogKey, messageType, subscription.HandlerType.Name, messageRequest.Message.MessageId);
-                            result = false;
-
-                            break;
-                        }
-
-                        TypedLogger.LogProcessed(this.Logger, Constants.LogKey, messageType, subscription.HandlerType.FullName, messageRequest.Message.MessageId, this.GetType().Name, watch.GetElapsedMilliseconds());
-                    }
-                    catch (Exception ex)
-                    {
-                        this.Logger.LogError(ex, "{LogKey} processing error (type={MessageType}, handler={MessageHandler}, id={MessageId}): {ErrorMessage}", Constants.LogKey, messageType, subscription.HandlerType.FullName, messageRequest.Message.MessageId, ex.Message);
-                        result = false;
-
                         break;
                     }
                 }
@@ -250,6 +177,131 @@ public abstract partial class MessageBrokerBase : IMessageBroker
         }
     }
 
+    /// <summary>
+    /// Processes a single subscription entry for the supplied message request.
+    /// </summary>
+    /// <param name="messageRequest">The message request being processed.</param>
+    /// <param name="subscription">The subscription entry to execute.</param>
+    /// <param name="messageType">The cached message type name used for logging.</param>
+    /// <returns><c>true</c> when the subscription completed successfully; otherwise <c>false</c>.</returns>
+    protected virtual async Task<bool> ProcessSubscription(
+        MessageRequest messageRequest,
+        SubscriptionDetails subscription,
+        string messageType = null)
+    {
+        EnsureArg.IsNotNull(messageRequest, nameof(messageRequest));
+        EnsureArg.IsNotNull(messageRequest.Message, nameof(messageRequest.Message));
+        EnsureArg.IsNotNull(subscription, nameof(subscription));
+
+        messageType ??= messageRequest.Message.GetType().PrettyName(false);
+
+        try
+        {
+            this.Logger.LogDebug("{LogKey} handler: {MessageType} ", Constants.LogKey, subscription.HandlerType?.FullName);
+
+            if (subscription.MessageType is null)
+            {
+                return true;
+            }
+
+            if (messageRequest.CancellationToken.IsCancellationRequested)
+            {
+                this.Logger.LogWarning("{LogKey} process cancelled (type={MessageType}, id={MessageId}, broker={MessageBroker})", Constants.LogKey, messageType, messageRequest.Message.MessageId, this.GetType().Name);
+                return false;
+            }
+
+            TypedLogger.LogProcessing(this.Logger, Constants.LogKey, messageType, subscription.HandlerType.FullName, messageRequest.Message.MessageId, this.GetType().Name);
+            var watch = ValueStopwatch.StartNew();
+
+            var handlerInstance = this.HandlerFactory.Create(subscription.HandlerType); // should not be null, did you forget to register your generic handler (EntityMessageHandler<T>)
+            var handlerType = typeof(IMessageHandler<>).MakeGenericType(subscription.MessageType);
+            var handlerMethod = handlerType.GetMethod("Handle"); // TODO: can .NET 8 new reflection improve this? https://steven-giesel.com/blogPost/05ecdd16-8dc4-490f-b1cf-780c994346a4
+
+            if (handlerInstance is null || handlerMethod is null)
+            {
+                this.Logger.LogError("{LogKey} processing error, message handler could not be created. is the handler registered? (type={MessageType}, handler={MessageHandler}, id={MessageId})", Constants.LogKey, messageType, subscription.HandlerType.Name, messageRequest.Message.MessageId);
+                return false;
+            }
+
+            await Semaphore.WaitAsync(messageRequest.CancellationToken);
+
+            try
+            {
+                var handledMessage = subscription.MessageType.IsInstanceOfType(messageRequest.Message)
+                    ? messageRequest.Message
+                    : this.Serializer.Deserialize(this.Serializer.SerializeToString(messageRequest.Message), subscription.MessageType) as IMessage;
+
+                if (handledMessage is null)
+                {
+                    this.Logger.LogError("{LogKey} processing error, message could not be deserialized for handler (type={MessageType}, handler={MessageHandler}, id={MessageId})", Constants.LogKey, messageType, subscription.HandlerType.Name, messageRequest.Message.MessageId);
+                    return false;
+                }
+
+                await this.ProcessSubscriptionHandler(messageRequest, subscription, handlerInstance, handlerMethod, handledMessage);
+            }
+            finally
+            {
+                Semaphore.Release();
+            }
+
+            TypedLogger.LogProcessed(this.Logger, Constants.LogKey, messageType, subscription.HandlerType.FullName, messageRequest.Message.MessageId, this.GetType().Name, watch.GetElapsedMilliseconds());
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            this.Logger.LogError(ex, "{LogKey} processing error (type={MessageType}, handler={MessageHandler}, id={MessageId}): {ErrorMessage}", Constants.LogKey, messageType, subscription.HandlerType.FullName, messageRequest.Message.MessageId, ex.Message);
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Executes the handler behavior pipeline for a single subscription entry.
+    /// </summary>
+    /// <param name="messageRequest">The message request being processed.</param>
+    /// <param name="subscription">The subscription entry being executed.</param>
+    /// <param name="handlerInstance">The resolved handler instance.</param>
+    /// <param name="handlerMethod">The reflected handler method to invoke.</param>
+    /// <param name="handledMessage">The message instance passed to the handler pipeline.</param>
+    /// <returns>A task that completes when the handler pipeline finishes.</returns>
+    protected virtual Task ProcessSubscriptionHandler(
+        MessageRequest messageRequest,
+        SubscriptionDetails subscription,
+        object handlerInstance,
+        System.Reflection.MethodInfo handlerMethod,
+        IMessage handledMessage)
+    {
+        EnsureArg.IsNotNull(messageRequest, nameof(messageRequest));
+        EnsureArg.IsNotNull(subscription, nameof(subscription));
+        EnsureArg.IsNotNull(handlerInstance, nameof(handlerInstance));
+        EnsureArg.IsNotNull(handlerMethod, nameof(handlerMethod));
+        EnsureArg.IsNotNull(handledMessage, nameof(handledMessage));
+
+        this.Logger.LogDebug($"{{LogKey}} handle behaviors: {this.HandlerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {handlerInstance.GetType().Name}:Handle", Constants.LogKey);
+
+        async Task Handler()
+        {
+            await ((Task)handlerMethod.Invoke(handlerInstance, [handledMessage, messageRequest.CancellationToken])).AnyContext();
+        }
+
+        return this.HandlerBehaviors.SafeNull()
+            .Reverse()
+            .Aggregate((MessageHandlerDelegate)Handler,
+                (next, pipeline) => async () =>
+                {
+                    // Activity.Current?.SetTag("messaging.handler", handlerInstance.GetType().PrettyName());
+                    // Activity.Current?.AddEvent(new($"handle behaviours: {this.HandlerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Handle"));
+
+                    await pipeline.Handle(handledMessage, messageRequest.CancellationToken, handlerInstance, next);
+                })();
+    }
+
+    /// <summary>
+    /// Allows derived brokers to react when a typed subscription is added.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type being subscribed.</typeparam>
+    /// <typeparam name="THandler">The handler type being subscribed.</typeparam>
+    /// <returns>A task that completes when subscription side effects are done.</returns>
     protected virtual Task OnSubscribe<TMessage, THandler>()
         where TMessage : IMessage
         where THandler : IMessageHandler<TMessage>
@@ -257,11 +309,23 @@ public abstract partial class MessageBrokerBase : IMessageBroker
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Allows derived brokers to react when a subscription is added.
+    /// </summary>
+    /// <param name="messageType">The subscribed message type.</param>
+    /// <param name="handlerType">The subscribed handler type.</param>
+    /// <returns>A task that completes when subscription side effects are done.</returns>
     protected virtual Task OnSubscribe(Type messageType, Type handlerType)
     {
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Allows derived brokers to react when a typed subscription is removed.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type being unsubscribed.</typeparam>
+    /// <typeparam name="THandler">The handler type being unsubscribed.</typeparam>
+    /// <returns>A task that completes when unsubscription side effects are done.</returns>
     protected virtual Task OnUnsubscribe<TMessage, THandler>()
         where TMessage : IMessage
         where THandler : IMessageHandler<TMessage>
@@ -269,21 +333,45 @@ public abstract partial class MessageBrokerBase : IMessageBroker
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Allows derived brokers to react when a subscription is removed.
+    /// </summary>
+    /// <param name="messageType">The unsubscribed message type.</param>
+    /// <param name="handlerType">The unsubscribed handler type.</param>
+    /// <returns>A task that completes when unsubscription side effects are done.</returns>
     protected virtual Task OnUnsubscribe(Type messageType, Type handlerType)
     {
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Allows derived brokers to react when a named subscription is removed.
+    /// </summary>
+    /// <param name="messageName">The unsubscribed message name.</param>
+    /// <param name="handlerType">The unsubscribed handler type.</param>
+    /// <returns>A task that completes when unsubscription side effects are done.</returns>
     protected virtual Task OnUnsubscribe(string messageName, Type handlerType)
     {
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Allows derived brokers to implement transport-specific publish behavior.
+    /// </summary>
+    /// <param name="message">The message being published.</param>
+    /// <param name="cancellationToken">The cancellation token for the publish operation.</param>
+    /// <returns>A task that completes when the transport has accepted the message.</returns>
     protected virtual Task OnPublish(IMessage message, CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Allows derived brokers to perform transport-specific work before subscriptions are executed.
+    /// </summary>
+    /// <param name="message">The message being processed.</param>
+    /// <param name="cancellationToken">The cancellation token for processing.</param>
+    /// <returns>A task that completes when transport-specific processing setup has finished.</returns>
     protected virtual Task OnProcess(IMessage message, CancellationToken cancellationToken)
     {
         return Task.CompletedTask;

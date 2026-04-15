@@ -303,6 +303,7 @@ The `BrokerMessage` entity represents the durable stored payload. The initial mo
 - `ArchivedDate`
 - `LockedBy`
 - `LockedUntil`
+- `ConcurrencyVersion`
 - `ProcessingStartedDate`
 - `ProcessedDate`
 - `LastError`
@@ -322,6 +323,7 @@ Recommended semantics:
 - `ArchivedDate` captures when the message moved into archive state
 - `LockedBy` identifies the node currently leasing the message
 - `LockedUntil` defines lease expiry and recovery
+- `ConcurrencyVersion` is the provider-neutral optimistic concurrency token used to protect lease and finalize updates
 - `ProcessingStartedDate` captures lease start for diagnostics
 - `ProcessedDate` captures aggregate terminal completion
 - `LastError` preserves the latest message-level failure summary
@@ -333,7 +335,7 @@ The entity should also expose a strongly typed handler state collection next to 
 The following shape is the recommended implementation target for the entity:
 
 ```csharp
-[Table("__Messaging_Messages")]
+[Table("__Messaging_BrokerMessages")]
 [Index(nameof(MessageId), IsUnique = true)]
 [Index(nameof(IsArchived), nameof(Status), nameof(LockedUntil), nameof(CreatedDate))]
 [Index(nameof(IsArchived), nameof(Type), nameof(CreatedDate))]
@@ -360,6 +362,10 @@ public class BrokerMessage
 
     [Required]
     public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
+
+    [Required]
+    [ConcurrencyCheck]
+    public Guid ConcurrencyVersion { get; set; } = Guid.NewGuid();
 
     public DateTimeOffset? ExpiresOn { get; set; }
 
@@ -414,6 +420,8 @@ public class BrokerMessage
 ```
 
 This shape intentionally mirrors the existing attribute-driven EF style already used by entities such as `OutboxMessage`.
+
+`ConcurrencyVersion` should be regenerated whenever the broker persists a lease mutation or final state transition for the row. This keeps the multi-node coordination model provider-neutral while still allowing EF optimistic concurrency checks during finalize and operational mutations.
 
 One important implementation note: EF Core attributes cover table name, indexes, key, required fields, lengths, column names, and non-mapped properties, but they do not cleanly cover every enum storage choice. If the implementation wants `BrokerMessageStatus` to be stored as strings rather than integers, that part should be configured in model building, for example with `HasConversion<string>()`.
 
@@ -520,13 +528,14 @@ The broker requires a hosted background worker that periodically processes store
 
 1. poll pending or reclaimable messages in batches
 2. skip expired messages and mark message and pending handlers terminal
-3. claim messages by assigning `LockedBy` and `LockedUntil`
+3. claim messages with an atomic storage update that assigns `LockedBy`, `LockedUntil`, `Status = Processing`, and a new `ConcurrencyVersion`
 4. load pending handler states for the claimed message
 5. deserialize the message to the correct type
 6. invoke the handler pipeline for each pending handler of the claimed message
 7. update the handler state according to outcome
 8. update aggregate message state according to remaining handler work
-9. archive terminal messages whose retention age has elapsed according to configured archive options
+9. reload the claimed row, verify the worker still owns the lease, apply the in-memory processing result, clear the lease, and persist a new `ConcurrencyVersion`
+10. archive terminal messages whose retention age has elapsed according to configured archive options
 
 ### 8.3 Success semantics
 
@@ -573,6 +582,8 @@ Recommended behavior:
 - `Expired` when the message expires before completion
 - `Pending` when retryable handler work remains and the message lease is released
 
+`Failed` remains useful as a transient operational status when a worker crashes or loses processing state after lease acquisition, but normal retryable handler failures should return the aggregate message to `Pending` once the lease is released.
+
 ### 8.8 Archive behavior
 
 The worker may automatically archive terminal messages based on age and configured options.
@@ -599,6 +610,7 @@ Each worker claims work by setting message lease fields:
 
 - `LockedBy` to an instance identifier
 - `LockedUntil` to the lease expiration timestamp
+- `ConcurrencyVersion` to a new version identifier
 
 Only messages that are not archived and not currently leased, or whose lease has expired, may be claimed.
 
@@ -609,6 +621,8 @@ If a node crashes or loses connectivity after claiming work, another node may re
 ### 9.3 Duplicate processing protection
 
 The same message must never be processed concurrently by two active workers. The claim operation should therefore be implemented as an atomic storage update, not as a separate read followed by a non-protected write.
+
+The finalize path also needs the same ownership guarantees. After handler execution, the worker should reload the row, confirm `LockedBy` still matches the current worker instance, copy the in-memory handler/message outcome to the tracked entity, clear the lease, regenerate `ConcurrencyVersion`, and then save. If optimistic concurrency fails or the lease owner changed, the worker must stop assuming exclusive ownership and avoid overwriting the newer row state.
 
 ### 9.4 Lease renewal
 
@@ -624,7 +638,8 @@ Recommended behavior:
 - while a worker is actively processing a claimed message, it periodically extends `LockedUntil`
 - renewal should happen before the current lease expires, for example every `LeaseRenewalInterval`
 - renewal should only succeed when `LockedBy` still matches the current worker instance
-- if lease renewal fails, the worker should log the failure and stop assuming exclusive ownership of the message
+- each successful renewal should also regenerate `ConcurrencyVersion`
+- if lease renewal fails, the worker should log the failure, stop assuming exclusive ownership of the message, and avoid persisting a stale finalize result afterwards
 
 This keeps the lease model robust for both:
 

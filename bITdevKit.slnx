@@ -213,6 +213,7 @@
     <Project Path="src/Presentation.Web.Client/Presentation.Web.Client.csproj" />
     <Project Path="src/Presentation.Web.EntityFramework/Presentation.Web.EntityFramework.csproj" />
     <Project Path="src/Presentation.Web.JobScheduling/Presentation.Web.JobScheduling.csproj" />
+    <Project Path="src/Presentation.Web.Messaging/Presentation.Web.Messaging.csproj" />
     <Project Path="src/Presentation.Web/Presentation.Web.csproj" />
     <Project Path="src/Presentation/Presentation.csproj" />
   </Folder>

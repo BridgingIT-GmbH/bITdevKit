@@ -879,7 +879,7 @@ public class RetryTestRequest : RequestBase<string>;
 /// <summary>
 /// A handler that fails twice before succeeding to test retry behavior.
 /// </summary>
-[HandlerRetry(2, 100)] // Retry twice with 100ms delay
+[HandlerRetry(2, 300)] // Retry twice with 100ms delay
 public class RetryTestRequestHandler : IRequestHandler<RetryTestRequest, string>
 {
     public static int RetryAttempts { get; private set; }
@@ -942,7 +942,7 @@ public class SendNotificationCommand : RequestBase<Unit>
 }
 
 // Handler for the command with a retry policy
-[HandlerRetry(2, 100)] // Retry twice with 100ms delay
+[HandlerRetry(2, 300)] // Retry twice with 100ms delay
 public class SendNotificationCommandHandler : RequestHandlerBase<SendNotificationCommand, Unit>
 {
     public static int RetryAttempts { get; private set; }
@@ -1028,7 +1028,7 @@ public class ProcessDataRequest<TData> : RequestBase<string>
     }
 }
 
-[HandlerRetry(2, 100)] // Retry twice with 100ms delay
+[HandlerRetry(2, 300)] // Retry twice with 100ms delay
 public class GenericDataProcessor<TData> : RequestHandlerBase<ProcessDataRequest<TData>, string>
     where TData : class, IDataItem
 {

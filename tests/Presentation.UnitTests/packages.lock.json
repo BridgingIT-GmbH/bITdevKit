@@ -587,6 +587,20 @@
           "Microsoft.AspNetCore.Authorization": "[10.0.5, )"
         }
       },
+      "BridgingIT.DevKit.Application.Messaging": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Humanizer.Core": "[3.0.10, )",
+          "Polly": "[8.6.6, )",
+          "Polly.Contrib.Simmy": "[0.3.0, )"
+        }
+      },
       "BridgingIT.DevKit.Application.Utilities": {
         "type": "Project",
         "dependencies": {
@@ -774,6 +788,15 @@
           "Serilog.Extensions.Hosting": "[10.0.0, )",
           "Spectre.Console": "[0.54.0, )",
           "System.IdentityModel.Tokens.Jwt": "[8.17.0, )"
+        }
+      },
+      "BridgingIT.DevKit.Presentation.Web.Messaging": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
+          "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )"
         }
       },
       "CsvHelper": {

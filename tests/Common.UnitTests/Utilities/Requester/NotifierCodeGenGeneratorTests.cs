@@ -151,7 +151,7 @@ public interface IEmailService
 }
 
 [Event]
-[HandlerRetry(2, 100)]
+[HandlerRetry(2, 300)]
 [HandlerTimeout(50)]
 public partial class UserRegisteredEvent
 {

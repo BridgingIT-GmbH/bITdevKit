@@ -665,7 +665,7 @@ public class RetryTestNotification : NotificationBase;
 /// <summary>
 /// A handler that fails twice before succeeding to test retry behavior.
 /// </summary>
-[HandlerRetry(2, 100)] // Retry twice with 100ms delay
+[HandlerRetry(2, 300)] // Retry twice with 100ms delay
 public class RetryTestNotificationHandler : NotificationHandlerBase<RetryTestNotification>
 {
     public static int RetryAttempts { get; private set; }

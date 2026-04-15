@@ -131,6 +131,39 @@ public static class RepositoryExtensions
     }
 
     /// <summary>
+    ///    Asynchronously counts the number of entities that match the given expression.
+    /// </summary>
+    /// <param name="source">The source repository.</param>
+    /// <param name="expression">The expression used to filter entities.</param>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <returns>A task representing the asynchronous operation, containing the count of matching entities.</returns>
+    public static async Task<long> CountAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        Expression<Func<TEntity, bool>> expression,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        return await source.CountAsync(new Specification<TEntity>(expression), cancellationToken).AnyContext();
+    }
+
+    /// <summary>
+    ///     Asynchronously determines whether any entities match the given expression.
+    /// </summary>
+    /// <param name="source">The source repository.</param>
+    /// <param name="expression">The expression used to filter entities.</param>
+    /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
+    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <returns>A task representing the asynchronous operation, containing a boolean indicating if any entities match the expression.</returns>
+    public static async Task<bool> AnyAsync<TEntity>(
+        this IGenericReadOnlyRepository<TEntity> source,
+        CancellationToken cancellationToken = default)
+        where TEntity : class, IEntity
+    {
+        return await source.CountAsync(new Specification<TEntity>(e => e.Id != null), cancellationToken).AnyContext() > 0;
+    }
+
+    /// <summary>
     /// Asynchronously finds all entities that match the given expression.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>

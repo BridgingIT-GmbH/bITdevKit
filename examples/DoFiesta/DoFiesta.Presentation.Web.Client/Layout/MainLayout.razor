@@ -15,11 +15,6 @@
         </MudLink>
         <MudIconButton Icon="@Icons.Material.Filled.CheckCircle" Color="Color.Secondary" Href="todos" />
         <MudIconButton Icon="@Icons.Material.Filled.Help" Color="Color.Tertiary" Href="todos/help" />
-        <MudMenu Icon="@Icons.Material.Filled.SettingsInputComponent" Color="Color.Info">
-            <MudMenuItem Href="/operations">Operations</MudMenuItem>
-            <MudMenuItem Href="/operations/messages">Messages</MudMenuItem>
-            <MudMenuItem Href="/operations/jobscheduling">Job Scheduling</MudMenuItem>
-        </MudMenu>
         <MudSpacer />
 
         <AuthorizeView>
@@ -42,6 +37,12 @@
             @* <MudTooltip Text="User Profile">
                 <MudIconButton Icon="@Icons.Material.Filled.VerifiedUser" Color="Color.Inherit" Href="/user-profile" />
             </MudTooltip> *@
+            <MudTooltip Text="Operations">
+                <MudMenu Icon="@Icons.Material.Filled.SettingsInputComponent" Color="Color.Info">
+                    <MudMenuItem Href="/operations/messages">Messages</MudMenuItem>
+                    <MudMenuItem Href="/operations/jobscheduling">Jobs</MudMenuItem>
+                </MudMenu>
+            </MudTooltip>
             <MudTooltip Text="OpenAPI documentation">
                 <MudIconButton Icon="@Icons.Material.Filled.Api" Color="Color.Inherit" Href="scalar" Target="_blank" />
             </MudTooltip>

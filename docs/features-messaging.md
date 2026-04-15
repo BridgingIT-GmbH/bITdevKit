@@ -82,17 +82,11 @@ Minimal example that adds behaviors, the outbox, the Entity Framework broker, an
 ```csharp
 // In Program.cs or your composition root
 builder.Services.AddMessaging(builder.Configuration, o => o.StartupDelay("00:00:30"))
+  // Register messages and handlers
+  .WithSubscription<UserRegisteredMessage, UserRegisteredHandler>();
   // Publisher/handler behavior pipelines
-  .WithBehavior<ModuleScopeMessagePublisherBehavior>()
-  .WithBehavior<ModuleScopeMessageHandlerBehavior>()
-  .WithBehavior<MetricsMessagePublisherBehavior>()
-  .WithBehavior<MetricsMessageHandlerBehavior>()
   .WithBehavior<RetryMessageHandlerBehavior>()
   .WithBehavior<TimeoutMessageHandlerBehavior>()
-  // Transactional outbox for reliability
-  .WithOutbox<AppDbContext>(o => o
-    .ProcessingInterval("00:00:30")
-    .StartupDelay("00:00:05"))
   // Choose a broker
   .WithEntityFrameworkBroker<AppDbContext>();
   //.WithInProcessBroker();

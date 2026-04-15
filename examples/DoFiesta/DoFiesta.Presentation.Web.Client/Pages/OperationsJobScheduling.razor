@@ -1,110 +1,1267 @@
 @page "/operations/jobscheduling"
+@using System.Globalization
+@using System.Text.Json
+@using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen
+@using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
+@using JobInfo = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobInfo
+@using JobRun = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobRun
+@using TriggerInfo = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.TriggerInfo
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.Kiota.Abstractions.Serialization
+@using KiotaApiException = Microsoft.Kiota.Abstractions.ApiException
+@inject BackendApiClient Api
+@inject ISnackbar Snackbar
+@implements IAsyncDisposable
 @attribute [Authorize]
 
 <PageTitle>DoFiesta - Operations Job Scheduling</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+<style>
+    @@media (max-width: 959.98px)
+    {
+        .job-action-label {
+            display: none;
+        }
+
+        .job-action-button {
+            min-width: 40px;
+            padding-left: 8px;
+            padding-right: 8px;
+        }
+    }
+</style>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 mb-6">
     <MudPaper Class="pa-6 mb-4">
         <div class="d-flex flex-wrap align-center gap-4">
             <div>
                 <MudText Typo="Typo.h4" GutterBottom="true">Job Scheduling</MudText>
             </div>
             <MudSpacer />
-            <MudButton Variant="Variant.Text" Color="Color.Warning" StartIcon="@Icons.Material.Filled.Construction">
-                Stub Ready
+            <MudSelect T="int?" Label="Auto refresh" Variant="Variant.Outlined" Margin="Margin.Dense" Value="autoRefreshIntervalSeconds" ValueChanged="OnAutoRefreshIntervalChanged" Style="min-width: 170px;">
+                <MudSelectItem T="int?" Value="@((int?)null)">Off</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)1)">1 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)5)">5 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)15)">15 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)30)">30 sec</MudSelectItem>
+            </MudSelect>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Filled.Refresh" OnClick="ReloadAsync" Disabled="@loading">
+                Refresh
             </MudButton>
         </div>
     </MudPaper>
 
     <MudGrid Class="mb-4">
-        <MudItem xs="12" md="8">
-            <MudCard Class="fill-height">
-                <MudCardHeader>
-                    <CardHeaderContent>
-                        <MudText Typo="Typo.h5">Planned Scheduler Console</MudText>
-                        <MudText Typo="Typo.body2">
-                            The page layout is ready for job inventory, trigger visibility, and recent run diagnostics without mixing scheduler operations into the todo workflow itself.
-                        </MudText>
-                    </CardHeaderContent>
-                    <CardHeaderActions>
-                        <MudAvatar Color="Color.Warning" Variant="Variant.Filled">
-                            <MudIcon Icon="@Icons.Material.Filled.Schedule" />
-                        </MudAvatar>
-                    </CardHeaderActions>
-                </MudCardHeader>
-                <MudCardContent>
-                    <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" Dense="true" Class="mb-4">
-                        The current generated Kiota client does not yet include the job scheduling endpoint surface, so this page intentionally stays read-only and explanatory for now.
-                    </MudAlert>
-
-                    <MudSimpleTable Dense="true" Hover="true">
-                        <thead>
-                            <tr>
-                                <th>Planned area</th>
-                                <th>Purpose</th>
-                                <th>Endpoint family</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Job inventory</td>
-                                <td>List scheduled jobs with name, group, next run, and state.</td>
-                                <td><code>GET /_system/jobscheduling</code></td>
-                            </tr>
-                            <tr>
-                                <td>Job details</td>
-                                <td>Inspect one job, its triggers, and run history.</td>
-                                <td><code>GET /_system/jobscheduling/{jobName}/{jobGroup}</code></td>
-                            </tr>
-                            <tr>
-                                <td>Operator actions</td>
-                                <td>Trigger, pause, resume, or interrupt jobs from the UI.</td>
-                                <td><code>POST /trigger | /pause | /resume | /interrupt</code></td>
-                            </tr>
-                            <tr>
-                                <td>Run retention</td>
-                                <td>Purge old run history when cleanup controls are added.</td>
-                                <td><code>DELETE /runs?olderThan=...</code></td>
-                            </tr>
-                        </tbody>
-                    </MudSimpleTable>
-                </MudCardContent>
-            </MudCard>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Jobs</MudText>
+                <MudText Typo="Typo.h4">@jobs.Count</MudText>
+            </MudPaper>
         </MudItem>
-
-        <MudItem xs="12" md="4">
-            <MudCard Class="mb-4">
-                <MudCardContent>
-                    <MudText Typo="Typo.h6" GutterBottom="true">Next integration step</MudText>
-                    <MudText Typo="Typo.body2" Class="mb-3">
-                        Once the server OpenAPI document includes `JobSchedulingEndpoints`, regenerate the Kiota client and replace this stub with live scheduler data.
-                    </MudText>
-                    <MudChip T="string" Color="Color.Info" Variant="Variant.Outlined" Class="mr-2 mb-2">JobSchedulingEndpoints</MudChip>
-                    <MudChip T="string" Color="Color.Secondary" Variant="Variant.Outlined" Class="mr-2 mb-2">Kiota client</MudChip>
-                    <MudChip T="string" Color="Color.Default" Variant="Variant.Outlined" Class="mb-2">MudBlazor page</MudChip>
-                </MudCardContent>
-            </MudCard>
-
-            <MudCard>
-                <MudCardContent>
-                    <MudText Typo="Typo.h6" GutterBottom="true">Planned actions</MudText>
-                    <div class="d-flex flex-column gap-2">
-                        <MudButton Variant="Variant.Outlined" Color="Color.Warning" Disabled="true" StartIcon="@Icons.Material.Filled.PlayArrow">
-                            Trigger Job
-                        </MudButton>
-                        <MudButton Variant="Variant.Outlined" Color="Color.Warning" Disabled="true" StartIcon="@Icons.Material.Filled.Pause">
-                            Pause Job
-                        </MudButton>
-                        <MudButton Variant="Variant.Outlined" Color="Color.Warning" Disabled="true" StartIcon="@Icons.Material.Filled.Refresh">
-                            Resume Job
-                        </MudButton>
-                        <MudButton Variant="Variant.Outlined" Color="Color.Error" Disabled="true" StartIcon="@Icons.Material.Filled.DeleteSweep">
-                            Purge Old Runs
-                        </MudButton>
-                    </div>
-                </MudCardContent>
-            </MudCard>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Running</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Success">@jobs.Count(IsRunningJob)</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Paused</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Warning">@jobs.Count(IsPausedJob)</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Failed Last Run</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Error">@jobs.Count(HasFailedLastRun)</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Scheduled</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Info">@jobs.Count(HasUpcomingTrigger)</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Triggers</MudText>
+                <MudText Typo="Typo.h4">@jobs.Sum(job => job.TriggerCount ?? 0)</MudText>
+            </MudPaper>
         </MudItem>
     </MudGrid>
+
+    <MudPaper Class="pa-4 mb-4">
+        <MudGrid>
+            <MudItem xs="12" md="4">
+                <MudTextField @bind-Value="jobSearch" Label="Search jobs" Placeholder="Name, type, description..." Clearable="true" />
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudSelect T="string" Label="State" @bind-Value="jobStateFilter">
+                    <MudSelectItem Value="@AllValue">All states</MudSelectItem>
+                    <MudSelectItem Value="@JobStateRunningValue">Running</MudSelectItem>
+                    <MudSelectItem Value="@JobStatePausedValue">Paused</MudSelectItem>
+                    <MudSelectItem Value="@JobStateFailedValue">Failed last run</MudSelectItem>
+                    <MudSelectItem Value="@JobStateInterruptedValue">Interrupted</MudSelectItem>
+                    <MudSelectItem Value="@JobStateScheduledValue">Scheduled</MudSelectItem>
+                    <MudSelectItem Value="@JobStateIdleValue">Idle</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudSelect T="string" Label="Group" @bind-Value="groupFilter">
+                    <MudSelectItem Value="@AllValue">All groups</MudSelectItem>
+                    @foreach (var group in GroupOptions)
+                    {
+                        <MudSelectItem Value="@group">@group</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudSelect T="string" Label="Category" @bind-Value="categoryFilter">
+                    <MudSelectItem Value="@AllValue">All categories</MudSelectItem>
+                    @foreach (var category in CategoryOptions)
+                    {
+                        <MudSelectItem Value="@category">@category</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        </MudGrid>
+
+        <MudDivider Class="my-4" />
+
+        <MudGrid>
+            <MudItem xs="12" md="2">
+                <MudDatePicker @bind-Date="runStartDate" Label="History start date" />
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudDatePicker @bind-Date="runEndDate" Label="History end date" />
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudSelect T="int" Label="Rows" @bind-Value="runRowsPerPage">
+                    <MudSelectItem Value="10">10</MudSelectItem>
+                    <MudSelectItem Value="25">25</MudSelectItem>
+                    <MudSelectItem Value="50">50</MudSelectItem>
+                    <MudSelectItem Value="100">100</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudSelect T="string" Label="Run status" @bind-Value="runStatusFilter">
+                    <MudSelectItem Value="@AllValue">All statuses</MudSelectItem>
+                    @foreach (var value in RunStatusOptions)
+                    {
+                        <MudSelectItem Value="@value">@value</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudTextField @bind-Value="runResultFilter" Label="Result contains" Clearable="true" />
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudTextField @bind-Value="runInstanceFilter" Label="Instance" Clearable="true" />
+            </MudItem>
+        </MudGrid>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.FilterAlt" OnClick="ApplyRunFiltersAsync" Disabled="@loading">
+                Apply
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Filled.Clear" OnClick="ResetRunFiltersAsync" Disabled="@loading">
+                Reset
+            </MudButton>
+        </div>
+    </MudPaper>
+
+    @if (!string.IsNullOrWhiteSpace(loadError))
+    {
+        <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="mb-4">@loadError</MudAlert>
+    }
+
+    @if (loading && jobs.Count == 0)
+    {
+        <MudPaper Class="pa-4">
+            <MudSkeleton Height="120px" Animation="Animation.Pulse" />
+            <MudSkeleton Height="120px" Animation="Animation.Pulse" Class="mt-2" />
+            <MudSkeleton Height="120px" Animation="Animation.Pulse" Class="mt-2" />
+        </MudPaper>
+    }
+    else if (!FilteredJobs.Any())
+    {
+        <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined">
+            No jobs matched the current filters.
+        </MudAlert>
+    }
+    else
+    {
+        @foreach (var job in FilteredJobs)
+        {
+            var card = GetCardData(job);
+            var pagedRuns = GetPagedRuns(job);
+            var pageCount = GetRunPageCount(job);
+
+            <MudPaper Class="pa-3 mb-3">
+                <MudGrid Class="mb-2">
+                    <MudItem xs="12" md="4">
+                        <MudText Typo="Typo.h6" Class="text-truncate" Style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            <strong>@DisplayValue(job.Name)</strong>
+                        </MudText>
+                    </MudItem>
+                    <MudItem xs="12" md="4">
+                        <MudText Typo="Typo.h6" Class="text-truncate" Style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                            @DisplayValue(job.Type)
+                        </MudText>
+                    </MudItem>
+                    <MudItem xs="12" md="4">
+                        @* <MudChip T="string" Variant="Variant.Outlined" Color="Color.Default" Size="Size.Small">
+                            @DisplayValue(job.Group)
+                        </MudChip> *@
+                    </MudItem>
+                </MudGrid>
+
+                <div class="d-flex flex-wrap align-center justify-space-between gap-2 mb-3">
+                    <div class="d-flex flex-wrap gap-2">
+                        <MudChip T="string" Color="@GetJobStateColor(job)" Variant="Variant.Filled" Size="Size.Small">
+                            @GetJobStateLabel(job)
+                        </MudChip>
+                        <MudChip T="string" Color="Color.Default" Variant="Variant.Outlined" Size="Size.Small">
+                            @DisplayCount(job.TriggerCount) trigger(s)
+                        </MudChip>
+                        @if (!string.IsNullOrWhiteSpace(job.Category))
+                        {
+                            <MudChip T="string" Color="Color.Info" Variant="Variant.Outlined" Size="Size.Small">
+                                @job.Category
+                            </MudChip>
+                        }
+                    </div>
+
+                    <div class="d-flex flex-wrap gap-2">
+                        <MudButton Class="job-action-button" Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="@(() => OpenTriggerDialog(job))" Disabled="@card.ActionBusy">
+                            <span class="job-action-label">Trigger</span>
+                        </MudButton>
+                        <MudButton Class="job-action-button" Variant="Variant.Outlined" Color="Color.Warning" Size="Size.Small" StartIcon="@Icons.Material.Filled.Pause" OnClick="@(() => PauseJobAsync(job))" Disabled="@(card.ActionBusy || !CanPauseJob(job))">
+                            <span class="job-action-label">Pause</span>
+                        </MudButton>
+                        <MudButton Class="job-action-button" Variant="Variant.Outlined" Color="Color.Success" Size="Size.Small" StartIcon="@Icons.Material.Filled.PlayCircleOutline" OnClick="@(() => ResumeJobAsync(job))" Disabled="@(card.ActionBusy || !CanResumeJob(job))">
+                            <span class="job-action-label">Resume</span>
+                        </MudButton>
+                        <MudButton Class="job-action-button" Variant="Variant.Outlined" Color="Color.Error" Size="Size.Small" StartIcon="@Icons.Material.Filled.StopCircle" OnClick="@(() => InterruptJobAsync(job))" Disabled="@(card.ActionBusy || !CanInterruptJob(job))">
+                            <span class="job-action-label">Interrupt</span>
+                        </MudButton>
+                    </div>
+                </div>
+
+                @if (card.ActionBusy)
+                {
+                    <MudProgressLinear Color="Color.Primary" Indeterminate="true" Class="mb-3" />
+                }
+
+                <MudGrid>
+                    <MudItem xs="12" md="4">
+                        <MudPaper Outlined="true" Class="pa-4 fill-height">
+                            <MudText Typo="Typo.h6" GutterBottom="true">Overview</MudText>
+                            <MudText><strong>Description:</strong> @DisplayValue(job.Description)</MudText>
+                            <MudText><strong>Next Fire:</strong> @FormatTimestamp(GetNextFireTime(job))</MudText>
+                            <MudText><strong>Previous Fire:</strong> @FormatTimestamp(GetPreviousFireTime(job))</MudText>
+                            <MudText><strong>Last Run:</strong> @FormatRunTimestamp(job.LastRun?.StartTime)</MudText>
+                            <MudText><strong>Last Result:</strong> @DisplayValue(job.LastRun?.Result)</MudText>
+                            <MudText><strong>Trigger States:</strong> @GetTriggerStateSummary(job.Triggers.SafeNull())</MudText>
+                        </MudPaper>
+
+                        <MudPaper Outlined="true" Class="pa-4 mt-3 fill-height">
+                            <MudText Typo="Typo.h6" GutterBottom="true">Triggers</MudText>
+
+                            @if (job.Triggers.SafeNull().Count == 0)
+                            {
+                                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+                                    No triggers are registered for this job.
+                                </MudAlert>
+                            }
+                            else
+                            {
+                                <MudTable Items="@job.Triggers.SafeNull().OrderBy(trigger => trigger.Group).ThenBy(trigger => trigger.Name)" Dense="true" Hover="true" Breakpoint="Breakpoint.Md" Elevation="0">
+                                    <HeaderContent>
+                                        <MudTh>State</MudTh>
+                                        <MudTh>Trigger</MudTh>
+                                        <MudTh>Cron</MudTh>
+                                        <MudTh>Next Fire</MudTh>
+                                        @* <MudTh>Previous Fire</MudTh> *@
+                                    </HeaderContent>
+                                    <RowTemplate Context="trigger">
+                                        <MudTd DataLabel="State">
+                                            <MudChip T="string" Color="@GetTriggerStateColor(trigger.State)" Variant="Variant.Filled" Size="Size.Small">
+                                                @DisplayValue(trigger.State)
+                                            </MudChip>
+                                        </MudTd>
+                                        <MudTd DataLabel="Trigger">
+                                            <MudText Typo="Typo.body2"><strong>@DisplayValue(trigger.Name)</strong></MudText>
+                                            <MudText Typo="Typo.caption">@DisplayValue(trigger.Group)</MudText>
+                                        </MudTd>
+                                        <MudTd DataLabel="Cron">@DisplayValue(trigger.CronExpression)</MudTd>
+                                        <MudTd DataLabel="Next Fire">
+                                            <MudTooltip Text="@FormatTimestamp(trigger.NextFireTime)">
+                                                <MudText Typo="Typo.body2">@FormatRelativeTimestamp(trigger.NextFireTime)</MudText>
+                                            </MudTooltip>
+                                        </MudTd>
+                                        @* <MudTd DataLabel="Previous Fire">
+                                            <MudTooltip Text="@FormatTimestamp(trigger.PreviousFireTime)">
+                                                <MudText Typo="Typo.body2">@FormatRelativeTimestamp(trigger.PreviousFireTime)</MudText>
+                                            </MudTooltip>
+                                        </MudTd> *@
+                                    </RowTemplate>
+                                </MudTable>
+                            }
+                        </MudPaper>
+                    </MudItem>
+
+                    <MudItem xs="12" md="8">
+                        <MudPaper Outlined="true" Class="pa-4 fill-height">
+                            <MudText Typo="Typo.h6" GutterBottom="true">Run History</MudText>
+
+                            @if (card.Loading)
+                            {
+                                <MudSkeleton Height="180px" Animation="Animation.Pulse" />
+                            }
+                            else if (!string.IsNullOrWhiteSpace(card.Error))
+                            {
+                                <MudAlert Severity="Severity.Error" Variant="Variant.Outlined">@card.Error</MudAlert>
+                            }
+                            else if (card.Runs.Count == 0)
+                            {
+                                <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined">
+                                    No runs matched the current history filters.
+                                </MudAlert>
+                            }
+                            else
+                            {
+                                <MudTable Items="@pagedRuns" Dense="true" Hover="true" Breakpoint="Breakpoint.Md" Elevation="0">
+                                    <HeaderContent>
+                                        <MudTh>Status</MudTh>
+                                        <MudTh>Started</MudTh>
+                                        <MudTh>Ended</MudTh>
+                                        <MudTh>Duration</MudTh>
+                                        <MudTh>Result</MudTh>
+                                        <MudTh>Instance</MudTh>
+                                        <MudTh></MudTh>
+                                    </HeaderContent>
+                                    <RowTemplate Context="run">
+                                        <MudTd DataLabel="Status">
+                                            <MudChip T="string" Color="@GetRunStatusColor(run.Status)" Variant="Variant.Filled" Size="Size.Small">
+                                                @GetRunStatusLabel(run.Status)
+                                            </MudChip>
+                                        </MudTd>
+                                        <MudTd DataLabel="Started">
+                                            <MudTooltip Text="@FormatRunTimestamp(run.StartTime)">
+                                                <MudText Typo="Typo.body2">@FormatRunRelativeTimestamp(run.StartTime)</MudText>
+                                            </MudTooltip>
+                                        </MudTd>
+                                        <MudTd DataLabel="Ended">
+                                            <MudTooltip Text="@FormatRunTimestamp(run.EndTime)">
+                                                <MudText Typo="Typo.body2">@FormatRunRelativeTimestamp(run.EndTime)</MudText>
+                                            </MudTooltip>
+                                        </MudTd>
+                                        <MudTd DataLabel="Duration">@DisplayValue(GetRunDuration(run))</MudTd>
+                                        <MudTd DataLabel="Result">@TrimValue(GetRunResult(run), 52)</MudTd>
+                                        <MudTd DataLabel="Instance">@DisplayValue(run.InstanceName)</MudTd>
+                                        <MudTd>
+                                            <MudTooltip Text="Open run details">
+                                                <MudIconButton Icon="@Icons.Material.Filled.Info"
+                                                               Color="Color.Info"
+                                                               Size="Size.Small"
+                                                               OnClick="@(() => OpenRunDialog(run))" />
+                                            </MudTooltip>
+                                        </MudTd>
+                                    </RowTemplate>
+                                </MudTable>
+
+                                <div class="d-flex flex-wrap align-center justify-space-between gap-3 mt-3">
+                                    <MudText Typo="Typo.caption">
+                                        Showing @pagedRuns.Count of @card.Runs.Count run(s)
+                                    </MudText>
+                                    <MudPagination Count="@pageCount"
+                                                   BoundaryCount="1"
+                                                   MiddleCount="2"
+                                                   Selected="@card.CurrentPage"
+                                                   SelectedChanged="@(page => SetRunPage(job, page))" />
+                                </div>
+                            }
+                        </MudPaper>
+                    </MudItem>
+
+                </MudGrid>
+            </MudPaper>
+        }
+    }
 </MudContainer>
+
+<MudDialog @bind-Visible="triggerDialogVisible" Options="new DialogOptions { CloseButton = true, FullWidth = true, MaxWidth = MaxWidth.Medium }">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Trigger Job Immediately</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Dense="true" Class="mb-4">
+            Provide an optional JSON object. Each property becomes job data for the immediate Quartz execution.
+        </MudAlert>
+        <MudTextField @bind-Value="triggerPayloadJson"
+                      Label="Trigger payload (JSON object)"
+                      Variant="Variant.Outlined"
+                      Lines="10"
+                      Clearable="true"
+                      FullWidth="true"
+                      Placeholder="{&#10;  &quot;requestedBy&quot;: &quot;operations-dashboard&quot;,&#10;  &quot;reason&quot;: &quot;manual-run&quot;&#10;}" />
+        @if (!string.IsNullOrWhiteSpace(triggerValidationError))
+        {
+            <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Dense="true" Class="mt-3">@triggerValidationError</MudAlert>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Text" Color="Color.Default" OnClick="CloseTriggerDialog">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.PlayArrow" OnClick="TriggerSelectedJobAsync" Disabled="@(this.actionJob is not null && GetCardData(this.actionJob).ActionBusy)">
+            Trigger
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+<MudDialog @bind-Visible="runDialogVisible" Options="new DialogOptions { CloseButton = true, FullWidth = true, MaxWidth = MaxWidth.Large }">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Job Run Details</MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (selectedRun is null)
+        {
+            <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">No run details are loaded.</MudAlert>
+        }
+        else
+        {
+            <MudGrid>
+                <MudItem xs="12" md="5">
+                    <MudPaper Class="pa-4 mb-4">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Overview</MudText>
+                        <MudText><strong>Status:</strong> @GetRunStatusLabel(selectedRun.Status)</MudText>
+                        <MudText><strong>Run Id:</strong> @DisplayValue(selectedRun.Id)</MudText>
+                        <MudText><strong>Started:</strong> @FormatRunTimestamp(selectedRun.StartTime)</MudText>
+                        <MudText><strong>Ended:</strong> @FormatRunTimestamp(selectedRun.EndTime)</MudText>
+                        <MudText><strong>Scheduled:</strong> @FormatRunTimestamp(selectedRun.ScheduledTime)</MudText>
+                        <MudText><strong>Duration:</strong> @DisplayValue(GetRunDuration(selectedRun))</MudText>
+                        <MudText><strong>Trigger:</strong> @DisplayValue(GetTriggerLabel(selectedRun))</MudText>
+                        <MudText><strong>Instance:</strong> @DisplayValue(selectedRun.InstanceName)</MudText>
+                        <MudText><strong>Priority:</strong> @DisplayCount(selectedRun.Priority)</MudText>
+                        <MudText><strong>Retries:</strong> @DisplayCount(selectedRun.RetryCount)</MudText>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" md="7">
+                    @if (!string.IsNullOrWhiteSpace(selectedRun.ErrorMessage))
+                    {
+                        <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="mb-4">@selectedRun.ErrorMessage</MudAlert>
+                    }
+
+                    <MudPaper Class="pa-4 mb-4">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Result</MudText>
+                        <MudText Typo="Typo.body2" Style="white-space: pre-wrap;">@DisplayValue(selectedRun.Result)</MudText>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        }
+    </DialogContent>
+</MudDialog>
+
+@code {
+    private const string AllValue = "__all";
+    private const int RunFetchLimit = 250;
+    private const string JobStateRunningValue = "running";
+    private const string JobStatePausedValue = "paused";
+    private const string JobStateFailedValue = "failed";
+    private const string JobStateInterruptedValue = "interrupted";
+    private const string JobStateScheduledValue = "scheduled";
+    private const string JobStateIdleValue = "idle";
+
+    private static readonly string[] RunStatusOptions =
+    [
+        "Started",
+        "Success",
+        "Completed",
+        "Failed",
+        "Interrupted",
+    ];
+
+    private sealed class JobCardData
+    {
+        public List<JobRun> Runs { get; } = [];
+
+        public bool ActionBusy { get; set; }
+
+        public bool Loading { get; set; }
+
+        public bool Loaded { get; set; }
+
+        public string Error { get; set; }
+
+        public int CurrentPage { get; set; } = 1;
+    }
+
+    private readonly List<JobInfo> jobs = [];
+    private readonly Dictionary<string, JobCardData> cardData = new(StringComparer.OrdinalIgnoreCase);
+
+    private bool loading;
+    private string loadError;
+
+    private string jobSearch;
+    private string jobStateFilter = AllValue;
+    private string groupFilter = AllValue;
+    private string categoryFilter = AllValue;
+
+    private string runStatusFilter = AllValue;
+    private string runResultFilter;
+    private string runInstanceFilter;
+    private DateTime? runStartDate = DateTime.Today;
+    private DateTime? runEndDate = DateTime.Today;
+    private int runRowsPerPage = 10;
+
+    private bool triggerDialogVisible;
+    private string triggerPayloadJson = "{}";
+    private string triggerValidationError;
+    private JobInfo actionJob;
+
+    private bool runDialogVisible;
+    private JobRun selectedRun;
+
+    private int? autoRefreshIntervalSeconds = 5;
+    private PeriodicTimer autoRefreshTimer;
+    private CancellationTokenSource autoRefreshCancellation;
+    private bool isDisposed;
+
+    private IEnumerable<JobInfo> FilteredJobs => this.jobs
+        .Where(this.MatchesJobFilters)
+        .OrderBy(job => job.Group)
+        .ThenBy(job => job.Name);
+
+    private IEnumerable<string> GroupOptions => this.jobs
+        .Select(job => job.Group)
+        .Where(value => !string.IsNullOrWhiteSpace(value))
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .OrderBy(value => value, StringComparer.OrdinalIgnoreCase);
+
+    private IEnumerable<string> CategoryOptions => this.jobs
+        .Select(job => GetCategoryLabel(job))
+        .Where(value => !string.IsNullOrWhiteSpace(value))
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .OrderBy(value => value, StringComparer.OrdinalIgnoreCase);
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.StartAutoRefresh();
+        await this.ReloadAsync();
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (this.loading)
+        {
+            return;
+        }
+
+        var pendingJobs = this.FilteredJobs
+            .Where(job =>
+            {
+                var card = this.GetCardData(job);
+                return !card.Loaded && !card.Loading;
+            })
+            .ToList();
+
+        if (pendingJobs.Count == 0)
+        {
+            return;
+        }
+
+        await Task.WhenAll(pendingJobs.Select(job => this.LoadRunsForJobAsync(job)));
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        this.isDisposed = true;
+        this.StopAutoRefresh();
+        await Task.CompletedTask;
+    }
+
+    private async Task ReloadAsync()
+    {
+        this.loading = true;
+        this.loadError = null;
+
+        try
+        {
+            var result = await this.Api.Api._system.Jobs.GetAsync();
+
+            this.jobs.Clear();
+            this.jobs.AddRange(result.SafeNull().OrderBy(job => job.Group).ThenBy(job => job.Name));
+
+            await this.LoadFilteredCardDataAsync(resetPage: false);
+        }
+        catch (KiotaApiException ex)
+        {
+            this.loadError = $"Loading jobs failed: {ex.Message}";
+            this.Snackbar.Add(this.loadError, Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            this.loadError = $"Loading jobs failed: {ex.Message}";
+            this.Snackbar.Add(this.loadError, Severity.Error);
+        }
+        finally
+        {
+            this.loading = false;
+            await this.InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private async Task ApplyRunFiltersAsync()
+    {
+        await this.LoadFilteredCardDataAsync(resetPage: true);
+    }
+
+    private async Task ResetRunFiltersAsync()
+    {
+        this.runStatusFilter = AllValue;
+        this.runResultFilter = null;
+        this.runInstanceFilter = null;
+        this.runStartDate = DateTime.Today;
+        this.runEndDate = DateTime.Today;
+        this.runRowsPerPage = 10;
+
+        await this.LoadFilteredCardDataAsync(resetPage: true);
+    }
+
+    private async Task LoadFilteredCardDataAsync(bool resetPage)
+    {
+        var visibleJobs = this.FilteredJobs.ToList();
+
+        foreach (var job in visibleJobs)
+        {
+            var card = this.GetCardData(job);
+            if (resetPage)
+            {
+                card.CurrentPage = 1;
+            }
+        }
+
+        await Task.WhenAll(visibleJobs.Select(job => this.LoadRunsForJobAsync(job)));
+    }
+
+    private async Task LoadRunsForJobAsync(JobInfo job)
+    {
+        if (job is null)
+        {
+            return;
+        }
+
+        var card = this.GetCardData(job);
+        card.Loading = true;
+        card.Error = null;
+
+        try
+        {
+            var runs = await this.Api.Api._system.Jobs[job.Name][job.Group].Runs.GetAsync(config =>
+            {
+                config.QueryParameters.Take = RunFetchLimit;
+                config.QueryParameters.StartDate = this.ToStartDateOffset(this.runStartDate);
+                config.QueryParameters.EndDate = this.ToEndDateOffset(this.runEndDate);
+
+                if (!string.Equals(this.runStatusFilter, AllValue, StringComparison.Ordinal))
+                {
+                    config.QueryParameters.Status = this.runStatusFilter;
+                }
+
+                if (!string.IsNullOrWhiteSpace(this.runResultFilter))
+                {
+                    config.QueryParameters.ResultContains = this.runResultFilter;
+                }
+
+                if (!string.IsNullOrWhiteSpace(this.runInstanceFilter))
+                {
+                    config.QueryParameters.InstanceName = this.runInstanceFilter;
+                }
+            });
+
+            card.Runs.Clear();
+            card.Runs.AddRange(runs.SafeNull().OrderByDescending(run => run.StartTime));
+
+            var maxPage = this.GetRunPageCount(job);
+            if (card.CurrentPage > maxPage)
+            {
+                card.CurrentPage = maxPage;
+            }
+        }
+        catch (KiotaApiException ex)
+        {
+            card.Error = $"Loading run history failed: {ex.Message}";
+        }
+        catch (Exception ex)
+        {
+            card.Error = $"Loading run history failed: {ex.Message}";
+        }
+        finally
+        {
+            card.Loading = false;
+            card.Loaded = true;
+        }
+    }
+
+    private void OpenTriggerDialog(JobInfo job)
+    {
+        this.actionJob = job;
+        this.triggerValidationError = null;
+        this.triggerPayloadJson = "{}";
+        this.triggerDialogVisible = true;
+    }
+
+    private void CloseTriggerDialog()
+    {
+        this.triggerValidationError = null;
+        this.triggerDialogVisible = false;
+        this.actionJob = null;
+    }
+
+    private async Task TriggerSelectedJobAsync()
+    {
+        if (this.actionJob is null)
+        {
+            return;
+        }
+
+        var card = this.GetCardData(this.actionJob);
+        card.ActionBusy = true;
+        this.triggerValidationError = null;
+
+        try
+        {
+            var payload = this.ParseTriggerPayload(this.triggerPayloadJson);
+            await this.Api.Api._system.Jobs[this.actionJob.Name][this.actionJob.Group].Trigger.PostAsync(payload);
+
+            this.triggerDialogVisible = false;
+            this.Snackbar.Add($"Job {this.actionJob.Name} triggered.", Severity.Success);
+            await this.ReloadAsync();
+        }
+        catch (JsonException ex)
+        {
+            this.triggerValidationError = $"Invalid JSON payload: {ex.Message}";
+        }
+        catch (KiotaApiException ex)
+        {
+            this.Snackbar.Add($"Triggering job failed: {ex.Message}", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            this.Snackbar.Add($"Triggering job failed: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            card.ActionBusy = false;
+        }
+    }
+
+    private Task PauseJobAsync(JobInfo job)
+    {
+        return this.ExecuteJobActionAsync(job, () => this.Api.Api._system.Jobs[job.Name][job.Group].Pause.PostAsync(), $"Job {job.Name} paused.");
+    }
+
+    private Task ResumeJobAsync(JobInfo job)
+    {
+        return this.ExecuteJobActionAsync(job, () => this.Api.Api._system.Jobs[job.Name][job.Group].Resume.PostAsync(), $"Job {job.Name} resumed.");
+    }
+
+    private Task InterruptJobAsync(JobInfo job)
+    {
+        return this.ExecuteJobActionAsync(job, () => this.Api.Api._system.Jobs[job.Name][job.Group].Interrupt.PostAsync(), $"Job {job.Name} interrupted.");
+    }
+
+    private async Task ExecuteJobActionAsync(JobInfo job, Func<Task> action, string successMessage)
+    {
+        if (job is null)
+        {
+            return;
+        }
+
+        var card = this.GetCardData(job);
+        card.ActionBusy = true;
+
+        try
+        {
+            await action();
+            this.Snackbar.Add(successMessage, Severity.Success);
+            await this.ReloadAsync();
+        }
+        catch (KiotaApiException ex)
+        {
+            this.Snackbar.Add($"Job action failed: {ex.Message}", Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            this.Snackbar.Add($"Job action failed: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            card.ActionBusy = false;
+        }
+    }
+
+    private Task OnAutoRefreshIntervalChanged(int? value)
+    {
+        this.autoRefreshIntervalSeconds = value;
+        this.StartAutoRefresh();
+        return Task.CompletedTask;
+    }
+
+    private void StartAutoRefresh()
+    {
+        this.StopAutoRefresh();
+
+        if (this.autoRefreshIntervalSeconds is not > 0)
+        {
+            return;
+        }
+
+        this.autoRefreshCancellation = new CancellationTokenSource();
+        this.autoRefreshTimer = new PeriodicTimer(TimeSpan.FromSeconds(this.autoRefreshIntervalSeconds.Value));
+        _ = this.RunAutoRefreshAsync(this.autoRefreshTimer, this.autoRefreshCancellation.Token);
+    }
+
+    private void StopAutoRefresh()
+    {
+        this.autoRefreshCancellation?.Cancel();
+        this.autoRefreshCancellation?.Dispose();
+        this.autoRefreshCancellation = null;
+
+        this.autoRefreshTimer?.Dispose();
+        this.autoRefreshTimer = null;
+    }
+
+    private async Task RunAutoRefreshAsync(PeriodicTimer timer, CancellationToken cancellationToken)
+    {
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                if (this.isDisposed || this.loading || this.cardData.Values.Any(card => card.ActionBusy))
+                {
+                    continue;
+                }
+
+                await this.InvokeAsync(this.ReloadAsync);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+
+    private bool MatchesJobFilters(JobInfo job)
+    {
+        if (job is null)
+        {
+            return false;
+        }
+
+        if (!string.IsNullOrWhiteSpace(this.jobSearch))
+        {
+            var search = this.jobSearch.Trim();
+            if (!Contains(job.Name, search) &&
+                !Contains(job.Group, search) &&
+                !Contains(job.Description, search) &&
+                !Contains(job.Type, search) &&
+                !Contains(job.Category, search))
+            {
+                return false;
+            }
+        }
+
+        if (!string.Equals(this.groupFilter, AllValue, StringComparison.Ordinal) &&
+            !string.Equals(job.Group, this.groupFilter, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (!string.Equals(this.categoryFilter, AllValue, StringComparison.Ordinal) &&
+            !string.Equals(GetCategoryLabel(job), this.categoryFilter, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return this.jobStateFilter switch
+        {
+            JobStateRunningValue => IsRunningJob(job),
+            JobStatePausedValue => IsPausedJob(job),
+            JobStateFailedValue => HasFailedLastRun(job),
+            JobStateInterruptedValue => HasInterruptedLastRun(job),
+            JobStateScheduledValue => HasUpcomingTrigger(job),
+            JobStateIdleValue => !IsRunningJob(job) && !IsPausedJob(job) && !HasUpcomingTrigger(job),
+            _ => true
+        };
+    }
+
+    private string GetJobKey(JobInfo job)
+    {
+        return $"{job?.Group}::{job?.Name}";
+    }
+
+    private JobCardData GetCardData(JobInfo job)
+    {
+        var key = this.GetJobKey(job);
+        if (!this.cardData.TryGetValue(key, out var data))
+        {
+            data = new JobCardData();
+            this.cardData[key] = data;
+        }
+
+        return data;
+    }
+
+    private IReadOnlyList<JobRun> GetPagedRuns(JobInfo job)
+    {
+        var data = this.GetCardData(job);
+        var page = Math.Max(1, data.CurrentPage);
+        var skip = (page - 1) * this.runRowsPerPage;
+
+        return data.Runs.Skip(skip).Take(this.runRowsPerPage).ToList();
+    }
+
+    private int GetRunPageCount(JobInfo job)
+    {
+        var data = this.GetCardData(job);
+        if (data.Runs.Count == 0)
+        {
+            return 1;
+        }
+
+        return (int)Math.Ceiling((double)data.Runs.Count / this.runRowsPerPage);
+    }
+
+    private void SetRunPage(JobInfo job, int page)
+    {
+        var data = this.GetCardData(job);
+        data.CurrentPage = Math.Max(1, page);
+    }
+
+    private void OpenRunDialog(JobRun run)
+    {
+        this.selectedRun = run;
+        this.runDialogVisible = true;
+    }
+
+    private static bool CanPauseJob(JobInfo job)
+    {
+        return job is not null && !IsPausedJob(job);
+    }
+
+    private static bool CanResumeJob(JobInfo job)
+    {
+        return job is not null && IsPausedJob(job);
+    }
+
+    private static bool CanInterruptJob(JobInfo job)
+    {
+        return job is not null && IsRunningJob(job);
+    }
+
+    private static bool IsRunningJob(JobInfo job)
+    {
+        return job?.IsRunning == true || string.Equals(job?.LastRun?.Status, "Started", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsPausedJob(JobInfo job)
+    {
+        return string.Equals(job?.Status, "Paused", StringComparison.OrdinalIgnoreCase) ||
+            job?.Triggers.SafeNull().Any(trigger => string.Equals(trigger.State, "Paused", StringComparison.OrdinalIgnoreCase)) == true;
+    }
+
+    private static bool HasFailedLastRun(JobInfo job)
+    {
+        return string.Equals(job?.LastRun?.Status, "Failed", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool HasInterruptedLastRun(JobInfo job)
+    {
+        return string.Equals(job?.LastRun?.Status, "Interrupted", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool HasUpcomingTrigger(JobInfo job)
+    {
+        return job?.Triggers.SafeNull().Any(trigger => trigger.NextFireTime is not null) == true;
+    }
+
+    private static DateTimeOffset? GetNextFireTime(JobInfo job)
+    {
+        return job?.Triggers.SafeNull()
+            .Where(trigger => trigger.NextFireTime is not null)
+            .OrderBy(trigger => trigger.NextFireTime)
+            .Select(trigger => trigger.NextFireTime)
+            .FirstOrDefault();
+    }
+
+    private static DateTimeOffset? GetPreviousFireTime(JobInfo job)
+    {
+        return job?.Triggers.SafeNull()
+            .Where(trigger => trigger.PreviousFireTime is not null)
+            .OrderByDescending(trigger => trigger.PreviousFireTime)
+            .Select(trigger => trigger.PreviousFireTime)
+            .FirstOrDefault();
+    }
+
+    private static string GetCategoryLabel(JobInfo job)
+    {
+        return string.IsNullOrWhiteSpace(job?.Category) ? "Uncategorized" : job.Category;
+    }
+
+    private static string GetJobStateLabel(JobInfo job)
+    {
+        if (IsRunningJob(job))
+        {
+            return "Running";
+        }
+
+        if (IsPausedJob(job))
+        {
+            return "Paused";
+        }
+
+        if (HasFailedLastRun(job))
+        {
+            return "Failed";
+        }
+
+        if (HasInterruptedLastRun(job))
+        {
+            return "Interrupted";
+        }
+
+        if (HasUpcomingTrigger(job))
+        {
+            return "Scheduled";
+        }
+
+        return "Idle";
+    }
+
+    private static Color GetJobStateColor(JobInfo job)
+    {
+        return GetJobStateLabel(job) switch
+        {
+            "Running" => Color.Success,
+            "Paused" => Color.Warning,
+            "Failed" => Color.Error,
+            "Interrupted" => Color.Warning,
+            "Scheduled" => Color.Info,
+            _ => Color.Default
+        };
+    }
+
+    private static string GetRunStatusLabel(string value)
+    {
+        return string.IsNullOrWhiteSpace(value) ? "Unknown" : value;
+    }
+
+    private static Color GetRunStatusColor(string value)
+    {
+        return value?.ToLowerInvariant() switch
+        {
+            "started" => Color.Info,
+            "success" => Color.Success,
+            "completed" => Color.Success,
+            "failed" => Color.Error,
+            "interrupted" => Color.Warning,
+            _ => Color.Default
+        };
+    }
+
+    private static Color GetTriggerStateColor(string value)
+    {
+        return value?.ToLowerInvariant() switch
+        {
+            "normal" => Color.Success,
+            "waiting" => Color.Info,
+            "paused" => Color.Warning,
+            "blocked" => Color.Warning,
+            "error" => Color.Error,
+            "complete" => Color.Default,
+            _ => Color.Default
+        };
+    }
+
+    private static string GetTriggerStateSummary(IEnumerable<TriggerInfo> triggers)
+    {
+        var states = triggers.SafeNull()
+            .Select(trigger => trigger.State)
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        return states.Count == 0 ? "None" : string.Join(", ", states);
+    }
+
+    private static string GetRunDuration(JobRun run)
+    {
+        return !string.IsNullOrWhiteSpace(run?.DurationText)
+            ? run.DurationText
+            : run?.DurationMs is > 0
+                ? TimeSpan.FromMilliseconds(run.DurationMs.Value).ToString(@"hh\:mm\:ss")
+                : null;
+    }
+
+    private static string GetRunResult(JobRun run)
+    {
+        return !string.IsNullOrWhiteSpace(run?.ErrorMessage)
+            ? run.ErrorMessage
+            : run?.Result;
+    }
+
+    private static string GetTriggerLabel(JobRun run)
+    {
+        if (!string.IsNullOrWhiteSpace(run?.TriggerName) && !string.IsNullOrWhiteSpace(run?.TriggerGroup))
+        {
+            return $"{run.TriggerGroup}/{run.TriggerName}";
+        }
+
+        return run?.TriggerName ?? run?.TriggerGroup;
+    }
+
+    private static string DisplayValue(object value)
+    {
+        return value switch
+        {
+            null => "-",
+            string text when string.IsNullOrWhiteSpace(text) => "-",
+            _ => value.ToString()
+        };
+    }
+
+    private static string DisplayCount(int? value)
+    {
+        return value?.ToString(CultureInfo.InvariantCulture) ?? "-";
+    }
+
+    private static string FormatTimestamp(DateTimeOffset? value)
+    {
+        return value?.ToLocalTime().ToString("f", CultureInfo.CurrentCulture) ?? "-";
+    }
+
+    private static string FormatRelativeTimestamp(DateTimeOffset? value)
+    {
+        if (value is null)
+        {
+            return "-";
+        }
+
+        var delta = value.Value - DateTimeOffset.UtcNow;
+        var absolute = delta.Duration();
+        var suffix = delta.TotalSeconds >= 0 ? "from now" : "ago";
+
+        if (absolute.TotalMinutes < 1)
+        {
+            return $"{Math.Max(1, absolute.Seconds)} sec {suffix}";
+        }
+
+        if (absolute.TotalHours < 1)
+        {
+            return $"{Math.Max(1, absolute.Minutes)} min {suffix}";
+        }
+
+        if (absolute.TotalDays < 1)
+        {
+            return $"{Math.Max(1, absolute.Hours)} hr {suffix}";
+        }
+
+        return $"{Math.Max(1, absolute.Days)} day {suffix}";
+    }
+
+    private static string FormatRunTimestamp(DateTimeOffset? value)
+    {
+        var local = ToLocalRunTime(value);
+        return local?.ToString("f", CultureInfo.CurrentCulture) ?? "-";
+    }
+
+    private static string FormatRunRelativeTimestamp(DateTimeOffset? value)
+    {
+        return FormatRelativeTimestamp(ToLocalRunTime(value));
+    }
+
+    private static DateTimeOffset? ToLocalRunTime(DateTimeOffset? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        var utc = DateTime.SpecifyKind(value.Value.DateTime, DateTimeKind.Utc);
+        var local = utc.ToLocalTime();
+        return new DateTimeOffset(local);
+    }
+
+    private static string TrimValue(string value, int length)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Length <= length)
+        {
+            return value ?? "-";
+        }
+
+        return value[..Math.Max(0, length - 3)] + "...";
+    }
+
+    private static bool Contains(string value, string search)
+    {
+        return value?.Contains(search, StringComparison.OrdinalIgnoreCase) == true;
+    }
+
+    private DateTimeOffset? ToStartDateOffset(DateTime? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        var local = DateTime.SpecifyKind(value.Value.Date, DateTimeKind.Local);
+        return new DateTimeOffset(local);
+    }
+
+    private DateTimeOffset? ToEndDateOffset(DateTime? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        var local = DateTime.SpecifyKind(value.Value.Date.AddDays(1).AddTicks(-1), DateTimeKind.Local);
+        return new DateTimeOffset(local);
+    }
+
+    private UntypedNode ParseTriggerPayload(string json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return new UntypedObject(new Dictionary<string, UntypedNode>());
+        }
+
+        using var document = JsonDocument.Parse(json);
+        if (document.RootElement.ValueKind != JsonValueKind.Object)
+        {
+            throw new JsonException("The trigger payload must be a JSON object.");
+        }
+
+        return ConvertToUntypedNode(document.RootElement);
+    }
+
+    private static UntypedNode ConvertToUntypedNode(JsonElement element)
+    {
+        return element.ValueKind switch
+        {
+            JsonValueKind.Object => new UntypedObject(element.EnumerateObject().ToDictionary(
+                property => property.Name,
+                property => ConvertToUntypedNode(property.Value))),
+            JsonValueKind.Array => new UntypedArray(element.EnumerateArray().Select(ConvertToUntypedNode)),
+            JsonValueKind.String => new UntypedString(element.GetString()),
+            JsonValueKind.True => new UntypedBoolean(true),
+            JsonValueKind.False => new UntypedBoolean(false),
+            JsonValueKind.Null => new UntypedNull(),
+            JsonValueKind.Number when element.TryGetInt32(out var intValue) => new UntypedInteger(intValue),
+            JsonValueKind.Number when element.TryGetInt64(out var longValue) => new UntypedLong(longValue),
+            JsonValueKind.Number when element.TryGetDecimal(out var decimalValue) => new UntypedDecimal(decimalValue),
+            JsonValueKind.Number => new UntypedDouble(element.GetDouble()),
+            _ => new UntypedString(element.GetRawText())
+        };
+    }
+}

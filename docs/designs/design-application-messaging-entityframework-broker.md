@@ -1,5 +1,5 @@
 ---
-status: draft
+status: implemented
 ---
 
 # Design Document: EntityFramework Message Broker Feature (Application.Messaging)

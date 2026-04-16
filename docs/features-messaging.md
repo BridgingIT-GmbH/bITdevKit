@@ -83,21 +83,23 @@ Minimal example that adds behaviors, the outbox, the Entity Framework broker, an
 // In Program.cs or your composition root
 builder.Services.AddMessaging(builder.Configuration, o => o.StartupDelay("00:00:30"))
   // Register messages and handlers
-  .WithSubscription<UserRegisteredMessage, UserRegisteredHandler>();
+  .WithSubscription<UserRegisteredMessage, UserRegisteredHandler>()
   // Publisher/handler behavior pipelines
   .WithBehavior<RetryMessageHandlerBehavior>()
   .WithBehavior<TimeoutMessageHandlerBehavior>()
   // Choose a broker
-  .WithEntityFrameworkBroker<AppDbContext>();
+  .WithEntityFrameworkBroker<AppDbContext>()
+  // Optional operational endpoints from Presentation.Web.Messaging
+  .AddEndpoints(new MessagingEndpointsOptions
+  {
+    RequireAuthorization = true
+  });
   //.WithInProcessBroker();
   //.WithRabbitMQBroker();
   //.WithServiceBusBroker();
-
-builder.Services.AddMessagingEndpoints(new MessagingEndpointsOptions
-{
-  RequireAuthorization = true
-});
 ```
+
+If you prefer separate registration, the existing `builder.Services.AddMessagingEndpoints(...)` helper is also available.
 
 ### Define a message and handler
 

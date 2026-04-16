@@ -1281,136 +1281,6 @@
         }
       }
     },
-    "/api/_system": {
-      "get": {
-        "tags": [
-          "_System"
-        ],
-        "summary": "_System.Get",
-        "operationId": "_System.Get",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "additionalProperties": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/_system/echo": {
-      "get": {
-        "tags": [
-          "_System"
-        ],
-        "summary": "_System.GetEcho",
-        "operationId": "_System.GetEcho",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/_system/info": {
-      "get": {
-        "tags": [
-          "_System"
-        ],
-        "summary": "_System.GetInfo",
-        "operationId": "_System.GetInfo",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/SystemInfo"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/_system/modules": {
-      "get": {
-        "tags": [
-          "_System"
-        ],
-        "summary": "_System.GetModules",
-        "operationId": "_System.GetModules",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/SystemModule"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/_system/messaging/messages/stats": {
       "get": {
         "tags": [
@@ -2705,6 +2575,136 @@
               "application/json": {
                 "schema": {
                   "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system": {
+      "get": {
+        "tags": [
+          "_System"
+        ],
+        "summary": "_System.Get",
+        "operationId": "_System.Get",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/echo": {
+      "get": {
+        "tags": [
+          "_System"
+        ],
+        "summary": "_System.GetEcho",
+        "operationId": "_System.GetEcho",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/info": {
+      "get": {
+        "tags": [
+          "_System"
+        ],
+        "summary": "_System.GetInfo",
+        "operationId": "_System.GetInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemInfo"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/modules": {
+      "get": {
+        "tags": [
+          "_System"
+        ],
+        "summary": "_System.GetModules",
+        "operationId": "_System.GetModules",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SystemModule"
+                  }
                 }
               }
             }
@@ -4597,13 +4597,13 @@
       "name": "CoreModule.TodoItems.DataPorter"
     },
     {
-      "name": "_System"
-    },
-    {
       "name": "_System.Messaging"
     },
     {
       "name": "_System.Queueing"
+    },
+    {
+      "name": "_System"
     }
   ]
 }

@@ -64,11 +64,13 @@ builder.Services.AddMessaging(builder.Configuration, o => o
     .WithBehavior<MetricsMessageHandlerBehavior>()
     .WithBehavior<RetryMessageHandlerBehavior>()
     .WithBehavior<TimeoutMessageHandlerBehavior>()
-    .WithEntityFrameworkBroker<CoreDbContext>();
+    .WithEntityFrameworkBroker<CoreDbContext>()
+    .AddEndpoints();
 
 builder.Services.AddQueueing(builder.Configuration, o => o
         .StartupDelay("00:00:10"))
-    .WithEntityFrameworkBroker<CoreDbContext>();
+    .WithEntityFrameworkBroker<CoreDbContext>()
+    .AddEndpoints();
 
 builder.Services.AddMapping().WithMapster();
 
@@ -129,8 +131,6 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
 // });
 builder.Services.AddEndpoints<SystemEndpoints>();
 //builder.Services.AddEndpoints<JobSchedulingEndpoints>();
-builder.Services.AddEndpoints<MessagingEndpoints>();
-builder.Services.AddEndpoints<QueueingEndpoints>();
 
 builder.Services.ConfigureJson();
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);

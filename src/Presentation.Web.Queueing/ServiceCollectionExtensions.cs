@@ -5,7 +5,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using BridgingIT.DevKit.Presentation.Web;
+using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Presentation.Web.Queueing;
 
 /// <summary>
@@ -13,6 +13,51 @@ using BridgingIT.DevKit.Presentation.Web.Queueing;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Registers the queueing endpoints from the fluent queueing builder with explicit options.
+    /// </summary>
+    /// <param name="context">The queueing builder context.</param>
+    /// <param name="options">The endpoint options to register.</param>
+    /// <param name="enabled">Indicates whether endpoint registration should be enabled.</param>
+    /// <returns>The current queueing builder context.</returns>
+    public static QueueingBuilderContext AddEndpoints(
+        this QueueingBuilderContext context,
+        QueueingEndpointsOptions options,
+        bool enabled = true)
+    {
+        EnsureArg.IsNotNull(context, nameof(context));
+
+        if (enabled)
+        {
+            if (options is not null)
+            {
+                context.Services.AddSingleton(options);
+            }
+
+            context.Services.AddEndpoints<QueueingEndpoints>(enabled);
+        }
+
+        return context;
+    }
+
+    /// <summary>
+    /// Registers the queueing endpoints from the fluent queueing builder with default options.
+    /// </summary>
+    /// <param name="context">The queueing builder context.</param>
+    /// <param name="enabled">Indicates whether endpoint registration should be enabled.</param>
+    /// <returns>The current queueing builder context.</returns>
+    public static QueueingBuilderContext AddEndpoints(this QueueingBuilderContext context, bool enabled = true)
+    {
+        EnsureArg.IsNotNull(context, nameof(context));
+
+        if (enabled)
+        {
+            context.Services.AddEndpoints<QueueingEndpoints>(enabled);
+        }
+
+        return context;
+    }
+
     /// <summary>
     /// Registers the queueing endpoints with explicit options.
     /// </summary>

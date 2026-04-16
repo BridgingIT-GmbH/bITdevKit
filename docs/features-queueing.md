@@ -36,25 +36,25 @@ The feature also includes an operational web endpoint surface for queue broker s
 
 ```mermaid
 sequenceDiagram
-	actor Producer
-	participant Broker as IQueueBroker
-	participant Behaviors as Enqueue Behaviors
-	participant Transport as Broker Provider
-	participant Worker as QueueingService / Provider Worker
-	participant Handler as IQueueMessageHandler<T>
+ actor Producer
+ participant Broker as IQueueBroker
+ participant Behaviors as Enqueue Behaviors
+ participant Transport as Broker Provider
+ participant Worker as QueueingService / Provider Worker
+ participant Handler as IQueueMessageHandler<T>
 
-	Producer->>Broker: Enqueue(message)
-	Broker->>Behaviors: Execute enqueue pipeline
-	Behaviors->>Transport: Persist or dispatch work item
-	Worker->>Transport: Claim item (if durable)
-	Worker->>Handler: Handle(message)
-	alt success
-		Worker->>Transport: Mark succeeded
-	else no handler yet
-		Worker->>Transport: Leave waiting for handler
-	else failure
-		Worker->>Transport: Retry or dead-letter
-	end
+ Producer->>Broker: Enqueue(message)
+ Broker->>Behaviors: Execute enqueue pipeline
+ Behaviors->>Transport: Persist or dispatch work item
+ Worker->>Transport: Claim item (if durable)
+ Worker->>Handler: Handle(message)
+ alt success
+  Worker->>Transport: Mark succeeded
+ else no handler yet
+  Worker->>Transport: Leave waiting for handler
+ else failure
+  Worker->>Transport: Retry or dead-letter
+ end
 ```
 
 ## Core Contracts
@@ -77,12 +77,13 @@ sequenceDiagram
 
 ```csharp
 builder.Services.AddQueueing(builder.Configuration, context =>
-	context.WithSubscription<OrderQueuedMessage, OrderQueuedHandler>())
+ context.WithSubscription<OrderQueuedMessage, OrderQueuedHandler>())
   .WithInProcessBroker(new InProcessQueueBrokerConfiguration
   {
-	  MaxDegreeOfParallelism = 1,
-	  EnsureOrdered = true
-  });
+   MaxDegreeOfParallelism = 1,
+   EnsureOrdered = true
+ })
+ .AddEndpoints();
 ```
 
 ### Entity Framework broker
@@ -91,13 +92,17 @@ builder.Services.AddQueueing(builder.Configuration, context =>
 builder.Services.AddDbContext<AppDbContext>(...);
 
 builder.Services.AddQueueing(builder.Configuration, context =>
-	context.WithSubscription<OrderQueuedMessage, OrderQueuedHandler>())
+ context.WithSubscription<OrderQueuedMessage, OrderQueuedHandler>())
   .WithEntityFrameworkBroker<AppDbContext>(new EntityFrameworkQueueBrokerConfiguration
   {
-	  AutoSave = true,
-	  ProcessingInterval = TimeSpan.FromSeconds(15),
-	  LeaseDuration = TimeSpan.FromSeconds(30)
-  });
+   AutoSave = true,
+   ProcessingInterval = TimeSpan.FromSeconds(15),
+   LeaseDuration = TimeSpan.FromSeconds(30)
+ })
+ .AddEndpoints(new QueueingEndpointsOptions
+ {
+   RequireAuthorization = true
+ });
 ```
 
 Your `DbContext` must implement `IQueueingContext`:
@@ -105,7 +110,7 @@ Your `DbContext` must implement `IQueueingContext`:
 ```csharp
 public class AppDbContext : DbContext, IQueueingContext
 {
-	public DbSet<QueueMessage> QueueMessages { get; set; }
+ public DbSet<QueueMessage> QueueMessages { get; set; }
 }
 ```
 
@@ -114,16 +119,16 @@ public class AppDbContext : DbContext, IQueueingContext
 ```csharp
 public sealed class OrderQueuedMessage(Guid orderId) : QueueMessageBase
 {
-	public Guid OrderId { get; } = orderId;
+ public Guid OrderId { get; } = orderId;
 }
 
 public sealed class OrderQueuedHandler : IQueueMessageHandler<OrderQueuedMessage>
 {
-	public Task Handle(OrderQueuedMessage message, CancellationToken cancellationToken)
-	{
-		// process one logical work item
-		return Task.CompletedTask;
-	}
+ public Task Handle(OrderQueuedMessage message, CancellationToken cancellationToken)
+ {
+  // process one logical work item
+  return Task.CompletedTask;
+ }
 }
 ```
 
@@ -132,10 +137,10 @@ public sealed class OrderQueuedHandler : IQueueMessageHandler<OrderQueuedMessage
 ```csharp
 public sealed class OrdersService(IQueueBroker queueBroker)
 {
-	public Task QueueOrderAsync(Guid orderId, CancellationToken cancellationToken)
-	{
-		return queueBroker.Enqueue(new OrderQueuedMessage(orderId), cancellationToken);
-	}
+ public Task QueueOrderAsync(Guid orderId, CancellationToken cancellationToken)
+ {
+  return queueBroker.Enqueue(new OrderQueuedMessage(orderId), cancellationToken);
+ }
 }
 ```
 
@@ -143,16 +148,21 @@ public sealed class OrdersService(IQueueBroker queueBroker)
 
 The retained-message operational surface lives in [src/Presentation.Web.Queueing/QueueingEndpoints.cs](src/Presentation.Web.Queueing/QueueingEndpoints.cs).
 
-Register it separately from the broker:
+When you reference `Presentation.Web.Queueing`, you can register it directly from the fluent queueing builder:
 
 ```csharp
-builder.Services.AddQueueingEndpoints(new QueueingEndpointsOptions
-{
-	GroupPath = "/api/_system/queueing",
-	GroupTag = "_System.Queueing",
-	RequireAuthorization = true
-});
+builder.Services.AddQueueing(builder.Configuration)
+  .WithSubscription<OrderQueuedMessage, OrderQueuedHandler>()
+  .WithEntityFrameworkBroker<AppDbContext>()
+  .AddEndpoints(new QueueingEndpointsOptions
+  {
+ GroupPath = "/api/_system/queueing",
+ GroupTag = "_System.Queueing",
+ RequireAuthorization = true
+  });
 ```
+
+If you prefer separate registration, the existing `builder.Services.AddQueueingEndpoints(...)` helper is also available.
 
 Routes:
 

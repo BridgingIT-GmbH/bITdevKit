@@ -1,6 +1,6 @@
 ---
-
-## status: draft
+status: draft
+---
 
 # Design Document: Orchestration Feature (Application.Orchestration)
 

@@ -1,5 +1,5 @@
 ---
-status: draft
+status: implemented
 ---
 
 # Design Document: Queueing Feature (Application.Queueing)

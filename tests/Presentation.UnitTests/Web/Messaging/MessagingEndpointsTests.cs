@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Presentation.UnitTests.Web.Messaging;
+namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 
 using System.Net;
 using System.Net.Http.Json;
@@ -97,7 +97,7 @@ public class MessagingEndpointsTests : IAsyncDisposable
             ]);
 
         // Act
-        var response = await this.client.GetAsync("/api/_system/messaging/messages?status=Pending&type=OrderSubmitted&messageId=msg-1&lockedBy=node-a&includeHandlers=true&take=25");
+        var response = await this.client.GetAsync("/api/_system/messaging/messages?status=Pending&type=OrderSubmitted&messageId=msg-1&lockedBy=node-a&isArchived=false&includeHandlers=true&take=25");
         var result = await response.Content.ReadFromJsonAsync<List<BrokerMessageInfo>>();
 
         // Assert
@@ -105,6 +105,17 @@ public class MessagingEndpointsTests : IAsyncDisposable
         result.ShouldNotBeNull();
         result.Count.ShouldBe(1);
         result[0].MessageId.ShouldBe("msg-1");
+        await this.messageBrokerService.Received(1).GetMessagesAsync(
+            BrokerMessageStatus.Pending,
+            "OrderSubmitted",
+            "msg-1",
+            "node-a",
+            false,
+            null,
+            null,
+            true,
+            25,
+            Arg.Any<CancellationToken>());
     }
 
     [Fact]

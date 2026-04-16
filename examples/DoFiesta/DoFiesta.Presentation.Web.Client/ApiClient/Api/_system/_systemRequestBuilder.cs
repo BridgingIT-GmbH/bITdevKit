@@ -5,6 +5,7 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Info;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Modules;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models;
 using Microsoft.Kiota.Abstractions.Extensions;
 using Microsoft.Kiota.Abstractions.Serialization;
@@ -46,6 +47,11 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Modules.ModulesRequestBuilder Modules
         {
             get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Modules.ModulesRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The queueing property</summary>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing.QueueingRequestBuilder Queueing
+        {
+            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing.QueueingRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>
         /// Instantiates a new <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system._systemRequestBuilder"/> and sets the default values.

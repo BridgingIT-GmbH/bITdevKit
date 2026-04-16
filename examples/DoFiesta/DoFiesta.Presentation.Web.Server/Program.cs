@@ -17,6 +17,7 @@ using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Host;
 using BridgingIT.DevKit.Presentation.Web.Messaging;
+using BridgingIT.DevKit.Presentation.Web.Queueing;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
@@ -63,6 +64,10 @@ builder.Services.AddMessaging(builder.Configuration, o => o
     .WithBehavior<MetricsMessageHandlerBehavior>()
     .WithBehavior<RetryMessageHandlerBehavior>()
     .WithBehavior<TimeoutMessageHandlerBehavior>()
+    .WithEntityFrameworkBroker<CoreDbContext>();
+
+builder.Services.AddQueueing(builder.Configuration, o => o
+        .StartupDelay("00:00:10"))
     .WithEntityFrameworkBroker<CoreDbContext>();
 
 builder.Services.AddMapping().WithMapster();
@@ -125,6 +130,7 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
 builder.Services.AddEndpoints<SystemEndpoints>();
 //builder.Services.AddEndpoints<JobSchedulingEndpoints>();
 builder.Services.AddEndpoints<MessagingEndpoints>();
+builder.Services.AddEndpoints<QueueingEndpoints>();
 
 builder.Services.ConfigureJson();
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);

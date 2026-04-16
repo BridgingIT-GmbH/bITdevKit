@@ -43,6 +43,27 @@
             <MudCard>
                 <MudCardHeader>
                     <CardHeaderContent>
+                        <MudText Typo="Typo.h5">Queueing</MudText>
+                        <MudText Typo="Typo.body2">Inspect retained queue work items, archive or retry failed work, and control queue flow for the echo demo.</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudAvatar Color="Color.Success" Variant="Variant.Filled">
+                            <MudIcon Icon="@Icons.Material.Filled.AccountTree" />
+                        </MudAvatar>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Success" StartIcon="@Icons.Material.Filled.Visibility" Href="/operations/queueing">
+                        Open Queueing
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" md="5">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
                         <MudText Typo="Typo.h5">Job Scheduling</MudText>
                         <MudText Typo="Typo.body2">Inspect persisted Quartz jobs, browse trigger and run history, and operate the scheduler from one dashboard.</MudText>
                     </CardHeaderContent>

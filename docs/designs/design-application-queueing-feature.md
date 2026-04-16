@@ -256,16 +256,16 @@ Recommended shape:
 - `Properties`
 - `Validate()`
 
-To reduce repeated boilerplate in application code, the feature should also provide a reusable base record such as:
+To reduce repeated boilerplate in application code, the feature should also provide a reusable base class such as:
 
 ```csharp
-public abstract record QueueMessageBase : IQueueMessage
+public abstract class QueueMessageBase : IQueueMessage
 {
-    public string MessageId { get; init; } = Guid.NewGuid().ToString("N");
+    public string MessageId { get; set; } = Guid.NewGuid().ToString("N");
 
-    public DateTimeOffset Timestamp { get; init; } = DateTimeOffset.UtcNow;
+    public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.UtcNow;
 
-    public IDictionary<string, object> Properties { get; init; } = new Dictionary<string, object>();
+    public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
 
     public virtual ValidationResult Validate() => new();
 }

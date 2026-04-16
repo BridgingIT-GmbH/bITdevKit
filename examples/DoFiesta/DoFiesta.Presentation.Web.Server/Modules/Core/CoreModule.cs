@@ -80,6 +80,10 @@ public class CoreModule : WebModuleBase
         services.AddMessaging(configuration)
             .WithSubscription<TodoItemActivityMessage, TodoItemActivityMessageHandler>();
 
+        // queueing
+        services.AddQueueing(configuration)
+            .WithSubscription<TodoItemEchoQueueMessage, TodoItemEchoQueueMessageHandler>();
+
         // dbcontext
         services.AddSqlServerDbContext<CoreDbContext>(o => o
                 .UseConnectionString(moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default"))

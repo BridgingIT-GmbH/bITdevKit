@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 
 using BridgingIT.DevKit.Application.Messaging;
+using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;
 using Microsoft.Extensions.Logging;
@@ -20,10 +21,12 @@ using Microsoft.Extensions.Logging;
 /// </remarks>
 /// <param name="loggerFactory">Factory used for creating loggers.</param>
 /// <param name="broker">Message broker used to persist example activity messages.</param>
-public class TodoItemDeletedDomainEventHandler(ILoggerFactory loggerFactory, IMessageBroker broker)
+/// <param name="queueBroker">Queue broker used to enqueue example echo work items.</param>
+public class TodoItemDeletedDomainEventHandler(ILoggerFactory loggerFactory, IMessageBroker broker, IQueueBroker queueBroker)
     : DomainEventHandlerBase<TodoItemDeletedDomainEvent>(loggerFactory)
 {
     private readonly IMessageBroker broker = broker;
+    private readonly IQueueBroker queueBroker = queueBroker;
 
     /// <summary>
     /// Determines whether this handler can handle the given event.
@@ -41,6 +44,14 @@ public class TodoItemDeletedDomainEventHandler(ILoggerFactory loggerFactory, IMe
 
         await this.broker.Publish(
             new TodoItemActivityMessage(
+                notification.Model?.Id?.ToString(),
+                notification.Model?.Title,
+                "Deleted",
+                notification.Model?.Status.ToString()),
+            cancellationToken);
+
+        await this.queueBroker.Enqueue(
+            new TodoItemEchoQueueMessage(
                 notification.Model?.Id?.ToString(),
                 notification.Model?.Title,
                 "Deleted",

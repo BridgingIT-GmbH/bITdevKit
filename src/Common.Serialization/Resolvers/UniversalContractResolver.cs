@@ -99,17 +99,7 @@ public class UniversalContractResolver : DefaultJsonTypeInfoResolver
                         {
                             jsonTypeInfo.CreateObject = () => Activator.CreateInstance(type, true);
                         }
-                        else
-                        {
-                            // If no parameterless, use the first constructor (may require params mapping if needed)
-                            var firstCtor = constructors[0];
-                            jsonTypeInfo.CreateObject = () => Activator.CreateInstance(type, true);
-                        }
                     }
-                }
-                else
-                {
-                    throw new InvalidOperationException($"No accessible constructor found for {type.Name}");
                 }
             }
 

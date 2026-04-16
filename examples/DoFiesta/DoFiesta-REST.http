@@ -41,3 +41,51 @@ Content-Type: application/json
 
 ### Purge archived succeeded broker messages older than 30 days
 DELETE {{baseUrl}}/api/_system/messaging/messages?olderThan=2026-03-16T00:00:00Z&statuses=Succeeded&isArchived=true
+
+### Queueing stats
+GET {{baseUrl}}/api/_system/queueing/messages/stats
+
+### List active queue messages
+GET {{baseUrl}}/api/_system/queueing/messages?take=20
+
+### Get a queue message by id
+GET {{baseUrl}}/api/_system/queueing/messages/{{messageId}}
+
+### Get queue message payload content
+GET {{baseUrl}}/api/_system/queueing/messages/{{messageId}}/content
+
+### Retry a queue message
+POST {{baseUrl}}/api/_system/queueing/messages/{{messageId}}/retry
+Content-Type: application/json
+
+{}
+
+### Release a queue message lease
+POST {{baseUrl}}/api/_system/queueing/messages/{{messageId}}/lease/release
+Content-Type: application/json
+
+{}
+
+### Archive a queue message
+POST {{baseUrl}}/api/_system/queueing/messages/{{messageId}}/archive
+Content-Type: application/json
+
+{}
+
+### Pause a queue
+POST {{baseUrl}}/api/_system/queueing/queues/TodoItemEchoQueueMessage/pause
+
+### Resume a queue
+POST {{baseUrl}}/api/_system/queueing/queues/TodoItemEchoQueueMessage/resume
+
+### Pause a queue message type
+POST {{baseUrl}}/api/_system/queueing/types/TodoItemEchoQueueMessage/pause
+
+### Resume a queue message type
+POST {{baseUrl}}/api/_system/queueing/types/TodoItemEchoQueueMessage/resume
+
+### Reset a queue message type circuit
+POST {{baseUrl}}/api/_system/queueing/types/TodoItemEchoQueueMessage/circuit/reset
+
+### Purge archived succeeded queue messages older than 30 days
+DELETE {{baseUrl}}/api/_system/queueing/messages?olderThan=2026-03-16T00:00:00Z&statuses=Succeeded&isArchived=true

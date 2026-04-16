@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
     <PackageReference Include="Bogus" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
     <PackageReference Include="NBuilder" />

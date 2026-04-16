@@ -31,6 +31,7 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 
 - [Requester and Notifier](./features-requester-notifier.md): Dispatch requests and notifications through handler pipelines with reusable cross-cutting behaviors.
 - [Messaging](./features-messaging.md): Decouple producers and consumers with resilient asynchronous messaging and outbox-backed delivery.
+- [Queueing](./features-queueing.md): Process single-consumer work items through in-process or durable queue brokers with retained-message inspection, retry/archive controls, and queue/type pause-resume management.
 - [Notifications](./features-notifications.md): Send and queue application notifications through transport-agnostic contracts with clear delivery boundaries.
 - [Modules](./features-modules.md): Structure modular monoliths as independently configurable feature modules within one host.
 - [Pipelines](./features-pipelines.md): Build structured, observable multi-step workflows with low-friction defaults.

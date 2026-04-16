@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Infrastructure;
 
 using DevKit.Infrastructure.EntityFramework;
 using DevKit.Infrastructure.EntityFramework.Messaging;
+using DevKit.Infrastructure.EntityFramework.Queueing;
 using Domain.Model;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +15,7 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     ModuleDbContextBase(options),
     IOutboxDomainEventContext,
     IMessagingContext,
+    IQueueingContext,
     IEntityPermissionContext,
     IFileMonitoringContext,
     ILoggingContext
@@ -23,6 +25,8 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     public DbSet<Subscription> Subscriptions { get; set; }
 
     public DbSet<BrokerMessage> BrokerMessages { get; set; }
+
+    public DbSet<QueueMessage> QueueMessages { get; set; }
 
     public DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }
 

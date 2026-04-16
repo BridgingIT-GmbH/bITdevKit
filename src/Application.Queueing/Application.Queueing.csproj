@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Application.Queueing</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Application.Queueing</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Abstractions\Common.Abstractions.csproj" />
+    <ProjectReference Include="..\Common.Modules\Common.Modules.csproj" />
+    <ProjectReference Include="..\Common.Options\Common.Options.csproj" />
+    <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj" />
+    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" />
+  </ItemGroup>
+
+</Project>

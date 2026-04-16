@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Presentation.Web.Queueing</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Presentation.Web.Queueing</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Queueing\Application.Queueing.csproj" />
+    <ProjectReference Include="..\Common.Extensions.Web\Common.Extensions.Web.csproj" />
+    <ProjectReference Include="..\Presentation.Web\Presentation.Web.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Application.Identity\Application.Identity.csproj" />
     <ProjectReference Include="..\Application.Messaging\Application.Messaging.csproj" />
+    <ProjectReference Include="..\Application.Queueing\Application.Queueing.csproj" />
     <ProjectReference Include="..\Application.Notifications\Application.Notifications.csproj" />
     <ProjectReference Include="..\Application.Storage\Application.Storage.csproj" />
     <ProjectReference Include="..\Application.Utilities\Application.Utilities.csproj" />

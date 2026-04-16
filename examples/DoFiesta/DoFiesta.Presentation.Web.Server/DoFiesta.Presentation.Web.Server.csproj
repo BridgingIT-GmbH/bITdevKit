@@ -74,6 +74,7 @@
     <ProjectReference Include="..\..\..\src\Presentation.Web.EntityFramework\Presentation.Web.EntityFramework.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.JobScheduling\Presentation.Web.JobScheduling.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.Messaging\Presentation.Web.Messaging.csproj" />
+    <ProjectReference Include="..\..\..\src\Presentation.Web.Queueing\Presentation.Web.Queueing.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web\Presentation.Web.csproj" />
     <ProjectReference Include="..\DoFiesta.Application\DoFiesta.Application.csproj" />
     <ProjectReference Include="..\DoFiesta.Infrastructure\DoFiesta.Infrastructure.csproj" />

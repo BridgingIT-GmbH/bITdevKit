@@ -20,6 +20,17 @@
         "resolved": "10.1.0",
         "contentHash": "rzTMSs0lQnu0WsesvTjs/zDzqiZXb9r5dv+wFQcPg/iIZqXb5BzwpIWEwi8Q3HA0TS4ytRcY129aSek6IzuOmA=="
       },
+      "Microsoft.EntityFrameworkCore.InMemory": {
+        "type": "Direct",
+        "requested": "[10.0.5, )",
+        "resolved": "10.0.5",
+        "contentHash": "zz4THzlDOrJ7fKU2YUOzQFs2LJ9DgOSr5xFXcDdoD59el73MTQLtQQOAJxQ94F4XDegyL9+2sePSQGdcU25ZxQ==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore": "10.0.5",
+          "Microsoft.Extensions.Caching.Memory": "10.0.5",
+          "Microsoft.Extensions.Logging": "10.0.5"
+        }
+      },
       "Microsoft.Net.Compilers.Toolset": {
         "type": "Direct",
         "requested": "[5.3.0, )",
@@ -666,6 +677,18 @@
           "MimeKit": "[4.15.1, )"
         }
       },
+      "BridgingIT.DevKit.Application.Queueing": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "FluentValidation": "[12.1.1, )"
+        }
+      },
       "BridgingIT.DevKit.Application.Storage": {
         "type": "Project",
         "dependencies": {
@@ -908,6 +931,7 @@
           "BridgingIT.DevKit.Application.Identity": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Notifications": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Queueing": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Utilities": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
@@ -1104,17 +1128,6 @@
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Abstractions": "10.0.5",
           "Microsoft.EntityFrameworkCore.Analyzers": "10.0.5",
-          "Microsoft.Extensions.Caching.Memory": "10.0.5",
-          "Microsoft.Extensions.Logging": "10.0.5"
-        }
-      },
-      "Microsoft.EntityFrameworkCore.InMemory": {
-        "type": "CentralTransitive",
-        "requested": "[10.0.5, )",
-        "resolved": "10.0.5",
-        "contentHash": "zz4THzlDOrJ7fKU2YUOzQFs2LJ9DgOSr5xFXcDdoD59el73MTQLtQQOAJxQ94F4XDegyL9+2sePSQGdcU25ZxQ==",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore": "10.0.5",
           "Microsoft.Extensions.Caching.Memory": "10.0.5",
           "Microsoft.Extensions.Logging": "10.0.5"
         }

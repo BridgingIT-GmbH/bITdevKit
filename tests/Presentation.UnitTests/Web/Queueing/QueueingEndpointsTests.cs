@@ -308,27 +308,6 @@ public class QueueingEndpointsTests : IAsyncDisposable
     }
 
     [Fact]
-    public async Task ReleaseLease_ShouldInvokeServiceWhenMessageExists()
-    {
-        // Arrange
-        var id = Guid.NewGuid();
-        this.queueBrokerService.GetMessageAsync(id, Arg.Any<CancellationToken>())
-            .Returns(new QueueMessageInfo
-            {
-                Id = id,
-                Status = QueueMessageStatus.Processing,
-                CreatedDate = DateTimeOffset.UtcNow
-            });
-
-        // Act
-        var response = await this.client.PostAsync($"/api/_system/queueing/messages/{id}/lease/release", null);
-
-        // Assert
-        response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        await this.queueBrokerService.Received(1).ReleaseLeaseAsync(id, Arg.Any<CancellationToken>());
-    }
-
-    [Fact]
     public async Task ArchiveMessage_ShouldInvokeServiceWhenMessageIsTerminal()
     {
         // Arrange

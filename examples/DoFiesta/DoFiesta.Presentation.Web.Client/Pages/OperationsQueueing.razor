@@ -637,7 +637,7 @@
 
     private async Task ReleaseLeaseAsync(Guid id)
     {
-        await this.ExecuteMutationAsync(() => Api.Api._system.Queueing.Messages[id].Lease.Release.PostAsync(), "Queue message lease released.");
+        //await this.ExecuteMutationAsync(() => Api.Api._system.Queueing.Messages[id].Lease.Release.PostAsync(), "Queue message lease released.");
         await this.ReloadSelectionAsync(id);
     }
 

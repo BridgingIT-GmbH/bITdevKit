@@ -2,6 +2,17 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [Unreleased]
+
+- Added the new `Application.Queueing` feature for single-consumer work items with in-process and Entity Framework-backed durable queue brokers.
+- Added queueing operational endpoints and models for inspecting queue messages, viewing stats, retrying work items, releasing leases, archiving messages, purging retained data, and pausing or resuming queues and message types.
+- Added durable Entity Framework-backed messaging with persisted broker messages, background processing workers, and operational broker services.
+- Added messaging operational endpoints and models for inspecting broker messages, viewing stats, retrying handlers, releasing leases, archiving messages, and purging retained data.
+
+## [10.0.106] - 2026-04-10
+
+- Added bulk update and bulk delete support to generic repositories and repository extensions across the supported repository implementations.
+
 ## [10.0.105] - 2026-03-31
 
 - Added source-generated Requester authoring for commands and queries so handlers, request wiring, and validation integration can be defined from a single partial request type.

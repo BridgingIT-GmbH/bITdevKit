@@ -89,13 +89,13 @@ public class QueueingEndpoints(
             .WithSummary("Retry a queue message")
             .WithDescription("Resets a retained queue message so it can be processed again.");
 
-        messagesGroup.MapPost("{id:guid}/lease/release", this.ReleaseLease)
-            .Produces<string>()
-            .Produces<string>((int)HttpStatusCode.NotFound)
-            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.ReleaseLease")
-            .WithSummary("Release a queue message lease")
-            .WithDescription("Releases the current lease for a retained queue message.");
+        //messagesGroup.MapPost("{id:guid}/lease/release", this.ReleaseLease)
+        //    .Produces<string>()
+        //    .Produces<string>((int)HttpStatusCode.NotFound)
+        //    .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+        //    .WithName("_System.Queueing.ReleaseLease")
+        //    .WithSummary("Release a queue message lease")
+        //    .WithDescription("Releases the current lease for a retained queue message.");
 
         messagesGroup.MapPost("{id:guid}/archive", this.ArchiveMessage)
             .Produces<string>()
@@ -267,18 +267,18 @@ public class QueueingEndpoints(
         return Results.Ok($"Queue message {id} was scheduled for retry.");
     }
 
-    private async Task<IResult> ReleaseLease(Guid id, CancellationToken cancellationToken)
-    {
-        this.logger.LogInformation("Releasing lease for queue message {QueueMessageId}", id);
-        var message = await queueBrokerService.GetMessageAsync(id, cancellationToken);
-        if (message is null)
-        {
-            return Results.NotFound($"Queue message {id} was not found.");
-        }
+    //private async Task<IResult> ReleaseLease(Guid id, CancellationToken cancellationToken)
+    //{
+    //    this.logger.LogInformation("Releasing lease for queue message {QueueMessageId}", id);
+    //    var message = await queueBrokerService.GetMessageAsync(id, cancellationToken);
+    //    if (message is null)
+    //    {
+    //        return Results.NotFound($"Queue message {id} was not found.");
+    //    }
 
-        await queueBrokerService.ReleaseLeaseAsync(id, cancellationToken);
-        return Results.Ok($"Lease for queue message {id} was released.");
-    }
+    //    await queueBrokerService.ReleaseLeaseAsync(id, cancellationToken);
+    //    return Results.Ok($"Lease for queue message {id} was released.");
+    //}
 
     private async Task<IResult> ArchiveMessage(Guid id, CancellationToken cancellationToken)
     {

@@ -3,7 +3,6 @@
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Item.Archive;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Item.Content;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Item.Handlers;
-using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Item.Lease;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Item.Retry;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models;
 using Microsoft.Kiota.Abstractions.Extensions;
@@ -36,11 +35,6 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Item.Handlers.HandlersRequestBuilder Handlers
         {
             get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Item.Handlers.HandlersRequestBuilder(PathParameters, RequestAdapter);
-        }
-        /// <summary>The lease property</summary>
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Item.Lease.LeaseRequestBuilder Lease
-        {
-            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Item.Lease.LeaseRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>The retry property</summary>
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Item.Retry.RetryRequestBuilder Retry

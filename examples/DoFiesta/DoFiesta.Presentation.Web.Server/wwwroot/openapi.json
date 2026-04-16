@@ -1888,59 +1888,6 @@
         }
       }
     },
-    "/api/_system/messaging/messages/{id}/lease/release": {
-      "post": {
-        "tags": [
-          "_System.Messaging"
-        ],
-        "summary": "Release a broker message lease",
-        "description": "Releases the current lease for a persisted broker message.",
-        "operationId": "_System.Messaging.ReleaseLease",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/_system/messaging/messages/{id}/archive": {
       "post": {
         "tags": [
@@ -2373,59 +2320,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/_system/queueing/messages/{id}/lease/release": {
-      "post": {
-        "tags": [
-          "_System.Queueing"
-        ],
-        "summary": "Release a queue message lease",
-        "description": "Releases the current lease for a retained queue message.",
-        "operationId": "_System.Queueing.ReleaseLease",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
                 }
               }
             }

@@ -95,13 +95,13 @@ public class MessagingEndpoints(
             .WithSummary("Retry a broker message handler")
             .WithDescription("Resets a single persisted handler entry so it can be processed again.");
 
-        group.MapPost("{id:guid}/lease/release", this.ReleaseLease)
-            .Produces<string>()
-            .Produces<string>((int)HttpStatusCode.NotFound)
-            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Messaging.ReleaseLease")
-            .WithSummary("Release a broker message lease")
-            .WithDescription("Releases the current lease for a persisted broker message.");
+        //group.MapPost("{id:guid}/lease/release", this.ReleaseLease)
+        //    .Produces<string>()
+        //    .Produces<string>((int)HttpStatusCode.NotFound)
+        //    .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+        //    .WithName("_System.Messaging.ReleaseLease")
+        //    .WithSummary("Release a broker message lease")
+        //    .WithDescription("Releases the current lease for a persisted broker message.");
 
         group.MapPost("{id:guid}/archive", this.ArchiveMessage)
             .Produces<string>()
@@ -230,19 +230,19 @@ public class MessagingEndpoints(
         return Results.Ok($"Handler {request.HandlerType} for broker message {id} was scheduled for retry.");
     }
 
-    private async Task<IResult> ReleaseLease(Guid id, CancellationToken cancellationToken)
-    {
-        this.logger.LogInformation("Releasing lease for broker message {BrokerMessageId}", id);
-        var message = await messageBrokerService.GetMessageAsync(id, false, cancellationToken);
-        if (message is null)
-        {
-            return Results.NotFound($"Broker message {id} was not found.");
-        }
+    //private async Task<IResult> ReleaseLease(Guid id, CancellationToken cancellationToken)
+    //{
+    //    this.logger.LogInformation("Releasing lease for broker message {BrokerMessageId}", id);
+    //    var message = await messageBrokerService.GetMessageAsync(id, false, cancellationToken);
+    //    if (message is null)
+    //    {
+    //        return Results.NotFound($"Broker message {id} was not found.");
+    //    }
 
-        await messageBrokerService.ReleaseLeaseAsync(id, cancellationToken);
+    //    await messageBrokerService.ReleaseLeaseAsync(id, cancellationToken);
 
-        return Results.Ok($"Lease for broker message {id} was released.");
-    }
+    //    return Results.Ok($"Lease for broker message {id} was released.");
+    //}
 
     private async Task<IResult> ArchiveMessage(Guid id, CancellationToken cancellationToken)
     {

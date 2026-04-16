@@ -341,9 +341,9 @@
                             <MudButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Filled.Archive" Disabled="@(!CanArchiveMessage(selectedMessage) || !selectedMessage.Id.HasValue)" OnClick="@(() => ArchiveMessageAsync(selectedMessage.Id.GetValueOrDefault()))">
                                 Archive Message
                             </MudButton>
-                            <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Filled.LockOpen" Disabled="@(string.IsNullOrWhiteSpace(selectedMessage.LockedBy) || !selectedMessage.Id.HasValue)" OnClick="@(() => ReleaseLeaseAsync(selectedMessage.Id.GetValueOrDefault()))">
+                            @* <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Filled.LockOpen" Disabled="@(string.IsNullOrWhiteSpace(selectedMessage.LockedBy) || !selectedMessage.Id.HasValue)" OnClick="@(() => ReleaseLeaseAsync(selectedMessage.Id.GetValueOrDefault()))">
                                 Release Lease
-                            </MudButton>
+                            </MudButton> *@
                             <MudDivider Class="my-2" />
                             <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Filled.Pause" OnClick="@(() => PauseQueueAsync(selectedMessage.QueueName))">
                                 Pause Queue

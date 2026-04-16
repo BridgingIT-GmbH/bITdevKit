@@ -2,7 +2,6 @@
 #pragma warning disable CS0618
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing.Messages.Item.Archive;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing.Messages.Item.Content;
-using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing.Messages.Item.Lease;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing.Messages.Item.Retry;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models;
 using Microsoft.Kiota.Abstractions.Extensions;
@@ -30,11 +29,6 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queue
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing.Messages.Item.Content.ContentRequestBuilder Content
         {
             get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing.Messages.Item.Content.ContentRequestBuilder(PathParameters, RequestAdapter);
-        }
-        /// <summary>The lease property</summary>
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing.Messages.Item.Lease.LeaseRequestBuilder Lease
-        {
-            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing.Messages.Item.Lease.LeaseRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>The retry property</summary>
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing.Messages.Item.Retry.RetryRequestBuilder Retry

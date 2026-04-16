@@ -21,7 +21,7 @@ public class SqlServerOptions : OptionsBase
 
     public virtual bool LoggerEnabled { get; set; }
 
-    public virtual bool IdempotentMigrationsEnabled { get; set; } = true;
+    public virtual bool IdempotentMigrationsEnabled { get; set; }
 
     public virtual bool CommandLoggerEnabled { get; set; }
 

@@ -21,7 +21,7 @@ public class PostgresOptions : OptionsBase
 
     public virtual bool LoggerEnabled { get; set; }
 
-    public virtual bool IdempotentMigrationsEnabled { get; set; } = true;
+    public virtual bool IdempotentMigrationsEnabled { get; set; } = false;
 
     public virtual bool CommandLoggerEnabled { get; set; }
 

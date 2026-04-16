@@ -9,6 +9,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.Extensions.DependencyInjection;
 
 [UnitTest("Common")]
 public class RequesterCodeGenGeneratorTests
@@ -357,7 +358,7 @@ public partial class GetUserQuery
         result.CompilationDiagnostics.Where(static d => d.Severity == DiagnosticSeverity.Error).ShouldBeEmpty();
         generatedSource.ShouldContain("public partial class GetUserQuery : global::BridgingIT.DevKit.Common.RequestBase<global::TestNamespace.User>");
         generatedSource.ShouldContain("GetUserQueryGeneratedHandler");
-        generatedSource.ShouldContain("[global::BridgingIT.DevKit.Common.HandlerRetryAttribute(2, 100)]");
+        generatedSource.ShouldContain("[global::BridgingIT.DevKit.Common.HandlerRetryAttribute(2, 300)]");
         generatedSource.ShouldContain("[global::BridgingIT.DevKit.Common.HandlerTimeoutAttribute(50)]");
         generatedSource.ShouldContain("private static global::BridgingIT.DevKit.Common.Result<global::TestNamespace.User> Success(global::TestNamespace.User value)");
         generatedSource.ShouldContain("public sealed class Validator : global::FluentValidation.AbstractValidator<global::TestNamespace.GetUserQuery>");
@@ -421,6 +422,7 @@ public partial class CreateUserCommand
         var references = AppDomain.CurrentDomain.GetAssemblies()
             .Where(static assembly => !assembly.IsDynamic && !string.IsNullOrWhiteSpace(assembly.Location))
             .Select(static assembly => assembly.Location)
+            .Append(typeof(ServiceProviderServiceExtensions).Assembly.Location)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .Select(location => MetadataReference.CreateFromFile(location))
             .Cast<MetadataReference>();

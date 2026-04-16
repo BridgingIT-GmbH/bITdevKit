@@ -9,6 +9,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.Extensions.DependencyInjection;
 
 [UnitTest("Common")]
 public class NotifierCodeGenGeneratorTests
@@ -193,7 +194,7 @@ public partial class UserRegisteredEvent
         generatedSource.ShouldContain("internal static global::System.Threading.Tasks.Task<global::BridgingIT.DevKit.Common.Result> __NotifierGeneratedInvoke_SendEmailAsyncAsync");
         generatedSource.ShouldContain("UserRegisteredEvent_AuditGeneratedHandler");
         generatedSource.ShouldContain("UserRegisteredEvent_SendEmailAsyncGeneratedHandler");
-        generatedSource.ShouldContain("[global::BridgingIT.DevKit.Common.HandlerRetryAttribute(2, 100)]");
+        generatedSource.ShouldContain("[global::BridgingIT.DevKit.Common.HandlerRetryAttribute(2, 300)]");
         generatedSource.ShouldContain("[global::BridgingIT.DevKit.Common.HandlerTimeoutAttribute(50)]");
         generatedSource.ShouldContain("private static global::BridgingIT.DevKit.Common.Result Success()");
         generatedSource.ShouldContain("public sealed class Validator : global::FluentValidation.AbstractValidator<global::TestNamespace.UserRegisteredEvent>");
@@ -219,6 +220,7 @@ public partial class UserRegisteredEvent
         var references = AppDomain.CurrentDomain.GetAssemblies()
             .Where(static assembly => !assembly.IsDynamic && !string.IsNullOrWhiteSpace(assembly.Location))
             .Select(static assembly => assembly.Location)
+            .Append(typeof(ServiceProviderServiceExtensions).Assembly.Location)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .Select(location => MetadataReference.CreateFromFile(location))
             .Cast<MetadataReference>();

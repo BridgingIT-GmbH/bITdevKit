@@ -162,7 +162,9 @@ public abstract class QueueBrokerBase : IQueueBroker
                 return false;
             }
 
-            var handlerInstance = this.HandlerFactory.Create(subscription.HandlerType);
+            var handlerResult = this.HandlerFactory.Create(subscription.HandlerType);
+            await using var _ = handlerResult;
+            var handlerInstance = handlerResult?.Handler;
             var handlerType = typeof(IQueueMessageHandler<>).MakeGenericType(subscription.MessageType);
             var handlerMethod = handlerType.GetMethod(nameof(IQueueMessageHandler<IQueueMessage>.Handle));
             if (handlerInstance is null || handlerMethod is null)

@@ -213,7 +213,9 @@ public abstract partial class MessageBrokerBase : IMessageBroker
             TypedLogger.LogProcessing(this.Logger, Constants.LogKey, messageType, subscription.HandlerType.FullName, messageRequest.Message.MessageId, this.GetType().Name);
             var watch = ValueStopwatch.StartNew();
 
-            var handlerInstance = this.HandlerFactory.Create(subscription.HandlerType); // should not be null, did you forget to register your generic handler (EntityMessageHandler<T>)
+            var handlerResult = this.HandlerFactory.Create(subscription.HandlerType); // should not be null, did you forget to register your generic handler (EntityMessageHandler<T>)
+            await using var _ = handlerResult;
+            var handlerInstance = handlerResult?.Handler;
             var handlerType = typeof(IMessageHandler<>).MakeGenericType(subscription.MessageType);
             var handlerMethod = handlerType.GetMethod("Handle"); // TODO: can .NET 8 new reflection improve this? https://steven-giesel.com/blogPost/05ecdd16-8dc4-490f-b1cf-780c994346a4
 

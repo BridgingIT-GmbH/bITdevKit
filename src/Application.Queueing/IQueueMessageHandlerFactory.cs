@@ -6,9 +6,9 @@ namespace BridgingIT.DevKit.Application.Queueing;
 public interface IQueueMessageHandlerFactory
 {
     /// <summary>
-    /// Creates an instance of the specified queue handler type.
+    /// Creates an owned instance of the specified queue handler type.
     /// </summary>
     /// <param name="messageHandlerType">The concrete queue handler type.</param>
-    /// <returns>The created handler instance.</returns>
-    object Create(Type messageHandlerType);
+    /// <returns>The created handler instance together with its owned lifetime.</returns>
+    QueueMessageHandlerFactoryResult Create(Type messageHandlerType);
 }

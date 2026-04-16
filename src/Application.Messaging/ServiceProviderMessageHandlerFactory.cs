@@ -23,11 +23,34 @@ public class ServiceProviderMessageHandlerFactory : IMessageHandlerFactory
     }
 
     /// <summary>
-    ///     Creates the specified message handler type.
+    ///     Creates the specified message handler type within an owned scoped service provider.
     /// </summary>
     /// <param name="messageHandlerType">Type of the message handler.</param>
-    public object Create(Type messageHandlerType)
+    public MessageHandlerFactoryResult Create(Type messageHandlerType)
     {
-        return Factory.Create(messageHandlerType, this.serviceProvider.CreateScope().ServiceProvider);
+        var scope = this.serviceProvider.CreateAsyncScope();
+        var handler = scope.ServiceProvider.GetService(messageHandlerType);
+        var createdByActivator = handler is null;
+
+        handler ??= ActivatorUtilities.CreateInstance(scope.ServiceProvider, messageHandlerType);
+
+        return new MessageHandlerFactoryResult(
+            handler,
+            async () =>
+            {
+                if (createdByActivator)
+                {
+                    if (handler is IAsyncDisposable asyncDisposable)
+                    {
+                        await asyncDisposable.DisposeAsync();
+                    }
+                    else if (handler is IDisposable disposable)
+                    {
+                        disposable.Dispose();
+                    }
+                }
+
+                await scope.DisposeAsync();
+            });
     }
 }

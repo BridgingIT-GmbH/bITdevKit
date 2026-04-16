@@ -79,6 +79,27 @@ public class QueueBrokerBaseTests
         trace.ShouldBe(["broker-process", "handler-before", "handler", "handler-after"]);
     }
 
+    [Fact]
+    public async Task Process_WhenSubscriptionExists_DisposesHandlerResultAfterPipelineCompletes()
+    {
+        // Arrange
+        var trace = new List<string>();
+        var lifetime = new HandlerLifetime();
+        var sut = new TestQueueBroker(
+            new LifetimeTrackingHandlerFactory(trace, lifetime),
+            handlerBehaviors: [new LifetimeAssertingHandlerBehavior(trace, lifetime)]);
+        QueueProcessingResult? result = null;
+        await sut.Subscribe<TestQueueMessage, LifetimeTrackingQueueMessageHandler>();
+
+        // Act
+        await sut.Process(new QueueMessageRequest(new TestQueueMessage("msg-1", trace), value => result = value, CancellationToken.None));
+
+        // Assert
+        result.ShouldBe(QueueProcessingResult.Succeeded);
+        lifetime.IsDisposed.ShouldBeTrue();
+        trace.ShouldBe(["broker-process", "handler-before", "handler", "handler-after", "handler-disposed"]);
+    }
+
     private sealed class TestQueueBroker(
         IQueueMessageHandlerFactory handlerFactory,
         IEnumerable<IQueueEnqueuerBehavior> enqueuerBehaviors = null,
@@ -112,9 +133,24 @@ public class QueueBrokerBaseTests
 
     private sealed class StaticHandlerFactory(object handler) : IQueueMessageHandlerFactory
     {
-        public object Create(Type messageHandlerType)
+        public QueueMessageHandlerFactoryResult Create(Type messageHandlerType)
         {
-            return handler;
+            return QueueMessageHandlerFactoryResult.Create(handler);
+        }
+    }
+
+    private sealed class LifetimeTrackingHandlerFactory(List<string> trace, HandlerLifetime lifetime) : IQueueMessageHandlerFactory
+    {
+        public QueueMessageHandlerFactoryResult Create(Type messageHandlerType)
+        {
+            return new QueueMessageHandlerFactoryResult(
+                new LifetimeTrackingQueueMessageHandler(trace, lifetime),
+                () =>
+                {
+                    lifetime.IsDisposed = true;
+                    trace.Add("handler-disposed");
+                    return ValueTask.CompletedTask;
+                });
         }
     }
 
@@ -134,6 +170,18 @@ public class QueueBrokerBaseTests
         {
             trace.Add("handler-before");
             await next();
+            trace.Add("handler-after");
+        }
+    }
+
+    private sealed class LifetimeAssertingHandlerBehavior(List<string> trace, HandlerLifetime lifetime) : IQueueHandlerBehavior
+    {
+        public async Task Handle(IQueueMessage message, CancellationToken cancellationToken, object handler, QueueHandlerDelegate next)
+        {
+            lifetime.IsDisposed.ShouldBeFalse();
+            trace.Add("handler-before");
+            await next();
+            lifetime.IsDisposed.ShouldBeFalse();
             trace.Add("handler-after");
         }
     }
@@ -160,5 +208,20 @@ public class QueueBrokerBaseTests
             trace.Add("handler");
             return Task.CompletedTask;
         }
+    }
+
+    private sealed class LifetimeTrackingQueueMessageHandler(List<string> trace, HandlerLifetime lifetime) : IQueueMessageHandler<TestQueueMessage>
+    {
+        public Task Handle(TestQueueMessage message, CancellationToken cancellationToken)
+        {
+            lifetime.IsDisposed.ShouldBeFalse();
+            trace.Add("handler");
+            return Task.CompletedTask;
+        }
+    }
+
+    private sealed class HandlerLifetime
+    {
+        public bool IsDisposed { get; set; }
     }
 }

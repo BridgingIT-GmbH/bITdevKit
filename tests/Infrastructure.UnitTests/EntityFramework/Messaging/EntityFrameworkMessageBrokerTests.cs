@@ -369,26 +369,26 @@ public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : I
 
     private class TestMessageHandlerFactory : IMessageHandlerFactory
     {
-        public object Create(Type messageHandlerType)
+        public MessageHandlerFactoryResult Create(Type messageHandlerType)
         {
             if (messageHandlerType == typeof(ProcessingStubMessageHandler))
             {
-                return new ProcessingStubMessageHandler();
+                return MessageHandlerFactoryResult.Create(new ProcessingStubMessageHandler());
             }
 
             if (messageHandlerType == typeof(CoordinatedProcessingStubMessageHandler))
             {
-                return new CoordinatedProcessingStubMessageHandler();
+                return MessageHandlerFactoryResult.Create(new CoordinatedProcessingStubMessageHandler());
             }
 
             if (messageHandlerType == typeof(CoordinatedLeaseRenewalStubMessageHandler))
             {
-                return new CoordinatedLeaseRenewalStubMessageHandler();
+                return MessageHandlerFactoryResult.Create(new CoordinatedLeaseRenewalStubMessageHandler());
             }
 
             if (messageHandlerType == typeof(FailingStubMessageHandler))
             {
-                return new FailingStubMessageHandler();
+                return MessageHandlerFactoryResult.Create(new FailingStubMessageHandler());
             }
 
             return null;

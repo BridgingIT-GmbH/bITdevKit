@@ -1,14 +1,10 @@
-// MIT-License
-// Copyright BridgingIT GmbH - All Rights Reserved
-// Use of this source code is governed by an MIT-style license that can be
-// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+namespace BridgingIT.DevKit.Application.UnitTests.Messaging;
 
-namespace BridgingIT.DevKit.Application.UnitTests.Queueing;
-
-using BridgingIT.DevKit.Application.Queueing;
+using BridgingIT.DevKit.Application.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 
-public class ServiceProviderQueueMessageHandlerFactoryTests
+[UnitTest("Application")]
+public class ServiceProviderMessageHandlerFactoryTests
 {
     [Fact]
     public async Task Create_WhenHandlerHasRegisteredDependencies_ReturnsResolvedHandler()
@@ -17,14 +13,14 @@ public class ServiceProviderQueueMessageHandlerFactoryTests
         var services = new ServiceCollection();
         services.AddSingleton<TestDependency>();
         using var provider = services.BuildServiceProvider();
-        var sut = new ServiceProviderQueueMessageHandlerFactory(provider);
+        var sut = new ServiceProviderMessageHandlerFactory(provider);
 
         // Act
-        await using var result = sut.Create(typeof(TestQueueMessageHandler));
+        await using var result = sut.Create(typeof(TestMessageHandler));
 
         // Assert
-        result.Handler.ShouldBeOfType<TestQueueMessageHandler>();
-        ((TestQueueMessageHandler)result.Handler).Dependency.ShouldNotBeNull();
+        result.Handler.ShouldBeOfType<TestMessageHandler>();
+        ((TestMessageHandler)result.Handler).Dependency.ShouldNotBeNull();
     }
 
     [Fact]
@@ -34,11 +30,11 @@ public class ServiceProviderQueueMessageHandlerFactoryTests
         var services = new ServiceCollection();
         services.AddScoped<ScopedDependency>();
         using var provider = services.BuildServiceProvider();
-        var sut = new ServiceProviderQueueMessageHandlerFactory(provider);
+        var sut = new ServiceProviderMessageHandlerFactory(provider);
 
         // Act
-        var result = sut.Create(typeof(ScopedQueueMessageHandler));
-        var handler = (ScopedQueueMessageHandler)result.Handler;
+        var result = sut.Create(typeof(ScopedMessageHandler));
+        var handler = (ScopedMessageHandler)result.Handler;
 
         // Assert
         handler.Dependency.IsDisposed.ShouldBeFalse();
@@ -60,12 +56,12 @@ public class ServiceProviderQueueMessageHandlerFactoryTests
         }
     }
 
-    private sealed class TestQueueMessageHandler(TestDependency dependency)
+    private sealed class TestMessageHandler(TestDependency dependency)
     {
         public TestDependency Dependency { get; } = dependency;
     }
 
-    private sealed class ScopedQueueMessageHandler(ScopedDependency dependency)
+    private sealed class ScopedMessageHandler(ScopedDependency dependency)
     {
         public ScopedDependency Dependency { get; } = dependency;
     }

@@ -10,14 +10,35 @@ public class ServiceProviderQueueMessageHandlerFactory(IServiceProvider serviceP
     private readonly IServiceProvider serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
 
     /// <summary>
-    /// Creates a queue handler instance within a scoped service provider.
+    /// Creates a queue handler instance within an owned scoped service provider.
     /// </summary>
     /// <param name="messageHandlerType">The concrete handler type to create.</param>
-    /// <returns>The resolved handler instance.</returns>
-    public object Create(Type messageHandlerType)
+    /// <returns>The resolved handler instance together with its owned scope.</returns>
+    public QueueMessageHandlerFactoryResult Create(Type messageHandlerType)
     {
-        using var scope = this.serviceProvider.CreateScope();
+        var scope = this.serviceProvider.CreateAsyncScope();
+        var handler = scope.ServiceProvider.GetService(messageHandlerType);
+        var createdByActivator = handler is null;
 
-        return ActivatorUtilities.CreateInstance(scope.ServiceProvider, messageHandlerType);
+        handler ??= ActivatorUtilities.CreateInstance(scope.ServiceProvider, messageHandlerType);
+
+        return new QueueMessageHandlerFactoryResult(
+            handler,
+            async () =>
+            {
+                if (createdByActivator)
+                {
+                    if (handler is IAsyncDisposable asyncDisposable)
+                    {
+                        await asyncDisposable.DisposeAsync();
+                    }
+                    else if (handler is IDisposable disposable)
+                    {
+                        disposable.Dispose();
+                    }
+                }
+
+                await scope.DisposeAsync();
+            });
     }
 }

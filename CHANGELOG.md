@@ -2,7 +2,7 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
-## [Unreleased]
+## [10.0.107] - 2026-04-16
 
 - Added the new `Application.Queueing` feature for single-consumer work items with in-process and Entity Framework-backed durable queue brokers.
 - Added queueing operational endpoints and models for inspecting queue messages, viewing stats, retrying work items, releasing leases, archiving messages, purging retained data, and pausing or resuming queues and message types.

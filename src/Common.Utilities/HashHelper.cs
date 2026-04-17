@@ -25,7 +25,22 @@ public static class HashHelper
             return string.Empty;
         }
 
-        return BitConverter.ToString(MD5.HashData(input)).Replace("-", string.Empty).ToLowerInvariant();
+        return Convert.ToHexStringLower(MD5.HashData(input));
+    }
+
+    /// <summary>
+    ///     Computes the SHA-256 hash of the specified byte array.
+    /// </summary>
+    /// <param name="input">The input byte array to hash.</param>
+    /// <returns>A string representation of the computed SHA-256 hash. If input is null, returns an empty string.</returns>
+    public static string ComputeSha256(byte[] input)
+    {
+        if (input is null)
+        {
+            return string.Empty;
+        }
+
+        return Convert.ToHexStringLower(SHA256.HashData(input));
     }
 
     /// <summary>
@@ -51,6 +66,28 @@ public static class HashHelper
     }
 
     /// <summary>
+    ///     Computes the SHA-256 hash of the given stream.
+    /// </summary>
+    /// <param name="stream">The input stream to hash.</param>
+    /// <returns>
+    ///     A string representation of the computed SHA-256 hash in lowercase hexadecimal format. If the stream is null,
+    ///     returns an empty string.
+    /// </returns>
+    public static string ComputeSha256(Stream stream)
+    {
+        if (stream is null)
+        {
+            return string.Empty;
+        }
+
+        using var ms = new MemoryStream();
+        stream.Position = 0;
+        stream.CopyTo(ms);
+
+        return ComputeSha256(ms.ToArray());
+    }
+
+    /// <summary>
     ///     Computes the MD5 hash of a byte array and returns it as a hexadecimal string.
     /// </summary>
     /// <param name="input">The byte array for which to compute the hash.</param>
@@ -63,6 +100,21 @@ public static class HashHelper
         }
 
         return Compute(Encoding.UTF8.GetBytes(input));
+    }
+
+    /// <summary>
+    ///     Computes the SHA-256 hash of a string and returns it as a hexadecimal string.
+    /// </summary>
+    /// <param name="input">The input string for which to compute the hash.</param>
+    /// <returns>The hexadecimal string representation of the SHA-256 hash.</returns>
+    public static string ComputeSha256(string input)
+    {
+        if (input is null)
+        {
+            return string.Empty;
+        }
+
+        return ComputeSha256(Encoding.UTF8.GetBytes(input));
     }
 
     /// <summary>

@@ -428,22 +428,23 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
         var provider = factory.CreateProvider("local");
 
         // Act - Write a file with progress reporting
-        var progressUpdates = new List<FileProgress>();
-        var progress = new Progress<FileProgress>(p => progressUpdates.Add(p));
+        var progress = new RecordingProgress<FileProgress>();
         var content = new MemoryStream(Encoding.UTF8.GetBytes("Test content for progress"));
         var writeResult = await provider.WriteFileAsync("test.txt", content, progress, CancellationToken.None);
 
         // Assert - Write with progress
         writeResult.ShouldBeSuccess("Write should succeed");
+        var progressUpdates = progress.Items;
         progressUpdates.ShouldNotBeEmpty("Progress updates should be reported");
         progressUpdates.Last().BytesProcessed.ShouldBeGreaterThan(0);
 
         // Act - Read the file with progress reporting
-        progressUpdates.Clear();
+        progress = new RecordingProgress<FileProgress>();
         var readResult = await provider.ReadFileAsync("test.txt", progress, CancellationToken.None);
 
         // Assert - Read with progress
         readResult.ShouldBeSuccess("Read should succeed");
+        progressUpdates = progress.Items;
         progressUpdates.ShouldNotBeEmpty("Progress updates should be reported during read");
         progressUpdates.Last().BytesProcessed.ShouldBeGreaterThan(0);
 

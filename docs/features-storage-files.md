@@ -15,10 +15,11 @@ Available providers included:
 - Network Shares (e.g., Windows UNC paths)
 - Azure Files 
 - Azure Blob Storage 
+- Entity Framework backed database storage
 
 ### Architecture
 
-The `FileStorage` subsystem is built around the `IFileStorageProvider` interface, which defines core file operations. Providers like `LocalFileStorageProvider`, `InMemoryFileStorageProvider`, and others implement this interface. The `IFileStorageFactory` resolves providers by name, and extensions like `FileStorageProviderCompressionExtensions` and `FileStorageProviderCrossExtensions` add advanced functionality such as compression and cross-provider operations. Behaviors can be applied to providers to add cross-cutting concerns like logging or retry logic.
+The `FileStorage` subsystem is built around the `IFileStorageProvider` interface, which defines core file operations. Providers like `LocalFileStorageProvider`, `InMemoryFileStorageProvider`, `EntityFrameworkFileStorageProvider<TContext>`, and others implement this interface. The `IFileStorageFactory` resolves providers by name, and extensions like `FileStorageProviderCompressionExtensions` and `FileStorageProviderCrossExtensions` add advanced functionality such as compression and cross-provider operations. Behaviors can be applied to providers to add cross-cutting concerns like logging or retry logic.
 
 Below is a high-level architecture diagram:
 
@@ -55,6 +56,17 @@ classDiagram
         +Files : ConcurrentDictionary
     }
 
+    class EntityFrameworkFileStorageProvider~TContext~ {
+        +LocationName : string
+        +SupportsNotifications : bool
+    }
+
+    class IFileStorageContext {
+        +StorageFiles : DbSet
+        +StorageFileContents : DbSet
+        +StorageDirectories : DbSet
+    }
+
     class FileStorageProviderCompressionExtensions {
         +WriteCompressedFileAsync(provider, path, content, progress, options, token) Task~Result~
         +ReadCompressedFile(provider, path, password, progress, options, token) Task~Result~Stream~~
@@ -68,6 +80,8 @@ classDiagram
     IFileStorageProvider <|.. BaseFileStorageProvider
     BaseFileStorageProvider <|-- LocalFileStorageProvider
     BaseFileStorageProvider <|-- InMemoryFileStorageProvider
+    BaseFileStorageProvider <|-- EntityFrameworkFileStorageProvider~TContext~
+    EntityFrameworkFileStorageProvider~TContext~ --> IFileStorageContext : requires
     IFileStorageProvider --> FileStorageProviderCompressionExtensions : Extends
     IFileStorageProvider --> FileStorageProviderCrossExtensions : Extends
     IFileStorageFactory --> IFileStorageProvider : Resolves
@@ -80,6 +94,7 @@ classDiagram
 - **Bulk Operations**: Copy, move, or delete multiple files within or across providers with progress reporting.
 - **Compression**: Compress files or directories into archives (e.g., ZIP) and decompress them, supporting password protection for decompression.
 - **Cross-Provider Transfers**: Copy or move files between different storage providers (e.g., from local to cloud storage).
+- **Database-backed Virtual Filesystems**: Persist files and directories in the application database through Entity Framework when a separate blob store or file share is unnecessary.
 - **Health Monitoring**: Check the health of storage providers to ensure availability.
 
 ## Usage
@@ -135,6 +150,71 @@ public class FileService
 ```
 
 This registers "inMemory", "local", "network", and "azureBlob" providers with behaviors and lifetimes, resolved by `IFileStorageFactory`.
+
+### Setting Up the Entity Framework Provider
+
+Use the Entity Framework provider when files should live in the same relational database as the rest of your application state.
+
+1. Make your `DbContext` implement `IFileStorageContext`.
+2. Add the three required `DbSet<>` properties.
+3. Register the provider with `UseEntityFramework<TContext>(...)`.
+4. Create and apply your own application migration for the storage tables.
+
+```csharp
+public class AppDbContext(DbContextOptions<AppDbContext> options)
+    : DbContext(options), IFileStorageContext
+{
+    public DbSet<FileStorageFileEntity> StorageFiles { get; set; }
+
+    public DbSet<FileStorageFileContentEntity> StorageFileContents { get; set; }
+
+    public DbSet<FileStorageDirectoryEntity> StorageDirectories { get; set; }
+}
+
+services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+services.AddFileStorage(factory => factory
+    .RegisterProvider("db", builder => builder
+        .UseEntityFramework<AppDbContext>(
+            "DatabaseFiles",
+            "Entity Framework file storage",
+            options => options
+                .LeaseDuration(TimeSpan.FromSeconds(30))
+                .RetryCount(3)
+                .RetryBackoff(TimeSpan.FromMilliseconds(250))
+                .PageSize(100)
+                .MaximumBufferedContentSize(4 * 1024 * 1024))
+        .WithLogging()
+        .WithLifetime(ServiceLifetime.Singleton)));
+```
+
+#### Entity Framework provider behavior
+
+- Uses three tables: `__Storage_Files`, `__Storage_FileContents`, and `__Storage_Directories`
+- Resolves a fresh scoped `DbContext` per operation, so singleton provider lifetime is safe
+- Stores directory rows explicitly, including empty directories
+- Uses `ListFilesAsync(..., continuationToken)` with an opaque seek-based continuation token
+- Returns `SupportsNotifications = false`
+- Buffers `WriteFileAsync` and `OpenWriteFileAsync` content in memory before the final database commit
+- Preserves exact bytes for text payloads when possible and falls back to binary payload storage when a text-looking file cannot be round-tripped losslessly
+
+#### Entity Framework provider options
+
+| Option | Default | Meaning |
+| --- | --- | --- |
+| `LeaseDuration` | `00:00:30` | Lease window for row-level mutation coordination |
+| `RetryCount` | `3` | Total replay-safe attempts for transient database contention |
+| `RetryBackoff` | `00:00:00.250` | Base backoff used for retry delay calculation |
+| `PageSize` | `100` | Default page size for `ListFilesAsync` |
+| `MaximumBufferedContentSize` | `null` | Optional write-size limit before buffered writes are rejected |
+
+#### Entity Framework provider notes
+
+- The feature does **not** ship library-owned migrations. Your application owns schema evolution after implementing `IFileStorageContext`.
+- The provider is Entity Framework-level and works across supported relational providers. This repository includes integration coverage for SQLite, SQL Server, and PostgreSQL.
+- Because writes are buffered before commit, set `MaximumBufferedContentSize(...)` when you want predictable limits for large uploads.
+- The provider supports cross-provider copy/move and the existing compression, traversal, text, and object extension methods through the normal `IFileStorageProvider` contract.
 
 ### Using Providers
 
@@ -495,9 +575,12 @@ copyErrorResult.Messages.ShouldContain(m => m.Contains("Copied 0/1 files, 1 fail
 ### Best Practices
 
 - **Configure via DI**: Register providers with `AddFileStorage` for loose coupling and easy provider switching.
+- **Own EF Migrations in the App**: When using `UseEntityFramework<TContext>`, add the storage tables through your consuming application's normal migration workflow.
 - **Leverage Extensions**: Use `FileStorageProviderCompressionExtensions` for compression and `FileStorageProviderCrossExtensions` for cross-provider operations like copying or moving files between storage systems.
 - **Handle Results**: Always check `Result.IsSuccess` and inspect `Messages` or `Errors` for detailed feedback.
 - **Report Progress**: Use `IProgress<FileProgress>` to provide feedback during long-running operations, such as bulk cross-provider copies or compression tasks.
+- **Tune Buffered Writes**: For the Entity Framework provider, configure `MaximumBufferedContentSize(...)` if uploads may become large enough to pressure memory.
+- **Do Not Expect Notifications from EF Storage**: The Entity Framework provider is fully usable for file operations, but it reports `SupportsNotifications = false`.
 - **Test Across Providers**: Verify functionality with `InMemoryFileStorageProvider`, `LocalFileStorageProvider`, and custom providers to ensure compatibility, especially for cross-provider operations.
 
 ## Appendix A: FileMonitoring

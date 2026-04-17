@@ -36,21 +36,7 @@ public class FileStorageProviderCrossTests(ITestOutputHelper output, TestEnviron
 
     [Fact]
     public async Task CopyFileAsync_CrossProvider_SourceNotFound_Fails()
-    {
-        // Arrange
-        var sourceProvider = this.CreateInMemoryProvider();
-        var destProvider = this.CreateLocalProvider();
-        const string sourcePath = "nonexistent.txt";
-        const string destPath = "copied_file.txt";
-
-        // Act
-        var result = await sourceProvider.CopyFileAsync(destProvider, sourcePath, destPath, null, CancellationToken.None);
-
-        // Assert
-        result.ShouldBeFailure();
-        result.ShouldContainError<FileSystemError>("File not found");
-        result.Messages.ShouldContain($"Failed to read file at '{sourcePath}'");
-    }
+        => await FileStorageCrossProviderTestScenarios.CopyFileAsync_SourceNotFound_Fails(this.CreateInMemoryProvider(), this.CreateLocalProvider());
 
     [Fact]
     public async Task CopyFilesAsync_CrossProvider_PartialFailure()
@@ -82,29 +68,7 @@ public class FileStorageProviderCrossTests(ITestOutputHelper output, TestEnviron
 
     [Fact]
     public async Task CopyFileAsync_CrossProvider_Success()
-    {
-        // Arrange
-        var sourceProvider = this.CreateLocalProvider();
-        var destProvider = this.CreateInMemoryProvider();
-        const string sourcePath = "file.txt";
-        const string destPath = "copied_file.txt";
-        var content = "Hello, World!"u8.ToArray();
-        await sourceProvider.WriteFileAsync(sourcePath, new MemoryStream(content), null, CancellationToken.None);
-
-        // Act
-        var result = await sourceProvider.CopyFileAsync(destProvider, sourcePath, destPath, null, CancellationToken.None);
-
-        // Assert
-        result.ShouldBeSuccess($"CopyFileAsync failed: {string.Join(", ", result.Messages)}");
-        result.Messages.ShouldContain($"Wrote file from '{sourcePath}' (source provider) to '{destPath}' (destination provider)");
-
-        var destExists = await destProvider.FileExistsAsync(destPath);
-        destExists.IsSuccess.ShouldBeTrue($"Destination file should exist: {string.Join(", ", destExists.Messages)}");
-
-        var destContentResult = await destProvider.ReadBytesAsync(destPath);
-        destContentResult.IsSuccess.ShouldBeTrue($"Reading destination file failed: {string.Join(", ", destContentResult.Messages)}");
-        destContentResult.Value.ShouldBeEquivalentTo(content);
-    }
+        => await FileStorageCrossProviderTestScenarios.CopyFileAsync_Success(this.CreateLocalProvider(), this.CreateInMemoryProvider());
 
     [Fact]
     public async Task CopyFilesAsync_CrossProvider_Success()
@@ -136,32 +100,7 @@ public class FileStorageProviderCrossTests(ITestOutputHelper output, TestEnviron
 
     [Fact]
     public async Task MoveFileAsync_CrossProvider_Success()
-    {
-        // Arrange
-        var sourceProvider = this.CreateInMemoryProvider();
-        var destProvider = this.CreateLocalProvider();
-        const string sourcePath = "file.txt";
-        const string destPath = "moved_file.txt";
-        var content = "Hello, World!"u8.ToArray();
-        await sourceProvider.WriteFileAsync(sourcePath, new MemoryStream(content), null, CancellationToken.None);
-
-        // Act
-        var result = await sourceProvider.MoveFileAsync(destProvider, sourcePath, destPath, null, CancellationToken.None);
-
-        // Assert
-        result.ShouldBeSuccess($"MoveFileAsync failed: {string.Join(", ", result.Messages)}");
-        result.Messages.ShouldContain($"Moved file from '{sourcePath}' (source provider) to '{destPath}' (destination provider)");
-
-        var destExists = await destProvider.FileExistsAsync(destPath);
-        destExists.IsSuccess.ShouldBeTrue($"Destination file should exist: {string.Join(", ", destExists.Messages)}");
-
-        var sourceExists = await sourceProvider.FileExistsAsync(sourcePath);
-        sourceExists.IsSuccess.ShouldBeFalse($"Source file should not exist: {string.Join(", ", sourceExists.Messages)}");
-
-        var destContentResult = await destProvider.ReadBytesAsync(destPath);
-        destContentResult.IsSuccess.ShouldBeTrue($"Reading destination file failed: {string.Join(", ", destContentResult.Messages)}");
-        destContentResult.Value.ShouldBeEquivalentTo(content);
-    }
+        => await FileStorageCrossProviderTestScenarios.MoveFileAsync_Success(this.CreateInMemoryProvider(), this.CreateLocalProvider());
 
     [Fact]
     public async Task MoveFilesAsync_CrossProvider_Success()
@@ -196,57 +135,7 @@ public class FileStorageProviderCrossTests(ITestOutputHelper output, TestEnviron
 
     [Fact]
     public async Task DeepCopyAsync_CrossProvider_DirectoryStructureWithFiles_Success()
-    {
-        // Arrange
-        var sourceProvider = this.CreateInMemoryProvider();
-        var destProvider = this.CreateLocalProvider();
-        const string sourcePath = "source";
-        const string destPath = "dest";
-
-        // Create directory structure: source/dir1/dir2, source/dir3
-        await sourceProvider.CreateDirectoryAsync("source/dir1/dir2");
-        await sourceProvider.CreateDirectoryAsync("source/dir3");
-
-        // Create files: source/file1.txt, source/dir1/file2.txt, source/dir1/dir2/file3.txt, source/dir3/file4.txt
-        await sourceProvider.WriteTextFileAsync("source/file1.txt", "File 1 content");
-        await sourceProvider.WriteTextFileAsync("source/dir1/file2.txt", "File 2 content");
-        await sourceProvider.WriteTextFileAsync("source/dir1/dir2/file3.txt", "File 3 content");
-        await sourceProvider.WriteTextFileAsync("source/dir3/file4.txt", "File 4 content");
-
-        var expectedDirs = new List<string> { "dest/dir1", "dest/dir1/dir2", "dest/dir3" };
-        var expectedFiles = new List<string> { "dest/file1.txt", "dest/dir1/file2.txt", "dest/dir1/dir2/file3.txt", "dest/dir3/file4.txt" };
-
-        // Act
-        var result = await sourceProvider.DeepCopyAsync(destProvider, sourcePath, destPath, skipFiles: false, searchPattern: null, progress: null, cancellationToken: CancellationToken.None);
-
-        // Assert
-        result.ShouldBeSuccess($"DeepCopyAsync failed: {string.Join(", ", result.Messages)}");
-        result.Messages.ShouldContain($"Deep copied structure from '{sourcePath}' (source provider) to '{destPath}' (destination provider)");
-
-        // Verify directories
-        var destDirsResult = await destProvider.ListDirectoriesAsync(destPath, "*.*", true);
-        destDirsResult.IsSuccess.ShouldBeTrue($"Listing directories failed: {string.Join(", ", destDirsResult.Messages)}");
-        destDirsResult.Value.ShouldContain(expectedDirs[0]);
-        destDirsResult.Value.ShouldContain(expectedDirs[1]);
-        destDirsResult.Value.ShouldContain(expectedDirs[2]);
-
-        // Verify files
-        var destFilesResult = await destProvider.ListFilesAsync(destPath, "*.*", true);
-        destFilesResult.IsSuccess.ShouldBeTrue($"Listing files failed: {string.Join(", ", destFilesResult.Messages)}");
-        destFilesResult.Value.Files.ShouldContain(expectedFiles[0]);
-        destFilesResult.Value.Files.ShouldContain(expectedFiles[1]);
-        destFilesResult.Value.Files.ShouldContain(expectedFiles[2]);
-
-        // Verify file contents
-        foreach (var file in expectedFiles)
-        {
-            var sourceFile = file.Replace("dest", "source");
-            var sourceContent = await sourceProvider.ReadTextFileAsync(sourceFile);
-            var destContent = await destProvider.ReadTextFileAsync(file);
-            destContent.IsSuccess.ShouldBeTrue($"Reading file {file} failed: {string.Join(", ", destContent.Messages)}");
-            //destContent.Value.ShouldBeSameAs(sourceContent.Value);
-        }
-    }
+        => await FileStorageCrossProviderTestScenarios.DeepCopyAsync_DirectoryStructureWithFiles_Success(this.CreateInMemoryProvider(), this.CreateLocalProvider());
 
     [Fact]
     public async Task DeepCopyAsync_CrossProvider_SkipFiles_CopiesOnlyDirectoryStructure()

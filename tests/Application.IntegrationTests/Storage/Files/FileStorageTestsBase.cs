@@ -156,8 +156,7 @@ public abstract class FileStorageTestsBase
         var provider = this.CreateProvider();
         const string path = "test/progress.txt";
         var content = Encoding.UTF8.GetBytes("Progress content");
-        var progressItems = new List<FileProgress>();
-        var progress = new Progress<FileProgress>(p => progressItems.Add(p));
+        var progress = new RecordingProgress<FileProgress>();
 
         var openResult = await provider.OpenWriteFileAsync(path, false, progress, CancellationToken.None);
 
@@ -168,6 +167,7 @@ public abstract class FileStorageTestsBase
             await stream.WriteAsync(content.AsMemory(8), CancellationToken.None);
         }
 
+        var progressItems = progress.Items;
         progressItems.ShouldNotBeEmpty();
         progressItems.ShouldContain(p => p.BytesProcessed >= content.Length);
         progressItems.Last().FilesProcessed.ShouldBe(1);
@@ -1274,7 +1274,108 @@ public abstract class FileStorageTestsBase
         //lastProgress.BytesProcessed.ShouldBe(expectedBytes, "Total bytes should match the sum of filtered file contents");
     }
 
-    private string ComputeSha256Hash(byte[] data)
+    protected async Task AssertFileExistsAsync(IFileStorageProvider provider, string path)
+    {
+        var result = await provider.FileExistsAsync(path, null, CancellationToken.None);
+
+        result.ShouldBeSuccess();
+        result.ShouldContainMessage($"Checked existence of file at '{path}'");
+    }
+
+    protected async Task AssertFileDoesNotExistAsync(IFileStorageProvider provider, string path)
+    {
+        var result = await provider.FileExistsAsync(path, null, CancellationToken.None);
+
+        result.ShouldBeFailure();
+        result.ShouldContainError<NotFoundError>("File not found");
+    }
+
+    protected async Task AssertReadFileAsync(IFileStorageProvider provider, string path, byte[] content)
+    {
+        var result = await provider.ReadFileAsync(path, null, CancellationToken.None);
+
+        result.ShouldBeSuccess();
+        result.Value.ShouldNotBeNull();
+        await using var readStream = result.Value;
+        using var memoryStream = new MemoryStream();
+        await readStream.CopyToAsync(memoryStream, CancellationToken.None);
+        var readBytes = memoryStream.ToArray();
+        readBytes.ShouldBe(content);
+    }
+
+    protected async Task AssertReadFileFailsAsync(IFileStorageProvider provider, string path)
+    {
+        var result = await provider.ReadFileAsync(path, null, CancellationToken.None);
+
+        result.ShouldBeFailure();
+        result.ShouldContainError<FileSystemError>("File not found");
+    }
+
+    protected async Task AssertChecksumAsync(IFileStorageProvider provider, string path, byte[] content)
+    {
+        var result = await provider.GetChecksumAsync(path, CancellationToken.None);
+
+        result.ShouldBeSuccess();
+        result.Value.ShouldNotBeNullOrEmpty();
+        result.Value.ShouldBe(this.ComputeSha256Hash(content));
+    }
+
+    protected async Task AssertChecksumFailsAsync(IFileStorageProvider provider, string path)
+    {
+        var result = await provider.GetChecksumAsync(path, CancellationToken.None);
+
+        result.ShouldBeFailure();
+        result.ShouldContainError<FileSystemError>("File not found");
+    }
+
+    protected async Task AssertFileMetadataAsync(
+        IFileStorageProvider provider,
+        string path,
+        long? expectedLength = null,
+        DateTime? expectedLastModified = null)
+    {
+        var result = await provider.GetFileMetadataAsync(path, CancellationToken.None);
+
+        result.ShouldBeSuccess();
+        result.Value.ShouldNotBeNull();
+        result.Value.Path.ShouldBe(path);
+
+        if (expectedLength.HasValue)
+        {
+            result.Value.Length.ShouldBe(expectedLength.Value);
+        }
+
+        if (expectedLastModified.HasValue)
+        {
+            result.Value.LastModified.ShouldNotBeNull();
+            result.Value.LastModified.Value.ShouldBe(expectedLastModified.Value);
+        }
+    }
+
+    protected async Task AssertFileMetadataFailsAsync(IFileStorageProvider provider, string path)
+    {
+        var result = await provider.GetFileMetadataAsync(path, CancellationToken.None);
+
+        result.ShouldBeFailure();
+        result.ShouldContainError<FileSystemError>("File not found");
+    }
+
+    protected async Task AssertDirectoryExistsAsync(IFileStorageProvider provider, string path)
+    {
+        var result = await provider.DirectoryExistsAsync(path, CancellationToken.None);
+
+        result.ShouldBeSuccess();
+    }
+
+    protected async Task AssertDirectoryDoesNotExistAsync(IFileStorageProvider provider, string path)
+    {
+        var result = await provider.DirectoryExistsAsync(path, CancellationToken.None);
+
+        result.ShouldBeFailure();
+        result.ShouldContainError<NotFoundError>("Directory not found");
+    }
+
+    protected string ComputeSha256Hash(byte[] data)
     {
         var hash = SHA256.HashData(data);
         return Convert.ToBase64String(hash);

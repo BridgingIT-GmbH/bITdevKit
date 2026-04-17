@@ -10,6 +10,7 @@ using Domain;
 using Domain.Model;
 using global::Azure.Storage.Blobs.Models;
 using Infrastructure.EntityFramework;
+using Infrastructure.EntityFramework.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -200,8 +201,11 @@ public class PersonStubDocument
     public int Age { get; set; }
 }
 
+/// <summary>
+/// Shared EF Core test context that exposes the repository infrastructure tables used by integration tests.
+/// </summary>
 public class StubDbContext : DbContext,
-    IOutboxDomainEventContext, IOutboxMessageContext, IDocumentStoreContext, IEntityPermissionContext, ILoggingContext
+    IOutboxDomainEventContext, IOutboxMessageContext, IDocumentStoreContext, IEntityPermissionContext, ILoggingContext, IFileStorageContext
 {
     public StubDbContext() { }
 
@@ -215,6 +219,21 @@ public class StubDbContext : DbContext,
     public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
     public DbSet<StorageDocument> StorageDocuments { get; set; }
+
+    /// <summary>
+    /// Gets or sets the persisted file rows for Entity Framework file storage tests.
+    /// </summary>
+    public DbSet<FileStorageFileEntity> StorageFiles { get; set; }
+
+    /// <summary>
+    /// Gets or sets the persisted file content rows for Entity Framework file storage tests.
+    /// </summary>
+    public DbSet<FileStorageFileContentEntity> StorageFileContents { get; set; }
+
+    /// <summary>
+    /// Gets or sets the persisted directory rows for Entity Framework file storage tests.
+    /// </summary>
+    public DbSet<FileStorageDirectoryEntity> StorageDirectories { get; set; }
 
     public DbSet<EntityPermission> EntityPermissions { get; set; }
 

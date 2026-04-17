@@ -20,6 +20,8 @@ flowchart LR
 
 At a glance, application code talks to `IDataExporter` or `IDataImporter`, `DataPorterService` builds the effective configuration, applies optional row interception, delegates to the selected provider, and returns a typed result.
 
+For download-oriented scenarios, `IDataExporter` can also return `Result<FileContent>` directly via `ExportToFileContentAsync(...)`, which packages the exported bytes together with a default file name and MIME type derived from the selected provider and compression settings.
+
 For the lower-level serializer abstractions and JSON converter conventions that sit underneath parts of the import/export stack, see [Common Serialization](./common-serialization.md).
 
 ## Features
@@ -85,6 +87,19 @@ public class MyService
             Console.WriteLine($"Exported {result.Value.TotalRows} rows");
         }
     }
+}
+```
+
+### Export To FileContent
+
+```csharp
+var result = await exporter.ExportToFileContentAsync(
+    orders,
+    o => o.AsCsv().WithFileName("orders-export.csv"));
+
+if (result.IsSuccess)
+{
+    return result.MapHttpFile();
 }
 ```
 

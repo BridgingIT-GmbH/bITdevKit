@@ -126,6 +126,7 @@ public class SqlServerIdempotentMigrationsSqlGenerator(
         var schema = operation.Schema ?? "dbo";
         var table = operation.Table;
         var index = operation.Name;
+        var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i, terminate: false));
 
         builder
                .AppendLine("-- Create Index")
@@ -137,12 +138,9 @@ public class SqlServerIdempotentMigrationsSqlGenerator(
                .AppendLine($"    WHERE i.name = N'{index}' AND t.name = N'{table}' AND s.name = N'{schema}'")
                .AppendLine(")")
                .AppendLine("BEGIN")
-               .IncrementIndent();
-
-        // call base directly; no CaptureInnerSql
-        base.Generate(operation, model, builder, terminate: false);
-
-        builder.DecrementIndent()
+               .IncrementIndent()
+               .AppendLine(innerSql.TrimEnd())
+               .DecrementIndent()
                .AppendLine("END;");
 
         if (terminate)
@@ -162,6 +160,7 @@ public class SqlServerIdempotentMigrationsSqlGenerator(
         var schema = operation.Schema ?? "dbo";
         var table = operation.Table;
         var index = operation.Name;
+        var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i, terminate: false));
 
         builder
                .AppendLine("-- Drop Index")
@@ -173,12 +172,9 @@ public class SqlServerIdempotentMigrationsSqlGenerator(
                .AppendLine($"    WHERE i.name = N'{index}' AND t.name = N'{table}' AND s.name = N'{schema}'")
                .AppendLine(")")
                .AppendLine("BEGIN")
-               .IncrementIndent();
-
-        // call base directly; no CaptureInnerSql
-        base.Generate(operation, model, builder, terminate: false);
-
-        builder.DecrementIndent()
+               .IncrementIndent()
+               .AppendLine(innerSql.TrimEnd())
+               .DecrementIndent()
                .AppendLine("END;");
 
         if (terminate)

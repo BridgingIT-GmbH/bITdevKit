@@ -91,6 +91,20 @@ public interface IDataExporter
         where TSource : class;
 
     /// <summary>
+    /// Exports data to file content using the specified options.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the source data.</typeparam>
+    /// <param name="data">The data to export.</param>
+    /// <param name="options">Optional export options.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A result containing the exported file content or error details.</returns>
+    Task<Result<FileContent>> ExportToFileContentAsync<TSource>(
+        IEnumerable<TSource> data,
+        ExportOptions options = null,
+        CancellationToken cancellationToken = default)
+        where TSource : class;
+
+    /// <summary>
     /// Exports data to a byte array using a fluent export options builder.
     /// </summary>
     /// <typeparam name="TSource">The type of the source data.</typeparam>
@@ -99,6 +113,20 @@ public interface IDataExporter
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A result containing the exported data as bytes or error details.</returns>
     Task<Result<byte[]>> ExportToBytesAsync<TSource>(
+        IEnumerable<TSource> data,
+        Builder<ExportOptionsBuilder, ExportOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TSource : class;
+
+    /// <summary>
+    /// Exports data to file content using a fluent export options builder.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the source data.</typeparam>
+    /// <param name="data">The data to export.</param>
+    /// <param name="optionsBuilder">The fluent options builder.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A result containing the exported file content or error details.</returns>
+    Task<Result<FileContent>> ExportToFileContentAsync<TSource>(
         IEnumerable<TSource> data,
         Builder<ExportOptionsBuilder, ExportOptions> optionsBuilder,
         CancellationToken cancellationToken = default)
@@ -119,6 +147,20 @@ public interface IDataExporter
         where TSource : class;
 
     /// <summary>
+    /// Exports asynchronous data to file content using the specified options.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the source data.</typeparam>
+    /// <param name="data">The data to export.</param>
+    /// <param name="options">Optional export options.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A result containing the exported file content or error details.</returns>
+    Task<Result<FileContent>> ExportToFileContentAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        ExportOptions options = null,
+        CancellationToken cancellationToken = default)
+        where TSource : class;
+
+    /// <summary>
     /// Exports asynchronous data to a byte array using a fluent export options builder.
     /// </summary>
     /// <typeparam name="TSource">The type of the source data.</typeparam>
@@ -127,6 +169,20 @@ public interface IDataExporter
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>A result containing the exported data as bytes or error details.</returns>
     Task<Result<byte[]>> ExportToBytesAsync<TSource>(
+        IAsyncEnumerable<TSource> data,
+        Builder<ExportOptionsBuilder, ExportOptions> optionsBuilder,
+        CancellationToken cancellationToken = default)
+        where TSource : class;
+
+    /// <summary>
+    /// Exports asynchronous data to file content using a fluent export options builder.
+    /// </summary>
+    /// <typeparam name="TSource">The type of the source data.</typeparam>
+    /// <param name="data">The data to export.</param>
+    /// <param name="optionsBuilder">The fluent options builder.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>A result containing the exported file content or error details.</returns>
+    Task<Result<FileContent>> ExportToFileContentAsync<TSource>(
         IAsyncEnumerable<TSource> data,
         Builder<ExportOptionsBuilder, ExportOptions> optionsBuilder,
         CancellationToken cancellationToken = default)

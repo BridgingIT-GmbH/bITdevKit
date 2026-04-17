@@ -14,7 +14,8 @@
         "resolved": "4.15.1",
         "contentHash": "4mLbqTbH3ctd0NlukHjVQbU3ZnNDuCtB6ttNZDLPZLWMA2Dr31rh/eCSTqOwDojUX8zfDOVaxstMgJTE9PwZNA==",
         "dependencies": {
-          "MimeKit": "4.15.1"
+          "MimeKit": "4.15.1",
+          "System.Formats.Asn1": "10.0.2"
         }
       },
       "Microsoft.Extensions.Configuration.Binder": {
@@ -117,6 +118,11 @@
         "type": "Transitive",
         "resolved": "8.6.6",
         "contentHash": "lCBL9mmhF9TZxHG3beVRkyjlLohkIC464xIAq7J7Y59C+z42hmsdUaeCKl2SIAYertOUU5TeBXyQDLDQGIKePQ=="
+      },
+      "System.Formats.Asn1": {
+        "type": "Transitive",
+        "resolved": "10.0.2",
+        "contentHash": "9Hee6iQ74pDgdRNIL6lO8Vlx2onVWd5aDnqwk4Pvo0h5FklBd7QwcQDKgxeLuhiy0o3ibzUVO0KFQe0/hPXU+Q=="
       },
       "System.Security.Cryptography.Pkcs": {
         "type": "Transitive",

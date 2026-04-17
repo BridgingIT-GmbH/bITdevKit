@@ -140,6 +140,7 @@ public class PostgresIdempotentMigrationsSqlGenerator(
         var schema = operation.Schema ?? "public";
         var table = operation.Table;
         var index = operation.Name;
+        var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i, terminate: false));
 
         builder.AppendLine("DO $$ BEGIN")
                .AppendLine("IF NOT EXISTS (")
@@ -147,11 +148,9 @@ public class PostgresIdempotentMigrationsSqlGenerator(
                .AppendLine("    FROM pg_indexes")
                .AppendLine($"    WHERE schemaname = '{schema}' AND indexname = '{index}'")
                .AppendLine(") THEN")
-               .IncrementIndent();
-
-        base.Generate(operation, model, builder, terminate: false);
-
-        builder.DecrementIndent()
+               .IncrementIndent()
+               .AppendLine(innerSql.TrimEnd())
+               .DecrementIndent()
                .AppendLine("END IF; END $$;");
 
         if (terminate)
@@ -170,6 +169,7 @@ public class PostgresIdempotentMigrationsSqlGenerator(
 
         var schema = operation.Schema ?? "public";
         var index = operation.Name;
+        var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i, terminate: false));
 
         builder.AppendLine("DO $$ BEGIN")
                .AppendLine("IF EXISTS (")
@@ -177,11 +177,9 @@ public class PostgresIdempotentMigrationsSqlGenerator(
                .AppendLine("    FROM pg_indexes")
                .AppendLine($"    WHERE schemaname = '{schema}' AND indexname = '{index}'")
                .AppendLine(") THEN")
-               .IncrementIndent();
-
-        base.Generate(operation, model, builder, terminate: false);
-
-        builder.DecrementIndent()
+               .IncrementIndent()
+               .AppendLine(innerSql.TrimEnd())
+               .DecrementIndent()
                .AppendLine("END IF; END $$;");
 
         if (terminate)

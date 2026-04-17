@@ -31,6 +31,11 @@ public sealed record ExportOptions
     public string SheetName { get; init; }
 
     /// <summary>
+    /// Gets or sets the file name to use when exporting to <see cref="FileContent"/>.
+    /// </summary>
+    public string FileName { get; init; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether to include headers.
     /// </summary>
     public bool IncludeHeaders { get; init; } = true;

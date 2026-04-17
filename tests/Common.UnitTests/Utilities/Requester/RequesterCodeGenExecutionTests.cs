@@ -238,10 +238,10 @@ public partial class GeneratedGetUserQuery
         IGeneratedUserStore userStore,
         CancellationToken cancellationToken)
     {
-        var user = await userStore.FindAsync(UserId, cancellationToken);
+        var user = await userStore.FindAsync(this.UserId, cancellationToken);
         return user != null
             ? Success(user)
-            : Failure($"User with ID {UserId} not found.");
+            : Failure($"User with ID {this.UserId} not found.");
     }
 }
 

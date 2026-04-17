@@ -188,6 +188,120 @@ public class DataPorterServiceExportTests
     }
 
     [Fact]
+    public async Task ExportToFileContentAsync_WithValidData_ReturnsFileContent()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvDataPorterProvider()], this.configurationMerger);
+        var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
+
+        // Act
+        var result = await sut.ExportToFileContentAsync(data, new ExportOptions { Format = Format.Csv });
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.Content.ShouldNotBeNull();
+        result.Value.FileName.ShouldBe("export.csv");
+        result.Value.ContentType.ShouldBe("text/csv");
+    }
+
+    [Fact]
+    public async Task ExportToFileContentAsync_WithBuilderOptions_ForwardsBuiltOptions()
+    {
+        // Arrange
+        IDataExporter sut = new DataPorterService([new CsvDataPorterProvider()], this.configurationMerger);
+        var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
+
+        // Act
+        var result = await sut.ExportToFileContentAsync(data, o => o.AsCsv().WithGZipCompression());
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.FileName.ShouldBe("export.csv.gz");
+        result.Value.ContentType.ShouldBe("application/gzip");
+        CompressionHelper.IsCompressed(result.Value.Content).ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task ExportToFileContentAsync_WithCustomFileName_UsesProvidedFileName()
+    {
+        // Arrange
+        var sut = new DataPorterService([new CsvDataPorterProvider()], this.configurationMerger);
+        var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
+
+        // Act
+        var result = await sut.ExportToFileContentAsync(data, new ExportOptions
+        {
+            Format = Format.Csv,
+            FileName = "orders-export.csv"
+        });
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.FileName.ShouldBe("orders-export.csv");
+    }
+
+    [Fact]
+    public async Task ExportToFileContentAsync_WithBuilderCustomFileName_UsesProvidedFileName()
+    {
+        // Arrange
+        IDataExporter sut = new DataPorterService([new JsonDataPorterProvider()], this.configurationMerger);
+        var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
+
+        // Act
+        var result = await sut.ExportToFileContentAsync(data, o => o.AsJson().WithFileName("orders"));
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.FileName.ShouldBe("orders.json");
+    }
+
+    [Fact]
+    public async Task ExportToFileContentAsync_WithCompressedCustomFileName_AppendsCompressionSuffix()
+    {
+        // Arrange
+        IDataExporter sut = new DataPorterService([new CsvDataPorterProvider()], this.configurationMerger);
+        var data = new[] { new SimpleEntity { Id = 1, Name = "Test" } };
+
+        // Act
+        var result = await sut.ExportToFileContentAsync(data, o => o.AsCsv().WithGZipCompression().WithFileName("orders"));
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.FileName.ShouldBe("orders.csv.gz");
+    }
+
+    [Fact]
+    public async Task ExportToFileContentAsync_WithAsyncData_ReturnsFileContent()
+    {
+        // Arrange
+        var sut = new DataPorterService([new JsonDataPorterProvider()], this.configurationMerger);
+
+        // Act
+        var result = await sut.ExportToFileContentAsync(
+            new[] { new SimpleEntity { Id = 1, Name = "Test" } }.ToAsyncEnumerable(),
+            new ExportOptions { Format = Format.Json });
+
+        // Assert
+        result.ShouldBeSuccess();
+        result.Value.FileName.ShouldBe("export.json");
+        result.Value.ContentType.ShouldBe("application/json");
+    }
+
+    [Fact]
+    public async Task ExportToFileContentAsync_WithNullData_ReturnsFailure()
+    {
+        // Arrange
+        var mockProvider = CreateMockExportProvider();
+        var sut = new DataPorterService([mockProvider], this.configurationMerger);
+
+        // Act
+        var result = await sut.ExportToFileContentAsync<SimpleEntity>((IEnumerable<SimpleEntity>)null);
+
+        // Assert
+        result.ShouldBeFailure();
+    }
+
+    [Fact]
     public async Task ExportToBytesAsync_WithBuilderOptions_ForwardsBuiltOptions()
     {
         // Arrange

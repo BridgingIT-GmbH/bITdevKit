@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Application.IntegrationTests.JobScheduling;
 
 using BridgingIT.DevKit.Application.JobScheduling;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -26,22 +25,45 @@ public class JobSchedulingTests
         this.loggerFactory.CreateLogger(Arg.Any<string>()).Returns(NullLogger.Instance);
     }
 
-    private IHost CreateHost(Action<WebApplicationBuilder> configure)
+    private static IHost CreateHost(Action<IServiceCollection> configure)
     {
-        var builder = WebApplication.CreateBuilder();
+        ArgumentNullException.ThrowIfNull(configure);
+
+        var builder = Host.CreateApplicationBuilder();
         builder.Services.AddLogging();
-        configure(builder);
-        var app = builder.Build();
-        return app as IHost;
+        configure(builder.Services);
+
+        return builder.Build();
+    }
+
+    private static async Task<IScheduler> StartAndWaitForSchedulerAsync(IHost host, CancellationToken cancellationToken = default)
+    {
+        ArgumentNullException.ThrowIfNull(host);
+
+        await host.StartAsync(cancellationToken);
+
+        var schedulerFactory = host.Services.GetRequiredService<ISchedulerFactory>();
+        var timeoutAt = DateTime.UtcNow.AddSeconds(5);
+
+        while (DateTime.UtcNow < timeoutAt)
+        {
+            var scheduler = await schedulerFactory.GetScheduler(cancellationToken);
+            if (scheduler.IsStarted)
+            {
+                return scheduler;
+            }
+
+            await Task.Delay(50, cancellationToken);
+        }
+
+        return await schedulerFactory.GetScheduler(cancellationToken);
     }
 
     [Fact]
     public async Task BasicScheduler_Runs()
     {
-        var host = this.CreateHost(builder => builder.Services.AddJobScheduling());
-        await host.StartAsync();
-        var schedulerFactory = host.Services.GetRequiredService<ISchedulerFactory>();
-        var scheduler = await schedulerFactory.GetScheduler();
+        using var host = CreateHost(services => services.AddJobScheduling());
+        var scheduler = await StartAndWaitForSchedulerAsync(host);
         Assert.True(scheduler.IsStarted);
         await host.StopAsync();
     }
@@ -50,9 +72,9 @@ public class JobSchedulingTests
     public async Task ScopedJob_ExecutesWithData()
     {
         var executed = new List<(string Name, Dictionary<string, string> Data)>();
-        var host = this.CreateHost(builder =>
+        using var host = CreateHost(services =>
         {
-            builder.Services
+            services
                 .AddJobScheduling()
                 .WithJob<TestJob>()
                     .Cron(CronExpressions.EverySecond)
@@ -62,7 +84,7 @@ public class JobSchedulingTests
         });
 
         TestJob.OnExecute = (name, data) => executed.Add((name, data));
-        await host.StartAsync();
+        _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(2500);
         await host.StopAsync();
 
@@ -76,9 +98,9 @@ public class JobSchedulingTests
     public async Task SingletonJob_ExecutesWithMultipleData()
     {
         var executed = new List<(string Name, Dictionary<string, string> Data)>();
-        var host = this.CreateHost(builder =>
+        using var host = CreateHost(services =>
         {
-            builder.Services
+            services
                 .AddJobScheduling()
                 .WithJob<TestJob>()
                     .Cron(CronExpressions.EverySecond)
@@ -88,7 +110,7 @@ public class JobSchedulingTests
         });
 
         TestJob.OnExecute = (name, data) => executed.Add((name, data));
-        await host.StartAsync();
+        _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(2500);
         await host.StopAsync();
 
@@ -102,9 +124,9 @@ public class JobSchedulingTests
     public async Task DisabledJob_DoesNotExecute()
     {
         var executed = new List<(string Name, Dictionary<string, string> Data)>();
-        var host = this.CreateHost(builder =>
+        using var host = CreateHost(services =>
         {
-            builder.Services
+            services
                 .AddJobScheduling()
                 .WithJob<TestJob>()
                     .Cron(CronExpressions.EverySecond)
@@ -113,7 +135,7 @@ public class JobSchedulingTests
         });
 
         TestJob.OnExecute = (name, data) => executed.Add((name, data));
-        await host.StartAsync();
+        _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(2500);
         await host.StopAsync();
 
@@ -124,9 +146,9 @@ public class JobSchedulingTests
     public async Task MultipleJobs_ExecuteCorrectly()
     {
         var executed = new List<(string Name, Dictionary<string, string> Data)>();
-        var host = this.CreateHost(builder =>
+        using var host = CreateHost(services =>
         {
-            builder.Services
+            services
                 .AddJobScheduling()
                 .WithJob<TestJob>()
                     .Cron(CronExpressions.EverySecond)
@@ -141,7 +163,7 @@ public class JobSchedulingTests
         });
 
         TestJob.OnExecute = (name, data) => executed.Add((name, data));
-        await host.StartAsync();
+        _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(2500);
         await host.StopAsync();
 
@@ -156,9 +178,9 @@ public class JobSchedulingTests
     public async Task OldSyntax_WorksCorrectly()
     {
         var executed = new List<(string Name, Dictionary<string, string> Data)>();
-        var host = this.CreateHost(builder =>
+        using var host = CreateHost(services =>
         {
-            builder.Services
+            services
                 .AddJobScheduling()
                 .WithJob<TestJob>(
                     CronExpressions.EverySecond,
@@ -169,7 +191,7 @@ public class JobSchedulingTests
         });
 
         TestJob.OnExecute = (name, data) => executed.Add((name, data));
-        await host.StartAsync();
+        _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(2500);
         await host.StopAsync();
 
@@ -182,9 +204,9 @@ public class JobSchedulingTests
     public async Task JobData_PersistsDataAcrossExecutions()
     {
         var executed = new List<(string Name, Dictionary<string, string> Data)>();
-        var host = this.CreateHost(builder =>
+        using var host = CreateHost(services =>
         {
-            builder.Services
+            services
                 .AddJobScheduling()
                 .WithJob<TestJob>()
                     .Cron(CronExpressions.EverySecond)
@@ -193,7 +215,7 @@ public class JobSchedulingTests
         });
 
         TestJob.OnExecute = (name, data) => executed.Add((name, data));
-        await host.StartAsync();
+        _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(2500);
         await host.StopAsync();
 
@@ -205,9 +227,9 @@ public class JobSchedulingTests
     public async Task CronExpression_TriggersCorrectly()
     {
         var executed = new List<(string Name, Dictionary<string, string> Data)>();
-        var host = this.CreateHost(builder =>
+        using var host = CreateHost(services =>
         {
-            builder.Services
+            services
                 .AddJobScheduling()
                 .WithJob<TestJob>()
                     .Cron("0/2 * * * * ?")
@@ -216,7 +238,7 @@ public class JobSchedulingTests
         });
 
         TestJob.OnExecute = (name, data) => executed.Add((name, data));
-        await host.StartAsync();
+        _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(5000);
         await host.StopAsync();
 
@@ -228,9 +250,9 @@ public class JobSchedulingTests
     public async Task InvalidCronExpression_DoesNotCrash()
     {
         var executed = new List<(string Name, Dictionary<string, string> Data)>();
-        var host = this.CreateHost(builder =>
+        using var host = CreateHost(services =>
         {
-            builder.Services
+            services
                 .AddJobScheduling()
                 .WithJob<TestJob>()
                     .Cron("ASD")
@@ -245,7 +267,7 @@ public class JobSchedulingTests
         });
 
         TestJob.OnExecute = (name, data) => executed.Add((name, data));
-        await host.StartAsync();
+        _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(2500);
         await host.StopAsync();
 
@@ -284,9 +306,9 @@ public class JobSchedulingTests
     public async Task NonConcurrentJob_DoesNotOverlap()
     {
         var executed = new List<(string Name, DateTime StartTime, DateTime EndTime)>();
-        var host = this.CreateHost(builder =>
+        using var host = CreateHost(services =>
         {
-            builder.Services
+            services
                 .AddJobScheduling()
                 .WithJob<NonConcurrentTestJob>()
                     .Cron(CronExpressions.EverySecond)
@@ -295,7 +317,7 @@ public class JobSchedulingTests
         });
 
         NonConcurrentTestJob.OnExecute = (name, start, end) => executed.Add((name, start, end));
-        await host.StartAsync();
+        _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(3500); // Allow multiple triggers
         await host.StopAsync();
 
@@ -314,9 +336,9 @@ public class JobSchedulingTests
     public async Task FailingJob_DoesNotCrashScheduler()
     {
         var executed = new List<(string Name, int Attempt)>();
-        var host = this.CreateHost(builder =>
+        using var host = CreateHost(services =>
         {
-            builder.Services
+            services
                 .AddJobScheduling()
                 .WithJob<FailingTestJob>()
                     .Cron(CronExpressions.EverySecond)
@@ -325,7 +347,7 @@ public class JobSchedulingTests
         });
 
         FailingTestJob.OnExecute = (name, attempt) => executed.Add((name, attempt));
-        await host.StartAsync();
+        _ = await StartAndWaitForSchedulerAsync(host);
         await Task.Delay(2500); // Allow a couple attempts
         await host.StopAsync();
 

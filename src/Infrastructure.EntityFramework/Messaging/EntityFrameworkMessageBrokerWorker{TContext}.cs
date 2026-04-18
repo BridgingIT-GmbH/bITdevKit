@@ -99,6 +99,26 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
     {
         var now = DateTimeOffset.UtcNow;
 
+        if (this.IsSqlite(context))
+        {
+            var candidates = await context.BrokerMessages
+                .AsNoTracking()
+                .Where(message => !message.IsArchived)
+                .Where(message =>
+                    message.Status == BrokerMessageStatus.Pending ||
+                    message.Status == BrokerMessageStatus.Failed ||
+                    message.Status == BrokerMessageStatus.Processing)
+                .ToListAsync(cancellationToken)
+                .AnyContext();
+
+            return candidates
+                .Where(message => this.CanClaimMessage(message, now))
+                .OrderBy(message => message.CreatedDate)
+                .Take(this.options.ProcessingCount)
+                .Select(message => message.Id)
+                .ToList();
+        }
+
         return await context.BrokerMessages
             .AsNoTracking()
             .Where(message =>
@@ -439,7 +459,25 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
 
     private bool SupportsExecuteUpdate(TContext dbContext)
     {
-        return !(dbContext.Database.ProviderName?.Contains("InMemory", StringComparison.OrdinalIgnoreCase) ?? false);
+        var providerName = dbContext.Database.ProviderName;
+
+        return !(providerName?.Contains("InMemory", StringComparison.OrdinalIgnoreCase) ?? false) &&
+            !(providerName?.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) ?? false);
+    }
+
+    private bool IsSqlite(TContext dbContext)
+    {
+        return dbContext.Database.ProviderName?.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) ?? false;
+    }
+
+    private bool CanClaimMessage(BrokerMessage message, DateTimeOffset now)
+    {
+        return message is not null &&
+            !message.IsArchived &&
+            (message.Status == BrokerMessageStatus.Pending ||
+             message.Status == BrokerMessageStatus.Failed ||
+             (message.Status == BrokerMessageStatus.Processing && message.LockedUntil < now)) &&
+            (message.LockedUntil == null || message.LockedUntil < now);
     }
 
     private sealed class NoopDisposable : IDisposable

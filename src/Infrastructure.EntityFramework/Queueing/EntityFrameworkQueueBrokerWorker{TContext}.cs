@@ -78,6 +78,27 @@ public class EntityFrameworkQueueBrokerWorker<TContext>
         using var lease = this.CreateContextLease(out var context);
         var now = DateTimeOffset.UtcNow;
 
+        if (this.IsSqlite(context))
+        {
+            var candidates = await context.QueueMessages
+                .AsNoTracking()
+                .Where(message => !message.IsArchived)
+                .Where(message =>
+                    message.Status == QueueMessageStatus.Pending ||
+                    message.Status == QueueMessageStatus.Failed ||
+                    message.Status == QueueMessageStatus.WaitingForHandler ||
+                    message.Status == QueueMessageStatus.Processing)
+                .ToListAsync(cancellationToken)
+                .AnyContext();
+
+            return candidates
+                .Where(message => this.CanClaimMessage(message, now))
+                .OrderBy(message => message.CreatedDate)
+                .Take(this.options.ProcessingCount)
+                .Select(message => message.Id)
+                .ToList();
+        }
+
         return await context.QueueMessages
             .AsNoTracking()
             .Where(message => !message.IsArchived)
@@ -404,7 +425,15 @@ public class EntityFrameworkQueueBrokerWorker<TContext>
 
     private bool SupportsExecuteUpdate(TContext dbContext)
     {
-        return !(dbContext.Database.ProviderName?.Contains("InMemory", StringComparison.OrdinalIgnoreCase) ?? false);
+        var providerName = dbContext.Database.ProviderName;
+
+        return !(providerName?.Contains("InMemory", StringComparison.OrdinalIgnoreCase) ?? false) &&
+            !(providerName?.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) ?? false);
+    }
+
+    private bool IsSqlite(TContext dbContext)
+    {
+        return dbContext.Database.ProviderName?.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) ?? false;
     }
 
     private bool CanClaimMessage(QueueMessage message, DateTimeOffset now)

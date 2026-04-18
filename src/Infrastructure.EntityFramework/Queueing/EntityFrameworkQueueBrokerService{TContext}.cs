@@ -245,6 +245,31 @@ public class EntityFrameworkQueueBrokerService<TContext> : IQueueBrokerService
     {
         using var lease = this.CreateContextLease(out var context);
 
+        if (context.Database.ProviderName?.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) == true)
+        {
+            var sqliteMessages = await context.QueueMessages
+                .AsNoTracking()
+                .Where(message => !message.IsArchived && message.Status == QueueMessageStatus.WaitingForHandler)
+                .ToListAsync(cancellationToken)
+                .AnyContext();
+
+            if (take.HasValue)
+            {
+                sqliteMessages = sqliteMessages
+                    .OrderBy(message => message.CreatedDate)
+                    .Take(take.Value)
+                    .ToList();
+            }
+            else
+            {
+                sqliteMessages = sqliteMessages
+                    .OrderBy(message => message.CreatedDate)
+                    .ToList();
+            }
+
+            return sqliteMessages.Select(MapInfo).ToArray();
+        }
+
         IQueryable<QueueMessage> query = context.QueueMessages
             .AsNoTracking()
             .Where(message => !message.IsArchived && message.Status == QueueMessageStatus.WaitingForHandler)

@@ -37,12 +37,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Application.Storage\Application.Storage.csproj" />
     <ProjectReference Include="..\..\src\Common.Abstractions\Common.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
     <ProjectReference Include="..\..\src\Domain.EventSourcing\Domain.EventSourcing.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web.Messaging\Presentation.Web.Messaging.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web.Queueing\Presentation.Web.Queueing.csproj" />
+    <ProjectReference Include="..\..\src\Presentation.Web.Storage\Presentation.Web.Storage.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web\Presentation.Web.csproj" />
   </ItemGroup>
 

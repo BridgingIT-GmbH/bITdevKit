@@ -1,5 +1,5 @@
 ---
-status: draft
+status: implemented
 ---
 
 # Design Document: EntityFramework Virtual File System Provider (Application.Storage)

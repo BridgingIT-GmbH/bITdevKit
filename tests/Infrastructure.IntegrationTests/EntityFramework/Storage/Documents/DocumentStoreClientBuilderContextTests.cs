@@ -6,8 +6,11 @@
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
 using Application.Storage;
+using Infrastructure.EntityFramework.Storage;
+using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
@@ -63,5 +66,42 @@ public class DocumentStoreClientBuilderContextTests
 
         // Assert
         sut.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public async Task GetDocumentStoreClient_WithSingletonLifetime_ShouldResolveScopeSafeClient()
+    {
+        // Arrange
+        await using var connection = new SqliteConnection("Data Source=:memory:");
+        await connection.OpenAsync();
+        var services = new ServiceCollection();
+        services.AddLogging();
+        services.AddDbContext<StubDbContext>(options => options.UseSqlite(connection));
+        services.AddEntityFrameworkDocumentStoreClient<PersonStubDocument, StubDbContext>(
+            lifetime: ServiceLifetime.Singleton,
+            configure: options => options.LeaseDuration = TimeSpan.FromSeconds(5));
+
+        await using var serviceProvider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
+        await using (var scope = serviceProvider.CreateAsyncScope())
+        {
+            await scope.ServiceProvider.GetRequiredService<StubDbContext>().Database.EnsureCreatedAsync();
+        }
+
+        var sut = serviceProvider.GetRequiredService<IDocumentStoreClient<PersonStubDocument>>();
+        var documentKey = new DocumentKey("people", "42");
+        var document = new PersonStubDocument
+        {
+            FirstName = "Ada",
+            LastName = "Lovelace",
+            Age = 36
+        };
+
+        // Act
+        await sut.UpsertAsync(documentKey, document);
+        var result = await sut.FindAsync(documentKey);
+
+        // Assert
+        result.Count().ShouldBe(1);
+        result.First().FirstName.ShouldBe("Ada");
     }
 }

@@ -314,7 +314,6 @@ public class StorageDocumentTypeConfiguration : IEntityTypeConfiguration<Storage
         //builder.HasManualThroughput(600); // cosmos
         //builder.HasAutoscaleThroughput(1000); // cosmos
 
-        builder.Ignore(u => u.RowVersion);
         //builder.Property(u => u.RowVersion)
         //    .IsETagConcurrency()
         //    .HasConversion(new BytesToStringConverter())

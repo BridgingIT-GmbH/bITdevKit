@@ -5,13 +5,18 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
+/// <summary>
+/// Configures fault injection for <see cref="ChaosDocumentStoreClientBehavior{T}" />.
+/// </summary>
 public class ChaosDocumentStoreClientBehaviorOptions
 {
     /// <summary>
-    ///     A decimal between 0 and 1 inclusive. The policy will inject the fault, randomly, that proportion of the time, eg:
-    ///     if 0.2, twenty percent of calls will be randomly affected; if 0.01, one percent of calls; if 1, all calls.
+    /// Gets or sets a value between <c>0</c> and <c>1</c> that determines how often a fault is injected.
     /// </summary>
     public double InjectionRate { get; set; }
 
+    /// <summary>
+    /// Gets or sets the exception injected when the chaos policy is triggered.
+    /// </summary>
     public Exception Fault { get; set; } = new ChaosException();
 }

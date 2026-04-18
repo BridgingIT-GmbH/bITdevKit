@@ -7,10 +7,27 @@ namespace BridgingIT.DevKit.Application.Storage;
 
 using Microsoft.Extensions.Caching.Distributed;
 
+/// <summary>
+/// Implements <see cref="IDistributedCache" /> by storing cache entries as documents.
+/// </summary>
+/// <remarks>
+/// This adapter is used internally by <see cref="DocumentStoreCacheProvider" />, but it can also be used directly anywhere an
+/// <see cref="IDistributedCache" /> is expected.
+/// </remarks>
+/// <example>
+/// <code>
+/// var distributedCache = new DocumentStoreCache(cacheDocuments);
+/// await distributedCache.SetStringAsync("customer:42", jsonPayload, cancellationToken);
+/// </code>
+/// </example>
 public class DocumentStoreCache : IDistributedCache
 {
     private readonly IDocumentStoreClient<CacheDocument> client;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DocumentStoreCache" /> class.
+    /// </summary>
+    /// <param name="client">The document-store client that persists <see cref="CacheDocument" /> records.</param>
     public DocumentStoreCache(IDocumentStoreClient<CacheDocument> client)
     {
         EnsureArg.IsNotNull(client, nameof(client));
@@ -18,11 +35,13 @@ public class DocumentStoreCache : IDistributedCache
         this.client = client;
     }
 
+    /// <inheritdoc />
     public byte[] Get(string key)
     {
         return this.GetAsync(key).Result;
     }
 
+    /// <inheritdoc />
     public async Task<byte[]> GetAsync(string key, CancellationToken token = default)
     {
         EnsureArg.IsNotNullOrEmpty(key, nameof(key));
@@ -61,11 +80,13 @@ public class DocumentStoreCache : IDistributedCache
         return null;
     }
 
+    /// <inheritdoc />
     public void Refresh(string key)
     {
         this.RefreshAsync(key).Wait();
     }
 
+    /// <inheritdoc />
     public async Task RefreshAsync(string key, CancellationToken token = default)
     {
         EnsureArg.IsNotNullOrEmpty(key, nameof(key));
@@ -76,21 +97,25 @@ public class DocumentStoreCache : IDistributedCache
         await this.RefreshDocumentAsync(key, document, token);
     }
 
+    /// <inheritdoc />
     public void Remove(string key)
     {
         this.RemoveAsync(key).Wait();
     }
 
+    /// <inheritdoc />
     public async Task RemoveAsync(string key, CancellationToken token = default)
     {
         await this.client.DeleteAsync(new DocumentKey("storage-cache", key), token);
     }
 
+    /// <inheritdoc />
     public void Set(string key, byte[] value, DistributedCacheEntryOptions options)
     {
         this.SetAsync(key, value, options).Wait();
     }
 
+    /// <inheritdoc />
     public async Task SetAsync(
         string key,
         byte[] value,
@@ -133,11 +158,23 @@ public class DocumentStoreCache : IDistributedCache
     }
 }
 
+/// <summary>
+/// Represents a cache entry persisted through the document-store-backed cache implementation.
+/// </summary>
 public class CacheDocument
 {
+    /// <summary>
+    /// Gets or sets the raw cached value.
+    /// </summary>
     public byte[] Value { get; set; }
 
+    /// <summary>
+    /// Gets or sets the absolute expiration timestamp of the cache entry.
+    /// </summary>
     public DateTimeOffset? AbsoluteExpiration { get; set; }
 
+    /// <summary>
+    /// Gets or sets the sliding-expiration window of the cache entry.
+    /// </summary>
     public TimeSpan? SlidingExpiration { get; set; }
 }

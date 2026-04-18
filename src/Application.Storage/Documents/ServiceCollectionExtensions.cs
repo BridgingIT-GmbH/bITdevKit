@@ -5,8 +5,27 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+/// <summary>
+/// Provides service-collection extensions for registering document-store clients.
+/// </summary>
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Registers an <see cref="IDocumentStoreClient{T}" /> using a custom factory and returns a fluent builder for behaviors.
+    /// </summary>
+    /// <typeparam name="T">The document type handled by the client.</typeparam>
+    /// <param name="services">The service collection to update.</param>
+    /// <param name="clientFactory">The factory used to create the client implementation.</param>
+    /// <param name="lifetime">The service lifetime to use for the registration.</param>
+    /// <returns>A builder that can be used to add client behaviors.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddDocumentStoreClient&lt;Person&gt;(
+    ///         sp => new DocumentStoreClient&lt;Person&gt;(
+    ///             new InMemoryDocumentStoreProvider(sp.GetRequiredService&lt;ILoggerFactory&gt;())))
+    ///     .WithBehavior&lt;LoggingDocumentStoreClientBehavior&lt;Person&gt;&gt;();
+    /// </code>
+    /// </example>
     public static DocumentStoreBuilderContext<T> AddDocumentStoreClient<T>(
         this IServiceCollection services,
         Func<IServiceProvider, IDocumentStoreClient<T>> clientFactory,

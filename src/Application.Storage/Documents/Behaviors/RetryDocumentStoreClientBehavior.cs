@@ -10,9 +10,33 @@ using Humanizer;
 using Polly;
 using Polly.Retry;
 
+/// <summary>
+/// Retries failed document-store operations according to a Polly-based retry policy.
+/// </summary>
+/// <typeparam name="T">The document type handled by the decorated client.</typeparam>
+/// <example>
+/// <code>
+/// services.AddEntityFrameworkDocumentStoreClient&lt;Person, AppDbContext&gt;()
+///     .WithBehavior((inner, sp) => new RetryDocumentStoreClientBehavior&lt;Person&gt;(
+///         sp.GetRequiredService&lt;ILoggerFactory&gt;(),
+///         inner,
+///         new RetryDocumentStoreClientBehaviorOptions
+///         {
+///             Attempts = 5,
+///             Backoff = TimeSpan.FromMilliseconds(100),
+///             BackoffExponential = true
+///         }));
+/// </code>
+/// </example>
 public class RetryDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
     where T : class, new()
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="RetryDocumentStoreClientBehavior{T}" /> class.
+    /// </summary>
+    /// <param name="loggerFactory">The logger factory used to create the behavior logger.</param>
+    /// <param name="inner">The inner client to decorate.</param>
+    /// <param name="options">The retry behavior options.</param>
     public RetryDocumentStoreClientBehavior(
         ILoggerFactory loggerFactory,
         IDocumentStoreClient<T> inner,
@@ -31,12 +55,22 @@ public class RetryDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
         }
     }
 
+    /// <summary>
+    /// Gets the logger used by the behavior.
+    /// </summary>
     protected ILogger<RetryDocumentStoreClientBehavior<T>> Logger { get; }
 
+    /// <summary>
+    /// Gets the decorated inner client.
+    /// </summary>
     protected IDocumentStoreClient<T> Inner { get; }
 
+    /// <summary>
+    /// Gets the retry settings used by the behavior.
+    /// </summary>
     protected RetryDocumentStoreClientBehaviorOptions Options { get; }
 
+    /// <inheritdoc />
     public async Task DeleteAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
     {
         await this.PolicyFactory(this.Options)
@@ -44,6 +78,7 @@ public class RetryDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
                 cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<T>> FindAsync(CancellationToken cancellationToken = default)
     {
         return (await this.PolicyFactory(this.Options)
@@ -52,6 +87,7 @@ public class RetryDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
             .Result;
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<T>> FindAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
     {
         return (await this.PolicyFactory(this.Options)
@@ -59,6 +95,7 @@ public class RetryDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
                 cancellationToken)).Result;
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<T>> FindAsync(
         DocumentKey documentKey,
         DocumentKeyFilter filter,
@@ -69,6 +106,7 @@ public class RetryDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
                 cancellationToken)).Result;
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<DocumentKey>> ListAsync(CancellationToken cancellationToken)
     {
         return (await this.PolicyFactory(this.Options)
@@ -77,6 +115,7 @@ public class RetryDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
             .Result;
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<DocumentKey>> ListAsync(
         DocumentKey documentKey,
         CancellationToken cancellationToken = default)
@@ -84,6 +123,7 @@ public class RetryDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
         return await this.Inner.ListAsync(documentKey, cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<DocumentKey>> ListAsync(
         DocumentKey documentKey,
         DocumentKeyFilter filter,
@@ -94,6 +134,7 @@ public class RetryDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
                 cancellationToken)).Result;
     }
 
+    /// <inheritdoc />
     public async Task<long> CountAsync(CancellationToken cancellationToken = default)
     {
         return (await this.PolicyFactory(this.Options)
@@ -102,6 +143,7 @@ public class RetryDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
             .Result;
     }
 
+    /// <inheritdoc />
     public async Task<bool> ExistsAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
     {
         return (await this.PolicyFactory(this.Options)
@@ -109,6 +151,7 @@ public class RetryDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
                 cancellationToken)).Result;
     }
 
+    /// <inheritdoc />
     public async Task UpsertAsync(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
     {
         await this.PolicyFactory(this.Options)
@@ -116,6 +159,7 @@ public class RetryDocumentStoreClientBehavior<T> : IDocumentStoreClient<T>
                 cancellationToken);
     }
 
+    /// <inheritdoc />
     public async Task UpsertAsync(
         IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
         CancellationToken cancellationToken = default)

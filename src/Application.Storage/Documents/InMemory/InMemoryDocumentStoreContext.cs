@@ -5,15 +5,27 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
+/// <summary>
+/// Provides the thread-safe backing store used by <see cref="InMemoryDocumentStoreProvider" />.
+/// </summary>
 public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
 {
     private readonly ReaderWriterLockSlim @lock = new();
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="InMemoryDocumentStoreContext" /> class.
+    /// </summary>
     public InMemoryDocumentStoreContext()
         : this([]) { }
 
+    /// <summary>
+    /// Gets the in-memory document entities tracked by the context.
+    /// </summary>
     protected List<DocumentEntity> Entities { get; } = entities.SafeNull().ToList();
 
+    /// <summary>
+    /// Returns all documents of type <typeparamref name="T" />.
+    /// </summary>
     public virtual IEnumerable<T> Find<T>()
         where T : class, new()
     {
@@ -32,6 +44,9 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
         }
     }
 
+    /// <summary>
+    /// Returns all documents of type <typeparamref name="T" /> matching the supplied exact key.
+    /// </summary>
     public virtual IEnumerable<T> Find<T>(DocumentKey documentKey)
         where T : class, new()
     {
@@ -53,6 +68,9 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
         }
     }
 
+    /// <summary>
+    /// Returns all documents of type <typeparamref name="T" /> matching the supplied key filter.
+    /// </summary>
     public virtual IEnumerable<T> Find<T>(DocumentKey documentKey, DocumentKeyFilter filter)
         where T : class, new()
     {
@@ -99,6 +117,9 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
         }
     }
 
+    /// <summary>
+    /// Lists all document keys for documents of type <typeparamref name="T" />.
+    /// </summary>
     public virtual IEnumerable<DocumentKey> List<T>()
         where T : class, new()
     {
@@ -116,6 +137,9 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
         }
     }
 
+    /// <summary>
+    /// Lists document keys of type <typeparamref name="T" /> using the supplied key filter.
+    /// </summary>
     public virtual IEnumerable<DocumentKey> List<T>(DocumentKey documentKey, DocumentKeyFilter filter)
         where T : class, new()
     {
@@ -159,6 +183,9 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
         }
     }
 
+    /// <summary>
+    /// Adds a new document or replaces the existing document stored under the supplied key.
+    /// </summary>
     public virtual void AddOrUpdate<T>(T content, DocumentKey documentKey)
         where T : class, new()
     {
@@ -193,6 +220,9 @@ public class InMemoryDocumentStoreContext(IEnumerable<DocumentEntity> entities)
         }
     }
 
+    /// <summary>
+    /// Deletes the document of type <typeparamref name="T" /> stored under the supplied key.
+    /// </summary>
     public virtual void Delete<T>(DocumentKey documentKey)
         where T : class, new()
     {

@@ -5,28 +5,46 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
+/// <summary>
+/// Implements <see cref="IDocumentStoreProvider" /> using an in-memory context.
+/// </summary>
+/// <remarks>
+/// This provider is useful for tests, local development, and other scenarios where persistence is not required beyond the
+/// current process.
+/// </remarks>
+/// <param name="loggerFactory">The logger factory used to create the provider logger.</param>
+/// <param name="context">The optional shared in-memory context backing the provider.</param>
+/// <example>
+/// <code>
+/// services.AddDocumentStoreClient&lt;Person&gt;(
+///     sp => new DocumentStoreClient&lt;Person&gt;(
+///         new InMemoryDocumentStoreProvider(sp.GetRequiredService&lt;ILoggerFactory&gt;())));
+/// </code>
+/// </example>
 public class InMemoryDocumentStoreProvider( // TODO: add Options ctor
     ILoggerFactory loggerFactory,
     InMemoryDocumentStoreContext context = null) : IDocumentStoreProvider
 {
+    /// <summary>
+    /// Gets the logger used by the provider.
+    /// </summary>
     protected ILogger<InMemoryDocumentStoreProvider> Logger { get; } =
         loggerFactory?.CreateLogger<InMemoryDocumentStoreProvider>() ??
         NullLoggerFactory.Instance.CreateLogger<InMemoryDocumentStoreProvider>();
 
+    /// <summary>
+    /// Gets the in-memory context backing the provider.
+    /// </summary>
     protected InMemoryDocumentStoreContext Context { get; } = context ?? new InMemoryDocumentStoreContext();
 
-    /// <summary>
-    ///     Retrieves entities of type T from document store asynchronously
-    /// </summary>
+    /// <inheritdoc />
     public Task<IEnumerable<T>> FindAsync<T>(CancellationToken cancellationToken = default)
         where T : class, new()
     {
         return Task.FromResult(this.Context.Find<T>());
     }
 
-    /// <summary>
-    ///     Retrieves entities of type T filtered by the whole partitionKey and whole rowKey
-    /// </summary>
+    /// <inheritdoc />
     public async Task<IEnumerable<T>> FindAsync<T>(
         DocumentKey documentKey,
         CancellationToken cancellationToken = default)
@@ -35,9 +53,7 @@ public class InMemoryDocumentStoreProvider( // TODO: add Options ctor
         return await this.FindAsync<T>(documentKey, DocumentKeyFilter.FullMatch, cancellationToken);
     }
 
-    /// <summary>
-    ///     Searches for entities of type T by the whole partitionKey and startswith rowKey
-    /// </summary>
+    /// <inheritdoc />
     public Task<IEnumerable<T>> FindAsync<T>(
         DocumentKey documentKey,
         DocumentKeyFilter filter,
@@ -51,12 +67,14 @@ public class InMemoryDocumentStoreProvider( // TODO: add Options ctor
             filter));
     }
 
+    /// <inheritdoc />
     public Task<IEnumerable<DocumentKey>> ListAsync<T>(CancellationToken cancellationToken = default)
         where T : class, new()
     {
         return Task.FromResult(this.Context.List<T>());
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<DocumentKey>> ListAsync<T>(
         DocumentKey documentKey,
         CancellationToken cancellationToken = default)
@@ -65,6 +83,7 @@ public class InMemoryDocumentStoreProvider( // TODO: add Options ctor
         return await this.ListAsync<T>(documentKey, DocumentKeyFilter.FullMatch, cancellationToken);
     }
 
+    /// <inheritdoc />
     public Task<IEnumerable<DocumentKey>> ListAsync<T>(
         DocumentKey documentKey,
         DocumentKeyFilter filter,
@@ -76,18 +95,14 @@ public class InMemoryDocumentStoreProvider( // TODO: add Options ctor
         return Task.FromResult(this.Context.List<T>(documentKey, filter));
     }
 
-    /// <summary>
-    ///     Counts the number of entities of type T in the document store
-    /// </summary>
+    /// <inheritdoc />
     public Task<long> CountAsync<T>(CancellationToken cancellationToken = default)
         where T : class, new()
     {
         return Task.FromResult(this.Context.Find<T>().LongCount());
     }
 
-    /// <summary>
-    ///     Checks if an entity of type T with given whole partitionKey and whole rowKey exists in the document store
-    /// </summary>
+    /// <inheritdoc />
     public Task<bool> ExistsAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
         where T : class, new()
     {
@@ -98,9 +113,7 @@ public class InMemoryDocumentStoreProvider( // TODO: add Options ctor
             this.Context.Find<T>(new DocumentKey(documentKey.PartitionKey, documentKey.RowKey)).Any());
     }
 
-    /// <summary>
-    ///     Inserts or updates an entity of type T in the document store
-    /// </summary>
+    /// <inheritdoc />
     public Task UpsertAsync<T>(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
         where T : class, new()
     {
@@ -113,9 +126,7 @@ public class InMemoryDocumentStoreProvider( // TODO: add Options ctor
             cancellationToken);
     }
 
-    /// <summary>
-    ///     Inserts or updates multiple entities of type T in the document store
-    /// </summary>
+    /// <inheritdoc />
     public async Task UpsertAsync<T>(
         IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
         CancellationToken cancellationToken = default)
@@ -134,9 +145,7 @@ public class InMemoryDocumentStoreProvider( // TODO: add Options ctor
         }
     }
 
-    /// <summary>
-    ///     Deletes an entity of type T with the specified whole partitionKey and whole rowKey from the document store
-    /// </summary>
+    /// <inheritdoc />
     public Task DeleteAsync<T>(DocumentKey documentKey, CancellationToken cancellationToken = default)
         where T : class, new()
     {

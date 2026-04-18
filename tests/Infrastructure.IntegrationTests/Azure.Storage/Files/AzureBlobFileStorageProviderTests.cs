@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Storage;
+namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure.Storage;
 
 using BridgingIT.DevKit.Application.IntegrationTests.Storage;
 using BridgingIT.DevKit.Application.Storage;

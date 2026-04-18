@@ -117,6 +117,13 @@ sequenceDiagram
   - **UpsertAsync(DocumentKey, T)**: Insert or update a single entity.
   - **UpsertAsync(IEnumerable<(DocumentKey, T)>)**: Insert or update multiple entities.
   - **DeleteAsync(DocumentKey)**: Delete the entity for an exact key.
+- `DocumentStoreClientResultExtensions` ([src/Application.Storage/Documents/DocumentStoreClientResultExtensions.cs](src/Application.Storage/Documents/DocumentStoreClientResultExtensions.cs))
+  - Adds `*ResultAsync(...)` wrappers for the document-store client so callers can use the shared `Result` pattern instead of exception-based control flow.
+  - Read operations return `Result<TValue>` wrappers around the existing client values.
+  - `UpsertResultAsync(...)` and `DeleteResultAsync(...)` translate lease/concurrency failures into `ConcurrencyError`.
+- `DocumentStoreCacheProvider` and `DocumentStoreCache` ([src/Application.Storage/Caching/DocumentStoreCacheProvider.cs](src/Application.Storage/Caching/DocumentStoreCacheProvider.cs), [src/Application.Storage/Caching/DocumentStoreCache.cs](src/Application.Storage/Caching/DocumentStoreCache.cs))
+  - Allow the document-store stack to act as the backing store for `ICacheProvider`, so cache entries can persist across process restarts and be shared between hosts when the underlying provider supports it.
+  - Cache entries are stored as `CacheDocument` documents under the `storage-cache` partition.
 - `IDocumentStoreProvider` ([src/Application.Storage/Documents/IDocumentStoreProvider.cs](src/Application.Storage/Documents/IDocumentStoreProvider.cs))
   - Backend interface; `DocumentStoreClient<T>` delegates to a provider implementation.
 - `DocumentStoreClient<T>` ([src/Application.Storage/Documents/DocumentStoreClient.cs](src/Application.Storage/Documents/DocumentStoreClient.cs))
@@ -138,8 +145,11 @@ sequenceDiagram
 
 - `EntityFrameworkDocumentStoreProvider<TContext>` ([src/Infrastructure.EntityFramework/Storage/Documents/EntityFrameworkDocumentStoreProvider.cs](src/Infrastructure.EntityFramework/Storage/Documents/EntityFrameworkDocumentStoreProvider.cs))
   - Persists documents in a table (see [src/Infrastructure.EntityFramework/Storage/Documents/StorageDocument.cs](src/Infrastructure.EntityFramework/Storage/Documents/StorageDocument.cs)).
-  - Keys are stored as `Type`, `PartitionKey`, `RowKey`; content is serialized (System.Text.Json by default) and hashed.
-  - Implements filter semantics (`FullMatch`, prefix, suffix) via LINQ queries.
+  - Keys are stored as `Type`, `PartitionKey`, and `RowKey`, each capped at **256 characters** and validated by the EF provider before any query or mutation runs.
+  - The EF provider adds SHA-256 lookup hashes and a unique logical-key index to keep exact-key mutations stable at scale. These hash columns are an **EF implementation detail only**; they are not part of the public document-store contract and are not required by non-EF providers.
+  - Content is serialized with `System.Text.Json` by default and persisted alongside a content hash.
+  - Implements filter semantics (`FullMatch`, prefix, suffix) via LINQ queries, while exact-key operations narrow by both full values and hashed lookup columns.
+  - Coordinates writes and deletes with short-lived row leases plus optimistic concurrency so multiple hosts can safely compete for the same logical document.
 
 ### Azure Cosmos DB
 
@@ -199,6 +209,16 @@ Register a client for your document type and choose a provider.
 // Register an EF-backed document client
 services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>();
 
+// Register a singleton client with explicit EF provider tuning
+services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>(
+    lifetime: ServiceLifetime.Singleton,
+    configure: options =>
+    {
+        options.LeaseDuration = TimeSpan.FromSeconds(15);
+        options.RetryCount = 5;
+        options.RetryDelay = TimeSpan.FromMilliseconds(100);
+    });
+
 // Or: Register a client with a custom factory (e.g., in-memory)
 services.AddDocumentStoreClient<Person>(sp =>
 {
@@ -219,6 +239,26 @@ services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>()
 services.AddEntityFrameworkDocumentStoreClient<Person, AppDbContext>()
     .WithBehavior<CacheDocumentStoreClientBehavior<Person>>();
 ```
+
+### Using document storage as a persistent cache backend
+
+The same document-store infrastructure can also back the shared caching abstraction.
+
+```csharp
+builder.Services
+    .AddCaching(builder.Configuration)
+    .WithEntityFrameworkDocumentStoreProvider<AppDbContext>(
+        new DocumentStoreCacheProviderConfiguration
+        {
+            SlidingExpiration = TimeSpan.FromMinutes(20),
+            AbsoluteExpiration = DateTimeOffset.UtcNow.AddHours(6)
+        });
+```
+
+- This registers `ICacheProvider` as a `DocumentStoreCacheProvider`.
+- Cache entries are serialized into `CacheDocument` records and stored through `IDocumentStoreClient<CacheDocument>`.
+- The EF variant requires the target `DbContext` to implement `IDocumentStoreContext`, and the consuming application still owns the schema migration for the document-store table.
+- Equivalent persistent cache registrations exist for other document-store-backed providers, including Cosmos DB and Azure Storage variants.
 
 ### Basic usage
 
@@ -257,6 +297,27 @@ public sealed class PeopleService
 }
 ```
 
+### Result-pattern usage
+
+```csharp
+public sealed class PeopleResultService(IDocumentStoreClient<Person> documents)
+{
+    public async Task<Result> SaveAsync(Person person, CancellationToken ct)
+    {
+        var key = new DocumentKey(person.Country, person.Id.ToString());
+        return await documents.UpsertResultAsync(key, person, ct);
+    }
+
+    public async Task<Result<IEnumerable<Person>>> FindByPrefixAsync(string country, string prefix, CancellationToken ct)
+    {
+        return await documents.FindResultAsync(
+            new DocumentKey(country, prefix),
+            DocumentKeyFilter.RowKeyPrefixMatch,
+            ct);
+    }
+}
+```
+
 ## Operations & Semantics
 
 - **FindAsync()**: Fetch all entities of type `T`.
@@ -272,6 +333,29 @@ public sealed class PeopleService
 - **UpsertAsync(DocumentKey, T)**: Insert/update a single entity.
 - **UpsertAsync(IEnumerable<(DocumentKey, T)>)**: Insert/update a batch; provider may optimize for fewer writes.
 - **DeleteAsync(DocumentKey)**: Remove exact entity.
+
+### Entity Framework mutation semantics
+
+- Exact-key writes and deletes use a unique logical identity plus lease ownership, so concurrent writers do not create duplicate rows for the same `(Type, PartitionKey, RowKey)`.
+- Delivery semantics are **last-writer-wins with at-least-once retries**, not compare-and-swap. If several hosts update the same document concurrently, one committed payload wins and callers should treat upserts as idempotent.
+- Leases are intentionally short-lived and replay-safe. SQL Server and PostgreSQL use conditional set-based updates for lease claims; SQLite uses an optimistic fallback path.
+- Reads are non-blocking and ignore transient leases. A leased row is still queryable until the owning mutation commits or rolls back.
+
+### Multi-host deployment guidance
+
+- **SQL Server** and **PostgreSQL** are the recommended EF providers for active multi-host document mutations.
+- **SQLite** is supported for development, tests, and lightweight single-node deployments, but it is not the recommended storage engine for distributed write-heavy document workloads.
+- If you register the EF document store client as a singleton, use the built-in DI registration so each operation resolves a fresh scoped `DbContext`.
+
+### Entity Framework schema notes
+
+- The provider expects the consuming `DbContext` to expose `DbSet<StorageDocument>` through `IDocumentStoreContext`.
+- The raw EF columns `Type`, `PartitionKey`, and `RowKey` are all fixed at a maximum length of **256 characters**.
+- The document table uses hashed lookup columns (`TypeHash`, `PartitionKeyHash`, `RowKeyHash`) to keep indexes narrow enough for relational providers while still validating the original key values. These hashes exist only in the EF persistence model.
+- The main relational indexes are:
+  - unique logical-key index on `(TypeHash, PartitionKeyHash, RowKeyHash)`
+  - lookup index on `(TypeHash, PartitionKeyHash, RowKey)`
+- The library does **not** ship migrations for consuming applications. After upgrading, the owning application must update its schema to include the new document-store columns and indexes.
 
 ## Behaviors (Client Decorators)
 
@@ -304,8 +388,21 @@ Behaviors are composable decorators applied to `IDocumentStoreClient<T>`. Regist
 - Filters: Prefer prefix filter for hierarchical keys (e.g., `user:`) and suffix for versioned or trailing identifiers.
 - Batching: Use batch `UpsertAsync` for multiple writes to reduce overhead.
 - Caching: Add cache behavior for hot read paths; rely on behavior invalidation after writes.
-- Resilience: Combine Retry + Timeout behaviors for resilient clients; keep handlers idempotent.
+- Resilience: Combine Retry + Timeout behaviors for resilient clients; keep handlers idempotent because EF mutations may be retried after transient contention.
 - Serialization: EF provider uses System.Text.Json by default; ensure types are compatible and stable.
+- Provider choice: Prefer SQL Server or PostgreSQL when you need multiple hosts to mutate the same document set concurrently.
+
+## Testing
+
+- The EF document-store provider has relational integration coverage for **SQLite**, **SQL Server**, and **PostgreSQL** in `tests/Infrastructure.IntegrationTests/EntityFramework/Storage/Documents`.
+- The shared suite covers:
+  - exact, prefix, and suffix query semantics
+  - key listing and counting
+  - exact-key existence checks
+  - single-row upsert behavior
+  - hashed lookup population and lease cleanup
+  - competing-writer behavior for the same logical document
+- The EF DI registration path is also covered by `DocumentStoreClientBuilderContextTests`, including singleton lifetime resolution with scoped `DbContext` creation.
 
 ## Appendix A — Behaviors
 

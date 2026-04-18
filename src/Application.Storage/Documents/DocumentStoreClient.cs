@@ -6,12 +6,23 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 /// <summary>
-/// Represents a client for storing and retrieving documents.
+/// Represents the default client implementation for storing and retrieving documents through an <see cref="IDocumentStoreProvider" />.
 /// </summary>
 /// <typeparam name="T">The type of documents managed by this client.</typeparam>
+/// <example>
+/// <code>
+/// var client = new DocumentStoreClient&lt;Person&gt;(provider);
+/// await client.UpsertAsync(new DocumentKey("people", "42"), person, cancellationToken);
+/// var people = await client.FindAsync(new DocumentKey("people", "4"), DocumentKeyFilter.RowKeyPrefixMatch, cancellationToken);
+/// </code>
+/// </example>
 public class DocumentStoreClient<T> : IDocumentStoreClient<T>
     where T : class, new()
 {
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DocumentStoreClient{T}" /> class.
+    /// </summary>
+    /// <param name="provider">The provider that executes the underlying document-store operations.</param>
     public DocumentStoreClient(IDocumentStoreProvider provider)
     {
         EnsureArg.IsNotNull(provider, nameof(provider));
@@ -19,51 +30,42 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>
         this.Provider = provider;
     }
 
+    /// <summary>
+    /// Gets the provider used to execute document-store operations.
+    /// </summary>
     protected IDocumentStoreProvider Provider { get; }
 
-    /// <summary>
-    ///     Counts the number of entities of type T in the document store
-    /// </summary>
+    /// <inheritdoc />
     public async Task<long> CountAsync(CancellationToken cancellationToken = default)
     {
         return await this.Provider.CountAsync<T>(cancellationToken);
     }
 
-    /// <summary>
-    ///     Deletes an entity of type T with the specified partitionKey and rowKey from the document store
-    /// </summary>
+    /// <inheritdoc />
     public async Task DeleteAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
     {
         await this.Provider.DeleteAsync<T>(documentKey, cancellationToken);
     }
 
-    /// <summary>
-    ///     Checks if an entity of type T with given partitionKey and rowKey exists in the document store
-    /// </summary>
+    /// <inheritdoc />
     public async Task<bool> ExistsAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
     {
         return await this.Provider.ExistsAsync<T>(documentKey, cancellationToken);
     }
 
-    /// <summary>
-    ///     Retrieves entities of type T from document store asynchronously
-    /// </summary>
+    /// <inheritdoc />
     public async Task<IEnumerable<T>> FindAsync(CancellationToken cancellationToken = default)
     {
         return await this.Provider.FindAsync<T>(cancellationToken);
     }
 
-    /// <summary>
-    ///     Retrieves entities of type T filtered by the partitionKey and rowKey
-    /// </summary>
+    /// <inheritdoc />
     public async Task<IEnumerable<T>> FindAsync(DocumentKey documentKey, CancellationToken cancellationToken = default)
     {
         return await this.Provider.FindAsync<T>(documentKey, cancellationToken);
     }
 
-    /// <summary>
-    ///     Retrieves entities of type T filtered by the partitionKey and rowKey
-    /// </summary>
+    /// <inheritdoc />
     public async Task<IEnumerable<T>> FindAsync(
         DocumentKey documentKey,
         DocumentKeyFilter filter,
@@ -72,17 +74,13 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>
         return await this.Provider.FindAsync<T>(documentKey, filter, cancellationToken);
     }
 
-    /// <summary>
-    ///     Retrieves document keys of type T
-    /// </summary>
+    /// <inheritdoc />
     public async Task<IEnumerable<DocumentKey>> ListAsync(CancellationToken cancellationToken = default)
     {
         return await this.Provider.ListAsync<T>(cancellationToken);
     }
 
-    /// <summary>
-    ///     Retrieves document keys of type T filtered by the partitionKey and rowKey
-    /// </summary>
+    /// <inheritdoc />
     public async Task<IEnumerable<DocumentKey>> ListAsync(
         DocumentKey documentKey,
         CancellationToken cancellationToken = default)
@@ -90,9 +88,7 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>
         return await this.Provider.ListAsync<T>(documentKey, cancellationToken);
     }
 
-    /// <summary>
-    ///     Retrieves document keys of type T filtered by the partitionKey and rowKey
-    /// </summary>
+    /// <inheritdoc />
     public async Task<IEnumerable<DocumentKey>> ListAsync(
         DocumentKey documentKey,
         DocumentKeyFilter filter,
@@ -101,17 +97,13 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>
         return await this.Provider.ListAsync<T>(documentKey, filter, cancellationToken);
     }
 
-    /// <summary>
-    ///     Inserts or updates an entity of type T in the document store
-    /// </summary>
+    /// <inheritdoc />
     public async Task UpsertAsync(DocumentKey documentKey, T entity, CancellationToken cancellationToken = default)
     {
         await this.Provider.UpsertAsync(documentKey, entity, cancellationToken);
     }
 
-    /// <summary>
-    ///     Inserts or updates multiple entities of type T in the document store
-    /// </summary>
+    /// <inheritdoc />
     public async Task UpsertAsync(
         IEnumerable<(DocumentKey DocumentKey, T Entity)> entities,
         CancellationToken cancellationToken = default)

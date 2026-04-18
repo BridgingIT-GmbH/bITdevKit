@@ -1,121 +1,100 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
-using DotNet.Testcontainers.Containers;
 using Infrastructure.EntityFramework.Storage;
 
 [IntegrationTest("Infrastructure")]
-[Collection(nameof(TestEnvironmentCollection3))] // https://xunit.net/docs/shared-context#collection-fixture
-public class EntityFrameworkCosmosDocumentStoreProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EntityFrameworkDocumentStoreProviderTestsBase
+[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
+public class EntityFrameworkPostgresDocumentStoreProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EntityFrameworkDocumentStoreProviderTestsBase
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
     private readonly ITestOutputHelper output = output;
 
-    [SkippableFact]
+    [Fact]
     public override async Task CountAsync_ReturnsDocumentCount()
     {
-        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
-
         await base.CountAsync_ReturnsDocumentCount();
     }
 
-    [SkippableFact]
+    [Fact]
     public override async Task DeleteAsync_DeletesEntity()
     {
-        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
-
         await base.DeleteAsync_DeletesEntity();
     }
 
-    [SkippableFact]
+    [Fact]
     public override async Task FindAsync_WithDocumentKeyAndFilterFullMatch_ReturnsFilteredEntities()
     {
-        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
-
         await base.FindAsync_WithDocumentKeyAndFilterFullMatch_ReturnsFilteredEntities();
     }
 
-    [SkippableFact]
+    [Fact]
     public override async Task FindAsync_WithDocumentKeyAndFilterRowKeyPrefix_ReturnsFilteredEntities()
     {
-        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
-
         await base.FindAsync_WithDocumentKeyAndFilterRowKeyPrefix_ReturnsFilteredEntities();
     }
 
-    [SkippableFact]
+    [Fact]
     public override async Task FindAsync_WithDocumentKeyAndFilterRowKeySuffix_ReturnsFilteredEntities()
     {
-        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
-
         await base.FindAsync_WithDocumentKeyAndFilterRowKeySuffix_ReturnsFilteredEntities();
     }
 
-    [SkippableFact]
+    [Fact]
     public override async Task FindAsync_WithoutFilter_ReturnsEntities()
     {
-        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
-
         await base.FindAsync_WithoutFilter_ReturnsEntities();
     }
 
-    [SkippableFact]
+    [Fact]
     public override async Task ExistsAsync_WithExactKey_ReturnsExpectedValue()
     {
-        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
-
         await base.ExistsAsync_WithExactKey_ReturnsExpectedValue();
     }
 
-    [SkippableFact]
+    [Fact]
     public override async Task ListAsync_WithDocumentKeyAndFilter_ReturnsFilteredDocumentKeys()
     {
-        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
-
         await base.ListAsync_WithDocumentKeyAndFilter_ReturnsFilteredDocumentKeys();
     }
 
-    [SkippableFact]
+    [Fact]
     public override async Task ListAsync_WithoutFilter_ReturnsDocumentKeys()
     {
-        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
-
         await base.ListAsync_WithoutFilter_ReturnsDocumentKeys();
     }
 
-    [SkippableFact]
+    [Fact]
     public override async Task UpsertAsync_CreatesOrUpdatesSingleLogicalRow()
     {
-        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
-
         await base.UpsertAsync_CreatesOrUpdatesSingleLogicalRow();
     }
 
-    [SkippableFact]
+    [Fact]
     public override async Task UpsertAsync_PopulatesLookupHashesAndClearsLease()
     {
-        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
-
         await base.UpsertAsync_PopulatesLookupHashesAndClearsLease();
     }
 
-    [SkippableFact]
+    [Fact]
+    public override async Task UpsertAsync_WithConcurrentWriters_PreservesSingleLogicalDocument()
+    {
+        await base.UpsertAsync_WithConcurrentWriters_PreservesSingleLogicalDocument();
+    }
+
+    [Fact]
     public override async Task UpsertAsync_WithPartitionKeyLongerThan256_ThrowsArgumentException()
     {
-        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
-
         await base.UpsertAsync_WithPartitionKeyLongerThan256_ThrowsArgumentException();
     }
 
-    [SkippableFact]
+    [Fact]
     public override async Task UpsertAsync_WithRowKeyLongerThan256_ThrowsArgumentException()
     {
-        Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
-
         await base.UpsertAsync_WithRowKeyLongerThan256_ThrowsArgumentException();
     }
 
@@ -123,7 +102,7 @@ public class EntityFrameworkCosmosDocumentStoreProviderTests(ITestOutputHelper o
     {
         ArgumentNullException.ThrowIfNull(action);
 
-        await using var dbContext = this.fixture.EnsureCosmosDbContext(this.output, forceNew: true);
+        await using var dbContext = this.fixture.EnsurePostgresDbContext(this.output, true);
         await action(dbContext);
     }
 
@@ -131,16 +110,24 @@ public class EntityFrameworkCosmosDocumentStoreProviderTests(ITestOutputHelper o
     {
         ArgumentNullException.ThrowIfNull(action);
 
-        await using var dbContext = this.fixture.EnsureCosmosDbContext(this.output, forceNew: true);
+        await using var dbContext = this.fixture.EnsurePostgresDbContext(this.output, true);
         return await action(dbContext);
     }
+
+    protected override EntityFrameworkDocumentStoreProviderOptions CreateConcurrentWriterOptions() =>
+        new()
+        {
+            LeaseDuration = TimeSpan.FromSeconds(15),
+            RetryCount = 10,
+            RetryDelay = TimeSpan.FromMilliseconds(25)
+        };
 
     protected override EntityFrameworkDocumentStoreProvider<StubDbContext> CreateProvider(
         EntityFrameworkDocumentStoreProviderOptions options = null,
         bool forceNew = false)
     {
         return new EntityFrameworkDocumentStoreProvider<StubDbContext>(
-            this.fixture.EnsureCosmosDbContext(this.output, forceNew: forceNew),
+            this.fixture.EnsurePostgresDbContext(this.output, forceNew),
             options: options);
     }
 }

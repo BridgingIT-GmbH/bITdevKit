@@ -15,6 +15,12 @@ public class EntityFrameworkSqliteDocumentStoreProviderTests(ITestOutputHelper o
     private readonly ITestOutputHelper output = output;
 
     [Fact]
+    public override async Task CountAsync_ReturnsDocumentCount()
+    {
+        await base.CountAsync_ReturnsDocumentCount();
+    }
+
+    [Fact]
     public override async Task DeleteAsync_DeletesEntity()
     {
         await base.DeleteAsync_DeletesEntity();
@@ -45,6 +51,12 @@ public class EntityFrameworkSqliteDocumentStoreProviderTests(ITestOutputHelper o
     }
 
     [Fact]
+    public override async Task ExistsAsync_WithExactKey_ReturnsExpectedValue()
+    {
+        await base.ExistsAsync_WithExactKey_ReturnsExpectedValue();
+    }
+
+    [Fact]
     public override async Task ListAsync_WithDocumentKeyAndFilter_ReturnsFilteredDocumentKeys()
     {
         await base.ListAsync_WithDocumentKeyAndFilter_ReturnsFilteredDocumentKeys();
@@ -57,13 +69,57 @@ public class EntityFrameworkSqliteDocumentStoreProviderTests(ITestOutputHelper o
     }
 
     [Fact]
-    public override async Task UpsertAsync_CreatesOrUpdateEntity()
+    public override async Task UpsertAsync_CreatesOrUpdatesSingleLogicalRow()
     {
-        await base.UpsertAsync_CreatesOrUpdateEntity();
+        await base.UpsertAsync_CreatesOrUpdatesSingleLogicalRow();
     }
 
-    protected override EntityFrameworkDocumentStoreProvider<StubDbContext> GetProvider()
+    [Fact]
+    public override async Task UpsertAsync_PopulatesLookupHashesAndClearsLease()
     {
-        return new EntityFrameworkDocumentStoreProvider<StubDbContext>(this.fixture.EnsureSqliteDbContext(this.output));
+        await base.UpsertAsync_PopulatesLookupHashesAndClearsLease();
+    }
+
+    [Fact]
+    public override async Task UpsertAsync_WithConcurrentWriters_PreservesSingleLogicalDocument()
+    {
+        await base.UpsertAsync_WithConcurrentWriters_PreservesSingleLogicalDocument();
+    }
+
+    [Fact]
+    public override async Task UpsertAsync_WithPartitionKeyLongerThan256_ThrowsArgumentException()
+    {
+        await base.UpsertAsync_WithPartitionKeyLongerThan256_ThrowsArgumentException();
+    }
+
+    [Fact]
+    public override async Task UpsertAsync_WithRowKeyLongerThan256_ThrowsArgumentException()
+    {
+        await base.UpsertAsync_WithRowKeyLongerThan256_ThrowsArgumentException();
+    }
+
+    protected override async Task ExecuteDbContextAsync(Func<StubDbContext, Task> action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        await using var dbContext = this.fixture.EnsureSqliteDbContext(this.output, true);
+        await action(dbContext);
+    }
+
+    protected override async Task<TResult> ExecuteDbContextAsync<TResult>(Func<StubDbContext, Task<TResult>> action)
+    {
+        ArgumentNullException.ThrowIfNull(action);
+
+        await using var dbContext = this.fixture.EnsureSqliteDbContext(this.output, true);
+        return await action(dbContext);
+    }
+
+    protected override EntityFrameworkDocumentStoreProvider<StubDbContext> CreateProvider(
+        EntityFrameworkDocumentStoreProviderOptions options = null,
+        bool forceNew = false)
+    {
+        return new EntityFrameworkDocumentStoreProvider<StubDbContext>(
+            this.fixture.EnsureSqliteDbContext(this.output, forceNew),
+            options: options);
     }
 }

@@ -9,6 +9,7 @@ using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 using Configuration;
 using Extensions;
+using Microsoft.Extensions.Logging;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -27,7 +28,7 @@ public static partial class ServiceCollectionExtensions
         // store client > store provider
         context.Services.TryAddScoped<IDocumentStoreClient<CacheDocument>>(sp =>
             new DocumentStoreClient<CacheDocument>(
-                new EntityFrameworkDocumentStoreProvider<TContext>(sp.GetRequiredService<TContext>())));
+                new EntityFrameworkDocumentStoreProvider<TContext>(sp, sp.GetService<ILoggerFactory>())));
 
         // cache provider > distrbuted cache + store client
         context.Services.TryAddTransient<ICacheProvider>(sp =>

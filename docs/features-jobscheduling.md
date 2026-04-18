@@ -221,7 +221,7 @@ Alternatively, enable API endpoints with `AddEndpoints()` for HTTP-based managem
 
 ```csharp
 builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Configuration)
-    .AddEndpoints(builder.Environment.IsDevelopment());
+    .AddEndpoints(options => options.RequireAuthorization(), builder.Environment.IsDevelopment());
 ```
 
 These endpoints, mapped under `/api/_system/jobs`, provide RESTful access to job operations (see `Appendix: Job Scheduling API Endpoints` for details). For example, to trigger a job via HTTP:
@@ -534,7 +534,7 @@ Enable endpoints with a condition (e.g., development-only):
 
 ```csharp
 builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Configuration)
-    .AddEndpoints(builder.Environment.IsDevelopment());
+    .AddEndpoints(options => options.RequireAuthorization(), builder.Environment.IsDevelopment());
 ```
 
 Ensure routing is configured in the application pipeline:

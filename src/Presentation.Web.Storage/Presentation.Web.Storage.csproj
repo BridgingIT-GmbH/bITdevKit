@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Presentation.Web.Storage</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Presentation.Web.Storage</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>true</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application.Storage\Application.Storage.csproj" />
+    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj" />
+    <ProjectReference Include="..\Presentation.Web\Presentation.Web.csproj" />
+  </ItemGroup>
+
+</Project>

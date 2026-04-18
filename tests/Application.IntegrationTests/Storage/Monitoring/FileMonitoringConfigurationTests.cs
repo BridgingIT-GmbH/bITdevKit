@@ -198,6 +198,38 @@ public class FileMonitoringConfigurationTests
         store.ShouldBeOfType<EntityFrameworkFileEventStore<TestDbContext>>(); // Custom store type
     }
 
+    [Fact]
+    public void FluentApi_AddFileMonitoring_RegistersNamedProviderLocationCorrectly()
+    {
+        // Arrange
+        var services = new ServiceCollection().AddLogging();
+        services.AddFileStorage(factory => factory
+            .RegisterProvider("documents", storage => storage
+                .UseInMemory("Documents")
+                .WithLifetime(ServiceLifetime.Singleton)));
+        services.AddFileMonitoring(monitoring =>
+        {
+            monitoring.UseProvider("documents", "documents", options =>
+            {
+                options.FileFilter = "*.txt";
+                options.UseOnDemandOnly = true;
+                options.UseProcessor<FileLoggerProcessor>();
+            });
+        });
+        var provider = services.BuildServiceProvider();
+
+        // Act
+        var sut = provider.GetService<IFileMonitoringService>();
+        var handlers = provider.GetServices<ILocationHandler>().ToList();
+
+        // Assert
+        sut.ShouldNotBeNull();
+        handlers.Count.ShouldBe(1);
+        handlers[0].Options.LocationName.ShouldBe("documents");
+        handlers[0].Provider.ShouldBeOfType<InMemoryFileStorageProvider>();
+        handlers[0].GetProcessors().ShouldHaveSingleItem();
+    }
+
     // Dummy TestDbContext for the test (assumes EF extension)
     public class TestDbContext : DbContext, IFileMonitoringContext
     {

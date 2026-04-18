@@ -98,11 +98,8 @@ builder.Services.AddQueueing(builder.Configuration, context =>
    AutoSave = true,
    ProcessingInterval = TimeSpan.FromSeconds(15),
    LeaseDuration = TimeSpan.FromSeconds(30)
- })
- .AddEndpoints(new QueueingEndpointsOptions
- {
-   RequireAuthorization = true
- });
+  })
+  .AddEndpoints(options => options.RequireAuthorization());
 ```
 
 Your `DbContext` must implement `IQueueingContext`:
@@ -154,15 +151,13 @@ When you reference `Presentation.Web.Queueing`, you can register it directly fro
 builder.Services.AddQueueing(builder.Configuration)
   .WithSubscription<OrderQueuedMessage, OrderQueuedHandler>()
   .WithEntityFrameworkBroker<AppDbContext>()
-  .AddEndpoints(new QueueingEndpointsOptions
-  {
- GroupPath = "/api/_system/queueing",
- GroupTag = "_System.Queueing",
- RequireAuthorization = true
-  });
+  .AddEndpoints(options => options
+    .GroupPath("/api/_system/queueing")
+    .GroupTag("_System.Queueing")
+    .RequireAuthorization());
 ```
 
-If you prefer separate registration, the existing `builder.Services.AddQueueingEndpoints(...)` helper is also available.
+If you prefer separate registration, the existing `builder.Services.AddQueueingEndpoints(options => options.RequireAuthorization())` helper is also available.
 
 Routes:
 

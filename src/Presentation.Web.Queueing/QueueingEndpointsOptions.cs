@@ -12,12 +12,10 @@ using BridgingIT.DevKit.Presentation.Web;
 /// </summary>
 /// <example>
 /// <code>
-/// services.AddQueueingEndpoints(new QueueingEndpointsOptions
-/// {
-///     GroupPath = "/api/_system/queueing",
-///     GroupTag = "_System.Queueing",
-///     RequireAuthorization = true
-/// });
+/// services.AddQueueingEndpoints(options => options
+///     .GroupPath("/api/_system/queueing")
+///     .GroupTag("_System.Queueing")
+///     .RequireAuthorization());
 /// </code>
 /// </example>
 public class QueueingEndpointsOptions : EndpointsOptionsBase

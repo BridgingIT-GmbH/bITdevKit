@@ -19,7 +19,7 @@ Available providers included:
 
 ### Architecture
 
-The `FileStorage` subsystem is built around the `IFileStorageProvider` interface, which defines core file operations. Providers like `LocalFileStorageProvider`, `InMemoryFileStorageProvider`, `EntityFrameworkFileStorageProvider<TContext>`, and others implement this interface. The `IFileStorageFactory` resolves providers by name, and extensions like `FileStorageProviderCompressionExtensions` and `FileStorageProviderCrossExtensions` add advanced functionality such as compression and cross-provider operations. Behaviors can be applied to providers to add cross-cutting concerns like logging or retry logic.
+The `FileStorage` subsystem is built around the `IFileStorageProvider` interface, which defines core file operations. Providers like `LocalFileStorageProvider`, `InMemoryFileStorageProvider`, `EntityFrameworkFileStorageProvider<TContext>`, and others implement this interface. The `IFileStorageProviderFactory` resolves providers by name, and extensions like `FileStorageProviderCompressionExtensions` and `FileStorageProviderCrossExtensions` add advanced functionality such as compression and cross-provider operations. Behaviors can be applied to providers to add cross-cutting concerns like logging or retry logic.
 
 Below is a high-level architecture diagram:
 
@@ -38,7 +38,7 @@ classDiagram
         +CheckHealthAsync(token) Task~Result~
     }
 
-    class IFileStorageFactory {
+    class IFileStorageProviderFactory {
         +CreateProvider(name) IFileStorageProvider
     }
 
@@ -84,7 +84,7 @@ classDiagram
     EntityFrameworkFileStorageProvider~TContext~ --> IFileStorageContext : requires
     IFileStorageProvider --> FileStorageProviderCompressionExtensions : Extends
     IFileStorageProvider --> FileStorageProviderCrossExtensions : Extends
-    IFileStorageFactory --> IFileStorageProvider : Resolves
+    IFileStorageProviderFactory --> IFileStorageProvider : Resolves
 ```
 
 ### Use Cases
@@ -101,7 +101,7 @@ classDiagram
 
 ### Setting Up a Provider with Dependency Injection (DI)
 
-Configure `FileStorage` using `Microsoft.Extensions.DependencyInjection` with the `AddFileStorage` method, which supports a fluent API for registering named providers, applying behaviors, and setting lifetimes. Providers are resolved via `IFileStorageFactory`.
+Configure `FileStorage` using `Microsoft.Extensions.DependencyInjection` with the `AddFileStorage` method, which supports a fluent API for registering named providers, applying behaviors, and setting lifetimes. Providers are resolved via `IFileStorageProviderFactory`.
 
 ```csharp
 services.AddFileStorage(c => c
@@ -134,9 +134,9 @@ services.AddFileStorage(c => c
 // Use the factory to resolve providers
 public class FileService
 {
-    private readonly IFileStorageFactory factory;
+    private readonly IFileStorageProviderFactory factory;
 
-    public FileService(IFileStorageFactory factory)
+    public FileService(IFileStorageProviderFactory factory)
     {
         this.factory = factory;
     }
@@ -149,7 +149,7 @@ public class FileService
 }
 ```
 
-This registers "inMemory", "local", "network", and "azureBlob" providers with behaviors and lifetimes, resolved by `IFileStorageFactory`.
+This registers "inMemory", "local", "network", and "azureBlob" providers with behaviors and lifetimes, resolved by `IFileStorageProviderFactory`.
 
 ### Setting Up the Entity Framework Provider
 
@@ -215,6 +215,59 @@ services.AddFileStorage(factory => factory
 - The provider is Entity Framework-level and works across supported relational providers. This repository includes integration coverage for SQLite, SQL Server, and PostgreSQL.
 - Because writes are buffered before commit, set `MaximumBufferedContentSize(...)` when you want predictable limits for large uploads.
 - The provider supports cross-provider copy/move and the existing compression, traversal, text, and object extension methods through the normal `IFileStorageProvider` contract.
+
+### Exposing Providers Through REST Endpoints
+
+Use `Presentation.Web.Storage` when you want registered providers to be reachable through HTTP. The endpoint package registers **one global storage endpoint surface** and resolves the target provider by route segment through `IFileStorageProviderFactory.CreateProvider(...)`.
+
+```csharp
+services.AddFileStorage(factory => factory
+    .RegisterProvider("documents", builder => builder
+        .UseEntityFramework<AppDbContext>(
+            "DatabaseFiles",
+            "Entity Framework file storage")
+        .WithLifetime(ServiceLifetime.Singleton)))
+    .AddEndpoints(options => options
+        .RequireAuthorization()
+        .GroupPath("/api/_system")
+        .GroupTag("_System.Storage"));
+```
+
+#### REST endpoint behavior
+
+- Works with **any** `IFileStorageProvider`, not only the Entity Framework provider
+- Uses `/api/_system/{providerName}` by default when `GroupPath` is not specified
+- Publishes one endpoint set for all registered providers, with the provider selected from the sanitized route segment
+- Supports provider info, health checks, file/directory existence checks, file listing, directory listing, metadata, checksum, create/delete directory, delete file, file download, raw file upload, and file-event query/scan routes when storage monitoring is configured for that provider
+- Raw uploads write the request body directly to the provider-backed path; send them as `application/octet-stream`
+
+#### Common routes
+
+| Route | Purpose |
+| --- | --- |
+| `GET /api/_system/{provider}/provider` | Provider information |
+| `GET /api/_system/{provider}/health` | Provider health |
+| `GET /api/_system/{provider}/directories?path=...&recursive=true` | List directories |
+| `POST /api/_system/{provider}/directories?path=...` | Create directory |
+| `DELETE /api/_system/{provider}/directories?path=...&recursive=true` | Delete directory |
+| `GET /api/_system/{provider}/files?path=...&recursive=true` | List files |
+| `GET /api/_system/{provider}/files/content?path=...` | Download file content |
+| `PUT /api/_system/{provider}/files/content?path=...` | Upload or overwrite file content |
+| `GET /api/_system/{provider}/files/metadata?path=...` | Read file metadata |
+| `GET /api/_system/{provider}/files/checksum?path=...` | Read checksum |
+| `DELETE /api/_system/{provider}/files?path=...` | Delete file |
+| `GET /api/_system/{provider}/events?path=...&eventType=...&fromDate=...&tillDate=...&take=...` | Query stored file events for the provider-backed monitoring location |
+| `POST /api/_system/{provider}/events/scan?waitForProcessing=true&searchPattern=...&maxFilesToScan=...&skipChecksum=false` | Trigger an on-demand monitoring scan and return detected events |
+
+#### Endpoint notes
+
+- Use `RequireAuthorization`, `RequireRoles`, or `RequirePolicy` on `FileStorageEndpointsOptions` when the storage surface should not be public.
+- Prefer `services.AddFileStorage(...).AddEndpoints(...)` when wiring providers and HTTP access together; `AddFileStorageEndpoints(...)` remains available when endpoint registration needs to happen separately.
+- The endpoint layer resolves the named provider through `factory.CreateProvider(...)`, so HTTP callers always go through the same behaviors, lifetime, retries, and provider composition as in-process callers.
+- File-event routes require `AddFileMonitoring(...)` plus `UseProvider(...)` for the same provider name. Without monitoring registration, the event routes return `503`.
+- The endpoint group disables antiforgery so generated clients and operational dashboards can call the unsafe file and scan routes with bearer tokens.
+- The provider info route intentionally lives at `/provider` so it does not collide with other fixed `_system` endpoints such as `/api/_system/info`.
+- The DoFiesta example uses this endpoint package to back both the Operations > Files and Operations > File Events dashboards against the `"documents"` Entity Framework provider, and the WASM client consumes the generated Kiota client directly via `BackendApiClient.Api._system["documents"]`.
 
 ### Using Providers
 

@@ -19,7 +19,7 @@ public static partial class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The IServiceCollection to register with.</param>
     /// <param name="configure">Optional action to configure initial providers at registration time.</param>
-    /// <returns>The IServiceCollection for chaining.</returns>
+    /// <returns>The file storage builder context for chaining additional feature configuration.</returns>
     /// <example>
     /// **Usage Scenarios:**
     /// - **Testing**: Register an in-memory provider with Transient lifetime for isolated unit/integration tests:
@@ -75,12 +75,25 @@ public static partial class ServiceCollectionExtensions
     ///   ```csharp
     ///   var inMemoryProvider = factory.CreateProvider<InMemoryFileStorageProvider>();
     ///   ```
+    ///
+    /// - **Integrated endpoint registration**: Chain file-storage REST endpoints from the same setup path:
+    ///   ```csharp
+    ///   services.AddFileStorage(cfg =>
+    ///   {
+    ///       cfg.RegisterProvider("documents", builder =>
+    ///       {
+    ///           builder.UseLocal("Documents", rootPath)
+    ///                  .WithLifetime(ServiceLifetime.Singleton);
+    ///       });
+    ///   })
+    ///   .AddEndpoints(options => options.RequireAuthorization());
+    ///   ```
     /// </example>
-    public static IServiceCollection AddFileStorage(this IServiceCollection services, Action<FileStorageProviderFactory> configure = null)
+    public static FileStorageBuilderContext AddFileStorage(this IServiceCollection services, Action<FileStorageProviderFactory> configure = null)
     {
         //services.AddLogging();
         //services.AddMemoryCache();
-        services.AddScoped<IFileStorageProviderFactory>(sp =>
+        services.AddSingleton<IFileStorageProviderFactory>(sp =>
         {
             var factory = new FileStorageProviderFactory(sp);
             configure?.Invoke(factory);
@@ -88,6 +101,6 @@ public static partial class ServiceCollectionExtensions
             return factory;
         });
 
-        return services;
+        return new FileStorageBuilderContext(services);
     }
 }

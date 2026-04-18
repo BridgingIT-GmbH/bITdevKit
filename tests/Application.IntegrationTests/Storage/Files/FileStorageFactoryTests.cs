@@ -146,6 +146,31 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
     }
 
     [Fact]
+    public void Factory_GetProviderNames_ReturnsRegisteredProviders()
+    {
+        var serviceProvider = this.CreateServiceProvider();
+        var factory = new FileStorageProviderFactory(serviceProvider);
+
+        factory.RegisterProvider("inMemory", builder =>
+        {
+            builder.UseInMemory("TestInMemory")
+                .WithLifetime(ServiceLifetime.Transient);
+        });
+
+        factory.RegisterProvider("local", builder =>
+        {
+            var tempPath = Path.Combine(Path.GetTempPath(), "TestStorage_" + Guid.NewGuid().ToString());
+            Directory.CreateDirectory(tempPath);
+            builder.UseLocal("TestLocal", tempPath)
+                .WithLifetime(ServiceLifetime.Singleton);
+        });
+
+        var result = factory.GetProviderNames();
+
+        result.ShouldBe(["inMemory", "local"], ignoreOrder: true);
+    }
+
+    [Fact]
     public void Factory_RegistersCustomBehavior_Succeeds()
     {
         // Arrange
@@ -236,6 +261,33 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
         provider1.ShouldNotBeNull();
         provider1.ShouldBeOfType<InMemoryFileStorageProvider>();
         provider2.ShouldBeSameAs(provider1); // Singleton ensures same instance
+    }
+
+    [Fact]
+    public void AddFileStorage_SingletonProvider_IsSharedAcrossScopes()
+    {
+        var services = new ServiceCollection()
+            .AddLogging()
+            .AddMemoryCache();
+
+        services.AddFileStorage(c => c
+            .RegisterProvider("inMemory", builder =>
+            {
+                builder.UseInMemory("TestInMemory")
+                    .WithLifetime(ServiceLifetime.Singleton);
+            }));
+
+        using var serviceProvider = services.BuildServiceProvider();
+        using var scope1 = serviceProvider.CreateScope();
+        using var scope2 = serviceProvider.CreateScope();
+
+        var factory1 = scope1.ServiceProvider.GetRequiredService<IFileStorageProviderFactory>();
+        var factory2 = scope2.ServiceProvider.GetRequiredService<IFileStorageProviderFactory>();
+
+        var provider1 = factory1.CreateProvider("inMemory");
+        var provider2 = factory2.CreateProvider("inMemory");
+
+        provider1.ShouldBeSameAs(provider2);
     }
 
     [Fact]

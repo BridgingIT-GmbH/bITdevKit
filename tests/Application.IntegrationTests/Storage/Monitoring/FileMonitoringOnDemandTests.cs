@@ -268,6 +268,54 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
     }
 
     [Fact]
+    public async Task FileMonitoringService_OnDemand_DetectsChangesForNamedFileStorageProvider()
+    {
+        // Arrange
+        var services = new ServiceCollection().AddLogging();
+        services.AddFileStorage(factory => factory
+            .RegisterProvider("documents", storage => storage
+                .UseInMemory("Documents")
+                .WithLifetime(ServiceLifetime.Singleton)));
+        services.AddFileMonitoring(monitoring =>
+        {
+            monitoring.UseProvider("documents", "documents", options =>
+            {
+                options.FileFilter = "*.txt";
+                options.UseOnDemandOnly = true;
+                options.UseProcessor<TestProcessor>();
+            });
+        });
+        var provider = services.BuildServiceProvider();
+        var sut = provider.GetRequiredService<IFileMonitoringService>();
+        var store = provider.GetRequiredService<IFileEventStore>();
+        var fileStorageProviderFactory = provider.GetRequiredService<IFileStorageProviderFactory>();
+        var fileStorageProvider = fileStorageProviderFactory.CreateProvider("documents");
+
+        await fileStorageProvider.WriteFileAsync(
+            "notes.txt",
+            new MemoryStream(Encoding.UTF8.GetBytes("test content")),
+            cancellationToken: CancellationToken.None);
+
+        // Act
+        var scanContext = await sut.ScanLocationAsync("documents", token: CancellationToken.None);
+        await Task.Delay(250);
+
+        var handler = provider.GetServices<ILocationHandler>().First(h => h.Options.LocationName == "documents");
+        var processor = handler.GetProcessors().OfType<TestProcessor>().First();
+        var storedEvents = await store.GetFileEventsForLocationAsync("documents");
+
+        // Assert
+        scanContext.Events.ShouldHaveSingleItem();
+        scanContext.Events[0].FilePath.ShouldBe("notes.txt");
+        scanContext.Events[0].EventType.ShouldBe(FileEventType.Added);
+        processor.InvocationCount.ShouldBe(1);
+        storedEvents.ShouldHaveSingleItem();
+        storedEvents[0].FilePath.ShouldBe("notes.txt");
+
+        await sut.StopAsync(CancellationToken.None);
+    }
+
+    [Fact]
     public async Task FileMonitoringService_OnDemand_HandlesMultipleLocationsWithDifferentEventTypes()
     {
         // Arrange
@@ -638,6 +686,7 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         var scanContext = await sut.ScanLocationAsync("InMemDocs", options, progress: progress, CancellationToken.None);
         stopwatch.Stop();
         output.WriteLine($"Scan detected {scanContext.Events.Count} changes in {stopwatch.ElapsedMilliseconds} ms");
+        await Task.Delay(100);
 
         // Assert
         // Verify scan results

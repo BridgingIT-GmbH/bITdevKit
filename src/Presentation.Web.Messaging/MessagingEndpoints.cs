@@ -21,8 +21,9 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// </summary>
 /// <example>
 /// <code>
-/// services.AddSingleton(new MessagingEndpointsOptions());
-/// services.AddMessagingEndpoints();
+/// services.AddMessagingEndpoints(options => options
+///     .RequireAuthorization()
+///     .GroupPath("/api/_system/messaging/messages"));
 /// </code>
 /// </example>
 public class MessagingEndpoints(

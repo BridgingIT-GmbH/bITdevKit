@@ -22,6 +22,14 @@ public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFil
     private readonly ConcurrentDictionary<string, Lazy<IFileStorageProvider>> singletonProviders = new(StringComparer.OrdinalIgnoreCase);
 
     /// <summary>
+    /// Gets the registered provider names known to the factory.
+    /// </summary>
+    public IReadOnlyCollection<string> GetProviderNames()
+        => this.providerConfigs.Keys
+            .OrderBy(name => name, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+    /// <summary>
     /// Creates a file storage provider with the specified name.
     /// </summary>
     public IFileStorageProvider CreateProvider(string name)
@@ -173,6 +181,11 @@ public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFil
         private readonly string providerName = providerName ?? throw new ArgumentNullException(nameof(providerName));
         private ServiceLifetime lifetime = ServiceLifetime.Scoped;
         private readonly List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> behaviors = [];
+
+        /// <summary>
+        /// Gets the registered provider name currently being configured.
+        /// </summary>
+        public string ProviderName => this.providerName;
 
         /// <summary>
         /// Gets or sets the factory function to create the provider instance.

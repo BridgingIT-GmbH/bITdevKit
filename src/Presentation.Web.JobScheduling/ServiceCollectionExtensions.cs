@@ -5,12 +5,38 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Adds job scheduling endpoints to the service collection with a fluent options builder.
+    /// </summary>
+    /// <param name="context">The JobSchedulingBuilderContext instance.</param>
+    /// <param name="optionsBuilder">The endpoint options builder.</param>
+    /// <param name="enabled">A condition to determine if the endpoints should be registered (default: true).</param>
+    /// <returns>The updated JobSchedulingBuilderContext for further configuration.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddJobScheduling()
+    ///     .AddEndpoints(options => options
+    ///         .RequireAuthorization()
+    ///         .GroupPath("/api/_system/jobs"), enabled: true);
+    /// </code>
+    /// </example>
+    public static JobSchedulingBuilderContext AddEndpoints(
+        this JobSchedulingBuilderContext context,
+        Builder<JobSchedulingEndpointsOptionsBuilder, JobSchedulingEndpointsOptions> optionsBuilder,
+        bool enabled = true)
+    {
+        var options = optionsBuilder?.Invoke(new JobSchedulingEndpointsOptionsBuilder()).Build();
+
+        return context.AddEndpoints(options, enabled);
+    }
+
     /// <summary>
     /// Adds job scheduling endpoints to the service collection with an optional condition.
     /// </summary>

@@ -14,6 +14,17 @@ using System;
 public interface IFileStorageProviderFactory
 {
     /// <summary>
+    /// Gets the registered provider names known to the factory.
+    /// </summary>
+    /// <returns>The registered provider names.</returns>
+    /// <example>
+    /// <code>
+    /// var providerNames = factory.GetProviderNames();
+    /// </code>
+    /// </example>
+    IReadOnlyCollection<string> GetProviderNames();
+
+    /// <summary>
     /// Creates a file storage provider with the specified name.
     /// </summary>
     /// <param name="name">The registered name of the provider to create.</param>

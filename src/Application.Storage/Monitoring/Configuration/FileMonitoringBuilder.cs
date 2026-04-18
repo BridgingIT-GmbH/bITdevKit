@@ -85,7 +85,14 @@ public class FileMonitoringBuilder
     }
 
     public void RegisterLocation(string name, LocationOptions options, Func<IFileStorageProvider> providerFactory, Type locationHandlerType)
+        => this.RegisterLocation(name, options, _ => providerFactory(), locationHandlerType);
+
+    public void RegisterLocation(string name, LocationOptions options, Func<IServiceProvider, IFileStorageProvider> providerFactory, Type locationHandlerType)
     {
+        EnsureArg.IsNotNullOrEmpty(name, nameof(name));
+        EnsureArg.IsNotNull(options, nameof(options));
+        EnsureArg.IsNotNull(providerFactory, nameof(providerFactory));
+
         foreach (var config in options.ProcessorConfigs)
         {
             this.services.TryAddScoped(config.ProcessorType);
@@ -104,7 +111,7 @@ public class FileMonitoringBuilder
             this.services.AddScoped(sp => Activator.CreateInstance(
                 locationHandlerType,
                 sp.GetRequiredService<ILoggerFactory>().CreateLogger(locationHandlerType),
-                providerFactory(),
+                providerFactory(sp),
                 sp.GetRequiredService<IFileEventStore>(),
                 options,
                 sp,

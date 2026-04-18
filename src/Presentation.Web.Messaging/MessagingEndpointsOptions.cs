@@ -12,11 +12,9 @@ using BridgingIT.DevKit.Presentation.Web;
 /// </summary>
 /// <example>
 /// <code>
-/// services.AddMessagingEndpoints(new MessagingEndpointsOptions
-/// {
-///     GroupPath = "/api/_system/messaging/messages",
-///     GroupTag = "_System.Messaging"
-/// });
+/// services.AddMessagingEndpoints(options => options
+///     .GroupPath("/api/_system/messaging/messages")
+///     .GroupTag("_System.Messaging"));
 /// </code>
 /// </example>
 public class MessagingEndpointsOptions : EndpointsOptionsBase

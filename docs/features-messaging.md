@@ -90,16 +90,13 @@ builder.Services.AddMessaging(builder.Configuration, o => o.StartupDelay("00:00:
   // Choose a broker
   .WithEntityFrameworkBroker<AppDbContext>()
   // Optional operational endpoints from Presentation.Web.Messaging
-  .AddEndpoints(new MessagingEndpointsOptions
-  {
-    RequireAuthorization = true
-  });
+  .AddEndpoints(options => options.RequireAuthorization());
   //.WithInProcessBroker();
   //.WithRabbitMQBroker();
   //.WithServiceBusBroker();
 ```
 
-If you prefer separate registration, the existing `builder.Services.AddMessagingEndpoints(...)` helper is also available.
+If you prefer separate registration, the existing `builder.Services.AddMessagingEndpoints(options => options.RequireAuthorization())` helper is also available.
 
 ### Define a message and handler
 

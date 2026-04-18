@@ -21,11 +21,9 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// </summary>
 /// <example>
 /// <code>
-/// services.AddQueueingEndpoints(new QueueingEndpointsOptions
-/// {
-///     GroupPath = "/api/_system/queueing",
-///     GroupTag = "_System.Queueing"
-/// });
+/// services.AddQueueingEndpoints(options => options
+///     .GroupPath("/api/_system/queueing")
+///     .GroupTag("_System.Queueing"));
 /// </code>
 /// </example>
 public class QueueingEndpoints(

@@ -31,8 +31,36 @@ The built-in builder supports:
 
 - `UseLocal(...)`
 - `UseInMemory(...)`
+- `UseProvider(...)`
 
-Infrastructure packages can add further provider-backed locations.
+`UseProvider(...)` resolves an already-registered `IFileStorageProvider` by name through
+`IFileStorageProviderFactory`. This is the preferred option when the monitored files live in
+application storage that is already exposed through a named provider, such as an Entity Framework
+backed operational document store.
+
+```csharp
+services.AddFileStorage(factory => factory
+    .RegisterProvider("documents", storage => storage
+        .UseEntityFramework<AppDbContext>(
+            "Documents",
+            "Operational document storage")
+        .WithLifetime(ServiceLifetime.Singleton)))
+    .AddEndpoints(options => options.RequireAuthorization());
+
+services.AddFileMonitoring(monitoring =>
+{
+    monitoring.UseProvider("documents", "documents", options =>
+    {
+        options.UseOnDemandOnly = true;
+        options.FileFilter = "*.*";
+        options.FileBlackListFilter = ["*.tmp", "*.log"];
+        options.UseProcessor<FileLoggerProcessor>();
+    });
+});
+```
+
+Provider-backed locations are scan-based unless the resolved provider offers notifications. This
+makes them a good fit for scheduled reconciliation jobs and admin-driven reprocessing flows.
 
 ### Service
 
@@ -192,6 +220,46 @@ This job:
 - logs progress and scan results
 
 That makes it the bridge between `Storage Monitoring` and `JobScheduling`.
+
+For provider-backed locations, scheduled scans are the normal way to capture file events in
+multi-node or database-backed deployments where real-time watchers are not available.
+
+## REST Endpoints For Provider-Backed Monitoring
+
+When a monitored location is also exposed through `Presentation.Web.Storage`, the same provider
+name can be used to query file events and trigger scans over HTTP.
+
+```csharp
+services.AddFileStorage(factory => factory
+    .RegisterProvider("documents", storage => storage
+        .UseEntityFramework<AppDbContext>(
+            "Documents",
+            "Operational document storage")
+        .WithLifetime(ServiceLifetime.Singleton)));
+
+services.AddFileMonitoring(monitoring =>
+{
+    monitoring.UseProvider("documents", "documents", options =>
+    {
+        options.UseOnDemandOnly = true;
+        options.UseProcessor<FileLoggerProcessor>();
+    });
+});
+```
+
+This exposes:
+
+| Route | Purpose |
+| --- | --- |
+| `GET /api/_system/{provider}/events?path=...&eventType=...&fromDate=...&tillDate=...&take=...` | Query stored file events for the provider-backed monitoring location |
+| `POST /api/_system/{provider}/events/scan?waitForProcessing=true&searchPattern=...&maxFilesToScan=...&skipChecksum=false` | Trigger an on-demand scan and return the detected events |
+
+Important notes:
+
+- The `{provider}` route segment must match the monitored location name you configured with `UseProvider(...)`.
+- These HTTP routes resolve the provider through `IFileStorageProviderFactory`, so the REST surface uses the same named provider that application code uses in process.
+- The scan route is useful for operations screens, admin tooling, or recovery workflows after downtime.
+- The DoFiesta example consumes these routes through the generated Kiota client and exposes them in the Operations > File Events dashboard at `/operations/fileevents`.
 
 ## Best Practices
 

@@ -5,6 +5,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Presentation.Web.Messaging;
 
@@ -13,6 +14,25 @@ using BridgingIT.DevKit.Presentation.Web.Messaging;
 /// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Registers the messaging endpoints from the fluent messaging builder with a fluent options builder.
+    /// </summary>
+    /// <param name="context">The messaging builder context.</param>
+    /// <param name="optionsBuilder">The endpoint options builder.</param>
+    /// <param name="enabled">Indicates whether endpoint registration should be enabled.</param>
+    /// <returns>The current messaging builder context.</returns>
+    public static MessagingBuilderContext AddEndpoints(
+        this MessagingBuilderContext context,
+        Builder<MessagingEndpointsOptionsBuilder, MessagingEndpointsOptions> optionsBuilder,
+        bool enabled = true)
+    {
+        EnsureArg.IsNotNull(context, nameof(context));
+
+        var options = optionsBuilder?.Invoke(new MessagingEndpointsOptionsBuilder()).Build();
+
+        return context.AddEndpoints(options, enabled);
+    }
+
     /// <summary>
     /// Registers the messaging endpoints from the fluent messaging builder with explicit options.
     /// </summary>
@@ -59,6 +79,33 @@ public static class ServiceCollectionExtensions
     }
 
     /// <summary>
+    /// Registers the messaging endpoints with a fluent options builder.
+    /// </summary>
+    /// <param name="services">The service collection.</param>
+    /// <param name="optionsBuilder">The endpoint options builder.</param>
+    /// <param name="enabled">Indicates whether endpoint registration should be enabled.</param>
+    /// <returns>The current service collection.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddMessagingEndpoints(options => options
+    ///     .RequireAuthorization()
+    ///     .GroupPath("/api/_system/messaging/messages")
+    ///     .GroupTag("_System.Messaging"));
+    /// </code>
+    /// </example>
+    public static IServiceCollection AddMessagingEndpoints(
+        this IServiceCollection services,
+        Builder<MessagingEndpointsOptionsBuilder, MessagingEndpointsOptions> optionsBuilder,
+        bool enabled = true)
+    {
+        EnsureArg.IsNotNull(services, nameof(services));
+
+        var options = optionsBuilder?.Invoke(new MessagingEndpointsOptionsBuilder()).Build();
+
+        return services.AddMessagingEndpoints(options, enabled);
+    }
+
+    /// <summary>
     /// Registers the messaging endpoints with explicit options.
     /// </summary>
     /// <param name="services">The service collection.</param>
@@ -67,11 +114,9 @@ public static class ServiceCollectionExtensions
     /// <returns>The current service collection.</returns>
     /// <example>
     /// <code>
-    /// services.AddMessagingEndpoints(new MessagingEndpointsOptions
-    /// {
-    ///     GroupPath = "/api/_system/messaging/messages",
-    ///     GroupTag = "_System.Messaging"
-    /// });
+    /// services.AddMessagingEndpoints(options => options
+    ///     .GroupPath("/api/_system/messaging/messages")
+    ///     .GroupTag("_System.Messaging"));
     /// </code>
     /// </example>
     public static IServiceCollection AddMessagingEndpoints(

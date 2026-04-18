@@ -13,6 +13,48 @@
     </MudPaper>
 
     <MudGrid>
+        <MudItem xs="12" md="5">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5">Files</MudText>
+                        <MudText Typo="Typo.body2">Browse the available Entity Framework backed file locations, manage folders, upload new assets, and download operational files.</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudAvatar Color="Color.Secondary" Variant="Variant.Filled">
+                            <MudIcon Icon="@Icons.Material.Filled.Folder" />
+                        </MudAvatar>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Visibility" Href="/operations/files">
+                        Open Files
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" md="7">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5">File Events</MudText>
+                        <MudText Typo="Typo.body2">Review the monitoring timeline for the selected storage location, trigger scans, and inspect adds, changes, and deletions by file path.</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudAvatar Color="Color.Success" Variant="Variant.Filled">
+                            <MudIcon Icon="@Icons.Material.Filled.Timeline" />
+                        </MudAvatar>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Success" StartIcon="@Icons.Material.Filled.Visibility" Href="/operations/fileevents">
+                        Open File Events
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
         <MudItem xs="12" md="7">
             <MudCard>
                 <MudCardHeader>

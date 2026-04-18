@@ -17,6 +17,7 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     IMessagingContext,
     IQueueingContext,
     IEntityPermissionContext,
+    IFileStorageContext,
     IFileMonitoringContext,
     ILoggingContext
 {
@@ -31,6 +32,12 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     public DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }
 
     public DbSet<EntityPermission> EntityPermissions { get; set; }
+
+    public DbSet<FileStorageFileEntity> StorageFiles { get; set; }
+
+    public DbSet<FileStorageFileContentEntity> StorageFileContents { get; set; }
+
+    public DbSet<FileStorageDirectoryEntity> StorageDirectories { get; set; }
 
     public DbSet<FileEventEntity> FileEvents { get; set; }
 

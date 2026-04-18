@@ -1,0 +1,656 @@
+@page "/operations/fileevents"
+@using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen
+@using GenFileStorageFileEventModel = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FileStorageFileEventModel
+@using GenFileStorageFileEventScanResponseModel = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FileStorageFileEventScanResponseModel
+@using GenFileStorageFileEventsResponseModel = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FileStorageFileEventsResponseModel
+@using GenFileStorageProviderInfoModel = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FileStorageProviderInfoModel
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Kiota.Abstractions
+@inject BackendApiClient ApiClient
+@inject IRequestAdapter RequestAdapter
+@inject ISnackbar Snackbar
+@attribute [Authorize]
+
+<PageTitle>DoFiesta - Operations File Events</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 mb-6">
+    <MudPaper Class="pa-6 mb-4">
+        <div class="d-flex flex-wrap align-center gap-4">
+            <div>
+                <MudText Typo="Typo.h4" GutterBottom="true">File Events</MudText>
+                @* <MudText Typo="Typo.body2" Class="mud-secondary-text">
+                    Inspect scans, additions, updates, and deletions for the selected storage location without leaving the operations workspace.
+                </MudText> *@
+            </div>
+            <MudSpacer />
+            <MudSelect T="string"
+                       Label="Location"
+                       Value="@selectedProviderName"
+                       ValueChanged="ChangeProviderAsync"
+                       Variant="Variant.Outlined"
+                       Margin="Margin.Dense"
+                       Dense="true"
+                       Disabled="@(loading || availableProviders.Count == 0)"
+                       Style="min-width:280px">
+                @foreach (var storageLocation in availableProviders)
+                {
+                    <MudSelectItem T="string" Value="@storageLocation.ProviderName">@FormatLocationOption(storageLocation)</MudSelectItem>
+                }
+            </MudSelect>
+            <MudButton Variant="Variant.Outlined"
+                       Color="Color.Default"
+                       StartIcon="@Icons.Material.Filled.Refresh"
+                       OnClick="ReloadAsync"
+                       Disabled="@loading">
+                Refresh
+            </MudButton>
+            <MudButton Variant="Variant.Text"
+                       Color="Color.Default"
+                       StartIcon="@Icons.Material.Filled.Folder"
+                       Href="@BuildFilesDashboardUri(selectedProviderName, path: null)">
+                Files
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                       Color="Color.Secondary"
+                       StartIcon="@Icons.Material.Filled.PlayArrow"
+                       OnClick="RunScanAsync"
+                       Disabled="@(loading || scanning)">
+                @(scanning ? "Scanning..." : "Scan now")
+            </MudButton>
+        </div>
+    </MudPaper>
+
+    <MudGrid Class="mb-4">
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4 h-100 file-events-metric">
+                <MudText Typo="Typo.caption">Location</MudText>
+                <MudText Typo="Typo.h6">@DisplayValue(providerInfo?.LocationName ?? providerInfo?.ProviderName)</MudText>
+                <MudText Typo="Typo.body2" Class="mud-secondary-text">@DisplayValue(providerInfo?.ProviderName)</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4 h-100 file-events-metric">
+                <MudText Typo="Typo.caption">Visible events</MudText>
+                <MudText Typo="Typo.h3">@events.Count</MudText>
+                <MudText Typo="Typo.body2" Class="mud-secondary-text">@GetSelectedTimeWindowLabel()</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4 h-100 file-events-metric">
+                <MudText Typo="Typo.caption">Most recent event</MudText>
+                <MudText Typo="Typo.h6">@FormatTimestamp(events.FirstOrDefault()?.DetectedDate)</MudText>
+                <MudText Typo="Typo.body2" Class="mud-secondary-text">@DisplayValue(events.FirstOrDefault()?.FilePath)</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4 h-100 file-events-metric">
+                <MudText Typo="Typo.caption">Last manual scan</MudText>
+                <MudText Typo="Typo.h6">@FormatTimestamp(lastScanResult?.EndTime ?? lastScanResult?.StartTime)</MudText>
+                <MudText Typo="Typo.body2" Class="mud-secondary-text">@((lastScanResult?.EventCount ?? 0).ToString() + " events")</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudPaper Class="pa-4 mb-4">
+        <MudGrid>
+            <MudItem xs="12" md="5">
+                <MudTextField @bind-Value="pathFilter"
+                              Label="Path prefix or exact file path"
+                              Variant="Variant.Outlined"
+                              Immediate="true"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search" />
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudSelect T="string" @bind-Value="selectedEventType" Label="Event type" Variant="Variant.Outlined">
+                    @foreach (var option in EventTypeOptions)
+                    {
+                        <MudSelectItem T="string" Value="@option">@option</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="2">
+                <MudSelect T="string" @bind-Value="selectedTimeWindowKey" Label="Window" Variant="Variant.Outlined">
+                    @foreach (var option in TimeWindowOptions)
+                    {
+                        <MudSelectItem T="string" Value="@option.Key">@option.Label</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="2">
+                <MudSelect T="int" @bind-Value="take" Label="Take" Variant="Variant.Outlined">
+                    @foreach (var option in TakeOptions)
+                    {
+                        <MudSelectItem T="int" Value="@option">@option</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        </MudGrid>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.FilterAlt" OnClick="ReloadAsync" Disabled="@loading">
+                Apply filters
+            </MudButton>
+            <MudButton Variant="Variant.Text" Color="Color.Default" StartIcon="@Icons.Material.Filled.Backspace" OnClick="ClearFilters">
+                Clear
+            </MudButton>
+        </div>
+    </MudPaper>
+
+    @if (!string.IsNullOrWhiteSpace(loadError))
+    {
+        <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="mb-4">@loadError</MudAlert>
+    }
+
+    <MudGrid>
+        <MudItem xs="12" xl="8">
+            <MudPaper Class="pa-0 event-stream-panel">
+                <div class="pa-4 d-flex flex-wrap align-center gap-2 event-stream-header">
+                    <MudText Typo="Typo.h6">Event stream</MudText>
+                    <MudSpacer />
+                    <MudChip T="string" Variant="Variant.Outlined" Color="Color.Success">@GetEventCount("Added") added</MudChip>
+                    <MudChip T="string" Variant="Variant.Outlined" Color="Color.Warning">@GetEventCount("Changed") changed</MudChip>
+                    <MudChip T="string" Variant="Variant.Outlined" Color="Color.Error">@GetEventCount("Deleted") deleted</MudChip>
+                </div>
+
+                @if (loading && events.Count == 0)
+                {
+                    <div class="pa-4">
+                        <MudSkeleton Height="68px" Animation="Animation.Pulse" />
+                        <MudSkeleton Height="68px" Animation="Animation.Pulse" Class="mt-2" />
+                        <MudSkeleton Height="68px" Animation="Animation.Pulse" Class="mt-2" />
+                    </div>
+                }
+                else if (events.Count == 0)
+                {
+                    <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined" Class="ma-4">
+                        No file events matched the current filter set.
+                    </MudAlert>
+                }
+                else
+                {
+                    <MudTable Items="@events" Dense="true" Hover="true" Elevation="0" Class="file-events-table">
+                        <HeaderContent>
+                            <MudTh>Event</MudTh>
+                            <MudTh>File</MudTh>
+                            <MudTh>Detected</MudTh>
+                            <MudTh>Size</MudTh>
+                            <MudTh></MudTh>
+                        </HeaderContent>
+                        <RowTemplate Context="fileEvent">
+                            <MudTd DataLabel="Event">
+                                <MudChip T="string" Color="@GetEventColor(fileEvent.EventType)" Variant="Variant.Filled" Class="event-type-chip">
+                                    @DisplayValue(fileEvent.EventType)
+                                </MudChip>
+                            </MudTd>
+                            <MudTd DataLabel="File">
+                                <div class="d-flex flex-column">
+                                    <MudText Typo="Typo.body1">@DisplayValue(fileEvent.FilePath)</MudText>
+                                    <MudText Typo="Typo.caption" Class="mud-secondary-text">@DisplayValue(GetFolderName(fileEvent.FilePath))</MudText>
+                                </div>
+                            </MudTd>
+                            <MudTd DataLabel="Detected">
+                                <div class="d-flex flex-column">
+                                    <MudText Typo="Typo.body2">@FormatTimestamp(fileEvent.DetectedDate)</MudText>
+                                    <MudText Typo="Typo.caption" Class="mud-secondary-text">@DisplayRelative(fileEvent.DetectedDate)</MudText>
+                                </div>
+                            </MudTd>
+                             <MudTd DataLabel="Size">@FormatSize(fileEvent.FileSize)</MudTd>
+                              <MudTd>
+                                  <div class="d-flex justify-end">
+                                      <MudTooltip Text="Open containing folder">
+                                         <MudIconButton Icon="@Icons.Material.Filled.FolderOpen"
+                                                        Color="Color.Default"
+                                                        Size="Size.Small"
+                                                        Disabled="@string.IsNullOrWhiteSpace(fileEvent.FilePath)"
+                                                        OnClick="@(() => NavigateToEventFolder(fileEvent.FilePath))" />
+                                      </MudTooltip>
+                                      <MudTooltip Text="Inspect event">
+                                         <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Info" Size="Size.Small" OnClick="@(() => OpenEventDialog(fileEvent))" />
+                                      </MudTooltip>
+                                  </div>
+                              </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                }
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" xl="4">
+            <MudPaper Class="pa-4 h-100 file-events-detail">
+                <MudText Typo="Typo.h6" Class="mb-2">Inspect events</MudText>
+                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Class="mb-4">
+                    Use the folder icon to jump into the files dashboard at the containing folder, or the eye icon to inspect the full event details in a dialog.
+                </MudAlert>
+
+                <MudText Typo="Typo.h6" Class="mb-2">Last scan</MudText>
+                @if (lastScanResult is null)
+                {
+                    <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined">
+                        No manual scan has been triggered in this session yet.
+                    </MudAlert>
+                }
+                else
+                {
+                    <div class="d-flex flex-column gap-2">
+                        <MudText Typo="Typo.caption">Scan id</MudText>
+                        <MudText Typo="Typo.body2" Class="file-events-break">@DisplayValue(lastScanResult.ScanId?.ToString())</MudText>
+                        <MudText Typo="Typo.caption">Started</MudText>
+                        <MudText Typo="Typo.body2">@FormatTimestamp(lastScanResult.StartTime)</MudText>
+                        <MudText Typo="Typo.caption">Completed</MudText>
+                        <MudText Typo="Typo.body2">@FormatTimestamp(lastScanResult.EndTime)</MudText>
+                        <MudText Typo="Typo.caption">Detected events</MudText>
+                        <MudText Typo="Typo.body2">@((lastScanResult.EventCount ?? 0).ToString())</MudText>
+                    </div>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+<MudDialog @bind-Visible="eventDialogVisible" Options="new DialogOptions { CloseButton = true, FullWidth = true, MaxWidth = MaxWidth.Medium }">
+    <TitleContent>
+        <MudText Typo="Typo.h6">@DisplayValue(eventDialogEvent?.FilePath)</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudGrid Class="mb-3">
+            <MudItem xs="12" sm="6" md="3">
+                <MudText Typo="Typo.caption">Event type</MudText>
+                <MudChip T="string" Color="@GetEventColor(eventDialogEvent?.EventType)" Variant="Variant.Filled" Class="mt-1">
+                    @DisplayValue(eventDialogEvent?.EventType)
+                </MudChip>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudText Typo="Typo.caption">Location</MudText>
+                <MudText Typo="Typo.body2">@DisplayValue(eventDialogEvent?.LocationName)</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudText Typo="Typo.caption">Detected</MudText>
+                <MudText Typo="Typo.body2">@FormatTimestamp(eventDialogEvent?.DetectedDate)</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudText Typo="Typo.caption">Last modified</MudText>
+                <MudText Typo="Typo.body2">@FormatTimestamp(eventDialogEvent?.LastModifiedDate)</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudText Typo="Typo.caption">Size</MudText>
+                <MudText Typo="Typo.body2">@FormatSize(eventDialogEvent?.FileSize)</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="9">
+                <MudText Typo="Typo.caption">Scan id</MudText>
+                <MudText Typo="Typo.body2" Class="file-events-break">@DisplayValue(eventDialogEvent?.ScanId?.ToString())</MudText>
+            </MudItem>
+        </MudGrid>
+
+        <MudText Typo="Typo.caption">File path</MudText>
+        <MudText Typo="Typo.body2" Class="mb-3 file-events-break">@DisplayValue(eventDialogEvent?.FilePath)</MudText>
+
+        <MudText Typo="Typo.caption">Checksum</MudText>
+        <MudText Typo="Typo.body2" Class="file-events-break">@DisplayValue(eventDialogEvent?.Checksum)</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined"
+                   Color="Color.Info"
+                   OnClick="@(() => NavigateToEventFolder(eventDialogEvent?.FilePath))"
+                   Disabled="@string.IsNullOrWhiteSpace(eventDialogEvent?.FilePath)">
+            Open folder
+        </MudButton>
+        <MudButton OnClick="@(() => eventDialogVisible = false)">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+<style>
+    .file-events-metric,
+    .event-stream-panel,
+    .file-events-detail {
+        border: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .event-stream-header {
+        border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+        background: linear-gradient(180deg, rgba(248, 250, 252, 0.85), rgba(248, 250, 252, 0.45));
+    }
+
+    .event-type-chip {
+        min-width: 88px;
+        justify-content: center;
+    }
+
+    .file-events-break {
+        word-break: break-all;
+    }
+</style>
+
+@code {
+    private static readonly string[] EventTypeOptions = ["All", "Added", "Changed", "Deleted"];
+    private static readonly int[] TakeOptions = [50, 100, 200, 500];
+    private static readonly TimeWindowOption[] TimeWindowOptions =
+    [
+        new("1h", "Last hour"),
+        new("24h", "Last 24 hours"),
+        new("7d", "Last 7 days"),
+        new("all", "All time")
+    ];
+
+    private bool loading;
+    private bool scanning;
+    private string loadError;
+    private string selectedProviderName;
+    private string pathFilter;
+    private string selectedEventType = "All";
+    private string selectedTimeWindowKey = "24h";
+    private int take = 100;
+    private List<GenFileStorageProviderInfoModel> availableProviders = [];
+    private GenFileStorageProviderInfoModel providerInfo;
+    private List<GenFileStorageFileEventModel> events = [];
+    private GenFileStorageFileEventScanResponseModel lastScanResult;
+    private bool eventDialogVisible;
+    private GenFileStorageFileEventModel eventDialogEvent;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.selectedProviderName = this.GetRequestedProviderName();
+        await this.ReloadAsync();
+    }
+
+    private async Task ReloadAsync()
+    {
+        this.loading = true;
+        this.loadError = null;
+
+        try
+        {
+            this.availableProviders = await this.ListLocationsAsync();
+            this.selectedProviderName = this.ResolveSelectedProviderName(this.selectedProviderName);
+
+            if (string.IsNullOrWhiteSpace(this.selectedProviderName))
+            {
+                this.providerInfo = null;
+                this.events = [];
+                this.lastScanResult = null;
+                this.loadError = "No file storage locations are currently available.";
+                return;
+            }
+
+            this.UpdateRequestedState();
+
+            var providerTask = this.ApiClient.Api._system[this.selectedProviderName].Provider.GetAsync();
+            var eventsTask = this.LoadEventsAsync();
+
+            await Task.WhenAll(providerTask, eventsTask);
+
+            this.providerInfo = await providerTask;
+            this.events = (await eventsTask).Events?
+                .OrderByDescending(item => item.DetectedDate)
+                .ToList() ?? [];
+        }
+        catch (Exception ex)
+        {
+            this.loadError = ex.Message;
+            this.Snackbar.Add($"Unable to load file events: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            this.loading = false;
+        }
+    }
+
+    private async Task ChangeProviderAsync(string providerName)
+    {
+        if (string.Equals(this.selectedProviderName, providerName, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        this.selectedProviderName = providerName;
+        this.lastScanResult = null;
+        this.UpdateRequestedState();
+        await this.ReloadAsync();
+    }
+
+    private async Task RunScanAsync()
+    {
+        this.scanning = true;
+
+        try
+        {
+            this.lastScanResult = await this.ApiClient.Api._system[this.selectedProviderName].Events.Scan.PostAsync(configuration =>
+            {
+                configuration.QueryParameters.WaitForProcessing = true;
+            });
+
+            var detectedEvents = this.lastScanResult?.EventCount ?? 0;
+            this.Snackbar.Add($"Scan finished with {detectedEvents} detected events.", Severity.Success);
+            await this.ReloadAsync();
+        }
+        catch (Exception ex)
+        {
+            this.Snackbar.Add($"Unable to scan file events: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            this.scanning = false;
+        }
+    }
+
+    private void ClearFilters()
+    {
+        this.pathFilter = null;
+        this.selectedEventType = "All";
+        this.selectedTimeWindowKey = "24h";
+        this.take = 100;
+        _ = this.ReloadAsync();
+    }
+
+    private void OpenEventDialog(GenFileStorageFileEventModel fileEvent)
+    {
+        this.eventDialogEvent = fileEvent;
+        this.eventDialogVisible = true;
+    }
+
+    private void NavigateToEventFolder(string filePath)
+        => this.navigationManager.NavigateTo(BuildFilesDashboardUri(this.selectedProviderName, GetFolderPath(filePath)));
+
+    private async Task<GenFileStorageFileEventsResponseModel> LoadEventsAsync()
+        => await this.ApiClient.Api._system[this.selectedProviderName].Events.GetAsync(configuration =>
+            {
+                configuration.QueryParameters.Path = NormalizePath(this.pathFilter);
+                configuration.QueryParameters.EventType = string.Equals(this.selectedEventType, "All", StringComparison.OrdinalIgnoreCase)
+                    ? null
+                    : this.selectedEventType;
+                configuration.QueryParameters.FromDate = this.GetFromDate();
+                configuration.QueryParameters.Take = this.take;
+            })
+        ?? new GenFileStorageFileEventsResponseModel { Events = [] };
+
+    private async Task<List<GenFileStorageProviderInfoModel>> ListLocationsAsync()
+    {
+        var requestInfo = this.ApiClient.Api._system
+            .WithUrl($"{this.RequestAdapter.BaseUrl?.TrimEnd('/')}/api/_system/locations")
+            .ToGetRequestInformation();
+
+        var errorMapping = new Dictionary<string, global::Microsoft.Kiota.Abstractions.Serialization.ParsableFactory<global::Microsoft.Kiota.Abstractions.Serialization.IParsable>>
+        {
+            { "500", global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ProblemDetails.CreateFromDiscriminatorValue }
+        };
+
+        var locations = await this.RequestAdapter.SendCollectionAsync<GenFileStorageProviderInfoModel>(
+            requestInfo,
+            GenFileStorageProviderInfoModel.CreateFromDiscriminatorValue,
+            errorMapping,
+            cancellationToken: CancellationToken.None);
+
+        return locations?
+            .ToList()
+            .OrderBy(storageLocation => storageLocation.LocationName ?? storageLocation.ProviderName, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(storageLocation => storageLocation.ProviderName, StringComparer.OrdinalIgnoreCase)
+            .ToList()
+            ?? [];
+    }
+
+    private string ResolveSelectedProviderName(string providerName)
+        => this.availableProviders.FirstOrDefault(location =>
+                string.Equals(location.ProviderName, providerName, StringComparison.OrdinalIgnoreCase))
+            ?.ProviderName
+            ?? this.availableProviders.FirstOrDefault()?.ProviderName;
+
+    private string GetRequestedProviderName()
+        => this.GetRequestedQueryValue("provider");
+
+    private string GetRequestedQueryValue(string key)
+    {
+        var query = this.navigationManager.ToAbsoluteUri(this.navigationManager.Uri).Query;
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return null;
+        }
+
+        foreach (var pair in query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var segments = pair.Split('=', 2);
+            if (!string.Equals(Uri.UnescapeDataString(segments[0]), key, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            return segments.Length > 1 ? Uri.UnescapeDataString(segments[1]) : null;
+        }
+
+        return null;
+    }
+
+    private void UpdateRequestedState()
+        => this.navigationManager.NavigateTo(BuildFileEventsUri(this.selectedProviderName), replace: true);
+
+    private DateTimeOffset? GetFromDate()
+        => this.selectedTimeWindowKey switch
+        {
+            "1h" => DateTimeOffset.UtcNow.AddHours(-1),
+            "24h" => DateTimeOffset.UtcNow.AddDays(-1),
+            "7d" => DateTimeOffset.UtcNow.AddDays(-7),
+            _ => null
+        };
+
+    private int GetEventCount(string eventType)
+        => this.events.Count(item => string.Equals(item.EventType, eventType, StringComparison.OrdinalIgnoreCase));
+
+    private string GetSelectedTimeWindowLabel()
+        => TimeWindowOptions.FirstOrDefault(option => option.Key == this.selectedTimeWindowKey)?.Label ?? "Custom";
+
+    private static string BuildFilesDashboardUri(string providerName, string path)
+        => BuildUri("/operations/files", providerName, path);
+
+    private static string BuildFileEventsUri(string providerName)
+        => BuildUri("/operations/fileevents", providerName, path: null);
+
+    private static string BuildUri(string basePath, string providerName, string path)
+    {
+        var query = new List<string>();
+        if (!string.IsNullOrWhiteSpace(providerName))
+        {
+            query.Add($"provider={Uri.EscapeDataString(providerName)}");
+        }
+
+        var normalizedPath = NormalizePath(path);
+        if (!string.IsNullOrWhiteSpace(normalizedPath))
+        {
+            query.Add($"path={Uri.EscapeDataString(normalizedPath)}");
+        }
+
+        return query.Count == 0
+            ? basePath
+            : $"{basePath}?{string.Join("&", query)}";
+    }
+
+    private static string GetFolderName(string path)
+    {
+        var folderPath = GetFolderPath(path);
+        return string.IsNullOrWhiteSpace(folderPath)
+            ? "/"
+            : "/" + folderPath;
+    }
+
+    private static string GetFolderPath(string path)
+    {
+        var normalized = NormalizePath(path);
+        if (string.IsNullOrWhiteSpace(normalized) || !normalized.Contains('/'))
+        {
+            return string.Empty;
+        }
+
+        return normalized[..normalized.LastIndexOf('/')];
+    }
+
+    private static string NormalizePath(string value)
+        => string.IsNullOrWhiteSpace(value)
+            ? null
+            : value.Replace('\\', '/').Trim().Trim('/');
+
+    private static string DisplayValue(string value)
+        => string.IsNullOrWhiteSpace(value) ? "n/a" : value;
+
+    private static string FormatLocationOption(GenFileStorageProviderInfoModel storageLocation)
+        => string.IsNullOrWhiteSpace(storageLocation?.ProviderName)
+            ? DisplayValue(storageLocation?.LocationName)
+            : $"{DisplayValue(storageLocation?.LocationName)} ({storageLocation.ProviderName})";
+
+    private static string FormatTimestamp(DateTimeOffset? value)
+        => value?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") ?? "n/a";
+
+    private static string DisplayRelative(DateTimeOffset? value)
+    {
+        if (value is null)
+        {
+            return "n/a";
+        }
+
+        var delta = DateTimeOffset.UtcNow - value.Value;
+        if (delta.TotalSeconds < 60)
+        {
+            return "just now";
+        }
+
+        if (delta.TotalMinutes < 60)
+        {
+            return $"{Math.Floor(delta.TotalMinutes)} min ago";
+        }
+
+        if (delta.TotalHours < 24)
+        {
+            return $"{Math.Floor(delta.TotalHours)} hr ago";
+        }
+
+        return $"{Math.Floor(delta.TotalDays)} d ago";
+    }
+
+    private static string FormatSize(long? bytes)
+    {
+        if (bytes is null)
+        {
+            return "n/a";
+        }
+
+        string[] suffixes = ["B", "KB", "MB", "GB"];
+        var size = (double)bytes.Value;
+        var index = 0;
+
+        while (size >= 1024 && index < suffixes.Length - 1)
+        {
+            size /= 1024;
+            index++;
+        }
+
+        return $"{size:0.#} {suffixes[index]}";
+    }
+
+    private static Color GetEventColor(string eventType)
+        => eventType?.ToLowerInvariant() switch
+        {
+            "added" => Color.Success,
+            "changed" => Color.Warning,
+            "deleted" => Color.Error,
+            _ => Color.Default
+        };
+
+    private sealed record TimeWindowOption(string Key, string Label);
+}

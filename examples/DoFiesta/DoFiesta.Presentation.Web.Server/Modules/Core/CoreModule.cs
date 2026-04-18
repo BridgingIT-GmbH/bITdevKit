@@ -14,6 +14,7 @@ using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation;
+using BridgingIT.DevKit.Presentation.Web.Storage;
 using Common;
 using DevKit.Domain.Repositories;
 using Domain.Model;
@@ -48,6 +49,14 @@ public class CoreModule : WebModuleBase
                 .Cron(CronExpressions.Every5Minutes)
                 .Named("scan_inbound")
                 .WithData(DataKeys.LocationName, "inbound")
+                .WithData(DataKeys.DelayPerFile, "00:00:00:100")
+                .WithData(DataKeys.FileFilter, "*.*")
+                .WithData(DataKeys.FileBlackListFilter, "*.tmp;*.log")
+                .RegisterScoped()
+            .WithJob<FileMonitoringLocationScanJob>()
+                .Cron(CronExpressions.EveryMinute)
+                .Named("scan_documents")
+                .WithData(DataKeys.LocationName, "documents")
                 .WithData(DataKeys.DelayPerFile, "00:00:00:100")
                 .WithData(DataKeys.FileFilter, "*.*")
                 .WithData(DataKeys.FileBlackListFilter, "*.tmp;*.log")
@@ -99,6 +108,25 @@ public class CoreModule : WebModuleBase
                 .StartupDelay("00:00:15"));
         //.PurgeOnStartup());
 
+        services.AddFileStorage(factory => factory
+            .RegisterProvider("documents", storage => storage
+                .UseEntityFramework<CoreDbContext>(
+                    "DoFiesta Documents",
+                    "Entity Framework backed operational file storage",
+                    options => options
+                        .PageSize(200)
+                        .MaximumBufferedContentSize(8 * 1024 * 1024))
+                .WithLifetime(ServiceLifetime.Singleton))
+            .RegisterProvider("attachments", storage => storage
+                .UseEntityFramework<CoreDbContext>(
+                    "DoFiesta Attachments",
+                    "Entity Framework backed attachment and import file storage",
+                    options => options
+                        .PageSize(200)
+                        .MaximumBufferedContentSize(8 * 1024 * 1024))
+                .WithLifetime(ServiceLifetime.Singleton)))
+            .AddEndpoints(options => options.RequireAuthorization());
+
         //services.AddInMemoryDbContext<CoreDbContext>()
         //    .WithDatabaseCreatorService(o => o
         //        .Enabled(environment?.IsDevelopment() == true));
@@ -131,6 +159,22 @@ public class CoreModule : WebModuleBase
                 o.RateLimit = RateLimitOptions.MediumSpeed;
                 o.FileFilter = "*.*";
                 o.FileBlackListFilter = ["*.tmp"];
+                o.UseProcessor<FileLoggerProcessor>();
+            });
+            b.UseProvider("documents", "documents", o =>
+            {
+                o.UseOnDemandOnly = true;
+                o.RateLimit = RateLimitOptions.MediumSpeed;
+                o.FileFilter = "*.*";
+                o.FileBlackListFilter = ["*.tmp", "*.log"];
+                o.UseProcessor<FileLoggerProcessor>();
+            });
+            b.UseProvider("attachments", "attachments", o =>
+            {
+                o.UseOnDemandOnly = true;
+                o.RateLimit = RateLimitOptions.MediumSpeed;
+                o.FileFilter = "*.*";
+                o.FileBlackListFilter = ["*.tmp", "*.log"];
                 o.UseProcessor<FileLoggerProcessor>();
             });
         }).WithEntityFrameworkStore<CoreDbContext>();

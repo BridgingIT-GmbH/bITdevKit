@@ -1,0 +1,955 @@
+@page "/operations/files"
+@using System.Text
+@using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen
+@using GenFileStorageFilesResponseModel = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FileStorageFilesResponseModel
+@using GenFileStorageProviderInfoModel = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FileStorageProviderInfoModel
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.Kiota.Abstractions
+@using Microsoft.JSInterop
+@inject BackendApiClient ApiClient
+@inject IRequestAdapter RequestAdapter
+@inject ISnackbar Snackbar
+@inject IJSRuntime JS
+@attribute [Authorize]
+
+<PageTitle>DoFiesta - Operations Files</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 mb-6">
+    <MudPaper Class="pa-6 mb-4">
+        <div class="d-flex flex-wrap align-center gap-4">
+            <div>
+                <MudText Typo="Typo.h4" GutterBottom="true">Files</MudText>
+            </div>
+            <MudSpacer />
+            <MudSelect T="string"
+                       Label="Location"
+                       Value="@selectedProviderName"
+                       ValueChanged="ChangeProviderAsync"
+                       Variant="Variant.Outlined"
+                       Margin="Margin.Dense"
+                       Dense="true"
+                       Disabled="@(loading || availableProviders.Count == 0)"
+                       Style="min-width:280px">
+                @foreach (var storageLocation in availableProviders)
+                {
+                    <MudSelectItem T="string" Value="@storageLocation.ProviderName">@FormatLocationOption(storageLocation)</MudSelectItem>
+                }
+            </MudSelect>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Filled.Refresh" OnClick="ReloadAsync" Disabled="@loading">
+                Refresh
+            </MudButton>
+            <MudButton Variant="Variant.Text" Color="Color.Default" StartIcon="@Icons.Material.Filled.Timeline" Href="@BuildFileEventsUri()">
+                Event stream
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Filled.ArrowUpward" OnClick="NavigateUpAsync" Disabled="@(!CanNavigateUp || loading)">
+                Up
+            </MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CreateNewFolder" OnClick="@(() => createDirectoryDialogVisible = true)">
+                New folder
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Description" OnClick="@(() => createTextFileDialogVisible = true)">
+                New text file
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Success" StartIcon="@Icons.Material.Filled.UploadFile" OnClick="@(() => uploadDialogVisible = true)">
+                Upload
+            </MudButton>
+        </div>
+    </MudPaper>
+
+    <MudGrid Class="mb-4">
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Location</MudText>
+                <MudText Typo="Typo.h6">@DisplayValue(providerInfo?.LocationName ?? providerInfo?.ProviderName)</MudText>
+                <MudText Typo="Typo.body2" Class="mud-secondary-text">@DisplayValue(providerInfo?.ProviderName)</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="3">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Current folder</MudText>
+                <MudText Typo="Typo.h6">@DisplayPath(currentPath)</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="6" md="3">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Folders</MudText>
+                <MudText Typo="Typo.h4">@allDirectoryPaths.Count</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="6" md="3">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Files</MudText>
+                <MudText Typo="Typo.h4">@allFilePaths.Count</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudPaper Class="pa-4 mb-4">
+        <MudText Typo="Typo.subtitle2" Class="mb-2">Path</MudText>
+        <div class="d-flex flex-wrap gap-2">
+            <MudChip T="string" Color="@(string.IsNullOrEmpty(currentPath) ? Color.Primary : Color.Default)" Variant="Variant.Outlined" OnClick="@(() => NavigateToAsync(string.Empty))">/</MudChip>
+            @foreach (var segment in GetBreadcrumbs())
+            {
+                <MudChip T="string" Color="@(string.Equals(segment.Path, currentPath, StringComparison.OrdinalIgnoreCase) ? Color.Primary : Color.Default)" Variant="Variant.Outlined" OnClick="@(() => NavigateToAsync(segment.Path))">
+                    @segment.Name
+                </MudChip>
+            }
+        </div>
+    </MudPaper>
+
+    @if (!string.IsNullOrWhiteSpace(loadError))
+    {
+        <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="mb-4">@loadError</MudAlert>
+    }
+
+    <MudGrid>
+        <MudItem xs="12" md="4" lg="3">
+            <MudPaper Class="pa-4 h-100">
+                <MudText Typo="Typo.h6">Directory tree</MudText>
+                <MudText Typo="Typo.body2" Class="mb-3">Select a folder to browse its immediate contents.</MudText>
+                <MudDivider Class="mb-2" />
+
+                @if (loading && flatDirectoryNodes.Count == 0)
+                {
+                    <MudSkeleton Height="32px" Animation="Animation.Pulse" />
+                    <MudSkeleton Height="32px" Animation="Animation.Pulse" Class="mt-2" />
+                    <MudSkeleton Height="32px" Animation="Animation.Pulse" Class="mt-2" />
+                }
+                else if (flatDirectoryNodes.Count == 0)
+                {
+                    <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined">
+                        No folders created yet.
+                    </MudAlert>
+                }
+                else
+                {
+                    <div class="d-flex flex-column gap-1">
+                        @foreach (var node in flatDirectoryNodes)
+                        {
+                            <MudButton Variant="Variant.Text"
+                                       Color="@(string.Equals(node.Path, currentPath, StringComparison.OrdinalIgnoreCase) ? Color.Primary : Color.Default)"
+                                       StartIcon="@Icons.Material.Filled.Folder"
+                                       Style="@($"justify-content:flex-start;padding-left:{12 + (node.Level * 20)}px")"
+                                       OnClick="@(() => NavigateToAsync(node.Path))">
+                                @node.Name
+                            </MudButton>
+                        }
+                    </div>
+                }
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="8" lg="9">
+            <MudPaper Class="pa-4 mb-4">
+                <div class="d-flex flex-wrap align-center gap-2 mb-3">
+                    <MudText Typo="Typo.h6">Folders in @DisplayPath(currentPath)</MudText>
+                    <MudSpacer />
+                    <MudChip T="string" Variant="Variant.Outlined">@currentDirectories.Count.ToString()</MudChip>
+                </div>
+
+                @if (currentDirectories.Count == 0)
+                {
+                    <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined">
+                        No folders in the current location.
+                    </MudAlert>
+                }
+                else
+                {
+                    <MudTable Items="@currentDirectories" Dense="true" Hover="true" Elevation="0">
+                        <HeaderContent>
+                            <MudTh>Name</MudTh>
+                            <MudTh>Path</MudTh>
+                            <MudTh></MudTh>
+                        </HeaderContent>
+                        <RowTemplate Context="directory">
+                            <MudTd DataLabel="Name">
+                                <div class="d-flex align-center gap-2">
+                                    <MudIcon Icon="@Icons.Material.Filled.Folder" Color="Color.Warning" />
+                                    <MudText Typo="Typo.body1">@directory.Name</MudText>
+                                </div>
+                            </MudTd>
+                            <MudTd DataLabel="Path">@directory.Path</MudTd>
+                            <MudTd>
+                                <div class="d-flex justify-end gap-1">
+                                    <MudTooltip Text="Open folder">
+                                        <MudIconButton Icon="@Icons.Material.Filled.FolderOpen" Color="Color.Info" Size="Size.Small" OnClick="@(() => NavigateToAsync(directory.Path))" />
+                                    </MudTooltip>
+                                    <MudTooltip Text="Delete folder recursively">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => PromptDeleteDirectory(directory.Path))" />
+                                    </MudTooltip>
+                                </div>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                }
+            </MudPaper>
+
+            <MudPaper Class="pa-4">
+                <div class="d-flex flex-wrap align-center gap-2 mb-3">
+                    <MudText Typo="Typo.h6">Files in @DisplayPath(currentPath)</MudText>
+                    <MudSpacer />
+                    <MudChip T="string" Variant="Variant.Outlined">@currentFiles.Count.ToString()</MudChip>
+                </div>
+
+                @if (currentFiles.Count == 0)
+                {
+                    <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined">
+                        No files in the current location.
+                    </MudAlert>
+                }
+                else
+                {
+                    <MudTable Items="@currentFiles" Dense="true" Hover="true" Elevation="0">
+                        <HeaderContent>
+                            <MudTh>Name</MudTh>
+                            <MudTh>Size</MudTh>
+                            <MudTh>Modified</MudTh>
+                            <MudTh></MudTh>
+                        </HeaderContent>
+                        <RowTemplate Context="file">
+                            <MudTd DataLabel="Name">
+                                <div class="d-flex align-center gap-2">
+                                    <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Secondary" />
+                                    <div>
+                                        <MudText Typo="Typo.body1">@file.Name</MudText>
+                                        <MudText Typo="Typo.caption">@file.Path</MudText>
+                                    </div>
+                                </div>
+                            </MudTd>
+                            <MudTd DataLabel="Size">@FormatSize(file.Length)</MudTd>
+                            <MudTd DataLabel="Modified">@FormatTimestamp(file.LastModified)</MudTd>
+                            <MudTd>
+                                <div class="d-flex justify-end gap-1">
+                                    <MudTooltip Text="Open details">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Info" Size="Size.Small" OnClick="@(() => OpenFileAsync(file.Path))" />
+                                    </MudTooltip>
+                                    <MudTooltip Text="Download file">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Download" Color="Color.Success" Size="Size.Small" OnClick="@(() => DownloadFileAsync(file.Path))" />
+                                    </MudTooltip>
+                                    <MudTooltip Text="Delete file">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => PromptDeleteFile(file.Path))" />
+                                    </MudTooltip>
+                                </div>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                }
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+<MudDialog @bind-Visible="createDirectoryDialogVisible" Options="new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small }">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Create folder</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText Typo="Typo.body2" Class="mb-3">Create a folder inside @DisplayPath(currentPath).</MudText>
+        <MudTextField @bind-Value="newDirectoryName" Label="Folder name" Variant="Variant.Outlined" Immediate="true" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => createDirectoryDialogVisible = false)">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateDirectoryAsync" Disabled="@string.IsNullOrWhiteSpace(newDirectoryName)">
+            Create
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+<MudDialog @bind-Visible="createTextFileDialogVisible" Options="new DialogOptions { CloseButton = true, FullWidth = true, MaxWidth = MaxWidth.Medium }">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Create text file</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField @bind-Value="newTextFileName" Label="File name" Variant="Variant.Outlined" Immediate="true" Class="mb-3" />
+        <MudTextField @bind-Value="newTextFileContent" Label="Content" Variant="Variant.Outlined" Lines="14" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => createTextFileDialogVisible = false)">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Secondary" OnClick="CreateTextFileAsync" Disabled="@string.IsNullOrWhiteSpace(newTextFileName)">
+            Save
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+<MudDialog @bind-Visible="uploadDialogVisible" Options="new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small }">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Upload file</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText Typo="Typo.body2" Class="mb-3">Upload into @DisplayPath(currentPath).</MudText>
+        <MudFileUpload T="IBrowserFile" @bind-Files="uploadFile" MaxFileSize="@MaxUploadSize">
+            <CustomContent Context="fileUpload">
+                <MudButton Variant="Variant.Filled"
+                           Color="Color.Primary"
+                           StartIcon="@Icons.Material.Filled.CloudUpload"
+                           OnClick="@(async () => await fileUpload.OpenFilePickerAsync())">
+                    @(uploadFile is null ? "Select file" : uploadFile.Name)
+                </MudButton>
+            </CustomContent>
+        </MudFileUpload>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => uploadDialogVisible = false)">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Success" OnClick="UploadFileAsync" Disabled="@(uploadFile is null)">
+            Upload
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+<MudDialog @bind-Visible="fileDialogVisible" Options="new DialogOptions { CloseButton = true, FullWidth = true, MaxWidth = MaxWidth.Large }">
+    <TitleContent>
+        <MudText Typo="Typo.h6">@DisplayValue(fileDialogName)</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudGrid Class="mb-3">
+            <MudItem xs="12" sm="6" md="3">
+                <MudText Typo="Typo.caption">Path</MudText>
+                <MudText Typo="Typo.body2">@DisplayValue(fileDialogPath)</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudText Typo="Typo.caption">Type</MudText>
+                <MudText Typo="Typo.body2">@DisplayValue(fileDialogContentType)</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudText Typo="Typo.caption">Size</MudText>
+                <MudText Typo="Typo.body2">@FormatSize(fileDialogLength)</MudText>
+            </MudItem>
+            <MudItem xs="12" sm="6" md="3">
+                <MudText Typo="Typo.caption">Modified</MudText>
+                <MudText Typo="Typo.body2">@FormatTimestamp(fileDialogLastModified)</MudText>
+            </MudItem>
+        </MudGrid>
+
+        <MudText Typo="Typo.caption">Checksum</MudText>
+        <MudText Typo="Typo.body2" Class="mb-3" Style="word-break:break-all">@DisplayValue(fileDialogChecksum)</MudText>
+
+        @if (fileDialogIsText)
+        {
+            <MudTextField Value="@fileDialogTextContent" ReadOnly="true" Lines="18" Variant="Variant.Outlined" Class="w-100" />
+        }
+        else
+        {
+            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+                Binary content preview is not shown inline. Use download to inspect the file locally.
+            </MudAlert>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Outlined" Color="Color.Success" OnClick="@(() => DownloadFileAsync(fileDialogPath))">
+            Download
+        </MudButton>
+        <MudButton OnClick="@(() => fileDialogVisible = false)">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+<MudDialog @bind-Visible="confirmDialogVisible" Options="new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small }">
+    <TitleContent>
+        <MudText Typo="Typo.h6">@confirmDialogTitle</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudText Typo="Typo.body2">@confirmDialogMessage</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => confirmDialogVisible = false)">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" OnClick="ConfirmDeleteAsync">
+            Delete
+        </MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private const long MaxUploadSize = 10 * 1024 * 1024;
+
+    private bool loading;
+    private string loadError;
+    private string currentPath = string.Empty;
+    private string selectedProviderName;
+    private List<GenFileStorageProviderInfoModel> availableProviders = [];
+    private GenFileStorageProviderInfoModel providerInfo;
+    private List<string> allDirectoryPaths = [];
+    private List<string> allFilePaths = [];
+    private List<DirectoryNode> flatDirectoryNodes = [];
+    private List<DirectoryRow> currentDirectories = [];
+    private List<FileRow> currentFiles = [];
+
+    private bool createDirectoryDialogVisible;
+    private string newDirectoryName;
+
+    private bool createTextFileDialogVisible;
+    private string newTextFileName;
+    private string newTextFileContent;
+
+    private bool uploadDialogVisible;
+    private IBrowserFile uploadFile;
+
+    private bool fileDialogVisible;
+    private string fileDialogName;
+    private string fileDialogPath;
+    private string fileDialogContentType;
+    private string fileDialogChecksum;
+    private string fileDialogTextContent;
+    private long fileDialogLength;
+    private DateTime? fileDialogLastModified;
+    private bool fileDialogIsText;
+
+    private bool confirmDialogVisible;
+    private bool confirmDeleteDirectory;
+    private string confirmDialogTitle;
+    private string confirmDialogMessage;
+    private string confirmTargetPath;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.selectedProviderName = this.GetRequestedProviderName();
+        this.currentPath = this.GetRequestedPath();
+        await this.ReloadAsync();
+    }
+
+    private bool CanNavigateUp => !string.IsNullOrWhiteSpace(this.currentPath);
+
+    private async Task ReloadAsync()
+    {
+        this.loading = true;
+        this.loadError = null;
+
+        try
+        {
+            this.availableProviders = await this.ListLocationsAsync();
+            this.selectedProviderName = this.ResolveSelectedProviderName(this.selectedProviderName);
+
+            if (string.IsNullOrWhiteSpace(this.selectedProviderName))
+            {
+                this.providerInfo = null;
+                this.allDirectoryPaths = [];
+                this.allFilePaths = [];
+                this.flatDirectoryNodes = [];
+                this.currentDirectories = [];
+                this.currentFiles = [];
+                this.loadError = "No file storage locations are currently available.";
+                return;
+            }
+
+            this.UpdateRequestedState();
+
+            var providerTask = this.ApiClient.Api._system[this.selectedProviderName].Provider.GetAsync();
+            var allDirectoriesTask = this.ListDirectoriesAsync(path: null, recursive: true);
+            var allFilesTask = this.ListFilesAsync(path: null, recursive: true);
+            var currentDirectoriesTask = this.ListDirectoriesAsync(this.currentPath, recursive: false);
+            var currentFilesTask = this.ListFilesAsync(this.currentPath, recursive: false);
+
+            await Task.WhenAll(providerTask, allDirectoriesTask, allFilesTask, currentDirectoriesTask, currentFilesTask);
+
+            this.providerInfo = await providerTask;
+            this.allDirectoryPaths = (await allDirectoriesTask).OrderBy(path => path, StringComparer.OrdinalIgnoreCase).ToList();
+            this.allFilePaths = (await allFilesTask).Files?.OrderBy(path => path, StringComparer.OrdinalIgnoreCase).ToList() ?? [];
+            this.flatDirectoryNodes = this.BuildDirectoryNodes(this.allDirectoryPaths);
+            this.currentDirectories = this.BuildDirectoryRows(await currentDirectoriesTask);
+            this.currentFiles = await this.BuildFileRowsAsync((await currentFilesTask).Files ?? []);
+        }
+        catch (Exception ex)
+        {
+            this.loadError = ex.Message;
+            this.Snackbar.Add($"Unable to load files: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            this.loading = false;
+        }
+    }
+
+    private async Task ChangeProviderAsync(string providerName)
+    {
+        if (string.Equals(this.selectedProviderName, providerName, StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        this.selectedProviderName = providerName;
+        this.currentPath = string.Empty;
+        this.UpdateRequestedState();
+        await this.ReloadAsync();
+    }
+
+    private async Task NavigateToAsync(string path)
+    {
+        this.currentPath = NormalizePath(path);
+        this.UpdateRequestedState();
+        await this.ReloadAsync();
+    }
+
+    private async Task NavigateUpAsync()
+    {
+        if (!this.CanNavigateUp)
+        {
+            return;
+        }
+
+        var lastSeparator = this.currentPath.LastIndexOf('/');
+        var parentPath = lastSeparator < 0 ? string.Empty : this.currentPath[..lastSeparator];
+        await this.NavigateToAsync(parentPath);
+    }
+
+    private async Task CreateDirectoryAsync()
+    {
+        var path = CombinePath(this.currentPath, this.newDirectoryName);
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        try
+        {
+            _ = await this.ApiClient.Api._system[this.selectedProviderName].Directories.PostAsync(
+                configuration => configuration.QueryParameters.Path = path);
+            this.Snackbar.Add($"Created folder '{path}'.", Severity.Success);
+            this.newDirectoryName = string.Empty;
+            this.createDirectoryDialogVisible = false;
+            await this.ReloadAsync();
+        }
+        catch (Exception ex)
+        {
+            this.Snackbar.Add($"Unable to create folder: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task CreateTextFileAsync()
+    {
+        var path = CombinePath(this.currentPath, this.newTextFileName);
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        try
+        {
+            await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(this.newTextFileContent ?? string.Empty));
+            _ = await this.ApiClient.Api._system[this.selectedProviderName].Files.Content.PutAsync(
+                stream,
+                configuration => configuration.QueryParameters.Path = path);
+            this.Snackbar.Add($"Saved text file '{path}'.", Severity.Success);
+            this.newTextFileName = string.Empty;
+            this.newTextFileContent = string.Empty;
+            this.createTextFileDialogVisible = false;
+            await this.ReloadAsync();
+        }
+        catch (Exception ex)
+        {
+            this.Snackbar.Add($"Unable to save text file: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task UploadFileAsync()
+    {
+        if (this.uploadFile is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await using var stream = this.uploadFile.OpenReadStream(MaxUploadSize);
+            _ = await this.ApiClient.Api._system[this.selectedProviderName].Files.Content.PutAsync(
+                stream,
+                configuration => configuration.QueryParameters.Path = CombinePath(this.currentPath, this.uploadFile.Name));
+
+            this.Snackbar.Add($"Uploaded '{this.uploadFile.Name}'.", Severity.Success);
+            this.uploadFile = null;
+            this.uploadDialogVisible = false;
+            await this.ReloadAsync();
+        }
+        catch (Exception ex)
+        {
+            this.Snackbar.Add($"Unable to upload file: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private void PromptDeleteDirectory(string path)
+    {
+        this.confirmDeleteDirectory = true;
+        this.confirmTargetPath = path;
+        this.confirmDialogTitle = "Delete folder";
+        this.confirmDialogMessage = $"Delete '{path}' and all nested content?";
+        this.confirmDialogVisible = true;
+    }
+
+    private void PromptDeleteFile(string path)
+    {
+        this.confirmDeleteDirectory = false;
+        this.confirmTargetPath = path;
+        this.confirmDialogTitle = "Delete file";
+        this.confirmDialogMessage = $"Delete '{path}'?";
+        this.confirmDialogVisible = true;
+    }
+
+    private async Task ConfirmDeleteAsync()
+    {
+        var path = this.confirmTargetPath;
+        var deleteDirectory = this.confirmDeleteDirectory;
+        this.confirmDialogVisible = false;
+
+        if (string.IsNullOrWhiteSpace(path))
+        {
+            return;
+        }
+
+        if (deleteDirectory)
+        {
+            await this.DeleteDirectoryAsync(path);
+        }
+        else
+        {
+            await this.DeleteFileAsync(path);
+        }
+    }
+
+    private async Task DeleteDirectoryAsync(string path)
+    {
+        try
+        {
+            _ = await this.ApiClient.Api._system[this.selectedProviderName].Directories.DeleteAsync(
+                configuration =>
+                {
+                    configuration.QueryParameters.Path = path;
+                    configuration.QueryParameters.Recursive = true;
+                });
+            if (string.Equals(this.currentPath, path, StringComparison.OrdinalIgnoreCase) ||
+                this.currentPath.StartsWith(path + "/", StringComparison.OrdinalIgnoreCase))
+            {
+                this.currentPath = string.Empty;
+            }
+
+            this.UpdateRequestedState();
+            this.Snackbar.Add($"Deleted folder '{path}'.", Severity.Success);
+            await this.ReloadAsync();
+        }
+        catch (Exception ex)
+        {
+            this.Snackbar.Add($"Unable to delete folder: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task DeleteFileAsync(string path)
+    {
+        try
+        {
+            _ = await this.ApiClient.Api._system[this.selectedProviderName].Files.DeleteAsync(
+                configuration => configuration.QueryParameters.Path = path);
+            this.Snackbar.Add($"Deleted file '{path}'.", Severity.Success);
+            await this.ReloadAsync();
+        }
+        catch (Exception ex)
+        {
+            this.Snackbar.Add($"Unable to delete file: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task OpenFileAsync(string path)
+    {
+        try
+        {
+            var metadataTask = this.ApiClient.Api._system[this.selectedProviderName].Files.Metadata.GetAsync(
+                configuration => configuration.QueryParameters.Path = path);
+            var checksumTask = this.ApiClient.Api._system[this.selectedProviderName].Files.Checksum.GetAsync(
+                configuration => configuration.QueryParameters.Path = path);
+            var downloadTask = this.ReadFileBytesAsync(path);
+
+            await Task.WhenAll(metadataTask, checksumTask, downloadTask);
+
+            var metadata = await metadataTask;
+            var checksum = await checksumTask;
+            var content = await downloadTask;
+
+            this.fileDialogName = Path.GetFileName(path);
+            this.fileDialogPath = path;
+            this.fileDialogContentType = "application/octet-stream";
+            this.fileDialogChecksum = checksum?.Checksum ?? string.Empty;
+            this.fileDialogLength = metadata?.Length ?? 0L;
+            this.fileDialogLastModified = metadata?.LastModified?.UtcDateTime;
+            this.fileDialogIsText = IsTextContent(this.fileDialogContentType, path);
+            this.fileDialogTextContent = this.fileDialogIsText
+                ? Encoding.UTF8.GetString(content)
+                : string.Empty;
+            this.fileDialogVisible = true;
+        }
+        catch (Exception ex)
+        {
+            this.Snackbar.Add($"Unable to open file: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task DownloadFileAsync(string path)
+    {
+        try
+        {
+            var content = await this.ReadFileBytesAsync(path);
+            using var stream = new MemoryStream(content, writable: false);
+            using var streamReference = new DotNetStreamReference(stream);
+            await this.JS.InvokeVoidAsync("downloadFileFromStream", Path.GetFileName(path), streamReference);
+        }
+        catch (Exception ex)
+        {
+            this.Snackbar.Add($"Unable to download file: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private List<DirectoryNode> BuildDirectoryNodes(IEnumerable<string> directories) =>
+        directories
+            .Select(path => NormalizePath(path))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .OrderBy(path => path.Count(character => character == '/'))
+            .ThenBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .Select(path => new DirectoryNode(
+                path,
+                Path.GetFileName(path),
+                path.Count(character => character == '/') + 1))
+            .ToList();
+
+    private List<DirectoryRow> BuildDirectoryRows(IEnumerable<string> directories) =>
+        directories
+            .Select(path => NormalizePath(path))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .Select(path => new DirectoryRow(path, Path.GetFileName(path)))
+            .ToList();
+
+    private async Task<List<FileRow>> BuildFileRowsAsync(IEnumerable<string> files)
+    {
+        var paths = files
+            .Select(path => NormalizePath(path))
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+            .ToList();
+
+        var metadataTasks = paths.Select(async path =>
+        {
+            try
+            {
+                var metadata = await this.ApiClient.Api._system[this.selectedProviderName].Files.Metadata.GetAsync(
+                    configuration => configuration.QueryParameters.Path = path);
+                return new FileRow(path, Path.GetFileName(path), metadata?.Length, metadata?.LastModified?.UtcDateTime);
+            }
+            catch
+            {
+                return new FileRow(path, Path.GetFileName(path), null, null);
+            }
+        });
+
+        return [.. await Task.WhenAll(metadataTasks)];
+    }
+
+    private async Task<List<GenFileStorageProviderInfoModel>> ListLocationsAsync()
+    {
+        var requestInfo = this.ApiClient.Api._system
+            .WithUrl($"{this.RequestAdapter.BaseUrl?.TrimEnd('/')}/api/_system/locations")
+            .ToGetRequestInformation();
+
+        var errorMapping = new Dictionary<string, global::Microsoft.Kiota.Abstractions.Serialization.ParsableFactory<global::Microsoft.Kiota.Abstractions.Serialization.IParsable>>
+        {
+            { "500", global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.ProblemDetails.CreateFromDiscriminatorValue }
+        };
+
+        var locations = await this.RequestAdapter.SendCollectionAsync<GenFileStorageProviderInfoModel>(
+            requestInfo,
+            GenFileStorageProviderInfoModel.CreateFromDiscriminatorValue,
+            errorMapping,
+            cancellationToken: CancellationToken.None);
+
+        return locations?
+            .ToList()
+            .OrderBy(storageLocation => storageLocation.LocationName ?? storageLocation.ProviderName, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(storageLocation => storageLocation.ProviderName, StringComparer.OrdinalIgnoreCase)
+            .ToList()
+            ?? [];
+    }
+
+    private async Task<IReadOnlyList<string>> ListDirectoriesAsync(string path, bool recursive)
+        => await this.ApiClient.Api._system[this.selectedProviderName].Directories.GetAsync(
+            configuration =>
+            {
+                configuration.QueryParameters.Path = path;
+                configuration.QueryParameters.Recursive = recursive;
+            })
+        ?? [];
+
+    private async Task<GenFileStorageFilesResponseModel> ListFilesAsync(string path, bool recursive)
+        => await this.ApiClient.Api._system[this.selectedProviderName].Files.GetAsync(
+            configuration =>
+            {
+                configuration.QueryParameters.Path = path;
+                configuration.QueryParameters.Recursive = recursive;
+            })
+        ?? new GenFileStorageFilesResponseModel { Files = [] };
+
+    private async Task<byte[]> ReadFileBytesAsync(string path)
+    {
+        await using var content = await this.ApiClient.Api._system[this.selectedProviderName].Files.Content.GetAsync(
+            configuration => configuration.QueryParameters.Path = path)
+            ?? throw new InvalidOperationException($"No file content was returned for '{path}'.");
+
+        using var buffer = new MemoryStream();
+        await content.CopyToAsync(buffer);
+        return buffer.ToArray();
+    }
+
+    private IEnumerable<BreadcrumbSegment> GetBreadcrumbs()
+    {
+        if (string.IsNullOrWhiteSpace(this.currentPath))
+        {
+            yield break;
+        }
+
+        var segments = this.currentPath.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        for (var i = 0; i < segments.Length; i++)
+        {
+            yield return new BreadcrumbSegment(
+                string.Join('/', segments.Take(i + 1)),
+                segments[i]);
+        }
+    }
+
+    private string ResolveSelectedProviderName(string providerName)
+        => this.availableProviders.FirstOrDefault(location =>
+                string.Equals(location.ProviderName, providerName, StringComparison.OrdinalIgnoreCase))
+            ?.ProviderName
+            ?? this.availableProviders.FirstOrDefault()?.ProviderName;
+
+    private string GetRequestedProviderName()
+        => this.GetRequestedQueryValue("provider");
+
+    private string GetRequestedPath()
+        => NormalizePath(this.GetRequestedQueryValue("path"));
+
+    private string GetRequestedQueryValue(string key)
+    {
+        var query = this.navigationManager.ToAbsoluteUri(this.navigationManager.Uri).Query;
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return null;
+        }
+
+        foreach (var pair in query.TrimStart('?').Split('&', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var segments = pair.Split('=', 2);
+            if (!string.Equals(Uri.UnescapeDataString(segments[0]), key, StringComparison.OrdinalIgnoreCase))
+            {
+                continue;
+            }
+
+            return segments.Length > 1 ? Uri.UnescapeDataString(segments[1]) : null;
+        }
+
+        return null;
+    }
+
+    private void UpdateRequestedState()
+        => this.navigationManager.NavigateTo(BuildFilesDashboardUri(this.selectedProviderName, this.currentPath), replace: true);
+
+    private string BuildFileEventsUri()
+        => BuildFileEventsUri(this.selectedProviderName);
+
+    private static string BuildFileEventsUri(string providerName)
+        => BuildUri("/operations/fileevents", providerName, path: null);
+
+    private static string BuildFilesDashboardUri(string providerName, string path)
+        => BuildUri("/operations/files", providerName, path);
+
+    private static string BuildUri(string basePath, string providerName, string path)
+    {
+        var query = new List<string>();
+        if (!string.IsNullOrWhiteSpace(providerName))
+        {
+            query.Add($"provider={Uri.EscapeDataString(providerName)}");
+        }
+
+        var normalizedPath = NormalizePath(path);
+        if (!string.IsNullOrWhiteSpace(normalizedPath))
+        {
+            query.Add($"path={Uri.EscapeDataString(normalizedPath)}");
+        }
+
+        return query.Count == 0
+            ? basePath
+            : $"{basePath}?{string.Join("&", query)}";
+    }
+
+    private static string FormatLocationOption(GenFileStorageProviderInfoModel storageLocation)
+        => string.IsNullOrWhiteSpace(storageLocation?.ProviderName)
+            ? DisplayValue(storageLocation?.LocationName)
+            : $"{DisplayValue(storageLocation?.LocationName)} ({storageLocation.ProviderName})";
+
+    private static string CombinePath(string parentPath, string name)
+    {
+        var normalizedName = NormalizePath(name);
+        if (string.IsNullOrWhiteSpace(normalizedName))
+        {
+            return string.Empty;
+        }
+
+        var normalizedParent = NormalizePath(parentPath);
+        return string.IsNullOrWhiteSpace(normalizedParent)
+            ? normalizedName
+            : $"{normalizedParent}/{normalizedName}";
+    }
+
+    private static string NormalizePath(string path) =>
+        string.IsNullOrWhiteSpace(path)
+            ? string.Empty
+            : path.Replace('\\', '/').Trim('/');
+
+    private static string DisplayPath(string path) =>
+        string.IsNullOrWhiteSpace(path) ? "/" : path;
+
+    private static string DisplayValue(string value) =>
+        string.IsNullOrWhiteSpace(value) ? "-" : value;
+
+    private static string FormatTimestamp(DateTime? value) =>
+        value?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss") ?? "-";
+
+    private static string FormatSize(long? value)
+    {
+        if (value is null)
+        {
+            return "-";
+        }
+
+        const long kiloByte = 1024;
+        const long megaByte = kiloByte * 1024;
+
+        return value.Value switch
+        {
+            >= megaByte => $"{value.Value / (double)megaByte:0.##} MB",
+            >= kiloByte => $"{value.Value / (double)kiloByte:0.##} KB",
+            _ => $"{value.Value} B"
+        };
+    }
+
+    private static bool IsTextContent(string contentType, string path)
+    {
+        if (!string.IsNullOrWhiteSpace(contentType))
+        {
+            if (contentType.StartsWith("text/", StringComparison.OrdinalIgnoreCase) ||
+                contentType.Contains("json", StringComparison.OrdinalIgnoreCase) ||
+                contentType.Contains("xml", StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+        }
+
+        var extension = Path.GetExtension(path);
+        return extension.Equals(".txt", StringComparison.OrdinalIgnoreCase) ||
+               extension.Equals(".json", StringComparison.OrdinalIgnoreCase) ||
+               extension.Equals(".xml", StringComparison.OrdinalIgnoreCase) ||
+               extension.Equals(".md", StringComparison.OrdinalIgnoreCase) ||
+               extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) ||
+               extension.Equals(".log", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private sealed record DirectoryNode(string Path, string Name, int Level);
+
+    private sealed record DirectoryRow(string Path, string Name);
+
+    private sealed record FileRow(string Path, string Name, long? Length, DateTime? LastModified);
+
+    private sealed record BreadcrumbSegment(string Path, string Name);
+}

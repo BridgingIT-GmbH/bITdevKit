@@ -125,10 +125,8 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
         "https://localhost:5001/openapi/oauth2-redirect.html", "https://dev-app-bitdevkit-todos-e2etb4dgcubabsa4.westeurope-01.azurewebsites.net/openapi/oauth2-redirect.html") // swaggerui authorize
     .WithClient("Scalar", "scalar", $"{builder.Configuration["Authentication:Authority"]}/scalar/")); // trailing slash is needed for login popup to close!?
 
-// builder.Services.AddMessagingEndpoints(new MessagingEndpointsOptions
-// {
-//     RequireAuthorization = false,
-// });
+// builder.Services.AddMessagingEndpoints(options => options
+//     .RequireAuthorization(false));
 builder.Services.AddEndpoints<SystemEndpoints>();
 //builder.Services.AddEndpoints<JobSchedulingEndpoints>();
 

@@ -2,7 +2,9 @@
 #pragma warning disable CS0618
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Echo;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Info;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Locations;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Modules;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing;
@@ -38,6 +40,11 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system
         {
             get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs.JobsRequestBuilder(PathParameters, RequestAdapter);
         }
+        /// <summary>The locations property</summary>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Locations.LocationsRequestBuilder Locations
+        {
+            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Locations.LocationsRequestBuilder(PathParameters, RequestAdapter);
+        }
         /// <summary>The messaging property</summary>
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.MessagingRequestBuilder Messaging
         {
@@ -52,6 +59,18 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing.QueueingRequestBuilder Queueing
         {
             get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing.QueueingRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>Gets an item from the BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.api._system.item collection</summary>
+        /// <param name="position">Unique identifier of the item</param>
+        /// <returns>A <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.WithProviderNameItemRequestBuilder"/></returns>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.WithProviderNameItemRequestBuilder this[string position]
+        {
+            get
+            {
+                var urlTplParams = new Dictionary<string, object>(PathParameters);
+                urlTplParams.Add("providerName", position);
+                return new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.WithProviderNameItemRequestBuilder(urlTplParams, RequestAdapter);
+            }
         }
         /// <summary>
         /// Instantiates a new <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system._systemRequestBuilder"/> and sets the default values.

@@ -219,6 +219,15 @@ Best practices:
 - Exposes the persisted work through `IMessageBrokerService` and the optional server endpoints from `Presentation.Web.Messaging`.
 - See [src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBroker{TContext}.cs](src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBroker{TContext}.cs), [src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBrokerWorker{TContext}.cs](src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBrokerWorker{TContext}.cs), and [src/Presentation.Web.Messaging/MessagingEndpoints.cs](src/Presentation.Web.Messaging/MessagingEndpoints.cs).
 
+Multi-host deployment notes:
+
+- The Entity Framework broker is designed for **multi-host active processing** when backed by a relational provider such as **SQL Server** or **PostgreSQL**.
+- Delivery semantics are **at-least-once**, not exactly-once. If a host crashes after side effects but before finalization, or if a lease expires and another worker reclaims the row, the same message may be processed again.
+- Handlers should therefore be **idempotent** and use `MessageId` or domain-level deduplication where duplicate side effects matter.
+- Tune `LeaseDuration` to exceed normal handler duration, and keep `LeaseRenewalInterval` comfortably below that lease.
+- `SQLite` is supported for local/dev and lightweight scenarios, but it is **not the recommended backing store for real multi-host deployments**.
+- Workers only finalize state when they still own the lease. If ownership changed, the worker skips finalization rather than overwriting newer state.
+
 Entity Framework broker flow:
 
 ```mermaid
@@ -343,11 +352,12 @@ These endpoints are intended for support and operations workflows. In production
 - Expiration/TTL: prevent processing stale data; in-process broker drops expired messages before processing, while the Entity Framework broker expires rows based on `MessageExpiration`.
 - Retries/redelivery: prefer handler retry behaviors; the Entity Framework broker also supports operational retries through stored handler state; Service Bus will redeliver after abandon; RabbitMQ auto-ack means no redelivery on failures.
 - Correlation/tracing: propagate correlation via Activity baggage; instrument via OpenTelemetry.
+- Multi-host EF guidance: prefer SQL Server/PostgreSQL for active-active worker deployments; treat SQLite as a local/lightweight option rather than a distributed broker store.
 
 ## Testing
 
 - InProcess broker for unit/integration tests: deterministic ordering and simple setup.
-- Entity Framework broker tests: validate claim/finalize, lease renewal, retry state transitions, and endpoint operations with focused broker and store-service tests.
+- Entity Framework broker tests: validate claim/finalize, lease renewal, retry state transitions, and endpoint operations with focused broker and store-service tests, including SQLite, SQL Server, and PostgreSQL integration coverage for the durable worker paths.
 - Transport-backed integration tests: run RabbitMQ/Service Bus locally (containers/emulators), ensure subscriptions exist before publishing, and assert side-effects and idempotency.
 
 ## Minimal Examples

@@ -192,6 +192,17 @@ For Entity Framework, the most relevant broker-specific retention options are:
 - Durable providers use at-least-once delivery semantics; handlers should remain idempotent.
 - `AddQueueing(...)` may be called from multiple modules. Registrations accumulate, but queueing still uses one hosted service.
 
+### Multi-host Deployment Notes
+
+- `EntityFrameworkQueueBroker<TContext>` is intended to support **multiple host instances competing for work** against the same durable store.
+- For real multi-host deployments, prefer **SQL Server** or **PostgreSQL** so lease claim and renewal can use efficient conditional updates in the database.
+- Queueing still provides **at-least-once** delivery semantics. The goal is one logical owner at a time, not an exactly-once execution guarantee.
+- A queued item can be reprocessed if a host crashes after side effects but before finalize, or if lease ownership changes after expiry.
+- Queue handlers should therefore be **idempotent** and safe to execute more than once for the same `MessageId`.
+- Set `LeaseDuration` longer than normal handler execution time and `LeaseRenewalInterval` low enough that healthy workers renew ownership before expiry.
+- `SQLite` is suitable for local/dev and lightweight durable scenarios, but it is **not the recommended storage engine for distributed multi-host queue processing**.
+- Workers verify `LockedBy` before finalizing state. If another node took ownership, the older worker skips finalization rather than overwriting the newer lease owner.
+
 ## Relation To Messaging
 
 Use Messaging when one event should fan out to many handlers. Use Queueing when one work item should be owned by one handler execution. The APIs are intentionally similar so the developer experience stays familiar, but the runtime semantics are different.
@@ -204,6 +215,9 @@ The queueing slice is covered by focused application and presentation tests:
 - [tests/Application.IntegrationTests/Queueing/QueueingRegistrationTests.cs](tests/Application.IntegrationTests/Queueing/QueueingRegistrationTests.cs)
 - [tests/Application.IntegrationTests/Queueing/InProcessQueueingBrokerTests.cs](tests/Application.IntegrationTests/Queueing/InProcessQueueingBrokerTests.cs)
 - [tests/Application.IntegrationTests/Queueing/EntityFrameworkQueueingBrokerTests.cs](tests/Application.IntegrationTests/Queueing/EntityFrameworkQueueingBrokerTests.cs)
+- [tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkSqliteQueueBrokerTests.cs](tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkSqliteQueueBrokerTests.cs)
+- [tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkSqlServerQueueBrokerTests.cs](tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkSqlServerQueueBrokerTests.cs)
+- [tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkPostgresQueueBrokerTests.cs](tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkPostgresQueueBrokerTests.cs)
 - [tests/Presentation.UnitTests/Web/Queueing/QueueingEndpointsTests.cs](tests/Presentation.UnitTests/Web/Queueing/QueueingEndpointsTests.cs)
 
-These tests cover additive registration with a single hosted service, in-process waiting/requeue and pause/resume behavior, Entity Framework durable processing and retention behavior, waiting-message ordering, retry state reset, and the operational endpoint surface.
+These tests cover additive registration with a single hosted service, in-process waiting/requeue and pause/resume behavior, Entity Framework durable processing and retention behavior, waiting-message ordering, retry state reset, competing-worker lease behavior, and the operational endpoint surface across SQLite, SQL Server, and PostgreSQL.

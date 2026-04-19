@@ -12,7 +12,7 @@
 @inject BackendApiClient Api
 @inject ISnackbar Snackbar
 @implements IAsyncDisposable
-@attribute [Authorize]
+@attribute [RequireAuthentication]
 
 <PageTitle>DoFiesta - Operations Job Scheduling</PageTitle>
 

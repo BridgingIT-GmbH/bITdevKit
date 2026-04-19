@@ -8,7 +8,7 @@
 @inject IAccessTokenProvider TokenProvider
 @inject IJSRuntime JSRuntime
 @inject NavigationManager Navigation
-@attribute [Authorize]
+@attribute [RequireAuthentication]
 
 <MudContainer Class="mt-4">
     <MudGrid>

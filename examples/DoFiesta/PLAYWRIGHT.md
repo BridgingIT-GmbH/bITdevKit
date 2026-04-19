@@ -8,6 +8,11 @@ Use this note when automating the local DoFiesta app with Playwright.
   - `dotnet run --project examples\DoFiesta\DoFiesta.Presentation.Web.Server\DoFiesta.Presentation.Web.Server.csproj --nologo --urls "https://localhost:5001;http://localhost:5000"`
 - Prefer `https://localhost:5001`.
 - In Playwright use `ignoreHTTPSErrors: true`.
+- If the app root turns into a white page and the browser console mentions a hashed `_framework/dotnet.<hash>.js` module or a MIME-type failure, treat that as a bootstrap-asset mismatch first:
+  - verify the app was started with `dotnet run` on the server project
+  - retry with a fresh browser context
+  - probe `https://localhost:5001/`, `https://localhost:5001/_framework/blazor.web.js`, and `https://localhost:5001/_framework/dotnet.js`
+  - the healthy state is `200` HTML for `/` and `200` JavaScript for both framework assets
 
 ## Authentication
 
@@ -30,12 +35,13 @@ DoFiesta uses the local fake identity provider in development.
 
 ### Navigation rule
 
-Do **not** navigate directly to authenticated routes in Playwright (`/todos`, `/operations`, `/operations/notifications`, and similar). That currently causes errors and needs a separate fix later. For browser automation, always use:
+Direct navigation to authenticated routes now works again because the server serves the SPA shell first and the client router performs the auth redirect. For reliable automation you can still prefer visible in-app navigation after login, but these direct entry routes should no longer return a raw `401` document response:
 
-- login
-- choose user
-- redirect back into the app
-- click the nav element you want
+- `/todos`
+- `/operations`
+- `/operations/notifications`
+- `/operations/files`
+- `/operations/fileevents`
 
 ### Useful auth detail
 
@@ -53,7 +59,7 @@ That entry contains the access token used by the generated API client.
 - Operations nav link: `Notifications`
 - Reliable post-login entry into Todos: home-page `Get Started`
 
-Protected routes can render a raw `401` response or other broken behavior when opened directly before or during login automation. Stay on the public shell and move through the app by clicking visible elements after sign-in.
+Unauthenticated direct hits to protected routes should redirect into the login flow through the SPA shell instead of rendering a raw `401` response. During automation, prefer waiting for the redirect/login UI to settle before asserting page content.
 
 ## Todo creation
 
@@ -82,6 +88,7 @@ Protected routes can render a raw `401` response or other broken behavior when o
 - If a normal Playwright click on the nav toggle fails because of viewport layout, scroll back to the top or use the nav link after bringing the shell back into view.
 - Querying provider-backed endpoints from Playwright requires the bearer token from `sessionStorage`; cookies alone are not enough for `/api/_system/...` fetch calls.
 - For provider verification, prefer the notifications endpoint over direct database inspection.
+- A clean Playwright browser context currently loads `/` and the direct `/todos` route successfully. If a previously opened browser still requests an older hashed `dotnet.*.js` module, suspect stale client bootstrap state before suspecting the current server build.
 
 ## Recommended automation pattern
 

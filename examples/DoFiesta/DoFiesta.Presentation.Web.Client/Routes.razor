@@ -3,17 +3,26 @@
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(Program).Assembly">
         <Found Context="routeData">
-            @* <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" /> *@
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                <Authorizing>
-                    @* <p>Determining session state, please wait...</p> *@
-                </Authorizing>
-                <NotAuthorized>
-                    <h1>Sorry</h1>
-                    <p>You are not authorized to view this page</p>
-                    <RedirectToLogin />
-                </NotAuthorized>
-            </AuthorizeRouteView>
+            @if (RequiresAuthentication(routeData.PageType))
+            {
+                <AuthorizeView>
+                    <Authorized>
+                        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+                    </Authorized>
+                    <Authorizing>
+                        @* <p>Determining session state, please wait...</p> *@
+                    </Authorizing>
+                    <NotAuthorized>
+                        <h1>Sorry</h1>
+                        <p>You are not authorized to view this page</p>
+                        <RedirectToLogin />
+                    </NotAuthorized>
+                </AuthorizeView>
+            }
+            else
+            {
+                <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
+            }
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
         <NotFound>
@@ -25,3 +34,10 @@
         </NotFound>
     </Router>
 </CascadingAuthenticationState>
+
+@code {
+    private static bool RequiresAuthentication(Type pageType)
+    {
+        return pageType.IsDefined(typeof(RequireAuthenticationAttribute), inherit: true);
+    }
+}

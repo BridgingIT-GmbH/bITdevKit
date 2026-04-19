@@ -9,6 +9,7 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using BridgingIT.DevKit.Presentation.Web;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 public class CoreTodoItemEndpoints : EndpointsBase
@@ -121,11 +122,95 @@ public class CoreTodoItemEndpoints : EndpointsBase
             async ([FromServices] IRequester requester,
                    [FromRoute] string id, CancellationToken ct)
                    => (await requester
-                    .SendAsync(new TodoItemDeleteCommand(id), cancellationToken: ct))
+                     .SendAsync(new TodoItemDeleteCommand(id), cancellationToken: ct))
                     .MapHttpNoContent())
             .WithName("Core.TodoItems.Delete")
             .WithDescription("Deletes the specified TodoItem.")
             .RequireEntityPermission<TodoItem>(Permission.Delete)
+            .Produces(StatusCodes.Status204NoContent)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("/{id}/attachments",
+            async ([FromServices] IRequester requester,
+                   [FromRoute] string id,
+                   CancellationToken ct)
+                   => (await requester
+                        .SendAsync(new TodoItemAttachmentFindAllQuery(id), cancellationToken: ct))
+                    .MapHttpOkAll())
+            .WithName("Core.TodoItems.Attachments.List")
+            .WithDescription("Lists the attachments stored for the specified TodoItem.")
+            .RequireEntityPermission<TodoItem>(Permission.Read)
+            .Produces<IEnumerable<TodoItemAttachmentModel>>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("/{id}/attachments/content",
+            async Task<Results<FileStreamHttpResult, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>> (
+                [FromServices] IRequester requester,
+                [FromRoute] string id,
+                [FromQuery] string fileName,
+                CancellationToken ct) =>
+                (await requester.SendAsync(new TodoItemAttachmentReadQuery(id, fileName), cancellationToken: ct))
+                .MapHttp<FileStreamHttpResult, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult, Stream>(
+                    stream => TypedResults.File(
+                        stream,
+                        ContentTypeExtensions.FromFileName(fileName, ContentType.DEFAULT).MimeType(),
+                        fileName)))
+            .WithName("Core.TodoItems.Attachments.Download")
+            .WithDescription("Downloads the specified TodoItem attachment.")
+            .RequireEntityPermission<TodoItem>(Permission.Read)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
+
+        group.MapPost("/{id}/attachments",
+            async ([FromServices] IRequester requester,
+                   [FromRoute] string id,
+                   IFormFile file,
+                   CancellationToken ct) =>
+            {
+                if (file is null)
+                {
+                    return Results.Problem(
+                        title: "No file provided",
+                        statusCode: StatusCodes.Status400BadRequest);
+                }
+
+                await using var stream = file.OpenReadStream();
+                return (await requester.SendAsync(
+                        new TodoItemAttachmentUploadCommand(id, file.FileName, stream),
+                        cancellationToken: ct))
+                    .MapHttpCreated(attachment =>
+                        $"/api/core/todoitems/{id}/attachments/content?fileName={Uri.EscapeDataString(attachment.FileName)}");
+            })
+            .WithName("Core.TodoItems.Attachments.Upload")
+            .WithDescription("Uploads or replaces an attachment for the specified TodoItem.")
+            .RequireEntityPermission<TodoItem>(Permission.Write)
+            .Accepts<IFormFile>("multipart/form-data")
+            .Produces<TodoItemAttachmentModel>(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status500InternalServerError)
+            .DisableAntiforgery();
+
+        group.MapDelete("/{id}/attachments",
+            async ([FromServices] IRequester requester,
+                   [FromRoute] string id,
+                   [FromQuery] string fileName,
+                   CancellationToken ct)
+                   => (await requester
+                        .SendAsync(new TodoItemAttachmentDeleteCommand(id, fileName), cancellationToken: ct))
+                    .MapHttpNoContent())
+            .WithName("Core.TodoItems.Attachments.Delete")
+            .WithDescription("Deletes the specified TodoItem attachment.")
+            .RequireEntityPermission<TodoItem>(Permission.Write)
             .Produces(StatusCodes.Status204NoContent)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)

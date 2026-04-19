@@ -11,11 +11,12 @@ Managing file storage presents challenges due to inconsistent APIs across storag
 The `FileStorage` feature addresses these through the `IFileStorageProvider` interface for abstracting file operations, a fluent DI setup with `AddFileStorage`, and the `Result` pattern for error handling and messaging. It supports progress reporting via `IProgress<FileProgress>` and metadata management with `FileMetadata`. The feature is designed to be extensible, allowing developers to implement custom providers or extend functionality with behaviors. Additionally, it supports notifications for real-time monitoring (used by `FileMonitoring`) through the `SupportsNotifications` property. Besides the existing `WriteFileAsync` push model, the abstraction also supports `OpenWriteFileAsync` for scenarios where callers want to stream bytes directly into the destination.
 
 Available providers included:
+
 - Local Files (e.g., `C:\data\file.txt` or `/var/data/file.txt`)
 - Network Shares (e.g., Windows UNC paths)
-- Azure Files 
-- Azure Blob Storage 
-- Entity Framework backed database storage
+- Azure Files
+- Azure Blob Storage
+- Entity Framework backed storage
 
 ### Architecture
 

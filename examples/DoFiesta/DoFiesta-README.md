@@ -52,6 +52,12 @@ the [ApiClient](.\DoFiesta.Presentation.Web.Client\Connected%20Services\DoFiesta
 
 # Presentation
 
+## Todo attachments
+
+- Todo-item attachments are stored through the regular todo API, not through the admin-only `_system` file-storage endpoints.
+- The server uses the named `attachments` file-storage provider and stores each todo item's files below a folder named after the todo item id.
+- The Blazor todo page exposes the feature through an attachment dialog on each row, supporting list, upload, download, and delete for text and binary files.
+
 # Development
 
 ### Entity Framework

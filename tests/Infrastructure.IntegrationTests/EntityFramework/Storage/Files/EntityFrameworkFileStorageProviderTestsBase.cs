@@ -452,6 +452,83 @@ public abstract class EntityFrameworkFileStorageProviderTestsBase : FileStorageT
     }
 
     [Fact]
+    public virtual async Task WriteFileAsync_MixedCasePath_PreservesStoredCasingAndSupportsCaseInsensitiveAccess()
+    {
+        var provider = this.CreateIsolatedProvider("mixed-case-file");
+        const string storedPath = "Docs/MixedCase/ReadMe.TXT";
+        byte[] payload = "payload"u8.ToArray();
+
+        var writeResult = await provider.WriteFileAsync(storedPath, new MemoryStream(payload), null, CancellationToken.None);
+        var readResult = await provider.ReadBytesAsync("docs/mixedcase/readme.txt", cancellationToken: CancellationToken.None);
+        var metadataResult = await provider.GetFileMetadataAsync("DOCS/MIXEDCASE/README.TXT", CancellationToken.None);
+        var directoryListResult = await provider.ListDirectoriesAsync("docs", "*", true, CancellationToken.None);
+        var fileListResult = await provider.ListFilesAsync("docs", "*", true, null, CancellationToken.None);
+
+        var storedState = await this.ExecuteDbContextAsync(async dbContext =>
+            new
+            {
+                File = await dbContext.StorageFiles
+                    .AsNoTracking()
+                    .SingleAsync(f => f.LocationName == provider.LocationName),
+                Directories = await dbContext.StorageDirectories
+                    .AsNoTracking()
+                    .Where(d => d.LocationName == provider.LocationName && d.NormalizedPath != string.Empty)
+                    .OrderBy(d => d.NormalizedPath)
+                    .Select(d => new { d.NormalizedPath, d.Name })
+                    .ToListAsync()
+            });
+
+        writeResult.ShouldBeSuccess();
+        readResult.ShouldBeSuccess();
+        readResult.Value.ShouldBe(payload);
+        metadataResult.ShouldBeSuccess();
+        metadataResult.Value.Path.ShouldBe(storedPath);
+        directoryListResult.ShouldBeSuccess();
+        directoryListResult.Value.ShouldBe(["Docs/MixedCase"]);
+        fileListResult.ShouldBeSuccess();
+        fileListResult.Value.Files.ShouldBe([storedPath]);
+        storedState.File.NormalizedPath.ShouldBe(storedPath);
+        storedState.File.ParentPath.ShouldBe("Docs/MixedCase");
+        storedState.File.Name.ShouldBe("ReadMe.TXT");
+        storedState.Directories.ShouldBe(
+        [
+            new { NormalizedPath = "Docs", Name = "Docs" },
+            new { NormalizedPath = "Docs/MixedCase", Name = "MixedCase" }
+        ]);
+    }
+
+    [Fact]
+    public virtual async Task WriteFileAsync_ExistingDirectoriesRetainStoredCasing_WhenAddressedWithDifferentCasing()
+    {
+        var provider = this.CreateIsolatedProvider("mixed-case-ancestors");
+        await provider.CreateDirectoryAsync("Root/Inner", CancellationToken.None);
+
+        var writeResult = await provider.WriteFileAsync("root/inner/File.txt", new MemoryStream("payload"u8.ToArray()), null, CancellationToken.None);
+        var metadataResult = await provider.GetFileMetadataAsync("ROOT/INNER/FILE.TXT", CancellationToken.None);
+
+        var storedState = await this.ExecuteDbContextAsync(async dbContext =>
+            new
+            {
+                File = await dbContext.StorageFiles
+                    .AsNoTracking()
+                    .SingleAsync(f => f.LocationName == provider.LocationName),
+                Directories = await dbContext.StorageDirectories
+                    .AsNoTracking()
+                    .Where(d => d.LocationName == provider.LocationName && d.NormalizedPath != string.Empty)
+                    .OrderBy(d => d.NormalizedPath)
+                    .Select(d => d.NormalizedPath)
+                    .ToListAsync()
+            });
+
+        writeResult.ShouldBeSuccess();
+        metadataResult.ShouldBeSuccess();
+        metadataResult.Value.Path.ShouldBe("Root/Inner/File.txt");
+        storedState.File.NormalizedPath.ShouldBe("Root/Inner/File.txt");
+        storedState.File.ParentPath.ShouldBe("Root/Inner");
+        storedState.Directories.ShouldBe(["Root", "Root/Inner"]);
+    }
+
+    [Fact]
     public virtual async Task DeleteFileAsync_DeletingOnlyFile_PrunesImplicitParents()
     {
         var provider = this.CreateIsolatedProvider("prune-implicit-parents");

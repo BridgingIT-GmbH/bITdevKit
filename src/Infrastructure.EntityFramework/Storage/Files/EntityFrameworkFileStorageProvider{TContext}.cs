@@ -854,6 +854,8 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
                             .WithMessage(failureMessage);
                     }
 
+                    sourcePath = ResolveMutationPathFromFile(sourcePath, sourceFile);
+
                     var destinationDirectoryConflict = await this.TryGetTrackedDirectoryAsync(mutationContext.Context, destinationMutationPath.NormalizedPath, cancellationToken);
                     if (destinationDirectoryConflict is not null)
                     {
@@ -873,6 +875,8 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
                             .WithErrors(destinationParentResult.Errors)
                             .WithMessages(destinationParentResult.Messages);
                     }
+
+                    destinationMutationPath = this.ResolveMutationPathAgainstParent(destinationMutationPath, destinationParentResult.Value);
 
                     var existingDestinationFile = await this.TryGetTrackedFileAsync(
                         mutationContext.Context,
@@ -1081,6 +1085,8 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
                                 .WithMessage(failureMessage);
                     }
 
+                    sourcePath = ResolveMutationPathFromDirectory(sourcePath, sourceDirectory);
+
                     var destinationDirectoryConflict = await this.TryGetTrackedDirectoryAsync(mutationContext.Context, destinationMutationPath.NormalizedPath, cancellationToken);
                     if (destinationDirectoryConflict is not null)
                     {
@@ -1106,6 +1112,8 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
                             .WithErrors(destinationParentResult.Errors)
                             .WithMessages(destinationParentResult.Messages);
                     }
+
+                    destinationMutationPath = this.ResolveMutationPathAgainstParent(destinationMutationPath, destinationParentResult.Value);
 
                     var subtreePrefix = sourcePath.NormalizedPath + "/";
                     var directories = await mutationContext.Context.StorageDirectories
@@ -1477,6 +1485,10 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
                     .WithMessages(directoryResult.Messages);
             }
 
+            normalizedRootPath = normalizedRootPath.Length == 0
+                ? string.Empty
+                : (await this.TryGetDirectoryAsync(context, normalizedRootPath, cancellationToken))?.NormalizedPath ?? normalizedRootPath;
+
             var tokenResult = this.ParseSeekContinuationToken(continuationToken, normalizedRootPath, recursive, searchPattern);
             if (tokenResult.IsFailure)
             {
@@ -1594,6 +1606,10 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
                     .WithErrors(directoryResult.Errors)
                     .WithMessages(directoryResult.Messages);
             }
+
+            normalizedRootPath = normalizedRootPath.Length == 0
+                ? string.Empty
+                : (await this.TryGetDirectoryAsync(context, normalizedRootPath, cancellationToken))?.NormalizedPath ?? normalizedRootPath;
 
             var directories = await this.BuildDirectoryListQuery(context, normalizedRootPath, recursive)
                 .OrderBy(d => d.NormalizedPath)
@@ -1786,11 +1802,19 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
                 continue;
             }
 
-            normalizedSegments.Add(segment.ToLowerInvariant());
+            normalizedSegments.Add(segment);
         }
 
         return string.Join("/", normalizedSegments);
     }
+
+    /// <summary>
+    /// Produces the case-folded path representation used for provider comparisons and hashes.
+    /// </summary>
+    /// <param name="normalizedPath">The normalized path whose separators and segments have already been validated.</param>
+    /// <returns>The case-insensitive comparison key for the supplied path.</returns>
+    protected virtual string NormalizePathForComparison(string normalizedPath) =>
+        (normalizedPath ?? string.Empty).ToUpperInvariant();
 
     /// <summary>
     /// Gets the normalized parent path for the supplied normalized path.
@@ -1839,7 +1863,7 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
     /// </summary>
     /// <param name="normalizedPath">The normalized path to hash.</param>
     /// <returns>The lowercase hexadecimal path hash.</returns>
-    protected virtual string ComputePathHash(string normalizedPath) => HashHelper.ComputeSha256(normalizedPath ?? string.Empty).ToLower();
+    protected virtual string ComputePathHash(string normalizedPath) => HashHelper.ComputeSha256(this.NormalizePathForComparison(normalizedPath)).ToLower();
 
     /// <summary>
     /// Ensures that the logical root directory row exists for the current location.
@@ -2074,7 +2098,9 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
 
         for (var index = 0; index < segments.Length; index++)
         {
-            currentPath = currentPath.Length == 0 ? segments[index] : $"{currentPath}/{segments[index]}";
+            currentPath = current?.NormalizedPath?.Length > 0
+                ? $"{current.NormalizedPath}/{segments[index]}"
+                : segments[index];
 
             var fileConflict = await this.TryGetTrackedFileAsync(context, currentPath, includeContent: false, cancellationToken);
             if (fileConflict is not null)
@@ -2257,7 +2283,7 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
             .Where(f => f.LocationName == this.LocationName && f.NormalizedPathHash == pathHash)
             .ToListAsync(cancellationToken);
 
-        var file = candidates.SingleOrDefault(f => f.NormalizedPath == normalizedPath);
+        var file = candidates.SingleOrDefault(f => string.Equals(f.NormalizedPath, normalizedPath, StringComparison.OrdinalIgnoreCase));
         if (file is null && candidates.Count > 0)
         {
             this.logger.LogWarning(
@@ -2285,7 +2311,7 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
         }
 
         var candidates = await query.ToListAsync(cancellationToken);
-        var file = candidates.SingleOrDefault(f => f.NormalizedPath == normalizedPath);
+        var file = candidates.SingleOrDefault(f => string.Equals(f.NormalizedPath, normalizedPath, StringComparison.OrdinalIgnoreCase));
         if (file is null && candidates.Count > 0)
         {
             this.logger.LogWarning(
@@ -2310,7 +2336,7 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
             .Where(d => d.LocationName == this.LocationName && d.NormalizedPathHash == pathHash)
             .ToListAsync(cancellationToken);
 
-        var directory = candidates.SingleOrDefault(d => d.NormalizedPath == normalizedPath);
+        var directory = candidates.SingleOrDefault(d => string.Equals(d.NormalizedPath, normalizedPath, StringComparison.OrdinalIgnoreCase));
         if (directory is null && candidates.Count > 0)
         {
             this.logger.LogWarning(
@@ -2332,7 +2358,7 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
             .Where(d => d.LocationName == this.LocationName && d.NormalizedPathHash == pathHash)
             .ToListAsync(cancellationToken);
 
-        return candidates.SingleOrDefault(d => d.NormalizedPath == normalizedPath);
+        return candidates.SingleOrDefault(d => string.Equals(d.NormalizedPath, normalizedPath, StringComparison.OrdinalIgnoreCase));
     }
 
     private async Task<Result> WriteFilePayloadAsync(
@@ -2374,6 +2400,8 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
                         .WithErrors(parentDirectoryResult.Errors)
                         .WithMessages(parentDirectoryResult.Messages);
                 }
+
+                mutationPath = this.ResolveMutationPathAgainstParent(mutationPath, parentDirectoryResult.Value);
 
                 var existingFile = await this.TryGetTrackedFileAsync(mutationContext.Context, mutationPath.NormalizedPath, includeContent: true, cancellationToken);
                 var persistedContent = this.CreateFileContentEntity(mutationPath.NormalizedPath, payloadBytes);
@@ -2489,6 +2517,8 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
                                 .WithMessage(failureMessage);
                     }
 
+                    sourcePath = ResolveMutationPathFromFile(sourcePath, sourceFile);
+
                     var destinationDirectoryConflict = await this.TryGetTrackedDirectoryAsync(mutationContext.Context, destinationMutationPath.NormalizedPath, cancellationToken);
                     if (destinationDirectoryConflict is not null)
                     {
@@ -2508,6 +2538,8 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
                             .WithErrors(destinationParentResult.Errors)
                             .WithMessages(destinationParentResult.Messages);
                     }
+
+                    destinationMutationPath = this.ResolveMutationPathAgainstParent(destinationMutationPath, destinationParentResult.Value);
 
                     var existingDestinationFile = await this.TryGetTrackedFileAsync(
                         mutationContext.Context,
@@ -2582,6 +2614,42 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
             this.ComputePathHash(normalizedPath),
             parentPath is null ? null : this.ComputePathHash(parentPath));
     }
+
+    private MutationPath ResolveMutationPathAgainstParent(MutationPath path, FileStorageDirectoryEntity parentDirectory)
+    {
+        var resolvedParentPath = parentDirectory?.NormalizedPath ?? string.Empty;
+        var resolvedPath = resolvedParentPath.Length == 0
+            ? path.Name
+            : $"{resolvedParentPath}/{path.Name}";
+
+        return path with
+        {
+            NormalizedPath = resolvedPath,
+            ParentPath = resolvedParentPath,
+            PathHash = this.ComputePathHash(resolvedPath),
+            ParentPathHash = this.ComputePathHash(resolvedParentPath)
+        };
+    }
+
+    private static MutationPath ResolveMutationPathFromFile(MutationPath path, FileStorageFileEntity file) =>
+        path with
+        {
+            NormalizedPath = file.NormalizedPath,
+            ParentPath = file.ParentPath,
+            Name = file.Name,
+            PathHash = file.NormalizedPathHash,
+            ParentPathHash = file.ParentPathHash
+        };
+
+    private static MutationPath ResolveMutationPathFromDirectory(MutationPath path, FileStorageDirectoryEntity directory) =>
+        path with
+        {
+            NormalizedPath = directory.NormalizedPath,
+            ParentPath = directory.ParentPath,
+            Name = directory.Name,
+            PathHash = directory.NormalizedPathHash,
+            ParentPathHash = directory.ParentPathHash
+        };
 
     private IReadOnlyList<MutationPath> CreateOrderedMutationPaths(IEnumerable<string> paths) =>
         paths
@@ -3215,14 +3283,14 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
     {
         var chainPaths = mutationPaths
             .SelectMany(path => this.EnumerateAncestorPathsInclusive(path.NormalizedPath))
-            .Distinct(StringComparer.Ordinal)
+            .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToList();
         if (chainPaths.Count == 0)
         {
             return [];
         }
 
-        var pathLookup = chainPaths.ToHashSet(StringComparer.Ordinal);
+        var pathLookup = chainPaths.ToHashSet(StringComparer.OrdinalIgnoreCase);
         var pathHashes = chainPaths
             .Select(this.ComputePathHash)
             .Distinct(StringComparer.Ordinal)
@@ -3239,11 +3307,11 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
             .ToListAsync(cancellationToken);
         var directoryLookup = directories
             .Where(target => pathLookup.Contains(target.Path))
-            .ToDictionary(target => target.Path, StringComparer.Ordinal);
+            .ToDictionary(target => target.Path, StringComparer.OrdinalIgnoreCase);
         var fileLookup = files
             .Where(target => pathLookup.Contains(target.Path))
-            .ToDictionary(target => target.Path, StringComparer.Ordinal);
-        var selectedTargets = new Dictionary<string, MutationLeaseTarget>(StringComparer.Ordinal);
+            .ToDictionary(target => target.Path, StringComparer.OrdinalIgnoreCase);
+        var selectedTargets = new Dictionary<string, MutationLeaseTarget>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var mutationPath in mutationPaths)
         {
@@ -3295,7 +3363,7 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
     }
 
     private Result ValidateDistinctPaths(MutationPath sourcePath, MutationPath destinationPath, string failureMessage) =>
-        string.Equals(sourcePath.NormalizedPath, destinationPath.NormalizedPath, StringComparison.Ordinal)
+        string.Equals(sourcePath.NormalizedPath, destinationPath.NormalizedPath, StringComparison.OrdinalIgnoreCase)
             ? this.CreateSemanticConflictFailure(failureMessage, "Source and destination paths cannot be the same")
             : Result.Success();
 
@@ -3545,11 +3613,12 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
             return true;
         }
 
-        return normalizedPath == normalizedRootPath || normalizedPath.StartsWith(normalizedRootPath + "/", StringComparison.Ordinal);
+        return string.Equals(normalizedPath, normalizedRootPath, StringComparison.OrdinalIgnoreCase) ||
+            normalizedPath.StartsWith(normalizedRootPath + "/", StringComparison.OrdinalIgnoreCase);
     }
 
     private static string RewriteSubtreePath(string sourceRootPath, string destinationRootPath, string currentPath) =>
-        string.Equals(currentPath, sourceRootPath, StringComparison.Ordinal)
+        string.Equals(currentPath, sourceRootPath, StringComparison.OrdinalIgnoreCase)
             ? destinationRootPath
             : destinationRootPath + currentPath[sourceRootPath.Length..];
 

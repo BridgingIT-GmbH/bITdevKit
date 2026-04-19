@@ -17,7 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <InternalsVisibleTo Include="BridgingIT.DevKit.Examples.DoFiesta.IntegrationTests" />
     <InternalsVisibleTo Include="BridgingIT.DevKit.Examples.DoFiesta.UnitTests" />
   </ItemGroup>
 

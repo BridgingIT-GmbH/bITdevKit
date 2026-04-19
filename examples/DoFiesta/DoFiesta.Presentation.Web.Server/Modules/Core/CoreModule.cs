@@ -111,7 +111,7 @@ public class CoreModule : WebModuleBase
         services.AddFileStorage(factory => factory
             .RegisterProvider("documents", storage => storage
                 .UseEntityFramework<CoreDbContext>(
-                    "DoFiesta Documents",
+                    "documents",
                     "Entity Framework backed operational file storage",
                     options => options
                         .PageSize(200)
@@ -119,7 +119,7 @@ public class CoreModule : WebModuleBase
                 .WithLifetime(ServiceLifetime.Singleton))
             .RegisterProvider("attachments", storage => storage
                 .UseEntityFramework<CoreDbContext>(
-                    "DoFiesta Attachments",
+                    "attachments",
                     "Entity Framework backed attachment and import file storage",
                     options => options
                         .PageSize(200)

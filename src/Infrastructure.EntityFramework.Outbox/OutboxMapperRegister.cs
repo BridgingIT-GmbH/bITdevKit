@@ -9,8 +9,15 @@ using Domain.Outbox;
 using Mapster;
 using Models;
 
+/// <summary>
+/// Registers Mapster mappings for the Entity Framework outbox module.
+/// </summary>
 public class OutboxMapperRegister : IRegister
 {
+    /// <summary>
+    /// Registers the outbox message mappings.
+    /// </summary>
+    /// <param name="config">The Mapster configuration to update.</param>
     public void Register(TypeAdapterConfig config)
     {
         config.NewConfig<OutboxMessage, Outbox>().TwoWays();

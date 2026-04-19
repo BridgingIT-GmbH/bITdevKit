@@ -7,8 +7,26 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Domain.Outbox;
 
+/// <summary>
+/// Provides builder extensions for registering the Entity Framework backed domain event outbox service.
+/// </summary>
 public static partial class DbContextBuilderContextExtensions
 {
+    /// <summary>
+    /// Registers the domain event outbox service for the current DbContext builder using a fluent options builder.
+    /// </summary>
+    /// <typeparam name="TContext">The database context type that implements <see cref="IOutboxDomainEventContext" />.</typeparam>
+    /// <param name="context">The DbContext builder context.</param>
+    /// <param name="optionsBuilder">The fluent options builder used to customize outbox processing.</param>
+    /// <returns>The current <see cref="DbContextBuilderContext{TContext}" /> for further composition.</returns>
+    /// <example>
+    /// <code>
+    /// builder.WithOutboxDomainEventService&lt;AppDbContext&gt;(options => options
+    ///     .ProcessingInterval(TimeSpan.FromSeconds(10))
+    ///     .LeaseDuration(TimeSpan.FromSeconds(30))
+    ///     .LeaseRenewalInterval(TimeSpan.FromSeconds(10)));
+    /// </code>
+    /// </example>
     public static DbContextBuilderContext<TContext> WithOutboxDomainEventService<TContext>(
         this DbContextBuilderContext<TContext> context,
         Builder<OutboxDomainEventOptionsBuilder, OutboxDomainEventOptions> optionsBuilder)
@@ -19,6 +37,22 @@ public static partial class DbContextBuilderContextExtensions
         return context;
     }
 
+    /// <summary>
+    /// Registers the domain event outbox service for the current DbContext builder using a concrete options instance.
+    /// </summary>
+    /// <typeparam name="TContext">The database context type that implements <see cref="IOutboxDomainEventContext" />.</typeparam>
+    /// <param name="context">The DbContext builder context.</param>
+    /// <param name="options">The outbox processing options.</param>
+    /// <returns>The current <see cref="DbContextBuilderContext{TContext}" /> for further composition.</returns>
+    /// <example>
+    /// <code>
+    /// builder.WithOutboxDomainEventService&lt;AppDbContext&gt;(new OutboxDomainEventOptions
+    /// {
+    ///     ProcessingInterval = TimeSpan.FromSeconds(10),
+    ///     LeaseDuration = TimeSpan.FromSeconds(30)
+    /// });
+    /// </code>
+    /// </example>
     public static DbContextBuilderContext<TContext> WithOutboxDomainEventService<TContext>(
         this DbContextBuilderContext<TContext> context,
         OutboxDomainEventOptions options = null)

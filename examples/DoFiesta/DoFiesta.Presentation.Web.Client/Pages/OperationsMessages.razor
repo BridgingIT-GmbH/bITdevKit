@@ -25,9 +25,10 @@
             <MudSpacer />
             <MudSelect T="int?" Label="Auto refresh" Variant="Variant.Outlined" Margin="Margin.Dense" Value="autoRefreshIntervalSeconds" ValueChanged="OnAutoRefreshIntervalChanged" Style="min-width: 170px;">
                 <MudSelectItem T="int?" Value="@((int?)null)">Off</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)1)">1 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)5)">5 sec</MudSelectItem>
                 <MudSelectItem T="int?" Value="@((int?)15)">15 sec</MudSelectItem>
                 <MudSelectItem T="int?" Value="@((int?)30)">30 sec</MudSelectItem>
-                <MudSelectItem T="int?" Value="@((int?)60)">60 sec</MudSelectItem>
             </MudSelect>
             <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Filled.Refresh" OnClick="ReloadAsync">
                 Refresh
@@ -105,6 +106,17 @@
             </MudItem>
             <MudItem xs="12" md="2">
                 <MudTextField @bind-Value="messageIdFilter" Label="Message Id" Clearable="true" />
+            </MudItem>
+        </MudGrid>
+
+        <MudDivider Class="my-4" />
+
+        <MudGrid>
+            <MudItem xs="12" md="3">
+                <MudDatePicker @bind-Date="createdStartDate" Label="Created from" />
+            </MudItem>
+            <MudItem xs="12" md="3">
+                <MudDatePicker @bind-Date="createdEndDate" Label="Created to" />
             </MudItem>
         </MudGrid>
 
@@ -411,6 +423,8 @@
     private string typeFilter;
     private string messageIdFilter;
     private int take = 50;
+    private DateTime? createdStartDate = DateTime.Today;
+    private DateTime? createdEndDate = DateTime.Today;
     private bool detailsDialogVisible;
     private bool detailsLoading;
     private MessageInfo selectedMessage;
@@ -468,6 +482,8 @@
         this.typeFilter = null;
         this.messageIdFilter = null;
         this.take = 50;
+        this.createdStartDate = DateTime.Today;
+        this.createdEndDate = DateTime.Today;
 
         await this.ReloadAsync();
     }
@@ -485,6 +501,8 @@
         this.stats = await this.Api.Api._system.Messaging.Messages.Stats.GetAsync(config =>
         {
             config.QueryParameters.IsArchived = this.GetArchiveFilter();
+            config.QueryParameters.StartDate = this.ToStartDateOffset(this.createdStartDate);
+            config.QueryParameters.EndDate = this.ToEndDateOffset(this.createdEndDate);
         });
     }
 
@@ -494,6 +512,8 @@
         {
             config.QueryParameters.IncludeHandlers = false;
             config.QueryParameters.IsArchived = this.GetArchiveFilter();
+            config.QueryParameters.CreatedAfter = this.ToStartDateOffset(this.createdStartDate);
+            config.QueryParameters.CreatedBefore = this.ToEndDateOffset(this.createdEndDate);
             config.QueryParameters.Take = this.take;
 
             if (!string.IsNullOrWhiteSpace(this.typeFilter))
@@ -763,6 +783,28 @@
         }
 
         return value.Length <= maxLength ? value : $"...{value[^maxLength..]}";
+    }
+
+    private DateTimeOffset? ToStartDateOffset(DateTime? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        var local = DateTime.SpecifyKind(value.Value.Date, DateTimeKind.Local);
+        return new DateTimeOffset(local);
+    }
+
+    private DateTimeOffset? ToEndDateOffset(DateTime? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        var local = DateTime.SpecifyKind(value.Value.Date.AddDays(1).AddTicks(-1), DateTimeKind.Local);
+        return new DateTimeOffset(local);
     }
 
     private void StartAutoRefresh()

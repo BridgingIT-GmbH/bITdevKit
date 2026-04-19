@@ -89,13 +89,14 @@ public class NotificationEmailEndpoints(
             .WithSummary("Retry a notification email")
             .WithDescription("Resets a failed notification email so it can be processed again by the outbox worker.");
 
-        group.MapDelete("{id:guid}", this.DeleteMessage)
+        group.MapPost("{id:guid}/archive", this.ArchiveMessage)
             .Produces<string>()
             .Produces<string>((int)HttpStatusCode.NotFound)
+            .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Notifications.DeleteEmail")
-            .WithSummary("Delete a notification email")
-            .WithDescription("Deletes a single persisted notification email from the outbox store.");
+            .WithName("_System.Notifications.ArchiveEmail")
+            .WithSummary("Archive a notification email")
+            .WithDescription("Archives a terminal notification email so it leaves the active working set without being purged.");
 
         group.MapDelete(string.Empty, this.PurgeMessages)
             .Produces<string>()
@@ -110,10 +111,11 @@ public class NotificationEmailEndpoints(
     private async Task<IResult> GetMessages([AsParameters] NotificationEmailsQueryModel request, CancellationToken cancellationToken)
     {
         this.logger.LogInformation(
-            "Fetching notification emails (Status={Status}, Subject={Subject}, LockedBy={LockedBy}, Take={Take})",
+            "Fetching notification emails (Status={Status}, Subject={Subject}, LockedBy={LockedBy}, IsArchived={IsArchived}, Take={Take})",
             request.Status,
             request.Subject,
             request.LockedBy,
+            request.IsArchived,
             request.Take);
 
         return Results.Ok(await this.WithOutboxService(
@@ -121,6 +123,7 @@ public class NotificationEmailEndpoints(
             request.Status,
             request.Subject,
             request.LockedBy,
+            request.IsArchived,
             request.CreatedAfter,
             request.CreatedBefore,
             request.Take,
@@ -150,11 +153,12 @@ public class NotificationEmailEndpoints(
     private async Task<IResult> GetMessageStats([AsParameters] NotificationEmailStatsQueryModel request, CancellationToken cancellationToken)
     {
         this.logger.LogInformation(
-            "Fetching notification email statistics (StartDate={StartDate}, EndDate={EndDate})",
+            "Fetching notification email statistics (StartDate={StartDate}, EndDate={EndDate}, IsArchived={IsArchived})",
             request.StartDate,
-            request.EndDate);
+            request.EndDate,
+            request.IsArchived);
 
-        return Results.Ok(await this.WithOutboxService(service => service.GetMessageStatsAsync(request.StartDate, request.EndDate, cancellationToken)));
+        return Results.Ok(await this.WithOutboxService(service => service.GetMessageStatsAsync(request.StartDate, request.EndDate, request.IsArchived, cancellationToken)));
     }
 
     private async Task<IResult> RetryMessage(Guid id, CancellationToken cancellationToken)
@@ -175,27 +179,38 @@ public class NotificationEmailEndpoints(
         return Results.Ok($"Notification email {id} was scheduled for retry.");
     }
 
-    private async Task<IResult> DeleteMessage(Guid id, CancellationToken cancellationToken)
+    private async Task<IResult> ArchiveMessage(Guid id, CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("Deleting notification email {NotificationEmailId}", id);
+        this.logger.LogInformation("Archiving notification email {NotificationEmailId}", id);
         var message = await this.WithOutboxService(service => service.GetMessageAsync(id, cancellationToken));
         if (message is null)
         {
             return Results.NotFound($"Notification email {id} was not found.");
         }
 
-        await this.WithOutboxService(service => service.DeleteMessageAsync(id, cancellationToken));
-        return Results.Ok($"Notification email {id} was deleted.");
+        if (message.IsArchived)
+        {
+            return Results.Ok($"Notification email {id} is already archived.");
+        }
+
+        if (message.Status is not (EmailMessageStatus.Sent or EmailMessageStatus.Failed))
+        {
+            return Results.Problem($"Notification email {id} is not in an archivable state.", statusCode: (int)HttpStatusCode.Conflict);
+        }
+
+        await this.WithOutboxService(service => service.ArchiveMessageAsync(id, cancellationToken));
+        return Results.Ok($"Notification email {id} was archived.");
     }
 
     private async Task<IResult> PurgeMessages([AsParameters] PurgeNotificationEmailsQueryModel request, CancellationToken cancellationToken)
     {
         this.logger.LogInformation(
-            "Purging notification emails (OlderThan={OlderThan}, StatusCount={StatusCount})",
+            "Purging notification emails (OlderThan={OlderThan}, StatusCount={StatusCount}, IsArchived={IsArchived})",
             request.OlderThan,
-            request.Statuses?.Length ?? 0);
+            request.Statuses?.Length ?? 0,
+            request.IsArchived);
 
-        await this.WithOutboxService(service => service.PurgeMessagesAsync(request.OlderThan, request.Statuses, cancellationToken));
+        await this.WithOutboxService(service => service.PurgeMessagesAsync(request.OlderThan, request.Statuses, request.IsArchived, cancellationToken));
         return Results.Ok("Notification emails were purged.");
     }
 

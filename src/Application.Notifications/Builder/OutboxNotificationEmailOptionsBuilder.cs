@@ -12,6 +12,7 @@ using BridgingIT.DevKit.Common;
 ///     .ProcessingModeImmediate()
 ///     .ProcessingCount(25)
 ///     .LeaseDuration(TimeSpan.FromMinutes(1))
+///     .AutoArchiveAfter(TimeSpan.FromHours(1))
 ///     .Build();
 /// </code>
 /// </example>
@@ -179,6 +180,24 @@ public class OutboxNotificationEmailOptionsBuilder : OptionsBuilderBase<OutboxNo
     public OutboxNotificationEmailOptionsBuilder LeaseDuration(int milliseconds)
     {
         this.Target.LeaseDuration = TimeSpan.FromMilliseconds(milliseconds);
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the age after which terminal notification emails may be archived automatically.
+    /// </summary>
+    public OutboxNotificationEmailOptionsBuilder AutoArchiveAfter(TimeSpan? value)
+    {
+        this.Target.AutoArchiveAfter = value;
+        return this;
+    }
+
+    /// <summary>
+    /// Sets the terminal statuses eligible for automatic archiving.
+    /// </summary>
+    public OutboxNotificationEmailOptionsBuilder AutoArchiveStatuses(IEnumerable<EmailMessageStatus> values)
+    {
+        this.Target.AutoArchiveStatuses = values?.ToArray() ?? [];
         return this;
     }
 }

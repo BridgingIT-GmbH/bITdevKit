@@ -5,9 +5,24 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+/// <summary>
+/// Defines a lightweight in-process queue that can trigger immediate outbox domain event processing.
+/// </summary>
 public interface IOutboxDomainEventQueue
 {
+    /// <summary>
+    /// Gets the logger used by the queue implementation.
+    /// </summary>
     ILogger Logger { get; }
 
+    /// <summary>
+    /// Enqueues a persisted domain event identifier for immediate processing.
+    /// </summary>
+    /// <param name="eventId">The persisted domain event identifier.</param>
+    /// <example>
+    /// <code>
+    /// eventQueue.Enqueue(domainEvent.EventId.ToString());
+    /// </code>
+    /// </example>
     void Enqueue(string eventId);
 }

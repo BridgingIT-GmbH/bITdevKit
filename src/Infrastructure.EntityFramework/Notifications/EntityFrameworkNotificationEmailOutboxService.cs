@@ -22,6 +22,7 @@ public class EntityFrameworkNotificationEmailOutboxService<TContext>(IServicePro
         EmailMessageStatus? status = null,
         string subject = null,
         string lockedBy = null,
+        bool? isArchived = false,
         DateTimeOffset? createdAfter = null,
         DateTimeOffset? createdBefore = null,
         int? take = null,
@@ -36,6 +37,7 @@ public class EntityFrameworkNotificationEmailOutboxService<TContext>(IServicePro
         query = query.WhereExpressionIf(message => message.Status == status, status.HasValue);
         query = query.WhereExpressionIf(message => message.Subject.Contains(subject), !subject.IsNullOrEmpty());
         query = query.WhereExpressionIf(message => message.LockedBy == lockedBy, !lockedBy.IsNullOrEmpty());
+        query = query.WhereExpressionIf(message => message.IsArchived == isArchived, isArchived.HasValue);
         query = query.WhereExpressionIf(message => message.CreatedAt >= createdAfter, createdAfter.HasValue);
         query = query.WhereExpressionIf(message => message.CreatedAt <= createdBefore, createdBefore.HasValue);
 
@@ -85,11 +87,13 @@ public class EntityFrameworkNotificationEmailOutboxService<TContext>(IServicePro
     public async Task<NotificationEmailStats> GetMessageStatsAsync(
         DateTimeOffset? startDate = null,
         DateTimeOffset? endDate = null,
+        bool? isArchived = false,
         CancellationToken cancellationToken = default)
     {
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
         var query = context.NotificationsEmails.AsQueryable();
+        query = query.WhereExpressionIf(message => message.IsArchived == isArchived, isArchived.HasValue);
         query = query.WhereExpressionIf(message => message.CreatedAt >= startDate || message.SentAt >= startDate, startDate.HasValue);
         query = query.WhereExpressionIf(message => message.CreatedAt <= endDate || message.SentAt <= endDate, endDate.HasValue);
 
@@ -103,6 +107,7 @@ public class EntityFrameworkNotificationEmailOutboxService<TContext>(IServicePro
             Locked = messages.Count(message => message.Status == EmailMessageStatus.Locked),
             Sent = messages.Count(message => message.Status == EmailMessageStatus.Sent),
             Failed = messages.Count(message => message.Status == EmailMessageStatus.Failed),
+            Archived = messages.Count(message => message.IsArchived),
             Leased = messages.Count(message => !message.LockedBy.IsNullOrEmpty() && message.LockedUntil.HasValue && message.LockedUntil > now)
         };
     }
@@ -128,6 +133,8 @@ public class EntityFrameworkNotificationEmailOutboxService<TContext>(IServicePro
         message.SentAt = null;
         message.LockedBy = null;
         message.LockedUntil = null;
+        message.IsArchived = false;
+        message.ArchivedDate = null;
         message.PropertiesJson = SerializeProperties(properties);
         message.AdvanceConcurrencyVersion();
 
@@ -135,7 +142,7 @@ public class EntityFrameworkNotificationEmailOutboxService<TContext>(IServicePro
     }
 
     /// <inheritdoc />
-    public async Task DeleteMessageAsync(Guid id, CancellationToken cancellationToken = default)
+    public async Task ArchiveMessageAsync(Guid id, CancellationToken cancellationToken = default)
     {
         using var scope = serviceProvider.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
@@ -148,14 +155,71 @@ public class EntityFrameworkNotificationEmailOutboxService<TContext>(IServicePro
             return;
         }
 
-        context.NotificationsEmails.Remove(message);
+        message.IsArchived = true;
+        message.ArchivedDate ??= DateTimeOffset.UtcNow;
+        message.LockedBy = null;
+        message.LockedUntil = null;
+        message.AdvanceConcurrencyVersion();
         await context.SaveChangesAsync(cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public async Task<int> AutoArchiveMessagesAsync(
+        DateTimeOffset olderThan,
+        IEnumerable<EmailMessageStatus> statuses = null,
+        CancellationToken cancellationToken = default)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<TContext>();
+        var statusArray = statuses?.Distinct().ToArray() ?? [];
+
+        if (statusArray.Length == 0)
+        {
+            return 0;
+        }
+
+        var query = context.NotificationsEmails
+            .Where(message => !message.IsArchived)
+            .Where(message => statusArray.Contains(message.Status))
+            .Where(message => (message.SentAt ?? message.CreatedAt) <= olderThan);
+
+        if (SupportsExecuteUpdate(context))
+        {
+            var archivedDate = DateTimeOffset.UtcNow;
+            var concurrencyVersion = Guid.NewGuid();
+
+            return await query.ExecuteUpdateAsync(
+                    setters => setters
+                        .SetProperty(message => message.IsArchived, true)
+                        .SetProperty(message => message.ArchivedDate, archivedDate)
+                        .SetProperty(message => message.LockedBy, (string)null)
+                        .SetProperty(message => message.LockedUntil, (DateTimeOffset?)null)
+                        .SetProperty(message => message.ConcurrencyVersion, concurrencyVersion),
+                    cancellationToken)
+                .AnyContext();
+        }
+
+        var messages = await query.ToListAsync(cancellationToken).AnyContext();
+        var archivedAt = DateTimeOffset.UtcNow;
+
+        foreach (var message in messages)
+        {
+            message.IsArchived = true;
+            message.ArchivedDate ??= archivedAt;
+            message.LockedBy = null;
+            message.LockedUntil = null;
+            message.AdvanceConcurrencyVersion();
+        }
+
+        await context.SaveChangesAsync(cancellationToken).AnyContext();
+        return messages.Count;
     }
 
     /// <inheritdoc />
     public async Task PurgeMessagesAsync(
         DateTimeOffset? olderThan = null,
         IEnumerable<EmailMessageStatus> statuses = null,
+        bool? isArchived = null,
         CancellationToken cancellationToken = default)
     {
         using var scope = serviceProvider.CreateScope();
@@ -166,7 +230,12 @@ public class EntityFrameworkNotificationEmailOutboxService<TContext>(IServicePro
 
         var statusArray = statuses?.ToArray();
         query = query.WhereExpressionIf(message => statusArray.Contains(message.Status), statusArray.SafeAny());
-        query = query.WhereExpressionIf(message => (message.SentAt ?? message.CreatedAt) < olderThan, olderThan.HasValue);
+        query = query.WhereExpressionIf(message => message.IsArchived == isArchived, isArchived.HasValue);
+        query = query.WhereExpressionIf(
+            message => (message.IsArchived
+                    ? (message.ArchivedDate ?? message.SentAt ?? message.CreatedAt)
+                    : (message.SentAt ?? message.CreatedAt)) < olderThan,
+            olderThan.HasValue);
 
         var messages = await query.ToListAsync(cancellationToken).AnyContext();
         context.NotificationsEmails.RemoveRange(messages);
@@ -194,6 +263,8 @@ public class EntityFrameworkNotificationEmailOutboxService<TContext>(IServicePro
             RetryCount = message.RetryCount,
             CreatedAt = message.CreatedAt,
             SentAt = message.SentAt,
+            IsArchived = message.IsArchived,
+            ArchivedDate = message.ArchivedDate,
             LockedBy = message.LockedBy,
             LockedUntil = message.LockedUntil,
             ProcessMessage = TryGetStringProperty(properties, "ProcessMessage"),
@@ -252,5 +323,13 @@ public class EntityFrameworkNotificationEmailOutboxService<TContext>(IServicePro
             JsonElement element when element.ValueKind == JsonValueKind.String => element.GetString(),
             _ => value.ToString()
         };
+    }
+
+    private static bool SupportsExecuteUpdate(TContext context)
+    {
+        var providerName = context.Database.ProviderName;
+
+        return !(providerName?.Contains("InMemory", StringComparison.OrdinalIgnoreCase) ?? false) &&
+            !(providerName?.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) ?? false);
     }
 }

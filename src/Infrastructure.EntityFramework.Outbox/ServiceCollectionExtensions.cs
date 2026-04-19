@@ -11,8 +11,23 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using EntityFrameworkCore;
 
+/// <summary>
+/// Provides registration helpers for the Entity Framework outbox repositories.
+/// </summary>
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Registers the Entity Framework based outbox repositories.
+    /// </summary>
+    /// <typeparam name="TContext">The database context type used by the repositories.</typeparam>
+    /// <param name="services">The service collection.</param>
+    /// <returns>The current <see cref="IServiceCollection" /> for further composition.</returns>
+    /// <example>
+    /// <code>
+    /// services.AddDbContext&lt;AppDbContext&gt;(options => options.UseSqlServer(connectionString));
+    /// services.AddEfOutbox&lt;AppDbContext&gt;();
+    /// </code>
+    /// </example>
     public static IServiceCollection AddEfOutbox<TContext>(this IServiceCollection services)
         where TContext : DbContext
     {

@@ -9,6 +9,9 @@ using Domain.Outbox;
 using Models;
 using Repositories;
 
+/// <summary>
+/// Loads and updates outbox messages for background worker processing.
+/// </summary>
 public class OutboxMessageWorkerRepository(EntityFrameworkRepositoryOptions options)
     : EntityFrameworkGenericRepository<OutboxMessage, Outbox>(options), IOutboxMessageWorkerRepository
 { }

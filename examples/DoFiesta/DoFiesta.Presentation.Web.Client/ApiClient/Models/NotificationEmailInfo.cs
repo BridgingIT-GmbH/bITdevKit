@@ -14,6 +14,8 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
+        /// <summary>The archivedDate property</summary>
+        public DateTimeOffset? ArchivedDate { get; set; }
         /// <summary>The attachmentCount property</summary>
         public int? AttachmentCount { get; set; }
         /// <summary>The attachments property</summary>
@@ -60,6 +62,8 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
 #endif
         /// <summary>The id property</summary>
         public Guid? Id { get; set; }
+        /// <summary>The isArchived property</summary>
+        public bool? IsArchived { get; set; }
         /// <summary>The isHtml property</summary>
         public bool? IsHtml { get; set; }
         /// <summary>The lockedBy property</summary>
@@ -153,6 +157,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
+                { "archivedDate", n => { ArchivedDate = n.GetDateTimeOffsetValue(); } },
                 { "attachmentCount", n => { AttachmentCount = n.GetIntValue(); } },
                 { "attachments", n => { Attachments = n.GetCollectionOfObjectValues<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.NotificationEmailAttachmentInfo>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.NotificationEmailAttachmentInfo.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "bcc", n => { Bcc = n.GetCollectionOfPrimitiveValues<string>()?.AsList(); } },
@@ -161,6 +166,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
                 { "fromAddress", n => { FromAddress = n.GetStringValue(); } },
                 { "fromName", n => { FromName = n.GetStringValue(); } },
                 { "id", n => { Id = n.GetGuidValue(); } },
+                { "isArchived", n => { IsArchived = n.GetBoolValue(); } },
                 { "isHtml", n => { IsHtml = n.GetBoolValue(); } },
                 { "lockedBy", n => { LockedBy = n.GetStringValue(); } },
                 { "lockedUntil", n => { LockedUntil = n.GetDateTimeOffsetValue(); } },
@@ -183,6 +189,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
+            writer.WriteDateTimeOffsetValue("archivedDate", ArchivedDate);
             writer.WriteIntValue("attachmentCount", AttachmentCount);
             writer.WriteCollectionOfObjectValues<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.NotificationEmailAttachmentInfo>("attachments", Attachments);
             writer.WriteCollectionOfPrimitiveValues<string>("bcc", Bcc);
@@ -191,6 +198,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             writer.WriteStringValue("fromAddress", FromAddress);
             writer.WriteStringValue("fromName", FromName);
             writer.WriteGuidValue("id", Id);
+            writer.WriteBoolValue("isArchived", IsArchived);
             writer.WriteBoolValue("isHtml", IsHtml);
             writer.WriteStringValue("lockedBy", LockedBy);
             writer.WriteDateTimeOffsetValue("lockedUntil", LockedUntil);

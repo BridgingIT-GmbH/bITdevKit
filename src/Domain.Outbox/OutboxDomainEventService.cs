@@ -197,6 +197,11 @@ public class OutboxDomainEventService : BackgroundService
             }
 
             await this.worker.ProcessAsync(cancellationToken: cancellationToken);
+
+            if (this.options.AutoArchiveAfter.HasValue)
+            {
+                await this.worker.ArchiveAsync(cancellationToken);
+            }
         }
         catch (OperationCanceledException)
         {

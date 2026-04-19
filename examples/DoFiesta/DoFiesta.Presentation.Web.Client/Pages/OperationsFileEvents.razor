@@ -9,6 +9,7 @@
 @inject BackendApiClient ApiClient
 @inject IRequestAdapter RequestAdapter
 @inject ISnackbar Snackbar
+@implements IAsyncDisposable
 @attribute [Authorize]
 
 <PageTitle>DoFiesta - Operations File Events</PageTitle>
@@ -36,6 +37,20 @@
                 {
                     <MudSelectItem T="string" Value="@storageLocation.ProviderName">@FormatLocationOption(storageLocation)</MudSelectItem>
                 }
+            </MudSelect>
+            <MudSelect T="int?"
+                       Label="Auto refresh"
+                       Value="autoRefreshIntervalSeconds"
+                       ValueChanged="OnAutoRefreshIntervalChanged"
+                       Variant="Variant.Outlined"
+                       Margin="Margin.Dense"
+                       Dense="true"
+                       Style="min-width:170px">
+                <MudSelectItem T="int?" Value="@((int?)null)">Off</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)1)">1 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)5)">5 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)15)">15 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)30)">30 sec</MudSelectItem>
             </MudSelect>
             <MudButton Variant="Variant.Outlined"
                        Color="Color.Default"
@@ -219,9 +234,9 @@
         <MudItem xs="12" xl="4">
             <MudPaper Class="pa-4 h-100 file-events-detail">
                 <MudText Typo="Typo.h6" Class="mb-2">Inspect events</MudText>
-                <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Class="mb-4">
+                @* <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" Class="mb-4">
                     Use the folder icon to jump into the files dashboard at the containing folder, or the eye icon to inspect the full event details in a dialog.
-                </MudAlert>
+                </MudAlert> *@
 
                 <MudText Typo="Typo.h6" Class="mb-2">Last scan</MudText>
                 @if (lastScanResult is null)
@@ -346,11 +361,23 @@
     private GenFileStorageFileEventScanResponseModel lastScanResult;
     private bool eventDialogVisible;
     private GenFileStorageFileEventModel eventDialogEvent;
+    private int? autoRefreshIntervalSeconds = 30;
+    private PeriodicTimer autoRefreshTimer;
+    private CancellationTokenSource autoRefreshCancellation;
+    private bool isDisposed;
 
     protected override async Task OnInitializedAsync()
     {
         this.selectedProviderName = this.GetRequestedProviderName();
+        this.StartAutoRefresh();
         await this.ReloadAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        this.isDisposed = true;
+        this.StopAutoRefresh();
+        await Task.CompletedTask;
     }
 
     private async Task ReloadAsync()
@@ -406,6 +433,14 @@
         this.lastScanResult = null;
         this.UpdateRequestedState();
         await this.ReloadAsync();
+    }
+
+    private Task OnAutoRefreshIntervalChanged(int? value)
+    {
+        this.autoRefreshIntervalSeconds = value;
+        this.StartAutoRefresh();
+
+        return Task.CompletedTask;
     }
 
     private async Task RunScanAsync()
@@ -651,6 +686,52 @@
             "deleted" => Color.Error,
             _ => Color.Default
         };
+
+    private void StartAutoRefresh()
+    {
+        this.StopAutoRefresh();
+
+        if (!this.autoRefreshIntervalSeconds.HasValue || this.autoRefreshIntervalSeconds.Value <= 0)
+        {
+            return;
+        }
+
+        this.autoRefreshCancellation = new CancellationTokenSource();
+        this.autoRefreshTimer = new PeriodicTimer(TimeSpan.FromSeconds(this.autoRefreshIntervalSeconds.Value));
+        _ = this.RunAutoRefreshAsync(this.autoRefreshTimer, this.autoRefreshCancellation.Token);
+    }
+
+    private void StopAutoRefresh()
+    {
+        if (this.autoRefreshCancellation is not null)
+        {
+            this.autoRefreshCancellation.Cancel();
+            this.autoRefreshCancellation.Dispose();
+            this.autoRefreshCancellation = null;
+        }
+
+        this.autoRefreshTimer?.Dispose();
+        this.autoRefreshTimer = null;
+    }
+
+    private async Task RunAutoRefreshAsync(PeriodicTimer timer, CancellationToken cancellationToken)
+    {
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                if (this.isDisposed || this.loading || this.scanning)
+                {
+                    continue;
+                }
+
+                await this.InvokeAsync(this.ReloadAsync);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
 
     private sealed record TimeWindowOption(string Key, string Label);
 }

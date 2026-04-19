@@ -32,6 +32,7 @@ public class OutboxNotificationEmailWorker(
         using var scope = this.serviceProvider.CreateScope();
         var storageProvider = scope.ServiceProvider.GetRequiredService<INotificationStorageProvider>();
         var emailService = scope.ServiceProvider.GetRequiredService<INotificationService<EmailMessage>>();
+        var outboxService = scope.ServiceProvider.GetService<INotificationEmailOutboxService>();
         var count = 0;
 
         this.logger.LogDebug("{LogKey} outbox notification emails processing (messageId={MessageId})", Constants.LogKey, messageId);
@@ -55,13 +56,15 @@ public class OutboxNotificationEmailWorker(
                 await this.ProcessEmail(message, storageProvider, emailService, cancellationToken);
             }
 
+            var archivedCount = await this.AutoArchiveMessagesAsync(outboxService, cancellationToken);
+
             if (count == 0)
             {
-                this.logger.LogDebug("{LogKey} outbox notification emails processed (count={Count})", Constants.LogKey, count);
+                this.logger.LogDebug("{LogKey} outbox notification emails processed (count={Count}, archivedCount={ArchivedCount})", Constants.LogKey, count, archivedCount);
             }
             else
             {
-                this.logger.LogInformation("{LogKey} outbox notification emails processed (count={Count})", Constants.LogKey, count);
+                this.logger.LogInformation("{LogKey} outbox notification emails processed (count={Count}, archivedCount={ArchivedCount})", Constants.LogKey, count, archivedCount);
             }
         }
         catch (Exception ex)
@@ -162,5 +165,35 @@ public class OutboxNotificationEmailWorker(
                 this.logger.LogWarning("{LogKey} failed to update message with ID {MessageId} after failure: {ErrorMessage}", Constants.LogKey, message.Id, updateResult.Errors?.FirstOrDefault()?.Message);
             }
         }
+    }
+
+    private async Task<int> AutoArchiveMessagesAsync(
+        INotificationEmailOutboxService outboxService,
+        CancellationToken cancellationToken)
+    {
+        if (outboxService is null || !this.options.AutoArchiveAfter.HasValue)
+        {
+            return 0;
+        }
+
+        var statuses = this.options.AutoArchiveStatuses?.Distinct().ToArray() ?? [];
+        if (statuses.Length == 0)
+        {
+            return 0;
+        }
+
+        var archiveThreshold = DateTimeOffset.UtcNow.Subtract(this.options.AutoArchiveAfter.Value);
+        var archivedCount = await outboxService.AutoArchiveMessagesAsync(archiveThreshold, statuses, cancellationToken);
+
+        if (archivedCount > 0)
+        {
+            this.logger.LogInformation(
+                "{LogKey} outbox notification emails auto-archived (count={Count}, olderThan={OlderThan})",
+                Constants.LogKey,
+                archivedCount,
+                archiveThreshold);
+        }
+
+        return archivedCount;
     }
 }

@@ -375,4 +375,205 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
         storedMessage.LockedUntil.ShouldNotBeNull();
         storedMessage.LockedUntil.Value.ShouldBeGreaterThan(DateTimeOffset.UtcNow);
     }
+
+    [Fact]
+    public async Task ArchiveMessageAsync_WhenMessageExists_ArchivesMessageAndRemovesItFromPendingClaims()
+    {
+        // Arrange
+        var message = new EmailMessage
+        {
+            Id = Guid.NewGuid(),
+            To = ["recipient@example.com"],
+            From = new EmailAddress { Address = "sender@example.com", Name = "Sender" },
+            Subject = "Archive me",
+            Body = "This message should be archived",
+            IsHtml = false,
+            Priority = EmailMessagePriority.Normal
+        };
+
+        await this.storageProvider.SaveAsync(message, CancellationToken.None);
+
+        using var scope = this.serviceProvider.CreateScope();
+        var outboxService = scope.ServiceProvider.GetRequiredService<INotificationEmailOutboxService>();
+
+        // Act
+        await outboxService.ArchiveMessageAsync(message.Id, CancellationToken.None);
+
+        // Assert
+        using var verifyScope = this.serviceProvider.CreateScope();
+        var dbContext = verifyScope.ServiceProvider.GetRequiredService<StubDbContext>();
+        var storedMessage = await dbContext.NotificationsEmails.FirstOrDefaultAsync(m => m.Id == message.Id);
+        storedMessage.ShouldNotBeNull();
+        storedMessage.IsArchived.ShouldBeTrue();
+        storedMessage.ArchivedDate.ShouldNotBeNull();
+
+        var pendingResult = await this.storageProvider.GetPendingAsync<EmailMessage>(10, CancellationToken.None);
+        pendingResult.IsSuccess.ShouldBeTrue();
+        pendingResult.Value.ShouldNotContain(item => item.Id == message.Id);
+    }
+
+    [Fact]
+    public async Task RetryMessageAsync_WhenMessageWasArchived_ReactivatesMessage()
+    {
+        // Arrange
+        var message = new EmailMessage
+        {
+            Id = Guid.NewGuid(),
+            To = ["recipient@example.com"],
+            From = new EmailAddress { Address = "sender@example.com", Name = "Sender" },
+            Subject = "Retry archived",
+            Body = "This message should reactivate",
+            IsHtml = false,
+            Priority = EmailMessagePriority.Normal
+        };
+
+        await this.storageProvider.SaveAsync(message, CancellationToken.None);
+
+        using (var arrangeScope = this.serviceProvider.CreateScope())
+        {
+            var dbContext = arrangeScope.ServiceProvider.GetRequiredService<StubDbContext>();
+            var entity = await dbContext.NotificationsEmails.FirstAsync(m => m.Id == message.Id);
+            entity.Status = EmailMessageStatus.Failed;
+            entity.RetryCount = 1;
+            entity.IsArchived = true;
+            entity.ArchivedDate = DateTimeOffset.UtcNow.AddMinutes(-5);
+            entity.AdvanceConcurrencyVersion();
+            await dbContext.SaveChangesAsync();
+        }
+
+        using var scope = this.serviceProvider.CreateScope();
+        var outboxService = scope.ServiceProvider.GetRequiredService<INotificationEmailOutboxService>();
+
+        // Act
+        await outboxService.RetryMessageAsync(message.Id, CancellationToken.None);
+
+        // Assert
+        using var verifyScope = this.serviceProvider.CreateScope();
+        var verifyContext = verifyScope.ServiceProvider.GetRequiredService<StubDbContext>();
+        var storedMessage = await verifyContext.NotificationsEmails.FirstAsync(m => m.Id == message.Id);
+        storedMessage.Status.ShouldBe(EmailMessageStatus.Pending);
+        storedMessage.RetryCount.ShouldBe(0);
+        storedMessage.IsArchived.ShouldBeFalse();
+        storedMessage.ArchivedDate.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task ProcessAsync_WhenAutoArchiveAfterIsReached_ArchivesEligibleTerminalMessages()
+    {
+        // Arrange
+        var sentMessage = new EmailMessage
+        {
+            Id = Guid.NewGuid(),
+            To = ["recipient@example.com"],
+            From = new EmailAddress { Address = "sender@example.com", Name = "Sender" },
+            Subject = "Sent archive candidate",
+            Body = "This message should auto-archive after it is sent",
+            IsHtml = false,
+            Priority = EmailMessagePriority.Normal
+        };
+
+        var failedMessage = new EmailMessage
+        {
+            Id = Guid.NewGuid(),
+            To = ["recipient@example.com"],
+            From = new EmailAddress { Address = "sender@example.com", Name = "Sender" },
+            Subject = "Failed archive candidate",
+            Body = "This message should auto-archive after it fails permanently",
+            IsHtml = false,
+            Priority = EmailMessagePriority.Normal
+        };
+
+        await this.storageProvider.SaveAsync(sentMessage, CancellationToken.None);
+        await this.storageProvider.SaveAsync(failedMessage, CancellationToken.None);
+
+        using (var arrangeScope = this.serviceProvider.CreateScope())
+        {
+            var dbContext = arrangeScope.ServiceProvider.GetRequiredService<StubDbContext>();
+
+            var sentEntity = await dbContext.NotificationsEmails.FirstAsync(m => m.Id == sentMessage.Id);
+            sentEntity.Status = EmailMessageStatus.Sent;
+            sentEntity.SentAt = DateTimeOffset.UtcNow.AddMinutes(-5);
+            sentEntity.AdvanceConcurrencyVersion();
+
+            var failedEntity = await dbContext.NotificationsEmails.FirstAsync(m => m.Id == failedMessage.Id);
+            failedEntity.Status = EmailMessageStatus.Failed;
+            failedEntity.RetryCount = this.options.OutboxOptions.RetryCount;
+            failedEntity.CreatedAt = DateTimeOffset.UtcNow.AddMinutes(-5);
+            failedEntity.AdvanceConcurrencyVersion();
+
+            await dbContext.SaveChangesAsync();
+        }
+
+        var workerOptions = new OutboxNotificationEmailOptions
+        {
+            ProcessingCount = this.options.OutboxOptions.ProcessingCount,
+            RetryCount = this.options.OutboxOptions.RetryCount,
+            AutoArchiveAfter = TimeSpan.Zero,
+            AutoArchiveStatuses = [EmailMessageStatus.Sent, EmailMessageStatus.Failed]
+        };
+
+        var worker = new OutboxNotificationEmailWorker(
+            Substitute.For<ILoggerFactory>(),
+            this.serviceProvider,
+            workerOptions);
+
+        // Act
+        await worker.ProcessAsync(cancellationToken: CancellationToken.None);
+
+        // Assert
+        using var verifyScope = this.serviceProvider.CreateScope();
+        var verifyContext = verifyScope.ServiceProvider.GetRequiredService<StubDbContext>();
+        var storedSentMessage = await verifyContext.NotificationsEmails.FirstAsync(m => m.Id == sentMessage.Id);
+        var storedFailedMessage = await verifyContext.NotificationsEmails.FirstAsync(m => m.Id == failedMessage.Id);
+
+        storedSentMessage.IsArchived.ShouldBeTrue();
+        storedSentMessage.ArchivedDate.ShouldNotBeNull();
+        storedFailedMessage.IsArchived.ShouldBeTrue();
+        storedFailedMessage.ArchivedDate.ShouldNotBeNull();
+    }
+
+    [Fact]
+    public async Task PurgeMessagesAsync_WhenArchiveFilterMatches_DeletesArchivedRows()
+    {
+        // Arrange
+        var message = new EmailMessage
+        {
+            Id = Guid.NewGuid(),
+            To = ["recipient@example.com"],
+            From = new EmailAddress { Address = "sender@example.com", Name = "Sender" },
+            Subject = "Purge archived",
+            Body = "This message should be deleted",
+            IsHtml = false,
+            Priority = EmailMessagePriority.Normal
+        };
+
+        await this.storageProvider.SaveAsync(message, CancellationToken.None);
+
+        using (var arrangeScope = this.serviceProvider.CreateScope())
+        {
+            var dbContext = arrangeScope.ServiceProvider.GetRequiredService<StubDbContext>();
+            var entity = await dbContext.NotificationsEmails.FirstAsync(m => m.Id == message.Id);
+            entity.Status = EmailMessageStatus.Sent;
+            entity.IsArchived = true;
+            entity.ArchivedDate = DateTimeOffset.UtcNow.AddMinutes(-10);
+            entity.AdvanceConcurrencyVersion();
+            await dbContext.SaveChangesAsync();
+        }
+
+        using var scope = this.serviceProvider.CreateScope();
+        var outboxService = scope.ServiceProvider.GetRequiredService<INotificationEmailOutboxService>();
+
+        // Act
+        await outboxService.PurgeMessagesAsync(
+            olderThan: DateTimeOffset.UtcNow.AddMinutes(-1),
+            statuses: [EmailMessageStatus.Sent],
+            isArchived: true,
+            cancellationToken: CancellationToken.None);
+
+        // Assert
+        using var verifyScope = this.serviceProvider.CreateScope();
+        var verifyContext = verifyScope.ServiceProvider.GetRequiredService<StubDbContext>();
+        var storedMessage = await verifyContext.NotificationsEmails.FirstOrDefaultAsync(m => m.Id == message.Id);
+        storedMessage.ShouldBeNull();
+    }
 }

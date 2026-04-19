@@ -36,6 +36,11 @@ public class NotificationEmailStats
     public int Failed { get; set; }
 
     /// <summary>
+    /// Gets or sets the number of archived notification emails.
+    /// </summary>
+    public int Archived { get; set; }
+
+    /// <summary>
     /// Gets or sets the number of notification emails with an active lease.
     /// </summary>
     public int Leased { get; set; }

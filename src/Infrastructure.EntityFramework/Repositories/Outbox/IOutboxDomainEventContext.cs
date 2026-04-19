@@ -5,7 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+/// <summary>
+/// Defines the Entity Framework context contract required by the domain event outbox infrastructure.
+/// </summary>
 public interface IOutboxDomainEventContext
 {
+    /// <summary>
+    /// Gets or sets the persisted domain event outbox rows.
+    /// </summary>
     DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }
 }

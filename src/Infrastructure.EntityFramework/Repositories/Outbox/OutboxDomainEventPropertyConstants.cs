@@ -5,11 +5,23 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+/// <summary>
+/// Defines well-known metadata keys stored in <see cref="OutboxDomainEvent.Properties" />.
+/// </summary>
 public struct OutboxDomainEventPropertyConstants
 {
+    /// <summary>
+    /// Gets the metadata key used to store the latest processing status.
+    /// </summary>
     public const string ProcessStatusKey = "ProcessStatus";
 
+    /// <summary>
+    /// Gets the metadata key used to store the latest processing message.
+    /// </summary>
     public const string ProcessMessageKey = "ProcessMessage";
 
+    /// <summary>
+    /// Gets the metadata key used to store the processing attempt count.
+    /// </summary>
     public const string ProcessAttemptsKey = "ProcessAttempts";
 }

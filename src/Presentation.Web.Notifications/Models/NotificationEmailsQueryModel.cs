@@ -28,6 +28,11 @@ public class NotificationEmailsQueryModel
     public string LockedBy { get; set; }
 
     /// <summary>
+    /// Gets or sets the optional archive-state filter. When <c>null</c>, both active and archived emails are included.
+    /// </summary>
+    public bool? IsArchived { get; set; }
+
+    /// <summary>
     /// Gets or sets the optional lower creation timestamp filter.
     /// </summary>
     public DateTimeOffset? CreatedAfter { get; set; }

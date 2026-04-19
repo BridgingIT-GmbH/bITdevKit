@@ -79,13 +79,15 @@ builder.Services.AddNotificationService<EmailMessage>(builder.Configuration, o =
         o.WithEntityFrameworkStorageProvider<CoreDbContext>()
             .WithOutbox<CoreDbContext>(options => options
                 .StartupDelay(TimeSpan.FromSeconds(5))
+                .AutoArchiveAfter(TimeSpan.FromHours(1))
                 .ProcessingInterval(TimeSpan.FromSeconds(5))
                 .ProcessingModeImmediate()
                 .ProcessingCount(25)
                 .RetryCount(3)
                 .LeaseDuration(TimeSpan.FromMinutes(2)));
 
-        if (string.IsNullOrWhiteSpace(builder.Configuration["NotificationService:Email:Smtp:Host"]))
+        // If no SMTP host is configured, use the fake SMTP client that logs email messages instead of sending them.
+        if (string.IsNullOrWhiteSpace(builder.Configuration["Notifications:Email:Smtp:Host"]))
         {
             o.WithFakeSmtpClient(new FakeSmtpClientOptions { LogMessageBodyLength = 1024 });
         }
@@ -94,11 +96,11 @@ builder.Services.AddNotificationService<EmailMessage>(builder.Configuration, o =
             o.WithSmtpClient();
         }
 
-        o.WithSmtpSettings(settings =>
-        {
-            settings.SenderName ??= "DoFiesta";
-            settings.SenderAddress ??= "noreply@dofiesta.local";
-        });
+        // o.WithSmtpSettings(settings =>
+        // {
+        //     settings.SenderName ??= "DoFiesta";
+        //     settings.SenderAddress ??= "noreply@dofiesta.local";
+        // });
     })
     .AddEndpoints(options => options.RequireAuthorization());
 
@@ -119,7 +121,7 @@ if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
 builder.Services.AddStartupTasks(o => o
         .Enabled().StartupDelay(builder.Configuration["StartupTasks:StartupDelay"]))
     .WithTask<JobSchedulingSqlServerSeederStartupTask>(o => o.Enabled().StartupDelay("00:00:00")) // uses quartz configuration from appsettings JobScheduling:Quartz:quartz...
-     //.WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
+                                                                                                  //.WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
     .WithBehavior<ModuleScopeStartupTaskBehavior>();
 
 //builder.Services.AddJobScheduling(o => o

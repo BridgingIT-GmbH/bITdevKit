@@ -19,4 +19,9 @@ public class NotificationEmailStatsQueryModel
     /// Gets or sets the optional upper created/sent timestamp filter.
     /// </summary>
     public DateTimeOffset? EndDate { get; set; }
+
+    /// <summary>
+    /// Gets or sets the optional archive-state filter. When <c>null</c>, both active and archived emails are included.
+    /// </summary>
+    public bool? IsArchived { get; set; }
 }

@@ -10,8 +10,16 @@ using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Infrastructure.Notifications;
 using Microsoft.EntityFrameworkCore;
 
+/// <summary>
+/// Configures Entity Framework persistence for the notification service.
+/// </summary>
 public class NotificationServiceInfrastructureBuilder(IServiceCollection services) : NotificationServiceBuilder(services)
 {
+    /// <summary>
+    /// Registers the Entity Framework backed notification email store and operational outbox service.
+    /// </summary>
+    /// <typeparam name="TContext">The database context type implementing <see cref="INotificationEmailContext"/>.</typeparam>
+    /// <returns>The current notification service builder.</returns>
     public NotificationServiceInfrastructureBuilder WithEntityFrameworkStorageProvider<TContext>()
         where TContext : DbContext, INotificationEmailContext
     {
@@ -20,6 +28,12 @@ public class NotificationServiceInfrastructureBuilder(IServiceCollection service
         return this;
     }
 
+    /// <summary>
+    /// Enables the hosted outbox processing pipeline for Entity Framework stored notification emails.
+    /// </summary>
+    /// <typeparam name="TContext">The database context type implementing <see cref="INotificationEmailContext"/>.</typeparam>
+    /// <param name="optionsBuilder">Optional builder used to customize outbox processing behavior.</param>
+    /// <returns>The current notification service builder.</returns>
     public NotificationServiceInfrastructureBuilder WithOutbox<TContext>(
         Builder<OutboxNotificationEmailOptionsBuilder, OutboxNotificationEmailOptions> optionsBuilder = null)
         where TContext : DbContext, INotificationEmailContext
@@ -49,8 +63,17 @@ public class NotificationServiceInfrastructureBuilder(IServiceCollection service
     }
 }
 
+/// <summary>
+/// Adds Entity Framework based notification registration helpers to <see cref="NotificationServiceBuilder"/>.
+/// </summary>
 public static class NotificationServiceBuilderExtensions
 {
+    /// <summary>
+    /// Registers the Entity Framework backed notification email store and operational outbox service.
+    /// </summary>
+    /// <typeparam name="TContext">The database context type implementing <see cref="INotificationEmailContext"/>.</typeparam>
+    /// <param name="serviceBuilder">The notification service builder.</param>
+    /// <returns>The current notification service builder.</returns>
     public static NotificationServiceBuilder WithEntityFrameworkStorageProvider<TContext>(this NotificationServiceBuilder serviceBuilder)
         where TContext : DbContext, INotificationEmailContext
     {
@@ -59,6 +82,13 @@ public static class NotificationServiceBuilderExtensions
         return serviceBuilder;
     }
 
+    /// <summary>
+    /// Enables the hosted outbox processing pipeline for Entity Framework stored notification emails.
+    /// </summary>
+    /// <typeparam name="TContext">The database context type implementing <see cref="INotificationEmailContext"/>.</typeparam>
+    /// <param name="serviceBuilder">The notification service builder.</param>
+    /// <param name="optionsBuilder">Optional builder used to customize outbox processing behavior.</param>
+    /// <returns>The current notification service builder.</returns>
     public static NotificationServiceBuilder WithOutbox<TContext>(
         this NotificationServiceBuilder serviceBuilder,
         Builder<OutboxNotificationEmailOptionsBuilder, OutboxNotificationEmailOptions> optionsBuilder = null)

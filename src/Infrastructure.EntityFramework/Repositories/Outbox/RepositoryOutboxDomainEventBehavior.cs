@@ -10,6 +10,9 @@ using Domain.Outbox;
 using BridgingIT.DevKit.Domain;
 
 [Obsolete("Use RepositoryOutboxDomainEventBehavior instead")]
+/// <summary>
+/// Backwards-compatible alias for <see cref="RepositoryOutboxDomainEventBehavior{TEntity,TContext}" />.
+/// </summary>
 public class GenericRepositoryDomainEventOutboxDecorator<TEntity, TContext>(
     ILoggerFactory loggerFactory,
     TContext context,
@@ -21,6 +24,9 @@ public class GenericRepositoryDomainEventOutboxDecorator<TEntity, TContext>(
     where TContext : DbContext, IOutboxDomainEventContext
 { }
 
+/// <summary>
+/// Decorates a repository so domain events raised by aggregates are stored in the Entity Framework outbox.
+/// </summary>
 public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IGenericRepository<TEntity>
     where TEntity : class, IEntity, IAggregateRoot
     where TContext : DbContext, IOutboxDomainEventContext
@@ -47,10 +53,19 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
         this.options.Serializer ??= new SystemTextJsonSerializer();
     }
 
+    /// <summary>
+    /// Gets the logger used for repository outbox diagnostics.
+    /// </summary>
     protected ILogger<RepositoryOutboxDomainEventBehavior<TEntity, TContext>> Logger { get; }
 
+    /// <summary>
+    /// Gets the DbContext that stores persisted outbox rows.
+    /// </summary>
     protected TContext Context { get; }
 
+    /// <summary>
+    /// Gets the decorated repository implementation.
+    /// </summary>
     protected IGenericRepository<TEntity> Inner { get; }
 
     /// <inheritdoc />

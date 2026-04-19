@@ -103,6 +103,7 @@ public class CoreModule : WebModuleBase
                 .HaltOnFailure())
                 //.DeleteOnStartup(environment.IsLocalDevelopment()))
             .WithOutboxDomainEventService(o => o
+                .AutoArchiveAfter(TimeSpan.FromHours(1))
                 .ProcessingModeImmediate()
                 .ProcessingInterval("00:00:30")
                 .StartupDelay("00:00:15"));

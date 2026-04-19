@@ -54,7 +54,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Notif
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public EmailsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/notifications/emails{?CreatedAfter*,CreatedBefore*,LockedBy*,OlderThan*,Status*,Statuses*,Subject*,Take*}", pathParameters)
+        public EmailsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/notifications/emails{?CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,OlderThan*,Status*,Statuses*,Subject*,Take*}", pathParameters)
         {
         }
         /// <summary>
@@ -62,7 +62,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Notif
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public EmailsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/notifications/emails{?CreatedAfter*,CreatedBefore*,LockedBy*,OlderThan*,Status*,Statuses*,Subject*,Take*}", rawUrl)
+        public EmailsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/notifications/emails{?CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,OlderThan*,Status*,Statuses*,Subject*,Take*}", rawUrl)
         {
         }
         /// <summary>
@@ -165,6 +165,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Notif
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
         public partial class EmailsRequestBuilderDeleteQueryParameters 
         {
+            public bool? IsArchived { get; set; }
             public DateTimeOffset? OlderThan { get; set; }
             [Obsolete("This property is deprecated, use StatusesAsEmailMessageStatus instead")]
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -200,6 +201,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Notif
         {
             public DateTimeOffset? CreatedAfter { get; set; }
             public DateTimeOffset? CreatedBefore { get; set; }
+            public bool? IsArchived { get; set; }
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
             public string? LockedBy { get; set; }

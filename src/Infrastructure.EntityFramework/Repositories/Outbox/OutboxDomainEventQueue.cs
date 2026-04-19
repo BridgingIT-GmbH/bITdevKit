@@ -7,10 +7,18 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using System.Threading.Tasks.Dataflow;
 
+/// <summary>
+/// Provides an in-process queue for immediate outbox domain event dispatch requests.
+/// </summary>
 public partial class OutboxDomainEventQueue : IOutboxDomainEventQueue
 {
     private readonly ActionBlock<string> eventIds;
 
+    /// <summary>
+    /// Initializes a new queue instance.
+    /// </summary>
+    /// <param name="loggerFactory">The logger factory used for diagnostics.</param>
+    /// <param name="action">The action invoked for each queued event identifier.</param>
     public OutboxDomainEventQueue(ILoggerFactory loggerFactory, Action<string> action = null)
     {
         this.Logger = loggerFactory?.CreateLogger(this.GetType()) ??
@@ -45,8 +53,20 @@ public partial class OutboxDomainEventQueue : IOutboxDomainEventQueue
     //    });
     //}
 
+    /// <summary>
+    /// Gets the logger used by the queue implementation.
+    /// </summary>
     public ILogger Logger { get; }
 
+    /// <summary>
+    /// Enqueues a persisted domain event identifier for immediate processing.
+    /// </summary>
+    /// <param name="eventId">The persisted domain event identifier.</param>
+    /// <example>
+    /// <code>
+    /// eventQueue.Enqueue(domainEvent.EventId.ToString());
+    /// </code>
+    /// </example>
     public virtual void Enqueue(string eventId)
     {
         TypedLogger.LogQueue(this.Logger, "DOM", eventId);

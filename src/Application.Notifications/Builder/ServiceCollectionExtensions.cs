@@ -34,8 +34,8 @@ public static class ServiceCollectionExtensions
 
         if (configuration != null)
         {
-            builder.Options.SmtpSettings = configuration.GetSection("NotificationService:Email:Smtp").Get<SmtpSettings>() ?? new SmtpSettings();
-            builder.Options.OutboxOptions = configuration.GetSection("NotificationService:Email:Outbox").Get<OutboxNotificationEmailOptions>() ?? new OutboxNotificationEmailOptions();
+            builder.Options.SmtpSettings = configuration.GetSection("Notifications:Email:Smtp").Get<SmtpSettings>() ?? new SmtpSettings();
+            builder.Options.OutboxOptions = configuration.GetSection("Notifications:Email:Outbox").Get<OutboxNotificationEmailOptions>() ?? new OutboxNotificationEmailOptions();
         }
 
         configure?.Invoke(builder);

@@ -21,4 +21,9 @@ public class PurgeNotificationEmailsQueryModel
     /// Gets or sets the optional status filters.
     /// </summary>
     public EmailMessageStatus[] Statuses { get; set; }
+
+    /// <summary>
+    /// Gets or sets the optional archive-state filter. When <c>null</c>, both active and archived emails are eligible.
+    /// </summary>
+    public bool? IsArchived { get; set; }
 }

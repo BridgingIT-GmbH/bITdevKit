@@ -7,9 +7,18 @@ namespace BridgingIT.DevKit.Infrastructure.Notifications;
 
 using Microsoft.EntityFrameworkCore;
 
+/// <summary>
+/// Defines the Entity Framework sets required for notification email persistence.
+/// </summary>
 public interface INotificationEmailContext
 {
+    /// <summary>
+    /// Gets or sets the persisted notification email rows.
+    /// </summary>
     DbSet<EmailMessageEntity> NotificationsEmails { get; set; }
 
+    /// <summary>
+    /// Gets or sets the persisted notification email attachment rows.
+    /// </summary>
     DbSet<EmailMessageAttachmentEntity> NotificationsEmailAttachments { get; set; }
 }

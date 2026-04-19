@@ -4033,6 +4033,13 @@
               "type": "string",
               "format": "date-time"
             }
+          },
+          {
+            "name": "IsArchived",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -4087,6 +4094,13 @@
             "in": "query",
             "schema": {
               "type": "string"
+            }
+          },
+          {
+            "name": "IsArchived",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
             }
           },
           {
@@ -4165,6 +4179,13 @@
                 "$ref": "#/components/schemas/EmailMessageStatus"
               }
             }
+          },
+          {
+            "name": "IsArchived",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
           }
         ],
         "responses": {
@@ -4217,57 +4238,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/NotificationEmailInfo"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "tags": [
-          "_System.Notifications"
-        ],
-        "summary": "Delete a notification email",
-        "description": "Deletes a single persisted notification email from the outbox store.",
-        "operationId": "_System.Notifications.DeleteEmail",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
                 }
               }
             }
@@ -4356,6 +4326,69 @@
         "summary": "Retry a notification email",
         "description": "Resets a failed notification email so it can be processed again by the outbox worker.",
         "operationId": "_System.Notifications.RetryEmail",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/notifications/emails/{id}/archive": {
+      "post": {
+        "tags": [
+          "_System.Notifications"
+        ],
+        "summary": "Archive a notification email",
+        "description": "Archives a terminal notification email so it leaves the active working set without being purged.",
+        "operationId": "_System.Notifications.ArchiveEmail",
         "parameters": [
           {
             "name": "id",
@@ -5861,6 +5894,16 @@
             ],
             "format": "date-time"
           },
+          "isArchived": {
+            "type": "boolean"
+          },
+          "archivedDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
           "lockedBy": {
             "type": [
               "null",
@@ -5921,6 +5964,10 @@
             "format": "int32"
           },
           "failed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "archived": {
             "type": "integer",
             "format": "int32"
           },

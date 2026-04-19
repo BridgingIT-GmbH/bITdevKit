@@ -14,6 +14,8 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
     {
         /// <summary>Stores additional data not described in the OpenAPI description found when deserializing. Can be used for serialization as well.</summary>
         public IDictionary<string, object> AdditionalData { get; set; }
+        /// <summary>The archived property</summary>
+        public int? Archived { get; set; }
         /// <summary>The failed property</summary>
         public int? Failed { get; set; }
         /// <summary>The leased property</summary>
@@ -51,6 +53,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         {
             return new Dictionary<string, Action<IParseNode>>
             {
+                { "archived", n => { Archived = n.GetIntValue(); } },
                 { "failed", n => { Failed = n.GetIntValue(); } },
                 { "leased", n => { Leased = n.GetIntValue(); } },
                 { "locked", n => { Locked = n.GetIntValue(); } },
@@ -66,6 +69,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         public virtual void Serialize(ISerializationWriter writer)
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
+            writer.WriteIntValue("archived", Archived);
             writer.WriteIntValue("failed", Failed);
             writer.WriteIntValue("leased", Leased);
             writer.WriteIntValue("locked", Locked);

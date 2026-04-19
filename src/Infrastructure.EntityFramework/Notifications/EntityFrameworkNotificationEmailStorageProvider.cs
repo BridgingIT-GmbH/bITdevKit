@@ -17,6 +17,10 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
+/// <summary>
+/// Persists notification emails in an Entity Framework backed outbox store.
+/// </summary>
+/// <typeparam name="TContext">The database context type that implements <see cref="INotificationEmailContext"/>.</typeparam>
 public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
     IServiceProvider serviceProvider,
     ILogger<EntityFrameworkNotificationEmailStorageProvider<TContext>> logger,
@@ -30,6 +34,7 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
     private readonly OutboxNotificationEmailOptions outboxOptions = outboxOptions ?? new OutboxNotificationEmailOptions();
     private readonly string leaseOwner = $"{Environment.MachineName}-{Guid.NewGuid():N}";
 
+    /// <inheritdoc />
     public async Task<Result> SaveAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
@@ -60,6 +65,7 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
             .WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
     }
 
+    /// <inheritdoc />
     public async Task<Result> UpdateAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
@@ -121,6 +127,7 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
             .WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
     }
 
+    /// <inheritdoc />
     public async Task<Result> DeleteAsync<TMessage>(TMessage message, CancellationToken cancellationToken)
         where TMessage : class, INotificationMessage
     {
@@ -152,8 +159,12 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
                         : $"EmailMessage with ID {emailMessage.Id} is not currently leased by this worker")));
                 }
 
-                this.logger.LogDebug("{LogKey} storage - delete email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
-                context.NotificationsEmails.Remove(entity);
+                this.logger.LogDebug("{LogKey} storage - archive email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
+                entity.IsArchived = true;
+                entity.ArchivedDate ??= DateTimeOffset.UtcNow;
+                entity.LockedBy = null;
+                entity.LockedUntil = null;
+                entity.AdvanceConcurrencyVersion();
 
                 await context.SaveChangesAsync(cancellationToken);
 
@@ -170,6 +181,7 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
         return await Task.FromResult(Result.Failure().WithError(new Error($"Unsupported message type: {typeof(TMessage).Name}")));
     }
 
+    /// <inheritdoc />
     public async Task<Result<IEnumerable<TMessage>>> GetPendingAsync<TMessage>(
         int batchSize,
         //int maxRetries,
@@ -191,7 +203,7 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
 
                 this.logger.LogDebug("{LogKey} storage - retrieve up to {BatchSize} pending email messages", Application.Notifications.Constants.LogKey, batchSize);
                 var entities = await context.NotificationsEmails.AsNoTracking()
-                    .Where(m => claimedIds.Contains(m.Id))
+                    .Where(m => !m.IsArchived && claimedIds.Contains(m.Id))
                     .Include(m => m.Attachments)
                     .OrderBy(m => m.CreatedAt)
                     .ToListAsync(cancellationToken);
@@ -339,6 +351,7 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
 
         var now = DateTimeOffset.UtcNow;
         var candidateIds = await context.NotificationsEmails.AsNoTracking()
+            .Where(message => !message.IsArchived)
             .Where(message =>
                 message.Status == EmailMessageStatus.Pending ||
                 (message.Status == EmailMessageStatus.Failed && message.RetryCount < this.outboxOptions.RetryCount) ||
@@ -377,6 +390,7 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
             var claimed = await context.NotificationsEmails
                 .Where(message =>
                     message.Id == messageId &&
+                    !message.IsArchived &&
                     (message.Status == EmailMessageStatus.Pending ||
                      (message.Status == EmailMessageStatus.Failed && message.RetryCount < this.outboxOptions.RetryCount) ||
                      (message.Status == EmailMessageStatus.Locked && message.LockedUntil < now)) &&
@@ -418,6 +432,11 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
     private bool CanClaimMessage(EmailMessageEntity entity, DateTimeOffset now)
     {
         if (entity == null)
+        {
+            return false;
+        }
+
+        if (entity.IsArchived)
         {
             return false;
         }

@@ -86,6 +86,16 @@ public class NotificationEmailInfo
     public DateTimeOffset? SentAt { get; set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the notification email has been archived.
+    /// </summary>
+    public bool IsArchived { get; set; }
+
+    /// <summary>
+    /// Gets or sets the timestamp when the notification email was archived.
+    /// </summary>
+    public DateTimeOffset? ArchivedDate { get; set; }
+
+    /// <summary>
     /// Gets or sets the lease owner for the current outbox claim.
     /// </summary>
     public string LockedBy { get; set; }

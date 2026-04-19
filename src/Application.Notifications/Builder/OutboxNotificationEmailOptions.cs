@@ -12,7 +12,9 @@ using BridgingIT.DevKit.Common;
 /// {
 ///     ProcessingMode = OutboxNotificationEmailProcessingMode.Immediate,
 ///     ProcessingCount = 50,
-///     LeaseDuration = TimeSpan.FromMinutes(2)
+///     LeaseDuration = TimeSpan.FromMinutes(2),
+///     AutoArchiveAfter = TimeSpan.FromHours(1),
+///     AutoArchiveStatuses = [EmailMessageStatus.Sent, EmailMessageStatus.Failed]
 /// };
 /// </code>
 /// </example>
@@ -77,4 +79,18 @@ public class OutboxNotificationEmailOptions : OptionsBase
     /// Gets or sets the duration of a processing lease claimed by a worker.
     /// </summary>
     public TimeSpan LeaseDuration { get; set; } = TimeSpan.FromMinutes(5);
+
+    /// <summary>
+    /// Gets or sets the age after which terminal notification emails may be archived automatically.
+    /// </summary>
+    public TimeSpan? AutoArchiveAfter { get; set; }
+
+    /// <summary>
+    /// Gets or sets the terminal statuses eligible for automatic archiving.
+    /// </summary>
+    public IEnumerable<EmailMessageStatus> AutoArchiveStatuses { get; set; } =
+    [
+        EmailMessageStatus.Sent,
+        EmailMessageStatus.Failed
+    ];
 }

@@ -9,6 +9,7 @@
 @using NotificationStatus = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.EmailMessageStatus
 @inject BackendApiClient Api
 @inject ISnackbar Snackbar
+@implements IAsyncDisposable
 @attribute [Authorize]
 
 <PageTitle>DoFiesta - Operations Notifications</PageTitle>
@@ -18,9 +19,16 @@
         <div class="d-flex flex-wrap align-center gap-4">
             <div>
                 <MudText Typo="Typo.h4" GutterBottom="true">Notification Emails</MudText>
-                <MudText Typo="Typo.body2">Inspect queued, leased, sent, and failed notification emails from the outbox.</MudText>
+                @* <MudText Typo="Typo.body2">Inspect queued, leased, sent, and failed notification emails from the outbox.</MudText> *@
             </div>
             <MudSpacer />
+            <MudSelect T="int?" Label="Auto refresh" Variant="Variant.Outlined" Margin="Margin.Dense" Value="autoRefreshIntervalSeconds" ValueChanged="OnAutoRefreshIntervalChanged" Style="min-width: 170px;">
+                <MudSelectItem T="int?" Value="@((int?)null)">Off</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)1)">1 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)5)">5 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)15)">15 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)30)">30 sec</MudSelectItem>
+            </MudSelect>
             <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Filled.Refresh" OnClick="ReloadAsync">
                 Refresh
             </MudButton>
@@ -68,13 +76,20 @@
 
     <MudPaper Class="pa-4 mb-4">
         <MudGrid>
-            <MudItem xs="12" md="4">
+            <MudItem xs="12" md="3">
                 <MudSelect T="string" Label="Status" @bind-Value="statusFilter">
                     <MudSelectItem Value="@AllStatusesValue">All statuses</MudSelectItem>
                     @foreach (var status in FilterStatuses)
                     {
                         <MudSelectItem Value="@status.ToString()">@status.Humanize()</MudSelectItem>
                     }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="3">
+                <MudSelect T="string" Label="Archive scope" @bind-Value="archiveFilter">
+                    <MudSelectItem Value="@ArchiveActiveValue">Active only</MudSelectItem>
+                    <MudSelectItem Value="@ArchiveArchivedValue">Archived only</MudSelectItem>
+                    <MudSelectItem Value="@ArchiveAllValue">Active and archived</MudSelectItem>
                 </MudSelect>
             </MudItem>
             <MudItem xs="12" md="4">
@@ -87,6 +102,17 @@
                     <MudSelectItem Value="100">100</MudSelectItem>
                     <MudSelectItem Value="250">250</MudSelectItem>
                 </MudSelect>
+            </MudItem>
+        </MudGrid>
+
+        <MudDivider Class="my-4" />
+
+        <MudGrid>
+            <MudItem xs="12" md="3">
+                <MudDatePicker @bind-Date="createdStartDate" Label="Created from" />
+            </MudItem>
+            <MudItem xs="12" md="3">
+                <MudDatePicker @bind-Date="createdEndDate" Label="Created to" />
             </MudItem>
         </MudGrid>
 
@@ -142,6 +168,12 @@
                         <MudChip T="string" Color="@GetStatusColor(notification.Status)" Variant="Variant.Filled" Size="Size.Small">
                             @GetStatusLabel(notification.Status)
                         </MudChip>
+                        @if (notification.IsArchived == true)
+                        {
+                            <MudChip T="string" Color="Color.Default" Variant="Variant.Outlined" Size="Size.Small" Class="ml-2">
+                                Archived
+                            </MudChip>
+                        }
                     </MudTd>
                     <MudTd DataLabel="Created">
                         <MudTooltip Text="@FormatTimestamp(notification.CreatedAt)">
@@ -181,12 +213,15 @@
                                                    OnClick="@(() => RetryAsync(notification))" />
                                 </MudTooltip>
                             }
-                            <MudTooltip Text="Delete email">
-                                <MudIconButton Icon="@Icons.Material.Filled.DeleteOutline"
-                                               Color="Color.Error"
-                                               Size="Size.Small"
-                                               OnClick="@(() => DeleteAsync(notification))" />
-                            </MudTooltip>
+                            @if (CanArchive(notification))
+                            {
+                                <MudTooltip Text="Archive email">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Archive"
+                                                   Color="Color.Default"
+                                                   Size="Size.Small"
+                                                   OnClick="@(() => ArchiveAsync(notification))" />
+                                </MudTooltip>
+                            }
                         </div>
                     </MudTd>
                 </RowTemplate>
@@ -220,6 +255,8 @@
                         <MudText><strong>Retries:</strong> @DisplayCount(selectedNotification.RetryCount)</MudText>
                         <MudText><strong>Locked By:</strong> @DisplayValue(selectedNotification.LockedBy)</MudText>
                         <MudText><strong>Locked Until:</strong> @FormatTimestamp(selectedNotification.LockedUntil)</MudText>
+                        <MudText><strong>Archived:</strong> @(selectedNotification.IsArchived == true ? "Yes" : "No")</MudText>
+                        <MudText><strong>Archived At:</strong> @FormatTimestamp(selectedNotification.ArchivedDate)</MudText>
                         <MudText><strong>Subject:</strong> @DisplayValue(selectedNotification.Subject)</MudText>
                         <MudText><strong>Process Message:</strong> @DisplayValue(selectedNotification.ProcessMessage)</MudText>
                     </MudPaper>
@@ -298,6 +335,9 @@
 
 @code {
     private const string AllStatusesValue = "__all";
+    private const string ArchiveActiveValue = "active";
+    private const string ArchiveArchivedValue = "archived";
+    private const string ArchiveAllValue = "all";
 
     private static readonly NotificationStatus[] FilterStatuses =
     [
@@ -316,12 +356,27 @@
     private bool detailsDialogVisible;
     private string loadError;
     private string statusFilter = AllStatusesValue;
+    private string archiveFilter = ArchiveActiveValue;
     private string subjectFilter;
     private int take = 50;
+    private DateTime? createdStartDate = DateTime.Today;
+    private DateTime? createdEndDate = DateTime.Today;
+    private int? autoRefreshIntervalSeconds = 30;
+    private PeriodicTimer autoRefreshTimer;
+    private CancellationTokenSource autoRefreshCancellation;
+    private bool isDisposed;
 
     protected override async Task OnInitializedAsync()
     {
+        this.StartAutoRefresh();
         await this.ReloadAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        this.isDisposed = true;
+        this.StopAutoRefresh();
+        await Task.CompletedTask;
     }
 
     private async Task ReloadAsync()
@@ -353,21 +408,40 @@
     private async Task ResetFiltersAsync()
     {
         this.statusFilter = AllStatusesValue;
+        this.archiveFilter = ArchiveActiveValue;
         this.subjectFilter = null;
         this.take = 50;
+        this.createdStartDate = DateTime.Today;
+        this.createdEndDate = DateTime.Today;
 
         await this.ReloadAsync();
     }
 
+    private Task OnAutoRefreshIntervalChanged(int? value)
+    {
+        this.autoRefreshIntervalSeconds = value;
+        this.StartAutoRefresh();
+
+        return Task.CompletedTask;
+    }
+
     private async Task LoadStatsAsync()
     {
-        this.stats = await this.Api.Api._system.Notifications.Emails.Stats.GetAsync();
+        this.stats = await this.Api.Api._system.Notifications.Emails.Stats.GetAsync(config =>
+        {
+            config.QueryParameters.IsArchived = this.GetArchiveFilter();
+            config.QueryParameters.StartDate = this.ToStartDateOffset(this.createdStartDate);
+            config.QueryParameters.EndDate = this.ToEndDateOffset(this.createdEndDate);
+        });
     }
 
     private async Task LoadNotificationsAsync()
     {
         var result = await this.Api.Api._system.Notifications.Emails.GetAsync(config =>
         {
+            config.QueryParameters.IsArchived = this.GetArchiveFilter();
+            config.QueryParameters.CreatedAfter = this.ToStartDateOffset(this.createdStartDate);
+            config.QueryParameters.CreatedBefore = this.ToEndDateOffset(this.createdEndDate);
             config.QueryParameters.Take = this.take;
 
             if (!string.IsNullOrWhiteSpace(this.subjectFilter))
@@ -429,7 +503,7 @@
         }
     }
 
-    private async Task DeleteAsync(NotificationInfo notification)
+    private async Task ArchiveAsync(NotificationInfo notification)
     {
         if (notification.Id is null)
         {
@@ -438,20 +512,13 @@
 
         try
         {
-            await this.Api.Api._system.Notifications.Emails[notification.Id.Value].DeleteAsync();
-            this.Snackbar.Add("Notification email deleted.", Severity.Success);
-            await this.ReloadAsync();
-
-            if (this.selectedNotification?.Id == notification.Id)
-            {
-                this.detailsDialogVisible = false;
-                this.selectedNotification = null;
-                this.selectedContent = null;
-            }
+            await this.Api.Api._system.Notifications.Emails[notification.Id.Value].Archive.PostAsync();
+            this.Snackbar.Add("Notification email archived.", Severity.Success);
+            await this.RefreshStateAsync(notification.Id.Value);
         }
         catch (KiotaApiException ex)
         {
-            this.Snackbar.Add($"Deleting failed: {ex.Message}", Severity.Error);
+            this.Snackbar.Add($"Archiving failed: {ex.Message}", Severity.Error);
         }
     }
 
@@ -469,6 +536,22 @@
     private static bool CanRetry(NotificationInfo notification)
     {
         return notification.Status == NotificationStatus.Failed;
+    }
+
+    private static bool CanArchive(NotificationInfo notification)
+    {
+        return notification.IsArchived != true &&
+               (notification.Status == NotificationStatus.Sent || notification.Status == NotificationStatus.Failed);
+    }
+
+    private bool? GetArchiveFilter()
+    {
+        return this.archiveFilter switch
+        {
+            ArchiveActiveValue => false,
+            ArchiveArchivedValue => true,
+            _ => null,
+        };
     }
 
     private static Color GetStatusColor(NotificationStatus? status)
@@ -542,5 +625,73 @@
     private static int DisplayCount(int? value)
     {
         return value ?? 0;
+    }
+
+    private DateTimeOffset? ToStartDateOffset(DateTime? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        var local = DateTime.SpecifyKind(value.Value.Date, DateTimeKind.Local);
+        return new DateTimeOffset(local);
+    }
+
+    private DateTimeOffset? ToEndDateOffset(DateTime? value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        var local = DateTime.SpecifyKind(value.Value.Date.AddDays(1).AddTicks(-1), DateTimeKind.Local);
+        return new DateTimeOffset(local);
+    }
+
+    private void StartAutoRefresh()
+    {
+        this.StopAutoRefresh();
+
+        if (!this.autoRefreshIntervalSeconds.HasValue || this.autoRefreshIntervalSeconds.Value <= 0)
+        {
+            return;
+        }
+
+        this.autoRefreshCancellation = new CancellationTokenSource();
+        this.autoRefreshTimer = new PeriodicTimer(TimeSpan.FromSeconds(this.autoRefreshIntervalSeconds.Value));
+        _ = this.RunAutoRefreshAsync(this.autoRefreshTimer, this.autoRefreshCancellation.Token);
+    }
+
+    private void StopAutoRefresh()
+    {
+        if (this.autoRefreshCancellation is not null)
+        {
+            this.autoRefreshCancellation.Cancel();
+            this.autoRefreshCancellation.Dispose();
+            this.autoRefreshCancellation = null;
+        }
+
+        this.autoRefreshTimer?.Dispose();
+        this.autoRefreshTimer = null;
+    }
+
+    private async Task RunAutoRefreshAsync(PeriodicTimer timer, CancellationToken cancellationToken)
+    {
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                if (this.isDisposed || this.loading)
+                {
+                    continue;
+                }
+
+                await this.InvokeAsync(this.ReloadAsync);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
     }
 }

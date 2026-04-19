@@ -23,6 +23,7 @@ When domain events are persisted through the outbox or forwarded into asynchrono
 - Side effects such as notifications, cache updates, or integration messages should not run inside aggregate methods.
 - Publishing must happen after persistence, not before.
 - Some reactions can run immediately, while others need durable retryable delivery.
+- Multi-node deployments need workers to coordinate ownership of persisted events safely.
 
 ## Solution
 
@@ -32,6 +33,7 @@ The devkit uses a small set of building blocks:
 - Aggregates register events through `DomainEvents.Register(...)`.
 - `RepositoryDomainEventPublisherBehavior<TEntity>` publishes events directly after repository persistence.
 - `RepositoryOutboxDomainEventBehavior<TEntity, TContext>` stores events in an outbox table and lets a background worker publish them reliably later.
+- `OutboxDomainEventWorker<TContext>` claims persisted rows with optimistic concurrency and renewable leases so multiple hosts can compete safely.
 - Event handlers subscribe through the notifier infrastructure documented in [Requester and Notifier](./features-requester-notifier.md).
 
 ## Raising Domain Events
@@ -88,7 +90,7 @@ services.AddEntityFrameworkRepository<Customer, CoreDbContext>()
 
 ### Reliable Outbox Publication
 
-`RepositoryOutboxDomainEventBehavior<TEntity, TContext>` persists each registered domain event into an outbox table. A hosted background service later reads those rows, deserializes the events, and publishes them through the notifier.
+`RepositoryOutboxDomainEventBehavior<TEntity, TContext>` persists each registered domain event into an outbox table. A hosted background service later triggers the worker, which claims eligible rows, deserializes the events, and publishes them through the notifier.
 
 This mode works well when:
 
@@ -97,7 +99,7 @@ This mode works well when:
 - retries and delayed processing are acceptable
 - you want persistence and event recording to happen in one reliable flow
 
-The outbox row stores event metadata such as event id, type name, serialized content, timestamps, correlation data, and processing state.
+The outbox row stores event metadata such as event id, type name, serialized content, timestamps, correlation data, processing state, optimistic concurrency data, lease ownership, and archive state.
 
 ## Setup
 
@@ -136,10 +138,25 @@ public class CoreDbContext : DbContext, IOutboxDomainEventContext
 services.AddOutboxDomainEventService<CoreDbContext>(options => options
     .ProcessingMode(OutboxDomainEventProcessMode.Interval)
     .ProcessingInterval(TimeSpan.FromSeconds(30))
-    .RetryCount(3));
+    .RetryCount(3)
+    .LeaseDuration(TimeSpan.FromSeconds(30))
+    .LeaseRenewalInterval(TimeSpan.FromSeconds(10))
+    .AutoArchiveAfter(TimeSpan.FromHours(1)));
 ```
 
-The hosted service delays startup until the host is ready, periodically reads unprocessed rows, publishes the deserialized domain events, and updates the processing metadata.
+The hosted service delays startup until the host is ready, periodically triggers processing, and can archive processed rows once they are older than the configured retention threshold.
+
+## Multi-Node Processing
+
+The current outbox implementation supports multiple competing workers across different hosts.
+
+- workers only scan rows that are not processed and not archived
+- a worker must first claim a row by writing lease metadata such as `LockedBy`, `LockedUntil`, and a new `ConcurrencyVersion`
+- long-running processing renews the lease periodically
+- if a worker loses ownership, it does not persist the final state for that row
+- when processing completes, the worker clears the lease and stores the resulting processing metadata
+
+This keeps outbox delivery safe when several nodes poll the same table.
 
 ## Processing Modes
 
@@ -148,7 +165,18 @@ The hosted service delays startup until the host is ready, periodically reads un
 - `Interval`: the hosted service polls the outbox on a configured interval
 - `Immediate`: newly stored event ids are queued for near-immediate processing in addition to the hosted worker
 
-Other useful options control startup delay, processing interval, retry count, serializer choice, batch size, and whether processed rows should be purged on startup.
+Other useful options control startup delay, processing interval, retry count, serializer choice, batch size, lease duration, lease renewal cadence, automatic archiving, and whether processed rows should be purged on startup.
+
+## Archiving
+
+Processed outbox rows can be retained without staying in the active worker set.
+
+- `AutoArchiveAfter` defines how old a processed row must be before it becomes archivable
+- `OutboxDomainEventService` triggers archiving during its scheduled work cycle
+- archiving marks rows with `IsArchived` and `ArchivedDate`
+- archived rows are ignored by normal processing scans
+
+Archiving is different from purging: archiving keeps rows for diagnostics, while purging deletes them.
 
 ## Handlers
 

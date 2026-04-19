@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Shouldly;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -247,7 +248,101 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
             .FirstOrDefaultAsync(m => m.Id == message.Id);
         storedMessage.ShouldNotBeNull();
         storedMessage.Status.ShouldBe(EmailMessageStatus.Failed);
-        storedMessage.SentAt.ShouldNotBeNull();
+        storedMessage.SentAt.ShouldBeNull();
         storedMessage.PropertiesJson.ShouldContain("Max retries reached");
+    }
+
+    [Fact]
+    public async Task GetPendingAsync_WithConcurrentReaders_ShouldClaimMessageOnlyOnce()
+    {
+        // Arrange
+        var message = new EmailMessage
+        {
+            Id = Guid.NewGuid(),
+            To = ["recipient@example.com"],
+            From = new EmailAddress { Address = "sender@example.com", Name = "Sender" },
+            Subject = "Claim once",
+            Body = "This is a test email",
+            IsHtml = false,
+            Priority = EmailMessagePriority.Normal
+        };
+
+        await this.storageProvider.SaveAsync(message, CancellationToken.None);
+
+        // Act
+        async Task<IReadOnlyList<EmailMessage>> claimAsync()
+        {
+            using var scope = this.serviceProvider.CreateScope();
+            var provider = scope.ServiceProvider.GetRequiredService<INotificationStorageProvider>();
+            var result = await provider.GetPendingAsync<EmailMessage>(1, CancellationToken.None);
+            result.IsSuccess.ShouldBeTrue();
+            return result.Value.ToList();
+        }
+
+        var claimed = await Task.WhenAll(claimAsync(), claimAsync());
+
+        // Assert
+        claimed.Sum(batch => batch.Count).ShouldBe(1);
+        using var verifyScope = this.serviceProvider.CreateScope();
+        var dbContext = verifyScope.ServiceProvider.GetRequiredService<StubDbContext>();
+        var storedMessage = await dbContext.NotificationsEmails.FirstOrDefaultAsync(m => m.Id == message.Id);
+        storedMessage.ShouldNotBeNull();
+        storedMessage.Status.ShouldBe(EmailMessageStatus.Locked);
+        storedMessage.LockedBy.ShouldNotBeNullOrWhiteSpace();
+        storedMessage.LockedUntil.ShouldNotBeNull();
+        storedMessage.LockedUntil.Value.ShouldBeGreaterThan(DateTimeOffset.UtcNow);
+    }
+
+    [Fact]
+    public async Task GetPendingAsync_WithExpiredLease_ShouldAllowTakeover()
+    {
+        // Arrange
+        var message = new EmailMessage
+        {
+            Id = Guid.NewGuid(),
+            To = ["recipient@example.com"],
+            From = new EmailAddress { Address = "sender@example.com", Name = "Sender" },
+            Subject = "Expired lease",
+            Body = "This is a test email",
+            IsHtml = false,
+            Priority = EmailMessagePriority.Normal
+        };
+
+        await this.storageProvider.SaveAsync(message, CancellationToken.None);
+
+        using (var firstScope = this.serviceProvider.CreateScope())
+        {
+            var firstProvider = firstScope.ServiceProvider.GetRequiredService<INotificationStorageProvider>();
+            var firstClaim = await firstProvider.GetPendingAsync<EmailMessage>(1, CancellationToken.None);
+            firstClaim.IsSuccess.ShouldBeTrue();
+            firstClaim.Value.Count().ShouldBe(1);
+        }
+
+        string firstLockedBy;
+        using (var expireScope = this.serviceProvider.CreateScope())
+        {
+            var dbContext = expireScope.ServiceProvider.GetRequiredService<StubDbContext>();
+            var entity = await dbContext.NotificationsEmails.FirstAsync(m => m.Id == message.Id);
+            firstLockedBy = entity.LockedBy;
+            entity.LockedUntil = DateTimeOffset.UtcNow.AddMinutes(-1);
+            entity.AdvanceConcurrencyVersion();
+            await dbContext.SaveChangesAsync();
+        }
+
+        // Act
+        using var secondScope = this.serviceProvider.CreateScope();
+        var secondProvider = secondScope.ServiceProvider.GetRequiredService<INotificationStorageProvider>();
+        var secondClaim = await secondProvider.GetPendingAsync<EmailMessage>(1, CancellationToken.None);
+
+        // Assert
+        secondClaim.IsSuccess.ShouldBeTrue();
+        secondClaim.Value.Count().ShouldBe(1);
+
+        using var verifyScope = this.serviceProvider.CreateScope();
+        var verifyContext = verifyScope.ServiceProvider.GetRequiredService<StubDbContext>();
+        var storedMessage = await verifyContext.NotificationsEmails.FirstAsync(m => m.Id == message.Id);
+        storedMessage.LockedBy.ShouldNotBe(firstLockedBy);
+        storedMessage.LockedUntil.ShouldNotBeNull();
+        storedMessage.LockedUntil.Value.ShouldBeGreaterThan(DateTimeOffset.UtcNow);
     }
 }

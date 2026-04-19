@@ -59,7 +59,7 @@ public class NotificationEmailService(
             {
                 var result = await this.SendAsync(message, cancellationToken);
                 message.Status = result.IsSuccess ? EmailMessageStatus.Sent : EmailMessageStatus.Failed;
-                message.SentAt = DateTimeOffset.UtcNow;
+                message.SentAt = result.IsSuccess ? DateTimeOffset.UtcNow : null;
                 message.Properties["ProcessMessage"] = result.Errors?.FirstOrDefault()?.Message;
 
                 var updateResult = await this.storageProvider.UpdateAsync(message, cancellationToken);

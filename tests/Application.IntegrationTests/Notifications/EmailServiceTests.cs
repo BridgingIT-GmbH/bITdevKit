@@ -345,7 +345,7 @@ public class EmailServiceTests : IAsyncLifetime
             .FirstOrDefaultAsync(m => m.Id == message.Id);
         storedMessage.ShouldNotBeNull();
         storedMessage.Status.ShouldBe(EmailMessageStatus.Failed);
-        storedMessage.SentAt.ShouldNotBeNull();
+        storedMessage.SentAt.ShouldBeNull();
         storedMessage.PropertiesJson.ShouldContain("Max retries reached");
     }
 }

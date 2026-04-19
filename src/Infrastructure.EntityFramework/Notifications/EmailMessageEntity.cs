@@ -15,6 +15,7 @@ using BridgingIT.DevKit.Application.Notifications;
 
 [Table("__Notifications_Emails")]
 [Index(nameof(Status))]
+[Index(nameof(Status), nameof(LockedUntil), nameof(CreatedAt))]
 [Index(nameof(Priority))]
 [Index(nameof(CreatedAt))]
 [Index(nameof(SentAt))]
@@ -95,8 +96,19 @@ public class EmailMessageEntity
 
     public DateTimeOffset? SentAt { get; set; }
 
-    [Timestamp]
-    public byte[] RowVersion { get; set; }
+    [MaxLength(256)]
+    public string LockedBy { get; set; }
+
+    public DateTimeOffset? LockedUntil { get; set; }
+
+    [Required]
+    [ConcurrencyCheck]
+    public Guid ConcurrencyVersion { get; set; } = Guid.NewGuid();
 
     public List<EmailMessageAttachmentEntity> Attachments { get; set; } = [];
+
+    public void AdvanceConcurrencyVersion()
+    {
+        this.ConcurrencyVersion = Guid.NewGuid();
+    }
 }

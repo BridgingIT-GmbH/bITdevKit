@@ -39,11 +39,9 @@ public class OutboxNotificationEmailWorker(
                 return;
             }
 
-            var messages = messagesResult.Value;
-            if (!string.IsNullOrEmpty(messageId))
-            {
-                messages = messages.Where(m => m.Id.ToString() == messageId);
-            }
+            var messages = string.IsNullOrEmpty(messageId)
+                ? messagesResult.Value
+                : messagesResult.Value.OrderByDescending(m => m.Id.ToString() == messageId);
 
             foreach (var message in messages)
             {
@@ -115,7 +113,7 @@ public class OutboxNotificationEmailWorker(
             this.logger.LogWarning("{LogKey} outbox notification email processing skipped: max retries reached (messageId={MessageId}, attempts={Attempts})", Constants.LogKey, message.Id, message.RetryCount);
 
             message.Status = EmailMessageStatus.Failed;
-            message.SentAt = DateTimeOffset.UtcNow;
+            message.SentAt = null;
             message.Properties["ProcessMessage"] = $"Max retries reached (attempts={message.RetryCount})";
 
             var updateResult = await storageProvider.UpdateAsync(message, cancellationToken);

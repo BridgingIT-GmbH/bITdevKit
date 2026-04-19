@@ -103,4 +103,16 @@ public class OutboxNotificationEmailOptionsBuilder : OptionsBuilderBase<OutboxNo
         this.Target.RetryCount = retries;
         return this;
     }
+
+    public OutboxNotificationEmailOptionsBuilder LeaseDuration(TimeSpan timeSpan)
+    {
+        this.Target.LeaseDuration = timeSpan;
+        return this;
+    }
+
+    public OutboxNotificationEmailOptionsBuilder LeaseDuration(int milliseconds)
+    {
+        this.Target.LeaseDuration = TimeSpan.FromMilliseconds(milliseconds);
+        return this;
+    }
 }

@@ -26,4 +26,6 @@ public class OutboxNotificationEmailOptions : OptionsBase
     public int ProcessingCount { get; set; } = 100;
 
     public int RetryCount { get; set; } = 3;
+
+    public TimeSpan LeaseDuration { get; set; } = TimeSpan.FromMinutes(5);
 }

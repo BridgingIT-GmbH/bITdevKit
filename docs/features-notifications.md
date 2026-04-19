@@ -145,11 +145,12 @@ services.AddNotificationService<EmailMessage>(builder.Configuration, o =>
     o.WithSmtpClient()
      .WithEntityFrameworkStorageProvider<AppDbContext>()
      .WithOutbox<AppDbContext>(c => c
-         .StartupDelay(TimeSpan.FromSeconds(10))
-         .ProcessingInterval(TimeSpan.FromSeconds(30))
-         .ProcessingMode(OutboxNotificationEmailProcessingMode.Interval)
-         .ProcessingCount(100)
-         .RetryCount(3));
+          .StartupDelay(TimeSpan.FromSeconds(10))
+          .ProcessingInterval(TimeSpan.FromSeconds(30))
+          .LeaseDuration(TimeSpan.FromMinutes(5))
+          .ProcessingMode(OutboxNotificationEmailProcessingMode.Interval)
+          .ProcessingCount(100)
+          .RetryCount(3));
 });
 ```
 
@@ -157,9 +158,9 @@ Once outbox processing is enabled:
 
 - new messages are saved through `INotificationStorageProvider`
 - `OutboxNotificationEmailService` runs as a hosted background service
-- `OutboxNotificationEmailWorker` loads pending messages in batches
+- `OutboxNotificationEmailWorker` claims pending messages in batches by taking a time-bounded lease in storage
 - each message is sent through `INotificationService<EmailMessage>`
-- status and retry metadata are updated after processing
+- status, retry metadata, and lease state are updated after processing
 
 Two processing styles are supported:
 
@@ -176,6 +177,7 @@ Available providers include:
 - Entity Framework provider registration from infrastructure for persistent outbox storage
 
 - `EntityFrameworkNotificationStorageProvider` for Entity Framework Core-based persistence, typically used with `WithOutbox<TContext>(...)`
+- `EntityFrameworkNotificationEmailStorageProvider<TContext>` for Entity Framework Core-based persistence, typically used with `WithOutbox<TContext>(...)`
 
 The storage abstraction is intentionally small:
 
@@ -185,6 +187,22 @@ The storage abstraction is intentionally small:
 - `GetPendingAsync(...)`
 
 That keeps the application layer focused on notification workflows while letting infrastructure choose how messages are stored.
+
+### Entity Framework Provider
+
+The Entity Framework provider stores queued emails in `__Notifications_Emails` and attachments in `__Notifications_EmailAttachments`.
+
+For outbox polling, it is hardened for shared-database and multi-node deployments:
+
+- pending rows are **claimed**, not just read
+- each claim writes `Status=Locked`, `LockedBy`, `LockedUntil`, and a new provider-neutral `ConcurrencyVersion`
+- only the worker instance that owns the current lease can persist the final status change for that claimed message
+- expired leases can be taken over by another node, so a crashed worker does not strand mail forever
+- failed rows remain eligible for retry until `RetryCount` reaches the configured `OutboxNotificationEmailOptions.RetryCount`
+
+For higher-volume outbox usage, the provider uses a composite polling index on `(Status, LockedUntil, CreatedAt)` and keeps attachments in a separate table so the hot polling query does not need attachment payload columns.
+
+Because the lease and concurrency columns are part of the EF entity model, consuming applications must add and apply their own migration after upgrading the package.
 
 ## Delivery Flow
 
@@ -223,6 +241,7 @@ sequenceDiagram
 
 - `StartupDelay`
 - `ProcessingInterval`
+- `LeaseDuration`
 - `ProcessingDelay`
 - `ProcessingJitter`
 - `ProcessingMode`

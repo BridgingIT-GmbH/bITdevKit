@@ -11,11 +11,12 @@
 @inject IRequestAdapter RequestAdapter
 @inject ISnackbar Snackbar
 @inject IJSRuntime JS
+@implements IAsyncDisposable
 @attribute [RequireAuthentication]
 
 <PageTitle>DoFiesta - Operations Files</PageTitle>
 
-<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 mb-6">
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
     <MudPaper Class="pa-6 mb-4">
         <div class="d-flex flex-wrap align-center gap-4">
             <div>
@@ -23,79 +24,70 @@
             </div>
             <MudSpacer />
             <MudSelect T="string"
-                       Label="Location"
-                       Value="@selectedProviderName"
-                       ValueChanged="ChangeProviderAsync"
-                       Variant="Variant.Outlined"
-                       Margin="Margin.Dense"
-                       Dense="true"
-                       Disabled="@(loading || availableProviders.Count == 0)"
-                       Style="min-width:280px">
+                        Label="Location"
+                        Value="@selectedProviderName"
+                        ValueChanged="ChangeProviderAsync"
+                        Variant="Variant.Outlined"
+                        Margin="Margin.Dense"
+                        Dense="true"
+                        Disabled="@(loading || availableProviders.Count == 0)"
+                        Style="min-width:280px">
                 @foreach (var storageLocation in availableProviders)
                 {
                     <MudSelectItem T="string" Value="@storageLocation.ProviderName">@FormatLocationOption(storageLocation)</MudSelectItem>
                 }
             </MudSelect>
-            <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Filled.Refresh" OnClick="ReloadAsync" Disabled="@loading">
+            <MudSelect T="int?"
+                        Label="Auto refresh"
+                        Value="autoRefreshIntervalSeconds"
+                        ValueChanged="OnAutoRefreshIntervalChanged"
+                        Variant="Variant.Outlined"
+                        Margin="Margin.Dense"
+                        Dense="true"
+                        Style="min-width:170px">
+                <MudSelectItem T="int?" Value="@((int?)null)">Off</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)5)">5 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)15)">15 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)30)">30 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)60)">60 sec</MudSelectItem>
+            </MudSelect>
+            <MudButton Variant="Variant.Outlined"
+                        Color="Color.Info"
+                        StartIcon="@Icons.Material.Filled.Refresh"
+                        OnClick="ReloadAsync"
+                        Disabled="@loading">
                 Refresh
             </MudButton>
-            <MudButton Variant="Variant.Text" Color="Color.Default" StartIcon="@Icons.Material.Filled.Timeline" Href="@BuildFileEventsUri()">
+            @* <MudButton Variant="Variant.Text"
+                        Color="Color.Default"
+                        StartIcon="@Icons.Material.Filled.Timeline"
+                        Href="@BuildFileEventsUri()">
                 Event stream
-            </MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Filled.ArrowUpward" OnClick="NavigateUpAsync" Disabled="@(!CanNavigateUp || loading)">
-                Up
-            </MudButton>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CreateNewFolder" OnClick="@(() => createDirectoryDialogVisible = true)">
-                New folder
-            </MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Description" OnClick="@(() => createTextFileDialogVisible = true)">
-                New text file
-            </MudButton>
-            <MudButton Variant="Variant.Outlined" Color="Color.Success" StartIcon="@Icons.Material.Filled.UploadFile" OnClick="@(() => uploadDialogVisible = true)">
-                Upload
-            </MudButton>
+            </MudButton> *@
         </div>
-    </MudPaper>
 
-    <MudGrid Class="mb-4">
-        <MudItem xs="12" sm="6" md="3">
-            <MudPaper Class="pa-4">
+        @* <div class="files-summary">
+            <div class="files-summary__item">
                 <MudText Typo="Typo.caption">Location</MudText>
-                <MudText Typo="Typo.h6">@DisplayValue(providerInfo?.LocationName ?? providerInfo?.ProviderName)</MudText>
-                <MudText Typo="Typo.body2" Class="mud-secondary-text">@DisplayValue(providerInfo?.ProviderName)</MudText>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="12" sm="6" md="3">
-            <MudPaper Class="pa-4">
-                <MudText Typo="Typo.caption">Current folder</MudText>
-                <MudText Typo="Typo.h6">@DisplayPath(currentPath)</MudText>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="6" sm="6" md="3">
-            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.subtitle2">@DisplayValue(providerInfo?.LocationName ?? providerInfo?.ProviderName)</MudText>
+            </div>
+            <div class="files-summary__item">
+                <MudText Typo="Typo.caption">Folder</MudText>
+                <MudText Typo="Typo.subtitle2">@DisplayPath(currentPath)</MudText>
+            </div>
+            <div class="files-summary__item files-summary__item--compact">
                 <MudText Typo="Typo.caption">Folders</MudText>
-                <MudText Typo="Typo.h4">@allDirectoryPaths.Count</MudText>
-            </MudPaper>
-        </MudItem>
-        <MudItem xs="6" sm="6" md="3">
-            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.h5">@allDirectoryPaths.Count</MudText>
+            </div>
+            <div class="files-summary__item files-summary__item--compact">
                 <MudText Typo="Typo.caption">Files</MudText>
-                <MudText Typo="Typo.h4">@allFilePaths.Count</MudText>
-            </MudPaper>
-        </MudItem>
-    </MudGrid>
-
-    <MudPaper Class="pa-4 mb-4">
-        <MudText Typo="Typo.subtitle2" Class="mb-2">Path</MudText>
-        <div class="d-flex flex-wrap gap-2">
-            <MudChip T="string" Color="@(string.IsNullOrEmpty(currentPath) ? Color.Primary : Color.Default)" Variant="Variant.Outlined" OnClick="@(() => NavigateToAsync(string.Empty))">/</MudChip>
-            @foreach (var segment in GetBreadcrumbs())
-            {
-                <MudChip T="string" Color="@(string.Equals(segment.Path, currentPath, StringComparison.OrdinalIgnoreCase) ? Color.Primary : Color.Default)" Variant="Variant.Outlined" OnClick="@(() => NavigateToAsync(segment.Path))">
-                    @segment.Name
-                </MudChip>
-            }
-        </div>
+                <MudText Typo="Typo.h5">@allFilePaths.Count</MudText>
+            </div>
+            <div class="files-summary__item files-summary__item--compact">
+                <MudText Typo="Typo.caption">Visible</MudText>
+                <MudText Typo="Typo.h5">@CurrentItemCount</MudText>
+            </div>
+        </div> *@
     </MudPaper>
 
     @if (!string.IsNullOrWhiteSpace(loadError))
@@ -105,136 +97,211 @@
 
     <MudGrid>
         <MudItem xs="12" md="4" lg="3">
-            <MudPaper Class="pa-4 h-100">
-                <MudText Typo="Typo.h6">Directory tree</MudText>
-                <MudText Typo="Typo.body2" Class="mb-3">Select a folder to browse its immediate contents.</MudText>
-                <MudDivider Class="mb-2" />
+            <MudPaper Class="pa-4 h-100 files-sidebar">
+                @* <div class="files-sidebar__section">
+                    <div class="d-flex flex-wrap align-center gap-2 mb-2">
+                        <MudText Typo="Typo.subtitle1">Path</MudText>
+                        <MudSpacer />
+                        <MudButton Variant="Variant.Text"
+                                   Color="Color.Default"
+                                   StartIcon="@Icons.Material.Filled.ArrowUpward"
+                                   OnClick="NavigateUpAsync"
+                                   Disabled="@(!CanNavigateUp || loading)">
+                            Up
+                        </MudButton>
+                    </div>
 
-                @if (loading && flatDirectoryNodes.Count == 0)
-                {
-                    <MudSkeleton Height="32px" Animation="Animation.Pulse" />
-                    <MudSkeleton Height="32px" Animation="Animation.Pulse" Class="mt-2" />
-                    <MudSkeleton Height="32px" Animation="Animation.Pulse" Class="mt-2" />
-                }
-                else if (flatDirectoryNodes.Count == 0)
-                {
-                    <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined">
-                        No folders created yet.
-                    </MudAlert>
-                }
-                else
-                {
-                    <div class="d-flex flex-column gap-1">
-                        @foreach (var node in flatDirectoryNodes)
+                    <div class="files-breadcrumbs">
+                        <MudChip T="string"
+                                 Color="@(string.IsNullOrEmpty(currentPath) ? Color.Primary : Color.Default)"
+                                 Variant="Variant.Outlined"
+                                 OnClick="@(() => NavigateToAsync(string.Empty))">
+                            /
+                        </MudChip>
+                        @foreach (var segment in GetBreadcrumbs())
                         {
-                            <MudButton Variant="Variant.Text"
-                                       Color="@(string.Equals(node.Path, currentPath, StringComparison.OrdinalIgnoreCase) ? Color.Primary : Color.Default)"
-                                       StartIcon="@Icons.Material.Filled.Folder"
-                                       Style="@($"justify-content:flex-start;padding-left:{12 + (node.Level * 20)}px")"
-                                       OnClick="@(() => NavigateToAsync(node.Path))">
-                                @node.Name
-                            </MudButton>
+                            <MudChip T="string"
+                                     Color="@(string.Equals(segment.Path, currentPath, StringComparison.OrdinalIgnoreCase) ? Color.Primary : Color.Default)"
+                                     Variant="Variant.Outlined"
+                                     OnClick="@(() => NavigateToAsync(segment.Path))">
+                                @segment.Name
+                            </MudChip>
                         }
                     </div>
-                }
+                </div> *@
+
+                <div class="files-sidebar__section">
+                    <MudText Typo="Typo.subtitle1" Class="mb-2">Quick actions</MudText>
+                    <div class="files-actions">
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.CreateNewFolder" OnClick="@(() => createDirectoryDialogVisible = true)">
+                            Folder
+                        </MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Filled.Description" OnClick="@(() => createTextFileDialogVisible = true)">
+                            Text file
+                        </MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Filled.UploadFile" OnClick="@(() => uploadDialogVisible = true)">
+                            Upload
+                        </MudButton>
+                    </div>
+                </div>
+
+                <div class="files-sidebar__section">
+                    <div class="d-flex flex-wrap align-center gap-2 mb-2">
+                        <MudText Typo="Typo.subtitle1">Folders</MudText>
+                        <MudSpacer />
+                        <MudChip T="string" Variant="Variant.Outlined" Size="Size.Small">@allDirectoryPaths.Count</MudChip>
+                    </div>
+
+                    @if (loading && flatDirectoryNodes.Count == 0)
+                    {
+                        <MudSkeleton Height="28px" Animation="Animation.Pulse" />
+                        <MudSkeleton Height="28px" Animation="Animation.Pulse" Class="mt-2" />
+                        <MudSkeleton Height="28px" Animation="Animation.Pulse" Class="mt-2" />
+                    }
+                    else if (flatDirectoryNodes.Count == 0)
+                    {
+                        <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined">
+                            No folders created yet.
+                        </MudAlert>
+                    }
+                    else
+                    {
+                        <div class="files-tree">
+                            <MudButton Variant="Variant.Text"
+                                       Color="@(string.IsNullOrEmpty(currentPath) ? Color.Primary : Color.Default)"
+                                       StartIcon="@Icons.Material.Filled.Folder"
+                                       Style="justify-content:flex-start"
+                                       OnClick="@(() => NavigateToAsync(string.Empty))">
+                                Root
+                            </MudButton>
+                            @foreach (var node in flatDirectoryNodes)
+                            {
+                                <MudButton Variant="Variant.Text"
+                                           Color="@(string.Equals(node.Path, currentPath, StringComparison.OrdinalIgnoreCase) ? Color.Primary : Color.Default)"
+                                           StartIcon="@Icons.Material.Filled.Folder"
+                                           Style="@($"justify-content:flex-start;padding-left:{12 + (node.Level * 18)}px")"
+                                           OnClick="@(() => NavigateToAsync(node.Path))">
+                                    @node.Name
+                                </MudButton>
+                            }
+                        </div>
+                    }
+                </div>
             </MudPaper>
         </MudItem>
 
         <MudItem xs="12" md="8" lg="9">
-            <MudPaper Class="pa-4 mb-4">
-                <div class="d-flex flex-wrap align-center gap-2 mb-3">
-                    <MudText Typo="Typo.h6">Folders in @DisplayPath(currentPath)</MudText>
-                    <MudSpacer />
-                    <MudChip T="string" Variant="Variant.Outlined">@currentDirectories.Count.ToString()</MudChip>
+            <MudPaper Class="pa-4 files-content">
+                <div class="files-content__header">
+                    <div>
+                        @* <MudText Typo="Typo.h6">Contents</MudText> *@
+                        <MudText Typo="Typo.body2" Class="mud-secondary-text">@DisplayPath(currentPath)</MudText>
+                    </div>
+                    @* <MudChip T="string" Variant="Variant.Outlined">@CurrentItemCount item(s)</MudChip> *@
+                    <MudButton Variant="Variant.Text" Color="Color.Default"
+                                StartIcon="@Icons.Material.Filled.ArrowUpward" OnClick="NavigateUpAsync"
+                                Disabled="@(!CanNavigateUp || loading)">
+                        Up
+                    </MudButton>
                 </div>
 
-                @if (currentDirectories.Count == 0)
-                {
-                    <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined">
-                        No folders in the current location.
-                    </MudAlert>
-                }
-                else
-                {
-                    <MudTable Items="@currentDirectories" Dense="true" Hover="true" Elevation="0">
-                        <HeaderContent>
-                            <MudTh>Name</MudTh>
-                            <MudTh>Path</MudTh>
-                            <MudTh></MudTh>
-                        </HeaderContent>
-                        <RowTemplate Context="directory">
-                            <MudTd DataLabel="Name">
-                                <div class="d-flex align-center gap-2">
-                                    <MudIcon Icon="@Icons.Material.Filled.Folder" Color="Color.Warning" />
-                                    <MudText Typo="Typo.body1">@directory.Name</MudText>
-                                </div>
-                            </MudTd>
-                            <MudTd DataLabel="Path">@directory.Path</MudTd>
-                            <MudTd>
-                                <div class="d-flex justify-end gap-1">
-                                    <MudTooltip Text="Open folder">
-                                        <MudIconButton Icon="@Icons.Material.Filled.FolderOpen" Color="Color.Info" Size="Size.Small" OnClick="@(() => NavigateToAsync(directory.Path))" />
-                                    </MudTooltip>
-                                    <MudTooltip Text="Delete folder recursively">
-                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => PromptDeleteDirectory(directory.Path))" />
-                                    </MudTooltip>
-                                </div>
-                            </MudTd>
-                        </RowTemplate>
-                    </MudTable>
-                }
-            </MudPaper>
+                <div class="files-section">
+                    <div class="files-section__header">
+                        <MudText Typo="Typo.subtitle1">Folders</MudText>
+                        <MudChip T="string" Variant="Variant.Text" Size="Size.Small">@currentDirectories.Count</MudChip>
+                    </div>
 
-            <MudPaper Class="pa-4">
-                <div class="d-flex flex-wrap align-center gap-2 mb-3">
-                    <MudText Typo="Typo.h6">Files in @DisplayPath(currentPath)</MudText>
-                    <MudSpacer />
-                    <MudChip T="string" Variant="Variant.Outlined">@currentFiles.Count.ToString()</MudChip>
-                </div>
-
-                @if (currentFiles.Count == 0)
-                {
-                    <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined">
-                        No files in the current location.
-                    </MudAlert>
-                }
-                else
-                {
-                    <MudTable Items="@currentFiles" Dense="true" Hover="true" Elevation="0">
-                        <HeaderContent>
-                            <MudTh>Name</MudTh>
-                            <MudTh>Size</MudTh>
-                            <MudTh>Modified</MudTh>
-                            <MudTh></MudTh>
-                        </HeaderContent>
-                        <RowTemplate Context="file">
-                            <MudTd DataLabel="Name">
-                                <div class="d-flex align-center gap-2">
-                                    <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Secondary" />
-                                    <div>
-                                        <MudText Typo="Typo.body1">@file.Name</MudText>
-                                        <MudText Typo="Typo.caption">@file.Path</MudText>
+                    @if (currentDirectories.Count == 0)
+                    {
+                        <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined">
+                            No folders in the current location.
+                        </MudAlert>
+                    }
+                    else
+                    {
+                        <MudTable Items="@currentDirectories" Dense="true" Hover="true" Elevation="0" Breakpoint="Breakpoint.Sm">
+                            <HeaderContent>
+                                <MudTh>Name</MudTh>
+                                @* <MudTh>Path</MudTh> *@
+                                <MudTh Class="text-right">Actions</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="directory">
+                                <MudTd DataLabel="Name">
+                                    <div class="files-name">
+                                        <MudIcon Icon="@Icons.Material.Filled.Folder" Color="Color.Warning" />
+                                        <MudText Typo="Typo.body2">@directory.Name</MudText>
                                     </div>
-                                </div>
-                            </MudTd>
-                            <MudTd DataLabel="Size">@FormatSize(file.Length)</MudTd>
-                            <MudTd DataLabel="Modified">@FormatTimestamp(file.LastModified)</MudTd>
-                            <MudTd>
-                                <div class="d-flex justify-end gap-1">
-                                    <MudTooltip Text="Open details">
-                                        <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Info" Size="Size.Small" OnClick="@(() => OpenFileAsync(file.Path))" />
-                                    </MudTooltip>
-                                    <MudTooltip Text="Download file">
-                                        <MudIconButton Icon="@Icons.Material.Filled.Download" Color="Color.Success" Size="Size.Small" OnClick="@(() => DownloadFileAsync(file.Path))" />
-                                    </MudTooltip>
-                                    <MudTooltip Text="Delete file">
-                                        <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => PromptDeleteFile(file.Path))" />
-                                    </MudTooltip>
-                                </div>
-                            </MudTd>
-                        </RowTemplate>
-                    </MudTable>
-                }
+                                </MudTd>
+                                @* <MudTd DataLabel="Path">
+                                    <MudText Typo="Typo.body2" Class="files-path">@directory.Path</MudText>
+                                </MudTd> *@
+                                <MudTd DataLabel="Actions" Class="text-right">
+                                    <div class="files-table__actions">
+                                        <MudTooltip Text="Open folder">
+                                            <MudIconButton Icon="@Icons.Material.Filled.FolderOpen" Color="Color.Default" Size="Size.Small" OnClick="@(() => NavigateToAsync(directory.Path))" />
+                                        </MudTooltip>
+                                        <MudTooltip Text="Delete folder recursively">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => PromptDeleteDirectory(directory.Path))" />
+                                        </MudTooltip>
+                                    </div>
+                                </MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    }
+                </div>
+
+                <MudDivider Class="my-4" />
+
+                <div class="files-section">
+                    <div class="files-section__header">
+                        <MudText Typo="Typo.subtitle1">Files</MudText>
+                        <MudChip T="string" Variant="Variant.Text" Size="Size.Small">@currentFiles.Count</MudChip>
+                    </div>
+
+                    @if (currentFiles.Count == 0)
+                    {
+                        <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined">
+                            No files in the current location.
+                        </MudAlert>
+                    }
+                    else
+                    {
+                        <MudTable Items="@currentFiles" Dense="true" Hover="true" Elevation="0" Breakpoint="Breakpoint.Sm">
+                            <HeaderContent>
+                                <MudTh>Name</MudTh>
+                                <MudTh>Size</MudTh>
+                                <MudTh>Modified</MudTh>
+                                <MudTh Class="text-right">Actions</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="file">
+                                <MudTd DataLabel="Name">
+                                    <div class="files-file">
+                                        <div class="files-name">
+                                            <MudIcon Icon="@Icons.Material.Filled.Description" Color="Color.Default" />
+                                            <MudText Typo="Typo.body2">@file.Name</MudText>
+                                        </div>
+                                        @* <MudText Typo="Typo.caption" Class="files-path">@file.Path</MudText> *@
+                                    </div>
+                                </MudTd>
+                                <MudTd DataLabel="Size">@FormatSize(file.Length)</MudTd>
+                                <MudTd DataLabel="Modified">@FormatTimestamp(file.LastModified)</MudTd>
+                                <MudTd DataLabel="Actions" Class="text-right">
+                                    <div class="files-table__actions">
+                                        <MudTooltip Text="Preview">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Visibility" Color="Color.Default" Size="Size.Small" OnClick="@(() => OpenFileAsync(file.Path))" />
+                                        </MudTooltip>
+                                        <MudTooltip Text="Download">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Download" Color="Color.Default" Size="Size.Small" OnClick="@(() => DownloadFileAsync(file.Path))" />
+                                        </MudTooltip>
+                                        <MudTooltip Text="Delete file">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Delete" Color="Color.Error" Size="Size.Small" OnClick="@(() => PromptDeleteFile(file.Path))" />
+                                        </MudTooltip>
+                                    </div>
+                                </MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    }
+                </div>
             </MudPaper>
         </MudItem>
     </MudGrid>
@@ -358,6 +425,115 @@
     </DialogActions>
 </MudDialog>
 
+<style>
+    .files-shell {
+        border: 1px solid var(--mud-palette-lines-default);
+    }
+
+    .files-shell__header {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.25rem;
+        align-items: flex-start;
+        justify-content: space-between;
+        margin-bottom: 1.25rem;
+    }
+
+    .files-shell__controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .files-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+        gap: 0.75rem;
+    }
+
+    .files-summary__item {
+        padding: 0.9rem 1rem;
+        border-radius: 14px;
+        border: 1px solid rgba(92, 107, 92, 0.14);
+        background: rgba(255, 255, 255, 0.72);
+    }
+
+    .files-summary__item--compact {
+        text-align: center;
+    }
+
+    .files-sidebar,
+    .files-content {
+        border: 1px solid var(--mud-palette-lines-default);
+    }
+
+    .files-sidebar__section + .files-sidebar__section {
+        margin-top: 1.25rem;
+        padding-top: 1.25rem;
+        border-top: 1px solid var(--mud-palette-lines-default);
+    }
+
+    .files-breadcrumbs,
+    .files-actions,
+    .files-tree {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .files-actions .mud-button-root {
+        min-width: 120px;
+    }
+
+    .files-tree {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .files-content__header,
+    .files-section__header {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .files-content__header {
+        margin-bottom: 1rem;
+    }
+
+    .files-name {
+        display: flex;
+        gap: 0.6rem;
+        align-items: center;
+    }
+
+    .files-file {
+        display: flex;
+        flex-direction: column;
+        gap: 0.15rem;
+    }
+
+    .files-path {
+        word-break: break-all;
+    }
+
+    .files-table__actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.2rem;
+    }
+
+    @@media (max-width: 960px) {
+        .files-shell__controls {
+            justify-content: flex-start;
+        }
+    }
+</style>
+
 @code {
     private const long MaxUploadSize = 10 * 1024 * 1024;
 
@@ -398,15 +574,29 @@
     private string confirmDialogTitle;
     private string confirmDialogMessage;
     private string confirmTargetPath;
+    private int? autoRefreshIntervalSeconds = 30;
+    private PeriodicTimer autoRefreshTimer;
+    private CancellationTokenSource autoRefreshCancellation;
+    private bool isDisposed;
 
     protected override async Task OnInitializedAsync()
     {
         this.selectedProviderName = this.GetRequestedProviderName();
         this.currentPath = this.GetRequestedPath();
+        this.StartAutoRefresh();
         await this.ReloadAsync();
     }
 
+    public async ValueTask DisposeAsync()
+    {
+        this.isDisposed = true;
+        this.StopAutoRefresh();
+        await Task.CompletedTask;
+    }
+
     private bool CanNavigateUp => !string.IsNullOrWhiteSpace(this.currentPath);
+
+    private int CurrentItemCount => this.currentDirectories.Count + this.currentFiles.Count;
 
     private async Task ReloadAsync()
     {
@@ -469,6 +659,14 @@
         this.currentPath = string.Empty;
         this.UpdateRequestedState();
         await this.ReloadAsync();
+    }
+
+    private Task OnAutoRefreshIntervalChanged(int? value)
+    {
+        this.autoRefreshIntervalSeconds = value;
+        this.StartAutoRefresh();
+
+        return Task.CompletedTask;
     }
 
     private async Task NavigateToAsync(string path)
@@ -943,6 +1141,52 @@
                extension.Equals(".md", StringComparison.OrdinalIgnoreCase) ||
                extension.Equals(".csv", StringComparison.OrdinalIgnoreCase) ||
                extension.Equals(".log", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private void StartAutoRefresh()
+    {
+        this.StopAutoRefresh();
+
+        if (!this.autoRefreshIntervalSeconds.HasValue || this.autoRefreshIntervalSeconds.Value <= 0)
+        {
+            return;
+        }
+
+        this.autoRefreshCancellation = new CancellationTokenSource();
+        this.autoRefreshTimer = new PeriodicTimer(TimeSpan.FromSeconds(this.autoRefreshIntervalSeconds.Value));
+        _ = this.RunAutoRefreshAsync(this.autoRefreshTimer, this.autoRefreshCancellation.Token);
+    }
+
+    private void StopAutoRefresh()
+    {
+        if (this.autoRefreshCancellation is not null)
+        {
+            this.autoRefreshCancellation.Cancel();
+            this.autoRefreshCancellation.Dispose();
+            this.autoRefreshCancellation = null;
+        }
+
+        this.autoRefreshTimer?.Dispose();
+        this.autoRefreshTimer = null;
+    }
+
+    private async Task RunAutoRefreshAsync(PeriodicTimer timer, CancellationToken cancellationToken)
+    {
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                if (this.isDisposed || this.loading)
+                {
+                    continue;
+                }
+
+                await this.InvokeAsync(this.ReloadAsync);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
     }
 
     private sealed record DirectoryNode(string Path, string Name, int Level);

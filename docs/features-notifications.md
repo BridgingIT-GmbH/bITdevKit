@@ -170,10 +170,12 @@ Two processing styles are supported:
 
 The notification feature depends on `INotificationStorageProvider` for queued delivery.
 
-Available patterns in the current codebase:
+Available providers include:
 
 - `InMemoryNotificationStorageProvider` for tests, demos, and ephemeral processing
 - Entity Framework provider registration from infrastructure for persistent outbox storage
+
+- `EntityFrameworkNotificationStorageProvider` for Entity Framework Core-based persistence, typically used with `WithOutbox<TContext>(...)`
 
 The storage abstraction is intentionally small:
 

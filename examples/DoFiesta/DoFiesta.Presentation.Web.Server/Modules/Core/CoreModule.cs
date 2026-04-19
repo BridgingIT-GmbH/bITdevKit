@@ -103,8 +103,8 @@ public class CoreModule : WebModuleBase
                 .HaltOnFailure())
                 //.DeleteOnStartup(environment.IsLocalDevelopment()))
             .WithOutboxDomainEventService(o => o
+                .ProcessingModeImmediate()
                 .ProcessingInterval("00:00:30")
-                //.ProcessingModeImmediate() // forwards the outbox event, through a queue, to the outbox worker
                 .StartupDelay("00:00:15"));
         //.PurgeOnStartup());
 

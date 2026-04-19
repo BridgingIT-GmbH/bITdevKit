@@ -72,7 +72,7 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
                 var leaseOwner = this.GetLeaseOwner(emailMessage);
                 var now = DateTimeOffset.UtcNow;
 
-                IQueryable<EmailMessageEntity> entityQuery = context.NotificationsEmails
+                var entityQuery = context.NotificationsEmails
                     .Include(e => e.Attachments)
                     .Where(e => e.Id == emailMessage.Id);
 

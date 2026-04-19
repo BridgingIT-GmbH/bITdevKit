@@ -35,45 +35,52 @@ public partial class TodoItemCreateCommand
         ISequenceNumberGenerator numberGenerator,
         ICurrentUserAccessor currentUserAccessor,
         IRepositoryTransaction<TodoItem> transaction,
-        CancellationToken cancellationToken) =>
-        await Result<TodoItem>.Success(mapper.Map<TodoItemModel, TodoItem>(this.Model))
+        CancellationToken cancellationToken)
+    {
+        if (string.IsNullOrWhiteSpace(this.Model.Assignee) && !string.IsNullOrWhiteSpace(currentUserAccessor.Email))
+        {
+            this.Model.Assignee = currentUserAccessor.Email;
+        }
 
-            // Start transaction scope using repository transaction
-            .StartOperation(transaction.BeginAsync)
-                // Set current user
-                .Tap(e => e.UserId = currentUserAccessor.UserId)
-                // Generate sequence number
-                .TapAsync(async (e, ct) =>
-                {
-                    var seqResult = await numberGenerator.GetNextAsync("TodoItemSequence", "core", cancellationToken: ct);
-                    e.Number = seqResult.IsSuccess ? (int)seqResult.Value : 0;
-                }, cancellationToken: cancellationToken)
-                // Check business rules
-                .UnlessAsync(async (e, ct) => await Rule
-                    .Add(RuleSet.IsNotEmpty(e.Title))
-                    .Add(RuleSet.NotEqual(e.Title, "todo"))
-                    .Add(new TitleShouldBeUniqueRule(e.Title, repository))
-                    .CheckAsync(ct), cancellationToken: cancellationToken)
-                // Register domain event
-                .Tap(e => e.DomainEvents.Register(new TodoItemCreatedDomainEvent(e)))
-                .Tap(e => e.DomainEvents.Register(new EntityCreatedDomainEvent<TodoItem>(e)))
-                // Insert into database
-                .BindAsync(async (e, ct) =>
-                    await repository.InsertResultAsync(e, ct), cancellationToken: cancellationToken)
-                // Set permissions
-                .Tap(e =>
-                    new EntityPermissionProviderBuilder(permissionProvider)
-                        .ForUser(e.UserId)
-                            .WithPermission<TodoItem>(e.Id, Permission.Read)
-                            .WithPermission<TodoItem>(e.Id, Permission.Write)
-                            .WithPermission<TodoItem>(e.Id, Permission.Delete)
-                        .Build())
-                // Audit logging
-                .Tap(e => Console.WriteLine("AUDIT"))
+        return await Result<TodoItem>.Success(mapper.Map<TodoItemModel, TodoItem>(this.Model))
 
-            // End transaction (commit on success, rollback on failure)
-            .EndOperationAsync(cancellationToken: cancellationToken)
+                // Start transaction scope using repository transaction
+                .StartOperation(transaction.BeginAsync)
+                    // Set current user
+                    .Tap(e => e.UserId = currentUserAccessor.UserId)
+                    // Generate sequence number
+                    .TapAsync(async (e, ct) =>
+                    {
+                        var seqResult = await numberGenerator.GetNextAsync("TodoItemSequence", "core", cancellationToken: ct);
+                        e.Number = seqResult.IsSuccess ? (int)seqResult.Value : 0;
+                    }, cancellationToken: cancellationToken)
+                    // Check business rules
+                    .UnlessAsync(async (e, ct) => await Rule
+                        .Add(RuleSet.IsNotEmpty(e.Title))
+                        .Add(RuleSet.NotEqual(e.Title, "todo"))
+                        .Add(new TitleShouldBeUniqueRule(e.Title, repository))
+                        .CheckAsync(ct), cancellationToken: cancellationToken)
+                    // Register domain event
+                    .Tap(e => e.DomainEvents.Register(new TodoItemCreatedDomainEvent(e)))
+                    .Tap(e => e.DomainEvents.Register(new EntityCreatedDomainEvent<TodoItem>(e)))
+                    // Insert into database
+                    .BindAsync(async (e, ct) =>
+                        await repository.InsertResultAsync(e, ct), cancellationToken: cancellationToken)
+                    // Set permissions
+                    .Tap(e =>
+                        new EntityPermissionProviderBuilder(permissionProvider)
+                            .ForUser(e.UserId)
+                                .WithPermission<TodoItem>(e.Id, Permission.Read)
+                                .WithPermission<TodoItem>(e.Id, Permission.Write)
+                                .WithPermission<TodoItem>(e.Id, Permission.Delete)
+                            .Build())
+                    // Audit logging
+                    .Tap(e => Console.WriteLine("AUDIT"))
 
-            // Map entity back to model
-            .Map(mapper.Map<TodoItem, TodoItemModel>);
+                // End transaction (commit on success, rollback on failure)
+                .EndOperationAsync(cancellationToken: cancellationToken)
+
+                // Map entity back to model
+                .Map(mapper.Map<TodoItem, TodoItemModel>);
+    }
 }

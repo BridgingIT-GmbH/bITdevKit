@@ -4,6 +4,7 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 using BridgingIT.DevKit.Application.Utilities;
+using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Application.Messaging;
@@ -17,6 +18,7 @@ using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Host;
 using BridgingIT.DevKit.Presentation.Web.Messaging;
+using BridgingIT.DevKit.Presentation.Web.Notifications;
 using BridgingIT.DevKit.Presentation.Web.Queueing;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -71,6 +73,34 @@ builder.Services.AddQueueing(builder.Configuration, o => o
         .StartupDelay("00:00:10"))
     .WithEntityFrameworkBroker<CoreDbContext>()
     .AddEndpoints();
+
+builder.Services.AddNotificationService<EmailMessage>(builder.Configuration, o =>
+    {
+        o.WithEntityFrameworkStorageProvider<CoreDbContext>()
+            .WithOutbox<CoreDbContext>(options => options
+                .StartupDelay(TimeSpan.FromSeconds(5))
+                .ProcessingInterval(TimeSpan.FromSeconds(5))
+                .ProcessingModeImmediate()
+                .ProcessingCount(25)
+                .RetryCount(3)
+                .LeaseDuration(TimeSpan.FromMinutes(2)));
+
+        if (string.IsNullOrWhiteSpace(builder.Configuration["NotificationService:Email:Smtp:Host"]))
+        {
+            o.WithFakeSmtpClient(new FakeSmtpClientOptions { LogMessageBodyLength = 1024 });
+        }
+        else
+        {
+            o.WithSmtpClient();
+        }
+
+        o.WithSmtpSettings(settings =>
+        {
+            settings.SenderName ??= "DoFiesta";
+            settings.SenderAddress ??= "noreply@dofiesta.local";
+        });
+    })
+    .AddEndpoints(options => options.RequireAuthorization());
 
 builder.Services.AddMapping().WithMapster();
 

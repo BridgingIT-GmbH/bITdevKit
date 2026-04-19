@@ -152,6 +152,36 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
     }
 
     [Fact]
+    public async Task QueueAsync_WithoutExplicitFrom_UsesConfiguredSenderAndPersists()
+    {
+        // Arrange
+        var emailService = this.serviceProvider.GetRequiredService<INotificationService<EmailMessage>>();
+        var message = new EmailMessage
+        {
+            Id = Guid.NewGuid(),
+            To = ["recipient@example.com"],
+            Subject = "Queued without sender",
+            Body = "This is a test email",
+            IsHtml = false,
+            Priority = EmailMessagePriority.Normal
+        };
+
+        // Act
+        var result = await emailService.QueueAsync(message, CancellationToken.None);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        using var scope = this.serviceProvider.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<StubDbContext>();
+        var storedMessage = await dbContext.NotificationsEmails
+            .FirstOrDefaultAsync(m => m.Id == message.Id);
+        storedMessage.ShouldNotBeNull();
+        storedMessage.From.ShouldContain("test@app.com");
+        storedMessage.From.ShouldContain("Test App");
+        storedMessage.Status.ShouldBe(EmailMessageStatus.Pending);
+    }
+
+    [Fact]
     public async Task SendAsync_NoOutbox_SendsDirectly()
     {
         // Arrange

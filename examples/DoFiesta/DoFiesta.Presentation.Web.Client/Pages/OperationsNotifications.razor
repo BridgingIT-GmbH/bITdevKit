@@ -1,0 +1,546 @@
+@page "/operations/notifications"
+@using System.Text.Json
+@using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen
+@using Microsoft.AspNetCore.Authorization
+@using KiotaApiException = Microsoft.Kiota.Abstractions.ApiException
+@using NotificationContentInfo = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.NotificationEmailContentInfo
+@using NotificationInfo = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.NotificationEmailInfo
+@using NotificationStats = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.NotificationEmailStats
+@using NotificationStatus = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.EmailMessageStatus
+@inject BackendApiClient Api
+@inject ISnackbar Snackbar
+@attribute [Authorize]
+
+<PageTitle>DoFiesta - Operations Notifications</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4">
+    <MudPaper Class="pa-6 mb-4">
+        <div class="d-flex flex-wrap align-center gap-4">
+            <div>
+                <MudText Typo="Typo.h4" GutterBottom="true">Notification Emails</MudText>
+                <MudText Typo="Typo.body2">Inspect queued, leased, sent, and failed notification emails from the outbox.</MudText>
+            </div>
+            <MudSpacer />
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Filled.Refresh" OnClick="ReloadAsync">
+                Refresh
+            </MudButton>
+        </div>
+    </MudPaper>
+
+    <MudGrid Class="mb-4">
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Total</MudText>
+                <MudText Typo="Typo.h4">@DisplayCount(stats?.Total)</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Pending</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Info">@DisplayCount(stats?.Pending)</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Locked</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Warning">@DisplayCount(stats?.Locked)</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Sent</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Success">@DisplayCount(stats?.Sent)</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Failed</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Error">@DisplayCount(stats?.Failed)</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Leased</MudText>
+                <MudText Typo="Typo.h4">@DisplayCount(stats?.Leased)</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudPaper Class="pa-4 mb-4">
+        <MudGrid>
+            <MudItem xs="12" md="4">
+                <MudSelect T="string" Label="Status" @bind-Value="statusFilter">
+                    <MudSelectItem Value="@AllStatusesValue">All statuses</MudSelectItem>
+                    @foreach (var status in FilterStatuses)
+                    {
+                        <MudSelectItem Value="@status.ToString()">@status.Humanize()</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudTextField @bind-Value="subjectFilter" Label="Subject contains" Clearable="true" />
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudSelect T="int" Label="Rows" @bind-Value="take">
+                    <MudSelectItem Value="25">25</MudSelectItem>
+                    <MudSelectItem Value="50">50</MudSelectItem>
+                    <MudSelectItem Value="100">100</MudSelectItem>
+                    <MudSelectItem Value="250">250</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+        </MudGrid>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.FilterAlt" OnClick="ReloadAsync">
+                Apply
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Filled.Clear" OnClick="ResetFiltersAsync">
+                Reset
+            </MudButton>
+        </div>
+    </MudPaper>
+
+    <MudPaper Class="pa-2">
+        @if (!string.IsNullOrWhiteSpace(loadError))
+        {
+            <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="ma-2">@loadError</MudAlert>
+        }
+        else if (loading && notifications.Count == 0)
+        {
+            <div class="pa-4">
+                <MudSkeleton Height="72px" Animation="Animation.Pulse" />
+                <MudSkeleton Height="72px" Animation="Animation.Pulse" Class="mt-2" />
+                <MudSkeleton Height="72px" Animation="Animation.Pulse" Class="mt-2" />
+            </div>
+        }
+        else if (notifications.Count == 0)
+        {
+            <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined" Class="ma-2">
+                No notification emails matched the current filters.
+            </MudAlert>
+        }
+        else
+        {
+            <MudTable Items="@notifications"
+                      Dense="true"
+                      Hover="true"
+                      Loading="@loading"
+                      LoadingProgressColor="Color.Info"
+                      Elevation="0">
+                <HeaderContent>
+                    <MudTh>Status</MudTh>
+                    <MudTh>Created</MudTh>
+                    <MudTh>To</MudTh>
+                    <MudTh>Subject</MudTh>
+                    <MudTh>Retries</MudTh>
+                    <MudTh>Sent</MudTh>
+                    <MudTh>Lease</MudTh>
+                    <MudTh></MudTh>
+                </HeaderContent>
+                <RowTemplate Context="notification">
+                    <MudTd DataLabel="Status">
+                        <MudChip T="string" Color="@GetStatusColor(notification.Status)" Variant="Variant.Filled" Size="Size.Small">
+                            @GetStatusLabel(notification.Status)
+                        </MudChip>
+                    </MudTd>
+                    <MudTd DataLabel="Created">
+                        <MudTooltip Text="@FormatTimestamp(notification.CreatedAt)">
+                            <MudText Typo="Typo.body2">@FormatRelativeTimestamp(notification.CreatedAt)</MudText>
+                        </MudTooltip>
+                    </MudTd>
+                    <MudTd DataLabel="To">@TrimValue(string.Join(", ", notification.To ?? []), 36)</MudTd>
+                    <MudTd DataLabel="Subject">@TrimValue(notification.Subject, 56)</MudTd>
+                    <MudTd DataLabel="Retries">@DisplayCount(notification.RetryCount)</MudTd>
+                    <MudTd DataLabel="Sent">@FormatRelativeTimestamp(notification.SentAt)</MudTd>
+                    <MudTd DataLabel="Lease">
+                        @if (!string.IsNullOrWhiteSpace(notification.LockedBy))
+                        {
+                            <MudTooltip Text="@($"{notification.LockedBy} until {FormatTimestamp(notification.LockedUntil)}")">
+                                <MudChip T="string" Color="Color.Warning" Variant="Variant.Outlined" Size="Size.Small">Leased</MudChip>
+                            </MudTooltip>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.body2">-</MudText>
+                        }
+                    </MudTd>
+                    <MudTd>
+                        <div class="d-flex justify-end gap-1">
+                            <MudTooltip Text="Open details">
+                                <MudIconButton Icon="@Icons.Material.Filled.Info"
+                                               Color="Color.Info"
+                                               Size="Size.Small"
+                                               OnClick="@(() => OpenDetailsAsync(notification))" />
+                            </MudTooltip>
+                            @if (CanRetry(notification))
+                            {
+                                <MudTooltip Text="Retry email">
+                                    <MudIconButton Icon="@Icons.Material.Filled.RestartAlt"
+                                                   Color="Color.Warning"
+                                                   Size="Size.Small"
+                                                   OnClick="@(() => RetryAsync(notification))" />
+                                </MudTooltip>
+                            }
+                            <MudTooltip Text="Delete email">
+                                <MudIconButton Icon="@Icons.Material.Filled.DeleteOutline"
+                                               Color="Color.Error"
+                                               Size="Size.Small"
+                                               OnClick="@(() => DeleteAsync(notification))" />
+                            </MudTooltip>
+                        </div>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+    </MudPaper>
+</MudContainer>
+
+<MudDialog @bind-Visible="detailsDialogVisible" Options="new DialogOptions { CloseButton = true, FullWidth = true, MaxWidth = MaxWidth.Large }">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Notification Email Details</MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (detailsLoading)
+        {
+            <MudProgressCircular Indeterminate="true" Color="Color.Info" />
+        }
+        else if (selectedNotification is null)
+        {
+            <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">No notification email details are loaded.</MudAlert>
+        }
+        else
+        {
+            <MudGrid>
+                <MudItem xs="12" md="7">
+                    <MudPaper Class="pa-4 mb-4">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Overview</MudText>
+                        <MudText><strong>Status:</strong> @GetStatusLabel(selectedNotification.Status)</MudText>
+                        <MudText><strong>Created:</strong> @FormatTimestamp(selectedNotification.CreatedAt)</MudText>
+                        <MudText><strong>Sent:</strong> @FormatTimestamp(selectedNotification.SentAt)</MudText>
+                        <MudText><strong>Retries:</strong> @DisplayCount(selectedNotification.RetryCount)</MudText>
+                        <MudText><strong>Locked By:</strong> @DisplayValue(selectedNotification.LockedBy)</MudText>
+                        <MudText><strong>Locked Until:</strong> @FormatTimestamp(selectedNotification.LockedUntil)</MudText>
+                        <MudText><strong>Subject:</strong> @DisplayValue(selectedNotification.Subject)</MudText>
+                        <MudText><strong>Process Message:</strong> @DisplayValue(selectedNotification.ProcessMessage)</MudText>
+                    </MudPaper>
+
+                    <MudPaper Class="pa-4 mb-4">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Recipients</MudText>
+                        <MudText><strong>To:</strong> @DisplayCollection(selectedNotification.To)</MudText>
+                        <MudText><strong>Cc:</strong> @DisplayCollection(selectedNotification.Cc)</MudText>
+                        <MudText><strong>Bcc:</strong> @DisplayCollection(selectedNotification.Bcc)</MudText>
+                        <MudText><strong>From:</strong> @DisplayAddress(selectedNotification.FromName, selectedNotification.FromAddress)</MudText>
+                        <MudText><strong>Reply-To:</strong> @DisplayAddress(selectedNotification.ReplyToName, selectedNotification.ReplyToAddress)</MudText>
+                    </MudPaper>
+
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Body</MudText>
+                        @if (selectedContent is null)
+                        {
+                            <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined">Body content is not available.</MudAlert>
+                        }
+                        else if (selectedContent.IsHtml == true)
+                        {
+                            <MudText Typo="Typo.caption" Class="mb-2">HTML body</MudText>
+                            <MudPaper Class="pa-4 mud-theme-surface" Style="max-height: 320px; overflow: auto;">
+                                @((MarkupString)(selectedContent.Body ?? string.Empty))
+                            </MudPaper>
+                        }
+                        else
+                        {
+                            <MudText Typo="Typo.caption" Class="mb-2">Plain text body</MudText>
+                            <MudPaper Class="pa-4 mud-theme-surface" Style="max-height: 320px; overflow: auto; white-space: pre-wrap;">
+                                @selectedContent?.Body
+                            </MudPaper>
+                        }
+                    </MudPaper>
+                </MudItem>
+
+                <MudItem xs="12" md="5">
+                    <MudPaper Class="pa-4 mb-4">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Attachments</MudText>
+                        @if (selectedNotification.Attachments?.Count > 0)
+                        {
+                            <MudList T="string" Dense="true">
+                                @foreach (var attachment in selectedNotification.Attachments)
+                                {
+                                    <MudListItem T="string">
+                                        <MudText>
+                                            <strong>@attachment.FileName</strong>
+                                            <br />
+                                            @attachment.ContentType (@DisplayCount(attachment.ContentLength) bytes)
+                                            @if (attachment.IsEmbedded == true)
+                                            {
+                                                <span> - inline</span>
+                                            }
+                                        </MudText>
+                                    </MudListItem>
+                                }
+                            </MudList>
+                        }
+                        else
+                        {
+                            <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined">No attachments were stored with this email.</MudAlert>
+                        }
+                    </MudPaper>
+
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Properties</MudText>
+                        <MudPaper Class="pa-3 mud-theme-surface" Style="max-height: 320px; overflow: auto;">
+                            <MudText Typo="Typo.body2">@FormatProperties(selectedNotification)</MudText>
+                        </MudPaper>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        }
+    </DialogContent>
+</MudDialog>
+
+@code {
+    private const string AllStatusesValue = "__all";
+
+    private static readonly NotificationStatus[] FilterStatuses =
+    [
+        NotificationStatus.Pending,
+        NotificationStatus.Locked,
+        NotificationStatus.Sent,
+        NotificationStatus.Failed
+    ];
+
+    private readonly List<NotificationInfo> notifications = [];
+    private NotificationStats stats;
+    private NotificationInfo selectedNotification;
+    private NotificationContentInfo selectedContent;
+    private bool loading = true;
+    private bool detailsLoading;
+    private bool detailsDialogVisible;
+    private string loadError;
+    private string statusFilter = AllStatusesValue;
+    private string subjectFilter;
+    private int take = 50;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await this.ReloadAsync();
+    }
+
+    private async Task ReloadAsync()
+    {
+        this.loading = true;
+        this.loadError = null;
+
+        try
+        {
+            await this.LoadStatsAsync();
+            await this.LoadNotificationsAsync();
+        }
+        catch (KiotaApiException ex)
+        {
+            this.loadError = $"Loading notification emails failed: {ex.Message}";
+            this.Snackbar.Add(this.loadError, Severity.Error);
+        }
+        catch (Exception ex)
+        {
+            this.loadError = $"Loading notification emails failed: {ex.Message}";
+            this.Snackbar.Add(this.loadError, Severity.Error);
+        }
+        finally
+        {
+            this.loading = false;
+        }
+    }
+
+    private async Task ResetFiltersAsync()
+    {
+        this.statusFilter = AllStatusesValue;
+        this.subjectFilter = null;
+        this.take = 50;
+
+        await this.ReloadAsync();
+    }
+
+    private async Task LoadStatsAsync()
+    {
+        this.stats = await this.Api.Api._system.Notifications.Emails.Stats.GetAsync();
+    }
+
+    private async Task LoadNotificationsAsync()
+    {
+        var result = await this.Api.Api._system.Notifications.Emails.GetAsync(config =>
+        {
+            config.QueryParameters.Take = this.take;
+
+            if (!string.IsNullOrWhiteSpace(this.subjectFilter))
+            {
+                config.QueryParameters.Subject = this.subjectFilter;
+            }
+
+            if (Enum.TryParse<NotificationStatus>(this.statusFilter, true, out var status))
+            {
+                config.QueryParameters.StatusAsEmailMessageStatus = status;
+            }
+        });
+
+        this.notifications.Clear();
+        this.notifications.AddRange(result?.OrderByDescending(item => item.CreatedAt ?? DateTimeOffset.MinValue).ToList() ?? []);
+    }
+
+    private async Task OpenDetailsAsync(NotificationInfo notification)
+    {
+        if (notification.Id is null)
+        {
+            return;
+        }
+
+        this.detailsDialogVisible = true;
+        this.detailsLoading = true;
+
+        try
+        {
+            this.selectedNotification = await this.Api.Api._system.Notifications.Emails[notification.Id.Value].GetAsync();
+            this.selectedContent = await this.Api.Api._system.Notifications.Emails[notification.Id.Value].Content.GetAsync();
+        }
+        catch (KiotaApiException ex)
+        {
+            this.Snackbar.Add($"Loading notification details failed: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            this.detailsLoading = false;
+        }
+    }
+
+    private async Task RetryAsync(NotificationInfo notification)
+    {
+        if (notification.Id is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await this.Api.Api._system.Notifications.Emails[notification.Id.Value].Retry.PostAsync();
+            this.Snackbar.Add("Notification retry requested.", Severity.Success);
+            await this.RefreshStateAsync(notification.Id.Value);
+        }
+        catch (KiotaApiException ex)
+        {
+            this.Snackbar.Add($"Retry failed: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task DeleteAsync(NotificationInfo notification)
+    {
+        if (notification.Id is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await this.Api.Api._system.Notifications.Emails[notification.Id.Value].DeleteAsync();
+            this.Snackbar.Add("Notification email deleted.", Severity.Success);
+            await this.ReloadAsync();
+
+            if (this.selectedNotification?.Id == notification.Id)
+            {
+                this.detailsDialogVisible = false;
+                this.selectedNotification = null;
+                this.selectedContent = null;
+            }
+        }
+        catch (KiotaApiException ex)
+        {
+            this.Snackbar.Add($"Deleting failed: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task RefreshStateAsync(Guid notificationId)
+    {
+        await this.ReloadAsync();
+
+        if (this.detailsDialogVisible)
+        {
+            var notification = this.notifications.FirstOrDefault(item => item.Id == notificationId) ?? new NotificationInfo { Id = notificationId };
+            await this.OpenDetailsAsync(notification);
+        }
+    }
+
+    private static bool CanRetry(NotificationInfo notification)
+    {
+        return notification.Status == NotificationStatus.Failed;
+    }
+
+    private static Color GetStatusColor(NotificationStatus? status)
+    {
+        return status switch
+        {
+            NotificationStatus.Pending => Color.Info,
+            NotificationStatus.Locked => Color.Warning,
+            NotificationStatus.Sent => Color.Success,
+            NotificationStatus.Failed => Color.Error,
+            _ => Color.Default
+        };
+    }
+
+    private static string GetStatusLabel(NotificationStatus? status)
+    {
+        return status?.Humanize() ?? "Unknown";
+    }
+
+    private static string TrimValue(string value, int length)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Length <= length)
+        {
+            return value ?? "-";
+        }
+
+        return $"{value[..length]}...";
+    }
+
+    private static string FormatTimestamp(DateTimeOffset? value)
+    {
+        return value?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz") ?? "-";
+    }
+
+    private static string FormatRelativeTimestamp(DateTimeOffset? value)
+    {
+        return value?.Humanize() ?? "-";
+    }
+
+    private static string DisplayCollection(IEnumerable<string> values)
+    {
+        var list = values?.Where(value => !string.IsNullOrWhiteSpace(value)).ToList() ?? [];
+        return list.Count == 0 ? "-" : string.Join(", ", list);
+    }
+
+    private static string DisplayAddress(string name, string address)
+    {
+        if (string.IsNullOrWhiteSpace(name) && string.IsNullOrWhiteSpace(address))
+        {
+            return "-";
+        }
+
+        return string.IsNullOrWhiteSpace(name)
+            ? address
+            : $"{name} <{address}>";
+    }
+
+    private static string DisplayValue(string value)
+    {
+        return string.IsNullOrWhiteSpace(value) ? "-" : value;
+    }
+
+    private static string FormatProperties(NotificationInfo notification)
+    {
+        var properties = notification.Properties?.AdditionalData;
+        return properties is null || properties.Count == 0
+            ? "-"
+            : JsonSerializer.Serialize(properties, new JsonSerializerOptions { WriteIndented = true });
+    }
+
+    private static int DisplayCount(int? value)
+    {
+        return value ?? 0;
+    }
+}

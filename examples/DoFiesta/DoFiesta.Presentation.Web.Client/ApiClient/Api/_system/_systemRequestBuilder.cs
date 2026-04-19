@@ -7,6 +7,7 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Locations;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Modules;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Notifications;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models;
 using Microsoft.Kiota.Abstractions.Extensions;
@@ -54,6 +55,11 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Modules.ModulesRequestBuilder Modules
         {
             get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Modules.ModulesRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The notifications property</summary>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Notifications.NotificationsRequestBuilder Notifications
+        {
+            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Notifications.NotificationsRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>The queueing property</summary>
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing.QueueingRequestBuilder Queueing

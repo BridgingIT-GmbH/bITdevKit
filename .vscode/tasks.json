@@ -2,183 +2,190 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Solution - restore",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "restore",
-        "${workspaceFolder}/bITdevKit.slnx",
-        "--nologo"
-      ],
-      "problemMatcher": "$msCompile"
+        "label": "Solution - restore",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "restore",
+            "${workspaceFolder}/bITdevKit.slnx",
+            "--nologo"
+        ],
+        "problemMatcher": "$msCompile"
     },
     {
-      "label": "Solution - clean",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "clean",
-        "${workspaceFolder}/bITdevKit.slnx",
-        "--nologo",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
-      ],
-      "problemMatcher": "$msCompile"
+        "label": "Solution - clean",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "clean",
+            "${workspaceFolder}/bITdevKit.slnx",
+            "--nologo",
+            "/property:GenerateFullPaths=true",
+            "/consoleloggerparameters:NoSummary"
+        ],
+        "problemMatcher": "$msCompile"
     },
     {
-      "label": "Solution - build",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "build",
-        "${workspaceFolder}/bITdevKit.slnx",
-        "--nologo",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
-      ],
-      "problemMatcher": "$msCompile",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
-    },
-    {
-      "label": "DoFiesta - build",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "build",
-        "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
-        "--nologo",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
-      ],
-      "problemMatcher": "$msCompile",
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      }
-    },
-    {
-      "label": "DoFiesta - publish",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "publish",
-        "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
-        "--nologo",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
-      ],
-      "problemMatcher": "$msCompile"
-    },
-    {
-      "label": "DoFiesta - watch",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "watch",
-        "run",
-        "--project",
-        "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
-        "--nologo"
-      ],
-      "isBackground": true,
-      "problemMatcher": {
-        "base": "$msCompile",
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": "^dotnet watch",
-          "endsPattern": "\\bwatch : Hot reload enabled\\.|\\bNow listening on:\\s+https?://"
+        "label": "Solution - build",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "build",
+            "${workspaceFolder}/bITdevKit.slnx",
+            "--nologo",
+            "/property:GenerateFullPaths=true",
+            "/consoleloggerparameters:NoSummary"
+        ],
+        "problemMatcher": "$msCompile",
+        "group": {
+            "kind": "build",
+            "isDefault": true
         }
-      }
     },
     {
-      "label": "DoFiesta - run",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "run",
-        "--project",
-        "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
-        "--nologo"
-      ],
-      "problemMatcher": "$msCompile"
+        "label": "DoFiesta - build",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "build",
+            "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
+            "--nologo",
+            "/property:GenerateFullPaths=true",
+            "/consoleloggerparameters:NoSummary"
+        ],
+        "problemMatcher": "$msCompile",
+        "group": {
+            "kind": "build",
+            "isDefault": true
+        }
     },
     {
-      "label": "DoFiesta - tests (unit)",
-      "command": "dotnet",
-      "type": "shell",
-      "args": [
-        "test",
-        "${workspaceFolder}/examples/DoFiesta/Modules/Core/Core.UnitTests/DoFiesta.Core.UnitTests.csproj"
-      ],
-      "group": "test",
-      "problemMatcher": "$msCompile"
+        "label": "DoFiesta - publish",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "publish",
+            "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
+            "--nologo",
+            "/property:GenerateFullPaths=true",
+            "/consoleloggerparameters:NoSummary"
+        ],
+        "problemMatcher": "$msCompile"
     },
     {
-      "label": "DoFiesta - tests (integration)",
-      "command": "dotnet",
-      "type": "shell",
-      "args": [
-        "test",
-        "${workspaceFolder}/examples/DoFiesta/Modules/Core/Core.IntegrationTests/DoFiesta.Core.IntegrationTests.csproj"
-      ],
-      "group": "test",
-      "problemMatcher": "$msCompile"
+        "label": "DoFiesta - watch",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "watch",
+            "run",
+            "--project",
+            "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
+            "--nologo"
+        ],
+        "isBackground": true,
+        "problemMatcher": {
+            "base": "$msCompile",
+            "background": {
+                "activeOnStart": true,
+                "beginsPattern": "^dotnet watch",
+                "endsPattern": "\\bwatch : Hot reload enabled\\.|\\bNow listening on:\\s+https?://"
+            }
+        }
     },
     {
-      "label": "Solution - tests (unit)",
-      "type": "shell",
-      "command": "Get-ChildItem '${workspaceFolder}/tests' -Recurse -Filter *.csproj | Where-Object { $_.BaseName -like '*.UnitTests' -and $_.BaseName -notmatch 'EventSourcing|WeatherForecast' } | Sort-Object FullName | ForEach-Object { dotnet test $_.FullName --nologo /property:GenerateFullPaths=true /consoleloggerparameters:NoSummary; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }",
-      "group": "test",
-      "problemMatcher": "$msCompile"
+        "label": "DoFiesta - run",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "run",
+            "--project",
+            "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Server/DoFiesta.Presentation.Web.Server.csproj",
+            "--nologo"
+        ],
+        "problemMatcher": "$msCompile"
     },
     {
-      "label": "Solution - tests (integration)",
-      "type": "shell",
-      "command": "Get-ChildItem '${workspaceFolder}/tests' -Recurse -Filter *.csproj | Where-Object { $_.BaseName -like '*.IntegrationTests' -and $_.BaseName -notmatch 'EventSourcing|WeatherForecast' } | Sort-Object FullName | ForEach-Object { dotnet test $_.FullName --nologo /property:GenerateFullPaths=true /consoleloggerparameters:NoSummary; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }",
-      "group": "test",
-      "problemMatcher": "$msCompile"
+        "label": "DoFiesta - tests (unit)",
+        "command": "dotnet",
+        "type": "shell",
+        "args": [
+            "test",
+            "${workspaceFolder}/examples/DoFiesta/Modules/Core/Core.UnitTests/DoFiesta.Core.UnitTests.csproj"
+        ],
+        "group": "test",
+        "problemMatcher": "$msCompile"
     },
     {
-      "label": "WeatherForecast - build",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "build",
-        "${workspaceFolder}/examples/WeatherForecast.Presentation.Web.Server/WeatherForecast.Presentation.Web.Server.csproj",
-        "--nologo",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
-      ],
-      "problemMatcher": "$msCompile"
+        "label": "DoFiesta - tests (integration)",
+        "command": "dotnet",
+        "type": "shell",
+        "args": [
+            "test",
+            "${workspaceFolder}/examples/DoFiesta/Modules/Core/Core.IntegrationTests/DoFiesta.Core.IntegrationTests.csproj"
+        ],
+        "group": "test",
+        "problemMatcher": "$msCompile"
     },
     {
-      "label": "WeatherForecast - publish",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "publish",
-        "${workspaceFolder}/examples/WeatherForecast.Presentation.Web.Server/WeatherForecast.Presentation.Web.Server.csproj",
-        "--nologo",
-        "/property:GenerateFullPaths=true",
-        "/consoleloggerparameters:NoSummary"
-      ],
-      "problemMatcher": "$msCompile"
+        "label": "Solution - tests (unit)",
+        "type": "shell",
+        "command": "Get-ChildItem '${workspaceFolder}/tests' -Recurse -Filter *.csproj | Where-Object { $_.BaseName -like '*.UnitTests' -and $_.BaseName -notmatch 'EventSourcing|WeatherForecast' } | Sort-Object FullName | ForEach-Object { dotnet test $_.FullName --nologo /property:GenerateFullPaths=true /consoleloggerparameters:NoSummary; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }",
+        "group": "test",
+        "problemMatcher": "$msCompile"
     },
     {
-      "label": "WeatherForecast - watch",
-      "command": "dotnet",
-      "type": "process",
-      "args": [
-        "watch",
-        "run",
-        "--project",
-        "${workspaceFolder}/examples/WeatherForecast.Presentation.Web.Server/WeatherForecast.Presentation.Web.Server.csproj",
-        "--nologo"
-      ],
-      "problemMatcher": "$msCompile"
+        "label": "Solution - tests (integration)",
+        "type": "shell",
+        "command": "Get-ChildItem '${workspaceFolder}/tests' -Recurse -Filter *.csproj | Where-Object { $_.BaseName -like '*.IntegrationTests' -and $_.BaseName -notmatch 'EventSourcing|WeatherForecast' } | Sort-Object FullName | ForEach-Object { dotnet test $_.FullName --nologo /property:GenerateFullPaths=true /consoleloggerparameters:NoSummary; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }",
+        "group": "test",
+        "problemMatcher": "$msCompile"
+    },
+    {
+        "label": "WeatherForecast - build",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "build",
+            "${workspaceFolder}/examples/WeatherForecast.Presentation.Web.Server/WeatherForecast.Presentation.Web.Server.csproj",
+            "--nologo",
+            "/property:GenerateFullPaths=true",
+            "/consoleloggerparameters:NoSummary"
+        ],
+        "problemMatcher": "$msCompile"
+    },
+    {
+        "label": "WeatherForecast - publish",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "publish",
+            "${workspaceFolder}/examples/WeatherForecast.Presentation.Web.Server/WeatherForecast.Presentation.Web.Server.csproj",
+            "--nologo",
+            "/property:GenerateFullPaths=true",
+            "/consoleloggerparameters:NoSummary"
+        ],
+        "problemMatcher": "$msCompile"
+    },
+    {
+        "label": "WeatherForecast - watch",
+        "command": "dotnet",
+        "type": "process",
+        "args": [
+            "watch",
+            "run",
+            "--project",
+            "${workspaceFolder}/examples/WeatherForecast.Presentation.Web.Server/WeatherForecast.Presentation.Web.Server.csproj",
+            "--nologo"
+        ],
+        "problemMatcher": "$msCompile"
+    },
+    {
+        "type": "dotnet",
+        "task": "watch Common.Benchmarks",
+        "file": "F:\\projects\\bit\\bIT.bITdevKit\\benchmarks\\Common.Benchmarks\\Common.Benchmarks.csproj",
+        "problemMatcher": [],
+        "label": "dotnet: watch Common.Benchmarks"
     }
-  ]
+]
 }

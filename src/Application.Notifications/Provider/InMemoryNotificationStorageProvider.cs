@@ -15,6 +15,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+/// <summary>
+/// Stores notification emails in memory for development and test scenarios.
+/// </summary>
 public class InMemoryNotificationStorageProvider(
     ILogger<InMemoryNotificationStorageProvider> logger = null) : INotificationStorageProvider
 {

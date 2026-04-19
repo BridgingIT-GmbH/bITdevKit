@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 
 using Common;
 using DevKit.Domain.Model;
+using System.Text.Json.Serialization;
 
 public class EmailAddress : ValueObject
 {
@@ -17,7 +18,8 @@ public class EmailAddress : ValueObject
         this.Value = value;
     }
 
-    public string Value { get; }
+    [JsonInclude]
+    public string Value { get; private set; }
 
     public static implicit operator string(EmailAddress email)
     {

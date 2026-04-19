@@ -73,6 +73,7 @@
     <ProjectReference Include="..\..\..\src\Presentation.Web.EntityFramework\Presentation.Web.EntityFramework.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.JobScheduling\Presentation.Web.JobScheduling.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.Messaging\Presentation.Web.Messaging.csproj" />
+    <ProjectReference Include="..\..\..\src\Presentation.Web.Notifications\Presentation.Web.Notifications.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.Queueing\Presentation.Web.Queueing.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.Storage\Presentation.Web.Storage.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web\Presentation.Web.csproj" />

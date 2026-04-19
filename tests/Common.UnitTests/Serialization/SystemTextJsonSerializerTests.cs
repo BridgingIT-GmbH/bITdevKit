@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
 using BenchmarkDotNet.Running;
+using System.Text.Json.Serialization;
 
 [UnitTest("Common")]
 public class SystemTextJsonSerializerTests(ITestOutputHelper output) : SerializerTestsBase(output)
@@ -56,6 +57,25 @@ public class SystemTextJsonSerializerTests(ITestOutputHelper output) : Serialize
     {
         return new SystemTextJsonSerializer();
     }
+
+    [Fact]
+    public void CanRoundTripNestedPrivateSetterValueObject_Test()
+    {
+        // Arrange
+        var sut = this.GetSerializer();
+        var value = NestedValueObjectRoot.Create("todo-created", "luke.skywalker@starwars.com");
+
+        // Act
+        using var stream = new MemoryStream();
+        sut.Serialize(value, stream);
+        var actual = sut.Deserialize<NestedValueObjectRoot>(stream);
+
+        // Assert
+        actual.ShouldNotBeNull();
+        actual.Name.ShouldBe(value.Name);
+        actual.Email.ShouldNotBeNull();
+        actual.Email.Value.ShouldBe(value.Email.Value);
+    }
 }
 
 public class SystemTextJsonSerializerBenchmark(ITestOutputHelper output) : SerializerBenchmarkBase(output)
@@ -63,5 +83,43 @@ public class SystemTextJsonSerializerBenchmark(ITestOutputHelper output) : Seria
     protected override ISerializer GetSerializer()
     {
         return new SystemTextJsonSerializer();
+    }
+}
+
+public class NestedValueObjectRoot
+{
+    private NestedValueObjectRoot() { }
+
+    private NestedValueObjectRoot(string name, NestedValueObject email)
+    {
+        this.Name = name;
+        this.Email = email;
+    }
+
+    public string Name { get; private set; }
+
+    public NestedValueObject Email { get; private set; }
+
+    public static NestedValueObjectRoot Create(string name, string email)
+    {
+        return new NestedValueObjectRoot(name, NestedValueObject.Create(email));
+    }
+}
+
+public class NestedValueObject
+{
+    private NestedValueObject() { }
+
+    private NestedValueObject(string value)
+    {
+        this.Value = value;
+    }
+
+    [JsonInclude]
+    public string Value { get; private set; }
+
+    public static NestedValueObject Create(string value)
+    {
+        return new NestedValueObject(value);
     }
 }

@@ -12,6 +12,9 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+/// <summary>
+/// Claims and processes persisted notification emails from the configured storage provider.
+/// </summary>
 public class OutboxNotificationEmailWorker(
     ILoggerFactory loggerFactory,
     IServiceProvider serviceProvider,
@@ -21,6 +24,9 @@ public class OutboxNotificationEmailWorker(
     private readonly IServiceProvider serviceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
     private readonly OutboxNotificationEmailOptions options = options ?? new OutboxNotificationEmailOptions();
 
+    /// <summary>
+    /// Processes a specific notification email or the next claimed batch.
+    /// </summary>
     public async Task ProcessAsync(string messageId = null, CancellationToken cancellationToken = default)
     {
         using var scope = this.serviceProvider.CreateScope();
@@ -64,6 +70,9 @@ public class OutboxNotificationEmailWorker(
         }
     }
 
+    /// <summary>
+    /// Purges notification emails from the configured storage provider.
+    /// </summary>
     public async Task PurgeAsync(bool processedOnly = false, CancellationToken cancellationToken = default)
     {
         using var scope = this.serviceProvider.CreateScope();

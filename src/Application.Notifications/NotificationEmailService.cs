@@ -15,6 +15,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
+/// <summary>
+/// Sends <see cref="EmailMessage" /> instances through SMTP and coordinates optional outbox persistence.
+/// </summary>
 public class NotificationEmailService(
     ILogger<NotificationEmailService> logger,
     INotificationStorageProvider storageProvider,
@@ -27,6 +30,9 @@ public class NotificationEmailService(
     private readonly ILogger<NotificationEmailService> logger = logger ?? throw new ArgumentNullException(nameof(logger));
     private readonly ISmtpClient smtpClient = smtpClient ?? throw new ArgumentNullException(nameof(smtpClient));
 
+    /// <summary>
+    /// Processes an email notification according to the configured outbox behavior and send options.
+    /// </summary>
     public async Task<Result> SendAsync(
         EmailMessage message,
         NotificationSendOptions options,
@@ -40,6 +46,8 @@ public class NotificationEmailService(
 
         try
         {
+            this.ApplySenderDefaults(message);
+
             if (!this.options.IsOutboxConfigured)
             {
                 return await this.SendAsync(message, cancellationToken);
@@ -86,6 +94,9 @@ public class NotificationEmailService(
         }
     }
 
+    /// <summary>
+    /// Persists an email notification to the configured outbox.
+    /// </summary>
     public async Task<Result> QueueAsync(EmailMessage message, CancellationToken cancellationToken)
     {
         if (message == null)
@@ -96,6 +107,8 @@ public class NotificationEmailService(
 
         try
         {
+            this.ApplySenderDefaults(message);
+
             if (!this.options.IsOutboxConfigured)
             {
                 this.logger.LogWarning("{LogKey} outbox not configured, queuing message with ID {MessageId} ignored", Constants.LogKey, message.Id);
@@ -129,6 +142,8 @@ public class NotificationEmailService(
     {
         try
         {
+            this.ApplySenderDefaults(message);
+
             var mimeMessage = this.MapToMimeMessage(message);
             var retryer = new Retryer(3, TimeSpan.FromSeconds(1));
             var timeoutHandler = new TimeoutHandlerBuilder(TimeSpan.FromSeconds(30)).Build();
@@ -168,6 +183,23 @@ public class NotificationEmailService(
             return await Task.FromResult(Result.Failure()
                 .WithError(new Error($"Failed to send email: {ex.Message}")));
         }
+    }
+
+    private void ApplySenderDefaults(EmailMessage message)
+    {
+        if (!string.IsNullOrWhiteSpace(message?.From?.Address))
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.options.SmtpSettings.SenderAddress))
+        {
+            return;
+        }
+
+        message.From ??= new EmailAddress();
+        message.From.Address ??= this.options.SmtpSettings.SenderAddress;
+        message.From.Name ??= this.options.SmtpSettings.SenderName;
     }
 
     private MimeMessage MapToMimeMessage(EmailMessage message)

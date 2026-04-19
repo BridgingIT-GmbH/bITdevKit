@@ -228,6 +228,35 @@ sequenceDiagram
     end
 ```
 
+## Operational Endpoints
+
+`Presentation.Web.Notifications` exposes an operational REST surface for the persisted email outbox. These endpoints are intended for dashboards and support tooling rather than end-user mail composition.
+
+Register them from the fluent notification builder:
+
+```csharp
+services.AddNotificationService<EmailMessage>(builder.Configuration, o =>
+{
+    o.WithEntityFrameworkStorageProvider<AppDbContext>()
+     .WithOutbox<AppDbContext>()
+     .AddEndpoints(options => options
+         .RequireAuthorization()
+         .GroupPath("/api/_system/notifications/emails"));
+});
+```
+
+The endpoint group exposes:
+
+- `GET /api/_system/notifications/emails` to list persisted emails with filters such as `status`, `subject`, `lockedBy`, and `take`
+- `GET /api/_system/notifications/emails/stats` to retrieve aggregate outbox counts
+- `GET /api/_system/notifications/emails/{id}` to inspect one email
+- `GET /api/_system/notifications/emails/{id}/content` to fetch the stored body
+- `POST /api/_system/notifications/emails/{id}/retry` to reset a failed row back to pending
+- `DELETE /api/_system/notifications/emails/{id}` to delete one row
+- `DELETE /api/_system/notifications/emails` to purge rows by age and status
+
+For typed operational access inside the application layer, use `INotificationEmailOutboxService`.
+
 ## Configuration Notes
 
 `NotificationServiceOptions` groups:

@@ -7,6 +7,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
+/// <summary>
+/// Hosts the background loop that periodically invokes the notification email outbox worker.
+/// </summary>
 public class OutboxNotificationEmailService(
     ILoggerFactory loggerFactory,
     IOutboxNotificationEmailWorker worker,
@@ -20,6 +23,9 @@ public class OutboxNotificationEmailService(
     private PeriodicTimer processTimer;
     private SemaphoreSlim semaphore;
 
+    /// <summary>
+    /// Starts the background outbox processing loop.
+    /// </summary>
     protected override Task ExecuteAsync(CancellationToken cancellationToken)
     {
         if (!this.options.Enabled)
@@ -114,12 +120,18 @@ public class OutboxNotificationEmailService(
         }
     }
 
+    /// <summary>
+    /// Stops the background service.
+    /// </summary>
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
         this.logger.LogInformation("{LogKey} outbox notification email service stopping", Constants.LogKey);
         await base.StopAsync(cancellationToken);
     }
 
+    /// <summary>
+    /// Releases background processing resources.
+    /// </summary>
     public override void Dispose()
     {
         this.processTimer?.Dispose();

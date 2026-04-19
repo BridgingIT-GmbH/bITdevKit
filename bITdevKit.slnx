@@ -215,6 +215,7 @@
     <Project Path="src/Presentation.Web.EntityFramework/Presentation.Web.EntityFramework.csproj" />
     <Project Path="src/Presentation.Web.JobScheduling/Presentation.Web.JobScheduling.csproj" />
     <Project Path="src/Presentation.Web.Messaging/Presentation.Web.Messaging.csproj" />
+    <Project Path="src/Presentation.Web.Notifications/Presentation.Web.Notifications.csproj" />
     <Project Path="src/Presentation.Web.Queueing/Presentation.Web.Queueing.csproj" />
     <Project Path="src/Presentation.Web/Presentation.Web.csproj" />
     <Project Path="src/Presentation/Presentation.csproj" />

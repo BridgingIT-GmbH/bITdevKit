@@ -195,7 +195,7 @@ public class EntityPermissionOptions
         this.DefaultPermissionProviders.Add(
             new DefaultPermissionProviderRegistration(
                 InterfaceType: typeof(IDefaultEntityPermissionProvider<>).MakeGenericType(typeof(TEntity)),
-                ImplementationType: typeof(DefaultPermissionProvider<>).MakeGenericType(typeof(TEntity)),
+                ImplementationType: typeof(DefaultEntityPermissionProvider<>).MakeGenericType(typeof(TEntity)),
                 permissions)
             );
 

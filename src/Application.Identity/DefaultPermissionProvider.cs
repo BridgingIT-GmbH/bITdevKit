@@ -11,7 +11,7 @@ using BridgingIT.DevKit.Domain.Model;
 /// <summary>
 /// Default implementation of IDefaultEntityPermissionProvider that uses configured permissions.
 /// </summary>
-public class DefaultPermissionProvider<TEntity>(EntityPermissionOptions options)
+public class DefaultEntityPermissionProvider<TEntity>(EntityPermissionOptions options)
     : IDefaultEntityPermissionProvider<TEntity>
     where TEntity : class, IEntity
 {

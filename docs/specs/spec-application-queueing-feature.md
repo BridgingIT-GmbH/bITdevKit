@@ -2,7 +2,7 @@
 status: implemented
 ---
 
-# Design Document: Queueing Feature (Application.Queueing)
+# Design Specification: Queueing Feature (Application.Queueing)
 
 > This design document outlines the architecture and behavior of the new Queueing feature within the application. It defines the core concepts, goals, non-goals, conceptual model, public abstractions, registration and composition patterns, provider model, delivery semantics, and specific design considerations for the Entity Framework provider.
 

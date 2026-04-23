@@ -2,7 +2,7 @@
 status: implemented
 ---
 
-# Design Document: Generic Processing Pipeline Feature (Common.Utilities\Pipeline)
+# Design Specification: Generic Processing Pipeline Feature (Common.Utilities\Pipeline)
 
 > This design document describes the architecture and behavior of a new generic processing pipeline framework for structuring ordered in-process processing logic as a sequence of focused steps. It defines the core design principles, conceptual model, control semantics, definition and execution model, static definition and runtime construction, extensibility points, and typical use cases for the pipeline feature.
 

@@ -2,7 +2,7 @@
 status: draft
 ---
 
-# Design Document: Extensible Document Templating Feature (Application.Templating)
+# Design Specification: Extensible Document Templating Feature (Application.Templating)
 
 > This design document describes the architecture and behavior of a reusable document templating platform for .NET based on renderer families such as `pdf`, `html`, `text`, and future extensions such as `excel`. It defines the core design principles, high-level architecture, public configuration model, template resolution mechanism, and main use cases for the templating feature.
 

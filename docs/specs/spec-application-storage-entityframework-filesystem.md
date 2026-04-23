@@ -2,7 +2,7 @@
 status: implemented
 ---
 
-# Design Document: EntityFramework Virtual File System Provider (Application.Storage)
+# Design Specification: EntityFramework Virtual File System Provider (Application.Storage)
 
 > This design document describes a full Entity Framework backed implementation of `IFileStorageProvider` that uses a relational database as a virtual filesystem. It aligns with the existing file storage abstractions in `Application.Storage` and follows the same DbContext extension model already used by Entity Framework based messaging, queueing, and file monitoring features.
 

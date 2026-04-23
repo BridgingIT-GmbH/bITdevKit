@@ -2,7 +2,7 @@
 status: implemented
 ---
 
-# Design Document: EntityFramework Message Broker Feature (Application.Messaging)
+# Design Specification: EntityFramework Message Broker Feature (Application.Messaging)
 
 > This design document outlines the architecture and behavior of the new Entity Framework Message Broker transport for the existing messaging feature. It defines the core concepts, goals, non-goals, high-level architecture, core design principles, delivery model, persistence model, runtime behavior, multi-node coordination, public API and configuration, testing strategies, and typical use cases for the Entity Framework broker.
 

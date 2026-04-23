@@ -2,7 +2,7 @@
 status: draft
 ---
 
-# Design Document: Orchestration Feature (Application.Orchestration)
+# Design Specification: Orchestration Feature (Application.Orchestration)
 
 > This design document outlines the architecture and behavior of the new orchestration feature within the application. It defines the core concepts, execution model, control flow capabilities, triggers, reliability mechanisms, observability features, identity management, versioning considerations, testing strategies, and typical use cases for orchestrations.
 

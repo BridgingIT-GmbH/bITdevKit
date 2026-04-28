@@ -11,10 +11,11 @@ Queueing provides an application-level abstraction for background work that must
 - Messaging is for pub/sub fan-out where multiple handlers may react to the same event.
 - Queueing is for work dispatch where one queued item must be processed once by one handler when a compatible handler is available.
 
-The current queueing implementation ships with two brokers:
+The current queueing implementation ships with three brokers:
 
 - `InProcessQueueBroker` for local, process-bound work distribution and tests.
 - `EntityFrameworkQueueBroker<TContext>` for durable SQL-backed processing with renewable leases and runtime-safe competing consumers.
+- `ServiceBusQueueBroker` for Azure Service Bus queue transport with manual complete/abandon/dead-letter semantics.
 
 The feature also includes an operational web endpoint surface for queue broker summary, subscription inspection, waiting-message inspection, and queue/type pause-resume control.
 
@@ -102,6 +103,22 @@ builder.Services.AddQueueing(builder.Configuration, context =>
   .AddEndpoints(options => options.RequireAuthorization());
 ```
 
+### Azure Service Bus broker
+
+```csharp
+builder.Services.AddQueueing(builder.Configuration, context =>
+ context.WithSubscription<OrderQueuedMessage, OrderQueuedHandler>())
+  .WithServiceBusBroker(new ServiceBusQueueBrokerConfiguration
+  {
+   ConnectionString = configuration["Queueing:ServiceBus:ConnectionString"],
+   QueueNamePrefix = "bit",
+   AutoCreateQueue = true,
+   MaxConcurrentCalls = 8,
+   MaxDeliveryAttempts = 5
+  })
+  .AddEndpoints(options => options.RequireAuthorization());
+```
+
 Your `DbContext` must implement `IQueueingContext`:
 
 ```csharp
@@ -178,7 +195,7 @@ Routes:
 - `POST /api/_system/queueing/types/{type}/resume`
 - `POST /api/_system/queueing/types/{type}/circuit/reset`
 
-Both built-in brokers implement the same `IQueueBrokerService` operational contract. The in-process broker exposes it over runtime-tracked items, while the Entity Framework broker adds durable retained history plus archive-aware filtering and lease management.
+All brokers implement the same `IQueueBrokerService` operational contract. The in-process broker exposes it over runtime-tracked items, the Entity Framework broker adds durable retained history plus archive-aware filtering and lease management, and the Service Bus broker provides lightweight in-memory operational tracking.
 
 For Entity Framework, the most relevant broker-specific retention options are:
 
@@ -221,3 +238,12 @@ The queueing slice is covered by focused application and presentation tests:
 - [tests/Presentation.UnitTests/Web/Queueing/QueueingEndpointsTests.cs](tests/Presentation.UnitTests/Web/Queueing/QueueingEndpointsTests.cs)
 
 These tests cover additive registration with a single hosted service, in-process waiting/requeue and pause/resume behavior, Entity Framework durable processing and retention behavior, waiting-message ordering, retry state reset, competing-worker lease behavior, and the operational endpoint surface across SQLite, SQL Server, and PostgreSQL.
+
+Service Bus specific tests:
+
+- [tests/Infrastructure.UnitTests/Azure.ServiceBus/Queueing/ServiceBusQueueBrokerOptionsBuilderTests.cs](tests/Infrastructure.UnitTests/Azure.ServiceBus/Queueing/ServiceBusQueueBrokerOptionsBuilderTests.cs)
+- [tests/Infrastructure.UnitTests/Azure.ServiceBus/Queueing/ServiceBusQueueBrokerConfigurationTests.cs](tests/Infrastructure.UnitTests/Azure.ServiceBus/Queueing/ServiceBusQueueBrokerConfigurationTests.cs)
+- [tests/Infrastructure.UnitTests/Azure.ServiceBus/Queueing/ServiceBusQueueBrokerRuntimeTests.cs](tests/Infrastructure.UnitTests/Azure.ServiceBus/Queueing/ServiceBusQueueBrokerRuntimeTests.cs)
+- [tests/Infrastructure.IntegrationTests/Azure.ServiceBus/Queueing/ServiceBusQueueBrokerTests.cs](tests/Infrastructure.IntegrationTests/Azure.ServiceBus/Queueing/ServiceBusQueueBrokerTests.cs)
+
+Integration tests against a real Azure Service Bus namespace can be enabled by setting the `TEST_SERVICEBUS_CONNECTIONSTRING` environment variable.

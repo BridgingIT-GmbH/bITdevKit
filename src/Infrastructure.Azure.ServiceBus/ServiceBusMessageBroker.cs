@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
+using System;
 using System.Diagnostics;
 using Application.Messaging;
 using Common;
@@ -35,9 +36,19 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
 
         if (!this.options.ConnectionString.IsNullOrEmpty())
         {
-            this.client = new ServiceBusClient(this.options.ConnectionString);
-            this.managementClient = new ServiceBusAdministrationClient(this.options.ConnectionString,
-                new ServiceBusAdministrationClientOptions());
+            var clientOptions = new ServiceBusClientOptions();
+            if (this.options.ConnectionString.Contains("UseDevelopmentEmulator", StringComparison.OrdinalIgnoreCase))
+            {
+                clientOptions.TransportType = ServiceBusTransportType.AmqpTcp;
+            }
+
+            this.client = new ServiceBusClient(this.options.ConnectionString, clientOptions);
+
+            if (this.options.AutoCreateTopic)
+            {
+                this.managementClient = new ServiceBusAdministrationClient(this.options.ConnectionString,
+                    new ServiceBusAdministrationClientOptions());
+            }
         }
         else
         {
@@ -193,6 +204,11 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
 
     private async Task EnsureTopicAsync(string topicName)
     {
+        if (this.managementClient is null)
+        {
+            return;
+        }
+
         if (!await this.managementClient.TopicExistsAsync(topicName).AnyContext())
         {
             this.Logger.LogTrace("CreateTopic(topic={MessageTopicName})", topicName);
@@ -203,6 +219,11 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
 
     private async Task EnsureSubscriptionAsync(string topicName, string subscriptionName)
     {
+        if (this.managementClient is null)
+        {
+            return;
+        }
+
         if (!await this.managementClient.SubscriptionExistsAsync(topicName, subscriptionName).AnyContext())
         {
             this.Logger.LogTrace("CreateSubscription(topic={MessageTopicName}, subscription={MessageSubscriptionName})",

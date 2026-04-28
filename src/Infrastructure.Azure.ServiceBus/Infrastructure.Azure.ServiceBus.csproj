@@ -15,7 +15,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Application.Messaging\Application.Messaging.csproj"/>
+    <ProjectReference Include="..\Application.Queueing\Application.Queueing.csproj"/>
     <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj"/>
+    <ProjectReference Include="..\Common.Utilities\Common.Utilities.csproj"/>
   </ItemGroup>
 
 

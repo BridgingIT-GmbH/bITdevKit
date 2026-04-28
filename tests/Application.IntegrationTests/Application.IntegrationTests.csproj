@@ -59,6 +59,7 @@
     <ProjectReference Include="..\..\src\Infrastructure.Azure.Storage\Infrastructure.Azure.Storage.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure.RabbitMQ\Infrastructure.RabbitMQ.csproj" />
     <ProjectReference Include="..\..\src\Infrastructure.Windows\Infrastructure.Windows.csproj" />
   </ItemGroup>
 

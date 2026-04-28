@@ -11,10 +11,11 @@ Queueing provides an application-level abstraction for background work that must
 - Messaging is for pub/sub fan-out where multiple handlers may react to the same event.
 - Queueing is for work dispatch where one queued item must be processed once by one handler when a compatible handler is available.
 
-The current queueing implementation ships with two brokers:
+The current queueing implementation ships with three brokers:
 
 - `InProcessQueueBroker` for local, process-bound work distribution and tests.
 - `EntityFrameworkQueueBroker<TContext>` for durable SQL-backed processing with renewable leases and runtime-safe competing consumers.
+- `RabbitMQQueueBroker` for broker-backed durable queue processing with manual acknowledgement, retry, and dead-letter semantics.
 
 The feature also includes an operational web endpoint surface for queue broker summary, subscription inspection, waiting-message inspection, and queue/type pause-resume control.
 
@@ -102,7 +103,26 @@ builder.Services.AddQueueing(builder.Configuration, context =>
   .AddEndpoints(options => options.RequireAuthorization());
 ```
 
-Your `DbContext` must implement `IQueueingContext`:
+### RabbitMQ broker
+
+```csharp
+builder.Services.AddQueueing(builder.Configuration, context =>
+ context.WithSubscription<OrderQueuedMessage, OrderQueuedHandler>())
+  .WithRabbitMQBroker(new RabbitMQQueueBrokerConfiguration
+  {
+   ConnectionString = configuration["Queueing:RabbitMQ:ConnectionString"],
+   QueueNamePrefix = "bit-",
+   IsDurable = true,
+   PrefetchCount = 20,
+   MaxDeliveryAttempts = 5,
+   MessageExpiration = TimeSpan.FromDays(7)
+  })
+  .AddEndpoints();
+```
+
+RabbitMQ uses one queue per registered queue message type. Multiple application instances consume from the same queue for round-robin distribution. The broker provisions queue topology automatically at runtime. Use `QueueNamePrefix` or `QueueNameSuffix` to isolate environments (e.g., `bit-prod-` vs `bit-test-`).
+
+Your `DbContext` must implement `IQueueingContext` when using the Entity Framework broker:
 
 ```csharp
 public class AppDbContext : DbContext, IQueueingContext
@@ -178,7 +198,68 @@ Routes:
 - `POST /api/_system/queueing/types/{type}/resume`
 - `POST /api/_system/queueing/types/{type}/circuit/reset`
 
-Both built-in brokers implement the same `IQueueBrokerService` operational contract. The in-process broker exposes it over runtime-tracked items, while the Entity Framework broker adds durable retained history plus archive-aware filtering and lease management.
+All brokers implement the same `IQueueBrokerService` operational contract. The in-process and RabbitMQ brokers expose it over runtime-tracked items, while the Entity Framework broker adds durable retained history plus archive-aware filtering and lease management.
+
+### RabbitMQ semantics
+
+The RabbitMQ queue broker maps queueing semantics to RabbitMQ work queues using the **default exchange** and **manual acknowledgement**.
+
+**Queue topology:**
+
+- One RabbitMQ queue is created per registered queue message type.
+- The queue name defaults to the message type name (e.g., `OrderQueuedMessage`), with optional `QueueNamePrefix` and `QueueNameSuffix`.
+- The broker uses the **default exchange** (`""`) and publishes with the queue name as the **routing key**. RabbitMQ routes messages directly to the queue with the matching name.
+
+```mermaid
+flowchart LR
+  P[Publisher] -->|routingKey=OrderQueuedMessage| E[Default Exchange]
+  E --> Q1[Queue: OrderQueuedMessage]
+  E --> Q2[Queue: InvoiceQueuedMessage]
+  Q1 --> C1[Consumer A]
+  Q1 --> C2[Consumer B <br/>(competing)]
+  Q2 --> C3[Consumer C]
+```
+
+**Competing consumers:**
+
+- Multiple application instances that use the same `QueueNamePrefix`/`QueueNameSuffix` and subscribe to the same message type consume from the **same queue**.
+- RabbitMQ round-robins messages across all connected consumers on that queue.
+- A message is delivered to **exactly one consumer** at a time.
+
+**Acknowledgement and retry:**
+
+- Consumption uses **manual ack** (`autoAck: false`).
+- On success: the broker sends `BasicAck` and the message is removed from the queue.
+- On failure: the broker implements retry by **republishing** the message with an incremented `x-attempt-count` header, then acks the original message. If republish fails, it falls back to `BasicNack(requeue: true)`.
+- After `MaxDeliveryAttempts` is exceeded, the broker sends `BasicNack(requeue: false)` and the message is dropped (dead-lettered). No separate dead-letter exchange is configured by default.
+- If a handler throws an unexpected exception, the broker nacks with requeue so the message is retried.
+
+**Waiting for handler:**
+
+- The broker declares the queue on both publish and subscribe. This means messages can be enqueued before any handler subscribes.
+- When no consumer is connected, messages accumulate in the RabbitMQ queue.
+- When a consumer connects, RabbitMQ delivers the backlog.
+
+**Pause/resume:**
+
+- When a queue or message type is paused, the broker detects this in `OnMessageAsync` and sends `BasicNack(requeue: true)`.
+- The message remains in the RabbitMQ queue and will be redelivered when the consumer resumes processing.
+
+**Expiration:**
+
+- The broker checks `message.Timestamp + MessageExpiration` against UTC now before invoking the handler.
+- If expired, the message is nacked without requeue and tracked as `Expired`.
+- The AMQP `Expiration` property is also set on publish, so RabbitMQ can drop expired messages that have not yet been delivered.
+
+**EnqueueAndWait:**
+
+- `EnqueueAndWait` enables publisher confirms (`ConfirmSelect`) and calls `WaitForConfirmsOrDie` with a 30-second timeout. This guarantees the message has been persisted by RabbitMQ before the call returns.
+
+**Operational visibility:**
+
+- The RabbitMQ broker service (`RabbitMQQueueBrokerService`) tracks recent messages in memory (bounded to 10,000 items with LRU eviction).
+- `GetMessagesAsync`, `GetSummaryAsync`, `GetMessageStatsAsync`, pause/resume, and purge are supported through this in-memory tracker.
+- Unlike the Entity Framework broker, there is no durable retained history. Restarting the application clears the operational tracker (the messages themselves remain in RabbitMQ).
 
 For Entity Framework, the most relevant broker-specific retention options are:
 
@@ -212,12 +293,15 @@ Use Messaging when one event should fan out to many handlers. Use Queueing when 
 The queueing slice is covered by focused application and presentation tests:
 
 - [tests/Application.UnitTests/Queueing/QueueSubscriptionMapTests.cs](tests/Application.UnitTests/Queueing/QueueSubscriptionMapTests.cs)
+- [tests/Application.UnitTests/Queueing/RabbitMQQueueBrokerServiceTests.cs](tests/Application.UnitTests/Queueing/RabbitMQQueueBrokerServiceTests.cs)
 - [tests/Application.IntegrationTests/Queueing/QueueingRegistrationTests.cs](tests/Application.IntegrationTests/Queueing/QueueingRegistrationTests.cs)
 - [tests/Application.IntegrationTests/Queueing/InProcessQueueingBrokerTests.cs](tests/Application.IntegrationTests/Queueing/InProcessQueueingBrokerTests.cs)
 - [tests/Application.IntegrationTests/Queueing/EntityFrameworkQueueingBrokerTests.cs](tests/Application.IntegrationTests/Queueing/EntityFrameworkQueueingBrokerTests.cs)
+- [tests/Infrastructure.IntegrationTests/RabbitMQ/Queueing/RabbitMQQueueingBrokerTests.cs](tests/Infrastructure.IntegrationTests/RabbitMQ/Queueing/RabbitMQQueueingBrokerTests.cs)
+- [tests/Infrastructure.IntegrationTests/RabbitMQ/Messaging/RabbitMQMessageBrokerTests.cs](tests/Infrastructure.IntegrationTests/RabbitMQ/Messaging/RabbitMQMessageBrokerTests.cs)
 - [tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkSqliteQueueBrokerTests.cs](tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkSqliteQueueBrokerTests.cs)
 - [tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkSqlServerQueueBrokerTests.cs](tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkSqlServerQueueBrokerTests.cs)
 - [tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkPostgresQueueBrokerTests.cs](tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkPostgresQueueBrokerTests.cs)
 - [tests/Presentation.UnitTests/Web/Queueing/QueueingEndpointsTests.cs](tests/Presentation.UnitTests/Web/Queueing/QueueingEndpointsTests.cs)
 
-These tests cover additive registration with a single hosted service, in-process waiting/requeue and pause/resume behavior, Entity Framework durable processing and retention behavior, waiting-message ordering, retry state reset, competing-worker lease behavior, and the operational endpoint surface across SQLite, SQL Server, and PostgreSQL.
+These tests cover additive registration with a single hosted service, in-process waiting/requeue and pause/resume behavior, Entity Framework durable processing and retention behavior, RabbitMQ end-to-end enqueue/consume/ack/nack behavior including multi-type queue isolation, waiting-message ordering, retry state reset, competing-worker lease behavior, and the operational endpoint surface across SQLite, SQL Server, and PostgreSQL.

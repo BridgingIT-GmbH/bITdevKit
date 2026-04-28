@@ -423,8 +423,8 @@
       },
       "Microsoft.DotNet.HotReload.WebAssembly.Browser": {
         "type": "Transitive",
-        "resolved": "10.0.201",
-        "contentHash": "4EAMH3CqtVwVm7Sx4DnNtZj/J0b+A1YGcTnCL6prhQ8ZHlwbVtZ3RmSyJdi85mSnLl+u94aVr8fElRGkjZkKmw=="
+        "resolved": "10.0.202",
+        "contentHash": "//aZ/qUD7sc2gcUlraZe4yD0jzxRv7uwUMuuDe7Wdlz404vgLpsdt5xD2l44VHjyUuOgH27ulK3MdJgQVjofzA=="
       },
       "Microsoft.DotNet.PlatformAbstractions": {
         "type": "Transitive",
@@ -1383,7 +1383,7 @@
           "Microsoft.AspNetCore.Components.WebAssembly": "[10.0.5, )",
           "Microsoft.AspNetCore.Components.WebAssembly.Authentication": "[10.0.5, )",
           "Microsoft.AspNetCore.SignalR.Client": "[10.0.5, )",
-          "Microsoft.DotNet.HotReload.WebAssembly.Browser": "[10.0.201, )",
+          "Microsoft.DotNet.HotReload.WebAssembly.Browser": "[10.0.202, )",
           "Microsoft.Extensions.Http": "[10.0.5, )",
           "Microsoft.Extensions.Http.Polly": "[10.0.5, )",
           "Microsoft.Extensions.Localization": "[10.0.5, )",

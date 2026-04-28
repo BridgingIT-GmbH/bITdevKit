@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Infrastructure;
 
 using Application.Messaging;
+using Application.Queueing;
 using Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -60,5 +61,71 @@ public static class ServiceCollectionExtensions
         });
 
         return context;
+    }
+
+    /// <summary>
+    ///     Registers the RabbitMQ queue broker transport for the current queueing builder using a fluent options builder.
+    /// </summary>
+    /// <param name="context">The queueing builder context.</param>
+    /// <param name="optionsBuilder">The options builder used to configure the broker.</param>
+    /// <returns>The queueing builder context.</returns>
+    public static QueueingBuilderContext WithRabbitMQBroker(
+        this QueueingBuilderContext context,
+        Builder<RabbitMQQueueBrokerOptionsBuilder, RabbitMQQueueBrokerOptions> optionsBuilder)
+    {
+        EnsureArg.IsNotNull(context, nameof(context));
+        EnsureArg.IsNotNull(context.Services, nameof(context.Services));
+
+        context.Services.TryAddSingleton(sp =>
+        {
+            var options = optionsBuilder?.Invoke(new RabbitMQQueueBrokerOptionsBuilder()).Build() ??
+                new RabbitMQQueueBrokerOptions();
+
+            options.LoggerFactory ??= sp.GetRequiredService<ILoggerFactory>();
+            options.EnqueuerBehaviors ??= sp.GetServices<IQueueEnqueuerBehavior>();
+            options.HandlerBehaviors ??= sp.GetServices<IQueueHandlerBehavior>();
+            options.HandlerFactory ??= new ServiceProviderQueueMessageHandlerFactory(sp);
+            options.Serializer ??= new SystemTextJsonSerializer();
+
+            return options;
+        });
+
+        context.Services.TryAddSingleton<RabbitMQQueueBrokerService>();
+        context.Services.TryAddSingleton<RabbitMQQueueBroker>();
+        context.Services.TryAddSingleton<IQueueBroker>(sp => sp.GetRequiredService<RabbitMQQueueBroker>());
+        context.Services.TryAddSingleton<IQueueBrokerService>(sp => sp.GetRequiredService<RabbitMQQueueBrokerService>());
+
+        return context;
+    }
+
+    /// <summary>
+    ///     Registers the RabbitMQ queue broker transport for the current queueing builder using configuration values.
+    /// </summary>
+    /// <param name="context">The queueing builder context.</param>
+    /// <param name="configuration">Optional configuration values.</param>
+    /// <param name="section">The configuration section name.</param>
+    /// <returns>The queueing builder context.</returns>
+    public static QueueingBuilderContext WithRabbitMQBroker(
+        this QueueingBuilderContext context,
+        RabbitMQQueueBrokerConfiguration configuration = null,
+        string section = "Queueing:RabbitMQ")
+    {
+        EnsureArg.IsNotNull(context, nameof(context));
+
+        configuration ??= context.Configuration?.GetSection(section)?.Get<RabbitMQQueueBrokerConfiguration>() ??
+            new RabbitMQQueueBrokerConfiguration();
+
+        return context.WithRabbitMQBroker(options => options
+            .HostName(configuration.HostName)
+            .ConnectionString(configuration.ConnectionString)
+            .QueueNamePrefix(configuration.QueueNamePrefix)
+            .QueueNameSuffix(configuration.QueueNameSuffix)
+            .PrefetchCount(configuration.PrefetchCount ?? 20)
+            .DurableEnabled(configuration.IsDurable ?? true)
+            .AutoDeleteQueueEnabled(configuration.AutoDeleteQueue ?? false)
+            .ExclusiveQueueEnabled(configuration.ExclusiveQueue ?? false)
+            .MessageExpiration(configuration.MessageExpiration)
+            .MaxDeliveryAttempts(configuration.MaxDeliveryAttempts ?? 5)
+            .ProcessDelay(configuration.ProcessDelay ?? 0));
     }
 }

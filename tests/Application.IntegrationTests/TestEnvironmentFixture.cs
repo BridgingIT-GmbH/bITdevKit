@@ -60,9 +60,9 @@ public class TestEnvironmentFixture : IAsyncLifetime
             .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(1025))
             .Build();
 
-        //this.RabbitMQContainer = new RabbitMqBuilder()
-        //    .WithNetworkAliases(this.NetworkName)
-        //    .Build();
+        this.RabbitMQContainer = new RabbitMqBuilder("rabbitmq:3.13-alpine")
+            .WithNetworkAliases(this.NetworkName)
+            .Build();
     }
 
     public IServiceCollection Services { get; set; } = new ServiceCollection();
@@ -153,7 +153,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
             this.Output?.WriteLine($"Failed to start MailHog container: {ex.Message}");
         }
 
-        //await this.RabbitMQContainer.StartAsync().AnyContext();
+        await this.RabbitMQContainer.StartAsync().AnyContext();
     }
 
     public async Task DisposeAsync()
@@ -166,7 +166,7 @@ public class TestEnvironmentFixture : IAsyncLifetime
 
         await this.MailHogContainer.DisposeAsync().AnyContext();
 
-        //await this.RabbitMQContainer.DisposeAsync().AnyContext();
+        await this.RabbitMQContainer.DisposeAsync().AnyContext();
 
         await this.Network.DeleteAsync().AnyContext();
     }

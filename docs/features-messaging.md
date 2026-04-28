@@ -53,8 +53,8 @@ sequenceDiagram
       Handler-->>Transport: Complete on success / Abandon on failure
     else Entity Framework
       note right of Transport: Persisted broker rows, worker leases, retries, and operational endpoints
-    else RabbitMQ
-      note right of Transport: Auto-ack consumption (no broker redelivery on handler failure)
+     else RabbitMQ
+       note right of Transport: Fanout exchange; all queues receive all messages; auto-ack; no broker redelivery
     else InProcess
       note right of Transport: Immediate in-memory completion
     end
@@ -253,21 +253,51 @@ sequenceDiagram
 
 ### RabbitMQMessageBroker
 
-- Direct exchange per message name; queues bound by message type name per consumer (fanout-like behavior).
-- Durability: `IsDurable`, queue flags `ExclusiveQueue`, `AutoDeleteQueue` (avoid for production patterns unless intended).
-- Expiration: per-message expiration via AMQP properties.
-- Correlation: `CorrelationId` populated from Activity baggage when present.
-- Consumption uses auto-ack in the current implementation; handler failures do not trigger broker redelivery. Use handler-level retries and idempotency.
+The RabbitMQ messaging broker uses a **single fanout exchange** (default name: `messaging`). Every message published to this exchange is broadcast to **all bound queues**, regardless of message type. Each subscriber gets its own queue bound to the exchange. The broker then filters messages at the consumer by looking up the actual message type from the `Type` AMQP header, so only handlers for that type are invoked.
+
+- **Exchange:** one fanout exchange per configured `ExchangeName`.
+- **Queues:** one queue per subscriber (not per message type). The queue name defaults to a random value unless you set `QueueName`. Use `QueueNameSuffix` for test isolation.
+- **Binding:** each queue is bound to the exchange using the message type name as the routing key. Because the exchange is fanout, the routing key does not restrict delivery; it is used only for binding consistency.
+- **Acknowledgement:** auto-ack (`autoAck: true`). Messages are acknowledged by RabbitMQ as soon as they are delivered to the consumer. **Handler failures do not trigger broker redelivery.** Use handler-level retry behaviors (e.g., `RetryMessageHandlerBehavior`) and design handlers to be idempotent.
+- **Durability:** `IsDurable` controls exchange durability and message persistence (`Persistent` flag). Queue flags `ExclusiveQueue` and `AutoDeleteQueue` default to `true`, which means queues are deleted when the consumer disconnects. For production multi-host scenarios, set `ExclusiveQueue = false` and `AutoDeleteQueue = false`, and provide a stable `QueueName` so that all instances of the same application share a queue.
+- **Expiration:** per-message TTL via AMQP `Expiration` property.
+- **Correlation:** `CorrelationId` populated from Activity baggage when present.
+- **ProcessDelay:** artificial delay before invoking handlers (useful for testing or throttling).
 - See [src/Infrastructure.RabbitMQ/Messaging/RabbitMQMessageBroker.cs](src/Infrastructure.RabbitMQ/Messaging/RabbitMQMessageBroker.cs).
 
-RabbitMQ topology (fanout-like per message type):
+RabbitMQ topology (fanout exchange with one queue per subscriber):
 
 ```mermaid
 flowchart LR
-  X[Exchange - per message type] -- bind by message type --> Q1[Queue Consumer A]
-  X -- bind by message type --> Q2[Queue Consumer B]
-  X -- bind by message type --> Qn[Queue Consumer N]
+  P[Publisher] -->|Publish any message| E[Fanout Exchange 'messaging']
+  E -->|broadcast| Q1[Queue A <br/>(Module A)]
+  E -->|broadcast| Q2[Queue B <br/>(Module B)]
+  E -->|broadcast| Q3[Queue C <br/>(Module C)]
+  Q1 --> C1[Consumer filters <br/>by message type]
+  Q2 --> C2[Consumer filters <br/>by message type]
+  Q3 --> C3[Consumer filters <br/>by message type]
 ```
+
+**Important behaviors:**
+
+1. **Every subscriber receives every message.** Because the exchange is fanout, `Queue A`, `Queue B`, and `Queue C` all receive a copy of every published message. The consumer for `Queue A` deserializes the message using the type declared in the `Type` AMQP header and then runs `Process`, which dispatches only to handlers registered for that message type. If `Queue A` has no handler for the message type, `Process` completes without invoking any handler.
+
+2. **Competing consumers for the same application.** If you run three replicas of the same module and want them to compete (one message handled by exactly one replica), all replicas must use the **same queue name**. The default behavior (random queue name + exclusive + auto-delete) creates a unique queue per instance, which means every replica receives every message. To enable competing consumers, set a stable `QueueName` and disable exclusivity:
+   ```csharp
+   .WithRabbitMQBroker(new RabbitMQMessageBrokerConfiguration
+   {
+       ConnectionString = "...",
+       ExchangeName = "messaging",
+       QueueName = "my-module-queue",
+       ExclusiveQueue = false,
+       AutoDeleteQueue = false,
+       IsDurable = true
+   })
+   ```
+
+3. **Multi-type on the same exchange is safe.** You can subscribe `HandlerA` for `MessageA` and `HandlerB` for `MessageB` on the same broker instance. Both message types flow through the same exchange. Each consumer deserializes using the correct type from the header, so cross-type handling does not occur.
+
+4. **No broker-level retry.** Because consumption uses auto-ack, a handler exception does not return the message to RabbitMQ. The message is considered delivered and done. Always use `RetryMessageHandlerBehavior` or make handlers idempotent if retry is required.
 
 ### ServiceBusMessageBroker
 
@@ -290,7 +320,7 @@ flowchart LR
 
 - InProcess: `ProcessDelay`, `MessageExpiration`.
 - Entity Framework: `StartupDelay`, `ProcessingInterval`, `ProcessingDelay`, `ProcessingCount`, `LeaseDuration`, `LeaseRenewalInterval`, `MaxDeliveryAttempts`, `MessageExpiration`, `AutoArchiveAfter`, `AutoArchiveStatuses`.
-- RabbitMQ: `HostName`/`ConnectionString`, `ExchangeName`, `QueueName`/`QueueNameSuffix`, `IsDurable`, `ExclusiveQueue`, `AutoDeleteQueue`, `MessageExpiration`.
+- RabbitMQ: `HostName`/`ConnectionString`, `ExchangeName`, `QueueName`/`QueueNameSuffix`, `IsDurable`, `ExclusiveQueue`, `AutoDeleteQueue`, `MessageExpiration`, `ProcessDelay`, `Retries`.
 - Service Bus: `ConnectionString`, `TopicScope`, `MessageExpiration` (TTL).
 - Naming/routing: message type name is used for routing; `TopicScope` adds a suffix to Service Bus topics.
 
@@ -312,6 +342,25 @@ Entity Framework broker configuration example:
       "MessageExpiration": "7.00:00:00",
       "AutoArchiveAfter": "14.00:00:00",
       "AutoArchiveStatuses": [ "Succeeded", "Expired", "DeadLettered" ]
+    }
+  }
+}
+```
+
+RabbitMQ broker configuration example:
+
+```json
+{
+  "Messaging": {
+    "RabbitMQ": {
+      "ConnectionString": "amqp://guest:guest@localhost:5672/",
+      "ExchangeName": "messaging",
+      "QueueName": "my-module-queue",
+      "IsDurable": true,
+      "ExclusiveQueue": false,
+      "AutoDeleteQueue": false,
+      "MessageExpiration": "1.00:00:00",
+      "ProcessDelay": 0
     }
   }
 }
@@ -358,6 +407,8 @@ These endpoints are intended for support and operations workflows. In production
 
 - InProcess broker for unit/integration tests: deterministic ordering and simple setup.
 - Entity Framework broker tests: validate claim/finalize, lease renewal, retry state transitions, and endpoint operations with focused broker and store-service tests, including SQLite, SQL Server, and PostgreSQL integration coverage for the durable worker paths.
+- RabbitMQ broker tests: validate publish/subscribe, multi-type filtering, exchange isolation, and handler invocation. Run against a local RabbitMQ container.
+  - [tests/Infrastructure.IntegrationTests/RabbitMQ/Messaging/RabbitMQMessageBrokerTests.cs](tests/Infrastructure.IntegrationTests/RabbitMQ/Messaging/RabbitMQMessageBrokerTests.cs)
 - Transport-backed integration tests: run RabbitMQ/Service Bus locally (containers/emulators), ensure subscriptions exist before publishing, and assert side-effects and idempotency.
 
 ## Minimal Examples

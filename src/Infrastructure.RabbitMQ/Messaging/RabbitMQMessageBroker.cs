@@ -162,7 +162,7 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
 
     protected override async Task OnSubscribe<TMessage, THandler>()
     {
-        await this.Subscribe(typeof(TMessage), typeof(THandler));
+        await this.OnSubscribe(typeof(TMessage), typeof(THandler));
     }
 
     protected override Task OnSubscribe(Type messageType, Type handlerType)
@@ -184,7 +184,11 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
         this.Logger.LogTrace("OnMessageAsync(messageId={MessageId})", args.BasicProperties?.MessageId);
 
         var messageName = args.BasicProperties.Type;
-        var message = this.options.Serializer.Deserialize(args.Body.ToArray(), messageType) as IMessage;
+
+        // Determine actual message type from the subscription map using the message name header
+        // so that multi-type scenarios deserialize correctly regardless of which consumer received the message.
+        var actualMessageType = this.Subscriptions.GetByName(messageName) ?? messageType;
+        var message = this.options.Serializer.Deserialize(args.Body.ToArray(), actualMessageType) as IMessage;
 
         if (message is not null)
         {

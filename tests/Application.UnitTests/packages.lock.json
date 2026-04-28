@@ -861,6 +861,16 @@
           "Scrutor": "[4.2.2, 5.0.0)"
         }
       },
+      "BridgingIT.DevKit.Infrastructure.RabbitMQ": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Queueing": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "RabbitMQ.Client": "[6.8.1, 7.0.0)"
+        }
+      },
       "ClosedXML": {
         "type": "CentralTransitive",
         "requested": "[0.105.0, )",
@@ -1197,6 +1207,12 @@
           "Microsoft.Extensions.Options": "10.0.0",
           "Quartz": "3.17.0"
         }
+      },
+      "RabbitMQ.Client": {
+        "type": "CentralTransitive",
+        "requested": "[6.8.1, 7.0.0)",
+        "resolved": "6.8.1",
+        "contentHash": "jNsmGgmCNw2S/NzskeN2ijtGywtH4Sk/G6jWUTD5sY9SrC27Xz6BsLIiB8hdsfjeyWCa4j4GvCIGkpE8wrjU1Q=="
       },
       "Scrutor": {
         "type": "CentralTransitive",

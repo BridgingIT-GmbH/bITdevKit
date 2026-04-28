@@ -968,6 +968,7 @@
           "BridgingIT.DevKit.Infrastructure.Azure.Storage": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer": "[1.0.0, )",
+          "BridgingIT.DevKit.Infrastructure.RabbitMQ": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.Windows": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Microsoft.Azure.Cosmos": "[3.58.0, )",
@@ -1397,6 +1398,7 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Queueing": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "RabbitMQ.Client": "[6.8.1, 7.0.0)"

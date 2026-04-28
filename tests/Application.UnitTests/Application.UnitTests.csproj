@@ -49,6 +49,7 @@
     <ProjectReference Include="..\..\src\Application.Messaging\Application.Messaging.csproj" />
     <ProjectReference Include="..\..\src\Application.Queueing\Application.Queueing.csproj" />
     <ProjectReference Include="..\..\src\Application.Queries\Application.Queries.csproj" />
+    <ProjectReference Include="..\..\src\Infrastructure.RabbitMQ\Infrastructure.RabbitMQ.csproj" />
   </ItemGroup>
 
 </Project>

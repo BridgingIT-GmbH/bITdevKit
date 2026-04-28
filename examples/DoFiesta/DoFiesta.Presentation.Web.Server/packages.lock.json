@@ -34,9 +34,9 @@
       },
       "Microsoft.AspNetCore.App.Internal.Assets": {
         "type": "Direct",
-        "requested": "[10.0.5, )",
-        "resolved": "10.0.5",
-        "contentHash": "Oxw9Ps1/nd6c/EMCAI13AeJFEqXezAvCEOshMjUWmL7LeGirHJNzytR2e/3jINYg0j2TmPvNUowGHf+gp8zDSQ=="
+        "requested": "[10.0.6, )",
+        "resolved": "10.0.6",
+        "contentHash": "3jRLKtAXwSCVDX0vUmGTDwcbSmL05jtf5vUHB9QXpw3wDbT0qU0dUJyKAOKgvwW3j0FI+aHHMbKIZCM63SPkOA=="
       },
       "Microsoft.AspNetCore.Components.WebAssembly.Server": {
         "type": "Direct",
@@ -451,8 +451,8 @@
       },
       "Microsoft.DotNet.HotReload.WebAssembly.Browser": {
         "type": "Transitive",
-        "resolved": "10.0.201",
-        "contentHash": "4EAMH3CqtVwVm7Sx4DnNtZj/J0b+A1YGcTnCL6prhQ8ZHlwbVtZ3RmSyJdi85mSnLl+u94aVr8fElRGkjZkKmw=="
+        "resolved": "10.0.202",
+        "contentHash": "//aZ/qUD7sc2gcUlraZe4yD0jzxRv7uwUMuuDe7Wdlz404vgLpsdt5xD2l44VHjyUuOgH27ulK3MdJgQVjofzA=="
       },
       "Microsoft.EntityFrameworkCore.Abstractions": {
         "type": "Transitive",
@@ -1196,7 +1196,7 @@
           "Microsoft.AspNetCore.Components.WebAssembly": "[10.0.5, )",
           "Microsoft.AspNetCore.Components.WebAssembly.Authentication": "[10.0.5, )",
           "Microsoft.AspNetCore.SignalR.Client": "[10.0.5, )",
-          "Microsoft.DotNet.HotReload.WebAssembly.Browser": "[10.0.201, )",
+          "Microsoft.DotNet.HotReload.WebAssembly.Browser": "[10.0.202, )",
           "Microsoft.Extensions.Http.Polly": "[10.0.5, )",
           "Microsoft.Kiota.Bundle": "[1.22.1, )",
           "MudBlazor": "[9.2.0, )",

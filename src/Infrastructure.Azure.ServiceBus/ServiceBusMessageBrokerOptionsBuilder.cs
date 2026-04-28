@@ -83,4 +83,11 @@ public class ServiceBusMessageBrokerOptionsBuilder
 
         return this;
     }
+
+    public ServiceBusMessageBrokerOptionsBuilder AutoCreateTopic(bool value = true)
+    {
+        this.Target.AutoCreateTopic = value;
+
+        return this;
+    }
 }

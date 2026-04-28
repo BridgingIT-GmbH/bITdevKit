@@ -30,4 +30,9 @@ public class ServiceBusMessageBrokerOptions : OptionsBase
     ///     The default message time to live.
     /// </summary>
     public TimeSpan? MessageExpiration { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether topics and subscriptions should be created at runtime.
+    /// </summary>
+    public bool AutoCreateTopic { get; set; } = true;
 }

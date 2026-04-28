@@ -3,112 +3,153 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-//namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure;
+namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure;
 
-//using BridgingIT.DevKit.Application.Messaging;
-//using BridgingIT.DevKit.Infrastructure.Azure;
-//using Microsoft.Extensions.DependencyInjection;
+using Application.Messaging;
+using FluentValidation.Results;
+using Infrastructure.Azure;
+using Microsoft.Extensions.DependencyInjection;
 
-//[IntegrationTest("Infrastructure")]
-//[Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-//public class ServiceBusMessageBrokerTests
-//{
-//    private static readonly MessageState MessageState = new();
-//    private readonly TestEnvironmentFixture fixture;
+[IntegrationTest("Infrastructure")]
+[Collection(nameof(TestEnvironmentCollection))]
+public class ServiceBusMessageBrokerTests
+{
+    private static readonly MessageState MessageState = new();
+    private readonly TestEnvironmentFixture fixture;
 
-//    public ServiceBusMessageBrokerTests(TestEnvironmentFixture fixture)
-//    {
-//        this.fixture = fixture;
-//        this.fixture.Services.AddSingleton(MessageState);
-//    }
+    public ServiceBusMessageBrokerTests(TestEnvironmentFixture fixture)
+    {
+        this.fixture = fixture;
+        this.fixture.Services.AddSingleton(MessageState);
+    }
 
-//    [Fact]
-//    public async Task Publish_SingleMessageNoSubscriber_MessageHandledByNone()
-//    {
-//        // Arrange
-//        var ticks = DateTime.UtcNow.Ticks;
-//        var message = new MessageStub() { FirstName = $"1John{ticks}", LastName = $"1Doe{ticks}" };
-//        var sut = this.CreateMessageBroker();
+    [SkippableFact]
+    public async Task Publish_Messages_HandledCorrectly()
+    {
+        Skip.IfNot(await this.fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
 
-//        // Act
-//        await sut.Publish(message);
-//        await Task.Delay(500);
+        // Scenario 1: Single handler
+        MessageState.Reset();
+        var sut = this.CreateMessageBroker();
+        await sut.Subscribe<MessageStub, MessageStubHandler>();
+        await Task.Delay(2000);
 
-//        // Assert
-//        await sut.Unsubscribe<MessageStub, MessageStubHandler>();
-//        MessageState.HandledMessageIds.Count(i => i == message.Id).ShouldBe(0);
-//    }
+        var message1 = new MessageStub { FirstName = "John", LastName = "Doe" };
+        await sut.Publish(message1);
 
-//    [Fact]
-//    public async Task Publish_SingleMessage_MessageHandledBySingleHandler()
-//    {
-//        // Arrange
-//        var ticks = DateTime.UtcNow.Ticks;
-//        var message = new MessageStub() { FirstName = $"1John{ticks}", LastName = $"1Doe{ticks}" };
-//        var sut = this.CreateMessageBroker();
-//        await sut.Subscribe<MessageStub, MessageStubHandler>();
+        var processed1 = await WaitForAsync(() => Task.FromResult(MessageState.HandledMessageIds.Contains(message1.MessageId)), attempts: 240);
+        processed1.ShouldBeTrue($"Message {message1.MessageId} was not handled within the timeout");
 
-//        // Act
-//        await sut.Publish(message);
-//        await Task.Delay(500);
+        await sut.Unsubscribe<MessageStub, MessageStubHandler>();
+        (sut as IAsyncDisposable)?.DisposeAsync().AsTask().Wait();
+        await Task.Delay(2000);
 
-//        // Assert
-//        await sut.Unsubscribe<MessageStub, MessageStubHandler>();
-//        MessageState.HandledMessageIds.Count(i => i == message.Id).ShouldBe(1);
-//        MessageState.HandledMessageIds.ShouldContain(message.Id);
-//    }
+        // Scenario 2: No subscriber
+        MessageState.Reset();
+        sut = this.CreateMessageBroker();
 
-//    [Fact]
-//    public async Task Publish_SingleMessage_MessageHandledBySingleHandler2()
-//    {
-//        // Arrange
-//        var ticks = DateTime.UtcNow.Ticks;
-//        var message1 = new MessageStub() { FirstName = $"1John{ticks}", LastName = $"1Doe{ticks}" };
-//        var message2 = new MessageStub() { FirstName = $"1John{ticks}", LastName = $"1Doe{ticks}" };
-//        var sut = this.CreateMessageBroker();
-//        await sut.Subscribe<MessageStub, MessageStubHandler>();
+        var message2 = new MessageStub { FirstName = "Jane", LastName = "Doe" };
+        await sut.Publish(message2);
+        await Task.Delay(2000);
 
-//        // Act
-//        await sut.Publish(message1);
-//        await Task.Delay(500);
-//        await sut.Unsubscribe<MessageStub, MessageStubHandler>();
-//        await sut.Publish(message2);
+        MessageState.HandledMessageIds.ShouldNotContain(message2.MessageId);
 
-//        // Assert
-//        MessageState.HandledMessageIds.Count(i => i == message1.Id).ShouldBe(1);
-//        MessageState.HandledMessageIds.Count(i => i == message2.Id).ShouldBe(0);
-//        MessageState.HandledMessageIds.ShouldContain(message1.Id);
-//        MessageState.HandledMessageIds.ShouldNotContain(message2.Id);
-//    }
+        (sut as IAsyncDisposable)?.DisposeAsync().AsTask().Wait();
+        await Task.Delay(2000);
 
-//    [Fact]
-//    public async Task Publish_SingleMessage_MessageHandledByAllHandlers()
-//    {
-//        // Arrange
-//        var ticks = DateTime.UtcNow.Ticks;
-//        var message = new MessageStub() { FirstName = $"2John{ticks}", LastName = $"2Doe{ticks}" };
-//        var sut = this.CreateMessageBroker();
-//        await sut.Subscribe<MessageStub, MessageStubHandler>();
-//        await sut.Subscribe<MessageStub, AnotherMessageStubHandler>();
+        // Scenario 3: Multiple handlers
+        MessageState.Reset();
+        sut = this.CreateMessageBroker();
+        await sut.Subscribe<MessageStub, MessageStubHandler>();
+        await sut.Subscribe<MessageStub, AnotherMessageStubHandler>();
+        await Task.Delay(2000);
 
-//        // Act
-//        await sut.Publish(message, CancellationToken.None);
-//        await Task.Delay(500);
+        var message3 = new MessageStub { FirstName = "John", LastName = "Doe" };
+        await sut.Publish(message3);
 
-//        // Assert
-//        await sut.Unsubscribe<MessageStub, MessageStubHandler>();
-//        await sut.Unsubscribe<MessageStub, AnotherMessageStubHandler>();
-//        MessageState.HandledMessageIds.Count(i => i == message.Id).ShouldBe(2);
-//        MessageState.HandledMessageIds.ShouldContain(message.Id);
-//    }
+        var processed3 = await WaitForAsync(() => Task.FromResult(MessageState.HandledMessageIds.Count(i => i == message3.MessageId) == 2), attempts: 240);
+        processed3.ShouldBeTrue($"Message {message3.MessageId} was not handled by both handlers within the timeout");
 
-//    private IMessageBroker CreateMessageBroker()
-//    {
-//        return new ServiceBusMessageBroker(o => o
-//            .ConnectionString("")
-//            .HandlerFactory(new ServiceProviderMessageHandlerFactory(this.fixture.ServiceProvider))
-//            .MachineTopicScope("_test")
-//            .Serializer(new SystemTextJsonSerializer()));
-//    }
-//}
+        await sut.Unsubscribe<MessageStub, MessageStubHandler>();
+        await sut.Unsubscribe<MessageStub, AnotherMessageStubHandler>();
+        (sut as IAsyncDisposable)?.DisposeAsync().AsTask().Wait();
+    }
 
+    private IMessageBroker CreateMessageBroker()
+    {
+        return new ServiceBusMessageBroker(o => o
+            .ConnectionString(this.fixture.ServiceBusEmulatorConnectionString)
+            .TopicScope("test")
+            .AutoCreateTopic(false)
+            .HandlerFactory(new ServiceProviderMessageHandlerFactory(this.fixture.ServiceProvider))
+            .Serializer(new SystemTextJsonSerializer()));
+    }
+
+    private static async Task<bool> WaitForAsync(Func<Task<bool>> condition, int attempts = 80, int delayMilliseconds = 250)
+    {
+        for (var attempt = 0; attempt < attempts; attempt++)
+        {
+            if (await condition())
+            {
+                return true;
+            }
+
+            await Task.Delay(delayMilliseconds);
+        }
+
+        return false;
+    }
+}
+
+public sealed class MessageState
+{
+    private readonly List<string> handledMessageIds = [];
+
+    public IReadOnlyList<string> HandledMessageIds => this.handledMessageIds.AsReadOnly();
+
+    public void Add(string messageId)
+    {
+        this.handledMessageIds.Add(messageId);
+    }
+
+    public void Reset()
+    {
+        this.handledMessageIds.Clear();
+    }
+}
+
+public class MessageStub : IMessage
+{
+    public string MessageId { get; set; } = GuidGenerator.CreateSequential().ToString("N");
+
+    public DateTimeOffset Timestamp { get; set; } = DateTimeOffset.UtcNow;
+
+    public string FirstName { get; set; }
+
+    public string LastName { get; set; }
+
+    public IDictionary<string, object> Properties { get; set; } = new Dictionary<string, object>();
+
+    public ValidationResult Validate()
+    {
+        return new ValidationResult();
+    }
+}
+
+public class MessageStubHandler(MessageState state) : IMessageHandler<MessageStub>
+{
+    public Task Handle(MessageStub message, CancellationToken cancellationToken)
+    {
+        state.Add(message.MessageId);
+        return Task.CompletedTask;
+    }
+}
+
+public class AnotherMessageStubHandler(MessageState state) : IMessageHandler<MessageStub>
+{
+    public Task Handle(MessageStub message, CancellationToken cancellationToken)
+    {
+        state.Add(message.MessageId);
+        return Task.CompletedTask;
+    }
+}

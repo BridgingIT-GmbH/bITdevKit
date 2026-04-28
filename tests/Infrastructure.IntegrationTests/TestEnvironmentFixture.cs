@@ -89,6 +89,29 @@ public class TestEnvironmentFixture : IAsyncLifetime
         this.RabbitMQContainer = new RabbitMqBuilder("rabbitmq:3.13-alpine")
             .WithNetworkAliases(this.NetworkName)
             .Build();
+
+        this.ServiceBusEmulatorConfigPath = this.CreateServiceBusEmulatorConfig();
+
+        this.ServiceBusSqlContainer = new ContainerBuilder("mcr.microsoft.com/azure-sql-edge:latest")
+            .WithName($"sb-sql-{Guid.NewGuid():N}")
+            .WithNetwork(this.Network)
+            .WithNetworkAliases("sb-sql")
+            .WithPortBinding(1433, true)
+            .WithEnvironment("ACCEPT_EULA", "Y")
+            .WithEnvironment("MSSQL_SA_PASSWORD", "YourStrongPassword123!")
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(1433))
+            .Build();
+
+        this.ServiceBusEmulatorContainer = new ContainerBuilder("mcr.microsoft.com/azure-messaging/servicebus-emulator:latest")
+            .WithName($"sb-emulator-{Guid.NewGuid():N}")
+            .WithNetwork(this.Network)
+            .WithPortBinding(5672, true)
+            .WithPortBinding(8900, true)
+            .WithEnvironment("SQL_SERVER", "sb-sql")
+            .WithEnvironment("MSSQL_SA_PASSWORD", "YourStrongPassword123!")
+            .WithEnvironment("ACCEPT_EULA", "Y")
+            .WithBindMount(this.ServiceBusEmulatorConfigPath, "/ServiceBus_Emulator/ConfigFiles/Config.json")
+            .Build();
     }
 
     public IServiceCollection Services { get; set; } = new ServiceCollection();
@@ -120,6 +143,55 @@ public class TestEnvironmentFixture : IAsyncLifetime
     public AzuriteContainer AzuriteContainer { get; }
 
     public RabbitMqContainer RabbitMQContainer { get; }
+
+    public IContainer ServiceBusSqlContainer { get; }
+
+    public IContainer ServiceBusEmulatorContainer { get; }
+
+    public string ServiceBusEmulatorConfigPath { get; }
+
+    public string ServiceBusEmulatorConnectionString
+    {
+        get
+        {
+            var port = this.ServiceBusEmulatorContainer?.GetMappedPublicPort(5672) ?? 5672;
+            return $"Endpoint=sb://localhost:{port};SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;";
+        }
+    }
+
+    public async Task<bool> WaitForServiceBusEmulatorReadyAsync(int timeoutSeconds = 90)
+    {
+        if (this.ServiceBusEmulatorContainer?.State != TestcontainersStates.Running)
+        {
+            return false;
+        }
+
+        var port = this.ServiceBusEmulatorContainer.GetMappedPublicPort(5672);
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(timeoutSeconds));
+
+        while (!cts.Token.IsCancellationRequested)
+        {
+            try
+            {
+                using var client = new System.Net.Sockets.TcpClient();
+                await client.ConnectAsync("localhost", port).WaitAsync(TimeSpan.FromSeconds(2), cts.Token);
+                return true;
+            }
+            catch
+            {
+                try
+                {
+                    await Task.Delay(1000, cts.Token);
+                }
+                catch (OperationCanceledException)
+                {
+                    break;
+                }
+            }
+        }
+
+        return false;
+    }
 
     public IServiceProvider ServiceProvider
     {
@@ -169,6 +241,20 @@ public class TestEnvironmentFixture : IAsyncLifetime
         await this.AzuriteContainer.StartAsync().AnyContext();
 
         await this.RabbitMQContainer.StartAsync().AnyContext();
+
+        try
+        {
+            await this.ServiceBusSqlContainer.StartAsync().AnyContext();
+            await this.ServiceBusEmulatorContainer.StartAsync().AnyContext();
+
+            // The Service Bus emulator waits 20s before checking SQL, then retries every 15s.
+            // It needs ~45-60s total before AMQP is ready. Wait 50s to give it time to initialize.
+            await Task.Delay(TimeSpan.FromSeconds(50));
+        }
+        catch
+        {
+            // Emulator or SQL Edge may fail to start (e.g., port 5672 in use); tests will skip.
+        }
     }
 
     public async Task DisposeAsync()
@@ -184,6 +270,21 @@ public class TestEnvironmentFixture : IAsyncLifetime
         await this.AzuriteContainer.DisposeAsync().AnyContext();
 
         await this.RabbitMQContainer.DisposeAsync().AnyContext();
+
+        await this.ServiceBusEmulatorContainer.DisposeAsync().AnyContext();
+        await this.ServiceBusSqlContainer.DisposeAsync().AnyContext();
+
+        try
+        {
+            if (File.Exists(this.ServiceBusEmulatorConfigPath))
+            {
+                File.Delete(this.ServiceBusEmulatorConfigPath);
+            }
+        }
+        catch
+        {
+            // Best-effort cleanup of temp config file.
+        }
 
         await this.Network.DeleteAsync().AnyContext();
     }
@@ -456,6 +557,62 @@ public class TestEnvironmentFixture : IAsyncLifetime
         }
 
         return this.cosmosDocumentStoreProvider;
+    }
+
+    private string CreateServiceBusEmulatorConfig()
+    {
+        var configJson = """
+                         {
+                           "UserConfig": {
+                             "Namespaces": [
+                               {
+                                 "Name": "sbemulatorns",
+                                 "Queues": [
+                                   {
+                                     "Name": "test-servicebusqueuetestmessage",
+                                     "Properties": {
+                                       "DeadLetteringOnMessageExpiration": false,
+                                       "DefaultMessageTimeToLive": "PT1H",
+                                       "LockDuration": "PT1M",
+                                       "MaxDeliveryCount": 3,
+                                       "RequiresDuplicateDetection": false,
+                                       "RequiresSession": false
+                                     }
+                                   }
+                                 ],
+                                 "Topics": [
+                                   {
+                                     "Name": "messagestub_test",
+                                     "Properties": {
+                                       "DefaultMessageTimeToLive": "PT1H",
+                                       "DuplicateDetectionHistoryTimeWindow": "PT5M"
+                                     },
+                                     "Subscriptions": [
+                                       {
+                                         "Name": "messagestub",
+                                         "Properties": {
+                                           "DeadLetteringOnMessageExpiration": false,
+                                           "DefaultMessageTimeToLive": "PT1H",
+                                           "LockDuration": "PT1M",
+                                           "MaxDeliveryCount": 3,
+                                           "RequiresSession": false
+                                         }
+                                       }
+                                     ]
+                                   }
+                                 ]
+                               }
+                             ],
+                             "Logging": {
+                               "Type": "Console"
+                             }
+                           }
+                         }
+                         """;
+
+        var tempPath = Path.Combine(Path.GetTempPath(), $"sb-config-{Guid.NewGuid():N}.json");
+        File.WriteAllText(tempPath, configJson);
+        return tempPath;
     }
 
     private sealed class

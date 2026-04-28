@@ -11,11 +11,12 @@ Queueing provides an application-level abstraction for background work that must
 - Messaging is for pub/sub fan-out where multiple handlers may react to the same event.
 - Queueing is for work dispatch where one queued item must be processed once by one handler when a compatible handler is available.
 
-The current queueing implementation ships with three brokers:
+The current queueing implementation ships with several brokers:
 
 - `InProcessQueueBroker` for local, process-bound work distribution and tests.
 - `EntityFrameworkQueueBroker<TContext>` for durable SQL-backed processing with renewable leases and runtime-safe competing consumers.
 - `RabbitMQQueueBroker` for broker-backed durable queue processing with manual acknowledgement, retry, and dead-letter semantics.
+- `ServiceBusQueueBroker` for Azure Service Bus queue transport with manual complete/abandon/dead-letter semantics.
 
 The feature also includes an operational web endpoint surface for queue broker summary, subscription inspection, waiting-message inspection, and queue/type pause-resume control.
 
@@ -103,26 +104,23 @@ builder.Services.AddQueueing(builder.Configuration, context =>
   .AddEndpoints(options => options.RequireAuthorization());
 ```
 
-### RabbitMQ broker
+### Azure Service Bus broker
 
 ```csharp
 builder.Services.AddQueueing(builder.Configuration, context =>
  context.WithSubscription<OrderQueuedMessage, OrderQueuedHandler>())
-  .WithRabbitMQBroker(new RabbitMQQueueBrokerConfiguration
+  .WithServiceBusBroker(new ServiceBusQueueBrokerConfiguration
   {
-   ConnectionString = configuration["Queueing:RabbitMQ:ConnectionString"],
-   QueueNamePrefix = "bit-",
-   IsDurable = true,
-   PrefetchCount = 20,
-   MaxDeliveryAttempts = 5,
-   MessageExpiration = TimeSpan.FromDays(7)
+   ConnectionString = configuration["Queueing:ServiceBus:ConnectionString"],
+   QueueNamePrefix = "bit",
+   AutoCreateQueue = true,
+   MaxConcurrentCalls = 8,
+   MaxDeliveryAttempts = 5
   })
-  .AddEndpoints();
+  .AddEndpoints(options => options.RequireAuthorization());
 ```
 
-RabbitMQ uses one queue per registered queue message type. Multiple application instances consume from the same queue for round-robin distribution. The broker provisions queue topology automatically at runtime. Use `QueueNamePrefix` or `QueueNameSuffix` to isolate environments (e.g., `bit-prod-` vs `bit-test-`).
-
-Your `DbContext` must implement `IQueueingContext` when using the Entity Framework broker:
+Your `DbContext` must implement `IQueueingContext`:
 
 ```csharp
 public class AppDbContext : DbContext, IQueueingContext
@@ -260,6 +258,7 @@ flowchart LR
 - The RabbitMQ broker service (`RabbitMQQueueBrokerService`) tracks recent messages in memory (bounded to 10,000 items with LRU eviction).
 - `GetMessagesAsync`, `GetSummaryAsync`, `GetMessageStatsAsync`, pause/resume, and purge are supported through this in-memory tracker.
 - Unlike the Entity Framework broker, there is no durable retained history. Restarting the application clears the operational tracker (the messages themselves remain in RabbitMQ).
+All brokers implement the same `IQueueBrokerService` operational contract. The in-process broker exposes it over runtime-tracked items, the Entity Framework broker adds durable retained history plus archive-aware filtering and lease management, and the Service Bus broker provides lightweight in-memory operational tracking.
 
 For Entity Framework, the most relevant broker-specific retention options are:
 
@@ -287,21 +286,3 @@ For Entity Framework, the most relevant broker-specific retention options are:
 ## Relation To Messaging
 
 Use Messaging when one event should fan out to many handlers. Use Queueing when one work item should be owned by one handler execution. The APIs are intentionally similar so the developer experience stays familiar, but the runtime semantics are different.
-
-## Testing Guidance
-
-The queueing slice is covered by focused application and presentation tests:
-
-- [tests/Application.UnitTests/Queueing/QueueSubscriptionMapTests.cs](tests/Application.UnitTests/Queueing/QueueSubscriptionMapTests.cs)
-- [tests/Application.UnitTests/Queueing/RabbitMQQueueBrokerServiceTests.cs](tests/Application.UnitTests/Queueing/RabbitMQQueueBrokerServiceTests.cs)
-- [tests/Application.IntegrationTests/Queueing/QueueingRegistrationTests.cs](tests/Application.IntegrationTests/Queueing/QueueingRegistrationTests.cs)
-- [tests/Application.IntegrationTests/Queueing/InProcessQueueingBrokerTests.cs](tests/Application.IntegrationTests/Queueing/InProcessQueueingBrokerTests.cs)
-- [tests/Application.IntegrationTests/Queueing/EntityFrameworkQueueingBrokerTests.cs](tests/Application.IntegrationTests/Queueing/EntityFrameworkQueueingBrokerTests.cs)
-- [tests/Infrastructure.IntegrationTests/RabbitMQ/Queueing/RabbitMQQueueingBrokerTests.cs](tests/Infrastructure.IntegrationTests/RabbitMQ/Queueing/RabbitMQQueueingBrokerTests.cs)
-- [tests/Infrastructure.IntegrationTests/RabbitMQ/Messaging/RabbitMQMessageBrokerTests.cs](tests/Infrastructure.IntegrationTests/RabbitMQ/Messaging/RabbitMQMessageBrokerTests.cs)
-- [tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkSqliteQueueBrokerTests.cs](tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkSqliteQueueBrokerTests.cs)
-- [tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkSqlServerQueueBrokerTests.cs](tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkSqlServerQueueBrokerTests.cs)
-- [tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkPostgresQueueBrokerTests.cs](tests/Infrastructure.IntegrationTests/EntityFramework/Queueing/EntityFrameworkPostgresQueueBrokerTests.cs)
-- [tests/Presentation.UnitTests/Web/Queueing/QueueingEndpointsTests.cs](tests/Presentation.UnitTests/Web/Queueing/QueueingEndpointsTests.cs)
-
-These tests cover additive registration with a single hosted service, in-process waiting/requeue and pause/resume behavior, Entity Framework durable processing and retention behavior, RabbitMQ end-to-end enqueue/consume/ack/nack behavior including multi-type queue isolation, waiting-message ordering, retry state reset, competing-worker lease behavior, and the operational endpoint surface across SQLite, SQL Server, and PostgreSQL.

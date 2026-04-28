@@ -1,55 +1,41 @@
 ![bITDevKit](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/bITDevKit_Logo.png)
 =====================================
+Empowering developers with modular components for modern application development, centered around
+Domain-Driven Design principles.
 
-# Application.Queueing
+Our goal is to empower developers by offering modular components that can be easily integrated into
+your projects. Whether you are working with repositories, commands, queries, or other components, the
+bITDevKit provides flexible solutions that can adapt to your specific needs.
 
-Provides a queue-specific abstraction for background work that must be processed by exactly one logical handler per queued message type. Queueing complements the messaging feature: messaging is for pub/sub fan-out, while queueing is for single-consumer work dispatch.
+This repository includes the complete source code for the bITDevKit, along with a variety of sample
+applications located in the ./examples folder within the solution. These samples serve as practical
+demonstrations of how to leverage the capabilities of the bITDevKit in real-world scenarios. All
+components are available
+as [nuget packages](https://www.nuget.org/packages?q=bitDevKit&packagetype=&prerel=true&sortby=relevance).
 
-## Key Concepts
+For the latest updates and release notes, please refer to
+the [CHANGELOG](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/CHANGELOG.md).
 
-- **IQueueMessage** – the work item envelope with `MessageId`, `Timestamp`, `Properties`, and validation.
-- **IQueueMessageHandler&lt;TMessage&gt;** – the single handler contract for a given queue message type.
-- **IQueueBroker** – central abstraction for subscribing, enqueueing, and processing queue messages.
-- **QueueBrokerBase** – base class for all queue brokers with behavior pipelines and subscription management.
-- **IQueueBrokerService** – operational surface for inspecting broker state, pausing/resuming, retrying, and archiving.
+Join us in advancing the world of software development with the bITDevKit!
 
-## Providers
+## Application.Queueing
 
-| Provider | Durability | Best For |
-|---|---|---|
-| `InProcessQueueBroker` | No | Local work, tests, simple apps |
-| `EntityFrameworkQueueBroker<TContext>` | Yes | Durable SQL-backed queues with full operational history |
-| `RabbitMQQueueBroker` | Yes | Broker-backed queues with competing consumers |
+Provides a queue-specific abstraction for single-consumer background work processing.
 
-## Quick Start
+### Available Brokers
 
-```csharp
-// Define a message and handler
-public sealed class GenerateInvoiceQueueMessage(Guid invoiceId) : QueueMessageBase
-{
-    public Guid InvoiceId { get; } = invoiceId;
-}
+- **InProcessQueueBroker** - In-memory, process-bound queue for local work distribution and tests.
+- **EntityFrameworkQueueBroker<TContext>** - Durable SQL-backed queue with lease-based competing consumers.
+- **ServiceBusQueueBroker** - Azure Service Bus queue transport with manual complete / abandon / dead-letter semantics.
 
-public sealed class GenerateInvoiceQueueHandler : IQueueMessageHandler<GenerateInvoiceQueueMessage>
-{
-    public Task Handle(GenerateInvoiceQueueMessage message, CancellationToken cancellationToken)
-    {
-        // process the invoice
-        return Task.CompletedTask;
-    }
-}
+### Key Contracts
 
-// Register in Program.cs
-builder.Services.AddQueueing(builder.Configuration)
-    .WithSubscription<GenerateInvoiceQueueMessage, GenerateInvoiceQueueHandler>()
-    .WithRabbitMQBroker(o => o
-        .ConnectionString(configuration["Queueing:RabbitMQ:ConnectionString"])
-        .QueueNamePrefix("bit")
-        .IsDurable(true)
-        .PrefetchCount(20));
-```
+- `IQueueBroker` - Subscribe, enqueue, and process queue messages.
+- `IQueueMessage` - Represents a unit of queued work.
+- `IQueueMessageHandler<TMessage>` - Handles a specific queue message type.
+- `IQueueBrokerService` - Operational inspection and control surface.
 
-## Documentation
+### Documentation
 
-- [Queueing Feature Documentation](../../docs/features-queueing.md)
-- [Design Specification](../../docs/specs/spec-application-queueing-feature.md)
+For detailed documentation, configuration examples, and usage guidance, see
+[docs/features-queueing.md](../../docs/features-queueing.md).

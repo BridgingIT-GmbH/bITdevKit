@@ -15,6 +15,7 @@
 - CORS support
 - Client redirect URI validation
 - Support for SPA, server, and API tool clients
+- Cookie-based Single Sign-On (SSO) across browser tabs
 
 ## Setup
 
@@ -31,6 +32,8 @@ builder.Services.AddFakeIdentityProvider(options => {
           .WithTokenLifetimes(
               accessToken: TimeSpan.FromMinutes(30),
               refreshToken: TimeSpan.FromDays(1))
+          .EnableCookieSingleSignOn()   // Optional; enabled by default
+          .EnablePersistentRefreshTokens() // Required for cookie SSO; enabled by default
           // Public Client (SPA)
           .WithClient(
               "spa-client",
@@ -110,9 +113,13 @@ sequenceDiagram
     participant User
     
     Client->>IDP: GET /authorize
-    IDP->>User: Show login page
-    User->>IDP: Select user
-    IDP->>Client: Code
+    alt User has auth cookie (SSO)
+        IDP->>Client: Code (no login page)
+    else First visit or cookie expired
+        IDP->>User: Show login page
+        User->>IDP: Select user
+        IDP->>Client: Code + Set auth cookie
+    end
     Client->>IDP: POST /token
     Note over Client,IDP: Exchange code for tokens
     IDP->>Client: Access + Refresh tokens
@@ -134,9 +141,13 @@ sequenceDiagram
     participant User
     
     Client->>IDP: GET /authorize
-    IDP->>User: Show login page
-    User->>IDP: Select user
-    IDP->>Client: Code
+    alt User has auth cookie (SSO)
+        IDP->>Client: Code (no login page)
+    else First visit or cookie expired
+        IDP->>User: Show login page
+        User->>IDP: Select user
+        IDP->>Client: Code + Set auth cookie
+    end
     Client->>IDP: POST /token
     Note over Client,IDP: With client_secret
     IDP->>Client: Access + Refresh tokens
@@ -149,6 +160,60 @@ Key points:
 - Secure token storage
 - Server-side token management
 - Valid redirect URIs enforced
+
+## Cookie Single Sign-On (SSO)
+
+When enabled (default), the fake identity provider sets an HTTP-only authentication cookie during the first authorization code flow. On subsequent `/authorize` requests, the provider checks this cookie and immediately redirects with a new authorization code if the user is still authenticated, skipping the user selection page.
+
+### How it Works
+
+```mermaid
+sequenceDiagram
+    participant Tab1 as Browser Tab 1
+    participant Tab2 as Browser Tab 2
+    participant IDP as Identity Provider
+
+    Tab1->>IDP: GET /authorize
+    IDP->>Tab1: Show login page
+    Tab1->>IDP: Select user
+    IDP->>Tab1: Code + Set auth cookie
+    Tab1->>IDP: POST /token (exchange code)
+    IDP->>Tab1: Access + Refresh tokens
+
+    Note over Tab2,IDP: Open app in new tab
+    Tab2->>IDP: GET /authorize (with cookie)
+    IDP->>IDP: Validate cookie & user
+    IDP->>Tab2: Code (no login page)
+    Tab2->>IDP: POST /token (exchange code)
+    IDP->>Tab2: Access + Refresh tokens
+```
+
+### Configuration
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `EnableCookieSingleSignOn` | `true` | When `true`, the authorize endpoint checks for an existing auth cookie and skips the login page for already-authenticated users. |
+| `EnablePersistentRefreshTokens` | `true` | Must be `true` for cookie SSO to work; this sets the auth cookie during token exchange. |
+
+### Opting Out
+
+To disable cookie SSO and always show the login page:
+
+```csharp
+builder.Services.AddFakeIdentityProvider(options =>
+{
+    options.Enabled(builder.Environment.IsDevelopment())
+           .EnableCookieSingleSignOn(false)
+           .WithUsers(Fakes.Users)
+           // ...
+});
+```
+
+### Security Notes
+
+- The authorize endpoint still validates `client_id` and `redirect_uri` before the SSO redirect, even when a valid cookie is present.
+- The cookie is HTTP-only (`options.Cookie.HttpOnly = true`) and Secure (`options.Cookie.SecurePolicy = CookieSecurePolicy.Always`).
+- The cookie inherits the refresh token lifetime (default 1 day).
 
 ## Client Integration Examples
 
@@ -414,6 +479,12 @@ Common error codes:
 - No real user authentication
 - CORS enabled for all origins
 - Debug endpoints exposed
+
+### Cookie Single Sign-On
+- Cookie SSO is enabled by default for development convenience
+- The auth cookie is scoped to the IDP origin and shared across browser tabs
+- Client validation (`client_id`, `redirect_uri`) still applies to SSO redirects
+- For testing scenarios where each request should show the login page, disable with `EnableCookieSingleSignOn(false)`
 
 ## Development Tips
 

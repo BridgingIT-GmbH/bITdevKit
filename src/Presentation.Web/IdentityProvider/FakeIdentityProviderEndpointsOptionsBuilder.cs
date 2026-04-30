@@ -282,6 +282,19 @@ public class FakeIdentityProviderEndpointsOptionsBuilder
     }
 
     /// <summary>
+    /// Enable cookie-based Single Sign-On for the identity provider.
+    /// When enabled, users with a valid auth cookie skip the login page on subsequent authorize requests.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public FakeIdentityProviderEndpointsOptionsBuilder EnableCookieSingleSignOn(bool value = true)
+    {
+        this.options.EnableCookieSingleSignOn = value;
+
+        return this;
+    }
+
+    /// <summary>
     /// Build the identity provider options.
     /// </summary>
     /// <returns></returns>

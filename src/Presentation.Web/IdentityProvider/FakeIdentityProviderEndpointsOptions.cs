@@ -43,6 +43,8 @@ public class FakeIdentityProviderEndpointsOptions : EndpointsOptionsBase
 
     public bool EnableLoginCard { get; set; }
 
+    public bool EnableCookieSingleSignOn { get; set; } = true;
+
     public TokenProvider TokenProvider { get; set; } = TokenProvider.Default;
 
     // Add provider-specific properties

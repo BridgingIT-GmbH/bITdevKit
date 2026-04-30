@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using System.Net;
+using System.Security.Claims;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.IdentityProvider.Pages;
 using Microsoft.AspNetCore.Authentication;
@@ -105,7 +106,8 @@ public class FakeIdentityProviderEndpoints(
             Results.RazorSlice<Pages.Index>());
     }
 
-    private Task<IResult> HandleAuthorize(
+    private async Task<IResult> HandleAuthorize(
+        HttpContext httpContext,
         [FromQuery] string response_type,
         [FromQuery] string client_id,
         [FromQuery] string redirect_uri,
@@ -118,34 +120,62 @@ public class FakeIdentityProviderEndpoints(
         scope = scope.Distinct();
         state = state?.Trim();
 
+        // Validate response_type before any redirect (including SSO)
         if (response_type != "code")
         {
-            return Task.FromResult<IResult>(TypedResults.BadRequest(new OAuth2Error
+            return TypedResults.BadRequest(new OAuth2Error
             {
                 Error = "unsupported_response_type",
                 ErrorDescription = "Only 'code' response type is supported"
-            }));
+            });
         }
 
+        // Validate client_id and redirect_uri before any redirect (including SSO)
         if (options.Clients.SafeAny())
         {
             var client = options.Clients.FirstOrDefault(c => c.ClientId == client_id);
             if (client == null)
             {
-                return Task.FromResult<IResult>(TypedResults.BadRequest(new OAuth2Error
+                return TypedResults.BadRequest(new OAuth2Error
                 {
                     Error = "invalid_client",
                     ErrorDescription = $"Invalid client '{client_id}'"
-                }));
+                });
             }
 
             if (!client.RedirectUris.Contains(redirect_uri))
             {
-                return Task.FromResult<IResult>(TypedResults.BadRequest(new OAuth2Error
+                return TypedResults.BadRequest(new OAuth2Error
                 {
                     Error = "invalid_request",
                     ErrorDescription = $"Invalid redirect URI '{redirect_uri}' for client '{client.Name}' ({client.ClientId}). Valid URIs are: {string.Join(", ", client.RedirectUris)}"
-                }));
+                });
+            }
+        }
+
+        // Cookie Single Sign-On: if user already has a valid auth cookie, bypass the login page
+        if (options.EnableCookieSingleSignOn)
+        {
+            var authResult = await httpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            if (authResult.Succeeded && authResult.Principal?.Identity?.IsAuthenticated == true)
+            {
+                var userId = authResult.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var user = options.Users?.FirstOrDefault(u => u.Id == userId);
+                if (user != null && user.IsEnabled)
+                {
+                    var ssoRequest = new AuthorizeRequest
+                    {
+                        ResponseType = response_type,
+                        ClientId = client_id,
+                        RedirectUri = redirect_uri,
+                        Scope = scope,
+                        State = state
+                    };
+
+                    var code = identityProvider.GenerateAuthorizationCode(user, ssoRequest);
+                    var redirectUrl = $"{redirect_uri}?code={code}&state={state}";
+                    return TypedResults.Redirect(redirectUrl).WithOAuthHeaders();
+                }
             }
         }
 
@@ -158,8 +188,7 @@ public class FakeIdentityProviderEndpoints(
             State = state
         };
 
-        return Task.FromResult(
-            Results.RazorSlice<Signin, SigninViewModel>(new SigninViewModel { Request = request, Options = options }));
+        return Results.RazorSlice<Signin, SigninViewModel>(new SigninViewModel { Request = request, Options = options });
     }
 
     private Task<IResult> HandleAuthorizeCallBack(

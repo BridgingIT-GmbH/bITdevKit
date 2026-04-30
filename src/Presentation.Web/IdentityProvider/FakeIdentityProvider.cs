@@ -11,6 +11,8 @@ public interface IFakeIdentityProvider
 {
     string GenerateAuthorizationCode(string email, string password, AuthorizeRequest request);
 
+    string GenerateAuthorizationCode(FakeUser user, AuthorizeRequest request);
+
     Task<TokenResponse> HandleAuthorizationCodeGrantAsync(string code, string clientId, string clientSecret, string scope, HttpContext httpContext);
 
     Task<TokenResponse> HandleClientCredentialsGrantAsync(string clientId, string clientSecret, string scope);
@@ -50,6 +52,21 @@ public class FakeIdentityProvider : IFakeIdentityProvider
         if (!this.passwordValidator.ValidatePassword(user, password))
         {
             throw new OAuth2Exception("invalid_grant", "Invalid credentials");
+        }
+
+        if (!user.IsEnabled)
+        {
+            throw new OAuth2Exception("invalid_grant", "User is disabled");
+        }
+
+        return this.authorizationCodeService.GenerateCode(user, request);
+    }
+
+    public string GenerateAuthorizationCode(FakeUser user, AuthorizeRequest request)
+    {
+        if (user == null)
+        {
+            throw new OAuth2Exception("invalid_grant", "Invalid user");
         }
 
         if (!user.IsEnabled)

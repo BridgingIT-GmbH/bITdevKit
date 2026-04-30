@@ -55,7 +55,64 @@ public class FakeIdentityProviderApplication : WebApplicationFactory<FakeIdentit
                     [config.ConfidentialClient.RedirectUri])
                 .WithTokenLifetimes(
                     config.AccessTokenLifetime,
-                    config.RefreshTokenLifetime);
+                    config.RefreshTokenLifetime)
+                .EnablePersistentRefreshTokens();
+        });
+
+        appBuilder.Services.AddSingleton(config);
+
+        var app = appBuilder.Build();
+
+        app.UseRouting();
+        app.UseCors(nameof(Presentation.Web.IdentityProvider));
+        app.UseAuthentication();
+        app.UseAuthorization();
+
+        app.MapEndpoints();
+
+        app.Start();
+
+        return app;
+    }
+}
+
+public class FakeIdentityProviderSsoDisabledApplication : WebApplicationFactory<FakeIdentityProviderTests>
+{
+    protected override IHost CreateHost(IHostBuilder builder)
+    {
+        var appBuilder = WebApplication.CreateBuilder();
+        appBuilder.WebHost.UseTestServer();
+        var config = new TestConfiguration();
+
+        appBuilder.Services.AddRouting();
+        appBuilder.Services.AddControllers();
+        appBuilder.Services.AddCors();
+
+        appBuilder.Services.AddAuthentication()
+            .AddCookie("Cookies");
+
+        appBuilder.Services.AddFakeIdentityProvider(options =>
+        {
+            options.Enabled(true)
+                .WithIssuer(config.Issuer)
+                .WithUsers([
+                    config.DefaultUser,
+                    config.RegularUser
+                ])
+                .WithClient(
+                    config.PublicClient.Name,
+                    config.PublicClient.ClientId,
+                    config.PublicClient.RedirectUri)
+                .WithConfidentalClient(
+                    config.ConfidentialClient.Name,
+                    config.ConfidentialClient.ClientId,
+                    config.ConfidentialClient.ClientSecret,
+                    [config.ConfidentialClient.RedirectUri])
+                .WithTokenLifetimes(
+                    config.AccessTokenLifetime,
+                    config.RefreshTokenLifetime)
+                .EnablePersistentRefreshTokens()
+                .EnableCookieSingleSignOn(false);
         });
 
         appBuilder.Services.AddSingleton(config);
@@ -359,6 +416,119 @@ public class FakeIdentityProviderTests : IAsyncDisposable
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         error.Error.ShouldBe("invalid_request");
+    }
+
+    [Fact]
+    public async Task AuthorizeEndpoint_WithValidCookie_ShouldRedirectWithCode()
+    {
+        // Step 1: Go through full auth flow to get tokens AND set the auth cookie
+        var state = Guid.NewGuid().ToString("N");
+        var query = new QueryBuilder
+        {
+            { "response_type", "code" },
+            { "client_id", this.testConfig.PublicClient.ClientId },
+            { "redirect_uri", this.testConfig.PublicClient.RedirectUri },
+            { "scope", "openid profile offline_access" },
+            { "state", state }
+        };
+
+        var authorizeResponse = await this.client.GetAsync(
+            $"/api/_system/identity/connect/authorize/callback{query}&email={this.testConfig.DefaultUser.Email}");
+        authorizeResponse.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+
+        var location = authorizeResponse.Headers.Location.ToString();
+        var code = HttpUtility.ParseQueryString(new Uri(location).Query)["code"];
+
+        var tokenRequest = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            { "grant_type", "authorization_code" },
+            { "client_id", this.testConfig.PublicClient.ClientId },
+            { "code", code },
+            { "redirect_uri", this.testConfig.PublicClient.RedirectUri }
+        });
+
+        var tokenResponse = await this.client.PostAsync(
+            "/api/_system/identity/connect/token", tokenRequest);
+        tokenResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        // Step 2: Now request authorize again with the same HttpClient (cookie jar is shared)
+        var ssoQuery = new QueryBuilder
+        {
+            { "response_type", "code" },
+            { "client_id", this.testConfig.PublicClient.ClientId },
+            { "redirect_uri", this.testConfig.PublicClient.RedirectUri },
+            { "scope", "openid profile" },
+            { "state", state }
+        };
+
+        var ssoResponse = await this.client.GetAsync($"/api/_system/identity/connect/authorize{ssoQuery}");
+
+        // Assert - Should redirect with code, not show login page
+        ssoResponse.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+        var ssoLocation = ssoResponse.Headers.Location.ToString();
+        ssoLocation.ShouldStartWith(this.testConfig.PublicClient.RedirectUri);
+        ssoLocation.ShouldContain("code=");
+        ssoLocation.ShouldContain($"state={state}");
+    }
+
+    [Fact]
+    public async Task AuthorizeEndpoint_WithValidCookieAndSsoDisabled_ShouldShowLoginPage()
+    {
+        // Arrange - Create a factory with SSO disabled
+        await using var ssoDisabledFactory = new FakeIdentityProviderSsoDisabledApplication();
+        var ssoDisabledClient = ssoDisabledFactory.CreateClient(new WebApplicationFactoryClientOptions
+        {
+            AllowAutoRedirect = false
+        });
+        var ssoDisabledConfig = ssoDisabledFactory.Services.GetRequiredService<TestConfiguration>();
+
+        // Step 1: Go through full auth flow to set the auth cookie
+        var state = Guid.NewGuid().ToString("N");
+        var query = new QueryBuilder
+        {
+            { "response_type", "code" },
+            { "client_id", ssoDisabledConfig.PublicClient.ClientId },
+            { "redirect_uri", ssoDisabledConfig.PublicClient.RedirectUri },
+            { "scope", "openid profile offline_access" },
+            { "state", state }
+        };
+
+        var authorizeResponse = await ssoDisabledClient.GetAsync(
+            $"/api/_system/identity/connect/authorize/callback{query}&email={ssoDisabledConfig.DefaultUser.Email}");
+        authorizeResponse.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+
+        var location = authorizeResponse.Headers.Location.ToString();
+        var code = HttpUtility.ParseQueryString(new Uri(location).Query)["code"];
+
+        var tokenRequest = new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            { "grant_type", "authorization_code" },
+            { "client_id", ssoDisabledConfig.PublicClient.ClientId },
+            { "code", code },
+            { "redirect_uri", ssoDisabledConfig.PublicClient.RedirectUri }
+        });
+
+        var tokenResponse = await ssoDisabledClient.PostAsync(
+            "/api/_system/identity/connect/token", tokenRequest);
+        tokenResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        // Step 2: Request authorize again - SSO is disabled so should show login page
+        var ssoQuery = new QueryBuilder
+        {
+            { "response_type", "code" },
+            { "client_id", ssoDisabledConfig.PublicClient.ClientId },
+            { "redirect_uri", ssoDisabledConfig.PublicClient.RedirectUri },
+            { "scope", "openid profile" },
+            { "state", state }
+        };
+
+        var ssoResponse = await ssoDisabledClient.GetAsync($"/api/_system/identity/connect/authorize{ssoQuery}");
+        var ssoContent = await ssoResponse.Content.ReadAsStringAsync();
+
+        // Assert - Should show login page, not redirect
+        ssoResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
+        ssoContent.ShouldContain(ssoDisabledConfig.DefaultUser.Email);
+        ssoContent.ShouldContain(ssoDisabledConfig.RegularUser.Email);
     }
 
     [Theory]

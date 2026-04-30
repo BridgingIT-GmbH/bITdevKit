@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Application.IntegrationTests.Storage;
 
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Infrastructure.Windows.Storage;
-using BridgingIT.DevKit.Infrastructure.Azure.Storage;
+using BridgingIT.DevKit.Infrastructure.Azure;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;

@@ -5,7 +5,9 @@
 
 global using Azure.Data.Tables;
 global using Azure.Storage.Blobs;
+global using Azure.Storage.Queues;
+global using Azure.Storage.Queues.Models;
 global using BridgingIT.DevKit.Application.Storage;
 global using BridgingIT.DevKit.Common;
-global using BridgingIT.DevKit.Infrastructure.Azure.Storage;
+global using BridgingIT.DevKit.Infrastructure.Azure;
 global using Microsoft.Extensions.Logging;

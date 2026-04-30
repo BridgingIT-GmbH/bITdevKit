@@ -11,7 +11,7 @@ using BridgingIT.DevKit.Application.Messaging;
 /// Provides an Entity Framework backed implementation of <see cref="IMessageBrokerService"/>.
 /// </summary>
 /// <typeparam name="TContext">The database context type that implements <see cref="IMessagingContext"/>.</typeparam>
-public class EntityFrameworkMessageBrokerStoreService<TContext>(IServiceProvider serviceProvider) : IMessageBrokerService
+public class EntityFrameworkMessageBrokerStoreService<TContext>(IServiceProvider serviceProvider, MessageBrokerControlState controlState) : IMessageBrokerService
     where TContext : DbContext, IMessagingContext
 {
     /// <inheritdoc />
@@ -239,6 +239,86 @@ public class EntityFrameworkMessageBrokerStoreService<TContext>(IServiceProvider
         var messages = await query.ToListAsync(cancellationToken).AnyContext();
         context.BrokerMessages.RemoveRange(messages);
         await context.SaveChangesAsync(cancellationToken).AnyContext();
+    }
+
+    /// <inheritdoc />
+    public Task PauseMessageTypeAsync(string type, CancellationToken cancellationToken = default)
+    {
+        controlState.PauseMessageType(type);
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public Task ResumeMessageTypeAsync(string type, CancellationToken cancellationToken = default)
+    {
+        controlState.ResumeMessageType(type);
+        return Task.CompletedTask;
+    }
+
+    /// <inheritdoc />
+    public async Task<BrokerMessageBrokerSummary> GetSummaryAsync(CancellationToken cancellationToken = default)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<TContext>();
+        var messages = await context.BrokerMessages.Where(m => !m.IsArchived).ToListAsync(cancellationToken).AnyContext();
+
+        return new BrokerMessageBrokerSummary
+        {
+            Total = messages.Count,
+            Pending = messages.Count(m => m.Status == BrokerMessageStatus.Pending),
+            Processing = messages.Count(m => m.Status == BrokerMessageStatus.Processing),
+            Succeeded = messages.Count(m => m.Status == BrokerMessageStatus.Succeeded),
+            Failed = messages.Count(m => m.Status == BrokerMessageStatus.Failed),
+            DeadLettered = messages.Count(m => m.Status == BrokerMessageStatus.DeadLettered),
+            Expired = messages.Count(m => m.Status == BrokerMessageStatus.Expired),
+            PausedTypes = controlState.GetPausedTypes(),
+            Capabilities = new BrokerMessageBrokerCapabilities
+            {
+                SupportsDurableStorage = true,
+                SupportsRetry = true,
+                SupportsArchive = true,
+                SupportsLeaseManagement = true,
+                SupportsPauseResume = true,
+                SupportsWaitingMessageInspection = true
+            }
+        };
+    }
+
+    /// <inheritdoc />
+    public Task<IEnumerable<BrokerMessageSubscriptionInfo>> GetSubscriptionsAsync(CancellationToken cancellationToken = default)
+    {
+        var subscriptions = ServiceCollectionMessagingExtensions.Subscriptions
+            .Select(s => new BrokerMessageSubscriptionInfo
+            {
+                MessageType = s.message.PrettyName(false),
+                HandlerType = s.handler.FullName,
+                IsMessageTypePaused = controlState.IsMessageTypePaused(s.message.AssemblyQualifiedNameShort())
+                    || controlState.IsMessageTypePaused(s.message.PrettyName(false))
+            })
+            .ToList();
+
+        return Task.FromResult<IEnumerable<BrokerMessageSubscriptionInfo>>(subscriptions);
+    }
+
+    /// <inheritdoc />
+    public async Task<IEnumerable<BrokerMessageInfo>> GetWaitingMessagesAsync(int? take = null, CancellationToken cancellationToken = default)
+    {
+        using var scope = serviceProvider.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<TContext>();
+        var messages = await context.BrokerMessages
+            .Where(m => !m.IsArchived)
+            .ToListAsync(cancellationToken).AnyContext();
+
+        IEnumerable<BrokerMessage> waiting = messages
+            .Where(m => m.HandlerStates.Count == 0)
+            .OrderBy(m => m.CreatedDate);
+
+        if (take.HasValue)
+        {
+            waiting = waiting.Take(take.Value);
+        }
+
+        return waiting.Select(m => MapInfo(m, false)).ToList();
     }
 
     private static BrokerMessageInfo MapInfo(BrokerMessage message, bool includeHandlers)

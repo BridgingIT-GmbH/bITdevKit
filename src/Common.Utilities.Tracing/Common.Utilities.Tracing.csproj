@@ -8,8 +8,4 @@
     <IsPackable>true</IsPackable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="OpenTelemetry"/>
-  </ItemGroup>
-
 </Project>

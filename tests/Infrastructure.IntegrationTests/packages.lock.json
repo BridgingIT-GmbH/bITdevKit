@@ -1293,6 +1293,9 @@
           "Azure.Data.Tables": "[12.11.0, )",
           "Azure.Storage.Blobs": "[12.27.0, )",
           "Azure.Storage.Files.Shares": "[12.25.0, )",
+          "Azure.Storage.Queues": "[12.17.1, )",
+          "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Queueing": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )"
@@ -1464,6 +1467,16 @@
         "dependencies": {
           "Azure.Core": "1.50.0",
           "Azure.Storage.Common": "12.26.0"
+        }
+      },
+      "Azure.Storage.Queues": {
+        "type": "CentralTransitive",
+        "requested": "[12.17.1, )",
+        "resolved": "12.17.1",
+        "contentHash": "ziN15iQ4+h0zf9EbKzFd5Zj3LiDH21qIrCknkXhpqwftPfIvlftvdyXbKQLi9+sh8dwT6PFPi/wq4oLsKNGfcQ==",
+        "dependencies": {
+          "Azure.Storage.Common": "12.18.1",
+          "System.Memory.Data": "1.0.2"
         }
       },
       "CsvHelper": {

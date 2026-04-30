@@ -157,6 +157,7 @@ public class EntityFrameworkMessageBrokerStoreServiceTests(StubDbContextFixture 
     {
         var services = new ServiceCollection();
         services.AddScoped(_ => this.fixture.CreateContext());
+        services.AddSingleton<MessageBrokerControlState>();
         services.AddScoped<IMessageBrokerService, EntityFrameworkMessageBrokerStoreService<StubDbContext>>();
         var provider = services.BuildServiceProvider();
         return provider.GetRequiredService<IMessageBrokerService>();

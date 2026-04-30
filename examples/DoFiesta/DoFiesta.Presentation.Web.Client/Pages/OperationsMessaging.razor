@@ -1,7 +1,8 @@
-@page "/operations/messages"
+@page "/operations/messaging"
 @using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen
 @using Microsoft.AspNetCore.Authorization
 @using KiotaApiException = Microsoft.Kiota.Abstractions.ApiException
+@using BrokerSummary = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.BrokerMessageBrokerSummary
 @using MessageContentInfo = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.BrokerMessageContentInfo
 @using MessageHandlerInfo = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.BrokerMessageHandlerInfo
 @using MessageHandlerStatus = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.BrokerMessageHandlerStatus
@@ -9,8 +10,10 @@
 @using MessageRetryModel = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.RetryBrokerMessageHandlerModel
 @using MessageStats = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.BrokerMessageStats
 @using MessageStatus = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.BrokerMessageStatus
+@using SubscriptionInfo = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.BrokerMessageSubscriptionInfo
 @inject BackendApiClient Api
 @inject ISnackbar Snackbar
+@inject IJSRuntime JS
 @implements IAsyncDisposable
 @attribute [RequireAuthentication]
 
@@ -75,6 +78,29 @@
         </MudItem>
     </MudGrid>
 
+    @if (waitingMessages is not null && waitingMessages.Count > 0)
+    {
+        <MudPaper Class="pa-4 mb-4">
+            <MudText Typo="Typo.h6" GutterBottom="true">Waiting Messages (No Handlers)</MudText>
+            <MudTable Items="@waitingMessages" Dense="true" Hover="true" Elevation="0">
+                <HeaderContent>
+                    <MudTh>Type</MudTh>
+                    <MudTh>Message Id</MudTh>
+                    <MudTh>Created</MudTh>
+                </HeaderContent>
+                <RowTemplate Context="msg">
+                    <MudTd DataLabel="Type">@TrimValue(msg.Type, 64)</MudTd>
+                    <MudTd DataLabel="Message Id">@TrimValueFromStart(msg.MessageId, 28)</MudTd>
+                    <MudTd DataLabel="Created">
+                        <MudTooltip Text="@FormatTimestamp(msg.CreatedDate)">
+                            <MudText Typo="Typo.body2">@FormatRelativeTimestamp(msg.CreatedDate)</MudText>
+                        </MudTooltip>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudPaper>
+    }
+
     <MudPaper Class="pa-4 mb-4">
         <MudGrid>
             <MudItem xs="12" md="3">
@@ -130,114 +156,158 @@
         </div>
     </MudPaper>
 
-    <MudPaper Class="pa-2">
-        @if (!string.IsNullOrWhiteSpace(loadError))
-        {
-            <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="ma-2">@loadError</MudAlert>
-        }
-        else if (loading && messages.Count == 0)
-        {
-            <div class="pa-4">
-                <MudSkeleton Height="72px" Animation="Animation.Pulse" />
-                <MudSkeleton Height="72px" Animation="Animation.Pulse" Class="mt-2" />
-                <MudSkeleton Height="72px" Animation="Animation.Pulse" Class="mt-2" />
-            </div>
-        }
-        else if (messages.Count == 0)
-        {
-            <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined" Class="ma-2">
-                No messages matched the current filters.
-            </MudAlert>
-        }
-        else
-        {
-            <MudTable Items="@messages"
-                      Dense="true"
-                      Hover="true"
-                      Loading="@loading"
-                      LoadingProgressColor="Color.Info"
-                      Elevation="0">
-                <HeaderContent>
-                    <MudTh>Status</MudTh>
-                    <MudTh>Created</MudTh>
-                    <MudTh>Type</MudTh>
-                    <MudTh>Message Id</MudTh>
-                    <MudTh>Attempts</MudTh>
-                    <MudTh>Processed</MudTh>
-                    <MudTh>Lease</MudTh>
-                    <MudTh></MudTh>
-                </HeaderContent>
-                <RowTemplate Context="message">
-                    <MudTd DataLabel="Status">
-                        <MudChip T="string" Color="@GetStatusColor(message.Status)" Variant="Variant.Filled" Size="Size.Small">
-                            @GetStatusLabel(message.Status)
-                        </MudChip>
-                        @if (message.IsArchived == true)
-                        {
-                            <MudChip T="string" Color="Color.Default" Variant="Variant.Outlined" Size="Size.Small" Class="ml-2">
-                                Archived
-                            </MudChip>
-                        }
-                    </MudTd>
-                    <MudTd DataLabel="Created">
-                        <MudTooltip Text="@FormatTimestamp(message.CreatedDate)">
-                            <MudText Typo="Typo.body2">@FormatRelativeTimestamp(message.CreatedDate)</MudText>
-                        </MudTooltip>
-                    </MudTd>
-                    <MudTd DataLabel="Type">@TrimValue(message.Type, 48)</MudTd>
-                    <MudTd DataLabel="Message Id">@TrimValueFromStart(message.MessageId, 28)</MudTd>
-                    <MudTd DataLabel="Attempts">@DisplayCount(message.AttemptCountSummary)</MudTd>
-                    <MudTd DataLabel="Processed">@FormatRelativeTimestamp(message.ProcessedDate)</MudTd>
-                    <MudTd DataLabel="Lease">
-                        @if (!string.IsNullOrWhiteSpace(message.LockedBy))
-                        {
-                            <MudTooltip Text="@($"{message.LockedBy} until {FormatTimestamp(message.LockedUntil)}")">
-                                <MudChip T="string" Color="Color.Warning" Variant="Variant.Outlined" Size="Size.Small">Leased</MudChip>
-                            </MudTooltip>
-                        }
-                        else
-                        {
-                            <MudText Typo="Typo.body2">-</MudText>
-                        }
-                    </MudTd>
-                    <MudTd>
-                        <div class="d-flex justify-end gap-1">
-                            <MudTooltip Text="Open details">
-                                <MudIconButton Icon="@Icons.Material.Filled.Info"
-                                               Color="Color.Info"
-                                               Size="Size.Small"
-                                               OnClick="@(() => OpenDetailsAsync(message))" />
-                            </MudTooltip>
-                            <MudTooltip Text="View content">
-                                <MudIconButton Icon="@Icons.Material.Filled.Article"
-                                               Color="Color.Secondary"
-                                               Size="Size.Small"
-                                               OnClick="@(() => OpenContentAsync(message))" />
-                            </MudTooltip>
-                            @if (CanRetryMessage(message))
-                            {
-                                <MudTooltip Text="Retry message">
-                                    <MudIconButton Icon="@Icons.Material.Filled.RestartAlt"
-                                                   Color="Color.Warning"
-                                                   Size="Size.Small"
-                                                   OnClick="@(() => RetryMessageAsync(message))" />
+    <MudGrid Class="mb-4">
+        <MudItem xs="12" lg="8">
+            <MudPaper Class="pa-2">
+                @if (!string.IsNullOrWhiteSpace(loadError))
+                {
+                    <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="ma-2">@loadError</MudAlert>
+                }
+                else if (loading && messages.Count == 0)
+                {
+                    <div class="pa-4">
+                        <MudSkeleton Height="72px" Animation="Animation.Pulse" />
+                        <MudSkeleton Height="72px" Animation="Animation.Pulse" Class="mt-2" />
+                        <MudSkeleton Height="72px" Animation="Animation.Pulse" Class="mt-2" />
+                    </div>
+                }
+                else if (messages.Count == 0)
+                {
+                    <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined" Class="ma-2">
+                        No messages matched the current filters.
+                    </MudAlert>
+                }
+                else
+                {
+                    <MudTable Items="@messages"
+                              Dense="true"
+                              Hover="true"
+                              Loading="@loading"
+                              LoadingProgressColor="Color.Info"
+                              Elevation="0">
+                        <HeaderContent>
+                            <MudTh>Status</MudTh>
+                            <MudTh>Created</MudTh>
+                            <MudTh>Type</MudTh>
+                            <MudTh>Message Id</MudTh>
+                            <MudTh>Attempts</MudTh>
+                            <MudTh>Processed</MudTh>
+                            <MudTh>Lease</MudTh>
+                            <MudTh></MudTh>
+                        </HeaderContent>
+                        <RowTemplate Context="message">
+                            <MudTd DataLabel="Status">
+                                <MudChip T="string" Color="@GetStatusColor(message.Status)" Variant="Variant.Filled" Size="Size.Small">
+                                    @GetStatusLabel(message.Status)
+                                </MudChip>
+                                @if (message.IsArchived == true)
+                                {
+                                    <MudChip T="string" Color="Color.Default" Variant="Variant.Outlined" Size="Size.Small" Class="ml-2">
+                                        Archived
+                                    </MudChip>
+                                }
+                            </MudTd>
+                            <MudTd DataLabel="Created">
+                                <MudTooltip Text="@FormatTimestamp(message.CreatedDate)">
+                                    <MudText Typo="Typo.body2">@FormatRelativeTimestamp(message.CreatedDate)</MudText>
                                 </MudTooltip>
-                            }
-                            @if (CanArchiveMessage(message))
-                            {
-                                <MudTooltip Text="Archive message">
-                                    <MudIconButton Icon="@Icons.Material.Filled.Archive"
-                                                   Color="Color.Default"
-                                                   Size="Size.Small"
-                                                   OnClick="@(() => ArchiveMessageAsync(message))" />
-                                </MudTooltip>
-                            }
-                        </div>
-                    </MudTd>
-                </RowTemplate>
-            </MudTable>
-        }
-    </MudPaper>
+                            </MudTd>
+                            <MudTd DataLabel="Type">@TrimValue(message.Type, 48)</MudTd>
+                            <MudTd DataLabel="Message Id">@TrimValueFromStart(message.MessageId, 28)</MudTd>
+                            <MudTd DataLabel="Attempts">@DisplayCount(message.AttemptCountSummary)</MudTd>
+                            <MudTd DataLabel="Processed">@FormatRelativeTimestamp(message.ProcessedDate)</MudTd>
+                            <MudTd DataLabel="Lease">
+                                @if (!string.IsNullOrWhiteSpace(message.LockedBy))
+                                {
+                                    <MudTooltip Text="@($"{message.LockedBy} until {FormatTimestamp(message.LockedUntil)}")">
+                                        <MudChip T="string" Color="Color.Warning" Variant="Variant.Outlined" Size="Size.Small">Leased</MudChip>
+                                    </MudTooltip>
+                                }
+                                else
+                                {
+                                    <MudText Typo="Typo.body2">-</MudText>
+                                }
+                            </MudTd>
+                            <MudTd>
+                                <div class="d-flex justify-end gap-1">
+                                    <MudTooltip Text="Open details">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Info"
+                                                       Color="Color.Info"
+                                                       Size="Size.Small"
+                                                       OnClick="@(() => OpenDetailsAsync(message))" />
+                                    </MudTooltip>
+                                    <MudTooltip Text="View content">
+                                        <MudIconButton Icon="@Icons.Material.Filled.Article"
+                                                       Color="Color.Secondary"
+                                                       Size="Size.Small"
+                                                       OnClick="@(() => OpenContentAsync(message))" />
+                                    </MudTooltip>
+                                    @if (CanRetryMessage(message))
+                                    {
+                                        <MudTooltip Text="Retry message">
+                                            <MudIconButton Icon="@Icons.Material.Filled.RestartAlt"
+                                                           Color="Color.Warning"
+                                                           Size="Size.Small"
+                                                           OnClick="@(() => RetryMessageAsync(message))" />
+                                        </MudTooltip>
+                                    }
+                                    @if (CanArchiveMessage(message))
+                                    {
+                                        <MudTooltip Text="Archive message">
+                                            <MudIconButton Icon="@Icons.Material.Filled.Archive"
+                                                           Color="Color.Default"
+                                                           Size="Size.Small"
+                                                           OnClick="@(() => ArchiveMessageAsync(message))" />
+                                        </MudTooltip>
+                                    }
+                                </div>
+                            </MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                }
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" lg="4">
+            <MudPaper Class="pa-4 mb-4">
+                <MudText Typo="Typo.h6" GutterBottom="true">Subscriptions</MudText>
+                @if (subscriptions is null || subscriptions.Count == 0)
+                {
+                    <MudText Typo="Typo.body2">No message subscriptions are registered.</MudText>
+                }
+                else
+                {
+                    @foreach (var subscription in subscriptions)
+                    {
+                        <MudPaper Class="pa-3 mb-2" Outlined="true">
+                            <MudText Typo="Typo.subtitle2">@subscription.MessageType</MudText>
+                            <MudText Typo="Typo.body2">Handler: @TrimValue(subscription.HandlerType, 48)</MudText>
+                            <div class="d-flex flex-wrap gap-1 mt-2">
+                                @if (subscription.IsMessageTypePaused == true)
+                                {
+                                    <MudChip T="string" Color="Color.Warning" Variant="Variant.Outlined" Size="Size.Small">Type paused</MudChip>
+                                }
+                            </div>
+                            <div class="d-flex flex-wrap gap-1 mt-2">
+                                @if (subscription.IsMessageTypePaused == true)
+                                {
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Success" Size="Size.Small" StartIcon="@Icons.Material.Filled.PlayCircleOutline" OnClick="@(() => ResumeTypeAsync(subscription.MessageType))">
+                                        Resume Type
+                                    </MudButton>
+                                }
+                                else
+                                {
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Warning" Size="Size.Small" StartIcon="@Icons.Material.Filled.PauseCircleOutline" OnClick="@(() => PauseTypeAsync(subscription.MessageType))">
+                                        Pause Type
+                                    </MudButton>
+                                }
+                            </div>
+                        </MudPaper>
+                    }
+                }
+            </MudPaper>
+
+        </MudItem>
+    </MudGrid>
 </MudContainer>
 
 <MudDialog @bind-Visible="detailsDialogVisible" Options="new DialogOptions { CloseButton = true, FullWidth = true, MaxWidth = MaxWidth.Large }">
@@ -301,6 +371,22 @@
                                        OnClick="@(() => ArchiveMessageAsync(selectedMessage))">
                                 Archive Message
                             </MudButton>
+                            @if (!string.IsNullOrWhiteSpace(selectedMessage.Type))
+                            {
+                                <MudDivider Class="my-2" />
+                                <MudButton Variant="Variant.Outlined"
+                                           Color="Color.Warning"
+                                           StartIcon="@Icons.Material.Filled.Pause"
+                                           OnClick="@(() => PauseTypeAsync(selectedMessage.Type))">
+                                    Pause Type
+                                </MudButton>
+                                <MudButton Variant="Variant.Outlined"
+                                           Color="Color.Success"
+                                           StartIcon="@Icons.Material.Filled.PlayArrow"
+                                           OnClick="@(() => ResumeTypeAsync(selectedMessage.Type))">
+                                    Resume Type
+                                </MudButton>
+                            }
                         </div>
                     </MudPaper>
                 </MudItem>
@@ -416,6 +502,9 @@
 
     private readonly List<MessageInfo> messages = [];
     private MessageStats stats;
+    private BrokerSummary summary;
+    private List<SubscriptionInfo> subscriptions;
+    private List<MessageInfo> waitingMessages;
     private bool loading;
     private string loadError;
     private string statusFilter = AllStatusesValue;
@@ -431,13 +520,26 @@
     private bool contentDialogVisible;
     private bool contentLoading;
     private MessageContentInfo selectedContent;
-    private int? autoRefreshIntervalSeconds = 30;
+    private int? autoRefreshIntervalSeconds = 5;
     private PeriodicTimer autoRefreshTimer;
     private CancellationTokenSource autoRefreshCancellation;
     private bool isDisposed;
 
     protected override async Task OnInitializedAsync()
     {
+        try
+        {
+            var saved = await this.JS.InvokeAsync<string>("localStorage.getItem", "dofiesta:autoRefreshInterval");
+            if (!string.IsNullOrWhiteSpace(saved) && int.TryParse(saved, out var parsed) && parsed >= 0)
+            {
+                this.autoRefreshIntervalSeconds = parsed == 0 ? null : parsed;
+            }
+        }
+        catch
+        {
+            // localStorage not available (e.g., prerendering)
+        }
+
         this.StartAutoRefresh();
         await this.ReloadAsync();
     }
@@ -458,6 +560,9 @@
         {
             await this.LoadStatsAsync();
             await this.LoadMessagesAsync();
+            await this.LoadSummaryAsync();
+            await this.LoadSubscriptionsAsync();
+            await this.LoadWaitingMessagesAsync();
         }
         catch (KiotaApiException ex)
         {
@@ -488,12 +593,26 @@
         await this.ReloadAsync();
     }
 
-    private Task OnAutoRefreshIntervalChanged(int? value)
+    private async Task OnAutoRefreshIntervalChanged(int? value)
     {
         this.autoRefreshIntervalSeconds = value;
         this.StartAutoRefresh();
 
-        return Task.CompletedTask;
+        try
+        {
+            if (value.HasValue && value.Value > 0)
+            {
+                await this.JS.InvokeVoidAsync("localStorage.setItem", "dofiesta:autoRefreshInterval", value.Value.ToString());
+            }
+            else
+            {
+                await this.JS.InvokeVoidAsync("localStorage.setItem", "dofiesta:autoRefreshInterval", "0");
+            }
+        }
+        catch
+        {
+            // localStorage not available
+        }
     }
 
     private async Task LoadStatsAsync()
@@ -534,6 +653,83 @@
 
         this.messages.Clear();
         this.messages.AddRange(result?.OrderByDescending(m => m.CreatedDate ?? DateTimeOffset.MinValue).ToList() ?? []);
+    }
+
+    private async Task LoadSummaryAsync()
+    {
+        try
+        {
+            this.summary = await this.Api.Api._system.Messaging.Messages.Summary.GetAsync();
+        }
+        catch (KiotaApiException)
+        {
+            this.summary = null;
+        }
+    }
+
+    private async Task LoadSubscriptionsAsync()
+    {
+        try
+        {
+            this.subscriptions = await this.Api.Api._system.Messaging.Messages.Subscriptions.GetAsync();
+        }
+        catch (KiotaApiException)
+        {
+            this.subscriptions = null;
+        }
+    }
+
+    private async Task LoadWaitingMessagesAsync()
+    {
+        try
+        {
+            this.waitingMessages = await this.Api.Api._system.Messaging.Messages.Waiting.GetAsync(config =>
+            {
+                config.QueryParameters.Take = 50;
+            });
+        }
+        catch (KiotaApiException)
+        {
+            this.waitingMessages = null;
+        }
+    }
+
+    private async Task PauseTypeAsync(string messageType)
+    {
+        if (string.IsNullOrWhiteSpace(messageType))
+        {
+            return;
+        }
+
+        try
+        {
+            await this.Api.Api._system.Messaging.Messages.Types[messageType].Pause.PostAsync();
+            this.Snackbar.Add($"Message type '{messageType}' paused.", Severity.Success);
+            await this.ReloadAsync();
+        }
+        catch (KiotaApiException ex)
+        {
+            this.Snackbar.Add($"Pause failed: {ex.Message}", Severity.Error);
+        }
+    }
+
+    private async Task ResumeTypeAsync(string messageType)
+    {
+        if (string.IsNullOrWhiteSpace(messageType))
+        {
+            return;
+        }
+
+        try
+        {
+            await this.Api.Api._system.Messaging.Messages.Types[messageType].Resume.PostAsync();
+            this.Snackbar.Add($"Message type '{messageType}' resumed.", Severity.Success);
+            await this.ReloadAsync();
+        }
+        catch (KiotaApiException ex)
+        {
+            this.Snackbar.Add($"Resume failed: {ex.Message}", Severity.Error);
+        }
     }
 
     private async Task OpenDetailsAsync(MessageInfo message)

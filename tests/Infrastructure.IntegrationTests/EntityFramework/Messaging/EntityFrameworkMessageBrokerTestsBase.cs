@@ -207,6 +207,178 @@ public abstract class EntityFrameworkMessageBrokerTestsBase
         stored.LockedUntil.ShouldBeNull();
     }
 
+    [Fact]
+    public virtual async Task ProcessAsync_WhenTypeIsPaused_MessageRemainsPending()
+    {
+        ProcessingRelationalBrokerMessageHandler.Reset();
+        var options = this.CreateOptions();
+        var broker = this.CreateBroker(options);
+        var controlState = new MessageBrokerControlState();
+        var worker = this.CreateWorker(broker, options, controlState);
+
+        await broker.Subscribe<RelationalBrokerMessage, ProcessingRelationalBrokerMessageHandler>();
+        await broker.Publish(new RelationalBrokerMessage("paused"), CancellationToken.None);
+
+        controlState.PauseMessageType(typeof(RelationalBrokerMessage).AssemblyQualifiedNameShort());
+        await worker.ProcessAsync(CancellationToken.None);
+
+        var stored = await this.Support.ExecuteDbContextAsync(context => context.BrokerMessages.SingleAsync());
+        ProcessingRelationalBrokerMessageHandler.Processed.ShouldBeFalse();
+        stored.Status.ShouldBe(BrokerMessageStatus.Pending);
+        stored.LockedBy.ShouldBeNull();
+    }
+
+    [Fact]
+    public virtual async Task ProcessAsync_WhenTypeIsResumed_ProcessesPreviouslyPausedMessage()
+    {
+        ProcessingRelationalBrokerMessageHandler.Reset();
+        var options = this.CreateOptions();
+        var broker = this.CreateBroker(options);
+        var controlState = new MessageBrokerControlState();
+        var worker = this.CreateWorker(broker, options, controlState);
+
+        await broker.Subscribe<RelationalBrokerMessage, ProcessingRelationalBrokerMessageHandler>();
+        await broker.Publish(new RelationalBrokerMessage("paused-then-resumed"), CancellationToken.None);
+
+        controlState.PauseMessageType(typeof(RelationalBrokerMessage).AssemblyQualifiedNameShort());
+        await worker.ProcessAsync(CancellationToken.None);
+
+        var storedAfterPause = await this.Support.ExecuteDbContextAsync(context => context.BrokerMessages.SingleAsync());
+        storedAfterPause.Status.ShouldBe(BrokerMessageStatus.Pending);
+        ProcessingRelationalBrokerMessageHandler.Processed.ShouldBeFalse();
+
+        controlState.ResumeMessageType(typeof(RelationalBrokerMessage).AssemblyQualifiedNameShort());
+        await worker.ProcessAsync(CancellationToken.None);
+
+        var storedAfterResume = await this.Support.ExecuteDbContextAsync(context => context.BrokerMessages.SingleAsync());
+        ProcessingRelationalBrokerMessageHandler.Processed.ShouldBeTrue();
+        storedAfterResume.Status.ShouldBe(BrokerMessageStatus.Succeeded);
+    }
+
+    [Fact]
+    public virtual async Task ProcessAsync_WhenTypeIsPausedByShortName_MessageRemainsPending()
+    {
+        ProcessingRelationalBrokerMessageHandler.Reset();
+        var options = this.CreateOptions();
+        var broker = this.CreateBroker(options);
+        var controlState = new MessageBrokerControlState();
+        var worker = this.CreateWorker(broker, options, controlState);
+
+        await broker.Subscribe<RelationalBrokerMessage, ProcessingRelationalBrokerMessageHandler>();
+        await broker.Publish(new RelationalBrokerMessage("paused-by-short-name"), CancellationToken.None);
+
+        // Pause using PrettyName(false) — the short form that the UI/API uses
+        controlState.PauseMessageType(typeof(RelationalBrokerMessage).PrettyName(false));
+        await worker.ProcessAsync(CancellationToken.None);
+
+        var stored = await this.Support.ExecuteDbContextAsync(context => context.BrokerMessages.SingleAsync());
+        ProcessingRelationalBrokerMessageHandler.Processed.ShouldBeFalse();
+        stored.Status.ShouldBe(BrokerMessageStatus.Pending);
+        stored.LockedBy.ShouldBeNull();
+    }
+
+    [Fact]
+    public virtual async Task GetSummaryAsync_ReturnsCorrectCounts()
+    {
+        ProcessingRelationalBrokerMessageHandler.Reset();
+        var options = this.CreateOptions();
+        var broker = this.CreateBroker(options);
+        var controlState = new MessageBrokerControlState();
+        var worker = this.CreateWorker(broker, options, controlState);
+
+        await broker.Subscribe<RelationalBrokerMessage, ProcessingRelationalBrokerMessageHandler>();
+        await broker.Publish(new RelationalBrokerMessage("msg1"), CancellationToken.None);
+        await broker.Publish(new RelationalBrokerMessage("msg2"), CancellationToken.None);
+
+        await worker.ProcessAsync(CancellationToken.None);
+
+        var brokerService = this.CreateBrokerService(controlState);
+        var summary = await brokerService.GetSummaryAsync();
+
+        summary.Total.ShouldBe(2);
+        summary.Succeeded.ShouldBe(2);
+        summary.Capabilities.SupportsDurableStorage.ShouldBeTrue();
+        summary.Capabilities.SupportsPauseResume.ShouldBeTrue();
+    }
+
+    [Fact]
+    public virtual async Task GetSubscriptionsAsync_ReturnsRegisteredSubscriptions()
+    {
+        var options = this.CreateOptions();
+        var broker = this.CreateBroker(options);
+
+        await broker.Subscribe<RelationalBrokerMessage, ProcessingRelationalBrokerMessageHandler>();
+        await broker.Subscribe<RelationalBrokerMessage, AnotherPersistedRelationalBrokerMessageHandler>();
+
+        // Populate the static subscriptions list (normally done at DI time via WithSubscription)
+        ServiceCollectionMessagingExtensions.Subscriptions.Add((typeof(RelationalBrokerMessage), typeof(ProcessingRelationalBrokerMessageHandler)));
+        ServiceCollectionMessagingExtensions.Subscriptions.Add((typeof(RelationalBrokerMessage), typeof(AnotherPersistedRelationalBrokerMessageHandler)));
+
+        try
+        {
+            var brokerService = this.CreateBrokerService();
+            var subscriptions = (await brokerService.GetSubscriptionsAsync()).ToList();
+
+            subscriptions.ShouldContain(s => s.HandlerType == typeof(ProcessingRelationalBrokerMessageHandler).FullName);
+            subscriptions.ShouldContain(s => s.HandlerType == typeof(AnotherPersistedRelationalBrokerMessageHandler).FullName);
+        }
+        finally
+        {
+            // Clean up static state
+            ServiceCollectionMessagingExtensions.Subscriptions.RemoveAll(s =>
+                s.handler == typeof(ProcessingRelationalBrokerMessageHandler) ||
+                s.handler == typeof(AnotherPersistedRelationalBrokerMessageHandler));
+        }
+    }
+
+    [Fact]
+    public virtual async Task GetSubscriptionsAsync_ReflectsPausedState()
+    {
+        var options = this.CreateOptions();
+        var broker = this.CreateBroker(options);
+        var controlState = new MessageBrokerControlState();
+
+        await broker.Subscribe<RelationalBrokerMessage, ProcessingRelationalBrokerMessageHandler>();
+        ServiceCollectionMessagingExtensions.Subscriptions.Add((typeof(RelationalBrokerMessage), typeof(ProcessingRelationalBrokerMessageHandler)));
+
+        try
+        {
+            var brokerService = this.CreateBrokerService(controlState);
+
+            // Pause using PrettyName(false) — the short form that the UI/API uses
+            controlState.PauseMessageType(typeof(RelationalBrokerMessage).PrettyName(false));
+            var subscriptions = (await brokerService.GetSubscriptionsAsync()).ToList();
+            subscriptions.ShouldContain(s => s.IsMessageTypePaused == true);
+
+            // Resume and pause using AssemblyQualifiedNameShort() — also supported
+            controlState.ResumeMessageType(typeof(RelationalBrokerMessage).PrettyName(false));
+            controlState.PauseMessageType(typeof(RelationalBrokerMessage).AssemblyQualifiedNameShort());
+            subscriptions = (await brokerService.GetSubscriptionsAsync()).ToList();
+            subscriptions.ShouldContain(s => s.IsMessageTypePaused == true);
+        }
+        finally
+        {
+            ServiceCollectionMessagingExtensions.Subscriptions.RemoveAll(s =>
+                s.handler == typeof(ProcessingRelationalBrokerMessageHandler));
+        }
+    }
+
+    [Fact]
+    public virtual async Task GetWaitingMessagesAsync_ReturnsMessagesWithNoHandlers()
+    {
+        var options = this.CreateOptions();
+        var broker = this.CreateBroker(options);
+
+        // Do NOT subscribe before publishing
+        await broker.Publish(new RelationalBrokerMessage("waiting-msg"), CancellationToken.None);
+
+        var brokerService = this.CreateBrokerService();
+        var waiting = (await brokerService.GetWaitingMessagesAsync()).ToList();
+
+        waiting.Count.ShouldBe(1);
+        waiting[0].MessageId.ShouldNotBeNull();
+    }
+
     private EntityFrameworkMessageBroker<BrokerMessageTestDbContext> CreateBroker(EntityFrameworkMessageBrokerOptions options)
     {
         return new EntityFrameworkMessageBroker<BrokerMessageTestDbContext>(
@@ -216,18 +388,20 @@ public abstract class EntityFrameworkMessageBrokerTestsBase
 
     private EntityFrameworkMessageBrokerWorker<BrokerMessageTestDbContext> CreateWorker(
         EntityFrameworkMessageBroker<BrokerMessageTestDbContext> broker,
-        EntityFrameworkMessageBrokerOptions options)
+        EntityFrameworkMessageBrokerOptions options,
+        MessageBrokerControlState controlState = null)
     {
         return new EntityFrameworkMessageBrokerWorker<BrokerMessageTestDbContext>(
             this.Support.LoggerFactory,
             this.Support.ServiceProvider,
             broker,
-            options);
+            options,
+            controlState);
     }
 
-    private EntityFrameworkMessageBrokerStoreService<BrokerMessageTestDbContext> CreateBrokerService()
+    private EntityFrameworkMessageBrokerStoreService<BrokerMessageTestDbContext> CreateBrokerService(MessageBrokerControlState controlState = null)
     {
-        return new EntityFrameworkMessageBrokerStoreService<BrokerMessageTestDbContext>(this.Support.ServiceProvider);
+        return new EntityFrameworkMessageBrokerStoreService<BrokerMessageTestDbContext>(this.Support.ServiceProvider, controlState ?? new MessageBrokerControlState());
     }
 
     private EntityFrameworkMessageBrokerOptions CreateOptions(IMessageHandlerFactory handlerFactory = null)

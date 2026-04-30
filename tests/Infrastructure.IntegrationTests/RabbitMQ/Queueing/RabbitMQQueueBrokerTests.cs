@@ -1,4 +1,9 @@
-namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.RabbitMQ.Queueing;
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.RabbitMQ;
 
 using BridgingIT.DevKit.Application.IntegrationTests.Queueing;
 using BridgingIT.DevKit.Application.Queueing;
@@ -7,14 +12,9 @@ using BridgingIT.DevKit.Infrastructure.RabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
 
 [Collection(nameof(TestEnvironmentCollection))]
-public class RabbitMQQueueingBrokerTests
+public class RabbitMQQueueBrokerTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
 {
-    private readonly TestEnvironmentFixture fixture;
-
-    public RabbitMQQueueingBrokerTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
-    {
-        this.fixture = fixture.WithOutput(output);
-    }
+    private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
 
     [Fact]
     public async Task RabbitMQBroker_EnqueueAndProcess_WithSubscription_ProcessesMessage()

@@ -37,7 +37,7 @@ sequenceDiagram
     actor Producer
     participant Broker as IMessageBroker
     participant PubBeh as Publisher Behaviors
-    participant Transport as Broker (InProcess/EntityFramework/RabbitMQ/ServiceBus)
+    participant Transport as Broker (InProcess/EntityFramework/RabbitMQ/ServiceBus/AzureQueueStorage)
     participant Proc as Process(MessageRequest)
     participant HandBeh as Handler Behaviors
     participant Handler as IMessageHandler<T>
@@ -55,9 +55,11 @@ sequenceDiagram
       note right of Transport: Persisted broker rows, worker leases, retries, and operational endpoints
      else RabbitMQ
        note right of Transport: Fanout exchange; all queues receive all messages; auto-ack; no broker redelivery
-    else InProcess
-      note right of Transport: Immediate in-memory completion
-    end
+     else Azure Queue Storage
+       note right of Transport: One queue per message type; visibility timeout retry; delete on success
+     else InProcess
+       note right of Transport: Immediate in-memory completion
+     end
 ```
 
 ## Core Contracts
@@ -94,6 +96,7 @@ builder.Services.AddMessaging(builder.Configuration, o => o.StartupDelay("00:00:
   //.WithInProcessBroker();
   //.WithRabbitMQBroker();
   //.WithServiceBusBroker();
+  //.WithAzureQueueStorageBroker();
 ```
 
 If you prefer separate registration, the existing `builder.Services.AddMessagingEndpoints(options => options.RequireAuthorization())` helper is also available.
@@ -217,6 +220,7 @@ Best practices:
 - Uses provider-neutral optimistic concurrency (`ConcurrencyVersion`) plus renewable leases (`LockedBy`, `LockedUntil`) to coordinate multi-node workers safely.
 - Stores per-handler execution state inside the broker row, enabling aggregate status, handler-level retry, expiration, dead-lettering, and auto-archiving.
 - Exposes the persisted work through `IMessageBrokerService` and the optional server endpoints from `Presentation.Web.Messaging`.
+- Supports **runtime pause/resume per message type** via `MessageBrokerControlState`. When a type is paused, the worker skips messages of that type without claiming leases; resumed types pick up pending work on the next tick.
 - See [src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBroker{TContext}.cs](src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBroker{TContext}.cs), [src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBrokerWorker{TContext}.cs](src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBrokerWorker{TContext}.cs), and [src/Presentation.Web.Messaging/MessagingEndpoints.cs](src/Presentation.Web.Messaging/MessagingEndpoints.cs).
 
 Multi-host deployment notes:
@@ -316,13 +320,46 @@ flowchart LR
   T --> Sn[Subscription Consumer N]
 ```
 
+### AzureQueueStorageMessageBroker
+
+Because Azure Queue Storage does not support native topics or subscriptions, this broker emulates pub/sub by creating **one queue per message type**. When a message is published, it is sent to the queue for that message type. The broker starts a single background poller per message type that receives messages using visibility timeout semantics. When a message is successfully received, `Process` dispatches it to **all subscribed handlers** for that message type, achieving fan-out behavior.
+
+- **Queue per message type:** the queue name is derived from the message type name (e.g., `myeventmessage`). Use `QueueNamePrefix`/`QueueNameSuffix` to isolate environments or tests.
+- **Polling consumer:** messages are received via `ReceiveMessagesAsync` with a configurable `VisibilityTimeout`. If processing fails, the message becomes visible again after the timeout expires and will be re-delivered.
+- **Single poller per message type:** even when multiple handlers subscribe to the same message type, only one polling loop runs. All handlers are invoked in-process for each received message.
+- **Delete on success:** messages are deleted from the queue after `Process` completes successfully.
+- **TTL:** `MessageExpiration` controls the time-to-live for messages in the queue (default: 7 days).
+- **Auto-create:** queues are created automatically at runtime when `AutoCreateQueue` is `true`.
+- **Correlation:** `CorrelationId` populated from Activity baggage when present.
+- **See:** [src/Infrastructure.Azure.Storage/Messaging/AzureQueueStorageMessageBroker.cs](src/Infrastructure.Azure.Storage/Messaging/AzureQueueStorageMessageBroker.cs).
+
+Azure Queue Storage topology (one queue per message type, shared by all handlers):
+
+```mermaid
+flowchart LR
+  P[Publisher] -->|Publish MyEvent| Q[Queue: myeventmessage]
+  Q -->|Poll + Process| H1[Handler A]
+  Q -->|Poll + Process| H2[Handler B]
+```
+
+**Important behaviors:**
+
+1. **All handlers for a message type are invoked for every message.** Because there is only one queue per message type, each received message is dispatched to every subscribed handler. There is no competing-consumer behavior *between* handlers for the same message type.
+
+2. **Competing consumers across instances.** If you run multiple instances of the same application with the same `QueueNamePrefix`/`QueueNameSuffix`, they will compete for messages from the same queue. Each message will be handled by exactly one instance, but all handlers registered on that instance will still be invoked.
+
+3. **Visibility timeout provides implicit retry.** If a handler throws or the process crashes before the message is deleted, the message will become visible again after `VisibilityTimeout` and will be reprocessed. There is no explicit dead-letter queue; messages that repeatedly fail will continue to retry until their TTL expires.
+
+4. **No ordering guarantees.** Azure Queue Storage does not guarantee FIFO ordering, especially when multiple consumers are polling the same queue.
+
 ## Configuration & Options
 
 - InProcess: `ProcessDelay`, `MessageExpiration`.
 - Entity Framework: `StartupDelay`, `ProcessingInterval`, `ProcessingDelay`, `ProcessingCount`, `LeaseDuration`, `LeaseRenewalInterval`, `MaxDeliveryAttempts`, `MessageExpiration`, `AutoArchiveAfter`, `AutoArchiveStatuses`.
 - RabbitMQ: `HostName`/`ConnectionString`, `ExchangeName`, `QueueName`/`QueueNameSuffix`, `IsDurable`, `ExclusiveQueue`, `AutoDeleteQueue`, `MessageExpiration`, `ProcessDelay`, `Retries`.
 - Service Bus: `ConnectionString`, `TopicScope`, `MessageExpiration` (TTL).
-- Naming/routing: message type name is used for routing; `TopicScope` adds a suffix to Service Bus topics.
+- Azure Queue Storage: `ConnectionString`, `QueueNamePrefix`/`QueueNameSuffix`, `AutoCreateQueue`, `MaxConcurrentCalls`, `VisibilityTimeout`, `PollingInterval`, `MessageExpiration`, `ProcessDelay`.
+- Naming/routing: message type name is used for routing; `TopicScope` adds a suffix to Service Bus topics; `QueueNamePrefix`/`QueueNameSuffix` isolate Azure Queue Storage queues.
 
 Entity Framework broker configuration example:
 
@@ -366,7 +403,27 @@ RabbitMQ broker configuration example:
 }
 ```
 
-To use the broker, your `DbContext` must implement `IMessagingContext`:
+Azure Queue Storage broker configuration example:
+
+```json
+{
+  "Messaging": {
+    "AzureQueueStorage": {
+      "ConnectionString": "UseDevelopmentStorage=true",
+      "QueueNamePrefix": "bit",
+      "QueueNameSuffix": "prod",
+      "AutoCreateQueue": true,
+      "MaxConcurrentCalls": 1,
+      "VisibilityTimeout": "00:00:30",
+      "PollingInterval": "00:00:01",
+      "MessageExpiration": "7.00:00:00",
+      "ProcessDelay": 0
+    }
+  }
+}
+```
+
+To use the Entity Framework broker, your `DbContext` must implement `IMessagingContext`:
 
 ```csharp
 public class AppDbContext : DbContext, IMessagingContext
@@ -381,6 +438,9 @@ When you add `Presentation.Web.Messaging`, the server can expose an operational 
 
 - Base route: `/api/_system/messaging/messages`
 - `GET /stats`: aggregate statistics for the persisted working set.
+- `GET /summary`: broker runtime summary including capabilities and paused types.
+- `GET /subscriptions`: active message type to handler registrations.
+- `GET /waiting`: messages published with no handler registrations.
 - `GET /`: filterable list of broker messages.
 - `GET /{id}`: message details with optional handler states.
 - `GET /{id}/content`: stored payload content.
@@ -388,6 +448,8 @@ When you add `Presentation.Web.Messaging`, the server can expose an operational 
 - `POST /{id}/handlers/retry`: retry one failed/expired/dead-lettered handler entry.
 - `POST /{id}/lease/release`: release the current worker lease.
 - `POST /{id}/archive`: archive a terminal broker row.
+- `POST /types/{type}/pause`: pause processing for a message type.
+- `POST /types/{type}/resume`: resume processing for a message type.
 - `DELETE /`: purge rows by age and optional status filters.
 
 These endpoints are intended for support and operations workflows. In production, prefer enabling them behind authorization and limiting access to privileged roles or policies.
@@ -402,6 +464,7 @@ These endpoints are intended for support and operations workflows. In production
 - Retries/redelivery: prefer handler retry behaviors; the Entity Framework broker also supports operational retries through stored handler state; Service Bus will redeliver after abandon; RabbitMQ auto-ack means no redelivery on failures.
 - Correlation/tracing: propagate correlation via Activity baggage; instrument via OpenTelemetry.
 - Multi-host EF guidance: prefer SQL Server/PostgreSQL for active-active worker deployments; treat SQLite as a local/lightweight option rather than a distributed broker store.
+- **Runtime pause/resume:** use the operational endpoints to pause processing for specific message types during maintenance or incidents. Paused messages remain in `Pending` state and are automatically eligible for processing once resumed.
 
 ## Testing
 
@@ -409,11 +472,13 @@ These endpoints are intended for support and operations workflows. In production
 - Entity Framework broker tests: validate claim/finalize, lease renewal, retry state transitions, and endpoint operations with focused broker and store-service tests, including SQLite, SQL Server, and PostgreSQL integration coverage for the durable worker paths.
 - RabbitMQ broker tests: validate publish/subscribe, multi-type filtering, exchange isolation, and handler invocation. Run against a local RabbitMQ container.
   - [tests/Infrastructure.IntegrationTests/RabbitMQ/Messaging/RabbitMQMessageBrokerTests.cs](tests/Infrastructure.IntegrationTests/RabbitMQ/Messaging/RabbitMQMessageBrokerTests.cs)
-- Transport-backed integration tests: run RabbitMQ/Service Bus locally (containers/emulators), ensure subscriptions exist before publishing, and assert side-effects and idempotency.
+- Azure Queue Storage broker tests: validate publish/subscribe, multi-handler fan-out, message type isolation, no-subscriber behavior, and batch handling. Run against Azurite (local Azure Storage emulator).
+  - [tests/Infrastructure.IntegrationTests/Azure.Storage/Messaging/AzureQueueStorageMessageBrokerTests.cs](tests/Infrastructure.IntegrationTests/Azure.Storage/Messaging/AzureQueueStorageMessageBrokerTests.cs)
+- Transport-backed integration tests: run RabbitMQ/Service Bus/Azure Queue Storage locally (containers/emulators), ensure subscriptions exist before publishing, and assert side-effects and idempotency.
 
 ## Minimal Examples
 
-- Switch brokers via DI (single lines): `.WithInProcessBroker()`, `.WithEntityFrameworkBroker<AppDbContext>()`, `.WithRabbitMQBroker()`, `.WithServiceBusBroker()`.
+- Switch brokers via DI (single lines): `.WithInProcessBroker()`, `.WithEntityFrameworkBroker<AppDbContext>()`, `.WithRabbitMQBroker()`, `.WithServiceBusBroker()`, `.WithAzureQueueStorageBroker()`.
 - Subscribe in startup and publish from application services (see snippets above).
 
 ## Appendix A — Behaviors

@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.RabbitMQ.Messaging;
+namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.RabbitMQ;
 
 using Application.IntegrationTests.Queueing;
 using Application.Messaging;
@@ -12,14 +12,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 [Collection(nameof(TestEnvironmentCollection))]
-public class RabbitMQMessageBrokerTests
+public class RabbitMQMessageBrokerTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
 {
-    private readonly TestEnvironmentFixture fixture;
-
-    public RabbitMQMessageBrokerTests(ITestOutputHelper output, TestEnvironmentFixture fixture)
-    {
-        this.fixture = fixture.WithOutput(output);
-    }
+    private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
 
     [Fact]
     public async Task Publish_SingleMessage_MessageHandledBySingleHandler()

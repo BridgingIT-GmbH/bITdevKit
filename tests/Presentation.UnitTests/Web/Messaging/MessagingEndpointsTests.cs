@@ -277,4 +277,56 @@ public class MessagingEndpointsTests : IAsyncDisposable
             true,
             Arg.Any<CancellationToken>());
     }
+
+    [Fact]
+    public async Task PauseMessageType_ShouldInvokeService()
+    {
+        var type = "MyApp.Messages.OrderSubmitted, MyApp";
+        var response = await this.client.PostAsync($"/api/_system/messaging/messages/types/{Uri.EscapeDataString(type)}/pause", null);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        await this.messageBrokerService.Received(1).PauseMessageTypeAsync(type, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task ResumeMessageType_ShouldInvokeService()
+    {
+        var type = "MyApp.Messages.OrderSubmitted, MyApp";
+        var response = await this.client.PostAsync($"/api/_system/messaging/messages/types/{Uri.EscapeDataString(type)}/resume", null);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        await this.messageBrokerService.Received(1).ResumeMessageTypeAsync(type, Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task GetSummary_ShouldInvokeService()
+    {
+        this.messageBrokerService.GetSummaryAsync(Arg.Any<CancellationToken>())
+            .Returns(new BrokerMessageBrokerSummary { Total = 5, Pending = 2 });
+
+        var response = await this.client.GetAsync("/api/_system/messaging/messages/summary");
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        await this.messageBrokerService.Received(1).GetSummaryAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task GetSubscriptions_ShouldInvokeService()
+    {
+        this.messageBrokerService.GetSubscriptionsAsync(Arg.Any<CancellationToken>())
+            .Returns([new BrokerMessageSubscriptionInfo { MessageType = "TestMessage", HandlerType = "TestHandler" }]);
+
+        var response = await this.client.GetAsync("/api/_system/messaging/messages/subscriptions");
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        await this.messageBrokerService.Received(1).GetSubscriptionsAsync(Arg.Any<CancellationToken>());
+    }
+
+    [Fact]
+    public async Task GetWaitingMessages_ShouldInvokeService()
+    {
+        this.messageBrokerService.GetWaitingMessagesAsync(10, Arg.Any<CancellationToken>())
+            .Returns([]);
+
+        var response = await this.client.GetAsync("/api/_system/messaging/messages/waiting?take=10");
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        await this.messageBrokerService.Received(1).GetWaitingMessagesAsync(10, Arg.Any<CancellationToken>());
+    }
+
 }

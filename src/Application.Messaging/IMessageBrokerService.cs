@@ -122,4 +122,41 @@ public interface IMessageBrokerService
         IEnumerable<BrokerMessageStatus> statuses = null,
         bool? isArchived = null,
         CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Pauses processing for the specified message type.
+    /// </summary>
+    /// <param name="type">The message type identifier (assembly-qualified short name as stored in BrokerMessage.Type).</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    Task PauseMessageTypeAsync(string type, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Resumes processing for the specified message type.
+    /// </summary>
+    /// <param name="type">The message type identifier (assembly-qualified short name as stored in BrokerMessage.Type).</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    Task ResumeMessageTypeAsync(string type, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retrieves a summary of broker runtime state.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The broker summary including counts, paused types, and capabilities.</returns>
+    Task<BrokerMessageBrokerSummary> GetSummaryAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets the currently active message subscriptions.
+    /// </summary>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A collection of registered message subscription info.</returns>
+    Task<IEnumerable<BrokerMessageSubscriptionInfo>> GetSubscriptionsAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Gets messages that are waiting because no compatible handler was registered at publish time.
+    /// </summary>
+    /// <param name="take">Optional limit for the number of results.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>A collection of waiting broker messages.</returns>
+    Task<IEnumerable<BrokerMessageInfo>> GetWaitingMessagesAsync(int? take = null, CancellationToken cancellationToken = default);
+
 }

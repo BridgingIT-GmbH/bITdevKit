@@ -10,7 +10,6 @@ using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
 using DotNet.Testcontainers.Networks;
 using Infrastructure.Azure;
-using Infrastructure.Azure.Storage;
 using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -567,40 +566,133 @@ public class TestEnvironmentFixture : IAsyncLifetime
                              "Namespaces": [
                                {
                                  "Name": "sbemulatorns",
-                                 "Queues": [
-                                   {
-                                     "Name": "test-servicebusqueuetestmessage",
-                                     "Properties": {
-                                       "DeadLetteringOnMessageExpiration": false,
-                                       "DefaultMessageTimeToLive": "PT1H",
-                                       "LockDuration": "PT1M",
-                                       "MaxDeliveryCount": 3,
-                                       "RequiresDuplicateDetection": false,
-                                       "RequiresSession": false
-                                     }
-                                   }
-                                 ],
-                                 "Topics": [
-                                   {
-                                     "Name": "messagestub_test",
-                                     "Properties": {
-                                       "DefaultMessageTimeToLive": "PT1H",
-                                       "DuplicateDetectionHistoryTimeWindow": "PT5M"
-                                     },
-                                     "Subscriptions": [
-                                       {
-                                         "Name": "messagestub",
-                                         "Properties": {
-                                           "DeadLetteringOnMessageExpiration": false,
-                                           "DefaultMessageTimeToLive": "PT1H",
-                                           "LockDuration": "PT1M",
-                                           "MaxDeliveryCount": 3,
-                                           "RequiresSession": false
-                                         }
-                                       }
-                                     ]
-                                   }
-                                 ]
+                                  "Queues": [
+                                    {
+                                      "Name": "test-servicebusqueuetestmessage",
+                                      "Properties": {
+                                        "DeadLetteringOnMessageExpiration": false,
+                                        "DefaultMessageTimeToLive": "PT1H",
+                                        "LockDuration": "PT1M",
+                                        "MaxDeliveryCount": 3,
+                                        "RequiresDuplicateDetection": false,
+                                        "RequiresSession": false
+                                      }
+                                    },
+                                    {
+                                      "Name": "test-servicebusqueuebeforesubmessage",
+                                      "Properties": {
+                                        "DeadLetteringOnMessageExpiration": false,
+                                        "DefaultMessageTimeToLive": "PT1H",
+                                        "LockDuration": "PT1M",
+                                        "MaxDeliveryCount": 3,
+                                        "RequiresDuplicateDetection": false,
+                                        "RequiresSession": false
+                                      }
+                                    },
+                                    {
+                                      "Name": "test-servicebusqueueothermessage",
+                                      "Properties": {
+                                        "DeadLetteringOnMessageExpiration": false,
+                                        "DefaultMessageTimeToLive": "PT1H",
+                                        "LockDuration": "PT1M",
+                                        "MaxDeliveryCount": 3,
+                                        "RequiresDuplicateDetection": false,
+                                        "RequiresSession": false
+                                      }
+                                    },
+                                    {
+                                      "Name": "test-servicebusqueuefailmessage",
+                                      "Properties": {
+                                        "DeadLetteringOnMessageExpiration": false,
+                                        "DefaultMessageTimeToLive": "PT1H",
+                                        "LockDuration": "PT1M",
+                                        "MaxDeliveryCount": 3,
+                                        "RequiresDuplicateDetection": false,
+                                        "RequiresSession": false
+                                      }
+                                    },
+                                    {
+                                      "Name": "test-servicebusqueuepausemessage",
+                                      "Properties": {
+                                        "DeadLetteringOnMessageExpiration": false,
+                                        "DefaultMessageTimeToLive": "PT1H",
+                                        "LockDuration": "PT1M",
+                                        "MaxDeliveryCount": 10,
+                                        "RequiresDuplicateDetection": false,
+                                        "RequiresSession": false
+                                      }
+                                    },
+                                    {
+                                      "Name": "test-servicebusqueuetrackmessage",
+                                      "Properties": {
+                                        "DeadLetteringOnMessageExpiration": false,
+                                        "DefaultMessageTimeToLive": "PT1H",
+                                        "LockDuration": "PT1M",
+                                        "MaxDeliveryCount": 3,
+                                        "RequiresDuplicateDetection": false,
+                                        "RequiresSession": false
+                                      }
+                                    }
+                                  ],
+                                  "Topics": [
+                                    {
+                                      "Name": "messagestub_test",
+                                      "Properties": {
+                                        "DefaultMessageTimeToLive": "PT1H",
+                                        "DuplicateDetectionHistoryTimeWindow": "PT5M"
+                                      },
+                                      "Subscriptions": [
+                                        {
+                                          "Name": "messagestub",
+                                          "Properties": {
+                                            "DeadLetteringOnMessageExpiration": false,
+                                            "DefaultMessageTimeToLive": "PT1H",
+                                            "LockDuration": "PT1M",
+                                            "MaxDeliveryCount": 3,
+                                            "RequiresSession": false
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "Name": "servicebustestmessage_test",
+                                      "Properties": {
+                                        "DefaultMessageTimeToLive": "PT1H",
+                                        "DuplicateDetectionHistoryTimeWindow": "PT5M"
+                                      },
+                                      "Subscriptions": [
+                                        {
+                                          "Name": "servicebustestmessage",
+                                          "Properties": {
+                                            "DeadLetteringOnMessageExpiration": false,
+                                            "DefaultMessageTimeToLive": "PT1H",
+                                            "LockDuration": "PT1M",
+                                            "MaxDeliveryCount": 3,
+                                            "RequiresSession": false
+                                          }
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "Name": "servicebusothertestmessage_test",
+                                      "Properties": {
+                                        "DefaultMessageTimeToLive": "PT1H",
+                                        "DuplicateDetectionHistoryTimeWindow": "PT5M"
+                                      },
+                                      "Subscriptions": [
+                                        {
+                                          "Name": "servicebusothertestmessage",
+                                          "Properties": {
+                                            "DeadLetteringOnMessageExpiration": false,
+                                            "DefaultMessageTimeToLive": "PT1H",
+                                            "LockDuration": "PT1M",
+                                            "MaxDeliveryCount": 3,
+                                            "RequiresSession": false
+                                          }
+                                        }
+                                      ]
+                                    }
+                                  ]
                                }
                              ],
                              "Logging": {

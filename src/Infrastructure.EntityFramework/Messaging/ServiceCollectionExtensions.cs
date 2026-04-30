@@ -52,7 +52,8 @@ public static partial class ServiceCollectionExtensions
                 sp.GetRequiredService<ILoggerFactory>(),
                 sp,
                 sp.GetRequiredService<EntityFrameworkMessageBroker<TContext>>(),
-                sp.GetRequiredService<EntityFrameworkMessageBrokerOptions>()));
+                sp.GetRequiredService<EntityFrameworkMessageBrokerOptions>(),
+                sp.GetService<MessageBrokerControlState>()));
 
         if (!IsBuildTimeOpenApiGeneration())
         {

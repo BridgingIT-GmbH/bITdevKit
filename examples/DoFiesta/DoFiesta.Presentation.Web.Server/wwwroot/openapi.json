@@ -3238,6 +3238,202 @@
         }
       }
     },
+    "/api/_system/messaging/messages/types/{type}/pause": {
+      "post": {
+        "tags": [
+          "_System.Messaging"
+        ],
+        "summary": "Pause message type processing",
+        "description": "Pauses processing for the specified message type.",
+        "operationId": "_System.Messaging.PauseMessageType",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/messaging/messages/types/{type}/resume": {
+      "post": {
+        "tags": [
+          "_System.Messaging"
+        ],
+        "summary": "Resume message type processing",
+        "description": "Resumes processing for the specified message type.",
+        "operationId": "_System.Messaging.ResumeMessageType",
+        "parameters": [
+          {
+            "name": "type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/messaging/messages/summary": {
+      "get": {
+        "tags": [
+          "_System.Messaging"
+        ],
+        "summary": "Get broker summary",
+        "description": "Retrieves aggregated broker state, including runtime capabilities and pause status.",
+        "operationId": "_System.Messaging.GetSummary",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BrokerMessageBrokerSummary"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/messaging/messages/subscriptions": {
+      "get": {
+        "tags": [
+          "_System.Messaging"
+        ],
+        "summary": "List message subscriptions",
+        "description": "Retrieves the currently active message type to handler registrations.",
+        "operationId": "_System.Messaging.GetSubscriptions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BrokerMessageSubscriptionInfo"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/messaging/messages/waiting": {
+      "get": {
+        "tags": [
+          "_System.Messaging"
+        ],
+        "summary": "List waiting messages",
+        "description": "Retrieves messages that were published with no handler registrations.",
+        "operationId": "_System.Messaging.GetWaitingMessages",
+        "parameters": [
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/BrokerMessageInfo"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/_system/queueing/messages/stats": {
       "get": {
         "tags": [
@@ -4577,6 +4773,74 @@
   },
   "components": {
     "schemas": {
+      "BrokerMessageBrokerCapabilities": {
+        "type": "object",
+        "properties": {
+          "supportsDurableStorage": {
+            "type": "boolean"
+          },
+          "supportsRetry": {
+            "type": "boolean"
+          },
+          "supportsArchive": {
+            "type": "boolean"
+          },
+          "supportsLeaseManagement": {
+            "type": "boolean"
+          },
+          "supportsPauseResume": {
+            "type": "boolean"
+          },
+          "supportsWaitingMessageInspection": {
+            "type": "boolean"
+          }
+        }
+      },
+      "BrokerMessageBrokerSummary": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pending": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "processing": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "succeeded": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "failed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "deadLettered": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "expired": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pausedTypes": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "capabilities": {
+            "$ref": "#/components/schemas/BrokerMessageBrokerCapabilities"
+          }
+        }
+      },
       "BrokerMessageContentInfo": {
         "type": "object",
         "properties": {
@@ -4804,6 +5068,26 @@
           "DeadLettered",
           "Expired"
         ]
+      },
+      "BrokerMessageSubscriptionInfo": {
+        "type": "object",
+        "properties": {
+          "messageType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "handlerType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "isMessageTypePaused": {
+            "type": "boolean"
+          }
+        }
       },
       "CompositeSpecification": {
         "type": "object",

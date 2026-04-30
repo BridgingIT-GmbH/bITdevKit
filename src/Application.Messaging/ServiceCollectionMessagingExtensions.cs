@@ -77,6 +77,7 @@ public static class ServiceCollectionMessagingExtensions
                 contextOptions));
         }
         services.TryAddSingleton<ISubscriptionMap, SubscriptionMap>();
+        services.TryAddSingleton<MessageBrokerControlState>();
 
         optionsAction?.Invoke(new MessagingBuilderContext(services));
 

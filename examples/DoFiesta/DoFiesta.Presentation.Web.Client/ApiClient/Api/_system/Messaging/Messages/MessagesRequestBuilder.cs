@@ -2,6 +2,10 @@
 #pragma warning disable CS0618
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Item;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Stats;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Subscriptions;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Summary;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Types;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Waiting;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models;
 using Microsoft.Kiota.Abstractions.Extensions;
 using Microsoft.Kiota.Abstractions.Serialization;
@@ -23,6 +27,26 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Stats.StatsRequestBuilder Stats
         {
             get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Stats.StatsRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The subscriptions property</summary>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Subscriptions.SubscriptionsRequestBuilder Subscriptions
+        {
+            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Subscriptions.SubscriptionsRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The summary property</summary>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Summary.SummaryRequestBuilder Summary
+        {
+            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Summary.SummaryRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The types property</summary>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Types.TypesRequestBuilder Types
+        {
+            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Types.TypesRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The waiting property</summary>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Waiting.WaitingRequestBuilder Waiting
+        {
+            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.Waiting.WaitingRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>Gets an item from the BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.api._system.messaging.messages.item collection</summary>
         /// <param name="position">Unique identifier of the item</param>

@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure.Storage;
 
 using BridgingIT.DevKit.Application.IntegrationTests.Storage;
 using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Infrastructure.Azure.Storage;
+using BridgingIT.DevKit.Infrastructure.Azure;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Xunit;

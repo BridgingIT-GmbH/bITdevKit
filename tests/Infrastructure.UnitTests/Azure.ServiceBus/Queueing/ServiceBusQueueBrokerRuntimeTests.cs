@@ -1,7 +1,7 @@
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.Azure.ServiceBus.Queueing;
 
 using BridgingIT.DevKit.Application.Queueing;
-using BridgingIT.DevKit.Infrastructure.Azure.ServiceBus;
+using BridgingIT.DevKit.Infrastructure.Azure;
 
 public class ServiceBusQueueBrokerRuntimeTests
 {

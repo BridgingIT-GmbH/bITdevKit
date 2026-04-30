@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Infrastructure.Azure.Storage</AssemblyName>
-    <RootNamespace>BridgingIT.DevKit.Infrastructure.Azure.Storage</RootNamespace>
+    <RootNamespace>BridgingIT.DevKit.Infrastructure.Azure</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <IsPackable>true</IsPackable>
   </PropertyGroup>
@@ -12,9 +12,12 @@
     <PackageReference Include="Azure.Data.Tables" />
     <PackageReference Include="Azure.Storage.Blobs" />
     <PackageReference Include="Azure.Storage.Files.Shares" />
+    <PackageReference Include="Azure.Storage.Queues" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Application.Messaging\Application.Messaging.csproj" />
+    <ProjectReference Include="..\Application.Queueing\Application.Queueing.csproj" />
     <ProjectReference Include="..\Application.Storage\Application.Storage.csproj" />
     <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj" />
   </ItemGroup>

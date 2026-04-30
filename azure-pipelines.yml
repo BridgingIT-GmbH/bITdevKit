@@ -2,7 +2,7 @@ variables:
   - group: global
   - group: NuGetOrg
   - name: dotnetVersion
-    value: '10.0.201'
+    value: '10.0.107'
   - name: solution
     value: "**/*.slnx"
   - name: buildConfiguration

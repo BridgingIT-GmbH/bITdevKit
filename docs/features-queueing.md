@@ -17,6 +17,7 @@ The current queueing implementation ships with several brokers:
 - `EntityFrameworkQueueBroker<TContext>` for durable SQL-backed processing with renewable leases and runtime-safe competing consumers.
 - `RabbitMQQueueBroker` for broker-backed durable queue processing with manual acknowledgement, retry, and dead-letter semantics.
 - `ServiceBusQueueBroker` for Azure Service Bus queue transport with manual complete/abandon/dead-letter semantics.
+- `AzureQueueStorageQueueBroker` for Azure Queue Storage transport with visibility timeout, polling-based consumption, and retry/dead-letter semantics.
 
 The feature also includes an operational web endpoint surface for queue broker summary, subscription inspection, waiting-message inspection, and queue/type pause-resume control.
 
@@ -120,6 +121,24 @@ builder.Services.AddQueueing(builder.Configuration, context =>
   .AddEndpoints(options => options.RequireAuthorization());
 ```
 
+### Azure Queue Storage broker
+
+```csharp
+builder.Services.AddQueueing(builder.Configuration, context =>
+ context.WithSubscription<OrderQueuedMessage, OrderQueuedHandler>())
+  .WithAzureQueueStorageBroker(new AzureQueueStorageQueueBrokerConfiguration
+  {
+   ConnectionString = configuration["Queueing:AzureQueueStorage:ConnectionString"],
+   QueueNamePrefix = "bit",
+   AutoCreateQueue = true,
+   MaxConcurrentCalls = 8,
+   MaxDeliveryAttempts = 5,
+   VisibilityTimeout = TimeSpan.FromSeconds(30),
+   PollingInterval = TimeSpan.FromSeconds(1)
+  })
+  .AddEndpoints(options => options.RequireAuthorization());
+```
+
 Your `DbContext` must implement `IQueueingContext`:
 
 ```csharp
@@ -196,11 +215,104 @@ Routes:
 - `POST /api/_system/queueing/types/{type}/resume`
 - `POST /api/_system/queueing/types/{type}/circuit/reset`
 
-All brokers implement the same `IQueueBrokerService` operational contract. The in-process and RabbitMQ brokers expose it over runtime-tracked items, while the Entity Framework broker adds durable retained history plus archive-aware filtering and lease management.
+### In-process semantics
+
+The in-process broker is the simplest queue transport. It uses an in-memory channel per message type and dispatches work within the same process.
+
+**Queue topology:**
+
+- One in-memory channel is created per registered queue message type.
+- There is no external broker or persistence layer.
+
+**Competing consumers:**
+
+- Only consumers inside the **same process** can compete for work.
+- Multiple application instances do **not** share the queue; each instance has its own isolated channel.
+- This makes the in-process broker suitable for tests and single-instance scenarios only.
+
+**Acknowledgement and retry:**
+
+- Messages are removed from the channel immediately before the handler is invoked.
+- If the handler throws, the message is tracked as failed but is **not** automatically retried because it has already been removed from the channel.
+- There is no dead-letter queue; failed messages are only tracked in the runtime.
+
+**Waiting for handler:**
+
+- Messages can be enqueued before a handler subscribes; they wait in the channel until a consumer is available.
+- When a subscription is added, the consumer starts reading from the channel and processes any backlog.
+
+**Pause/resume:**
+
+- When paused, the consumer stops reading from the channel.
+- Messages remain in the in-memory channel and are processed when consumption resumes.
+
+**Expiration:**
+
+- The broker checks `message.Timestamp + MessageExpiration` against UTC now before invoking the handler.
+- If expired, the message is skipped and tracked as `Expired`.
+
+**Operational visibility:**
+
+- The in-process broker tracks messages in memory for the lifetime of the process.
+- `GetMessagesAsync`, `GetSummaryAsync`, pause/resume, and purge are supported through this in-memory tracker.
+- Restarting the application clears all tracked and queued messages.
+
+### Entity Framework semantics
+
+The Entity Framework broker maps queue semantics to a SQL-backed durable store using `DbContext` and renewable leases.
+
+**Queue topology:**
+
+- One logical queue is represented by rows in a `QueueMessage` table filtered by message type.
+- The queue name defaults to the message type name, with optional `QueueNamePrefix` and `QueueNameSuffix`.
+
+**Competing consumers:**
+
+- Multiple application instances compete for work by claiming leases on rows in the same database table.
+- A worker claims a message by updating `LockedBy` and `LockedUntil`; other workers skip rows that are already leased.
+- Workers verify `LockedBy` before finalizing state. If another node took ownership, the older worker skips finalization.
+
+**Leases and renewal:**
+
+- `LeaseDuration` controls how long a worker owns a message.
+- `LeaseRenewalInterval` controls how often a healthy worker renews its lease.
+- If a worker crashes, the lease expires and another worker can claim the message after `LeaseDuration`.
+
+**Retry and dead-letter:**
+
+- The broker increments `AttemptCount` on each processing attempt.
+- On failure: the message is released (lease cleared) and becomes available for the next worker.
+- After `MaxDeliveryAttempts` is exceeded, the message is marked `DeadLettered` and is no longer eligible for processing.
+
+**Waiting for handler:**
+
+- Messages can be enqueued before any handler subscribes; they persist in the database table.
+- When no handler is registered, the broker returns `WaitingForHandler` and leaves the message unleased for the next polling cycle.
+
+**Pause/resume:**
+
+- When a queue or message type is paused, workers stop claiming messages for that queue/type.
+- Messages remain in the database table and are picked up when polling resumes.
+
+**Expiration:**
+
+- The broker checks `message.Timestamp + MessageExpiration` against UTC now before invoking the handler.
+- If expired, the message is marked `Expired` and is no longer eligible for processing.
+
+**Archive:**
+
+- Terminal messages (`Succeeded`, `DeadLettered`, `Expired`) can be archived with `ArchiveMessageAsync`.
+- `AutoArchiveAfter` and `AutoArchiveStatuses` can be configured to archive terminal messages automatically after a retention period.
+
+**Operational visibility:**
+
+- The Entity Framework broker provides full durable retained history in the database.
+- `GetMessagesAsync`, `GetSummaryAsync`, `GetMessageStatsAsync`, retry, archive, lease release, pause/resume, and purge are all backed by the database.
+- Unlike the in-memory brokers, tracked history survives application restarts.
 
 ### RabbitMQ semantics
 
-The RabbitMQ queue broker maps queueing semantics to RabbitMQ work queues using the **default exchange** and **manual acknowledgement**.
+The RabbitMQ queue broker maps queue semantics to RabbitMQ work queues using the **default exchange** and **manual acknowledgement**.
 
 **Queue topology:**
 
@@ -258,6 +370,108 @@ flowchart LR
 - The RabbitMQ broker service (`RabbitMQQueueBrokerService`) tracks recent messages in memory (bounded to 10,000 items with LRU eviction).
 - `GetMessagesAsync`, `GetSummaryAsync`, `GetMessageStatsAsync`, pause/resume, and purge are supported through this in-memory tracker.
 - Unlike the Entity Framework broker, there is no durable retained history. Restarting the application clears the operational tracker (the messages themselves remain in RabbitMQ).
+
+### Service Bus semantics
+
+The Service Bus broker maps queue semantics to Azure Service Bus queues using **peek-lock consumption** and **manual complete/abandon/dead-letter**.
+
+**Queue topology:**
+
+- One Service Bus queue is created per registered queue message type.
+- The queue name defaults to the message type name, with optional `QueueNamePrefix` and `QueueNameSuffix`.
+- Queue names are sanitized to comply with Service Bus naming rules (alphanumeric, hyphens, underscores, and slashes, 1-260 characters).
+
+**Competing consumers:**
+
+- Multiple application instances that use the same `QueueNamePrefix`/`QueueNameSuffix` and subscribe to the same message type consume from the **same queue**.
+- Service Bus delivers messages to **exactly one consumer** at a time using peek-lock.
+
+**Acknowledgement and retry:**
+
+- Consumption uses **peek-lock** with `AutoCompleteMessages = false`.
+- On success: the broker calls `CompleteMessageAsync` and the message is removed from the queue.
+- On failure: the broker calls `AbandonMessageAsync`, which increments the Service Bus delivery count and makes the message immediately available for redelivery.
+- After `MaxDeliveryAttempts` is exceeded, the broker calls `DeadLetterMessageAsync` with reason `MaxDeliveryAttemptsExceeded`.
+
+**Waiting for handler:**
+
+- The broker creates the queue at runtime when `AutoCreateQueue` is enabled.
+- Messages can be enqueued before any handler subscribes; they persist in the Service Bus queue.
+- When no handler is registered, the broker returns `WaitingForHandler`, abandons the message, and tracks it accordingly.
+
+**Pause/resume:**
+
+- When a queue or message type is paused, the broker detects this in `OnMessageAsync` and calls `AbandonMessageAsync`.
+- The message remains in the Service Bus queue and will be redelivered when the consumer resumes processing.
+- Because abandon triggers immediate redelivery, the pause window should be kept short to avoid exhausting `MaxDeliveryCount`.
+
+**Expiration:**
+
+- The broker checks `message.Timestamp + MessageExpiration` against UTC now before invoking the handler.
+- If expired, the broker dead-letters the message with reason `Expired`.
+- The Service Bus `TimeToLive` is also set on enqueue so the service can drop expired messages that have not yet been delivered.
+
+**Operational visibility:**
+
+- The Service Bus broker service (`ServiceBusQueueBrokerService`) tracks recent messages in memory (bounded to 10,000 items).
+- `GetMessagesAsync`, `GetSummaryAsync`, `GetMessageStatsAsync`, pause/resume, and purge are supported through this in-memory tracker.
+- Unlike the Entity Framework broker, there is no durable retained history. Restarting the application clears the operational tracker (the messages themselves remain in Service Bus).
+
+### Azure Queue Storage semantics
+
+The Azure Queue Storage broker maps queueing semantics to Azure Queue Storage using **polling-based consumption** and **visibility timeouts**.
+
+**Queue topology:**
+
+- One Azure Queue Storage queue is created per registered queue message type.
+- The queue name defaults to the message type name (e.g., `orderqueuedmessage`), with optional `QueueNamePrefix` and `QueueNameSuffix`.
+- Queue names are sanitized to comply with Azure Queue Storage naming rules (lowercase alphanumeric and hyphens, 3-63 characters).
+
+**Polling and visibility timeout:**
+
+- The broker starts a background polling loop per subscribed queue.
+- Each poll calls `ReceiveMessagesAsync` with a configurable `VisibilityTimeout`.
+- While a message is invisible, no other consumer can receive it.
+- If the message is not deleted within the visibility timeout, it becomes visible again for redelivery.
+- When no messages are available, the broker sleeps for `PollingInterval` before polling again.
+
+**Competing consumers:**
+
+- Multiple application instances that use the same `QueueNamePrefix`/`QueueNameSuffix` and subscribe to the same message type consume from the **same queue**.
+- Azure Queue Storage round-robins messages across all connected consumers on that queue.
+- A message is delivered to **exactly one consumer** at a time while it remains within the visibility timeout.
+
+**Retry and dead-letter:**
+
+- The broker uses the built-in `DequeueCount` header to track delivery attempts.
+- On success: the broker deletes the message from the queue.
+- On failure: if `DequeueCount` is below `MaxDeliveryAttempts`, the broker updates the message visibility timeout to `RetryDelay` so it reappears for retry after a short delay.
+- After `MaxDeliveryAttempts` is exceeded, the broker deletes the message and tracks it as `DeadLettered` in the runtime.
+- If a handler throws an unexpected exception, the message is retried up to `MaxDeliveryAttempts`.
+
+**Waiting for handler:**
+
+- The broker creates the queue on both publish and subscribe when `AutoCreateQueue` is enabled.
+- Messages can be enqueued before any handler subscribes; they remain in the queue until a poller starts.
+- When no handler is registered for a message type, the broker returns `WaitingForHandler`, makes the message immediately visible again, and tracks it accordingly.
+
+**Pause/resume:**
+
+- When a queue or message type is paused, the polling loop detects this and delays further receives.
+- Messages already in the queue remain there and will be picked up when polling resumes.
+
+**Expiration:**
+
+- The broker checks `message.Timestamp + MessageExpiration` against UTC now before invoking the handler.
+- If expired, the message is deleted from the queue and tracked as `Expired`.
+- The Azure Queue Storage `TimeToLive` property is also set on enqueue so the service can drop expired messages that have not yet been delivered.
+
+**Operational visibility:**
+
+- The Azure Queue Storage broker service (`AzureQueueStorageQueueBrokerService`) tracks recent messages in memory (bounded to 10,000 items).
+- `GetMessagesAsync`, `GetSummaryAsync`, `GetMessageStatsAsync`, pause/resume, and purge are supported through this in-memory tracker.
+- Unlike the Entity Framework broker, there is no durable retained history. Restarting the application clears the operational tracker (the messages themselves remain in Azure Queue Storage).
+
 All brokers implement the same `IQueueBrokerService` operational contract. The in-process broker exposes it over runtime-tracked items, the Entity Framework broker adds durable retained history plus archive-aware filtering and lease management, and the Service Bus broker provides lightweight in-memory operational tracking.
 
 For Entity Framework, the most relevant broker-specific retention options are:

@@ -9,6 +9,7 @@
 @inject BackendApiClient ApiClient
 @inject IRequestAdapter RequestAdapter
 @inject ISnackbar Snackbar
+@inject IJSRuntime JS
 @implements IAsyncDisposable
 @attribute [RequireAuthentication]
 
@@ -361,7 +362,7 @@
     private GenFileStorageFileEventScanResponseModel lastScanResult;
     private bool eventDialogVisible;
     private GenFileStorageFileEventModel eventDialogEvent;
-    private int? autoRefreshIntervalSeconds = 30;
+    private int? autoRefreshIntervalSeconds = 5;
     private PeriodicTimer autoRefreshTimer;
     private CancellationTokenSource autoRefreshCancellation;
     private bool isDisposed;
@@ -369,6 +370,20 @@
     protected override async Task OnInitializedAsync()
     {
         this.selectedProviderName = this.GetRequestedProviderName();
+
+        try
+        {
+            var saved = await this.JS.InvokeAsync<string>("localStorage.getItem", "dofiesta:autoRefreshInterval");
+            if (!string.IsNullOrWhiteSpace(saved) && int.TryParse(saved, out var parsed) && parsed >= 0)
+            {
+                this.autoRefreshIntervalSeconds = parsed == 0 ? null : parsed;
+            }
+        }
+        catch
+        {
+            // localStorage not available (e.g., prerendering)
+        }
+
         this.StartAutoRefresh();
         await this.ReloadAsync();
     }
@@ -435,12 +450,26 @@
         await this.ReloadAsync();
     }
 
-    private Task OnAutoRefreshIntervalChanged(int? value)
+    private async Task OnAutoRefreshIntervalChanged(int? value)
     {
         this.autoRefreshIntervalSeconds = value;
         this.StartAutoRefresh();
 
-        return Task.CompletedTask;
+        try
+        {
+            if (value.HasValue && value.Value > 0)
+            {
+                await this.JS.InvokeVoidAsync("localStorage.setItem", "dofiesta:autoRefreshInterval", value.Value.ToString());
+            }
+            else
+            {
+                await this.JS.InvokeVoidAsync("localStorage.setItem", "dofiesta:autoRefreshInterval", "0");
+            }
+        }
+        catch
+        {
+            // localStorage not available
+        }
     }
 
     private async Task RunScanAsync()

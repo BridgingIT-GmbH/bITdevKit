@@ -21,6 +21,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
     private readonly Func<TContext> contextFactory;
     private readonly EntityFrameworkMessageBroker<TContext> broker;
     private readonly EntityFrameworkMessageBrokerOptions options;
+    private readonly MessageBrokerControlState controlState;
     private readonly string instanceName = $"{Environment.MachineName}:{Guid.NewGuid():N}";
 
     /// <summary>
@@ -34,7 +35,8 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
         ILoggerFactory loggerFactory,
         IServiceProvider serviceProvider,
         EntityFrameworkMessageBroker<TContext> broker,
-        EntityFrameworkMessageBrokerOptions options)
+        EntityFrameworkMessageBrokerOptions options,
+        MessageBrokerControlState controlState = null)
     {
         EnsureArg.IsNotNull(serviceProvider, nameof(serviceProvider));
         EnsureArg.IsNotNull(broker, nameof(broker));
@@ -43,6 +45,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
         this.serviceProvider = serviceProvider;
         this.broker = broker;
         this.options = options ?? new EntityFrameworkMessageBrokerOptions();
+        this.controlState = controlState ?? new MessageBrokerControlState();
     }
 
     /// <summary>
@@ -56,7 +59,8 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
         ILoggerFactory loggerFactory,
         TContext context,
         EntityFrameworkMessageBroker<TContext> broker,
-        EntityFrameworkMessageBrokerOptions options)
+        EntityFrameworkMessageBrokerOptions options,
+        MessageBrokerControlState controlState = null)
     {
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(broker, nameof(broker));
@@ -66,6 +70,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
         this.contextFactory = CreateContextFactory(context);
         this.broker = broker;
         this.options = options ?? new EntityFrameworkMessageBrokerOptions();
+        this.controlState = controlState ?? new MessageBrokerControlState();
     }
 
     /// <summary>
@@ -112,6 +117,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
                 .AnyContext();
 
             return candidates
+                .Where(message => !this.IsMessageTypePaused(message.Type))
                 .Where(message => this.CanClaimMessage(message, now))
                 .OrderBy(message => message.CreatedDate)
                 .Take(this.options.ProcessingCount)
@@ -119,7 +125,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
                 .ToList();
         }
 
-        return await context.BrokerMessages
+        var sqlCandidates = await context.BrokerMessages
             .AsNoTracking()
             .Where(message =>
                 !message.IsArchived &&
@@ -128,10 +134,43 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
                  (message.Status == BrokerMessageStatus.Processing && message.LockedUntil < now)) &&
                 (message.LockedUntil == null || message.LockedUntil < now))
             .OrderBy(message => message.CreatedDate)
-            .Take(this.options.ProcessingCount)
-            .Select(message => message.Id)
+            .Take(this.options.ProcessingCount * 5) // Fetch extra to account for paused messages
             .ToListAsync(cancellationToken)
             .AnyContext();
+
+        return sqlCandidates
+            .Where(message => !this.IsMessageTypePaused(message.Type))
+            .Take(this.options.ProcessingCount)
+            .Select(message => message.Id)
+            .ToList();
+    }
+
+    /// <summary>
+    /// Checks whether the message type identified by the persisted type token is currently paused.
+    /// Normalizes both full (AssemblyQualifiedNameShort) and short (PrettyName) forms.
+    /// </summary>
+    private bool IsMessageTypePaused(string messageType)
+    {
+        var pausedTypes = this.controlState.GetPausedTypes();
+        if (!pausedTypes.Any())
+        {
+            return false;
+        }
+
+        // Exact match: AssemblyQualifiedNameShort form (e.g., "MyMessage, MyAssembly")
+        if (pausedTypes.Contains(messageType))
+        {
+            return true;
+        }
+
+        // Short name match: resolve the type and check PrettyName(false) (e.g., "MyMessage")
+        var resolvedType = Type.GetType(messageType);
+        if (resolvedType != null && pausedTypes.Contains(resolvedType.PrettyName(false)))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     private async Task ProcessMessageAsync(Guid brokerMessageId, CancellationToken cancellationToken)

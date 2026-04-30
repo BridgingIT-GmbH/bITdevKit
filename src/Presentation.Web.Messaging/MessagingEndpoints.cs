@@ -113,12 +113,47 @@ public class MessagingEndpoints(
             .WithSummary("Archive a broker message")
             .WithDescription("Archives a terminal persisted broker message.");
 
+        group.MapPost("types/{type}/pause", this.PauseMessageType)
+            .Produces<string>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("_System.Messaging.PauseMessageType")
+            .WithSummary("Pause message type processing")
+            .WithDescription("Pauses processing for the specified message type.");
+
+        group.MapPost("types/{type}/resume", this.ResumeMessageType)
+            .Produces<string>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("_System.Messaging.ResumeMessageType")
+            .WithSummary("Resume message type processing")
+            .WithDescription("Resumes processing for the specified message type.");
+
         group.MapDelete(string.Empty, this.PurgeMessages)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
             .WithName("_System.Messaging.PurgeMessages")
             .WithSummary("Purge broker messages")
             .WithDescription("Purges persisted broker messages by age and optional status filters.");
+
+        group.MapGet("summary", this.GetSummary)
+            .Produces<BrokerMessageBrokerSummary>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("_System.Messaging.GetSummary")
+            .WithSummary("Get broker summary")
+            .WithDescription("Retrieves aggregated broker state, including runtime capabilities and pause status.");
+
+        group.MapGet("subscriptions", this.GetSubscriptions)
+            .Produces<IEnumerable<BrokerMessageSubscriptionInfo>>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("_System.Messaging.GetSubscriptions")
+            .WithSummary("List message subscriptions")
+            .WithDescription("Retrieves the currently active message type to handler registrations.");
+
+        group.MapGet("waiting", this.GetWaitingMessages)
+            .Produces<IEnumerable<BrokerMessageInfo>>()
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("_System.Messaging.GetWaitingMessages")
+            .WithSummary("List waiting messages")
+            .WithDescription("Retrieves messages that were published with no handler registrations.");
 
         this.IsRegistered = true;
     }
@@ -285,4 +320,37 @@ public class MessagingEndpoints(
 
         return Results.Ok("Broker messages were purged successfully.");
     }
+
+    private async Task<IResult> PauseMessageType(string type, CancellationToken cancellationToken)
+    {
+        this.logger.LogInformation("Pausing message type {MessageType}", type);
+        await messageBrokerService.PauseMessageTypeAsync(type, cancellationToken);
+        return Results.Ok($"Message type {type} was paused.");
+    }
+
+    private async Task<IResult> ResumeMessageType(string type, CancellationToken cancellationToken)
+    {
+        this.logger.LogInformation("Resuming message type {MessageType}", type);
+        await messageBrokerService.ResumeMessageTypeAsync(type, cancellationToken);
+        return Results.Ok($"Message type {type} was resumed.");
+    }
+
+    private async Task<IResult> GetSummary(CancellationToken cancellationToken)
+    {
+        this.logger.LogInformation("Fetching broker summary");
+        return Results.Ok(await messageBrokerService.GetSummaryAsync(cancellationToken));
+    }
+
+    private async Task<IResult> GetSubscriptions(CancellationToken cancellationToken)
+    {
+        this.logger.LogInformation("Fetching message subscriptions");
+        return Results.Ok(await messageBrokerService.GetSubscriptionsAsync(cancellationToken));
+    }
+
+    private async Task<IResult> GetWaitingMessages([FromQuery] int? take, CancellationToken cancellationToken)
+    {
+        this.logger.LogInformation("Fetching waiting messages (Take={Take})", take);
+        return Results.Ok(await messageBrokerService.GetWaitingMessagesAsync(take, cancellationToken));
+    }
+
 }

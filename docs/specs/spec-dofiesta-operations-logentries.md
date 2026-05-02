@@ -1,5 +1,5 @@
 ---
-status: planned
+status: implemented
 ---
 
 # Design Specification: DoFiesta Operations Log Entries

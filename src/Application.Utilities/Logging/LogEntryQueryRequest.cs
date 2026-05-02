@@ -41,6 +41,12 @@ public class LogEntryQueryRequest
     public string TraceId { get; set; }
 
     /// <summary>
+    /// Gets or sets the SpanId to filter by.
+    /// If null or empty, no SpanId filter is applied.
+    /// </summary>
+    public string SpanId { get; set; }
+
+    /// <summary>
     /// Gets or sets the CorrelationId to filter by.
     /// If null or empty, no CorrelationId filter is applied.
     /// </summary>
@@ -89,6 +95,13 @@ public class LogEntryQueryRequest
     public string ContinuationToken { get; set; }
 
     /// <summary>
+    /// Gets or sets the exclusive lower Id bound for tail queries.
+    /// When specified, only log entries with an Id greater than this value are returned.
+    /// Mutually exclusive with <see cref="ContinuationToken"/>.
+    /// </summary>
+    public long? AfterId { get; set; }
+
+    /// <summary>
     /// Gets or sets the age of logs to include, as a duration from the present.
     /// Converted to <see cref="StartTime"/> as (UtcNow - Age).
     /// Mutually exclusive with <see cref="StartTime"/>.
@@ -119,6 +132,16 @@ public class LogEntryQueryRequest
         if (this.PageSize <= 0)
         {
             throw new ArgumentException("PageSize must be positive.");
+        }
+
+        if (this.AfterId.HasValue && this.AfterId.Value < 0)
+        {
+            throw new ArgumentException("AfterId cannot be negative.");
+        }
+
+        if (this.AfterId.HasValue && !string.IsNullOrEmpty(this.ContinuationToken))
+        {
+            throw new ArgumentException("AfterId and ContinuationToken cannot both be specified.");
         }
 
         //if (!string.IsNullOrEmpty(this.LogKey) && this.LogKey.Contains(";"))

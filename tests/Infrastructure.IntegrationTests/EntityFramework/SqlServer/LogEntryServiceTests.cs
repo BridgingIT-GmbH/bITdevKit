@@ -50,9 +50,9 @@ public class LogEntryServiceTests
         var entries = new List<LogEntry>
         {
             // Original 5 entries
-            new() { Message = "Info log", Level = "Information", TimeStamp = now.AddMinutes(-10), TraceId = "trace-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
-            new() { Message = "Error log", Level = "Error", TimeStamp = now.AddMinutes(-5), TraceId = "trace-2", CorrelationId = "corr-2", LogKey = "key-2", ModuleName = "mod-2", ThreadId = "thread-2", ShortTypeName = "type-2" },
-            new() { Message = "Debug log", Level = "Debug", TimeStamp = now.AddMinutes(-2), TraceId = "trace-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
+            new() { Message = "Info log", Level = "Information", TimeStamp = now.AddMinutes(-10), TraceId = "trace-1", SpanId = "span-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
+            new() { Message = "Error log", Level = "Error", TimeStamp = now.AddMinutes(-5), TraceId = "trace-2", SpanId = "span-2", CorrelationId = "corr-2", LogKey = "key-2", ModuleName = "mod-2", ThreadId = "thread-2", ShortTypeName = "type-2" },
+            new() { Message = "Debug log", Level = "Debug", TimeStamp = now.AddMinutes(-2), TraceId = "trace-1", SpanId = "span-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
             new() { Message = "Warning log", Level = "Warning", TimeStamp = now.AddMinutes(-1), TraceId = "trace-3", CorrelationId = "corr-3", LogKey = "key-3", ModuleName = "mod-3", ThreadId = "thread-3", ShortTypeName = "type-3" },
             new() { Message = "Contains special search", Level = "Information", TimeStamp = now, TraceId = "trace-4", CorrelationId = "corr-4", LogKey = "key-4", ModuleName = "mod-4", ThreadId = "thread-4", ShortTypeName = "type-4" },
 
@@ -80,16 +80,16 @@ public class LogEntryServiceTests
             new() { Message = "Info: batch complete", Level = "Information", TimeStamp = now, TraceId = "trace-25", CorrelationId = "corr-25", LogKey = "key-25", ModuleName = "mod-25", ThreadId = "thread-25", ShortTypeName = "type-25" },
 
             // Add more for higher volume and variety
-            new() { Message = "Debug: test entry 1", Level = "Debug", TimeStamp = now.AddSeconds(-10), TraceId = "trace-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
-            new() { Message = "Debug: test entry 2", Level = "Debug", TimeStamp = now.AddSeconds(-9), TraceId = "trace-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
-            new() { Message = "Debug: test entry 3", Level = "Debug", TimeStamp = now.AddSeconds(-8), TraceId = "trace-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
-            new() { Message = "Debug: test entry 4", Level = "Debug", TimeStamp = now.AddSeconds(-7), TraceId = "trace-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
-            new() { Message = "Debug: test entry 5", Level = "Debug", TimeStamp = now.AddSeconds(-6), TraceId = "trace-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
-            new() { Message = "Debug: test entry 6", Level = "Debug", TimeStamp = now.AddSeconds(-5), TraceId = "trace-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
-            new() { Message = "Debug: test entry 7", Level = "Debug", TimeStamp = now.AddSeconds(-4), TraceId = "trace-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
-            new() { Message = "Debug: test entry 8", Level = "Debug", TimeStamp = now.AddSeconds(-3), TraceId = "trace-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
-            new() { Message = "Debug: test entry 9", Level = "Debug", TimeStamp = now.AddSeconds(-2), TraceId = "trace-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
-            new() { Message = "Debug: test entry 10", Level = "Debug", TimeStamp = now.AddSeconds(-1), TraceId = "trace-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" }
+            new() { Message = "Debug: test entry 1", Level = "Debug", TimeStamp = now.AddSeconds(-10), TraceId = "trace-1", SpanId = "span-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
+            new() { Message = "Debug: test entry 2", Level = "Debug", TimeStamp = now.AddSeconds(-9), TraceId = "trace-1", SpanId = "span-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
+            new() { Message = "Debug: test entry 3", Level = "Debug", TimeStamp = now.AddSeconds(-8), TraceId = "trace-1", SpanId = "span-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
+            new() { Message = "Debug: test entry 4", Level = "Debug", TimeStamp = now.AddSeconds(-7), TraceId = "trace-1", SpanId = "span-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
+            new() { Message = "Debug: test entry 5", Level = "Debug", TimeStamp = now.AddSeconds(-6), TraceId = "trace-1", SpanId = "span-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
+            new() { Message = "Debug: test entry 6", Level = "Debug", TimeStamp = now.AddSeconds(-5), TraceId = "trace-1", SpanId = "span-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
+            new() { Message = "Debug: test entry 7", Level = "Debug", TimeStamp = now.AddSeconds(-4), TraceId = "trace-1", SpanId = "span-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
+            new() { Message = "Debug: test entry 8", Level = "Debug", TimeStamp = now.AddSeconds(-3), TraceId = "trace-1", SpanId = "span-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
+            new() { Message = "Debug: test entry 9", Level = "Debug", TimeStamp = now.AddSeconds(-2), TraceId = "trace-1", SpanId = "span-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" },
+            new() { Message = "Debug: test entry 10", Level = "Debug", TimeStamp = now.AddSeconds(-1), TraceId = "trace-1", SpanId = "span-1", CorrelationId = "corr-1", LogKey = "key-1", ModuleName = "mod-1", ThreadId = "thread-1", ShortTypeName = "type-1" }
         };
 
         this.context.LogEntries.AddRange(entries);
@@ -213,5 +213,42 @@ public class LogEntryServiceTests
         // "Info log", "Debug log", "Debug: test entry 1" to "Debug: test entry 10" (12 entries)
         result.Items.Count.ShouldBe(12);
         result.Items.All(e => e.TraceId == "trace-1").ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task QueryLogEntriesAsync_ShouldFilterBySpanId()
+    {
+        this.SeedLogEntries();
+        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
+        var request = new LogEntryQueryRequest { SpanId = "span-1", PageSize = 100 };
+
+        var result = await sut.QueryAsync(request);
+
+        result.Items.Count.ShouldBe(12);
+        result.Items.All(e => e.SpanId == "span-1").ShouldBeTrue();
+    }
+
+    [Fact]
+    public async Task QueryLogEntriesAsync_ShouldReturnNewerEntries_WhenAfterIdProvided()
+    {
+        this.SeedLogEntries();
+        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
+        var all = await sut.QueryAsync(new LogEntryQueryRequest { PageSize = 100 });
+        var pivot = all.Items[10].Id;
+
+        var result = await sut.QueryAsync(new LogEntryQueryRequest { AfterId = pivot, PageSize = 100 });
+
+        result.Items.Select(e => e.Id).ShouldBe(all.Items.Where(e => e.Id > pivot).Select(e => e.Id));
+        result.Items.All(e => e.Id > pivot).ShouldBeTrue();
+        result.ContinuationToken.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task QueryLogEntriesAsync_ShouldRejectAfterIdWithContinuationToken()
+    {
+        var sut = this.fixture.ServiceProvider.GetRequiredService<ILogEntryService>();
+        var request = new LogEntryQueryRequest { AfterId = 1, ContinuationToken = "1" };
+
+        await Should.ThrowAsync<ArgumentException>(() => sut.QueryAsync(request));
     }
 }

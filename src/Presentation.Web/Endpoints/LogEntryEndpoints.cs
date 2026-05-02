@@ -87,6 +87,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         [FromQuery] double? ageDays,
         [FromQuery] LogLevel? level,
         [FromQuery] string traceId,
+        [FromQuery] string spanId,
         [FromQuery] string correlationId,
         [FromQuery] string logKey,
         [FromQuery] string moduleName,
@@ -95,6 +96,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         [FromQuery] string searchText,
         [FromQuery] int? pageSize,
         [FromQuery] string continuationToken,
+        [FromQuery] long? afterId,
         CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(queryService);
@@ -112,25 +114,35 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             }
 
             DateTimeOffset? parsedStartTime = null;
-            if (!string.IsNullOrEmpty(startTime) && !DateTimeOffset.TryParse(startTime, out var startTimeValue))
+            if (!string.IsNullOrEmpty(startTime))
             {
-                return Results.Problem(new ProblemDetails
+                if (!DateTimeOffset.TryParse(startTime, out var startTimeValue))
                 {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Title = "Invalid Date Format",
-                    Detail = "Invalid startTime format. Use ISO 8601 (e.g., 2025-04-15T00:00:00Z)."
-                });
+                    return Results.Problem(new ProblemDetails
+                    {
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Title = "Invalid Date Format",
+                        Detail = "Invalid startTime format. Use ISO 8601 (e.g., 2025-04-15T00:00:00Z)."
+                    });
+                }
+
+                parsedStartTime = startTimeValue;
             }
 
             DateTimeOffset? parsedEndTime = null;
-            if (!string.IsNullOrEmpty(endTime) && !DateTimeOffset.TryParse(endTime, out var endTimeValue))
+            if (!string.IsNullOrEmpty(endTime))
             {
-                return Results.Problem(new ProblemDetails
+                if (!DateTimeOffset.TryParse(endTime, out var endTimeValue))
                 {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Title = "Invalid Date Format",
-                    Detail = "Invalid endTime format. Use ISO 8601 (e.g., 2025-04-15T00:00:00Z)."
-                });
+                    return Results.Problem(new ProblemDetails
+                    {
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Title = "Invalid Date Format",
+                        Detail = "Invalid endTime format. Use ISO 8601 (e.g., 2025-04-15T00:00:00Z)."
+                    });
+                }
+
+                parsedEndTime = endTimeValue;
             }
 
             TimeSpan? age = null;
@@ -155,6 +167,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                 Age = age,
                 Level = level,
                 TraceId = traceId,
+                SpanId = spanId,
                 CorrelationId = correlationId,
                 LogKey = logKey,
                 ModuleName = moduleName,
@@ -162,7 +175,8 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                 ShortTypeName = shortTypeName,
                 SearchText = searchText,
                 PageSize = pageSize ?? 1000,
-                ContinuationToken = continuationToken
+                ContinuationToken = continuationToken,
+                AfterId = afterId
             };
 
             var response = await queryService.QueryAsync(request, cancellationToken);
@@ -199,6 +213,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         [FromQuery] double? ageDays,
         [FromQuery] LogLevel? level,
         [FromQuery] string traceId,
+        [FromQuery] string spanId,
         [FromQuery] string correlationId,
         [FromQuery] string logKey,
         [FromQuery] string moduleName,
@@ -223,14 +238,19 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             }
 
             DateTimeOffset? parsedStartTime = null;
-            if (!string.IsNullOrEmpty(startTime) && !DateTimeOffset.TryParse(startTime, out var startTimeValue))
+            if (!string.IsNullOrEmpty(startTime))
             {
-                return Results.Problem(new ProblemDetails
+                if (!DateTimeOffset.TryParse(startTime, out var startTimeValue))
                 {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Title = "Invalid Date Format",
-                    Detail = "Invalid startTime format. Use ISO 8601 (e.g., 2025-04-15T00:00:00Z)."
-                });
+                    return Results.Problem(new ProblemDetails
+                    {
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Title = "Invalid Date Format",
+                        Detail = "Invalid startTime format. Use ISO 8601 (e.g., 2025-04-15T00:00:00Z)."
+                    });
+                }
+
+                parsedStartTime = startTimeValue;
             }
 
             TimeSpan? age = null;
@@ -259,6 +279,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                     parsedStartTime,
                     level,
                     traceId,
+                    spanId,
                     correlationId,
                     logKey,
                     moduleName,
@@ -407,25 +428,35 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         try
         {
             DateTimeOffset? parsedStartTime = null;
-            if (!string.IsNullOrEmpty(startTime) && !DateTimeOffset.TryParse(startTime, out var startTimeValue))
+            if (!string.IsNullOrEmpty(startTime))
             {
-                return Results.Problem(new ProblemDetails
+                if (!DateTimeOffset.TryParse(startTime, out var startTimeValue))
                 {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Title = "Invalid Date Format",
-                    Detail = "Invalid startTime format. Use ISO 8601 (e.g., 2025-04-15T00:00:00Z)."
-                });
+                    return Results.Problem(new ProblemDetails
+                    {
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Title = "Invalid Date Format",
+                        Detail = "Invalid startTime format. Use ISO 8601 (e.g., 2025-04-15T00:00:00Z)."
+                    });
+                }
+
+                parsedStartTime = startTimeValue;
             }
 
             DateTimeOffset? parsedEndTime = null;
-            if (!string.IsNullOrEmpty(endTime) && !DateTimeOffset.TryParse(endTime, out var endTimeValue))
+            if (!string.IsNullOrEmpty(endTime))
             {
-                return Results.Problem(new ProblemDetails
+                if (!DateTimeOffset.TryParse(endTime, out var endTimeValue))
                 {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Title = "Invalid Date Format",
-                    Detail = "Invalid endTime format. Use ISO 8601 (e.g., 2025-04-15T00:00:00Z)."
-                });
+                    return Results.Problem(new ProblemDetails
+                    {
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Title = "Invalid Date Format",
+                        Detail = "Invalid endTime format. Use ISO 8601 (e.g., 2025-04-15T00:00:00Z)."
+                    });
+                }
+
+                parsedEndTime = endTimeValue;
             }
 
             var stats = await queryService.GetStatisticsAsync(
@@ -464,6 +495,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         [FromQuery] string endTime,
         [FromQuery] LogLevel? level,
         [FromQuery] string traceId,
+        [FromQuery] string spanId,
         [FromQuery] string correlationId,
         [FromQuery] string logKey,
         [FromQuery] string moduleName,
@@ -489,25 +521,35 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             }
 
             DateTimeOffset? parsedStartTime = null;
-            if (!string.IsNullOrEmpty(startTime) && !DateTimeOffset.TryParse(startTime, out var startTimeValue))
+            if (!string.IsNullOrEmpty(startTime))
             {
-                return Results.Problem(new ProblemDetails
+                if (!DateTimeOffset.TryParse(startTime, out var startTimeValue))
                 {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Title = "Invalid Date Format",
-                    Detail = "Invalid startTime format. Use ISO 8601 (e.g., 2025-04-15T00:00:00Z)."
-                });
+                    return Results.Problem(new ProblemDetails
+                    {
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Title = "Invalid Date Format",
+                        Detail = "Invalid startTime format. Use ISO 8601 (e.g., 2025-04-15T00:00:00Z)."
+                    });
+                }
+
+                parsedStartTime = startTimeValue;
             }
 
             DateTimeOffset? parsedEndTime = null;
-            if (!string.IsNullOrEmpty(endTime) && !DateTimeOffset.TryParse(endTime, out var endTimeValue))
+            if (!string.IsNullOrEmpty(endTime))
             {
-                return Results.Problem(new ProblemDetails
+                if (!DateTimeOffset.TryParse(endTime, out var endTimeValue))
                 {
-                    Status = (int)HttpStatusCode.BadRequest,
-                    Title = "Invalid Date Format",
-                    Detail = "Invalid endTime format. Use ISO 8601 (e.g., 2025-04-15T00:00:00Z)."
-                });
+                    return Results.Problem(new ProblemDetails
+                    {
+                        Status = (int)HttpStatusCode.BadRequest,
+                        Title = "Invalid Date Format",
+                        Detail = "Invalid endTime format. Use ISO 8601 (e.g., 2025-04-15T00:00:00Z)."
+                    });
+                }
+
+                parsedEndTime = endTimeValue;
             }
 
             TimeSpan? age = null;
@@ -532,6 +574,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
                 Age = age,
                 Level = level,
                 TraceId = traceId,
+                SpanId = spanId,
                 CorrelationId = correlationId,
                 LogKey = logKey,
                 ModuleName = moduleName,

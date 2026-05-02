@@ -1,0 +1,666 @@
+@page "/operations/logentries"
+@using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Kiota.Abstractions.Serialization
+@using KiotaApiException = Microsoft.Kiota.Abstractions.ApiException
+@using LogEntry = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.LogEntryModel
+@using LogEntryExportFormat = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.LogEntryExportFormat
+@using LogEntryStats = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.LogEntryStatisticsModel
+@using LogLevelModel = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.LogLevel
+@inject BackendApiClient Api
+@inject ISnackbar Snackbar
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+@attribute [RequireAuthentication]
+
+<PageTitle>DoFiesta - Operations Logs</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.False" Class="mt-4 operations-logentries">
+    <MudPaper Class="pa-4 mb-4">
+        <div class="d-flex flex-wrap align-center gap-3">
+            <div>
+                <MudText Typo="Typo.h4" GutterBottom="true">Log Entries</MudText>
+            </div>
+            <MudSpacer />
+            <MudSwitch T="bool" Color="Color.Success" Value="tailEnabled" ValueChanged="OnTailChanged" Label="Tail" />
+            @* <MudSelect T="int" Label="Poll" Variant="Variant.Outlined" Margin="Margin.Dense" @bind-Value="pollIntervalSeconds" Style="width: 120px;">
+                <MudSelectItem Value="1">1 sec</MudSelectItem>
+                <MudSelectItem Value="2">2 sec</MudSelectItem>
+                <MudSelectItem Value="5">5 sec</MudSelectItem>
+                <MudSelectItem Value="15">15 sec</MudSelectItem>
+            </MudSelect> *@
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Filled.Refresh" OnClick="ReloadAsync">Refresh</MudButton>
+            <MudMenu Label="Export" StartIcon="@Icons.Material.Filled.FileDownload" Variant="Variant.Outlined" Color="Color.Success" Disabled="exporting" Dense="true">
+                <MudMenuItem OnClick="@(() => ExportAsync(LogEntryExportFormat.Csv))">CSV</MudMenuItem>
+                <MudMenuItem OnClick="@(() => ExportAsync(LogEntryExportFormat.Json))">JSON</MudMenuItem>
+                <MudMenuItem OnClick="@(() => ExportAsync(LogEntryExportFormat.Txt))">Text</MudMenuItem>
+            </MudMenu>
+            <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Filled.CleaningServices" OnClick="@(() => cleanupDialogVisible = true)">Cleanup</MudButton>
+        </div>
+    </MudPaper>
+
+    <MudGrid Class="mb-4">
+        <MudItem xs="6" sm="4" md="2"><MudPaper Class="pa-3"><MudText Typo="Typo.caption">Shown</MudText><MudText Typo="Typo.h5">@logs.Count</MudText></MudPaper></MudItem>
+        <MudItem xs="6" sm="4" md="2"><MudPaper Class="pa-3"><MudText Typo="Typo.caption">Debug</MudText><MudText Typo="Typo.h5">@LevelCount("Debug")</MudText></MudPaper></MudItem>
+        <MudItem xs="6" sm="4" md="2"><MudPaper Class="pa-3"><MudText Typo="Typo.caption">Information</MudText><MudText Typo="Typo.h5">@LevelCount("Information")</MudText></MudPaper></MudItem>
+        <MudItem xs="6" sm="4" md="2"><MudPaper Class="pa-3"><MudText Typo="Typo.caption">Warning</MudText><MudText Typo="Typo.h5" Color="Color.Warning">@LevelCount("Warning")</MudText></MudPaper></MudItem>
+        <MudItem xs="6" sm="4" md="2"><MudPaper Class="pa-3"><MudText Typo="Typo.caption">Error</MudText><MudText Typo="Typo.h5" Color="Color.Error">@LevelCount("Error")</MudText></MudPaper></MudItem>
+        <MudItem xs="6" sm="4" md="2"><MudPaper Class="pa-3"><MudText Typo="Typo.caption">Fatal</MudText><MudText Typo="Typo.h5" Color="Color.Error">@LevelCount("Critical")</MudText></MudPaper></MudItem>
+    </MudGrid>
+
+    <MudPaper Class="pa-4 mb-4">
+        <MudGrid>
+            <MudItem xs="12" md="3"><MudTextField @bind-Value="searchText" Label="Search text, trace, span, correlation, module" Clearable="true" Adornment="Adornment.Start" AdornmentIcon="@Icons.Material.Filled.Search" /></MudItem>
+            <MudItem xs="12" md="2"><MudSelect T="LogLevelModel?" Label="Minimum level" @bind-Value="levelFilter"><MudSelectItem T="LogLevelModel?" Value="@((LogLevelModel?)null)">All levels</MudSelectItem>@foreach (var level in LevelOptions) { <MudSelectItem T="LogLevelModel?" Value="@level.Value">@level.Label</MudSelectItem> }</MudSelect></MudItem>
+            <MudItem xs="12" md="2"><MudSelect T="int" Label="Rows" @bind-Value="pageSize"><MudSelectItem Value="50">50</MudSelectItem><MudSelectItem Value="100">100</MudSelectItem><MudSelectItem Value="250">250</MudSelectItem><MudSelectItem Value="500">500</MudSelectItem></MudSelect></MudItem>
+            <MudItem xs="12" md="2"><MudDatePicker @bind-Date="startDate" Label="From" /></MudItem>
+            <MudItem xs="12" md="2"><MudDatePicker @bind-Date="endDate" Label="To" /></MudItem>
+            <MudItem xs="12" md="1" Class="d-flex align-end"><MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.FilterAlt" OnClick="ReloadAsync" FullWidth="true">Apply</MudButton></MudItem>
+        </MudGrid>
+        <MudGrid Class="mt-1">
+            <MudItem xs="12" sm="6" md="2"><MudTextField @bind-Value="correlationId" Label="CorrelationId" Clearable="true" /></MudItem>
+            <MudItem xs="12" sm="6" md="2"><MudTextField @bind-Value="traceId" Label="TraceId" Clearable="true" /></MudItem>
+            <MudItem xs="12" sm="6" md="2"><MudTextField @bind-Value="spanId" Label="SpanId" Clearable="true" /></MudItem>
+            <MudItem xs="12" sm="6" md="2"><MudTextField @bind-Value="logKey" Label="LogKey" Clearable="true" /></MudItem>
+            <MudItem xs="12" sm="6" md="2"><MudTextField @bind-Value="moduleName" Label="ModuleName" Clearable="true" /></MudItem>
+            <MudItem xs="12" sm="6" md="2"><MudTextField @bind-Value="shortTypeName" Label="ShortTypeName" Clearable="true" /></MudItem>
+        </MudGrid>
+        <div class="d-flex flex-wrap gap-2 mt-3">
+            <MudButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Filled.Clear" OnClick="ResetFiltersAsync">Reset</MudButton>
+            @if (ActiveFilters.Any())
+            {
+                @foreach (var filter in ActiveFilters)
+                {
+                    <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined" OnClose="@(() => ClearFilterAsync(filter.Key))">@filter.Label</MudChip>
+                }
+            }
+        </div>
+    </MudPaper>
+
+    <MudPaper Class="pa-2">
+        @if (!string.IsNullOrWhiteSpace(loadError))
+        {
+            <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="ma-2">@loadError</MudAlert>
+        }
+        else if (loading && logs.Count == 0)
+        {
+            <div class="pa-4"><MudSkeleton Height="48px" /><MudSkeleton Height="48px" Class="mt-2" /><MudSkeleton Height="48px" Class="mt-2" /></div>
+        }
+        else if (logs.Count == 0)
+        {
+            <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined" Class="ma-2">No log entries matched the current filters.</MudAlert>
+        }
+        else
+        {
+            <MudTable Items="@logs" Dense="true" Hover="true" Elevation="0" Loading="@loading" LoadingProgressColor="Color.Info" Breakpoint="Breakpoint.Sm" RowClassFunc="GetRowClass">
+                <HeaderContent>
+                    <MudTh>Time</MudTh>
+                    <MudTh>Level</MudTh>
+                    <MudTh>Message</MudTh>
+                    <MudTh>Trace</MudTh>
+                    <MudTh>Span</MudTh>
+                    <MudTh>Correlation</MudTh>
+                    <MudTh>Key</MudTh>
+                    <MudTh>Module</MudTh>
+                    <MudTh></MudTh>
+                </HeaderContent>
+                <RowTemplate Context="entry">
+                    <MudTd DataLabel="Time"><MudTooltip Text="@FormatTimestamp(entry.TimeStamp)"><span>@FormatShortTimestamp(entry.TimeStamp)</span></MudTooltip></MudTd>
+                    <MudTd DataLabel="Level"><MudChip T="string" Size="Size.Small" Color="@LevelColor(entry.Level)" Variant="Variant.Filled">@DisplayLevel(entry.Level)</MudChip></MudTd>
+                    <MudTd DataLabel="Message">@entry.Message</MudTd>
+                    <MudTd DataLabel="Trace">@ShortId(entry.TraceId, 12)</MudTd>
+                    <MudTd DataLabel="Span">@ShortId(entry.SpanId, 12)</MudTd>
+                    <MudTd DataLabel="Correlation">@ShortId(entry.CorrelationId, 12)</MudTd>
+                    <MudTd DataLabel="Key">@entry.LogKey</MudTd>
+                    <MudTd DataLabel="Module">@entry.ModuleName</MudTd>
+                    <MudTd>
+                        <MudMenu Icon="@Icons.Material.Filled.MoreVert" Dense="true">
+                            <MudMenuItem OnClick="@(() => ShowDetails(entry))" Icon="@Icons.Material.Filled.Subject">Details</MudMenuItem>
+                            <MudMenuItem Disabled="@string.IsNullOrWhiteSpace(entry.TraceId)" OnClick="@(() => OpenTraceAsync(entry))" Icon="@Icons.Material.Filled.Timeline">Trace timeline</MudMenuItem>
+                            <MudDivider />
+                            <MudMenuItem Disabled="@string.IsNullOrWhiteSpace(entry.CorrelationId)" OnClick="@(() => ApplyQuickFilterAsync(nameof(correlationId), entry.CorrelationId))">Find all for CorrelationId</MudMenuItem>
+                            <MudMenuItem Disabled="@string.IsNullOrWhiteSpace(entry.TraceId)" OnClick="@(() => ApplyQuickFilterAsync(nameof(traceId), entry.TraceId))">Find all for TraceId</MudMenuItem>
+                            <MudMenuItem Disabled="@string.IsNullOrWhiteSpace(entry.SpanId)" OnClick="@(() => ApplyQuickFilterAsync(nameof(spanId), entry.SpanId))">Find all for SpanId</MudMenuItem>
+                            <MudMenuItem Disabled="@string.IsNullOrWhiteSpace(entry.LogKey)" OnClick="@(() => ApplyQuickFilterAsync(nameof(logKey), entry.LogKey))">Find all for LogKey</MudMenuItem>
+                            <MudMenuItem Disabled="@string.IsNullOrWhiteSpace(entry.ModuleName)" OnClick="@(() => ApplyQuickFilterAsync(nameof(moduleName), entry.ModuleName))">Find all for ModuleName</MudMenuItem>
+                            <MudMenuItem Disabled="@string.IsNullOrWhiteSpace(entry.ShortTypeName)" OnClick="@(() => ApplyQuickFilterAsync(nameof(shortTypeName), entry.ShortTypeName))">Find all for ShortTypeName</MudMenuItem>
+                        </MudMenu>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+
+        <div class="older-log-sentinel">
+            @if (loadingOlder)
+            {
+                <MudProgressCircular Indeterminate="true" Size="Size.Small" />
+            }
+            else if (!string.IsNullOrWhiteSpace(continuationToken))
+            {
+                <MudButton Variant="Variant.Text" Color="Color.Info" OnClick="LoadOlderAsync">Load more</MudButton>
+            }
+        </div>
+    </MudPaper>
+</MudContainer>
+
+<MudDialog @bind-Visible="detailsDialogVisible" Options="new DialogOptions { CloseButton = true, FullWidth = true, MaxWidth = MaxWidth.Large }">
+    <TitleContent><MudText Typo="Typo.h6">Log entry @selectedLog?.Id</MudText></TitleContent>
+    <DialogContent>
+        @if (selectedLog is not null)
+        {
+            <MudGrid>
+                <MudItem xs="12" md="6"><MudText Typo="Typo.caption">Message</MudText><MudText>@selectedLog.Message</MudText></MudItem>
+                <MudItem xs="12" md="6"><MudText Typo="Typo.caption">Template</MudText><MudText>@selectedLog.MessageTemplate</MudText></MudItem>
+                @foreach (var row in DetailRows(selectedLog))
+                {
+                    <MudItem xs="12" md="4"><MudText Typo="Typo.caption">@row.Key</MudText><MudText Class="monospace">@row.Value</MudText></MudItem>
+                }
+                @if (!string.IsNullOrWhiteSpace(selectedLog.Exception))
+                {
+                    <MudItem xs="12"><MudAlert Severity="Severity.Error" Variant="Variant.Outlined"><pre>@selectedLog.Exception</pre></MudAlert></MudItem>
+                }
+            </MudGrid>
+        }
+    </DialogContent>
+</MudDialog>
+
+<MudDialog @bind-Visible="traceDialogVisible" Options="new DialogOptions { CloseButton = true, FullWidth = true, MaxWidth = MaxWidth.ExtraLarge }">
+    <TitleContent><MudText Typo="Typo.h6">Trace @ShortId(activeTraceId, 32)</MudText></TitleContent>
+    <DialogContent>
+        @if (traceLoading)
+        {
+            <MudProgressLinear Indeterminate="true" Color="Color.Info" />
+        }
+        else
+        {
+            <div class="trace-summary">
+                <MudChip T="string" Size="Size.Small">@traceLogs.Count events</MudChip>
+                <MudChip T="string" Size="Size.Small">@traceLogs.Select(e => e.SpanId).Where(e => !string.IsNullOrWhiteSpace(e)).Distinct().Count() spans</MudChip>
+                <MudChip T="string" Size="Size.Small">@TraceDuration()</MudChip>
+            </div>
+            <div class="trace-timeline">
+                @foreach (var lane in TraceLanes())
+                {
+                    <div class="trace-lane">
+                        <div class="trace-lane-label">@ShortId(lane.Key, 18)</div>
+                        <div class="trace-lane-track">
+                            @foreach (var entry in lane.OrderBy(e => e.TimeStamp))
+                            {
+                                <MudTooltip Text="@($"{FormatTimestamp(entry.TimeStamp)} {entry.Level}: {entry.Message}")">
+                                    <span class="trace-dot @LevelCss(entry.Level)" style="left:@TimelineLeft(entry)%;"></span>
+                                </MudTooltip>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+            <MudTable Items="@traceLogs.OrderBy(e => e.TimeStamp)" Dense="true" Hover="true" Elevation="0">
+                <HeaderContent><MudTh>Offset</MudTh><MudTh>Level</MudTh><MudTh>Span</MudTh><MudTh>Message</MudTh><MudTh>Key</MudTh><MudTh>Type</MudTh></HeaderContent>
+                <RowTemplate Context="entry">
+                    <MudTd>@TraceOffset(entry)</MudTd>
+                    <MudTd><MudChip T="string" Size="Size.Small" Color="@LevelColor(entry.Level)">@DisplayLevel(entry.Level)</MudChip></MudTd>
+                    <MudTd>@ShortId(entry.SpanId, 16)</MudTd>
+                    <MudTd>@entry.Message</MudTd>
+                    <MudTd>@entry.LogKey</MudTd>
+                    <MudTd>@entry.ShortTypeName</MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+    </DialogContent>
+</MudDialog>
+
+<MudDialog @bind-Visible="cleanupDialogVisible" Options="new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small }">
+    <TitleContent><MudText Typo="Typo.h6">Cleanup log entries</MudText></TitleContent>
+    <DialogContent>
+        <MudDatePicker @bind-Date="cleanupOlderThanDate" Label="Older than" />
+        <MudSwitch T="bool" @bind-Value="cleanupArchive" Label="Archive before cleanup" Color="Color.Warning" />
+        <MudNumericField T="int" @bind-Value="cleanupBatchSize" Label="Batch size" Min="1" />
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="@(() => cleanupDialogVisible = false)">Cancel</MudButton>
+        <MudButton Color="Color.Warning" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.CleaningServices" OnClick="CleanupAsync">Queue cleanup</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private readonly List<LogEntry> logs = [];
+    private LogEntryStats stats;
+    private bool loading;
+    private bool loadingOlder;
+    private bool tailEnabled;
+    private bool detailsDialogVisible;
+    private bool traceDialogVisible;
+    private bool traceLoading;
+    private bool cleanupDialogVisible;
+    private bool exporting;
+    private string loadError;
+    private string continuationToken;
+    private string searchText;
+    private string correlationId;
+    private string traceId;
+    private string spanId;
+    private string logKey;
+    private string moduleName;
+    private string shortTypeName;
+    private int pageSize = 100;
+    private int pollIntervalSeconds = 2;
+    private long? maxLoadedId;
+    private DateTime? startDate = DateTime.Today;
+    private DateTime? endDate;
+    private DateTime? cleanupOlderThanDate = DateTime.Today.AddDays(-7);
+    private bool cleanupArchive;
+    private int cleanupBatchSize = 1000;
+    private LogLevelModel? levelFilter;
+    private LogEntry selectedLog;
+    private string activeTraceId;
+    private List<LogEntry> traceLogs = [];
+    private PeriodicTimer tailTimer;
+    private CancellationTokenSource tailCts;
+
+    private static readonly (LogLevelModel Value, string Label)[] LevelOptions =
+    [
+        (LogLevelModel.Trace, "Verbose"),
+        (LogLevelModel.Debug, "Debug"),
+        (LogLevelModel.Information, "Information"),
+        (LogLevelModel.Warning, "Warning"),
+        (LogLevelModel.Error, "Error"),
+        (LogLevelModel.Critical, "Fatal")
+    ];
+
+    protected override async Task OnInitializedAsync() => await ReloadAsync();
+
+    private async Task ReloadAsync()
+    {
+        loading = true;
+        loadError = null;
+        continuationToken = null;
+
+        try
+        {
+            var response = await QueryLogsAsync(pageSize, null, null);
+            logs.Clear();
+            logs.AddRange(response?.Items ?? []);
+            SortLogs();
+            continuationToken = response?.ContinuationToken;
+            maxLoadedId = logs.Count == 0 ? null : logs.Max(e => e.Id ?? 0);
+            await LoadStatsAsync();
+        }
+        catch (Exception ex) when (ex is KiotaApiException or InvalidOperationException)
+        {
+            loadError = ex.Message;
+            Snackbar.Add("Could not load log entries.", Severity.Error);
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
+    private async Task LoadOlderAsync()
+    {
+        if (loading || loadingOlder || string.IsNullOrWhiteSpace(continuationToken))
+        {
+            return;
+        }
+
+        loadingOlder = true;
+        try
+        {
+            var response = await QueryLogsAsync(pageSize, continuationToken, null);
+            logs.AddRange(response?.Items ?? []);
+            SortLogs();
+            continuationToken = response?.ContinuationToken;
+        }
+        finally
+        {
+            loadingOlder = false;
+        }
+    }
+
+    private async Task LoadNewerAsync()
+    {
+        if (!maxLoadedId.HasValue || loading)
+        {
+            return;
+        }
+
+        var response = await QueryLogsAsync(Math.Max(pageSize, 1000), null, maxLoadedId);
+        var incoming = (response?.Items ?? []).Where(e => e.Id.HasValue && logs.All(existing => existing.Id != e.Id)).OrderByDescending(e => e.Id).ToList();
+        if (incoming.Count == 0)
+        {
+            return;
+        }
+
+        logs.InsertRange(0, incoming);
+        SortLogs();
+        maxLoadedId = logs.Max(e => e.Id ?? 0);
+        Snackbar.Add($"{incoming.Count} new log entries", Severity.Info);
+    }
+
+    private async Task<BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.LogEntryQueryResponse> QueryLogsAsync(int size, string continuation, long? afterId)
+    {
+        return await Api.Api._system.Logentries.GetAsync(c =>
+        {
+            c.QueryParameters.StartTime = ToIsoStart(startDate);
+            c.QueryParameters.EndTime = ToIsoEnd(endDate);
+            c.QueryParameters.LevelAsLogLevel = levelFilter;
+            c.QueryParameters.TraceId = EmptyToNull(traceId);
+            c.QueryParameters.SpanId = EmptyToNull(spanId);
+            c.QueryParameters.CorrelationId = EmptyToNull(correlationId);
+            c.QueryParameters.LogKey = EmptyToNull(logKey);
+            c.QueryParameters.ModuleName = EmptyToNull(moduleName);
+            c.QueryParameters.ShortTypeName = EmptyToNull(shortTypeName);
+            c.QueryParameters.SearchText = EmptyToNull(searchText);
+            c.QueryParameters.PageSize = size;
+            c.QueryParameters.ContinuationToken = continuation;
+            c.QueryParameters.AfterId = afterId;
+        });
+    }
+
+    private async Task LoadStatsAsync()
+    {
+        try
+        {
+            stats = await Api.Api._system.Logentries.Stats.GetAsync(c =>
+            {
+                c.QueryParameters.StartTime = ToIsoStart(startDate);
+                c.QueryParameters.EndTime = ToIsoEnd(endDate);
+            });
+        }
+        catch
+        {
+            stats = null;
+        }
+    }
+
+    private async Task OnTailChanged(bool enabled)
+    {
+        tailEnabled = enabled;
+        await StopTailAsync();
+        if (!enabled)
+        {
+            return;
+        }
+
+        if (logs.Count == 0)
+        {
+            await ReloadAsync();
+        }
+
+        tailCts = new CancellationTokenSource();
+        tailTimer = new PeriodicTimer(TimeSpan.FromSeconds(Math.Max(1, pollIntervalSeconds)));
+        _ = TailLoopAsync(tailCts.Token);
+    }
+
+    private async Task TailLoopAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            while (await tailTimer.WaitForNextTickAsync(cancellationToken))
+            {
+                await InvokeAsync(LoadNewerAsync);
+                await InvokeAsync(StateHasChanged);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+    }
+
+    private async Task StopTailAsync()
+    {
+        tailCts?.Cancel();
+        tailTimer?.Dispose();
+        tailCts?.Dispose();
+        tailTimer = null;
+        tailCts = null;
+        await Task.CompletedTask;
+    }
+
+    private async Task ResetFiltersAsync()
+    {
+        searchText = correlationId = traceId = spanId = logKey = moduleName = shortTypeName = null;
+        levelFilter = null;
+        startDate = DateTime.Today;
+        endDate = null;
+        await ReloadAsync();
+    }
+
+    private async Task ApplyQuickFilterAsync(string key, string value)
+    {
+        switch (key)
+        {
+            case nameof(correlationId): correlationId = value; break;
+            case nameof(traceId): traceId = value; break;
+            case nameof(spanId): spanId = value; break;
+            case nameof(logKey): logKey = value; break;
+            case nameof(moduleName): moduleName = value; break;
+            case nameof(shortTypeName): shortTypeName = value; break;
+        }
+
+        await ReloadAsync();
+    }
+
+    private async Task ClearFilterAsync(string key)
+    {
+        await ApplyQuickFilterAsync(key, null);
+    }
+
+    private void ShowDetails(LogEntry entry)
+    {
+        selectedLog = entry;
+        detailsDialogVisible = true;
+    }
+
+    private async Task OpenTraceAsync(LogEntry entry)
+    {
+        if (string.IsNullOrWhiteSpace(entry.TraceId))
+        {
+            return;
+        }
+
+        activeTraceId = entry.TraceId;
+        traceDialogVisible = true;
+        traceLoading = true;
+        traceLogs = [];
+        try
+        {
+            var response = await Api.Api._system.Logentries.GetAsync(c =>
+            {
+                c.QueryParameters.TraceId = activeTraceId;
+                c.QueryParameters.LevelAsLogLevel = levelFilter;
+                c.QueryParameters.PageSize = 1000;
+                c.QueryParameters.StartTime = ToIsoStart(startDate);
+                c.QueryParameters.EndTime = ToIsoEnd(endDate);
+            });
+            traceLogs = (response?.Items ?? []).OrderBy(e => e.TimeStamp).ToList();
+        }
+        finally
+        {
+            traceLoading = false;
+        }
+    }
+
+    private async Task CleanupAsync()
+    {
+        if (!cleanupOlderThanDate.HasValue)
+        {
+            Snackbar.Add("Select an older-than date.", Severity.Warning);
+            return;
+        }
+
+        await Api.Api._system.Logentries.DeleteAsync(c =>
+        {
+            c.QueryParameters.OlderThan = ToIsoStart(cleanupOlderThanDate);
+            c.QueryParameters.Archive = cleanupArchive;
+            c.QueryParameters.BatchSize = cleanupBatchSize;
+            c.QueryParameters.DelayIntervalMilliseconds = 100;
+        });
+
+        cleanupDialogVisible = false;
+        Snackbar.Add("Log cleanup queued.", Severity.Success);
+    }
+
+    private async Task ExportAsync(LogEntryExportFormat format)
+    {
+        exporting = true;
+
+        try
+        {
+            await using var stream = await Api.Api._system.Logentries.Export.GetAsync(c =>
+            {
+                c.QueryParameters.StartTime = ToIsoStart(startDate);
+                c.QueryParameters.EndTime = ToIsoEnd(endDate);
+                c.QueryParameters.LevelAsLogLevel = levelFilter;
+                c.QueryParameters.TraceId = EmptyToNull(traceId);
+                c.QueryParameters.SpanId = EmptyToNull(spanId);
+                c.QueryParameters.CorrelationId = EmptyToNull(correlationId);
+                c.QueryParameters.LogKey = EmptyToNull(logKey);
+                c.QueryParameters.ModuleName = EmptyToNull(moduleName);
+                c.QueryParameters.ShortTypeName = EmptyToNull(shortTypeName);
+                c.QueryParameters.SearchText = EmptyToNull(searchText);
+                c.QueryParameters.PageSize = 1000;
+                c.QueryParameters.FormatAsLogEntryExportFormat = format;
+            });
+
+            if (stream is null)
+            {
+                Snackbar.Add("Export returned no content.", Severity.Warning);
+                return;
+            }
+
+            using var streamReference = new DotNetStreamReference(stream);
+            await JS.InvokeVoidAsync("downloadFileFromStream", GetExportFileName(format), streamReference);
+            Snackbar.Add("Log export downloaded.", Severity.Success);
+        }
+        catch (Exception ex) when (ex is KiotaApiException or InvalidOperationException)
+        {
+            Snackbar.Add($"Unable to export log entries: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            exporting = false;
+        }
+    }
+
+    private IEnumerable<(string Key, string Label)> ActiveFilters
+    {
+        get
+        {
+            if (!string.IsNullOrWhiteSpace(correlationId)) yield return (nameof(correlationId), $"CorrelationId: {ShortId(correlationId, 16)}");
+            if (!string.IsNullOrWhiteSpace(traceId)) yield return (nameof(traceId), $"TraceId: {ShortId(traceId, 16)}");
+            if (!string.IsNullOrWhiteSpace(spanId)) yield return (nameof(spanId), $"SpanId: {ShortId(spanId, 16)}");
+            if (!string.IsNullOrWhiteSpace(logKey)) yield return (nameof(logKey), $"LogKey: {logKey}");
+            if (!string.IsNullOrWhiteSpace(moduleName)) yield return (nameof(moduleName), $"Module: {moduleName}");
+            if (!string.IsNullOrWhiteSpace(shortTypeName)) yield return (nameof(shortTypeName), $"Type: {shortTypeName}");
+        }
+    }
+
+    private IEnumerable<IGrouping<string, LogEntry>> TraceLanes() =>
+        traceLogs.GroupBy(e => string.IsNullOrWhiteSpace(e.SpanId) ? "(no span)" : e.SpanId).OrderBy(g => g.Min(e => e.TimeStamp));
+
+    private IEnumerable<KeyValuePair<string, string>> DetailRows(LogEntry entry)
+    {
+        yield return new("Timestamp", FormatTimestamp(entry.TimeStamp));
+        yield return new("Level", DisplayLevel(entry.Level));
+        yield return new("TraceId", entry.TraceId);
+        yield return new("SpanId", entry.SpanId);
+        yield return new("CorrelationId", entry.CorrelationId);
+        yield return new("LogKey", entry.LogKey);
+        yield return new("ModuleName", entry.ModuleName);
+        yield return new("ThreadId", entry.ThreadId);
+        yield return new("ShortTypeName", entry.ShortTypeName);
+    }
+
+    private int LevelCount(string level)
+    {
+        var data = stats?.LevelCounts?.AdditionalData;
+        if (data is null || !data.TryGetValue(level, out var value))
+        {
+            return 0;
+        }
+
+        return value switch
+        {
+            int i => i,
+            long l => (int)l,
+            double d => (int)d,
+            UntypedInteger ui => ui.GetValue(),
+            UntypedLong ul => (int)ul.GetValue(),
+            _ when int.TryParse(value?.ToString(), out var parsed) => parsed,
+            _ => 0
+        };
+    }
+
+    private string TraceDuration()
+    {
+        if (traceLogs.Count < 2)
+        {
+            return "0 ms";
+        }
+
+        var duration = traceLogs.Max(e => e.TimeStamp) - traceLogs.Min(e => e.TimeStamp);
+        return $"{duration?.TotalMilliseconds:0.###} ms";
+    }
+
+    private string TraceOffset(LogEntry entry)
+    {
+        if (traceLogs.Count == 0 || !entry.TimeStamp.HasValue)
+        {
+            return "0 ms";
+        }
+
+        var start = traceLogs.Min(e => e.TimeStamp);
+        return $"{(entry.TimeStamp - start)?.TotalMilliseconds:0.###} ms";
+    }
+
+    private double TimelineLeft(LogEntry entry)
+    {
+        if (traceLogs.Count < 2 || !entry.TimeStamp.HasValue)
+        {
+            return 0;
+        }
+
+        var min = traceLogs.Min(e => e.TimeStamp).GetValueOrDefault();
+        var max = traceLogs.Max(e => e.TimeStamp).GetValueOrDefault();
+        var total = (max - min).TotalMilliseconds;
+        return total <= 0 ? 0 : Math.Clamp((entry.TimeStamp.Value - min).TotalMilliseconds / total * 100, 0, 100);
+    }
+
+    private void SortLogs() => logs.Sort((left, right) => (right.Id ?? 0).CompareTo(left.Id ?? 0));
+    private static string EmptyToNull(string value) => string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+    private static string ToIsoStart(DateTime? value) => value.HasValue ? new DateTimeOffset(value.Value.Date, TimeZoneInfo.Local.GetUtcOffset(value.Value.Date)).ToUniversalTime().ToString("O") : null;
+    private static string ToIsoEnd(DateTime? value) => value.HasValue ? new DateTimeOffset(value.Value.Date.AddDays(1).AddTicks(-1), TimeZoneInfo.Local.GetUtcOffset(value.Value.Date)).ToUniversalTime().ToString("O") : null;
+    private static string FormatTimestamp(DateTimeOffset? value) => value?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss.fff zzz") ?? "";
+    private static string FormatShortTimestamp(DateTimeOffset? value) => value?.ToLocalTime().ToString("HH:mm:ss.fff") ?? "";
+    private static string ShortId(string value, int max) => string.IsNullOrWhiteSpace(value) ? "" : value.Length <= max ? value : value[..max];
+    private static string DisplayLevel(string level) => level == "Critical" ? "Fatal" : level;
+    private static Color LevelColor(string level) => level switch { "Fatal" or "Critical" or "Error" => Color.Error, "Warning" => Color.Warning, "Information" => Color.Info, "Debug" => Color.Dark, _ => Color.Default };
+    private static string LevelCss(string level) => (level ?? "").ToLowerInvariant();
+    private static string GetRowClass(LogEntry entry, int rowNumber) => $"log-row level-{LevelCss(entry.Level)}";
+    private static string GetExportFileName(LogEntryExportFormat format) => $"logentries-{DateTime.Now:yyyyMMdd-HHmmss}.{GetExportExtension(format)}";
+    private static string GetExportExtension(LogEntryExportFormat format) => format switch { LogEntryExportFormat.Json => "json", LogEntryExportFormat.Txt => "txt", _ => "csv" };
+
+    public async ValueTask DisposeAsync()
+    {
+        await StopTailAsync();
+    }
+}
+
+<style>
+    .operations-logentries .mud-table-cell { vertical-align: top; }
+    .log-message { max-width: 680px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .log-template { max-width: 680px; color: var(--mud-palette-text-secondary); font-size: .75rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .monospace { font-family: Consolas, "Cascadia Mono", monospace; word-break: break-all; }
+    .older-log-sentinel { min-height: 56px; display: flex; align-items: center; justify-content: center; }
+    .trace-summary { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .trace-timeline { border: 1px solid var(--mud-palette-lines-default); border-radius: 6px; margin-bottom: 16px; overflow: hidden; }
+    .trace-lane { display: grid; grid-template-columns: 190px minmax(240px, 1fr); border-bottom: 1px solid var(--mud-palette-lines-default); min-height: 42px; }
+    .trace-lane:last-child { border-bottom: 0; }
+    .trace-lane-label { padding: 10px 12px; font-family: Consolas, "Cascadia Mono", monospace; color: var(--mud-palette-text-secondary); background: var(--mud-palette-surface); border-right: 1px solid var(--mud-palette-lines-default); }
+    .trace-lane-track { position: relative; margin: 0 14px; }
+    .trace-dot { position: absolute; top: 15px; width: 11px; height: 11px; margin-left: -5px; border-radius: 50%; background: var(--mud-palette-info); box-shadow: 0 0 0 3px rgba(25, 118, 210, .16); }
+    .trace-dot.warning { background: var(--mud-palette-warning); box-shadow: 0 0 0 3px rgba(255, 152, 0, .18); }
+    .trace-dot.error, .trace-dot.fatal, .trace-dot.critical { background: var(--mud-palette-error); box-shadow: 0 0 0 3px rgba(244, 67, 54, .18); }
+    pre { white-space: pre-wrap; margin: 0; }
+</style>

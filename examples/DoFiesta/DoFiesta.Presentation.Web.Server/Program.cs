@@ -113,7 +113,7 @@ if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
 {
     builder.Services.AddHostedService<LogEntryMaintenanceService<CoreDbContext>>();
 }
-//builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopment());
+builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopment() || EnvironmentExtensions.IsBuildTimeOpenApiGeneration());
 
 // logging services and endpoints
 

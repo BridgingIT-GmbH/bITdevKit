@@ -44,7 +44,7 @@ public class LogEntryService<TContext>(
 
         request.Validate();
 
-        this.logger.LogTrace("{LogKey}: starting query with filters: StartTime={StartTime}, EndTime={EndTime}, Age={Age}, Level={Level}, TraceId={TraceId}, CorrelationId={CorrelationId}, LogKey={LogKey}, SearchText={SearchText}, PageSize={PageSize}, ContinuationToken={ContinuationToken}", "LOG", request.StartTime, request.EndTime, request.Age, request.Level, request.TraceId, request.CorrelationId, request.LogKey, request.SearchText, request.PageSize, request.ContinuationToken);
+        this.logger.LogTrace("{LogKey}: starting query with filters: StartTime={StartTime}, EndTime={EndTime}, Age={Age}, Level={Level}, TraceId={TraceId}, SpanId={SpanId}, CorrelationId={CorrelationId}, LogKey={LogKey}, SearchText={SearchText}, PageSize={PageSize}, ContinuationToken={ContinuationToken}, AfterId={AfterId}", "LOG", request.StartTime, request.EndTime, request.Age, request.Level, request.TraceId, request.SpanId, request.CorrelationId, request.LogKey, request.SearchText, request.PageSize, request.ContinuationToken, request.AfterId);
 
         var pageSize = Math.Max(1, Math.Min(request.PageSize, 10000)); // Cap at 10,000 for safety
         long? lastId = null;
@@ -90,6 +90,11 @@ public class LogEntryService<TContext>(
             query = query.Where(e => e.TraceId == request.TraceId);
         }
 
+        if (!string.IsNullOrEmpty(request.SpanId))
+        {
+            query = query.Where(e => e.SpanId == request.SpanId);
+        }
+
         if (!string.IsNullOrEmpty(request.CorrelationId))
         {
             query = query.Where(e => e.CorrelationId == request.CorrelationId);
@@ -124,7 +129,10 @@ public class LogEntryService<TContext>(
                     searchPattern = $"%{request.SearchText}%";
                     query = query.Where(e =>
                         EF.Functions.Like(e.Message ?? "", searchPattern) ||
-                        e.CorrelationId == searchPattern ||
+                        EF.Functions.Like(e.CorrelationId ?? "", searchPattern) ||
+                        EF.Functions.Like(e.TraceId ?? "", searchPattern) ||
+                        EF.Functions.Like(e.SpanId ?? "", searchPattern) ||
+                        EF.Functions.Like(e.ModuleName ?? "", searchPattern) ||
                         EF.Functions.Like(e.Exception ?? "", searchPattern) ||
                         EF.Functions.Like(e.LogEventsJson ?? "", searchPattern));
                     break;
@@ -139,14 +147,21 @@ public class LogEntryService<TContext>(
                     searchPattern = $"%{request.SearchText}%";
                     query = query.Where(e =>
                         EF.Functions.Like(e.Message ?? "", searchPattern) ||
-                        e.CorrelationId == searchPattern ||
+                        EF.Functions.Like(e.CorrelationId ?? "", searchPattern) ||
+                        EF.Functions.Like(e.TraceId ?? "", searchPattern) ||
+                        EF.Functions.Like(e.SpanId ?? "", searchPattern) ||
+                        EF.Functions.Like(e.ModuleName ?? "", searchPattern) ||
                         EF.Functions.Like(e.Exception ?? "", searchPattern) ||
                         EF.Functions.Like(e.LogEventsJson ?? "", searchPattern));
                     break;
             }
         }
 
-        if (lastId.HasValue)
+        if (request.AfterId.HasValue)
+        {
+            query = query.Where(e => e.Id > request.AfterId.Value); // Tail: fetch newer entries
+        }
+        else if (lastId.HasValue)
         {
             query = query.Where(e => e.Id < lastId.Value); // Reverse: fetch entries with Id < lastId
         }
@@ -180,7 +195,7 @@ public class LogEntryService<TContext>(
             LogEvents = e.LogEvents,
         });
 
-        var continuationToken = hasMore && dtos.Count != 0 ? dtos[^1].Id.ToString() : null; // Reverse: use last (smallest) Id
+        var continuationToken = !request.AfterId.HasValue && hasMore && dtos.Count != 0 ? dtos[^1].Id.ToString() : null; // Reverse: use last (smallest) Id
 
         this.logger.LogTrace("{LogKey}: query completed with {ItemCount} items", "LOG", dtos.Count);
 
@@ -197,6 +212,7 @@ public class LogEntryService<TContext>(
         DateTimeOffset? startTime = null,
         LogLevel? level = null,
         string traceId = null,
+        string spanId = null,
         string correlationId = null,
         string logKey = null,
         string moduleName = null,
@@ -206,7 +222,7 @@ public class LogEntryService<TContext>(
         TimeSpan? pollingInterval = null,
         [System.Runtime.CompilerServices.EnumeratorCancellation] CancellationToken cancellationToken = default)
     {
-        this.logger.LogTrace("{LogKey}: starting log stream with filters: StartTime={StartTime}, Level={Level}, TraceId={TraceId}, CorrelationId={CorrelationId}, LogKey={LogKey}, SearchText={SearchText}, PollingInterval={PollingInterval}", "LOG", startTime, level, traceId, correlationId, logKey, searchText, pollingInterval);
+        this.logger.LogTrace("{LogKey}: starting log stream with filters: StartTime={StartTime}, Level={Level}, TraceId={TraceId}, SpanId={SpanId}, CorrelationId={CorrelationId}, LogKey={LogKey}, SearchText={SearchText}, PollingInterval={PollingInterval}", "LOG", startTime, level, traceId, spanId, correlationId, logKey, searchText, pollingInterval);
 
         long? lastId = null;
         var interval = pollingInterval ?? TimeSpan.FromSeconds(1);
@@ -238,6 +254,11 @@ public class LogEntryService<TContext>(
             if (!string.IsNullOrEmpty(traceId))
             {
                 query = query.Where(e => e.TraceId == traceId);
+            }
+
+            if (!string.IsNullOrEmpty(spanId))
+            {
+                query = query.Where(e => e.SpanId == spanId);
             }
 
             if (!string.IsNullOrEmpty(correlationId))
@@ -274,7 +295,10 @@ public class LogEntryService<TContext>(
                         searchPattern = $"%{searchText}%";
                         query = query.Where(e =>
                             EF.Functions.Like(e.Message ?? "", searchPattern) ||
-                            e.CorrelationId == searchPattern ||
+                            EF.Functions.Like(e.CorrelationId ?? "", searchPattern) ||
+                            EF.Functions.Like(e.TraceId ?? "", searchPattern) ||
+                            EF.Functions.Like(e.SpanId ?? "", searchPattern) ||
+                            EF.Functions.Like(e.ModuleName ?? "", searchPattern) ||
                             EF.Functions.Like(e.Exception ?? "", searchPattern) ||
                             EF.Functions.Like(e.LogEventsJson ?? "", searchPattern));
                         break;
@@ -289,7 +313,10 @@ public class LogEntryService<TContext>(
                         searchPattern = $"%{searchText}%";
                         query = query.Where(e =>
                             EF.Functions.Like(e.Message ?? "", searchPattern) ||
-                            e.CorrelationId == searchPattern ||
+                            EF.Functions.Like(e.CorrelationId ?? "", searchPattern) ||
+                            EF.Functions.Like(e.TraceId ?? "", searchPattern) ||
+                            EF.Functions.Like(e.SpanId ?? "", searchPattern) ||
+                            EF.Functions.Like(e.ModuleName ?? "", searchPattern) ||
                             EF.Functions.Like(e.Exception ?? "", searchPattern) ||
                             EF.Functions.Like(e.LogEventsJson ?? "", searchPattern));
                         break;
@@ -408,7 +435,7 @@ public class LogEntryService<TContext>(
             .GroupBy(e => e.Level)
             .Select(g => new { Level = g.Key, Count = g.Count() })
             .ToDictionaryAsync(
-                e => e.Level != null ? Enum.Parse<LogLevel>(e.Level) : LogLevel.Trace,
+                e => ParseLogLevel(e.Level),
                 e => e.Count,
                 cancellationToken);
 
@@ -440,7 +467,7 @@ public class LogEntryService<TContext>(
                 .ToDictionary(
                     g => (effectiveStartTime ?? DateTimeOffset.UtcNow).AddSeconds(g.Key),
                     g => g.ToDictionary(
-                        e => e.Level != null ? Enum.Parse<LogLevel>(e.Level) : LogLevel.Trace,
+                        e => ParseLogLevel(e.Level),
                         e => e.Count));
 
             result.TimeIntervalCounts = groupedByTime;
@@ -658,6 +685,16 @@ public class LogEntryService<TContext>(
             }
         }
     }
+
+    private static LogLevel ParseLogLevel(string level) =>
+        level switch
+        {
+            "Verbose" => LogLevel.Trace,
+            "Fatal" => LogLevel.Critical,
+            null => LogLevel.Trace,
+            _ when Enum.TryParse<LogLevel>(level, out var parsed) => parsed,
+            _ => LogLevel.Trace
+        };
 
     /// <inheritdoc/>
     public async Task SubscribeAsync(Func<LogEntryModel, Task> callback, LogLevel logLevel = LogLevel.Error, CancellationToken cancellationToken = default)

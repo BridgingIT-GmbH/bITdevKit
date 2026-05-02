@@ -5,6 +5,7 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Info;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Locations;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logentries;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Modules;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Notifications;
@@ -45,6 +46,11 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Locations.LocationsRequestBuilder Locations
         {
             get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Locations.LocationsRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The logentries property</summary>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logentries.LogentriesRequestBuilder Logentries
+        {
+            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logentries.LogentriesRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>The messaging property</summary>
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.MessagingRequestBuilder Messaging

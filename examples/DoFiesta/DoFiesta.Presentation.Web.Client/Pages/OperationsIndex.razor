@@ -85,6 +85,27 @@
             <MudCard>
                 <MudCardHeader>
                     <CardHeaderContent>
+                        <MudText Typo="Typo.h5">Logs</MudText>
+                        <MudText Typo="Typo.body2">Search SQL sink log entries, tail new events, filter by trace/span/correlation, and inspect a trace timeline.</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudAvatar Color="Color.Secondary" Variant="Variant.Filled">
+                            <MudIcon Icon="@Icons.Material.Filled.ManageSearch" />
+                        </MudAvatar>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Secondary" StartIcon="@Icons.Material.Filled.Visibility" Href="/operations/logentries">
+                        Open Logs
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" md="5">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
                         <MudText Typo="Typo.h5">Notifications</MudText>
                         <MudText Typo="Typo.body2">Inspect the email outbox, review pending and sent notification mail, and retry or delete failed outbox entries.</MudText>
                     </CardHeaderContent>

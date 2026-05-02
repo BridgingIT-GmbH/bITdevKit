@@ -64,6 +64,7 @@ public interface ILogEntryService
     /// <param name="startTime">The start time for log entries (optional).</param>
     /// <param name="level">The log level to filter by (optional).</param>
     /// <param name="traceId">The trace identifier to filter by (optional).</param>
+    /// <param name="spanId">The span identifier to filter by (optional).</param>
     /// <param name="correlationId">The correlation identifier to filter by (optional).</param>
     /// <param name="logKey">The log key to filter by (optional).</param>
     /// <param name="moduleName">The module name to filter by (optional).</param>
@@ -77,6 +78,7 @@ public interface ILogEntryService
         DateTimeOffset? startTime = null,
         LogLevel? level = null,
         string traceId = null,
+        string spanId = null,
         string correlationId = null,
         string logKey = null,
         string moduleName = null,

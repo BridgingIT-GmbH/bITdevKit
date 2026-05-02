@@ -2,7 +2,7 @@
 status: draft
 ---
 
-# Design Specification: Orchestration Feature (Application.Orchestration)
+# Design Specification: Stateful Orchestration Feature (Application.Orchestration)
 
 > This design document outlines the architecture and behavior of the new orchestration feature within the application. It defines the core concepts, execution model, control flow capabilities, triggers, reliability mechanisms, observability features, identity management, versioning considerations, testing strategies, and typical use cases for orchestrations.
 
@@ -11,6 +11,10 @@ status: draft
 The orchestration feature provides a code-first framework for defining, executing, and managing long-running processes within the application.
 
 Orchestrations are persistent, stateful, and designed to support complex coordination scenarios, including human interaction, event-driven transitions, and fault-tolerant execution.
+
+The orchestration model is state-machine-oriented. States represent stable phases of a long-running process, while activities perform work within a state. Transitions move an orchestration instance between states based on outcomes, conditions, signals, or time-based triggers.
+
+The feature intentionally combines state-machine semantics with selected workflow capabilities such as activity execution, waiting, retries, human interaction, and compensation.
 
 Disclaimer: this feature is not a full blown workflow engine or a business process modeling tool. It is a code-centric framework for structuring long-running processes in a maintainable and testable way. Please evaluate carefully if this feature is a good fit for your specific use case, as it can be opinionated in its execution model and may not be suitable for all scenarios. Alternatives: Elsa, Camunda, Dapr Workflows, MassTransit Courier, Temporal, Durable Functions, etc.
 
@@ -527,7 +531,7 @@ public sealed class OrderApprovalOrchestration
         builder
             .State("Created", state => state // sequential activities example
                 .Activity<ValidateOrderActivity>() // custom activity example
-                .Activity<DetermineApprovalRequirementActivity>()
+                .Activity<DetermineApprovalRequirementActivity>() // custom activity that sets RequiresApproval in context
                 .TransitionTo("AwaitingApproval", ctx => ctx.Data.RequiresApproval)
                 .TransitionTo("PaymentReservation", ctx => !ctx.Data.RequiresApproval))
 
@@ -544,7 +548,7 @@ public sealed class OrderApprovalOrchestration
 
                     context.Properties["ApprovalTaskId"] = taskId;
 
-                    return OrchestrationOutcome.Continue();
+                    return OrchestrationOutcome.Continue(); // execution continues to wait for signals after this activity
                 })
 
                 .WaitForSignal("OrderApproved", signal => signal // signal-driven transition example
@@ -556,7 +560,7 @@ public sealed class OrderApprovalOrchestration
                 .WaitForSignal("OrderRejected", signal => signal
                     .MapToContext((ctx, payload) =>
                     {
-                        ctx.Data.RejectionReason = payload.Reason;
+                        ctx.Data.RejectionReason = payload.Reason; // mapping of signal data to context
                     })
                     .TransitionTo("Rejected"))
                 .TimeoutAfter(TimeSpan.FromDays(3)) // time-based transition example

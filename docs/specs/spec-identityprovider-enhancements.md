@@ -1,5 +1,5 @@
 ---
-status: planned
+status: draft
 ---
 
 # Design Specification: Fake Identity Provider Enhancements

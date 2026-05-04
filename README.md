@@ -5,74 +5,114 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=bitdevkit&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=bitdevkit)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
 
-> Empowering developers with modular components for modern application development, centered around
-> Domain-Driven Design principles.
+> Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles.
 
 <!-- TOC -->
 
-* [Introduction:](#introduction)
-* [Features:](#features)
-* [Libraries used](#libraries-used-excerpt)
-* [Example projects](#example-projects)
-* [Collaboration](#collaboration)
-* [Commit Policy](#commit-policy)
+- [](#)
+  - [Introduction](#introduction)
+  - [Documentation](#documentation)
+  - [Feature Highlights](#feature-highlights)
+    - [Core domain and application](#core-domain-and-application)
+    - [Execution, messaging and modularity](#execution-messaging-and-modularity)
+    - [Presentation and host](#presentation-and-host)
+    - [Storage, scheduling and operations](#storage-scheduling-and-operations)
+    - [Common building blocks](#common-building-blocks)
+  - [Libraries used (excerpt):](#libraries-used-excerpt)
+  - [Example projects](#example-projects)
+  - [Performance Benchmarks](#performance-benchmarks)
+  - [Collaboration](#collaboration)
+  - [Commit Policy](#commit-policy)
+  - [License](#license)
 
 <!-- TOC -->
 
 ## Introduction
 
-Our goal is to empower developers by offering modular components that can be easily integrated into
-your projects. Whether you're working with repositories, commands, queries, or other components, the
-bITDevKit provides flexible solutions that can adapt to your specific needs.
+The `bITdevKit` provides modular building blocks for modern .NET applications. It is centered around
+clean architecture, Domain-Driven Design, modular vertical slices and reusable infrastructure for
+real-world application concerns such as requests, messaging, queueing, storage, scheduling and
+presentation.
 
-This repository includes the complete source code for the bITDevKit, along with a variety of sample
-applications located in the ./examples folder within the solution. These samples serve as practical
-demonstrations of how to leverage the capabilities of the bITDevKit in real-world scenarios. All
-components are available
-as [nuget packages](https://www.nuget.org/packages?q=bitDevKit&packagetype=&prerel=true&sortby=relevance).
+This repository contains the full source code, supporting docs and several example applications in
+`./examples` that show how the framework can be composed in practice. The components are published as
+[NuGet packages](https://www.nuget.org/packages?q=bitDevKit&packagetype=&prerel=true&sortby=relevance).
 
 For the latest updates and release notes, please refer to
 the [CHANGELOG](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/CHANGELOG.md).
 
-Join us in advancing the world of software development with the bITDevKit!
+## Documentation
 
-## Features:
+The best entry point into the current documentation set is the
+[Documentation Index](./docs/INDEX.md).
 
-- [Commands](./docs/features-commands.md) & [Queries](./docs/features-queries.md)
-- [Domain Model](./docs/features-domain-models.md)
-- Domain Events
-- Domain Specifications
-- [Domain Repositories](./docs/features-domain-repositories.md)
-- Domain TypedIds
-- Domain Policies & Rules
-- Domain EventSourcing
+Recommended starting path:
+
+- [Domain](./docs/features-domain.md)
+- [Results](./docs/features-results.md)
+- [Requester and Notifier](./docs/features-requester-notifier.md)
 - [Modules](./docs/features-modules.md)
+- [Presentation Endpoints](./docs/features-presentation-endpoints.md)
+
+Additional entry points:
+
+- [Introduction to DDD in bITdevKit](./docs/introduction-ddd-guide.md)
+- [Testing Common XUnit](./docs/testing-common-xunit.md)
+- [Fake Authentication for Integration Tests](./docs/testing-fake-authentication.md)
+
+## Feature Highlights
+
+### Core domain and application
+
+- [Domain](./docs/features-domain.md)
+- [Domain Events](./docs/features-domain-events.md)
+- [Domain Repositories](./docs/features-domain-repositories.md)
+- [Domain Specifications](./docs/features-domain-specifications.md)
+- [Results](./docs/features-results.md)
+- [Application Commands and Queries](./docs/features-application-commands-queries.md)
+- [Application Events](./docs/features-application-events.md)
+
+### Execution, messaging and modularity
+
+- [Requester and Notifier](./docs/features-requester-notifier.md)
+- [Messaging](./docs/features-messaging.md)
+- [Queueing](./docs/features-queueing.md)
+- [Notifications](./docs/features-notifications.md)
+- [Modules](./docs/features-modules.md)
+- [Pipelines](./docs/features-pipelines.md)
 - [Filtering](./docs/features-filtering.md)
 
-  Addresses the challenges of data querying in modern applications by providing a unified,
-  type-safe, and flexible solution for filtering, sorting, and pagination through API requests.
-- [Results](./docs/features-results.md)
+### Presentation and host
 
-  Tackles the challenges of inconsistent error handling and outcome management in applications. It
-  introduces a standardized, type-safe Result pattern for explicit success/failure handling and
-  streamlining outcomes with functional extensions.
-- [Rules](./docs/features-rules.md)
+- [Presentation Endpoints](./docs/features-presentation-endpoints.md)
+- [Console Commands](./docs/features-presentation-console-commands.md)
+- [CORS Configuration](./docs/features-presentation-cors.md)
+- [Exception Handling](./docs/features-presentation-exception-handling.md)
+- [AppState](./docs/features-presentation-appstate.md)
 
-  Provides a flexible and extensible way to define and enforce business rules in your application at
-  several layers. It allows to encapsulate and manage rules in a single place, making them easy to
-  maintain, test and apply across your domain.
-- [Messaging](./docs/features-messaging.md)
-- Queuing (TODO)
-- [JobScheduling](./docs/features-jobscheduling.md)
+### Storage, scheduling and operations
+
 - [StartupTasks](./docs/features-startuptasks.md)
-- [DocumentStorage](./docs/features-documentstorage.md)
+- [JobScheduling](./docs/features-jobscheduling.md)
+- [DocumentStorage](./docs/features-storage-documents.md)
+- [FileStorage](./docs/features-storage-files.md)
+- [Storage Monitoring](./docs/features-storage-monitoring.md)
+- [Log Entries](./docs/features-log-entries.md)
+
+### Common building blocks
+
+- [Common Extensions](./docs/common-extensions.md)
+- [Common Utilities](./docs/common-utilities.md)
+- [Common Serialization](./docs/common-serialization.md)
+- [Common Options Builders](./docs/common-options-builders.md)
+- [Common Mapping](./docs/common-mapping.md)
+- [Common Caching](./docs/common-caching.md)
+- [Common Observability Tracing](./docs/common-observability-tracing.md)
 
 ## Libraries used (excerpt):
 
 - [Xunit](https://github.com/xunit/xunit)
-- [MediatR](https://github.com/jbogard/MediatR)
-- [EnsureThat.Core](https://github.com/danielwertheim/Ensure.That)
-- [AutoMapper](https://github.com/AutoMapper/AutoMapper)
+- [EnsureThat](https://github.com/danielwertheim/Ensure.That)
 - [Mapster](https://github.com/MapsterMapper/Mapster)
 - [FluentValidation](https://github.com/FluentValidation/FluentValidation)
 - [FluentAssertions](https://github.com/fluentassertions/fluentassertions)
@@ -83,7 +123,7 @@ Join us in advancing the world of software development with the bITDevKit!
 - [Quartz](https://github.com/quartz-scheduler/quartz)
 - [Shouldly](https://github.com/shouldly/shouldly)
 - [Testcontainer](https://github.com/testcontainers)
-- EntityFramework Core
+- EntityFramework
 - Azure Storage
 - Azure ServiceBus
 - Azure CosmosDb
@@ -96,7 +136,6 @@ Join us in advancing the world of software development with the bITDevKit!
 - [EventStore (CQRS)](https://github.com/bridgingit/bitdevkit/examples)
 - [DinnerFiesta](https://github.com/bridgingit/bitdevkit/examples)
 - [WeatherForecast](https://github.com/bridgingit/bitdevkit/examples)
-- [Shop](https://github.com/bridgingit/bitdevkit/examples)
 
 ## Performance Benchmarks
 
@@ -122,7 +161,7 @@ For more details, see the `Common.Benchmarks` project in the `benchmarks/` folde
 ## Collaboration
 
 Simply create a pull request with your ideas or contact us.
-Please refer to the [CONTRIBUTING](./CONTRIBUTION.md) guidelines for more information.
+Please refer to the [Contribution Guide](./CONTRIBUTION.md) for more information.
 
 ## Commit Policy
 

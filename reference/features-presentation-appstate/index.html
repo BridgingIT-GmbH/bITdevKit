@@ -1,0 +1,3166 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles.">
+      
+      
+      
+        <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/reference/features-presentation-appstate/">
+      
+      
+        <link rel="prev" href="../features-presentation-exception-handling/">
+      
+      
+        <link rel="next" href="../features-startuptasks/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>AppState - bITdevKit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#appstate-feature-documentation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
+      
+  <img src="../../assets/images/bITDevKit_Icon.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            bITdevKit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              AppState
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/bridgingIT/bITdevKit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bridgingIT/bITdevKit
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
+      
+  <img src="../../assets/images/bITDevKit_Icon.svg" alt="logo">
+
+    </a>
+    bITdevKit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/bridgingIT/bITdevKit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bridgingIT/bITdevKit
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Infrastructure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Common Infrastructure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-serialization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Serialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-options-builders/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Options Builders
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-mapping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Mapping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-observability-tracing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Observability Tracing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Domain and Application
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core Domain and Application
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-repositories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Repositories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-specifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Specifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-rules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-commands-queries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Commands and Queries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-dataporter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataPorter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution, Messaging and Modularity
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Execution, Messaging and Modularity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-requester-notifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requester and Notifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-modules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipelines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-filtering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filtering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security and Access
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Security and Access
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-entitypermissions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entity Permissions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-identityprovider/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Identity Provider
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation and Host
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Presentation and Host
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-endpoints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Endpoints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-console-commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Console Commands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-cors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CORS Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-exception-handling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exception Handling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AppState
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AppState
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#visual-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visual Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#component-interaction-with-filter-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Interaction with Filter State
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-creating-a-state-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Creating a State Class
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-registering-the-state-in-di" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Registering the State in DI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-subscribing-to-state-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Subscribing to State Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-persisting-and-loading-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Persisting and Loading State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-using-undoredo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Using Undo/Redo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-triggering-state-changes-manually" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Triggering State Changes Manually
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-testing-and-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Testing and Debugging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Performance Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-integration-with-other-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Integration with Other Services
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-lifecycle-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Lifecycle Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Scenarios
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-internals-of-appstate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix: Internals of AppState
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Appendix: Internals of AppState">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#state-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State Storage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#history-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        History Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#change-notifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Change Notifications
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debounced-saving" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debounced Saving
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debugging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage, Scheduling and Utilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Storage, Scheduling and Utilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-startuptasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StartupTasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-jobscheduling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JobScheduling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-documents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DocumentStorage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FileStorage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-monitoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Monitoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-log-entries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Log Entries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing and Test Utilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Testing and Test Utilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing-fake-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Authentication for Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing-common-xunit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing Common XUnit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Overview">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#visual-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Visual Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#component-interaction-with-filter-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component Interaction with Filter State
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-creating-a-state-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Creating a State Class
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-registering-the-state-in-di" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Registering the State in DI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-subscribing-to-state-changes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Subscribing to State Changes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-persisting-and-loading-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Persisting and Loading State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-using-undoredo" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Using Undo/Redo
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-triggering-state-changes-manually" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Triggering State Changes Manually
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#7-testing-and-debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Testing and Debugging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#8-performance-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Performance Considerations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#9-integration-with-other-services" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. Integration with Other Services
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#10-lifecycle-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. Lifecycle Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Best Practices
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#common-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Scenarios
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-internals-of-appstate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix: Internals of AppState
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Appendix: Internals of AppState">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#state-storage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State Storage
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#history-management" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        History Management
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#change-notifications" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Change Notifications
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debounced-saving" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debounced Saving
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debugging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debugging
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="appstate-feature-documentation">AppState Feature Documentation<a class="headerlink" href="#appstate-feature-documentation" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Manage Blazor application state with persistence, history, and change notifications.</p>
+</blockquote>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p><code>AppState&lt;T&gt;</code> is an abstract base class designed for state management in Blazor applications. It provides features for persistence, history (undo/redo), and change notifications, making it ideal for managing application state in a robust and scalable way. Developers can create strongly-typed state classes that persist to storage (e.g., local storage), support undo/redo operations, and notify subscribers of state changes.</p>
+<h3 id="visual-overview">Visual Overview<a class="headerlink" href="#visual-overview" title="Permanent link">&para;</a></h3>
+<p>Below is a Mermaid flowchart that illustrates the key components and flow of <code>AppState&lt;T&gt;</code>:</p>
+<pre class="mermaid"><code>flowchart TD
+    A[Component] --&gt;|Injects| B[AppState&lt;T&gt;]
+    B --&gt;|Persists to| C[Storage Provider&lt;br&gt; IAppStateStoreProvider]
+    B --&gt;|Notifies| D[Subscribers&lt;br&gt; Components/Services]
+    B --&gt;|Logs| E[Debugger&lt;br&gt; AppStateDebugger]
+    B --&gt;|Manages| F[History&lt;br&gt;Undo/Redo]
+
+    subgraph AppState Internals
+        B --&gt; G[State TState]
+        B --&gt; H[Debouncer]
+        G --&gt;|Updates| I[SetCurrentState]
+        I --&gt;|Triggers| J[StateChanged Event]
+        I --&gt;|Triggers| K[StateChangeWithMetadata Event]
+        H --&gt;|Saves| C
+    end
+
+    D --&gt;|Calls| L[StateHasChanged]</code></pre>
+<ul>
+<li><strong>Component</strong>: A Blazor component that injects <code>AppState&lt;T&gt;</code> to manage state.</li>
+<li><strong>AppState</strong>: The core state management class, handling state updates, persistence, history, and notifications.</li>
+<li><strong>Storage Provider</strong>: Persists state to storage (e.g., local storage).</li>
+<li><strong>Subscribers</strong>: Components or services that react to state changes via events.</li>
+<li><strong>Debugger</strong>: Logs state changes for debugging.</li>
+<li><strong>History</strong>: Manages undo/redo operations.</li>
+<li><strong>Debouncer</strong>: Delays state saving to improve performance.</li>
+</ul>
+<h3 id="component-interaction-with-filter-state">Component Interaction with Filter State<a class="headerlink" href="#component-interaction-with-filter-state" title="Permanent link">&para;</a></h3>
+<p>Below is a sequence diagram that illustrates how the <code>CustomerPageComponent</code> interacts with <code>CustomerFilterState</code> during its lifecycle, including initialization, state updates, and filtering:</p>
+<pre class="mermaid"><code>sequenceDiagram
+    participant C as CustomerPageComponent
+    participant F as CustomerFilterState
+    participant S as Storage (IAppStateStoreProvider)
+    participant U as User
+
+    C-&gt;&gt;F: LoadStateAsync()
+    F-&gt;&gt;S: Load state from storage
+    S--&gt;&gt;F: Return persisted state
+    F--&gt;&gt;C: State loaded
+
+    C-&gt;&gt;F: Subscribe to StateChanged&lt;br&gt;OnFilterStateChanged
+    C-&gt;&gt;C: LoadCustomers()
+
+    U-&gt;&gt;C: Updates SearchText via MudTextField
+    C-&gt;&gt;F: SetSearchText("new value")
+    F-&gt;&gt;F: TakeSnapshot()
+    F-&gt;&gt;F: RestoreSnapshot(snapshot, "Updated SearchText")
+    F-&gt;&gt;F: SetCurrentState(snapshot)
+    F-&gt;&gt;C: StateChanged event fired
+    C-&gt;&gt;C: OnFilterStateChanged(newState)
+
+    C-&gt;&gt;S: Debounced save triggered
+    S--&gt;&gt;F: State saved to storage
+
+    C-&gt;&gt;F: Unsubscribe from StateChanged (Dispose)</code></pre>
+<ul>
+<li><strong>Initialization</strong>: The component loads the state from storage and subscribes to <code>StateChanged</code> with the <code>OnFilterStateChanged</code> handler.</li>
+<li><strong>Data Loading</strong>: The component loads customers.</li>
+<li><strong>User Interaction</strong>: The user updates the <code>SearchText</code> filter, triggering <code>SetSearchText</code>.</li>
+<li><strong>State Update</strong>: <code>SetSearchText</code> updates the state via <code>RestoreSnapshot</code>, which calls <code>SetCurrentState</code>.</li>
+<li><strong>Notification</strong>: <code>SetCurrentState</code> fires the <code>StateChanged</code> event, notifying the component.</li>
+<li><strong>Reaction</strong>: The component�s <code>OnFilterStateChanged</code> handler is called with the new state.</li>
+<li><strong>Persistence</strong>: The debouncer saves the updated state to storage.</li>
+<li><strong>Cleanup</strong>: The component unsubscribes from events during disposal.</li>
+</ul>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>State Persistence</strong>: Persist state to a storage provider (e.g., local storage) using <code>IAppStateStoreProvider</code>.</li>
+<li><strong>History Management</strong>: Enable undo/redo with configurable history limits via <code>AppStateOptions</code>.</li>
+<li><strong>Change Notifications</strong>: Raise <code>StateChanged</code> and <code>StateChangeWithMetadata</code> events when the state changes, allowing components and services to react.</li>
+<li><strong>Debounced Saving</strong>: Automatically save state changes with a configurable debounce delay.</li>
+<li><strong>Thread Safety</strong>: Uses concurrent collections for history management.</li>
+<li><strong>Debugging</strong>: Supports debugging via <code>AppStateDebugger</code> for logging and tracking state changes.</li>
+</ul>
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
+<h3 id="1-creating-a-state-class">1. Creating a State Class<a class="headerlink" href="#1-creating-a-state-class" title="Permanent link">&para;</a></h3>
+<p>To use <code>AppState&lt;T&gt;</code>, create a derived class that defines your state model and implements the required abstract methods. For example, <code>CustomerFilterState</code> manages filter state for a customer list.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">CustomerFilterStateModel</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Status</span><span class="w"> </span><span class="n">Status</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">CustomerType</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">SearchText</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">CustomerFilterState</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">AppState</span><span class="o">&lt;</span><span class="n">CustomerFilterStateModel</span><span class="o">&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">CustomerFilterState</span><span class="p">(</span>
+<span class="w">        </span><span class="n">ILogger</span><span class="o">&lt;</span><span class="n">CustomerFilterState</span><span class="o">&gt;</span><span class="w"> </span><span class="n">logger</span><span class="p">,</span>
+<span class="w">        </span><span class="n">AppStateOptions</span><span class="w"> </span><span class="n">options</span><span class="p">,</span>
+<span class="w">        </span><span class="n">IAppStateStoreProvider</span><span class="w"> </span><span class="n">storageProvider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">,</span>
+<span class="w">        </span><span class="n">IUserContextProvider</span><span class="w"> </span><span class="n">userContextProvider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">,</span>
+<span class="w">        </span><span class="n">AppStateDebugger</span><span class="w"> </span><span class="n">debugger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">null</span><span class="p">)</span>
+<span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="k">base</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">storageProvider</span><span class="p">,</span><span class="w"> </span><span class="n">userContextProvider</span><span class="p">,</span><span class="w"> </span><span class="n">debugger</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="n">CustomerFilterStateModel</span><span class="w"> </span><span class="n">currentState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">CustomerFilterStateModel</span><span class="w"> </span><span class="nf">GetCurrentState</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">currentState</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">CustomerFilterStateModel</span><span class="w"> </span><span class="nf">CreateDefaultState</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">new</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">UpdateState</span><span class="p">(</span><span class="n">CustomerFilterStateModel</span><span class="w"> </span><span class="n">state</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">currentState</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">state</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Status</span><span class="w"> </span><span class="n">Status</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">get</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">currentState</span><span class="p">.</span><span class="n">Status</span><span class="p">;</span>
+<span class="w">        </span><span class="k">set</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">SetStatus</span><span class="p">(</span><span class="k">value</span><span class="p">).</span><span class="n">Wait</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">CustomerType</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">get</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">currentState</span><span class="p">.</span><span class="n">CustomerType</span><span class="p">;</span>
+<span class="w">        </span><span class="k">set</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">SetCustomerType</span><span class="p">(</span><span class="k">value</span><span class="p">).</span><span class="n">Wait</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">SearchText</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">get</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">currentState</span><span class="p">.</span><span class="n">SearchText</span><span class="p">;</span>
+<span class="w">        </span><span class="k">set</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">SetSearchText</span><span class="p">(</span><span class="k">value</span><span class="p">).</span><span class="n">Wait</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">SetStatus</span><span class="p">(</span><span class="n">Status</span><span class="w"> </span><span class="k">value</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">TakeSnapshot</span><span class="p">();</span>
+<span class="w">        </span><span class="n">snapshot</span><span class="p">.</span><span class="n">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="p">;</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">RestoreSnapshot</span><span class="p">(</span><span class="n">snapshot</span><span class="p">,</span><span class="w"> </span><span class="s">$&quot;Updated {nameof(CustomerFilterStateModel.Status)} -&gt; {value}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">SetCustomerType</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="k">value</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">TakeSnapshot</span><span class="p">();</span>
+<span class="w">        </span><span class="n">snapshot</span><span class="p">.</span><span class="n">CustomerType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="p">;</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">RestoreSnapshot</span><span class="p">(</span><span class="n">snapshot</span><span class="p">,</span><span class="w"> </span><span class="s">$&quot;Updated {nameof(CustomerFilterStateModel.CustomerType)} -&gt; {value}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">SetSearchText</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="k">value</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">TakeSnapshot</span><span class="p">();</span>
+<span class="w">        </span><span class="n">snapshot</span><span class="p">.</span><span class="n">SearchText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="o">??</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Empty</span><span class="p">;</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">RestoreSnapshot</span><span class="p">(</span><span class="n">snapshot</span><span class="p">,</span><span class="w"> </span><span class="s">$&quot;Updated {nameof(CustomerFilterStateModel.SearchText)} -&gt; {value}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Key Points</strong>:</p>
+<ul>
+<li>Implement the abstract methods: <code>GetCurrentState</code>, <code>CreateDefaultState</code>, and <code>UpdateState</code>.</li>
+<li>Use properties to expose state values and update the state using methods like <code>SetSearchText</code>, which call <code>RestoreSnapshot</code> to trigger change notifications.</li>
+<li>Add validation in setter methods to ensure state integrity (e.g., validating <code>Status</code> values).</li>
+</ul>
+<h3 id="2-registering-the-state-in-di">2. Registering the State in DI<a class="headerlink" href="#2-registering-the-state-in-di" title="Permanent link">&para;</a></h3>
+<p>Use the <code>StateBuilder</code> to register your state class in the DI container, typically with a scoped lifetime for local storage persistence.</p>
+<p><strong>Example:</strong> <code>Program.cs</code></p>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddAppState</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithDebugging</span><span class="p">(</span><span class="n">debug</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">debug</span><span class="p">.</span><span class="n">LoggingEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="w">        </span><span class="n">debug</span><span class="p">.</span><span class="n">StateChangesTracked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddState</span><span class="o">&lt;</span><span class="n">CustomerFilterState</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">AsLocalStorageScoped</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithHistory</span><span class="p">(</span><span class="n">maxItems</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithDebounceDelay</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Done</span><span class="p">();</span>
+</code></pre></div>
+<p><strong>Persistence Options</strong>:</p>
+<ul>
+<li><code>AsLocalStorageScoped</code>: Persists the state to local storage with a scoped lifetime.</li>
+<li><code>WithPersistence(StatePersistenceType.ComponentScoped)</code>: Persists state only for the lifetime of a component.</li>
+<li><code>WithPersistence(StatePersistenceType.SessionScoped)</code>: Persists state for the session duration.</li>
+<li><code>WithDebounceDelay</code>: Sets the delay for debounced state saving (e.g., 1 second to balance performance and persistence).</li>
+</ul>
+<h3 id="3-subscribing-to-state-changes">3. Subscribing to State Changes<a class="headerlink" href="#3-subscribing-to-state-changes" title="Permanent link">&para;</a></h3>
+<p>Components can subscribe to the <code>StateChanged</code> or <code>StateChangeWithMetadata</code> events to react to state changes, such as updating the UI or re-fetching data.</p>
+<ul>
+<li><code>StateChanged</code>: <code>Action&lt;object&gt;</code> - Provides the new state object whenever the state changes.</li>
+<li><code>StateChangeWithMetadata</code>: <code>Action&lt;IStateChangeMetadata&gt;</code> - Provides detailed metadata about the change, including <code>StateId</code>, <code>Timestamp</code>, <code>Operation</code>, <code>OldValue</code>, <code>NewValue</code>, and <code>Reason</code>.</li>
+</ul>
+<p><strong>Example: Customer Filter Component</strong></p>
+<div class="highlight"><pre><span></span><code>&lt;MudSelect T=&quot;string&quot; Label=&quot;Status&quot; Dense=&quot;true&quot; Clearable=&quot;true&quot;
+           Value=&quot;@FilterState.Status&quot; ValueChanged=&quot;@(async (string value) =&gt; await FilterState.SetStatus(value))&quot;
+           Margin=&quot;Margin.Dense&quot; Style=&quot;width: 120px;&quot;&gt;
+    &lt;MudSelectItem Value=&quot;@(null)&quot;&gt;Alle&lt;/MudSelectItem&gt;
+    &lt;MudSelectItem Value=&quot;@(&quot;Aktiv&quot;)&quot;&gt;Aktiv&lt;/MudSelectItem&gt;
+    &lt;MudSelectItem Value=&quot;@(&quot;Inaktiv&quot;)&quot;&gt;Inaktiv&lt;/MudSelectItem&gt;
+&lt;/MudSelect&gt;
+
+&lt;MudTextField Value=&quot;@FilterState.SearchText&quot; ValueChanged=&quot;@(async (string value) =&gt; await FilterState.SetSearchText(value))&quot;
+              Placeholder=&quot;Search customers&quot; Clearable=&quot;true&quot;
+              Adornment=&quot;Adornment.Start&quot; AdornmentIcon=&quot;@Icons.Material.Filled.Search&quot;
+              IconSize=&quot;Size.Medium&quot; Immediate=&quot;true&quot; DebounceInterval=&quot;300&quot;
+              Margin=&quot;Margin.Dense&quot; Style=&quot;width: 230px;&quot; /&gt;
+</code></pre></div>
+<p><strong>Code-Behind</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">OnInitializedAsync</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="n">FilterState</span><span class="p">.</span><span class="n">LoadStateAsync</span><span class="p">();</span>
+<span class="w">    </span><span class="n">FilterState</span><span class="p">.</span><span class="n">StateChanged</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnFilterStateChanged</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nf">LoadCustomers</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">private</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnFilterStateChanged</span><span class="p">(</span><span class="kt">object</span><span class="w"> </span><span class="n">newState</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Filter state changed: {JsonSerializer.Serialize(newState)}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nf">ApplyFilters</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Dispose</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">FilterState</span><span class="p">.</span><span class="n">StateChanged</span><span class="w"> </span><span class="o">-=</span><span class="w"> </span><span class="n">OnFilterStateChanged</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>Key Points</strong>:</p>
+<ul>
+<li>Use <code>Value</code> and <code>ValueChanged</code> to update state properties without <code>@bind-</code>.</li>
+<li>Subscribe to <code>StateChanged</code> in <code>OnInitialized</code> to react to state changes.</li>
+<li>Unsubscribe in <code>Dispose</code> to prevent memory leaks.</li>
+</ul>
+<h3 id="4-persisting-and-loading-state">4. Persisting and Loading State<a class="headerlink" href="#4-persisting-and-loading-state" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Load State</strong>: Call <code>LoadStateAsync</code> to initialize the state from storage during component initialization.</li>
+<li><strong>Save State</strong>: State changes are automatically saved with a debounce delay (configured via <code>AppStateOptions</code>).</li>
+</ul>
+<p><strong>Example</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">OnInitializedAsync</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="n">FilterState</span><span class="p">.</span><span class="n">LoadStateAsync</span><span class="p">();</span>
+<span class="w">    </span><span class="n">FilterState</span><span class="p">.</span><span class="n">StateChanged</span><span class="w"> </span><span class="o">+=</span><span class="w"> </span><span class="n">OnFilterStateChanged</span><span class="p">;</span>
+
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="nf">LoadCustomers</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="5-using-undoredo">5. Using Undo/Redo<a class="headerlink" href="#5-using-undoredo" title="Permanent link">&para;</a></h3>
+<p>Enable history in the <code>AppStateOptions</code> to support undo/redo operations.</p>
+<p><strong>Example: Enabling Undo/Redo</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddAppState</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithDebugging</span><span class="p">(</span><span class="n">debug</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">debug</span><span class="p">.</span><span class="n">LoggingEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="w">        </span><span class="n">debug</span><span class="p">.</span><span class="n">StateChangesTracked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddState</span><span class="o">&lt;</span><span class="n">CustomerFilterState</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">AsLocalStorageScoped</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithHistory</span><span class="p">(</span><span class="n">maxItems</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Done</span><span class="p">();</span>
+</code></pre></div>
+<p><strong>Example: Adding Undo/Redo Buttons</strong></p>
+<div class="highlight"><pre><span></span><code>&lt;MudButton OnClick=&quot;@(() =&gt; FilterState.UndoAsync())&quot; Disabled=&quot;@(!FilterState.CanUndo)&quot;&gt;Undo&lt;/MudButton&gt;
+&lt;MudButton OnClick=&quot;@(() =&gt; FilterState.RedoAsync())&quot; Disabled=&quot;@(!FilterState.CanRedo)&quot;&gt;Redo&lt;/MudButton&gt;
+</code></pre></div>
+<h3 id="6-triggering-state-changes-manually">6. Triggering State Changes Manually<a class="headerlink" href="#6-triggering-state-changes-manually" title="Permanent link">&para;</a></h3>
+<p>If you need to notify subscribers without changing the state (e.g., after loading entities to apply filtering based on the current state), directly call the event handler instead of invoking the event. This ensures the handler is triggered with the current state.</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="nf">LoadEntities</span><span class="p">();</span>
+<span class="n">OnFilterStateChanged</span><span class="p">(</span><span class="n">FilterState</span><span class="p">.</span><span class="n">CurrentState</span><span class="p">);</span><span class="w"> </span><span class="c1">// Trigger filtering by directly calling the handler</span>
+</code></pre></div>
+<h3 id="7-testing-and-debugging">7. Testing and Debugging<a class="headerlink" href="#7-testing-and-debugging" title="Permanent link">&para;</a></h3>
+<p>Use the <code>AppStateDebugger</code> to log and track state changes for debugging.</p>
+<p><strong>Example: Enabling Debugging</strong></p>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddAppState</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithDebugging</span><span class="p">(</span><span class="n">debug</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">debug</span><span class="p">.</span><span class="n">LoggingEnabled</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="w">        </span><span class="n">debug</span><span class="p">.</span><span class="n">StateChangesTracked</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="w">    </span><span class="p">})</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddState</span><span class="o">&lt;</span><span class="n">CustomerFilterState</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">AsLocalStorageScoped</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Done</span><span class="p">();</span>
+</code></pre></div>
+<h3 id="8-performance-considerations">8. Performance Considerations<a class="headerlink" href="#8-performance-considerations" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Large State Objects</strong>: Minimize the size of <code>TState</code> to reduce serialization overhead during persistence.</li>
+<li><strong>Frequent Updates</strong>: Use a reasonable debounce delay to avoid excessive saves (e.g., 300-1000ms).</li>
+<li><strong>History Management</strong>: Set a low <code>maxItems</code> for history to prevent memory bloat (e.g., 10-50 items).</li>
+</ul>
+<h3 id="9-integration-with-other-services">9. Integration with Other Services<a class="headerlink" href="#9-integration-with-other-services" title="Permanent link">&para;</a></h3>
+<p>Integrate <code>AppState&lt;T&gt;</code> with other services (e.g., a mediator for commands/queries) to fetch data or perform actions based on state changes.</p>
+<p><strong>Example: Using a Mediator</strong></p>
+<div class="highlight"><pre><span></span><code><span class="k">private</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">LoadCustomers</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">filter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CustomerFilter</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">SearchText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterState</span><span class="p">.</span><span class="n">SearchText</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FilterState</span><span class="p">.</span><span class="n">Status</span>
+<span class="w">    </span><span class="p">};</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">mediator</span><span class="p">.</span><span class="n">Send</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">FetchCustomersQuery</span><span class="p">(</span><span class="n">filter</span><span class="p">));</span>
+<span class="w">    </span><span class="n">customers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">Result</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">ToList</span><span class="p">();</span>
+
+<span class="w">    </span><span class="n">OnFilterStateChanged</span><span class="p">(</span><span class="n">FilterState</span><span class="p">.</span><span class="n">CurrentState</span><span class="p">);</span><span class="w"> </span><span class="c1">// Apply filtering after loading</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="10-lifecycle-management">10. Lifecycle Management<a class="headerlink" href="#10-lifecycle-management" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Scoped Lifetime</strong>: <code>AppState&lt;T&gt;</code> instances are typically scoped, meaning they�re created when a new DI scope begins (e.g., a new page load) and disposed when the scope ends.</li>
+<li><strong>Disposal</strong>: Ensure components unsubscribe from events in <code>Dispose</code> to avoid memory leaks. <code>AppState&lt;T&gt;</code> itself disposes the debouncer in its <code>Dispose</code> method.</li>
+</ul>
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Scoped Lifetime</strong>: Use <code>AsLocalStorageScoped</code> to ensure components on the same page share the same state instance.</li>
+<li><strong>Unsubscribe Events</strong>: Always unsubscribe from <code>StateChanged</code> and <code>StateChangeWithMetadata</code> in <code>Dispose</code> to prevent memory leaks.</li>
+<li><strong>Debounce Delay</strong>: Configure the debounce delay to balance performance and persistence (e.g., <code>.WithDebounceDelay(TimeSpan.FromSeconds(1))</code>).</li>
+<li><strong>History Limits</strong>: Set a reasonable <code>maxItems</code> for history to avoid excessive memory usage (e.g., 10-50 items).</li>
+<li><strong>Thread Safety</strong>: Ensure your state model (<code>TState</code>) is thread-safe if accessed concurrently.</li>
+</ul>
+<h2 id="common-scenarios">Common Scenarios<a class="headerlink" href="#common-scenarios" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Filter Form</strong>: A form updates the state (e.g., <code>SearchText</code>), and a table component reacts by re-filtering data.</li>
+<li><strong>State Reset</strong>: A reset button calls <code>ResetAsync</code> to clear the state and storage, notifying all subscribers.</li>
+<li><strong>Undo/Redo</strong>: A component provides undo/redo buttons to revert or reapply state changes.</li>
+<li><strong>Multi-Component Updates</strong>: Multiple components on the same page subscribe to <code>StateChanged</code> to react to state changes (e.g., a filter form and a summary component).</li>
+<li><strong>Advanced Scenarios</strong>:</li>
+<li><strong>Nested State</strong>: Combine multiple <code>AppState&lt;T&gt;</code> instances for nested state management (e.g., a parent state managing child states).</li>
+<li><strong>Multi-Page Apps</strong>: Use a singleton lifetime for state classes if they need to persist across page navigation.</li>
+</ul>
+<h2 id="appendix-internals-of-appstate">Appendix: Internals of AppState<a class="headerlink" href="#appendix-internals-of-appstate" title="Permanent link">&para;</a></h2>
+<h3 id="state-storage">State Storage<a class="headerlink" href="#state-storage" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Current State</strong>: Stored in a private field (e.g., <code>currentState</code>) in the derived class, managed through <code>GetCurrentState</code> and <code>UpdateState</code> methods.</li>
+<li><strong>Persistence</strong>: The state is serialized to JSON and saved to storage via <code>IAppStateStoreProvider</code> (e.g., local storage) in the <code>SaveStateAsyncInternal</code> method, which is called by the debouncer.</li>
+<li><strong>Loading</strong>: The <code>LoadStateAsync</code> method deserializes the state from storage and updates the current state using <code>SetCurrentState</code>.</li>
+</ul>
+<h3 id="history-management">History Management<a class="headerlink" href="#history-management" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Undo/Redo Stacks</strong>: Maintains two <code>Stack&lt;TState&gt;</code> objects (<code>undoStack</code> and <code>redoStack</code>) to store state snapshots for undo/redo operations.</li>
+<li><strong>Limits</strong>: The maximum number of history items is controlled by <code>AppStateOptions.MaxHistoryItems</code>, preventing excessive memory usage.</li>
+<li><strong>Operations</strong>: <code>UndoAsync</code> pops a state from <code>undoStack</code>, pushes the current state to <code>redoStack</code>, and restores the previous state. <code>RedoAsync</code> does the reverse.</li>
+</ul>
+<h3 id="change-notifications">Change Notifications<a class="headerlink" href="#change-notifications" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Events</strong>: Defines <code>StateChanged</code> (<code>Action&lt;object&gt;</code>) and <code>StateChangeWithMetadata</code> (<code>Action&lt;IStateChangeMetadata&gt;</code>) events to notify subscribers.</li>
+<li><strong>Triggering</strong>: Events are fired in <code>SetCurrentState</code> when the state changes (i.e., when <code>oldState</code> and <code>newState</code> are not equal, based on <code>Equals</code> comparison).</li>
+<li><strong>Metadata</strong>: The <code>StateChangeWithMetadata</code> event includes a <code>StateChangeMetadata&lt;T&gt;</code> object with properties like <code>StateId</code>, <code>Timestamp</code>, <code>Operation</code>, <code>OldValue</code>, <code>NewValue</code>, and <code>Reason</code>.</li>
+</ul>
+<h3 id="debounced-saving">Debounced Saving<a class="headerlink" href="#debounced-saving" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Debouncer</strong>: Utilizes a <code>Debouncer</code> instance (<code>saveDebouncer</code>) to delay state persistence, reducing the frequency of storage writes.</li>
+<li><strong>Configuration</strong>: The debounce delay is set via <code>AppStateOptions.DebounceDelay</code> (e.g., 300ms by default).</li>
+<li><strong>Mechanism</strong>: The <code>saveDebouncer</code> triggers <code>SaveStateAsyncInternal</code>, which serializes the state and saves it to storage.</li>
+</ul>
+<h3 id="debugging">Debugging<a class="headerlink" href="#debugging" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Debugger Integration</strong>: Uses <code>AppStateDebugger</code> to log state changes and track metadata, controlled by <code>LoggingEnabled</code> and <code>StateChangesTracked</code> settings.</li>
+<li><strong>Logging</strong>: State changes are logged with details like the reason, old state, and new state, aiding in debugging.</li>
+</ul>
+<h3 id="lifecycle">Lifecycle<a class="headerlink" href="#lifecycle" title="Permanent link">&para;</a></h3>
+<ul>
+<li><strong>Initialization</strong>: <code>AppState&lt;T&gt;</code> instances are created via dependency injection with a scoped lifetime, typically during page load or component initialization.</li>
+<li><strong>Disposal</strong>: The <code>Dispose</code> method ensures the <code>saveDebouncer</code> is disposed, cleaning up resources when the instance is no longer needed.</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/bridgingIT/bITdevKit" target="_blank" rel="noopener" title="GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://www.nuget.org/packages?q=bitdevkit" target="_blank" rel="noopener" title="NuGet" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M224.3-2.5c19.8-11.4 44.2-11.4 64 0L464.2 99c19.8 11.4 32 32.6 32 55.4v203c0 22.9-12.2 44-32 55.4L288.3 514.5a64.16 64.16 0 0 1-64 0L48.5 413c-19.8-11.4-32-32.6-32-55.4v-203c0-22.9 12.2-44 32-55.4zm207.8 360V191.4l-143.8 83v166.1z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

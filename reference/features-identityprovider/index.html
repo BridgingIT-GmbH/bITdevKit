@@ -1,0 +1,3883 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles.">
+      
+      
+      
+        <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/reference/features-identityprovider/">
+      
+      
+        <link rel="prev" href="../features-entitypermissions/">
+      
+      
+        <link rel="next" href="../features-presentation-endpoints/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Fake Identity Provider - bITdevKit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#fake-identity-provider-feature-documentation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
+      
+  <img src="../../assets/images/bITDevKit_Icon.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            bITdevKit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Fake Identity Provider
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/bridgingIT/bITdevKit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bridgingIT/bITdevKit
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
+      
+  <img src="../../assets/images/bITDevKit_Icon.svg" alt="logo">
+
+    </a>
+    bITdevKit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/bridgingIT/bITdevKit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bridgingIT/bITdevKit
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Infrastructure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Common Infrastructure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-serialization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Serialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-options-builders/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Options Builders
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-mapping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Mapping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-observability-tracing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Observability Tracing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Domain and Application
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core Domain and Application
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-repositories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Repositories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-specifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Specifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-rules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-commands-queries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Commands and Queries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-dataporter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataPorter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution, Messaging and Modularity
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Execution, Messaging and Modularity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-requester-notifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requester and Notifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-modules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipelines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-filtering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filtering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security and Access
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Security and Access
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-entitypermissions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entity Permissions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Identity Provider
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Identity Provider
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-install-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Install Package
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-define-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Define Users
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#token-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token Types
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Token Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#access-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Access Token
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ID Token
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#refresh-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Refresh Token
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication-flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Flows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Authentication Flows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#public-client-flow-spa-mobile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Client Flow (SPA, Mobile)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#confidential-client-flow-server-apps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Confidential Client Flow (Server Apps)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cookie-single-sign-on-sso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cookie Single Sign-On (SSO)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cookie Single Sign-On (SSO)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it Works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opting-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Opting Out
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Notes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client-integration-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Client Integration Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Client Integration Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-angular-public-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Angular (Public Client)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-aspnet-core-mvc-confidential-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. ASP.NET Core MVC (Confidential Client)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-blazor-webassembly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Blazor WebAssembly
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-webapi-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. WebAPI Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authorization-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authorization Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#token-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#userinfo-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UserInfo Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debug Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#well-known-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Well-Known Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Security Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#development-use-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development Use Only
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#default-behaviors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default Behaviors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cookie-single-sign-on" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cookie Single Sign-On
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development Tips
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development Tips">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-client-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Client Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Scenarios
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Resources
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation and Host
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Presentation and Host
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-endpoints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Endpoints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-console-commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Console Commands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-cors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CORS Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-exception-handling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exception Handling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-appstate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AppState
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage, Scheduling and Utilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Storage, Scheduling and Utilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-startuptasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StartupTasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-jobscheduling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JobScheduling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-documents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DocumentStorage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FileStorage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-monitoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Monitoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-log-entries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Log Entries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing and Test Utilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Testing and Test Utilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing-fake-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Authentication for Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing-common-xunit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing Common XUnit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-install-package" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Install Package
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-define-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Define Users
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#token-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token Types
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Token Types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#access-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Access Token
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#id-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ID Token
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#refresh-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Refresh Token
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authentication-flows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Flows
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Authentication Flows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#public-client-flow-spa-mobile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public Client Flow (SPA, Mobile)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#confidential-client-flow-server-apps" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Confidential Client Flow (Server Apps)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cookie-single-sign-on-sso" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cookie Single Sign-On (SSO)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cookie Single Sign-On (SSO)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        How it Works
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#opting-out" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Opting Out
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#security-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Notes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#client-integration-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Client Integration Examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Client Integration Examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-angular-public-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Angular (Public Client)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-aspnet-core-mvc-confidential-client" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. ASP.NET Core MVC (Confidential Client)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-blazor-webassembly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Blazor WebAssembly
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-webapi-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. WebAPI Backend
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        API Reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#authorization-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authorization Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#token-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Token Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#userinfo-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        UserInfo Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#debug-endpoint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Debug Endpoint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#well-known-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Well-Known Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Error Handling
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-considerations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Considerations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Security Considerations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#development-use-only" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development Use Only
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#default-behaviors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Default Behaviors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cookie-single-sign-on" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cookie Single Sign-On
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#development-tips" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Development Tips
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Development Tips">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#custom-client-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom Client Setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#testing-scenarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing Scenarios
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-resources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related Resources
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="fake-identity-provider-feature-documentation">Fake Identity Provider Feature Documentation<a class="headerlink" href="#fake-identity-provider-feature-documentation" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>A lightweight OAuth2/OpenID Connect identity provider supporting multiple grant types and hardcoded users, designed for development and testing scenarios.</p>
+</blockquote>
+<div class="toc">
+<ul>
+<li><a href="#fake-identity-provider-feature-documentation">Fake Identity Provider Feature Documentation</a><ul>
+<li><a href="#features">Features</a></li>
+<li><a href="#setup">Setup</a><ul>
+<li><a href="#1-install-package">1. Install Package</a></li>
+<li><a href="#3-define-users">3. Define Users</a></li>
+</ul>
+</li>
+<li><a href="#token-types">Token Types</a><ul>
+<li><a href="#access-token">Access Token</a></li>
+<li><a href="#id-token">ID Token</a></li>
+<li><a href="#refresh-token">Refresh Token</a></li>
+</ul>
+</li>
+<li><a href="#authentication-flows">Authentication Flows</a><ul>
+<li><a href="#public-client-flow-spa-mobile">Public Client Flow (SPA, Mobile)</a></li>
+<li><a href="#confidential-client-flow-server-apps">Confidential Client Flow (Server Apps)</a></li>
+</ul>
+</li>
+<li><a href="#cookie-single-sign-on-sso">Cookie Single Sign-On (SSO)</a><ul>
+<li><a href="#how-it-works">How it Works</a></li>
+<li><a href="#configuration">Configuration</a></li>
+<li><a href="#opting-out">Opting Out</a></li>
+<li><a href="#security-notes">Security Notes</a></li>
+</ul>
+</li>
+<li><a href="#client-integration-examples">Client Integration Examples</a><ul>
+<li><a href="#1-angular-public-client">1. Angular (Public Client)</a></li>
+<li><a href="#2-aspnet-core-mvc-confidential-client">2. ASP.NET Core MVC (Confidential Client)</a></li>
+<li><a href="#3-blazor-webassembly">3. Blazor WebAssembly</a></li>
+<li><a href="#4-webapi-backend">4. WebAPI Backend</a></li>
+</ul>
+</li>
+<li><a href="#api-reference">API Reference</a><ul>
+<li><a href="#authorization-endpoint">Authorization Endpoint</a></li>
+<li><a href="#token-endpoint">Token Endpoint</a></li>
+<li><a href="#userinfo-endpoint">UserInfo Endpoint</a></li>
+<li><a href="#debug-endpoint">Debug Endpoint</a></li>
+<li><a href="#well-known-configuration">Well-Known Configuration</a></li>
+</ul>
+</li>
+<li><a href="#error-handling">Error Handling</a></li>
+<li><a href="#security-considerations">Security Considerations</a><ul>
+<li><a href="#development-use-only">Development Use Only</a></li>
+<li><a href="#default-behaviors">Default Behaviors</a></li>
+<li><a href="#cookie-single-sign-on">Cookie Single Sign-On</a></li>
+</ul>
+</li>
+<li><a href="#development-tips">Development Tips</a><ul>
+<li><a href="#custom-client-setup">Custom Client Setup</a></li>
+<li><a href="#testing-scenarios">Testing Scenarios</a></li>
+</ul>
+</li>
+<li><a href="#related-resources">Related Resources</a></li>
+</ul>
+</li>
+<li><a href="#bare-bones-identity-provider-documentation">Bare-Bones Identity Provider Documentation</a><ul>
+<li><a href="#features_1">Features</a></li>
+<li><a href="#setup_1">Setup</a><ul>
+<li><a href="#1-install-package_1">1. Install Package</a></li>
+<li><a href="#2-configure-services">2. Configure Services</a></li>
+<li><a href="#3-define-users_1">3. Define Users</a></li>
+</ul>
+</li>
+<li><a href="#client-integration-examples_1">Client Integration Examples</a><ul>
+<li><a href="#1-angular-application-authorization-code-flow">1. Angular Application (Authorization Code Flow)</a><ul>
+<li><a href="#authorization-code-flow">Authorization Code Flow</a></li>
+</ul>
+</li>
+<li><a href="#2-direct-api-access-password-grant">2. Direct API Access (Password Grant)</a></li>
+<li><a href="#3-service-to-service-client-credentials">3. Service-to-Service (Client Credentials)</a></li>
+</ul>
+</li>
+<li><a href="#api-reference_1">API Reference</a><ul>
+<li><a href="#authorization-endpoint_1">Authorization Endpoint</a></li>
+<li><a href="#token-endpoint_1">Token Endpoint</a><ul>
+<li><a href="#authorization-code-grant">Authorization Code Grant</a></li>
+</ul>
+</li>
+<li><a href="#userinfo-endpoint_1">UserInfo Endpoint</a></li>
+<li><a href="#openid-configuration">OpenID Configuration</a></li>
+<li><a href="#logout-endpoint">Logout Endpoint</a></li>
+</ul>
+</li>
+<li><a href="#error-handling_1">Error Handling</a></li>
+<li><a href="#disclaimer">Disclaimer</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>OAuth2 and OpenID Connect support</li>
+<li>Public and confidential client support</li>
+<li>Multiple grant types (authorization code, password, client credentials, refresh token)</li>
+<li>JWT token generation</li>
+<li>Debug endpoints for development</li>
+<li>No database required</li>
+<li>Built-in user selection interface</li>
+<li>CORS support</li>
+<li>Client redirect URI validation</li>
+<li>Support for SPA, server, and API tool clients</li>
+<li>Cookie-based Single Sign-On (SSO) across browser tabs</li>
+</ul>
+<h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
+<h3 id="1-install-package">1. Install Package<a class="headerlink" href="#1-install-package" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">&quot;BridgingIT.DevKit.Presentation.Web&quot;</span><span class="w"> </span><span class="na">Version=</span><span class="s">&quot;x.y.z&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddFakeIdentityProvider</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="n">options</span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">())</span>
+<span class="w">          </span><span class="p">.</span><span class="n">WithIssuer</span><span class="p">(</span><span class="s">&quot;https://localhost:5001&quot;</span><span class="p">)</span>
+<span class="w">          </span><span class="p">.</span><span class="n">WithUsers</span><span class="p">(</span><span class="n">Fakes</span><span class="p">.</span><span class="n">Users</span><span class="p">)</span>
+<span class="w">          </span><span class="p">.</span><span class="n">WithTokenLifetimes</span><span class="p">(</span>
+<span class="w">              </span><span class="n">accessToken</span><span class="p">:</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>
+<span class="w">              </span><span class="n">refreshToken</span><span class="p">:</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromDays</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="w">          </span><span class="p">.</span><span class="n">EnableCookieSingleSignOn</span><span class="p">()</span><span class="w">   </span><span class="c1">// Optional; enabled by default</span>
+<span class="w">          </span><span class="p">.</span><span class="n">EnablePersistentRefreshTokens</span><span class="p">()</span><span class="w"> </span><span class="c1">// Required for cookie SSO; enabled by default</span>
+<span class="w">          </span><span class="c1">// Public Client (SPA)</span>
+<span class="w">          </span><span class="p">.</span><span class="n">WithClient</span><span class="p">(</span>
+<span class="w">              </span><span class="s">&quot;spa-client&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="s">&quot;Angular SPA&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="s">&quot;http://localhost:4200/callback&quot;</span><span class="p">)</span>
+<span class="w">          </span><span class="c1">// Blazor WASM (Public Client)</span>
+<span class="w">          </span><span class="p">.</span><span class="n">WithClient</span><span class="p">(</span>
+<span class="w">              </span><span class="s">&quot;blazor-wasm&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="s">&quot;Blazor WASM Frontend&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="s">&quot;https://localhost:5001/authentication/login-callback&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="s">&quot;https://localhost:5001/authentication/logout-callback&quot;</span><span class="p">)</span>
+<span class="w">          </span><span class="c1">// Confidential Client (Server)</span>
+<span class="w">          </span><span class="p">.</span><span class="n">WithConfidentalClient</span><span class="p">(</span>
+<span class="w">              </span><span class="s">&quot;mvc-app&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="s">&quot;MVC Server&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="s">&quot;mvc-secret&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="na">[&quot;https://localhost:5002/signin-oidc&quot;]</span><span class="p">)</span>
+<span class="w">          </span><span class="c1">// Blazor Server (Confidential Client)</span>
+<span class="w">          </span><span class="p">.</span><span class="n">WithConfidentalClient</span><span class="p">(</span>
+<span class="w">              </span><span class="s">&quot;blazor-server&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="s">&quot;Blazor Server Frontend&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="s">&quot;server-secret&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="na">[&quot;https://localhost:5003/signin-oidc&quot;]</span><span class="p">)</span>
+<span class="w">          </span><span class="c1">// WebAPI Backend</span>
+<span class="w">          </span><span class="p">.</span><span class="n">WithConfidentalClient</span><span class="p">(</span>
+<span class="w">              </span><span class="s">&quot;api-backend&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="s">&quot;API Backend&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="s">&quot;api-secret&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="na">[&quot;https://localhost:5001&quot;]</span><span class="p">)</span>
+<span class="w">          </span><span class="c1">// API Tools</span>
+<span class="w">          </span><span class="p">.</span><span class="n">WithClient</span><span class="p">(</span>
+<span class="w">              </span><span class="s">&quot;swagger&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="s">&quot;Swagger UI&quot;</span><span class="p">,</span>
+<span class="w">              </span><span class="s">&quot;https://localhost:5001/swagger/oauth2-redirect.html&quot;</span><span class="p">);</span>
+<span class="p">});</span>
+</code></pre></div>
+<h3 id="3-define-users">3. Define Users<a class="headerlink" href="#3-define-users" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Fakes</span><span class="w"> </span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">FakeUser</span><span class="p">[]</span><span class="w"> </span><span class="n">Users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
+<span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="s">&quot;luke.skywalker@starwars.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Luke Skywalker&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">            </span><span class="na">[Role.Administrators, Role.Users]</span><span class="p">,</span><span class="w"> </span><span class="n">isDefault</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">),</span>
+<span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="s">&quot;yoda@starwars.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Yoda&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">            </span><span class="na">[Role.Administrators]</span><span class="p">)</span>
+<span class="w">        </span><span class="c1">// ...... Add more users</span>
+<span class="w">    </span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="token-types">Token Types<a class="headerlink" href="#token-types" title="Permanent link">&para;</a></h2>
+<h3 id="access-token">Access Token<a class="headerlink" href="#access-token" title="Permanent link">&para;</a></h3>
+<p>JSON Web Token (JWT) containing:
+- User identity (sub, email)
+- User info (name, roles)
+- Token metadata (iss, aud, exp)
+- Scope permissions</p>
+<h3 id="id-token">ID Token<a class="headerlink" href="#id-token" title="Permanent link">&para;</a></h3>
+<p>OpenID Connect token with:
+- Required claims (iss, sub, aud, exp)
+- Profile data (name, email)
+- Role information</p>
+<h3 id="refresh-token">Refresh Token<a class="headerlink" href="#refresh-token" title="Permanent link">&para;</a></h3>
+<p>Long-lived token for obtaining new access tokens.</p>
+<h2 id="authentication-flows">Authentication Flows<a class="headerlink" href="#authentication-flows" title="Permanent link">&para;</a></h2>
+<h3 id="public-client-flow-spa-mobile">Public Client Flow (SPA, Mobile)<a class="headerlink" href="#public-client-flow-spa-mobile" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Client
+    participant IDP
+    participant User
+
+    Client-&gt;&gt;IDP: GET /authorize
+    alt User has auth cookie (SSO)
+        IDP-&gt;&gt;Client: Code (no login page)
+    else First visit or cookie expired
+        IDP-&gt;&gt;User: Show login page
+        User-&gt;&gt;IDP: Select user
+        IDP-&gt;&gt;Client: Code + Set auth cookie
+    end
+    Client-&gt;&gt;IDP: POST /token
+    Note over Client,IDP: Exchange code for tokens
+    IDP-&gt;&gt;Client: Access + Refresh tokens
+    Client-&gt;&gt;IDP: GET /userinfo
+    IDP-&gt;&gt;Client: User data</code></pre>
+<p>Key points:
+- No client secret
+- State parameter required
+- Access token in Authorization header
+- Refresh token for token renewal</p>
+<h3 id="confidential-client-flow-server-apps">Confidential Client Flow (Server Apps)<a class="headerlink" href="#confidential-client-flow-server-apps" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Client
+    participant IDP
+    participant User
+
+    Client-&gt;&gt;IDP: GET /authorize
+    alt User has auth cookie (SSO)
+        IDP-&gt;&gt;Client: Code (no login page)
+    else First visit or cookie expired
+        IDP-&gt;&gt;User: Show login page
+        User-&gt;&gt;IDP: Select user
+        IDP-&gt;&gt;Client: Code + Set auth cookie
+    end
+    Client-&gt;&gt;IDP: POST /token
+    Note over Client,IDP: With client_secret
+    IDP-&gt;&gt;Client: Access + Refresh tokens
+    Client-&gt;&gt;IDP: GET /userinfo
+    IDP-&gt;&gt;Client: User data</code></pre>
+<p>Key points:
+- Client secret required
+- Secure token storage
+- Server-side token management
+- Valid redirect URIs enforced</p>
+<h2 id="cookie-single-sign-on-sso">Cookie Single Sign-On (SSO)<a class="headerlink" href="#cookie-single-sign-on-sso" title="Permanent link">&para;</a></h2>
+<p>When enabled (default), the fake identity provider sets an HTTP-only authentication cookie during the first authorization code flow. On subsequent <code>/authorize</code> requests, the provider checks this cookie and immediately redirects with a new authorization code if the user is still authenticated, skipping the user selection page.</p>
+<h3 id="how-it-works">How it Works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h3>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Tab1 as Browser Tab 1
+    participant Tab2 as Browser Tab 2
+    participant IDP as Identity Provider
+
+    Tab1-&gt;&gt;IDP: GET /authorize
+    IDP-&gt;&gt;Tab1: Show login page
+    Tab1-&gt;&gt;IDP: Select user
+    IDP-&gt;&gt;Tab1: Code + Set auth cookie
+    Tab1-&gt;&gt;IDP: POST /token (exchange code)
+    IDP-&gt;&gt;Tab1: Access + Refresh tokens
+
+    Note over Tab2,IDP: Open app in new tab
+    Tab2-&gt;&gt;IDP: GET /authorize (with cookie)
+    IDP-&gt;&gt;IDP: Validate cookie &amp; user
+    IDP-&gt;&gt;Tab2: Code (no login page)
+    Tab2-&gt;&gt;IDP: POST /token (exchange code)
+    IDP-&gt;&gt;Tab2: Access + Refresh tokens</code></pre>
+<h3 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Option</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>EnableCookieSingleSignOn</code></td>
+<td><code>true</code></td>
+<td>When <code>true</code>, the authorize endpoint checks for an existing auth cookie and skips the login page for already-authenticated users.</td>
+</tr>
+<tr>
+<td><code>EnablePersistentRefreshTokens</code></td>
+<td><code>true</code></td>
+<td>Must be <code>true</code> for cookie SSO to work; this sets the auth cookie during token exchange.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="opting-out">Opting Out<a class="headerlink" href="#opting-out" title="Permanent link">&para;</a></h3>
+<p>To disable cookie SSO and always show the login page:</p>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddFakeIdentityProvider</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">())</span>
+<span class="w">           </span><span class="p">.</span><span class="n">EnableCookieSingleSignOn</span><span class="p">(</span><span class="k">false</span><span class="p">)</span>
+<span class="w">           </span><span class="p">.</span><span class="n">WithUsers</span><span class="p">(</span><span class="n">Fakes</span><span class="p">.</span><span class="n">Users</span><span class="p">)</span>
+<span class="w">           </span><span class="c1">// ...</span>
+<span class="p">});</span>
+</code></pre></div>
+<h3 id="security-notes">Security Notes<a class="headerlink" href="#security-notes" title="Permanent link">&para;</a></h3>
+<ul>
+<li>The authorize endpoint still validates <code>client_id</code> and <code>redirect_uri</code> before the SSO redirect, even when a valid cookie is present.</li>
+<li>The cookie is HTTP-only (<code>options.Cookie.HttpOnly = true</code>) and Secure (<code>options.Cookie.SecurePolicy = CookieSecurePolicy.Always</code>).</li>
+<li>The cookie inherits the refresh token lifetime (default 1 day).</li>
+</ul>
+<h2 id="client-integration-examples">Client Integration Examples<a class="headerlink" href="#client-integration-examples" title="Permanent link">&para;</a></h2>
+<h3 id="1-angular-public-client">1. Angular (Public Client)<a class="headerlink" href="#1-angular-public-client" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">AuthConfig</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;angular-oauth2-oidc&#39;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">authConfig</span><span class="o">:</span><span class="w"> </span><span class="kt">AuthConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">issuer</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;http://localhost:5000&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">redirectUri</span><span class="o">:</span><span class="w"> </span><span class="kt">window.location.origin</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;/callback&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">clientId</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;spa-client&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">scope</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;openid profile email roles&#39;</span>
+<span class="p">};</span>
+</code></pre></div>
+<h3 id="2-aspnet-core-mvc-confidential-client">2. ASP.NET Core MVC (Confidential Client)<a class="headerlink" href="#2-aspnet-core-mvc-confidential-client" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddAuthentication</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">DefaultScheme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CookieAuthenticationDefaults</span><span class="p">.</span><span class="n">AuthenticationScheme</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">DefaultChallengeScheme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OpenIdConnectDefaults</span><span class="p">.</span><span class="n">AuthenticationScheme</span><span class="p">;</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="n">AddCookie</span><span class="p">()</span>
+<span class="p">.</span><span class="n">AddOpenIdConnect</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Authority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;http://localhost:5000&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ClientId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;mvc-app&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ClientSecret</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;mvc-secret&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ResponseType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;code&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">SaveTokens</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="p">});</span>
+</code></pre></div>
+<h3 id="3-blazor-webassembly">3. Blazor WebAssembly<a class="headerlink" href="#3-blazor-webassembly" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// Client Program.cs</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddOidcAuthentication</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">Authority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://localhost:5001&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">ClientId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;blazor-wasm&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">DefaultScopes</span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="s">&quot;roles&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">ResponseType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;code&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">PostLogoutRedirectUri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;authentication/logout-callback&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">ProviderOptions</span><span class="p">.</span><span class="n">RedirectUri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;authentication/login-callback&quot;</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="c1">// Client App.razor</span>
+<span class="o">&lt;</span><span class="n">CascadingAuthenticationState</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="o">&lt;</span><span class="n">Router</span><span class="w"> </span><span class="n">AppAssembly</span><span class="o">=</span><span class="s">&quot;@typeof(App).Assembly&quot;</span><span class="o">&gt;</span>
+<span class="w">        </span><span class="o">&lt;</span><span class="n">Found</span><span class="w"> </span><span class="n">Context</span><span class="o">=</span><span class="s">&quot;routeData&quot;</span><span class="o">&gt;</span>
+<span class="w">            </span><span class="o">&lt;</span><span class="n">AuthorizeRouteView</span><span class="w"> </span><span class="n">RouteData</span><span class="o">=</span><span class="s">&quot;@routeData&quot;</span><span class="w"> </span><span class="n">DefaultLayout</span><span class="o">=</span><span class="s">&quot;@typeof(MainLayout)&quot;</span><span class="o">&gt;</span>
+<span class="w">                </span><span class="o">&lt;</span><span class="n">NotAuthorized</span><span class="o">&gt;</span>
+<span class="w">                    </span><span class="o">&lt;</span><span class="n">RedirectToLogin</span><span class="w"> </span><span class="o">/&gt;</span>
+<span class="w">                </span><span class="o">&lt;/</span><span class="n">NotAuthorized</span><span class="o">&gt;</span>
+<span class="w">            </span><span class="o">&lt;/</span><span class="n">AuthorizeRouteView</span><span class="o">&gt;</span>
+<span class="w">        </span><span class="o">&lt;/</span><span class="n">Found</span><span class="o">&gt;</span>
+<span class="w">    </span><span class="o">&lt;/</span><span class="n">Router</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">CascadingAuthenticationState</span><span class="o">&gt;</span>
+</code></pre></div>
+<h3 id="4-webapi-backend">4. WebAPI Backend<a class="headerlink" href="#4-webapi-backend" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// Program.cs</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddAuthentication</span><span class="p">(</span><span class="n">JwtBearerDefaults</span><span class="p">.</span><span class="n">AuthenticationScheme</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddJwtBearer</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">Authority</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://localhost:5001&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">TokenValidationParameters</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">TokenValidationParameters</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">ValidateAudience</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
+<span class="w">            </span><span class="n">ValidAudience</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;api&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">ValidateIssuer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
+<span class="w">            </span><span class="n">ValidIssuer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;https://localhost:5001&quot;</span>
+<span class="w">        </span><span class="p">};</span>
+<span class="w">    </span><span class="p">});</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddAuthorization</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddPolicy</span><span class="p">(</span><span class="s">&quot;RequireAdminRole&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">policy</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="n">policy</span><span class="p">.</span><span class="n">RequireRole</span><span class="p">(</span><span class="s">&quot;Administrators&quot;</span><span class="p">));</span>
+<span class="p">});</span>
+
+<span class="c1">// WeatherForecastController.cs</span>
+<span class="na">[ApiController]</span>
+<span class="na">[Route(&quot;[controller]</span><span class="s">&quot;)]</span>
+<span class="na">[Authorize]</span>
+<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">WeatherForecastController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ControllerBase</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="na">[HttpGet]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">WeatherForecast</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Get</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">User</span><span class="p">.</span><span class="n">Identity</span><span class="p">.</span><span class="n">Name</span><span class="p">;</span>
+<span class="w">        </span><span class="c1">// Implementation</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="na">[HttpPost]</span>
+<span class="w">    </span><span class="na">[Authorize(Policy = &quot;RequireAdminRole&quot;)]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IActionResult</span><span class="w"> </span><span class="nf">Create</span><span class="p">(</span><span class="n">WeatherForecast</span><span class="w"> </span><span class="n">forecast</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="c1">// Implementation</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h2>
+<h3 id="authorization-endpoint">Authorization Endpoint<a class="headerlink" href="#authorization-endpoint" title="Permanent link">&para;</a></h3>
+<p>Start OAuth2 flow and user selection.</p>
+<div class="highlight"><pre><span></span><code><span class="err">GET /api/_system/identity/connect/authorize</span>
+</code></pre></div>
+<p>Parameters:
+- <code>response_type</code>: "code"
+- <code>client_id</code>: Client identifier
+- <code>redirect_uri</code>: Return URL
+- <code>scope</code>: Requested permissions
+- <code>state</code>: Security token</p>
+<h3 id="token-endpoint">Token Endpoint<a class="headerlink" href="#token-endpoint" title="Permanent link">&para;</a></h3>
+<p>Issue tokens using various grant types.</p>
+<div class="highlight"><pre><span></span><code><span class="err">POST /api/_system/identity/connect/token</span>
+<span class="err">Content-Type: application/x-www-form-urlencoded</span>
+</code></pre></div>
+<p>Grant Types:
+1. Authorization Code
+<div class="highlight"><pre><span></span><code><span class="err">grant_type=authorization_code</span>
+<span class="err">&amp;client_id=client_id</span>
+<span class="err">&amp;code=auth_code</span>
+<span class="err">&amp;redirect_uri=callback_url</span>
+</code></pre></div></p>
+<ol>
+<li>
+<p>Password Grant
+<div class="highlight"><pre><span></span><code><span class="err">grant_type=password</span>
+<span class="err">&amp;client_id=client_id</span>
+<span class="err">&amp;username=user@example.com</span>
+<span class="err">&amp;scope=openid profile</span>
+</code></pre></div></p>
+</li>
+<li>
+<p>Client Credentials
+<div class="highlight"><pre><span></span><code><span class="err">grant_type=client_credentials</span>
+<span class="err">&amp;client_id=client_id</span>
+<span class="err">&amp;scope=api</span>
+</code></pre></div></p>
+</li>
+<li>
+<p>Refresh Token
+<div class="highlight"><pre><span></span><code><span class="err">grant_type=refresh_token</span>
+<span class="err">&amp;client_id=client_id</span>
+<span class="err">&amp;refresh_token=token</span>
+</code></pre></div></p>
+</li>
+</ol>
+<p>Response:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;access_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eyJhbGci...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expires_in&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;refresh_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eyJhbGci...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;token_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Bearer&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;scope&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openid profile&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;id_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eyJhbGci...&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="userinfo-endpoint">UserInfo Endpoint<a class="headerlink" href="#userinfo-endpoint" title="Permanent link">&para;</a></h3>
+<p>Get authenticated user data.</p>
+<div class="highlight"><pre><span></span><code><span class="err">GET /api/_system/identity/connect/userinfo</span>
+<span class="err">Authorization: Bearer token</span>
+</code></pre></div>
+<p>Response:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;sub&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user_id&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User Name&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user@example.com&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Admin&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;User&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="debug-endpoint">Debug Endpoint<a class="headerlink" href="#debug-endpoint" title="Permanent link">&para;</a></h3>
+<p>Development information about configuration.</p>
+<div class="highlight"><pre><span></span><code><span class="err">GET /api/_system/identity/connect/debuginfo</span>
+</code></pre></div>
+<p>Response:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;tokenIssuer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;configuredClients&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;clientId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;spa-client&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SPA App&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;redirectUris&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;http://localhost:4200/callback&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;configuredUsers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;user@example.com&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;User Name&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Admin&quot;</span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="well-known-configuration">Well-Known Configuration<a class="headerlink" href="#well-known-configuration" title="Permanent link">&para;</a></h3>
+<p>OpenID Connect discovery document.</p>
+<div class="highlight"><pre><span></span><code><span class="err">GET /api/_system/identity/.well-known/openid-configuration</span>
+</code></pre></div>
+<p>Response:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;issuer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;authorization_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/api/_system/identity/connect/authorize&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;token_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/api/_system/identity/connect/token&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;userinfo_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/api/_system/identity/connect/userinfo&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;end_session_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/api/_system/identity/connect/logout&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h2 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
+<p>Standard OAuth2 error responses:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;invalid_request&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;error_description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Error details&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Common error codes:
+- invalid_request
+- invalid_client
+- invalid_grant
+- unauthorized_client
+- unsupported_grant_type</p>
+<h2 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">&para;</a></h2>
+<h3 id="development-use-only">Development Use Only<a class="headerlink" href="#development-use-only" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Designed for development and testing</li>
+<li>No production security measures</li>
+<li>Hardcoded users and clients</li>
+<li>No token encryption requirements</li>
+</ul>
+<h3 id="default-behaviors">Default Behaviors<a class="headerlink" href="#default-behaviors" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Client secrets not validated</li>
+<li>Access tokens never expire by default</li>
+<li>No real user authentication</li>
+<li>CORS enabled for all origins</li>
+<li>Debug endpoints exposed</li>
+</ul>
+<h3 id="cookie-single-sign-on">Cookie Single Sign-On<a class="headerlink" href="#cookie-single-sign-on" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Cookie SSO is enabled by default for development convenience</li>
+<li>The auth cookie is scoped to the IDP origin and shared across browser tabs</li>
+<li>Client validation (<code>client_id</code>, <code>redirect_uri</code>) still applies to SSO redirects</li>
+<li>For testing scenarios where each request should show the login page, disable with <code>EnableCookieSingleSignOn(false)</code></li>
+</ul>
+<h2 id="development-tips">Development Tips<a class="headerlink" href="#development-tips" title="Permanent link">&para;</a></h2>
+<h3 id="custom-client-setup">Custom Client Setup<a class="headerlink" href="#custom-client-setup" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="c1">// Multiple redirect URIs</span>
+<span class="p">.</span><span class="n">WithClient</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;angular-app&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;Angular Frontend&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="na">[&quot;http://localhost:4200/callback&quot;, </span>
+<span class="na">     &quot;http://localhost:4200/silent-refresh&quot;]</span><span class="p">)</span>
+
+<span class="c1">// API documentation tools</span>
+<span class="p">.</span><span class="n">WithClient</span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;swagger&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;Swagger UI&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s">&quot;https://localhost:5001/swagger/oauth2-redirect.html&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="testing-scenarios">Testing Scenarios<a class="headerlink" href="#testing-scenarios" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Multiple users</li>
+<li>Role-based access</li>
+<li>Token validation</li>
+<li>Authentication flows</li>
+<li>Client registrations</li>
+</ul>
+<h2 id="related-resources">Related Resources<a class="headerlink" href="#related-resources" title="Permanent link">&para;</a></h2>
+<ul>
+<li>OAuth 2.0 RFC </li>
+<li>OpenID Connect Specification</li>
+<li>JWT Documentation</li>
+</ul>
+<h1 id="bare-bones-identity-provider-documentation">Bare-Bones Identity Provider Documentation<a class="headerlink" href="#bare-bones-identity-provider-documentation" title="Permanent link">&para;</a></h1>
+<p>A lightweight OAuth2/OpenID Connect identity provider supporting multiple grant types and hardcoded users. Perfect for development and testing scenarios where a full-fledged identity provider would be overkill.</p>
+<h2 id="features_1">Features<a class="headerlink" href="#features_1" title="Permanent link">&para;</a></h2>
+<ul>
+<li>OAuth2 and OpenID Connect support</li>
+<li>Multiple grant types (authorization code, password, client credentials, refresh token)</li>
+<li>Hardcoded user management</li>
+<li>JWT token generation</li>
+<li>No database required</li>
+<li>Minimal setup</li>
+</ul>
+<h2 id="setup_1">Setup<a class="headerlink" href="#setup_1" title="Permanent link">&para;</a></h2>
+<h3 id="1-install-package_1">1. Install Package<a class="headerlink" href="#1-install-package_1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="nt">&lt;PackageReference</span><span class="w"> </span><span class="na">Include=</span><span class="s">&quot;BridgingIT.DevKit.Presentation.Web&quot;</span><span class="w"> </span><span class="na">Version=</span><span class="s">&quot;1.0.0&quot;</span><span class="w"> </span><span class="nt">/&gt;</span>
+</code></pre></div>
+<h3 id="2-configure-services">2. Configure Services<a class="headerlink" href="#2-configure-services" title="Permanent link">&para;</a></h3>
+<p>In your <code>Program.cs</code>:
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddFakeIdentityProvider</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Fakes</span><span class="p">.</span><span class="n">Users</span><span class="p">;</span><span class="w">  </span><span class="c1">// Your hardcoded users</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">TokenIssuer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;http://localhost:5000&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// Your IDP base URL</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">GroupPrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/api/_system/identity&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// Base route for all endpoints</span>
+<span class="p">});</span>
+</code></pre></div></p>
+<h3 id="3-define-users_1">3. Define Users<a class="headerlink" href="#3-define-users_1" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Fakes</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">FakeUser</span><span class="p">[]</span><span class="w"> </span><span class="n">Users</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="na">[</span>
+<span class="na">        new(&quot;luke.skywalker@starwars.com&quot;, &quot;Luke Skywalker&quot;, </span>
+<span class="na">            [Role.Administrators, Role.Users]</span><span class="p">,</span><span class="w"> </span><span class="n">isDefault</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">),</span>
+<span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="s">&quot;yoda@starwars.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Yoda&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">            </span><span class="na">[Role.Administrators]</span><span class="p">)</span>
+<span class="w">    </span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="client-integration-examples_1">Client Integration Examples<a class="headerlink" href="#client-integration-examples_1" title="Permanent link">&para;</a></h2>
+<h3 id="1-angular-application-authorization-code-flow">1. Angular Application (Authorization Code Flow)<a class="headerlink" href="#1-angular-application-authorization-code-flow" title="Permanent link">&para;</a></h3>
+<p>Configure your Angular application with OIDC client library:
+<div class="highlight"><pre><span></span><code><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">AuthConfig</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s1">&#39;angular-oauth2-oidc&#39;</span><span class="p">;</span>
+
+<span class="k">export</span><span class="w"> </span><span class="kd">const</span><span class="w"> </span><span class="nx">authConfig</span><span class="o">:</span><span class="w"> </span><span class="kt">AuthConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">issuer</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;http://localhost:5000&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">redirectUri</span><span class="o">:</span><span class="w"> </span><span class="kt">window.location.origin</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s1">&#39;/callback&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">clientId</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;any_client_id&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">scope</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;openid profile email roles&#39;</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">responseType</span><span class="o">:</span><span class="w"> </span><span class="s1">&#39;code&#39;</span>
+<span class="p">};</span>
+</code></pre></div></p>
+<h4 id="authorization-code-flow">Authorization Code Flow<a class="headerlink" href="#authorization-code-flow" title="Permanent link">&para;</a></h4>
+<pre class="mermaid"><code>sequenceDiagram
+    participant Browser
+    participant App
+    participant IDP
+
+    App-&gt;&gt;Browser: 1. Redirect to /connect/authorize
+    Browser-&gt;&gt;IDP: 2. GET /connect/authorize
+    IDP-&gt;&gt;Browser: 3. Show user selection page
+    Browser-&gt;&gt;Browser: 4. Select user
+    Browser-&gt;&gt;IDP: 5. GET /connect/authorize/callback
+    IDP-&gt;&gt;Browser: 6. Redirect with code
+    Browser-&gt;&gt;App: 7. Pass authorization code
+    App-&gt;&gt;IDP: 8. POST /connect/token
+    Note over App,IDP: Exchange code for tokens
+    IDP-&gt;&gt;App: 9. Return tokens (access + refresh)
+    App-&gt;&gt;IDP: 10. GET /connect/userinfo
+    Note over App,IDP: Get user data with access token
+    IDP-&gt;&gt;App: 11. Return user info</code></pre>
+<h3 id="2-direct-api-access-password-grant">2. Direct API Access (Password Grant)<a class="headerlink" href="#2-direct-api-access-password-grant" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="err">POST /api/_system/identity/connect/token</span>
+<span class="err">Content-Type: application/x-www-form-urlencoded</span>
+
+<span class="err">grant_type=password</span>
+<span class="err">&amp;client_id=any_client_id</span>
+<span class="err">&amp;username=luke.skywalker@starwars.com</span>
+<span class="err">&amp;scope=openid profile email roles</span>
+</code></pre></div>
+<h3 id="3-service-to-service-client-credentials">3. Service-to-Service (Client Credentials)<a class="headerlink" href="#3-service-to-service-client-credentials" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="err">POST /api/_system/identity/connect/token</span>
+<span class="err">Content-Type: application/x-www-form-urlencoded</span>
+
+<span class="err">grant_type=client_credentials</span>
+<span class="err">&amp;client_id=any_client_id</span>
+<span class="err">&amp;scope=api</span>
+</code></pre></div>
+<p>Note: This IDP implementation does not validate client_ids.
+Any string can be used as client_id in the requests.</p>
+<h2 id="api-reference_1">API Reference<a class="headerlink" href="#api-reference_1" title="Permanent link">&para;</a></h2>
+<h3 id="authorization-endpoint_1">Authorization Endpoint<a class="headerlink" href="#authorization-endpoint_1" title="Permanent link">&para;</a></h3>
+<p>Starts the OAuth2 authorization flow with user selection.</p>
+<div class="highlight"><pre><span></span><code><span class="err">GET /api/_system/identity/connect/authorize?</span>
+<span class="err">    response_type=code</span>
+<span class="err">    &amp;client_id=any_client_id</span>
+<span class="err">    &amp;redirect_uri=http://localhost:4200/callback</span>
+<span class="err">    &amp;scope=openid profile email roles</span>
+<span class="err">    &amp;state=abc123</span>
+</code></pre></div>
+<h3 id="token-endpoint_1">Token Endpoint<a class="headerlink" href="#token-endpoint_1" title="Permanent link">&para;</a></h3>
+<p>Issues tokens using various grant types.</p>
+<h4 id="authorization-code-grant">Authorization Code Grant<a class="headerlink" href="#authorization-code-grant" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><span class="err">POST /api/_system/identity/connect/token</span>
+<span class="err">Content-Type: application/x-www-form-urlencoded</span>
+
+<span class="err">grant_type=authorization_code</span>
+<span class="err">&amp;client_id=any_client_id</span>
+<span class="err">&amp;code=xyz789</span>
+<span class="err">&amp;redirect_uri=http://localhost:4200/callback</span>
+</code></pre></div>
+<p>Sample Response:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;access_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eyJhbGci...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;expires_in&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;refresh_expires_in&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1800</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;refresh_token&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;eyJhbGci...&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;token_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Bearer&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;scope&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;openid email profile roles&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;session_state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;5adfe176-2f18-4803-a0b3-21c678c49b5b&quot;</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="userinfo-endpoint_1">UserInfo Endpoint<a class="headerlink" href="#userinfo-endpoint_1" title="Permanent link">&para;</a></h3>
+<p>Returns information about the authenticated user.</p>
+<div class="highlight"><pre><span></span><code><span class="err">GET /api/_system/identity/connect/userinfo</span>
+<span class="err">Authorization: Bearer eyJhbGci...</span>
+</code></pre></div>
+<p>Response:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;sub&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;749ecbc50c2364add0caa40f9afc2bbf&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Luke Skywalker&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;given_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Luke&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;family_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Skywalker&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;preferred_username&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;luke.skywalker@starwars.com&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;email&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;luke.skywalker@starwars.com&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;email_verified&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;roles&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Administrators&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;Users&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="openid-configuration">OpenID Configuration<a class="headerlink" href="#openid-configuration" title="Permanent link">&para;</a></h3>
+<p>Returns the OpenID Connect discovery document.</p>
+<div class="highlight"><pre><span></span><code><span class="err">GET /api/_system/identity/.well-known/openid-configuration</span>
+</code></pre></div>
+<p>Response:
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;issuer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:5000&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;authorization_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:5000/api/_system/identity/connect/authorize&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;token_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:5000/api/_system/identity/connect/token&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;userinfo_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:5000/api/_system/identity/connect/userinfo&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;end_session_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:5000/api/_system/identity/connect/logout&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;grant_types_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;authorization_code&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;password&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;client_credentials&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;refresh_token&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;response_types_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;code&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;scopes_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;openid&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;profile&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;email&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;roles&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;claims_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;sub&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;name&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;family_name&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;given_name&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;preferred_username&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;email&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;email_verified&quot;</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></p>
+<h3 id="logout-endpoint">Logout Endpoint<a class="headerlink" href="#logout-endpoint" title="Permanent link">&para;</a></h3>
+<p>Handles user logout with optional redirect.</p>
+<div class="highlight"><pre><span></span><code><span class="err">POST /api/_system/identity/connect/logout?</span>
+<span class="err">    post_logout_redirect_uri=http://localhost:4200</span>
+<span class="err">    &amp;state=abc123</span>
+</code></pre></div>
+<h2 id="error-handling_1">Error Handling<a class="headerlink" href="#error-handling_1" title="Permanent link">&para;</a></h2>
+<p>All endpoints return OAuth2 compliant error responses:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;error&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;invalid_request&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;error_description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The request is missing a required parameter&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Common error codes:
+- invalid_request
+- invalid_client
+- invalid_grant
+- unauthorized_client
+- unsupported_grant_type
+- invalid_scope</p>
+<h2 id="disclaimer">Disclaimer<a class="headerlink" href="#disclaimer" title="Permanent link">&para;</a></h2>
+<p>This Identity Provider is designed exclusively for development and testing environments, with intentionally simplified security measures that make it unsuitable for production use. It provides basic OAuth2 and OpenID Connect flows without rigorous security validation. User credentials are stored in plaintext, authentication is simplified, and token validation is minimal. Security features like rate limiting, audit logging, and proper session management are omitted for development convenience.</p>
+<p>The provider includes development-friendly features like debug endpoints and permissive CORS policies that would pose security risks in production. Use this provider only in controlled development environments, ideally on localhost or protected development networks. Never expose it to public networks, use it with production data, or connect it to production services. For production deployments, always use a properly secured identity provider.</p>
+<ul>
+<li>This IDP is designed for development and testing</li>
+<li>Uses symmetric key signing (HS256)</li>
+<li>No real user authentication</li>
+<li>No real client secret validation</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/bridgingIT/bITdevKit" target="_blank" rel="noopener" title="GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://www.nuget.org/packages?q=bitdevkit" target="_blank" rel="noopener" title="NuGet" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M224.3-2.5c19.8-11.4 44.2-11.4 64 0L464.2 99c19.8 11.4 32 32.6 32 55.4v203c0 22.9-12.2 44-32 55.4L288.3 514.5a64.16 64.16 0 0 1-64 0L48.5 413c-19.8-11.4-32-32.6-32-55.4v-203c0-22.9 12.2-44 32-55.4zm207.8 360V191.4l-143.8 83v166.1z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

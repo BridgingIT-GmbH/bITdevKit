@@ -1,0 +1,3228 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles.">
+      
+      
+      
+        <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/reference/features-queueing/">
+      
+      
+        <link rel="prev" href="../features-messaging/">
+      
+      
+        <link rel="next" href="../features-notifications/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/bITDevKit_Icon.svg">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Queueing - bITdevKit</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#queueing-feature-documentation" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
+      
+  <img src="../../assets/images/bITDevKit_Icon.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            bITdevKit
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Queueing
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m17.75 4.09-2.53 1.94.91 3.06-2.63-1.81-2.63 1.81.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3zm3.5 6.91-1.64 1.25.59 1.98-1.7-1.17-1.7 1.17.59-1.98L15.75 11l2.06-.05L18.5 9l.69 1.95zm-2.28 4.95c.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02a9.96 9.96 0 0 0 8.02 2.89m-1.64 2.02a12.08 12.08 0 0 1-7.8-3.47c-2.17-2.19-3.33-5-3.49-7.82-2.81 3.14-2.7 7.96.31 10.98 3.02 3.01 7.84 3.12 10.98.31"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="custom" data-md-color-accent="custom"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 7a5 5 0 0 1 5 5 5 5 0 0 1-5 5 5 5 0 0 1-5-5 5 5 0 0 1 5-5m0 2a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3m0-7 2.39 3.42C13.65 5.15 12.84 5 12 5s-1.65.15-2.39.42zM3.34 7l4.16-.35A7.2 7.2 0 0 0 5.94 8.5c-.44.74-.69 1.5-.83 2.29zm.02 10 1.76-3.77a7.131 7.131 0 0 0 2.38 4.14zM20.65 7l-1.77 3.79a7.02 7.02 0 0 0-2.38-4.15zm-.01 10-4.14.36c.59-.51 1.12-1.14 1.54-1.86.42-.73.69-1.5.83-2.29zM12 22l-2.41-3.44c.74.27 1.55.44 2.41.44.82 0 1.63-.17 2.37-.44z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="Share" aria-label="Share" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/bridgingIT/bITdevKit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bridgingIT/bITdevKit
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
+      
+  <img src="../../assets/images/bITDevKit_Icon.svg" alt="logo">
+
+    </a>
+    bITdevKit
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/bridgingIT/bITdevKit" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    bridgingIT/bITdevKit
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Documentation
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Infrastructure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Common Infrastructure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-utilities/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Utilities
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-serialization/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Serialization
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-options-builders/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Options Builders
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-mapping/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Mapping
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-caching/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Caching
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../common-observability-tracing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Common Observability Tracing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Domain and Application
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Core Domain and Application
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-repositories/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Repositories
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-specifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Specifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-domain-policies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Policies
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-rules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Rules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Results
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-commands-queries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Commands and Queries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Application Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-application-dataporter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DataPorter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Execution, Messaging and Modularity
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Execution, Messaging and Modularity
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-requester-notifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requester and Notifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-messaging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queueing
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-contracts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Contracts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting Started
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Getting Started">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in-process-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In-process broker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-framework-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Framework broker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#azure-service-bus-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Azure Service Bus broker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#azure-queue-storage-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Azure Queue Storage broker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-a-queue-message-and-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Define a queue message and handler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enqueue-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enqueue work
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operational-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational Endpoints
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operational Endpoints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in-process-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In-process semantics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-framework-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Framework semantics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rabbitmq-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RabbitMQ semantics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#service-bus-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service Bus semantics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#azure-queue-storage-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Azure Queue Storage semantics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#runtime-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Runtime Behavior
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Runtime Behavior">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multi-host-deployment-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-host Deployment Notes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relation-to-messaging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relation To Messaging
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-notifications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Notifications
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-modules/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Modules
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-pipelines/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipelines
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-filtering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Filtering
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-extensions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Extensions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_5" id="__nav_3_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Security and Access
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Security and Access
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-entitypermissions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Entity Permissions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-identityprovider/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Identity Provider
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation and Host
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Presentation and Host
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-endpoints/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Endpoints
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-console-commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Console Commands
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-cors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CORS Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-exception-handling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Exception Handling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-appstate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AppState
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_7" id="__nav_3_7_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage, Scheduling and Utilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Storage, Scheduling and Utilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-startuptasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    StartupTasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-jobscheduling/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    JobScheduling
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-documents/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DocumentStorage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FileStorage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-storage-monitoring/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Storage Monitoring
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-log-entries/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Log Entries
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_8" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_8" id="__nav_3_8_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing and Test Utilities
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_8">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Testing and Test Utilities
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing-fake-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Fake Authentication for Integration Tests
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../testing-common-xunit/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing Common XUnit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-contracts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Contracts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting Started
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Getting Started">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in-process-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In-process broker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-framework-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Framework broker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#azure-service-bus-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Azure Service Bus broker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#azure-queue-storage-broker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Azure Queue Storage broker
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#define-a-queue-message-and-handler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Define a queue message and handler
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enqueue-work" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enqueue work
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operational-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational Endpoints
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Operational Endpoints">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#in-process-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        In-process semantics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#entity-framework-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Entity Framework semantics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rabbitmq-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RabbitMQ semantics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#service-bus-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service Bus semantics
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#azure-queue-storage-semantics" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Azure Queue Storage semantics
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#runtime-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Runtime Behavior
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Runtime Behavior">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multi-host-deployment-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multi-host Deployment Notes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relation-to-messaging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relation To Messaging
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="queueing-feature-documentation">Queueing Feature Documentation<a class="headerlink" href="#queueing-feature-documentation" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Process single-consumer work items through in-process or durable queue brokers with retained-message inspection, retry/archive controls, and queue/type pause-resume control.</p>
+</blockquote>
+<div class="toc">
+<ul>
+<li><a href="#queueing-feature-documentation">Queueing Feature Documentation</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#core-contracts">Core Contracts</a></li>
+<li><a href="#getting-started">Getting Started</a><ul>
+<li><a href="#in-process-broker">In-process broker</a></li>
+<li><a href="#entity-framework-broker">Entity Framework broker</a></li>
+<li><a href="#azure-service-bus-broker">Azure Service Bus broker</a></li>
+<li><a href="#azure-queue-storage-broker">Azure Queue Storage broker</a></li>
+<li><a href="#define-a-queue-message-and-handler">Define a queue message and handler</a></li>
+<li><a href="#enqueue-work">Enqueue work</a></li>
+</ul>
+</li>
+<li><a href="#operational-endpoints">Operational Endpoints</a><ul>
+<li><a href="#in-process-semantics">In-process semantics</a></li>
+<li><a href="#entity-framework-semantics">Entity Framework semantics</a></li>
+<li><a href="#rabbitmq-semantics">RabbitMQ semantics</a></li>
+<li><a href="#service-bus-semantics">Service Bus semantics</a></li>
+<li><a href="#azure-queue-storage-semantics">Azure Queue Storage semantics</a></li>
+</ul>
+</li>
+<li><a href="#runtime-behavior">Runtime Behavior</a><ul>
+<li><a href="#multi-host-deployment-notes">Multi-host Deployment Notes</a></li>
+</ul>
+</li>
+<li><a href="#relation-to-messaging">Relation To Messaging</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>Queueing provides an application-level abstraction for background work that must be processed by exactly one logical handler per queued message type. It complements Messaging rather than replacing it:</p>
+<ul>
+<li>Messaging is for pub/sub fan-out where multiple handlers may react to the same event.</li>
+<li>Queueing is for work dispatch where one queued item must be processed once by one handler when a compatible handler is available.</li>
+</ul>
+<p>The current queueing implementation ships with several brokers:</p>
+<ul>
+<li><code>InProcessQueueBroker</code> for local, process-bound work distribution and tests.</li>
+<li><code>EntityFrameworkQueueBroker&lt;TContext&gt;</code> for durable SQL-backed processing with renewable leases and runtime-safe competing consumers.</li>
+<li><code>RabbitMQQueueBroker</code> for broker-backed durable queue processing with manual acknowledgement, retry, and dead-letter semantics.</li>
+<li><code>ServiceBusQueueBroker</code> for Azure Service Bus queue transport with manual complete/abandon/dead-letter semantics.</li>
+<li><code>AzureQueueStorageQueueBroker</code> for Azure Queue Storage transport with visibility timeout, polling-based consumption, and retry/dead-letter semantics.</li>
+</ul>
+<p>The feature also includes an operational web endpoint surface for queue broker summary, subscription inspection, waiting-message inspection, and queue/type pause-resume control.</p>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Single-consumer semantics: one handler per queued message type while still allowing multiple host instances to compete for work.</li>
+<li>Delayed handler availability: work can be enqueued before a handler is registered and should wait instead of failing.</li>
+<li>Durability: persisted messages need retries, leases, expiration, and dead-lettering behavior without depending on the messaging feature.</li>
+<li>Operational control: support engineers need visibility into waiting work, active subscriptions, and queue pause state.</li>
+</ul>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Contracts: <code>IQueueMessage</code>, <code>IQueueMessageHandler&lt;TMessage&gt;</code>, <code>IQueueBroker</code>, and <code>IQueueBrokerService</code> provide a queue-specific API.</li>
+<li>Runtime: <code>QueueingService</code> is the single hosted service for the feature and applies subscriptions after host startup.</li>
+<li>Providers: brokers implement <code>QueueBrokerBase</code>; provider-specific background work plugs into the single runtime through <code>IQueueBrokerBackgroundProcessor</code>.</li>
+<li>Operations: <code>IQueueBrokerService</code> and <code>Presentation.Web.Queueing</code> expose broker inspection and operational controls, including retained-message queries, retry/archive actions, waiting-message inspection, purge, and queue/type pause-resume management.</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>sequenceDiagram
+ actor Producer
+ participant Broker as IQueueBroker
+ participant Behaviors as Enqueue Behaviors
+ participant Transport as Broker Provider
+ participant Worker as QueueingService / Provider Worker
+ participant Handler as IQueueMessageHandler&lt;T&gt;
+
+ Producer-&gt;&gt;Broker: Enqueue(message)
+ Broker-&gt;&gt;Behaviors: Execute enqueue pipeline
+ Behaviors-&gt;&gt;Transport: Persist or dispatch work item
+ Worker-&gt;&gt;Transport: Claim item (if durable)
+ Worker-&gt;&gt;Handler: Handle(message)
+ alt success
+  Worker-&gt;&gt;Transport: Mark succeeded
+ else no handler yet
+  Worker-&gt;&gt;Transport: Leave waiting for handler
+ else failure
+  Worker-&gt;&gt;Transport: Retry or dead-letter
+ end</code></pre>
+<h2 id="core-contracts">Core Contracts<a class="headerlink" href="#core-contracts" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>IQueueBroker</code> (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Queueing/IQueueBroker.cs">src/Application.Queueing/IQueueBroker.cs</a>)</li>
+<li>Subscribe/unsubscribe queue handlers.</li>
+<li>Enqueue messages and optionally wait for provider-specific persistence confirmation.</li>
+<li>Process messages through the shared queue dispatch pipeline.</li>
+<li><code>IQueueBrokerService</code> (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Queueing/IQueueBrokerService.cs">src/Application.Queueing/IQueueBrokerService.cs</a>)</li>
+<li>Inspect queue summary, subscriptions, and waiting messages.</li>
+<li>Pause or resume queues and specific message types.</li>
+<li><code>QueueBrokerBase</code> (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Queueing/QueueBrokerBase.cs">src/Application.Queueing/QueueBrokerBase.cs</a>)</li>
+<li>Validates messages, runs behaviors, resolves handlers, and enforces queue semantics.</li>
+<li><code>QueueingService</code> (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Application.Queueing/QueueingService.cs">src/Application.Queueing/QueueingService.cs</a>)</li>
+<li>The single hosted service for the whole feature.</li>
+</ul>
+<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
+<h3 id="in-process-broker">In-process broker<a class="headerlink" href="#in-process-broker" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddQueueing</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">())</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithInProcessBroker</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">InProcessQueueBrokerConfiguration</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">   </span><span class="n">MaxDegreeOfParallelism</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">   </span><span class="n">EnsureOrdered</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span>
+<span class="w"> </span><span class="p">})</span>
+<span class="w"> </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">();</span>
+</code></pre></div>
+<h3 id="entity-framework-broker">Entity Framework broker<a class="headerlink" href="#entity-framework-broker" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(...);</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddQueueing</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">())</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithEntityFrameworkBroker</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">EntityFrameworkQueueBrokerConfiguration</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">   </span><span class="n">AutoSave</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
+<span class="w">   </span><span class="n">ProcessingInterval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span>
+<span class="w">   </span><span class="n">LeaseDuration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">());</span>
+</code></pre></div>
+<h3 id="azure-service-bus-broker">Azure Service Bus broker<a class="headerlink" href="#azure-service-bus-broker" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddQueueing</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">())</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithServiceBusBroker</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ServiceBusQueueBrokerConfiguration</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">   </span><span class="n">ConnectionString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">configuration</span><span class="p">[</span><span class="s">&quot;Queueing:ServiceBus:ConnectionString&quot;</span><span class="p">],</span>
+<span class="w">   </span><span class="n">QueueNamePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bit&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="n">AutoCreateQueue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
+<span class="w">   </span><span class="n">MaxConcurrentCalls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">   </span><span class="n">MaxDeliveryAttempts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">());</span>
+</code></pre></div>
+<h3 id="azure-queue-storage-broker">Azure Queue Storage broker<a class="headerlink" href="#azure-queue-storage-broker" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddQueueing</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">())</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithAzureQueueStorageBroker</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">AzureQueueStorageQueueBrokerConfiguration</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">   </span><span class="n">ConnectionString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">configuration</span><span class="p">[</span><span class="s">&quot;Queueing:AzureQueueStorage:ConnectionString&quot;</span><span class="p">],</span>
+<span class="w">   </span><span class="n">QueueNamePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bit&quot;</span><span class="p">,</span>
+<span class="w">   </span><span class="n">AutoCreateQueue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
+<span class="w">   </span><span class="n">MaxConcurrentCalls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">   </span><span class="n">MaxDeliveryAttempts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">   </span><span class="n">VisibilityTimeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>
+<span class="w">   </span><span class="n">PollingInterval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="w">  </span><span class="p">})</span>
+<span class="w">  </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">());</span>
+</code></pre></div>
+<p>Your <code>DbContext</code> must implement <code>IQueueingContext</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">AppDbContext</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">DbContext</span><span class="p">,</span><span class="w"> </span><span class="n">IQueueingContext</span>
+<span class="p">{</span>
+<span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">QueueMessage</span><span class="o">&gt;</span><span class="w"> </span><span class="n">QueueMessages</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="define-a-queue-message-and-handler">Define a queue message and handler<a class="headerlink" href="#define-a-queue-message-and-handler" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">OrderQueuedMessage</span><span class="p">(</span><span class="n">Guid</span><span class="w"> </span><span class="n">orderId</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">QueueMessageBase</span>
+<span class="p">{</span>
+<span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Guid</span><span class="w"> </span><span class="n">OrderId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">orderId</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">OrderQueuedHandler</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IQueueMessageHandler</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="o">&gt;</span>
+<span class="p">{</span>
+<span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">Handle</span><span class="p">(</span><span class="n">OrderQueuedMessage</span><span class="w"> </span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
+<span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="c1">// process one logical work item</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">;</span>
+<span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="enqueue-work">Enqueue work<a class="headerlink" href="#enqueue-work" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">OrdersService</span><span class="p">(</span><span class="n">IQueueBroker</span><span class="w"> </span><span class="n">queueBroker</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">QueueOrderAsync</span><span class="p">(</span><span class="n">Guid</span><span class="w"> </span><span class="n">orderId</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
+<span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">queueBroker</span><span class="p">.</span><span class="n">Enqueue</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">OrderQueuedMessage</span><span class="p">(</span><span class="n">orderId</span><span class="p">),</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="operational-endpoints">Operational Endpoints<a class="headerlink" href="#operational-endpoints" title="Permanent link">&para;</a></h2>
+<p>The retained-message operational surface lives in <a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Presentation.Web.Queueing/QueueingEndpoints.cs">src/Presentation.Web.Queueing/QueueingEndpoints.cs</a>.</p>
+<p>When you reference <code>Presentation.Web.Queueing</code>, you can register it directly from the fluent queueing builder:</p>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddQueueing</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithEntityFrameworkBroker</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">  </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
+<span class="w">    </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">&quot;/api/_system/queueing&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">GroupTag</span><span class="p">(</span><span class="s">&quot;_System.Queueing&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">());</span>
+</code></pre></div>
+<p>If you prefer separate registration, the existing <code>builder.Services.AddQueueingEndpoints(options =&gt; options.RequireAuthorization())</code> helper is also available.</p>
+<p>Routes:</p>
+<ul>
+<li><code>GET /api/_system/queueing/stats</code></li>
+<li><code>GET /api/_system/queueing/subscriptions</code></li>
+<li><code>GET /api/_system/queueing/messages</code></li>
+<li><code>GET /api/_system/queueing/messages/{id}</code></li>
+<li><code>GET /api/_system/queueing/messages/{id}/content</code></li>
+<li><code>GET /api/_system/queueing/messages/stats</code></li>
+<li><code>GET /api/_system/queueing/messages/waiting?take=50</code></li>
+<li><code>POST /api/_system/queueing/messages/{id}/retry</code></li>
+<li><code>POST /api/_system/queueing/messages/{id}/lease/release</code></li>
+<li><code>POST /api/_system/queueing/messages/{id}/archive</code></li>
+<li><code>DELETE /api/_system/queueing/messages</code></li>
+<li><code>POST /api/_system/queueing/queues/{queueName}/pause</code></li>
+<li><code>POST /api/_system/queueing/queues/{queueName}/resume</code></li>
+<li><code>POST /api/_system/queueing/types/{type}/pause</code></li>
+<li><code>POST /api/_system/queueing/types/{type}/resume</code></li>
+<li><code>POST /api/_system/queueing/types/{type}/circuit/reset</code></li>
+</ul>
+<h3 id="in-process-semantics">In-process semantics<a class="headerlink" href="#in-process-semantics" title="Permanent link">&para;</a></h3>
+<p>The in-process broker is the simplest queue transport. It uses an in-memory channel per message type and dispatches work within the same process.</p>
+<p><strong>Queue topology:</strong></p>
+<ul>
+<li>One in-memory channel is created per registered queue message type.</li>
+<li>There is no external broker or persistence layer.</li>
+</ul>
+<p><strong>Competing consumers:</strong></p>
+<ul>
+<li>Only consumers inside the <strong>same process</strong> can compete for work.</li>
+<li>Multiple application instances do <strong>not</strong> share the queue; each instance has its own isolated channel.</li>
+<li>This makes the in-process broker suitable for tests and single-instance scenarios only.</li>
+</ul>
+<p><strong>Acknowledgement and retry:</strong></p>
+<ul>
+<li>Messages are removed from the channel immediately before the handler is invoked.</li>
+<li>If the handler throws, the message is tracked as failed but is <strong>not</strong> automatically retried because it has already been removed from the channel.</li>
+<li>There is no dead-letter queue; failed messages are only tracked in the runtime.</li>
+</ul>
+<p><strong>Waiting for handler:</strong></p>
+<ul>
+<li>Messages can be enqueued before a handler subscribes; they wait in the channel until a consumer is available.</li>
+<li>When a subscription is added, the consumer starts reading from the channel and processes any backlog.</li>
+</ul>
+<p><strong>Pause/resume:</strong></p>
+<ul>
+<li>When paused, the consumer stops reading from the channel.</li>
+<li>Messages remain in the in-memory channel and are processed when consumption resumes.</li>
+</ul>
+<p><strong>Expiration:</strong></p>
+<ul>
+<li>The broker checks <code>message.Timestamp + MessageExpiration</code> against UTC now before invoking the handler.</li>
+<li>If expired, the message is skipped and tracked as <code>Expired</code>.</li>
+</ul>
+<p><strong>Operational visibility:</strong></p>
+<ul>
+<li>The in-process broker tracks messages in memory for the lifetime of the process.</li>
+<li><code>GetMessagesAsync</code>, <code>GetSummaryAsync</code>, pause/resume, and purge are supported through this in-memory tracker.</li>
+<li>Restarting the application clears all tracked and queued messages.</li>
+</ul>
+<h3 id="entity-framework-semantics">Entity Framework semantics<a class="headerlink" href="#entity-framework-semantics" title="Permanent link">&para;</a></h3>
+<p>The Entity Framework broker maps queue semantics to a SQL-backed durable store using <code>DbContext</code> and renewable leases.</p>
+<p><strong>Queue topology:</strong></p>
+<ul>
+<li>One logical queue is represented by rows in a <code>QueueMessage</code> table filtered by message type.</li>
+<li>The queue name defaults to the message type name, with optional <code>QueueNamePrefix</code> and <code>QueueNameSuffix</code>.</li>
+</ul>
+<p><strong>Competing consumers:</strong></p>
+<ul>
+<li>Multiple application instances compete for work by claiming leases on rows in the same database table.</li>
+<li>A worker claims a message by updating <code>LockedBy</code> and <code>LockedUntil</code>; other workers skip rows that are already leased.</li>
+<li>Workers verify <code>LockedBy</code> before finalizing state. If another node took ownership, the older worker skips finalization.</li>
+</ul>
+<p><strong>Leases and renewal:</strong></p>
+<ul>
+<li><code>LeaseDuration</code> controls how long a worker owns a message.</li>
+<li><code>LeaseRenewalInterval</code> controls how often a healthy worker renews its lease.</li>
+<li>If a worker crashes, the lease expires and another worker can claim the message after <code>LeaseDuration</code>.</li>
+</ul>
+<p><strong>Retry and dead-letter:</strong></p>
+<ul>
+<li>The broker increments <code>AttemptCount</code> on each processing attempt.</li>
+<li>On failure: the message is released (lease cleared) and becomes available for the next worker.</li>
+<li>After <code>MaxDeliveryAttempts</code> is exceeded, the message is marked <code>DeadLettered</code> and is no longer eligible for processing.</li>
+</ul>
+<p><strong>Waiting for handler:</strong></p>
+<ul>
+<li>Messages can be enqueued before any handler subscribes; they persist in the database table.</li>
+<li>When no handler is registered, the broker returns <code>WaitingForHandler</code> and leaves the message unleased for the next polling cycle.</li>
+</ul>
+<p><strong>Pause/resume:</strong></p>
+<ul>
+<li>When a queue or message type is paused, workers stop claiming messages for that queue/type.</li>
+<li>Messages remain in the database table and are picked up when polling resumes.</li>
+</ul>
+<p><strong>Expiration:</strong></p>
+<ul>
+<li>The broker checks <code>message.Timestamp + MessageExpiration</code> against UTC now before invoking the handler.</li>
+<li>If expired, the message is marked <code>Expired</code> and is no longer eligible for processing.</li>
+</ul>
+<p><strong>Archive:</strong></p>
+<ul>
+<li>Terminal messages (<code>Succeeded</code>, <code>DeadLettered</code>, <code>Expired</code>) can be archived with <code>ArchiveMessageAsync</code>.</li>
+<li><code>AutoArchiveAfter</code> and <code>AutoArchiveStatuses</code> can be configured to archive terminal messages automatically after a retention period.</li>
+</ul>
+<p><strong>Operational visibility:</strong></p>
+<ul>
+<li>The Entity Framework broker provides full durable retained history in the database.</li>
+<li><code>GetMessagesAsync</code>, <code>GetSummaryAsync</code>, <code>GetMessageStatsAsync</code>, retry, archive, lease release, pause/resume, and purge are all backed by the database.</li>
+<li>Unlike the in-memory brokers, tracked history survives application restarts.</li>
+</ul>
+<h3 id="rabbitmq-semantics">RabbitMQ semantics<a class="headerlink" href="#rabbitmq-semantics" title="Permanent link">&para;</a></h3>
+<p>The RabbitMQ queue broker maps queue semantics to RabbitMQ work queues using the <strong>default exchange</strong> and <strong>manual acknowledgement</strong>.</p>
+<p><strong>Queue topology:</strong></p>
+<ul>
+<li>One RabbitMQ queue is created per registered queue message type.</li>
+<li>The queue name defaults to the message type name (e.g., <code>OrderQueuedMessage</code>), with optional <code>QueueNamePrefix</code> and <code>QueueNameSuffix</code>.</li>
+<li>The broker uses the <strong>default exchange</strong> (<code>""</code>) and publishes with the queue name as the <strong>routing key</strong>. RabbitMQ routes messages directly to the queue with the matching name.</li>
+</ul>
+<pre class="mermaid"><code>flowchart LR
+  P[Publisher] --&gt;|routingKey=OrderQueuedMessage| E[Default Exchange]
+  E --&gt; Q1[Queue: OrderQueuedMessage]
+  E --&gt; Q2[Queue: InvoiceQueuedMessage]
+  Q1 --&gt; C1[Consumer A]
+  Q1 --&gt; C2[Consumer B &lt;br/&gt;(competing)]
+  Q2 --&gt; C3[Consumer C]</code></pre>
+<p><strong>Competing consumers:</strong></p>
+<ul>
+<li>Multiple application instances that use the same <code>QueueNamePrefix</code>/<code>QueueNameSuffix</code> and subscribe to the same message type consume from the <strong>same queue</strong>.</li>
+<li>RabbitMQ round-robins messages across all connected consumers on that queue.</li>
+<li>A message is delivered to <strong>exactly one consumer</strong> at a time.</li>
+</ul>
+<p><strong>Acknowledgement and retry:</strong></p>
+<ul>
+<li>Consumption uses <strong>manual ack</strong> (<code>autoAck: false</code>).</li>
+<li>On success: the broker sends <code>BasicAck</code> and the message is removed from the queue.</li>
+<li>On failure: the broker implements retry by <strong>republishing</strong> the message with an incremented <code>x-attempt-count</code> header, then acks the original message. If republish fails, it falls back to <code>BasicNack(requeue: true)</code>.</li>
+<li>After <code>MaxDeliveryAttempts</code> is exceeded, the broker sends <code>BasicNack(requeue: false)</code> and the message is dropped (dead-lettered). No separate dead-letter exchange is configured by default.</li>
+<li>If a handler throws an unexpected exception, the broker nacks with requeue so the message is retried.</li>
+</ul>
+<p><strong>Waiting for handler:</strong></p>
+<ul>
+<li>The broker declares the queue on both publish and subscribe. This means messages can be enqueued before any handler subscribes.</li>
+<li>When no consumer is connected, messages accumulate in the RabbitMQ queue.</li>
+<li>When a consumer connects, RabbitMQ delivers the backlog.</li>
+</ul>
+<p><strong>Pause/resume:</strong></p>
+<ul>
+<li>When a queue or message type is paused, the broker detects this in <code>OnMessageAsync</code> and sends <code>BasicNack(requeue: true)</code>.</li>
+<li>The message remains in the RabbitMQ queue and will be redelivered when the consumer resumes processing.</li>
+</ul>
+<p><strong>Expiration:</strong></p>
+<ul>
+<li>The broker checks <code>message.Timestamp + MessageExpiration</code> against UTC now before invoking the handler.</li>
+<li>If expired, the message is nacked without requeue and tracked as <code>Expired</code>.</li>
+<li>The AMQP <code>Expiration</code> property is also set on publish, so RabbitMQ can drop expired messages that have not yet been delivered.</li>
+</ul>
+<p><strong>EnqueueAndWait:</strong></p>
+<ul>
+<li><code>EnqueueAndWait</code> enables publisher confirms (<code>ConfirmSelect</code>) and calls <code>WaitForConfirmsOrDie</code> with a 30-second timeout. This guarantees the message has been persisted by RabbitMQ before the call returns.</li>
+</ul>
+<p><strong>Operational visibility:</strong></p>
+<ul>
+<li>The RabbitMQ broker service (<code>RabbitMQQueueBrokerService</code>) tracks recent messages in memory (bounded to 10,000 items with LRU eviction).</li>
+<li><code>GetMessagesAsync</code>, <code>GetSummaryAsync</code>, <code>GetMessageStatsAsync</code>, pause/resume, and purge are supported through this in-memory tracker.</li>
+<li>Unlike the Entity Framework broker, there is no durable retained history. Restarting the application clears the operational tracker (the messages themselves remain in RabbitMQ).</li>
+</ul>
+<h3 id="service-bus-semantics">Service Bus semantics<a class="headerlink" href="#service-bus-semantics" title="Permanent link">&para;</a></h3>
+<p>The Service Bus broker maps queue semantics to Azure Service Bus queues using <strong>peek-lock consumption</strong> and <strong>manual complete/abandon/dead-letter</strong>.</p>
+<p><strong>Queue topology:</strong></p>
+<ul>
+<li>One Service Bus queue is created per registered queue message type.</li>
+<li>The queue name defaults to the message type name, with optional <code>QueueNamePrefix</code> and <code>QueueNameSuffix</code>.</li>
+<li>Queue names are sanitized to comply with Service Bus naming rules (alphanumeric, hyphens, underscores, and slashes, 1-260 characters).</li>
+</ul>
+<p><strong>Competing consumers:</strong></p>
+<ul>
+<li>Multiple application instances that use the same <code>QueueNamePrefix</code>/<code>QueueNameSuffix</code> and subscribe to the same message type consume from the <strong>same queue</strong>.</li>
+<li>Service Bus delivers messages to <strong>exactly one consumer</strong> at a time using peek-lock.</li>
+</ul>
+<p><strong>Acknowledgement and retry:</strong></p>
+<ul>
+<li>Consumption uses <strong>peek-lock</strong> with <code>AutoCompleteMessages = false</code>.</li>
+<li>On success: the broker calls <code>CompleteMessageAsync</code> and the message is removed from the queue.</li>
+<li>On failure: the broker calls <code>AbandonMessageAsync</code>, which increments the Service Bus delivery count and makes the message immediately available for redelivery.</li>
+<li>After <code>MaxDeliveryAttempts</code> is exceeded, the broker calls <code>DeadLetterMessageAsync</code> with reason <code>MaxDeliveryAttemptsExceeded</code>.</li>
+</ul>
+<p><strong>Waiting for handler:</strong></p>
+<ul>
+<li>The broker creates the queue at runtime when <code>AutoCreateQueue</code> is enabled.</li>
+<li>Messages can be enqueued before any handler subscribes; they persist in the Service Bus queue.</li>
+<li>When no handler is registered, the broker returns <code>WaitingForHandler</code>, abandons the message, and tracks it accordingly.</li>
+</ul>
+<p><strong>Pause/resume:</strong></p>
+<ul>
+<li>When a queue or message type is paused, the broker detects this in <code>OnMessageAsync</code> and calls <code>AbandonMessageAsync</code>.</li>
+<li>The message remains in the Service Bus queue and will be redelivered when the consumer resumes processing.</li>
+<li>Because abandon triggers immediate redelivery, the pause window should be kept short to avoid exhausting <code>MaxDeliveryCount</code>.</li>
+</ul>
+<p><strong>Expiration:</strong></p>
+<ul>
+<li>The broker checks <code>message.Timestamp + MessageExpiration</code> against UTC now before invoking the handler.</li>
+<li>If expired, the broker dead-letters the message with reason <code>Expired</code>.</li>
+<li>The Service Bus <code>TimeToLive</code> is also set on enqueue so the service can drop expired messages that have not yet been delivered.</li>
+</ul>
+<p><strong>Operational visibility:</strong></p>
+<ul>
+<li>The Service Bus broker service (<code>ServiceBusQueueBrokerService</code>) tracks recent messages in memory (bounded to 10,000 items).</li>
+<li><code>GetMessagesAsync</code>, <code>GetSummaryAsync</code>, <code>GetMessageStatsAsync</code>, pause/resume, and purge are supported through this in-memory tracker.</li>
+<li>Unlike the Entity Framework broker, there is no durable retained history. Restarting the application clears the operational tracker (the messages themselves remain in Service Bus).</li>
+</ul>
+<h3 id="azure-queue-storage-semantics">Azure Queue Storage semantics<a class="headerlink" href="#azure-queue-storage-semantics" title="Permanent link">&para;</a></h3>
+<p>The Azure Queue Storage broker maps queueing semantics to Azure Queue Storage using <strong>polling-based consumption</strong> and <strong>visibility timeouts</strong>.</p>
+<p><strong>Queue topology:</strong></p>
+<ul>
+<li>One Azure Queue Storage queue is created per registered queue message type.</li>
+<li>The queue name defaults to the message type name (e.g., <code>orderqueuedmessage</code>), with optional <code>QueueNamePrefix</code> and <code>QueueNameSuffix</code>.</li>
+<li>Queue names are sanitized to comply with Azure Queue Storage naming rules (lowercase alphanumeric and hyphens, 3-63 characters).</li>
+</ul>
+<p><strong>Polling and visibility timeout:</strong></p>
+<ul>
+<li>The broker starts a background polling loop per subscribed queue.</li>
+<li>Each poll calls <code>ReceiveMessagesAsync</code> with a configurable <code>VisibilityTimeout</code>.</li>
+<li>While a message is invisible, no other consumer can receive it.</li>
+<li>If the message is not deleted within the visibility timeout, it becomes visible again for redelivery.</li>
+<li>When no messages are available, the broker sleeps for <code>PollingInterval</code> before polling again.</li>
+</ul>
+<p><strong>Competing consumers:</strong></p>
+<ul>
+<li>Multiple application instances that use the same <code>QueueNamePrefix</code>/<code>QueueNameSuffix</code> and subscribe to the same message type consume from the <strong>same queue</strong>.</li>
+<li>Azure Queue Storage round-robins messages across all connected consumers on that queue.</li>
+<li>A message is delivered to <strong>exactly one consumer</strong> at a time while it remains within the visibility timeout.</li>
+</ul>
+<p><strong>Retry and dead-letter:</strong></p>
+<ul>
+<li>The broker uses the built-in <code>DequeueCount</code> header to track delivery attempts.</li>
+<li>On success: the broker deletes the message from the queue.</li>
+<li>On failure: if <code>DequeueCount</code> is below <code>MaxDeliveryAttempts</code>, the broker updates the message visibility timeout to <code>RetryDelay</code> so it reappears for retry after a short delay.</li>
+<li>After <code>MaxDeliveryAttempts</code> is exceeded, the broker deletes the message and tracks it as <code>DeadLettered</code> in the runtime.</li>
+<li>If a handler throws an unexpected exception, the message is retried up to <code>MaxDeliveryAttempts</code>.</li>
+</ul>
+<p><strong>Waiting for handler:</strong></p>
+<ul>
+<li>The broker creates the queue on both publish and subscribe when <code>AutoCreateQueue</code> is enabled.</li>
+<li>Messages can be enqueued before any handler subscribes; they remain in the queue until a poller starts.</li>
+<li>When no handler is registered for a message type, the broker returns <code>WaitingForHandler</code>, makes the message immediately visible again, and tracks it accordingly.</li>
+</ul>
+<p><strong>Pause/resume:</strong></p>
+<ul>
+<li>When a queue or message type is paused, the polling loop detects this and delays further receives.</li>
+<li>Messages already in the queue remain there and will be picked up when polling resumes.</li>
+</ul>
+<p><strong>Expiration:</strong></p>
+<ul>
+<li>The broker checks <code>message.Timestamp + MessageExpiration</code> against UTC now before invoking the handler.</li>
+<li>If expired, the message is deleted from the queue and tracked as <code>Expired</code>.</li>
+<li>The Azure Queue Storage <code>TimeToLive</code> property is also set on enqueue so the service can drop expired messages that have not yet been delivered.</li>
+</ul>
+<p><strong>Operational visibility:</strong></p>
+<ul>
+<li>The Azure Queue Storage broker service (<code>AzureQueueStorageQueueBrokerService</code>) tracks recent messages in memory (bounded to 10,000 items).</li>
+<li><code>GetMessagesAsync</code>, <code>GetSummaryAsync</code>, <code>GetMessageStatsAsync</code>, pause/resume, and purge are supported through this in-memory tracker.</li>
+<li>Unlike the Entity Framework broker, there is no durable retained history. Restarting the application clears the operational tracker (the messages themselves remain in Azure Queue Storage).</li>
+</ul>
+<p>All brokers implement the same <code>IQueueBrokerService</code> operational contract. The in-process broker exposes it over runtime-tracked items, the Entity Framework broker adds durable retained history plus archive-aware filtering and lease management, and the Service Bus broker provides lightweight in-memory operational tracking.</p>
+<p>For Entity Framework, the most relevant broker-specific retention options are:</p>
+<ul>
+<li><code>AutoArchiveAfter</code> to archive terminal messages automatically after a retention period.</li>
+<li><code>AutoArchiveStatuses</code> to limit auto-archival to specific terminal states such as <code>Succeeded</code>, <code>DeadLettered</code>, or <code>Expired</code>.</li>
+</ul>
+<h2 id="runtime-behavior">Runtime Behavior<a class="headerlink" href="#runtime-behavior" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Duplicate handlers fail fast. A second handler for the same queue message type is rejected.</li>
+<li>Missing handlers produce <code>WaitingForHandler</code> instead of immediate failure.</li>
+<li>Durable providers use at-least-once delivery semantics; handlers should remain idempotent.</li>
+<li><code>AddQueueing(...)</code> may be called from multiple modules. Registrations accumulate, but queueing still uses one hosted service.</li>
+</ul>
+<h3 id="multi-host-deployment-notes">Multi-host Deployment Notes<a class="headerlink" href="#multi-host-deployment-notes" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>EntityFrameworkQueueBroker&lt;TContext&gt;</code> is intended to support <strong>multiple host instances competing for work</strong> against the same durable store.</li>
+<li>For real multi-host deployments, prefer <strong>SQL Server</strong> or <strong>PostgreSQL</strong> so lease claim and renewal can use efficient conditional updates in the database.</li>
+<li>Queueing still provides <strong>at-least-once</strong> delivery semantics. The goal is one logical owner at a time, not an exactly-once execution guarantee.</li>
+<li>A queued item can be reprocessed if a host crashes after side effects but before finalize, or if lease ownership changes after expiry.</li>
+<li>Queue handlers should therefore be <strong>idempotent</strong> and safe to execute more than once for the same <code>MessageId</code>.</li>
+<li>Set <code>LeaseDuration</code> longer than normal handler execution time and <code>LeaseRenewalInterval</code> low enough that healthy workers renew ownership before expiry.</li>
+<li><code>SQLite</code> is suitable for local/dev and lightweight durable scenarios, but it is <strong>not the recommended storage engine for distributed multi-host queue processing</strong>.</li>
+<li>Workers verify <code>LockedBy</code> before finalizing state. If another node took ownership, the older worker skips finalization rather than overwriting the newer lease owner.</li>
+</ul>
+<h2 id="relation-to-messaging">Relation To Messaging<a class="headerlink" href="#relation-to-messaging" title="Permanent link">&para;</a></h2>
+<p>Use Messaging when one event should fan out to many handlers. Use Queueing when one work item should be owned by one handler execution. The APIs are intentionally similar so the developer experience stays familiar, but the runtime semantics are different.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+    <a href="https://github.com/bridgingIT/bITdevKit" target="_blank" rel="noopener" title="GitHub" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+    <a href="https://www.nuget.org/packages?q=bitdevkit" target="_blank" rel="noopener" title="NuGet" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M224.3-2.5c19.8-11.4 44.2-11.4 64 0L464.2 99c19.8 11.4 32 32.6 32 55.4v203c0 22.9-12.2 44-32 55.4L288.3 514.5a64.16 64.16 0 0 1-64 0L48.5 413c-19.8-11.4-32-32.6-32-55.4v-203c0-22.9 12.2-44 32-55.4zm207.8 360V191.4l-143.8 83v166.1z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

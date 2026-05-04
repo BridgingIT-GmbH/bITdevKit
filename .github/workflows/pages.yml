@@ -4,6 +4,15 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'mkdocs.yml'
+      - 'docs/site/**'
+      - 'docs/INDEX.md'
+      - 'docs/introduction-ddd-guide.md'
+      - 'docs/common-*.md'
+      - 'docs/features-*.md'
+      - 'docs/testing-*.md'
+      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:

@@ -1,46 +1,41 @@
 ---
-status: draft
+status: implemented
 ---
 
-# Design Specification: GitHub Pages Site for bITdevKit
+# Specification: GitHub Pages Site for bITdevKit
 
-> This document defines the target GitHub Pages experience for bITdevKit: a polished public landing page combined with an extensive, curated technical documentation site. It describes the intended end state. Implementation can later be split into phases such as v1 and vNext, but those phases are intentionally not defined here.
+> This document defines the GitHub Pages experience, information architecture, content model, build model, and publishing behavior for bITdevKit.
 
 [TOC]
 
 ## 1. Introduction
 
-bITdevKit should have a public website at `https://bridgingit-gmbh.github.io/bITdevKit/` that serves two purposes at the same time:
+bITdevKit shall have a public website at `https://bridgingit-gmbh.github.io/bITdevKit/` that serves two purposes at the same time:
 
 - act as the public front door for the project
 - provide a rich, searchable technical documentation experience
 
-The site is not meant to be a raw rendering of the repository and it is not meant to be a documentation-only shell. It should present bITdevKit like a serious .NET framework/toolkit while still remaining lightweight, maintainable, and Markdown-first.
+The site is not meant to be a raw rendering of the repository and it is not meant to be a documentation-only shell. It shall present bITdevKit like a serious .NET framework/toolkit while still remaining lightweight, maintainable, and Markdown-first.
 
-The resulting site should combine:
+The resulting site shall combine:
 
 - a product-style landing page
 - curated feature and architecture documentation
 - strong navigation into relevant repository resources
 - a design that feels intentional and modern rather than like a stock docs theme
 
----
-
 ## 2. Goals
 
 The GitHub Pages site shall:
 
-- replace the current `404` at the public Pages URL
 - present bITdevKit as a modular .NET development kit/framework
 - help first-time visitors quickly understand what the project is, what problems it solves, and why it is useful
 - provide a polished landing page with strong calls to action
 - provide extensive technical documentation for the public feature set
 - keep documentation discoverable through clear navigation and search
 - remain maintainable by using Markdown as the primary content authoring format
-- build locally (Docker) without requiring Python to be installed directly on the developer machine
-- build and publish automatically through GitHub Actions after code is pushed to GitHub remote
-
----
+- build locally through Docker without requiring Python to be installed directly on the developer machine
+- build and publish automatically through GitHub Actions after code is pushed to the GitHub remote
 
 ## 3. Non-Goals
 
@@ -55,8 +50,6 @@ The site shall NOT:
 - mirror the entire repository structure one-to-one
 - behave as a general company marketing site for BridgingIT GmbH
 
----
-
 ## 4. Audience
 
 The site primarily serves:
@@ -66,7 +59,7 @@ The site primarily serves:
 - contributors and adopters looking for feature guidance
 - developers searching for concrete entry points into the framework
 
-The tone should therefore be:
+The tone shall therefore be:
 
 - technical
 - clear
@@ -74,14 +67,12 @@ The tone should therefore be:
 - confident
 - concise
 
-The tone should not be:
+The tone shall not be:
 
 - sales-heavy
 - generic
 - buzzword-driven
 - enterprise brochure-like
-
----
 
 ## 5. Site Scope
 
@@ -105,8 +96,6 @@ The following repository content shall not be part of the public MkDocs site:
 
 These areas may still exist in the repository for internal design, engineering, or presentation work, but they are explicitly outside the public Pages information architecture.
 
----
-
 ## 6. Site Generation Approach
 
 ### 6.1 Generator choice
@@ -125,23 +114,35 @@ MkDocs is chosen because it provides:
 
 The public site shall use a dedicated MkDocs content source directory separate from the repository’s internal `docs/` structure.
 
-Recommended structure:
+Implemented structure:
 
 ```text
 /mkdocs.yml
 /docs/site/
   index.md
-  getting-started/
-  architecture/
-  features/
-  assets/
-    images/
-    stylesheets/
+  getting-started.md
+  templates.md
+  why.md
+  architecture.md
+  packages.md
+  examples.md
+  decisions.md
+  decisions-messaging-vs-queueing.md
+  decisions-repository-vs-activeentity.md
+  /assets/
+    /images/
+    /stylesheets/
+  /scripts/
+    build-pages.ps1
+    serve-pages.ps1
+    sync-docs.ps1
+  /reference/
+    ...generated synced public docs...
 ```
 
-`docs/site/` is the only MkDocs input directory.
+`docs/site/` is the MkDocs input directory.
 
-Existing reusable branding assets from `docs/assets/` may be copied, referenced, or curated into the public site asset structure as part of implementation.
+Existing reusable branding assets from `docs/assets/` shall be copied, referenced, or curated into the public site asset structure as needed.
 
 ### 6.3 Content ownership model
 
@@ -173,8 +174,6 @@ The README is therefore both:
 - an input to the Pages experience
 - a document that must be modernized and synchronized as part of the overall public documentation effort
 
----
-
 ## 7. Build and Deployment Model
 
 ### 7.1 Local build and preview
@@ -190,6 +189,20 @@ The local workflow shall support:
 
 without requiring a Python installation on the host machine.
 
+Implemented wrapper scripts:
+
+- [build-pages.ps1](f:\projects\bit\bITdevKit\docs\site\scripts\build-pages.ps1)
+- [serve-pages.ps1](f:\projects\bit\bITdevKit\docs\site\scripts\serve-pages.ps1)
+- [sync-docs.ps1](f:\projects\bit\bITdevKit\docs\site\scripts\sync-docs.ps1)
+
+Canonical local commands:
+
+```powershell
+pwsh -File ./docs/site/scripts/serve-pages.ps1
+pwsh -File ./docs/site/scripts/build-pages.ps1
+pwsh -File ./docs/site/scripts/sync-docs.ps1
+```
+
 ### 7.2 Azure DevOps
 
 Azure DevOps shall not be used for GitHub Pages build or deployment.
@@ -203,8 +216,8 @@ GitHub Actions shall be the only automation responsible for Pages build and depl
 The workflow shall:
 
 - trigger on pushes to the GitHub default branch
-- optionally support manual dispatch
-- build the site inside Docker
+- support manual dispatch
+- build the site inside Docker through the PowerShell wrapper scripts
 - publish the generated static output to the `gh-pages` branch
 
 ### 7.4 GitHub Pages publishing mode
@@ -216,7 +229,13 @@ GitHub Pages shall use branch-based publishing from:
 
 The GitHub Actions workflow shall be responsible for keeping `gh-pages` up to date with the generated static output.
 
----
+### 7.5 Output directory
+
+The generated static site shall be written to:
+
+- `.github/pages/`
+
+This output directory shall be the source copied to the root of the `gh-pages` branch.
 
 ## 8. Information Architecture
 
@@ -227,45 +246,46 @@ The site shall have two major layers:
 
 ### 8.1 Top-level navigation
 
-The top-level navigation should be visitor-oriented and product-oriented.
+The top-level navigation shall be visitor-oriented and product-oriented.
 
-Recommended top-level navigation:
+Implemented top-level navigation:
 
 - Home
-- Why
-- Features
-- Architecture
 - Getting Started
-- Docs
-- GitHub
-- NuGet
+- Why bITdevKit
+- Architecture
+- Packages
+- Examples
+- Decisions
+- Documentation
 
-The exact labels may vary slightly during implementation, but the structure shall preserve both landing content and deep docs access.
+The exact labels shall remain aligned with the repository’s public site pages and user journeys.
 
 ### 8.2 Docs navigation
 
 Once a user enters the documentation area, the site shall provide a documentation-style navigation model with:
 
-- left-side or section navigation
 - page hierarchy grouped by topic
 - search across public documentation pages
+- a curated grouping model instead of a flat file list
 
 The docs experience shall feel like a real framework documentation site, not just a set of disconnected pages.
 
 ### 8.3 Canonical public routes
 
-The public site should expose stable, human-readable routes for the major public areas.
+The public site shall expose stable, human-readable routes for the major public areas.
 
-Recommended canonical route families:
+Implemented canonical route families:
 
 - `/` for the landing page
-- `/getting-started/` for first-use guidance
-- `/architecture/` for architecture overview and conceptual framing
-- `/features/` for the main public framework feature documentation
-- `/testing/` for testing-related public guides
-- `/docs/` for the broader curated documentation hub when a hub page is useful
-
-The exact internal source file names may differ, but the public routing model should remain stable and visitor-friendly.
+- `/getting-started/` for onboarding
+- `/templates/` for scaffolding guidance
+- `/why/` for positioning and fit
+- `/architecture/` for architecture overview and request flow
+- `/packages/` for the package map
+- `/examples/` for the example story
+- `/decisions/` for decision guides
+- `/reference/` for the broader curated docs overview
 
 ### 8.4 Primary user journeys
 
@@ -289,157 +309,102 @@ The site shall support at least these user journeys:
    - use homepage and getting-started entry points
    - move into curated docs rather than browsing repository folders manually
 
----
-
 ## 9. Homepage Information Architecture
 
 The homepage shall act as the main public entry point for bITdevKit.
 
 ### 9.1 Exact homepage section order
 
-The homepage should be implemented in this order:
+The homepage shall be implemented in this order:
 
-1. Top navigation
-2. Hero
+1. Hero
+2. Primary CTA row
 3. Trust and quick-signal strip
-4. Why bITdevKit
-5. Capability overview
-6. Architecture overview
-7. Example applications
-8. Documentation gateway
-9. Closing call to action
-10. Footer
+4. Choose a start path
+5. When bITdevKit fits best
+6. Capability overview
+7. Why not just plain ASP.NET Core + MediatR + EF Core?
+8. Architecture overview
+9. Request flow in practice
+10. Example applications
+11. Templates for new solutions and modules
+12. Common early decisions
+13. Closing call to action
 
-The page should read as one continuous product story:
+The page shall read as one continuous product story:
 
 - what the kit is
-- why it matters
+- where it fits
 - what it contains
 - how it is structured
+- which paths and decisions matter first
 - where to go next
 
 ### 9.2 Top navigation
 
-The homepage top navigation should use exact visitor-facing labels or very close equivalents:
+The homepage shall use the site-wide top navigation defined in [mkdocs.yml](f:\projects\bit\bITdevKit\mkdocs.yml).
 
-- Home
-- Why
-- Features
-- Architecture
-- Getting Started
-- Docs
-- GitHub
-- NuGet
-
-Top navigation behavior should be:
-
-- `Home` scrolls to top or routes to `/`
-- `Why` jumps to the homepage value section
-- `Features` jumps to the homepage capability section or routes to `/features/`
-- `Architecture` routes to `/architecture/`
-- `Getting Started` routes to `/getting-started/`
-- `Docs` routes to the public docs hub or primary docs landing page
-- `GitHub` opens the repository
-- `NuGet` opens the package listing/search target
-
-A theme toggle for light/dark mode should be visible in the top navigation or persistent page chrome.
+It shall include the light/dark theme toggle through Material for MkDocs theme chrome.
 
 ### 9.3 Hero
 
 The hero shall be the strongest piece of homepage messaging and should immediately answer what bITdevKit is.
 
-The hero should contain:
+The hero shall contain:
 
-- an eyebrow or short context line such as `.NET Development Kit` or `Modular Building Blocks for .NET`
-- a primary headline
+- an eyebrow line
+- a primary marketing/developer message
 - a supporting paragraph
 - a primary CTA row
-- a secondary quick-link row
-- a subtle visual treatment that feels technical and deliberate
 
-Recommended primary headline direction:
+The primary CTA row shall use these targets:
 
-- `Build modular .NET applications with reusable architectural building blocks.`
-
-Alternative acceptable headline direction:
-
-- `A modular .NET development kit for clean architecture, DDD, and real-world application building.`
-
-Recommended supporting copy direction:
-
-- explain that bITdevKit helps teams compose application architecture from reusable building blocks for domain modeling, requests, messaging, queueing, storage, scheduling, and presentation concerns
-- emphasize maintainability, consistency, and development speed
-- avoid vague claims like “next-generation” or “revolutionary”
-
-The hero shall use these CTA targets:
-
-- primary CTA: `Get Started` -> `/getting-started/`
-- secondary CTA: `Explore Docs` -> public docs landing page
-- tertiary CTA: `View on GitHub` -> repository root
-
-Optional additional CTA:
-
-- `Browse Packages` -> NuGet search/listing target
-
-The hero may include a small secondary badge or quick-link row for:
-
-- `MIT Licensed`
-- `NuGet Packages`
-- `Examples Included`
-- `GitHub Source`
-
-These should be factual trust signals, not decorative clutter.
+- `Get Started` -> `/getting-started/`
+- `Use Templates` -> `/templates/`
+- `Explore Docs` -> `/reference/`
+- `View Source` -> GitHub repository root
 
 ### 9.4 Trust and quick-signal strip
 
-Immediately below the hero, the homepage should provide a compact strip of factual project signals.
+Immediately below the hero, the homepage shall provide a compact strip of factual project signals.
 
-This strip should highlight a small number of concrete properties such as:
+The implemented signal strip shall highlight:
 
-- modular architecture
-- DDD-oriented building blocks
-- open source / MIT
-- NuGet packages
-- examples included
+- DDD
+- CQRS
+- Modular Monolith
+- Results
+- Messaging
+- Queueing
+- Templates
 
-If metrics or badges are shown, they should be limited to signals that are already available and stable, such as:
+### 9.5 Choose a start path
 
-- GitHub repository
-- GitHub Actions status
-- NuGet package availability
+This section shall provide a small set of high-value entry paths for different developer intents.
 
-This area should not attempt to imitate customer-logo walls unless there is real, curated proof data to support it.
+The implemented cards shall route to:
 
-### 9.5 Why bITdevKit
+- `Learn the devkit`
+- `Scaffold a solution`
+- `Explore examples`
+- `Read the docs`
 
-This section shall explain the framework’s practical reason for existing.
+### 9.6 When bITdevKit fits best
 
-It should answer three questions:
+This section shall explain when the framework is a strong fit.
 
-1. What problems does it solve?
-2. What does it standardize?
-3. Why would a team adopt it instead of assembling everything ad hoc?
+The implemented value themes shall include:
 
-Recommended structure:
+- modular monoliths
+- business-heavy applications
+- operationally realistic platforms
+- teams that need consistency
 
-- short section headline such as `Why bITdevKit`
-- one concise lead paragraph
-- three to four value cards or columns
-
-Recommended value themes:
-
-- `Architectural consistency`
-- `Reusable cross-cutting building blocks`
-- `Faster application composition`
-- `Clear boundaries for maintainable systems`
-
-Each value block should connect directly to real capabilities already present in the framework rather than generic benefits.
-
-### 9.6 Capability overview
+### 9.7 Capability overview
 
 This section shall be the main homepage bridge into the public docs.
 
-It should use a grid of cards with:
+It shall use a grid of cards with:
 
 - capability name
 - one short explanatory sentence
@@ -448,122 +413,83 @@ It should use a grid of cards with:
 The homepage shall present these capability cards:
 
 - `Domain`
-  - link target: domain/core concepts area
 - `Application`
-  - link target: commands, queries, and application events area
 - `Requester & Notifier`
-  - link target: requester/notifier docs
 - `Messaging`
-  - link target: messaging docs
 - `Queueing`
-  - link target: queueing docs
 - `Pipelines`
-  - link target: pipelines docs
 - `Storage`
-  - link target: document/file/storage monitoring docs
 - `Scheduling`
-  - link target: startup tasks and job scheduling docs
 - `Presentation`
-  - link target: endpoints, CORS, exception handling, app state docs
-- `Common Building Blocks`
-  - link target: common/shared guides area
 
-Card copy should be short and concrete. It should describe what a visitor can do with the capability, not just restate the category title.
+### 9.8 Plain-stack comparison
 
-The card grid should be scannable on desktop and stack cleanly on mobile.
+The homepage shall include a short comparison explaining why the devkit exists beyond a plain stack of ASP.NET Core, MediatR, and EF Core.
 
-### 9.7 Architecture overview
+This section shall remain concise and link to the broader `Why` page.
+
+### 9.9 Architecture overview
 
 This section shall explain the framework shape in a visually digestible way.
 
-It should communicate:
+It shall communicate:
 
-- onion / clean architecture
+- clean architecture
 - modular vertical slices
 - domain/application/infrastructure/presentation boundaries
-- reusable conventions across modules
 
-Recommended content structure:
+and route to `/architecture/`.
 
-- section headline such as `Designed for modular, maintainable .NET systems`
-- short explanatory paragraph
-- simplified architecture diagram or layered visual block
-- one CTA to `/architecture/`
+### 9.10 Request flow in practice
 
-This section should not attempt to reproduce a full architecture document. Its purpose is orientation and motivation.
+The homepage shall include a compact code example that shows request flow in a familiar developer-facing way.
 
-### 9.8 Example applications
+This section shall route to `/architecture/` for the fuller architecture and flow explanation.
+
+### 9.11 Example applications
 
 This section shall show that the framework is grounded in real usage and examples.
 
-It should highlight the example applications already present in the repository where relevant:
+The public homepage example story shall highlight:
 
+- `GettingStarted`
 - `DoFiesta`
-- `DinnerFiesta`
-- `WeatherForecast`
+- `EventSourcingDemo`
 
-For each example block, the homepage should provide:
+and route to `/examples/` for the fuller example inventory.
 
-- example name
-- one short sentence describing its role
-- a link to the relevant GitHub location or public docs page if one exists later
+### 9.12 Templates section
 
-This section may also mention the broader role of examples:
+This section shall introduce the template story and route to `/templates/`.
 
-- learning the framework
-- seeing integration patterns
-- understanding real composition of modules and infrastructure
+It shall emphasize:
 
-### 9.9 Documentation gateway
+- scaffolding a full solution
+- adding modules
+- starting from the kit’s structural conventions instead of assembling them manually
 
-This section shall serve visitors who are ready to move from overview into learning.
+### 9.13 Common early decisions
 
-It should contain a small set of prominent entry cards or buttons for:
+This section shall provide decision-entry cards for:
 
-- `Getting Started`
-- `Core Concepts`
-- `Feature Guides`
-- `Architecture`
-- `Testing`
-- `Source Code`
+- `Messaging vs Queueing`
+- `Repository vs ActiveEntity`
+- `Package map`
+- `Why bITdevKit`
 
-Recommended behavior:
+### 9.14 Closing call to action
 
-- each entry point has a one-line explanation
-- each entry point routes to a stable public path or intentional external GitHub destination
-- this section should feel like a curated launchpad, not a raw file index
+The homepage shall end with a strong, simple next-step section.
 
-### 9.10 Closing call to action
+The closing CTA hierarchy shall be:
 
-The homepage should end with a strong, simple next-step section.
+- `Start Here`
+- `Why bITdevKit`
+- `See Architecture`
+- `Explore Templates`
+- `Browse GitHub`
 
-Recommended closing CTA hierarchy:
-
-- primary: `Start with the Docs`
-- secondary: `View Source on GitHub`
-- optional tertiary: `Browse NuGet Packages`
-
-Closing copy should reinforce that bITdevKit is both:
-
-- a practical framework/toolkit
-- an openly inspectable codebase with documentation and examples
-
-### 9.11 Footer
-
-The footer should be functional and concise.
-
-It should include:
-
-- project name
-- GitHub link
-- NuGet link
-- README link
-- license link
-- optional changelog link
-
-The footer should not introduce entirely new navigation concepts that were not already present higher on the page.
-
-### 9.12 Homepage content rules
+### 9.15 Homepage content rules
 
 The homepage copy shall:
 
@@ -580,25 +506,13 @@ The homepage shall not:
 - expose internal design/spec language
 - rely on unverified claims, customer proof, or invented ecosystem metrics
 
-### 9.13 Homepage acceptance expectations
-
-The homepage should let a first-time visitor answer these questions within one screenful and a short scroll:
-
-- What is bITdevKit?
-- Who is it for?
-- What major capabilities does it include?
-- How is it architected?
-- Where do I go next?
-
----
-
 ## 10. Public Documentation Scope
 
 The public documentation area shall be extensive, but curated.
 
 ### 10.1 Included public doc categories
 
-The public site documentation should include curated content derived from or based on:
+The public site documentation shall include curated content derived from or based on:
 
 - feature guides from `docs/features-*.md`
 - common/shared guides from `docs/common-*.md`
@@ -617,39 +531,39 @@ The following documentation categories shall remain excluded from the public sit
 
 ### 10.3 Documentation structure
 
-The public docs should be organized into clear reader journeys rather than file-system-shaped buckets.
+The public docs shall be organized into clear reader journeys rather than file-system-shaped buckets.
 
-Recommended public docs groupings:
+Implemented public docs groupings:
 
 - Getting Started
-- Core Concepts
-- Feature Guides
+- Why bITdevKit
 - Architecture
-- Testing
-- Reference Links
+- Packages
+- Examples
+- Decisions
+- Documentation
 
-### 10.3.1 Proposed public docs map
+### 10.3.1 Public docs map
 
-The public documentation structure should be derived from the current repository documentation set as follows.
+The public documentation structure shall be derived from the current repository documentation set as follows.
 
 **Getting Started**
 
 - site-authored getting-started overview page
 - curated orientation derived from `README.md`
 - curated orientation derived from `docs/INDEX.md`
-- optional use of `docs/introduction-ddd-guide.md` where appropriate
+- use of `docs/introduction-ddd-guide.md` as an early onboarding concept page
 
-**Core Concepts**
+**Why / Architecture / Packages / Examples / Decisions**
 
-- Domain from `docs/features-domain.md`
-- Results from `docs/features-results.md`
-- Requester and Notifier from `docs/features-requester-notifier.md`
-- Modules from `docs/features-modules.md`
-- Presentation Endpoints from `docs/features-presentation-endpoints.md`
+- site-authored overview pages for evaluation and onboarding
+- site-authored decision pages for recurring technical tradeoffs
 
-These should form the default conceptual learning path for new readers.
+**Documentation**
 
-**Common Building Blocks**
+The public technical docs shall expose:
+
+**Common Infrastructure**
 
 - `docs/common-extensions.md`
 - `docs/common-utilities.md`
@@ -658,9 +572,8 @@ These should form the default conceptual learning path for new readers.
 - `docs/common-mapping.md`
 - `docs/common-caching.md`
 - `docs/common-observability-tracing.md`
-- `docs/features-utilities.md`
 
-**Domain and Application**
+**Core Domain and Application**
 
 - `docs/features-domain.md`
 - `docs/features-domain-events.md`
@@ -675,7 +588,7 @@ These should form the default conceptual learning path for new readers.
 - `docs/features-application-events.md`
 - `docs/features-application-dataporter.md`
 
-**Execution, Messaging, and Modularity**
+**Execution, Messaging and Modularity**
 
 - `docs/features-requester-notifier.md`
 - `docs/features-messaging.md`
@@ -699,7 +612,7 @@ These should form the default conceptual learning path for new readers.
 - `docs/features-presentation-exception-handling.md`
 - `docs/features-presentation-appstate.md`
 
-**Storage, Scheduling, and Operations**
+**Storage, Scheduling and Utilities**
 
 - `docs/features-startuptasks.md`
 - `docs/features-jobscheduling.md`
@@ -708,23 +621,21 @@ These should form the default conceptual learning path for new readers.
 - `docs/features-storage-monitoring.md`
 - `docs/features-log-entries.md`
 
-**Testing**
+**Testing and Test Utilities**
 
 - `docs/testing-fake-authentication.md`
 - `docs/testing-common-xunit.md`
 
-This mapping is the intended public documentation inventory unless a later documentation review explicitly removes or combines pages.
-
 ### 10.3.2 Documentation entry hierarchy
 
-The public docs should expose a layered reading hierarchy:
+The public docs shall expose a layered reading hierarchy:
 
 1. homepage overview
-2. getting-started and architecture entry points
+2. getting-started, why, architecture, examples, and decisions entry points
 3. grouped feature/category indexes
 4. individual deep-dive pages
 
-Users should not need to start from an alphabetical list of files.
+Users shall not need to start from an alphabetical list of files.
 
 ### 10.3.3 Cross-linking expectations
 
@@ -736,18 +647,6 @@ Documentation pages shall cross-link intentionally between:
 - source code references
 
 Cross-linking should support learning flow, not just file discoverability.
-
-### 10.4 Documentation behavior
-
-The public documentation area shall:
-
-- use consistent navigation
-- support search
-- use readable headings and cross-links
-- avoid broken repo-local filesystem links
-- link to source code through GitHub URLs where source references are useful
-
----
 
 ## 11. Content Source Policy
 
@@ -787,21 +686,18 @@ They may be:
 - combined into curated overview pages
 - augmented with site-authored introductory context
 
-The public site should optimize for reader experience, not for one-to-one file preservation.
+The public site shall optimize for reader experience, not for one-to-one file preservation.
 
 ### 11.4 Synchronization policy
 
-When a public site page is derived from an existing repository doc, the implementation should define a clear ownership rule so future maintenance is predictable.
+When a public site page is derived from an existing repository doc, the implementation shall define a clear ownership rule so future maintenance is predictable.
 
-Preferred rule:
+The rule is:
 
-- public-facing canonical content should eventually live in the MkDocs source tree
-- repository-only internal docs remain under `docs/`
-- during migration, temporary duplication is acceptable only when explicitly tracked
-
-This avoids long-term ambiguity about which file is authoritative.
-
----
+- site-authored public pages live in `docs/site/`
+- synchronized repository docs are generated into `docs/site/reference/`
+- the repository source of truth for synchronized docs remains under `docs/`
+- internal docs remain outside the public site
 
 ## 12. README Relationship
 
@@ -809,42 +705,18 @@ The root `README.md` remains the GitHub repository front page and shall stay ali
 
 The README shall be treated as both a source input and a maintained public artifact.
 
-The README shall be modernized so that it:
+The README shall:
 
-- uses current terminology and links
-- matches the site’s positioning
-- points prominently to the GitHub Pages site
-- acts as a concise GitHub-facing summary rather than trying to replace the full website
-- can feed curated homepage and getting-started material without requiring large corrective rewrites every time
+- use current terminology and links
+- match the site’s positioning
+- point prominently to the GitHub Pages site
+- act as a concise GitHub-facing summary rather than trying to replace the full website
+- feed curated homepage and getting-started material without requiring large corrective rewrites every time
 
-The README and the website should complement each other:
+The README and the website shall complement each other:
 
 - the README is the repo front door
 - the Pages site is the polished public experience
-
-### 12.1 README update expectations
-
-The README update should address at least the following:
-
-- remove stale or broken docs links
-- align feature/category names with the public site and current docs inventory
-- simplify or modernize overly dated structure where needed
-- preserve its role as a concise repository overview rather than a long-form website substitute
-
-### 12.2 README-to-site relationship rule
-
-The implementation should avoid both extremes:
-
-- the site must not simply mirror the README verbatim
-- the README must not drift so far from the public site that they appear to describe different projects
-
-The intended relationship is:
-
-- shared core positioning
-- shared feature vocabulary
-- different depth and presentation
-
----
 
 ## 13. Visual Design Direction
 
@@ -852,7 +724,7 @@ The site shall feel like a framework/product website with strong documentation c
 
 ### 13.1 Design goals
 
-The design should be:
+The design shall be:
 
 - modern
 - technical
@@ -871,7 +743,7 @@ The site may take inspiration from polished framework landing pages that combine
 - balanced white space and section rhythm
 - easy transitions from landing content into docs
 
-The design should not copy another site directly. It should reflect bITdevKit’s own identity.
+The design shall not copy another site directly. It shall reflect bITdevKit’s own identity.
 
 ### 13.3 Implementation direction
 
@@ -883,7 +755,7 @@ The implementation shall use:
 
 ### 13.3.1 Existing brand asset inventory
 
-The repository already contains reusable visual assets in `docs/assets/`, including:
+The repository contains reusable visual assets in `docs/assets/`, including:
 
 - `bITDevKit_Logo.svg`
 - `bITDevKit_Logo_dark.svg`
@@ -896,18 +768,16 @@ The repository already contains reusable visual assets in `docs/assets/`, includ
 - `bITDevKit_Text.svg`
 - `bITDevKit_Text_variants.svg`
 
-These assets should be treated as the preferred source for public-site branding before creating new derived branding assets.
+These assets shall be treated as the preferred source for public-site branding before creating new derived branding assets.
 
 ### 13.3.2 Intended asset usage
 
-The public site should reuse the existing SVG assets intentionally:
+The public site shall reuse the existing SVG assets intentionally:
 
-- a full logo variant for header/navigation branding
-- dark/light-appropriate logo variants where needed
-- icon variants for favicon, compact branding, or feature-area accents
-- text/logo variants when a more horizontal lockup is needed
-
-PNG assets may remain useful as compatibility fallbacks, but SVG should be preferred for the public site where supported.
+- a compact icon/logo for header branding
+- dark/light-appropriate variants where needed
+- favicon usage
+- horizontal or icon-based variants where layout requires it
 
 ### 13.4 Theme modes
 
@@ -921,15 +791,11 @@ The theme behavior shall satisfy the following expectations:
 - the default mode may respect system preference when practical
 - the homepage and documentation pages shall both support the same theme model
 
-Light and dark mode support is not a cosmetic extra. It is part of the intended public documentation experience.
-
-When logo usage differs by theme mode, the implementation should use the most appropriate existing asset variant rather than applying fragile runtime color inversion.
-
 ### 13.5 Docs-page design expectations
 
 The documentation area shall not visually collapse into a generic white-page knowledge base.
 
-Docs pages should maintain:
+Docs pages shall maintain:
 
 - clear typography hierarchy
 - readable content width
@@ -937,10 +803,6 @@ Docs pages should maintain:
 - strong code block styling
 - useful callouts or notes where needed
 - consistent visual connection to the landing page brand
-
-The landing page may be more visually expressive than the docs pages, but both should feel like one site.
-
----
 
 ## 14. Link and Routing Policy
 
@@ -989,13 +851,11 @@ This includes:
 - theme toggle persistence
 - landing-page CTAs that point to internal Pages routes
 
----
-
 ## 15. Acceptance Criteria
 
 ### 15.1 Site availability
 
-- When the GitHub Actions workflow completes successfully, then `https://bridgingit-gmbh.github.io/bITdevKit/` serves a valid site instead of a 404.
+- When the GitHub Actions workflow completes successfully, then `https://bridgingit-gmbh.github.io/bITdevKit/` serves a valid site.
 
 ### 15.2 Homepage behavior
 
@@ -1016,7 +876,7 @@ This includes:
 ### 15.5 Tooling
 
 - When a developer previews the site locally, then they can do so using Docker without installing Python directly on the host machine.
-- When GitHub Actions builds the site, then the build runs through Docker.
+- When GitHub Actions builds the site, then the build runs through Docker via the wrapper scripts.
 - When a developer wants to reproduce CI locally, then the same Dockerized MkDocs toolchain can be used with comparable behavior.
 
 ### 15.6 Theme behavior
@@ -1026,7 +886,7 @@ This includes:
 
 ### 15.7 Deployment
 
-- When code is pushed to the GitHub default branch, then GitHub Actions can rebuild and republish the site to `gh-pages`.
+- When code is pushed to `main`, then GitHub Actions can rebuild and republish the site to `gh-pages`.
 - When GitHub Pages is configured to serve `gh-pages`, then the published site resolves correctly under the `/bITdevKit/` project path.
 - When the workflow publishes the site, then the generated Pages branch contains a valid static-site root with `index.html`.
 
@@ -1042,9 +902,7 @@ This includes:
 
 ### 15.10 Content map fidelity
 
-- When the public docs are implemented, then the current public documentation inventory described in this specification is represented in the site information architecture, unless later design decisions explicitly revise that inventory.
-
----
+- When the public docs are built, then the public documentation inventory described in this specification is represented in the site information architecture unless later design decisions explicitly revise that inventory.
 
 ## 16. GitHub Actions and Docker Build Specification
 
@@ -1062,52 +920,50 @@ The workflow is responsible for:
 
 ### 16.2 Workflow trigger model
 
-The workflow should support:
+The workflow shall support:
 
-- automatic execution on pushes to the GitHub default branch
-- optional manual execution through workflow dispatch
-
-The workflow does not need to run on every pull request in the first iteration unless later required for preview validation.
+- automatic execution on pushes to the default branch
+- manual execution through workflow dispatch
 
 ### 16.3 Workflow responsibilities
 
 The workflow shall perform these high-level steps:
 
 1. checkout repository contents
-2. prepare the Docker-based MkDocs build environment
-3. build the site using the Dockerized MkDocs/Material toolchain
-4. verify that the expected static output directory was generated
-5. publish the generated output to the `gh-pages` branch
+2. invoke the Docker-based MkDocs build through the PowerShell wrapper script
+3. verify that the expected static output directory was generated
+4. publish the generated output to the `gh-pages` branch
 
-### 16.3.1 Recommended workflow file and permissions
+### 16.3.1 Workflow file and permissions
 
-The Pages workflow should live at:
+The Pages workflow shall live at:
 
 - `.github/workflows/pages.yml`
 
-It should request the minimum permissions needed to publish to the repository Pages branch, typically centered on repository contents write access.
+It shall request the repository permissions needed to publish to the Pages branch, centered on repository contents write access.
 
 ### 16.4 Docker build model
 
 The GitHub Actions workflow shall build the site through Docker rather than through a host-installed Python environment.
 
-The intended model is:
+The model is:
 
 - use the official `squidfunk/mkdocs-material` image
-- mount the repository into the container
+- mount the repository into the container through the wrapper scripts
 - run the MkDocs build command inside the container
-- emit static output into the configured build directory
+- emit static output into `.github/pages/`
 
 This same Docker-first model shall also be the documented local build model so local and CI behavior stay aligned.
 
 ### 16.4.1 Local Docker commands
 
-The implementation should document canonical Docker commands for:
+The implementation shall document canonical commands for:
 
 - local live preview
 - local production build
+- docs synchronization
 
-Those commands should mount the repository or MkDocs source folder into the container and invoke the corresponding MkDocs serve/build command inside the official image.
+Those commands shall be the wrapper scripts under `docs/site/scripts/`.
 
 ### 16.5 Publishing model
 
@@ -1120,8 +976,6 @@ The publishing behavior shall ensure:
 - the published output works under the repository project path `/bITdevKit/`
 - the static output is suitable for branch-based GitHub Pages hosting
 
-The publish step should also ensure the output does not accidentally include internal or excluded repository content.
-
 ### 16.6 GitHub Pages repository settings
 
 The repository Pages configuration shall be set to:
@@ -1129,16 +983,17 @@ The repository Pages configuration shall be set to:
 - source branch: `gh-pages`
 - source folder: `/ (root)`
 
-The workflow and repository settings must match each other. A workflow that publishes to `gh-pages` is not sufficient unless GitHub Pages is also configured to serve that branch.
+The workflow and repository settings must match each other.
 
 ### 16.7 Local Docker workflow parity
 
-The repository should document Docker commands for:
+The repository shall document Docker-based commands for:
 
 - local preview/serve
 - local production build
+- docs sync
 
-Those commands should reflect the same image and general build behavior used in GitHub Actions so developers can reproduce the CI build locally with minimal drift.
+These commands shall reflect the same image and general build behavior used in GitHub Actions so developers can reproduce the CI build locally with minimal drift.
 
 ### 16.8 Workflow failure expectations
 

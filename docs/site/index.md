@@ -27,7 +27,63 @@ hide:
   <a class="cta-button cta-ghost" href="https://github.com/bridgingIT/bITdevKit">View Source</a>
 </div>
 
+<div class="signal-strip">
+  <span>DDD</span>
+  <span>CQRS</span>
+  <span>Modular Monolith</span>
+  <span>Results</span>
+  <span>Messaging</span>
+  <span>Queueing</span>
+  <span>Templates</span>
+</div>
+
+## Choose a start path
+
+<div class="gateway-grid">
+  <a class="gateway-card" href="getting-started/">
+    <h3>Learn the devkit</h3>
+    <p>Start with the GettingStarted example, the DDD introduction, and the guided first-read path.</p>
+  </a>
+  <a class="gateway-card" href="templates/">
+    <h3>Scaffold a solution</h3>
+    <p>Install the templates and create a new solution or module that already follows the expected structure.</p>
+  </a>
+  <a class="gateway-card" href="examples/">
+    <h3>Explore examples</h3>
+    <p>Move from the focused GettingStarted example to broader scenarios like DoFiesta and EventSourcingDemo.</p>
+  </a>
+  <a class="gateway-card" href="reference/">
+    <h3>Read the docs</h3>
+    <p>Browse the full public documentation map by capability area and feature-specific guide.</p>
+  </a>
+</div>
+
+## When bITdevKit fits best
+
+<div class="value-grid">
+  <article class="value-card">
+    <h3>Modular monoliths</h3>
+    <p>Projects that need clear domain boundaries and module composition without splitting into many services too early.</p>
+  </article>
+  <article class="value-card">
+    <h3>Business-heavy applications</h3>
+    <p>Systems where aggregates, policies, results, and specifications matter more than simple DTO-first CRUD code.</p>
+  </article>
+  <article class="value-card">
+    <h3>Operationally realistic platforms</h3>
+    <p>Applications that need queueing, messaging, storage, scheduling, and diagnostic control as first-class concerns.</p>
+  </article>
+  <article class="value-card">
+    <h3>Teams that need consistency</h3>
+    <p>Codebases where shared patterns for handlers, modules, repositories, and endpoints reduce architectural drift.</p>
+  </article>
+</div>
+
 ## Capabilities for real-world application needs
+
+<p class="section-linkout">
+  <a class="inline-link" href="reference/">Browse the full documentation overview</a>
+</p>
 
 <div class="capability-grid">
   <a class="capability-card" href="reference/features-domain/">
@@ -68,8 +124,21 @@ hide:
   </a>
 </div>
 
+## Why not just plain ASP.NET Core + MediatR + EF Core?
+
+<div class="value-grid">
+  <article class="value-card">
+    <h3>More than a library stack</h3>
+    <p>bITdevKit provides a coherent model for results, rules, request flow, modules, and operational infrastructure instead of leaving each project to compose its own conventions.</p>
+  </article>
+  <article class="value-card">
+    <h3>Developer guidance with reusable defaults</h3>
+    <p>Examples, templates, and aligned documentation reduce the amount of architectural assembly work needed at project start.</p>
+  </article>
+</div>
+
 <p class="section-linkout">
-  <a class="inline-link" href="reference/">Browse the full documentation overview</a>
+  <a class="inline-link" href="why/">Read the full why bITdevKit page</a>
 </p>
 
 ## Designed for modular, maintainable .NET systems
@@ -83,7 +152,7 @@ hide:
       presentation. It supports modular systems where cross-cutting building blocks stay reusable
       while business logic remains explicit and testable.
     </p>
-    <a class="inline-link" href="reference/introduction-ddd-guide/">Read the architecture-oriented introduction</a>
+    <a class="inline-link" href="architecture/">See the architecture map</a>
   </div>
   <div class="architecture-stack" aria-label="Architecture layers">
     <span>Presentation</span>
@@ -92,6 +161,26 @@ hide:
     <span>Domain</span>
   </div>
 </div>
+
+## Request flow in practice
+
+<div class="snippet-panel" markdown="1">
+
+```csharp
+app.MapPost("/customers", async (CustomerCreateModel model, IRequester requester) =>
+{
+    var command = new CustomerCreateCommand(model);
+    var result = await requester.SendAsync(command);
+
+    return result.MapHttpCreated();
+});
+```
+
+</div>
+
+<p class="section-linkout">
+  <a class="inline-link" href="architecture/">See the request flow and layer map</a>
+</p>
 
 ## Example applications
 
@@ -106,7 +195,16 @@ hide:
     <p>A richer example application used throughout the repository to show operational, messaging, scheduling and UI integration scenarios.</p>
     <a class="inline-link" href="https://github.com/bridgingIT/bITdevKit/tree/main/examples/DoFiesta">Open example</a>
   </article>
+  <article class="example-card">
+    <h3>EventSourcingDemo</h3>
+    <p>A focused example for exploring how event-sourcing-oriented concepts fit into the broader development kit.</p>
+    <a class="inline-link" href="https://github.com/bridgingIT/bITdevKit/tree/main/examples/EventSourcingDemo">Open example</a>
+  </article>
 </div>
+
+<p class="section-linkout">
+  <a class="inline-link" href="examples/">Browse all examples and suggested progression</a>
+</p>
 
 ## Templates for new solutions and modules
 
@@ -129,16 +227,40 @@ hide:
   </div>
 </div>
 
+## Common early decisions
+
+<div class="gateway-grid">
+  <a class="gateway-card" href="decisions-messaging-vs-queueing/">
+    <h3>Messaging vs Queueing</h3>
+    <p>Choose between event fan-out and single-consumer work ownership based on runtime semantics.</p>
+  </a>
+  <a class="gateway-card" href="decisions-repository-vs-activeentity/">
+    <h3>Repository vs ActiveEntity</h3>
+    <p>Pick between a richer DDD-oriented abstraction and a simpler persistence style for faster CRUD scenarios.</p>
+  </a>
+  <a class="gateway-card" href="packages/">
+    <h3>Package map</h3>
+    <p>Understand the repository as grouped package families instead of a flat project list.</p>
+  </a>
+  <a class="gateway-card" href="why/">
+    <h3>Why bITdevKit</h3>
+    <p>See when the devkit pays off and when a simpler stack may be enough.</p>
+  </a>
+</div>
+
 ## Getting started
 
 <div class="closing-panel">
   <p>
-    The fastest path into bITdevKit is to start with the curated docs, follow one or two feature
-    areas and then move into the repository and examples for implementation detail.
+    The fastest path into bITdevKit is to start with the GettingStarted example, read the DDD
+    introduction, and then move into the feature docs, templates, and example applications as the
+    implementation questions become more concrete.
   </p>
   <div class="hero-actions">
-    <a class="cta-button cta-primary" href="reference/">Start with the Docs</a>
+    <a class="cta-button cta-primary" href="getting-started/">Start Here</a>
+    <a class="cta-button cta-secondary" href="why/">Why bITdevKit</a>
+    <a class="cta-button cta-secondary" href="architecture/">See Architecture</a>
     <a class="cta-button cta-secondary" href="templates/">Explore Templates</a>
-    <a class="cta-button cta-secondary" href="https://github.com/bridgingIT/bITdevKit">Browse GitHub</a>
+    <a class="cta-button cta-ghost" href="https://github.com/bridgingIT/bITdevKit">Browse GitHub</a>
   </div>
 </div>

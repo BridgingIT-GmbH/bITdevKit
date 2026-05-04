@@ -67,6 +67,10 @@ docs for `Domain`, `Results`, `Requester and Notifier`, `Modules`, and `Presenta
 
 ## What to read next
 
+- Read [Why bITdevKit](why.md) for the positioning and fit of the devkit.
+- Read [Architecture](architecture.md) for the layer map, module shape, and request flow.
+- Read [Examples](examples.md) for the recommended progression through the sample applications.
+- Read [Packages](packages.md) to understand the repository as grouped package families.
 - Use the [Overview](reference/index.md) when you want the complete list of public framework topics.
 - Use the [Templates](templates.md) page when you want to scaffold your own solution or add modules.
 - Move into the example applications once you want to see how the pieces fit together in code.

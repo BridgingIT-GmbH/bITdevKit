@@ -180,6 +180,10 @@ pre,
   margin-top: 1.4rem;
 }
 
+.section-linkout {
+  margin: -0.35rem 0 1rem;
+}
+
 .cta-button,
 .capability-card,
 .gateway-card,
@@ -429,6 +433,19 @@ pre,
   color: var(--bdk-primary) !important;
   font-weight: 600;
   text-decoration: none !important;
+}
+
+.snippet-panel {
+  margin: 1rem 0 1.4rem;
+  padding: 1rem;
+  border-radius: var(--bdk-radius-sm);
+  border: 1px solid var(--bdk-border);
+  background: var(--bdk-card-bg);
+}
+
+.snippet-panel .highlight,
+.snippet-panel pre {
+  margin: 0;
 }
 
 .closing-panel {

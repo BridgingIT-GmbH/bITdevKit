@@ -148,7 +148,6 @@ The best entry point into the current documentation set is the
 - [GettingStarted (Basic)](https://github.com/bridgingIT/bITdevKit.Examples.GettingStarted)
 - [BookFiesta (DDD)](https://github.com/BridgingIT-GmbH/bITdevKit.Examples.BookFiesta)
 - [EventStore (CQRS)](https://github.com/bridgingit/bitdevkit/examples)
-- [DinnerFiesta](https://github.com/bridgingit/bitdevkit/examples)
 - [WeatherForecast](https://github.com/bridgingit/bitdevkit/examples)
 
 ## Performance Benchmarks

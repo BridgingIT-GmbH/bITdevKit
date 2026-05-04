@@ -13,6 +13,14 @@ nav:
       - Overview: getting-started.md
       - DDD Introduction: reference/introduction-ddd-guide.md
       - Templates: templates.md
+  - Why bITdevKit: why.md
+  - Architecture: architecture.md
+  - Packages: packages.md
+  - Examples: examples.md
+  - Decisions:
+      - Overview: decisions.md
+      - Messaging vs Queueing: decisions-messaging-vs-queueing.md
+      - Repository vs ActiveEntity: decisions-repository-vs-activeentity.md
   - Documentation:
       - Overview: reference/index.md
       - Common Infrastructure:

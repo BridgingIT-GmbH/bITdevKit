@@ -129,7 +129,7 @@ Recommended structure:
 
 ```text
 /mkdocs.yml
-/site-docs/
+/docs/site/
   index.md
   getting-started/
   architecture/
@@ -139,7 +139,7 @@ Recommended structure:
     stylesheets/
 ```
 
-`site-docs/` is the only MkDocs input directory.
+`docs/site/` is the only MkDocs input directory.
 
 Existing reusable branding assets from `docs/assets/` may be copied, referenced, or curated into the public site asset structure as part of implementation.
 

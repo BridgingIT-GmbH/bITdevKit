@@ -12,15 +12,24 @@
 - [](#)
   - [Introduction](#introduction)
   - [Documentation](#documentation)
-  - [Feature Highlights](#feature-highlights)
-    - [Core domain and application](#core-domain-and-application)
-    - [Execution, messaging and modularity](#execution-messaging-and-modularity)
-    - [Presentation and host](#presentation-and-host)
-    - [Storage, scheduling and operations](#storage-scheduling-and-operations)
-    - [Common building blocks](#common-building-blocks)
+  - [Features](#features)
+    - [Common Infrastructure](#common-infrastructure)
+    - [Core Domain and Application](#core-domain-and-application)
+    - [Execution, Messaging and Modularity](#execution-messaging-and-modularity)
+    - [Security and Access](#security-and-access)
+    - [Presentation and Host](#presentation-and-host)
+    - [Storage, Scheduling and Utilities](#storage-scheduling-and-utilities)
+    - [Testing and Test Utilities](#testing-and-test-utilities)
   - [Libraries used (excerpt):](#libraries-used-excerpt)
   - [Example projects](#example-projects)
   - [Performance Benchmarks](#performance-benchmarks)
+  - [GitHub Pages](#github-pages)
+    - [Source structure](#source-structure)
+    - [Which Markdown files get into the site](#which-markdown-files-get-into-the-site)
+    - [Add a new documentation page](#add-a-new-documentation-page)
+    - [Local preview and build](#local-preview-and-build)
+    - [Publishing through GitHub Actions](#publishing-through-github-actions)
+    - [Typical workflow for docs updates](#typical-workflow-for-docs-updates)
   - [Collaboration](#collaboration)
   - [Commit Policy](#commit-policy)
   - [License](#license)
@@ -43,63 +52,15 @@ the [CHANGELOG](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/CHAN
 
 ## Documentation
 
+The public documentation site is available at
+[bridgingit-gmbh.github.io/bITdevKit](https://bridgingit-gmbh.github.io/bITdevKit/).
+
 The best entry point into the current documentation set is the
-[Documentation Index](./docs/INDEX.md).
+[Documentation](./docs/INDEX.md) and [Introduction to DDD in bITdevKit](./docs/introduction-ddd-guide.md).
 
-Recommended starting path:
+## Features
 
-- [Domain](./docs/features-domain.md)
-- [Results](./docs/features-results.md)
-- [Requester and Notifier](./docs/features-requester-notifier.md)
-- [Modules](./docs/features-modules.md)
-- [Presentation Endpoints](./docs/features-presentation-endpoints.md)
-
-Additional entry points:
-
-- [Introduction to DDD in bITdevKit](./docs/introduction-ddd-guide.md)
-- [Testing Common XUnit](./docs/testing-common-xunit.md)
-- [Fake Authentication for Integration Tests](./docs/testing-fake-authentication.md)
-
-## Feature Highlights
-
-### Core domain and application
-
-- [Domain](./docs/features-domain.md)
-- [Domain Events](./docs/features-domain-events.md)
-- [Domain Repositories](./docs/features-domain-repositories.md)
-- [Domain Specifications](./docs/features-domain-specifications.md)
-- [Results](./docs/features-results.md)
-- [Application Commands and Queries](./docs/features-application-commands-queries.md)
-- [Application Events](./docs/features-application-events.md)
-
-### Execution, messaging and modularity
-
-- [Requester and Notifier](./docs/features-requester-notifier.md)
-- [Messaging](./docs/features-messaging.md)
-- [Queueing](./docs/features-queueing.md)
-- [Notifications](./docs/features-notifications.md)
-- [Modules](./docs/features-modules.md)
-- [Pipelines](./docs/features-pipelines.md)
-- [Filtering](./docs/features-filtering.md)
-
-### Presentation and host
-
-- [Presentation Endpoints](./docs/features-presentation-endpoints.md)
-- [Console Commands](./docs/features-presentation-console-commands.md)
-- [CORS Configuration](./docs/features-presentation-cors.md)
-- [Exception Handling](./docs/features-presentation-exception-handling.md)
-- [AppState](./docs/features-presentation-appstate.md)
-
-### Storage, scheduling and operations
-
-- [StartupTasks](./docs/features-startuptasks.md)
-- [JobScheduling](./docs/features-jobscheduling.md)
-- [DocumentStorage](./docs/features-storage-documents.md)
-- [FileStorage](./docs/features-storage-files.md)
-- [Storage Monitoring](./docs/features-storage-monitoring.md)
-- [Log Entries](./docs/features-log-entries.md)
-
-### Common building blocks
+### Common Infrastructure
 
 - [Common Extensions](./docs/common-extensions.md)
 - [Common Utilities](./docs/common-utilities.md)
@@ -108,6 +69,59 @@ Additional entry points:
 - [Common Mapping](./docs/common-mapping.md)
 - [Common Caching](./docs/common-caching.md)
 - [Common Observability Tracing](./docs/common-observability-tracing.md)
+
+### Core Domain and Application
+
+- [Domain](./docs/features-domain.md)
+- [Domain Events](./docs/features-domain-events.md)
+- [Event Sourcing](./docs/features-event-sourcing.md)
+- [Domain Repositories](./docs/features-domain-repositories.md)
+- [Domain Specifications](./docs/features-domain-specifications.md)
+- [ActiveEntity](./docs/features-domain-activeentity.md)
+- [Domain Policies](./docs/features-domain-policies.md)
+- [Rules](./docs/features-rules.md)
+- [Results](./docs/features-results.md)
+- [Application Commands and Queries](./docs/features-application-commands-queries.md)
+- [Application Events](./docs/features-application-events.md)
+- [DataPorter](./docs/features-application-dataporter.md)
+
+### Execution, Messaging and Modularity
+
+- [Requester and Notifier](./docs/features-requester-notifier.md)
+- [Messaging](./docs/features-messaging.md)
+- [Queueing](./docs/features-queueing.md)
+- [Notifications](./docs/features-notifications.md)
+- [Modules](./docs/features-modules.md)
+- [Pipelines](./docs/features-pipelines.md)
+- [Filtering](./docs/features-filtering.md)
+- [Extensions](./docs/features-extensions.md)
+
+### Security and Access
+
+- [Entity Permissions](./docs/features-entitypermissions.md)
+- [Fake Identity Provider](./docs/features-identityprovider.md)
+
+### Presentation and Host
+
+- [Presentation Endpoints](./docs/features-presentation-endpoints.md)
+- [Console Commands](./docs/features-presentation-console-commands.md)
+- [CORS Configuration](./docs/features-presentation-cors.md)
+- [Exception Handling](./docs/features-presentation-exception-handling.md)
+- [AppState](./docs/features-presentation-appstate.md)
+
+### Storage, Scheduling and Utilities
+
+- [StartupTasks](./docs/features-startuptasks.md)
+- [JobScheduling](./docs/features-jobscheduling.md)
+- [DocumentStorage](./docs/features-storage-documents.md)
+- [FileStorage](./docs/features-storage-files.md)
+- [Storage Monitoring](./docs/features-storage-monitoring.md)
+- [Log Entries](./docs/features-log-entries.md)
+
+### Testing and Test Utilities
+
+- [Fake Authentication for Integration Tests](./docs/testing-fake-authentication.md)
+- [Testing Common XUnit](./docs/testing-common-xunit.md)
 
 ## Libraries used (excerpt):
 
@@ -157,6 +171,93 @@ dotnet run -c Release --project benchmarks/Common.Benchmarks/Common.Benchmarks.c
 - Guide optimization and architectural decisions.
 
 For more details, see the `Common.Benchmarks` project in the `benchmarks/` folder.
+
+## GitHub Pages
+
+The repository includes a MkDocs-based GitHub Pages site with:
+
+- a landing page under `docs/site/`
+- curated technical docs synced from `./docs`
+
+Public site:
+[https://bridgingit-gmbh.github.io/bITdevKit/](https://bridgingit-gmbh.github.io/bITdevKit/)
+
+### Source structure
+
+- `docs/site/`
+  - the site-specific source pages such as the landing page, getting started pages, templates page, styling, and helper scripts
+- `docs/`
+  - the framework documentation source that is selectively imported into the public site
+- `.github/pages/`
+  - the generated static MkDocs output
+
+### Which Markdown files get into the site
+
+The sync step currently imports these files from `./docs` into the public site:
+
+- `INDEX.md`
+- `introduction-ddd-guide.md`
+- `common-*.md`
+- `features-*.md`
+- `testing-*.md`
+
+The following are intentionally excluded from GitHub Pages:
+
+- `docs/adr/`
+- `docs/presentations/`
+- `docs/specs/`
+- `src/**`
+
+### Add a new documentation page
+
+For a new Markdown page from `./docs` to appear in GitHub Pages:
+
+1. Add or update the Markdown file under `./docs`.
+2. Make sure its filename matches one of the currently imported patterns above.
+3. If it should appear in navigation, add it to [mkdocs.yml](./mkdocs.yml) under the appropriate section.
+4. Regenerate the site locally or push to `main` so GitHub Actions publishes it.
+
+### Local preview and build
+
+Preview the full site locally with Docker:
+
+```powershell
+pwsh -File ./docs/site/scripts/serve-pages.ps1
+```
+
+or use the VS Code Tasks for the same command.
+Build the full static site locally:
+
+```powershell
+pwsh -File ./docs/site/scripts/build-pages.ps1
+```
+
+That build command performs these steps:
+
+1. Synchronize the selected public docs from `./docs` into `docs/site/reference/`
+2. Build the MkDocs site in Docker
+3. Write the generated static site to `./.github/pages/`
+
+### Publishing through GitHub Actions
+
+The Pages workflow is defined in [pages.yml](./.github/workflows/pages.yml).
+
+On each push to `main`, it:
+
+1. checks out the repository
+2. runs `./docs/site/scripts/build-pages.ps1`
+3. verifies that `./.github/pages/index.html` was generated
+4. publishes the generated site to the `gh-pages` branch
+
+### Typical workflow for docs updates
+
+Typical documentation workflow:
+
+1. Edit or add Markdown under `./docs`
+2. If needed, update [mkdocs.yml](./mkdocs.yml) so the page is reachable in navigation
+3. Run `pwsh -File ./docs/site/scripts/serve-pages.ps1` to preview the result
+4. Run `pwsh -File ./docs/site/scripts/build-pages.ps1` to generate the final static output
+5. Commit and push to `main` to publish via GitHub Actions
 
 ## Collaboration
 

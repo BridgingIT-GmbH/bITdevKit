@@ -1,0 +1,72 @@
+name: Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  publish:
+    name: Build and publish landing site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build site
+        shell: pwsh
+        run: |
+          ./docs/site/scripts/build-pages.ps1
+
+      - name: Verify static output
+        run: |
+          test -f .github/pages/index.html
+
+      - name: Publish to gh-pages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          SITE_DIR="${GITHUB_WORKSPACE}/.github/pages"
+          TARGET_DIR="$(mktemp -d)"
+          REMOTE_URL="https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          if git ls-remote --exit-code --heads "${REMOTE_URL}" gh-pages >/dev/null 2>&1; then
+            git clone --depth 1 --branch gh-pages "${REMOTE_URL}" "${TARGET_DIR}"
+          else
+            git init "${TARGET_DIR}"
+            (
+              cd "${TARGET_DIR}"
+              git checkout --orphan gh-pages
+              git remote add origin "${REMOTE_URL}"
+            )
+          fi
+
+          find "${TARGET_DIR}" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -R "${SITE_DIR}/." "${TARGET_DIR}/"
+          touch "${TARGET_DIR}/.nojekyll"
+
+          (
+            cd "${TARGET_DIR}"
+            git add -A
+            if git diff --cached --quiet; then
+              echo "No site changes to publish."
+              exit 0
+            fi
+            git commit -m "docs: publish site for ${GITHUB_SHA}"
+            git push origin HEAD:gh-pages --force
+          )

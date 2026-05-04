@@ -142,6 +142,49 @@
         "problemMatcher": "$msCompile"
     },
     {
+        "label": "Docs - sync",
+        "type": "process",
+        "command": "pwsh",
+        "args": [
+            "-File",
+            "${workspaceFolder}/docs/site/scripts/sync-docs.ps1"
+        ],
+        "problemMatcher": []
+    },
+    {
+        "label": "Docs - landing page serve",
+        "type": "process",
+        "command": "pwsh",
+        "args": [
+            "-File",
+            "${workspaceFolder}/docs/site/scripts/serve-pages.ps1"
+        ],
+        "isBackground": true,
+        "problemMatcher": {
+            "pattern": [],
+            "background": {
+                "activeOnStart": true,
+                "beginsPattern": ".",
+                "endsPattern": "Serving on .*:8000/"
+            }
+        },
+        "presentation": {
+            "reveal": "always",
+            "panel": "dedicated",
+            "clear": false
+        }
+    },
+    {
+        "label": "Docs - landing page build",
+        "type": "process",
+        "command": "pwsh",
+        "args": [
+            "-File",
+            "${workspaceFolder}/docs/site/scripts/build-pages.ps1"
+        ],
+        "problemMatcher": []
+    },
+    {
         "label": "WeatherForecast - build",
         "command": "dotnet",
         "type": "process",

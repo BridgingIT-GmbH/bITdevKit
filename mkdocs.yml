@@ -1,0 +1,127 @@
+site_name: bITdevKit
+site_description: Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles.
+site_url: https://bridgingit-gmbh.github.io/bITdevKit/
+repo_url: https://github.com/bridgingIT/bITdevKit
+repo_name: bridgingIT/bITdevKit
+docs_dir: docs/site
+site_dir: .github/pages
+use_directory_urls: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+      - Overview: getting-started.md
+      - DDD Introduction: reference/introduction-ddd-guide.md
+      - Templates: templates.md
+  - Documentation:
+      - Overview: reference/index.md
+      - Common Infrastructure:
+          - Common Extensions: reference/common-extensions.md
+          - Common Utilities: reference/common-utilities.md
+          - Common Serialization: reference/common-serialization.md
+          - Common Options Builders: reference/common-options-builders.md
+          - Common Mapping: reference/common-mapping.md
+          - Common Caching: reference/common-caching.md
+          - Common Observability Tracing: reference/common-observability-tracing.md
+      - Core Domain and Application:
+          - Domain: reference/features-domain.md
+          - Domain Events: reference/features-domain-events.md
+          - Event Sourcing: reference/features-event-sourcing.md
+          - Domain Repositories: reference/features-domain-repositories.md
+          - Domain Specifications: reference/features-domain-specifications.md
+          - ActiveEntity: reference/features-domain-activeentity.md
+          - Domain Policies: reference/features-domain-policies.md
+          - Rules: reference/features-rules.md
+          - Results: reference/features-results.md
+          - Application Commands and Queries: reference/features-application-commands-queries.md
+          - Application Events: reference/features-application-events.md
+          - DataPorter: reference/features-application-dataporter.md
+      - Execution, Messaging and Modularity:
+          - Requester and Notifier: reference/features-requester-notifier.md
+          - Messaging: reference/features-messaging.md
+          - Queueing: reference/features-queueing.md
+          - Notifications: reference/features-notifications.md
+          - Modules: reference/features-modules.md
+          - Pipelines: reference/features-pipelines.md
+          - Filtering: reference/features-filtering.md
+          - Extensions: reference/features-extensions.md
+      - Security and Access:
+          - Entity Permissions: reference/features-entitypermissions.md
+          - Fake Identity Provider: reference/features-identityprovider.md
+      - Presentation and Host:
+          - Presentation Endpoints: reference/features-presentation-endpoints.md
+          - Console Commands: reference/features-presentation-console-commands.md
+          - CORS Configuration: reference/features-presentation-cors.md
+          - Exception Handling: reference/features-presentation-exception-handling.md
+          - AppState: reference/features-presentation-appstate.md
+      - Storage, Scheduling and Utilities:
+          - StartupTasks: reference/features-startuptasks.md
+          - JobScheduling: reference/features-jobscheduling.md
+          - DocumentStorage: reference/features-storage-documents.md
+          - FileStorage: reference/features-storage-files.md
+          - Storage Monitoring: reference/features-storage-monitoring.md
+          - Log Entries: reference/features-log-entries.md
+      - Testing and Test Utilities:
+          - Fake Authentication for Integration Tests: reference/testing-fake-authentication.md
+          - Testing Common XUnit: reference/testing-common-xunit.md
+
+theme:
+  name: material
+  logo: assets/images/bITDevKit_Icon.svg
+  favicon: assets/images/bITDevKit_Icon.svg
+  font: false
+  features:
+    - navigation.instant
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.tabs.link
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra_css:
+  - assets/stylesheets/extra.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/bridgingIT/bITdevKit
+      name: GitHub
+    - icon: fontawesome/solid/cube
+      link: https://www.nuget.org/packages?q=bitdevkit
+      name: NuGet

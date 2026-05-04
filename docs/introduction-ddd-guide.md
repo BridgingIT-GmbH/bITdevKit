@@ -1,6 +1,6 @@
-# Introduction Guide to Domain-Driven Design in bITDevKit
+# DDD Introduction
 
-## 1. What is Domain-Driven Design?
+## What is Domain-Driven Design?
 
 Domain-Driven Design (DDD) is an approach to software development that focuses on building rich domain models that accurately represent business concepts. Rather than treating data as simple records or DTOs, DDD emphasizes:
 
@@ -13,9 +13,9 @@ bITDevKit provides building blocks to implement DDD patterns in .NET, allowing y
 
 If you want a broader map of the available guides, start with the [documentation index](INDEX.md).
 
-## 2. Core Domain Building Blocks
+## Core Domain Building Blocks
 
-### 2.1 Aggregates and Consistency Boundaries
+### Aggregates and Consistency Boundaries
 
 An **Aggregate** is a cluster of domain objects treated as a unit for data changes. It defines a **consistency boundary** - all invariants within an aggregate must be satisfied atomically. This means you cannot modify part of an aggregate in isolation; you must always work through the aggregate root.
 
@@ -40,7 +40,7 @@ The `[TypedEntityId<Guid>]` attribute automatically generates a strongly-typed `
 
 *Reference: [Domain features documentation](features-domain.md), [Domain Repositories](features-domain-repositories.md), and [Domain Policies](features-domain-policies.md)*
 
-### 2.2 Value Objects
+### Value Objects
 
 A **Value Object** is an immutable object identified by its attributes rather than identity. It encapsulates a domain concept without its own lifecycle. Value objects are ideal for concepts that don't need to be tracked individually.
 
@@ -82,7 +82,7 @@ The factory method `Create()` returns a `Result<EmailAddress>`, ensuring invalid
 
 *Reference: [Domain features documentation](features-domain.md), [Results documentation](features-results.md), and [Common Serialization](common-serialization.md)*
 
-### 2.3 Smart Enumerations
+### Smart Enumerations
 
 Traditional C# enums have significant limitations:
 
@@ -121,7 +121,7 @@ Smart enumerations can:
 
 *Reference: [Domain features documentation - Appendix A](features-domain.md), [Common Utilities](common-utilities.md), and [Common Serialization](common-serialization.md)*
 
-### 2.4 Strongly-Typed Entity IDs
+### Strongly-Typed Entity IDs
 
 Using primitive types (`Guid`, `int`, `string`) as identifiers can lead to subtle bugs where you accidentally pass a `TodoId` to a method expecting `CustomerId`. The compiler cannot catch this because both are just `Guid` values.
 
@@ -156,7 +156,7 @@ Benefits of typed IDs:
 
 *Reference: [Domain features documentation - Appendix B](features-domain.md), [Common Serialization](common-serialization.md), and [Common Mapping](common-mapping.md)*
 
-### 2.5 Domain Events
+### Domain Events
 
 **Domain Events** capture significant domain occurrences in past-tense, immutable records. They decouple producers from consumers, enabling event-driven architecture and maintaining the single responsibility principle.
 
@@ -195,9 +195,9 @@ Domain events are collected in the aggregate's `DomainEvents` collection and pub
 
 *Reference: [Domain Events documentation](features-domain-events.md), [Messaging](features-messaging.md), and [Event Sourcing](features-event-sourcing.md)*
 
-## 3. Application Layer Patterns
+## Application Layer Patterns
 
-### 3.1 Command Query Separation (CQRS)
+### Command Query Separation (CQRS)
 
 The **CQRS pattern** separates read and write operations into distinct models. While this can mean separate read/write models in complex systems, bITDevKit uses a simplified approach where the same domain model serves both, but operations are clearly separated.
 
@@ -273,7 +273,7 @@ The `IRequester` interface acts as a mediator, dispatching commands and queries 
 
 *Reference: [Commands and Queries documentation](features-application-commands-queries.md), [Requester and Notifier](features-requester-notifier.md), and [Common Mapping](common-mapping.md)*
 
-### 3.2 Result Pattern (Railway-Oriented Programming)
+### Result Pattern (Railway-Oriented Programming)
 
 The **Result pattern** replaces exception-based error handling with explicit success/failure types. This enables **railway-oriented programming** - operations compose cleanly with automatic error propagation.
 
@@ -321,7 +321,7 @@ The pipeline automatically short-circuits on failure - subsequent operations are
 
 *Reference: [Results documentation](features-results.md), [Presentation Endpoints](features-presentation-endpoints.md), and [Exception Handling](features-presentation-exception-handling.md)*
 
-### 3.3 Business Rules
+### Business Rules
 
 The **Rules feature** provides centralized, composable business rule evaluation. Rules encapsulate validation logic and business invariants in a declarative, readable way.
 
@@ -349,9 +349,9 @@ Rules can be:
 
 *Reference: [Rules documentation](features-rules.md), [Domain Policies](features-domain-policies.md), and [Entity Permissions](features-entitypermissions.md)*
 
-## 4. Infrastructure Layer
+## Infrastructure Layer
 
-### 4.1 Repositories with Behaviors
+### Repositories with Behaviors
 
 The repository pattern abstracts data access while the **behavior pattern** (decorator) adds cross-cutting concerns. This separation keeps business logic clean while automatically applying logging, tracing, auditing, and event publishing.
 
@@ -397,7 +397,7 @@ services.AddEntityFrameworkRepository<Customer, CoreModuleDbContext>()
 
 *Reference: [Repository documentation](features-domain-repositories.md), [Domain Events](features-domain-events.md), and [Common Observability Tracing](common-observability-tracing.md)*
 
-### 4.2 ActiveEntity vs Repository Pattern
+### ActiveEntity vs Repository Pattern
 
 bITDevKit supports both persistence patterns. Choose based on your project's complexity and requirements:
 
@@ -432,9 +432,9 @@ Both patterns support:
 
 *Reference: [ActiveEntity documentation](features-domain-activeentity.md), [Domain Repositories](features-domain-repositories.md), and [Filtering](features-filtering.md)*
 
-## 5. Modular Monolith Architecture
+## Modular Monolith Architecture
 
-### 5.1 Vertical Slices
+### Vertical Slices
 
 Organize code into **modules** - each a self-contained vertical slice containing all layers. This differs from traditional layered architecture where all domains share layers.
 
@@ -461,7 +461,7 @@ src/Modules/CoreModule/
 - Teams can work on modules independently
 - Deploy independently if configured correctly
 
-### 5.2 Dependency Rules
+### Dependency Rules
 
 Critical rules enforced by architecture tests (these tests run as part of your CI/CD):
 
@@ -487,7 +487,7 @@ Critical rules enforced by architecture tests (these tests run as part of your C
 
 For the HTTP side of module boundaries and endpoint composition, also see [Presentation Endpoints](features-presentation-endpoints.md).
 
-## 6. Request Flow Example
+## Request Flow Example
 
 Complete flow showing how a customer creation request moves through the architecture, from HTTP request to database persistence.
 
@@ -543,7 +543,7 @@ sequenceDiagram
 
 See also: [Presentation Endpoints](features-presentation-endpoints.md), [Requester and Notifier](features-requester-notifier.md), [Domain Events](features-domain-events.md), [Domain Repositories](features-domain-repositories.md), and [Results](features-results.md).
 
-## 7. Getting Started Checklist
+## Getting Started Checklist
 
 For new developers joining a bITDevKit project, follow this checklist to understand and extend the codebase:
 
@@ -581,9 +581,9 @@ For new developers joining a bITDevKit project, follow this checklist to underst
 - [ ] Add authorization with `.RequireAuthorization()`
 - [ ] Register endpoints in module's `Map()` method
 
-## 8. Common Patterns Reference
+## Common Patterns Reference
 
-### 8.1 Fluent Aggregate Updates
+### Fluent Aggregate Updates
 
 Fluent updates eliminate repetitive change detection code, event registration, and validation. The `.Change()` builder provides a composable way to update aggregates while maintaining invariants.
 
@@ -607,7 +607,7 @@ public Result<Customer> ChangeEmail(string email)
 
 *Reference: [Domain documentation - Appendix C](features-domain.md), [Domain Events](features-domain-events.md), and [Results](features-results.md)*
 
-### 8.2 Specifications for Querying
+### Specifications for Querying
 
 Specifications encapsulate query criteria in reusable, composable objects. They integrate with repositories and FilterModel for API queries.
 
@@ -627,7 +627,7 @@ Benefits of specifications:
 
 *Reference: [Domain Specifications documentation](features-domain-specifications.md) and [Filtering documentation](features-filtering.md)*
 
-### 8.3 Transaction Scopes
+### Transaction Scopes
 
 Transaction scopes provide all-or-nothing semantics for operations that need multiple database operations. The Result pattern integrates with transactions to ensure rollback on failure.
 
@@ -650,7 +650,7 @@ await Result<Customer>.Success(customer)
 
 *Reference: [Results documentation - Result Operation Scope](features-results.md), [Domain Repositories](features-domain-repositories.md), and [Common Observability Tracing](common-observability-tracing.md)*
 
-## 9. Next Steps
+## Next Steps
 
 This introduction provides a foundation for understanding DDD in bITDevKit. To deepen your knowledge, explore these resources:
 

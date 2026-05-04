@@ -27,7 +27,7 @@ hide:
   <a class="cta-button cta-ghost" href="https://github.com/bridgingIT/bITdevKit">View Source</a>
 </div>
 
-<div class="signal-strip">
+<!-- <div class="signal-strip">
   <span>DDD</span>
   <span>CQRS</span>
   <span>Modular Monolith</span>
@@ -35,7 +35,7 @@ hide:
   <span>Messaging</span>
   <span>Queueing</span>
   <span>Templates</span>
-</div>
+</div> -->
 
 ## Choose a start path
 
@@ -58,7 +58,7 @@ hide:
   </a>
 </div>
 
-## When bITdevKit fits best
+<!-- ## When bITdevKit fits best
 
 <div class="value-grid">
   <article class="value-card">
@@ -77,7 +77,7 @@ hide:
     <h3>Teams that need consistency</h3>
     <p>Codebases where shared patterns for handlers, modules, repositories, and endpoints reduce architectural drift.</p>
   </article>
-</div>
+</div> -->
 
 ## Capabilities for real-world application needs
 
@@ -248,7 +248,7 @@ app.MapPost("/customers", async (CustomerCreateModel model, IRequester requester
   </a>
 </div>
 
-## Getting started
+<!-- ## Getting started
 
 <div class="closing-panel">
   <p>
@@ -263,4 +263,4 @@ app.MapPost("/customers", async (CustomerCreateModel model, IRequester requester
     <a class="cta-button cta-secondary" href="templates/">Explore Templates</a>
     <a class="cta-button cta-ghost" href="https://github.com/bridgingIT/bITdevKit">Browse GitHub</a>
   </div>
-</div>
+</div> -->

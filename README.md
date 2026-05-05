@@ -52,7 +52,7 @@ the [CHANGELOG](https://raw.githubusercontent.com/bridgingIT/bITdevKit/main/CHAN
 
 ## Documentation
 
-The public documentation site is available at
+The documentation site is available at
 [bridgingit-gmbh.github.io/bITdevKit](https://bridgingit-gmbh.github.io/bITdevKit/).
 
 The best entry point into the current documentation set is the

@@ -151,7 +151,7 @@ The public site content shall be curated rather than directly exposing all repos
 That means:
 
 - landing-page content is authored specifically for the site
-- public documentation pages are selected, adapted, or synchronized from suitable repository docs
+- Documentation pages are selected, adapted, or synchronized from suitable repository docs
 - internal or low-signal documentation remains outside the public site
 
 The public site is therefore a curated documentation product, not just a renderer over arbitrary repository files.

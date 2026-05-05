@@ -54,7 +54,7 @@ hide:
   </a>
   <a class="gateway-card" href="reference/">
     <h3>Read the docs</h3>
-    <p>Browse the full public documentation map by capability area and feature-specific guide.</p>
+    <p>Browse the documentation map by capability area and feature-specific guide.</p>
   </a>
 </div>
 

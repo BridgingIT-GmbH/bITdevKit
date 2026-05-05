@@ -93,8 +93,3 @@ sequenceDiagram
 - [Requester and Notifier](reference/features-requester-notifier.md)
 - [Modules](reference/features-modules.md)
 - [Presentation Endpoints](reference/features-presentation-endpoints.md)
-
-## Related decisions
-
-- [Messaging vs Queueing](decisions-messaging-vs-queueing.md)
-- [Repository vs ActiveEntity](decisions-repository-vs-activeentity.md)

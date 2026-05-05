@@ -62,11 +62,3 @@ structure to be more intentional and more repeatable.
 | Queueing and messaging | Usually added separately | Integrated concepts with related operational support |
 | Operational endpoints | Typically custom | Reusable patterns for inspection and control |
 | Onboarding | Team-specific | Templates, examples, and aligned docs |
-
-## Good next pages
-
-- [Architecture](architecture.md)
-- [Packages](packages.md)
-- [Examples](examples.md)
-- [Messaging vs Queueing](decisions-messaging-vs-queueing.md)
-- [Repository vs ActiveEntity](decisions-repository-vs-activeentity.md)

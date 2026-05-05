@@ -51,10 +51,3 @@ Best for:
 
 - a lighter-weight example
 - fast experimentation with less surface area
-
-## Suggested progression
-
-1. Start with [Getting Started](getting-started.md)
-2. Run the `GettingStarted` example
-3. Read the [DDD Introduction](reference/introduction-ddd-guide.md)
-4. Move to `DoFiesta` or `EventSourcingDemo` depending on the scenario of interest

@@ -203,7 +203,7 @@ app.MapPost("/customers", async (CustomerCreateModel model, IRequester requester
 </div>
 
 <p class="section-linkout">
-  <a class="inline-link" href="examples/">Browse all examples and suggested progression</a>
+  <a class="inline-link" href="examples/">Explore the examples</a>
 </p>
 
 ## Templates for new solutions and modules

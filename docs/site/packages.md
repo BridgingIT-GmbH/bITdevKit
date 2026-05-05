@@ -99,4 +99,4 @@ The most useful mental model is:
 1. Start with the developer-facing concepts in [Getting Started](getting-started.md).
 2. Learn the architectural roles on the [Architecture](architecture.md) page.
 3. Use the public [Documentation](reference/index.md) pages for feature-level detail.
-4. Treat the package list as an implementation map, not the primary onboarding experience.
+4. Refer back to this page when you want to understand where a specific package fits into the overall structure.

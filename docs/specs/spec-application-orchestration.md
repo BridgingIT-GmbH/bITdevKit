@@ -4,19 +4,34 @@ status: draft
 
 # Design Specification: Stateful Orchestration Feature (Application.Orchestration)
 
-> This design document outlines the architecture and behavior of the new orchestration feature within the application. It defines the core concepts, execution model, control flow capabilities, triggers, reliability mechanisms, observability features, identity management, versioning considerations, testing strategies, and typical use cases for orchestrations.
+> This design document outlines the architecture and behavior of the new orchestration feature within the application. It defines the core concepts, execution model, control flow capabilities, triggers, reliability mechanisms, observability features, identity management, versioning considerations, testing strategies and typical use cases for orchestrations.
 
 ## Introduction
 
-The orchestration feature provides a code-first framework for defining, executing, and managing long-running processes within the application.
+The orchestration feature provides a code-first framework for defining, executing and managing long-running processes within the application.
 
-Orchestrations are persistent, stateful, and designed to support complex coordination scenarios, including human interaction, event-driven transitions, and fault-tolerant execution.
+Orchestrations are persistent, stateful and designed to support complex coordination scenarios, including human interaction, event-driven transitions and fault-tolerant execution.
 
 The orchestration model is state-machine-oriented. States represent stable phases of a long-running process, while activities perform work within a state. Transitions move an orchestration instance between states based on outcomes, conditions, signals, or time-based triggers.
 
-The feature intentionally combines state-machine semantics with selected workflow capabilities such as activity execution, waiting, retries, human interaction, and compensation.
+The feature intentionally combines state-machine semantics with selected workflow capabilities such as activity execution, waiting, retries, human interaction and compensation.
 
 Disclaimer: this feature is not a full blown workflow engine or a business process modeling tool. It is a code-centric framework for structuring long-running processes in a maintainable and testable way. Please evaluate carefully if this feature is a good fit for your specific use case, as it can be opinionated in its execution model and may not be suitable for all scenarios. Alternatives: Elsa, Camunda, Dapr Workflows, MassTransit Courier, Temporal, Durable Functions, etc.
+
+---
+
+## XML documentation and examples
+
+All public/protected code symbols introduced by this feature should include XML documentation comments:
+
+* classes
+* records
+* interfaces
+* enums
+* properties
+* methods
+
+For public or client-facing symbols, the XML comments should also include usage examples where that improves usability.
 
 ---
 
@@ -24,13 +39,13 @@ Disclaimer: this feature is not a full blown workflow engine or a business proce
 
 | Term                       | Description                                                                                                            |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| **Orchestration**          | A definition that describes a long-running process composed of states, activities, and transitions.                    |
+| **Orchestration**          | A definition that describes a long-running process composed of states, activities and transitions.                    |
 | **Orchestration Instance** | A runtime execution of an orchestration definition.                                                                    |
 | **State**                  | A logical phase within an orchestration where a set of activities is executed.                                         |
 | **Activity**               | The smallest unit of execution within a state that produces an outcome controlling progression.                        |
 | **Outcome**                | The result of an activity that determines execution behavior (e.g. Continue, Retry, Wait, Complete).                   |
 | **Transition**             | A movement from one state to another based on conditions, signals (events) or outcomes.                                |
-| **Orchestration Context**  | The shared execution object containing runtime metadata, optional orchestration data, and execution-scoped properties. |
+| **Orchestration Context**  | The shared execution object containing runtime metadata, optional orchestration data and execution-scoped properties. |
 
 ---
 
@@ -64,11 +79,11 @@ Disclaimer: this feature is not a full blown workflow engine or a business proce
 
 * **Long-Running Support**
 
-  * Orchestrations can be paused, resumed, and persisted across application restarts.
+  * Orchestrations can be paused, resumed and persisted across application restarts.
 
 * **Extensibility**
 
-  * The framework is extensible, allowing custom activity types, triggers, and persistence providers.
+  * The framework is extensible, allowing custom activity types, triggers and persistence providers.
   * A REST API is provided for orchestration management and monitoring based on a common data provider model.
 
 ---
@@ -83,7 +98,7 @@ Its execution contract is defined by the following rules:
 
   * An orchestration instance is always in exactly one current business state.
   * The current business state is persisted durably.
-  * Activities, signal handlers, timers, and transitions are always evaluated relative to the persisted current state.
+  * Activities, signal handlers, timers and transitions are always evaluated relative to the persisted current state.
 
 * **Sequential activity execution inside a state**
 
@@ -166,9 +181,9 @@ The runtime shall advance an orchestration instance using the following high-lev
 6. Persist the outcome of that action together with the updated full context snapshot.
 7. Renew or re-check the lease before performing the next state-mutating action.
 8. Evaluate the resulting outcome and the state's transition definitions.
-9. If a transition is selected, persist a transition record, update the current state, and persist the new full context snapshot before continuing.
+9. If a transition is selected, persist a transition record, update the current state and persist the new full context snapshot before continuing.
 10. If execution must wait for a signal or timer, persist the waiting reason plus any pending timer registrations, then release the lease.
-11. If execution reaches a terminal outcome, persist the final status, final context snapshot, and completion metadata, then release the lease.
+11. If execution reaches a terminal outcome, persist the final status, final context snapshot and completion metadata, then release the lease.
 12. If execution cannot continue because no valid transition, wait, or terminal condition exists, mark the instance as `Failed` with a descriptive orchestration-definition error.
 
 ---
@@ -234,7 +249,7 @@ The runtime shall:
 
 The outcome model is used for controlled execution flow.
 
-Business rejection or expected negative business paths should be modeled explicitly through state, data, and transitions rather than through exceptions.
+Business rejection or expected negative business paths should be modeled explicitly through state, data and transitions rather than through exceptions.
 
 Exceptions are intended for technical or unexpected failures.
 
@@ -263,7 +278,7 @@ This is a mandatory requirement, including:
 * every persisted context mutation after a completed activity attempt
 * every accepted signal
 * every timer registration and timer consumption
-* every pause, resume, cancellation, failure, compensation step, and terminal completion
+* every pause, resume, cancellation, failure, compensation step and terminal completion
 
 The durable model shall include at least:
 
@@ -282,29 +297,57 @@ The durable model shall include at least:
 
 * **Execution history**
 
-  * append-only records describing state entry, activity execution, retries, transitions, waits, signals, timers, compensation, pause/resume, and terminal outcomes
-  * each record includes UTC timestamp, instance identifier, event type, and relevant metadata
+  * append-only records describing state entry, activity execution, retries, transitions, waits, signals, timers, compensation, pause/resume and terminal outcomes
+  * each record includes UTC timestamp, instance identifier, event type and relevant metadata
 
 * **Signal inbox**
 
   * persisted signal records correlated to an orchestration instance
-  * payload, signal name, received timestamp, processing status, and idempotency key when provided
+  * payload, signal name, received timestamp, processing status and idempotency key when provided
 
 * **Timer records**
 
-  * persisted due time, trigger kind, target state or continuation metadata, and consumption status
+  * persisted due time, trigger kind, target state or continuation metadata and consumption status
 
-* **Compensation log**
+* **Instance-owned compensation state**
 
   * persisted reverse-order compensation stack for successfully completed compensable work
+  * stored as part of the orchestration instance's durable state rather than as a separate top-level persistence root
 
 The runtime must always be able to reconstruct the latest execution point from persisted state without requiring replay of in-memory-only mutations.
+
+### Retention, Archival and Purge
+
+The orchestration feature shall support retained operational history together with explicit archival and purge operations.
+
+This requirement applies to:
+
+* orchestration instances
+* execution history
+* persisted signals
+* persisted timers
+* compensation state retained as part of orchestration instances and execution history
+
+The retention contract is:
+
+* completed and non-active orchestration data may remain queryable for operational support and dashboard scenarios
+* archival and purge are explicit lifecycle/maintenance operations, not implicit loss of history
+* archival and purge behavior shall be exposed consistently through the administration/query surface and the persistence provider
+* providers may retain active and archived data differently, but archived data must remain inspectable until purged
+
+The purge contract is:
+
+* purge shall support at least age-based deletion
+* purge should support filtering by status and archived state where meaningful
+* purge operations shall be explicit maintenance actions
+
+The Entity Framework provider shall support retained orchestration history, archival-oriented inspection and purge operations in the same overall operational style already used by the queueing and messaging features.
 
 ### Persistence Provider Model
 
 The durable layer shall be exposed through a provider model.
 
-The orchestration runtime, authoring model, and public orchestration services should depend on orchestration persistence abstractions rather than directly on Entity Framework types.
+The orchestration runtime, authoring model and public orchestration services should depend on orchestration persistence abstractions rather than directly on Entity Framework types.
 
 The provider model shall allow alternative persistence implementations later without changing the orchestration execution contract.
 
@@ -314,8 +357,8 @@ The provider contract shall cover at least:
 * execution history append
 * signal inbox storage and state updates
 * timer storage and consumption
-* compensation-log persistence
-* lease acquisition, renewal, and release
+* persistence of compensation state as part of orchestration instances
+* lease acquisition, renewal and release
 * orchestration-instance querying for runtime and administration
 
 Provider implementations must preserve the same observable orchestration behavior, especially:
@@ -337,7 +380,7 @@ The persistence abstraction set shall distinguish between:
 * **Execution-facing abstractions**
   * used by the orchestration runtime to advance instances safely
 * **Operations-facing abstractions**
-  * used by application services, administration APIs, dashboards, and support tooling
+  * used by application services, administration APIs, dashboards and support tooling
 
 ### Execution-Facing Persistence Abstractions
 
@@ -347,7 +390,7 @@ The runtime needs the following minimum abstractions.
 
   * Creates a new orchestration instance snapshot.
   * Loads the latest snapshot for a specific instance.
-  * Persists the latest orchestration snapshot, including lifecycle status, current business state, current activity, and serialized full context.
+  * Persists the latest orchestration snapshot, including lifecycle status, current business state, current activity and serialized full context.
   * Applies optimistic concurrency checks when persisting snapshot changes.
 
 * **`IOrchestrationLeaseStore`**
@@ -360,7 +403,7 @@ The runtime needs the following minimum abstractions.
 * **`IOrchestrationHistoryStore`**
 
   * Appends durable execution history records.
-  * Stores transition, activity, retry, waiting, signal, timer, compensation, pause/resume, and terminal lifecycle events.
+  * Stores transition, activity, retry, waiting, signal, timer, compensation, pause/resume and terminal lifecycle events.
   * Preserves append-only semantics.
 
 * **`IOrchestrationSignalStore`**
@@ -377,12 +420,6 @@ The runtime needs the following minimum abstractions.
   * Marks timers as consumed, cancelled, or obsolete.
   * Supports deterministic ordering when multiple due timers exist for the same orchestration instance.
 
-* **`IOrchestrationCompensationStore`**
-
-  * Persists compensable work registrations.
-  * Loads pending compensation entries in reverse execution order.
-  * Marks compensation entries as completed, skipped, or failed.
-
 * **`ISerializer`**
 
   * Serializes the orchestration context into the durable snapshot format.
@@ -393,7 +430,7 @@ The runtime needs the following minimum abstractions.
 
 ### Operations-Facing Persistence Abstractions
 
-The feature also needs read/query abstractions over persisted orchestration state for support, monitoring, metrics, and APIs.
+The feature also needs read/query abstractions over persisted orchestration state for support, monitoring, metrics and APIs.
 
 * **`IOrchestrationQueryStore`**
 
@@ -434,7 +471,6 @@ public interface IOrchestrationPersistenceProvider
     IOrchestrationHistoryStore History { get; }
     IOrchestrationSignalStore Signals { get; }
     IOrchestrationTimerStore Timers { get; }
-    IOrchestrationCompensationStore Compensation { get; }
     IOrchestrationQueryStore Queries { get; }
     ISerializer Serializer { get; }
 }
@@ -467,12 +503,12 @@ The current status and current context snapshot are mandatory provider capabilit
 
 Any persistence provider that claims runtime execution support for orchestration shall implement these mandatory capabilities:
 
-* create, load, and update orchestration instance snapshots with optimistic concurrency protection
-* acquire, renew, validate, and release orchestration-instance leases
+* create, load and update orchestration instance snapshots with optimistic concurrency protection
+* acquire, renew, validate and release orchestration-instance leases
 * append execution history records
-* persist, query, and finalize signals according to the signal-processing contract
-* persist, query, and finalize timers according to the timer-processing contract
-* persist and load compensation registrations
+* persist, query and finalize signals according to the signal-processing contract
+* persist, query and finalize timers according to the timer-processing contract
+* persist and load compensation state as part of orchestration instances
 * serialize and deserialize orchestration contexts through `ISerializer`
 * expose current-instance query capabilities for:
   * current lifecycle status
@@ -507,7 +543,7 @@ The dashboard contract shall support:
 * listing running and past orchestration instances
 * inspecting a specific orchestration instance in detail
 * loading the latest persisted context snapshot for a specific instance
-* loading execution history, transition history, signals, timers, and compensation history for a specific instance
+* loading execution history, transition history, signals and timers for a specific instance
 * loading overall metrics and filtered metrics across orchestration definitions
 
 The query/filter contract shall support at least:
@@ -528,7 +564,7 @@ The endpoint contract should expose enough data to support views such as:
 * completed/failed/cancelled/terminated workflows
 * instance detail with current context snapshot
 * instance history timeline
-* overall counts, durations, retries, signal activity, and timer activity
+* overall counts, durations, retries, signal activity and timer activity
 
 The query and endpoint model should be designed so that a provider-backed dashboard can examine both current state and retained history without requiring direct access to provider-internal tables.
 
@@ -545,7 +581,6 @@ Its design contract is:
   * execution history records
   * persisted signals
   * persisted timers
-  * compensation log entries
   * lease metadata when stored in the same database
 * the Entity Framework provider is responsible for translating the storage-agnostic provider contract into relational persistence operations
 * the runtime above the provider must not assume SQL Server-specific or Entity Framework-specific behavior
@@ -557,6 +592,7 @@ The Entity Framework provider should use normal devkit patterns for:
 * optimistic concurrency via concurrency tokens
 * transactional updates where multiple durable records must move together
 * query support for administration and monitoring endpoints
+* provider-controlled `DbContext` scope management through `IServiceProvider`
 
 The Entity Framework provider is also the first full-fidelity operational provider.
 
@@ -564,7 +600,7 @@ It should expose the complete query and metrics abstraction surface over the SQL
 
 ### Entity Framework DbContext Integration Contract
 
-The Entity Framework provider shall follow the same composition model already used by existing EF-backed devkit features such as messaging, queueing, notifications, file storage, and logging.
+The Entity Framework provider shall follow the same composition model already used by existing EF-backed devkit features such as messaging, queueing, notifications, file storage and logging.
 
 This means:
 
@@ -581,7 +617,6 @@ public interface IOrchestrationContext
     DbSet<OrchestrationHistory> OrchestrationHistory { get; set; }
     DbSet<OrchestrationSignal> OrchestrationSignals { get; set; }
     DbSet<OrchestrationTimer> OrchestrationTimers { get; set; }
-    DbSet<OrchestrationCompensation> OrchestrationCompensation { get; set; }
 }
 ```
 
@@ -599,7 +634,6 @@ public class AppDbContext : DbContext,
     public DbSet<OrchestrationHistory> OrchestrationHistory { get; set; }
     public DbSet<OrchestrationSignal> OrchestrationSignals { get; set; }
     public DbSet<OrchestrationTimer> OrchestrationTimers { get; set; }
-    public DbSet<OrchestrationCompensation> OrchestrationCompensation { get; set; }
 }
 ```
 
@@ -607,6 +641,8 @@ Registration and implementation patterns should follow the existing feature styl
 
 * EF orchestration services use generic registration constrained as `where TContext : DbContext, IOrchestrationContext`
 * the provider reads and writes orchestration rows through the application's own `DbContext`
+* the provider controls its own `DbContext` scope by leveraging the DI `IServiceProvider`
+* for normal runtime operation, the provider should resolve scoped `TContext` instances from `IServiceProvider` rather than depending on a caller-owned `DbContext` lifetime
 * migrations and schema evolution are owned by the consuming application's `DbContext` and migration workflow
 
 This keeps orchestration persistence aligned with the devkit's established EF integration model and enables a single application database context to host both domain data and selected system-feature data.
@@ -618,7 +654,7 @@ The EF-first orchestration persistence types shall follow the same style as exis
 The conventions are:
 
 * persistence model type names must not use the suffix `Entity`
-* the EF persistence types should define their table, key, index, column, length, required, and concurrency configuration directly through annotations on the type and its properties
+* the EF persistence types should define their table, key, index, column, length, required and concurrency configuration directly through annotations on the type and its properties
 * the goal is that each persistence type fully describes its own EF Core mapping in the type definition
 * serializer selection is infrastructure configuration, not type-level mapping
 
@@ -633,7 +669,7 @@ The annotation-based model should include the relevant EF Core attributes where 
 * `[ConcurrencyCheck]`
 * `[NotMapped]`
 
-Provider-specific persistence types such as `OrchestrationInstance`, `OrchestrationHistory`, `OrchestrationSignal`, `OrchestrationTimer`, and `OrchestrationCompensation` should therefore be self-describing EF models rather than relying on separate fluent configuration as the primary mapping contract.
+Provider-specific persistence types such as `OrchestrationInstance`, `OrchestrationHistory`, `OrchestrationSignal` and `OrchestrationTimer` should therefore be self-describing EF models rather than relying on separate fluent configuration as the primary mapping contract.
 
 ### Entity Framework Registration API
 
@@ -655,7 +691,7 @@ The public registration contract shall support:
 
 * registering orchestration definitions
 * registering the EF persistence provider against `TContext`
-* registering runtime/background services needed for dispatch, signal consumption, timer consumption, and lease-driven execution
+* registering runtime/background services needed for dispatch, signal consumption, timer consumption and lease-driven execution
 * registering query services, including metrics queries
 * registering optional administration/dashboard endpoints
 * allowing an explicit `ISerializer` override while defaulting to `SystemTextJsonSerializer`
@@ -696,6 +732,9 @@ Schema/table mapping is owned by the application's `DbContext` model and the orc
     * Cancelling orchestrations
     * Pausing and resuming orchestrations
     * Inspecting transition history and context snapshots
+    * Archiving retained orchestration records when supported by the provider model
+    * Purging retained orchestration data
+    * Maintenance and repair actions for stuck or operationally impaired orchestrations
 
 * **Extensibility**
 
@@ -732,6 +771,25 @@ Schema/table mapping is owned by the application's `DbContext` model and the orc
   * Activity logic
   * Control flow
 
+### Testing Utilities
+
+The feature shall provide workflow-focused test utilities so orchestration authors can test definitions and runtime behavior with low friction.
+
+The testing utility contract shall support at least:
+
+* creating and running orchestration instances in tests
+* supplying initial orchestration data/context easily
+* executing orchestrations inline for deterministic tests
+* dispatching orchestrations in a test runtime when background-style behavior is needed
+* sending signals to test instances
+* advancing or controlling time for timer and waiting scenarios
+* asserting current status, current state, current context snapshot and execution history
+* asserting retries, waits, transitions, terminal outcomes and compensation behavior
+* substituting fake or in-memory persistence providers where suitable
+* substituting fake lease/timer/signal infrastructure where suitable
+
+The testing surface should make common orchestration tests easy without requiring full application hosting or real infrastructure unless the test explicitly needs integration coverage.
+
 ---
 
 ## Execution Lifecycle
@@ -754,7 +812,7 @@ An orchestration instance progresses through a well-defined lifecycle from creat
 
   * Execution is paused as part of normal orchestration behavior.
   * process is intentionally waiting for orchestration input/time/event.
-  * The waiting reason, waiting timestamp, and any registered timers or expected signals are persisted durably.
+  * The waiting reason, waiting timestamp and any registered timers or expected signals are persisted durably.
 
 * **Paused**
 
@@ -956,7 +1014,7 @@ The runtime shall process timers using the following rules:
 * when the orchestration resumes, an overdue timer that is still relevant shall fire immediately on resume under the orchestration-instance lease
 * if multiple timers are due for the same orchestration instance at the same evaluation point, they are evaluated in deterministic order
 * once a waiting condition or state transition makes a persisted timer no longer relevant, that timer is marked as consumed, cancelled, or obsolete and may not fire later
-* timer registration, timer consumption, and timer-driven transition application all execute under the orchestration-instance lease
+* timer registration, timer consumption and timer-driven transition application all execute under the orchestration-instance lease
 
 ---
 
@@ -1024,7 +1082,7 @@ The runtime may additionally persist intermediate snapshots for diagnostics or r
 
 * **Deterministic Behavior**
 
-  * Execution is driven by persisted state, persisted context snapshots, and explicit activity outcomes.
+  * Execution is driven by persisted state, persisted context snapshots and explicit activity outcomes.
   * The next execution decision must be derivable from durable state.
 
 Activities may interact with external systems; therefore idempotency is required to ensure safe re-execution.
@@ -1053,9 +1111,9 @@ The feature shall expose a clear application-facing service API for orchestratio
 The public service surface should distinguish between:
 
 * **runtime/control operations**
-  * start, signal, pause, resume, cancel, terminate, and wait
+  * start, signal, pause, resume, cancel, terminate and wait
 * **query operations**
-  * load current status, current context, history, signals, timers, filtered lists, and aggregated metrics
+  * load current status, current context, history, signals, timers, filtered lists and aggregated metrics
 
 The runtime and query service shape shall be:
 
@@ -1258,7 +1316,7 @@ The runtime/control service shall support at least:
 * background dispatch for long-running orchestrations
 * dispatch plus await for completion, states, or outcomes
 * signal delivery with optional typed payload and idempotency key
-* pause, resume, cancel, and terminate operations
+* pause, resume, cancel and terminate operations
 * querying current status after any control operation
 
 The query service shall support at least:
@@ -1275,7 +1333,7 @@ The query service shall support at least:
 * waiting/paused/running counts
 * completion/failure/cancellation/termination counts
 * duration metrics
-* retry, signal, and timer activity metrics where available
+* retry, signal and timer activity metrics where available
 
 ### Endpoint API Contract
 
@@ -1283,12 +1341,13 @@ The feature shall expose optional administration endpoints built on top of the q
 
 The endpoint surface shall support:
 
-* instance list queries with paging, sorting, and filtering
+* instance list queries with paging, sorting and filtering
 * instance detail queries
 * context snapshot queries
-* history, signal, and timer detail queries
+* history, signal and timer detail queries
 * aggregated metrics queries
-* control actions such as signal, pause, resume, cancel, and terminate
+* control actions such as signal, pause, resume, cancel and terminate
+* maintenance actions such as archive, purge and repair operations when supported by the provider
 
 The endpoint filter model shall support at least:
 
@@ -1327,6 +1386,10 @@ POST   /api/_system/orchestrations/{instanceId}/pause
 POST   /api/_system/orchestrations/{instanceId}/resume
 POST   /api/_system/orchestrations/{instanceId}/cancel
 POST   /api/_system/orchestrations/{instanceId}/terminate
+POST   /api/_system/orchestrations/{instanceId}/archive
+POST   /api/_system/orchestrations/{instanceId}/repair/release-lease
+POST   /api/_system/orchestrations/{instanceId}/repair/requeue-timers
+DELETE /api/_system/orchestrations
 ```
 
 Query parameters for `GET /api/_system/orchestrations` shall support at least:
@@ -1358,7 +1421,7 @@ public sealed class SignalRequest
 }
 ```
 
-The `POST /pause`, `POST /cancel`, and `POST /terminate` request bodies shall support at least:
+The `POST /pause`, `POST /cancel` and `POST /terminate` request bodies shall support at least:
 
 ```csharp
 public sealed class ReasonRequest
@@ -1366,6 +1429,12 @@ public sealed class ReasonRequest
     public string Reason { get; set; }
 }
 ```
+
+The `DELETE /api/_system/orchestrations` endpoint shall support purge-style query parameters comparable to the retained operational endpoints used by queueing and messaging, for example:
+
+* `olderThan`
+* `statuses`
+* `isArchived`
 
 The endpoint response contract shall follow this pattern:
 
@@ -1421,6 +1490,24 @@ The endpoint response contract shall follow this pattern:
   * `404 Not Found` with plain text message
   * `409 Conflict` with `ProblemDetails` when the orchestration is already terminal
   * `500 Internal Server Error` with `ProblemDetails`
+* `POST /api/_system/orchestrations/{instanceId}/archive`
+  * `200 OK` with success message
+  * `404 Not Found` with plain text message
+  * `409 Conflict` with `ProblemDetails` when the orchestration is not archivable in its current state
+  * `500 Internal Server Error` with `ProblemDetails`
+* `POST /api/_system/orchestrations/{instanceId}/repair/release-lease`
+  * `200 OK` with success message
+  * `404 Not Found` with plain text message
+  * `409 Conflict` with `ProblemDetails` when the repair action is not valid in the current state
+  * `500 Internal Server Error` with `ProblemDetails`
+* `POST /api/_system/orchestrations/{instanceId}/repair/requeue-timers`
+  * `200 OK` with success message
+  * `404 Not Found` with plain text message
+  * `409 Conflict` with `ProblemDetails` when the repair action is not valid in the current state
+  * `500 Internal Server Error` with `ProblemDetails`
+* `DELETE /api/_system/orchestrations`
+  * `200 OK` with success message
+  * `500 Internal Server Error` with `ProblemDetails`
 
 The `ProblemDetails` contract shall use stable orchestration-specific `type` values, for example:
 
@@ -1442,7 +1529,7 @@ At minimum:
 * transitions are declared explicitly and evaluated predictably
 * terminal states use explicit terminal directives rather than implicit fall-through
 * state activities are sequential by default
-* parallelism, looping, waiting, and compensation are opt-in constructs and must be visible in the definition
+* parallelism, looping, waiting and compensation are opt-in constructs and must be visible in the definition
 
 Authoring rules:
 
@@ -1525,7 +1612,7 @@ Parallel contract details:
 * a worker advancing one branch must hold the orchestration-instance lease for the duration of that persisted branch action
 * branch actions may be scheduled independently, but they are serialized at persistence-mutation boundaries by the orchestration-instance lease
 * the parent instance may not advance beyond the join until the join condition is satisfied
-* branch failure, retry, waiting, and completion are recorded independently and then reflected in the parent orchestration history
+* branch failure, retry, waiting and completion are recorded independently and then reflected in the parent orchestration history
 
 This means the feature supports logical parallelism with durable branch state, while preserving single-instance mutation safety in multi-node environments.
 
@@ -1552,7 +1639,7 @@ Compensation contract details:
 * compensation execution runs under the orchestration-instance lease
 * compensation execution may itself succeed, fail, or retry
 * compensation execution may not buffer unmatched signals for later states
-* compensation history is part of the normal orchestration history/query/dashboard contract
+* compensation execution is reflected through normal orchestration instance state and execution history
 * if compensation fails irrecoverably, the default outcome is: continue attempting remaining compensation entries and then mark the orchestration `Failed`
 
 Compensation failure policies shall be explicit and limited to a small declarative set:
@@ -1586,7 +1673,7 @@ The orchestration feature supports three distinct mechanisms for starting execut
   * Easy for testing and debugging due to synchronous nature.
   * Should be restricted to orchestrations that are expected to complete inline without entering a waiting/blocking state.
   * If execution reaches a Waiting or Paused condition during Execute, an exception is thrown indicating that the orchestration cannot complete inline.
-  * Inline execution still persists the instance, state transitions, and context snapshots according to the normal durability contract.
+  * Inline execution still persists the instance, state transitions and context snapshots according to the normal durability contract.
 
 * **Dispatch**
 
@@ -1638,7 +1725,7 @@ supports:
 
 ## Example Orchestration: Order Approval Process
 
-This example shows a long-running order approval process with validation, human approval, timeout handling, payment reservation, and completion.
+This example shows a long-running order approval process with validation, human approval, timeout handling, payment reservation and completion.
 
 ### Scenario
 
@@ -2022,16 +2109,3 @@ OffHook
 * `PhoneDestroyed` is terminal and ends the orchestration with a `Terminate` outcome.
 
 ---
-
-## XML documentation and examples
-
-All public code symbols introduced by this feature should include XML documentation comments:
-
-* public classes
-* public records
-* public interfaces
-* public enums
-* public properties
-* public methods
-
-For public or client-facing symbols, the XML comments should also include usage examples where that improves discoverability.

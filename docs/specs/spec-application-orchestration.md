@@ -24,6 +24,101 @@ Disclaimer: this feature is not a full blown workflow engine or a business proce
 
 ---
 
+## Capability Layers
+
+This specification describes the full target capability of the orchestration feature.
+To keep the implementation understandable and maintainable, the feature is organized into capability layers. These layers do not change the execution model; they describe how the complete feature can be built and reasoned about incrementally.
+
+### Foundation Layer
+
+The foundation layer contains the minimum capabilities required for a durable stateful orchestration runtime.
+
+It includes:
+
+* Code-first orchestration definitions
+* States, activities, outcomes and transitions
+* Typed orchestration context
+* Context snapshot persistence
+* Orchestration instance persistence
+* Durable execution history
+* Exclusive instance leases
+* Inline execution
+* Background dispatch
+* Signal delivery
+* Waiting
+* Durable timers
+* Basic lifecycle operations:
+  * start
+  * signal
+  * cancel
+  * terminate
+
+### Operational Layer
+
+The operational layer contains the capabilities required to inspect, manage and operate orchestrations in real systems.
+
+It includes:
+
+* Query service
+* Current instance inspection
+* Context snapshot inspection
+* Execution history inspection
+* Signal and timer inspection
+* Metrics queries
+* Administration endpoints
+* Pause and resume
+* Archive and purge
+* Maintenance and repair operations
+* Dashboard-ready query contracts
+
+### Advanced Workflow Layer
+
+The advanced workflow layer contains higher-level orchestration capabilities built on top of the foundation model.
+
+It includes:
+
+* Parallel branches
+* Loops
+* Compensation
+* Child orchestrations
+* Human task helpers
+* Approval activity
+* Built-in activity catalog
+* Advanced retry and recovery patterns
+
+### Provider Layer
+
+The provider layer contains durable infrastructure implementations.
+
+The first full provider is the Entity Framework provider.
+
+It includes:
+
+* Entity Framework persistence implementation
+* `IOrchestrationContext` DbContext integration
+* Instance snapshot tables
+* Execution history tables
+* Signal inbox tables
+* Timer tables
+* Lease metadata
+* Query and metrics support
+
+Alternative providers may be added later, provided they preserve the same runtime behavior and persistence contracts.
+
+### Layering Rule
+
+Higher layers must not weaken or bypass the foundation layer.
+
+All orchestration behavior, including advanced activities, compensation, timers, signals, pause/resume and administration actions, must still follow:
+
+* durable boundary persistence
+* lease-protected state mutation
+* append-only execution history
+* context snapshot persistence
+* explicit state transition semantics
+
+---
+
 ## XML documentation and examples
 
 All public/protected code symbols introduced by this feature should include XML documentation comments:

@@ -16,6 +16,10 @@ The orchestration model is state-machine-oriented. States represent stable phase
 
 The feature intentionally combines state-machine semantics with selected workflow capabilities such as activity execution, waiting, retries, human interaction and compensation.
 
+The main feature implementation is intended to live in the `Application.Orchestration` project.
+The durable Entity Framework implementation is intended to live in `Infrastructure.EntityFramework/Orchestration` project.
+The web endpoint surface for orchestration administration and query access is intended to live in `Presentation.Web.Orchestration` project.
+
 Disclaimer: this feature is not a full blown workflow engine or a business process modeling tool. It is a code-centric framework for structuring long-running processes in a maintainable and testable way. Please evaluate carefully if this feature is a good fit for your specific use case, as it can be opinionated in its execution model and may not be suitable for all scenarios. Alternatives: Elsa, Camunda, Dapr Workflows, MassTransit Courier, Temporal, Durable Functions, etc.
 
 ---
@@ -168,6 +172,8 @@ The lease contract is:
 * lease owner identity and lease expiration metadata are persisted or otherwise durably coordinated
 * if a worker loses its lease, it must stop advancing the instance immediately
 * a new worker may resume only from the latest persisted orchestration snapshot
+* leases prevent concurrent advancement of the same orchestration instance, but they do not by themselves deduplicate two separately submitted logical signals
+* prevention of repeated business handling for duplicate logical signals relies on persisted signal identity, optional caller-supplied idempotency keys, and current-state validation during signal processing
 
 ### Execution Algorithm
 
@@ -293,21 +299,25 @@ The durable model shall include at least:
   * concurrency key when configured
   * started/completed timestamps
   * latest serialized full orchestration context
+  * audit metadata including `CreatedDate`, `UpdatedDate`, `CreatedBy` and `UpdatedBy`
   * version/concurrency token for optimistic updates
 
 * **Execution history**
 
   * append-only records describing state entry, activity execution, retries, transitions, waits, signals, timers, compensation, pause/resume and terminal outcomes
   * each record includes UTC timestamp, instance identifier, event type and relevant metadata
+  * history records shall include enough audit metadata to identify when the action was recorded and, when available, which user initiated or caused the action
 
 * **Signal inbox**
 
   * persisted signal records correlated to an orchestration instance
   * payload, signal name, received timestamp, processing status and idempotency key when provided
+  * audit metadata including `CreatedDate`, `UpdatedDate`, `CreatedBy` and `UpdatedBy`
 
 * **Timer records**
 
   * persisted due time, trigger kind, target state or continuation metadata and consumption status
+  * audit metadata including `CreatedDate`, `UpdatedDate`, `CreatedBy` and `UpdatedBy`
 
 * **Instance-owned compensation state**
 
@@ -315,6 +325,28 @@ The durable model shall include at least:
   * stored as part of the orchestration instance's durable state rather than as a separate top-level persistence root
 
 The runtime must always be able to reconstruct the latest execution point from persisted state without requiring replay of in-memory-only mutations.
+
+### Auditability Contract
+
+The orchestration feature shall provide lightweight auditability over persisted orchestration operations and records.
+
+The auditability contract is:
+
+* top-level persisted orchestration records shall store `CreatedDate` and `UpdatedDate`
+* top-level persisted orchestration records should also store `CreatedBy` and `UpdatedBy` when a current user identity is available
+* this applies at least to orchestration instances, persisted signals and persisted timers
+* execution history shall capture the action timestamp and, when available, the user identity associated with the recorded orchestration action
+* audit metadata shall be updated as orchestration state changes, signals are accepted/finalized, timers are scheduled/consumed and maintenance actions are performed
+
+The runtime and provider may use `ICurrentUserAccessor` to resolve the current user identity for these audit fields.
+
+`ICurrentUserAccessor` is optional:
+
+* the orchestration feature must work correctly when `ICurrentUserAccessor` is not registered
+* the orchestration feature must work correctly when a current user is not authenticated or no user identifier can be resolved
+* in those cases the runtime/provider shall continue gracefully and leave `CreatedBy` and `UpdatedBy` empty or use a provider-defined system identity value
+
+Auditability is a persistence and operations concern. It does not require every internal runtime helper or execution method to carry audit state explicitly as part of its own public contract.
 
 ### Retention, Archival and Purge
 
@@ -593,10 +625,13 @@ The Entity Framework provider should use normal devkit patterns for:
 * transactional updates where multiple durable records must move together
 * query support for administration and monitoring endpoints
 * provider-controlled `DbContext` scope management through `IServiceProvider`
+* optional resolution of `ICurrentUserAccessor` through `IServiceProvider` for audit metadata population
 
 The Entity Framework provider is also the first full-fidelity operational provider.
 
 It should expose the complete query and metrics abstraction surface over the SQL-backed orchestration data owned by the host application's `DbContext`.
+
+The durable Entity Framework implementation is intended to live in `Infrastructure.EntityFramework/Orchestration`, while the core orchestration authoring/runtime contracts remain in `Application.Orchestration`.
 
 ### Entity Framework DbContext Integration Contract
 
@@ -686,6 +721,8 @@ services.AddOrchestrations()
     .AddEndpoints(options => options
         .Prefix("/api/_system/orchestrations"));
 ```
+
+The endpoint implementation behind this registration model is intended to live in `Presentation.Web.Orchestration`.
 
 The public registration contract shall support:
 
@@ -789,6 +826,98 @@ The testing utility contract shall support at least:
 * substituting fake lease/timer/signal infrastructure where suitable
 
 The testing surface should make common orchestration tests easy without requiring full application hosting or real infrastructure unless the test explicitly needs integration coverage.
+
+The intended testing surface should provide a small orchestration test harness around the normal runtime contract, for example:
+
+* a test builder or fixture for creating an orchestration test runtime
+* in-memory persistence suitable for unit tests
+* deterministic inline execution helpers
+* a controllable test clock for timers and waits
+* helper methods for sending signals, loading instance state, and asserting execution history
+
+The test harness should make tests readable in terms of workflow behavior rather than infrastructure setup.
+
+Typical unit-test usage should support a shape like:
+
+```csharp
+var harness = OrchestrationTestHarness.Create()
+    .WithOrchestration<OrderApprovalOrchestration>()
+    .Build();
+
+var dispatch = await harness.DispatchAsync(
+    new OrderApprovalData
+    {
+        OrderId = "ORD-1001",
+        CustomerId = "CUST-42",
+        OrderAmount = 2500m
+    });
+
+var instanceId = dispatch.Value;
+
+await harness.SignalAsync(
+    instanceId,
+    "OrderApproved",
+    new OrderApprovedSignal
+    {
+        ApprovedBy = "manager-1"
+    });
+
+var instance = await harness.GetAsync(instanceId);
+
+instance.Value.CurrentState.ShouldBe("Confirmed");
+instance.Value.Status.ShouldBe("Completed");
+```
+
+The feature should also make it easy to test workflows without a full background runtime.
+
+For example, a simple inline unit test should support a shape like:
+
+```csharp
+public sealed class OrderApprovalOrchestrationTests
+{
+    [Fact]
+    public async Task Execute_should_wait_for_approval_and_complete_after_signal()
+    {
+        var harness = OrchestrationTestHarness.Create()
+            .WithOrchestration<OrderApprovalOrchestration>()
+            .Build();
+
+        var dispatch = await harness.DispatchAsync(
+            new OrderApprovalData
+            {
+                OrderId = "ORD-1001",
+                CustomerId = "CUST-42",
+                OrderAmount = 2500m
+            });
+
+        dispatch.IsSuccess.ShouldBeTrue();
+
+        var instanceId = dispatch.Value;
+
+        var waiting = await harness.GetAsync(instanceId);
+        waiting.Value.CurrentState.ShouldBe("AwaitingApproval");
+        waiting.Value.Status.ShouldBe("Waiting");
+
+        await harness.SignalAsync(
+            instanceId,
+            "OrderApproved",
+            new OrderApprovedSignal
+            {
+                ApprovedBy = "manager-1"
+            });
+
+        var completed = await harness.GetAsync(instanceId);
+        completed.Value.CurrentState.ShouldBe("Confirmed");
+        completed.Value.Status.ShouldBe("Completed");
+
+        var history = await harness.GetHistoryAsync(instanceId);
+        history.Value.ShouldContain(e => e.EventType == "SignalProcessed");
+        history.Value.ShouldContain(e => e.EventType == "Transition");
+    }
+}
+```
+
+This example is illustrative of the intended test-authoring experience. The normative requirement is that the orchestration feature provide enough test utilities to make state assertions, signal progression, history assertions and timer/wait testing straightforward in ordinary unit tests.
 
 ---
 
@@ -992,11 +1121,65 @@ The runtime shall process signals using the following rules:
 * every received signal is persisted before it is processed
 * signals are correlated to a specific orchestration instance
 * signals may carry typed payload data
+* when a signal handler or signal wait accesses a typed payload, the payload type shall be declared explicitly at the authoring point, for example through `WaitForSignal<TPayload>(...)` or `WhenSignal<TPayload>(...)`
+* when no payload is needed by the workflow definition, the non-generic signal form should be used to avoid unnecessary signal payload types like `WaitForSignal(...)` or `WhenSignal(...)`
 * signal payload-to-context mapping happens under the instance lease and is persisted as part of the next context snapshot
 * when the instance is `Paused`, signals may be accepted and persisted but may not advance execution until resumed
+* signals are always evaluated against the latest persisted current state of the orchestration instance, not against the state the sender expected
 * when the current state has no matching signal handler, the signal is rejected or recorded as ignored at that point in time
+* if the workflow has already advanced and the current state no longer matches the signal's intended wait or handler, the signal is rejected or recorded as ignored at that point in time
 * an unmatched signal is not buffered for later consumption by a future state
 * signal processing is idempotent by signal record identity and optional caller-supplied idempotency key
+* the runtime shall prevent concurrent re-processing of the same persisted signal record
+* when two separate signal submissions represent the same logical business signal, duplicate prevention is guaranteed only when a persisted signal identity match, an idempotency key match, or current-state rejection prevents repeated handling
+
+### Signal Authoring Contract
+
+Signal-driven workflow behavior shall be explicit in the authoring model.
+
+The signal authoring model should distinguish between:
+
+* `WhenSignal(...)`
+  * Defines a signal-driven transition or signal-driven behavior within the current state.
+  * Used when the current state reacts immediately to a received signal.
+  * May perform inline signal-driven work, map signal payload data into context, and then transition or otherwise continue according to the configured signal behavior.
+* `WaitForSignal(...)`
+  * Defines an explicit waiting condition for one or more signals.
+  * Used when the orchestration should enter or remain in a waiting condition until a matching signal arrives.
+  * May map signal payload data into context and then release the wait through a transition or other configured continuation.
+
+The authoring contract is:
+
+* `WhenSignal(...)` is state-reaction oriented
+* `WaitForSignal(...)` is waiting-condition oriented
+* both forms participate in the same durable signal-processing rules
+* both forms may be non-generic when the workflow definition does not consume signal payload data
+* both forms shall require explicit payload typing when the workflow definition consumes typed payload data
+* both forms may map payload data into orchestration context before transition evaluation or continuation
+* both forms execute under the orchestration-instance lease when processing the matching signal
+
+The intended authoring shape is therefore:
+
+```csharp
+.WhenSignal("PlacedOnHold", signal => signal
+    .Activity((context, cancellationToken) =>
+    {
+        context.Data.IsOnHold = true;
+        return Task.FromResult(OrchestrationOutcome.Continue());
+    })
+    .TransitionTo("OnHold"))
+```
+
+and:
+
+```csharp
+.WaitForSignal<OrderApprovedSignal>("OrderApproved", signal => signal
+    .MapToContext((context, payload) =>
+    {
+        context.Data.ApprovalUserId = payload.ApprovedBy;
+    })
+    .TransitionTo("PaymentReservation"))
+```
 
 ### Timer Processing Contract
 
@@ -1054,8 +1237,10 @@ The orchestration context contains:
 * Orchestration-specific data is optional.
 * The orchestration context itself is always present.
 * Activities interact exclusively through the context.
-* No activity input or output parameters are supported; all data is accessed via the context.
-  * This approach simplifies persistence and execution consistency, but requires all data dependencies to be modeled explicitly in the orchestration context.
+* Activity execution is always context-centered.
+  * Custom code activities may read and mutate context directly.
+  * Reusable built-in or typed activities may offer configuration hooks, but those hooks still operate against the shared orchestration context rather than separate activity input/output objects.
+  * Activity results are not modeled as separate durable channels; any data needed later must be written into the orchestration context and is then persisted with the next snapshot.
 * The latest full orchestration context snapshot is persisted durably as execution moves forward.
 * Context persistence is snapshot-based.
   * The runtime persists the latest full serializable context state at each durable boundary rather than relying only on event replay.
@@ -1246,6 +1431,10 @@ public sealed class OrchestrationInstanceModel
     public string CurrentActivity { get; set; }
     public string CorrelationId { get; set; }
     public string ConcurrencyKey { get; set; }
+    public string CreatedBy { get; set; }
+    public DateTimeOffset CreatedDate { get; set; }
+    public string UpdatedBy { get; set; }
+    public DateTimeOffset? UpdatedDate { get; set; }
     public DateTimeOffset StartedUtc { get; set; }
     public DateTimeOffset? CompletedUtc { get; set; }
     public DateTimeOffset LastUpdatedUtc { get; set; }
@@ -1266,6 +1455,8 @@ public sealed class OrchestrationHistoryModel
 {
     public Guid Id { get; set; }
     public Guid InstanceId { get; set; }
+    public string CreatedBy { get; set; }
+    public DateTimeOffset CreatedDate { get; set; }
     public DateTimeOffset TimestampUtc { get; set; }
     public string EventType { get; set; }
     public string State { get; set; }
@@ -1281,6 +1472,10 @@ public sealed class OrchestrationSignalModel
     public string SignalName { get; set; }
     public string ProcessingStatus { get; set; }
     public string IdempotencyKey { get; set; }
+    public string CreatedBy { get; set; }
+    public DateTimeOffset CreatedDate { get; set; }
+    public string UpdatedBy { get; set; }
+    public DateTimeOffset? UpdatedDate { get; set; }
     public DateTimeOffset ReceivedUtc { get; set; }
     public DateTimeOffset? ProcessedUtc { get; set; }
     public string PayloadJson { get; set; }
@@ -1292,6 +1487,10 @@ public sealed class OrchestrationTimerModel
     public Guid InstanceId { get; set; }
     public string TimerKind { get; set; }
     public string ProcessingStatus { get; set; }
+    public string CreatedBy { get; set; }
+    public DateTimeOffset CreatedDate { get; set; }
+    public string UpdatedBy { get; set; }
+    public DateTimeOffset? UpdatedDate { get; set; }
     public DateTimeOffset DueUtc { get; set; }
     public DateTimeOffset? ProcessedUtc { get; set; }
     public string MetadataJson { get; set; }
@@ -1335,6 +1534,14 @@ Examples include:
 * rejected or ignored signals
 * inline execute requests that reach a waiting or paused condition and therefore cannot complete inline
 * wait requests that cannot satisfy the requested condition because the orchestration has already reached an incompatible terminal state
+
+Inline execute requests that cannot complete inline shall use a distinct error contract, for example a dedicated `CannotCompleteInlineError`.
+
+That error contract should make it clear that:
+
+* the orchestration instance may already have been created and durably persisted
+* the orchestration may currently be healthy in `Waiting` or another non-terminal persisted state
+* the failure applies to inline completion semantics, not necessarily to orchestration execution as a whole
 
 Unexpected technical faults may still surface as exceptions. The Result requirement applies to expected client-visible runtime and business outcomes.
 
@@ -1439,7 +1646,7 @@ The `POST /signal` request body shall support at least:
 public sealed class SignalRequest
 {
     public string SignalName { get; set; }
-    public string IdempotencyKey { get; set; }
+    public string IdempotencyKey { get; set; } // prevent duplicate signals when needed
     public object Payload { get; set; }
 }
 ```
@@ -1570,6 +1777,362 @@ Authoring rules:
   * a loop/branch continuation
 * definitions that cannot progress deterministically should fail validation at startup or registration time
 
+### Activity Model
+
+Activities remain the primary execution unit inside orchestration states.
+
+The activity model shall support three authoring styles:
+
+* **Custom code activities**
+  * Implement orchestration-specific logic directly against the orchestration context.
+  * Remain the escape hatch for arbitrary integration and business logic.
+* **Reusable activities**
+  * Provide a structured contract for well-known or product-specific activity categories such as HTTP calls, queries, logging, notifications or starting child orchestrations.
+  * May define configuration for context access, retry, timeout, compensation and behavior-specific options.
+* **Inline activities**
+  * Allow short orchestration-local logic blocks when defining the state machine.
+
+All activity styles shall remain context-centered.
+
+The common contract is:
+
+* the activity reads the data it needs from the current orchestration context
+* the activity may call configured code during execution to mutate the orchestration context
+* any data produced by the activity that must survive later workflow steps shall be written into the orchestration context
+* that context mutation becomes durable through the normal context snapshot persistence rules
+
+Signal-driven authoring shall also be explicit about payload typing.
+
+If a signal handler or signal wait accesses a typed payload, the payload type shall be declared explicitly in the workflow definition rather than inferred implicitly from a callback parameter.
+
+If the workflow definition does not consume signal payload data, the non-generic signal form should be preferred.
+
+For example, the intended signal authoring shape is:
+
+```csharp
+.WaitForSignal<OrderApprovedSignal>("OrderApproved", signal => signal
+    .MapToContext((context, payload) =>
+    {
+        context.Data.ApprovalUserId = payload.ApprovedBy;
+    })
+    .TransitionTo("PaymentReservation"))
+```
+
+This keeps signal names and signal payload contracts clear and type-safe at the point of orchestration definition.
+
+### Built-In Activity Catalog
+
+The feature should provide a built-in set of ready-to-use activities for recurring technical and workflow scenarios.
+
+The built-in catalog should include at least:
+
+* `LogActivity`
+  * Writes structured log entries based on the current orchestration context.
+* `HttpActivity`
+  * Executes outbound HTTP requests and may update context from the response.
+* `QueryActivity`
+  * Executes a query/read operation and may write the returned data into context.
+* `CommandActivity`
+  * Executes an application command/action and may update context based on the command result.
+* `WaitActivity`
+  * Represents a declarative wait, delay, timeout or scheduled resume point.
+* `StartOrchestrationActivity`
+  * Starts another orchestration and may optionally wait for its completion, state or outcome.
+
+The catalog may additionally include activities such as:
+
+* `SignalActivity`
+  * Sends a signal to another orchestration instance and may record signal-related state in the orchestration context.
+* `ApprovalActivity`
+  * Represents a specialized business approval step that records approval state in workflow context and waits for approve or reject resolution.
+* `HumanTaskActivity`
+  * Represents a broader manual interaction step that records task state in workflow context and waits for user-driven completion or resolution.
+* `DecisionActivity`
+  * Evaluates decision logic against the current orchestration context and may update context or choose the next orchestration outcome.
+* `TransformActivity`
+  * Performs a pure context-to-context data transformation step used to derive, normalize or enrich orchestration data without requiring external integration.
+
+`StartOrchestrationActivity` should be treated as a first-class built-in activity type.
+
+Its contract should support at least:
+
+* starting another orchestration using data read from the parent context
+* optionally storing the child orchestration instance identifier or other returned child reference data back into the parent context
+* optionally waiting for child completion, child states, or child outcomes
+* persisting the parent wait condition durably when the parent orchestration is configured to wait for the child
+
+`ApprovalActivity` should represent a specialized business approval step.
+
+Its contract should support at least:
+
+* recording approval metadata and current approval state in the orchestration context
+* moving the orchestration into a waiting state until an approval-related decision or signal is received
+* resuming with an approval or rejection outcome that can be reflected in the orchestration context
+* persisting approval resolution metadata such as resolution timestamp, resolver identity when available, and resolution comment or reason when provided
+* supporting explicit rejection and optional expiration through normal timer/waiting composition
+
+It does not require a separate orchestration-specific durable approval table or approval persistence root.
+
+The approval resolution contract is:
+
+* approval or rejection is returned to the orchestration through a durable runtime interaction
+* the baseline progression mechanism shall be a mapped orchestration signal, even if higher-level helpers or product-specific APIs wrap that interaction
+* when the resolution is received, the orchestration context is updated with the decision and related metadata before the next transition is evaluated
+* resolution handling follows the same lease-protected, persisted execution rules as other signal or wait-release mechanisms
+* approval-related UI or worklist behavior may be implemented from orchestration context and history data or integrated with an application-specific task/approval subsystem
+
+For example, the authoring model should support:
+
+```csharp
+state.ApprovalActivity(activity => activity
+    .Title(context => $"Approve order {context.Data.OrderId}")
+    .AssignedToRole("SalesManager")
+    .ApprovedSignal("OrderApproved")
+    .RejectedSignal("OrderRejected")
+    .OnApproved((context, decision) =>
+    {
+        context.Data.Approved = true;
+        context.Data.ApprovalDecision = "Approved";
+        context.Data.ApprovedBy = decision.UserId;
+    })
+    .OnRejected((context, decision) =>
+    {
+        context.Data.Approved = false;
+        context.Data.ApprovalDecision = "Rejected";
+        context.Data.RejectionReason = decision.Reason;
+        context.Data.RejectedBy = decision.UserId;
+    }));
+```
+
+and progression should work through the ordinary orchestration signal surface, for example:
+
+```csharp
+await orchestrations.SignalAsync(
+    instanceId,
+    "OrderApproved",
+    new ApprovalDecisionSignal
+    {
+        UserId = currentUser.UserId,
+        Comment = "Approved for preferred customer."
+    },
+    cancellationToken: cancellationToken);
+```
+
+`HumanTaskActivity` should represent a broader manual interaction step.
+
+Its contract should support at least:
+
+* recording task metadata and current task state in the orchestration context
+* moving the orchestration into a waiting state until the task is completed, cancelled, expired or otherwise resolved
+* allowing non-approval manual interactions such as review, confirmation, correction, enrichment or document-related tasks
+* persisting task resolution metadata such as resolution timestamp, resolver identity when available, task outcome and optional completion notes
+
+It does not require a separate orchestration-specific durable human-task table or human-task persistence root.
+
+The human-task resolution contract is:
+
+* task completion, cancellation, expiration or other resolution is returned to the orchestration through a durable runtime interaction
+* the baseline progression mechanism shall be a mapped orchestration signal, even if higher-level helpers or product-specific APIs wrap that interaction
+* when the resolution is received, the orchestration context is updated with the task outcome and related metadata before the next transition is evaluated
+* expiration and escalation may be implemented through composition with timers, signals and ordinary orchestration logic rather than requiring a separate execution model inside the activity
+* task-related UI or worklist behavior may be implemented from orchestration context and history data or integrated with an application-specific task subsystem
+
+For example, the authoring model should support:
+
+```csharp
+state.HumanTaskActivity(activity => activity
+    .Title(context => $"Review customer data for order {context.Data.OrderId}")
+    .Description("Please verify and correct missing customer information.")
+    .AssignedToRole("Backoffice")
+    .CompletedSignal("CustomerReviewCompleted")
+    .CancelledSignal("CustomerReviewCancelled")
+    .OnCompleted((context, task) =>
+    {
+        context.Data.CustomerReviewCompleted = true;
+        context.Data.CustomerReviewComment = task.Comment;
+        context.Data.CustomerReviewedBy = task.UserId;
+    })
+    .OnCancelled((context, task) =>
+    {
+        context.Data.CustomerReviewCompleted = false;
+        context.Data.CustomerReviewComment = task.Comment;
+    }));
+```
+
+and progression should work through the ordinary orchestration signal surface, for example:
+
+```csharp
+await orchestrations.SignalAsync(
+    instanceId,
+    "CustomerReviewCompleted",
+    new HumanTaskResolutionSignal
+    {
+        UserId = currentUser.UserId,
+        Comment = "Customer data corrected and verified."
+    },
+    cancellationToken: cancellationToken);
+```
+
+`TransformActivity` should be pure by contract.
+
+Its contract should support at least:
+
+* reading orchestration context
+* computing derived or normalized values
+* writing those derived values back into orchestration context
+
+It should not:
+
+* call external systems
+* depend on non-durable ambient state
+* produce side effects outside the orchestration context
+
+Built-in activities should support convenience methods in the orchestration DSL in addition to the generic activity registration form.
+
+That means both of these styles should be valid:
+
+```csharp
+state.Activity<LogActivity>(activity => activity
+    .Warning("Order {OrderId} requires manual approval"));
+```
+
+and:
+
+```csharp
+state.LogActivity(activity => activity
+    .Warning("Order {OrderId} requires manual approval"));
+```
+
+Convenience methods are authoring sugar over the same runtime activity contract. They do not introduce a separate execution model.
+
+The activity authoring model should support richer built-in activity configuration for recurring technical integrations.
+
+`HttpActivity` should support configuration of request construction, headers, timeout, response handling and orchestration outcome selection while remaining fully context-centered.
+
+Its normative capability contract is:
+
+* selecting HTTP method
+* constructing target URL from orchestration context
+* configuring headers from orchestration context
+* configuring request body from orchestration context when applicable
+* configuring timeout behavior
+* classifying acceptable and non-acceptable status codes
+* handling successful responses
+* handling non-success responses
+* handling transport or serialization exceptions
+* updating orchestration context from response data
+* selecting the resulting orchestration outcome
+
+The following code shape is illustrative of the intended authoring experience, not a requirement for the exact public method names:
+
+```csharp
+state.HttpActivity(activity => activity
+    .Name("ReservePayment")
+    .Post()
+    .Url(context => $"payments/orders/{context.Data.OrderId}/reservations")
+    .Header("Authorization", context => $"Bearer {context.Data.PaymentToken}")
+    .Header("Accept", _ => "application/json")
+    .Body(context => new
+    {
+        orderId = context.Data.OrderId,
+        customerId = context.Data.CustomerId,
+        amount = context.Data.OrderAmount,
+        currency = context.Data.Currency
+    })
+    .Timeout(TimeSpan.FromSeconds(30))
+    .AcceptStatus(HttpStatusCode.OK, HttpStatusCode.Created, HttpStatusCode.Accepted)
+    .OnBeforeSend((context, request) =>
+    {
+        context.Data.LastHttpRequestUtc = DateTimeOffset.UtcNow;
+        context.Data.LastHttpOperation = "ReservePayment";
+    })
+    .OnSuccess((context, response) =>
+    {
+        context.Data.LastHttpStatusCode = (int)response.StatusCode;
+
+        var body = response.GetBody<ReservePaymentResponse>();
+
+        context.Data.PaymentReservationId = body.ReservationId;
+        context.Data.PaymentStatus = body.Status;
+        context.Data.PaymentReservedUtc = body.ReservedUtc;
+    })
+    .OnFailure((context, response) =>
+    {
+        context.Data.LastHttpStatusCode = (int)response.StatusCode;
+        context.Data.LastError = $"Payment reservation failed with status {(int)response.StatusCode}";
+    })
+    .OnException((context, exception) =>
+    {
+        context.Data.LastError = exception.Message;
+        context.Data.LastExceptionType = exception.GetType().Name;
+    })
+    .Outcome((context, response) =>
+    {
+        if (response.StatusCode == HttpStatusCode.Accepted)
+        {
+            return OrchestrationOutcome.Wait(TimeSpan.FromMinutes(1));
+        }
+
+        if (response.IsSuccessStatusCode)
+        {
+            return OrchestrationOutcome.Continue();
+        }
+
+        if ((int)response.StatusCode >= 500)
+        {
+            return OrchestrationOutcome.Retry();
+        }
+
+        return OrchestrationOutcome.Terminate("Payment reservation was rejected.");
+    }));
+```
+
+This example illustrates the intended pattern:
+
+* request data is derived from the orchestration context
+* headers and body are configured declaratively
+* response handling writes durable business data back into the orchestration context
+* orchestration flow control remains outcome-based
+* no separate activity input/output channel is introduced
+
+### Activity Extensibility Contract
+
+The orchestration feature shall allow applications to define their own reusable activities for better integration into product-specific workflows and language.
+
+The extensibility contract is:
+
+* custom reusable activities use the same runtime execution contract as built-in activities
+* custom reusable activities are resolved through dependency injection like other orchestration activities
+* custom reusable activities execute against the same shared orchestration context model
+* custom reusable activities may expose their own fluent configuration API for definition-time behavior
+* custom reusable activities may apply retry, timeout, wait, compensation and outcome semantics through the normal orchestration activity contract
+* custom reusable activities may be packaged by an application or module as reusable building blocks across multiple orchestrations
+
+The implementation model should therefore be shaped so that:
+
+* built-in activities are ordinary activity implementations provided by the framework
+* framework-provided convenience methods such as `.LogActivity(...)` and `.HttpActivity(...)` are wrappers over the same underlying activity registration model as `.Activity<TActivity>(...)`
+* applications may implement their own activity classes and register them without requiring special runtime treatment
+* applications may add their own DSL extension methods that wrap `.Activity<TActivity>(...)` so orchestration definitions can use product language such as `.ReserveWarehouseSlotActivity(...)` or `.CreateInvoiceActivity(...)`
+
+This ensures the activity system is open for product-specific integration without fragmenting the runtime model.
+
+The authoring model should support product-defined DSL extensions shaped like:
+
+```csharp
+public static IOrchestrationStateBuilder<TData> ReserveWarehouseSlotActivity<TData>(
+    this IOrchestrationStateBuilder<TData> state,
+    Action<ReserveWarehouseSlotActivityOptions<TData>> configure = null)
+{
+    return state.Activity<ReserveWarehouseSlotActivity<TData>>(configure);
+}
+```
+
+Applications should therefore be able to build both:
+
+* custom reusable activity implementations
+* custom convenience methods that expose those activities in product-specific orchestration language
+
 ### Definition Validation Contract
 
 Orchestration definitions shall be validated at registration or startup time before they are allowed to run.
@@ -1695,7 +2258,7 @@ The orchestration feature supports three distinct mechanisms for starting execut
   * Blocks the caller until execution completes.
   * Easy for testing and debugging due to synchronous nature.
   * Should be restricted to orchestrations that are expected to complete inline without entering a waiting/blocking state.
-  * If execution reaches a Waiting or Paused condition during Execute, the call shall return a failed `Result<OrchestrationExecuteResult>` indicating that the orchestration cannot complete inline.
+  * If execution reaches a Waiting or Paused condition during Execute, the call shall return a failed `Result<OrchestrationExecuteResult>` using the distinct inline-incompletion error contract.
   * Inline execution still persists the instance, state transitions and context snapshots according to the normal durability contract.
 
 * **Dispatch**
@@ -1812,13 +2375,13 @@ public sealed class OrderApprovalOrchestration
                     return OrchestrationOutcome.Continue(); // execution continues to wait for signals after this activity
                 })
 
-                .WaitForSignal("OrderApproved", signal => signal // signal-driven transition example
+                .WaitForSignal<OrderApprovedSignal>("OrderApproved", signal => signal // signal-driven transition example
                     .MapToContext((ctx, payload) =>
                     {
                         ctx.Data.ApprovalUserId = payload.ApprovedBy;
                     })
                     .TransitionTo("PaymentReservation"))
-                .WaitForSignal("OrderRejected", signal => signal
+                .WaitForSignal<OrderRejectedSignal>("OrderRejected", signal => signal
                     .MapToContext((ctx, payload) =>
                     {
                         ctx.Data.RejectionReason = payload.Reason; // mapping of signal data to context

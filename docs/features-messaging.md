@@ -54,9 +54,9 @@ sequenceDiagram
     else Entity Framework
       note right of Transport: Persisted broker rows, worker leases, retries, and operational endpoints
      else RabbitMQ
-       note right of Transport: Fanout exchange; all queues receive all messages; auto-ack; no broker redelivery
+       note right of Transport: Fanout exchange, all queues receive all messages auto-ack, no broker redelivery
      else Azure Queue Storage
-       note right of Transport: One queue per message type; visibility timeout retry; delete on success
+       note right of Transport: One queue per message type, visibility timeout retry, delete on success
      else InProcess
        note right of Transport: Immediate in-memory completion
      end
@@ -274,12 +274,12 @@ RabbitMQ topology (fanout exchange with one queue per subscriber):
 ```mermaid
 flowchart LR
   P[Publisher] -->|Publish any message| E[Fanout Exchange 'messaging']
-  E -->|broadcast| Q1[Queue A <br/>(Module A)]
-  E -->|broadcast| Q2[Queue B <br/>(Module B)]
-  E -->|broadcast| Q3[Queue C <br/>(Module C)]
-  Q1 --> C1[Consumer filters <br/>by message type]
-  Q2 --> C2[Consumer filters <br/>by message type]
-  Q3 --> C3[Consumer filters <br/>by message type]
+  E -->|broadcast| Q1[Queue A - Module A]
+  E -->|broadcast| Q2[Queue B - Module B]
+  E -->|broadcast| Q3[Queue C - Module C]
+  Q1 --> C1[Consumer filters - by message type]
+  Q2 --> C2[Consumer filters - by message type]
+  Q3 --> C3[Consumer filters - by message type]
 ```
 
 **Important behaviors:**

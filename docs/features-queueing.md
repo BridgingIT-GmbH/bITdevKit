@@ -79,13 +79,13 @@ sequenceDiagram
 ### In-process broker
 
 ```csharp
-builder.Services.AddQueueing(builder.Configuration, context =>
- context.WithSubscription<OrderQueuedMessage, OrderQueuedHandler>())
+builder.Services.AddQueueing(builder.Configuration)
+  .WithSubscription<OrderQueuedMessage, OrderQueuedHandler>())
   .WithInProcessBroker(new InProcessQueueBrokerConfiguration
   {
-   MaxDegreeOfParallelism = 1,
-   EnsureOrdered = true
- })
+    MaxDegreeOfParallelism = 1,
+    EnsureOrdered = true
+  })
  .AddEndpoints();
 ```
 
@@ -94,13 +94,13 @@ builder.Services.AddQueueing(builder.Configuration, context =>
 ```csharp
 builder.Services.AddDbContext<AppDbContext>(...);
 
-builder.Services.AddQueueing(builder.Configuration, context =>
- context.WithSubscription<OrderQueuedMessage, OrderQueuedHandler>())
+builder.Services.AddQueueing(builder.Configuration)
+  .WithSubscription<OrderQueuedMessage, OrderQueuedHandler>()
   .WithEntityFrameworkBroker<AppDbContext>(new EntityFrameworkQueueBrokerConfiguration
   {
-   AutoSave = true,
-   ProcessingInterval = TimeSpan.FromSeconds(15),
-   LeaseDuration = TimeSpan.FromSeconds(30)
+     AutoSave = true,
+    ProcessingInterval = TimeSpan.FromSeconds(15),
+    LeaseDuration = TimeSpan.FromSeconds(30)
   })
   .AddEndpoints(options => options.RequireAuthorization());
 ```
@@ -108,15 +108,15 @@ builder.Services.AddQueueing(builder.Configuration, context =>
 ### Azure Service Bus broker
 
 ```csharp
-builder.Services.AddQueueing(builder.Configuration, context =>
- context.WithSubscription<OrderQueuedMessage, OrderQueuedHandler>())
+builder.Services.AddQueueing(builder.Configuration)
+  .WithSubscription<OrderQueuedMessage, OrderQueuedHandler>()
   .WithServiceBusBroker(new ServiceBusQueueBrokerConfiguration
   {
-   ConnectionString = configuration["Queueing:ServiceBus:ConnectionString"],
-   QueueNamePrefix = "bit",
-   AutoCreateQueue = true,
-   MaxConcurrentCalls = 8,
-   MaxDeliveryAttempts = 5
+    ConnectionString = configuration["Queueing:ServiceBus:ConnectionString"],
+    QueueNamePrefix = "bit",
+    AutoCreateQueue = true,
+    MaxConcurrentCalls = 8,
+    MaxDeliveryAttempts = 5
   })
   .AddEndpoints(options => options.RequireAuthorization());
 ```
@@ -124,8 +124,8 @@ builder.Services.AddQueueing(builder.Configuration, context =>
 ### Azure Queue Storage broker
 
 ```csharp
-builder.Services.AddQueueing(builder.Configuration, context =>
- context.WithSubscription<OrderQueuedMessage, OrderQueuedHandler>())
+builder.Services.AddQueueing(builder.Configuration)
+  .WithSubscription<OrderQueuedMessage, OrderQueuedHandler>()
   .WithAzureQueueStorageBroker(new AzureQueueStorageQueueBrokerConfiguration
   {
    ConnectionString = configuration["Queueing:AzureQueueStorage:ConnectionString"],

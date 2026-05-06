@@ -134,7 +134,7 @@ For public or client-facing symbols, the XML comments should also include usage 
 
 ---
 
-## Terminology
+## Glossary
 
 | Term                       | Description                                                                                                            |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
@@ -145,6 +145,16 @@ For public or client-facing symbols, the XML comments should also include usage 
 | **Outcome**                | The result of an activity that determines execution behavior (e.g. Continue, Retry, Wait, Complete).                   |
 | **Transition**             | A movement from one state to another based on conditions, signals (events) or outcomes.                                |
 | **Orchestration Context**  | The shared execution object containing runtime metadata, optional orchestration data and execution-scoped properties. |
+| **Signal**                 | A durable external or internal input correlated to an orchestration instance and evaluated against its current state. |
+| **Timer**                  | A durable time-based trigger used for retries, timeouts, scheduled wake-up, or delayed continuation.                  |
+| **Waiting**                | A workflow-controlled paused execution state where the orchestration is waiting for a signal, timer, or other release condition. |
+| **Paused**                 | An externally imposed suspended state where execution is halted until an explicit resume operation occurs.             |
+| **Lease**                  | An exclusive, time-bound lock for a single orchestration instance that prevents concurrent state mutation across nodes. |
+| **Durable Boundary**       | A point in execution where instance state, context, and relevant runtime facts must be persisted before continuing.   |
+| **Execution History**      | The append-only persisted timeline of orchestration events such as activities, transitions, waits, signals, timers, and terminal outcomes. |
+| **Compensation**           | Reverse-order recovery actions used to undo or mitigate already completed work after later failure or cancellation.    |
+| **Current State**          | The latest persisted business state of the orchestration instance against which transitions, signals, and timers are evaluated. |
+| **Current Status**         | The latest persisted lifecycle status of the orchestration instance, such as Running, Waiting, Paused, Completed, Failed, Cancelled, or Terminated. |
 
 ---
 

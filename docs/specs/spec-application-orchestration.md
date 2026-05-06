@@ -1108,6 +1108,12 @@ Activities may interact with external systems; therefore idempotency is required
 
 The feature shall expose a clear application-facing service API for orchestration execution and control.
 
+Client-facing orchestration service methods shall follow the devkit Result pattern as described in `features-results.md`.
+
+Public orchestration runtime and query methods shall therefore return `Result`, `Result<T>` or `ResultPaged<T>` so that callers can inspect success, failure, messages and errors explicitly instead of inferring business/runtime failure from exceptions or ad-hoc status handling. More details here: [Results Feature](../features-results.md)
+
+This requirement applies to the application-facing orchestration runtime and query services. It does not require internal runtime components, persistence providers, execution helpers or other non-client-facing implementation methods to use the Result pattern internally.
+
 The public service surface should distinguish between:
 
 * **runtime/control operations**
@@ -1120,42 +1126,42 @@ The runtime and query service shape shall be:
 ```csharp
 public interface IOrchestrationService
 {
-    Task<OrchestrationExecuteResult> ExecuteAsync<TOrchestration, TData>(
+    Task<Result<OrchestrationExecuteResult>> ExecuteAsync<TOrchestration, TData>(
         TData data,
         CancellationToken cancellationToken = default);
 
-    Task<Guid> DispatchAsync<TOrchestration, TData>(
+    Task<Result<Guid>> DispatchAsync<TOrchestration, TData>(
         TData data,
         CancellationToken cancellationToken = default);
 
-    Task<OrchestrationWaitResult> DispatchAndWaitAsync<TOrchestration, TData>(
+    Task<Result<OrchestrationWaitResult>> DispatchAndWaitAsync<TOrchestration, TData>(
         TData data,
         OrchestrationWaitFor waitFor = null,
         TimeSpan? timeout = null,
         CancellationToken cancellationToken = default);
 
-    Task SignalAsync(
+    Task<Result> SignalAsync(
         Guid instanceId,
         string signalName,
         object payload = null,
         string idempotencyKey = null,
         CancellationToken cancellationToken = default);
 
-    Task PauseAsync(
+    Task<Result> PauseAsync(
         Guid instanceId,
         string reason = null,
         CancellationToken cancellationToken = default);
 
-    Task ResumeAsync(
+    Task<Result> ResumeAsync(
         Guid instanceId,
         CancellationToken cancellationToken = default);
 
-    Task CancelAsync(
+    Task<Result> CancelAsync(
         Guid instanceId,
         string reason = null,
         CancellationToken cancellationToken = default);
 
-    Task TerminateAsync(
+    Task<Result> TerminateAsync(
         Guid instanceId,
         string reason = null,
         CancellationToken cancellationToken = default);
@@ -1163,17 +1169,17 @@ public interface IOrchestrationService
 
 public interface IOrchestrationQueryService
 {
-    Task<OrchestrationInstanceModel> GetAsync(Guid instanceId, CancellationToken cancellationToken = default);
-    Task<OrchestrationContextSnapshotModel> GetContextAsync(Guid instanceId, CancellationToken cancellationToken = default);
-    Task<PagedResult<OrchestrationInstanceModel>> QueryAsync(OrchestrationQueryRequest request, CancellationToken cancellationToken = default);
-    Task<IReadOnlyList<OrchestrationHistoryModel>> GetHistoryAsync(Guid instanceId, CancellationToken cancellationToken = default);
-    Task<IReadOnlyList<OrchestrationSignalModel>> GetSignalsAsync(Guid instanceId, CancellationToken cancellationToken = default);
-    Task<IReadOnlyList<OrchestrationTimerModel>> GetTimersAsync(Guid instanceId, CancellationToken cancellationToken = default);
-    Task<OrchestrationMetricsModel> GetMetricsAsync(OrchestrationMetricsRequest request = null, CancellationToken cancellationToken = default);
+    Task<Result<OrchestrationInstanceModel>> GetAsync(Guid instanceId, CancellationToken cancellationToken = default);
+    Task<Result<OrchestrationContextSnapshotModel>> GetContextAsync(Guid instanceId, CancellationToken cancellationToken = default);
+    Task<ResultPaged<OrchestrationInstanceModel>> QueryAsync(OrchestrationQueryRequest request, CancellationToken cancellationToken = default);
+    Task<Result<IReadOnlyList<OrchestrationHistoryModel>>> GetHistoryAsync(Guid instanceId, CancellationToken cancellationToken = default);
+    Task<Result<IReadOnlyList<OrchestrationSignalModel>>> GetSignalsAsync(Guid instanceId, CancellationToken cancellationToken = default);
+    Task<Result<IReadOnlyList<OrchestrationTimerModel>>> GetTimersAsync(Guid instanceId, CancellationToken cancellationToken = default);
+    Task<Result<OrchestrationMetricsModel>> GetMetricsAsync(OrchestrationMetricsRequest request = null, CancellationToken cancellationToken = default);
 }
 ```
 
-The following request and response models are part of the contract.
+The following request and value models are part of the contract. They are returned inside the appropriate Result wrapper on the public client-facing API.
 
 ```csharp
 public sealed class OrchestrationQueryRequest
@@ -1319,6 +1325,19 @@ The runtime/control service shall support at least:
 * pause, resume, cancel and terminate operations
 * querying current status after any control operation
 
+Client-facing runtime/control operations shall report business/runtime failure through Result failures rather than requiring callers to infer failure from exceptions or partial state.
+
+Examples include:
+
+* missing orchestration instances
+* invalid lifecycle operations such as resume on a non-paused instance
+* duplicate or rejected starts due to orchestration execution constraints
+* rejected or ignored signals
+* inline execute requests that reach a waiting or paused condition and therefore cannot complete inline
+* wait requests that cannot satisfy the requested condition because the orchestration has already reached an incompatible terminal state
+
+Unexpected technical faults may still surface as exceptions. The Result requirement applies to expected client-visible runtime and business outcomes.
+
 The query service shall support at least:
 
 * current instance summary
@@ -1335,9 +1354,13 @@ The query service shall support at least:
 * duration metrics
 * retry, signal and timer activity metrics where available
 
+Client-facing query operations shall also use Result wrappers so callers can distinguish successful reads, not-found conditions, invalid filters and provider/query failures through the standard Result contract.
+
 ### Endpoint API Contract
 
 The feature shall expose optional administration endpoints built on top of the query service.
+
+These endpoints may map service-layer `Result`, `Result<T>` and `ResultPaged<T>` values into HTTP responses using the devkit's established Result-to-HTTP mapping approach.
 
 The endpoint surface shall support:
 
@@ -1439,7 +1462,7 @@ The `DELETE /api/_system/orchestrations` endpoint shall support purge-style quer
 The endpoint response contract shall follow this pattern:
 
 * `GET /api/_system/orchestrations`
-  * `200 OK` with `PagedResult<OrchestrationInstanceModel>`
+  * `200 OK` with `ResultPaged<OrchestrationInstanceModel>`
   * `500 Internal Server Error` with `ProblemDetails`
 * `GET /api/_system/orchestrations/{instanceId}`
   * `200 OK` with `OrchestrationInstanceModel`
@@ -1668,18 +1691,18 @@ The orchestration feature supports three distinct mechanisms for starting execut
   * Synchronous, inline execution within the current context.
   * Suitable for short-running orchestrations that need to execute immediately and return results directly to the caller.
   * Runs inline in the caller's execution flow without dispatching to the background runtime.
-  * Returns a task that can be awaited for completion and result retrieval.
+  * Returns a `Task<Result<OrchestrationExecuteResult>>` that can be awaited for completion and result retrieval.
   * Blocks the caller until execution completes.
   * Easy for testing and debugging due to synchronous nature.
   * Should be restricted to orchestrations that are expected to complete inline without entering a waiting/blocking state.
-  * If execution reaches a Waiting or Paused condition during Execute, an exception is thrown indicating that the orchestration cannot complete inline.
+  * If execution reaches a Waiting or Paused condition during Execute, the call shall return a failed `Result<OrchestrationExecuteResult>` indicating that the orchestration cannot complete inline.
   * Inline execution still persists the instance, state transitions and context snapshots according to the normal durability contract.
 
 * **Dispatch**
 
   * Asynchronous, background execution via the orchestration runtime.
   * Suitable for long-running orchestrations that may involve waiting, human interaction
-  * Returns immediately without waiting for completion
+  * Returns a `Task<Result<Guid>>` immediately without waiting for completion
   * Queues orchestration for background execution
   * Does not block the caller
   * Provides the orchestration instance identifier for tracking and correlation
@@ -1692,6 +1715,7 @@ The orchestration feature supports three distinct mechanisms for starting execut
   * Blocks the caller until execution completes or until the awaited condition is reached.
   * Suitable when background processing is required but the result or a specific orchestration milestone is still needed by the caller.
   * Can optionally wait for completion, specific outcomes, or one or more specific states.
+  * Returns a `Task<Result<OrchestrationWaitResult>>`.
 
 supports:
 
@@ -1855,20 +1879,25 @@ public sealed class ReservePaymentActivity
 ### Signal Example
 
 ```csharp
-await orchestrations.SignalAsync(
+var signalResult = await orchestrations.SignalAsync(
     instanceId,
     "OrderApproved",
     new OrderApprovedSignal
     {
         ApprovedBy = currentUser.Id
     },
-    cancellationToken);
+    cancellationToken: cancellationToken);
+
+if (signalResult.IsFailure)
+{
+    // inspect signalResult.Errors / signalResult.Messages
+}
 ```
 
 ### Execution Examples
 
 ```csharp
-var instanceId = await orchestrations.DispatchAsync(
+var dispatchResult = await orchestrations.DispatchAsync(
     new OrderApprovalData
     {
         OrderId = order.Id,
@@ -1876,6 +1905,14 @@ var instanceId = await orchestrations.DispatchAsync(
         OrderAmount = order.TotalAmount
     },
     cancellationToken);
+
+if (dispatchResult.IsFailure)
+{
+    // inspect dispatchResult.Errors / dispatchResult.Messages
+    return;
+}
+
+var instanceId = dispatchResult.Value;
 ```
 
 ```csharp
@@ -1888,7 +1925,12 @@ var result = await orchestrations.DispatchAndWaitAsync(
     },
     waitFor: WaitFor.State("Confirmed", "Rejected"),
     timeout: TimeSpan.FromSeconds(30),
-    cancellationToken);
+    cancellationToken: cancellationToken);
+
+if (result.IsSuccess && !result.Value.TimedOut)
+{
+    var finalState = result.Value.CurrentState;
+}
 ```
 
 ### Behavior Summary
@@ -2028,50 +2070,58 @@ public sealed class TelephoneCallOrchestration
 ### Starting the Orchestration
 
 ```csharp
-var instanceId = await orchestrations.DispatchAsync(
+var dispatchResult = await orchestrations.DispatchAsync(
     new TelephoneCallData
     {
         CallId = Guid.NewGuid().ToString("N"),
         PhoneNumber = "+49 123 456789"
     },
     cancellationToken);
+
+if (dispatchResult.IsFailure)
+{
+    // inspect dispatchResult.Errors / dispatchResult.Messages
+    return;
+}
+
+var instanceId = dispatchResult.Value;
 ```
 
 ### Signal Examples
 
 ```csharp
-await orchestrations.SignalAsync(
+var dialedResult = await orchestrations.SignalAsync(
     instanceId,
     "CallDialed",
-    cancellationToken);
+    cancellationToken: cancellationToken);
 ```
 
 ```csharp
-await orchestrations.SignalAsync(
+var connectedResult = await orchestrations.SignalAsync(
     instanceId,
     "CallConnected",
-    cancellationToken);
+    cancellationToken: cancellationToken);
 ```
 
 ```csharp
-await orchestrations.SignalAsync(
+var holdResult = await orchestrations.SignalAsync(
     instanceId,
     "PlacedOnHold",
-    cancellationToken);
+    cancellationToken: cancellationToken);
 ```
 
 ```csharp
-await orchestrations.SignalAsync(
+var resumeHoldResult = await orchestrations.SignalAsync(
     instanceId,
     "TakenOffHold",
-    cancellationToken);
+    cancellationToken: cancellationToken);
 ```
 
 ```csharp
-await orchestrations.SignalAsync(
+var hungUpResult = await orchestrations.SignalAsync(
     instanceId,
     "HungUp",
-    cancellationToken);
+    cancellationToken: cancellationToken);
 ```
 
 ### Example Flow

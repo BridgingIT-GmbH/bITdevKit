@@ -326,7 +326,7 @@ flowchart LR
   E --> Q1[Queue: OrderQueuedMessage]
   E --> Q2[Queue: InvoiceQueuedMessage]
   Q1 --> C1[Consumer A]
-  Q1 --> C2[Consumer B <br/>(competing)]
+  Q1 --> C2[Consumer B - competing with A]
   Q2 --> C3[Consumer C]
 ```
 

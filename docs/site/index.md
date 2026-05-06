@@ -162,26 +162,6 @@ hide:
   </div>
 </div>
 
-## Request flow in practice
-
-<div class="snippet-panel" markdown="1">
-
-```csharp
-app.MapPost("/customers", async (CustomerCreateModel model, IRequester requester) =>
-{
-    var command = new CustomerCreateCommand(model);
-    var result = await requester.SendAsync(command);
-
-    return result.MapHttpCreated();
-});
-```
-
-</div>
-
-<p class="section-linkout">
-  <a class="inline-link" href="architecture/">See the request flow and layer map</a>
-</p>
-
 ## Example applications
 
 <div class="examples-grid">
@@ -206,7 +186,7 @@ app.MapPost("/customers", async (CustomerCreateModel model, IRequester requester
   <a class="inline-link" href="examples/">Explore the examples</a>
 </p>
 
-## Templates for new solutions and modules
+## Templates for solutions and modules
 
 <div class="architecture-panel">
   <div>
@@ -223,11 +203,10 @@ app.MapPost("/customers", async (CustomerCreateModel model, IRequester requester
     <span>Solution</span>
     <span>Module</span>
     <span>Tests</span>
-    <span>Presentation</span>
   </div>
 </div>
 
-## Common early decisions
+<!-- ## Common decisions
 
 <div class="gateway-grid">
   <a class="gateway-card" href="decisions-messaging-vs-queueing/">
@@ -246,7 +225,7 @@ app.MapPost("/customers", async (CustomerCreateModel model, IRequester requester
     <h3>Why bITdevKit</h3>
     <p>See when the devkit pays off and when a simpler stack may be enough.</p>
   </a>
-</div>
+</div> -->
 
 <!-- ## Getting started
 

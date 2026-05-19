@@ -63,7 +63,7 @@ jobs:
       - run: dotnet --info
 
       - name: Cache nuget packages
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}

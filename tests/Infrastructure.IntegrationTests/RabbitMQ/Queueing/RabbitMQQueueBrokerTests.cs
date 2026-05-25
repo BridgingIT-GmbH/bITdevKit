@@ -33,7 +33,7 @@ public class RabbitMQQueueBrokerTests(ITestOutputHelper output, TestEnvironmentF
                 .MessageExpiration(TimeSpan.FromMinutes(1)));
 
         using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         await broker.Subscribe<RabbitMQQueueMessage, RabbitMQQueueMessageHandler>();
@@ -65,7 +65,7 @@ public class RabbitMQQueueBrokerTests(ITestOutputHelper output, TestEnvironmentF
                 .MessageExpiration(TimeSpan.FromMinutes(1)));
 
         using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         var message = new RabbitMQQueueMessage("wait-for-handler");
@@ -104,7 +104,7 @@ public class RabbitMQQueueBrokerTests(ITestOutputHelper output, TestEnvironmentF
                 .MessageExpiration(TimeSpan.FromMinutes(1)));
 
         using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         await broker.Subscribe<RabbitMQQueueMessage, RabbitMQQueueMessageHandler>();
@@ -150,7 +150,7 @@ public class RabbitMQQueueBrokerTests(ITestOutputHelper output, TestEnvironmentF
                 .MessageExpiration(TimeSpan.FromMinutes(1)));
 
         using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         await broker.Subscribe<RabbitMQQueueMessage, RabbitMQQueueMessageHandler>();
@@ -182,7 +182,7 @@ public class RabbitMQQueueBrokerTests(ITestOutputHelper output, TestEnvironmentF
                 .MessageExpiration(TimeSpan.FromMinutes(1)));
 
         using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         await broker.Subscribe<RabbitMQFailingQueueMessage, RabbitMQFailingQueueMessageHandler>();
@@ -223,7 +223,7 @@ public class RabbitMQQueueBrokerTests(ITestOutputHelper output, TestEnvironmentF
                 .MessageExpiration(TimeSpan.FromMinutes(1)));
 
         using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         var message = new RabbitMQQueueMessage("track-me");
@@ -253,7 +253,7 @@ public class RabbitMQQueueBrokerTests(ITestOutputHelper output, TestEnvironmentF
                 .MessageExpiration(TimeSpan.FromMinutes(1)));
 
         using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         var message = new RabbitMQQueueMessage("purge-me");
@@ -290,7 +290,7 @@ public class RabbitMQQueueBrokerTests(ITestOutputHelper output, TestEnvironmentF
                 .MessageExpiration(TimeSpan.FromMinutes(1)));
 
         using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         await broker.Subscribe<RabbitMQQueueMessage, RabbitMQQueueMessageHandler>();

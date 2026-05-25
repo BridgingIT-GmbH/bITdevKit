@@ -54,7 +54,7 @@ public class SimpleNotifier(
         where TNotification : ISimpleNotification
     {
         var notificationHandler = new SimpleNotificationHandler<TNotification>(handler);
-        this.Subscribe<TNotification>(notificationHandler, order);
+        this.Subscribe(notificationHandler, order);
     }
 
     /// <summary>
@@ -147,7 +147,7 @@ public class SimpleNotifier(
         where TNotification : ISimpleNotification
     {
         var notificationHandler = new SimpleNotificationHandler<TNotification>(handler);
-        this.Unsubscribe<TNotification>(notificationHandler);
+        this.Unsubscribe(notificationHandler);
     }
 
     /// <summary>

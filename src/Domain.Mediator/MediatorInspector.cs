@@ -18,8 +18,8 @@ public static class MediatorInspector
     [
         typeof(MediatR.INotificationHandler < >),
         typeof(MediatR.IRequestHandler <,   >),
-        typeof(MediatR.IRequestHandler < >),
-        typeof(MediatR.IStreamRequestHandler <, >),
+        typeof(IRequestHandler < >),
+        typeof(IStreamRequestHandler <, >),
         typeof(IRequestExceptionHandler<,,>),
         typeof(IRequestExceptionAction<,>)
     ];

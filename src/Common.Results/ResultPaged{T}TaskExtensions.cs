@@ -60,7 +60,7 @@ public static partial class ResultPagedFunctionTaskExtensions
         try
         {
             var result = await resultTask;
-            return result.ThrowIfFailed<T>();
+            return result.ThrowIfFailed();
         }
         catch (TException)
         {

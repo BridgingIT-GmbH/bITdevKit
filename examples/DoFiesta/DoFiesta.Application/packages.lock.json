@@ -307,6 +307,18 @@
           "MimeKit": "[4.16.0, )"
         }
       },
+      "BridgingIT.DevKit.Application.Orchestrations": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.Hosting.Abstractions": "[10.0.5, )"
+        }
+      },
       "BridgingIT.DevKit.Application.Queueing": {
         "type": "Project",
         "dependencies": {
@@ -332,13 +344,14 @@
           "Polly": "[8.6.6, )",
           "Polly.Contrib.Simmy": "[0.3.0, )",
           "Scrutor": "[4.2.2, 5.0.0)",
-          "SharpCompress": "[0.44.5, 0.44.5]"
+          "SharpCompress": "[0.48.1, )"
         }
       },
       "BridgingIT.DevKit.Common.Abstractions": {
         "type": "Project",
         "dependencies": {
           "Ensure.That": "[10.1.0, )",
+          "FluentValidation": "[12.1.1, )",
           "Microsoft.Extensions.Configuration.Abstractions": "[10.0.5, )",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.5, )"
         }
@@ -780,9 +793,9 @@
       },
       "SharpCompress": {
         "type": "CentralTransitive",
-        "requested": "[0.44.5, 0.44.5]",
-        "resolved": "0.44.5",
-        "contentHash": "//rgXHGp1vVFK+2A75OKXseZM9Fq8NDkhuV9uf1NxUU4JQj6HDG9VRl51nghasteYF4/ub1Oe/o7Fnwpdj4t1g=="
+        "requested": "[0.48.1, )",
+        "resolved": "0.48.1",
+        "contentHash": "SqGaVniGG943Gph/gHhUQUiZPyC7y0tXZyMf0/B2oGsMav9dqs7JJOuUA+xOkwKYaWM2TM7aZQjNK91f4bX71A=="
       },
       "System.Linq.Dynamic.Core": {
         "type": "CentralTransitive",

@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 
+using System.Globalization;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
@@ -40,6 +41,22 @@ public class CoreModuleMapperRegister : IRegister
             .MapWith(src => src.Value);
         config.NewConfig<string, EmailAddress>()
             .MapWith(src => EmailAddress.Create(src));
+
+        config.NewConfig<PropertyBag, Dictionary<string, string>>()
+            .MapWith(src => src == null
+                ? new Dictionary<string, string>()
+                : src.ToDictionary(
+                    pair => pair.Key,
+                    pair => Convert.ToString(pair.Value, CultureInfo.InvariantCulture),
+                    StringComparer.OrdinalIgnoreCase));
+
+        config.NewConfig<Dictionary<string, string>, PropertyBag>()
+            .MapWith(src => src == null
+                ? new PropertyBag()
+                : new PropertyBag(src.ToDictionary(
+                    pair => pair.Key,
+                    pair => (object)pair.Value,
+                    StringComparer.OrdinalIgnoreCase)));
 
         // Register type converters for enumerations
         RegisterConverter<TodoStatus>(config);

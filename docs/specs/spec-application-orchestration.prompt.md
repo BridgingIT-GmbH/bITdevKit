@@ -21,7 +21,7 @@ Do not allow implementation yet.
 ```text
 Do not implement anything yet.
 
-Read the orchestration specification spec-application-orchestration.md and the orchestration implementation governance prompt completely.
+Read the specification [SPECIFICATION].md and the implementation governance prompt completely.
 
 Your task right now is architectural analysis only.
 
@@ -590,6 +590,10 @@ Run:
 Do not introduce new functionality.
 Focus only on correctness, consistency, cleanup and stabilization.
 ```
+
+---
+
+the new @docs\specs\spec-application-orchestration.md feature has been implemented now. please write developer usage focused documentation. it should not describe too much internals but more the usage of the orchestration feature, however it can have an Architecture section explaining the inner workings. The doc can be placed in ./docs. see @docs\features-queueing.md or @docs\features-results.md as guidance. make use of the mermaid skill for nice diagrams. the original plan for the feature can be found here: @docs\specs\spec-application-orchestration.md.
 
 ---
 

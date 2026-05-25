@@ -1,0 +1,1217 @@
+@page "/operations/orchestrations"
+@using System.Text.Json
+@using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen
+@using GenModels = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
+@using Microsoft.AspNetCore.Authorization
+@using KiotaApiException = Microsoft.Kiota.Abstractions.ApiException
+@inject BackendApiClient Api
+@inject NavigationManager Navigation
+@inject ISnackbar Snackbar
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+@attribute [RequireAuthentication]
+
+<PageTitle>DoFiesta - Operations Orchestrations</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 mb-6">
+    <MudPaper Class="pa-6 mb-4">
+        <div class="d-flex flex-wrap align-center gap-4">
+            <div>
+                <MudText Typo="Typo.h4" GutterBottom="true">Orchestrations</MudText>
+            </div>
+            <MudSpacer />
+            <MudSelect T="int?" Label="Auto refresh" Variant="Variant.Outlined" Margin="Margin.Dense" Value="autoRefreshIntervalSeconds" ValueChanged="OnAutoRefreshIntervalChanged" Style="min-width: 170px;">
+                <MudSelectItem T="int?" Value="@((int?)null)">Off</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)5)">5 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)15)">15 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)30)">30 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)60)">60 sec</MudSelectItem>
+            </MudSelect>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Filled.Refresh" OnClick="ReloadAsync" Disabled="@loading">
+                Refresh
+            </MudButton>
+        </div>
+    </MudPaper>
+
+    <MudGrid Class="mb-4">
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Total</MudText>
+                <MudText Typo="Typo.h4">@metrics.TotalCount</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Running</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Info">@metrics.RunningCount</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Waiting</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Warning">@metrics.WaitingCount</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Paused</MudText>
+                <MudText Typo="Typo.h4">@metrics.PausedCount</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Completed</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Success">@metrics.CompletedCount</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Problem</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Error">@(metrics.FailedCount + metrics.CancelledCount + metrics.TerminatedCount)</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    <MudPaper Class="pa-4 mb-4">
+        <MudGrid>
+            <MudItem xs="12" md="3">
+                <MudTextField @bind-Value="orchestrationNameFilter" Label="Orchestration name" Clearable="true" />
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudSelect T="string" Label="Status" @bind-Value="statusFilter">
+                    <MudSelectItem Value="@AllFilterValue">All</MudSelectItem>
+                    @foreach (var status in StatusOptions)
+                    {
+                        <MudSelectItem Value="@status">@status</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudTextField @bind-Value="stateFilter" Label="State" Clearable="true" />
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudTextField @bind-Value="correlationIdFilter" Label="Correlation Id" Clearable="true" />
+            </MudItem>
+            <MudItem xs="12" md="3">
+                <MudTextField @bind-Value="concurrencyKeyFilter" Label="Concurrency key" Clearable="true" />
+            </MudItem>
+        </MudGrid>
+
+        <MudDivider Class="my-4" />
+
+        <MudGrid>
+            <MudItem xs="12" md="2">
+                <MudDatePicker @bind-Date="startedFromFilter" Label="Started from" />
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudDatePicker @bind-Date="startedToFilter" Label="Started to" />
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudDatePicker @bind-Date="completedFromFilter" Label="Completed from" />
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudDatePicker @bind-Date="completedToFilter" Label="Completed to" />
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudSelect T="int" Label="Rows" @bind-Value="take">
+                    <MudSelectItem Value="25">25</MudSelectItem>
+                    <MudSelectItem Value="50">50</MudSelectItem>
+                    <MudSelectItem Value="100">100</MudSelectItem>
+                    <MudSelectItem Value="250">250</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudSelect T="string" Label="Sort" @bind-Value="sortBy">
+                    <MudSelectItem Value='@("StartedUtc")'>Started</MudSelectItem>
+                    <MudSelectItem Value='@("CompletedUtc")'>Completed</MudSelectItem>
+                    <MudSelectItem Value='@("LastUpdatedUtc")'>Last updated</MudSelectItem>
+                    <MudSelectItem Value='@("OrchestrationName")'>Name</MudSelectItem>
+                    <MudSelectItem Value='@("Status")'>Status</MudSelectItem>
+                    <MudSelectItem Value='@("CurrentState")'>State</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+        </MudGrid>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <MudSwitch T="bool" @bind-Value="sortDescending" Color="Color.Info" Label="Newest first" />
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.FilterAlt" OnClick="ReloadAsync" Disabled="@loading">
+                Apply
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Filled.Clear" OnClick="ResetFiltersAsync" Disabled="@loading">
+                Reset
+            </MudButton>
+        </div>
+    </MudPaper>
+
+    <MudPaper Class="pa-2 mb-4">
+        @if (!string.IsNullOrWhiteSpace(loadError))
+        {
+            <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="ma-2">@loadError</MudAlert>
+        }
+        else if (loading && instances.Count == 0)
+        {
+            <div class="pa-4">
+                <MudSkeleton Height="72px" Animation="Animation.Pulse" />
+                <MudSkeleton Height="72px" Animation="Animation.Pulse" Class="mt-2" />
+                <MudSkeleton Height="72px" Animation="Animation.Pulse" Class="mt-2" />
+            </div>
+        }
+        else if (instances.Count == 0)
+        {
+            <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined" Class="ma-2">
+                No orchestration instances matched the current filters.
+            </MudAlert>
+        }
+        else
+        {
+            <MudTable Items="@instances" Dense="true" Hover="true" Loading="@loading" LoadingProgressColor="Color.Info" Elevation="0">
+                <HeaderContent>
+                    <MudTh>Status</MudTh>
+                    <MudTh>Started</MudTh>
+                    <MudTh>Orchestration</MudTh>
+                    <MudTh>State</MudTh>
+                    <MudTh>Current activity</MudTh>
+                    <MudTh>Correlation</MudTh>
+                    <MudTh></MudTh>
+                </HeaderContent>
+                <RowTemplate Context="instance">
+                    <MudTd DataLabel="Status">
+                        <MudChip T="string" Color="@GetStatusColor(instance.Status)" Variant="Variant.Filled" Size="Size.Small">
+                            @DisplayValue(instance.Status)
+                        </MudChip>
+                    </MudTd>
+                    <MudTd DataLabel="Started">
+                        <MudTooltip Text="@FormatTimestamp(instance.StartedUtc)">
+                            <MudText Typo="Typo.body2">@FormatRelativeTimestamp(instance.LastUpdatedUtc)</MudText>
+                        </MudTooltip>
+                    </MudTd>
+                    <MudTd DataLabel="Orchestration">@DisplayValue(instance.OrchestrationName)</MudTd>
+                    <MudTd DataLabel="State">@DisplayValue(instance.CurrentState)</MudTd>
+                    <MudTd DataLabel="Current activity">@TrimValue(instance.CurrentActivity, 28)</MudTd>
+                    <MudTd DataLabel="Correlation">@TrimValue(instance.CorrelationId, 28)</MudTd>
+                    <MudTd>
+                        <div class="d-flex justify-end gap-1">
+                            <MudTooltip Text="Open details">
+                                <MudIconButton Icon="@Icons.Material.Filled.Info" Color="Color.Info" Size="Size.Small" Disabled="@(!instance.InstanceId.HasValue)" OnClick="@(() => SelectInstanceAsync(instance.InstanceId.GetValueOrDefault()))" />
+                            </MudTooltip>
+                            @if (CanResume(instance))
+                            {
+                                <MudTooltip Text="Resume">
+                                    <MudIconButton Icon="@Icons.Material.Filled.PlayCircleOutline" Color="Color.Success" Size="Size.Small" Disabled="@(!instance.InstanceId.HasValue)" OnClick="@(() => ResumeAsync(instance.InstanceId.GetValueOrDefault()))" />
+                                </MudTooltip>
+                            }
+                            else if (CanPause(instance))
+                            {
+                                <MudTooltip Text="Pause">
+                                    <MudIconButton Icon="@Icons.Material.Filled.PauseCircleOutline" Color="Color.Warning" Size="Size.Small" Disabled="@(!instance.InstanceId.HasValue)" OnClick="@(() => PauseAsync(instance.InstanceId.GetValueOrDefault()))" />
+                                </MudTooltip>
+                            }
+                            @if (CanArchive(instance))
+                            {
+                                <MudTooltip Text="Archive">
+                                    <MudIconButton Icon="@Icons.Material.Filled.Archive" Color="Color.Default" Size="Size.Small" Disabled="@(!instance.InstanceId.HasValue)" OnClick="@(() => ArchiveAsync(instance.InstanceId.GetValueOrDefault()))" />
+                                </MudTooltip>
+                            }
+                        </div>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        }
+    </MudPaper>
+
+    @* <MudText Typo="Typo.body2" Color="Color.Secondary">Showing @instances.Count instances.</MudText> *@
+</MudContainer>
+
+<MudDialog @bind-Visible="detailsDialogVisible" Options="new DialogOptions { CloseButton = true, FullWidth = true, MaxWidth = MaxWidth.ExtraLarge }">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Orchestration Details</MudText>
+    </TitleContent>
+    <DialogContent>
+        @if (detailsLoading)
+        {
+            <MudProgressCircular Indeterminate="true" Color="Color.Info" />
+        }
+        else if (selectedInstance is null)
+        {
+            <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined">No orchestration instance details are loaded.</MudAlert>
+        }
+        else
+        {
+            <MudTabs Rounded="true" ApplyEffectsToContainer="true">
+                <MudTabPanel Text="Overview">
+                    <MudGrid>
+                        <MudItem xs="12" md="7">
+                            <MudPaper Class="pa-4 mb-4">
+                                <MudText Typo="Typo.h6" GutterBottom="true">Overview</MudText>
+                                <MudText><strong>Name:</strong> @DisplayValue(selectedInstance.OrchestrationName)</MudText>
+                                <MudText><strong>Status:</strong> @DisplayValue(selectedInstance.Status)</MudText>
+                                <MudText><strong>State:</strong> @DisplayValue(selectedInstance.CurrentState)</MudText>
+                                <MudText><strong>Activity:</strong> @DisplayValue(selectedInstance.CurrentActivity)</MudText>
+                                <MudText><strong>Started:</strong> @FormatTimestamp(selectedInstance.StartedUtc)</MudText>
+                                <MudText><strong>Completed:</strong> @FormatTimestamp(selectedInstance.CompletedUtc)</MudText>
+                                <MudText><strong>Last Updated:</strong> @FormatTimestamp(selectedInstance.LastUpdatedUtc)</MudText>
+                                <MudText><strong>Correlation:</strong> @DisplayValue(selectedInstance.CorrelationId)</MudText>
+                                <MudText><strong>Concurrency:</strong> @DisplayValue(selectedInstance.ConcurrencyKey)</MudText>
+                            </MudPaper>
+                        </MudItem>
+                        <MudItem xs="12" md="5">
+                            <MudPaper Class="pa-4 mb-4">
+                                <MudText Typo="Typo.h6" GutterBottom="true">Operations</MudText>
+                                <MudTextField @bind-Value="actionReason" Label="Reason" Clearable="true" HelperText="Used for pause, cancel, and terminate operations." Class="mb-3" />
+                                <div class="d-flex flex-wrap gap-2">
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Filled.PauseCircleOutline" Disabled="@(!CanPause(selectedInstance) || !selectedInstance.InstanceId.HasValue)" OnClick="@(() => PauseAsync(selectedInstance.InstanceId.GetValueOrDefault()))">Pause</MudButton>
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Success" StartIcon="@Icons.Material.Filled.PlayCircleOutline" Disabled="@(!CanResume(selectedInstance) || !selectedInstance.InstanceId.HasValue)" OnClick="@(() => ResumeAsync(selectedInstance.InstanceId.GetValueOrDefault()))">Resume</MudButton>
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Filled.Cancel" Disabled="@(!CanStop(selectedInstance) || !selectedInstance.InstanceId.HasValue)" OnClick="@(() => CancelAsync(selectedInstance.InstanceId.GetValueOrDefault()))">Cancel</MudButton>
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Filled.StopCircle" Disabled="@(!CanStop(selectedInstance) || !selectedInstance.InstanceId.HasValue)" OnClick="@(() => TerminateAsync(selectedInstance.InstanceId.GetValueOrDefault()))">Terminate</MudButton>
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Filled.Archive" Disabled="@(!CanArchive(selectedInstance) || !selectedInstance.InstanceId.HasValue)" OnClick="@(() => ArchiveAsync(selectedInstance.InstanceId.GetValueOrDefault()))">Archive</MudButton>
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Warning" StartIcon="@Icons.Material.Filled.LockOpen" Disabled="@(!selectedInstance.InstanceId.HasValue)" OnClick="@(() => ReleaseLeaseAsync(selectedInstance.InstanceId.GetValueOrDefault()))">Release Lease</MudButton>
+                                    <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Filled.Restore" Disabled="@(!selectedInstance.InstanceId.HasValue)" OnClick="@(() => RequeueTimersAsync(selectedInstance.InstanceId.GetValueOrDefault()))">Requeue Timers</MudButton>
+                                </div>
+                            </MudPaper>
+                        </MudItem>
+                    </MudGrid>
+                </MudTabPanel>
+                <MudTabPanel Text="Signal">
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Manual Signal</MudText>
+                        <MudTextField @bind-Value="signalName" Label="Signal name" Clearable="true" Class="mb-3" />
+                        <MudTextField @bind-Value="signalIdempotencyKey" Label="Idempotency key" Clearable="true" Class="mb-3" />
+                        <MudTextField @bind-Value="signalPayloadJson" Label="Payload JSON" Clearable="true" Lines="8" Variant="Variant.Outlined" Class="mb-3" />
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Send" Disabled="@(string.IsNullOrWhiteSpace(signalName))" OnClick="SendSignalAsync">
+                            Send Signal
+                        </MudButton>
+                    </MudPaper>
+                </MudTabPanel>
+                <MudTabPanel Text="Diagram">
+                    <MudPaper Class="pa-4">
+                        <div class="d-flex flex-wrap align-center gap-2 mb-4">
+                            <MudText Typo="Typo.h6">Diagram</MudText>
+                        </div>
+
+                        @if (diagramLoading)
+                        {
+                            <MudProgressCircular Indeterminate="true" Color="Color.Info" />
+                        }
+                        else
+                        {
+                            @if (!string.IsNullOrWhiteSpace(diagramLoadError))
+                            {
+                                <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" Class="mb-4">@diagramLoadError</MudAlert>
+                            }
+
+                            <MudGrid>
+                                <MudItem xs="12">
+                                    <MudPaper Class="pa-4 mb-4" Outlined="true">
+                                        <MudText Typo="Typo.subtitle1" GutterBottom="true">Instance diagram</MudText>
+                                        <MudText Typo="Typo.caption" Class="mb-2 d-block">Rendered SVG</MudText>
+                                        @if (string.IsNullOrWhiteSpace(selectedInstanceDiagramSvg))
+                                        {
+                                            <MudText Typo="Typo.body2">No SVG preview is available for this orchestration.</MudText>
+                                        }
+                                        else
+                                        {
+                                            <MudPaper Class="pa-3 mb-4 orchestration-diagram-preview" Outlined="true">
+                                                @RenderSvgMarkup(selectedInstanceDiagramSvg)
+                                            </MudPaper>
+                                        }
+
+                                        <MudDivider Class="mb-3" />
+                                        <MudText Typo="Typo.caption" Class="mb-2 d-block">Mermaid source</MudText>
+                                        @if (string.IsNullOrWhiteSpace(selectedInstanceDiagram))
+                                        {
+                                            <MudText Typo="Typo.body2">No instance diagram text is available for this orchestration.</MudText>
+                                        }
+                                        else
+                                        {
+                                            <MudPaper Class="pa-3 mud-theme-surface" Style="max-height: 420px; overflow: auto;">
+                                                <pre class="orchestration-mermaid-block">@selectedInstanceDiagram</pre>
+                                            </MudPaper>
+                                        }
+                                    </MudPaper>
+                                </MudItem>
+                            </MudGrid>
+                        }
+                    </MudPaper>
+                </MudTabPanel>
+                <MudTabPanel Text="Context">
+                    @if (selectedContext is null)
+                    {
+                        <MudText Typo="Typo.body2">No context snapshot is available.</MudText>
+                    }
+                    else
+                    {
+                        <MudPaper Class="pa-4">
+                            <MudText Typo="Typo.body2"><strong>Snapshot:</strong> @FormatTimestamp(selectedContext.SnapshotUtc)</MudText>
+                            <MudText Typo="Typo.body2"><strong>Type:</strong> @DisplayValue(selectedContext.ContextType)</MudText>
+                            <MudText Typo="Typo.body2"><strong>Status:</strong> @DisplayValue(selectedContext.Status)</MudText>
+                            <MudText Typo="Typo.body2"><strong>State:</strong> @DisplayValue(selectedContext.CurrentState)</MudText>
+                            <MudDivider Class="my-3" />
+                            <MudText Typo="Typo.body2" Style="white-space: pre-wrap; font-family: Consolas, monospace;">@PrettyPrintJson(selectedContext.ContextJson)</MudText>
+                        </MudPaper>
+                    }
+                </MudTabPanel>
+                <MudTabPanel Text="History">
+                    @if (selectedHistory.Count == 0)
+                    {
+                        <MudText Typo="Typo.body2">No execution history is available.</MudText>
+                    }
+                    else
+                    {
+                        <MudTable Items="@selectedHistory" Dense="true" Hover="true" Elevation="0">
+                            <HeaderContent>
+                                <MudTh>When</MudTh>
+                                <MudTh>Event</MudTh>
+                                <MudTh>State</MudTh>
+                                <MudTh>Activity</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="item">
+                                <MudTd DataLabel="When">@FormatTimestamp(item.TimestampUtc)</MudTd>
+                                <MudTd DataLabel="Event">@DisplayValue(item.EventType)</MudTd>
+                                <MudTd DataLabel="State">@DisplayValue(item.State)</MudTd>
+                                <MudTd DataLabel="Activity">@TrimValue(item.Activity, 28)</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    }
+                </MudTabPanel>
+                <MudTabPanel Text="Signals">
+                    @if (selectedSignals.Count == 0)
+                    {
+                        <MudText Typo="Typo.body2">No signals are recorded.</MudText>
+                    }
+                    else
+                    {
+                        <MudTable Items="@selectedSignals" Dense="true" Hover="true" Elevation="0">
+                            <HeaderContent>
+                                <MudTh>Received</MudTh>
+                                <MudTh>Name</MudTh>
+                                <MudTh>Status</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="item">
+                                <MudTd DataLabel="Received">@FormatTimestamp(item.ReceivedUtc)</MudTd>
+                                <MudTd DataLabel="Name">@DisplayValue(item.SignalName)</MudTd>
+                                <MudTd DataLabel="Status">@DisplayValue(item.ProcessingStatus)</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                        <MudDivider Class="my-3" />
+                        <MudText Typo="Typo.caption">Latest payload</MudText>
+                        <MudText Typo="Typo.body2" Style="white-space: pre-wrap; font-family: Consolas, monospace;">@PrettyPrintJson(selectedSignals[0].PayloadJson)</MudText>
+                    }
+                </MudTabPanel>
+                <MudTabPanel Text="Timers">
+                    @if (selectedTimers.Count == 0)
+                    {
+                        <MudText Typo="Typo.body2">No timers are recorded.</MudText>
+                    }
+                    else
+                    {
+                        <MudTable Items="@selectedTimers" Dense="true" Hover="true" Elevation="0">
+                            <HeaderContent>
+                                <MudTh>Due</MudTh>
+                                <MudTh>Kind</MudTh>
+                                <MudTh>Status</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="item">
+                                <MudTd DataLabel="Due">@FormatTimestamp(item.DueUtc)</MudTd>
+                                <MudTd DataLabel="Kind">@DisplayValue(item.TimerKind)</MudTd>
+                                <MudTd DataLabel="Status">@DisplayValue(item.ProcessingStatus)</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    }
+                </MudTabPanel>
+            </MudTabs>
+        }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="CloseDetailsDialog">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    private const string AllFilterValue = "__all";
+    private static readonly string[] StatusOptions =
+    [
+        "Running",
+        "Waiting",
+        "Paused",
+        "Completed",
+        "Failed",
+        "Cancelled",
+        "Terminated",
+    ];
+
+    private readonly List<GenModels.OrchestrationInstanceModel> instances = [];
+    private readonly List<GenModels.OrchestrationHistoryModel> selectedHistory = [];
+    private readonly List<GenModels.OrchestrationSignalModel> selectedSignals = [];
+    private readonly List<GenModels.OrchestrationTimerModel> selectedTimers = [];
+    private GenModels.OrchestrationMetricsModel metrics = new();
+    private GenModels.OrchestrationInstanceModel selectedInstance;
+    private GenModels.OrchestrationContextSnapshotModel selectedContext;
+    private string selectedInstanceDiagram;
+    private string selectedInstanceDiagramSvg;
+    private bool loading;
+    private bool detailsLoading;
+    private bool diagramLoading;
+    private bool detailsDialogVisible;
+    private string loadError;
+    private string diagramLoadError;
+    private string orchestrationNameFilter = "TodoItemLifecycleOrchestration";
+    private string statusFilter = AllFilterValue;
+    private string stateFilter;
+    private string correlationIdFilter;
+    private string concurrencyKeyFilter;
+    private DateTime? startedFromFilter = DateTime.Today.AddDays(-7);
+    private DateTime? startedToFilter = DateTime.Today;
+    private DateTime? completedFromFilter;
+    private DateTime? completedToFilter;
+    private int take = 50;
+    private string sortBy = "StartedUtc";
+    private bool sortDescending = true;
+    private string actionReason = "Investigating orchestration flow";
+    private string signalName;
+    private string signalIdempotencyKey;
+    private string signalPayloadJson = "{}";
+    private int? autoRefreshIntervalSeconds = 15;
+    private PeriodicTimer autoRefreshTimer;
+    private CancellationTokenSource autoRefreshCancellation;
+    private bool isDisposed;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var saved = await this.JS.InvokeAsync<string>("localStorage.getItem", "dofiesta:orchestrations:autoRefreshInterval");
+            if (!string.IsNullOrWhiteSpace(saved) && int.TryParse(saved, out var parsed) && parsed >= 0)
+            {
+                this.autoRefreshIntervalSeconds = parsed == 0 ? null : parsed;
+            }
+        }
+        catch
+        {
+        }
+
+        this.StartAutoRefresh();
+        await this.LoadAsync();
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        this.isDisposed = true;
+        this.StopAutoRefresh();
+        return ValueTask.CompletedTask;
+    }
+
+    private Task ReloadAsync()
+    {
+        return this.LoadAsync();
+    }
+
+    private async Task ResetFiltersAsync()
+    {
+        this.orchestrationNameFilter = "TodoItemLifecycleOrchestration";
+        this.statusFilter = AllFilterValue;
+        this.stateFilter = null;
+        this.correlationIdFilter = null;
+        this.concurrencyKeyFilter = null;
+        this.startedFromFilter = DateTime.Today.AddDays(-7);
+        this.startedToFilter = DateTime.Today;
+        this.completedFromFilter = null;
+        this.completedToFilter = null;
+        this.take = 50;
+        this.sortBy = "StartedUtc";
+        this.sortDescending = true;
+        await this.LoadAsync();
+    }
+
+    private async Task OnAutoRefreshIntervalChanged(int? value)
+    {
+        this.autoRefreshIntervalSeconds = value;
+        this.StartAutoRefresh();
+
+        try
+        {
+            await this.JS.InvokeVoidAsync(
+                "localStorage.setItem",
+                "dofiesta:orchestrations:autoRefreshInterval",
+                value.HasValue && value.Value > 0 ? value.Value.ToString() : "0");
+        }
+        catch
+        {
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        this.loading = true;
+        this.loadError = null;
+
+        try
+        {
+            var instancesTask = this.LoadInstancesAsync();
+            var metricsTask = this.LoadMetricsAsync();
+
+            await Task.WhenAll(instancesTask, metricsTask);
+
+            this.metrics = metricsTask.Result ?? new GenModels.OrchestrationMetricsModel();
+
+            this.instances.Clear();
+            this.instances.AddRange(instancesTask.Result ?? []);
+
+            if (this.selectedInstance is not null)
+            {
+                var selectedId = this.selectedInstance.InstanceId;
+                var refreshed = selectedId.HasValue ? this.instances.FirstOrDefault(i => i.InstanceId == selectedId) : null;
+                if (refreshed is null)
+                {
+                    this.ClearSelection();
+                }
+                else
+                {
+                    await this.LoadDetailsAsync(refreshed.InstanceId.GetValueOrDefault());
+                }
+            }
+        }
+        catch (KiotaApiException ex)
+        {
+            this.loadError = ex.Message;
+            this.ShowError("Failed to load orchestration data", ex);
+        }
+        catch (Exception ex)
+        {
+            this.loadError = ex.Message;
+            this.ShowError("Failed to load orchestration data", ex);
+        }
+        finally
+        {
+            this.loading = false;
+            await this.InvokeSafeStateHasChangedAsync();
+        }
+    }
+
+    private async Task SelectInstanceAsync(Guid instanceId)
+    {
+        this.detailsDialogVisible = true;
+        await this.LoadDetailsAsync(instanceId);
+        await this.InvokeSafeStateHasChangedAsync();
+    }
+
+    private void CloseDetailsDialog()
+    {
+        this.detailsDialogVisible = false;
+    }
+
+    private async Task LoadDetailsAsync(Guid instanceId)
+    {
+        this.detailsLoading = true;
+
+        try
+        {
+            var detailTask = this.Api.Api._system.Orchestrations[instanceId].GetAsync();
+            var contextTask = this.Api.Api._system.Orchestrations[instanceId].Context.GetAsync();
+            var historyTask = this.Api.Api._system.Orchestrations[instanceId].History.GetAsync();
+            var signalsTask = this.Api.Api._system.Orchestrations[instanceId].Signals.GetAsync();
+            var timersTask = this.Api.Api._system.Orchestrations[instanceId].Timers.GetAsync();
+
+            await Task.WhenAll(detailTask, contextTask, historyTask, signalsTask, timersTask);
+
+            this.selectedInstance = detailTask.Result;
+            this.selectedContext = contextTask.Result;
+
+            this.selectedHistory.Clear();
+            this.selectedHistory.AddRange(historyTask.Result ?? []);
+
+            this.selectedSignals.Clear();
+            this.selectedSignals.AddRange(signalsTask.Result ?? []);
+
+            this.selectedTimers.Clear();
+            this.selectedTimers.AddRange(timersTask.Result ?? []);
+
+            if (this.selectedInstance is not null)
+            {
+                this.signalName ??= this.selectedInstance.Status?.Equals("Waiting", StringComparison.OrdinalIgnoreCase) == true
+                    ? "TodoUpdated"
+                    : string.Empty;
+
+                await this.LoadDiagramAsync(instanceId, this.selectedInstance.OrchestrationName);
+            }
+        }
+        catch (Exception ex)
+        {
+            this.ShowError("Failed to load orchestration details", ex);
+        }
+        finally
+        {
+            this.detailsLoading = false;
+        }
+    }
+
+    private async Task PauseAsync(Guid instanceId)
+    {
+        await this.ExecuteInstanceActionAsync(
+            () => this.Api.Api._system.Orchestrations[instanceId].Pause.PostAsync(new GenModels.ReasonRequest
+            {
+                Reason = this.GetReason("Paused from the DoFiesta operations dashboard."),
+            }),
+            "Orchestration paused.");
+    }
+
+    private async Task ResumeAsync(Guid instanceId)
+    {
+        await this.ExecuteInstanceActionAsync(
+            () => this.Api.Api._system.Orchestrations[instanceId].Resume.PostAsync(),
+            "Orchestration resumed.");
+    }
+
+    private async Task CancelAsync(Guid instanceId)
+    {
+        await this.ExecuteInstanceActionAsync(
+            () => this.Api.Api._system.Orchestrations[instanceId].Cancel.PostAsync(new GenModels.ReasonRequest
+            {
+                Reason = this.GetReason("Cancelled from the DoFiesta operations dashboard."),
+            }),
+            "Orchestration cancelled.");
+    }
+
+    private async Task TerminateAsync(Guid instanceId)
+    {
+        await this.ExecuteInstanceActionAsync(
+            () => this.Api.Api._system.Orchestrations[instanceId].Terminate.PostAsync(new GenModels.ReasonRequest
+            {
+                Reason = this.GetReason("Terminated from the DoFiesta operations dashboard."),
+            }),
+            "Orchestration terminated.");
+    }
+
+    private async Task ArchiveAsync(Guid instanceId)
+    {
+        await this.ExecuteInstanceActionAsync(
+            () => this.Api.Api._system.Orchestrations[instanceId].Archive.PostAsync(),
+            "Orchestration archived.");
+    }
+
+    private async Task ReleaseLeaseAsync(Guid instanceId)
+    {
+        await this.ExecuteInstanceActionAsync(
+            () => this.Api.Api._system.Orchestrations[instanceId].Repair.ReleaseLease.PostAsync(),
+            "Orchestration lease released.");
+    }
+
+    private async Task RequeueTimersAsync(Guid instanceId)
+    {
+        await this.ExecuteInstanceActionAsync(
+            () => this.Api.Api._system.Orchestrations[instanceId].Repair.RequeueTimers.PostAsync(),
+            "Orchestration timers requeued.");
+    }
+
+    private async Task SendSignalAsync()
+    {
+        if (this.selectedInstance is null || string.IsNullOrWhiteSpace(this.signalName))
+        {
+            return;
+        }
+
+        await this.ExecuteInstanceActionAsync(
+            () => this.Api.Api._system.Orchestrations[this.selectedInstance.InstanceId.GetValueOrDefault()].Signal.PostAsync(
+                new GenModels.OrchestrationSignalRequest
+                {
+                    SignalName = this.signalName?.Trim(),
+                    IdempotencyKey = string.IsNullOrWhiteSpace(this.signalIdempotencyKey) ? null : this.signalIdempotencyKey.Trim(),
+                    Payload = this.CreateSignalPayload(this.signalPayloadJson),
+                }),
+            "Signal delivered.");
+    }
+
+    private async Task ExecuteInstanceActionAsync(Func<Task<string>> action, string successMessage)
+    {
+        try
+        {
+            await action();
+            this.Snackbar.Add(successMessage, Severity.Success);
+            await this.LoadAsync();
+        }
+        catch (KiotaApiException ex)
+        {
+            this.ShowError(successMessage, ex);
+        }
+        catch (Exception ex)
+        {
+            this.ShowError(successMessage, ex);
+        }
+    }
+
+    private async Task<IReadOnlyList<GenModels.OrchestrationInstanceModel>> LoadInstancesAsync()
+    {
+        return await this.Api.Api._system.Orchestrations
+            .WithUrl(this.BuildAbsoluteUrl(this.BuildOrchestrationsUrl()))
+            .GetAsync() ?? [];
+    }
+
+    private async Task<GenModels.OrchestrationMetricsModel> LoadMetricsAsync()
+    {
+        return await this.Api.Api._system.Orchestrations.Metrics
+            .WithUrl(this.BuildAbsoluteUrl(this.BuildMetricsUrl()))
+            .GetAsync() ?? new GenModels.OrchestrationMetricsModel();
+    }
+
+    private async Task RefreshDiagramAsync()
+    {
+        if (this.selectedInstance?.InstanceId is not Guid instanceId)
+        {
+            return;
+        }
+
+        await this.LoadDiagramAsync(instanceId, this.selectedInstance.OrchestrationName);
+        await this.InvokeSafeStateHasChangedAsync();
+    }
+
+    private async Task CopyDiagramAsync(string diagram, string label)
+    {
+        if (string.IsNullOrWhiteSpace(diagram))
+        {
+            return;
+        }
+
+        try
+        {
+            await this.JS.InvokeVoidAsync("navigator.clipboard.writeText", diagram);
+            this.Snackbar.Add($"{label} copied to clipboard.", Severity.Success);
+        }
+        catch (Exception ex)
+        {
+            this.ShowError($"Failed to copy {label.ToLowerInvariant()}", ex);
+        }
+    }
+
+    private Task CopyInstanceDiagramAsync()
+    {
+        return this.CopyDiagramAsync(this.selectedInstanceDiagram, "Instance diagram");
+    }
+
+    private async Task LoadDiagramAsync(Guid instanceId, string orchestrationName)
+    {
+        this.diagramLoading = true;
+        this.diagramLoadError = null;
+        this.selectedInstanceDiagram = null;
+        this.selectedInstanceDiagramSvg = null;
+
+        try
+        {
+            var instanceTask = this.TryGetDiagramAsync(
+                () => this.Api.Api._system.Orchestrations[instanceId].Diagram.GetAsync(),
+                "Instance Mermaid diagram");
+            var instanceSvgTask = this.TryGetDiagramAsync(
+                () => this.TryReadDiagramStreamAsync(() => this.Api.Api._system.Orchestrations[instanceId].Diagram.Svg.GetAsync()),
+                "Instance SVG diagram");
+
+            await Task.WhenAll(instanceTask, instanceSvgTask);
+
+            var instanceResult = await instanceTask;
+            var instanceSvgResult = await instanceSvgTask;
+
+            this.selectedInstanceDiagram = instanceResult.Text;
+            this.selectedInstanceDiagramSvg = instanceSvgResult.Text;
+
+            var errors = new[] { instanceResult.Error, instanceSvgResult.Error }
+                .Where(error => !string.IsNullOrWhiteSpace(error))
+                .ToArray();
+
+            this.diagramLoadError = errors.Length == 0 ? null : string.Join(Environment.NewLine, errors);
+        }
+        finally
+        {
+            this.diagramLoading = false;
+        }
+    }
+
+    private async Task<(string Text, string Error)> TryGetDiagramAsync(Func<Task<string>> action, string label)
+    {
+        try
+        {
+            return (await action(), null);
+        }
+        catch (Exception ex)
+        {
+            return (null, $"{label}: {ex.Message}");
+        }
+    }
+
+    private async Task<string> TryReadDiagramStreamAsync(Func<Task<global::System.IO.Stream>> action)
+    {
+        await using var stream = await action();
+        if (stream is null)
+        {
+            return null;
+        }
+
+        using var reader = new global::System.IO.StreamReader(stream);
+        return await reader.ReadToEndAsync();
+    }
+
+    private string BuildOrchestrationsUrl()
+    {
+        var query = this.ToQueryString(this.BuildQueryParameters());
+        return string.IsNullOrWhiteSpace(query) ? "/api/_system/orchestrations" : $"/api/_system/orchestrations?{query}";
+    }
+
+    private string BuildMetricsUrl()
+    {
+        var query = this.ToQueryString(this.BuildQueryParameters(includePaging: false, includeCorrelation: false, includeSorting: false));
+        return string.IsNullOrWhiteSpace(query) ? "/api/_system/orchestrations/metrics" : $"/api/_system/orchestrations/metrics?{query}";
+    }
+
+    private string BuildAbsoluteUrl(string relativeUrl)
+    {
+        return new Uri(new Uri(this.Navigation.BaseUri), relativeUrl.TrimStart('/')).ToString();
+    }
+
+    private string ToQueryString(Dictionary<string, object> queryParameters)
+    {
+        return string.Join("&", queryParameters.Select(pair => $"{Uri.EscapeDataString(pair.Key)}={Uri.EscapeDataString(pair.Value?.ToString() ?? string.Empty)}"));
+    }
+
+    private Dictionary<string, object> BuildQueryParameters(bool includePaging = true, bool includeCorrelation = true, bool includeSorting = true)
+    {
+        var query = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+
+        this.AddQuery(query, "orchestrationName", this.orchestrationNameFilter);
+        this.AddQuery(query, "states", this.stateFilter);
+
+        if (!string.Equals(this.statusFilter, AllFilterValue, StringComparison.Ordinal))
+        {
+            this.AddQuery(query, "statuses", this.statusFilter);
+        }
+
+        if (includeCorrelation)
+        {
+            this.AddQuery(query, "correlationId", this.correlationIdFilter);
+            this.AddQuery(query, "concurrencyKey", this.concurrencyKeyFilter);
+        }
+
+        this.AddQuery(query, "startedFrom", this.ToStartDateOffset(this.startedFromFilter)?.ToString("O"));
+        this.AddQuery(query, "startedTo", this.ToEndDateOffset(this.startedToFilter)?.ToString("O"));
+        this.AddQuery(query, "completedFrom", this.ToStartDateOffset(this.completedFromFilter)?.ToString("O"));
+        this.AddQuery(query, "completedTo", this.ToEndDateOffset(this.completedToFilter)?.ToString("O"));
+
+        if (includePaging)
+        {
+            query["take"] = this.take;
+            query["skip"] = 0;
+        }
+
+        if (includeSorting)
+        {
+            this.AddQuery(query, "sortBy", this.sortBy);
+            query["sortDescending"] = this.sortDescending;
+        }
+
+        return query;
+    }
+
+    private void AddQuery(Dictionary<string, object> query, string name, string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return;
+        }
+
+        query[name] = value;
+    }
+
+    private DateTimeOffset? ToStartDateOffset(DateTime? value)
+    {
+        if (!value.HasValue)
+        {
+            return null;
+        }
+
+        var local = DateTime.SpecifyKind(value.Value.Date, DateTimeKind.Local);
+        return new DateTimeOffset(local);
+    }
+
+    private DateTimeOffset? ToEndDateOffset(DateTime? value)
+    {
+        if (!value.HasValue)
+        {
+            return null;
+        }
+
+        var local = DateTime.SpecifyKind(value.Value.Date.AddDays(1).AddTicks(-1), DateTimeKind.Local);
+        return new DateTimeOffset(local);
+    }
+
+    private GenModels.OrchestrationSignalRequest.OrchestrationSignalRequest_payload CreateSignalPayload(string json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return null;
+        }
+
+        using var document = JsonDocument.Parse(json);
+        if (document.RootElement.ValueKind != JsonValueKind.Object)
+        {
+            throw new JsonException("The signal payload must be a JSON object when sent through the Kiota client.");
+        }
+
+        return new GenModels.OrchestrationSignalRequest.OrchestrationSignalRequest_payload
+        {
+            OrchestrationSignalRequestPayloadMember1 = new GenModels.OrchestrationSignalRequest_payloadMember1
+            {
+                AdditionalData = this.ConvertJsonObjectToAdditionalData(document.RootElement),
+            },
+        };
+    }
+
+    private Dictionary<string, object> ConvertJsonObjectToAdditionalData(System.Text.Json.JsonElement element)
+    {
+        return element.EnumerateObject().ToDictionary(
+            property => property.Name,
+            property => this.ConvertJsonElementToObject(property.Value));
+    }
+
+    private object ConvertJsonElementToObject(System.Text.Json.JsonElement element)
+    {
+        return element.ValueKind switch
+        {
+            JsonValueKind.Object => this.ConvertJsonObjectToAdditionalData(element),
+            JsonValueKind.Array => element.EnumerateArray().Select(this.ConvertJsonElementToObject).ToList(),
+            JsonValueKind.String => element.GetString(),
+            JsonValueKind.True => true,
+            JsonValueKind.False => false,
+            JsonValueKind.Null => null,
+            JsonValueKind.Number when element.TryGetInt32(out var intValue) => intValue,
+            JsonValueKind.Number when element.TryGetInt64(out var longValue) => longValue,
+            JsonValueKind.Number when element.TryGetDecimal(out var decimalValue) => decimalValue,
+            JsonValueKind.Number => element.GetDouble(),
+            _ => element.GetRawText(),
+        };
+    }
+
+    private void ShowError(string context, Exception ex)
+    {
+        this.Snackbar.Add($"{context}: {ex.Message}", Severity.Error);
+    }
+
+    private string GetReason(string fallback)
+    {
+        return string.IsNullOrWhiteSpace(this.actionReason) ? fallback : this.actionReason.Trim();
+    }
+
+    private void ClearSelection()
+    {
+        this.selectedInstance = null;
+        this.selectedContext = null;
+        this.selectedInstanceDiagram = null;
+        this.selectedInstanceDiagramSvg = null;
+        this.diagramLoadError = null;
+        this.selectedHistory.Clear();
+        this.selectedSignals.Clear();
+        this.selectedTimers.Clear();
+    }
+
+    private global::Microsoft.AspNetCore.Components.MarkupString RenderSvgMarkup(string svg)
+    {
+        return new global::Microsoft.AspNetCore.Components.MarkupString(svg ?? string.Empty);
+    }
+
+    private bool CanPause(GenModels.OrchestrationInstanceModel instance)
+    {
+        return instance is not null
+            && !this.IsTerminal(instance.Status)
+            && !string.Equals(instance.Status, "Paused", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool CanResume(GenModels.OrchestrationInstanceModel instance)
+    {
+        return string.Equals(instance?.Status, "Paused", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool CanStop(GenModels.OrchestrationInstanceModel instance)
+    {
+        return instance is not null && !this.IsTerminal(instance.Status);
+    }
+
+    private bool CanArchive(GenModels.OrchestrationInstanceModel instance)
+    {
+        return instance is not null && this.IsTerminal(instance.Status);
+    }
+
+    private bool IsTerminal(string status)
+    {
+        return string.Equals(status, "Completed", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(status, "Failed", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(status, "Cancelled", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(status, "Terminated", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private Color GetStatusColor(string status)
+    {
+        if (string.Equals(status, "Running", StringComparison.OrdinalIgnoreCase))
+        {
+            return Color.Info;
+        }
+
+        if (string.Equals(status, "Waiting", StringComparison.OrdinalIgnoreCase))
+        {
+            return Color.Warning;
+        }
+
+        if (string.Equals(status, "Completed", StringComparison.OrdinalIgnoreCase))
+        {
+            return Color.Success;
+        }
+
+        if (string.Equals(status, "Failed", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(status, "Cancelled", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(status, "Terminated", StringComparison.OrdinalIgnoreCase))
+        {
+            return Color.Error;
+        }
+
+        return Color.Default;
+    }
+
+    private string DisplayValue(string value)
+    {
+        return string.IsNullOrWhiteSpace(value) ? "-" : value;
+    }
+
+    private string TrimValue(string value, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(value) || value.Length <= maxLength)
+        {
+            return this.DisplayValue(value);
+        }
+
+        return value[..maxLength] + "...";
+    }
+
+    private string FormatTimestamp(DateTime? value)
+    {
+        return value.HasValue ? value.Value.ToLocalTime().ToString("g") : "-";
+    }
+
+    private string FormatTimestamp(DateTimeOffset? value)
+    {
+        return value.HasValue ? value.Value.LocalDateTime.ToString("g") : "-";
+    }
+
+    private string FormatRelativeTimestamp(DateTimeOffset? value)
+    {
+        if (!value.HasValue)
+        {
+            return "-";
+        }
+
+        var span = DateTimeOffset.UtcNow - value.Value.ToUniversalTime();
+        if (span.TotalMinutes < 1)
+        {
+            return "just now";
+        }
+
+        if (span.TotalHours < 1)
+        {
+            return $"{Math.Max(1, (int)span.TotalMinutes)} min ago";
+        }
+
+        if (span.TotalDays < 1)
+        {
+            return $"{Math.Max(1, (int)span.TotalHours)} h ago";
+        }
+
+        return $"{Math.Max(1, (int)span.TotalDays)} d ago";
+    }
+
+    private string PrettyPrintJson(string json)
+    {
+        if (string.IsNullOrWhiteSpace(json))
+        {
+            return "-";
+        }
+
+        try
+        {
+            using var document = JsonDocument.Parse(json);
+            return JsonSerializer.Serialize(document.RootElement, new JsonSerializerOptions { WriteIndented = true });
+        }
+        catch
+        {
+            return json;
+        }
+    }
+
+    private void StartAutoRefresh()
+    {
+        this.StopAutoRefresh();
+
+        if (!this.autoRefreshIntervalSeconds.HasValue || this.autoRefreshIntervalSeconds.Value <= 0)
+        {
+            return;
+        }
+
+        this.autoRefreshCancellation = new CancellationTokenSource();
+        this.autoRefreshTimer = new PeriodicTimer(TimeSpan.FromSeconds(this.autoRefreshIntervalSeconds.Value));
+        _ = this.RunAutoRefreshAsync(this.autoRefreshTimer, this.autoRefreshCancellation.Token);
+    }
+
+    private void StopAutoRefresh()
+    {
+        if (this.autoRefreshCancellation is not null)
+        {
+            this.autoRefreshCancellation.Cancel();
+            this.autoRefreshCancellation.Dispose();
+            this.autoRefreshCancellation = null;
+        }
+
+        this.autoRefreshTimer?.Dispose();
+        this.autoRefreshTimer = null;
+    }
+
+    private async Task RunAutoRefreshAsync(PeriodicTimer timer, CancellationToken cancellationToken)
+    {
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                if (!this.loading && !this.detailsLoading)
+                {
+                    await this.LoadAsync();
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+    }
+
+    private Task InvokeSafeStateHasChangedAsync()
+    {
+        return this.isDisposed ? Task.CompletedTask : this.InvokeAsync(this.StateHasChanged);
+    }
+
+}
+
+<style>
+    .orchestration-mermaid-block {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family: Consolas, "Cascadia Mono", monospace;
+        font-size: 0.85rem;
+        line-height: 1.45;
+    }
+
+    .orchestration-diagram-preview {
+        min-height: 280px;
+        max-height: 420px;
+        overflow: auto;
+        background: linear-gradient(180deg, rgba(24, 36, 48, 0.04), rgba(24, 36, 48, 0.01));
+    }
+
+    .orchestration-diagram-preview svg {
+        display: block;
+        min-width: 100%;
+        height: auto;
+    }
+</style>

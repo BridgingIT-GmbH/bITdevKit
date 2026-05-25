@@ -7,8 +7,10 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Locations;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logentries;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Metrics;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Modules;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Notifications;
+using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Orchestrations;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models;
 using Microsoft.Kiota.Abstractions.Extensions;
@@ -57,6 +59,11 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system
         {
             get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.MessagingRequestBuilder(PathParameters, RequestAdapter);
         }
+        /// <summary>The metrics property</summary>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Metrics.MetricsRequestBuilder Metrics
+        {
+            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Metrics.MetricsRequestBuilder(PathParameters, RequestAdapter);
+        }
         /// <summary>The modules property</summary>
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Modules.ModulesRequestBuilder Modules
         {
@@ -66,6 +73,11 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Notifications.NotificationsRequestBuilder Notifications
         {
             get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Notifications.NotificationsRequestBuilder(PathParameters, RequestAdapter);
+        }
+        /// <summary>The orchestrations property</summary>
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Orchestrations.OrchestrationsRequestBuilder Orchestrations
+        {
+            get => new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Orchestrations.OrchestrationsRequestBuilder(PathParameters, RequestAdapter);
         }
         /// <summary>The queueing property</summary>
         public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queueing.QueueingRequestBuilder Queueing

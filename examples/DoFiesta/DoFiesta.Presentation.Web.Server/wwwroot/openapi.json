@@ -639,6 +639,1202 @@
         }
       }
     },
+    "/api/_system/orchestrations/definitions": {
+      "get": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "List orchestration definitions",
+        "description": "Retrieves registered orchestration definition names.",
+        "operationId": "_System.Orchestrations.GetDefinitions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/definitions/{name}/diagram": {
+      "get": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Get orchestration definition diagram",
+        "description": "Retrieves Mermaid-compatible state diagram text for a registered orchestration definition.",
+        "operationId": "_System.Orchestrations.GetDefinitionDiagram",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/definitions/{name}/diagram/svg": {
+      "get": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Get orchestration definition SVG diagram",
+        "description": "Retrieves rendered SVG markup for a registered orchestration definition.",
+        "operationId": "_System.Orchestrations.GetDefinitionDiagramSvg",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "image/svg+xml": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations": {
+      "get": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "List orchestration instances",
+        "description": "Retrieves persisted orchestration instances with optional operational filters.",
+        "operationId": "_System.Orchestrations.GetInstances",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrchestrationInstanceModel"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Purge orchestration data",
+        "description": "Purges retained orchestration data by age and optional status filters.",
+        "operationId": "_System.Orchestrations.Purge",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/metrics": {
+      "get": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Get orchestration metrics",
+        "description": "Retrieves persisted orchestration metrics for dashboards and support tooling.",
+        "operationId": "_System.Orchestrations.GetMetrics",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationMetricsModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/{instanceId}": {
+      "get": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Get orchestration details",
+        "description": "Retrieves a single persisted orchestration instance.",
+        "operationId": "_System.Orchestrations.GetInstance",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationInstanceModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/{instanceId}/context": {
+      "get": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Get orchestration context",
+        "description": "Retrieves the latest persisted orchestration context snapshot.",
+        "operationId": "_System.Orchestrations.GetContext",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationContextSnapshotModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/{instanceId}/history": {
+      "get": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Get orchestration history",
+        "description": "Retrieves persisted execution history for an orchestration instance.",
+        "operationId": "_System.Orchestrations.GetHistory",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrchestrationHistoryModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/{instanceId}/signals": {
+      "get": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Get orchestration signals",
+        "description": "Retrieves persisted signal records for an orchestration instance.",
+        "operationId": "_System.Orchestrations.GetSignals",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrchestrationSignalModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/{instanceId}/timers": {
+      "get": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Get orchestration timers",
+        "description": "Retrieves persisted timer records for an orchestration instance.",
+        "operationId": "_System.Orchestrations.GetTimers",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrchestrationTimerModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/{instanceId}/diagram": {
+      "get": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Get orchestration instance diagram",
+        "description": "Retrieves Mermaid-compatible state diagram text for a persisted orchestration instance.",
+        "operationId": "_System.Orchestrations.GetInstanceDiagram",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/{instanceId}/diagram/svg": {
+      "get": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Get orchestration instance SVG diagram",
+        "description": "Retrieves rendered SVG markup for a persisted orchestration instance.",
+        "operationId": "_System.Orchestrations.GetInstanceDiagramSvg",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "image/svg+xml": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/{instanceId}/signal": {
+      "post": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Deliver an orchestration signal",
+        "description": "Persists and delivers a signal for an orchestration instance.",
+        "operationId": "_System.Orchestrations.Signal",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrchestrationSignalRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/{instanceId}/pause": {
+      "post": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Pause an orchestration",
+        "description": "Pauses a non-terminal orchestration instance.",
+        "operationId": "_System.Orchestrations.Pause",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/{instanceId}/resume": {
+      "post": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Resume an orchestration",
+        "description": "Resumes a previously paused orchestration instance.",
+        "operationId": "_System.Orchestrations.Resume",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/{instanceId}/cancel": {
+      "post": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Cancel an orchestration",
+        "description": "Cancels a non-terminal orchestration instance.",
+        "operationId": "_System.Orchestrations.Cancel",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/{instanceId}/terminate": {
+      "post": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Terminate an orchestration",
+        "description": "Terminates a non-terminal orchestration instance.",
+        "operationId": "_System.Orchestrations.Terminate",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/{instanceId}/archive": {
+      "post": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Archive an orchestration",
+        "description": "Archives a terminal orchestration instance.",
+        "operationId": "_System.Orchestrations.Archive",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/{instanceId}/repair/release-lease": {
+      "post": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Release an orchestration lease",
+        "description": "Releases an active lease for a stuck orchestration instance.",
+        "operationId": "_System.Orchestrations.ReleaseLease",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/orchestrations/{instanceId}/repair/requeue-timers": {
+      "post": {
+        "tags": [
+          "_System.Orchestrations"
+        ],
+        "summary": "Requeue orchestration timers",
+        "description": "Requeues persisted timers for a stuck orchestration instance.",
+        "operationId": "_System.Orchestrations.RequeueTimers",
+        "parameters": [
+          {
+            "name": "instanceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/_system/locations": {
       "get": {
         "tags": [
@@ -5338,10 +6534,561 @@
           }
         }
       }
+    },
+    "/api/_system/metrics": {
+      "get": {
+        "tags": [
+          "_System.Metrics"
+        ],
+        "summary": "_System.Metrics.Get",
+        "operationId": "_System.Metrics.Get",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/metrics/bdk": {
+      "get": {
+        "tags": [
+          "_System.Metrics"
+        ],
+        "summary": "_System.Metrics.GetBdk",
+        "operationId": "_System.Metrics.GetBdk",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetricsSnapshotModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/metrics/dotnet": {
+      "get": {
+        "tags": [
+          "_System.Metrics"
+        ],
+        "summary": "_System.Metrics.GetDotNet",
+        "operationId": "_System.Metrics.GetDotNet",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DotNetMetricsSnapshotModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/metrics/aspnet": {
+      "get": {
+        "tags": [
+          "_System.Metrics"
+        ],
+        "summary": "_System.Metrics.GetAspNet",
+        "operationId": "_System.Metrics.GetAspNet",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AspNetMetricsSnapshotModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/metrics/aspnet/routes": {
+      "get": {
+        "tags": [
+          "_System.Metrics"
+        ],
+        "summary": "_System.Metrics.GetAspNetRoutes",
+        "operationId": "_System.Metrics.GetAspNetRoutes",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AspNetRouteMetricsSnapshotModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/metrics/overview": {
+      "get": {
+        "tags": [
+          "_System.Metrics"
+        ],
+        "summary": "_System.Metrics.GetOverview",
+        "operationId": "_System.Metrics.GetOverview",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetricsOverviewSnapshotModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "AspNetMetricsSnapshotModel": {
+        "type": "object",
+        "properties": {
+          "totalRequests": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "trackedRouteCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "activeRequests": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "maxObservedConcurrentRequests": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "failedRequests": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "failureRatePercent": {
+            "type": "number",
+            "format": "double"
+          },
+          "averageLatencyMs": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalLatencyMs": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "requestsPerMinute": {
+            "type": "number",
+            "format": "double"
+          },
+          "status1xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status2xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status3xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status4xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status5xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "lastRequestAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "capturedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "processStartedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "uptimeSeconds": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "AspNetRouteMetricsModel": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "route": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "requestCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status1xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status2xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status3xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status4xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status5xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "failureCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "failureRatePercent": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalLatencyMs": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "averageLatencyMs": {
+            "type": "number",
+            "format": "double"
+          },
+          "lastRequestAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "AspNetRouteMetricsSnapshotModel": {
+        "type": "object",
+        "properties": {
+          "trackedRouteCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "routes": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/AspNetRouteMetricsModel"
+            }
+          },
+          "capturedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "processStartedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "uptimeSeconds": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "BdkFeatureSnapshotModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "counters": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          "current": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          "durations": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/BdkHistogramSnapshotModel"
+            }
+          },
+          "successTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "failureTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "currentTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "topThroughput": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "topCurrent": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "topFailures": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "latencyHighlights": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricLatencyModel"
+            }
+          }
+        }
+      },
+      "BdkHistogramSnapshotModel": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sum": {
+            "type": "number",
+            "format": "double"
+          },
+          "average": {
+            "type": "number",
+            "format": "double"
+          },
+          "max": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "BdkMetricDescriptorModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "feature": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "kind": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "unit": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
       "BrokerMessageBrokerCapabilities": {
         "type": "object",
         "properties": {
@@ -5673,6 +7420,87 @@
           }
         },
         "description": "A tree structure containing specification nodes for complex filtering logic"
+      },
+      "DotNetMetricsSnapshotModel": {
+        "type": "object",
+        "properties": {
+          "cpuUsagePercent": {
+            "type": "number",
+            "format": "double"
+          },
+          "workingSetMb": {
+            "type": "number",
+            "format": "double"
+          },
+          "privateMemoryMb": {
+            "type": "number",
+            "format": "double"
+          },
+          "managedMemoryMb": {
+            "type": "number",
+            "format": "double"
+          },
+          "heapSizeMb": {
+            "type": "number",
+            "format": "double"
+          },
+          "fragmentedMemoryMb": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalAllocatedMb": {
+            "type": "number",
+            "format": "double"
+          },
+          "gen0Collections": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "gen1Collections": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "gen2Collections": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "threadCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workerThreadsUsed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workerThreadsAvailable": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ioThreadsUsed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ioThreadsAvailable": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pendingWorkItems": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "capturedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "processStartedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "uptimeSeconds": {
+            "type": "number",
+            "format": "double"
+          }
+        }
       },
       "EmailMessagePriority": {
         "enum": [
@@ -6597,6 +8425,7 @@
           }
         }
       },
+      "JsonElement": { },
       "LogEntryExportFormat": {
         "enum": [
           "Csv",
@@ -6752,6 +8581,229 @@
           "None",
           null
         ]
+      },
+      "MetricLatencyModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sum": {
+            "type": "number",
+            "format": "double"
+          },
+          "average": {
+            "type": "number",
+            "format": "double"
+          },
+          "max": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "MetricsOverviewFeatureModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "successTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "failureTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "currentTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "topThroughput": {
+            "$ref": "#/components/schemas/MetricValueModel"
+          },
+          "topCurrent": {
+            "$ref": "#/components/schemas/MetricValueModel"
+          },
+          "slowestSeries": {
+            "$ref": "#/components/schemas/MetricLatencyModel"
+          }
+        }
+      },
+      "MetricsOverviewSnapshotModel": {
+        "type": "object",
+        "properties": {
+          "summaryCards": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          "features": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/MetricsOverviewFeatureModel"
+            }
+          },
+          "topFailures": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "topThroughput": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "topCurrent": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "latencyHighlights": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricLatencyModel"
+            }
+          },
+          "capturedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "processStartedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "uptimeSeconds": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "MetricsSnapshotModel": {
+        "type": "object",
+        "properties": {
+          "meter": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "features": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/BdkFeatureSnapshotModel"
+            }
+          },
+          "availableMetrics": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/BdkMetricDescriptorModel"
+            }
+          },
+          "topFailures": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "topThroughput": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "topCurrent": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "latencyHighlights": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricLatencyModel"
+            }
+          },
+          "capturedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "processStartedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "uptimeSeconds": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "MetricValueModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "value": {
+            "type": "number",
+            "format": "double"
+          }
+        }
       },
       "NotificationEmailAttachmentInfo": {
         "type": "object",
@@ -6983,6 +9035,423 @@
           "leased": {
             "type": "integer",
             "format": "int32"
+          }
+        }
+      },
+      "OrchestrationContextSnapshotModel": {
+        "type": "object",
+        "properties": {
+          "instanceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orchestrationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "currentState": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "snapshotUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "contextType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "contextJson": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "OrchestrationHistoryModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "instanceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "createdBy": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "timestampUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "eventType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "state": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "activity": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "message": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "dataJson": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "OrchestrationInstanceModel": {
+        "type": "object",
+        "properties": {
+          "instanceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "orchestrationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "currentState": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "currentActivity": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "correlationId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "concurrencyKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdBy": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedBy": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "updatedDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "startedUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "lastUpdatedUtc": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "OrchestrationMetricsModel": {
+        "type": "object",
+        "properties": {
+          "totalCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "runningCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "waitingCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "pausedCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "completedCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "failedCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "cancelledCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "terminatedCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "averageDurationSeconds": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "oldestWaitingStartedUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "countsByOrchestration": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          "countsByState": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      },
+      "OrchestrationSignalModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "instanceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "signalName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "processingStatus": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "idempotencyKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdBy": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedBy": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "updatedDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "receivedUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "processedUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "payloadJson": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "OrchestrationSignalRequest": {
+        "type": "object",
+        "properties": {
+          "signalName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "payload": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/JsonElement"
+              }
+            ]
+          },
+          "idempotencyKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "OrchestrationTimerModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "instanceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "timerKind": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "processingStatus": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdBy": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedBy": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "updatedDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "dueUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "processedUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "metadataJson": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -7382,6 +9851,17 @@
           },
           "isMessageTypePaused": {
             "type": "boolean"
+          }
+        }
+      },
+      "ReasonRequest": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": [
+              "null",
+              "string"
+            ]
           }
         }
       },
@@ -7802,6 +10282,15 @@
               "$ref": "#/components/schemas/TodoStepModel"
             }
           },
+          "properties": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
           "concurrencyVersion": {
             "type": [
               "null",
@@ -7974,6 +10463,9 @@
       "name": "_System.JobScheduling"
     },
     {
+      "name": "_System.Orchestrations"
+    },
+    {
       "name": "_System.Storage"
     },
     {
@@ -7999,6 +10491,9 @@
     },
     {
       "name": "_System"
+    },
+    {
+      "name": "_System.Metrics"
     }
   ]
 }

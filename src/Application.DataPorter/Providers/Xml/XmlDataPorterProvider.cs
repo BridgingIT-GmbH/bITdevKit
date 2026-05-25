@@ -1014,7 +1014,7 @@ public sealed class XmlDataPorterProvider(
             if (propertyType.IsCollectionType())
             {
                 var element = new XElement(elementName);
-                foreach (var item in (System.Collections.IEnumerable)value)
+                foreach (var item in (IEnumerable)value)
                 {
                     if (item is null)
                     {

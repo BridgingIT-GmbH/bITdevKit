@@ -1,10 +1,12 @@
 ---
-status: draft
+status: implemented
 ---
 
 # Design Specification: Stateful Orchestration Feature (Application.Orchestration)
 
 > This design document outlines the architecture and behavior of the new orchestration feature within the application. It defines the core concepts, execution model, control flow capabilities, triggers, reliability mechanisms, observability features, identity management, versioning considerations, testing strategies and typical use cases for orchestrations.
+
+[TOC]
 
 ## Introduction
 
@@ -1939,10 +1941,20 @@ The built-in catalog should include at least:
   * Executes a query/read operation and may write the returned data into context.
 * `CommandActivity`
   * Executes an application command/action and may update context based on the command result.
+* `SendRequestActivity`
+  * Executes a requester-backed request and may write the returned data into context.
+* `PublishNotificationActivity`
+  * Publishes a notification through the notifier abstraction and continues after publication succeeds.
 * `WaitActivity`
   * Represents a declarative wait, delay, timeout or scheduled resume point.
 * `StartOrchestrationActivity`
   * Starts another orchestration and may optionally wait for its completion, state or outcome.
+* `ExecuteJobActivity`
+  * Executes a devkit job and waits for the job execution result inside the activity flow.
+* `DispatchJobActivity`
+  * Dispatches a devkit job occurrence for immediate background execution and may store the accepted occurrence identifier.
+* `ScheduleJobActivity`
+  * Schedules a devkit job occurrence for a future due time and may store the accepted occurrence identifier or scheduler result in the orchestration context.
 
 The catalog may additionally include activities such as:
 
@@ -1965,6 +1977,21 @@ Its contract should support at least:
 * optionally storing the child orchestration instance identifier or other returned child reference data back into the parent context
 * optionally waiting for child completion, child states, or child outcomes
 * persisting the parent wait condition durably when the parent orchestration is configured to wait for the child
+
+`ExecuteJobActivity`, `DispatchJobActivity` and `ScheduleJobActivity` should be treated as first-class built-in activity types when the Jobs integration is available.
+
+Their contract should support at least:
+
+* executing, dispatching or scheduling a job through the public Jobs abstraction, not through scheduler provider tables
+* authoring through built-in activity methods such as `ExecuteJobActivityAsync<TJob>(...)`, `DispatchJobActivityAsync<TJob>(...)` and `ScheduleJobActivityAsync<TJob>(...)`
+* deriving job data, trigger name, due time, idempotency key and metadata from the orchestration context
+* storing the job execution result, accepted occurrence identifier or scheduler result back into the orchestration context
+* returning a `Result`-based activity outcome so orchestration error handling, retry, wait or compensation rules can decide the next step
+* preserving the boundary that Jobs owns background execution and Orchestration owns workflow state
+
+`ExecuteJobActivity` is for cases where the orchestration must wait for the job result. `DispatchJobActivity` is for immediate background execution after scheduler acceptance. `ScheduleJobActivity` is for future due-time execution.
+
+The orchestration context itself should not expose direct `ExecuteJobAsync(...)`, `DispatchJobAsync(...)` or `ScheduleJobAsync(...)` methods. Job integration from an orchestration should be modeled as activity execution so the operation remains visible in orchestration definition, history, retries and activity-level behavior.
 
 `ApprovalActivity` should represent a specialized business approval step.
 

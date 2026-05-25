@@ -22,7 +22,7 @@ public static class ServiceCollectionExtensions
         configuration ??= context.Configuration?.GetSection(section)?.Get<InProcessMessageBrokerConfiguration>() ??
             new InProcessMessageBrokerConfiguration();
 
-        context.Services.TryAddSingleton<IMessageBroker>(sp =>
+        context.Services.TryAddSingleton(sp =>
         {
             var broker = new InProcessMessageBroker(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
@@ -40,6 +40,8 @@ public static class ServiceCollectionExtensions
 
             return broker;
         });
+        context.Services.TryAddSingleton<IMessageBrokerRuntime>(sp => sp.GetRequiredService<InProcessMessageBroker>());
+        context.Services.TryAddSingleton<IMessageBroker>(sp => sp.GetRequiredService<InProcessMessageBroker>());
 
         return context;
     }

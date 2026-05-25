@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 /// <summary>
 /// Handles <see cref="TodoItemUpdatedDomainEvent"/> notifications.
-/// Triggered whenever a new <see cref="Domain.Model.TodoItem"/> is created.
+/// Triggered whenever a new <see cref="TodoItem"/> is created.
 /// Extend <see cref="Process"/> with integration, logging, or side-effects.
 /// </summary>
 /// <remarks>

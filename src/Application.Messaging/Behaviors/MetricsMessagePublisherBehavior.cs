@@ -6,29 +6,53 @@
 namespace BridgingIT.DevKit.Application.Messaging;
 
 using System.Diagnostics.Metrics;
+using BridgingIT.DevKit.Common;
 
+/// <summary>
+/// Emits message publish total, current, and failure metrics around message dispatch.
+/// </summary>
+/// <example>
+/// <code>
+/// services.AddMessaging()
+///     .WithBehavior&lt;MetricsMessagePublisherBehavior&gt;();
+/// </code>
+/// </example>
 public class MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMeterFactory meterFactory = null)
     : MessagePublisherBehaviorBase(loggerFactory)
 {
+    /// <summary>
+    /// Wraps message publishing and records the corresponding metrics.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type being published.</typeparam>
+    /// <param name="message">The message to publish.</param>
+    /// <param name="cancellationToken">The publish cancellation token.</param>
+    /// <param name="next">The next publish delegate.</param>
     public override async Task Publish<TMessage>(
         TMessage message,
         CancellationToken cancellationToken,
         MessagePublisherDelegate next)
     {
-        if (meterFactory is null || message is null)
+        if (message is null)
         {
             return;
         }
 
-        if (cancellationToken.IsCancellationRequested)
+        if (meterFactory is null || cancellationToken.IsCancellationRequested)
         {
+            await next().AnyContext();
             return;
         }
 
-        // TODO: extract module name from message and use in metric name
-        var meter = meterFactory.Create("bridgingit_devkit");
-        meter.CreateCounter<int>("messages_publish").Add(1);
-        meter.CreateCounter<int>($"messages_publish_{message.GetType().Name.ToLower()}").Add(1);
+        var messageName = Metrics.NormalizeTypeName(message.GetType());
+        var publishSeries = Metrics.Series("messaging_publish");
+        var typedPublishSeries = Metrics.Series("messaging_publish", messageName);
+        var currentPublishSeries = Metrics.CurrentSeries(publishSeries);
+        var currentTypedPublishSeries = Metrics.CurrentSeries(typedPublishSeries);
+
+        Metrics.Increment(meterFactory, publishSeries);
+        Metrics.Increment(meterFactory, typedPublishSeries);
+        Metrics.ChangeCurrent(meterFactory, currentPublishSeries, 1);
+        Metrics.ChangeCurrent(meterFactory, currentTypedPublishSeries, 1);
 
         try
         {
@@ -36,10 +60,15 @@ public class MetricsMessagePublisherBehavior(ILoggerFactory loggerFactory, IMete
         }
         catch
         {
-            meter.CreateCounter<int>("messages_publish_failure").Add(1);
-            meter.CreateCounter<int>($"messages_publish_{message.GetType().Name.ToLower()}_failure").Add(1);
+            Metrics.Increment(meterFactory, Metrics.FailureSeries(publishSeries));
+            Metrics.Increment(meterFactory, Metrics.FailureSeries(typedPublishSeries));
 
             throw;
+        }
+        finally
+        {
+            Metrics.ChangeCurrent(meterFactory, currentPublishSeries, -1);
+            Metrics.ChangeCurrent(meterFactory, currentTypedPublishSeries, -1);
         }
     }
 }

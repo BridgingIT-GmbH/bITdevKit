@@ -37,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\Application.Orchestrations\Application.Orchestrations.csproj" />
     <ProjectReference Include="..\..\src\Application.Notifications\Application.Notifications.csproj" />
     <ProjectReference Include="..\..\src\Application.Storage\Application.Storage.csproj" />
     <ProjectReference Include="..\..\src\Common.Abstractions\Common.Abstractions.csproj" />
@@ -45,6 +46,7 @@
     <ProjectReference Include="..\..\src\Domain.EventSourcing\Domain.EventSourcing.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web.Messaging\Presentation.Web.Messaging.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web.Notifications\Presentation.Web.Notifications.csproj" />
+    <ProjectReference Include="..\..\src\Presentation.Web.Orchestrations\Presentation.Web.Orchestrations.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web.Queueing\Presentation.Web.Queueing.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web.Storage\Presentation.Web.Storage.csproj" />
     <ProjectReference Include="..\..\src\Presentation.Web\Presentation.Web.csproj" />

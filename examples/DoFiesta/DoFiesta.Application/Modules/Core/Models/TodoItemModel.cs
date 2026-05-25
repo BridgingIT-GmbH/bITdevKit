@@ -29,5 +29,7 @@ public class TodoItemModel
 
     public ICollection<TodoStepModel> Steps { get; set; } = [];
 
+    public Dictionary<string, string> Properties { get; set; } = [];
+
     public string ConcurrencyVersion { get; set; }
 }

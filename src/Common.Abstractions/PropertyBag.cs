@@ -87,7 +87,7 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
         var raw = this.Get(key);
         if (raw != null)
         {
-            return raw.TryTo<T>(out value);
+            return raw.TryTo(out value);
         }
         value = default;
         return false;

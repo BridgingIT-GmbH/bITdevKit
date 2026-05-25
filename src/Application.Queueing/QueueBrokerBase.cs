@@ -5,7 +5,7 @@ using FluentValidation;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-public abstract class QueueBrokerBase : IQueueBroker
+public abstract class QueueBrokerBase : IQueueBrokerRuntime
 {
     protected QueueBrokerBase(
         ILoggerFactory loggerFactory,

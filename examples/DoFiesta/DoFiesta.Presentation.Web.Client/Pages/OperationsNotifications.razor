@@ -20,7 +20,7 @@
         <div class="d-flex flex-wrap align-center gap-4">
             <div>
                 <MudText Typo="Typo.h4" GutterBottom="true">Notification Emails</MudText>
-                @* <MudText Typo="Typo.body2">Inspect queued, leased, sent, and failed notification emails from the outbox.</MudText> *@
+                <MudText Typo="Typo.body2">Inspect the notification email outbox, open message bodies, retry failures, archive terminal items, and purge old outbox entries.</MudText>
             </div>
             <MudSpacer />
             <MudSelect T="int?" Label="Auto refresh" Variant="Variant.Outlined" Margin="Margin.Dense" Value="autoRefreshIntervalSeconds" ValueChanged="OnAutoRefreshIntervalChanged" Style="min-width: 170px;">
@@ -32,6 +32,9 @@
             </MudSelect>
             <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Filled.Refresh" OnClick="ReloadAsync">
                 Refresh
+            </MudButton>
+            <MudButton Variant="Variant.Outlined" Color="Color.Error" StartIcon="@Icons.Material.Filled.DeleteSweep" OnClick="OpenPurgeDialog" Disabled="@loading">
+                Purge
             </MudButton>
         </div>
     </MudPaper>
@@ -77,7 +80,7 @@
 
     <MudPaper Class="pa-4 mb-4">
         <MudGrid>
-            <MudItem xs="12" md="3">
+            <MudItem xs="12" md="2">
                 <MudSelect T="string" Label="Status" @bind-Value="statusFilter">
                     <MudSelectItem Value="@AllStatusesValue">All statuses</MudSelectItem>
                     @foreach (var status in FilterStatuses)
@@ -96,13 +99,8 @@
             <MudItem xs="12" md="4">
                 <MudTextField @bind-Value="subjectFilter" Label="Subject contains" Clearable="true" />
             </MudItem>
-            <MudItem xs="12" md="2">
-                <MudSelect T="int" Label="Rows" @bind-Value="take">
-                    <MudSelectItem Value="25">25</MudSelectItem>
-                    <MudSelectItem Value="50">50</MudSelectItem>
-                    <MudSelectItem Value="100">100</MudSelectItem>
-                    <MudSelectItem Value="250">250</MudSelectItem>
-                </MudSelect>
+            <MudItem xs="12" md="3">
+                <MudTextField @bind-Value="lockedByFilter" Label="Locked by" Clearable="true" />
             </MudItem>
         </MudGrid>
 
@@ -114,6 +112,14 @@
             </MudItem>
             <MudItem xs="12" md="3">
                 <MudDatePicker @bind-Date="createdEndDate" Label="Created to" />
+            </MudItem>
+            <MudItem xs="12" md="2">
+                <MudSelect T="int" Label="Rows" @bind-Value="take">
+                    <MudSelectItem Value="25">25</MudSelectItem>
+                    <MudSelectItem Value="50">50</MudSelectItem>
+                    <MudSelectItem Value="100">100</MudSelectItem>
+                    <MudSelectItem Value="250">250</MudSelectItem>
+                </MudSelect>
             </MudItem>
         </MudGrid>
 
@@ -229,6 +235,8 @@
             </MudTable>
         }
     </MudPaper>
+
+    @* <MudText Typo="Typo.body2" Color="Color.Secondary" Class="mt-2">Showing @notifications.Count emails.</MudText> *@
 </MudContainer>
 
 <MudDialog @bind-Visible="detailsDialogVisible" Options="new DialogOptions { CloseButton = true, FullWidth = true, MaxWidth = MaxWidth.Large }">
@@ -334,6 +342,43 @@
     </DialogContent>
 </MudDialog>
 
+<MudDialog @bind-Visible="purgeDialogVisible" Options="new DialogOptions { CloseButton = true, FullWidth = true, MaxWidth = MaxWidth.Small }">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Purge Notification Emails</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudAlert Severity="Severity.Warning" Variant="Variant.Outlined" Class="mb-4">
+            Purge permanently removes outbox entries from storage. Use archive if you only want to hide terminal items from the active working set.
+        </MudAlert>
+
+        <MudGrid>
+            <MudItem xs="12">
+                <MudDatePicker @bind-Date="purgeOlderThan" Label="Delete messages older than" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudSelect T="string" Label="Archive scope" @bind-Value="purgeArchiveFilter">
+                    <MudSelectItem Value="@ArchiveActiveValue">Active only</MudSelectItem>
+                    <MudSelectItem Value="@ArchiveArchivedValue">Archived only</MudSelectItem>
+                    <MudSelectItem Value="@ArchiveAllValue">Active and archived</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12">
+                <MudSelect T="string" Label="Status filter" @bind-Value="purgeStatusFilter">
+                    <MudSelectItem Value="@AllStatusesValue">All statuses</MudSelectItem>
+                    @foreach (var status in FilterStatuses)
+                    {
+                        <MudSelectItem Value="@status.ToString()">@status.Humanize()</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Text" Color="Color.Default" OnClick="ClosePurgeDialog">Cancel</MudButton>
+        <MudButton Variant="Variant.Filled" Color="Color.Error" StartIcon="@Icons.Material.Filled.DeleteForever" OnClick="ConfirmPurgeAsync">Purge</MudButton>
+    </DialogActions>
+</MudDialog>
+
 @code {
     private const string AllStatusesValue = "__all";
     private const string ArchiveActiveValue = "active";
@@ -355,13 +400,18 @@
     private bool loading = true;
     private bool detailsLoading;
     private bool detailsDialogVisible;
+    private bool purgeDialogVisible;
     private string loadError;
     private string statusFilter = AllStatusesValue;
     private string archiveFilter = ArchiveActiveValue;
     private string subjectFilter;
+    private string lockedByFilter;
     private int take = 50;
     private DateTime? createdStartDate = DateTime.Today;
     private DateTime? createdEndDate = DateTime.Today;
+    private DateTime? purgeOlderThan = DateTime.Today.AddDays(-30);
+    private string purgeArchiveFilter = ArchiveActiveValue;
+    private string purgeStatusFilter = AllStatusesValue;
     private int? autoRefreshIntervalSeconds = 5;
     private PeriodicTimer autoRefreshTimer;
     private CancellationTokenSource autoRefreshCancellation;
@@ -371,7 +421,7 @@
     {
         try
         {
-            var saved = await this.JS.InvokeAsync<string>("localStorage.getItem", "dofiesta:autoRefreshInterval");
+            var saved = await this.JS.InvokeAsync<string>("localStorage.getItem", "dofiesta:notifications:autoRefreshInterval");
             if (!string.IsNullOrWhiteSpace(saved) && int.TryParse(saved, out var parsed) && parsed >= 0)
             {
                 this.autoRefreshIntervalSeconds = parsed == 0 ? null : parsed;
@@ -424,6 +474,7 @@
         this.statusFilter = AllStatusesValue;
         this.archiveFilter = ArchiveActiveValue;
         this.subjectFilter = null;
+        this.lockedByFilter = null;
         this.take = 50;
         this.createdStartDate = DateTime.Today;
         this.createdEndDate = DateTime.Today;
@@ -440,11 +491,11 @@
         {
             if (value.HasValue && value.Value > 0)
             {
-                await this.JS.InvokeVoidAsync("localStorage.setItem", "dofiesta:autoRefreshInterval", value.Value.ToString());
+                await this.JS.InvokeVoidAsync("localStorage.setItem", "dofiesta:notifications:autoRefreshInterval", value.Value.ToString());
             }
             else
             {
-                await this.JS.InvokeVoidAsync("localStorage.setItem", "dofiesta:autoRefreshInterval", "0");
+                await this.JS.InvokeVoidAsync("localStorage.setItem", "dofiesta:notifications:autoRefreshInterval", "0");
             }
         }
         catch
@@ -475,6 +526,11 @@
             if (!string.IsNullOrWhiteSpace(this.subjectFilter))
             {
                 config.QueryParameters.Subject = this.subjectFilter;
+            }
+
+            if (!string.IsNullOrWhiteSpace(this.lockedByFilter))
+            {
+                config.QueryParameters.LockedBy = this.lockedByFilter;
             }
 
             if (Enum.TryParse<NotificationStatus>(this.statusFilter, true, out var status))
@@ -550,6 +606,41 @@
         }
     }
 
+    private void OpenPurgeDialog()
+    {
+        this.purgeDialogVisible = true;
+    }
+
+    private void ClosePurgeDialog()
+    {
+        this.purgeDialogVisible = false;
+    }
+
+    private async Task ConfirmPurgeAsync()
+    {
+        try
+        {
+            var message = await this.Api.Api._system.Notifications.Emails.DeleteAsync(config =>
+            {
+                config.QueryParameters.IsArchived = this.GetArchiveFilter(this.purgeArchiveFilter);
+                config.QueryParameters.OlderThan = this.ToEndDateOffset(this.purgeOlderThan);
+
+                if (Enum.TryParse<NotificationStatus>(this.purgeStatusFilter, true, out var status))
+                {
+                    config.QueryParameters.StatusesAsEmailMessageStatus = [status];
+                }
+            });
+
+            this.purgeDialogVisible = false;
+            this.Snackbar.Add(string.IsNullOrWhiteSpace(message) ? "Notification emails were purged." : message, Severity.Success);
+            await this.ReloadAsync();
+        }
+        catch (KiotaApiException ex)
+        {
+            this.Snackbar.Add($"Purge failed: {ex.Message}", Severity.Error);
+        }
+    }
+
     private async Task RefreshStateAsync(Guid notificationId)
     {
         await this.ReloadAsync();
@@ -574,7 +665,12 @@
 
     private bool? GetArchiveFilter()
     {
-        return this.archiveFilter switch
+        return this.GetArchiveFilter(this.archiveFilter);
+    }
+
+    private bool? GetArchiveFilter(string value)
+    {
+        return value switch
         {
             ArchiveActiveValue => false,
             ArchiveArchivedValue => true,

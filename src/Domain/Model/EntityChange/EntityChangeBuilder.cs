@@ -440,7 +440,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
             return this;
         }
 
-        return this.RemoveById<TItem, TId>(collectionExpression, result.Value, comparer, errorMessage, error);
+        return this.RemoveById(collectionExpression, result.Value, comparer, errorMessage, error);
     }
 
     /// <summary>

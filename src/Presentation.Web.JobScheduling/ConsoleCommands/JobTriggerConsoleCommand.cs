@@ -82,7 +82,7 @@ public class JobTriggerConsoleCommand : JobGroupConsoleCommandBase
                 console.MarkupLine($"Result: {result.LastRun.Result}");
             }
         }
-        catch (System.TimeoutException)
+        catch (TimeoutException)
         {
             console.MarkupLine("[yellow]Job execution timed out[/]");
         }

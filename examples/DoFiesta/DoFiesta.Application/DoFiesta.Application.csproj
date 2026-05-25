@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Application.Identity\Application.Identity.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Notifications\Application.Notifications.csproj" />
+    <ProjectReference Include="..\..\..\src\Application.Orchestrations\Application.Orchestrations.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Queueing\Application.Queueing.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Messaging\Application.Messaging.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Storage\Application.Storage.csproj" />
@@ -23,9 +24,7 @@
     <ProjectReference Include="..\..\..\src\Application.JobScheduling\Application.JobScheduling.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Utilities\Common.Utilities.csproj" />
     <ProjectReference Include="..\DoFiesta.Domain\DoFiesta.Domain.csproj" />
-    <ProjectReference Include="..\..\..\src\Common.Utilities.CodeGen\Common.Utilities.CodeGen.csproj"
-                      OutputItemType="Analyzer"
-                      ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\..\src\Common.Utilities.CodeGen\Common.Utilities.CodeGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 
 </Project>

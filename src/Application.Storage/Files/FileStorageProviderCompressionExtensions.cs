@@ -13,6 +13,7 @@ using System.Threading;
 using BridgingIT.DevKit.Common;
 using SharpCompress.Archives;
 using SharpCompress.Common;
+using SharpCompress.Common.Options;
 using SharpCompress.Readers;
 using SharpCompress.Writers;
 using SharpCompress.Writers.GZip;
@@ -176,7 +177,7 @@ public static class FileStorageProviderCompressionExtensions
         try
         {
             var zipStream = readResult.Value;
-            using var archive = ArchiveFactory.Open(zipStream, new ReaderOptions { Password = password });
+            using var archive = ArchiveFactory.OpenArchive(zipStream, new ReaderOptions { Password = password });
 
             // Validate the archive type matches the expected type
             if (!IsArchiveTypeMatch(archive.Type, options.ArchiveType))
@@ -519,7 +520,7 @@ public static class FileStorageProviderCompressionExtensions
             }
 
             await using var zipStream = readResult.Value;
-            using var archive = ArchiveFactory.Open(zipStream, new ReaderOptions { Password = password });
+            using var archive = ArchiveFactory.OpenArchive(zipStream, new ReaderOptions { Password = password });
 
             // Validate the archive type matches the expected type
             if (!IsArchiveTypeMatch(archive.Type, options.ArchiveType))
@@ -691,7 +692,7 @@ public static class FileStorageProviderCompressionExtensions
             }
 
             await using var zipStream = readResult.Value;
-            using var archive = ArchiveFactory.Open(zipStream, new ReaderOptions { Password = password });
+            using var archive = ArchiveFactory.OpenArchive(zipStream, new ReaderOptions { Password = password });
 
             // Validate the archive type matches the expected type
             if (!IsArchiveTypeMatch(archive.Type, options.ArchiveType))
@@ -862,7 +863,7 @@ public static class FileStorageProviderCompressionExtensions
             }
 
             await using var archiveStream = readResult.Value;
-            using var archive = ArchiveFactory.Open(archiveStream, new ReaderOptions { Password = password });
+            using var archive = ArchiveFactory.OpenArchive(archiveStream, new ReaderOptions { Password = password });
 
             // Validate the archive type matches the expected type
             if (!IsArchiveTypeMatch(archive.Type, options.ArchiveType))
@@ -875,9 +876,10 @@ public static class FileStorageProviderCompressionExtensions
             List<string> fileEntries;
             try
             {
-                fileEntries = [.. archive.Entries
+                fileEntries = archive.Entries
                     .Where(e => !e.IsDirectory)
-                    .Select(e => e.Key)];
+                    .Select(e => e.Key)
+                    .ToList();
             }
             catch (CryptographicException cryptoEx)
             {
@@ -940,34 +942,36 @@ public static class FileStorageProviderCompressionExtensions
             throw new ArgumentException($"Archive type '{archiveType}' is not supported for writing.");
         }
 
-        var writerOptions = new WriterOptions(GetCompressionType(archiveType));
-        if (archiveType == ArchiveType.Zip)
+        var compressionType = GetCompressionType(archiveType);
+        var archiveEncoding = new ArchiveEncoding { Default = options.Encoding };
+
+        IWriterOptions writerOptions = archiveType switch
         {
-            writerOptions = new ZipWriterOptions(GetCompressionType(archiveType))
+            ArchiveType.Zip => new ZipWriterOptions(compressionType, options.CompressionLevel)
             {
-                //DeflateCompressionLevel = (SharpCompress.Compressors.Deflate.CompressionLevel)options.CompressionLevel,
-                CompressionLevel = /*(int)(SharpCompress.Compressors.Deflate.CompressionLevel)*/options.CompressionLevel,
-                UseZip64 = options.UseZip64,
+                ArchiveEncoding = archiveEncoding,
+                LeaveStreamOpen = true,
+                UseZip64 = options.UseZip64
                 //ArchiveComment = "Compressed using SharpCompress",
                 //Password = password,
                 //Encryption = ZipEncryptionMethod.WinZipAes256
-            };
-        }
-        else if (archiveType == ArchiveType.GZip)
-        {
-            writerOptions = new GZipWriterOptions()
+            },
+            ArchiveType.GZip => new GZipWriterOptions(options.CompressionLevel)
             {
-                CompressionLevel = /*(int)(SharpCompress.Compressors.Deflate.CompressionLevel)*/options.CompressionLevel,
+                ArchiveEncoding = archiveEncoding,
+                LeaveStreamOpen = true
                 //ArchiveComment = "Compressed using SharpCompress",
                 //Password = password,
                 //Encryption = ZipEncryptionMethod.WinZipAes256
-            };
-        }
+            },
+            _ => new WriterOptions(compressionType, options.CompressionLevel)
+            {
+                ArchiveEncoding = archiveEncoding,
+                LeaveStreamOpen = true
+            }
+        };
 
-        writerOptions.ArchiveEncoding = new SharpCompress.Common.ArchiveEncoding { Default = options.Encoding };
-        writerOptions.LeaveStreamOpen = true;
-
-        return WriterFactory.Open(stream, archiveType, writerOptions);
+        return WriterFactory.OpenWriter(stream, archiveType, writerOptions);
     }
 
     private static CompressionType GetCompressionType(ArchiveType archiveType)

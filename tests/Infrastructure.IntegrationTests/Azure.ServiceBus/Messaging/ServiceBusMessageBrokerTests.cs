@@ -206,7 +206,7 @@ public class ServiceBusMessageBrokerTests
         await (broker as IAsyncDisposable).DisposeAsync().AsTask();
     }
 
-    private IMessageBroker CreateMessageBroker(IServiceProvider serviceProvider = null)
+    private IMessageBrokerRuntime CreateMessageBroker(IServiceProvider serviceProvider = null)
     {
         serviceProvider ??= this.fixture.ServiceProvider;
 

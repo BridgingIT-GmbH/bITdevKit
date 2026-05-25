@@ -47,6 +47,6 @@ public class TestHttpMessageHandler : HttpMessageHandler
     /// <param name="request">The HTTP request message to send.</param>
     /// <param name="cancellationToken">A cancellation token to cancel operation.</param>
     /// <returns>A task that represents the asynchronous operation, containing the HTTP response.</returns>
-    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         => this.handlerFunc(request);
 }

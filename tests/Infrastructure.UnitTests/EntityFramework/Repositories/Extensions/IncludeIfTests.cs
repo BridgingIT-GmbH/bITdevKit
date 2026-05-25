@@ -26,7 +26,7 @@ public class IncludeIfTests
         var query = context.Blogs.AsQueryable();
 
         // Act
-        var result = query.IncludeIf<BlogEntity>(null);
+        var result = query.IncludeIf(null);
 
         // Assert
         result.ShouldBeSameAs(query);

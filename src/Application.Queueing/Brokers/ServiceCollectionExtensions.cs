@@ -37,6 +37,7 @@ public static class ServiceCollectionExtensions
         context.Services.TryAddSingleton<InProcessQueueBrokerRuntime>();
         context.Services.TryAddSingleton<InProcessQueueBroker>();
         context.Services.TryAddSingleton<InProcessQueueBrokerService>();
+        context.Services.TryAddSingleton<IQueueBrokerRuntime>(sp => sp.GetRequiredService<InProcessQueueBroker>());
         context.Services.TryAddSingleton<IQueueBroker>(sp => sp.GetRequiredService<InProcessQueueBroker>());
         context.Services.TryAddSingleton<IQueueBrokerService>(sp => sp.GetRequiredService<InProcessQueueBrokerService>());
 

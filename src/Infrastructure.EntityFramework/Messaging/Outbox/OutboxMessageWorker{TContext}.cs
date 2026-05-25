@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 
 using Application.Messaging;
+using BridgingIT.DevKit.Common;
 using Microsoft.Data.SqlClient;
 using Constants = Constants;
 

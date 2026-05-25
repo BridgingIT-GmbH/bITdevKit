@@ -244,7 +244,7 @@ public class FakeIdentityProviderEndpoints(
             var code = identityProvider.GenerateAuthorizationCode(email, password, request);
             var redirectUrl = $"{redirect_uri}?code={code}&state={state}";
 
-            return Task.FromResult<IResult>(TypedResults.Redirect(redirectUrl).WithOAuthHeaders());
+            return Task.FromResult(TypedResults.Redirect(redirectUrl).WithOAuthHeaders());
         }
         catch (OAuth2Exception ex)
         {

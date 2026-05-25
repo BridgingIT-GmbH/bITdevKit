@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Application.Messaging;
 
 using FluentValidation;
 
-public abstract partial class MessageBrokerBase : IMessageBroker
+public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
 {
     protected MessageBrokerBase(
         ILoggerFactory loggerFactory,

@@ -20,21 +20,22 @@ public static partial class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
 
-        Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton<EntityFrameworkQueueBrokerOptions>(context.Services, sp => CreateOptions(sp, optionsBuilder));
-        Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton<EntityFrameworkQueueBroker<TContext>>(context.Services, sp =>
+        Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton(context.Services, sp => CreateOptions(sp, optionsBuilder));
+        Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton(context.Services, sp =>
             new EntityFrameworkQueueBroker<TContext>(
                 sp,
                 sp.GetRequiredService<EntityFrameworkQueueBrokerOptions>(),
                 sp.GetRequiredService<QueueBrokerControlState>()));
-        Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton<EntityFrameworkQueueBrokerService<TContext>>(context.Services, sp =>
+        Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton(context.Services, sp =>
             new EntityFrameworkQueueBrokerService<TContext>(
                 sp,
                 sp.GetRequiredService<EntityFrameworkQueueBrokerOptions>(),
                 sp.GetRequiredService<QueueingRegistrationStore>(),
                 sp.GetRequiredService<QueueBrokerControlState>()));
+        Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton<IQueueBrokerRuntime>(context.Services, sp => sp.GetRequiredService<EntityFrameworkQueueBroker<TContext>>());
         Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton<IQueueBroker>(context.Services, sp => sp.GetRequiredService<EntityFrameworkQueueBroker<TContext>>());
         Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton<IQueueBrokerService>(context.Services, sp => sp.GetRequiredService<EntityFrameworkQueueBrokerService<TContext>>());
-        Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton<EntityFrameworkQueueBrokerWorker<TContext>>(context.Services, sp =>
+        Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton(context.Services, sp =>
             new EntityFrameworkQueueBrokerWorker<TContext>(
                 sp.GetRequiredService<ILoggerFactory>(),
                 sp,

@@ -11,6 +11,7 @@
   <ItemGroup>
     <!--<PackageReference Include="EntityFrameworkCore.Exceptions.Sqlite" />-->
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
     <PackageReference Include="System.Data.SQLite" />
   </ItemGroup>
 

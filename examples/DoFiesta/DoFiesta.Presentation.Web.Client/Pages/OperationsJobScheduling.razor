@@ -1274,7 +1274,7 @@
         return ConvertToUntypedNode(document.RootElement);
     }
 
-    private static UntypedNode ConvertToUntypedNode(JsonElement element)
+    private static UntypedNode ConvertToUntypedNode(System.Text.Json.JsonElement element)
     {
         return element.ValueKind switch
         {

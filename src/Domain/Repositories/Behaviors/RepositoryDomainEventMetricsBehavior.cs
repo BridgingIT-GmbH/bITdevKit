@@ -240,11 +240,10 @@ public class RepositoryDomainEventMetricsBehavior<TEntity> : IGenericRepository<
             return;
         }
 
-        var meter = this.meterFactory.Create("bridgingit_devkit");
         foreach (var domainEvent in domainEvents.GetAll())
         {
-            meter.CreateCounter<int>("domainevents_create").Add(1);
-            meter.CreateCounter<int>($"domainevents_create_{domainEvent.GetType().Name.ToLower()}").Add(1);
+            Metrics.Increment(this.meterFactory, Metrics.Series("domainevents_create"));
+            Metrics.Increment(this.meterFactory, Metrics.Series("domainevents_create", Metrics.NormalizeTypeName(domainEvent.GetType())));
         }
     }
 }

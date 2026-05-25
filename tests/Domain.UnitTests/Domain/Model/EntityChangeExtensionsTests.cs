@@ -1153,7 +1153,7 @@ public class EntityChangeExtensionsTests
         // Act - RemoveById with failing Result
         var failedIdResult = Result<Guid>.Failure().WithError(new ValidationError("Invalid ID format"));
         var result = person.Change()
-            .RemoveById<AddressEntityStub, Guid>(p => p.addressEntities, failedIdResult)
+            .RemoveById(p => p.addressEntities, failedIdResult)
             .Apply();
 
         // Assert
@@ -1172,7 +1172,7 @@ public class EntityChangeExtensionsTests
 
         // Act - RemoveById with function returning failing Result
         var result = person.Change()
-            .RemoveById<AddressEntityStub, Guid>(
+            .RemoveById(
                 p => p.addressEntities,
                 p => Result<Guid>.Failure().WithError(new ValidationError("Could not find ID")))
             .Apply();
@@ -1198,8 +1198,8 @@ public class EntityChangeExtensionsTests
 
         // Act - Remove multiple addresses by ID
         var result = person.Change()
-            .RemoveById<AddressEntityStub, Guid>(p => p.addressEntities, address1.Id)
-            .RemoveById<AddressEntityStub, Guid>(p => p.addressEntities, address3.Id)
+            .RemoveById(p => p.addressEntities, address1.Id)
+            .RemoveById(p => p.addressEntities, address3.Id)
             .Apply();
 
         // Assert
@@ -1221,8 +1221,8 @@ public class EntityChangeExtensionsTests
 
         // Act - First remove fails, second should not execute
         var result = person.Change()
-            .RemoveById<AddressEntityStub, Guid>(p => p.addressEntities, nonExistentId) // Fails
-            .RemoveById<AddressEntityStub, Guid>(p => p.addressEntities, address.Id)     // Should not execute
+            .RemoveById(p => p.addressEntities, nonExistentId) // Fails
+            .RemoveById(p => p.addressEntities, address.Id)     // Should not execute
             .Apply();
 
         // Assert
@@ -1244,7 +1244,7 @@ public class EntityChangeExtensionsTests
         var result = person.Change()
             .Set(p => p.FirstName, "John")
             .When(p => p.Age >= 18) // Circuit breaker - fails
-            .RemoveById<AddressEntityStub, Guid>(p => p.addressEntities, address.Id) // Should not execute
+            .RemoveById(p => p.addressEntities, address.Id) // Should not execute
             .Apply();
 
         // Assert

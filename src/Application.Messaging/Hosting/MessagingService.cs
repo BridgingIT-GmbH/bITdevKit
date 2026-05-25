@@ -27,7 +27,7 @@ public class MessagingService : BackgroundService
     private CancellationTokenSource linkedCts;
     private Task startupTask;
     private IServiceScope scope;
-    private IMessageBroker broker;
+    private IMessageBrokerRuntime broker;
 
     public MessagingService(
         ILoggerFactory loggerFactory,
@@ -134,7 +134,7 @@ public class MessagingService : BackgroundService
 
             try
             {
-                this.broker = this.scope.ServiceProvider.GetService<IMessageBroker>();
+                this.broker = this.scope.ServiceProvider.GetService<IMessageBrokerRuntime>();
                 this.logger.LogInformation("{LogKey} broker message service starting (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
             }
             catch (InvalidOperationException ex)

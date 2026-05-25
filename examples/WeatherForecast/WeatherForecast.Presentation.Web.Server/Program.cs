@@ -197,7 +197,7 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
         "bruno",
         "http://localhost:3000/callback", "http://localhost:3000"));
 
-builder.Services.AddMetrics(); // TOOL: dotnet-counters monitor -n BridgingIT.DevKit.Examples.DinnerFiesta.Presentation.Web.Server --counters bridgingit_devkit
+//builder.Services.AddMetrics(); // TOOL: dotnet-counters monitor -n BridgingIT.DevKit.Examples.DinnerFiesta.Presentation.Web.Server --counters bdk
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 #pragma warning disable CS0618 // Type or member is obsolete

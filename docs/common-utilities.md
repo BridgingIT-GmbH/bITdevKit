@@ -12,6 +12,7 @@ This includes:
 
 - resiliency and concurrency helpers such as `Retryer`, `Debouncer`, `Throttler`, `CircuitBreaker`, `RateLimiter`, `Bulkhead`, and `TimeoutHandler`
 - lightweight background and in-process messaging helpers such as `BackgroundWorker`, `SimpleNotifier`, and `SimpleRequester`
+- reusable diagram builders and Mermaid renderers for state, flow, activity, sequence, class, and component diagrams
 - dynamic predicate and reflection helpers
 - content-type, compression, hashing, and cloning utilities
 - id and key generation helpers
@@ -20,6 +21,398 @@ This includes:
 - validation helpers for FluentValidation
 
 Some of those areas also have higher-level feature docs elsewhere in `docs/`. This page focuses on the shared utilities available across the devkit and gives a short usage example for each main utility family.
+
+## Composition
+
+`Common.Utilities.Composition` adds low-level service composition building blocks for developers who want explicit, fluent DI-driven composition without repeatedly hand-writing wrapper registration code.
+
+Use it when you want to:
+
+- wrap a service with ordered same-contract behavior
+- adapt one contract to another through an explicit adapter
+- attach reusable runtime interception behavior to an interface contract
+- resolve implementations by named strategy key
+- combine multiple implementations behind one composite
+- run ordered request handlers as a chain
+
+The public entry point is:
+
+```csharp
+var services = new ServiceCollection();
+
+services.AddComposition();
+```
+
+### Pattern Guide
+
+| Pattern | Use it when | Typical result |
+| --- | --- | --- |
+| `Decorator` | You need the same contract with explicit wrapper behavior. | Ordered wrapper classes around the implementation. |
+| `Adapter` | You need to expose one contract through a different contract. | A translation layer between source and target services. |
+| `Interception` | You need cross-cutting behavior around interface method calls. | Runtime behaviors such as logging, timeout, retry, metrics, authorization, or lazy activation. |
+| `Strategy` | You need multiple named implementations and runtime selection. | A keyed resolver with optional default behavior. |
+| `Composite` | You need to treat many implementations as one service. | One contract backed by a configured child set. |
+| `Chain` | You need ordered handlers that may handle or pass on a request. | A `next`-driven pipeline with handled/unhandled outcomes. |
+
+### Full Showcase
+
+`AddComposition()` is additive, so multiple modules can contribute registrations and the final service resolves with the configured composition order of decorators, explicit interceptors, runtime interception behaviors, and the concrete implementation.
+
+```csharp
+var services = new ServiceCollection();
+
+services.AddComposition()
+    .For<IWeatherClient>()
+        .Use<WeatherClient>()
+        .Decorate(decorators => decorators
+            .With<CachedWeatherClient>())
+        .Intercept(interception => interception
+            .With<AuthorizationWeatherInterceptor>()
+            .WithLogging()
+            .WithTimeout(TimeSpan.FromSeconds(5))
+            .WithRetry(3))
+        .RegisterScoped();
+
+services.AddComposition()
+    .Strategies<INotificationSender>()
+    .Add<SmtpNotificationSender>("smtp")
+    .Add<WebhookNotificationSender>("webhook")
+    .WithDefault("smtp");
+
+using var provider = services.BuildServiceProvider();
+
+var weatherClient = provider.GetRequiredService<IWeatherClient>();
+var notificationStrategies = provider.GetRequiredService<IStrategyResolver<INotificationSender>>();
+var defaultSender = notificationStrategies.ResolveDefault();
+```
+
+### Decorator
+
+Decorator pattern: wrap a service with one or more same-contract classes so you can add behavior before or after the inner implementation.
+
+Use a decorator when the behavior should be a normal wrapper class that still implements the same contract.
+
+```csharp
+services.AddComposition()
+    .For<INotificationSender>()
+        .Use<SmtpNotificationSender>()
+        .Decorate(decorators => decorators
+            .With<LoggingNotificationSender>()
+            .With<MetricsNotificationSender>())
+        .RegisterScoped();
+```
+
+Typical constructor shape:
+
+```csharp
+public sealed class LoggingNotificationSender(INotificationSender inner, ILogger<LoggingNotificationSender> logger)
+    : INotificationSender
+{
+    public Task SendAsync(NotificationMessage message, CancellationToken cancellationToken = default)
+    {
+        logger.LogInformation("sending notification");
+        return inner.SendAsync(message, cancellationToken);
+    }
+}
+```
+
+### Adapter
+
+Adapter pattern: translate one API or contract into another contract that the rest of the application expects.
+
+Use an adapter when you already have an implementation but consumers need a different contract.
+
+```csharp
+services.AddComposition()
+    .Adapt<LegacyMailClient>()
+    .To<INotificationSender>()
+    .Using<LegacyMailClientAdapter>()
+    .RegisterScoped();
+
+using var provider = services.BuildServiceProvider();
+var sender = provider.GetRequiredService<INotificationSender>();
+```
+
+Typical adapter shape:
+
+```csharp
+public sealed class LegacyMailClientAdapter(LegacyMailClient client)
+    : INotificationSender
+{
+    public Task SendAsync(NotificationMessage message, CancellationToken cancellationToken = default)
+    {
+        client.Send(message.Subject, message.Body, message.Recipients);
+        return Task.CompletedTask;
+    }
+}
+```
+
+For adapting non-DI source instances at runtime, use `IAdapterFactory`:
+
+```csharp
+var adapterFactory = provider.GetRequiredService<IAdapterFactory>();
+var client = new LegacyMailClient();
+var sender = adapterFactory.Adapt<LegacyMailClient, INotificationSender>(client);
+```
+
+### Interception
+
+Interception pattern: surround method calls on the same contract so cross-cutting concerns can run around the invocation pipeline.
+
+Interception is interface-only and is designed for cross-cutting method behavior, not for hiding application logic. When runtime behaviors such as logging, retry, timeout, metrics, authorization, or lazy activation are configured, interception may internally create an interface proxy host for that invocation chain. Built-in retry and timeout interception reuse the existing `Retryer` and `TimeoutHandler` utilities instead of adding a second resiliency engine.
+
+```csharp
+var services = new ServiceCollection();
+
+services.AddComposition()
+    .For<IInventoryClient>()
+        .Use<InventoryClient>()
+        .Intercept(interception => interception
+            .With<InventoryAuthorizationInterceptor>()
+            .WithLogging()
+            .WithMetrics()
+            .WithAuthorization()
+            .WithLazy()
+            .WithTimeout(TimeSpan.FromSeconds(2))
+            .WithRetry(3))
+        .RegisterTransient();
+
+using var provider = services.BuildServiceProvider();
+var client = provider.GetRequiredService<IInventoryClient>();
+```
+
+Typical explicit interceptor shape:
+
+```csharp
+public sealed class InventoryAuthorizationInterceptor(
+    IInventoryClient inner,
+    ICurrentUserService currentUser)
+    : IInventoryClient
+{
+    public async Task<InventoryItem> GetBySkuAsync(string sku, CancellationToken cancellationToken = default)
+    {
+        if (!currentUser.HasPermission("inventory.read"))
+        {
+            throw new UnauthorizedAccessException("Missing inventory.read permission.");
+        }
+
+        return await inner.GetBySkuAsync(sku, cancellationToken);
+    }
+}
+```
+
+Typical runtime authorization authorizer shape for `.WithAuthorization()`:
+
+```csharp
+public sealed class InventoryAuthorizationAuthorizer
+    : IInterceptionAuthorizer<IInventoryClient>
+{
+    public ValueTask<Result> AuthorizeAsync(
+        InterceptionInvocationContext<IInventoryClient> context,
+        CancellationToken cancellationToken = default)
+    {
+        var isAllowed = context.Method.Name.StartsWith("Get", StringComparison.Ordinal);
+        return ValueTask.FromResult(isAllowed
+            ? Result.Success()
+            : Result.Failure().WithMessage("Inventory operation is not authorized."));
+    }
+}
+```
+
+Execution order is:
+
+```text
+Decorators
+-> Explicit interceptors added with .With<TInterceptor>()
+-> Runtime interception behaviors such as logging/retry/timeout
+-> Concrete implementation
+```
+
+### Strategy
+
+Strategy pattern: register multiple implementations for the same contract and choose one by key at runtime.
+
+Use a strategy when runtime selection by string key is part of the design.
+
+```csharp
+services.AddComposition()
+    .Strategies<INotificationSender>()
+    .Add<SmtpNotificationSender>("smtp")
+    .Add<WebhookNotificationSender>("webhook")
+    .WithDefault("smtp");
+
+using var provider = services.BuildServiceProvider();
+var resolver = provider.GetRequiredService<IStrategyResolver<INotificationSender>>();
+
+var sender = resolver.Resolve("webhook");
+var defaultSender = resolver.ResolveDefault();
+var availableKeys = resolver.Keys;
+```
+
+Typical strategy implementations:
+
+```csharp
+public sealed class SmtpNotificationSender : INotificationSender
+{
+    public Task SendAsync(NotificationMessage message, CancellationToken cancellationToken = default)
+    {
+        return Task.CompletedTask;
+    }
+}
+
+public sealed class WebhookNotificationSender : INotificationSender
+{
+    public Task SendAsync(NotificationMessage message, CancellationToken cancellationToken = default)
+    {
+        return Task.CompletedTask;
+    }
+}
+```
+
+### Composite
+
+Composite pattern: combine several implementations behind one contract so callers interact with one service while the composite coordinates its children.
+
+Use a composite when multiple implementations should be coordinated behind one contract.
+
+```csharp
+services.AddComposition()
+    .Composite<INotificationSender, BroadcastNotificationSender>(children => children
+        .With<EmailNotificationSender>()
+        .With<TeamsNotificationSender>()
+        .With<WebhookNotificationSender>())
+    .RegisterScoped();
+
+using var provider = services.BuildServiceProvider();
+var sender = provider.GetRequiredService<INotificationSender>();
+```
+
+Typical composite constructor shape:
+
+```csharp
+public sealed class BroadcastNotificationSender(IEnumerable<INotificationSender> children)
+    : INotificationSender
+{
+    public async Task SendAsync(NotificationMessage message, CancellationToken cancellationToken = default)
+    {
+        foreach (var child in children)
+        {
+            await child.SendAsync(message, cancellationToken);
+        }
+    }
+}
+```
+
+### Chain
+
+Chain of responsibility pattern: pass a request through ordered handlers until one handles it or the chain completes without a handler taking responsibility.
+
+Use a chain when each handler may process the request or pass it to the next handler.
+
+```csharp
+services.AddComposition()
+    .Chain<IImportHandler, ImportContext>(chain => chain
+        .With<CsvImportHandler>()
+        .With<JsonImportHandler>()
+        .With<XmlImportHandler>())
+    .RegisterScoped();
+
+using var provider = services.BuildServiceProvider();
+var executor = provider.GetRequiredService<IChainExecutor<ImportContext>>();
+var result = await executor.ExecuteAsync(new ImportContext("orders.csv"), cancellationToken);
+```
+
+Handlers return `ChainResult` to indicate whether the request was handled.
+
+Typical handler shape:
+
+```csharp
+public sealed class CsvImportHandler : IImportHandler
+{
+    public ValueTask<ChainResult> HandleAsync(
+        ImportContext context,
+        ChainExecutionDelegate<ImportContext> next,
+        CancellationToken cancellationToken)
+    {
+        if (!context.FileName.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
+        {
+            return next(context, cancellationToken);
+        }
+
+        return ValueTask.FromResult(new ChainResult
+        {
+            Handled = true,
+            Result = Result.Success()
+        });
+    }
+}
+```
+
+### Choosing A Pattern
+
+- Use `Decorator` when the behavior should be visible as an explicit wrapper class and still implement the same contract.
+- Use `Adapter` when the implementation already exists but the consuming code needs a different contract.
+- Use `Interception` when the behavior is cross-cutting and method-oriented rather than domain-specific.
+- Use `Strategy` when runtime selection by string key is part of the design.
+- Use `Composite` when multiple implementations should be coordinated behind one contract.
+- Use `Chain` when each handler may continue or stop processing.
+
+### Limitations
+
+- Runtime interception supports interface contracts only. Class proxying is not included.
+- The composition package does not include caching interception behavior.
+- Configuration is intentionally explicit and fluent. It does not rely on source generation or attribute-first setup.
+
+## Diagrams
+
+The shared diagrams utilities provide a lightweight, deterministic way to build reusable diagram documents and render them without bringing in external graph or diagram packages.
+
+The current Common diagrams surface covers:
+
+- `StateDiagramBuilder` with `MermaidStateDiagramRenderer`
+- `StateDiagramBuilder` with `SvgStateDiagramRenderer`
+- `FlowDiagramBuilder` with `MermaidFlowDiagramRenderer`
+- `FlowDiagramBuilder` with `SvgFlowDiagramRenderer`
+- `ActivityDiagramBuilder` with `MermaidActivityDiagramRenderer`
+- `ActivityDiagramBuilder` with `SvgActivityDiagramRenderer`
+- `SequenceDiagramBuilder` with `MermaidSequenceDiagramRenderer`
+- `SequenceDiagramBuilder` with `SvgSequenceDiagramRenderer`
+- `ClassDiagramBuilder` with `MermaidClassDiagramRenderer`
+- `ClassDiagramBuilder` with `SvgClassDiagramRenderer`
+- `ComponentDiagramBuilder` with `MermaidComponentDiagramRenderer`
+- `ComponentDiagramBuilder` with `SvgComponentDiagramRenderer`
+- `BitmapDiagramRenderer` placeholder registrations for all built-in diagram kinds
+- `AddDiagramRendering()` and `IDiagramRendererFactory` for dependency injection driven renderer resolution by `DiagramKind` and `DiagramRenderFormat`
+
+The renderer abstraction is format-aware. Mermaid remains the main built-in text format, every built-in diagram kind now also has a native SVG renderer, and bitmap registrations are present as explicit `NotImplementedException` placeholders through `DiagramRenderFormat`, `DiagramRenderResult`, and format-specific render option types.
+
+Example:
+
+```csharp
+var document = new SequenceDiagramBuilder()
+    .AddParticipant("User", kind: DiagramNodeKind.Actor)
+    .AddParticipant("Api", "Todo API")
+    .AddMessage("User", "Api", "GET /todos")
+    .AddMessage("Api", "User", "200 OK", DiagramEdgeKind.Reply)
+    .Build();
+
+var renderer = new MermaidSequenceDiagramRenderer();
+var mermaid = renderer.Render(document).GetText();
+
+var services = new ServiceCollection();
+services.AddDiagramRendering();
+var provider = services.BuildServiceProvider();
+var factory = provider.GetRequiredService<IDiagramRendererFactory>();
+
+var svg = factory.Render(
+    new StateDiagramBuilder()
+        .AddState("Created")
+        .AddTransition("[*]", "Created")
+        .Build(),
+    DiagramRenderFormat.Svg,
+    new SvgDiagramRenderOptions { Width = 640, Height = 320 })
+    .GetText();
+```
 
 ## Resiliency Helpers
 
@@ -313,6 +706,141 @@ Example:
 var progress = new Progress<RetryProgress>(p =>
     logger.LogInformation("attempt {Attempt}/{Max}: {Status}", p.CurrentAttempt, p.MaxAttempts, p.Status));
 ```
+
+## Metrics
+
+The devkit metrics feature is a thin developer-friendly layer over .NET diagnostics metrics from `System.Diagnostics.Metrics`.
+
+It does not invent a separate metrics runtime. Instead, it builds on the standard .NET `Meter`, `Counter<T>`, `UpDownCounter<T>`, and `Histogram<T>` primitives so applications can emit custom metrics and let the hosting app decide how those metrics are collected and exported.
+
+The shared devkit meter name is `bdk`.
+
+### What It Provides
+
+- `Metrics` for low-level metric naming and recording helpers
+- `IMetricsService` and `MetricsService` for application code that wants a simpler API
+- `AddMetrics(...)` for DI registration
+- optional system metrics endpoints via `AddMetrics(options => options.AddEndpoints())`
+- built-in metrics behaviors for features such as requester, notifier, messaging, queueing, job scheduling, orchestrations, and repositories
+
+### Registering Metrics
+
+Register the feature once in the host:
+
+```csharp
+services.AddMetrics(options => options
+    .Enabled()
+    .AddEndpoints());
+```
+
+That registers `IMetricsService` and the supporting snapshot services used by the web metrics endpoints.
+
+### Emitting Custom Metrics
+
+Use `IMetricsService` in application or infrastructure code when you want custom metrics without dealing with raw `Meter` APIs directly.
+
+```csharp
+public sealed class InventoryRefreshService(IMetricsService metrics)
+{
+    public async Task RefreshAsync(CancellationToken cancellationToken)
+    {
+        using var scope = metrics.Track("inventory_refresh", "warehouse_a");
+
+        try
+        {
+            await Task.Delay(50, cancellationToken);
+        }
+        catch
+        {
+            metrics.IncrementFailure("inventory_refresh", "warehouse_a");
+            throw;
+        }
+    }
+}
+```
+
+The helper methods map to standard metric concepts:
+
+- `Increment(...)` records cumulative totals
+- `IncrementFailure(...)` records failure totals
+- `ChangeCurrent(...)` records live concurrency style values with an up/down counter
+- `RecordDuration(...)` records latency in milliseconds with a histogram
+- `Track(...)` combines total, current, and duration tracking into one disposable scope
+
+Metric names are normalized automatically and follow the shared naming pattern:
+
+- base series: `family_part_a_part_b`
+- failure series: `family_part_a_part_b_failure`
+- current series: `family_part_a_part_b_current`
+- duration series: `family_part_a_part_b_duration`
+
+Prefer low-cardinality parts such as operation names, message types, or status values. Avoid ids, titles, emails, or other unbounded values in metric parts.
+
+### Built-In Feature Metrics
+
+Several devkit features already have ready-made behaviors that emit metrics without additional custom instrumentation in your handlers or services.
+
+Examples include:
+
+- `MetricsRequestBehavior<,>`
+- `MetricsNotificationBehavior<,>`
+- `MetricsNotificationHandlerBehavior<,>`
+- `MetricsMessagePublisherBehavior`
+- `MetricsMessageHandlerBehavior`
+- `MetricsQueueEnqueuerBehavior`
+- `MetricsQueueHandlerBehavior`
+- `MetricsJobSchedulingBehavior`
+- `MetricsOrchestrationBehavior`
+- `RepositoryMetricsBehavior`
+- composition interception via `.WithMetrics()`
+
+That means developers can often add metrics to higher-level features just by registering the corresponding behavior:
+
+```csharp
+services.AddMessaging(builder.Configuration)
+    .WithBehavior<MetricsMessagePublisherBehavior>()
+    .WithBehavior<MetricsMessageHandlerBehavior>();
+
+services.AddJobScheduling(builder.Configuration)
+    .WithBehavior<MetricsJobSchedulingBehavior>();
+```
+
+### OpenTelemetry And Collector Compatibility
+
+The instrumentation itself is OpenTelemetry-friendly because it uses the standard .NET diagnostics metrics stack.
+
+In practice that means a host can export devkit metrics to an OpenTelemetry collector as long as it:
+
+- registers OpenTelemetry metrics
+- subscribes to the `bdk` meter
+- configures an exporter such as OTLP or Prometheus
+
+The devkit does not configure OpenTelemetry exporters or collector endpoints on behalf of the host application. That setup remains the responsibility of the client application.
+
+If a host wants devkit metrics to participate in its OpenTelemetry pipeline, it should make sure the `bdk` meter is included:
+
+```csharp
+builder.Services.AddOpenTelemetry()
+    .WithMetrics(metrics => metrics
+        .AddMeter("bdk")
+        .AddRuntimeInstrumentation()
+        .AddAspNetCoreInstrumentation());
+        // .AddOtlpExporter()
+        // or .AddPrometheusExporter()
+```
+
+### Endpoints
+
+Metrics exposes JSON snapshot endpoints such as:
+
+- `/api/_system/metrics/bdk`
+- `/api/_system/metrics/overview`
+- `/api/_system/metrics/dotnet`
+- `/api/_system/metrics/aspnet`
+
+These endpoints are useful for dashboards, debugging, demos, and internal operational inspection. They are backed by in-process snapshot services that listen to the `bdk` meter and project the measurements into JSON models.
+
+They are not an OTLP endpoint, and they are not a Prometheus scrape endpoint. Those concerns belong to the host application's OpenTelemetry configuration.
 
 ## Requester Utilities
 

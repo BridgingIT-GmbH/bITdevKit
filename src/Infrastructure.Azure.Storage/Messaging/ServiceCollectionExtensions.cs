@@ -37,7 +37,7 @@ public static partial class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
 
-        context.Services.TryAddSingleton<IMessageBroker>(sp =>
+        context.Services.TryAddSingleton(sp =>
         {
             var options = optionsBuilder?.Invoke(new AzureQueueStorageMessageBrokerOptionsBuilder()).Build() ??
                 new AzureQueueStorageMessageBrokerOptions();
@@ -57,6 +57,8 @@ public static partial class ServiceCollectionExtensions
 
             return broker;
         });
+        context.Services.TryAddSingleton<IMessageBrokerRuntime>(sp => sp.GetRequiredService<AzureQueueStorageMessageBroker>());
+        context.Services.TryAddSingleton<IMessageBroker>(sp => sp.GetRequiredService<AzureQueueStorageMessageBroker>());
 
         return context;
     }

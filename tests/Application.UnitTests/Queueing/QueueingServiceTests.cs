@@ -16,7 +16,7 @@ public class QueueingServiceTests
     public async Task StartAsync_WhenApplicationStarts_AppliesSubscriptionsAndRunsBackgroundProcessor()
     {
         // Arrange
-        var broker = Substitute.For<IQueueBroker>();
+        var broker = Substitute.For<IQueueBrokerRuntime>();
         var backgroundProcessor = Substitute.For<IQueueBrokerBackgroundProcessor>();
         backgroundProcessor.RunAsync(Arg.Any<CancellationToken>()).Returns(Task.CompletedTask);
 

@@ -110,6 +110,10 @@ hide:
     <h3>Pipelines</h3>
     <p>Structured, observable multi-step workflows for in-process execution with low-friction defaults.</p>
   </a>
+  <a class="capability-card" href="reference/features-orchestrations/">
+    <h3>Orchestrations</h3>
+    <p>Durable, stateful workflows with explicit states, activities, signals, timers and operational endpoints.</p>
+  </a>
   <a class="capability-card" href="reference/features-storage-documents/">
     <h3>Storage</h3>
     <p>Document and file storage abstractions, monitoring, behaviors and provider-based extensibility.</p>

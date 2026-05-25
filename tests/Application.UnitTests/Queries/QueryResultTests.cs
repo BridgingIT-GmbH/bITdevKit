@@ -99,7 +99,7 @@ public class QueryResultTests
         var result = Result<int>.Success(inputValue).WithMessage(this.faker.Lorem.Sentence());
 
         // Act
-        var response = QueryResult.For<int, string>(result, outputValue);
+        var response = QueryResult.For(result, outputValue);
 
         // Assert
         response.ShouldNotBeNull();

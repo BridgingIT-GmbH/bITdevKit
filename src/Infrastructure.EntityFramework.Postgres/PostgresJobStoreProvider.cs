@@ -40,7 +40,7 @@ public class PostgresJobStoreProvider : IJobStoreProvider
         var runs = new List<JobRun>();
         var tableName = this.GetTableName("journal_triggers");
         var sql = $@"
-            SELECT 
+            SELECT
                 entry_id, trigger_name, trigger_group, job_name, job_group, description,
                 start_time, end_time, scheduled_time, duration_ms, status, error_message,
                 job_data_json, instance_name, priority, result, retry_count, category
@@ -90,7 +90,7 @@ public class PostgresJobStoreProvider : IJobStoreProvider
     {
         var tableName = this.GetTableName("journal_triggers");
         var sql = $@"
-            SELECT 
+            SELECT
                 COUNT(*) as total_runs,
                 SUM(CASE WHEN status = 'Success' THEN 1 ELSE 0 END) as success_count,
                 SUM(CASE WHEN status = 'Failed' THEN 1 ELSE 0 END) as failure_count,
@@ -233,7 +233,7 @@ public class PostgresJobStoreProvider : IJobStoreProvider
         return $"\"{this.schema}\".\"{this.prefix}{table}\"";
     }
 
-    private JobRun MapJobRun(Npgsql.NpgsqlDataReader reader)
+    private JobRun MapJobRun(NpgsqlDataReader reader)
     {
         return new JobRun
         {

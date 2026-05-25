@@ -39,16 +39,17 @@ public static partial class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
 
         context.Services.TryAddSingleton(sp => CreateOptions(sp, optionsBuilder));
-        context.Services.TryAddSingleton<AzureQueueStorageQueueBroker>(sp =>
+        context.Services.TryAddSingleton(sp =>
             new AzureQueueStorageQueueBroker(
                 sp.GetRequiredService<AzureQueueStorageQueueBrokerOptions>(),
                 sp.GetRequiredService<QueueBrokerControlState>()));
-        context.Services.TryAddSingleton<AzureQueueStorageQueueBrokerService>(sp =>
+        context.Services.TryAddSingleton(sp =>
             new AzureQueueStorageQueueBrokerService(
                 sp.GetRequiredService<AzureQueueStorageQueueBroker>().Runtime,
                 sp.GetRequiredService<AzureQueueStorageQueueBrokerOptions>(),
                 sp.GetRequiredService<QueueingRegistrationStore>(),
                 sp.GetRequiredService<QueueBrokerControlState>()));
+        context.Services.TryAddSingleton<IQueueBrokerRuntime>(sp => sp.GetRequiredService<AzureQueueStorageQueueBroker>());
         context.Services.TryAddSingleton<IQueueBroker>(sp => sp.GetRequiredService<AzureQueueStorageQueueBroker>());
         context.Services.TryAddSingleton<IQueueBrokerService>(sp => sp.GetRequiredService<AzureQueueStorageQueueBrokerService>());
 

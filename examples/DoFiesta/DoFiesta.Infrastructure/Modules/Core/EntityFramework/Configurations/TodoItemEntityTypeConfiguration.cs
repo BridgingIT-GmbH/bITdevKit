@@ -5,8 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.DoFiesta.Infrastructure;
 
+using System.Linq;
+using System.Text.Json;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Domain.Model;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -59,6 +63,16 @@ public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem
             .HasConversion(email => email.Value, value => EmailAddress.Create(value))
             .HasMaxLength(256);
 
+        builder.Property(x => x.Properties)
+            .HasColumnName("Properties")
+            .HasConversion(
+                properties => SerializeProperties(properties),
+                value => DeserializeProperties(value))
+            .Metadata.SetValueComparer(new ValueComparer<PropertyBag>(
+                (left, right) => SerializeProperties(left) == SerializeProperties(right),
+                value => SerializeProperties(value) == null ? 0 : SerializeProperties(value).GetHashCode(StringComparison.Ordinal),
+                value => DeserializeProperties(SerializeProperties(value))));
+
         builder.OwnsMany(x => x.Steps, sb =>
         {
             sb.Property(s => s.Id)
@@ -90,5 +104,19 @@ public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem
 
         builder.OwnsOneAuditState(); // TODO: use ToJson variant
         //builder.OwnsOne(e => e.AuditState, b => b.ToJson());
+    }
+
+    private static string SerializeProperties(PropertyBag properties)
+    {
+        return properties is null || !properties.Any()
+            ? null
+            : JsonSerializer.Serialize(properties, DefaultJsonSerializerOptions.Create());
+    }
+
+    private static PropertyBag DeserializeProperties(string value)
+    {
+        return string.IsNullOrWhiteSpace(value)
+            ? []
+            : JsonSerializer.Deserialize<PropertyBag>(value, DefaultJsonSerializerOptions.Create()) ?? [];
     }
 }

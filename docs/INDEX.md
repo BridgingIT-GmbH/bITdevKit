@@ -35,6 +35,7 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 - [Notifications](./features-notifications.md): Send and queue application notifications through transport-agnostic contracts with clear delivery boundaries.
 - [Modules](./features-modules.md): Structure modular monoliths as independently configurable feature modules within one host.
 - [Pipelines](./features-pipelines.md): Build structured, observable multi-step workflows with low-friction defaults.
+- [Orchestrations](./features-orchestrations.md): Model long-running stateful workflows with durable state, signals, timers, query services and operational endpoints.
 - [Filtering](./features-filtering.md): Simplify complex entity queries with a unified filtering solution.
 - [Extensions](./features-extensions.md): Use focused LINQ and helper extensions to write cleaner, more expressive application code.
 

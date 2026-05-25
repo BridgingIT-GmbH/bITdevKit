@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
+namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework.ActiveEntity;
 
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Repositories;
@@ -26,8 +26,8 @@ public class ActiveEntityInMemoryTests(ITestOutputHelper output, TestEnvironment
 {
     fixture.EnsureSqlServerDbContext();
     services.AddLogging();
-    services.AddSingleton<ILogger>(provider => XunitLogger.Create(output));
-    services.AddSingleton<ILoggerFactory>(provider => XunitLoggerFactory.Create(output));
+    services.AddSingleton(provider => XunitLogger.Create(output));
+    services.AddSingleton(provider => XunitLoggerFactory.Create(output));
     services.AddSqlServerDbContext<ActiveEntityDbContext>(fixture.SqlConnectionString);
     services.AddNotifier()
         .AddHandlers();

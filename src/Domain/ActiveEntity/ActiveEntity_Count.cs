@@ -47,7 +47,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
         ActiveEntityContext<TEntity, TId> context,
         CancellationToken cancellationToken = default)
     {
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result<long>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -126,7 +126,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
             return Task.FromResult(Result<long>.Failure("expression cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result<long>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -208,7 +208,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
             return Task.FromResult(Result<long>.Failure("specification cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result<long>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -289,7 +289,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
             return Task.FromResult(Result<long>.Failure("specifications cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result<long>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -374,7 +374,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
             return Task.FromResult(Result<long>.Failure("filter cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result<long>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {

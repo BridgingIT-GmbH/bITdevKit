@@ -14,7 +14,7 @@ public class EntityFrameworkQueueingBrokerTests
     {
         EntityFrameworkQueueMessageHandler.Reset();
         using var provider = this.CreateProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var worker = provider.GetRequiredService<EntityFrameworkQueueBrokerWorker<TestQueueDbContext>>();
         var message = new EntityFrameworkQueueMessage("persist-me");
 
@@ -44,7 +44,7 @@ public class EntityFrameworkQueueingBrokerTests
             configuration.AutoArchiveAfter = TimeSpan.Zero;
         });
 
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var worker = provider.GetRequiredService<EntityFrameworkQueueBrokerWorker<TestQueueDbContext>>();
         var message = new EntityFrameworkQueueMessage("archive-me");
 
@@ -72,7 +72,7 @@ public class EntityFrameworkQueueingBrokerTests
             configuration.AutoArchiveStatuses = [QueueMessageStatus.DeadLettered];
         });
 
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var worker = provider.GetRequiredService<EntityFrameworkQueueBrokerWorker<TestQueueDbContext>>();
         var message = new EntityFrameworkQueueMessage("stay-active");
 

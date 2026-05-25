@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.Entities;
 
-using Constants = BridgingIT.DevKit.Application.Queries.Constants;
+using Constants = Queries.Constants;
 
 [Obsolete("Use the new Requester from now on")]
 public abstract class

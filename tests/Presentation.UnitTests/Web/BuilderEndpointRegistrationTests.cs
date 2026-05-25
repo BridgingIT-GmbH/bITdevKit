@@ -6,8 +6,10 @@
 namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 
 using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Messaging;
+using BridgingIT.DevKit.Presentation.Web.Orchestrations;
 using BridgingIT.DevKit.Presentation.Web.Queueing;
 using BridgingIT.DevKit.Presentation.Web.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -55,6 +57,28 @@ public class BuilderEndpointRegistrationTests
             .ShouldBeTrue();
         services.Any(descriptor =>
             descriptor.ServiceType == typeof(QueueingEndpointsOptions) &&
+            ReferenceEquals(descriptor.ImplementationInstance, options))
+            .ShouldBeTrue();
+    }
+
+    [Fact]
+    public void OrchestrationBuilder_AddEndpoints_RegistersOrchestrationEndpointsAndOptions()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        var options = new OrchestrationEndpointsOptions { RequireAuthorization = true };
+
+        // Act
+        services.AddOrchestrations()
+            .AddEndpoints(options);
+
+        // Assert
+        services.Any(descriptor =>
+            descriptor.ServiceType == typeof(IEndpoints) &&
+            descriptor.ImplementationType == typeof(OrchestrationEndpoints))
+            .ShouldBeTrue();
+        services.Any(descriptor =>
+            descriptor.ServiceType == typeof(OrchestrationEndpointsOptions) &&
             ReferenceEquals(descriptor.ImplementationInstance, options))
             .ShouldBeTrue();
     }
@@ -175,6 +199,28 @@ public class BuilderEndpointRegistrationTests
         options.RequireAuthorization.ShouldBeTrue();
         options.GroupPath.ShouldBe("/api/test/queueing/direct");
         options.GroupTag.ShouldBe("queueing-direct");
+    }
+
+    [Fact]
+    public void OrchestrationService_AddEndpoints_WithOptionsBuilder_RegistersConfiguredOptions()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddOrchestrationEndpoints(options => options
+            .RequireAuthorization()
+            .GroupPath("/api/test/orchestrations/direct")
+            .GroupTag("orchestrations-direct"));
+
+        // Assert
+        var options = services.Single(descriptor => descriptor.ServiceType == typeof(OrchestrationEndpointsOptions))
+            .ImplementationInstance as OrchestrationEndpointsOptions;
+
+        options.ShouldNotBeNull();
+        options.RequireAuthorization.ShouldBeTrue();
+        options.GroupPath.ShouldBe("/api/test/orchestrations/direct");
+        options.GroupTag.ShouldBe("orchestrations-direct");
     }
 
     [Fact]

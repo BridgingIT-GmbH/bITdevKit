@@ -6,29 +6,55 @@
 namespace BridgingIT.DevKit.Application.Messaging;
 
 using System.Diagnostics.Metrics;
+using BridgingIT.DevKit.Common;
 
+/// <summary>
+/// Emits message handler total, current, and failure metrics around message processing.
+/// </summary>
+/// <example>
+/// <code>
+/// services.AddMessaging()
+///     .WithBehavior&lt;MetricsMessageHandlerBehavior&gt;();
+/// </code>
+/// </example>
 public class MetricsMessageHandlerBehavior(ILoggerFactory loggerFactory, IMeterFactory meterFactory = null)
     : MessageHandlerBehaviorBase(loggerFactory)
 {
+    /// <summary>
+    /// Wraps message handling and records the corresponding metrics.
+    /// </summary>
+    /// <typeparam name="TMessage">The message type being handled.</typeparam>
+    /// <param name="message">The message being processed.</param>
+    /// <param name="cancellationToken">The handler cancellation token.</param>
+    /// <param name="handler">The concrete handler instance.</param>
+    /// <param name="next">The next handler delegate.</param>
     public override async Task Handle<TMessage>(
         TMessage message,
         CancellationToken cancellationToken,
         object handler,
         MessageHandlerDelegate next)
     {
-        if (meterFactory is null || message is null)
+        if (message is null)
         {
             return;
         }
 
-        if (cancellationToken.IsCancellationRequested)
+        if (meterFactory is null || cancellationToken.IsCancellationRequested)
         {
+            await next().AnyContext();
             return;
         }
 
-        var meter = meterFactory.Create("bridgingit_devkit");
-        meter.CreateCounter<int>("messaging_handle").Add(1);
-        meter.CreateCounter<int>($"messaging_handle_{message.GetType().Name.ToLower()}").Add(1);
+        var messageName = Metrics.NormalizeTypeName(message.GetType());
+        var handleSeries = Metrics.Series("messaging_handle");
+        var typedHandleSeries = Metrics.Series("messaging_handle", messageName);
+        var currentHandleSeries = Metrics.CurrentSeries(handleSeries);
+        var currentTypedHandleSeries = Metrics.CurrentSeries(typedHandleSeries);
+
+        Metrics.Increment(meterFactory, handleSeries);
+        Metrics.Increment(meterFactory, typedHandleSeries);
+        Metrics.ChangeCurrent(meterFactory, currentHandleSeries, 1);
+        Metrics.ChangeCurrent(meterFactory, currentTypedHandleSeries, 1);
 
         try
         {
@@ -36,10 +62,15 @@ public class MetricsMessageHandlerBehavior(ILoggerFactory loggerFactory, IMeterF
         }
         catch
         {
-            meter.CreateCounter<int>("messaging_handle_failure").Add(1);
-            meter.CreateCounter<int>($"messaging_handle_{message.GetType().Name.ToLower()}_failure").Add(1);
+            Metrics.Increment(meterFactory, Metrics.FailureSeries(handleSeries));
+            Metrics.Increment(meterFactory, Metrics.FailureSeries(typedHandleSeries));
 
             throw;
+        }
+        finally
+        {
+            Metrics.ChangeCurrent(meterFactory, currentHandleSeries, -1);
+            Metrics.ChangeCurrent(meterFactory, currentTypedHandleSeries, -1);
         }
     }
 }

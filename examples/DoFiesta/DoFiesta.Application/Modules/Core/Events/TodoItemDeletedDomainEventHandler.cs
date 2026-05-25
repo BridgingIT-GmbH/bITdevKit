@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Application.Queueing;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;
 using Microsoft.Extensions.Logging;
@@ -22,11 +23,16 @@ using Microsoft.Extensions.Logging;
 /// <param name="loggerFactory">Factory used for creating loggers.</param>
 /// <param name="broker">Message broker used to persist example activity messages.</param>
 /// <param name="queueBroker">Queue broker used to enqueue example echo work items.</param>
-public class TodoItemDeletedDomainEventHandler(ILoggerFactory loggerFactory, IMessageBroker broker, IQueueBroker queueBroker)
+public class TodoItemDeletedDomainEventHandler(
+    ILoggerFactory loggerFactory,
+    IMessageBroker broker,
+    IQueueBroker queueBroker,
+    ITodoItemOrchestrationCoordinator orchestrationCoordinator)
     : DomainEventHandlerBase<TodoItemDeletedDomainEvent>(loggerFactory)
 {
     private readonly IMessageBroker broker = broker;
     private readonly IQueueBroker queueBroker = queueBroker;
+    private readonly ITodoItemOrchestrationCoordinator orchestrationCoordinator = orchestrationCoordinator;
 
     /// <summary>
     /// Determines whether this handler can handle the given event.
@@ -57,5 +63,10 @@ public class TodoItemDeletedDomainEventHandler(ILoggerFactory loggerFactory, IMe
                 "Deleted",
                 notification.Model?.Status.ToString()),
             cancellationToken);
+
+        if (notification.Model is not null) // ensure orchestration is stopped for this todo item as it has been deleted and no longer needs lifecycle tracking or reminders
+        {
+            await this.orchestrationCoordinator.HandleDeletedAsync(notification.Model, cancellationToken);
+        }
     }
 }

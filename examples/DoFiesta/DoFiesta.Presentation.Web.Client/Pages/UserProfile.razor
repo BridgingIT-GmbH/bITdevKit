@@ -195,7 +195,7 @@
 
             if (!string.IsNullOrEmpty(tokenStorage))
             {
-                var tokenInfo = JsonSerializer.Deserialize<JsonElement>(tokenStorage);
+                var tokenInfo = JsonSerializer.Deserialize<System.Text.Json.JsonElement>(tokenStorage);
                 accessToken = accessToken.EmptyToNull() ?? tokenInfo.GetProperty("access_token").GetString() ?? string.Empty;
                 idToken = tokenInfo.GetProperty("id_token").GetString() ?? string.Empty;
                 refreshToken = tokenInfo.GetProperty("refresh_token").GetString() ?? string.Empty;

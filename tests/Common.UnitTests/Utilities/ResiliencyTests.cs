@@ -354,7 +354,7 @@ public class ResiliencyTests
             .WithProgress(progress)
             .AddPipelineBehavior(new LoggingNotificationPipelineBehavior(new ConsoleLogger()))
             .Build();
-        notifier.Subscribe<TestNotification>(new TestNotificationHandler());
+        notifier.Subscribe(new TestNotificationHandler());
         notifier.Subscribe<TestNotification>(async (not, ct) => await Task.CompletedTask);
         var cts = new CancellationTokenSource();
 
@@ -412,8 +412,8 @@ public class ResiliencyTests
         // Arrange
         var notifier = new SimpleNotifierBuilder().Build();
         var handler = new TestNotificationHandler();
-        notifier.Subscribe<TestNotification>(handler);
-        notifier.Unsubscribe<TestNotification>(handler);
+        notifier.Subscribe(handler);
+        notifier.Unsubscribe(handler);
         var cts = new CancellationTokenSource();
 
         // Act

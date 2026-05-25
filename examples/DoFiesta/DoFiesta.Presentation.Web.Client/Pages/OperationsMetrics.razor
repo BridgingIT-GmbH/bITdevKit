@@ -1,0 +1,1643 @@
+@page "/operations/metrics"
+@using System.Globalization
+@using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen
+@using Microsoft.Kiota.Abstractions.Serialization
+@using Models = BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
+@inject BackendApiClient Api
+@inject ISnackbar Snackbar
+@inject IJSRuntime JS
+@implements IAsyncDisposable
+@attribute [RequireAuthentication]
+
+<PageTitle>DoFiesta - Operations Metrics</PageTitle>
+
+<MudContainer MaxWidth="MaxWidth.ExtraLarge" Class="mt-4 mb-6">
+    <MudPaper Class="pa-6 mb-4">
+        <div class="d-flex flex-wrap align-center gap-4">
+            <div>
+                <MudText Typo="Typo.h4" GutterBottom="true">Metrics</MudText>
+                @* <MudText Typo="Typo.body2">Inspect live devkit, .NET runtime, and ASP.NET request metrics from the current system snapshot.</MudText> *@
+            </div>
+            <MudSpacer />
+            <MudSelect T="int?" Label="Auto refresh" Variant="Variant.Outlined" Margin="Margin.Dense" Value="autoRefreshIntervalSeconds" ValueChanged="OnAutoRefreshIntervalChanged" Style="min-width: 170px;">
+                <MudSelectItem T="int?" Value="@((int?)null)">Off</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)1)">1 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)5)">5 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)15)">15 sec</MudSelectItem>
+                <MudSelectItem T="int?" Value="@((int?)30)">30 sec</MudSelectItem>
+            </MudSelect>
+            <MudButton Variant="Variant.Outlined" Color="Color.Info" StartIcon="@Icons.Material.Filled.Refresh" OnClick="ReloadAsync" Disabled="@loading">
+                Refresh
+            </MudButton>
+        </div>
+    </MudPaper>
+
+    <MudGrid Class="mb-4">
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">App Success</MudText>
+                <MudText Typo="Typo.h4">@DisplayCount(this.GetSummaryCard("totalSuccess"))</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">App Failure</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Error">@DisplayCount(this.GetSummaryCard("totalFailure"))</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">.NET CPU</MudText>
+                <MudText Typo="Typo.h4" Color="Color.Info">@FormatMetricNumber(this.dotNetSnapshot.CpuUsagePercent)%</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Working Set</MudText>
+                <MudText Typo="Typo.h6">@FormatMetricNumber(this.dotNetSnapshot.WorkingSetMb) MB</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">ASP.NET Requests</MudText>
+                <MudText Typo="Typo.h4">@DisplayCount(this.aspNetSnapshot.TotalRequests)</MudText>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="6" sm="4" md="2">
+            <MudPaper Class="pa-4">
+                <MudText Typo="Typo.caption">Avg Latency</MudText>
+                <MudText Typo="Typo.h6">@FormatMetricNumber(this.aspNetSnapshot.AverageLatencyMs) ms</MudText>
+                <MudText Typo="Typo.caption">@FormatTimestamp(this.GetLatestCapturedAt())</MudText>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+
+    @if (!string.IsNullOrWhiteSpace(loadError))
+    {
+        <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Class="mb-4">@loadError</MudAlert>
+    }
+
+    <MudTabs Rounded="true" Elevation="1">
+        <MudTabPanel Text="App">
+            <MudGrid Class="mb-4">
+                <MudItem xs="12" md="4">
+                    <MudPaper Class="pa-4 metric-panel-fill">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Top Current</MudText>
+                        @if (this.appSnapshot.TopCurrent.Count == 0)
+                        {
+                            <MudText Typo="Typo.body2">No live current metrics are available.</MudText>
+                        }
+                        else
+                        {
+                            <MudList T="string" Dense="true">
+                                @foreach (var metric in this.appSnapshot.TopCurrent.Take(5))
+                                {
+                                    <MudListItem T="string">
+                                        <div class="w-100 d-flex justify-space-between gap-4">
+                                            <MudText Typo="Typo.body2">@metric.Name</MudText>
+                                            <MudText Typo="Typo.body2" Class="font-weight-medium">@FormatMetricNumber(metric.Value)</MudText>
+                                        </div>
+                                    </MudListItem>
+                                }
+                            </MudList>
+                        }
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudPaper Class="pa-4 metric-panel-fill">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Top Failures</MudText>
+                        @if (this.overview.TopFailures.Count == 0)
+                        {
+                            <MudText Typo="Typo.body2">No failure metrics are currently recorded.</MudText>
+                        }
+                        else
+                        {
+                            <MudList T="string" Dense="true">
+                                @foreach (var metric in this.overview.TopFailures.Take(5))
+                                {
+                                    <MudListItem T="string">
+                                        <div class="w-100 d-flex justify-space-between gap-4">
+                                            <MudText Typo="Typo.body2">@metric.Name</MudText>
+                                            <MudText Typo="Typo.body2" Color="Color.Error" Class="font-weight-medium">@FormatMetricNumber(metric.Value)</MudText>
+                                        </div>
+                                    </MudListItem>
+                                }
+                            </MudList>
+                        }
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" md="4">
+                    <MudPaper Class="pa-4 metric-panel-fill">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Latency Highlights</MudText>
+                        @if (this.overview.LatencyHighlights.Count == 0)
+                        {
+                            <MudText Typo="Typo.body2">No latency histograms are available yet.</MudText>
+                        }
+                        else
+                        {
+                            <MudList T="string" Dense="true">
+                                @foreach (var metric in this.overview.LatencyHighlights.Take(5))
+                                {
+                                    <MudListItem T="string">
+                                        <div class="w-100">
+                                            <MudText Typo="Typo.body2">@metric.Name</MudText>
+                                            <MudText Typo="Typo.caption">avg @FormatMetricNumber(metric.Average) ms, max @FormatMetricNumber(metric.Max) ms</MudText>
+                                        </div>
+                                    </MudListItem>
+                                }
+                            </MudList>
+                        }
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+
+            <MudPaper Class="pa-4 mb-4">
+                <MudText Typo="Typo.h6" GutterBottom="true">Feature Overview</MudText>
+
+                @if (loading && this.featureRows.Count == 0)
+                {
+                    <div class="pa-2">
+                        <MudSkeleton Height="72px" Animation="Animation.Pulse" />
+                        <MudSkeleton Height="72px" Animation="Animation.Pulse" Class="mt-2" />
+                        <MudSkeleton Height="72px" Animation="Animation.Pulse" Class="mt-2" />
+                    </div>
+                }
+                else if (this.featureRows.Count == 0)
+                {
+                    <MudAlert Severity="Severity.Normal" Variant="Variant.Outlined">
+                        No feature overview data is available.
+                    </MudAlert>
+                }
+                else
+                {
+                    <MudTable Items="@this.featureRows" Dense="true" Hover="true" Elevation="0">
+                        <HeaderContent>
+                            <MudTh>Feature</MudTh>
+                            <MudTh>Success</MudTh>
+                            <MudTh>Failure</MudTh>
+                            <MudTh>Current</MudTh>
+                            <MudTh>Top Throughput</MudTh>
+                            <MudTh>Top Current</MudTh>
+                            <MudTh>Slowest Series</MudTh>
+                        </HeaderContent>
+                        <RowTemplate Context="feature">
+                            <MudTd DataLabel="Feature">@feature.Name</MudTd>
+                            <MudTd DataLabel="Success">@DisplayCount(feature.SuccessTotal)</MudTd>
+                            <MudTd DataLabel="Failure">
+                                <MudText Color="@(feature.FailureTotal > 0 ? Color.Error : Color.Inherit)">@DisplayCount(feature.FailureTotal)</MudText>
+                            </MudTd>
+                            <MudTd DataLabel="Current">
+                                <MudText Color="@(feature.CurrentTotal > 0 ? Color.Info : Color.Inherit)">@DisplayCount(feature.CurrentTotal)</MudText>
+                            </MudTd>
+                            <MudTd DataLabel="Top Throughput">@FormatMetricPair(feature.TopThroughput)</MudTd>
+                            <MudTd DataLabel="Top Current">@FormatMetricPair(feature.TopCurrent)</MudTd>
+                            <MudTd DataLabel="Slowest Series">@FormatLatencyPair(feature.SlowestSeries)</MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                }
+            </MudPaper>
+
+            <MudPaper Class="pa-4 mb-4">
+                <MudText Typo="Typo.h6" GutterBottom="true">Metric Explorer</MudText>
+                <MudGrid>
+                    <MudItem xs="12" md="4">
+                        <MudTextField @bind-Value="MetricSearch" Label="Search metric series" Clearable="true" />
+                    </MudItem>
+                    <MudItem xs="12" md="3">
+                        <MudSelect T="string" Label="Feature" @bind-Value="SelectedFeatureFilter">
+                            <MudSelectItem Value="@AllFilterValue">All features</MudSelectItem>
+                            @foreach (var feature in this.availableFeatures)
+                            {
+                                <MudSelectItem Value="@feature">@feature</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" md="3">
+                        <MudSelect T="string" Label="Kind" @bind-Value="SelectedKindFilter">
+                            <MudSelectItem Value="@AllFilterValue">All kinds</MudSelectItem>
+                            @foreach (var kind in this.availableKinds)
+                            {
+                                <MudSelectItem Value="@kind">@kind</MudSelectItem>
+                            }
+                        </MudSelect>
+                    </MudItem>
+                    <MudItem xs="12" md="2" Class="d-flex align-end">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Filled.ClearAll" OnClick="ClearMetricSelection" Disabled="@(this.selectedMetricNames.Count == 0)">
+                            Clear
+                        </MudButton>
+                    </MudItem>
+                </MudGrid>
+
+                <MudDivider Class="my-4" />
+
+                <MudGrid>
+                    <MudItem xs="12" lg="6">
+                        <MudText Typo="Typo.subtitle1" GutterBottom="true">Available Metrics (@this.filteredAvailableMetrics.Count)</MudText>
+                        <MudTable Items="@this.filteredAvailableMetrics" Dense="true" Hover="true" Elevation="0" RowsPerPage="10">
+                            <HeaderContent>
+                                <MudTh></MudTh>
+                                <MudTh>Feature</MudTh>
+                                <MudTh>Kind</MudTh>
+                                <MudTh>Series</MudTh>
+                            </HeaderContent>
+                            <RowTemplate Context="metric">
+                                <MudTd DataLabel="Selected">
+                                    <MudCheckBox T="bool" Value="@this.selectedMetricNames.Contains(metric.Name)" ValueChanged="@((bool value) => ToggleMetric(metric.Name, value))" />
+                                </MudTd>
+                                <MudTd DataLabel="Feature">@metric.Feature</MudTd>
+                                <MudTd DataLabel="Kind">@metric.Kind</MudTd>
+                                <MudTd DataLabel="Series">@metric.Name</MudTd>
+                            </RowTemplate>
+                        </MudTable>
+                    </MudItem>
+                    <MudItem xs="12" lg="6">
+                        <MudText Typo="Typo.subtitle1" GutterBottom="true">Selected Metrics (@this.selectedMetricRows.Count)</MudText>
+                        @if (this.selectedMetricRows.Count == 0)
+                        {
+                            <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+                                Select one or more metric series to inspect the current snapshot values.
+                            </MudAlert>
+                        }
+                        else
+                        {
+                            <MudTable Items="@this.selectedMetricRows" Dense="true" Hover="true" Elevation="0">
+                                <HeaderContent>
+                                    <MudTh>Series</MudTh>
+                                    <MudTh>Feature</MudTh>
+                                    <MudTh>Kind</MudTh>
+                                    <MudTh>Value</MudTh>
+                                    <MudTh>Detail</MudTh>
+                                </HeaderContent>
+                                <RowTemplate Context="metric">
+                                    <MudTd DataLabel="Series">@metric.Name</MudTd>
+                                    <MudTd DataLabel="Feature">@metric.Feature</MudTd>
+                                    <MudTd DataLabel="Kind">@metric.Kind</MudTd>
+                                    <MudTd DataLabel="Value">@metric.Value</MudTd>
+                                    <MudTd DataLabel="Detail">@metric.Detail</MudTd>
+                                </RowTemplate>
+                            </MudTable>
+                        }
+                    </MudItem>
+                </MudGrid>
+            </MudPaper>
+        </MudTabPanel>
+
+        <MudTabPanel Text=".NET">
+            <MudGrid Class="mb-4">
+                <MudItem xs="6" sm="4" md="2">
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.caption">CPU</MudText>
+                        <MudText Typo="Typo.h4">@FormatMetricNumber(this.dotNetSnapshot.CpuUsagePercent)%</MudText>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="6" sm="4" md="2">
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.caption">Working Set</MudText>
+                        <MudText Typo="Typo.h6">@FormatMetricNumber(this.dotNetSnapshot.WorkingSetMb) MB</MudText>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="6" sm="4" md="2">
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.caption">Managed Heap</MudText>
+                        <MudText Typo="Typo.h6">@FormatMetricNumber(this.dotNetSnapshot.HeapSizeMb) MB</MudText>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="6" sm="4" md="2">
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.caption">Allocated</MudText>
+                        <MudText Typo="Typo.h6">@FormatMetricNumber(this.dotNetSnapshot.TotalAllocatedMb) MB</MudText>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="6" sm="4" md="2">
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.caption">Worker Used</MudText>
+                        <MudText Typo="Typo.h4">@DisplayCount(this.dotNetSnapshot.WorkerThreadsUsed)</MudText>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="6" sm="4" md="2">
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.caption">Pending Work</MudText>
+                        <MudText Typo="Typo.h4">@DisplayCount(this.dotNetSnapshot.PendingWorkItems)</MudText>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid>
+                <MudItem xs="12" lg="6">
+                    <MudPaper Class="pa-4 mb-4 metric-panel-fill">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Memory & GC</MudText>
+                        <table class="mud-table-root w-100">
+                            <tbody>
+                                <tr><td>Working Set</td><td>@FormatMetricNumber(this.dotNetSnapshot.WorkingSetMb) MB</td></tr>
+                                <tr><td>Private Memory</td><td>@FormatMetricNumber(this.dotNetSnapshot.PrivateMemoryMb) MB</td></tr>
+                                <tr><td>Managed Memory</td><td>@FormatMetricNumber(this.dotNetSnapshot.ManagedMemoryMb) MB</td></tr>
+                                <tr><td>Heap Size</td><td>@FormatMetricNumber(this.dotNetSnapshot.HeapSizeMb) MB</td></tr>
+                                <tr><td>Fragmented Memory</td><td>@FormatMetricNumber(this.dotNetSnapshot.FragmentedMemoryMb) MB</td></tr>
+                                <tr><td>Total Allocated</td><td>@FormatMetricNumber(this.dotNetSnapshot.TotalAllocatedMb) MB</td></tr>
+                                <tr><td>GC Gen0</td><td>@DisplayCount(this.dotNetSnapshot.Gen0Collections)</td></tr>
+                                <tr><td>GC Gen1</td><td>@DisplayCount(this.dotNetSnapshot.Gen1Collections)</td></tr>
+                                <tr><td>GC Gen2</td><td>@DisplayCount(this.dotNetSnapshot.Gen2Collections)</td></tr>
+                            </tbody>
+                        </table>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" lg="6">
+                    <MudPaper Class="pa-4 mb-4 metric-panel-fill">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Threads & Runtime</MudText>
+                        <table class="mud-table-root w-100">
+                            <tbody>
+                                <tr><td>Thread Count</td><td>@DisplayCount(this.dotNetSnapshot.ThreadCount)</td></tr>
+                                <tr><td>Worker Threads Used</td><td>@DisplayCount(this.dotNetSnapshot.WorkerThreadsUsed)</td></tr>
+                                <tr><td>Worker Threads Available</td><td>@DisplayCount(this.dotNetSnapshot.WorkerThreadsAvailable)</td></tr>
+                                <tr><td>IO Threads Used</td><td>@DisplayCount(this.dotNetSnapshot.IoThreadsUsed)</td></tr>
+                                <tr><td>IO Threads Available</td><td>@DisplayCount(this.dotNetSnapshot.IoThreadsAvailable)</td></tr>
+                                <tr><td>Pending Work Items</td><td>@DisplayCount(this.dotNetSnapshot.PendingWorkItems)</td></tr>
+                                <tr><td>Process Uptime</td><td>@FormatUptime(this.dotNetSnapshot.UptimeSeconds)</td></tr>
+                                <tr><td>Captured</td><td>@FormatTimestamp(this.dotNetSnapshot.CapturedAtUtc)</td></tr>
+                            </tbody>
+                        </table>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </MudTabPanel>
+
+        <MudTabPanel Text="ASP.NET">
+            <MudGrid Class="mb-4">
+                <MudItem xs="6" sm="4" md="2">
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.caption">Requests</MudText>
+                        <MudText Typo="Typo.h4">@DisplayCount(this.aspNetSnapshot.TotalRequests)</MudText>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="6" sm="4" md="2">
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.caption">Active</MudText>
+                        <MudText Typo="Typo.h4" Color="Color.Info">@DisplayCount(this.aspNetSnapshot.ActiveRequests)</MudText>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="6" sm="4" md="2">
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.caption">Failures</MudText>
+                        <MudText Typo="Typo.h4" Color="Color.Error">@DisplayCount(this.aspNetSnapshot.FailedRequests)</MudText>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="6" sm="4" md="2">
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.caption">Avg Latency</MudText>
+                        <MudText Typo="Typo.h6">@FormatMetricNumber(this.aspNetSnapshot.AverageLatencyMs) ms</MudText>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="6" sm="4" md="2">
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.caption">Req/Minute</MudText>
+                        <MudText Typo="Typo.h6">@FormatMetricNumber(this.aspNetSnapshot.RequestsPerMinute)</MudText>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="6" sm="4" md="2">
+                    <MudPaper Class="pa-4">
+                        <MudText Typo="Typo.caption">Routes</MudText>
+                        <MudText Typo="Typo.h4">@DisplayCount(this.aspNetRoutesSnapshot.TrackedRouteCount)</MudText>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+
+            <MudGrid>
+                <MudItem xs="12" lg="6">
+                    <MudPaper Class="pa-4 mb-4 metric-panel-fill">
+                        <MudText Typo="Typo.h6" GutterBottom="true">HTTP Status Classes</MudText>
+                        <table class="mud-table-root w-100">
+                            <tbody>
+                                <tr><td>1xx Informational</td><td>@DisplayCount(this.aspNetSnapshot.Status1xx)</td></tr>
+                                <tr><td>2xx Success</td><td>@DisplayCount(this.aspNetSnapshot.Status2xx)</td></tr>
+                                <tr><td>3xx Redirect</td><td>@DisplayCount(this.aspNetSnapshot.Status3xx)</td></tr>
+                                <tr><td>4xx Client Error</td><td>@DisplayCount(this.aspNetSnapshot.Status4xx)</td></tr>
+                                <tr><td>5xx Server Error</td><td><MudText Color="Color.Error">@DisplayCount(this.aspNetSnapshot.Status5xx)</MudText></td></tr>
+                            </tbody>
+                        </table>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12" lg="6">
+                    <MudPaper Class="pa-4 mb-4 metric-panel-fill">
+                        <MudText Typo="Typo.h6" GutterBottom="true">Request Health</MudText>
+                        <table class="mud-table-root w-100">
+                            <tbody>
+                                <tr><td>Failure Rate</td><td>@FormatMetricNumber(this.aspNetSnapshot.FailureRatePercent)%</td></tr>
+                                <tr><td>Total Latency</td><td>@DisplayCount(this.aspNetSnapshot.TotalLatencyMs) ms</td></tr>
+                                <tr><td>Max Active</td><td>@DisplayCount(this.aspNetSnapshot.MaxObservedConcurrentRequests)</td></tr>
+                                <tr><td>Process Uptime</td><td>@FormatUptime(this.aspNetSnapshot.UptimeSeconds)</td></tr>
+                                <tr><td>Last Request</td><td>@FormatTimestamp(this.aspNetSnapshot.LastRequestAtUtc)</td></tr>
+                                <tr><td>Captured</td><td>@FormatTimestamp(this.aspNetSnapshot.CapturedAtUtc)</td></tr>
+                            </tbody>
+                        </table>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+
+            <MudPaper Class="pa-4 mb-4">
+                <MudText Typo="Typo.h6" GutterBottom="true">Per Route</MudText>
+
+                @if (this.aspNetRoutesSnapshot.Routes.Count == 0)
+                {
+                    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined">
+                        No route metrics have been captured yet.
+                    </MudAlert>
+                }
+                else
+                {
+                    <MudTable Items="@this.aspNetRoutesSnapshot.Routes" Dense="true" Hover="true" Elevation="0" RowsPerPage="10">
+                        <HeaderContent>
+                            <MudTh>Method</MudTh>
+                            <MudTh>Route</MudTh>
+                            <MudTh>Count</MudTh>
+                            <MudTh>1xx</MudTh>
+                            <MudTh>2xx</MudTh>
+                            <MudTh>3xx</MudTh>
+                            <MudTh>4xx</MudTh>
+                            <MudTh>5xx</MudTh>
+                            <MudTh>Failure Rate</MudTh>
+                            <MudTh>Total Latency</MudTh>
+                            <MudTh>Avg Latency</MudTh>
+                            <MudTh>Last Request</MudTh>
+                        </HeaderContent>
+                        <RowTemplate Context="route">
+                            <MudTd DataLabel="Method">@route.Method</MudTd>
+                            <MudTd DataLabel="Route"><code>@route.Route</code></MudTd>
+                            <MudTd DataLabel="Count">@DisplayCount(route.RequestCount)</MudTd>
+                            <MudTd DataLabel="1xx">@DisplayCount(route.Status1xx)</MudTd>
+                            <MudTd DataLabel="2xx">@DisplayCount(route.Status2xx)</MudTd>
+                            <MudTd DataLabel="3xx">@DisplayCount(route.Status3xx)</MudTd>
+                            <MudTd DataLabel="4xx">@DisplayCount(route.Status4xx)</MudTd>
+                            <MudTd DataLabel="5xx">
+                                <MudText Color="@(route.Status5xx > 0 ? Color.Error : Color.Inherit)">@DisplayCount(route.Status5xx)</MudText>
+                            </MudTd>
+                            <MudTd DataLabel="Failure Rate">
+                                <MudText Color="@(route.FailureRatePercent > 0 ? Color.Error : Color.Inherit)">@FormatMetricNumber(route.FailureRatePercent)%</MudText>
+                            </MudTd>
+                            <MudTd DataLabel="Total Latency">@DisplayCount(route.TotalLatencyMs) ms</MudTd>
+                            <MudTd DataLabel="Avg Latency">@FormatMetricNumber(route.AverageLatencyMs) ms</MudTd>
+                            <MudTd DataLabel="Last Request">@FormatTimestamp(route.LastRequestAtUtc)</MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                }
+            </MudPaper>
+        </MudTabPanel>
+    </MudTabs>
+</MudContainer>
+
+@code {
+    private const string AllFilterValue = "__all";
+
+    private readonly HashSet<string> selectedMetricNames = new(StringComparer.Ordinal);
+    private readonly List<FeatureRowModel> featureRows = [];
+    private readonly List<MetricDescriptorViewModel> filteredAvailableMetrics = [];
+    private readonly List<SelectedMetricRowModel> selectedMetricRows = [];
+    private readonly List<string> availableFeatures = [];
+    private readonly List<string> availableKinds = [];
+
+    private MetricsOverviewSnapshotViewModel overview = new();
+    private BdkMetricsSnapshotViewModel appSnapshot = new();
+    private DotNetMetricsSnapshotViewModel dotNetSnapshot = new();
+    private AspNetMetricsSnapshotViewModel aspNetSnapshot = new();
+    private AspNetRouteMetricsSnapshotViewModel aspNetRoutesSnapshot = new();
+    private bool loading;
+    private string loadError;
+    private string metricSearch;
+    private string selectedFeatureFilter = AllFilterValue;
+    private string selectedKindFilter = AllFilterValue;
+    private int? autoRefreshIntervalSeconds = 5;
+    private PeriodicTimer autoRefreshTimer;
+    private CancellationTokenSource autoRefreshCancellation;
+    private bool isDisposed;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var saved = await this.JS.InvokeAsync<string>("localStorage.getItem", "dofiesta:metrics:autoRefreshInterval");
+            if (!string.IsNullOrWhiteSpace(saved) && int.TryParse(saved, out var parsed) && parsed >= 0)
+            {
+                this.autoRefreshIntervalSeconds = parsed == 0 ? null : parsed;
+            }
+        }
+        catch
+        {
+        }
+
+        this.StartAutoRefresh();
+        await this.LoadAsync();
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        this.isDisposed = true;
+        this.StopAutoRefresh();
+
+        return ValueTask.CompletedTask;
+    }
+
+    private Task ReloadAsync()
+    {
+        return this.LoadAsync();
+    }
+
+    private string MetricSearch
+    {
+        get => this.metricSearch;
+        set
+        {
+            if (string.Equals(this.metricSearch, value, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            this.metricSearch = value;
+            this.RebuildViewModels();
+        }
+    }
+
+    private string SelectedFeatureFilter
+    {
+        get => this.selectedFeatureFilter;
+        set
+        {
+            if (string.Equals(this.selectedFeatureFilter, value, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            this.selectedFeatureFilter = value;
+            this.RebuildViewModels();
+        }
+    }
+
+    private string SelectedKindFilter
+    {
+        get => this.selectedKindFilter;
+        set
+        {
+            if (string.Equals(this.selectedKindFilter, value, StringComparison.Ordinal))
+            {
+                return;
+            }
+
+            this.selectedKindFilter = value;
+            this.RebuildViewModels();
+        }
+    }
+
+    private async Task OnAutoRefreshIntervalChanged(int? value)
+    {
+        this.autoRefreshIntervalSeconds = value;
+        this.StartAutoRefresh();
+
+        try
+        {
+            await this.JS.InvokeVoidAsync(
+                "localStorage.setItem",
+                "dofiesta:metrics:autoRefreshInterval",
+                value.HasValue && value.Value > 0 ? value.Value.ToString(CultureInfo.InvariantCulture) : "0");
+        }
+        catch
+        {
+        }
+    }
+
+    private async Task LoadAsync()
+    {
+        this.loading = true;
+        this.loadError = null;
+
+        try
+        {
+            var overviewTask = this.Api.Api._system.Metrics.Overview.GetAsync();
+            var appTask = this.Api.Api._system.Metrics.Bdk.GetAsync();
+            var dotNetTask = this.Api.Api._system.Metrics.Dotnet.GetAsync();
+            var aspNetTask = this.Api.Api._system.Metrics.Aspnet.GetAsync();
+            var aspNetRoutesTask = this.Api.Api._system.Metrics.Aspnet.Routes.GetAsync();
+
+            await Task.WhenAll(overviewTask, appTask, dotNetTask, aspNetTask, aspNetRoutesTask);
+
+            this.overview = this.MapOverviewSnapshot(overviewTask.Result);
+            this.appSnapshot = this.MapBdkSnapshot(appTask.Result);
+            this.dotNetSnapshot = this.MapDotNetSnapshot(dotNetTask.Result);
+            this.aspNetSnapshot = this.MapAspNetSnapshot(aspNetTask.Result);
+            this.aspNetRoutesSnapshot = this.MapAspNetRouteSnapshot(aspNetRoutesTask.Result);
+
+            this.SyncFilters();
+            this.RebuildViewModels();
+        }
+        catch (Exception ex)
+        {
+            this.loadError = ex.Message;
+            this.Snackbar.Add($"Failed to load metrics: {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            this.loading = false;
+            await this.InvokeSafeStateHasChangedAsync();
+        }
+    }
+
+    private void SyncFilters()
+    {
+        this.availableFeatures.Clear();
+        this.availableFeatures.AddRange(this.appSnapshot.AvailableMetrics
+            .Select(metric => metric.Feature)
+            .Where(feature => !string.IsNullOrWhiteSpace(feature))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(feature => feature, StringComparer.OrdinalIgnoreCase));
+
+        this.availableKinds.Clear();
+        this.availableKinds.AddRange(this.appSnapshot.AvailableMetrics
+            .Select(metric => metric.Kind)
+            .Where(kind => !string.IsNullOrWhiteSpace(kind))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(kind => kind, StringComparer.OrdinalIgnoreCase));
+
+        if (!string.Equals(this.selectedFeatureFilter, AllFilterValue, StringComparison.Ordinal)
+            && !this.availableFeatures.Contains(this.selectedFeatureFilter, StringComparer.OrdinalIgnoreCase))
+        {
+            this.selectedFeatureFilter = AllFilterValue;
+        }
+
+        if (!string.Equals(this.selectedKindFilter, AllFilterValue, StringComparison.Ordinal)
+            && !this.availableKinds.Contains(this.selectedKindFilter, StringComparer.OrdinalIgnoreCase))
+        {
+            this.selectedKindFilter = AllFilterValue;
+        }
+
+        var availableMetricNames = this.appSnapshot.AvailableMetrics.Select(metric => metric.Name).ToHashSet(StringComparer.Ordinal);
+        this.selectedMetricNames.RemoveWhere(name => !availableMetricNames.Contains(name));
+    }
+
+    private void RebuildViewModels()
+    {
+        this.featureRows.Clear();
+        this.featureRows.AddRange(this.overview.Features.Values
+            .OrderBy(feature => feature.Name, StringComparer.OrdinalIgnoreCase)
+            .Select(feature => new FeatureRowModel
+            {
+                Name = feature.Name,
+                SuccessTotal = feature.SuccessTotal,
+                FailureTotal = feature.FailureTotal,
+                CurrentTotal = feature.CurrentTotal,
+                TopThroughput = feature.TopThroughput,
+                TopCurrent = feature.TopCurrent,
+                SlowestSeries = feature.SlowestSeries,
+            }));
+
+        this.filteredAvailableMetrics.Clear();
+        this.filteredAvailableMetrics.AddRange(this.appSnapshot.AvailableMetrics
+            .Where(this.MatchesMetricFilter)
+            .OrderBy(metric => metric.Feature, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(metric => metric.Kind, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(metric => metric.Name, StringComparer.OrdinalIgnoreCase)
+            .Select(metric => new MetricDescriptorViewModel
+            {
+                Name = metric.Name,
+                Feature = metric.Feature,
+                Kind = metric.Kind,
+                Unit = metric.Unit,
+            }));
+
+        this.selectedMetricRows.Clear();
+        this.selectedMetricRows.AddRange(this.appSnapshot.AvailableMetrics
+            .Where(metric => this.selectedMetricNames.Contains(metric.Name))
+            .Select(this.BuildSelectedMetricRow)
+            .Where(metric => metric is not null)
+            .OrderBy(metric => metric.Feature, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(metric => metric.Kind, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(metric => metric.Name, StringComparer.OrdinalIgnoreCase));
+    }
+
+    private bool MatchesMetricFilter(BdkMetricDescriptorViewModel metric)
+    {
+        if (!string.Equals(this.selectedFeatureFilter, AllFilterValue, StringComparison.Ordinal)
+            && !string.Equals(metric.Feature, this.selectedFeatureFilter, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (!string.Equals(this.selectedKindFilter, AllFilterValue, StringComparison.Ordinal)
+            && !string.Equals(metric.Kind, this.selectedKindFilter, StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(this.metricSearch))
+        {
+            return true;
+        }
+
+        return metric.Name.Contains(this.metricSearch, StringComparison.OrdinalIgnoreCase)
+            || metric.Feature.Contains(this.metricSearch, StringComparison.OrdinalIgnoreCase)
+            || metric.Kind.Contains(this.metricSearch, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private SelectedMetricRowModel BuildSelectedMetricRow(BdkMetricDescriptorViewModel metric)
+    {
+        if (!this.appSnapshot.Features.TryGetValue(metric.Feature, out var feature))
+        {
+            return null;
+        }
+
+        if (string.Equals(metric.Kind, "duration", StringComparison.OrdinalIgnoreCase)
+            && feature.Durations.TryGetValue(metric.Name, out var histogram))
+        {
+            return new SelectedMetricRowModel
+            {
+                Name = metric.Name,
+                Feature = metric.Feature,
+                Kind = metric.Kind,
+                Value = $"avg {FormatMetricNumber(histogram.Average)} {metric.Unit ?? "ms"}",
+                Detail = $"max {FormatMetricNumber(histogram.Max)} {metric.Unit ?? "ms"}, count {DisplayCount(histogram.Count)}",
+            };
+        }
+
+        if (string.Equals(metric.Kind, "current", StringComparison.OrdinalIgnoreCase)
+            && feature.Current.TryGetValue(metric.Name, out var currentValue))
+        {
+            return new SelectedMetricRowModel
+            {
+                Name = metric.Name,
+                Feature = metric.Feature,
+                Kind = metric.Kind,
+                Value = FormatMetricNumber(currentValue),
+                Detail = "Current live value",
+            };
+        }
+
+        if (feature.Counters.TryGetValue(metric.Name, out var counterValue))
+        {
+            return new SelectedMetricRowModel
+            {
+                Name = metric.Name,
+                Feature = metric.Feature,
+                Kind = metric.Kind,
+                Value = FormatMetricNumber(counterValue),
+                Detail = string.Equals(metric.Kind, "total", StringComparison.OrdinalIgnoreCase)
+                    ? "Cumulative total"
+                    : "Snapshot counter",
+            };
+        }
+
+        return new SelectedMetricRowModel
+        {
+            Name = metric.Name,
+            Feature = metric.Feature,
+            Kind = metric.Kind,
+            Value = "-",
+            Detail = "Not present in current snapshot",
+        };
+    }
+
+    private void ToggleMetric(string name, bool value)
+    {
+        if (value)
+        {
+            this.selectedMetricNames.Add(name);
+        }
+        else
+        {
+            this.selectedMetricNames.Remove(name);
+        }
+
+        this.RebuildViewModels();
+    }
+
+    private void ClearMetricSelection()
+    {
+        this.selectedMetricNames.Clear();
+        this.RebuildViewModels();
+    }
+
+    private MetricsOverviewSnapshotViewModel MapOverviewSnapshot(Models.MetricsOverviewSnapshotModel source)
+    {
+        if (source is null)
+        {
+            return new MetricsOverviewSnapshotViewModel();
+        }
+
+        return new MetricsOverviewSnapshotViewModel
+        {
+            CapturedAtUtc = source.CapturedAtUtc,
+            ProcessStartedAtUtc = source.ProcessStartedAtUtc,
+            UptimeSeconds = source.UptimeSeconds,
+            SummaryCards = this.ReadDoubleDictionary(source.SummaryCards),
+            Features = this.ReadOverviewFeatures(source.Features),
+            TopFailures = this.ReadMetricValueList(source.TopFailures),
+            TopThroughput = this.ReadMetricValueList(source.TopThroughput),
+            TopCurrent = this.ReadMetricValueList(source.TopCurrent),
+            LatencyHighlights = this.ReadMetricLatencyList(source.LatencyHighlights),
+        };
+    }
+
+    private BdkMetricsSnapshotViewModel MapBdkSnapshot(Models.MetricsSnapshotModel source)
+    {
+        if (source is null)
+        {
+            return new BdkMetricsSnapshotViewModel();
+        }
+
+        return new BdkMetricsSnapshotViewModel
+        {
+            Meter = source.Meter ?? string.Empty,
+            CapturedAtUtc = source.CapturedAtUtc,
+            ProcessStartedAtUtc = source.ProcessStartedAtUtc,
+            UptimeSeconds = source.UptimeSeconds,
+            Features = this.ReadBdkFeatures(source.Features),
+            AvailableMetrics = (source.AvailableMetrics ?? [])
+                .Select(metric => new BdkMetricDescriptorViewModel
+                {
+                    Name = metric?.Name ?? string.Empty,
+                    Feature = metric?.Feature ?? string.Empty,
+                    Kind = metric?.Kind ?? string.Empty,
+                    Unit = metric?.Unit ?? string.Empty,
+                })
+                .ToList(),
+            TopFailures = this.ReadMetricValueList(source.TopFailures),
+            TopThroughput = this.ReadMetricValueList(source.TopThroughput),
+            TopCurrent = this.ReadMetricValueList(source.TopCurrent),
+            LatencyHighlights = this.ReadMetricLatencyList(source.LatencyHighlights),
+        };
+    }
+
+    private DotNetMetricsSnapshotViewModel MapDotNetSnapshot(Models.DotNetMetricsSnapshotModel source)
+    {
+        if (source is null)
+        {
+            return new DotNetMetricsSnapshotViewModel();
+        }
+
+        return new DotNetMetricsSnapshotViewModel
+        {
+            CapturedAtUtc = source.CapturedAtUtc,
+            ProcessStartedAtUtc = source.ProcessStartedAtUtc,
+            UptimeSeconds = source.UptimeSeconds,
+            CpuUsagePercent = source.CpuUsagePercent,
+            WorkingSetMb = source.WorkingSetMb,
+            PrivateMemoryMb = source.PrivateMemoryMb,
+            ManagedMemoryMb = source.ManagedMemoryMb,
+            HeapSizeMb = source.HeapSizeMb,
+            FragmentedMemoryMb = source.FragmentedMemoryMb,
+            TotalAllocatedMb = source.TotalAllocatedMb,
+            Gen0Collections = source.Gen0Collections,
+            Gen1Collections = source.Gen1Collections,
+            Gen2Collections = source.Gen2Collections,
+            ThreadCount = source.ThreadCount,
+            WorkerThreadsUsed = source.WorkerThreadsUsed,
+            WorkerThreadsAvailable = source.WorkerThreadsAvailable,
+            IoThreadsUsed = source.IoThreadsUsed,
+            IoThreadsAvailable = source.IoThreadsAvailable,
+            PendingWorkItems = source.PendingWorkItems,
+        };
+    }
+
+    private AspNetMetricsSnapshotViewModel MapAspNetSnapshot(Models.AspNetMetricsSnapshotModel source)
+    {
+        if (source is null)
+        {
+            return new AspNetMetricsSnapshotViewModel();
+        }
+
+        return new AspNetMetricsSnapshotViewModel
+        {
+            CapturedAtUtc = source.CapturedAtUtc,
+            ProcessStartedAtUtc = source.ProcessStartedAtUtc,
+            UptimeSeconds = source.UptimeSeconds,
+            TotalRequests = source.TotalRequests,
+            TrackedRouteCount = source.TrackedRouteCount,
+            ActiveRequests = source.ActiveRequests,
+            MaxObservedConcurrentRequests = source.MaxObservedConcurrentRequests,
+            FailedRequests = source.FailedRequests,
+            FailureRatePercent = source.FailureRatePercent,
+            AverageLatencyMs = source.AverageLatencyMs,
+            TotalLatencyMs = source.TotalLatencyMs,
+            RequestsPerMinute = source.RequestsPerMinute,
+            Status1xx = source.Status1xx,
+            Status2xx = source.Status2xx,
+            Status3xx = source.Status3xx,
+            Status4xx = source.Status4xx,
+            Status5xx = source.Status5xx,
+            LastRequestAtUtc = source.LastRequestAtUtc,
+        };
+    }
+
+    private AspNetRouteMetricsSnapshotViewModel MapAspNetRouteSnapshot(Models.AspNetRouteMetricsSnapshotModel source)
+    {
+        if (source is null)
+        {
+            return new AspNetRouteMetricsSnapshotViewModel();
+        }
+
+        return new AspNetRouteMetricsSnapshotViewModel
+        {
+            CapturedAtUtc = source.CapturedAtUtc,
+            ProcessStartedAtUtc = source.ProcessStartedAtUtc,
+            UptimeSeconds = source.UptimeSeconds,
+            TrackedRouteCount = source.TrackedRouteCount,
+            Routes = (source.Routes ?? [])
+                .Select(route => new AspNetRouteMetricsRowViewModel
+                {
+                    Method = route?.Method ?? string.Empty,
+                    Route = route?.Route ?? string.Empty,
+                    RequestCount = route?.RequestCount,
+                    Status1xx = route?.Status1xx,
+                    Status2xx = route?.Status2xx,
+                    Status3xx = route?.Status3xx,
+                    Status4xx = route?.Status4xx,
+                    Status5xx = route?.Status5xx,
+                    FailureCount = route?.FailureCount,
+                    FailureRatePercent = route?.FailureRatePercent,
+                    TotalLatencyMs = route?.TotalLatencyMs,
+                    AverageLatencyMs = route?.AverageLatencyMs,
+                    LastRequestAtUtc = route?.LastRequestAtUtc,
+                })
+                .ToList()
+        };
+    }
+
+    private Dictionary<string, MetricsOverviewFeatureViewModel> ReadOverviewFeatures(IAdditionalDataHolder holder)
+    {
+        return this.ReadAdditionalData(holder)
+            .Select(entry => new KeyValuePair<string, MetricsOverviewFeatureViewModel>(
+                entry.Key,
+                this.ReadOverviewFeature(entry.Key, entry.Value)))
+            .ToDictionary(entry => entry.Key, entry => entry.Value, StringComparer.OrdinalIgnoreCase);
+    }
+
+    private Dictionary<string, BdkFeatureSnapshotViewModel> ReadBdkFeatures(IAdditionalDataHolder holder)
+    {
+        return this.ReadAdditionalData(holder)
+            .Select(entry => new KeyValuePair<string, BdkFeatureSnapshotViewModel>(
+                entry.Key,
+                this.ReadBdkFeature(entry.Key, entry.Value)))
+            .ToDictionary(entry => entry.Key, entry => entry.Value, StringComparer.OrdinalIgnoreCase);
+    }
+
+    private MetricsOverviewFeatureViewModel ReadOverviewFeature(string name, object value)
+    {
+        var data = this.ReadAdditionalData(value);
+
+        return new MetricsOverviewFeatureViewModel
+        {
+            Name = this.ReadString(data, "name") ?? name,
+            SuccessTotal = this.ReadNullableDouble(data, "successTotal"),
+            FailureTotal = this.ReadNullableDouble(data, "failureTotal"),
+            CurrentTotal = this.ReadNullableDouble(data, "currentTotal"),
+            TopThroughput = this.ReadMetricValue(data, "topThroughput"),
+            TopCurrent = this.ReadMetricValue(data, "topCurrent"),
+            SlowestSeries = this.ReadMetricLatency(data, "slowestSeries"),
+        };
+    }
+
+    private BdkFeatureSnapshotViewModel ReadBdkFeature(string name, object value)
+    {
+        var data = this.ReadAdditionalData(value);
+
+        return new BdkFeatureSnapshotViewModel
+        {
+            Name = this.ReadString(data, "name") ?? name,
+            Counters = this.ReadDoubleDictionary(this.ReadValue(data, "counters")),
+            Current = this.ReadDoubleDictionary(this.ReadValue(data, "current")),
+            Durations = this.ReadHistogramDictionary(this.ReadValue(data, "durations")),
+            SuccessTotal = this.ReadNullableDouble(data, "successTotal"),
+            FailureTotal = this.ReadNullableDouble(data, "failureTotal"),
+            CurrentTotal = this.ReadNullableDouble(data, "currentTotal"),
+            TopThroughput = this.ReadMetricValueList(this.ReadValue(data, "topThroughput")),
+            TopCurrent = this.ReadMetricValueList(this.ReadValue(data, "topCurrent")),
+            TopFailures = this.ReadMetricValueList(this.ReadValue(data, "topFailures")),
+            LatencyHighlights = this.ReadMetricLatencyList(this.ReadValue(data, "latencyHighlights")),
+        };
+    }
+
+    private Dictionary<string, BdkHistogramSnapshotViewModel> ReadHistogramDictionary(object value)
+    {
+        return this.ReadAdditionalData(value)
+            .Select(entry => new KeyValuePair<string, BdkHistogramSnapshotViewModel>(
+                entry.Key,
+                this.ReadHistogram(entry.Value)))
+            .ToDictionary(entry => entry.Key, entry => entry.Value, StringComparer.Ordinal);
+    }
+
+    private BdkHistogramSnapshotViewModel ReadHistogram(object value)
+    {
+        var data = this.ReadAdditionalData(value);
+
+        return new BdkHistogramSnapshotViewModel
+        {
+            Count = this.ReadNullableLong(data, "count"),
+            Sum = this.ReadNullableDouble(data, "sum"),
+            Average = this.ReadNullableDouble(data, "average"),
+            Max = this.ReadNullableDouble(data, "max"),
+        };
+    }
+
+    private List<MetricValueViewModel> ReadMetricValueList(IEnumerable<Models.MetricValueModel> values)
+    {
+        return (values ?? [])
+            .Select(value => new MetricValueViewModel
+            {
+                Name = value?.Name ?? string.Empty,
+                Value = value?.Value,
+            })
+            .ToList();
+    }
+
+    private List<MetricValueViewModel> ReadMetricValueList(object value)
+    {
+        return this.ReadSequence(value)
+            .Select(this.ReadMetricValue)
+            .Where(item => item is not null)
+            .ToList();
+    }
+
+    private MetricValueViewModel ReadMetricValue(IDictionary<string, object> data, string key)
+    {
+        return this.ReadMetricValue(this.ReadValue(data, key));
+    }
+
+    private MetricValueViewModel ReadMetricValue(object value)
+    {
+        return value switch
+        {
+            Models.MetricValueModel model => new MetricValueViewModel
+            {
+                Name = model.Name ?? string.Empty,
+                Value = model.Value,
+            },
+            _ => new MetricValueViewModel
+            {
+                Name = this.ReadString(this.ReadAdditionalData(value), "name") ?? string.Empty,
+                Value = this.ReadNullableDouble(this.ReadAdditionalData(value), "value"),
+            }
+        };
+    }
+
+    private List<MetricLatencyViewModel> ReadMetricLatencyList(IEnumerable<Models.MetricLatencyModel> values)
+    {
+        return (values ?? [])
+            .Select(value => new MetricLatencyViewModel
+            {
+                Name = value?.Name ?? string.Empty,
+                Count = value?.Count,
+                Sum = value?.Sum,
+                Average = value?.Average,
+                Max = value?.Max,
+            })
+            .ToList();
+    }
+
+    private List<MetricLatencyViewModel> ReadMetricLatencyList(object value)
+    {
+        return this.ReadSequence(value)
+            .Select(this.ReadMetricLatency)
+            .Where(item => item is not null)
+            .ToList();
+    }
+
+    private MetricLatencyViewModel ReadMetricLatency(IDictionary<string, object> data, string key)
+    {
+        return this.ReadMetricLatency(this.ReadValue(data, key));
+    }
+
+    private MetricLatencyViewModel ReadMetricLatency(object value)
+    {
+        return value switch
+        {
+            Models.MetricLatencyModel model => new MetricLatencyViewModel
+            {
+                Name = model.Name ?? string.Empty,
+                Count = model.Count,
+                Sum = model.Sum,
+                Average = model.Average,
+                Max = model.Max,
+            },
+            _ => new MetricLatencyViewModel
+            {
+                Name = this.ReadString(this.ReadAdditionalData(value), "name") ?? string.Empty,
+                Count = this.ReadNullableLong(this.ReadAdditionalData(value), "count"),
+                Sum = this.ReadNullableDouble(this.ReadAdditionalData(value), "sum"),
+                Average = this.ReadNullableDouble(this.ReadAdditionalData(value), "average"),
+                Max = this.ReadNullableDouble(this.ReadAdditionalData(value), "max"),
+            }
+        };
+    }
+
+    private Dictionary<string, double> ReadDoubleDictionary(IAdditionalDataHolder holder)
+    {
+        return this.ReadDoubleDictionary((object)holder);
+    }
+
+    private Dictionary<string, double> ReadDoubleDictionary(object value)
+    {
+        return this.ReadAdditionalData(value)
+            .Select(entry => new KeyValuePair<string, double?>(entry.Key, this.ReadDouble(entry.Value)))
+            .Where(entry => entry.Value.HasValue)
+            .ToDictionary(entry => entry.Key, entry => entry.Value.Value, StringComparer.OrdinalIgnoreCase);
+    }
+
+    private IDictionary<string, object> ReadAdditionalData(IAdditionalDataHolder holder)
+    {
+        return holder?.AdditionalData ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
+    }
+
+    private IDictionary<string, object> ReadAdditionalData(object value)
+    {
+        return value switch
+        {
+            null => new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase),
+            IDictionary<string, object> dictionary => dictionary,
+            IAdditionalDataHolder holder => holder.AdditionalData ?? new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase),
+            UntypedObject untypedObject => untypedObject.GetValue()
+                .ToDictionary(entry => entry.Key, entry => (object)entry.Value, StringComparer.OrdinalIgnoreCase),
+            _ => new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase),
+        };
+    }
+
+    private IEnumerable<object> ReadSequence(object value)
+    {
+        return value switch
+        {
+            null => [],
+            UntypedArray untypedArray => untypedArray.GetValue().Cast<object>(),
+            IEnumerable<object> items => items,
+            System.Collections.IEnumerable items => items.Cast<object>(),
+            _ => [],
+        };
+    }
+
+    private object ReadValue(IDictionary<string, object> data, string key)
+    {
+        return data.TryGetValue(key, out var value) ? value : null;
+    }
+
+    private string ReadString(IDictionary<string, object> data, string key)
+    {
+        return this.ReadString(this.ReadValue(data, key));
+    }
+
+    private string ReadString(object value)
+    {
+        return value switch
+        {
+            null => null,
+            UntypedString stringValue => stringValue.GetValue(),
+            string stringValue => stringValue,
+            _ => Convert.ToString(value, CultureInfo.InvariantCulture),
+        };
+    }
+
+    private double? ReadNullableDouble(IDictionary<string, object> data, string key)
+    {
+        return this.ReadDouble(this.ReadValue(data, key));
+    }
+
+    private double? ReadDouble(object value)
+    {
+        return value switch
+        {
+            null => null,
+            UntypedDouble doubleValue => doubleValue.GetValue(),
+            UntypedFloat floatValue => Convert.ToDouble(floatValue.GetValue(), CultureInfo.InvariantCulture),
+            UntypedDecimal decimalValue => Convert.ToDouble(decimalValue.GetValue(), CultureInfo.InvariantCulture),
+            UntypedInteger intValue => intValue.GetValue(),
+            UntypedLong longValue => longValue.GetValue(),
+            double doubleValue => doubleValue,
+            float floatValue => Convert.ToDouble(floatValue, CultureInfo.InvariantCulture),
+            decimal decimalValue => Convert.ToDouble(decimalValue, CultureInfo.InvariantCulture),
+            int intValue => intValue,
+            long longValue => longValue,
+            short shortValue => shortValue,
+            byte byteValue => byteValue,
+            string stringValue when double.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsed) => parsed,
+            _ => null,
+        };
+    }
+
+    private long? ReadNullableLong(IDictionary<string, object> data, string key)
+    {
+        return this.ReadLong(this.ReadValue(data, key));
+    }
+
+    private long? ReadLong(object value)
+    {
+        return value switch
+        {
+            null => null,
+            UntypedLong longValue => longValue.GetValue(),
+            UntypedInteger intValue => intValue.GetValue(),
+            UntypedDouble doubleValue => Convert.ToInt64(doubleValue.GetValue(), CultureInfo.InvariantCulture),
+            UntypedDecimal decimalValue => Convert.ToInt64(decimalValue.GetValue(), CultureInfo.InvariantCulture),
+            long longValue => longValue,
+            int intValue => intValue,
+            short shortValue => shortValue,
+            byte byteValue => byteValue,
+            double doubleValue => Convert.ToInt64(doubleValue, CultureInfo.InvariantCulture),
+            decimal decimalValue => Convert.ToInt64(decimalValue, CultureInfo.InvariantCulture),
+            string stringValue when long.TryParse(stringValue, NumberStyles.Any, CultureInfo.InvariantCulture, out var parsed) => parsed,
+            _ => null,
+        };
+    }
+
+    private double GetSummaryCard(string key)
+    {
+        return this.overview.SummaryCards.TryGetValue(key, out var value) ? value : 0;
+    }
+
+    private DateTimeOffset? GetLatestCapturedAt()
+    {
+        var latest = new[] { this.overview.CapturedAtUtc, this.dotNetSnapshot.CapturedAtUtc, this.aspNetSnapshot.CapturedAtUtc }
+            .Where(value => value.HasValue)
+            .Select(value => value.Value)
+            .OrderByDescending(value => value)
+            .FirstOrDefault();
+
+        return latest == default ? null : latest;
+    }
+
+    private static string FormatMetricPair(MetricValueViewModel metric)
+    {
+        return string.IsNullOrWhiteSpace(metric?.Name)
+            ? "-"
+            : $"{metric.Name} ({FormatMetricNumber(metric.Value)})";
+    }
+
+    private static string FormatLatencyPair(MetricLatencyViewModel metric)
+    {
+        return string.IsNullOrWhiteSpace(metric?.Name)
+            ? "-"
+            : $"{metric.Name} ({FormatMetricNumber(metric.Average)} ms avg)";
+    }
+
+    private static string DisplayCount(double? value)
+    {
+        return FormatMetricNumber(value);
+    }
+
+    private static string DisplayCount(long? value)
+    {
+        return value.HasValue ? value.Value.ToString("N0", CultureInfo.InvariantCulture) : "0";
+    }
+
+    private static string DisplayCount(int? value)
+    {
+        return value.HasValue ? value.Value.ToString("N0", CultureInfo.InvariantCulture) : "0";
+    }
+
+    private static string FormatMetricNumber(double? value)
+    {
+        if (!value.HasValue)
+        {
+            return "0";
+        }
+
+        var rounded = Math.Round(value.Value, 2);
+        return Math.Abs(rounded % 1) < 0.0001
+            ? rounded.ToString("N0", CultureInfo.InvariantCulture)
+            : rounded.ToString("N2", CultureInfo.InvariantCulture);
+    }
+
+    private static string FormatTimestamp(DateTimeOffset? value)
+    {
+        return value.HasValue ? value.Value.LocalDateTime.ToString("g", CultureInfo.InvariantCulture) : "-";
+    }
+
+    private static string FormatUptime(double? uptimeSeconds)
+    {
+        if (!uptimeSeconds.HasValue || uptimeSeconds <= 0)
+        {
+            return "-";
+        }
+
+        return TimeSpan.FromSeconds(uptimeSeconds.Value).Humanize(2);
+    }
+
+    private void StartAutoRefresh()
+    {
+        this.StopAutoRefresh();
+
+        if (!this.autoRefreshIntervalSeconds.HasValue || this.autoRefreshIntervalSeconds.Value <= 0)
+        {
+            return;
+        }
+
+        this.autoRefreshCancellation = new CancellationTokenSource();
+        this.autoRefreshTimer = new PeriodicTimer(TimeSpan.FromSeconds(this.autoRefreshIntervalSeconds.Value));
+        _ = this.RunAutoRefreshAsync(this.autoRefreshTimer, this.autoRefreshCancellation.Token);
+    }
+
+    private void StopAutoRefresh()
+    {
+        if (this.autoRefreshCancellation is not null)
+        {
+            this.autoRefreshCancellation.Cancel();
+            this.autoRefreshCancellation.Dispose();
+            this.autoRefreshCancellation = null;
+        }
+
+        this.autoRefreshTimer?.Dispose();
+        this.autoRefreshTimer = null;
+    }
+
+    private async Task RunAutoRefreshAsync(PeriodicTimer timer, CancellationToken cancellationToken)
+    {
+        try
+        {
+            while (await timer.WaitForNextTickAsync(cancellationToken))
+            {
+                if (!this.loading)
+                {
+                    await this.LoadAsync();
+                }
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        catch (ObjectDisposedException)
+        {
+        }
+    }
+
+    private Task InvokeSafeStateHasChangedAsync()
+    {
+        return this.isDisposed ? Task.CompletedTask : this.InvokeAsync(this.StateHasChanged);
+    }
+
+    private class MetricsSnapshotBaseViewModel
+    {
+        public DateTimeOffset? CapturedAtUtc { get; set; }
+
+        public DateTimeOffset? ProcessStartedAtUtc { get; set; }
+
+        public double? UptimeSeconds { get; set; }
+    }
+
+    private sealed class MetricValueViewModel
+    {
+        public string Name { get; set; } = string.Empty;
+
+        public double? Value { get; set; }
+    }
+
+    private sealed class MetricLatencyViewModel
+    {
+        public string Name { get; set; } = string.Empty;
+
+        public long? Count { get; set; }
+
+        public double? Sum { get; set; }
+
+        public double? Average { get; set; }
+
+        public double? Max { get; set; }
+    }
+
+    private sealed class BdkHistogramSnapshotViewModel
+    {
+        public long? Count { get; set; }
+
+        public double? Sum { get; set; }
+
+        public double? Average { get; set; }
+
+        public double? Max { get; set; }
+    }
+
+    private sealed class BdkMetricDescriptorViewModel
+    {
+        public string Name { get; set; } = string.Empty;
+
+        public string Feature { get; set; } = string.Empty;
+
+        public string Kind { get; set; } = string.Empty;
+
+        public string Unit { get; set; } = string.Empty;
+    }
+
+    private sealed class BdkFeatureSnapshotViewModel
+    {
+        public string Name { get; set; } = string.Empty;
+
+        public Dictionary<string, double> Counters { get; set; } = new(StringComparer.Ordinal);
+
+        public Dictionary<string, double> Current { get; set; } = new(StringComparer.Ordinal);
+
+        public Dictionary<string, BdkHistogramSnapshotViewModel> Durations { get; set; } = new(StringComparer.Ordinal);
+
+        public double? SuccessTotal { get; set; }
+
+        public double? FailureTotal { get; set; }
+
+        public double? CurrentTotal { get; set; }
+
+        public List<MetricValueViewModel> TopThroughput { get; set; } = [];
+
+        public List<MetricValueViewModel> TopCurrent { get; set; } = [];
+
+        public List<MetricValueViewModel> TopFailures { get; set; } = [];
+
+        public List<MetricLatencyViewModel> LatencyHighlights { get; set; } = [];
+    }
+
+    private sealed class BdkMetricsSnapshotViewModel : MetricsSnapshotBaseViewModel
+    {
+        public string Meter { get; set; } = string.Empty;
+
+        public Dictionary<string, BdkFeatureSnapshotViewModel> Features { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+        public List<BdkMetricDescriptorViewModel> AvailableMetrics { get; set; } = [];
+
+        public List<MetricValueViewModel> TopFailures { get; set; } = [];
+
+        public List<MetricValueViewModel> TopThroughput { get; set; } = [];
+
+        public List<MetricValueViewModel> TopCurrent { get; set; } = [];
+
+        public List<MetricLatencyViewModel> LatencyHighlights { get; set; } = [];
+    }
+
+    private sealed class MetricsOverviewFeatureViewModel
+    {
+        public string Name { get; set; } = string.Empty;
+
+        public double? SuccessTotal { get; set; }
+
+        public double? FailureTotal { get; set; }
+
+        public double? CurrentTotal { get; set; }
+
+        public MetricValueViewModel TopThroughput { get; set; }
+
+        public MetricValueViewModel TopCurrent { get; set; }
+
+        public MetricLatencyViewModel SlowestSeries { get; set; }
+    }
+
+    private sealed class MetricsOverviewSnapshotViewModel : MetricsSnapshotBaseViewModel
+    {
+        public Dictionary<string, double> SummaryCards { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+        public Dictionary<string, MetricsOverviewFeatureViewModel> Features { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+
+        public List<MetricValueViewModel> TopFailures { get; set; } = [];
+
+        public List<MetricValueViewModel> TopThroughput { get; set; } = [];
+
+        public List<MetricValueViewModel> TopCurrent { get; set; } = [];
+
+        public List<MetricLatencyViewModel> LatencyHighlights { get; set; } = [];
+    }
+
+    private sealed class DotNetMetricsSnapshotViewModel : MetricsSnapshotBaseViewModel
+    {
+        public double? CpuUsagePercent { get; set; }
+
+        public double? WorkingSetMb { get; set; }
+
+        public double? PrivateMemoryMb { get; set; }
+
+        public double? ManagedMemoryMb { get; set; }
+
+        public double? HeapSizeMb { get; set; }
+
+        public double? FragmentedMemoryMb { get; set; }
+
+        public double? TotalAllocatedMb { get; set; }
+
+        public long? Gen0Collections { get; set; }
+
+        public long? Gen1Collections { get; set; }
+
+        public long? Gen2Collections { get; set; }
+
+        public int? ThreadCount { get; set; }
+
+        public int? WorkerThreadsUsed { get; set; }
+
+        public int? WorkerThreadsAvailable { get; set; }
+
+        public int? IoThreadsUsed { get; set; }
+
+        public int? IoThreadsAvailable { get; set; }
+
+        public long? PendingWorkItems { get; set; }
+    }
+
+    private sealed class AspNetMetricsSnapshotViewModel : MetricsSnapshotBaseViewModel
+    {
+        public long? TotalRequests { get; set; }
+
+        public long? TrackedRouteCount { get; set; }
+
+        public long? ActiveRequests { get; set; }
+
+        public long? MaxObservedConcurrentRequests { get; set; }
+
+        public long? FailedRequests { get; set; }
+
+        public double? FailureRatePercent { get; set; }
+
+        public double? AverageLatencyMs { get; set; }
+
+        public long? TotalLatencyMs { get; set; }
+
+        public double? RequestsPerMinute { get; set; }
+
+        public long? Status1xx { get; set; }
+
+        public long? Status2xx { get; set; }
+
+        public long? Status3xx { get; set; }
+
+        public long? Status4xx { get; set; }
+
+        public long? Status5xx { get; set; }
+
+        public DateTimeOffset? LastRequestAtUtc { get; set; }
+    }
+
+    private sealed class AspNetRouteMetricsSnapshotViewModel : MetricsSnapshotBaseViewModel
+    {
+        public long? TrackedRouteCount { get; set; }
+
+        public List<AspNetRouteMetricsRowViewModel> Routes { get; set; } = [];
+    }
+
+    private sealed class AspNetRouteMetricsRowViewModel
+    {
+        public string Method { get; set; } = string.Empty;
+
+        public string Route { get; set; } = string.Empty;
+
+        public long? RequestCount { get; set; }
+
+        public long? Status1xx { get; set; }
+
+        public long? Status2xx { get; set; }
+
+        public long? Status3xx { get; set; }
+
+        public long? Status4xx { get; set; }
+
+        public long? Status5xx { get; set; }
+
+        public long? FailureCount { get; set; }
+
+        public double? FailureRatePercent { get; set; }
+
+        public long? TotalLatencyMs { get; set; }
+
+        public double? AverageLatencyMs { get; set; }
+
+        public DateTimeOffset? LastRequestAtUtc { get; set; }
+    }
+
+    private sealed class FeatureRowModel
+    {
+        public string Name { get; set; } = string.Empty;
+
+        public double? SuccessTotal { get; set; }
+
+        public double? FailureTotal { get; set; }
+
+        public double? CurrentTotal { get; set; }
+
+        public MetricValueViewModel TopThroughput { get; set; }
+
+        public MetricValueViewModel TopCurrent { get; set; }
+
+        public MetricLatencyViewModel SlowestSeries { get; set; }
+    }
+
+    private sealed class MetricDescriptorViewModel
+    {
+        public string Name { get; set; } = string.Empty;
+
+        public string Feature { get; set; } = string.Empty;
+
+        public string Kind { get; set; } = string.Empty;
+
+        public string Unit { get; set; } = string.Empty;
+    }
+
+    private sealed class SelectedMetricRowModel
+    {
+        public string Name { get; set; } = string.Empty;
+
+        public string Feature { get; set; } = string.Empty;
+
+        public string Kind { get; set; } = string.Empty;
+
+        public string Value { get; set; } = string.Empty;
+
+        public string Detail { get; set; } = string.Empty;
+    }
+}
+
+<style>
+    .metric-panel-fill {
+        height: 100%;
+    }
+</style>

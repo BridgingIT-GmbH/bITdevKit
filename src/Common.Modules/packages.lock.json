@@ -69,7 +69,8 @@
       "BridgingIT.DevKit.Common.Abstractions": {
         "type": "Project",
         "dependencies": {
-          "Ensure.That": "[10.1.0, )"
+          "Ensure.That": "[10.1.0, )",
+          "FluentValidation": "[12.1.1, )"
         }
       },
       "BridgingIT.DevKit.Common.Options": {

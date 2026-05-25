@@ -21,7 +21,7 @@ public class InProcessQueueingBrokerTests
             });
 
         using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
         var message = new InProcessQueueMessage("requeue-me");
 
@@ -57,7 +57,7 @@ public class InProcessQueueingBrokerTests
             });
 
         using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         await broker.Subscribe<InProcessQueueMessage, InProcessQueueMessageHandler>();
@@ -105,7 +105,7 @@ public class InProcessQueueingBrokerTests
             });
 
         using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
         var message = new InProcessQueueMessage("archive-me");
 

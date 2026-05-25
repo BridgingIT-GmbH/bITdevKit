@@ -86,7 +86,7 @@ public class ActiveEntityConfigurator<TEntity, TId>(IServiceCollection services,
         ArgumentNullException.ThrowIfNull(factory);
 
         this.providerFactory = sp => (IActiveEntityEntityProvider<TEntity, TId>)factory(sp);
-        this.registrations.Add(services => services.AddScoped<IActiveEntityEntityProvider<TEntity, TId>>(sp => this.providerFactory(sp)));
+        this.registrations.Add(services => services.AddScoped(sp => this.providerFactory(sp)));
         return this;
     }
 
@@ -108,7 +108,7 @@ public class ActiveEntityConfigurator<TEntity, TId>(IServiceCollection services,
         ArgumentNullException.ThrowIfNull(factory);
 
         this.providerFactory = factory;
-        this.registrations.Add(services => services.AddScoped<IActiveEntityEntityProvider<TEntity, TId>>(sp => this.providerFactory(sp)));
+        this.registrations.Add(services => services.AddScoped(sp => this.providerFactory(sp)));
         return this;
     }
 

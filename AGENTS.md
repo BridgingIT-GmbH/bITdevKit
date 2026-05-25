@@ -85,6 +85,7 @@ test: add domain tests for task status transitions
 - **Async**: Use `async/await` for I/O-bound operations.
 - **LINQ**: Prefer efficient LINQ; avoid N+1 queries.
 - **Nullability**: Project uses disabled nullability annotations; maintain consistency.
+- **XML Documentation**: Document every public class, method, and property with XML comments. Public-facing symbols must include an XML documentation usage example.
 
 ## Tech Stack
 
@@ -105,6 +106,10 @@ test: add domain tests for task status transitions
   - Build: `Solution - build`
   - Tests: `Solution - tests (unit)`, `Solution - tests (integration)`
 - Prefer these tasks over custom scripts to maintain consistency.
+- For CLI builds from the repo root, `dotnet build` is preferred and resolves the solution automatically.
+- Prefer running repo-wide builds and repo-wide test commands sequentially in the same worktree. Running multiple top-level `dotnet build` or `dotnet test` commands in parallel can produce misleading `obj/ref` failures such as:
+  - `PE image doesn't contain managed metadata`
+  - transient missing type/namespace errors in downstream projects
 
 ### DoFiesta example application Browser Testing
 

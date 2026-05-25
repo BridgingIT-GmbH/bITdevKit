@@ -33,7 +33,7 @@ public class DataPorterServiceExportTests
         await using var stream = new MemoryStream();
 
         // Act
-        var result = await sut.ExportAsync<SimpleEntity>((IEnumerable<SimpleEntity>)null, stream);
+        var result = await sut.ExportAsync((IEnumerable<SimpleEntity>)null, stream);
 
         // Assert
         result.ShouldBeFailure();
@@ -295,7 +295,7 @@ public class DataPorterServiceExportTests
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
 
         // Act
-        var result = await sut.ExportToFileContentAsync<SimpleEntity>((IEnumerable<SimpleEntity>)null);
+        var result = await sut.ExportToFileContentAsync((IEnumerable<SimpleEntity>)null);
 
         // Assert
         result.ShouldBeFailure();
@@ -365,7 +365,7 @@ public class DataPorterServiceExportTests
         var sut = new DataPorterService([mockProvider], this.configurationMerger);
 
         // Act
-        var result = await sut.ExportToBytesAsync<SimpleEntity>((IEnumerable<SimpleEntity>)null);
+        var result = await sut.ExportToBytesAsync((IEnumerable<SimpleEntity>)null);
 
         // Assert
         result.ShouldBeFailure();

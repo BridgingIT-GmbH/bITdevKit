@@ -17,6 +17,7 @@ using System;
 using System.Linq;
 using Xunit;
 
+[Collection(ResultMapTestCollection.Name)]
 public class ResultMapExtensionsGenericTests
 {
     private readonly ILogger logger;

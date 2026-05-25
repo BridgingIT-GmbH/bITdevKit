@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Examples.DinnerFiesta.Modules.Core.Application;
 
 using DevKit.Application.Messaging;
+using DevKit.Common;
 
 public class UserCreatedDomainEventHandler(
     ILoggerFactory loggerFactory,

@@ -9,7 +9,7 @@ using Application.Modules.Core;
 using Common;
 using Domain.Model;
 using Microsoft.Extensions.Logging;
-using HttpContentExtensions = System.Net.Http.HttpContentExtensions;
+using HttpContentExtensions = HttpContentExtensions;
 
 public class OpenWeatherDataAdapter : IWeatherDataAdapter
 {

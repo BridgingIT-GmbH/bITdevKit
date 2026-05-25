@@ -192,7 +192,7 @@ public class OutboxDomainEventWorkerTests(StubDbContextFixture fixture) : IClass
         var services = new ServiceCollection();
         services.AddSingleton<ILoggerFactory>(NullLoggerFactory.Instance);
         services.AddSingleton(notifier);
-        services.AddScoped<StubDbContext>(_ => this.fixture.CreateContext());
+        services.AddScoped(_ => this.fixture.CreateContext());
 
         return services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
     }

@@ -25,7 +25,7 @@ public class RabbitMQMessageBrokerTests(ITestOutputHelper output, TestEnvironmen
         services.AddTransient<RabbitMQTestMessageHandler>();
 
         var exchangeName = $"test-exchange-{Guid.NewGuid():N}";
-        services.AddSingleton<IMessageBroker>(sp =>
+        services.AddSingleton<IMessageBrokerRuntime>(sp =>
         {
             var broker = new RabbitMQMessageBroker(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
@@ -42,7 +42,7 @@ public class RabbitMQMessageBrokerTests(ITestOutputHelper output, TestEnvironmen
         });
 
         using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IMessageBroker>();
+        var broker = provider.GetRequiredService<IMessageBrokerRuntime>();
 
         await broker.Subscribe<RabbitMQTestMessage, RabbitMQTestMessageHandler>();
 
@@ -69,7 +69,7 @@ public class RabbitMQMessageBrokerTests(ITestOutputHelper output, TestEnvironmen
         var exchangeNameA = $"test-exchange-a-{Guid.NewGuid():N}";
         var exchangeNameB = $"test-exchange-b-{Guid.NewGuid():N}";
 
-        services.AddSingleton<IMessageBroker>(sp =>
+        services.AddSingleton<IMessageBrokerRuntime>(sp =>
         {
             var brokerA = new RabbitMQMessageBroker(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
@@ -86,7 +86,7 @@ public class RabbitMQMessageBrokerTests(ITestOutputHelper output, TestEnvironmen
         });
 
         using var provider = services.BuildServiceProvider();
-        var brokerA = provider.GetRequiredService<IMessageBroker>();
+        var brokerA = provider.GetRequiredService<IMessageBrokerRuntime>();
 
         var brokerB = new RabbitMQMessageBroker(o => o
             .LoggerFactory(provider.GetRequiredService<ILoggerFactory>())
@@ -123,7 +123,7 @@ public class RabbitMQMessageBrokerTests(ITestOutputHelper output, TestEnvironmen
         services.AddTransient<RabbitMQTestMessageHandler>();
 
         var exchangeName = $"test-exchange-{Guid.NewGuid():N}";
-        services.AddSingleton<IMessageBroker>(sp =>
+        services.AddSingleton<IMessageBrokerRuntime>(sp =>
         {
             var broker = new RabbitMQMessageBroker(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
@@ -140,7 +140,7 @@ public class RabbitMQMessageBrokerTests(ITestOutputHelper output, TestEnvironmen
         });
 
         using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IMessageBroker>();
+        var broker = provider.GetRequiredService<IMessageBrokerRuntime>();
 
         // Do NOT subscribe before publishing
         var message = new RabbitMQTestMessage("no-sub", DateTime.UtcNow.Ticks);
@@ -160,7 +160,7 @@ public class RabbitMQMessageBrokerTests(ITestOutputHelper output, TestEnvironmen
         services.AddTransient<RabbitMQTestMessageHandler>();
 
         var exchangeName = $"test-exchange-{Guid.NewGuid():N}";
-        services.AddSingleton<IMessageBroker>(sp =>
+        services.AddSingleton<IMessageBrokerRuntime>(sp =>
         {
             var broker = new RabbitMQMessageBroker(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
@@ -177,7 +177,7 @@ public class RabbitMQMessageBrokerTests(ITestOutputHelper output, TestEnvironmen
         });
 
         using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IMessageBroker>();
+        var broker = provider.GetRequiredService<IMessageBrokerRuntime>();
 
         await broker.Subscribe<RabbitMQTestMessage, RabbitMQTestMessageHandler>();
 
@@ -211,7 +211,7 @@ public class RabbitMQMessageBrokerTests(ITestOutputHelper output, TestEnvironmen
         services.AddTransient<RabbitMQOtherTestMessageHandler>();
 
         var exchangeName = $"test-exchange-{Guid.NewGuid():N}";
-        services.AddSingleton<IMessageBroker>(sp =>
+        services.AddSingleton<IMessageBrokerRuntime>(sp =>
         {
             var broker = new RabbitMQMessageBroker(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
@@ -228,7 +228,7 @@ public class RabbitMQMessageBrokerTests(ITestOutputHelper output, TestEnvironmen
         });
 
         using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IMessageBroker>();
+        var broker = provider.GetRequiredService<IMessageBrokerRuntime>();
 
         await broker.Subscribe<RabbitMQTestMessage, RabbitMQTestMessageHandler>();
         await broker.Subscribe<RabbitMQOtherTestMessage, RabbitMQOtherTestMessageHandler>();

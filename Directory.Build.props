@@ -24,7 +24,7 @@
     <!--https://learn.microsoft.com/en-us/azure/devops/pipelines/artifacts/caching-nuget?view=azure-devops#lock-dependencies-->
         <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
         <MinVerDefaultPreReleaseIdentifiers>preview.0</MinVerDefaultPreReleaseIdentifiers>
-        <NoWarn>NU1903</NoWarn>
+        <NoWarn>NU1903;NU1902</NoWarn>
     </PropertyGroup>
 
   <!--<PropertyGroup Condition="$(MSBuildProjectDirectory.Contains('src'))">

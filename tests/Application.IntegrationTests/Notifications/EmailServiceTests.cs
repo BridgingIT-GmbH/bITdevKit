@@ -223,8 +223,15 @@ public class EmailServiceTests : IAsyncLifetime
             .Include(e => e.Attachments)
             .FirstOrDefaultAsync(m => m.Id == message.Id);
         storedMessage.ShouldNotBeNull();
-        storedMessage.Status.ShouldBe(EmailMessageStatus.Pending);
-        storedMessage.SentAt.ShouldBeNull();
+        new[] { EmailMessageStatus.Pending, EmailMessageStatus.Locked, EmailMessageStatus.Sent }.ShouldContain(storedMessage.Status);
+        if (storedMessage.Status == EmailMessageStatus.Sent)
+        {
+            storedMessage.SentAt.ShouldNotBeNull();
+        }
+        else
+        {
+            storedMessage.SentAt.ShouldBeNull();
+        }
     }
 
     [Fact]

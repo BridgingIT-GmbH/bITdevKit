@@ -14,6 +14,9 @@ using Serilog.Events;
 using Serilog.Extensions.Hosting;
 using Serilog.Parsing;
 
+/// <summary>
+/// ASP.NET Core middleware that logs incoming HTTP requests and their outcomes using Serilog.
+/// </summary>
 public class RequestLoggingMiddleware
 {
     private const string LogKey = "REQ";

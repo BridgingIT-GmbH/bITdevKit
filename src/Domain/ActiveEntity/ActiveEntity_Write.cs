@@ -46,7 +46,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// </example>
     public Task<Result<TEntity>> InsertAsync(ActiveEntityContext<TEntity, TId> context, CancellationToken cancellationToken = default)
     {
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result<TEntity>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -223,7 +223,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// </example>
     public Task<Result<TEntity>> UpdateAsync(ActiveEntityContext<TEntity, TId> context, CancellationToken cancellationToken = default)
     {
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result<TEntity>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -535,7 +535,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
             return Task.FromResult(Result<long>.Failure("update set cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result<long>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -600,7 +600,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
             return Task.FromResult(Result<long>.Failure("update set cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result<long>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -878,7 +878,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// </example>
     public Task<Result> DeleteAsync(ActiveEntityContext<TEntity, TId> context, CancellationToken cancellationToken = default)
     {
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {

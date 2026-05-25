@@ -1,0 +1,54 @@
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Application.Messaging;
+
+/// <summary>
+/// Provides message-broker subscription and processing operations on top of the shared outbound broker contract.
+/// </summary>
+public interface IMessageBrokerRuntime : IMessageBroker
+{
+    /// <summary>
+    ///     Subscribes for the message (TMessage) with a specific message handler (THandler).
+    /// </summary>
+    /// <typeparam name="TMessage">The type of the message.</typeparam>
+    /// <typeparam name="THandler">The type of the message handler.</typeparam>
+    Task Subscribe<TMessage, THandler>()
+        where TMessage : IMessage
+        where THandler : IMessageHandler<TMessage>;
+
+    /// <summary>
+    ///     Subscribes for the message with a specific message handler.
+    /// </summary>
+    /// <param name="messageType">The type of the message.</param>
+    /// <param name="handlerType">The type of the message handler.</param>
+    Task Subscribe(Type messageType, Type handlerType);
+
+    /// <summary>
+    ///     Unsubscribes message (TMessage) and its message handler (THandler).
+    /// </summary>
+    /// <typeparam name="TMessage">The type of the message.</typeparam>
+    /// <typeparam name="THandler">The type of the message handler.</typeparam>
+    Task Unsubscribe<TMessage, THandler>()
+        where TMessage : IMessage
+        where THandler : IMessageHandler<TMessage>;
+
+    /// <summary>
+    ///     Unsubscribes message and its message handler.
+    /// </summary>
+    /// <param name="messageType">The type of the message.</param>
+    /// <param name="handlerType">The type of the message handler.</param>
+    Task Unsubscribe(Type messageType, Type handlerType);
+
+    /// <summary>
+    ///     Unsubscribes all messages and its message handlers.
+    /// </summary>
+    Task Unsubscribe();
+
+    /// <summary>
+    ///     Process a subscribed message
+    /// </summary>
+    Task Process(MessageRequest messageRequest);
+}

@@ -6,8 +6,9 @@
 namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 
 using BridgingIT.DevKit.Application.Messaging;
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
-using Constants = BridgingIT.DevKit.Application.Messaging.Constants;
+using Constants = DevKit.Application.Messaging.Constants;
 
 /// <summary>
 /// Handles persisted <see cref="TodoItemActivityMessage"/> messages for the DoFiesta example.
@@ -16,10 +17,12 @@ using Constants = BridgingIT.DevKit.Application.Messaging.Constants;
 /// The handler intentionally keeps side effects light and logs the processed message so the example can
 /// demonstrate the full Entity Framework broker lifecycle without introducing extra infrastructure.
 /// </remarks>
-public class TodoItemActivityMessageHandler(ILoggerFactory loggerFactory) : MessageHandlerBase<TodoItemActivityMessage>(loggerFactory),
+public class TodoItemActivityMessageHandler(ILoggerFactory loggerFactory, IMetricsService metrics = null) : MessageHandlerBase<TodoItemActivityMessage>(loggerFactory),
     IRetryMessageHandler,
     ITimeoutMessageHandler
 {
+    private const string HandleMetricFamily = "dofiesta_todo_activity_message_handle";
+
     RetryMessageHandlerOptions IRetryMessageHandler.Options =>
         new() { Attempts = 3, Backoff = TimeSpan.FromSeconds(1) };
 
@@ -40,16 +43,27 @@ public class TodoItemActivityMessageHandler(ILoggerFactory loggerFactory) : Mess
             ["TodoItemId"] = message.TodoItemId,
         });
 
-        await Task.Delay(300, cancellationToken); // simulate some work
+        using var metricsScope = metrics?.Track(HandleMetricFamily, message.Activity, message.Status);
 
-        this.Logger.LogInformation(
-            "{LogKey} processed todo activity message (messageId={MessageId}, todoItemId={TodoItemId}, activity={Activity}, status={Status}, title={Title}, handler={HandlerType})",
-            Constants.LogKey,
-            message.MessageId,
-            message.TodoItemId,
-            message.Activity,
-            message.Status,
-            message.Title,
-            this.GetType().FullName);
+        try
+        {
+            await Task.Delay(300, cancellationToken); // simulate some work
+
+            this.Logger.LogInformation(
+                "{LogKey} processed todo activity message (messageId={MessageId}, todoItemId={TodoItemId}, activity={Activity}, status={Status}, title={Title}, handler={HandlerType})",
+                Constants.LogKey,
+                message.MessageId,
+                message.TodoItemId,
+                message.Activity,
+                message.Status,
+                message.Title,
+                this.GetType().FullName);
+        }
+        catch
+        {
+            metrics?.IncrementFailure(HandleMetricFamily, message.Activity, message.Status);
+
+            throw;
+        }
     }
 }

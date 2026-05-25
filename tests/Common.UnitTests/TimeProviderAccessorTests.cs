@@ -192,7 +192,7 @@ public class TimeProviderAccessorTests : IDisposable
         var threadResult = default(TimeProvider);
 
         // Act
-        var thread = new System.Threading.Thread(() =>
+        var thread = new Thread(() =>
         {
             TimeProviderAccessor.Current = fake;
             threadResult = TimeProviderAccessor.Current;

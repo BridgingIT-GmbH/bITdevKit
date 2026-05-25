@@ -45,9 +45,10 @@ public static partial class ServiceCollectionExtensions
 
         context.Services.TryAddSingleton(sp => CreateOptions(sp, optionsBuilder));
         context.Services.TryAddSingleton(sp => CreateBroker<TContext>(sp));
+        context.Services.TryAddSingleton<IMessageBrokerRuntime>(sp => sp.GetRequiredService<EntityFrameworkMessageBroker<TContext>>());
         context.Services.TryAddSingleton<IMessageBroker>(sp => sp.GetRequiredService<EntityFrameworkMessageBroker<TContext>>());
         context.Services.TryAddSingleton<IMessageBrokerService, EntityFrameworkMessageBrokerStoreService<TContext>>();
-        context.Services.TryAddSingleton<EntityFrameworkMessageBrokerWorker<TContext>>(sp =>
+        context.Services.TryAddSingleton(sp =>
             new EntityFrameworkMessageBrokerWorker<TContext>(
                 sp.GetRequiredService<ILoggerFactory>(),
                 sp,

@@ -34,7 +34,7 @@ public class BrokerMessage
     [Required]
     [MaxLength(256)]
     /// <summary>
-    /// Gets or sets the logical message identifier copied from <see cref="BridgingIT.DevKit.Application.Messaging.IMessage.MessageId"/>.
+    /// Gets or sets the logical message identifier copied from <see cref="Messaging.IMessage.MessageId"/>.
     /// </summary>
     public string MessageId { get; set; }
 

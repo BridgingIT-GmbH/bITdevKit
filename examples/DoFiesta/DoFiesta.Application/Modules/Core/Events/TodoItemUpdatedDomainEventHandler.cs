@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Application.Queueing;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;
 using Microsoft.Extensions.Logging;
@@ -24,11 +25,16 @@ using System.Threading.Tasks;
 /// <param name="loggerFactory">Factory used for creating loggers.</param>
 /// <param name="broker">Message broker used to persist example activity messages.</param>
 /// <param name="queueBroker">Queue broker used to enqueue example echo work items.</param>
-public class TodoItemUpdatedDomainEventHandler(ILoggerFactory loggerFactory, IMessageBroker broker, IQueueBroker queueBroker)
+public class TodoItemUpdatedDomainEventHandler(
+    ILoggerFactory loggerFactory,
+    IMessageBroker broker,
+    IQueueBroker queueBroker,
+    ITodoItemOrchestrationCoordinator orchestrationCoordinator)
     : DomainEventHandlerBase<TodoItemUpdatedDomainEvent>(loggerFactory)
 {
     private readonly IMessageBroker broker = broker;
     private readonly IQueueBroker queueBroker = queueBroker;
+    private readonly ITodoItemOrchestrationCoordinator orchestrationCoordinator = orchestrationCoordinator;
 
     /// <summary>
     /// Determines whether this handler can handle the given event.
@@ -61,5 +67,9 @@ public class TodoItemUpdatedDomainEventHandler(ILoggerFactory loggerFactory, IMe
                 notification.Model?.Status.ToString()),
             cancellationToken);
 
+        if (notification.Model is not null) // ensure orchestration is updated for this todo item to keep lifecycle tracking and reminders up to date with the latest changes
+        {
+            await this.orchestrationCoordinator.SynchronizeAsync(notification.Model, cancellationToken);
+        }
     }
 }

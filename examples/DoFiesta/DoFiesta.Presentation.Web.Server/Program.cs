@@ -6,7 +6,6 @@
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Examples.DoFiesta.Infrastructure;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client.Layout;
@@ -16,23 +15,20 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
-using BridgingIT.DevKit.Presentation.Web.Host;
-using BridgingIT.DevKit.Presentation.Web.Messaging;
-using BridgingIT.DevKit.Presentation.Web.Notifications;
-using BridgingIT.DevKit.Presentation.Web.Queueing;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using MudBlazor.Services;
 using Scalar.AspNetCore;
-using BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
-using BridgingIT.DevKit.Presentation.Web.JobScheduling;
+using System.Text.Json;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 // ===============================================================================================
 // Create the webhost
 var builder = WebApplication.CreateBuilder(args);
-builder.Host.ConfigureLogging();
 builder.Host.ConfigureAppConfiguration();
+builder.Host.ConfigureLogging(builder.Configuration);
 
 // ===============================================================================================
 // Configure the modules
@@ -43,6 +39,7 @@ builder.Services.AddModules(builder.Configuration, builder.Environment)
 // Configure the services
 builder.Services.AddRequester()
     .AddHandlers()
+    .WithBehavior(typeof(MetricsRequestBehavior<,>))
     .WithBehavior(typeof(TracingBehavior<,>))
     .WithBehavior(typeof(ModuleScopeBehavior<,>))
     .WithBehavior(typeof(DatabaseTransactionPipelineBehavior<,>))
@@ -51,6 +48,8 @@ builder.Services.AddRequester()
     .WithBehavior(typeof(TimeoutPipelineBehavior<,>));
 builder.Services.AddNotifier()
     .AddHandlers()
+    .WithBehavior(typeof(MetricsNotificationBehavior<,>))
+    .WithBehavior(typeof(MetricsNotificationHandlerBehavior<,>))
     .WithBehavior(typeof(TracingBehavior<,>))
     .WithBehavior(typeof(ModuleScopeBehavior<,>))
     .WithBehavior(typeof(DatabaseTransactionPipelineBehavior<,>))
@@ -141,7 +140,6 @@ builder.Services
     .AddJwtBearerAuthentication(builder.Configuration)
     .AddCookieAuthentication();
 
-//
 // Identity Provider Middleware ==============================
 builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth identity provider with its endpoints and signin page
     .Enabled(builder.Environment.IsDevelopment())
@@ -160,11 +158,18 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
 // builder.Services.AddMessagingEndpoints(options => options
 //     .RequireAuthorization(false));
 builder.Services.AddEndpoints<SystemEndpoints>();
+MetricsServiceCollectionExtensions.AddMetrics(
+    builder.Services,
+    options => options
+        .Enabled()
+        .AddEndpoints());
+builder.Services.AddAppOpenTelemetry(builder.Configuration, builder.Environment);
 //builder.Services.AddEndpoints<JobSchedulingEndpoints>();
 
 builder.Services.ConfigureJson();
 builder.Services.Configure<ApiBehaviorOptions>(ConfiguraApiBehavior);
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
+builder.Services.AddHealthChecks();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers(); // needed for openapi gen, even with no controllers
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -215,7 +220,6 @@ builder.Services.AddMudServices();
 builder.Services.AddSignalR();
 builder.Services.AddConsoleCommandsInteractive();
 
-
 // ===============================================================================================
 // Configure the HTTP request pipeline
 var app = builder.Build();
@@ -260,6 +264,7 @@ app.UseStaticFiles();
 app.UseRequestCorrelation();
 app.UseRequestModuleContext();
 app.UseRequestLogging();
+app.UseRequestMetrics();
 
 app.UseCors();
 app.UseAntiforgery();
@@ -282,6 +287,10 @@ app.MapRazorComponents<App>()
     //.AddInteractiveServerRenderMode()
     .AddAdditionalAssemblies(typeof(MainLayout).Assembly);
 
+app.MapHealthChecks("/healthz", new HealthCheckOptions
+{
+    ResponseWriter = WriteHealthCheckResponse
+});
 app.MapHub<NotificationHub>("/signalrhub");
 
 app.UseConsoleCommandsInteractiveStats();
@@ -292,6 +301,32 @@ app.Run();
 static void ConfiguraApiBehavior(ApiBehaviorOptions options)
 {
     options.SuppressModelStateInvalidFilter = true;
+}
+
+static Task WriteHealthCheckResponse(HttpContext context, HealthReport report)
+{
+    context.Response.ContentType = "application/json; charset=utf-8";
+
+    var payload = new
+    {
+        status = report.Status.ToString(),
+        totalDuration = report.TotalDuration,
+        entries = report.Entries.ToDictionary(
+            entry => entry.Key,
+            entry => new
+            {
+                status = entry.Value.Status.ToString(),
+                description = entry.Value.Description,
+                duration = entry.Value.Duration,
+                exception = entry.Value.Exception?.Message,
+                data = entry.Value.Data.ToDictionary(data => data.Key, data => data.Value)
+            })
+    };
+
+    return context.Response.WriteAsync(JsonSerializer.Serialize(payload, new JsonSerializerOptions
+    {
+        WriteIndented = true
+    }));
 }
 
 //void ConfigureOpenApiDocument(AspNetCoreOpenApiDocumentGeneratorSettings settings)

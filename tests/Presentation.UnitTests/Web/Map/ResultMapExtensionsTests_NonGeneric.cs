@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Shouldly;
 using Xunit;
 
+[Collection(ResultMapTestCollection.Name)]
 public class ResultMapExtensionsNonGenericTests
 {
     private readonly ILogger logger;

@@ -38,6 +38,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" />
     <PackageReference Include="OpenTelemetry.Exporter.Console" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
     <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
     <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
@@ -74,6 +75,7 @@
     <ProjectReference Include="..\..\..\src\Presentation.Web.JobScheduling\Presentation.Web.JobScheduling.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.Messaging\Presentation.Web.Messaging.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.Notifications\Presentation.Web.Notifications.csproj" />
+    <ProjectReference Include="..\..\..\src\Presentation.Web.Orchestrations\Presentation.Web.Orchestrations.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.Queueing\Presentation.Web.Queueing.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.Storage\Presentation.Web.Storage.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web\Presentation.Web.csproj" />

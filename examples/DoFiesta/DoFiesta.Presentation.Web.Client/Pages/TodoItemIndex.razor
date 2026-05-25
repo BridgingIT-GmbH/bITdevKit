@@ -36,6 +36,13 @@
                                Size="Size.Large"
                                OnClick="@(() => AddNewTodo())" />
             </MudTooltip>
+            <MudTooltip Text="Create detailed task">
+                <MudIconButton Icon="@Icons.Material.Filled.NoteAdd"
+                               Variant="Variant.Outlined"
+                               Color="Color.Primary"
+                               Size="Size.Large"
+                               OnClick="OpenCreateTodoDialog" />
+            </MudTooltip>
             <MudSpacer />
             <MudTooltip Text="Refresh">
                 <MudIconButton Icon="@Icons.Material.Filled.Refresh"
@@ -151,8 +158,22 @@
                             </MudSelect>
                         </MudTd>
                         <MudTd DataLabel="Due Date" HideSmall="true">
-                            <MudDatePicker Date="todoItem.DueDate" DateChanged="async date => { todoItem.DueDate = date; await UpdateTodo(todoItem); }"
-                                           DateFormat="yyyy-MM-dd" Style="min-width: 150px;" Editable="true" Placeholder="Select Date" />
+                            <MudStack Spacing="1">
+                                <MudDatePicker Date="todoItem.DueDate"
+                                               DateChanged="async date => await OnTodoDueDateChangedAsync(todoItem, date)"
+                                               DateFormat="yyyy-MM-dd"
+                                               Style="min-width: 150px;"
+                                               Editable="true"
+                                               Placeholder="Select Date" />
+                                <MudTextField T="string"
+                                              Value="@FormatDueTime(todoItem.DueDate)"
+                                              ValueChanged="async value => await OnTodoDueTimeChangedAsync(todoItem, value)"
+                                              Label="Due time"
+                                              Variant="Variant.Text"
+                                              Margin="Margin.Dense"
+                                              InputType="InputType.Time"
+                                              HelperText="Local time" />
+                            </MudStack>
                         </MudTd>
                         <MudTd HideSmall="true">
                             <MudTooltip Text="Attachments">
@@ -170,6 +191,73 @@
         </MudItem>
     </MudGrid>
 </MudContainer>
+
+@* Create Todo Dialog *@
+<MudDialog @bind-Visible="showCreateTodoDialog" Options="new DialogOptions { CloseButton = true, FullWidth = true, MaxWidth = MaxWidth.Medium }">
+    <TitleContent>
+        <MudText Typo="Typo.h6">Create Task</MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudGrid>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="createTodoModel.Title"
+                              Label="Title"
+                              Variant="Variant.Outlined"
+                              Required="true"
+                              Immediate="true" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField @bind-Value="createTodoModel.Description"
+                              Label="Description"
+                              Variant="Variant.Outlined"
+                              Lines="4" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudSelect @bind-Value="createTodoModel.Status" T="int" Label="Status" Variant="Variant.Outlined">
+                    @foreach (var status in enums?.TodoStatuses?.Where(e => e.Enabled) ?? [])
+                    {
+                        <MudSelectItem Value="@status.Id">@status.Value</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudSelect @bind-Value="createTodoModel.Priority" T="int" Label="Priority" Variant="Variant.Outlined">
+                    @foreach (var priority in enums?.TodoPriorities?.Where(e => e.Enabled) ?? [])
+                    {
+                        <MudSelectItem Value="@priority.Id">@priority.Value</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudDatePicker Date="createTodoModel.DueDate"
+                               DateChanged="OnCreateTodoDueDateChanged"
+                               Label="Due date"
+                               DateFormat="yyyy-MM-dd"
+                               Variant="Variant.Outlined"
+                               Editable="true"
+                               HelperText="Calendar date" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField T="string"
+                              Value="@createTodoDueTime"
+                              ValueChanged="OnCreateTodoDueTimeChanged"
+                              Label="Due time"
+                              Variant="Variant.Outlined"
+                              InputType="InputType.Time"
+                              HelperText="Local time" />
+            </MudItem>
+            <MudItem xs="12" md="6">
+                <MudTextField @bind-Value="createTodoModel.Assignee"
+                              Label="Assignee email"
+                              Variant="Variant.Outlined" />
+            </MudItem>
+        </MudGrid>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="CloseCreateTodoDialog">Cancel</MudButton>
+        <MudButton OnClick="CreateTodoFromDialogAsync" Variant="Variant.Filled" Color="Color.Primary">Create</MudButton>
+    </DialogActions>
+</MudDialog>
 
 @* Export Dialog *@
 <MudDialog @bind-Visible="showExportDialog" Options="new DialogOptions { CloseButton = true, MaxWidth = MaxWidth.Small }">
@@ -321,6 +409,7 @@
 
 @code {
     private const long MaxAttachmentUploadSize = 8 * 1024 * 1024;
+    private const string DefaultDueTimeText = "22:00";
 
     private sealed class TodoAttachmentItem
     {
@@ -342,6 +431,9 @@
     private int? filterPriorityId;
     private string filterTitle = string.Empty;
     private SortDirection currentSortDirection = SortDirection.Ascending;
+    private bool showCreateTodoDialog = false;
+    private TodoItemModel createTodoModel = new();
+    private string createTodoDueTime = DefaultDueTimeText;
 
     private bool showExportDialog = false;
     private bool showImportDialog = false;
@@ -664,6 +756,71 @@
         }
     }
 
+    private void OpenCreateTodoDialog()
+    {
+        this.ResetCreateTodoModel();
+        this.showCreateTodoDialog = true;
+    }
+
+    private void CloseCreateTodoDialog()
+    {
+        this.showCreateTodoDialog = false;
+    }
+
+    private Task OnCreateTodoDueDateChanged(DateTime? date)
+    {
+        this.createTodoModel.DueDate = CombineDueDateAndTime(date, this.createTodoDueTime);
+        return Task.CompletedTask;
+    }
+
+    private Task OnCreateTodoDueTimeChanged(string value)
+    {
+        this.createTodoDueTime = string.IsNullOrWhiteSpace(value) ? DefaultDueTimeText : value;
+        this.createTodoModel.DueDate = CombineDueDateAndTime(this.createTodoModel.DueDate, this.createTodoDueTime);
+        return Task.CompletedTask;
+    }
+
+    private async Task OnTodoDueDateChangedAsync(TodoItemModel item, DateTime? date)
+    {
+        item.DueDate = CombineDueDateAndTime(date, FormatDueTime(item.DueDate));
+        await UpdateTodo(item);
+    }
+
+    private async Task OnTodoDueTimeChangedAsync(TodoItemModel item, string value)
+    {
+        item.DueDate = CombineDueDateAndTime(item.DueDate, value);
+        await UpdateTodo(item);
+    }
+
+    private async Task CreateTodoFromDialogAsync()
+    {
+        if (string.IsNullOrWhiteSpace(this.createTodoModel.Title))
+        {
+            this.Snackbar.Add("Title is required.", Severity.Warning);
+            return;
+        }
+
+        loading = true;
+
+        try
+        {
+            await ApiClient.Core_TodoItems_CreateAsync(this.createTodoModel);
+
+            this.showCreateTodoDialog = false;
+            this.Snackbar.Add("Task created successfully", Severity.Success);
+            this.ResetCreateTodoModel();
+            await LoadItems();
+        }
+        catch (ApiException ex)
+        {
+            this.Snackbar.Add($"Error creating todo: [{ex.StatusCode}] {ex.Message}", Severity.Error);
+        }
+        finally
+        {
+            loading = false;
+        }
+    }
+
     private async Task UpdateTodo(TodoItemModel item)
     {
         loading = true;
@@ -684,6 +841,40 @@
         {
             loading = false;
         }
+    }
+
+    private static DateTime? CombineDueDateAndTime(DateTime? date, string timeText)
+    {
+        if (!date.HasValue)
+        {
+            return null;
+        }
+
+        return date.Value.Date.Add(ParseDueTime(timeText));
+    }
+
+    private static string FormatDueTime(DateTime? date)
+    {
+        return date.HasValue
+            ? date.Value.ToString("HH:mm")
+            : DefaultDueTimeText;
+    }
+
+    private static TimeSpan ParseDueTime(string timeText)
+    {
+        return TimeSpan.TryParse(timeText, out var time)
+            ? new TimeSpan(time.Hours, time.Minutes, 0)
+            : TimeSpan.Parse(DefaultDueTimeText);
+    }
+
+    private void ResetCreateTodoModel()
+    {
+        this.createTodoModel = new TodoItemModel
+        {
+            Status = enums?.TodoStatuses?.FirstOrDefault(e => e.Enabled)?.Id ?? 1,
+            Priority = enums?.TodoPriorities?.FirstOrDefault(e => e.Enabled)?.Id ?? newTodoPriority,
+        };
+        this.createTodoDueTime = DefaultDueTimeText;
     }
 
     private async Task CompleteAll()

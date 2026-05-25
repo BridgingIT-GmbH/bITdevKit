@@ -156,7 +156,7 @@ public class PipelineRuntime(
 
             // Behaviors wrap the core step loop from outermost to innermost.
             Func<ValueTask<Result>> next = () => this.ExecuteStepsCoreAsync(definition, context, options, serviceProvider, state, hooks, behaviors, cancellationToken);
-            foreach (var behavior in behaviors.Reverse<IPipelineBehaviorInvoker>())
+            foreach (var behavior in behaviors.Reverse())
             {
                 var capturedNext = next;
                 next = () => behavior.ExecuteAsync(context, capturedNext, cancellationToken);
@@ -298,7 +298,7 @@ public class PipelineRuntime(
         {
             // Step behaviors wrap the actual step execution just like pipeline behaviors wrap the full step loop.
             Func<ValueTask<PipelineControl>> next = () => step.ExecuteAsync(context, result, options, cancellationToken);
-            foreach (var behavior in behaviors.Reverse<IPipelineBehaviorInvoker>())
+            foreach (var behavior in behaviors.Reverse())
             {
                 var capturedNext = next;
                 next = () => behavior.ExecuteStepAsync(context, stepDefinition, result, capturedNext, cancellationToken);

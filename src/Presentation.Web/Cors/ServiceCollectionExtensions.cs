@@ -108,7 +108,7 @@ public static partial class ServiceCollectionExtensions
     /// <param name="builder">The CORS policy builder.</param>
     /// <param name="policyOptions">The policy options to apply.</param>
     private static void ConfigurePolicyBuilder(
-        Microsoft.AspNetCore.Cors.Infrastructure.CorsPolicyBuilder builder,
+        AspNetCore.Cors.Infrastructure.CorsPolicyBuilder builder,
         CorsPolicyOptions policyOptions)
     {
         // Configure origins

@@ -152,7 +152,7 @@ public static partial class ApplicationBuilderExtensions
     private static string[] SplitArgs(string commandLine)
     {
         var list = new List<string>();
-        var current = new System.Text.StringBuilder();
+        var current = new StringBuilder();
         var inQuotes = false;
 
         foreach (var ch in commandLine)

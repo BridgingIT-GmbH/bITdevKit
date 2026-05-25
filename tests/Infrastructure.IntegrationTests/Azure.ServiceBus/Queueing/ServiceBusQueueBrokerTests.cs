@@ -43,8 +43,8 @@ public class ServiceBusQueueBrokerTests
             .ProcessDelay(0));
 
         var provider = services.BuildServiceProvider();
-        await using var broker = provider.GetRequiredService<IQueueBroker>() as IAsyncDisposable;
-        var queueBroker = provider.GetRequiredService<IQueueBroker>();
+        await using var broker = provider.GetRequiredService<IQueueBrokerRuntime>() as IAsyncDisposable;
+        var queueBroker = provider.GetRequiredService<IQueueBrokerRuntime>();
 
         await queueBroker.Subscribe<ServiceBusQueueTestMessage, ServiceBusQueueTestMessageHandler>();
         await Task.Delay(2000); // give processor time to establish receive link
@@ -77,8 +77,8 @@ public class ServiceBusQueueBrokerTests
             .ProcessDelay(0));
 
         var provider = services.BuildServiceProvider();
-        await using var broker = provider.GetRequiredService<IQueueBroker>() as IAsyncDisposable;
-        var queueBroker = provider.GetRequiredService<IQueueBroker>();
+        await using var broker = provider.GetRequiredService<IQueueBrokerRuntime>() as IAsyncDisposable;
+        var queueBroker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         var message = new ServiceBusQueueTestMessage("waiting-test");
@@ -113,8 +113,8 @@ public class ServiceBusQueueBrokerTests
             .ProcessDelay(0));
 
         var provider = services.BuildServiceProvider();
-        await using var broker = provider.GetRequiredService<IQueueBroker>() as IAsyncDisposable;
-        var queueBroker = provider.GetRequiredService<IQueueBroker>();
+        await using var broker = provider.GetRequiredService<IQueueBrokerRuntime>() as IAsyncDisposable;
+        var queueBroker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         var message = new ServiceBusQueueBeforeSubMessage("wait-for-handler");
@@ -159,8 +159,8 @@ public class ServiceBusQueueBrokerTests
             .ProcessDelay(0));
 
         var provider = services.BuildServiceProvider();
-        await using var broker = provider.GetRequiredService<IQueueBroker>() as IAsyncDisposable;
-        var queueBroker = provider.GetRequiredService<IQueueBroker>();
+        await using var broker = provider.GetRequiredService<IQueueBrokerRuntime>() as IAsyncDisposable;
+        var queueBroker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         await queueBroker.Subscribe<ServiceBusQueuePauseMessage, ServiceBusQueuePauseMessageHandler>();
@@ -218,8 +218,8 @@ public class ServiceBusQueueBrokerTests
             .ProcessDelay(0));
 
         var provider = services.BuildServiceProvider();
-        await using var broker = provider.GetRequiredService<IQueueBroker>() as IAsyncDisposable;
-        var queueBroker = provider.GetRequiredService<IQueueBroker>();
+        await using var broker = provider.GetRequiredService<IQueueBrokerRuntime>() as IAsyncDisposable;
+        var queueBroker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         await queueBroker.Subscribe<ServiceBusQueueFailMessage, ServiceBusQueueFailMessageHandler>();
@@ -263,8 +263,8 @@ public class ServiceBusQueueBrokerTests
             .ProcessDelay(0));
 
         var provider = services.BuildServiceProvider();
-        await using var broker = provider.GetRequiredService<IQueueBroker>() as IAsyncDisposable;
-        var queueBroker = provider.GetRequiredService<IQueueBroker>();
+        await using var broker = provider.GetRequiredService<IQueueBrokerRuntime>() as IAsyncDisposable;
+        var queueBroker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         var message = new ServiceBusQueueTrackMessage("track-me");
@@ -299,8 +299,8 @@ public class ServiceBusQueueBrokerTests
             .ProcessDelay(0));
 
         var provider = services.BuildServiceProvider();
-        await using var broker = provider.GetRequiredService<IQueueBroker>() as IAsyncDisposable;
-        var queueBroker = provider.GetRequiredService<IQueueBroker>();
+        await using var broker = provider.GetRequiredService<IQueueBrokerRuntime>() as IAsyncDisposable;
+        var queueBroker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         var message = new ServiceBusQueueTrackMessage("purge-me");
@@ -341,8 +341,8 @@ public class ServiceBusQueueBrokerTests
             .ProcessDelay(0));
 
         var provider = services.BuildServiceProvider();
-        await using var broker = provider.GetRequiredService<IQueueBroker>() as IAsyncDisposable;
-        var queueBroker = provider.GetRequiredService<IQueueBroker>();
+        await using var broker = provider.GetRequiredService<IQueueBrokerRuntime>() as IAsyncDisposable;
+        var queueBroker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         await queueBroker.Subscribe<ServiceBusQueueTestMessage, ServiceBusQueueTestMessageHandler>();

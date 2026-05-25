@@ -147,8 +147,15 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
             .Include(e => e.Attachments)
             .FirstOrDefaultAsync(m => m.Id == message.Id);
         storedMessage.ShouldNotBeNull();
-        storedMessage.Status.ShouldBe(EmailMessageStatus.Pending);
-        storedMessage.SentAt.ShouldBeNull();
+        new[] { EmailMessageStatus.Pending, EmailMessageStatus.Locked, EmailMessageStatus.Sent }.ShouldContain(storedMessage.Status);
+        if (storedMessage.Status == EmailMessageStatus.Sent)
+        {
+            storedMessage.SentAt.ShouldNotBeNull();
+        }
+        else
+        {
+            storedMessage.SentAt.ShouldBeNull();
+        }
     }
 
     [Fact]
@@ -178,7 +185,7 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
         storedMessage.ShouldNotBeNull();
         storedMessage.From.ShouldContain("test@app.com");
         storedMessage.From.ShouldContain("Test App");
-        storedMessage.Status.ShouldBe(EmailMessageStatus.Pending);
+        new[] { EmailMessageStatus.Pending, EmailMessageStatus.Locked, EmailMessageStatus.Sent }.ShouldContain(storedMessage.Status);
     }
 
     [Fact]

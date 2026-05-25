@@ -44,7 +44,22 @@ public partial class TodoItemUpdateCommand
                 .CheckAsync(cancellationToken), cancellationToken: cancellationToken)
             .Tap(e => e.DomainEvents.Register(new TodoItemUpdatedDomainEvent(e)))
             .BindAsync(async (e, ct) =>
-                await repository.UpdateResultAsync(e, ct), cancellationToken)
+            {
+                // Preserve existing properties that are not included in the update model to avoid unintentional data loss
+                var existingResult = await repository.FindOneResultAsync(e.Id, cancellationToken: ct);
+                if (existingResult.IsSuccess)
+                {
+                    foreach (var property in existingResult.Value.Properties)
+                    {
+                        if (!e.Properties.Contains(property.Key))
+                        {
+                            e.Properties.Set(property.Key, property.Value);
+                        }
+                    }
+                }
+
+                return await repository.UpdateResultAsync(e, ct);
+            }, cancellationToken)
             .Tap(e => Console.WriteLine("AUDIT")) // do something
             .Map(mapper.Map<TodoItem, TodoItemModel>);
 }

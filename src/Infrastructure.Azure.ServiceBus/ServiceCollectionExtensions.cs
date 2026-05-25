@@ -26,7 +26,7 @@ public static partial class ServiceCollectionExtensions
         configuration ??= context.Configuration?.GetSection(section)?.Get<ServiceBusMessageBrokerConfiguration>() ??
             new ServiceBusMessageBrokerConfiguration();
 
-        context.Services.TryAddSingleton<IMessageBroker>(sp =>
+        context.Services.TryAddSingleton(sp =>
         {
             var broker = new ServiceBusMessageBroker(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
@@ -55,6 +55,8 @@ public static partial class ServiceCollectionExtensions
 
             return broker;
         });
+        context.Services.TryAddSingleton<IMessageBrokerRuntime>(sp => sp.GetRequiredService<ServiceBusMessageBroker>());
+        context.Services.TryAddSingleton<IMessageBroker>(sp => sp.GetRequiredService<ServiceBusMessageBroker>());
 
         return context;
     }
@@ -84,16 +86,17 @@ public static partial class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
 
         context.Services.TryAddSingleton(sp => CreateOptions(sp, optionsBuilder));
-        context.Services.TryAddSingleton<ServiceBusQueueBroker>(sp =>
+        context.Services.TryAddSingleton(sp =>
             new ServiceBusQueueBroker(
                 sp.GetRequiredService<ServiceBusQueueBrokerOptions>(),
                 sp.GetRequiredService<QueueBrokerControlState>()));
-        context.Services.TryAddSingleton<ServiceBusQueueBrokerService>(sp =>
+        context.Services.TryAddSingleton(sp =>
             new ServiceBusQueueBrokerService(
                 sp.GetRequiredService<ServiceBusQueueBroker>().Runtime,
                 sp.GetRequiredService<ServiceBusQueueBrokerOptions>(),
                 sp.GetRequiredService<QueueingRegistrationStore>(),
                 sp.GetRequiredService<QueueBrokerControlState>()));
+        context.Services.TryAddSingleton<IQueueBrokerRuntime>(sp => sp.GetRequiredService<ServiceBusQueueBroker>());
         context.Services.TryAddSingleton<IQueueBroker>(sp => sp.GetRequiredService<ServiceBusQueueBroker>());
         context.Services.TryAddSingleton<IQueueBrokerService>(sp => sp.GetRequiredService<ServiceBusQueueBrokerService>());
 

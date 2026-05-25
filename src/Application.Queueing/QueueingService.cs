@@ -19,7 +19,7 @@ public class QueueingService : BackgroundService
     private CancellationTokenSource linkedCts;
     private Task startupTask;
     private IServiceScope scope;
-    private IQueueBroker broker;
+    private IQueueBrokerRuntime broker;
     private IQueueBrokerBackgroundProcessor backgroundProcessor;
 
     /// <summary>
@@ -121,7 +121,7 @@ public class QueueingService : BackgroundService
             }
 
             this.scope = this.serviceProvider.CreateScope();
-            this.broker = this.scope.ServiceProvider.GetService<IQueueBroker>();
+            this.broker = this.scope.ServiceProvider.GetService<IQueueBrokerRuntime>();
             if (this.broker is null)
             {
                 this.logger.LogWarning("{LogKey} queueing service not started because no broker is registered", Constants.LogKey);

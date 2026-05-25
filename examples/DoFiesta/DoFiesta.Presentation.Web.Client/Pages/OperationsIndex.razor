@@ -13,6 +13,48 @@
     </MudPaper>
 
     <MudGrid>
+        <MudItem xs="12" md="7">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5">Orchestrations</MudText>
+                        <MudText Typo="Typo.body2">Inspect durable todo lifecycle instances, review persisted context and history, deliver signals, and operate execution control actions.</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudAvatar Color="Color.Info" Variant="Variant.Filled">
+                            <MudIcon Icon="@Icons.Material.Filled.Route" />
+                        </MudAvatar>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Filled" Color="Color.Info" StartIcon="@Icons.Material.Filled.Visibility" Href="/operations/orchestrations">
+                        Open Orchestrations
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
+        <MudItem xs="12" md="5">
+            <MudCard>
+                <MudCardHeader>
+                    <CardHeaderContent>
+                        <MudText Typo="Typo.h5">Metrics</MudText>
+                        <MudText Typo="Typo.body2">Inspect live devkit metrics, compare feature health, and drill into cumulative, current, and latency series from one operations view.</MudText>
+                    </CardHeaderContent>
+                    <CardHeaderActions>
+                        <MudAvatar Color="Color.Primary" Variant="Variant.Filled">
+                            <MudIcon Icon="@Icons.Material.Filled.QueryStats" />
+                        </MudAvatar>
+                    </CardHeaderActions>
+                </MudCardHeader>
+                <MudCardActions>
+                    <MudButton Variant="Variant.Filled" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Visibility" Href="/operations/metrics">
+                        Open Metrics
+                    </MudButton>
+                </MudCardActions>
+            </MudCard>
+        </MudItem>
+
         <MudItem xs="12" md="5">
             <MudCard>
                 <MudCardHeader>

@@ -31,7 +31,7 @@ public sealed class PdfDataPorterProvider(
 {
     private readonly PdfConfiguration configuration = configuration ?? new PdfConfiguration();
     private readonly ILogger<PdfDataPorterProvider> logger = loggerFactory?.CreateLogger<PdfDataPorterProvider>() ?? NullLogger<PdfDataPorterProvider>.Instance;
-    private static readonly System.Threading.Lock fontResolverLock = new();
+    private static readonly Lock fontResolverLock = new();
     private static bool fontResolverInitialized;
     private static readonly PlatformFontResolver platformFontResolver = new();
 

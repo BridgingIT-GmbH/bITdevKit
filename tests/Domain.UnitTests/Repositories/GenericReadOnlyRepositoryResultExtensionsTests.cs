@@ -12,7 +12,7 @@ using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using Shouldly;
 using Xunit;
-using CancellationToken = System.Threading.CancellationToken;
+using CancellationToken = CancellationToken;
 
 public class GenericReadOnlyRepositoryResultExtensionsTests
 {

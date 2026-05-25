@@ -99,7 +99,7 @@ public class CommandResultTests
         var result = Result<int>.Success(inputValue).WithMessage(this.faker.Lorem.Sentence());
 
         // Act
-        var response = CommandResult.For<int, string>(result, outputValue);
+        var response = CommandResult.For(result, outputValue);
 
         // Assert
         response.ShouldNotBeNull();

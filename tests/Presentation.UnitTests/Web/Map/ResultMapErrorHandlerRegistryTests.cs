@@ -17,6 +17,7 @@ using Shouldly;
 using Xunit;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
+[Collection(ResultMapTestCollection.Name)]
 public class ResultMapErrorHandlerRegistryTests
 {
     private readonly ILogger<ResultMapErrorHandlerRegistryTests> logger;

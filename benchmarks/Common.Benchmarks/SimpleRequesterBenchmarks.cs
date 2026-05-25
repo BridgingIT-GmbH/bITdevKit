@@ -3,10 +3,10 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Common.Benchmarks;
-
 using BenchmarkDotNet.Attributes;
 using BridgingIT.DevKit.Common.Utilities;
+
+namespace BridgingIT.DevKit.Common.Benchmarks;
 
 [MemoryDiagnoser]
 public class SimpleRequesterBenchmarks

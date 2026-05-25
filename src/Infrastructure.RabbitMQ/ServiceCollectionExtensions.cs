@@ -27,7 +27,7 @@ public static class ServiceCollectionExtensions
         configuration ??= context.Configuration?.GetSection(section)?.Get<RabbitMQMessageBrokerConfiguration>() ??
             new RabbitMQMessageBrokerConfiguration();
 
-        context.Services.TryAddSingleton<IMessageBroker>(sp =>
+        context.Services.TryAddSingleton(sp =>
         {
             var broker = new RabbitMQMessageBroker(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
@@ -59,6 +59,8 @@ public static class ServiceCollectionExtensions
 
             return broker;
         });
+        context.Services.TryAddSingleton<IMessageBrokerRuntime>(sp => sp.GetRequiredService<RabbitMQMessageBroker>());
+        context.Services.TryAddSingleton<IMessageBroker>(sp => sp.GetRequiredService<RabbitMQMessageBroker>());
 
         return context;
     }
@@ -92,6 +94,7 @@ public static class ServiceCollectionExtensions
 
         context.Services.TryAddSingleton<RabbitMQQueueBrokerService>();
         context.Services.TryAddSingleton<RabbitMQQueueBroker>();
+        context.Services.TryAddSingleton<IQueueBrokerRuntime>(sp => sp.GetRequiredService<RabbitMQQueueBroker>());
         context.Services.TryAddSingleton<IQueueBroker>(sp => sp.GetRequiredService<RabbitMQQueueBroker>());
         context.Services.TryAddSingleton<IQueueBrokerService>(sp => sp.GetRequiredService<RabbitMQQueueBrokerService>());
 

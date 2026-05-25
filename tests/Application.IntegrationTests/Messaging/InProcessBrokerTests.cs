@@ -25,7 +25,7 @@ public class InProcessBrokerTests(ITestOutputHelper output) : TestsBase(output,
     {
         // Arrange
         var message = new StubMessage("John", DateTime.UtcNow.Ticks);
-        var messageBroker = this.ServiceProvider.GetService<IMessageBroker>();
+        var messageBroker = this.ServiceProvider.GetService<IMessageBrokerRuntime>();
         await messageBroker.Subscribe<StubMessage, StubMessageHandler>();
         StubMessageHandler.Processed = false;
 
@@ -45,7 +45,7 @@ public class InProcessBrokerTests(ITestOutputHelper output) : TestsBase(output,
         var message = new StubMessage("John", DateTime.UtcNow.Ticks);
         ReflectionHelper.SetProperty(message, nameof(StubMessage.Timestamp), DateTime.UtcNow.AddMinutes(-5));
 
-        var messageBroker = this.ServiceProvider.GetService<IMessageBroker>();
+        var messageBroker = this.ServiceProvider.GetService<IMessageBrokerRuntime>();
         await messageBroker.Subscribe<StubMessage, StubMessageHandler>();
         StubMessageHandler.Processed = false;
         // Act
@@ -60,7 +60,7 @@ public class InProcessBrokerTests(ITestOutputHelper output) : TestsBase(output,
     {
         // Arrange
         var message = new StubMessage("John", DateTime.UtcNow.Ticks);
-        var messageBroker = this.ServiceProvider.GetService<IMessageBroker>();
+        var messageBroker = this.ServiceProvider.GetService<IMessageBrokerRuntime>();
         await messageBroker.Subscribe<StubMessage, StubMessageHandler>();
         await messageBroker.Subscribe<StubMessage, AnotherStubMessageHandler>();
         StubMessageHandler.Processed = false;

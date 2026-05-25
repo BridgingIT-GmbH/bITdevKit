@@ -29,7 +29,7 @@ public static class HostBuilderExtensions
     /// <param name="builder">The host builder to configure.</param>
     /// <param name="configuration">Optional configuration root used (only) for OpenTelemetry sink setup. Serilog itself is read from the host builder context configuration.</param>
     /// <param name="exclusionPatterns">Optional collection of Serilog expression filters to exclude log events (added in addition to default health/otel exclusions).</param>
-    /// <param name="selfLogEnabled">If <c>true</c>, enables Serilog self-log output to <see cref="System.Console.Error"/> for diagnostics.</param>
+    /// <param name="selfLogEnabled">If <c>true</c>, enables Serilog self-log output to <see cref="Console.Error"/> for diagnostics.</param>
     /// <param name="registerLogCommands">If <c>true</c>, registers console commands for listing, getting and setting the active log level at runtime.</param>
     /// <returns>The same <see cref="IHostBuilder"/> instance for chaining.</returns>
     /// <remarks>
@@ -114,7 +114,7 @@ public static class HostBuilderExtensions
     /// <param name="builder">The host builder to configure.</param>
     /// <param name="configure">An action that receives a new <see cref="LoggerConfiguration"/> for custom sink/enrichment setup.</param>
     /// <param name="logEventLevel">Initial minimum log level applied to the dynamic <see cref="LoggingLevelSwitch"/>.</param>
-    /// <param name="selfLogEnabled">If <c>true</c>, enables Serilog self-log output to <see cref="System.Console.Error"/> for diagnostics.</param>
+    /// <param name="selfLogEnabled">If <c>true</c>, enables Serilog self-log output to <see cref="Console.Error"/> for diagnostics.</param>
     /// <param name="registerLogCommands">If <c>true</c>, registers console commands for listing, getting and setting the active log level at runtime.</param>
     /// <returns>The same <see cref="IHostBuilder"/> instance for chaining.</returns>
     /// <remarks>

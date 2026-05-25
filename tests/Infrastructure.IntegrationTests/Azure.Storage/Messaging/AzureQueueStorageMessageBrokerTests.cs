@@ -26,7 +26,7 @@ public class AzureQueueStorageMessageBrokerTests(ITestOutputHelper output, TestE
         services.AddTransient<AzureQueueStorageMessagingTestMessageHandler>();
 
         var queueSuffix = $"-{Guid.NewGuid():N}";
-        services.AddSingleton<IMessageBroker>(sp =>
+        services.AddSingleton<IMessageBrokerRuntime>(sp =>
         {
             var broker = new AzureQueueStorageMessageBroker(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
@@ -42,7 +42,7 @@ public class AzureQueueStorageMessageBrokerTests(ITestOutputHelper output, TestE
         });
 
         await using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IMessageBroker>();
+        var broker = provider.GetRequiredService<IMessageBrokerRuntime>();
 
         await broker.Subscribe<AzureQueueStorageMessagingTestMessage, AzureQueueStorageMessagingTestMessageHandler>();
         await Task.Delay(500); // give poller time to start
@@ -70,7 +70,7 @@ public class AzureQueueStorageMessageBrokerTests(ITestOutputHelper output, TestE
         services.AddTransient<AzureQueueStorageMessagingOtherTestMessageHandler>();
 
         var queueSuffix = $"-{Guid.NewGuid():N}";
-        services.AddSingleton<IMessageBroker>(sp =>
+        services.AddSingleton<IMessageBrokerRuntime>(sp =>
         {
             var broker = new AzureQueueStorageMessageBroker(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
@@ -86,7 +86,7 @@ public class AzureQueueStorageMessageBrokerTests(ITestOutputHelper output, TestE
         });
 
         await using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IMessageBroker>();
+        var broker = provider.GetRequiredService<IMessageBrokerRuntime>();
 
         await broker.Subscribe<AzureQueueStorageMessagingTestMessage, AzureQueueStorageMessagingTestMessageHandler>();
         await broker.Subscribe<AzureQueueStorageMessagingTestMessage, AzureQueueStorageMessagingOtherTestMessageHandler>();
@@ -118,7 +118,7 @@ public class AzureQueueStorageMessageBrokerTests(ITestOutputHelper output, TestE
         services.AddTransient<AzureQueueStorageMessagingOtherMessageHandler>();
 
         var queueSuffix = $"-{Guid.NewGuid():N}";
-        services.AddSingleton<IMessageBroker>(sp =>
+        services.AddSingleton<IMessageBrokerRuntime>(sp =>
         {
             var broker = new AzureQueueStorageMessageBroker(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
@@ -134,7 +134,7 @@ public class AzureQueueStorageMessageBrokerTests(ITestOutputHelper output, TestE
         });
 
         await using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IMessageBroker>();
+        var broker = provider.GetRequiredService<IMessageBrokerRuntime>();
 
         await broker.Subscribe<AzureQueueStorageMessagingTestMessage, AzureQueueStorageMessagingTestMessageHandler>();
         await broker.Subscribe<AzureQueueStorageMessagingOtherMessage, AzureQueueStorageMessagingOtherMessageHandler>();
@@ -169,7 +169,7 @@ public class AzureQueueStorageMessageBrokerTests(ITestOutputHelper output, TestE
         services.AddTransient<AzureQueueStorageMessagingTestMessageHandler>();
 
         var queueSuffix = $"-{Guid.NewGuid():N}";
-        services.AddSingleton<IMessageBroker>(sp =>
+        services.AddSingleton<IMessageBrokerRuntime>(sp =>
         {
             var broker = new AzureQueueStorageMessageBroker(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
@@ -185,7 +185,7 @@ public class AzureQueueStorageMessageBrokerTests(ITestOutputHelper output, TestE
         });
 
         await using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IMessageBroker>();
+        var broker = provider.GetRequiredService<IMessageBrokerRuntime>();
 
         // Do NOT subscribe before publishing
         var message = new AzureQueueStorageMessagingTestMessage("no-sub", DateTime.UtcNow.Ticks);
@@ -205,7 +205,7 @@ public class AzureQueueStorageMessageBrokerTests(ITestOutputHelper output, TestE
         services.AddTransient<AzureQueueStorageMessagingTestMessageHandler>();
 
         var queueSuffix = $"-{Guid.NewGuid():N}";
-        services.AddSingleton<IMessageBroker>(sp =>
+        services.AddSingleton<IMessageBrokerRuntime>(sp =>
         {
             var broker = new AzureQueueStorageMessageBroker(o => o
                 .LoggerFactory(sp.GetRequiredService<ILoggerFactory>())
@@ -221,7 +221,7 @@ public class AzureQueueStorageMessageBrokerTests(ITestOutputHelper output, TestE
         });
 
         await using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IMessageBroker>();
+        var broker = provider.GetRequiredService<IMessageBrokerRuntime>();
 
         await broker.Subscribe<AzureQueueStorageMessagingTestMessage, AzureQueueStorageMessagingTestMessageHandler>();
         await Task.Delay(500);

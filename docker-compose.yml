@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   mssql:
     image: mcr.microsoft.com/mssql/server:2022-latest
@@ -37,7 +35,7 @@ services:
       - ACCEPT_EULA=Y
       - SEQ_FIRSTRUN_ADMINUSERNAME=admin
       # https://blog.datalust.co/setting-an-initial-password-when-deploying-seq-to-docker/
-      - SEQ_FIRSTRUN_ADMINPASSWORDHASH=FIQIay86/lqTJOWoq8jeh1KUr3wSfubJJ+/mB+fluLSK+ZhBQQ==
+      - SEQ_FIRSTRUN_ADMINPASSWORDHASH=FIQIay86/lqTJOWoq8jeh1KUr3wSfubJJ+/mB+fluLSK+ZhBQQ== # admin
     volumes:
       - seq:/data
     networks:
@@ -54,15 +52,26 @@ services:
       - 6832:6832/udp # AgentPort
       - 9411:9411
       - 14268:14268
+      - 4319:4317
+      - 4320:4318
       - 16688:16686 # http://localhost:16688
     environment:
-      # https://www.jaegertracing.io/docs/1.16/deployment/#badger---local-storage
-      - SPAN_STORAGE_TYPE=badger
-      - BADGER_EPHEMERAL=false
-      - BADGER_DIRECTORY_VALUE=/badger/data
-      - BADGER_DIRECTORY_KEY=/badger/key
+      - COLLECTOR_OTLP_ENABLED=true
+      - SPAN_STORAGE_TYPE=memory
+    networks:
+      - bdk
+
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    container_name: bdk_otel_collector
+    restart: unless-stopped
+    command:
+      - "--config=/etc/otelcol/config.yaml"
+    ports:
+      - 4317:4317
+      - 4318:4318
     volumes:
-      - jaeger:/badger
+      - ./tools/docker/otel-collector-config.yaml:/etc/otelcol/config.yaml:ro
     networks:
       - bdk
 
@@ -73,10 +82,6 @@ volumes:
   seq:
     name: bdk_seq
     driver: local
-  jaeger:
-    name: bdk_jaeger
-    driver: local
-
 networks:
   bdk:
     name: bdk

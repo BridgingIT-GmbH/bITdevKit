@@ -22,27 +22,18 @@ public interface IFakeIdentityProvider
     Task<TokenResponse> HandleRefreshTokenGrantAsync(string refreshToken, string clientId, string scope, HttpContext httpContext);
 }
 
-public class FakeIdentityProvider : IFakeIdentityProvider
+public class FakeIdentityProvider(
+    ILogger<FakeIdentityProvider> logger,
+    FakeIdentityProviderEndpointsOptions options,
+    ITokenService tokenService,
+    IAuthorizationCodeService authorizationCodeService,
+    IPasswordValidator passwordValidator) : IFakeIdentityProvider
 {
-    private readonly ILogger<FakeIdentityProvider> logger;
-    private readonly FakeIdentityProviderEndpointsOptions options;
-    private readonly ITokenService tokenService;
-    private readonly IAuthorizationCodeService authorizationCodeService;
-    private readonly IPasswordValidator passwordValidator;
-
-    public FakeIdentityProvider(
-        ILogger<FakeIdentityProvider> logger,
-        FakeIdentityProviderEndpointsOptions options,
-        ITokenService tokenService,
-        IAuthorizationCodeService authorizationCodeService,
-        IPasswordValidator passwordValidator)
-    {
-        this.logger = logger;
-        this.options = options ?? new FakeIdentityProviderEndpointsOptions();
-        this.tokenService = tokenService;
-        this.authorizationCodeService = authorizationCodeService;
-        this.passwordValidator = passwordValidator;
-    }
+    private readonly ILogger<FakeIdentityProvider> logger = logger;
+    private readonly FakeIdentityProviderEndpointsOptions options = options ?? new FakeIdentityProviderEndpointsOptions();
+    private readonly ITokenService tokenService = tokenService;
+    private readonly IAuthorizationCodeService authorizationCodeService = authorizationCodeService;
+    private readonly IPasswordValidator passwordValidator = passwordValidator;
 
     public string GenerateAuthorizationCode(string email, string password, AuthorizeRequest request)
     {

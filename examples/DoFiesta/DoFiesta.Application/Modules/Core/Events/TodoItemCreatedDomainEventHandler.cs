@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Application.Queueing;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;
 using Microsoft.Extensions.Logging;
@@ -30,12 +31,14 @@ public class TodoItemCreatedDomainEventHandler(
     ILoggerFactory loggerFactory,
     IMessageBroker broker,
     IQueueBroker queueBroker,
-    INotificationService<EmailMessage> notificationService)
+    INotificationService<EmailMessage> notificationService,
+    ITodoItemOrchestrationCoordinator orchestrationCoordinator)
     : DomainEventHandlerBase<TodoItemCreatedDomainEvent>(loggerFactory)
 {
     private readonly IMessageBroker broker = broker;
     private readonly IQueueBroker queueBroker = queueBroker;
     private readonly INotificationService<EmailMessage> notificationService = notificationService;
+    private readonly ITodoItemOrchestrationCoordinator orchestrationCoordinator = orchestrationCoordinator;
 
     /// <summary>
     /// Determines whether this handler can handle the given event.
@@ -67,6 +70,11 @@ public class TodoItemCreatedDomainEventHandler(
                 "Created",
                 notification.Model?.Status.ToString()),
             cancellationToken);
+
+        if (notification.Model is not null) // ensure orchestration is started for this todo item to track its lifecycle and send reminders
+        {
+            await this.orchestrationCoordinator.EnsureStartedAsync(notification.Model, cancellationToken);
+        }
 
         if (string.IsNullOrWhiteSpace(notification.Model?.Assignee))
         {

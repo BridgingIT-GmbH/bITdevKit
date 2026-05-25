@@ -30,16 +30,10 @@ public static class ResultsExtensions
         return new HeaderResult(result, headers);
     }
 
-    private sealed class HeaderResult : IResult
+    private sealed class HeaderResult(IResult result, HeaderDictionary headers) : IResult
     {
-        private readonly IResult result;
-        private readonly HeaderDictionary headers;
-
-        public HeaderResult(IResult result, HeaderDictionary headers)
-        {
-            this.result = result;
-            this.headers = headers;
-        }
+        private readonly IResult result = result;
+        private readonly HeaderDictionary headers = headers;
 
         public async Task ExecuteAsync(HttpContext httpContext)
         {

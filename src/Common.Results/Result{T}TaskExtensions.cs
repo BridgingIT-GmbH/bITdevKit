@@ -60,7 +60,7 @@ public static partial class ResultTTaskExtensions
         try
         {
             var result = await resultTask;
-            return result.ThrowIfFailed<T>();
+            return result.ThrowIfFailed();
         }
         catch (TException)
         {

@@ -32,7 +32,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return await ProjectAllAsync<TProjection>(context: null, projection, options, cancellationToken).AnyContext();
+        return await ProjectAllAsync(context: null, projection, options, cancellationToken).AnyContext();
     }
 
     /// <summary>
@@ -520,7 +520,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
             return Task.FromResult(ResultPaged<TProjection>.Failure("projection cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, ResultPaged<TProjection>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -612,7 +612,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
             return Task.FromResult(ResultPaged<TProjection>.Failure("projection cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, ResultPaged<TProjection>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -707,7 +707,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
             return Task.FromResult(ResultPaged<TProjection>.Failure("projection cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, ResultPaged<TProjection>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -801,7 +801,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
             return Task.FromResult(ResultPaged<TProjection>.Failure("projection cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, ResultPaged<TProjection>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -857,7 +857,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
         IEnumerable<ISpecification<TEntity>> additionalSpecifications = null,
         CancellationToken cancellationToken = default)
     {
-        return await ProjectAllPagedAsync<TProjection>(null, filter, projection, additionalSpecifications, cancellationToken).AnyContext();
+        return await ProjectAllPagedAsync(null, filter, projection, additionalSpecifications, cancellationToken).AnyContext();
     }
 
     /// <summary>
@@ -899,7 +899,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
             return Task.FromResult(ResultPaged<TProjection>.Failure("projection cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, ResultPaged<TProjection>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {

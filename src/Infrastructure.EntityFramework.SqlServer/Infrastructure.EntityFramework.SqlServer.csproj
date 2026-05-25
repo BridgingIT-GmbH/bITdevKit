@@ -12,6 +12,7 @@
     <PackageReference Include="Microsoft.Data.SqlClient" />
     <!--<PackageReference Include="EntityFrameworkCore.Exceptions.SqlServer" />-->
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" />
   </ItemGroup>
 
   <ItemGroup>

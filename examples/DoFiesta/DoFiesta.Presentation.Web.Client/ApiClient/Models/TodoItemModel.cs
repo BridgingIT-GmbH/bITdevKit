@@ -54,6 +54,14 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         public int? OrderIndex { get; set; }
         /// <summary>The priority property</summary>
         public int? Priority { get; set; }
+        /// <summary>The properties property</summary>
+#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
+#nullable enable
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.TodoItemModel_properties? Properties { get; set; }
+#nullable restore
+#else
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.TodoItemModel_properties Properties { get; set; }
+#endif
         /// <summary>The status property</summary>
         public int? Status { get; set; }
         /// <summary>The steps property</summary>
@@ -113,6 +121,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
                 { "number", n => { Number = n.GetLongValue(); } },
                 { "orderIndex", n => { OrderIndex = n.GetIntValue(); } },
                 { "priority", n => { Priority = n.GetIntValue(); } },
+                { "properties", n => { Properties = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.TodoItemModel_properties>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.TodoItemModel_properties.CreateFromDiscriminatorValue); } },
                 { "status", n => { Status = n.GetIntValue(); } },
                 { "steps", n => { Steps = n.GetCollectionOfObjectValues<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.TodoStepModel>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.TodoStepModel.CreateFromDiscriminatorValue)?.AsList(); } },
                 { "title", n => { Title = n.GetStringValue(); } },
@@ -134,6 +143,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             writer.WriteLongValue("number", Number);
             writer.WriteIntValue("orderIndex", OrderIndex);
             writer.WriteIntValue("priority", Priority);
+            writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.TodoItemModel_properties>("properties", Properties);
             writer.WriteIntValue("status", Status);
             writer.WriteCollectionOfObjectValues<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.TodoStepModel>("steps", Steps);
             writer.WriteStringValue("title", Title);

@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.DoFiesta.Infrastructure;
 
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Orchestrations;
 using DevKit.Infrastructure.EntityFramework;
 using DevKit.Infrastructure.EntityFramework.Messaging;
 using DevKit.Infrastructure.Notifications;
@@ -18,6 +19,7 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     IMessagingContext,
     INotificationEmailContext,
     IQueueingContext,
+    IOrchestrationContext,
     IEntityPermissionContext,
     IFileStorageContext,
     IFileMonitoringContext,
@@ -34,6 +36,14 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     public DbSet<EmailMessageAttachmentEntity> NotificationsEmailAttachments { get; set; }
 
     public DbSet<QueueMessage> QueueMessages { get; set; }
+
+    public DbSet<OrchestrationInstance> OrchestrationInstances { get; set; }
+
+    public DbSet<OrchestrationHistory> OrchestrationHistory { get; set; }
+
+    public DbSet<OrchestrationSignal> OrchestrationSignals { get; set; }
+
+    public DbSet<OrchestrationTimer> OrchestrationTimers { get; set; }
 
     public DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }
 

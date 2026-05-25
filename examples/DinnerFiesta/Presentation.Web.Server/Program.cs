@@ -24,6 +24,7 @@ using NSwag;
 using NSwag.AspNetCore;
 using NSwag.Generation.AspNetCore;
 using NSwag.Generation.Processors.Security;
+using OpenTelemetry.Exporter;
 using OpenTelemetry;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -127,8 +128,7 @@ ConfigureHealth(builder.Services);
 builder.Services.AddScoped<ICurrentUserAccessor, HttpCurrentUserAccessor>();
 //builder.Services.AddFakeAuthentication(Fakes.Users, builder.Environment.IsDevelopment());
 
-builder.Services
-    .AddMetrics(); // TOOL: dotnet-counters monitor -n BridgingIT.DevKit.Examples.DinnerFiesta.Presentation.Web.Server --counters bridgingit_devkit
+builder.Services.AddMetrics().UseEndpoints(); // TOOL: dotnet-counters monitor -n BridgingIT.DevKit.Examples.DinnerFiesta.Presentation.Web.Server --counters bdk
 builder.Services.Configure<ApiBehaviorOptions>(ConfigureApiBehavior);
 builder.Services.AddSingleton<IConfigurationRoot>(builder.Configuration);
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -180,6 +180,7 @@ app.UseRouting();
 app.UseRequestCorrelation();
 app.UseRequestModuleContext();
 app.UseRequestLogging();
+app.UseRequestMetrics();
 
 app.UseOpenApi();
 app.UseSwaggerUi(ConfigureSwaggerUi);
@@ -246,11 +247,29 @@ void ConfigureHealth(IServiceCollection services)
 
 void ConfigureMetrics(MeterProviderBuilder provider)
 {
+    var otlpEndpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"].EmptyToNull();
+    var otlpHeaders = builder.Configuration["OTEL_EXPORTER_OTLP_HEADERS"].EmptyToNull();
+
     provider.AddRuntimeInstrumentation()
         .AddMeter("Microsoft.AspNetCore.Hosting",
             "Microsoft.AspNetCore.Server.Kestrel",
             "System.Net.Http",
-            "BridgingIT.DevKit");
+            Metrics.MeterName);
+
+    if (!otlpEndpoint.IsNullOrEmpty())
+    {
+        Log.Logger.Information("{LogKey} otlp metrics exporter enabled (endpoint={OtlpEndpoint})", "MET", otlpEndpoint);
+        provider.AddOtlpExporter(options =>
+        {
+            options.Endpoint = new Uri(otlpEndpoint);
+            options.Protocol = OtlpExportProtocol.Grpc;
+
+            if (!otlpHeaders.IsNullOrEmpty())
+            {
+                options.Headers = otlpHeaders;
+            }
+        });
+    }
 
     if (builder.Configuration["Metrics:Prometheus:Enabled"].To<bool>())
     {
@@ -264,6 +283,8 @@ void ConfigureTracing(TracerProviderBuilder provider)
     // TODO: multiple per module tracer needed? https://github.com/open-telemetry/opentelemetry-dotnet/issues/2040
     // https://opentelemetry.io/docs/instrumentation/net/getting-started/
     var serviceName = Assembly.GetExecutingAssembly().GetName().Name; //TODO: use ModuleExtensions.ServiceName
+    var otlpEndpoint = builder.Configuration["OTEL_EXPORTER_OTLP_ENDPOINT"].EmptyToNull();
+    var otlpHeaders = builder.Configuration["OTEL_EXPORTER_OTLP_HEADERS"].EmptyToNull();
 
     if (builder.Environment.IsDevelopment())
     {
@@ -308,16 +329,20 @@ void ConfigureTracing(TracerProviderBuilder provider)
             options.SetDbStatementForText = true;
         });
 
-    if (builder.Configuration["Tracing:Jaeger:Enabled"].To<bool>())
+    if (!otlpEndpoint.IsNullOrEmpty())
     {
-        Log.Logger.Information("{LogKey} jaeger exporter enabled (host={JaegerHost})",
+        Log.Logger.Information("{LogKey} otlp trace exporter enabled (endpoint={OtlpEndpoint})",
             "TRC",
-            builder.Configuration["Tracing:Jaeger:AgentHost"]);
-        provider.AddJaegerExporter(opts =>
+            otlpEndpoint);
+        provider.AddOtlpExporter(options =>
         {
-            opts.AgentHost = builder.Configuration["Tracing:Jaeger:AgentHost"];
-            opts.AgentPort = Convert.ToInt32(builder.Configuration["Tracing:Jaeger:AgentPort"]);
-            opts.ExportProcessorType = ExportProcessorType.Simple;
+            options.Endpoint = new Uri(otlpEndpoint);
+            options.Protocol = OtlpExportProtocol.Grpc;
+
+            if (!otlpHeaders.IsNullOrEmpty())
+            {
+                options.Headers = otlpHeaders;
+            }
         });
     }
 

@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 using System.Net;
 using System.Net.Http.Json;
 using BridgingIT.DevKit.Application.Queueing;
-using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Queueing;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

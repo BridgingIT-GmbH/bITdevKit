@@ -57,7 +57,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Exists
             return Task.FromResult(Result<bool>.Failure("id cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result<bool>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -118,7 +118,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Exists
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result<bool>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -189,7 +189,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Exists
             return Task.FromResult(Result<bool>.Failure("expression cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result<bool>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -255,7 +255,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Exists
             return Task.FromResult(Result<bool>.Failure("specification cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result<bool>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -320,7 +320,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Exists
             return Task.FromResult(Result<bool>.Failure("specifications cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result<bool>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {
@@ -385,7 +385,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Exists
             return Task.FromResult(Result<bool>.Failure("filter cannot be null."));
         }
 
-        return ActiveEntityContextScope.UseAsync<TEntity, TId, Result<bool>>(
+        return ActiveEntityContextScope.UseAsync(
             context,
             async ctx =>
             {

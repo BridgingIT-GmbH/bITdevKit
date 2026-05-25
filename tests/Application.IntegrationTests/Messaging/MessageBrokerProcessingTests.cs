@@ -28,7 +28,7 @@ public class MessageBrokerProcessingTests(ITestOutputHelper output) : TestsBase(
         // Arrange
         DelayedProcessingHandler.Reset();
         var message = new DelayedProcessingMessage("wait-for-handler");
-        var sut = this.ServiceProvider.GetRequiredService<IMessageBroker>();
+        var sut = this.ServiceProvider.GetRequiredService<IMessageBrokerRuntime>();
         await sut.Subscribe<DelayedProcessingMessage, DelayedProcessingHandler>();
         var watch = Stopwatch.StartNew();
 
@@ -49,7 +49,7 @@ public class MessageBrokerProcessingTests(ITestOutputHelper output) : TestsBase(
         FailingProcessingHandler.Reset();
         SkippedProcessingHandler.Reset();
         var message = new DelayedProcessingMessage("stop-after-failure");
-        var sut = this.ServiceProvider.GetRequiredService<IMessageBroker>();
+        var sut = this.ServiceProvider.GetRequiredService<IMessageBrokerRuntime>();
         await sut.Subscribe<DelayedProcessingMessage, FailingProcessingHandler>();
         await sut.Subscribe<DelayedProcessingMessage, SkippedProcessingHandler>();
 

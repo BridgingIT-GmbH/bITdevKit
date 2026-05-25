@@ -51,6 +51,7 @@ nav:
           - Notifications: reference/features-notifications.md
           - Modules: reference/features-modules.md
           - Pipelines: reference/features-pipelines.md
+          - Orchestrations: reference/features-orchestrations.md
           - Filtering: reference/features-filtering.md
           - Extensions: reference/features-extensions.md
       - Security and Access:

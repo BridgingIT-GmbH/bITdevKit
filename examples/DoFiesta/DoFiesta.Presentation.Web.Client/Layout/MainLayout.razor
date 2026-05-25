@@ -41,7 +41,9 @@
                 <MudMenu Icon="@Icons.Material.Filled.SettingsInputComponent" Color="Color.Info">
                     <MudMenuItem Href="/operations/jobscheduling">Jobs</MudMenuItem>
                     <MudMenuItem Href="/operations/logentries">Logs</MudMenuItem>
+                    <MudMenuItem Href="/operations/metrics">Metrics</MudMenuItem>
                     <MudMenuItem Href="/operations/messaging">Messaging</MudMenuItem>
+                    <MudMenuItem Href="/operations/orchestrations">Orchestrations</MudMenuItem>
                     <MudMenuItem Href="/operations/queueing">Queueing</MudMenuItem>
                     <MudMenuItem Href="/operations/notifications">Notifications </MudMenuItem>
                     <MudMenuItem Href="/operations/files">Files</MudMenuItem>
@@ -58,7 +60,7 @@
                 <MudIconButton Icon="@Icons.Material.Filled.GraphicEq" Color="Color.Inherit" Href="http://localhost:16688" Target="_blank" />
             </MudTooltip>
             <MudTooltip Text="Health">
-                <MudIconButton Icon="@Icons.Material.Filled.MonitorHeart" Color="@(IsHealthy ? Color.Success : Color.Error)" Href="https://localhost:5001/health-ui" Target="_blank" />
+                <MudIconButton Icon="@Icons.Material.Filled.MonitorHeart" Color="@(IsHealthy ? Color.Success : Color.Error)" Href="https://localhost:5001/healthz" Target="_blank" />
             </MudTooltip>
             <MudTooltip Text="Theme">
                 <MudIconButton Icon="@ThemeToggleIcon" Color="@Color.Warning" OnClick="ToggleTheme" />

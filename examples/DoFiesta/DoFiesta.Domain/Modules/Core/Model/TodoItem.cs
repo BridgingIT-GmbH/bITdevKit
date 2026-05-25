@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 
 using System.Diagnostics;
+using BridgingIT.DevKit.Common;
 using DevKit.Domain.Model;
 
 [DebuggerDisplay("Id={Id}, UserId={UserId}, Status={Status}, Title={Title}")]
@@ -43,6 +44,8 @@ public class TodoItem : AuditableAggregateRoot<TodoItemId>, IConcurrency
     public EmailAddress Assignee { get; set; }
 
     public virtual ICollection<TodoStep> Steps { get; set; } = [];
+
+    public PropertyBag Properties { get; set; } = [];
 
     public Guid ConcurrencyVersion { get; set; }
 }

@@ -228,7 +228,7 @@ public class FileStorageEndpoints(
             return Task.FromResult(failure);
         }
 
-        return Task.FromResult<HttpResult>(Results.Ok(new FileStorageProviderInfoModel
+        return Task.FromResult(Results.Ok(new FileStorageProviderInfoModel
         {
             ProviderName = providerName,
             LocationName = provider.LocationName,
@@ -488,7 +488,7 @@ public class FileStorageEndpoints(
 
         FileEventType parsedEventType = default;
         if (!string.IsNullOrWhiteSpace(eventType) &&
-            !Enum.TryParse<FileEventType>(eventType, ignoreCase: true, out parsedEventType))
+            !Enum.TryParse(eventType, ignoreCase: true, out parsedEventType))
         {
             return Results.Problem(
                 $"The file event type '{eventType}' is invalid. Expected one of: {string.Join(", ", Enum.GetNames<FileEventType>())}.",

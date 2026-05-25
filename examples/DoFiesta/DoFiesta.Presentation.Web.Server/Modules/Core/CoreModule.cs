@@ -5,16 +5,22 @@
 
 namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 
+using System.Diagnostics.Metrics;
 using Application.Modules.Core;
 using Application.Modules.Core.DataPorter;
 using BridgingIT.DevKit.Application;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Application.DataPorter;
+using BridgingIT.DevKit.Application.JobScheduling;
+using BridgingIT.DevKit.Application.Orchestrations;
+using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Orchestrations;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web.Storage;
+using BridgingIT.DevKit.Presentation.Web.Orchestrations;
 using Common;
 using DevKit.Domain.Repositories;
 using Domain.Model;
@@ -45,6 +51,7 @@ public class CoreModule : WebModuleBase
         services.AddJobScheduling(o => o
             .Enabled().StartupDelay(configuration["JobScheduling:StartupDelay"]), configuration)
             .WithSqlServerStore(moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default"))
+            .WithBehavior<MetricsJobSchedulingBehavior>()
             .WithJob<FileMonitoringLocationScanJob>()
                 .Cron(CronExpressions.Every5Minutes)
                 .Named("scan_inbound")
@@ -91,6 +98,8 @@ public class CoreModule : WebModuleBase
 
         // queueing
         services.AddQueueing(configuration)
+            .WithBehavior(sp => (IQueueEnqueuerBehavior)new MetricsQueueEnqueuerBehavior(sp.GetService<IMeterFactory>()))
+            .WithBehavior(sp => (IQueueHandlerBehavior)new MetricsQueueHandlerBehavior(sp.GetService<IMeterFactory>()))
             .WithSubscription<TodoItemEchoQueueMessage, TodoItemEchoQueueMessageHandler>();
 
         // dbcontext
@@ -98,6 +107,7 @@ public class CoreModule : WebModuleBase
                 .UseConnectionString(moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default"))
                 .UseLogger()/*.UseSimpleLogger()*/)
             .WithSequenceNumberGenerator()
+            .WithHealthCheck() // TODO: implement in devkit and use in all dbcontext registrations
             .WithDatabaseCreatorService(o => o
                 .Enabled(environment.IsLocalDevelopment())
                 .HaltOnFailure())
@@ -108,6 +118,16 @@ public class CoreModule : WebModuleBase
                 .ProcessingInterval("00:00:30")
                 .StartupDelay("00:00:15"));
         //.PurgeOnStartup());
+
+        services.AddOrchestrations()
+            .WithOrchestration<TodoItemLifecycleOrchestration>()
+            .WithBehavior<MetricsOrchestrationBehavior>()
+            .WithEntityFramework<CoreDbContext>()
+            .AddEndpoints();
+
+        // services.AddOrchestrationEndpoints(options => options.RequireAuthorization());
+
+        services.AddScoped<ITodoItemOrchestrationCoordinator, TodoItemOrchestrationCoordinator>();
 
         services.AddFileStorage(factory => factory
             .RegisterProvider("documents", storage => storage
@@ -183,6 +203,7 @@ public class CoreModule : WebModuleBase
         // repositories
         services.AddEntityFrameworkRepository<TodoItem, CoreDbContext>()
             .WithTransactions()
+            .WithBehavior<RepositoryMetricsBehavior<TodoItem>>()
             .WithBehavior<RepositoryTracingBehavior<TodoItem>>()
             .WithBehavior<RepositoryLoggingBehavior<TodoItem>>()
             .WithBehavior<RepositoryAuditStateBehavior<TodoItem>>()
@@ -191,6 +212,7 @@ public class CoreModule : WebModuleBase
 
         services.AddEntityFrameworkRepository<Subscription, CoreDbContext>()
             .WithTransactions()
+            .WithBehavior<RepositoryMetricsBehavior<Subscription>>()
             .WithBehavior<RepositoryTracingBehavior<Subscription>>()
             .WithBehavior<RepositoryLoggingBehavior<Subscription>>()
             .WithBehavior<RepositoryAuditStateBehavior<Subscription>>()

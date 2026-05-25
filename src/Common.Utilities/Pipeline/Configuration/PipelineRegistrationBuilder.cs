@@ -38,7 +38,7 @@ public static class PipelineServiceCollectionExtensions
             services.AddSingleton(state);
         }
 
-        services.TryAddSingleton<PipelineRegistry>(sp =>
+        services.TryAddSingleton(sp =>
             new PipelineRegistry(sp, sp.GetRequiredService<PipelineRegistrationState>()));
         services.TryAddSingleton<InMemoryPipelineExecutionTracker>();
         services.TryAddSingleton<IPipelineRuntime, PipelineRuntime>();

@@ -33,7 +33,7 @@ public class AzureQueueStorageQueueBrokerTests(ITestOutputHelper output, TestEnv
                 .ProcessDelay(0));
 
         await using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         await broker.Subscribe<AzureQueueStorageTestMessage, AzureQueueStorageTestMessageHandler>();
@@ -66,7 +66,7 @@ public class AzureQueueStorageQueueBrokerTests(ITestOutputHelper output, TestEnv
                 .ProcessDelay(0));
 
         await using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         var message = new AzureQueueStorageTestMessage("waiting-test");
@@ -96,7 +96,7 @@ public class AzureQueueStorageQueueBrokerTests(ITestOutputHelper output, TestEnv
                 .ProcessDelay(0));
 
         await using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         var message = new AzureQueueStorageBeforeSubMessage("wait-for-handler");
@@ -136,7 +136,7 @@ public class AzureQueueStorageQueueBrokerTests(ITestOutputHelper output, TestEnv
                 .ProcessDelay(0));
 
         await using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         await broker.Subscribe<AzureQueueStoragePauseMessage, AzureQueueStoragePauseMessageHandler>();
@@ -196,7 +196,7 @@ public class AzureQueueStorageQueueBrokerTests(ITestOutputHelper output, TestEnv
                 .ProcessDelay(0));
 
         await using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         await broker.Subscribe<AzureQueueStorageFailMessage, AzureQueueStorageFailMessageHandler>();
@@ -236,7 +236,7 @@ public class AzureQueueStorageQueueBrokerTests(ITestOutputHelper output, TestEnv
                 .ProcessDelay(0));
 
         await using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         var message = new AzureQueueStorageTrackMessage("track-me");
@@ -267,7 +267,7 @@ public class AzureQueueStorageQueueBrokerTests(ITestOutputHelper output, TestEnv
                 .ProcessDelay(0));
 
         await using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         var message = new AzureQueueStorageTrackMessage("purge-me");
@@ -304,7 +304,7 @@ public class AzureQueueStorageQueueBrokerTests(ITestOutputHelper output, TestEnv
                 .ProcessDelay(0));
 
         await using var provider = services.BuildServiceProvider();
-        var broker = provider.GetRequiredService<IQueueBroker>();
+        var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
         var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         await broker.Subscribe<AzureQueueStorageTestMessage, AzureQueueStorageTestMessageHandler>();

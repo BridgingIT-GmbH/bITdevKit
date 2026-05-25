@@ -171,6 +171,8 @@ This glossary captures the working terminology used by the Jobs feature. Names m
 | Occurrence                    | A concrete scheduled execution request produced by a trigger. Durable providers persist occurrences before execution.                                    |
 | Due Occurrence                | An occurrence whose scheduled execution time has arrived and is eligible for acquisition by a worker.                                                    |
 | Missed Occurrence             | An occurrence that should have run while the scheduler was stopped, unavailable or unable to acquire work.                                               |
+| Job Batch                     | An optional operational grouping of related occurrences that should be monitored and controlled together. This is distinct from provider scan batch size or worker dispatch batch size. |
+| Batch Child Occurrence        | An occurrence associated with a job batch and counted toward the batch's created, pending, processing, succeeded, failed, deleted and finished totals.   |
 | Execution                     | One attempt to run a job occurrence. Retries create additional execution attempts.                                                                       |
 | Execution History             | Persisted records describing execution attempts, status, timing, messages, errors, duration, correlation and owning scheduler instance.                  |
 | Previous Execution            | The immediately preceding execution attempt for the same job/trigger identity.                                                                           |
@@ -1245,17 +1247,30 @@ The registration model, persistence layer and endpoint layer shall together supp
 
 The dashboard contract shall support views such as:
 
+- dashboard navigation counts for occurrences, failed occurrences, retries, batches, recurring triggers and scheduler instances
+- overview cards for provider/runtime health, including storage provider name, provider version where available, scheduler uptime, active scheduler instances, active leases, worker slots, backlog size and storage/resource counters where the provider can expose them safely
+- realtime graph data showing recent successful, failed, cancelled/deleted and retry-scheduled occurrence counts grouped by short time buckets
+- history graph data showing longer-range successful, failed, cancelled/deleted and retry-scheduled occurrence counts grouped by hour or day
 - active job definition list with display name, description, status, trigger counts and latest execution outcome
 - trigger list with schedule, enabled state, next due occurrence and last execution outcome
+- recurring trigger list with cron/calendar expression, time zone, last materialized occurrence, next due occurrence, enabled state and missed-occurrence policy
 - orphaned runtime-state view for jobs or triggers that have persisted history/state but no active registration
-- active and due occurrence list
-- failed and retrying occurrence list
-- occurrence detail with data source metadata, status, attempts and history
-- execution history timeline
+- occurrence lists grouped by operational state, including enqueued/due, scheduled, processing/running, succeeded/completed, failed, deleted/cancelled, awaiting dependency and awaiting batch
+- failed and retrying occurrence list with retry attempt number, max attempts, failure reason, retry due time and original creation time
+- occurrence detail with invocation display, sanitized data/arguments, parameters, source metadata, status, attempts, retry information and state history
+- state history timeline showing status transitions, timestamps, scheduler instance id, duration offsets, reason/error summary and next action metadata such as next retry or enqueue time
+- batch list and batch detail views with description, status counts, progress percentage, created/started/completed timestamps and the child occurrences grouped by batch state
+- batch progress bars that can distinguish created, pending, processing, succeeded, failed, deleted and finished child occurrences
+- bulk action views for selected failed, retrying, queued or batch child occurrences
+- scheduler server/instance list with instance id, host name, process id where available, queues/groups handled, worker slot counts, active execution counts, heartbeat age, started time and lease health
 - lease diagnostics and recovery view
 - aggregate metrics by job, trigger type, status and scheduler instance
 
 A first-party dashboard UI is optional for the initial implementation. If provided later, it should use the same public query and management APIs as external tools.
+
+Dashboard query models must be designed for UI consumption and must not require clients to reconstruct core views by issuing many per-row detail requests. Summary endpoints should provide enough counts, labels, status colors/classes, UTC timestamps and paging metadata for a dashboard to render navigation tabs, sidebars, tables, progress bars and graphs efficiently.
+
+Dashboard contracts must separate compact previews from full stored data. Occurrence list and detail models may expose sanitized argument previews, data type names, parameter names, hashes, sizes and selected safe metadata by default. Full serialized data, sensitive payloads, exception stack traces and integration payloads must require explicit opt-in endpoints or options and must respect authorization and redaction policies.
 
 ### Administration API
 
@@ -1265,15 +1280,22 @@ The endpoints may map service-layer `Result`, `Result<T>` and `ResultPaged<T>` v
 
 The endpoint surface shall support:
 
+- dashboard summary queries for navigation counts, overview cards and graph series
 - active job definition list and detail queries
 - trigger list and detail queries
+- recurring trigger list and detail queries
 - occurrence list and detail queries
+- retry list and detail queries
+- batch list and detail queries when batches are supported
 - execution history queries
 - lease diagnostic queries
+- scheduler server/instance queries
 - aggregated metrics queries
 - job management actions such as enable, disable, pause and resume
 - trigger management actions such as register, update, enable, disable and delete
 - execution control actions such as manual dispatch, cancel, interrupt and retry
+- bulk execution control actions such as retry/requeue, cancel, delete/archive and purge for selected occurrence ids where supported
+- batch control actions such as retry/requeue selected child occurrences, cancel, pause, resume and archive/delete where supported
 - maintenance actions such as archive, purge and repair operations when supported by the provider
 
 Management endpoints and any operational UI must be securable through host application authentication and authorization.
@@ -1296,15 +1318,26 @@ That means:
 The endpoint contract shall expose routes shaped like:
 
 ```text
+GET    /api/_system/jobs/dashboard
+GET    /api/_system/jobs/dashboard/navigation
+GET    /api/_system/jobs/dashboard/overview
+GET    /api/_system/jobs/dashboard/timeline
 GET    /api/_system/jobs
 GET    /api/_system/jobs/{jobName}
 GET    /api/_system/jobs/{jobName}/triggers
 GET    /api/_system/jobs/{jobName}/triggers/{triggerName}
+GET    /api/_system/jobs/recurring
+GET    /api/_system/jobs/recurring/{jobName}/{triggerName}
 GET    /api/_system/jobs/occurrences
 GET    /api/_system/jobs/occurrences/{occurrenceId}
 GET    /api/_system/jobs/occurrences/{occurrenceId}/history
+GET    /api/_system/jobs/retries
 GET    /api/_system/jobs/executions
+GET    /api/_system/jobs/batches
+GET    /api/_system/jobs/batches/{batchId}
+GET    /api/_system/jobs/batches/{batchId}/occurrences
 GET    /api/_system/jobs/leases
+GET    /api/_system/jobs/servers
 GET    /api/_system/jobs/metrics
 POST   /api/_system/jobs/{jobName}/dispatch
 POST   /api/_system/jobs/{jobName}/enable
@@ -1321,8 +1354,55 @@ POST   /api/_system/jobs/occurrences/{occurrenceId}/interrupt
 POST   /api/_system/jobs/occurrences/{occurrenceId}/retry
 POST   /api/_system/jobs/occurrences/{occurrenceId}/archive
 POST   /api/_system/jobs/occurrences/{occurrenceId}/repair/release-lease
+POST   /api/_system/jobs/occurrences/bulk/retry
+POST   /api/_system/jobs/occurrences/bulk/cancel
+POST   /api/_system/jobs/occurrences/bulk/archive
+POST   /api/_system/jobs/batches/{batchId}/retry
+POST   /api/_system/jobs/batches/{batchId}/cancel
+POST   /api/_system/jobs/batches/{batchId}/archive
 DELETE /api/_system/jobs/occurrences
 ```
+
+The dashboard endpoints are convenience read models over the same query services used by the detailed resources. They must not bypass provider-neutral query abstractions or expose provider tables directly.
+
+`GET /api/_system/jobs/dashboard` may return a combined dashboard shell model for initial page load. It should include navigation counts, overview cards, default graph series, status facets and provider capability flags. The more focused `/dashboard/navigation`, `/dashboard/overview` and `/dashboard/timeline` endpoints should be available so dashboards can refresh small regions without reloading all tables.
+
+`GET /api/_system/jobs/dashboard/navigation` shall return at least:
+
+- total visible occurrence count
+- failed occurrence count
+- retry-scheduled occurrence count
+- active batch count
+- recurring trigger count
+- active scheduler server/instance count
+- stale server/instance count
+- capability flags for batches, recurring triggers, server diagnostics, leases, archived history and bulk actions
+
+`GET /api/_system/jobs/dashboard/overview` shall return provider and runtime facts suitable for overview cards:
+
+- scheduler status and uptime
+- storage/provider name and version where available
+- active scheduler instance count
+- active lease count and expired lease count
+- worker slot count, active worker count and queue/backlog size
+- oldest due occurrence age
+- retained occurrence and execution counts by status
+- storage resource counters where the provider safely exposes them, such as connection count, memory use, database size or retention-window totals
+
+Provider-specific overview facts must be represented as named metric cards with display name, value, unit, severity and source. The core contract must not hard-code Redis-specific metrics, but it must allow a provider to expose Redis-like values such as version, uptime, connections, memory usage, peak memory usage and pub/sub channel count.
+
+`GET /api/_system/jobs/dashboard/timeline` shall support realtime and history graph scenarios. Query parameters shall include:
+
+- `from`
+- `to`
+- `bucket`
+- `mode` with values such as `Realtime`, `Day` and `Week`
+- `jobName`
+- `triggerName`
+- `schedulerInstanceId`
+- `statuses`
+
+The timeline response shall return ordered buckets with UTC start/end timestamps and counts for succeeded, failed, cancelled/deleted, retry-scheduled and processing occurrences. Empty buckets should be included when requested so chart axes remain stable.
 
 Query parameters for `GET /api/_system/jobs` shall support at least:
 
@@ -1335,6 +1415,8 @@ Query parameters for `GET /api/_system/jobs` shall support at least:
 - `take`
 - `sortBy`
 - `sortDescending`
+
+Job definition list models shall include status facet counts suitable for a dashboard sidebar. At minimum, the response should expose counts for enabled, disabled, paused, orphaned runtime state and failed latest execution where those concepts are available.
 
 Query parameters for `GET /api/_system/jobs/occurrences` and `GET /api/_system/jobs/executions` shall support at least:
 
@@ -1356,9 +1438,54 @@ Query parameters for `GET /api/_system/jobs/occurrences` and `GET /api/_system/j
 - `sortBy`
 - `sortDescending`
 
+Occurrence list models shall support table views similar to an operations dashboard. Each row should include at least:
+
+- occurrence id and a short id/display id
+- job name, display name and invocation display
+- trigger name and trigger type
+- current occurrence status and display severity
+- queue/group/module where applicable
+- attempt number and max attempts where applicable
+- created UTC, due UTC, started UTC, completed UTC and next retry UTC where applicable
+- scheduler instance id and lease owner where applicable
+- correlation id and idempotency key where available
+- concise reason/error summary for failed, cancelled, interrupted or retry-scheduled states
+
+Occurrence detail models shall include:
+
+- the same row summary fields
+- sanitized job data and metadata previews
+- parameter names and values when safe to expose
+- full attempt summary with execution ids, status, duration, result messages and error summary
+- state history timeline records
+- lease and recovery metadata
+- links or ids for parent batch, source feature, source id, causation id and related orchestration/message/queue records where available
+
+`GET /api/_system/jobs/retries` is a filtered occurrence view optimized for retry pages. It shall return retry-scheduled or retryable failed occurrences with retry attempt count, max attempts, reason/error summary, retry due time, created time, job display and paging metadata. It shall support the same paging and page-size options as occurrence lists.
+
+`GET /api/_system/jobs/batches` shall return batch summaries when batch support is enabled. Each row should include batch id, display id, description, current status, progress percentage, child occurrence counts by status, created UTC, started UTC, completed UTC, latest failure summary and whether bulk operations are available.
+
+`GET /api/_system/jobs/batches/{batchId}` shall return:
+
+- batch id and description
+- current status and progress percentage
+- child occurrence counts by state
+- created, started, completed and updated timestamps
+- parent/continuation batch ids where supported
+- safe metadata and correlation values
+- capability flags for retry, cancel, pause, resume, archive/delete and selected-child operations
+
+`GET /api/_system/jobs/batches/{batchId}/occurrences` shall support filtering by child occurrence status and the same paging, sorting and selected bulk-action model as occurrence lists.
+
+`GET /api/_system/jobs/recurring` shall return recurring trigger rows with job name, trigger name, display name, cron/calendar expression, time zone, enabled/paused state, last occurrence, next due occurrence, last execution status, missed-occurrence policy and safe metadata.
+
+`GET /api/_system/jobs/servers` shall return scheduler server/instance rows with scheduler instance id, host name, process id where available, app version where available, started UTC, last heartbeat UTC, heartbeat age, queues/groups/modules handled, worker slot count, active execution count, acquired lease count and status such as `Active`, `Stale` or `Offline`.
+
 HTTP query values for status filters shall use the public enum member names. Endpoint models and internal query services should bind those values to `JobOccurrenceStatus` or `JobExecutionStatus` instead of passing raw strings through the application.
 
 Query parameters for `GET /api/_system/jobs/metrics` shall support the same filter subset that is meaningful for aggregated metrics.
+
+Dashboard list endpoints shall support page sizes commonly used by operations tables, including `10`, `20`, `50`, `100`, `500`, `1000` and `5000`, while still allowing hosts to configure a maximum page size. Requests above the configured maximum shall return `400 Bad Request` or be capped according to explicit endpoint options.
 
 The `POST /dispatch` request body shall support at least:
 
@@ -1395,6 +1522,18 @@ public class JobOperationReasonRequest
     public string Reason { get; set; }
 }
 ```
+
+Bulk occurrence action endpoints shall support a selected-id request body:
+
+```csharp
+public class JobBulkOccurrenceOperationRequest
+{
+    public IReadOnlyList<Guid> OccurrenceIds { get; set; }
+    public string Reason { get; set; }
+}
+```
+
+Bulk action responses shall include requested count, succeeded count, failed count and per-occurrence failures for invalid state, not found, authorization failure or provider failure.
 
 The `DELETE /api/_system/jobs/occurrences` endpoint shall support purge-style query parameters comparable to the retained operational endpoints used by queueing, messaging and orchestration, for example:
 
@@ -2239,7 +2378,7 @@ The public service surface should distinguish between:
 
 - **query operations**
 
-  - load active job definitions merged with runtime state, triggers, occurrences, executions, history, leases and aggregated metrics
+  - load active job definitions merged with runtime state, triggers, recurring triggers, occurrences, retry views, batches, executions, history, servers, leases, dashboard summaries and aggregated metrics
 
 The runtime and query service shape should follow this responsibility model:
 
@@ -2320,10 +2459,44 @@ public interface IJobSchedulerService
         string occurrenceId,
         string reason = null,
         CancellationToken cancellationToken = default);
+
+    Task<Result> ArchiveOccurrenceAsync(
+        string occurrenceId,
+        string reason = null,
+        CancellationToken cancellationToken = default);
+
+    Task<Result<JobBulkOperationResult>> RetryOccurrencesAsync(
+        IReadOnlyList<string> occurrenceIds,
+        string reason = null,
+        CancellationToken cancellationToken = default);
+
+    Task<Result<JobBulkOperationResult>> CancelOccurrencesAsync(
+        IReadOnlyList<string> occurrenceIds,
+        string reason = null,
+        CancellationToken cancellationToken = default);
+
+    Task<Result<JobBulkOperationResult>> ArchiveOccurrencesAsync(
+        IReadOnlyList<string> occurrenceIds,
+        string reason = null,
+        CancellationToken cancellationToken = default);
 }
 
 public interface IJobSchedulerQueryService
 {
+    Task<Result<JobDashboardModel>> GetDashboardAsync(
+        JobDashboardRequest request = null,
+        CancellationToken cancellationToken = default);
+
+    Task<Result<JobDashboardNavigationModel>> GetDashboardNavigationAsync(
+        CancellationToken cancellationToken = default);
+
+    Task<Result<JobDashboardOverviewModel>> GetDashboardOverviewAsync(
+        CancellationToken cancellationToken = default);
+
+    Task<Result<JobDashboardTimelineModel>> GetDashboardTimelineAsync(
+        JobDashboardTimelineRequest request,
+        CancellationToken cancellationToken = default);
+
     Task<Result<JobDefinitionModel>> GetJobAsync(
         string jobName,
         CancellationToken cancellationToken = default);
@@ -2336,11 +2509,32 @@ public interface IJobSchedulerQueryService
         string jobName,
         CancellationToken cancellationToken = default);
 
+    Task<ResultPaged<JobRecurringTriggerModel>> QueryRecurringTriggersAsync(
+        JobRecurringTriggerQueryRequest request,
+        CancellationToken cancellationToken = default);
+
     Task<Result<JobOccurrenceModel>> GetOccurrenceAsync(
         string occurrenceId,
         CancellationToken cancellationToken = default);
 
     Task<ResultPaged<JobOccurrenceModel>> QueryOccurrencesAsync(
+        JobOccurrenceQueryRequest request,
+        CancellationToken cancellationToken = default);
+
+    Task<ResultPaged<JobRetryModel>> QueryRetriesAsync(
+        JobRetryQueryRequest request,
+        CancellationToken cancellationToken = default);
+
+    Task<ResultPaged<JobBatchModel>> QueryBatchesAsync(
+        JobBatchQueryRequest request,
+        CancellationToken cancellationToken = default);
+
+    Task<Result<JobBatchModel>> GetBatchAsync(
+        string batchId,
+        CancellationToken cancellationToken = default);
+
+    Task<ResultPaged<JobOccurrenceModel>> QueryBatchOccurrencesAsync(
+        string batchId,
         JobOccurrenceQueryRequest request,
         CancellationToken cancellationToken = default);
 
@@ -2354,6 +2548,10 @@ public interface IJobSchedulerQueryService
 
     Task<ResultPaged<JobLeaseModel>> QueryLeasesAsync(
         JobLeaseQueryRequest request,
+        CancellationToken cancellationToken = default);
+
+    Task<ResultPaged<JobSchedulerServerModel>> QueryServersAsync(
+        JobSchedulerServerQueryRequest request,
         CancellationToken cancellationToken = default);
 
     Task<Result<JobSchedulerMetricsModel>> GetMetricsAsync(
@@ -2409,6 +2607,34 @@ public class JobExecutionResult
     public IReadOnlyList<string> Messages { get; set; }
 }
 
+public class JobBulkOperationResult
+{
+    public int RequestedCount { get; set; }
+    public int SucceededCount { get; set; }
+    public int FailedCount { get; set; }
+    public IReadOnlyList<JobBulkOperationFailureModel> Failures { get; set; }
+}
+
+public class JobDashboardRequest
+{
+    public DateTimeOffset? From { get; set; }
+    public DateTimeOffset? To { get; set; }
+    public string TimelineBucket { get; set; }
+    public string TimelineMode { get; set; }
+}
+
+public class JobDashboardTimelineRequest
+{
+    public DateTimeOffset? From { get; set; }
+    public DateTimeOffset? To { get; set; }
+    public string Bucket { get; set; }
+    public string Mode { get; set; }
+    public string JobName { get; set; }
+    public string TriggerName { get; set; }
+    public string SchedulerInstanceId { get; set; }
+    public IReadOnlyList<JobOccurrenceStatus> Statuses { get; set; }
+}
+
 public class JobDefinitionQueryRequest
 {
     public string JobName { get; set; }
@@ -2443,6 +2669,56 @@ public class JobOccurrenceQueryRequest
     public bool SortDescending { get; set; } = true;
 }
 
+public class JobRetryQueryRequest : JobOccurrenceQueryRequest
+{
+    public int? MinAttemptNumber { get; set; }
+    public int? MaxAttemptNumber { get; set; }
+    public DateTimeOffset? RetryDueFrom { get; set; }
+    public DateTimeOffset? RetryDueTo { get; set; }
+}
+
+public class JobBatchQueryRequest
+{
+    public string BatchId { get; set; }
+    public string Description { get; set; }
+    public IReadOnlyList<string> Statuses { get; set; }
+    public DateTimeOffset? CreatedFrom { get; set; }
+    public DateTimeOffset? CreatedTo { get; set; }
+    public DateTimeOffset? CompletedFrom { get; set; }
+    public DateTimeOffset? CompletedTo { get; set; }
+    public int Skip { get; set; }
+    public int Take { get; set; } = 50;
+    public string SortBy { get; set; } = "CreatedUtc";
+    public bool SortDescending { get; set; } = true;
+}
+
+public class JobRecurringTriggerQueryRequest
+{
+    public string JobName { get; set; }
+    public string TriggerName { get; set; }
+    public string Group { get; set; }
+    public string Module { get; set; }
+    public bool? Enabled { get; set; }
+    public bool? Paused { get; set; }
+    public DateTimeOffset? NextDueFrom { get; set; }
+    public DateTimeOffset? NextDueTo { get; set; }
+    public int Skip { get; set; }
+    public int Take { get; set; } = 50;
+    public string SortBy { get; set; } = "NextDueUtc";
+    public bool SortDescending { get; set; }
+}
+
+public class JobSchedulerServerQueryRequest
+{
+    public string SchedulerInstanceId { get; set; }
+    public string HostName { get; set; }
+    public string Status { get; set; }
+    public int Skip { get; set; }
+    public int Take { get; set; } = 50;
+    public string SortBy { get; set; } = "LastHeartbeatUtc";
+    public bool SortDescending { get; set; } = true;
+}
+
 public class JobSchedulerMetricsRequest
 {
     public string JobName { get; set; }
@@ -2457,7 +2733,7 @@ public class JobSchedulerMetricsRequest
 }
 ```
 
-Additional models such as `JobDefinitionModel`, `JobTriggerModel`, `JobOccurrenceModel`, `JobExecutionModel`, `JobLeaseModel`, `JobExecutionHistoryModel` and `JobSchedulerMetricsModel` should mirror the query and endpoint contracts described in the Observability & Management section.
+Additional models such as `JobDefinitionModel`, `JobTriggerModel`, `JobRecurringTriggerModel`, `JobOccurrenceModel`, `JobRetryModel`, `JobBatchModel`, `JobExecutionModel`, `JobLeaseModel`, `JobExecutionHistoryModel`, `JobSchedulerServerModel`, `JobDashboardModel`, `JobDashboardNavigationModel`, `JobDashboardOverviewModel`, `JobDashboardTimelineModel`, `JobBulkOperationFailureModel` and `JobSchedulerMetricsModel` should mirror the query and endpoint contracts described in the Observability & Management section.
 
 `JobDefinitionModel` must be built from the active registration model plus persisted runtime state. It must include at least job name, display name, job type identity, description, group, module, effective enabled state, data type metadata, trigger count and latest execution summary so dashboards and operational clients can present registered jobs without inspecting implementation types.
 

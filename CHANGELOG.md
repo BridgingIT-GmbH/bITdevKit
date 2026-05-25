@@ -2,6 +2,22 @@
 
 This changelog includes unreleased changes on `main` and the full tagged release history from the `main` branch.
 
+## [Unreleased]
+
+- Added the new `Application.Orchestrations` feature for code-first, durable workflows with activities, state transitions, timers, signals, behaviors, in-memory execution, recovery services, administration APIs, query services, diagrams, and test harness support.
+- Added Entity Framework orchestration persistence and orchestration operational endpoints for definitions, instances, history, context, signals, timers, metrics, diagrams, SVG rendering, pause/resume, cancel/terminate, repair, lease release, purge, and timer requeue operations.
+- Added metrics infrastructure across utilities, requester/notifier behaviors, repositories, job scheduling, messaging, queueing, and ASP.NET Core presentation, including request metrics middleware and platform/bITdevKit metrics endpoints.
+- Added the Entity Framework file storage provider and storage operational endpoints for file and directory operations, metadata, checksums, existence checks, provider health, and file event inspection.
+- Added notification email persistence, attachment storage, outbox processing, and operational endpoints for querying, reading content, retrying, archiving, purging, and viewing notification email statistics.
+- Added Service Bus, RabbitMQ, and Azure Queue Storage queue broker implementations, plus Azure Queue Storage messaging broker support.
+- Improved messaging and queueing operations with broker runtime summaries, capabilities, subscriptions, pause/resume controls, waiting-message views, and endpoint registration builders.
+- Improved Entity Framework outbox, domain-event, message-broker, queue-broker, document-storage, and file-storage behavior for more reliable multi-host and provider-backed processing.
+- Added `Common.Utilities` composition helpers and diagram builders/renderers for Mermaid and SVG output.
+- Added DataPorter file-content export support.
+- Improved fake identity provider support with cookie-based single sign-on and configurable endpoint options.
+- Expanded the DoFiesta example with todo attachments, lifecycle orchestration, richer operations dashboards, metrics, file operations, log entries, messaging, notifications, and queueing views.
+- Updated package baselines including MailKit, MimeKit, OpenTelemetry, SharpCompress, Azure SDK packages, ASP.NET Core/EF Core packages, Kiota, MudBlazor, NSwag, Serilog, and test tooling.
+
 ## [10.0.107] - 2026-04-16
 
 - Added the new `Application.Queueing` feature for single-consumer work items with in-process and Entity Framework-backed durable queue brokers.

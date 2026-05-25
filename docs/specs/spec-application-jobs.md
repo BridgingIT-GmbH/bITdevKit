@@ -16,7 +16,7 @@ The feature is intended for background work that belongs inside the application 
 
 Unlike the current JobScheduling feature, the new Jobs feature owns its runtime model, persistence model, trigger model, and management APIs. Durable providers coordinate multi-node execution through provider-backed locks or leases, which allows horizontally scaled workers to process large workloads while avoiding a full clustered scheduler design.
 
-The design keeps the public API provider-neutral. Cron handling uses a devkit-owned abstraction with a Cronos-backed default implementation, storage uses replaceable providers, and integrations with Requester, Notifier, Messaging, Queueing, and Orchestration use public feature abstractions. Requester and Notifier live in the Common namespace/package and may be referenced directly by Jobs; Messaging, Queueing, and Orchestration remain optional integration packages. This keeps the scheduler replaceable internally while giving application developers a stable `IJob`/`JobExecutionContext` programming model.
+The design keeps the public API provider-neutral. Cron handling uses a devkit-owned abstraction with a Cronos-backed default implementation, storage uses replaceable providers, and integrations with Requester, Notifier, Messaging, Queueing, and Orchestration use public feature abstractions. Requester and Notifier live in the Common namespace/package and may be referenced directly by Jobs; Messaging, Queueing, and Orchestration remain optional integration packages. This keeps the scheduler replaceable internally while giving application developers a stable `IJob`/`IJobExecutionContext` programming model.
 
 ---
 
@@ -30,8 +30,8 @@ The foundation layer contains the minimum capabilities required to define jobs, 
 
 It includes:
 
-- `IJob` and the base `JobBase` class
-- `JobExecutionContext` and typed data access
+- shared `IJob`/`IJob<TData>` and `IJobExecutionContext`/`IJobExecutionContext<TData>` contracts that can live in `Common.Abstractions`
+- the `Application.Jobs` `JobBase`/`JobBase<TData>` base classes, concrete `JobExecutionContext` implementations and typed data access
 - job definitions, trigger definitions, data, metadata, groups, and modules
 - fluent registration and appsettings merge behavior
 - trigger types for manual, one-time, delayed, startup-delay, cron, calendar, and event-based scheduling
@@ -71,10 +71,12 @@ The first full durable provider is the Entity Framework provider.
 
 It includes:
 
-- job and trigger runtime state, occurrence, execution, and history persistence
+- job and trigger runtime state, occurrence, dependency, batch, execution, and history persistence
 - provider-backed lock/lease acquisition for due occurrences
 - lease renewal and abandoned-lease recovery
 - missed occurrence recovery
+- atomic batch creation and attachment
+- batch child membership and roll-up state maintenance
 - previous-execution lookup
 - execution-history retention and purge support
 - query and metrics support for operational APIs
@@ -82,7 +84,7 @@ It includes:
 - model configuration/migration hooks for host applications
 - `DbContext` integration through a capability interface such as `IJobSchedulerContext`
 
-Alternative providers may be added later, provided they preserve the same observable runtime behavior, especially occurrence identity, lease exclusivity, retry semantics, and execution-history behavior.
+Alternative providers may be added later, provided they preserve the same observable runtime behavior, especially occurrence identity, lease exclusivity, retry semantics, batch atomicity, batch roll-up behavior and execution-history behavior.
 
 ### Operational Layer
 
@@ -94,8 +96,8 @@ It includes:
 - dashboard-ready query contracts
 - optional REST endpoints
 - optional operational UI/dashboard support
-- register, update, enable, disable, and delete operations for triggers
-- manual execution, pause, resume, cancel, interrupt, retry, and purge operations
+- enable, disable, pause and resume operations for code-registered jobs and triggers
+- manual execution, cancel, interrupt, retry, archive and purge operations for materialized occurrences and history
 - filtering, sorting, paging, and aggregate statistics
 - authorization boundaries for endpoints and operational UI
 - structured logging, metrics, tracing, and correlation
@@ -149,7 +151,7 @@ All public/protected code symbols introduced by this feature should include XML 
 - properties
 - methods
 
-Dont use any internal or sealed modifiers. For public or client-facing symbols, the XML comments should also include usage examples where that improves usability.
+Public and protected symbols should be intentionally documented because they define the extension and implementation contract. Internal implementation details may use `internal`, and leaf types may use `sealed` when they are not intended for inheritance. Extensibility should be exposed through public interfaces, abstract base classes, builders, options and provider contracts rather than by making every implementation class inheritable. For public or client-facing symbols, the XML comments should also include usage examples where that improves usability.
 
 ---
 
@@ -171,14 +173,15 @@ This glossary captures the working terminology used by the Jobs feature. Names m
 | Occurrence                    | A concrete scheduled execution request produced by a trigger. Durable providers persist occurrences before execution.                                    |
 | Due Occurrence                | An occurrence whose scheduled execution time has arrived and is eligible for acquisition by a worker.                                                    |
 | Missed Occurrence             | An occurrence that should have run while the scheduler was stopped, unavailable or unable to acquire work.                                               |
-| Job Batch                     | An optional operational grouping of related occurrences that should be monitored and controlled together. This is distinct from provider scan batch size or worker dispatch batch size. |
-| Batch Child Occurrence        | An occurrence associated with a job batch and counted toward the batch's created, pending, processing, succeeded, failed, deleted and finished totals.   |
-| Execution                     | One attempt to run a job occurrence. Retries create additional execution attempts.                                                                       |
-| Execution History             | Persisted records describing execution attempts, status, timing, messages, errors, duration, correlation and owning scheduler instance.                  |
-| Previous Execution            | The immediately preceding execution attempt for the same job/trigger identity.                                                                           |
-| Previous Successful Execution | The latest successful execution for the same job/trigger identity, used for delta processing.                                                            |
-| JobExecutionContext           | The runtime context passed to a job. It exposes metadata, typed data, previous run information, cancellation, messages, correlation and control operations. |
-| Data                          | Structured input supplied by a trigger, manual dispatch or dynamic registration and exposed to the job through `JobExecutionContext<TData>` as `ctx.Data`. `Unit` represents no input data. |
+| Job Batch                     | A durable operational grouping of related occurrences that can be queried, monitored and controlled together. This is distinct from provider scan batch size or worker dispatch batch size. |
+| Batch Child Occurrence        | An occurrence associated with a job batch and counted toward the batch's created, pending, processing, succeeded, failed, cancelled and finished totals. |
+| Execution                     | One attempt to run a job occurrence. Retries create additional execution attempts for the same occurrence.                                                |
+| Execution Record              | Durable attempt summary for one execution attempt, including status, timing, result/error summary, attempt number, and owning scheduler instance.         |
+| Execution History             | Append-only lifecycle records describing occurrence transitions, execution attempt transitions, operator actions, retry scheduling, leases and diagnostics. |
+| Previous Execution            | The immediately preceding execution attempt for the same occurrence. It is mainly useful when the current attempt is a retry.                             |
+| Previous Successful Execution | The latest successful execution for the same job and trigger before the current occurrence, used for delta processing.                                    |
+| JobExecutionContext           | The runtime context passed to a job through the `IJobExecutionContext` public contract. It exposes metadata, typed data, previous run information, cancellation, messages, correlation and control operations. |
+| Data                          | Structured input supplied by a code-registered trigger or manual dispatch and exposed to the job through `IJobExecutionContext<TData>` as `ctx.Data`. `Unit` represents no input data. |
 | Metadata                      | Non-input key/value information attached to jobs, triggers, occurrences or executions for filtering, diagnostics or runtime decisions.                 |
 | Scheduler Instance            | One running scheduler host inside an application instance. It has an instance id used for leases, diagnostics and telemetry.                             |
 | Worker                        | A scheduler runtime component that acquires due occurrences and dispatches job executions.                                                               |
@@ -188,7 +191,7 @@ This glossary captures the working terminology used by the Jobs feature. Names m
 | Lease Renewal                 | The act of extending ownership while a job is still running.                                                                                             |
 | Lease Expiration              | The point at which an unrenewed lease is considered abandoned and can be recovered.                                                                      |
 | Lease Recovery                | Releasing or reacquiring abandoned work after a host crash, shutdown or stalled execution.                                                               |
-| Active Registration           | The resolved job and trigger model built from fluent registration, attributes and appsettings at application startup. It is the source of truth for available jobs and triggers. |
+| Active Registration           | The resolved job and trigger model built from code-first fluent registration and attributes at application startup, with appsettings allowed only to override matching registrations. It is the source of truth for available jobs and triggers. |
 | Runtime State                 | Durable mutable scheduler state associated with registered jobs or triggers, such as enable/disable overrides, pause state and trigger materialization watermarks. |
 | Durable Provider              | A storage provider that persists runtime state, occurrences, executions, history and leases across process restarts.                                    |
 | In-Memory Provider            | The default lightweight provider for tests, local development and transient workloads. It does not provide durable recovery across restarts.             |
@@ -203,13 +206,13 @@ This glossary captures the working terminology used by the Jobs feature. Names m
 | Manual Trigger                | A trigger that allows a job to be dispatched explicitly through services or operations APIs.                                                             |
 | Delayed Trigger               | A trigger that creates an occurrence after a relative delay from activation, registration or dispatch.                                                   |
 | Startup-Delay Trigger         | A trigger evaluated when the scheduler starts, after a configured delay.                                                                                 |
-| Event-Based Trigger           | A trigger category reserved for application-defined or provider-defined event sources when such trigger support is explicitly enabled.                    |
+| Event-Based Trigger           | A trigger category reserved for application-defined or provider-defined event sources such as notifications, messages or queue activity when such trigger support is explicitly enabled. Requester remains an outbound job integration unless a separate request-observation adapter is explicitly designed. |
 | Outbound Job Integration      | A job step that invokes another devkit feature, such as Messaging, Queueing, Requester, Notifier, or Orchestration, through the target feature's public abstraction. |
 | Retry Policy                  | Configuration that determines whether failed executions are retried, how many times and with what delay/backoff.                                         |
 | Timeout                       | A configured maximum runtime for an execution before cancellation or timeout handling is requested.                                                      |
 | Priority                      | A scheduling hint used to order eligible work when multiple occurrences are due.                                                                         |
 | Concurrency Limit             | A limit on simultaneous executions for a job, trigger, group or scheduler.                                                                               |
-| Dependency                    | A configured relationship where one job or trigger waits for another job outcome before becoming eligible.                                               |
+| Dependency                    | A persisted occurrence-level prerequisite that keeps an occurrence blocked until another occurrence reaches a configured terminal outcome.                 |
 | Chaining                      | A relationship where completion of one job schedules or dispatches another job.                                                                          |
 | Behavior                      | A decorator around job execution used for cross-cutting concerns such as logging, metrics, retries or validation.                                        |
 | Exception Handler             | A registered component that handles unhandled job execution exceptions in a centralized way.                                                             |
@@ -242,14 +245,14 @@ The Jobs feature is defined by the following core characteristics. These are the
 ### Code-First Job Model
 
 - Jobs are implemented with `IJob` or the base `JobBase` class.
-- Jobs execute through `ExecuteAsync(JobExecutionContext ctx, CancellationToken cancellationToken)`.
+- Jobs execute through `ExecuteAsync(IJobExecutionContext ctx, CancellationToken cancellationToken)`.
 - Constructor dependency injection is supported.
 - The default job lifetime is transient, with scoped or singleton lifetime available when explicitly configured.
-- Typed data contracts are inferred from `JobBase<TData>` and exposed through `JobExecutionContext<TData>` or equivalent typed access.
+- Typed data contracts are inferred from `JobBase<TData>` and exposed through `IJobExecutionContext<TData>` or equivalent typed access.
 - `JobBase` is shorthand for `JobBase<Unit>` and represents a job with no data.
 - Inline lambda/delegate jobs may be supported as a lightweight convenience, but they still execute through the normal job definition, context, trigger and history pipeline.
 - Fluent configuration is the canonical authoring model; attributes and job properties may provide defaults or metadata when they do not obscure the runtime contract.
-- The runtime passes all execution state through `JobExecutionContext`.
+- The runtime passes all execution state through `IJobExecutionContext`.
 - Method-based job handlers are intentionally not part of the target model.
 
 ### Trigger-Centered Scheduling
@@ -257,7 +260,7 @@ The Jobs feature is defined by the following core characteristics. These are the
 - A job can have one or more triggers.
 - Supported trigger types include manual, one-time, delayed, startup-delay, cron, calendar and event-based triggers.
 - Trigger-level configuration can override job defaults for schedule, data, priority, retry policy, timeout, enabled state and worker targeting.
-- Event-based triggers are provider-neutral in the core and can be connected through built-in Requester/Notifier adapters and optional Messaging/Queueing adapters.
+- Event-based triggers are provider-neutral in the core and can be connected through built-in Notifier adapters and optional Messaging/Queueing adapters. Requester-backed work is modeled as outbound job integration by default, not as an event source.
 - Triggers produce concrete occurrences; durable providers persist occurrences before execution.
 
 ### Cron Handling
@@ -280,9 +283,10 @@ The Jobs feature is defined by the following core characteristics. These are the
 
 ### Previous Run Context
 
-- `JobExecutionContext` exposes previous run information so jobs can process deltas without querying scheduler storage directly.
+- `IJobExecutionContext` exposes previous run information so jobs can process deltas without querying scheduler storage directly.
 - The context distinguishes the previous attempt from the previous successful execution.
-- Previous-run lookup is scoped by job and trigger by default.
+- Previous-attempt lookup is scoped to the current occurrence.
+- Previous-success lookup is scoped by job and trigger by default.
 - A job-level previous successful execution lookup can be exposed for jobs that need the latest success across all triggers.
 
 ### Persistence and Lease Coordination
@@ -306,7 +310,7 @@ The Jobs feature is defined by the following core characteristics. These are the
 ### Operational Surface
 
 - Query APIs expose jobs, triggers, occurrences, executions, leases, history, metrics and aggregate statistics.
-- Management APIs support register, update, enable, disable, delete, manual dispatch, pause, resume, cancel, interrupt, retry and purge operations.
+- Management APIs support enable, disable, pause and resume for code-registered jobs and triggers, plus manual dispatch, cancel, interrupt, retry, archive and purge for occurrences and retained history.
 - Optional REST endpoints and dashboard/UI support are built on top of the query and management APIs.
 - Operational endpoints and UI must be securable through host application authentication and authorization.
 - Execution history must support filtering, paging, retention and purge.
@@ -315,7 +319,7 @@ The Jobs feature is defined by the following core characteristics. These are the
 
 - Job execution is logged with structured lifecycle events for start, completion, failure, retry, cancellation, pause, resume and timeout.
 - Metrics and traces are emitted for execution counts, durations, failures, retries, queue/occurrence age and worker utilization where available.
-- Correlation IDs flow through `JobExecutionContext` and into logs/telemetry.
+- Correlation IDs flow through `IJobExecutionContext` and into logs/telemetry.
 - Lease ownership and recovery should be diagnosable through query or operational surfaces.
 
 ### Replacement and Migration
@@ -364,7 +368,7 @@ Its execution contract is defined by the following rules:
 
 - **Context-centered job execution**
 
-  - Jobs receive all runtime data through `JobExecutionContext`.
+  - Jobs receive all runtime data through `IJobExecutionContext`.
   - The context includes job identity, trigger identity, occurrence identity, data, metadata, correlation id, scheduler instance id and cancellation token.
   - The context includes previous-run information so jobs can process deltas.
   - Jobs should not depend on scheduler storage directly for ordinary execution state.
@@ -381,7 +385,7 @@ Its execution contract is defined by the following rules:
   - The runtime shall persist scheduler state whenever execution crosses a meaningful durable boundary.
   - Durable boundaries include:
     - active registration reconciliation
-    - trigger runtime-state registration or update
+    - trigger runtime-state reconciliation or update
     - occurrence creation
     - occurrence lease acquisition
     - execution start
@@ -455,11 +459,11 @@ The runtime shall process scheduled jobs using the following high-level algorith
 8. Create an execution record with status `Running`.
 9. Create a DI scope for the job execution.
 10. Resolve the `IJob` implementation.
-11. Hydrate `JobExecutionContext`, including data, metadata, cancellation token, correlation id and previous-run information.
+11. Hydrate `IJobExecutionContext`, including data, metadata, cancellation token, correlation id and previous-run information.
 12. Execute `IJob.ExecuteAsync(...)`.
 13. Capture returned `Result`, messages, errors, duration and any context updates.
 14. If execution succeeds, persist `Completed` status, completion metadata and execution history.
-15. If execution fails and a retry policy applies, persist failed-attempt history and schedule the next retry occurrence or retry attempt.
+15. If execution fails and a retry policy applies, persist failed-attempt history and schedule the next retry attempt for the same occurrence.
 16. If execution fails and no retry applies, persist terminal failure status and failure metadata.
 17. Release the lease after the final persisted state transition for the attempt.
 18. Continue scanning and dispatching until the scheduler stops or no eligible work remains.
@@ -531,7 +535,55 @@ public enum JobExecutionStatus
 }
 ```
 
-The exact enum values can evolve during implementation, but they must remain explicit devkit enum types, not free-form strings. Operational queries must make the distinction between scheduled occurrence lifecycle and individual execution attempts clear.
+Dependency, batch and scheduler-instance state should also use explicit enums:
+
+```csharp
+public enum JobDependencyStatus
+{
+    Pending,
+    Satisfied,
+    Failed,
+    Skipped,
+    Cancelled
+}
+
+public enum JobDependencyFailurePolicy
+{
+    KeepBlocked,
+    Skip,
+    Cancel,
+    Fail
+}
+
+public enum JobBatchStatus
+{
+    Created,
+    Processing,
+    Completed,
+    CompletedWithFailures,
+    Failed,
+    Cancelled,
+    Archived
+}
+
+public enum JobBatchCompletionPolicy
+{
+    RequireAllSucceeded,
+    AllowPartialCompletion
+}
+
+public enum JobSchedulerServerStatus
+{
+    Starting,
+    Active,
+    Draining,
+    Stopped,
+    Unhealthy,
+    Expired
+}
+```
+
+The exact enum values can evolve during implementation, but they must remain explicit devkit enum types, not free-form strings. Operational queries must make the distinction between scheduled occurrence lifecycle, individual execution attempts and batch roll-up state clear.
 
 ---
 
@@ -568,10 +620,10 @@ A one-time trigger creates one occurrence at a configured absolute due time.
 Expected behavior:
 
 - The configured time must be normalized to a UTC instant for scheduler decisions.
-- The trigger materializes at most one occurrence unless it is explicitly reset, recreated or reconfigured.
+- The trigger materializes at most one occurrence for a given active registration unless code/configuration changes intentionally define a new registration identity or reset policy.
 - If the application is offline when the due time passes, a durable provider must recover the missed occurrence according to the trigger's missed-occurrence policy.
 - The operational model should distinguish a one-time trigger that has not fired yet from one that has already materialized its occurrence.
-- Updating a one-time trigger before materialization should update the pending due time. Updating it after materialization should require explicit reset or recreation semantics.
+- Changing a one-time trigger's code/appsettings registration before materialization should update the pending due time after startup reconciliation. Changing it after materialization requires an explicit reset/replacement registration policy; runtime management APIs must not rewrite the trigger definition in storage.
 
 ### Delayed Trigger
 
@@ -579,7 +631,7 @@ A delayed trigger creates an occurrence after a relative delay.
 
 Expected behavior:
 
-- The delay is relative to the trigger activation point, such as dynamic registration, explicit scheduling or another accepted scheduler command.
+- The delay is relative to the trigger activation point, such as startup activation, explicit scheduling or another accepted scheduler command.
 - Once accepted, durable providers should persist the calculated due UTC instant so restart behavior is based on a stable timestamp instead of recalculating the delay.
 - Delayed triggers are appropriate for follow-up work such as retry-like workflows, deferred notifications or short-lived scheduled actions that should not be modeled as cron schedules.
 - A delayed trigger should materialize at most one occurrence per activation unless the trigger is explicitly configured as reusable.
@@ -623,15 +675,17 @@ Expected behavior:
 
 ### Event-Based Trigger
 
-An event-based trigger creates occurrences from application requests (Requester), application events (Notifier), messages (Messaging) or queue activity (Queueing).
+An event-based trigger creates occurrences from accepted event records produced by application events (Notifier), messages (Messaging), queue activity (Queueing) or a custom event-source adapter. Requester is not an event source in the base model because `IRequester` represents request/response command and query dispatch. If a future request-observation adapter is added, it must be an explicit optional adapter that observes completed request activity without coupling the scheduler core to request handler execution.
 
 Expected behavior:
 
 - The scheduler core should expose a provider-neutral event-trigger model.
-- Built-in adapters may connect Common Requester and Notifier features to the event-trigger model.
+- Built-in adapters may connect Common Notifier features to the event-trigger model.
 - Optional adapters may connect Messaging and Queueing features to the event-trigger model.
 - Adapters should register event sources and mapping rules only; the scheduler core must not depend directly on Messaging or Queueing packages.
 - Accepted events should create job occurrences asynchronously and should not execute the job in the publishing or receiving call path unless the caller explicitly selects inline dispatch.
+- Durable event-trigger adapters must persist or otherwise durably acknowledge an accepted event before materializing a job occurrence.
+- Event-trigger adapters must define the transaction boundary with the source feature. If the source feature cannot atomically persist the event and scheduler occurrence, the adapter must use an idempotency key so retries can safely re-materialize the occurrence.
 - Event identity, message id, notification id or an explicit idempotency key should be used when available to prevent duplicate occurrences.
 - Event data mapping should support typed job data and correlation metadata propagation.
 - Event-trigger failures should be reported through `Result` values, logging, metrics and execution history where applicable.
@@ -684,7 +738,7 @@ The runtime shall:
 - persist the failed execution attempt, including exception metadata suitable for diagnostics
 - evaluate the trigger-level retry policy first, then the job-level retry policy, then the scheduler default
 - persist retry scheduling metadata before the next attempt becomes eligible
-- preserve the original occurrence identity or link retry attempts to the original occurrence so history remains understandable
+- preserve the original occurrence identity for all retry attempts so history remains understandable
 - mark the occurrence `Failed` when no retry or recovery path remains
 
 Jobs should use `Result` or `Result<T>` for expected business outcomes. Business rejection, validation failure, or negative domain outcomes should be modeled as explicit results and messages rather than as exceptions. Exceptions are intended for unexpected technical failures.
@@ -735,7 +789,7 @@ Duplicate business effects should be prevented through:
 - event or caller-supplied idempotency keys
 - idempotent job implementation
 - business-level uniqueness constraints where the job touches external state
-- checking previous successful execution from `JobExecutionContext` when processing deltas
+- checking previous successful execution from `IJobExecutionContext` when processing deltas
 
 ### Lease Recovery
 
@@ -810,12 +864,45 @@ Job dependencies and chaining must not hide failure state.
 
 Job chaining is a first-class Jobs capability for coupling successive background jobs. Chaining must materialize each successor as an ordinary occurrence with its own execution lifecycle, lease, retry policy, timeout, history, and operational visibility. Chaining must not bypass the scheduler pipeline or turn the Jobs feature into a workflow/state-machine runtime.
 
-When a job depends on another job or occurrence:
+Dependency semantics are occurrence-level. A dependency does not mean a job type globally waits for another job type forever; it means a materialized occurrence has one or more persisted prerequisites that must be satisfied before that occurrence can be leased and executed.
+
+Dependency scope must be explicit:
+
+- **Occurrence dependency**: a dependent occurrence waits for a specific prerequisite occurrence id.
+- **Chain dependency**: a successor occurrence created by chaining records the predecessor occurrence id and required predecessor outcome.
+- **Definition-level dependency templates**, if supported, only describe how to create occurrence dependencies during materialization; they are not runtime state by themselves.
+
+The persisted model must make dependency evaluation durable. Providers should represent dependency links as separate provider rows or as structured occurrence dependency metadata with equivalent query and concurrency behavior. A plain serialized blob that cannot be queried for blocked-work recovery is not sufficient for durable providers.
+
+Dependency links are not batch membership. Batches use `JobBatchOccurrence` to group parallel child occurrences for progress and bulk operations. `JobOccurrenceDependency` is used only when one occurrence must wait for another occurrence, including normal job chaining.
+
+Dependency links should include at least:
+
+- dependent occurrence id
+- prerequisite occurrence id
+- required terminal outcome, such as completed successfully or completed with an accepted status set
+- dependency status, such as pending, satisfied, failed, skipped or cancelled
+- failure policy for the dependent occurrence
+- created UTC and updated UTC
+- optional reason, source chain id and metadata
+
+When a due occurrence has unsatisfied dependencies:
 
 - dependency state must be visible through occurrence and history records
-- a failed dependency must leave dependent work blocked, skipped, cancelled or failed according to explicit configuration
-- chained jobs must be materialized as normal occurrences with their own trigger or chaining metadata
-- chained jobs must use the same retry, lease, timeout, cancellation and history rules as directly scheduled jobs
+- the occurrence must remain `Blocked` or be queryable as blocked with a reason when blocked is derived
+- the occurrence must not be leased until all required dependencies are satisfied
+- dependency checks must be re-evaluated when prerequisite occurrences reach terminal states, during due scans and during recovery scans
+
+After prerequisite retry exhaustion or terminal failure, the dependent occurrence follows its configured dependency failure policy:
+
+- `KeepBlocked`: remain blocked for operator intervention
+- `Skip`: transition to a skipped/cancelled terminal state with history
+- `Cancel`: transition to `Cancelled` with dependency failure reason
+- `Fail`: transition to `Failed` with dependency failure reason
+
+The default policy should be conservative: keep dependent work blocked and visible unless the registration explicitly chooses a terminal outcome. Manual retry of the prerequisite or dependent occurrence must re-evaluate dependency links and record the operator action in history.
+
+Chained jobs must be materialized as normal occurrences with their own trigger or chaining metadata and must use the same retry, lease, timeout, cancellation and history rules as directly scheduled jobs.
 
 The Jobs feature is not a SAGA orchestration engine. Rollback-style workflows should be modeled through explicit compensating jobs, chaining, or the Orchestration feature when workflow compensation semantics are required.
 
@@ -826,11 +913,93 @@ The Jobs feature is not a SAGA orchestration engine. Rollback-style workflows sh
 - A chain is not a long-lived workflow state machine.
 - No compensation semantics unless modeled as explicit jobs.
 
+### Batch Execution Model
+
+Batches are a first-class operational grouping concept. A batch groups related occurrences so operators and application code can query progress, apply bulk controls and understand a larger unit of background work without changing the execution semantics of each child occurrence.
+
+A batch is not a worker dispatch batch, queue scan batch, dependency graph or transaction boundary for execution. Child occurrences still execute independently through the normal occurrence, lease, retry, timeout, cancellation and history pipeline.
+
+Batch scope must be explicit:
+
+- **Manual bulk dispatch batch**: created when an application or operator dispatches several occurrences as one accepted operation.
+- **Chain fan-out batch**: optionally created when a job or chain step materializes multiple parallel successor occurrences that should be tracked together. Any ordering between occurrences still uses normal occurrence dependencies.
+- **Application-defined batch**: created by application code through scheduler APIs when the application has a durable grouping id, such as an import id or reprocessing campaign id.
+
+Batch creation paths must be explicit:
+
+- `CreateBatchAsync(...)` creates a durable batch record and may accept zero child occurrences.
+- `DispatchBatchAsync(...)` creates a durable batch and one or more child occurrences in one provider transaction.
+- `AttachToBatchAsync(...)` adds child occurrences to an existing batch and moves a finished batch back to `Processing` when new non-terminal children are attached.
+
+Durable batch creation must be atomic. If a durable provider cannot persist the batch record, child occurrence records and batch-child links as one accepted operation, no child occurrence from that operation may become runnable. Providers may use database transactions, transactional outbox-style staging or an equivalent provider-specific atomic acceptance mechanism, but partial acceptance must return a `Result` failure and leave no runnable orphaned children.
+
+Batch dispatch items may create immediate or scheduled child occurrences. Dependency-blocked work should use the normal occurrence dependency model, not batch membership.
+
+Empty batches are valid. An empty batch starts as `Completed` for `RequireAllSucceeded` and can move back to `Processing` when child occurrences are attached later.
+
+Durable providers must persist batch state in queryable form. Batch membership should be represented by separate batch and batch-occurrence rows, or an equivalent provider model that supports querying by batch id, child occurrence id and child status. Batch membership must not exist only as opaque serialized occurrence metadata.
+
+A batch record should include at least:
+
+- batch id
+- description or display name
+- status
+- completion policy
+- created UTC, started UTC, completed UTC and updated UTC where applicable
+- created, pending, processing, succeeded, failed, cancelled and finished child counts
+- latest failure summary
+- correlation id, causation id and safe metadata
+- archive state and audit metadata
+
+A batch-child link should include at least:
+
+- batch id
+- occurrence id
+- child status projection
+- created UTC and updated UTC
+- optional sequence/order value
+- optional source step, source feature or source id metadata
+
+Batch status is a roll-up over persisted batch intent and child occurrence outcomes:
+
+- `Created`: the batch exists but no child occurrence has started.
+- `Processing`: at least one child occurrence is active, due, blocked, retry-scheduled or otherwise not terminal.
+- `Completed`: all child occurrences completed successfully.
+- `CompletedWithFailures`: all child occurrences are terminal and at least one failed, timed out or was cancelled where the batch policy accepts partial completion.
+- `Failed`: the batch policy requires all children to succeed and one or more child occurrences reached terminal failure or cancellation.
+- `Cancelled`: the batch was cancelled before all children completed, or all unfinished children were cancelled through a batch operation.
+- `Archived`: the batch is retained for inspection but removed from active operational views.
+
+Batch completion policy controls roll-up:
+
+- `RequireAllSucceeded`: any terminal failed, timed-out or cancelled child makes the batch `Failed`.
+- `AllowPartialCompletion`: terminal failed, timed-out or cancelled children make the batch `CompletedWithFailures` after all children finish.
+
+Batch operations are bulk operations over eligible child occurrences. They must report per-child failures and must not bypass normal occurrence state validation:
+
+- retry a batch retries eligible failed child occurrences
+- cancel a batch cancels eligible scheduled, due, blocked, retry-scheduled or running child occurrences according to normal cancellation semantics
+- archive a batch archives the batch and eligible retained child records according to retention policy
+- pause/resume, if exposed for batches, must map to child occurrence pause/resume and record the batch operation in history
+
+Workers must check batch state before starting a child occurrence. If the child belongs to a cancelled batch, the occurrence must not execute and should transition according to the normal cancellation path with a batch-cancel reason. Providers may implement this check eagerly during the cancel operation, lazily during scans, or immediately before lease/start, but the observable result must prevent new child execution after batch cancellation is accepted.
+
+Batch operations must be idempotent. Repeating the same operation with the same batch id and idempotency key should not create duplicate child occurrences or duplicate side effects. Partial success must be visible in the returned `JobBulkOperationResult`, child occurrence history and batch summary.
+
+Retry behavior remains child-occurrence behavior. If a batch child is also blocked by a normal occurrence dependency, that dependency is represented in `JobOccurrenceDependency`; the batch only reflects the child as non-terminal until the dependency resolves or the child reaches a terminal state. Retry exhaustion on a child contributes to the batch roll-up according to the batch completion policy.
+
+Batch history must record batch creation, child attachment, child terminal roll-up changes, operator actions, bulk operation outcomes, archive and purge actions. Child occurrence history must include the batch id when an operation was initiated through a batch.
+
 ### Persistence Contract
 
 Durability is mandatory for durable providers and optional for the in-memory provider.
 
-The active job and trigger definitions are not database-owned. They are resolved from fluent registration, attributes and appsettings during application startup. Durable storage owns runtime state and history only.
+The active job and trigger definitions are not owned by durable storage or ordinary runtime-state rows. They are resolved during application startup from code-first registration sources:
+
+- code-first fluent registration and attributes for jobs and static triggers
+- matching appsettings entries that override already registered jobs and triggers
+
+Durable storage owns runtime state, occurrences, leases and history. Runtime-state rows may influence effective operational state for active registrations, but they must never create new job or trigger definitions.
 
 The runtime shall persist scheduler state whenever execution crosses a meaningful durable boundary.
 
@@ -848,6 +1017,7 @@ This includes:
 - timeout, cancellation or interrupt request
 - pause and resume actions
 - manual dispatch
+- batch creation, child attachment and batch roll-up updates
 - history archival and purge actions
 
 The durable model shall include at least:
@@ -887,6 +1057,38 @@ The durable model shall include at least:
   - idempotency key when available
   - attempt counters and retry linkage
 
+- **Batches**
+
+  - batch identifier
+  - status
+  - completion policy
+  - description or display name
+  - child count projections
+  - latest failure summary
+  - correlation and causation identifiers
+  - safe metadata and audit metadata
+  - archive state
+
+- **Batch child links**
+
+  - batch identifier
+  - occurrence identifier
+  - child status projection
+  - optional sequence/order value
+  - source metadata when available
+  - audit metadata
+
+- **Occurrence dependencies**
+
+  - dependency identifier
+  - dependent occurrence identifier
+  - prerequisite occurrence identifier
+  - required terminal outcome or accepted status set
+  - dependency status
+  - dependency failure policy
+  - reason and source metadata
+  - audit metadata
+
 - **Execution history**
 
   - append-oriented records describing execution start, completion, failure, retry, timeout, cancellation, interruption, pause/resume and terminal outcomes
@@ -905,9 +1107,11 @@ The runtime must always be able to reconstruct runnable work, latest execution s
 Source-of-truth rules:
 
 - active registrations are the source of truth for which jobs and triggers exist
+- code-first fluent registration and attributes are the only source of job and trigger definitions
+- appsettings may override matching jobs and triggers, but appsettings must not create new job definitions or trigger definitions
 - durable runtime state may override operational state for registered jobs and triggers, but it must not create definitions
-- if a job registration is removed from code/appsettings, it must no longer appear in the active job list and workers must not execute pending occurrences for that job
-- if a trigger registration is removed, it must no longer materialize new occurrences and pending occurrences for that trigger must not execute
+- if a job registration is removed from code or attributes, it must no longer appear in the active job list and workers must not execute pending occurrences for that job
+- if a trigger registration is removed from code or attributes, it must no longer materialize new occurrences and pending occurrences for that trigger must not execute
 - removed jobs and triggers may remain visible through history or orphaned-runtime-state views for support and cleanup
 - changing display name, description, group, module, schedule, retry policy or defaults in registration should affect the active model on next startup without requiring database updates
 - changing the stable job name or trigger name creates a new identity; continuity with old history requires an explicit migration/rename operation
@@ -973,9 +1177,12 @@ The provider contract shall cover at least:
 - job runtime-state storage
 - trigger runtime-state storage
 - occurrence storage and state updates
+- occurrence dependency storage and state updates
+- batch storage, child membership and roll-up state updates
 - execution history append
 - lease acquisition, renewal, verification and release
 - missed occurrence recovery support
+- atomic batch acceptance and attach support
 - previous execution lookup
 - scheduler querying for operations, endpoints and dashboards
 - serializer integration for context data and metadata
@@ -986,6 +1193,8 @@ Provider implementations must preserve the same observable behavior, especially:
 - lease exclusivity semantics
 - durable-boundary persistence rules
 - retry scheduling semantics
+- dependency blocking semantics
+- batch atomicity, child membership and roll-up semantics
 - append-oriented execution history behavior
 - previous-run lookup behavior
 - missed-occurrence recovery behavior
@@ -1028,6 +1237,27 @@ The runtime needs the following minimum abstractions.
   - Loads due occurrences eligible for execution.
   - Updates occurrence lifecycle state.
   - Preserves retry linkage and original occurrence identity.
+  - Excludes or explains due occurrences blocked by unresolved dependencies or cancelled batches.
+
+- **`IJobOccurrenceDependencyStore`**
+
+  - Creates dependency links for occurrence dependencies and chain dependencies.
+  - Must not be used to represent batch membership.
+  - Loads unresolved dependencies for due occurrence eligibility checks.
+  - Updates dependency status when prerequisite occurrences reach terminal states.
+  - Finds dependent occurrences that need to be unblocked, failed, cancelled or skipped after prerequisite completion or retry exhaustion.
+  - Supports recovery scans that can reconstruct blocked-state decisions from persisted dependency links.
+
+- **`IJobBatchStore`**
+
+  - Creates empty batches and dispatch batches atomically with child occurrences and batch-child links.
+  - Attaches child occurrences to an existing batch atomically.
+  - Represents grouping and bulk operation membership only; ordering and prerequisites remain in `IJobOccurrenceDependencyStore`.
+  - Loads batch summaries and child membership by batch id.
+  - Maintains batch child status projections and roll-up counts.
+  - Updates batch roll-up status when child occurrences transition.
+  - Applies batch cancellation, pause, resume, retry and archive operations through normal occurrence state rules.
+  - Provides idempotency checks for batch creation and attach requests.
 
 - **`IJobLeaseStore`**
 
@@ -1045,13 +1275,13 @@ The runtime needs the following minimum abstractions.
 
 - **`IJobPreviousExecutionStore`**
 
-  - Loads the previous execution attempt for a job/trigger identity.
-  - Loads the previous successful execution for a job/trigger identity.
-  - Supports job-level previous-success lookup across triggers where configured.
+  - Loads the previous execution attempt for the same occurrence.
+  - Loads the previous successful execution for the same job/trigger identity before the current occurrence.
+  - Supports job-level previous-success lookup across triggers before the current occurrence where configured.
 
 - **`ISerializer`**
 
-  - Serializes `JobExecutionContext.Data`, trigger data, occurrence data, metadata and retained diagnostic data.
+  - Serializes `IJobExecutionContext.Data`, trigger data, occurrence data, metadata and retained diagnostic data.
   - Deserializes persisted data back into the typed job data model.
   - Keeps data persistence provider-neutral and avoids leaking storage representation into the runtime.
   - The Jobs feature shall use `BridgingIT.DevKit.Common.ISerializer`.
@@ -1063,10 +1293,12 @@ The feature also needs read/query abstractions over persisted scheduler state fo
 
 - **`IJobSchedulerQueryStore`**
 
-  - Returns runtime state, occurrence, execution, lease and history data that can be merged with active registrations.
+  - Returns runtime state, occurrence, dependency, batch, execution, lease and history data that can be merged with active registrations.
   - Returns stale/orphaned runtime state for support views where requested.
   - Returns occurrence details by occurrence identifier.
   - Returns paged occurrence lists with filters such as job name, trigger name, trigger type, status, due time range, correlation id and scheduler instance id.
+  - Returns batch details, child occurrence lists and child status counts.
+  - Returns dependency details and blocked-work reasons where those reasons are persisted or derivable.
   - Returns execution history for a job, trigger or occurrence.
   - Returns active and expired lease diagnostics where supported by the provider.
   - Returns aggregated metrics derived from persisted scheduler data.
@@ -1075,6 +1307,9 @@ Metrics should support at least:
 
 - counts by job, trigger type and lifecycle status
 - due, running, completed, failed, cancelled and retried occurrence counts
+- counts by batch status and batch completion policy
+- batch child counts by child occurrence status
+- blocked occurrence counts by dependency status and batch cancellation state
 - oldest due occurrence timestamp
 - execution duration averages and percentiles where the provider can compute them efficiently
 - retry counts and failure rates
@@ -1096,6 +1331,8 @@ public interface IJobSchedulerStoreProvider
     IJobRuntimeStateStore JobStates { get; }
     IJobTriggerRuntimeStateStore TriggerStates { get; }
     IJobOccurrenceStore Occurrences { get; }
+    IJobOccurrenceDependencyStore Dependencies { get; }
+    IJobBatchStore Batches { get; }
     IJobLeaseStore Leases { get; }
     IJobExecutionHistoryStore History { get; }
     IJobPreviousExecutionStore PreviousExecutions { get; }
@@ -1123,7 +1360,7 @@ All meaningful scheduler state changes shall be visible through durable executio
 This includes:
 
 - registration reconciliation and stale-runtime-state detection
-- trigger registration, update, enable, disable and delete operations as reflected in active registrations and runtime-state overrides
+- trigger registration reconciliation, active-registration removal detection, and enable/disable/pause/resume runtime-state overrides
 - occurrence materialization
 - execution start, completion, failure and retry decisions
 - timeout, cancellation and interrupt requests
@@ -1189,7 +1426,7 @@ Tracing should use `ActivitySource` and create spans for:
 - event-trigger acceptance
 - management operations
 
-Correlation id must flow through `JobExecutionContext` and be included in logs, traces, metrics tags and persisted history where applicable.
+Correlation id must flow through `IJobExecutionContext` and be included in logs, traces, metrics tags and persisted history where applicable.
 
 ### Query and Metrics Contracts
 
@@ -1241,36 +1478,21 @@ Metrics should support at least:
 
 Metrics may be computed from active registrations, durable storage, provider-maintained summary tables, or provider-maintained projections, as long as durable-provider metrics do not depend only on worker-local memory.
 
-### Dashboard Contract
+### Dashboard Query Obligations
 
-The registration model, persistence layer and endpoint layer shall together support building a rich operational dashboard for job monitoring and support.
+The core Jobs feature must expose enough provider-neutral query and management contracts for an operational dashboard or external support tool to be built without private provider-table access. The spec defines the required query/API obligations; it does not prescribe dashboard layout, navigation structure, visual components or first-party UI behavior.
 
-The dashboard contract shall support views such as:
+Dashboard-oriented query models must:
 
-- dashboard navigation counts for occurrences, failed occurrences, retries, batches, recurring triggers and scheduler instances
-- overview cards for provider/runtime health, including storage provider name, provider version where available, scheduler uptime, active scheduler instances, active leases, worker slots, backlog size and storage/resource counters where the provider can expose them safely
-- realtime graph data showing recent successful, failed, cancelled/deleted and retry-scheduled occurrence counts grouped by short time buckets
-- history graph data showing longer-range successful, failed, cancelled/deleted and retry-scheduled occurrence counts grouped by hour or day
-- active job definition list with display name, description, status, trigger counts and latest execution outcome
-- trigger list with schedule, enabled state, next due occurrence and last execution outcome
-- recurring trigger list with cron/calendar expression, time zone, last materialized occurrence, next due occurrence, enabled state and missed-occurrence policy
-- orphaned runtime-state view for jobs or triggers that have persisted history/state but no active registration
-- occurrence lists grouped by operational state, including enqueued/due, scheduled, processing/running, succeeded/completed, failed, deleted/cancelled, awaiting dependency and awaiting batch
-- failed and retrying occurrence list with retry attempt number, max attempts, failure reason, retry due time and original creation time
-- occurrence detail with invocation display, sanitized data/arguments, parameters, source metadata, status, attempts, retry information and state history
-- state history timeline showing status transitions, timestamps, scheduler instance id, duration offsets, reason/error summary and next action metadata such as next retry or enqueue time
-- batch list and batch detail views with description, status counts, progress percentage, created/started/completed timestamps and the child occurrences grouped by batch state
-- batch progress bars that can distinguish created, pending, processing, succeeded, failed, deleted and finished child occurrences
-- bulk action views for selected failed, retrying, queued or batch child occurrences
-- scheduler server/instance list with instance id, host name, process id where available, queues/groups handled, worker slot counts, active execution counts, heartbeat age, started time and lease health
-- lease diagnostics and recovery view
-- aggregate metrics by job, trigger type, status and scheduler instance
+- be built from active registrations plus persisted runtime state
+- expose summary counts for jobs, triggers, occurrences, retries, batches, leases and scheduler instances
+- expose paged list and detail models for active jobs, triggers, recurring triggers, occurrences, retry views, batches, executions, leases, scheduler instances, history and metrics
+- include enough status, timestamp, correlation, retry, dependency, batch and error-summary information to avoid per-row provider lookups for ordinary support views
+- separate compact safe previews from full serialized data, exception details and integration payloads
+- respect host authorization, redaction and sensitive-data policies
+- remain query contracts over scheduler state, not a product specification for a particular dashboard UI
 
-A first-party dashboard UI is optional for the initial implementation. If provided later, it should use the same public query and management APIs as external tools.
-
-Dashboard query models must be designed for UI consumption and must not require clients to reconstruct core views by issuing many per-row detail requests. Summary endpoints should provide enough counts, labels, status colors/classes, UTC timestamps and paging metadata for a dashboard to render navigation tabs, sidebars, tables, progress bars and graphs efficiently.
-
-Dashboard contracts must separate compact previews from full stored data. Occurrence list and detail models may expose sanitized argument previews, data type names, parameter names, hashes, sizes and selected safe metadata by default. Full serialized data, sensitive payloads, exception stack traces and integration payloads must require explicit opt-in endpoints or options and must respect authorization and redaction policies.
+A first-party dashboard UI is optional. If provided, it must use the same public query and management APIs as external tools.
 
 ### Administration API
 
@@ -1280,22 +1502,22 @@ The endpoints may map service-layer `Result`, `Result<T>` and `ResultPaged<T>` v
 
 The endpoint surface shall support:
 
-- dashboard summary queries for navigation counts, overview cards and graph series
+- dashboard summary queries for counts, provider/runtime facts and timeline series
 - active job definition list and detail queries
 - trigger list and detail queries
 - recurring trigger list and detail queries
 - occurrence list and detail queries
 - retry list and detail queries
-- batch list and detail queries when batches are supported
+- batch list and detail queries
 - execution history queries
 - lease diagnostic queries
 - scheduler server/instance queries
 - aggregated metrics queries
 - job management actions such as enable, disable, pause and resume
-- trigger management actions such as register, update, enable, disable and delete
+- trigger management actions such as enable, disable, pause and resume for code-registered triggers
 - execution control actions such as manual dispatch, cancel, interrupt and retry
 - bulk execution control actions such as retry/requeue, cancel, delete/archive and purge for selected occurrence ids where supported
-- batch control actions such as retry/requeue selected child occurrences, cancel, pause, resume and archive/delete where supported
+- batch control actions such as retry/requeue selected child occurrences, cancel, pause, resume and archive/delete
 - maintenance actions such as archive, purge and repair operations when supported by the provider
 
 Management endpoints and any operational UI must be securable through host application authentication and authorization.
@@ -1344,11 +1566,10 @@ POST   /api/_system/jobs/{jobName}/enable
 POST   /api/_system/jobs/{jobName}/disable
 POST   /api/_system/jobs/{jobName}/pause
 POST   /api/_system/jobs/{jobName}/resume
-POST   /api/_system/jobs/{jobName}/triggers
-PUT    /api/_system/jobs/{jobName}/triggers/{triggerName}
 POST   /api/_system/jobs/{jobName}/triggers/{triggerName}/enable
 POST   /api/_system/jobs/{jobName}/triggers/{triggerName}/disable
-DELETE /api/_system/jobs/{jobName}/triggers/{triggerName}
+POST   /api/_system/jobs/{jobName}/triggers/{triggerName}/pause
+POST   /api/_system/jobs/{jobName}/triggers/{triggerName}/resume
 POST   /api/_system/jobs/occurrences/{occurrenceId}/cancel
 POST   /api/_system/jobs/occurrences/{occurrenceId}/interrupt
 POST   /api/_system/jobs/occurrences/{occurrenceId}/retry
@@ -1357,52 +1578,19 @@ POST   /api/_system/jobs/occurrences/{occurrenceId}/repair/release-lease
 POST   /api/_system/jobs/occurrences/bulk/retry
 POST   /api/_system/jobs/occurrences/bulk/cancel
 POST   /api/_system/jobs/occurrences/bulk/archive
+POST   /api/_system/jobs/batches
+POST   /api/_system/jobs/batches/{batchId}/attach
 POST   /api/_system/jobs/batches/{batchId}/retry
 POST   /api/_system/jobs/batches/{batchId}/cancel
+POST   /api/_system/jobs/batches/{batchId}/pause
+POST   /api/_system/jobs/batches/{batchId}/resume
 POST   /api/_system/jobs/batches/{batchId}/archive
 DELETE /api/_system/jobs/occurrences
 ```
 
-The dashboard endpoints are convenience read models over the same query services used by the detailed resources. They must not bypass provider-neutral query abstractions or expose provider tables directly.
+The dashboard endpoints are convenience read models over the same query services used by the detailed resources. They must not bypass provider-neutral query abstractions or expose provider tables directly. Dashboard endpoints may combine summary counts, provider/runtime facts and timeline buckets, but their contract should stay focused on scheduler state and must not prescribe a particular UI composition.
 
-`GET /api/_system/jobs/dashboard` may return a combined dashboard shell model for initial page load. It should include navigation counts, overview cards, default graph series, status facets and provider capability flags. The more focused `/dashboard/navigation`, `/dashboard/overview` and `/dashboard/timeline` endpoints should be available so dashboards can refresh small regions without reloading all tables.
-
-`GET /api/_system/jobs/dashboard/navigation` shall return at least:
-
-- total visible occurrence count
-- failed occurrence count
-- retry-scheduled occurrence count
-- active batch count
-- recurring trigger count
-- active scheduler server/instance count
-- stale server/instance count
-- capability flags for batches, recurring triggers, server diagnostics, leases, archived history and bulk actions
-
-`GET /api/_system/jobs/dashboard/overview` shall return provider and runtime facts suitable for overview cards:
-
-- scheduler status and uptime
-- storage/provider name and version where available
-- active scheduler instance count
-- active lease count and expired lease count
-- worker slot count, active worker count and queue/backlog size
-- oldest due occurrence age
-- retained occurrence and execution counts by status
-- storage resource counters where the provider safely exposes them, such as connection count, memory use, database size or retention-window totals
-
-Provider-specific overview facts must be represented as named metric cards with display name, value, unit, severity and source. The core contract must not hard-code Redis-specific metrics, but it must allow a provider to expose Redis-like values such as version, uptime, connections, memory usage, peak memory usage and pub/sub channel count.
-
-`GET /api/_system/jobs/dashboard/timeline` shall support realtime and history graph scenarios. Query parameters shall include:
-
-- `from`
-- `to`
-- `bucket`
-- `mode` with values such as `Realtime`, `Day` and `Week`
-- `jobName`
-- `triggerName`
-- `schedulerInstanceId`
-- `statuses`
-
-The timeline response shall return ordered buckets with UTC start/end timestamps and counts for succeeded, failed, cancelled/deleted, retry-scheduled and processing occurrences. Empty buckets should be included when requested so chart axes remain stable.
+Dashboard timeline query parameters should support at least `from`, `to`, `bucket`, `mode`, `jobName`, `triggerName`, `schedulerInstanceId` and status filters. Timeline buckets should use UTC start/end timestamps and counts grouped by public status enums.
 
 Query parameters for `GET /api/_system/jobs` shall support at least:
 
@@ -1416,7 +1604,7 @@ Query parameters for `GET /api/_system/jobs` shall support at least:
 - `sortBy`
 - `sortDescending`
 
-Job definition list models shall include status facet counts suitable for a dashboard sidebar. At minimum, the response should expose counts for enabled, disabled, paused, orphaned runtime state and failed latest execution where those concepts are available.
+Job definition list models shall include status facet counts for operational clients. At minimum, the response should expose counts for enabled, disabled, paused, orphaned runtime state and failed latest execution where those concepts are available.
 
 Query parameters for `GET /api/_system/jobs/occurrences` and `GET /api/_system/jobs/executions` shall support at least:
 
@@ -1438,7 +1626,7 @@ Query parameters for `GET /api/_system/jobs/occurrences` and `GET /api/_system/j
 - `sortBy`
 - `sortDescending`
 
-Occurrence list models shall support table views similar to an operations dashboard. Each row should include at least:
+Occurrence list models shall support operational list views. Each row should include at least:
 
 - occurrence id and a short id/display id
 - job name, display name and invocation display
@@ -1459,11 +1647,11 @@ Occurrence detail models shall include:
 - full attempt summary with execution ids, status, duration, result messages and error summary
 - state history timeline records
 - lease and recovery metadata
-- links or ids for parent batch, source feature, source id, causation id and related orchestration/message/queue records where available
+- links or ids for batch, source feature, source id, causation id and related orchestration/message/queue records where available
 
 `GET /api/_system/jobs/retries` is a filtered occurrence view optimized for retry pages. It shall return retry-scheduled or retryable failed occurrences with retry attempt count, max attempts, reason/error summary, retry due time, created time, job display and paging metadata. It shall support the same paging and page-size options as occurrence lists.
 
-`GET /api/_system/jobs/batches` shall return batch summaries when batch support is enabled. Each row should include batch id, display id, description, current status, progress percentage, child occurrence counts by status, created UTC, started UTC, completed UTC, latest failure summary and whether bulk operations are available.
+`GET /api/_system/jobs/batches` shall return batch summaries. Each row should include batch id, display id, description, current status, progress percentage, child occurrence counts by status, created UTC, started UTC, completed UTC, latest failure summary and whether bulk operations are available.
 
 `GET /api/_system/jobs/batches/{batchId}` shall return:
 
@@ -1471,7 +1659,6 @@ Occurrence detail models shall include:
 - current status and progress percentage
 - child occurrence counts by state
 - created, started, completed and updated timestamps
-- parent/continuation batch ids where supported
 - safe metadata and correlation values
 - capability flags for retry, cancel, pause, resume, archive/delete and selected-child operations
 
@@ -1481,11 +1668,11 @@ Occurrence detail models shall include:
 
 `GET /api/_system/jobs/servers` shall return scheduler server/instance rows with scheduler instance id, host name, process id where available, app version where available, started UTC, last heartbeat UTC, heartbeat age, queues/groups/modules handled, worker slot count, active execution count, acquired lease count and status such as `Active`, `Stale` or `Offline`.
 
-HTTP query values for status filters shall use the public enum member names. Endpoint models and internal query services should bind those values to `JobOccurrenceStatus` or `JobExecutionStatus` instead of passing raw strings through the application.
+HTTP query values for status filters shall use the public enum member names. Endpoint models should accept route and query strings for natural HTTP binding, then validate and normalize them before calling runtime or query services. Internal query services should bind status filters to `JobOccurrenceStatus`, `JobExecutionStatus`, `JobBatchStatus` or `JobSchedulerServerStatus` instead of passing raw strings through the application.
 
 Query parameters for `GET /api/_system/jobs/metrics` shall support the same filter subset that is meaningful for aggregated metrics.
 
-Dashboard list endpoints shall support page sizes commonly used by operations tables, including `10`, `20`, `50`, `100`, `500`, `1000` and `5000`, while still allowing hosts to configure a maximum page size. Requests above the configured maximum shall return `400 Bad Request` or be capped according to explicit endpoint options.
+Operational list endpoints shall support page sizes commonly used by support tools, including `10`, `20`, `50`, `100`, `500`, `1000` and `5000`, while still allowing hosts to configure a maximum page size. Requests above the configured maximum shall return `400 Bad Request` or be capped according to explicit endpoint options.
 
 The `POST /dispatch` request body shall support at least:
 
@@ -1500,19 +1687,7 @@ public class JobDispatchRequest
 }
 ```
 
-The trigger create/update request body shall support at least:
-
-```csharp
-public class JobTriggerRequest
-{
-    public string TriggerName { get; set; }
-    public string TriggerType { get; set; }
-    public bool Enabled { get; set; }
-    public object Options { get; set; }
-    public object Data { get; set; }
-    public IDictionary<string, string> Metadata { get; set; }
-}
-```
+Runtime trigger endpoints operate only on existing code-registered triggers. They must not accept request bodies that define trigger type, schedule options or trigger data. Definition changes are made in code and become active on application startup after validation.
 
 The `POST /pause`, `POST /resume`, `POST /cancel`, `POST /interrupt`, `POST /retry`, `POST /archive` and repair endpoints shall support a reason-oriented request body where meaningful:
 
@@ -1534,6 +1709,8 @@ public class JobBulkOccurrenceOperationRequest
 ```
 
 Bulk action responses shall include requested count, succeeded count, failed count and per-occurrence failures for invalid state, not found, authorization failure or provider failure.
+
+Batch creation endpoints shall use the same request shapes as `CreateBatchAsync(...)`, `DispatchBatchAsync(...)` and `AttachToBatchAsync(...)`. A batch creation request with no child items creates an empty completed batch. A batch dispatch or attach request with child items must atomically accept the batch operation or return a `Result`/HTTP failure without leaving runnable orphaned occurrences.
 
 The `DELETE /api/_system/jobs/occurrences` endpoint shall support purge-style query parameters comparable to the retained operational endpoints used by queueing, messaging and orchestration, for example:
 
@@ -1563,7 +1740,7 @@ Jobs shall be easy to test with xUnit without requiring full application hosting
 The Jobs feature should provide test helper utilities for:
 
 - unit testing job logic directly
-- testing `JobExecutionContext` behavior
+- testing `IJobExecutionContext` behavior
 - testing typed data handling
 - testing previous-run/delta behavior
 - testing trigger materialization
@@ -1596,12 +1773,12 @@ The testing surface should make common job tests easy without requiring the test
 
 ### Job Unit Test Harness
 
-The simplest testing path should execute a single job with a synthetic `JobExecutionContext`.
+The simplest testing path should execute a single job with a synthetic `IJobExecutionContext`.
 
 The intended unit-test surface should provide a small job test harness around the normal job contract, for example:
 
 - a test builder or fixture for creating a job instance through DI
-- helpers for creating `JobExecutionContext`
+- helpers for creating `IJobExecutionContext`
 - typed data helpers
 - previous-execution helpers
 - assertion helpers for result, messages and context metadata
@@ -1722,7 +1899,7 @@ The test utilities should support:
 
 The testing support is ready when:
 
-- a job can be executed in an xUnit test by providing dependencies and a `JobExecutionContext`
+- a job can be executed in an xUnit test by providing dependencies and an `IJobExecutionContext`
 - a test can provide typed data, metadata and previous-run information
 - a test can assert `Result`, messages, history and status without querying provider internals
 - a test can run scheduler behavior with in-memory persistence and a controllable clock
@@ -1738,8 +1915,8 @@ Job execution progresses through a well-defined lifecycle from trigger materiali
 
 The runtime must distinguish:
 
-- **Job registration lifecycle**: registration, enable/disable defaults, update and removal of the configured job definition.
-- **Trigger registration lifecycle**: registration, enable/disable defaults, update, materialization and deletion of an active trigger definition.
+- **Job registration lifecycle**: code-first registration, enable/disable defaults, startup validation, appsettings override merge, update through code changes and removal from active registration when code no longer registers the job.
+- **Trigger registration lifecycle**: code-first registration, enable/disable defaults, startup validation, appsettings override merge and removal from active registration when code no longer registers the trigger.
 - **Runtime-state lifecycle**: durable operational overrides, pause/resume state, materialization watermarks and stale/orphaned state after registrations are removed.
 - **Occurrence lifecycle**: the scheduled unit of work created by a trigger.
 - **Execution attempt lifecycle**: one attempt to run a materialized occurrence.
@@ -1781,7 +1958,7 @@ Operational queries and persisted history must make this distinction visible.
 - **Running**
 
   - An execution attempt has started for the occurrence.
-  - `JobExecutionContext` has been hydrated and `IJob.ExecuteAsync(...)` is executing.
+  - `IJobExecutionContext` has been hydrated and `IJob.ExecuteAsync(...)` is executing.
   - Cancellation, timeout, lease renewal and operational interrupt requests are active concerns while running.
 
 - **RetryScheduled**
@@ -1812,7 +1989,7 @@ Operational queries and persisted history must make this distinction visible.
 
   - The occurrence was cancelled before or during execution.
   - Cancellation reason, actor metadata when available, timestamps and history are persisted.
-  - Cancelled occurrences are terminal unless a management operation explicitly creates a new occurrence or retry.
+  - Cancelled occurrences are terminal unless a management operation explicitly dispatches a replacement occurrence or starts an allowed retry attempt.
 
 - **Archived**
 
@@ -1822,7 +1999,7 @@ Operational queries and persisted history must make this distinction visible.
 
 ### Execution Attempt Lifecycle Phases
 
-Execution attempts are history records linked to one occurrence. Retries create additional execution attempts; they do not erase previous attempts.
+Execution attempts are durable execution records linked to one occurrence. Retries create additional execution records for the same occurrence; they do not create retry occurrences and do not erase previous attempts.
 
 - **Created**
 
@@ -1832,7 +2009,7 @@ Execution attempts are history records linked to one occurrence. Retries create 
 - **Started**
 
   - The attempt has begun.
-  - The runtime has created a DI scope, resolved the job, hydrated `JobExecutionContext`, and recorded started UTC.
+  - The runtime has created a DI scope, resolved the job, hydrated `IJobExecutionContext`, and recorded started UTC.
 
 - **Running**
 
@@ -1948,10 +2125,10 @@ Retry is part of the occurrence lifecycle, not a separate job definition or trig
 
 When retry is selected:
 
-1. The failed attempt is finalized in execution history.
+1. The failed attempt is finalized in its execution record and append-only lifecycle history.
 2. Retry policy calculates the next retry due UTC.
 3. Retry metadata is persisted.
-4. The occurrence transitions to `RetryScheduled` or equivalent provider state.
+4. The same occurrence transitions to `RetryScheduled` or equivalent provider state.
 5. When retry due time arrives, the occurrence becomes due again and must be reacquired through the normal lease pipeline.
 
 Retry attempts must preserve enough history to answer:
@@ -1991,7 +2168,7 @@ At minimum:
 - `Running` may transition to `Completed`, `RetryScheduled`, `Failed` or `Cancelled` through attempt finalization. Timeout and interruption are recorded on the execution attempt and then mapped to the configured occurrence outcome.
 - `RetryScheduled` may transition to `Due`, `Paused`, `Cancelled` or `Archived`.
 - `Paused` may transition back to the previous runnable state, or to `Cancelled`/`Archived` through operations.
-- `Completed`, `Failed` and `Cancelled` are terminal execution states unless an explicit management action creates a retry or replacement occurrence.
+- `Completed`, `Failed` and `Cancelled` are terminal occurrence states unless an explicit management action starts an allowed retry attempt or dispatches a replacement occurrence.
 - `Archived` is terminal for active scheduling and can only transition to purge/removal.
 
 Invalid transitions must return `Result`/`Result<T>` failures from management APIs and should be represented as `409 Conflict` by operational endpoints.
@@ -1999,6 +2176,11 @@ Invalid transitions must return `Result`/`Result<T>` failures from management AP
 ### Lifecycle History
 
 Lifecycle changes must be visible in execution history.
+
+Execution records and lifecycle history serve different purposes:
+
+- `JobExecution` records summarize attempts and are the primary source for attempt status, timestamps, duration, result/error summary, scheduler instance and attempt number.
+- `JobExecutionHistory` records are append-only timeline entries for occurrence changes, execution attempt changes, lease events, retry scheduling, operator actions and diagnostics.
 
 The history model should record at least:
 
@@ -2020,9 +2202,9 @@ History records should include UTC timestamps, scheduler instance id, actor iden
 
 ## Job Context
 
-Each job execution operates with a dedicated `JobExecutionContext`.
+Each job execution operates with a dedicated `IJobExecutionContext`.
 
-The job context is the shared execution object passed to `IJob.ExecuteAsync(...)`. It gives the job access to scheduler metadata, typed input data, previous-run information, messages, correlation data, cancellation state and controlled scheduler operations.
+The job context is the shared execution contract passed to `IJob.ExecuteAsync(...)`. It gives the job access to scheduler metadata, typed input data, previous-run information, messages, correlation data, cancellation state and controlled scheduler operations. `Application.Jobs` may provide concrete `JobExecutionContext` implementations, but public job implementations should depend on the interfaces.
 
 Unlike an orchestration context, a job context is execution-scoped. It is not intended to be a long-lived workflow state snapshot. Durable business state should be stored in application-owned persistence. The scheduler persists the runtime facts needed to explain, retry, recover and inspect the job execution.
 
@@ -2060,9 +2242,9 @@ The job context contains:
 
 - **Previous run information**
 
-  - previous execution attempt for the same job/trigger identity
-  - previous successful execution for delta processing
-  - optional job-level previous successful execution across triggers
+  - previous execution attempt for the same occurrence, when the current attempt is not the first attempt
+  - previous successful execution for the same job/trigger identity before the current occurrence
+  - optional job-level previous successful execution across triggers before the current occurrence
   - previous status, timestamps, data source metadata, result messages and error details when retained
 
 - **Runtime services**
@@ -2088,7 +2270,7 @@ The job context contains:
 
 ### Context Characteristics
 
-- The `JobExecutionContext` itself is always present.
+- The `IJobExecutionContext` itself is always present.
 - Typed data is optional; jobs without data still receive a context.
 - Jobs should read scheduler-provided runtime data through the context rather than querying scheduler storage directly.
 - Jobs should use constructor dependency injection for ordinary application services.
@@ -2118,7 +2300,7 @@ The feature should support either a typed context or an equivalent typed accesso
 public class GenerateInvoiceJob : JobBase<GenerateInvoiceRequest>
 {
     public override async Task<Result> ExecuteAsync(
-        JobExecutionContext<GenerateInvoiceRequest> ctx,
+        IJobExecutionContext<GenerateInvoiceRequest> ctx,
         CancellationToken cancellationToken = default)
     {
         var invoiceId = ctx.Data.InvoiceId;
@@ -2145,7 +2327,7 @@ Jobs without data use `Unit`:
 public class RebuildSearchIndexJob : JobBase
 {
     public override async Task<Result> ExecuteAsync(
-        JobExecutionContext<Unit> ctx,
+        IJobExecutionContext<Unit> ctx,
         CancellationToken cancellationToken = default)
     {
         // no data is expected
@@ -2160,14 +2342,14 @@ Previous-run information is part of the job context because many scheduled jobs 
 
 The context should expose:
 
-- `PreviousExecution`: the immediately preceding attempt for the same job/trigger identity
-- `PreviousSuccessfulExecution`: the most recent successful execution for the same job/trigger identity
-- optional job-level previous successful execution across all triggers
+- `PreviousExecution`: the immediately preceding attempt for the same occurrence, populated only when a previous attempt exists for the occurrence
+- `PreviousSuccessfulExecution`: the most recent successful execution for the same job/trigger identity before the current occurrence
+- optional job-level previous successful execution across all triggers before the current occurrence
 - previous data source metadata when retained
 - previous messages and error summaries when retained
 - previous started, completed and duration values
 
-Previous-run lookup should happen before invoking `ExecuteAsync(...)` so the job can use this information without directly depending on scheduler persistence abstractions.
+Previous-run lookup should happen before invoking `ExecuteAsync(...)` so the job can use this information without directly depending on scheduler persistence abstractions. The lookup must exclude the current occurrence when resolving `PreviousSuccessfulExecution` so retry attempts do not shift the delta boundary.
 
 ### Context Control Operations
 
@@ -2215,7 +2397,7 @@ For delta processing, the preferred pattern is:
 
 ### Context Testing
 
-The testing utilities shall make `JobExecutionContext` easy to construct in unit tests.
+The testing utilities shall make `IJobExecutionContext` easy to construct in unit tests.
 
 Tests should be able to supply:
 
@@ -2352,7 +2534,7 @@ The programmatic API should support:
 
 - dispatching a job immediately
 - dispatching a job and waiting for completion
-- registering, updating, enabling, disabling and deleting triggers
+- enabling, disabling, pausing and resuming code-registered triggers
 - pausing and resuming jobs, triggers or occurrences
 - cancelling or interrupting running work
 - retrying failed occurrences
@@ -2370,6 +2552,10 @@ Public runtime and query methods shall therefore return `Result`, `Result<T>` or
 
 This requirement applies to application-facing services. It does not require internal runtime components, persistence providers, execution helpers or other non-client-facing implementation methods to use the Result pattern internally.
 
+Public scheduler contracts should use simple `string` and `Guid` identifiers for stable job, trigger, occurrence, execution, batch and scheduler-instance identities. The argument and property names are part of the contract and make the identifier role clear without adding wrapper types to the public API. Implementations should still validate and normalize names at the boundary, including required values, length limits and allowed characters.
+
+Dispatch data is intentionally opaque at the scheduler boundary. The job-type overload accepts `object data` so callers do not have to repeat generic data arguments, while the runtime still validates the supplied value against the registered job data type before accepting an occurrence. String-based dispatch exists for endpoint binding and operational tooling and follows the same validation rules.
+
 The public service surface should distinguish between:
 
 - **runtime/control operations**
@@ -2383,6 +2569,20 @@ The public service surface should distinguish between:
 The runtime and query service shape should follow this responsibility model:
 
 ```csharp
+public interface IJob
+{
+    Task<Result> ExecuteAsync(
+        IJobExecutionContext context,
+        CancellationToken cancellationToken = default);
+}
+
+public interface IJob<TData> : IJob
+{
+    Task<Result> ExecuteAsync(
+        IJobExecutionContext<TData> context,
+        CancellationToken cancellationToken = default);
+}
+
 public interface IJobSchedulerService
 {
     Task<Result<JobDispatchResult>> DispatchAsync<TJob>(
@@ -2404,18 +2604,6 @@ public interface IJobSchedulerService
         CancellationToken cancellationToken = default)
         where TJob : IJob;
 
-    Task<Result> RegisterTriggerAsync(
-        string jobName,
-        string triggerName,
-        Action<IJobTriggerBuilder> configure,
-        CancellationToken cancellationToken = default);
-
-    Task<Result> UpdateTriggerAsync(
-        string jobName,
-        string triggerName,
-        Action<IJobTriggerBuilder> configure,
-        CancellationToken cancellationToken = default);
-
     Task<Result> EnableTriggerAsync(
         string jobName,
         string triggerName,
@@ -2425,6 +2613,17 @@ public interface IJobSchedulerService
         string jobName,
         string triggerName,
         string reason = null,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> PauseTriggerAsync(
+        string jobName,
+        string triggerName,
+        string reason = null,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> ResumeTriggerAsync(
+        string jobName,
+        string triggerName,
         CancellationToken cancellationToken = default);
 
     Task<Result> EnableJobAsync(
@@ -2446,37 +2645,74 @@ public interface IJobSchedulerService
         CancellationToken cancellationToken = default);
 
     Task<Result> CancelOccurrenceAsync(
-        string occurrenceId,
+        Guid occurrenceId,
         string reason = null,
         CancellationToken cancellationToken = default);
 
     Task<Result> InterruptOccurrenceAsync(
-        string occurrenceId,
+        Guid occurrenceId,
         string reason = null,
         CancellationToken cancellationToken = default);
 
     Task<Result> RetryOccurrenceAsync(
-        string occurrenceId,
+        Guid occurrenceId,
         string reason = null,
         CancellationToken cancellationToken = default);
 
     Task<Result> ArchiveOccurrenceAsync(
-        string occurrenceId,
+        Guid occurrenceId,
         string reason = null,
         CancellationToken cancellationToken = default);
 
     Task<Result<JobBulkOperationResult>> RetryOccurrencesAsync(
-        IReadOnlyList<string> occurrenceIds,
+        IReadOnlyList<Guid> occurrenceIds,
         string reason = null,
         CancellationToken cancellationToken = default);
 
     Task<Result<JobBulkOperationResult>> CancelOccurrencesAsync(
-        IReadOnlyList<string> occurrenceIds,
+        IReadOnlyList<Guid> occurrenceIds,
         string reason = null,
         CancellationToken cancellationToken = default);
 
     Task<Result<JobBulkOperationResult>> ArchiveOccurrencesAsync(
-        IReadOnlyList<string> occurrenceIds,
+        IReadOnlyList<Guid> occurrenceIds,
+        string reason = null,
+        CancellationToken cancellationToken = default);
+
+    Task<Result<JobBatchDispatchResult>> CreateBatchAsync(
+        JobBatchCreateRequest request,
+        CancellationToken cancellationToken = default);
+
+    Task<Result<JobBatchDispatchResult>> DispatchBatchAsync(
+        JobBatchDispatchRequest request,
+        CancellationToken cancellationToken = default);
+
+    Task<Result<JobBatchDispatchResult>> AttachToBatchAsync(
+        string batchId,
+        JobBatchDispatchRequest request,
+        CancellationToken cancellationToken = default);
+
+    Task<Result<JobBulkOperationResult>> RetryBatchAsync(
+        string batchId,
+        string reason = null,
+        CancellationToken cancellationToken = default);
+
+    Task<Result<JobBulkOperationResult>> CancelBatchAsync(
+        string batchId,
+        string reason = null,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> PauseBatchAsync(
+        string batchId,
+        string reason = null,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> ResumeBatchAsync(
+        string batchId,
+        CancellationToken cancellationToken = default);
+
+    Task<Result> ArchiveBatchAsync(
+        string batchId,
         string reason = null,
         CancellationToken cancellationToken = default);
 }
@@ -2514,7 +2750,7 @@ public interface IJobSchedulerQueryService
         CancellationToken cancellationToken = default);
 
     Task<Result<JobOccurrenceModel>> GetOccurrenceAsync(
-        string occurrenceId,
+        Guid occurrenceId,
         CancellationToken cancellationToken = default);
 
     Task<ResultPaged<JobOccurrenceModel>> QueryOccurrencesAsync(
@@ -2539,7 +2775,7 @@ public interface IJobSchedulerQueryService
         CancellationToken cancellationToken = default);
 
     Task<Result<IReadOnlyList<JobExecutionHistoryModel>>> GetHistoryAsync(
-        string occurrenceId,
+        Guid occurrenceId,
         CancellationToken cancellationToken = default);
 
     Task<ResultPaged<JobExecutionModel>> QueryExecutionsAsync(
@@ -2561,6 +2797,8 @@ public interface IJobSchedulerQueryService
 ```
 
 Equivalent service names are allowed, but the feature shall preserve these responsibilities.
+
+The typed `IJob<TData>` contract exists for registration-time data contract inference and typed execution context access. `JobBase<TData>` should bridge the non-generic `IJob.ExecuteAsync(IJobExecutionContext, ...)` call to the typed `ExecuteAsync(IJobExecutionContext<TData>, ...)` override after the runtime has validated and deserialized the occurrence data. The dispatch API intentionally accepts `object data` so callers can dispatch by job type without specifying duplicate generic type arguments; the scheduler validates the supplied data against the registered job data contract and returns a `Result` failure for mismatches.
 
 Manual dispatch target rules:
 
@@ -2613,6 +2851,40 @@ public class JobBulkOperationResult
     public int SucceededCount { get; set; }
     public int FailedCount { get; set; }
     public IReadOnlyList<JobBulkOperationFailureModel> Failures { get; set; }
+}
+
+public class JobBatchCreateRequest
+{
+    public string BatchId { get; set; }
+    public string Description { get; set; }
+    public JobBatchCompletionPolicy CompletionPolicy { get; set; } = JobBatchCompletionPolicy.RequireAllSucceeded;
+    public string CorrelationId { get; set; }
+    public string CausationId { get; set; }
+    public string IdempotencyKey { get; set; }
+    public IReadOnlyDictionary<string, string> Metadata { get; set; }
+}
+
+public class JobBatchDispatchRequest : JobBatchCreateRequest
+{
+    public IReadOnlyList<JobBatchDispatchItem> Items { get; set; }
+}
+
+public class JobBatchDispatchItem
+{
+    public string JobName { get; set; }
+    public object Data { get; set; }
+    public JobDispatchOptions Options { get; set; }
+    public int? Sequence { get; set; }
+    public DateTimeOffset? DueUtc { get; set; }
+    public string SourceStep { get; set; }
+}
+
+public class JobBatchDispatchResult
+{
+    public string BatchId { get; set; }
+    public JobBatchStatus Status { get; set; }
+    public int AcceptedCount { get; set; }
+    public IReadOnlyList<Guid> OccurrenceIds { get; set; }
 }
 
 public class JobDashboardRequest
@@ -2681,7 +2953,7 @@ public class JobBatchQueryRequest
 {
     public string BatchId { get; set; }
     public string Description { get; set; }
-    public IReadOnlyList<string> Statuses { get; set; }
+    public IReadOnlyList<JobBatchStatus> Statuses { get; set; }
     public DateTimeOffset? CreatedFrom { get; set; }
     public DateTimeOffset? CreatedTo { get; set; }
     public DateTimeOffset? CompletedFrom { get; set; }
@@ -2712,7 +2984,7 @@ public class JobSchedulerServerQueryRequest
 {
     public string SchedulerInstanceId { get; set; }
     public string HostName { get; set; }
-    public string Status { get; set; }
+    public JobSchedulerServerStatus? Status { get; set; }
     public int Skip { get; set; }
     public int Take { get; set; } = 50;
     public string SortBy { get; set; } = "LastHeartbeatUtc";
@@ -2746,11 +3018,11 @@ The scheduler shall preserve these constraints across providers and integrations
 - An active trigger definition creates occurrences; it does not execute jobs directly.
 - A durable occurrence must be persisted before execution.
 - A durable execution attempt must run under an occurrence lease.
-- A retry attempt must be linked to the original occurrence and previous attempts.
+- A retry attempt must reuse the original occurrence and link to previous execution attempts through attempt numbers and history.
 - An occurrence is executable only when its job and trigger still exist in the active registration model.
 - Persisted runtime state for removed jobs or triggers must not make them executable again.
 - A job must not mutate scheduler provider state directly for normal execution flow.
-- A job must receive scheduler state through `JobExecutionContext`.
+- A job must receive scheduler state through `IJobExecutionContext`.
 - A job may use application services through dependency injection.
 - A job may produce messages and metadata through the context and returned `Result`.
 - A job may request control operations through the context only where policy allows it.
@@ -2822,7 +3094,7 @@ public interface IDatabaseCleanupService
 public class DatabaseCleanupJob(IDatabaseCleanupService cleanup) : JobBase<DatabaseCleanupRequest>
 {
     public override async Task<Result> ExecuteAsync(
-        JobExecutionContext<DatabaseCleanupRequest> ctx,
+        IJobExecutionContext<DatabaseCleanupRequest> ctx,
         CancellationToken cancellationToken = default)
     {
         var request = ctx.Data;
@@ -2906,7 +3178,7 @@ var result = await jobScheduler.DispatchAsync<DatabaseCleanupJob>(
         CorrelationId = $"maintenance-{DateTimeOffset.UtcNow:yyyyMMddHHmmss}",
         IdempotencyKey = "database-cleanup-2026-05-manual"
     },
-    cancellationToken);
+    cancellationToken: cancellationToken);
 
 if (result.IsFailure)
 {
@@ -2923,6 +3195,180 @@ Expected behavior:
 - Both triggers execute the same `DatabaseCleanupJob` implementation and receive a typed `DatabaseCleanupRequest`.
 - The job-level concurrency limit prevents recurring and manual cleanup from running at the same time.
 - Durable providers lease the occurrence before execution, persist history, and retain context messages and cleanup metadata for operations.
+
+---
+
+## Example Job: Batch Reprocessing
+
+This example shows how application code can create a durable batch for fan-out work. The batch groups many normal job occurrences so operators can track progress, retry failed children and cancel remaining work.
+
+Example scenario:
+
+1. A support user starts order projection reprocessing for a date range.
+2. The application splits the range into chunks.
+3. Each chunk becomes a normal `RecalculateOrderProjectionChunkJob` occurrence.
+4. If more affected orders are discovered later, the application attaches more child occurrences to the same batch.
+
+Data passed to the jobs:
+
+```csharp
+public record RecalculateOrderProjectionChunkRequest(
+    string ReprocessingId,
+    int ChunkNumber,
+    IReadOnlyList<Guid> OrderIds);
+
+```
+
+Job implementation:
+
+```csharp
+public interface IOrderProjectionChunkService
+{
+    Task<IReadOnlyList<Guid>> RecalculateAsync(
+        IReadOnlyList<Guid> orderIds,
+        CancellationToken cancellationToken);
+}
+
+public class RecalculateOrderProjectionChunkJob(IOrderProjectionChunkService projections)
+    : JobBase<RecalculateOrderProjectionChunkRequest>
+{
+    public override async Task<Result> ExecuteAsync(
+        IJobExecutionContext<RecalculateOrderProjectionChunkRequest> ctx,
+        CancellationToken cancellationToken = default)
+    {
+        var updated = await projections.RecalculateAsync(
+            ctx.Data.OrderIds,
+            cancellationToken);
+
+        ctx.Messages.Add(
+            $"Recalculated {updated.Count} orders for chunk {ctx.Data.ChunkNumber}.");
+
+        ctx.Properties["ReprocessingId"] = ctx.Data.ReprocessingId;
+        ctx.Properties["ChunkNumber"] = ctx.Data.ChunkNumber;
+        ctx.Properties["UpdatedOrderCount"] = updated.Count;
+
+        return Result.Success();
+    }
+}
+
+```
+
+Registration:
+
+```csharp
+builder.Services.AddJobScheduler(scheduler => scheduler
+    .WithJob<RecalculateOrderProjectionChunkJob>("orders-recalculate-projection-chunk", job => job
+        .WithName("Recalculate Order Projection Chunk")
+        .WithDescription("Recalculates order projections for a chunk of order ids.")
+        .WithConcurrency(limit: 8)
+        .WithRetry(retry => retry
+            .MaxAttempts(3)
+            .ExponentialBackoff(
+                initialDelay: TimeSpan.FromMinutes(1),
+                maxDelay: TimeSpan.FromMinutes(10)))
+        .AddTrigger("manual", trigger => trigger
+            .Manual()
+            .Enabled())));
+```
+
+Creating and dispatching the batch:
+
+```csharp
+var reprocessingId = "orders-reprocess-2026-05";
+var chunks = orderIds
+    .Chunk(100)
+    .Select((ids, index) => new JobBatchDispatchItem
+    {
+        JobName = "orders-recalculate-projection-chunk",
+        Sequence = index + 1,
+        SourceStep = "projection-chunk",
+        Data = new RecalculateOrderProjectionChunkRequest(
+            ReprocessingId: reprocessingId,
+            ChunkNumber: index + 1,
+            OrderIds: ids.ToArray()),
+        Options = new JobDispatchOptions
+        {
+            TriggerName = "manual",
+            CorrelationId = reprocessingId,
+            IdempotencyKey = $"{reprocessingId}-chunk-{index + 1}"
+        }
+    })
+    .ToArray();
+
+var batch = await jobScheduler.DispatchBatchAsync(
+    new JobBatchDispatchRequest
+    {
+        BatchId = reprocessingId,
+        Description = "Recalculate May 2026 order projections.",
+        CompletionPolicy = JobBatchCompletionPolicy.RequireAllSucceeded,
+        CorrelationId = reprocessingId,
+        IdempotencyKey = reprocessingId,
+        Items = chunks
+    },
+    cancellationToken);
+
+if (batch.IsFailure)
+{
+    logger.LogWarning(
+        "Order reprocessing batch dispatch failed: {Message}",
+        batch.Messages.FirstOrDefault());
+}
+```
+
+Attaching late-discovered work:
+
+```csharp
+var attach = await jobScheduler.AttachToBatchAsync(
+    batchId: reprocessingId,
+    request: new JobBatchDispatchRequest
+    {
+        CorrelationId = reprocessingId,
+        IdempotencyKey = $"{reprocessingId}-late-orders",
+        Items = new[]
+        {
+            new JobBatchDispatchItem
+            {
+                JobName = "orders-recalculate-projection-chunk",
+                Sequence = 10_001,
+                SourceStep = "late-projection-chunk",
+                Data = new RecalculateOrderProjectionChunkRequest(
+                    ReprocessingId: reprocessingId,
+                    ChunkNumber: 10_001,
+                    OrderIds: lateOrderIds),
+                Options = new JobDispatchOptions
+                {
+                    TriggerName = "manual",
+                    CorrelationId = reprocessingId,
+                    IdempotencyKey = $"{reprocessingId}-late-orders-1"
+                }
+            }
+        }
+    },
+    cancellationToken);
+```
+
+Operational control:
+
+```csharp
+await jobScheduler.RetryBatchAsync(
+    batchId: reprocessingId,
+    reason: "Retry failed chunks after fixing projection data.",
+    cancellationToken);
+
+await jobScheduler.CancelBatchAsync(
+    batchId: reprocessingId,
+    reason: "Reprocessing request was started with the wrong date range.",
+    cancellationToken);
+```
+
+Expected behavior:
+
+- `DispatchBatchAsync(...)` atomically creates the batch, child occurrences and batch-child links.
+- Each chunk occurrence is leased, retried, timed out and recorded independently.
+- The batch status rolls up from child occurrence outcomes.
+- `AttachToBatchAsync(...)` adds new child occurrences and moves a finished batch back to `Processing` when the attached work is non-terminal.
+- `RetryBatchAsync(...)` retries only eligible failed child occurrences and reports per-child failures.
+- `CancelBatchAsync(...)` prevents remaining child occurrences from starting and records batch-cancel history.
 
 ---
 
@@ -2966,7 +3412,7 @@ Job implementations:
 public class ImportOrdersJob(IOrderImportService imports) : JobBase<OrderImportChainRequest>
 {
     public override async Task<Result> ExecuteAsync(
-        JobExecutionContext<OrderImportChainRequest> ctx,
+        IJobExecutionContext<OrderImportChainRequest> ctx,
         CancellationToken cancellationToken = default)
     {
         var imported = await imports.ImportAsync(
@@ -2985,7 +3431,7 @@ public class RecalculateOrderProjectionsJob(IOrderProjectionService projections)
     : JobBase<RecalculateOrderProjectionsRequest>
 {
     public override async Task<Result> ExecuteAsync(
-        JobExecutionContext<RecalculateOrderProjectionsRequest> ctx,
+        IJobExecutionContext<RecalculateOrderProjectionsRequest> ctx,
         CancellationToken cancellationToken = default)
     {
         var updated = await projections.RecalculateAsync(
@@ -3003,7 +3449,7 @@ public class SendOrderImportNotificationJob(INotificationService notifications)
     : JobBase<SendOrderImportNotificationRequest>
 {
     public override async Task<Result> ExecuteAsync(
-        JobExecutionContext<SendOrderImportNotificationRequest> ctx,
+        IJobExecutionContext<SendOrderImportNotificationRequest> ctx,
         CancellationToken cancellationToken = default)
     {
         await notifications.SendOrderImportCompletedAsync(
@@ -3072,7 +3518,7 @@ var dispatch = await jobScheduler.DispatchAsync<ImportOrdersJob>(
         CorrelationId = "orders-import-2026-05-08-001",
         IdempotencyKey = "orders-import-2026-05-08-001"
     },
-    cancellationToken);
+    cancellationToken: cancellationToken);
 ```
 
 Expected behavior:
@@ -3113,11 +3559,11 @@ Common migration mapping:
 | ----------------------------------------------------- | --------------------------------------------------------------------------- |
 | `AddJobScheduling(...)`                               | `AddJobScheduler(...)`                                                      |
 | `JobBase`                                             | new `JobBase` base class or direct `IJob` implementation                    |
-| `Process(IJobExecutionContext, CancellationToken)`    | `ExecuteAsync(JobExecutionContext, CancellationToken)`                      |
+| `Process(IJobExecutionContext, CancellationToken)`    | `ExecuteAsync(IJobExecutionContext, CancellationToken)`                     |
 | `.WithJob<T>().Cron(...).Named(...).RegisterScoped()` | `.WithJob<T>("name", job => job.WithDescription("...").AddTrigger("trigger", t => t.Cron(...)))` |
-| `.WithData(key, value)`                               | `.Data(...)`, `.Metadata(...)`, or typed `JobExecutionContext<TData>`    |
+| `.WithData(key, value)`                               | `.Data(...)`, `.Metadata(...)`, or typed `IJobExecutionContext<TData>`      |
 | job group                                             | job group, module, or metadata-based scope                                  |
-| `LastProcessedDate`                                   | `JobExecutionContext.PreviousExecution.CompletedUtc` or equivalent          |
+| `LastProcessedDate`                                   | `IJobExecutionContext.PreviousSuccessfulExecution.CompletedUtc` or equivalent |
 | `ElapsedMilliseconds`                                 | execution history duration                                                  |
 | `Status` / `ErrorMessage`                             | execution history status, messages, and errors                              |
 | `CronExpressions` / `CronExpressionBuilder`           | devkit cron helpers and new fluent cron builder                             |
@@ -3129,7 +3575,7 @@ Common migration mapping:
 
 The fluent API should make the common setup compact while still exposing enough detail for durable, multi-node workloads. The intended shape is one scheduler builder, one job builder per `IJob` implementation, and one trigger builder per trigger attached to that job.
 
-Fluent registration is the primary configuration source and the authoritative source of active job and trigger definitions. Appsettings-based configuration is intended for environment-specific values such as schedules, enabled state, retry settings and worker targeting. Attribute-based and property-based configuration may provide defaults or metadata on job classes, but must remain visible through the same resolved job and trigger definitions as fluent configuration.
+Fluent registration is the primary configuration source and the authoritative source of active job and trigger definitions. Appsettings-based configuration is intended for environment-specific values such as schedules, enabled state, retry settings and worker targeting, and it may only override matching registrations. Attribute-based and property-based configuration may provide defaults or metadata on job classes, but must remain visible through the same resolved job and trigger definitions as fluent configuration.
 
 Durable storage overlays runtime state onto the active registration model. It must not become the source of truth for job names, display names, descriptions, groups, modules, job types, trigger schedules or default configuration.
 
@@ -3258,7 +3704,7 @@ Serializer behavior:
 
 - `.Serializer(ISerializer serializer)` configures the scheduler-wide serializer and returns the scheduler builder.
 - If `.Serializer(...)` is not called, the scheduler uses `SystemTextJsonSerializer`.
-- The serializer is used for `JobExecutionContext.Data`, trigger data, occurrence data, metadata and retained diagnostic data.
+- The serializer is used for `IJobExecutionContext.Data`, trigger data, occurrence data, metadata and retained diagnostic data.
 - Durable providers must use the configured serializer when writing and reading persisted scheduler data.
 - In-memory providers should use the same serializer boundary where serialization behavior is observable, so tests can catch serializer compatibility issues.
 - Null serializer configuration must not replace the current or default serializer.
@@ -3289,7 +3735,7 @@ builder.Services.AddJobScheduler(scheduler => scheduler
 public class GenerateDailyReportsJob : JobBase
 {
     public override Task<Result> ExecuteAsync(
-        JobExecutionContext ctx,
+        IJobExecutionContext ctx,
         CancellationToken cancellationToken = default)
     {
         return Task.FromResult(Result.Success());
@@ -3322,7 +3768,18 @@ The provider contract should make these concepts explicit:
 - `MissedJobCheckInterval`: how often the scheduler looks for due or missed occurrences.
 - `MaxLeaseRecoveryBatchSize`: how many abandoned or missed occurrences one scan may recover.
 - `HistoryRetention`: how long execution history is retained before purge operations can remove it.
+- `BatchOperationSize`: optional limit for how many child occurrence state transitions one batch control operation should process in one provider transaction.
+- `BatchRollupMode`: provider choice for synchronous roll-up updates, provider-maintained projections or background roll-up repair, provided observable query results remain consistent after accepted operations.
 - `UseModelConfiguration()`: applies provider model configuration needed by the host application's migrations.
+
+Batch provider behavior must be explicit:
+
+- durable batch creation and attachment must be atomic with child occurrence creation and batch-child link creation
+- batch child links must be queryable by batch id and occurrence id
+- batch roll-up counts and status must be updated when child occurrences transition
+- accepted batch cancellation must prevent not-yet-started children from executing, even when cancellation is enforced lazily during due scans
+- provider recovery must repair stale batch roll-ups and dependency releases after process failure
+- purge and archive operations must treat batches, batch-child links, child occurrences and history consistently according to retention policy
 
 ### Entity Framework DbContext Integration Contract
 
@@ -3343,6 +3800,9 @@ public interface IJobSchedulerContext
     DbSet<JobRuntimeState> JobRuntimeStates { get; set; }
     DbSet<JobTriggerRuntimeState> JobTriggerRuntimeStates { get; set; }
     DbSet<JobOccurrence> JobOccurrences { get; set; }
+    DbSet<JobOccurrenceDependency> JobOccurrenceDependencies { get; set; }
+    DbSet<JobBatch> JobBatches { get; set; }
+    DbSet<JobBatchOccurrence> JobBatchOccurrences { get; set; }
     DbSet<JobExecution> JobExecutions { get; set; }
     DbSet<JobExecutionHistory> JobExecutionHistory { get; set; }
     DbSet<JobLease> JobLeases { get; set; }
@@ -3724,11 +4184,6 @@ public class JobOccurrence
     public string IdempotencyKey { get; set; }
 
     /// <summary>
-    /// Gets or sets the occurrence identifier this occurrence retries, when applicable.
-    /// </summary>
-    public Guid? RetryOfOccurrenceId { get; set; }
-
-    /// <summary>
     /// Gets or sets the number of attempts already recorded for this occurrence.
     /// </summary>
     [Required]
@@ -3788,6 +4243,317 @@ public class JobOccurrence
     {
         this.ConcurrencyVersion = Guid.NewGuid();
     }
+}
+
+[Table("__Jobs_OccurrenceDependencies")]
+[Index(nameof(DependentOccurrenceId), nameof(Status))]
+[Index(nameof(PrerequisiteOccurrenceId), nameof(Status))]
+/// <summary>
+/// Represents a durable prerequisite relationship between two job occurrences.
+/// </summary>
+public class JobOccurrenceDependency
+{
+    /// <summary>
+    /// Gets or sets the dependency identifier.
+    /// </summary>
+    [Key]
+    public Guid DependencyId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the occurrence that is blocked by this dependency.
+    /// </summary>
+    [Required]
+    public Guid DependentOccurrenceId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the prerequisite occurrence that must reach the required outcome.
+    /// </summary>
+    [Required]
+    public Guid PrerequisiteOccurrenceId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the required prerequisite status set as serialized enum names.
+    /// </summary>
+    [Column("RequiredStatuses")]
+    public string SerializedRequiredStatuses { get; set; }
+
+    /// <summary>
+    /// Gets or sets the current dependency status.
+    /// </summary>
+    [Required]
+    public JobDependencyStatus Status { get; set; }
+
+    /// <summary>
+    /// Gets or sets the dependent occurrence policy when the prerequisite cannot satisfy the dependency.
+    /// </summary>
+    [Required]
+    public JobDependencyFailurePolicy FailurePolicy { get; set; }
+
+    /// <summary>
+    /// Gets or sets the optional source chain identifier.
+    /// </summary>
+    [MaxLength(256)]
+    public string SourceId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the latest reason for the dependency status.
+    /// </summary>
+    [MaxLength(4000)]
+    public string Reason { get; set; }
+
+    /// <summary>
+    /// Gets or sets serialized dependency metadata.
+    /// </summary>
+    [Column("Metadata")]
+    public string SerializedMetadata { get; set; }
+
+    /// <summary>
+    /// Gets or sets the creation timestamp.
+    /// </summary>
+    [Required]
+    public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
+
+    /// <summary>
+    /// Gets or sets the last update timestamp.
+    /// </summary>
+    [Required]
+    public DateTimeOffset UpdatedDate { get; set; } = DateTimeOffset.UtcNow;
+
+    /// <summary>
+    /// Gets or sets the provider-neutral concurrency token used by EF Core.
+    /// </summary>
+    [Required]
+    [ConcurrencyCheck]
+    public Guid ConcurrencyVersion { get; set; } = Guid.NewGuid();
+
+    /// <summary>
+    /// Regenerates <see cref="ConcurrencyVersion"/> so Entity Framework can detect concurrent updates.
+    /// </summary>
+    public void AdvanceConcurrencyVersion()
+    {
+        this.ConcurrencyVersion = Guid.NewGuid();
+    }
+}
+
+[Table("__Jobs_Batches")]
+[Index(nameof(Status), nameof(CreatedUtc))]
+[Index(nameof(IsArchived), nameof(Status), nameof(UpdatedDate))]
+[Index(nameof(IsArchived), nameof(ArchivedUtc))]
+[Index(nameof(CorrelationId))]
+/// <summary>
+/// Represents a durable operational grouping of related job occurrences.
+/// </summary>
+public class JobBatch
+{
+    /// <summary>
+    /// Gets or sets the batch identifier.
+    /// </summary>
+    [Key]
+    [MaxLength(256)]
+    public string BatchId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the display name or description.
+    /// </summary>
+    [MaxLength(512)]
+    public string Description { get; set; }
+
+    /// <summary>
+    /// Gets or sets the current batch roll-up status.
+    /// </summary>
+    [Required]
+    public JobBatchStatus Status { get; set; }
+
+    /// <summary>
+    /// Gets or sets the batch completion policy.
+    /// </summary>
+    [Required]
+    public JobBatchCompletionPolicy CompletionPolicy { get; set; }
+
+    /// <summary>
+    /// Gets or sets the total number of child occurrences.
+    /// </summary>
+    [Required]
+    public int TotalCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets the number of pending child occurrences.
+    /// </summary>
+    [Required]
+    public int PendingCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets the number of processing child occurrences.
+    /// </summary>
+    [Required]
+    public int ProcessingCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets the number of successfully completed child occurrences.
+    /// </summary>
+    [Required]
+    public int SucceededCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets the number of failed child occurrences.
+    /// </summary>
+    [Required]
+    public int FailedCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets the number of cancelled child occurrences.
+    /// </summary>
+    [Required]
+    public int CancelledCount { get; set; }
+
+    /// <summary>
+    /// Gets or sets the latest failure summary.
+    /// </summary>
+    [MaxLength(4000)]
+    public string LatestFailureSummary { get; set; }
+
+    /// <summary>
+    /// Gets or sets the correlation identifier.
+    /// </summary>
+    [MaxLength(256)]
+    public string CorrelationId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the causation identifier.
+    /// </summary>
+    [MaxLength(256)]
+    public string CausationId { get; set; }
+
+    /// <summary>
+    /// Gets or sets serialized batch metadata.
+    /// </summary>
+    [Column("Metadata")]
+    public string SerializedMetadata { get; set; }
+
+    /// <summary>
+    /// Gets or sets the UTC timestamp when the batch was created.
+    /// </summary>
+    [Required]
+    public DateTimeOffset CreatedUtc { get; set; }
+
+    /// <summary>
+    /// Gets or sets the UTC timestamp when the batch started processing.
+    /// </summary>
+    public DateTimeOffset? StartedUtc { get; set; }
+
+    /// <summary>
+    /// Gets or sets the UTC timestamp when the batch reached a terminal roll-up status.
+    /// </summary>
+    public DateTimeOffset? CompletedUtc { get; set; }
+
+    /// <summary>
+    /// Gets or sets a value indicating whether the batch has been archived.
+    /// </summary>
+    [Required]
+    public bool IsArchived { get; set; }
+
+    /// <summary>
+    /// Gets or sets the UTC archive timestamp when the batch has been archived.
+    /// </summary>
+    public DateTimeOffset? ArchivedUtc { get; set; }
+
+    /// <summary>
+    /// Gets or sets the creation timestamp.
+    /// </summary>
+    [Required]
+    public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
+
+    /// <summary>
+    /// Gets or sets the last update timestamp.
+    /// </summary>
+    [Required]
+    public DateTimeOffset UpdatedDate { get; set; } = DateTimeOffset.UtcNow;
+
+    /// <summary>
+    /// Gets or sets the creator identifier when available.
+    /// </summary>
+    [MaxLength(256)]
+    public string CreatedBy { get; set; }
+
+    /// <summary>
+    /// Gets or sets the updater identifier when available.
+    /// </summary>
+    [MaxLength(256)]
+    public string UpdatedBy { get; set; }
+
+    /// <summary>
+    /// Gets or sets the provider-neutral concurrency token used by EF Core.
+    /// </summary>
+    [Required]
+    [ConcurrencyCheck]
+    public Guid ConcurrencyVersion { get; set; } = Guid.NewGuid();
+
+    /// <summary>
+    /// Regenerates <see cref="ConcurrencyVersion"/> so Entity Framework can detect concurrent updates.
+    /// </summary>
+    public void AdvanceConcurrencyVersion()
+    {
+        this.ConcurrencyVersion = Guid.NewGuid();
+    }
+}
+
+[Table("__Jobs_BatchOccurrences")]
+[Index(nameof(BatchId), nameof(ChildStatus))]
+[Index(nameof(OccurrenceId))]
+[Index(nameof(BatchId), nameof(OccurrenceId))]
+[Index(nameof(BatchId), nameof(Sequence))]
+/// <summary>
+/// Represents membership of an occurrence in a durable job batch.
+/// </summary>
+public class JobBatchOccurrence
+{
+    /// <summary>
+    /// Gets or sets the batch occurrence link identifier.
+    /// </summary>
+    [Key]
+    public Guid BatchOccurrenceId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the batch identifier.
+    /// </summary>
+    [Required]
+    [MaxLength(256)]
+    public string BatchId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the child occurrence identifier.
+    /// </summary>
+    [Required]
+    public Guid OccurrenceId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the projected child occurrence status.
+    /// </summary>
+    [Required]
+    public JobOccurrenceStatus ChildStatus { get; set; }
+
+    /// <summary>
+    /// Gets or sets the optional sequence value within the batch.
+    /// </summary>
+    public int? Sequence { get; set; }
+
+    /// <summary>
+    /// Gets or sets the optional source step.
+    /// </summary>
+    [MaxLength(256)]
+    public string SourceStep { get; set; }
+
+    /// <summary>
+    /// Gets or sets the creation timestamp.
+    /// </summary>
+    [Required]
+    public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
+
+    /// <summary>
+    /// Gets or sets the last update timestamp.
+    /// </summary>
+    [Required]
+    public DateTimeOffset UpdatedDate { get; set; } = DateTimeOffset.UtcNow;
 }
 
 [Table("__Jobs_Executions")]
@@ -4190,6 +4956,8 @@ Indexing requirements:
 - `JobLease.OccurrenceId` must be unique so only one active lease row can own an occurrence.
 - `JobOccurrence.OccurrenceKey` must be unique and deterministic for trigger materialization idempotency.
 - Job and trigger runtime-state indexes must support registration reconciliation, orphan detection, operational enable/disable overrides and next-due projections.
+- Batch indexes must support listing active batches by status, finding child links by batch id, finding batch membership by occurrence id and ordering child links by sequence.
+- Dependency indexes must support finding unresolved prerequisites for a dependent occurrence and finding dependents to release or fail when a prerequisite reaches a terminal state.
 - Occurrence, execution and history archive indexes must support retention and purge scans without walking the active working set.
 - Execution and history indexes must support detail timelines, retry diagnostics and retention/purge scans.
 - The execution completed-time index must support previous-success lookup without scanning all executions for a job.
@@ -4209,6 +4977,9 @@ public class AppDbContext : DbContext,
     public DbSet<JobRuntimeState> JobRuntimeStates { get; set; }
     public DbSet<JobTriggerRuntimeState> JobTriggerRuntimeStates { get; set; }
     public DbSet<JobOccurrence> JobOccurrences { get; set; }
+    public DbSet<JobOccurrenceDependency> JobOccurrenceDependencies { get; set; }
+    public DbSet<JobBatch> JobBatches { get; set; }
+    public DbSet<JobBatchOccurrence> JobBatchOccurrences { get; set; }
     public DbSet<JobExecution> JobExecutions { get; set; }
     public DbSet<JobExecutionHistory> JobExecutionHistory { get; set; }
     public DbSet<JobLease> JobLeases { get; set; }
@@ -4283,7 +5054,7 @@ trigger.Cron(CronExpressions.WeekdaysAt(hour: 8, minute: 0));
 trigger.Cron(CronExpressions.MonthlyOnFirstDayAt(hour: 7, minute: 0));
 ```
 
-Invalid field counts and unsupported cron tokens should fail during registration or startup configuration validation rather than at execution time. Invalid cron configuration should return a validation `Result` for dynamic registration and should fail scheduler startup for startup configuration.
+Invalid field counts and unsupported cron tokens should fail during registration or startup configuration validation rather than at execution time. Invalid cron configuration should fail scheduler startup for code/appsettings configuration.
 
 ### Cron Engine Abstraction
 
@@ -4356,7 +5127,7 @@ public class GenerateInvoiceJob(
     : JobBase<InvoicePaidJobRequest>
 {
     public override async Task<Result> ExecuteAsync(
-        JobExecutionContext<InvoicePaidJobRequest> ctx,
+        IJobExecutionContext<InvoicePaidJobRequest> ctx,
         CancellationToken cancellationToken = default)
     {
         await messageBroker.Publish(
@@ -4386,38 +5157,30 @@ These integrations should use public feature abstractions only. They should not 
 
 Appendix A expands the outbound integration requirements for Queueing, Messaging, Requester, Notifier, Orchestration, built-in maintenance jobs, Pipeline and the xUnit harness.
 
-### Dynamic Registration and Management
+### Trigger Management
 
-Runtime trigger changes should use public application services that mirror the fluent model, but they must still respect the source-of-truth boundary.
+Triggers are registered by the host from code during application startup. The Jobs feature must not persist trigger definitions or let runtime management APIs create, update or delete trigger definitions in the database. Code is the leading source of truth for job and trigger shape.
 
-Dynamic trigger registration is allowed only for an active registered job. If dynamic registrations are persisted, they should be treated as an explicit dynamic-registration source that participates in the active registration model during reconciliation. They must not be confused with ordinary runtime state rows. Removing the owning job registration makes any persisted dynamic trigger inactive until the job is registered again or the dynamic trigger is deleted.
+Runtime management APIs may change operational state for code-registered jobs and triggers:
 
-```csharp
-var result = await jobScheduler.RegisterTriggerAsync(
-    jobName: "account-digest",
-    triggerName: "customer-requested",
-    configure: trigger => trigger
-        .At(request.ExecuteAt)
-        .Data(new AccountDigestRequest(DigestKind.CustomerRequested)),
-    cancellationToken);
-```
-
-Management APIs should expose the same concepts:
-
-- register, update, enable, disable, and delete triggers
-- pause, resume, cancel, retry, and manually dispatch occurrences
-- inspect active job definitions, active trigger definitions, runtime state, executions, leases, and history
+- enable or disable a registered job or trigger through runtime-state overrides
+- pause or resume a registered job, trigger or occurrence
+- manually dispatch a registered job through a registered manual trigger
+- cancel, interrupt, retry or archive materialized occurrences
+- inspect active job definitions, active trigger definitions, runtime state, executions, leases and history
 - return `Result`/`Result<T>` for recoverable validation and lifecycle failures
+
+If an application needs request-driven or user-created scheduling, the host application should persist that business intent in its own domain/application storage and register a stable code-defined job/trigger that reads those records. Scheduler persistence still owns only scheduler runtime state, occurrences, leases and history.
 
 ### Previous Run Context
 
-Jobs should not need to query the scheduler store directly to calculate deltas. The runtime should hydrate previous run information into `JobExecutionContext` before invoking the job.
+Jobs should not need to query the scheduler store directly to calculate deltas. The runtime should hydrate previous run information into `IJobExecutionContext` before invoking the job.
 
 ```csharp
 public class SyncCustomersJob(ICustomerRepository customers) : JobBase
 {
     public override async Task<Result> ExecuteAsync(
-        JobExecutionContext ctx,
+        IJobExecutionContext ctx,
         CancellationToken cancellationToken = default)
     {
         var changedSince = ctx.PreviousSuccessfulExecution?.CompletedUtc
@@ -4438,11 +5201,11 @@ public class SyncCustomersJob(ICustomerRepository customers) : JobBase
 
 The context should distinguish between:
 
-- `PreviousExecution`: the immediately preceding attempt for the same job/trigger identity
-- `PreviousSuccessfulExecution`: the most recent successful execution for delta processing
+- `PreviousExecution`: the immediately preceding attempt for the same occurrence, populated for retry attempts
+- `PreviousSuccessfulExecution`: the most recent successful execution for the same job/trigger identity before the current occurrence
 - current execution metadata such as execution id, job name, trigger name, started UTC, correlation id, data, and scheduler instance id
 
-For jobs with multiple triggers, previous execution lookup should be scoped by job and trigger by default. A job-level lookup can be exposed separately for scenarios that need the latest successful execution across all triggers for the same job.
+For jobs with multiple triggers, previous successful execution lookup should be scoped by job and trigger by default. A job-level lookup can be exposed separately for scenarios that need the latest successful execution across all triggers for the same job.
 
 ### Appsettings Merge Rules
 
@@ -4452,12 +5215,12 @@ Recommended merge behavior:
 
 1. Register jobs and triggers from code.
 2. Load matching appsettings entries by job name and trigger name.
-3. Apply appsettings values for job enabled state, trigger enabled state, schedules, priority, retry settings, and host targeting.
+3. Apply appsettings values for job enabled state, trigger enabled state, schedules, priority, retry settings and host targeting to matching code registrations.
 4. Resolve the active job and trigger definition model.
 5. Reconcile active definitions with persisted runtime state by job name and trigger name.
 6. Apply operational runtime-state overrides only to active registered jobs and triggers.
 7. Mark persisted runtime-state rows with no matching active registration as orphaned/stale.
-8. Fail fast for unknown job names in appsettings, duplicate trigger names, invalid cron expressions, invalid lease settings, and unsupported trigger types.
+8. Fail fast for unknown job names in appsettings, unknown trigger names in appsettings, duplicate trigger names in code registration, invalid cron expressions, invalid lease settings and unsupported trigger types.
 
 Example:
 
@@ -4493,7 +5256,7 @@ Example:
 - If no display name is configured, validation must resolve the display name from the optional module name and dashified job type name.
 - If no group is configured, validation must resolve the group to `DEFAULT`.
 - Trigger names must be unique within a job.
-- A job must have at least one trigger unless it is registered as manual-only through runtime APIs.
+- A job must have at least one code-registered trigger; manual-only jobs register a manual trigger in code.
 - Job context data, trigger data and metadata must be serializable by the configured scheduler serializer.
 - Durable triggers must have deterministic persisted identifiers.
 - Lease settings must be valid before the scheduler starts.
@@ -4527,7 +5290,7 @@ All integrations must preserve the core Jobs contracts:
 
 ### Low-Coupling Abstraction Placement
 
-Some job abstractions should move below `Application.Jobs` so other devkit features can depend on job concepts without depending on the scheduler runtime.
+The minimal job execution contracts belong below `Application.Jobs` so other devkit features can depend on job concepts without depending on the scheduler runtime.
 
 The target dependency shape is:
 
@@ -4538,17 +5301,25 @@ The target dependency shape is:
 - provider packages own durable implementations, for example `Infrastructure.EntityFramework.Jobs`
 - presentation packages own operational endpoints and optional dashboard assets
 
-Candidates for `Common.Abstractions`:
+`Common.Abstractions` should own:
 
 - `IJob`
 - `IJob<TData>`
 - `IJobExecutionContext`
 - `IJobExecutionContext<TData>`
 - `IJobDataMapper<TSource, TData>`
-- lightweight job identity models such as `JobName`, `JobTriggerName`, `JobOccurrenceId`
 - status enums such as `JobOccurrenceStatus` and `JobExecutionStatus` if they are returned by cross-feature APIs
 
-`JobBase` may remain in `Application.Jobs` if it contains scheduler conveniences, context helpers or behavior-pipeline assumptions. It can move to a lower-level package only if it remains free of scheduler runtime, storage, hosting and provider dependencies.
+The `IJob` and `IJob<TData>` method signatures must depend only on `IJobExecutionContext`/`IJobExecutionContext<TData>` and other Common abstractions. They must not require concrete `Application.Jobs` context classes, provider contracts, hosting services or storage types.
+
+`Application.Jobs` should own:
+
+- `JobBase` and `JobBase<TData>` when they contain scheduler conveniences, context helpers or behavior-pipeline assumptions
+- concrete `JobExecutionContext` implementations
+- trigger builders and scheduler registration builders
+- scheduler services, query services, runtime stores, hosted services and provider abstractions
+
+`JobBase` can move to a lower-level package only if it remains free of scheduler runtime, storage, hosting and provider dependencies.
 
 The low-level abstractions must not reference:
 
@@ -4574,7 +5345,7 @@ Typical outbound job integrations include:
 - start an orchestration (orchestration)
 - execute a Pipeline (pipeline)
 
-These integrations should use the public abstractions of the target feature and map `JobExecutionContext<TData>` into the target payload, and into target-specific metadata only where that target feature exposes a clear metadata surface.
+These integrations should use the public abstractions of the target feature and map `IJobExecutionContext<TData>` into the target payload, and into target-specific metadata only where that target feature exposes a clear metadata surface.
 
 ### Declarative Integration Jobs
 
@@ -4708,9 +5479,9 @@ Pseudo implementation:
 ```csharp
 public record SendRequestJobOptions<TData, TRequest, TResponse>
 {
-    public required Func<JobExecutionContext<TData>, TRequest> RequestFactory { get; init; }
+    public required Func<IJobExecutionContext<TData>, TRequest> RequestFactory { get; init; }
 
-    public Action<JobExecutionContext<TData>, TResponse>? MapResult { get; init; }
+    public Action<IJobExecutionContext<TData>, TResponse>? MapResult { get; init; }
 
     public Func<TResponse, Result>? SuccessEvaluator { get; init; }
 }
@@ -4721,7 +5492,7 @@ public class SendRequestJob<TData, TRequest, TResponse>(
     : JobBase<TData>
 {
     public override async Task<Result> ExecuteAsync(
-        JobExecutionContext<TData> context,
+        IJobExecutionContext<TData> context,
         CancellationToken cancellationToken = default)
     {
         if (requester == null)
@@ -4753,11 +5524,11 @@ public class SendRequestJob<TData, TRequest, TResponse>(
 }
 ```
 
-Conceptually, `WithRequestSendJob<TRequest>(...)` and `WithRequest(...)` close and configure a typed implementation like the pseudo code above. The same pattern should apply across the integration family: the target request, message, notification, pipeline, or orchestration type belongs on the `With...Job<...>(...)` registration method, while the inner fluent builder focuses on mapping `JobExecutionContext<TData>` into that already-declared target shape. The simple requester fluent shape should assume the common `Result` response contract by default, while additional overloads may support explicit `TResponse` and result mapping when a request returns richer typed data. `WithCommandJob<TCommand>(...)` should be treated as a thin semantic alias over `WithRequestSendJob<TRequest>(...)`, and `WithCommand(...)` should be treated as a thin alias over `WithRequest(...)`. The alias exists for readability and intent, not for a different runtime model. Jobs are activated through DI. Optional outbound integration dependencies may therefore be injected as nullable or otherwise optional constructor parameters so the application can compose without every integration present. When a job actually executes an integration path and the required target abstraction is missing, the job must fail with a clear error through the normal job failure path. The public surface should prefer integration-specific registration methods such as `WithRequestSendJob<TRequest>(...)`, `WithMessagingPublishJob<TMessage>(...)`, `WithQueueingSendJob<TQueueMessage>(...)`, `WithNotificationPublishJob<TNotification>(...)`, `WithPipelineExecuteJob<TPipeline, TPipelineContext>(...)`, and `WithOrchestrationExecuteJob<TOrchestration, TOrchestrationData>(...)` because they read as first-class devkit capabilities instead of generic jobs with a special implementation type behind them. Other integration jobs should follow the same pattern: fluent configuration at registration time, typed payload factory at runtime, and feature-specific execution logic behind the scenes.
+Conceptually, `WithRequestSendJob<TRequest>(...)` and `WithRequest(...)` close and configure a typed implementation like the pseudo code above. The same pattern should apply across the integration family: the target request, message, notification, pipeline, or orchestration type belongs on the `With...Job<...>(...)` registration method, while the inner fluent builder focuses on mapping `IJobExecutionContext<TData>` into that already-declared target shape. The simple requester fluent shape should assume the common `Result` response contract by default, while additional overloads may support explicit `TResponse` and result mapping when a request returns richer typed data. `WithCommandJob<TCommand>(...)` should be treated as a thin semantic alias over `WithRequestSendJob<TRequest>(...)`, and `WithCommand(...)` should be treated as a thin alias over `WithRequest(...)`. The alias exists for readability and intent, not for a different runtime model. Jobs are activated through DI. Optional outbound integration dependencies may therefore be injected as nullable or otherwise optional constructor parameters so the application can compose without every integration present. When a job actually executes an integration path and the required target abstraction is missing, the job must fail with a clear error through the normal job failure path. The public surface should prefer integration-specific registration methods such as `WithRequestSendJob<TRequest>(...)`, `WithMessagingPublishJob<TMessage>(...)`, `WithQueueingSendJob<TQueueMessage>(...)`, `WithNotificationPublishJob<TNotification>(...)`, `WithPipelineExecuteJob<TPipeline, TPipelineContext>(...)`, and `WithOrchestrationExecuteJob<TOrchestration, TOrchestrationData>(...)` because they read as first-class devkit capabilities instead of generic jobs with a special implementation type behind them. Other integration jobs should follow the same pattern: fluent configuration at registration time, typed payload factory at runtime, and feature-specific execution logic behind the scenes.
 
 These helpers should keep integration work explicit in the job definition:
 
-- the outbound payload is built from `JobExecutionContext<TData>`
+- the outbound payload is built from `IJobExecutionContext<TData>`
 - builders should primarily support constructing the outbound payload directly from context, for example through `Request(context => ...)`, `Notification(context => ...)`, `Message(context => ...)`, or equivalent integration-specific factories
 - builders may additionally support mutating a pre-created payload through hooks such as `MapToRequest(...)`, `MapToNotification(...)`, `MapToMessage(...)`, `MapToQueueMessage(...)`, `MapToPipelineContext(...)`, and `MapToOrchestrationData(...)` when that is useful
 - target-specific metadata mapping is optional and should only be exposed where the target abstraction has a clear metadata surface; the primary required contract is context-to-payload construction
@@ -4842,7 +5613,7 @@ public class PublishInvoicePaidJob(IMessageBroker broker)
     : JobBase<InvoicePaidJobData>
 {
     public override async Task<Result> ExecuteAsync(
-        JobExecutionContext<InvoicePaidJobData> ctx,
+        IJobExecutionContext<InvoicePaidJobData> ctx,
         CancellationToken cancellationToken = default)
     {
         var message = new InvoicePaidMessage
@@ -4889,7 +5660,7 @@ public class QueueInvoiceProcessingJob(IQueueBroker broker)
     : JobBase<QueueInvoiceProcessingData>
 {
     public override async Task<Result> ExecuteAsync(
-        JobExecutionContext<QueueInvoiceProcessingData> ctx,
+        IJobExecutionContext<QueueInvoiceProcessingData> ctx,
         CancellationToken cancellationToken = default)
     {
         var message = new GenerateInvoiceQueueMessage
@@ -4940,7 +5711,7 @@ public class StartCustomerSyncJob(IRequester requester)
     : JobBase<StartCustomerSyncJobData>
 {
     public override async Task<Result> ExecuteAsync(
-        JobExecutionContext<StartCustomerSyncJobData> ctx,
+        IJobExecutionContext<StartCustomerSyncJobData> ctx,
         CancellationToken cancellationToken = default)
     {
         var result = await requester.SendAsync<StartCustomerSyncCommand, Result>(
@@ -4988,7 +5759,7 @@ public class PublishCustomerReviewedNotificationJob(INotifier notifier)
     : JobBase<CustomerReviewedJobData>
 {
     public override async Task<Result> ExecuteAsync(
-        JobExecutionContext<CustomerReviewedJobData> ctx,
+        IJobExecutionContext<CustomerReviewedJobData> ctx,
         CancellationToken cancellationToken = default)
     {
         var notification = new CustomerReviewedNotification
@@ -5037,7 +5808,7 @@ public class ExecuteOrderSyncPipelineJob(IPipelineFactory pipelines)
     : JobBase<OrderSyncJobData>
 {
     public override async Task<Result> ExecuteAsync(
-        JobExecutionContext<OrderSyncJobData> ctx,
+        IJobExecutionContext<OrderSyncJobData> ctx,
         CancellationToken cancellationToken = default)
     {
         var context = new OrderSyncPipelineContext
@@ -5090,7 +5861,7 @@ public class StartOrderFulfillmentJob(IOrchestrationService orchestrations)
     : JobBase<StartOrderFulfillmentJobData>
 {
     public override async Task<Result> ExecuteAsync(
-        JobExecutionContext<StartOrderFulfillmentJobData> ctx,
+        IJobExecutionContext<StartOrderFulfillmentJobData> ctx,
         CancellationToken cancellationToken = default)
     {
         var result = await orchestrations.DispatchAsync<OrderFulfillmentOrchestration, OrderFulfillmentData>(
@@ -5116,7 +5887,7 @@ Requirements:
 - successful orchestration dispatch results may be mapped into job messages or execution metadata when the configured default job supports that shape
 - if orchestration services are not registered or dispatch fails, the job execution fails with an error
 
-### Built-In Devkit Maintenance Jobs
+### Built-In Maintenance Jobs
 
 The Jobs feature should ship or enable a catalog of built-in maintenance jobs for devkit infrastructure. These jobs should be opt-in, named consistently, module-aware where applicable, and safe to run across multiple nodes through normal scheduler leases.
 
@@ -5135,34 +5906,17 @@ Proposed maintenance jobs:
 
 | Job | Purpose |
 | --- | ------- |
-| `jobs-archive-completed-occurrences` | Archives completed, failed or cancelled job occurrences after a retention window. |
+| `jobs-archive-occurrences` | Archives completed, failed or cancelled job occurrences after a retention window. |
 | `jobs-purge-history` | Purges archived job execution history older than a configured retention period. |
 | `jobs-release-expired-leases` | Releases or repairs expired scheduler leases after verifying provider ownership. |
 | `jobs-recover-stuck-occurrences` | Moves abandoned due/running occurrences back to a recoverable state according to policy. |
 | `jobs-detect-orphaned-runtime-state` | Reports or marks runtime-state rows whose registrations no longer exist. |
-| `messaging-archive-processed-messages` | Archives processed broker messages after a retention window. |
-| `messaging-retry-failed-messages` | Requeues or retries failed broker messages according to messaging policy. |
-| `messaging-purge-archived-messages` | Purges archived broker messages after retention. |
-| `messaging-recover-stuck-handler-states` | Repairs broker message handler states that are locked or processing past timeout. |
-| `queueing-archive-processed-messages` | Archives completed queue messages after retention. |
-| `queueing-retry-failed-messages` | Retries failed queue messages according to queue policy. |
-| `queueing-purge-archived-messages` | Purges archived queue messages after retention. |
-| `queueing-release-expired-locks` | Repairs queue message locks that expired while still marked as processing. |
-| `orchestration-archive-terminal-instances` | Archives completed, failed, cancelled or terminated orchestration instances after retention. |
-| `orchestration-purge-history` | Purges archived orchestration history, signals and timers after retention. |
-| `orchestration-release-expired-leases` | Repairs orchestration leases that expired while an instance was still owned. |
-| `orchestration-detect-stale-waits` | Finds orchestration instances waiting longer than configured thresholds and optionally signals or reports them. |
-| `storage-cleanup-temporary-files` | Deletes temporary files from configured storage providers after retention. |
-| `storage-archive-old-files` | Moves old files to an archive provider or archive path. |
-| `logentries-purge-old-entries` | Purges or archives retained log entries after retention. |
-| `outbox-dispatch-pending-events` | Dispatches pending outbox events when the owning feature exposes an outbox contract. |
-| `outbox-recover-stuck-dispatches` | Repairs outbox records stuck in processing state. |
 
 Acceptance criteria:
 
 - Given a maintenance job is registered, when it runs on multiple nodes, then lease rules prevent duplicate mutation of the same scheduler occurrence.
 - Given dry-run mode is enabled, when the job executes, then it records what would be changed without mutating target data.
-- Given a batch limit is configured, when more records match, then the job processes at most the configured batch and records continuation metadata.
+- Given a batch limit is configured, when more records match, then the job processes at most the configured batch and records remaining-work metadata.
 
 ### XUnit Harness Integration
 
@@ -5228,7 +5982,7 @@ Appsettings may configure:
 - dry-run mode for maintenance jobs
 - host targeting for expensive jobs
 
-Appsettings must not create active jobs or triggers unless a code registration or explicit dynamic registration source exists.
+Appsettings must not create active jobs or triggers. Every appsettings job or trigger entry must match a code-registered job or trigger.
 
 ### Integration Security and Operations
 

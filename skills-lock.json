@@ -1,6 +1,12 @@
 {
   "version": 1,
   "skills": {
+    "create-implementation-plan": {
+      "source": "github/awesome-copilot",
+      "sourceType": "github",
+      "skillPath": "skills/create-implementation-plan/SKILL.md",
+      "computedHash": "4764bacd34af8e5c27a85ca01a90197afcf1f1ed1785975ba91d9b80dff60e2d"
+    },
     "revealjs": {
       "source": "ryanbbrown/revealjs-skill",
       "sourceType": "github",

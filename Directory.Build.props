@@ -62,10 +62,10 @@
     <ItemGroup>
         <PackageReference Include="Ensure.That"/>
         <PackageReference Include="MinVer" PrivateAssets="All"/>
-        <PackageReference Include="Microsoft.Net.Compilers.Toolset">
+        <!--<PackageReference Include="Microsoft.Net.Compilers.Toolset">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+        </PackageReference>-->
 
     </ItemGroup>
 

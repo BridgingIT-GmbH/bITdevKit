@@ -133,5 +133,26 @@ public class CoreAdminEndpoints : EndpointsBase
             .Produces(StatusCodes.Status403Forbidden)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
+
+        // DELETE /api/core/admin/users/{userId}
+        var usersGroup = app
+            .MapGroup("api/core/admin/users")
+            .RequireAuthorization(policy => policy.RequireRole("CoreAdmin"))
+            .WithTags("Core.Admin");
+
+        usersGroup.MapDelete("/{userId}",
+            async ([FromServices] IRequester requester,
+                   [FromRoute] string userId,
+                   CancellationToken ct)
+                => (await requester
+                    .SendAsync(new AdminUserDeleteCommand(userId), cancellationToken: ct))
+                    .MapHttpNoContent())
+            .WithName("Core.Admin.Users.Delete")
+            .WithDescription("Hard-deletes a user and all associated data.")
+            .Produces(StatusCodes.Status204NoContent)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status403Forbidden)
+            .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
     }
 }

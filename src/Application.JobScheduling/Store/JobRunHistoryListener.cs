@@ -117,8 +117,10 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
         TypedLogger.LogJobStarting(this.logger, Constants.LogKey, jobKey.Name, jobKey.Group, entryId);
 
         var jobDataMap = new JobDataMap(context.JobDetail.JobDataMap.Count + context.Trigger.JobDataMap.Count);
+#pragma warning disable CS0618 // Type or member is obsolete
         jobDataMap.PutAll(context.JobDetail.JobDataMap);
         jobDataMap.PutAll(context.Trigger.JobDataMap);
+#pragma warning restore CS0618 // Type or member is obsolete
 
         var jobRun = new JobRun
         {
@@ -195,8 +197,10 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
         TypedLogger.LogJobCompleted(this.logger, Constants.LogKey, jobKey.Name, jobKey.Group, entryId, status);
 
         var jobDataMap = new JobDataMap(context.JobDetail.JobDataMap.Count + context.Trigger.JobDataMap.Count);
+#pragma warning disable CS0618 // Type or member is obsolete
         jobDataMap.PutAll(context.JobDetail.JobDataMap);
         jobDataMap.PutAll(context.Trigger.JobDataMap);
+#pragma warning restore CS0618 // Type or member is obsolete
 
         var jobRun = new JobRun
         {

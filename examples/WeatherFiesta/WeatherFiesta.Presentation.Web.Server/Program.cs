@@ -41,13 +41,14 @@ builder.Services.AddNotifier()
 
 builder.Services.AddMapping().WithMapster();
 
-// Configure Authentication ==============================
+// ===============================================================================================
+// Configure Authentication
 builder.Services.AddScoped<ICurrentUserAccessor, HttpCurrentUserAccessor>();
 builder.Services
     .AddJwtBearerAuthentication(builder.Configuration)
     .AddCookieAuthentication();
 
-// Identity Provider (fake for development)
+// Identity Provider ==============================================================================
 builder.Services.AddFakeIdentityProvider(o => o
     .Enabled(builder.Environment.IsDevelopment())
     .WithUsers(FakeUsers.Starwars)
@@ -61,9 +62,10 @@ builder.Services.AddFakeIdentityProvider(o => o
     .WithClient("Scalar", "scalar", $"{builder.Configuration["Authentication:Authority"]}/scalar/"));
 
 builder.Services.AddEndpoints<SystemEndpoints>();
-MetricsServiceCollectionExtensions.AddMetrics(
-    builder.Services,
-    options => options
+
+// ===============================================================================================
+// Configure Metrics and Telemetry
+builder.Services.AddMetrics(o => o
         .Enabled()
         .AddEndpoints());
 builder.Services.AddAppOpenTelemetry(builder.Configuration, builder.Environment);

@@ -130,6 +130,9 @@ public class CoreModule : WebModuleBase
         services.AddTransient<IConsoleCommand, CityListConsoleCommand>();
         services.AddTransient<IConsoleCommand, CityCurrentConsoleCommand>();
         services.AddTransient<IConsoleCommand, CityForecastConsoleCommand>();
+        services.AddTransient<IConsoleCommand, CityCreateConsoleCommand>();
+        services.AddTransient<IConsoleCommand, CityDeleteConsoleCommand>();
+        services.AddTransient<IConsoleCommand, CityResetConsoleCommand>();
 
         // Endpoints
         services.AddEndpoints<CoreCityEndpoints>();

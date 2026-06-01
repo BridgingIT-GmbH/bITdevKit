@@ -8,12 +8,6 @@
         "resolved": "10.1.0",
         "contentHash": "rzTMSs0lQnu0WsesvTjs/zDzqiZXb9r5dv+wFQcPg/iIZqXb5BzwpIWEwi8Q3HA0TS4ytRcY129aSek6IzuOmA=="
       },
-      "Microsoft.Net.Compilers.Toolset": {
-        "type": "Direct",
-        "requested": "[5.3.0, )",
-        "resolved": "5.3.0",
-        "contentHash": "7TEP2rSGCvP7Y1H/Koktzt5xCkf/PWzbTmiDVxztkLTvTeZbj99LgpSjogWEZRpgOTAHlVJK9VfOAxrVKcR5pw=="
-      },
       "MinVer": {
         "type": "Direct",
         "requested": "[7.0.0, )",
@@ -121,13 +115,13 @@
       },
       "MessagePack.Annotations": {
         "type": "Transitive",
-        "resolved": "3.1.4",
-        "contentHash": "aVWrDAkCdqxwQsz/q0ldPh2EFn48M99YUzE9OvZjMq2RNLKz4o2z88iGFvSvbMqOWRweRvKPHBJZe22PRqzslQ=="
+        "resolved": "3.1.6",
+        "contentHash": "d0r/B7v1frvN6ElIgp5J5/cHeLADOK21qieHutimUpCWGcjhzOJV9glrItZO4E3dUcriMKX3Swsee3rFx9ouOw=="
       },
       "MessagePackAnalyzer": {
         "type": "Transitive",
-        "resolved": "3.1.4",
-        "contentHash": "CTaSsN/liJ7MhLCAB7Z4ZLBNuVGCq9lt2BT/cbrc9vzGv89yK3CqIA+z9T19a11eQYl9etZHL6MQJgCqECRVpg=="
+        "resolved": "3.1.6",
+        "contentHash": "7Ewqh8D5dAnF4XWy0q76eYFdNLIpDvQqLQOTfrWAGA35ARUB65mrrIES+J5Kw2FVwZGTjudeWh2FB89TC4YMyg=="
       },
       "Microsoft.Extensions.DependencyModel": {
         "type": "Transitive",
@@ -151,6 +145,11 @@
         "dependencies": {
           "Serilog": "4.2.0"
         }
+      },
+      "Spectre.Console.Ansi": {
+        "type": "Transitive",
+        "resolved": "0.55.2",
+        "contentHash": "tN3KEJQQZwLW9HJnG5YTSAxfBwxsmg1wVuGvhGG2rM+pbl+NGaHU8pDcNofPlOXlgpkbpBMxI5t9o9qPfy3sHQ=="
       },
       "BridgingIT.DevKit.Common.Abstractions": {
         "type": "Project",
@@ -180,7 +179,7 @@
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
           "CsvHelper": "[33.1.0, )",
           "Ensure.That": "[10.1.0, )",
-          "MessagePack": "[3.1.4, )",
+          "MessagePack": "[3.1.6, )",
           "Newtonsoft.Json": "[13.0.4, )"
         }
       },
@@ -204,7 +203,7 @@
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
-          "Spectre.Console": "[0.54.0, )"
+          "Spectre.Console": "[0.55.2, )"
         }
       },
       "CsvHelper": {
@@ -227,12 +226,12 @@
       },
       "MessagePack": {
         "type": "CentralTransitive",
-        "requested": "[3.1.4, )",
-        "resolved": "3.1.4",
-        "contentHash": "BH0wlHWmVoZpbAPyyt2Awbq30C+ZsS3eHSkYdnyUAbqVJ22fAJDzn2xTieBeoT5QlcBzp61vHcv878YJGfi3mg==",
+        "requested": "[3.1.6, )",
+        "resolved": "3.1.6",
+        "contentHash": "c5M8C0Lrf6GdGiv01OCB86WEL5YDi7UdH5qsU+q7Q9WvqlhtE4kkJzzJpFufPbz+OULX8FGIB2qo/7CLQ6vizg==",
         "dependencies": {
-          "MessagePack.Annotations": "3.1.4",
-          "MessagePackAnalyzer": "3.1.4",
+          "MessagePack.Annotations": "3.1.6",
+          "MessagePackAnalyzer": "3.1.6",
           "Microsoft.NET.StringTools": "17.11.4"
         }
       },
@@ -268,9 +267,12 @@
       },
       "Spectre.Console": {
         "type": "CentralTransitive",
-        "requested": "[0.54.0, )",
-        "resolved": "0.54.0",
-        "contentHash": "StDXCFayfy0yB1xzUHT2tgEpV1/HFTiS4JgsAQS49EYTfMixSwwucaQs/bIOCwXjWwIQTMuxjUIxcB5XsJkFJA=="
+        "requested": "[0.55.2, )",
+        "resolved": "0.55.2",
+        "contentHash": "yc0g12YJpmZHofGJLTQX02/uqfzJ6XHRx6pe9rANNjleQptXMHPxD9KI2/DWkXiJWddc+4oizEdGox15c89hhw==",
+        "dependencies": {
+          "Spectre.Console.Ansi": "0.55.2"
+        }
       }
     }
   }

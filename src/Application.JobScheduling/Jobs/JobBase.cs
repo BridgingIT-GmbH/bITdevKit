@@ -145,6 +145,7 @@ public abstract partial class JobBase : IJob
             }
             this.ElapsedMilliseconds = elapsedMilliseconds;
 
+#pragma warning disable CS0618 // Type or member is obsolete
             context.Trigger.JobDataMap.Put(Constants.CorrelationIdKey, context.Get(Constants.CorrelationIdKey));
             context.Trigger.JobDataMap.Put(Constants.FlowIdKey, context.Get(Constants.FlowIdKey));
             context.Trigger.JobDataMap.Put(Constants.TriggeredByKey, context.Get(Constants.TriggeredByKey));
@@ -153,6 +154,7 @@ public abstract partial class JobBase : IJob
             context.Trigger.JobDataMap.Put(nameof(this.RunDate), this.RunDate);
             context.Trigger.JobDataMap.Put(nameof(this.RunSuccessDate), this.RunSuccessDate);
             context.Trigger.JobDataMap.Put(nameof(this.ElapsedMilliseconds), this.ElapsedMilliseconds);
+#pragma warning restore CS0618 // Type or member is obsolete
 
             foreach (var key in this.Data.Keys)
             {
@@ -161,7 +163,9 @@ public abstract partial class JobBase : IJob
                     context.Trigger.JobDataMap.Remove(key);
                 }
 
+#pragma warning disable CS0618 // Type or member is obsolete
                 context.Trigger.JobDataMap.Put(key, this.Data[key]);
+#pragma warning restore CS0618 // Type or member is obsolete
             }
 
             // Persist Trigger.JobDataMap changes by updating the trigger
@@ -175,11 +179,13 @@ public abstract partial class JobBase : IJob
             //await context.Scheduler.RescheduleJob(context.Trigger.Key, updatedTrigger);
             await Task.Delay(0); // Simulate async operation, replace with actual rescheduling if needed
 
+#pragma warning disable CS0618 // Type or member is obsolete
             context.JobDetail.JobDataMap.Put("Last" + nameof(this.Status), this.Status.ToString());
             context.JobDetail.JobDataMap.Put("Last" + nameof(this.ErrorMessage), this.ErrorMessage);
             context.JobDetail.JobDataMap.Put("Last" + nameof(this.RunDate), this.RunDate);
             context.JobDetail.JobDataMap.Put("Last" + nameof(this.RunSuccessDate), this.RunSuccessDate);
             context.JobDetail.JobDataMap.Put("Last" + nameof(this.ElapsedMilliseconds), this.ElapsedMilliseconds);
+#pragma warning restore CS0618 // Type or member is obsolete
 
             //this.Logger.LogDebug("{LogKey} Stored Trigger.JobDataMap: {Keys}", Constants.LogKey, string.Join(", ", context.Trigger.JobDataMap.Keys));
             //this.Logger.LogDebug("{LogKey} Stored JobDetail.JobDataMap: {Keys}", Constants.LogKey, string.Join(", ", context.JobDetail.JobDataMap.Keys));

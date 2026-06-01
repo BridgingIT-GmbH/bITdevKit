@@ -24,7 +24,7 @@ public static class ProgramExtensions
              .AddDocumentTransformer(
                 new DocumentInfoTransformer(new DocumentInfoOptions
                 {
-                    Title = "WeatherFiesta API",
+                    Title = "Web API",
                     Description = "API for WeatherFiesta application.",
                 }))
              .AddSchemaTransformer<DiagnosticSchemaTransformer>()

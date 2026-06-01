@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj" />
+    <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
+    <ProjectReference Include="..\WeatherFiesta.Application\WeatherFiesta.Application.csproj" />
+    <ProjectReference Include="..\WeatherFiesta.Domain\WeatherFiesta.Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Modules\Core\EntityFramework\Migrations\" />
+  </ItemGroup>
+</Project>

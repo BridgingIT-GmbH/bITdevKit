@@ -1,0 +1,248 @@
+### ============================================================
+### WeatherFiesta API — JetBrains HTTP Client
+### ============================================================
+### Usage: Open in Rider/IntelliJ, run the login request first,
+### then run any other request. The token is captured automatically.
+### ============================================================
+
+@baseUrl = https://localhost:5001
+@token = {{login.response.body.$.access_token}}
+
+
+### ============================================================
+### AUTHENTICATION
+### ============================================================
+
+### Login — get access token (FakeIdentityProvider)
+# @name login
+POST {{baseUrl}}/api/_system/identity/connect/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&username=luke.skywalker&password=password&client_id=weatherfiesta-api&scope=openid profile email offline_access
+
+
+### ============================================================
+### CITY ENDPOINTS (api/core/cities)
+### ============================================================
+
+### City Suggestions — search via geocoding
+GET {{baseUrl}}/api/core/cities/suggestions?search=Berlin&countryCode=DE
+Authorization: Bearer {{token}}
+
+### Create City — create and subscribe
+POST {{baseUrl}}/api/core/cities
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Berlin",
+  "country": "Germany",
+  "countryCode": "DE",
+  "latitude": 52.52,
+  "longitude": 13.405,
+  "timeZone": "Europe/Berlin"
+}
+
+### List User Cities — all subscriptions with weather
+GET {{baseUrl}}/api/core/cities
+Authorization: Bearer {{token}}
+
+### Unsubscribe from City
+DELETE {{baseUrl}}/api/core/cities/{{cityId}}
+Authorization: Bearer {{token}}
+
+### Set Primary City
+PUT {{baseUrl}}/api/core/cities/{{cityId}}/primary
+Authorization: Bearer {{token}}
+
+### Reorder Cities
+PUT {{baseUrl}}/api/core/cities/reorder
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+[
+  "{{cityId1}}",
+  "{{cityId2}}",
+  "{{cityId3}}"
+]
+
+### City Weather — current + forecast
+GET {{baseUrl}}/api/core/cities/{{cityId}}/weather?forecastDays=7
+Authorization: Bearer {{token}}
+
+### Trigger Weather Ingestion
+POST {{baseUrl}}/api/core/cities/{{cityId}}/ingest
+Authorization: Bearer {{token}}
+
+
+### ============================================================
+### WEATHER ENDPOINTS (api/core/cities)
+### ============================================================
+
+### Weather Alerts — all subscribed cities
+GET {{baseUrl}}/api/core/cities/alerts
+Authorization: Bearer {{token}}
+
+### Sunrise/Sunset Data
+GET {{baseUrl}}/api/core/cities/{{cityId}}/sun?days=7
+Authorization: Bearer {{token}}
+
+### Compare Weather Across Cities
+GET {{baseUrl}}/api/core/cities/compare
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+[
+  "{{cityId1}}",
+  "{{cityId2}}"
+]
+
+### Export All Cities Weather (CSV)
+GET {{baseUrl}}/api/core/cities/export
+Authorization: Bearer {{token}}
+
+### Export City Forecast (CSV)
+GET {{baseUrl}}/api/core/cities/{{cityId}}/weather/export?days=7
+Authorization: Bearer {{token}}
+
+### Weather Recommendations
+GET {{baseUrl}}/api/core/cities/{{cityId}}/recommendations
+Authorization: Bearer {{token}}
+
+
+### ============================================================
+### USER ENDPOINTS (api/core/users)
+### ============================================================
+
+### Get User Profile
+GET {{baseUrl}}/api/core/users/me
+Authorization: Bearer {{token}}
+
+### Update User Profile
+PUT {{baseUrl}}/api/core/users/me
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "firstName": "Luke",
+  "lastName": "Skywalker",
+  "email": "luke@rebel-alliance.org"
+}
+
+### Get User Preferences
+GET {{baseUrl}}/api/core/users/preferences
+Authorization: Bearer {{token}}
+
+### Update User Preferences
+PUT {{baseUrl}}/api/core/users/preferences
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "temperatureUnit": "Celsius",
+  "windSpeedUnit": "Kmh"
+}
+
+### Delete User (soft-delete)
+DELETE {{baseUrl}}/api/core/users/me
+Authorization: Bearer {{token}}
+
+
+### ============================================================
+### DASHBOARD ENDPOINT
+### ============================================================
+
+### Get Dashboard — cities, highlights, alerts, recommendations
+GET {{baseUrl}}/api/core/dashboard
+Authorization: Bearer {{token}}
+
+
+### ============================================================
+### ADMIN ENDPOINTS (api/core/admin/cities) — CoreAdmin role required
+### ============================================================
+
+### Admin — Create City (no geocoding)
+POST {{baseUrl}}/api/core/admin/cities
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Berlin",
+  "country": "Germany",
+  "countryCode": "DE",
+  "latitude": 52.52,
+  "longitude": 13.405,
+  "timeZone": "Europe/Berlin",
+  "elevation": 34.0
+}
+
+### Admin — Update City
+PUT {{baseUrl}}/api/core/admin/cities/{{cityId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "name": "Berlin",
+  "country": "Germany",
+  "countryCode": "DE",
+  "latitude": 52.52,
+  "longitude": 13.405,
+  "timeZone": "Europe/Berlin",
+  "elevation": 34.0
+}
+
+### Admin — Delete City (hard-delete)
+DELETE {{baseUrl}}/api/core/admin/cities/{{cityId}}
+Authorization: Bearer {{token}}
+
+### Admin — List All Cities with subscription counts
+GET {{baseUrl}}/api/core/admin/cities
+Authorization: Bearer {{token}}
+
+### Admin — List City Subscriptions (incl. soft-deleted)
+GET {{baseUrl}}/api/core/admin/cities/{{cityId}}/subscriptions
+Authorization: Bearer {{token}}
+
+### Admin — Trigger Weather Ingestion (no subscription check)
+POST {{baseUrl}}/api/core/admin/cities/{{cityId}}/ingest
+Authorization: Bearer {{token}}
+
+### Admin — Reset City Weather Data
+DELETE {{baseUrl}}/api/core/admin/cities/{{cityId}}/weather
+Authorization: Bearer {{token}}
+
+
+### ============================================================
+### SUBSCRIPTION ENDPOINTS
+### ============================================================
+
+### Get Current User Subscription
+GET {{baseUrl}}/api/core/users/subscription
+Authorization: Bearer {{token}}
+
+### Admin — List All User Subscriptions
+GET {{baseUrl}}/api/core/admin/subscriptions
+Authorization: Bearer {{token}}
+
+### Admin — Get User Subscription
+GET {{baseUrl}}/api/core/admin/subscriptions/{{userId}}
+Authorization: Bearer {{token}}
+
+### Admin — Update User Subscription
+PUT {{baseUrl}}/api/core/admin/subscriptions/{{userId}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "plan": "Pro",
+  "status": "Active",
+  "billingCycle": "Monthly"
+}
+
+
+### ============================================================
+### HEALTH CHECK
+### ============================================================
+
+### Health Check
+GET {{baseUrl}}/healthz

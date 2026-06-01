@@ -1,12 +1,12 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
-    <AssemblyName>BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server</AssemblyName>
-    <RootNamespace>BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server</RootNamespace>
+    <InterceptorsNamespaces>$(InterceptorsNamespaces);Microsoft.AspNetCore.OpenApi.Generated</InterceptorsNamespaces>
+    <AssemblyName>BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server</RootNamespace>
     <IsPackable>false</IsPackable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <HotReloadAutoRestart>true</HotReloadAutoRestart>
   </PropertyGroup>
 
   <ItemGroup>
@@ -46,7 +46,6 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.SqlClient" />
     <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter" />
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
-    <PackageReference Include="MudBlazor" />
     <PackageReference Include="Scalar.AspNetCore" />
     <PackageReference Include="Serilog.AspNetCore" />
     <PackageReference Include="Serilog.Enrichers.Environment" />
@@ -61,37 +60,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Application.Messaging\Application.Messaging.csproj" />
-    <ProjectReference Include="..\..\..\src\Application.Storage.Jobs\Application.Storage.Jobs.csproj" />
-    <ProjectReference Include="..\..\..\src\Application.Storage\Application.Storage.csproj" />
-    <ProjectReference Include="..\..\..\src\Application.Utilities\Application.Utilities.csproj" />
-    <ProjectReference Include="..\..\..\src\Application.DataPorter/Application.DataPorter.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Extensions.Web\Common.Extensions.Web.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Configuration\Presentation.Configuration.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Serilog\Presentation.Serilog.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.EntityFramework\Presentation.Web.EntityFramework.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.JobScheduling\Presentation.Web.JobScheduling.csproj" />
-    <ProjectReference Include="..\..\..\src\Presentation.Web.Messaging\Presentation.Web.Messaging.csproj" />
-    <ProjectReference Include="..\..\..\src\Presentation.Web.Notifications\Presentation.Web.Notifications.csproj" />
-    <ProjectReference Include="..\..\..\src\Presentation.Web.Orchestrations\Presentation.Web.Orchestrations.csproj" />
-    <ProjectReference Include="..\..\..\src\Presentation.Web.Queueing\Presentation.Web.Queueing.csproj" />
-    <ProjectReference Include="..\..\..\src\Presentation.Web.Storage\Presentation.Web.Storage.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web\Presentation.Web.csproj" />
-    <ProjectReference Include="..\DoFiesta.Application\DoFiesta.Application.csproj" />
-    <ProjectReference Include="..\DoFiesta.Infrastructure\DoFiesta.Infrastructure.csproj" />
-    <ProjectReference Include="..\DoFiesta.Presentation.Web.Client\DoFiesta.Presentation.Web.Client.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Update="appsettings.dev.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-    <Content Update="appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
+    <ProjectReference Include="..\WeatherFiesta.Application\WeatherFiesta.Application.csproj" />
+    <ProjectReference Include="..\WeatherFiesta.Infrastructure\WeatherFiesta.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

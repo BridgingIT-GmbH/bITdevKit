@@ -256,7 +256,6 @@ app.UseRuleLogger();
 app.UseResultLogger();
 
 app.UseHttpsRedirection();
-
 app.UseProblemDetails();
 //app.UseExceptionHandler();
 

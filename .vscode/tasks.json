@@ -128,6 +128,56 @@
       "problemMatcher": "$msCompile"
     },
     {
+      "label": "WeatherFiesta - build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/WeatherFiesta.Presentation.Web.Server.csproj",
+        "--nologo",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    },
+    {
+      "label": "WeatherFiesta - watch",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "watch",
+        "run",
+        "--project",
+        "${workspaceFolder}/examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/WeatherFiesta.Presentation.Web.Server.csproj",
+        "--nologo"
+      ],
+      "isBackground": true,
+      "problemMatcher": {
+        "base": "$msCompile",
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^dotnet watch",
+          "endsPattern": "\\bwatch : Hot reload enabled\\.|\\bNow listening on:\\s+https?://"
+        }
+      }
+    },
+    {
+      "label": "WeatherFiesta - run",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "--project",
+        "${workspaceFolder}/examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/WeatherFiesta.Presentation.Web.Server.csproj",
+        "--nologo"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
       "label": "Solution - tests (unit)",
       "type": "shell",
       "command": "Get-ChildItem '${workspaceFolder}/tests' -Recurse -Filter *.csproj | Where-Object { $_.BaseName -like '*.UnitTests' -and $_.BaseName -notmatch 'EventSourcing|WeatherForecast' } | Sort-Object FullName | ForEach-Object { dotnet test $_.FullName --nologo /property:GenerateFullPaths=true /consoleloggerparameters:NoSummary; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } }",

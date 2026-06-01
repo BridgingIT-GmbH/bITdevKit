@@ -1,0 +1,55 @@
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
+
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Orchestrations;
+using DevKit.Domain.Model;
+
+/// <summary>
+/// Entity Framework Core DbContext for the WeatherFiesta Core module.
+/// Manages city, weather, user profile, and subscription entities.
+/// </summary>
+public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
+    ModuleDbContextBase(options),
+    IOutboxDomainEventContext, IOrchestrationContext
+{
+    /// <summary>Gets or sets the cities DbSet.</summary>
+    public DbSet<City> Cities { get; set; }
+
+    /// <summary>Gets or sets the user-city subscriptions DbSet.</summary>
+    public DbSet<UserCity> UserCities { get; set; }
+
+    /// <summary>Gets or sets the current weather DbSet.</summary>
+    public DbSet<CurrentWeather> CurrentWeathers { get; set; }
+
+    /// <summary>Gets or sets the weather forecasts DbSet.</summary>
+    public DbSet<WeatherForecast> WeatherForecasts { get; set; }
+
+    /// <summary>Gets or sets the user profiles DbSet.</summary>
+    public DbSet<UserProfile> UserProfiles { get; set; }
+
+    /// <summary>Gets or sets the user subscriptions DbSet.</summary>
+    public DbSet<UserSubscription> UserSubscriptions { get; set; }
+
+    /// <summary>Gets or sets the outbox domain events DbSet.</summary>
+    public DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }
+
+    public DbSet<OrchestrationInstance> OrchestrationInstances { get; set; }
+
+    public DbSet<OrchestrationHistory> OrchestrationHistory { get; set; }
+
+    public DbSet<OrchestrationSignal> OrchestrationSignals { get; set; }
+
+    public DbSet<OrchestrationTimer> OrchestrationTimers { get; set; }
+
+    /// <inheritdoc />
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // Soft-delete filtering is handled by specifications (e.g. UserCitiesByUserSpecification),
+        // not EF global query filters. This allows IncludingDeleted specs and admin queries to work.
+        base.OnModelCreating(modelBuilder);
+    }
+}

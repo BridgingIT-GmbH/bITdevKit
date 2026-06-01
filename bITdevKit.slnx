@@ -131,21 +131,19 @@
   <Folder Name="/examples/EventSourcingDemo/tests/">
     <Project Path="examples/EventSourcingDemo/tests/EventSourcingDemo.Integration.Tests/EventSourcing.IntegrationTests.csproj" />
   </Folder>
-  <Folder Name="/examples/WeatherForecast/" />
-  <Folder Name="/examples/WeatherForecast/assets/">
-    <File Path="examples/WeatherForecast/WeatherForecast-README.md" />
-    <File Path="examples/WeatherForecast/WeatherForecast-REST.http" />
+  <Folder Name="/examples/WeatherFiesta/" />
+  <Folder Name="/examples/WeatherFiesta/assets/">
+    <File Path="examples/WeatherFiesta/WeatherFiesta-README.md" />
+    <File Path="examples/WeatherFiesta/WeatherFiesta-REST.http" />
   </Folder>
-  <Folder Name="/examples/WeatherForecast/src/">
-    <Project Path="examples/WeatherForecast/WeatherForecast.Application/WeatherForecast.Application.csproj" />
-    <Project Path="examples/WeatherForecast/WeatherForecast.Domain/WeatherForecast.Domain.csproj" />
-    <Project Path="examples/WeatherForecast/WeatherForecast.Infrastructure/WeatherForecast.Infrastructure.csproj" />
-    <Project Path="examples/WeatherForecast/WeatherForecast.Presentation.Web.Client/WeatherForecast.Presentation.Web.Client.csproj" />
-    <Project Path="examples/WeatherForecast/WeatherForecast.Presentation.Web.Server/WeatherForecast.Presentation.Web.Server.csproj" />
+  <Folder Name="/examples/WeatherFiesta/src/">
+    <Project Path="examples/WeatherFiesta/WeatherFiesta.Application/WeatherFiesta.Application.csproj" />
+    <Project Path="examples/WeatherFiesta/WeatherFiesta.Domain/WeatherFiesta.Domain.csproj" />
+    <Project Path="examples/WeatherFiesta/WeatherFiesta.Infrastructure/WeatherFiesta.Infrastructure.csproj" />
+    <Project Path="examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/WeatherFiesta.Presentation.Web.Server.csproj" />
   </Folder>
-  <Folder Name="/examples/WeatherForecast/tests/">
-    <Project Path="examples/WeatherForecast/WeatherForecast.EndToEndTests/WeatherForecast.EndToEndTests.csproj" />
-    <Project Path="examples/WeatherForecast/WeatherForecast.IntegrationTests/WeatherForecast.IntegrationTests.csproj" />
+  <Folder Name="/examples/WeatherFiesta/tests/">
+    <Project Path="examples/WeatherFiesta/WeatherFiesta.IntegrationTests/WeatherFiesta.IntegrationTests.csproj" />
   </Folder>
   <Folder Name="/src/">
     <File Path="src/Directory.Build.props" />

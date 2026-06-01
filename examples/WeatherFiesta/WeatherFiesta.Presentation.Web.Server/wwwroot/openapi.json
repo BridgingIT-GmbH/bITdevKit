@@ -1,0 +1,5177 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "WeatherFiesta API",
+    "description": "API for WeatherFiesta application.",
+    "version": "v1.0"
+  },
+  "paths": {
+    "/api/_system/jobs": {
+      "get": {
+        "tags": [
+          "_System.JobScheduling"
+        ],
+        "summary": "Get all jobs",
+        "description": "Retrieves a list of all scheduled jobs.",
+        "operationId": "_System.JobScheduling.GetJobs",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JobInfo"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/{jobName}/{jobGroup}": {
+      "get": {
+        "tags": [
+          "_System.JobScheduling"
+        ],
+        "summary": "Get job details",
+        "description": "Retrieves details for a specific job.",
+        "operationId": "_System.JobScheduling.GetJob",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobGroup",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobInfo"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/{jobName}/{jobGroup}/runs": {
+      "get": {
+        "tags": [
+          "_System.JobScheduling"
+        ],
+        "summary": "Get job run history",
+        "description": "Retrieves execution history for a specific job with optional filters.",
+        "operationId": "_System.JobScheduling.GetJobRuns",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobGroup",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "priority",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "instanceName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "resultContains",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/JobRun"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "_System.JobScheduling"
+        ],
+        "summary": "Purge old job run history",
+        "description": "Purges job run history older than a specified date.",
+        "operationId": "_System.JobScheduling.PurgeJobRuns",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobGroup",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "olderThan",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/{jobName}/{jobGroup}/stats": {
+      "get": {
+        "tags": [
+          "_System.JobScheduling"
+        ],
+        "summary": "Get job run statistics",
+        "description": "Retrieves aggregated statistics for a job’s execution history.",
+        "operationId": "_System.JobScheduling.GetJobRunStats",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobGroup",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobRunStats"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/{jobName}/{jobGroup}/triggers": {
+      "get": {
+        "tags": [
+          "_System.JobScheduling"
+        ],
+        "summary": "Get job triggers",
+        "description": "Retrieves all triggers associated with a specific job.",
+        "operationId": "_System.JobScheduling.GetJobTriggers",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobGroup",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TriggerInfo"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/{jobName}/{jobGroup}/trigger": {
+      "post": {
+        "tags": [
+          "_System.JobScheduling"
+        ],
+        "summary": "Trigger job immediately",
+        "description": "Triggers a job to run immediately with optional data.",
+        "operationId": "_System.JobScheduling.TriggerJob",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobGroup",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "null"
+                  },
+                  {
+                    "type": "object"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/{jobName}/{jobGroup}/pause": {
+      "post": {
+        "tags": [
+          "_System.JobScheduling"
+        ],
+        "summary": "Pause a job",
+        "description": "Pauses the execution of a specific job.",
+        "operationId": "_System.JobScheduling.PauseJob",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobGroup",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/{jobName}/{jobGroup}/resume": {
+      "post": {
+        "tags": [
+          "_System.JobScheduling"
+        ],
+        "summary": "Resume a paused job",
+        "description": "Resumes the execution of a paused job.",
+        "operationId": "_System.JobScheduling.ResumeJob",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobGroup",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/{jobName}/{jobGroup}/interrupt": {
+      "post": {
+        "tags": [
+          "_System.JobScheduling"
+        ],
+        "summary": "Interrupt a running job",
+        "description": "Interrupts the execution of a currently running job.",
+        "operationId": "_System.JobScheduling.InterruptJob",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "jobGroup",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/cities/suggestions": {
+      "get": {
+        "tags": [
+          "Core.Cities"
+        ],
+        "summary": "Core.Cities.Suggestions",
+        "description": "Searches for city suggestions using the Open-Meteo geocoding API.",
+        "operationId": "Core.Cities.Suggestions",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "countryCode",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CitySuggestionModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/cities": {
+      "post": {
+        "tags": [
+          "Core.Cities"
+        ],
+        "summary": "Core.Cities.Create",
+        "description": "Creates a city and subscribes the current user to it.",
+        "operationId": "Core.Cities.Create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CityCreateModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CityModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Core.Cities"
+        ],
+        "summary": "Core.Cities.List",
+        "description": "Lists all city subscriptions for the current user with weather data.",
+        "operationId": "Core.Cities.List",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserCityModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/cities/{cityId}": {
+      "delete": {
+        "tags": [
+          "Core.Cities"
+        ],
+        "summary": "Core.Cities.Unsubscribe",
+        "description": "Unsubscribes the current user from a city.",
+        "operationId": "Core.Cities.Unsubscribe",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/cities/{cityId}/primary": {
+      "put": {
+        "tags": [
+          "Core.Cities"
+        ],
+        "summary": "Core.Cities.SetPrimary",
+        "description": "Sets a city as the user's primary city.",
+        "operationId": "Core.Cities.SetPrimary",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/cities/reorder": {
+      "put": {
+        "tags": [
+          "Core.Cities"
+        ],
+        "summary": "Core.Cities.Reorder",
+        "description": "Reorders the user's city subscriptions.",
+        "operationId": "Core.Cities.Reorder",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/cities/{cityId}/weather": {
+      "get": {
+        "tags": [
+          "Core.Cities"
+        ],
+        "summary": "Core.Cities.Weather",
+        "description": "Gets current weather and forecasts for a subscribed city.",
+        "operationId": "Core.Cities.Weather",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "forecastDays",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CityWeatherResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/cities/{cityId}/ingest": {
+      "post": {
+        "tags": [
+          "Core.Cities"
+        ],
+        "summary": "Core.Cities.Ingest",
+        "description": "Triggers weather data ingestion for a subscribed city.",
+        "operationId": "Core.Cities.Ingest",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/cities/alerts": {
+      "get": {
+        "tags": [
+          "Core.Weather"
+        ],
+        "summary": "Core.Weather.Alerts",
+        "description": "Gets weather alerts for all subscribed cities.",
+        "operationId": "Core.Weather.Alerts",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/CityAlertsModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/cities/{cityId}/sun": {
+      "get": {
+        "tags": [
+          "Core.Weather"
+        ],
+        "summary": "Core.Weather.Sun",
+        "description": "Gets sunrise/sunset data for a subscribed city.",
+        "operationId": "Core.Weather.Sun",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CitySunResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/cities/compare": {
+      "get": {
+        "tags": [
+          "Core.Weather"
+        ],
+        "summary": "Core.Weather.Compare",
+        "description": "Compares current weather across multiple subscribed cities.",
+        "operationId": "Core.Weather.Compare",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CityCompareResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/cities/export": {
+      "get": {
+        "tags": [
+          "Core.Weather"
+        ],
+        "summary": "Core.Weather.Export",
+        "description": "Exports current weather for all subscribed cities as CSV.",
+        "operationId": "Core.Weather.Export",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CityExportResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/cities/{cityId}/weather/export": {
+      "get": {
+        "tags": [
+          "Core.Weather"
+        ],
+        "summary": "Core.Weather.WeatherExport",
+        "description": "Exports forecast data for a specific subscribed city as CSV.",
+        "operationId": "Core.Weather.WeatherExport",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CityExportResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/cities/{cityId}/recommendations": {
+      "get": {
+        "tags": [
+          "Core.Weather"
+        ],
+        "summary": "Core.Weather.Recommendations",
+        "description": "Gets weather recommendations for a subscribed city.",
+        "operationId": "Core.Weather.Recommendations",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CityRecommendationsResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/users/me": {
+      "get": {
+        "tags": [
+          "Core.Users"
+        ],
+        "summary": "Core.Users.Profile",
+        "description": "Gets the current user's profile.",
+        "operationId": "Core.Users.Profile",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Core.Users"
+        ],
+        "summary": "Core.Users.UpdateProfile",
+        "description": "Updates the current user's profile.",
+        "operationId": "Core.Users.UpdateProfile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserProfileUpdateModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserProfileModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Core.Users"
+        ],
+        "summary": "Core.Users.Delete",
+        "description": "Soft-deletes the current user and all associated data.",
+        "operationId": "Core.Users.Delete",
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/users/preferences": {
+      "get": {
+        "tags": [
+          "Core.Users"
+        ],
+        "summary": "Core.Users.Preferences",
+        "description": "Gets the current user's unit preferences.",
+        "operationId": "Core.Users.Preferences",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitPreferencesModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Core.Users"
+        ],
+        "summary": "Core.Users.UpdatePreferences",
+        "description": "Updates the current user's unit preferences.",
+        "operationId": "Core.Users.UpdatePreferences",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserPreferencesUpdateModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UnitPreferencesModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/dashboard": {
+      "get": {
+        "tags": [
+          "Core.Dashboard"
+        ],
+        "summary": "Core.Dashboard.Get",
+        "description": "Gets the full weather dashboard with cities, highlights, alerts, and recommendations.",
+        "operationId": "Core.Dashboard.Get",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/admin/cities": {
+      "post": {
+        "tags": [
+          "Core.Admin"
+        ],
+        "summary": "Core.Admin.Cities.Create",
+        "description": "Creates a city directly without geocoding.",
+        "operationId": "Core.Admin.Cities.Create",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminCityCreateModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CityModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Core.Admin"
+        ],
+        "summary": "Core.Admin.Cities.List",
+        "description": "Lists all cities with subscription counts.",
+        "operationId": "Core.Admin.Cities.List",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminCityModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/admin/cities/{cityId}": {
+      "put": {
+        "tags": [
+          "Core.Admin"
+        ],
+        "summary": "Core.Admin.Cities.Update",
+        "description": "Updates city details.",
+        "operationId": "Core.Admin.Cities.Update",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminCityUpdateModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CityModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Core.Admin"
+        ],
+        "summary": "Core.Admin.Cities.Delete",
+        "description": "Hard-deletes a city and all associated data.",
+        "operationId": "Core.Admin.Cities.Delete",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/admin/cities/{cityId}/subscriptions": {
+      "get": {
+        "tags": [
+          "Core.Admin"
+        ],
+        "summary": "Core.Admin.Cities.Subscriptions",
+        "description": "Lists subscriptions for a city including soft-deleted.",
+        "operationId": "Core.Admin.Cities.Subscriptions",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AdminCitySubscriptionModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/admin/cities/{cityId}/ingest": {
+      "post": {
+        "tags": [
+          "Core.Admin"
+        ],
+        "summary": "Core.Admin.Cities.Ingest",
+        "description": "Triggers weather data ingestion for a city without subscription check.",
+        "operationId": "Core.Admin.Cities.Ingest",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/admin/cities/{cityId}/weather": {
+      "delete": {
+        "tags": [
+          "Core.Admin"
+        ],
+        "summary": "Core.Admin.Cities.WeatherReset",
+        "description": "Deletes all weather data for a city.",
+        "operationId": "Core.Admin.Cities.WeatherReset",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/users/subscription": {
+      "get": {
+        "tags": [
+          "Core.Subscription"
+        ],
+        "summary": "Core.Subscription.Get",
+        "description": "Gets the current user's subscription plan details.",
+        "operationId": "Core.Subscription.Get",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserSubscriptionModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/admin/subscriptions": {
+      "get": {
+        "tags": [
+          "Core.Admin.Subscription"
+        ],
+        "summary": "Core.Admin.Subscriptions.List",
+        "description": "Lists all user subscriptions.",
+        "operationId": "Core.Admin.Subscriptions.List",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserSubscriptionModel"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/core/admin/subscriptions/{userId}": {
+      "get": {
+        "tags": [
+          "Core.Admin.Subscription"
+        ],
+        "summary": "Core.Admin.Subscriptions.Get",
+        "description": "Gets a specific user's subscription.",
+        "operationId": "Core.Admin.Subscriptions.Get",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserSubscriptionModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Core.Admin.Subscription"
+        ],
+        "summary": "Core.Admin.Subscriptions.Update",
+        "description": "Updates a user's subscription plan, status, and billing cycle.",
+        "operationId": "Core.Admin.Subscriptions.Update",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminSubscriptionUpdateModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserSubscriptionModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system": {
+      "get": {
+        "tags": [
+          "_System"
+        ],
+        "summary": "_System.Get",
+        "operationId": "_System.Get",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/echo": {
+      "get": {
+        "tags": [
+          "_System"
+        ],
+        "summary": "_System.GetEcho",
+        "operationId": "_System.GetEcho",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/info": {
+      "get": {
+        "tags": [
+          "_System"
+        ],
+        "summary": "_System.GetInfo",
+        "operationId": "_System.GetInfo",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SystemInfo"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/modules": {
+      "get": {
+        "tags": [
+          "_System"
+        ],
+        "summary": "_System.GetModules",
+        "operationId": "_System.GetModules",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SystemModule"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/metrics": {
+      "get": {
+        "tags": [
+          "_System.Metrics"
+        ],
+        "summary": "_System.Metrics.Get",
+        "operationId": "_System.Metrics.Get",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/metrics/bdk": {
+      "get": {
+        "tags": [
+          "_System.Metrics"
+        ],
+        "summary": "_System.Metrics.GetBdk",
+        "operationId": "_System.Metrics.GetBdk",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetricsSnapshotModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/metrics/dotnet": {
+      "get": {
+        "tags": [
+          "_System.Metrics"
+        ],
+        "summary": "_System.Metrics.GetDotNet",
+        "operationId": "_System.Metrics.GetDotNet",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DotNetMetricsSnapshotModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/metrics/aspnet": {
+      "get": {
+        "tags": [
+          "_System.Metrics"
+        ],
+        "summary": "_System.Metrics.GetAspNet",
+        "operationId": "_System.Metrics.GetAspNet",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AspNetMetricsSnapshotModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/metrics/aspnet/routes": {
+      "get": {
+        "tags": [
+          "_System.Metrics"
+        ],
+        "summary": "_System.Metrics.GetAspNetRoutes",
+        "operationId": "_System.Metrics.GetAspNetRoutes",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AspNetRouteMetricsSnapshotModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/metrics/overview": {
+      "get": {
+        "tags": [
+          "_System.Metrics"
+        ],
+        "summary": "_System.Metrics.GetOverview",
+        "operationId": "_System.Metrics.GetOverview",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetricsOverviewSnapshotModel"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AdminCityCreateModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "country": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "countryCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "timeZone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "elevation": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "externalId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          }
+        }
+      },
+      "AdminCityModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "country": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "countryCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "timeZone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "elevation": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "externalId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          },
+          "subscriptionCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "concurrencyVersion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "AdminCitySubscriptionModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "userId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "cityId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "displayOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isDeleted": {
+            "type": "boolean"
+          },
+          "deleteReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "concurrencyVersion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "AdminCityUpdateModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "country": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "countryCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "timeZone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "elevation": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "AdminSubscriptionUpdateModel": {
+        "type": "object",
+        "properties": {
+          "plan": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "billingCycle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "endDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "AspNetMetricsSnapshotModel": {
+        "type": "object",
+        "properties": {
+          "totalRequests": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "trackedRouteCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "activeRequests": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "maxObservedConcurrentRequests": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "failedRequests": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "failureRatePercent": {
+            "type": "number",
+            "format": "double"
+          },
+          "averageLatencyMs": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalLatencyMs": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "requestsPerMinute": {
+            "type": "number",
+            "format": "double"
+          },
+          "status1xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status2xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status3xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status4xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status5xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "lastRequestAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "capturedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "processStartedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "uptimeSeconds": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "AspNetRouteMetricsModel": {
+        "type": "object",
+        "properties": {
+          "method": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "route": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "requestCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status1xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status2xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status3xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status4xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "status5xx": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "failureCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "failureRatePercent": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalLatencyMs": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "averageLatencyMs": {
+            "type": "number",
+            "format": "double"
+          },
+          "lastRequestAtUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "AspNetRouteMetricsSnapshotModel": {
+        "type": "object",
+        "properties": {
+          "trackedRouteCount": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "routes": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/AspNetRouteMetricsModel"
+            }
+          },
+          "capturedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "processStartedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "uptimeSeconds": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "BdkFeatureSnapshotModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "counters": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          "current": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          "durations": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/BdkHistogramSnapshotModel"
+            }
+          },
+          "successTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "failureTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "currentTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "topThroughput": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "topCurrent": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "topFailures": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "latencyHighlights": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricLatencyModel"
+            }
+          }
+        }
+      },
+      "BdkHistogramSnapshotModel": {
+        "type": "object",
+        "properties": {
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sum": {
+            "type": "number",
+            "format": "double"
+          },
+          "average": {
+            "type": "number",
+            "format": "double"
+          },
+          "max": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "BdkMetricDescriptorModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "feature": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "kind": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "unit": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "CityAlertsModel": {
+        "type": "object",
+        "properties": {
+          "cityId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "alerts": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/WeatherAlertModel"
+            }
+          },
+          "staleDataWarning": {
+            "type": "boolean"
+          },
+          "staleDataWarningMessage": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "CityCompareResponse": {
+        "type": "object",
+        "properties": {
+          "cities": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/CityComparisonModel"
+            }
+          },
+          "highlights": {
+            "$ref": "#/components/schemas/DashboardHighlightsModel"
+          },
+          "unitPreferences": {
+            "$ref": "#/components/schemas/UnitPreferencesModel"
+          }
+        }
+      },
+      "CityComparisonModel": {
+        "type": "object",
+        "properties": {
+          "cityId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "currentWeather": {
+            "$ref": "#/components/schemas/CurrentWeatherModel"
+          },
+          "staleDataWarning": {
+            "type": "boolean"
+          },
+          "staleDataWarningMessage": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "CityCreateModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "countryCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "CityExportResponse": {
+        "type": "object",
+        "properties": {
+          "csvContent": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "fileName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "contentType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "CityHighlightModel": {
+        "type": "object",
+        "properties": {
+          "cityId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "cityName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "value": {
+            "type": "number",
+            "format": "double"
+          },
+          "unit": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "CityModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "country": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "countryCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "timeZone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "elevation": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "externalId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          },
+          "concurrencyVersion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "CityRecommendationsResponse": {
+        "type": "object",
+        "properties": {
+          "cityId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "recommendations": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/WeatherRecommendationModel"
+            }
+          },
+          "staleDataWarning": {
+            "type": "boolean"
+          },
+          "staleDataWarningMessage": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "unitPreferences": {
+            "$ref": "#/components/schemas/UnitPreferencesModel"
+          }
+        }
+      },
+      "CitySuggestionModel": {
+        "type": "object",
+        "properties": {
+          "externalId": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "country": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "countryCode": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "admin1": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "latitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "longitude": {
+            "type": "number",
+            "format": "double"
+          },
+          "timeZone": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "elevation": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "CitySunResponse": {
+        "type": "object",
+        "properties": {
+          "sunData": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/SunDataModel"
+            }
+          }
+        }
+      },
+      "CityWeatherResponse": {
+        "type": "object",
+        "properties": {
+          "currentWeather": {
+            "$ref": "#/components/schemas/CurrentWeatherModel"
+          },
+          "forecasts": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/WeatherForecastModel"
+            }
+          },
+          "unitPreferences": {
+            "$ref": "#/components/schemas/UnitPreferencesModel"
+          },
+          "staleDataWarning": {
+            "type": "boolean"
+          },
+          "staleDataWarningMessage": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "CurrentWeatherModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "cityId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "temperature": {
+            "type": "number",
+            "format": "double"
+          },
+          "apparentTemperature": {
+            "type": "number",
+            "format": "double"
+          },
+          "humidity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "weatherCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "weatherDescription": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "weatherIcon": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "windSpeed": {
+            "type": "number",
+            "format": "double"
+          },
+          "windDirection": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "windGusts": {
+            "type": "number",
+            "format": "double"
+          },
+          "precipitation": {
+            "type": "number",
+            "format": "double"
+          },
+          "cloudCover": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pressure": {
+            "type": "number",
+            "format": "double"
+          },
+          "retrievedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "staleDataWarning": {
+            "type": "boolean"
+          },
+          "staleDataWarningMessage": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "concurrencyVersion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "DashboardHighlightsModel": {
+        "type": "object",
+        "properties": {
+          "warmest": {
+            "$ref": "#/components/schemas/CityHighlightModel"
+          },
+          "coldest": {
+            "$ref": "#/components/schemas/CityHighlightModel"
+          },
+          "wettest": {
+            "$ref": "#/components/schemas/CityHighlightModel"
+          },
+          "windiest": {
+            "$ref": "#/components/schemas/CityHighlightModel"
+          }
+        }
+      },
+      "DashboardModel": {
+        "type": "object",
+        "properties": {
+          "primaryCity": {
+            "$ref": "#/components/schemas/UserCityModel"
+          },
+          "cities": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/UserCityModel"
+            }
+          },
+          "highlights": {
+            "$ref": "#/components/schemas/DashboardHighlightsModel"
+          },
+          "alerts": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/WeatherAlertModel"
+            }
+          },
+          "recommendations": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/WeatherRecommendationModel"
+            }
+          },
+          "unitPreferences": {
+            "$ref": "#/components/schemas/UnitPreferencesModel"
+          }
+        }
+      },
+      "DotNetMetricsSnapshotModel": {
+        "type": "object",
+        "properties": {
+          "cpuUsagePercent": {
+            "type": "number",
+            "format": "double"
+          },
+          "workingSetMb": {
+            "type": "number",
+            "format": "double"
+          },
+          "privateMemoryMb": {
+            "type": "number",
+            "format": "double"
+          },
+          "managedMemoryMb": {
+            "type": "number",
+            "format": "double"
+          },
+          "heapSizeMb": {
+            "type": "number",
+            "format": "double"
+          },
+          "fragmentedMemoryMb": {
+            "type": "number",
+            "format": "double"
+          },
+          "totalAllocatedMb": {
+            "type": "number",
+            "format": "double"
+          },
+          "gen0Collections": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "gen1Collections": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "gen2Collections": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "threadCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workerThreadsUsed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workerThreadsAvailable": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ioThreadsUsed": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ioThreadsAvailable": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pendingWorkItems": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "capturedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "processStartedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "uptimeSeconds": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "HourlyForecastModel": {
+        "type": "object",
+        "properties": {
+          "hour": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "temperature": {
+            "type": "number",
+            "format": "double"
+          },
+          "relativeHumidity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "apparentTemperature": {
+            "type": "number",
+            "format": "double"
+          },
+          "precipitationProbability": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "precipitation": {
+            "type": "number",
+            "format": "double"
+          },
+          "weatherCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "weatherDescription": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "windSpeed": {
+            "type": "number",
+            "format": "double"
+          },
+          "windDirection": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "windGusts": {
+            "type": "number",
+            "format": "double"
+          },
+          "cloudCover": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "visibility": {
+            "type": "number",
+            "format": "double"
+          },
+          "isDay": {
+            "type": "boolean"
+          }
+        }
+      },
+      "JobInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "group": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "triggerCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lastRun": {
+            "$ref": "#/components/schemas/JobRun"
+          },
+          "isRunning": {
+            "type": "boolean"
+          },
+          "lastRunStats": {
+            "$ref": "#/components/schemas/JobRunStats"
+          },
+          "category": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "triggers": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/TriggerInfo"
+            }
+          },
+          "runs": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/JobRun"
+            }
+          }
+        }
+      },
+      "JobRun": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "jobName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "jobGroup": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "triggerName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "triggerGroup": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "startTimeText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "endTime": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "endTimeText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "scheduledTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "durationMs": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          },
+          "durationText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "isRunning": {
+            "type": "boolean"
+          },
+          "errorMessage": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "data": {
+            "type": [
+              "null",
+              "object"
+            ]
+          },
+          "instanceName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "priority": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "result": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "retryCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "category": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "JobRunStats": {
+        "type": "object",
+        "properties": {
+          "totalRuns": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "successCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "failureCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "interruptCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "avgRunDurationMs": {
+            "type": "number",
+            "format": "double"
+          },
+          "avgRunDurationText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "maxRunDurationMs": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "maxRunDurationText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "minRunDurationMs": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "minRunDurationText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "MetricLatencyModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "count": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "sum": {
+            "type": "number",
+            "format": "double"
+          },
+          "average": {
+            "type": "number",
+            "format": "double"
+          },
+          "max": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "MetricsOverviewFeatureModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "successTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "failureTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "currentTotal": {
+            "type": "number",
+            "format": "double"
+          },
+          "topThroughput": {
+            "$ref": "#/components/schemas/MetricValueModel"
+          },
+          "topCurrent": {
+            "$ref": "#/components/schemas/MetricValueModel"
+          },
+          "slowestSeries": {
+            "$ref": "#/components/schemas/MetricLatencyModel"
+          }
+        }
+      },
+      "MetricsOverviewSnapshotModel": {
+        "type": "object",
+        "properties": {
+          "summaryCards": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "number",
+              "format": "double"
+            }
+          },
+          "features": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/MetricsOverviewFeatureModel"
+            }
+          },
+          "topFailures": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "topThroughput": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "topCurrent": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "latencyHighlights": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricLatencyModel"
+            }
+          },
+          "capturedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "processStartedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "uptimeSeconds": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "MetricsSnapshotModel": {
+        "type": "object",
+        "properties": {
+          "meter": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "features": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "$ref": "#/components/schemas/BdkFeatureSnapshotModel"
+            }
+          },
+          "availableMetrics": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/BdkMetricDescriptorModel"
+            }
+          },
+          "topFailures": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "topThroughput": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "topCurrent": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricValueModel"
+            }
+          },
+          "latencyHighlights": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/MetricLatencyModel"
+            }
+          },
+          "capturedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "processStartedAtUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "uptimeSeconds": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "MetricValueModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "value": {
+            "type": "number",
+            "format": "double"
+          }
+        }
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "detail": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "instance": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "ProblemError": {
+        "type": "object",
+        "additionalProperties": { },
+        "description": "Represents an individual error entry with flexible structure for additional data"
+      },
+      "ResultProblemData": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "$ref": "#/components/schemas/ResultProblemResult"
+          },
+          "errors": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ProblemError"
+            },
+            "description": "Collection of additional errors outside the result object"
+          }
+        },
+        "additionalProperties": { },
+        "description": "Data section included within a problem details response"
+      },
+      "ResultProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "A URI reference that identifies the problem type"
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "A short, human-readable summary of the problem"
+          },
+          "status": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "description": "The HTTP status code",
+            "format": "int32"
+          },
+          "detail": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "A human-readable explanation specific to this occurrence"
+          },
+          "instance": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "A URI reference that identifies the specific occurrence of the problem"
+          },
+          "data": {
+            "$ref": "#/components/schemas/ResultProblemData"
+          }
+        },
+        "additionalProperties": { },
+        "description": "A Problem Details response containing result information and contextual data (RFC 7807)"
+      },
+      "ResultProblemError": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "description": "Human-readable error message"
+          }
+        },
+        "additionalProperties": { },
+        "description": "Represents an individual error entry with a message and optional metadata"
+      },
+      "ResultProblemResult": {
+        "type": "object",
+        "properties": {
+          "isSuccess": {
+            "type": "boolean",
+            "description": "Indicates whether the operation completed successfully"
+          },
+          "messages": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            },
+            "description": "Collection of informational or diagnostic messages from the operation"
+          },
+          "errors": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/ResultProblemError"
+            },
+            "description": "Collection of domain or technical errors encountered during the operation"
+          }
+        },
+        "additionalProperties": { },
+        "description": "Represents the operation outcome with success status, messages, and errors"
+      },
+      "SunDataModel": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "sunrise": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sunset": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "daylightDurationSeconds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "isDay": {
+            "type": "boolean"
+          }
+        }
+      },
+      "SystemInfo": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "type": [
+              "null",
+              "object"
+            ]
+          },
+          "runtime": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "memory": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "configuration": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "customMetadata": {
+            "type": [
+              "null",
+              "object"
+            ],
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "uptime": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "SystemModule": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "isRegistered": {
+            "type": "boolean"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "TriggerInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "group": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "cronExpression": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextFireTime": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "nextFireTimeText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "previousFireTime": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "previousFireTimeText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "state": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UnitPreferencesModel": {
+        "type": "object",
+        "properties": {
+          "temperatureUnit": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "temperatureSymbol": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "windSpeedUnit": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "windSpeedSymbol": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UserCityModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "userId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "cityId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "displayOrder": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "city": {
+            "$ref": "#/components/schemas/CityModel"
+          },
+          "currentWeather": {
+            "$ref": "#/components/schemas/CurrentWeatherModel"
+          },
+          "staleDataWarning": {
+            "type": "boolean"
+          },
+          "staleDataWarningMessage": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "concurrencyVersion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UserPreferencesUpdateModel": {
+        "type": "object",
+        "properties": {
+          "temperatureUnit": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "windSpeedUnit": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UserProfileModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "temperatureUnit": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "windSpeedUnit": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "concurrencyVersion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UserProfileUpdateModel": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "email": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "UserSubscriptionModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "userId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "plan": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "planDescription": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "maxCities": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "maxForecastDays": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "allowsComparison": {
+            "type": "boolean"
+          },
+          "allowsExport": {
+            "type": "boolean"
+          },
+          "status": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "billingCycle": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "isActive": {
+            "type": "boolean"
+          },
+          "concurrencyVersion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "WeatherAlertModel": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "severity": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "message": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "weatherCode": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "windSpeed": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          },
+          "temperature": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
+          }
+        }
+      },
+      "WeatherForecastModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "cityId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "forecastDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "dayWeatherCode": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dayWeatherDescription": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "dayWeatherIcon": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "temperatureMax": {
+            "type": "number",
+            "format": "double"
+          },
+          "temperatureMin": {
+            "type": "number",
+            "format": "double"
+          },
+          "apparentTemperatureMax": {
+            "type": "number",
+            "format": "double"
+          },
+          "apparentTemperatureMin": {
+            "type": "number",
+            "format": "double"
+          },
+          "precipitationSum": {
+            "type": "number",
+            "format": "double"
+          },
+          "precipitationProbabilityMax": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "windSpeedMax": {
+            "type": "number",
+            "format": "double"
+          },
+          "windGustsMax": {
+            "type": "number",
+            "format": "double"
+          },
+          "dominantWindDirection": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "uvIndexMax": {
+            "type": "number",
+            "format": "double"
+          },
+          "sunshineDurationSeconds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "daylightDurationSeconds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "sunrise": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "sunset": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "hourlyForecasts": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/HourlyForecastModel"
+            }
+          },
+          "retrievedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "staleDataWarning": {
+            "type": "boolean"
+          },
+          "staleDataWarningMessage": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "concurrencyVersion": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "WeatherRecommendationModel": {
+        "type": "object",
+        "properties": {
+          "category": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "severity": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "title": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "message": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "oauth2",
+        "description": "The JWT token in the format: Bearer {token}"
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ],
+  "tags": [
+    {
+      "name": "_System.JobScheduling"
+    },
+    {
+      "name": "Core.Cities"
+    },
+    {
+      "name": "Core.Weather"
+    },
+    {
+      "name": "Core.Users"
+    },
+    {
+      "name": "Core.Dashboard"
+    },
+    {
+      "name": "Core.Admin"
+    },
+    {
+      "name": "Core.Subscription"
+    },
+    {
+      "name": "Core.Admin.Subscription"
+    },
+    {
+      "name": "_System"
+    },
+    {
+      "name": "_System.Metrics"
+    }
+  ]
+}

@@ -42,7 +42,7 @@ public partial class CityIngestCommand
         var subscriptionsResult = await UserCity.FindAllAsync(spec, null, cancellationToken);
         if (subscriptionsResult.IsFailure)
         {
-            return Result<Unit>.Failure(subscriptionsResult.Errors.Select(e => e.Message));
+            return subscriptionsResult.Wrap<Unit>();
         }
 
         var subscriptions = subscriptionsResult.Value;

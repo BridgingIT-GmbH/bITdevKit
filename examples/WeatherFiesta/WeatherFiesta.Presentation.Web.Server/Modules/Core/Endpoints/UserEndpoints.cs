@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modul
 /// <summary>
 /// Endpoints for user profile and preferences management.
 /// </summary>
-public class CoreUserEndpoints : EndpointsBase
+public class UserEndpoints : EndpointsBase
 {
     /// <summary>
     /// Maps the user-related endpoints to the specified route builder.

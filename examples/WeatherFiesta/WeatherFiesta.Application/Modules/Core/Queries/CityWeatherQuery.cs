@@ -49,7 +49,7 @@ public partial class CityWeatherQuery
         var subscriptionsResult = await UserCity.FindAllAsync(subSpec, null, cancellationToken);
         if (subscriptionsResult.IsFailure)
         {
-            return Result<CityWeatherResponse>.Failure(subscriptionsResult.Errors.Select(e => e.Message));
+            return subscriptionsResult.Wrap<CityWeatherResponse>();
         }
 
         var subscriptions = subscriptionsResult.Value;
@@ -63,7 +63,7 @@ public partial class CityWeatherQuery
         var currentWeatherResult = await CurrentWeather.FindAllAsync(weatherSpec, null, cancellationToken);
         if (currentWeatherResult.IsFailure)
         {
-            return Result<CityWeatherResponse>.Failure(currentWeatherResult.Errors.Select(e => e.Message));
+            return currentWeatherResult.Wrap<CityWeatherResponse>();
         }
 
         var currentWeather = currentWeatherResult.Value.FirstOrDefault();
@@ -73,7 +73,7 @@ public partial class CityWeatherQuery
         var forecastsResult = await WeatherForecast.FindAllAsync(forecastSpec, null, cancellationToken);
         if (forecastsResult.IsFailure)
         {
-            return Result<CityWeatherResponse>.Failure(forecastsResult.Errors.Select(e => e.Message));
+            return forecastsResult.Wrap<CityWeatherResponse>();
         }
 
         var forecasts = forecastsResult.Value;
@@ -83,7 +83,7 @@ public partial class CityWeatherQuery
         var userProfileResult = await UserProfile.FindAllAsync(userProfileSpec, null, cancellationToken);
         if (userProfileResult.IsFailure)
         {
-            return Result<CityWeatherResponse>.Failure(userProfileResult.Errors.Select(e => e.Message));
+            return userProfileResult.Wrap<CityWeatherResponse>();
         }
 
         var userProfile = userProfileResult.Value.FirstOrDefault();

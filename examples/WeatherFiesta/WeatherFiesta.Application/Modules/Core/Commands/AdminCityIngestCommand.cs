@@ -38,7 +38,7 @@ public partial class AdminCityIngestCommand
         var cityResult = await City.FindAllAsync(spec, null, cancellationToken);
         if (cityResult.IsFailure)
         {
-            return Result<Unit>.Failure(cityResult.Errors.Select(e => e.Message));
+            return cityResult.Wrap<Unit>();
         }
 
         var city = cityResult.Value.FirstOrDefault();

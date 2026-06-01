@@ -26,7 +26,7 @@ public partial class UserProfileQuery
         var profileResult = await UserProfile.FindAllAsync(spec, null, cancellationToken);
         if (profileResult.IsFailure)
         {
-            return Result<UserProfileModel>.Failure(profileResult.Errors.Select(e => e.Message));
+            return profileResult.Wrap<UserProfileModel>();
         }
 
         var profile = profileResult.Value.FirstOrDefault();

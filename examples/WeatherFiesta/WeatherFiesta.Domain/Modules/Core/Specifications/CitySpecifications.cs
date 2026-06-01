@@ -27,7 +27,7 @@ public class UserCitiesByUserSpecification(string userId) : Specification<UserCi
 {
     public override Expression<Func<UserCity, bool>> ToExpression()
     {
-        return uc => uc.UserId == userId && !uc.AuditState.IsDeleted();
+        return uc => uc.UserId == userId && uc.AuditState.Deleted != true;
     }
 }
 
@@ -38,7 +38,7 @@ public class UserCityByUserAndCitySpecification(string userId, CityId cityId) : 
 {
     public override Expression<Func<UserCity, bool>> ToExpression()
     {
-        return uc => uc.UserId == userId && uc.CityId == cityId && !uc.AuditState.IsDeleted();
+        return uc => uc.UserId == userId && uc.CityId == cityId && uc.AuditState.Deleted != true;
     }
 }
 

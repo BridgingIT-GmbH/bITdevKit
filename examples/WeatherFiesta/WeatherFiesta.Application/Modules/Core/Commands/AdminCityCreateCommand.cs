@@ -43,9 +43,9 @@ public partial class AdminCityCreateCommand
         var result = await city.InsertAsync(cancellationToken);
         if (result.IsFailure)
         {
-            return Result<CityModel>.Failure(result.Errors.Select(e => e.Message));
+            return result.Wrap<CityModel>();
         }
 
-        return Result<CityModel>.Success(mapper.Map<City, CityModel>(result.Value));
+        return result.Wrap(mapper.Map<City, CityModel>(city));
     }
 }

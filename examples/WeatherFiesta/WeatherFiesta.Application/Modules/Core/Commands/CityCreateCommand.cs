@@ -53,7 +53,7 @@ public partial class CityCreateCommand
         var existingCitiesResult = await City.FindAllAsync(existingCitySpec, null, cancellationToken);
         if (existingCitiesResult.IsFailure)
         {
-            return Result<CityModel>.Failure(existingCitiesResult.Errors.Select(e => e.Message));
+            return existingCitiesResult.Wrap<CityModel>();
         }
 
         var existingCities = existingCitiesResult.Value;
@@ -80,7 +80,7 @@ public partial class CityCreateCommand
             var cityResult = await city.InsertAsync(cancellationToken);
             if (cityResult.IsFailure)
             {
-                return Result<CityModel>.Failure(cityResult.Errors.Select(e => e.Message));
+                return cityResult.Wrap<CityModel>();
             }
 
             city = cityResult.Value;
@@ -91,7 +91,7 @@ public partial class CityCreateCommand
         var existingUserCitiesResult = await UserCity.FindAllAsync(userCitySpec, null, cancellationToken);
         if (existingUserCitiesResult.IsFailure)
         {
-            return Result<CityModel>.Failure(existingUserCitiesResult.Errors.Select(e => e.Message));
+            return existingUserCitiesResult.Wrap<CityModel>();
         }
 
         var existingUserCities = existingUserCitiesResult.Value;
@@ -112,7 +112,7 @@ public partial class CityCreateCommand
                 new UserCitiesByUserSpecification(userId), null, cancellationToken);
             if (existingCountResult.IsFailure)
             {
-                return Result<CityModel>.Failure(existingCountResult.Errors.Select(e => e.Message));
+                return existingCountResult.Wrap<CityModel>();
             }
 
             var isPrimary = existingCountResult.Value == 0;
@@ -123,10 +123,10 @@ public partial class CityCreateCommand
         var userCityResult = await userCity.UpsertAsync(cancellationToken);
         if (userCityResult.IsFailure)
         {
-            return Result<CityModel>.Failure(userCityResult.Errors.Select(e => e.Message));
+            return userCityResult.Wrap<CityModel>();
         }
 
-        return Result<CityModel>.Success(mapper.Map<City, CityModel>(city));
+        return userCityResult.Wrap(mapper.Map<City, CityModel>(city));
     }
 }
 

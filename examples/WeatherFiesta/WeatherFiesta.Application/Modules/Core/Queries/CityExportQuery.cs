@@ -28,7 +28,7 @@ public partial class CityExportQuery
         var userCitiesResult = await UserCity.FindAllAsync(spec, null, cancellationToken);
         if (userCitiesResult.IsFailure)
         {
-            return Result<CityExportResponse>.Failure(userCitiesResult.Errors.Select(e => e.Message));
+            return userCitiesResult.Wrap<CityExportResponse>();
         }
 
         var userCities = userCitiesResult.Value;
@@ -43,7 +43,7 @@ public partial class CityExportQuery
             var cityResult = await City.FindAllAsync(citySpec, null, cancellationToken);
             if (cityResult.IsFailure)
             {
-                return Result<CityExportResponse>.Failure(cityResult.Errors.Select(e => e.Message));
+                return cityResult.Wrap<CityExportResponse>();
             }
 
             var city = cityResult.Value.FirstOrDefault();
@@ -56,7 +56,7 @@ public partial class CityExportQuery
             var weatherResult = await CurrentWeather.FindAllAsync(weatherSpec, null, cancellationToken);
             if (weatherResult.IsFailure)
             {
-                return Result<CityExportResponse>.Failure(weatherResult.Errors.Select(e => e.Message));
+                return weatherResult.Wrap<CityExportResponse>();
             }
 
             var weather = weatherResult.Value.FirstOrDefault();

@@ -3,22 +3,25 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests;
+namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests.Application;
 
 /// <summary>
 /// Direct query handler tests using IRequester.SendAsync with InMemory EF Core.
 /// Tests the full pipeline (validation, retry, timeout) without HTTP.
 /// </summary>
-public class ApplicationQueryTests : IClassFixture<WeatherFiestaApplicationFactory>
+[Trait("Category", "Integration")]
+[Collection(WeatherFiestaTestCollection.Name)]
+public class ApplicationQueryTests
 {
     private readonly WeatherFiestaApplicationFactory factory;
     private readonly IRequester requester;
 
-    public ApplicationQueryTests(WeatherFiestaApplicationFactory factory)
+    public ApplicationQueryTests(WeatherFiestaApplicationFactory factory, ITestOutputHelper output)
     {
         this.factory = factory;
+        factory.SetOutput(output);
+        factory.ResetDatabaseAsync().GetAwaiter().GetResult();
         this.requester = factory.Services.GetRequiredService<IRequester>();
-        factory.SeedAsync().GetAwaiter().GetResult();
     }
 
     // ──────────────────────────────────────────────────────────────────────────────
@@ -37,7 +40,7 @@ public class ApplicationQueryTests : IClassFixture<WeatherFiestaApplicationFacto
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldNotBeNull();
         result.Value.ShouldNotBeEmpty();
-        result.Value.ShouldContain(c => c.CityId == WeatherFiestaTestData.LondonCityGuid.ToString());
+        result.Value.ShouldContain(c => c.CityId == TestData.LondonCityGuid.ToString());
     }
 
     [Fact]
@@ -47,7 +50,7 @@ public class ApplicationQueryTests : IClassFixture<WeatherFiestaApplicationFacto
         await this.factory.ResetDatabaseAsync();
         // Unsubscribe from London
         await this.requester.SendAsync(
-            new CityUnsubscribeCommand(WeatherFiestaTestData.LondonCityGuid.ToString()));
+            new CityUnsubscribeCommand(TestData.LondonCityGuid.ToString()));
 
         // Act
         var result = await this.requester.SendAsync(new UserCitiesQuery());
@@ -68,7 +71,7 @@ public class ApplicationQueryTests : IClassFixture<WeatherFiestaApplicationFacto
 
         // Act
         var result = await this.requester.SendAsync(
-            new CityWeatherQuery(WeatherFiestaTestData.LondonCityGuid.ToString()));
+            new CityWeatherQuery(TestData.LondonCityGuid.ToString()));
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -79,7 +82,7 @@ public class ApplicationQueryTests : IClassFixture<WeatherFiestaApplicationFacto
     public async Task CityWeatherQuery_WhenNotSubscribed_ReturnsFailure()
     {
         // Arrange — Berlin not subscribed
-        var query = new CityWeatherQuery(WeatherFiestaTestData.BerlinCityGuid.ToString());
+        var query = new CityWeatherQuery(TestData.BerlinCityGuid.ToString());
 
         // Act
         var result = await this.requester.SendAsync(query);
@@ -113,7 +116,7 @@ public class ApplicationQueryTests : IClassFixture<WeatherFiestaApplicationFacto
         // Arrange
         await this.factory.ResetDatabaseAsync();
         await this.requester.SendAsync(
-            new CityUnsubscribeCommand(WeatherFiestaTestData.LondonCityGuid.ToString()));
+            new CityUnsubscribeCommand(TestData.LondonCityGuid.ToString()));
 
         // Act
         var result = await this.requester.SendAsync(new DashboardQuery());
@@ -160,7 +163,7 @@ public class ApplicationQueryTests : IClassFixture<WeatherFiestaApplicationFacto
         result.Value.ShouldNotBeNull();
         result.Value.Plan.ShouldBe("Free");
         result.Value.Status.ShouldBe("Active");
-        result.Value.UserId.ShouldBe(WeatherFiestaTestData.TestUserId);
+        result.Value.UserId.ShouldBe(TestData.TestUserId);
     }
 
     [Fact]
@@ -171,7 +174,7 @@ public class ApplicationQueryTests : IClassFixture<WeatherFiestaApplicationFacto
         // Delete the seeded subscription directly from DB
         using var scope = this.factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
-        var subs = db.UserSubscriptions.Where(s => s.UserId == WeatherFiestaTestData.TestUserId).ToList();
+        var subs = db.UserSubscriptions.Where(s => s.UserId == TestData.TestUserId).ToList();
         db.UserSubscriptions.RemoveRange(subs);
         await db.SaveChangesAsync();
 
@@ -234,7 +237,7 @@ public class ApplicationQueryTests : IClassFixture<WeatherFiestaApplicationFacto
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldNotBeNull();
         result.Value.ShouldNotBeEmpty();
-        result.Value.ShouldContain(s => s.UserId == WeatherFiestaTestData.TestUserId);
+        result.Value.ShouldContain(s => s.UserId == TestData.TestUserId);
     }
 
     // ──────────────────────────────────────────────────────────────────────────────
@@ -247,7 +250,7 @@ public class ApplicationQueryTests : IClassFixture<WeatherFiestaApplicationFacto
         // Arrange
         var query = new AdminUserSubscriptionQuery
         {
-            UserId = WeatherFiestaTestData.TestUserId
+            UserId = TestData.TestUserId
         };
 
         // Act
@@ -352,7 +355,7 @@ public class ApplicationQueryTests : IClassFixture<WeatherFiestaApplicationFacto
     public async Task CityRecommendationsQuery_WhenSubscribed_ReturnsSuccess()
     {
         // Arrange
-        var query = new CityRecommendationsQuery(WeatherFiestaTestData.LondonCityGuid.ToString());
+        var query = new CityRecommendationsQuery(TestData.LondonCityGuid.ToString());
 
         // Act
         var result = await this.requester.SendAsync(query);
@@ -360,14 +363,14 @@ public class ApplicationQueryTests : IClassFixture<WeatherFiestaApplicationFacto
         // Assert
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldNotBeNull();
-        result.Value.CityId.ShouldBe(WeatherFiestaTestData.LondonCityGuid.ToString());
+        result.Value.CityId.ShouldBe(TestData.LondonCityGuid.ToString());
     }
 
     [Fact]
     public async Task CityRecommendationsQuery_WhenNotSubscribed_ReturnsFailure()
     {
         // Arrange
-        var query = new CityRecommendationsQuery(WeatherFiestaTestData.BerlinCityGuid.ToString());
+        var query = new CityRecommendationsQuery(TestData.BerlinCityGuid.ToString());
 
         // Act
         var result = await this.requester.SendAsync(query);

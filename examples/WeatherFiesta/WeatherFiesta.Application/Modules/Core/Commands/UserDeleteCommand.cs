@@ -26,7 +26,7 @@ public partial class UserDeleteCommand
         var profileResult = await UserProfile.FindAllAsync(profileSpec, null, cancellationToken);
         if (profileResult.IsFailure)
         {
-            return Result<Unit>.Failure(profileResult.Errors.Select(e => e.Message));
+            return profileResult.Wrap<Unit>();
         }
 
         var profile = profileResult.Value.FirstOrDefault();
@@ -40,7 +40,7 @@ public partial class UserDeleteCommand
         var updateResult = await profile.UpdateAsync(cancellationToken);
         if (updateResult.IsFailure)
         {
-            return Result<Unit>.Failure(updateResult.Errors.Select(e => e.Message));
+            return updateResult.Wrap<Unit>();
         }
 
         // Soft-delete all user city subscriptions
@@ -48,7 +48,7 @@ public partial class UserDeleteCommand
         var userCitiesResult = await UserCity.FindAllAsync(citiesSpec, null, cancellationToken);
         if (userCitiesResult.IsFailure)
         {
-            return Result<Unit>.Failure(userCitiesResult.Errors.Select(e => e.Message));
+            return userCitiesResult.Wrap<Unit>();
         }
 
         var userCities = userCitiesResult.Value;
@@ -59,7 +59,7 @@ public partial class UserDeleteCommand
             var cityResult = await uc.UpdateAsync(cancellationToken);
             if (cityResult.IsFailure)
             {
-                return Result<Unit>.Failure(cityResult.Errors.Select(e => e.Message));
+                return cityResult.Wrap<Unit>();
             }
         }
 

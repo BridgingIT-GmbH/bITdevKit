@@ -626,6 +626,16 @@ public readonly partial struct Result<T> : IResult<T>
     }
 
     /// <summary>
+    /// Creates a failed Result{T} based on an existing IResult, copying its messages and errors.
+    /// </summary>
+    /// <param name="result">The existing IResult to copy messages and errors from.</param>
+    /// <returns>A new failed Result{T} with the messages and errors from the existing IResult. </returns>
+    public static Result<T> Failure(IResult result)
+    {
+        return new Result<T>(false).WithMessages(result.Messages).WithErrors(result.Errors);
+    }
+
+    /// <summary>
     /// Creates a failed Result{T} with a value and multiple messages and errors.
     /// </summary>
     /// <param name="value">The value to be contained in the failed result.</param>

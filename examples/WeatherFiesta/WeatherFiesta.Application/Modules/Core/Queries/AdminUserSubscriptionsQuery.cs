@@ -22,7 +22,7 @@ public partial class AdminUserSubscriptionsQuery
         var subscriptionsResult = await UserSubscription.FindAllAsync(null, cancellationToken);
         if (subscriptionsResult.IsFailure)
         {
-            return Result<List<UserSubscriptionModel>>.Failure(subscriptionsResult.Errors.Select(e => e.Message));
+            return subscriptionsResult.Wrap<List<UserSubscriptionModel>>();
         }
 
         var subscriptions = subscriptionsResult.Value;

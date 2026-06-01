@@ -26,7 +26,7 @@ public partial class UserPreferencesQuery
         var profileResult = await UserProfile.FindAllAsync(spec, null, cancellationToken);
         if (profileResult.IsFailure)
         {
-            return Result<UnitPreferencesModel>.Failure(profileResult.Errors.Select(e => e.Message));
+            return profileResult.Wrap<UnitPreferencesModel>();
         }
 
         var profile = profileResult.Value.FirstOrDefault();

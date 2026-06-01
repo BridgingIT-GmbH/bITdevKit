@@ -15,25 +15,17 @@ using Quartz;
 /// Quartz scheduled job that periodically ingests weather data for all cities with stale data.
 /// Uses <see cref="IWeatherAgent"/> to fetch weather data and persists results via ActiveEntity upserts.
 /// </summary>
+/// <remarks>
+/// Initializes a new instance of the <see cref="WeatherIngestionJob"/> class.
+/// </remarks>
+/// <param name="weatherAgent">The weather agent for fetching weather data.</param>
+/// <param name="loggerFactory">The logger factory.</param>
 [DisallowConcurrentExecution]
-public class CoreIngestionJob : JobBase
+public class WeatherIngestionJob(
+    IWeatherAgent weatherAgent,
+    ILoggerFactory loggerFactory) : JobBase(loggerFactory)
 {
     private static readonly TimeSpan StaleThreshold = TimeSpan.FromMinutes(30);
-
-    private readonly IWeatherAgent weatherAgent;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CoreIngestionJob"/> class.
-    /// </summary>
-    /// <param name="weatherAgent">The weather agent for fetching weather data.</param>
-    /// <param name="loggerFactory">The logger factory.</param>
-    public CoreIngestionJob(
-        IWeatherAgent weatherAgent,
-        ILoggerFactory loggerFactory)
-        : base(loggerFactory)
-    {
-        this.weatherAgent = weatherAgent;
-    }
 
     /// <inheritdoc />
     public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
@@ -65,7 +57,7 @@ public class CoreIngestionJob : JobBase
 
             try
             {
-                var ingestResult = await this.weatherAgent.IngestWeatherAsync(
+                var ingestResult = await weatherAgent.IngestWeatherAsync(
                     city.Id.ToString(),
                     (double)city.Location.Latitude,
                     (double)city.Location.Longitude,

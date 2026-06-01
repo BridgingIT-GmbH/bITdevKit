@@ -3,22 +3,25 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests;
+namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests.Presentation;
 
 /// <summary>
 /// Integration tests for the dashboard endpoint.
 /// Uses real IRequester pipeline with InMemory EF Core.
 /// </summary>
-public class CoreDashboardEndpointsTests : IClassFixture<WeatherFiestaApplicationFactory>
+[Trait("Category", "Integration")]
+[Collection(WeatherFiestaTestCollection.Name)]
+public class DashboardEndpointsTests
 {
     private readonly HttpClient client;
     private readonly WeatherFiestaApplicationFactory factory;
 
-    public CoreDashboardEndpointsTests(WeatherFiestaApplicationFactory factory)
+    public DashboardEndpointsTests(WeatherFiestaApplicationFactory factory, ITestOutputHelper output)
     {
         this.factory = factory;
+        factory.SetOutput(output);
+        factory.ResetDatabaseAsync().GetAwaiter().GetResult();
         this.client = factory.CreateClient();
-        factory.SeedAsync().GetAwaiter().GetResult();
     }
 
     [Fact]
@@ -35,7 +38,7 @@ public class CoreDashboardEndpointsTests : IClassFixture<WeatherFiestaApplicatio
         content.ShouldNotBeNull();
         content.Cities.ShouldNotBeEmpty();
         content.PrimaryCity.ShouldNotBeNull();
-        content.PrimaryCity.CityId.ShouldBe(WeatherFiestaTestData.LondonCityGuid.ToString());
+        content.PrimaryCity.CityId.ShouldBe(TestData.LondonCityGuid.ToString());
     }
 
     [Fact]
@@ -45,7 +48,7 @@ public class CoreDashboardEndpointsTests : IClassFixture<WeatherFiestaApplicatio
         await this.factory.ResetDatabaseAsync();
         // Delete the seeded subscription by unsubscribing
         await this.client.DeleteAsync(
-            $"/api/core/cities/{WeatherFiestaTestData.LondonCityGuid}");
+            $"/api/core/cities/{TestData.LondonCityGuid}");
 
         // Act
         var response = await this.client.GetAsync("/api/core/dashboard");

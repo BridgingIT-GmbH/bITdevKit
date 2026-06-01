@@ -3,23 +3,26 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests;
+namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests.Presentation;
 
 /// <summary>
 /// Integration tests for admin city management endpoints.
 /// Uses real IRequester pipeline with InMemory EF Core.
 /// TestAuthenticationHandler grants CoreAdmin role.
 /// </summary>
-public class CoreAdminEndpointsTests : IClassFixture<WeatherFiestaApplicationFactory>
+[Trait("Category", "Integration")]
+[Collection(WeatherFiestaTestCollection.Name)]
+public class AdminEndpointsTests
 {
     private readonly HttpClient client;
     private readonly WeatherFiestaApplicationFactory factory;
 
-    public CoreAdminEndpointsTests(WeatherFiestaApplicationFactory factory)
+    public AdminEndpointsTests(WeatherFiestaApplicationFactory factory, ITestOutputHelper output)
     {
         this.factory = factory;
+        factory.SetOutput(output);
+        factory.ResetDatabaseAsync().GetAwaiter().GetResult();
         this.client = factory.CreateClient();
-        factory.SeedAsync().GetAwaiter().GetResult();
     }
 
     [Fact]
@@ -88,7 +91,7 @@ public class CoreAdminEndpointsTests : IClassFixture<WeatherFiestaApplicationFac
     public async Task AdminGetCity_ReturnsOk()
     {
         // Arrange
-        var cityId = WeatherFiestaTestData.LondonCityGuid.ToString();
+        var cityId = TestData.LondonCityGuid.ToString();
 
         // Act
         var response = await this.client.GetAsync($"/api/core/admin/cities/{cityId}/subscriptions");
@@ -105,7 +108,7 @@ public class CoreAdminEndpointsTests : IClassFixture<WeatherFiestaApplicationFac
     {
         // Arrange
         await this.factory.ResetDatabaseAsync();
-        var cityId = WeatherFiestaTestData.LondonCityGuid.ToString();
+        var cityId = TestData.LondonCityGuid.ToString();
         var updateModel = new AdminCityUpdateModel
         {
             Name = "London Updated",
@@ -131,7 +134,7 @@ public class CoreAdminEndpointsTests : IClassFixture<WeatherFiestaApplicationFac
     {
         // Arrange
         await this.factory.ResetDatabaseAsync();
-        var cityId = WeatherFiestaTestData.LondonCityGuid.ToString();
+        var cityId = TestData.LondonCityGuid.ToString();
 
         // Act
         var response = await this.client.DeleteAsync($"/api/core/admin/cities/{cityId}");
@@ -144,7 +147,7 @@ public class CoreAdminEndpointsTests : IClassFixture<WeatherFiestaApplicationFac
     public async Task AdminIngestCity_ReturnsNoContent()
     {
         // Arrange
-        var cityId = WeatherFiestaTestData.LondonCityGuid.ToString();
+        var cityId = TestData.LondonCityGuid.ToString();
 
         // Act
         var response = await this.client.PostAsync(
@@ -158,7 +161,7 @@ public class CoreAdminEndpointsTests : IClassFixture<WeatherFiestaApplicationFac
     public async Task AdminResetWeather_ReturnsNoContent()
     {
         // Arrange
-        var cityId = WeatherFiestaTestData.LondonCityGuid.ToString();
+        var cityId = TestData.LondonCityGuid.ToString();
 
         // Act
         var response = await this.client.DeleteAsync(

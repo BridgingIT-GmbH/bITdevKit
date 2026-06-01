@@ -29,7 +29,7 @@ public partial class DashboardQuery
         var userCitiesResult = await UserCity.FindAllAsync(spec, null, cancellationToken);
         if (userCitiesResult.IsFailure)
         {
-            return Result<DashboardModel>.Failure(userCitiesResult.Errors.Select(e => e.Message));
+            return userCitiesResult.Wrap<DashboardModel>();
         }
 
         var userCities = userCitiesResult.Value;
@@ -49,7 +49,7 @@ public partial class DashboardQuery
             var weatherResult = await CurrentWeather.FindAllAsync(weatherSpec, null, cancellationToken);
             if (weatherResult.IsFailure)
             {
-                return Result<DashboardModel>.Failure(weatherResult.Errors.Select(e => e.Message));
+                return weatherResult.Wrap<DashboardModel>();
             }
 
             var weather = weatherResult.Value.FirstOrDefault();
@@ -64,7 +64,7 @@ public partial class DashboardQuery
         var userProfileResult = await UserProfile.FindAllAsync(userProfileSpec, null, cancellationToken);
         if (userProfileResult.IsFailure)
         {
-            return Result<DashboardModel>.Failure(userProfileResult.Errors.Select(e => e.Message));
+            return userProfileResult.Wrap<DashboardModel>();
         }
 
         var userProfile = userProfileResult.Value.FirstOrDefault();

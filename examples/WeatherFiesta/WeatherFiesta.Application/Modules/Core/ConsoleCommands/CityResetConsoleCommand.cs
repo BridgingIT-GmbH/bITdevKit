@@ -42,7 +42,7 @@ public class CityResetConsoleCommand : ConsoleCommandBase, IGroupedConsoleComman
     {
         // Resolve city name to ID
         var cityResult = await City.FindAllAsync(
-            c => !c.AuditState.IsDeleted() && c.Name.Contains(this.CityName),
+            c => c.AuditState.Deleted != true && c.Name.Contains(this.CityName),
             null,
             CancellationToken.None);
 

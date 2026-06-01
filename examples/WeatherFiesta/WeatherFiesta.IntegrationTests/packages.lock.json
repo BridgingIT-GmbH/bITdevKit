@@ -1154,6 +1154,23 @@
           "Polly.Contrib.Simmy": "[0.3.0, )"
         }
       },
+      "BridgingIT.DevKit.Common.Utilities.Xunit": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.AspNetCore.Mvc.Testing": "[10.0.8, )",
+          "Microsoft.Extensions.TimeProvider.Testing": "[10.6.0, )",
+          "Serilog": "[4.3.1, )",
+          "Serilog.Extensions.Hosting": "[10.0.0, )",
+          "Serilog.Sinks.XUnit": "[3.0.19, )",
+          "Shouldly": "[4.3.0, )",
+          "xunit.abstractions": "[2.0.3, )"
+        }
+      },
       "BridgingIT.DevKit.Domain": {
         "type": "Project",
         "dependencies": {
@@ -2195,6 +2212,18 @@
         "contentHash": "9wILC29WU2t7D4t/KGzKxUEFza+4B2MCfBjn9ouIHbZJDOmL9S1P33pxR9pLhH8fAY80U+8rweNtyjOoDDt9cA==",
         "dependencies": {
           "Serilog": "4.0.0"
+        }
+      },
+      "Serilog.Sinks.XUnit": {
+        "type": "CentralTransitive",
+        "requested": "[3.0.19, )",
+        "resolved": "3.0.19",
+        "contentHash": "TlibhWRbxB2fl+w5XEtRtzuxsceDF18bNJIXsmDiHqlK+KN6PSKDeDQq1rEa3V712q0ouvKbYAiVCE+5DOkYdQ==",
+        "dependencies": {
+          "Serilog": "4.1.0",
+          "xunit.abstractions": "2.0.3",
+          "xunit.extensibility.core": "2.9.2",
+          "xunit.extensibility.execution": "2.9.2"
         }
       },
       "SharpCompress": {

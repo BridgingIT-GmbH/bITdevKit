@@ -21,7 +21,7 @@ public class EntityFrameworkOrchestrationRuntimeTests(ITestOutputHelper output)
     public async Task SweepOnceAsync_WhenStateTimeoutIsRecovered_CompletesWithEntityFrameworkPersistence()
     {
         var clock = new FakeOrchestrationClock();
-        await using var fixture = await CreateFixtureAsync(clock);
+        await using var fixture = await this.CreateFixtureAsync(clock);
 
         var instanceId = await CreateInstanceAsync<EfStateTimeoutOrchestration, EfRecoveryData>(fixture.ServiceProvider, new EfRecoveryData());
         await ContinueInstanceAsync(fixture.ServiceProvider, instanceId);
@@ -40,7 +40,7 @@ public class EntityFrameworkOrchestrationRuntimeTests(ITestOutputHelper output)
     public async Task SweepOnceAsync_WhenDelayWaitIsRecovered_DoesNotReplayActivityWithEntityFrameworkPersistence()
     {
         var clock = new FakeOrchestrationClock();
-        await using var fixture = await CreateFixtureAsync(clock);
+        await using var fixture = await this.CreateFixtureAsync(clock);
 
         var instanceId = await CreateInstanceAsync<EfDelayWaitOrchestration, EfRecoveryData>(fixture.ServiceProvider, new EfRecoveryData());
         await ContinueInstanceAsync(fixture.ServiceProvider, instanceId);
@@ -59,7 +59,7 @@ public class EntityFrameworkOrchestrationRuntimeTests(ITestOutputHelper output)
     public async Task ExecuteAsync_WhenCancellationCompensationFails_WithEntityFrameworkPersistence_ReportsFailedConsistently()
     {
         var clock = new FakeOrchestrationClock();
-        await using var fixture = await CreateFixtureAsync(clock);
+        await using var fixture = await this.CreateFixtureAsync(clock);
 
         var execute = await fixture.Runtime.ExecuteAsync<EfCancelCompensationFailureOrchestration, EfCompensationFailureData>(new EfCompensationFailureData());
         var wait = await fixture.Runtime.DispatchAndWaitAsync<EfCancelCompensationFailureOrchestration, EfCompensationFailureData>(
@@ -83,7 +83,7 @@ public class EntityFrameworkOrchestrationRuntimeTests(ITestOutputHelper output)
     public async Task ExecuteAsync_WhenParallelStateReenters_RerunsBranchesWithEntityFrameworkPersistence()
     {
         var clock = new FakeOrchestrationClock();
-        await using var fixture = await CreateFixtureAsync(clock);
+        await using var fixture = await this.CreateFixtureAsync(clock);
 
         var result = await fixture.Runtime.ExecuteAsync<EfParallelReentryOrchestration, EfParallelReentryData>(new EfParallelReentryData());
         var context = await fixture.Queries.GetContextAsync<EfParallelReentryData>(result.Value.InstanceId, fixture.ServiceProvider);
@@ -99,7 +99,7 @@ public class EntityFrameworkOrchestrationRuntimeTests(ITestOutputHelper output)
     public async Task SweepOnceAsync_WhenOneDueInstanceHasActiveLease_OtherEntityFrameworkInstancesStillAdvance()
     {
         var clock = new FakeOrchestrationClock();
-        await using var fixture = await CreateFixtureAsync(clock);
+        await using var fixture = await this.CreateFixtureAsync(clock);
 
         var leasedInstanceId = await CreateInstanceAsync<EfStateTimeoutOrchestration, EfRecoveryData>(fixture.ServiceProvider, new EfRecoveryData());
         var freeInstanceId = await CreateInstanceAsync<EfStateTimeoutOrchestration, EfRecoveryData>(fixture.ServiceProvider, new EfRecoveryData());
@@ -128,7 +128,7 @@ public class EntityFrameworkOrchestrationRuntimeTests(ITestOutputHelper output)
         await connection.OpenAsync();
 
         var services = new ServiceCollection();
-        ConfigureLogging(services);
+        this.ConfigureLogging(services);
         services.AddSingleton<IHostApplicationLifetime, TestHostApplicationLifetime>();
         services.AddSingleton<IOrchestrationClock>(clock);
         services.AddSingleton(new OrchestrationExecutionSettings { EnableBackgroundExecution = false });

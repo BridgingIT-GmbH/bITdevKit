@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modul
 /// <summary>
 /// Endpoints for subscription management including user self-service and admin operations.
 /// </summary>
-public class CoreSubscriptionEndpoints : EndpointsBase
+public class SubscriptionEndpoints : EndpointsBase
 {
     /// <summary>
     /// Maps the subscription-related endpoints to the specified route builder.

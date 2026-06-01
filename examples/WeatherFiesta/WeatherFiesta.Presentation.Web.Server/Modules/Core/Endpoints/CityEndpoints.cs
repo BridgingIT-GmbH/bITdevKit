@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modul
 /// <summary>
 /// Endpoints for city management operations including subscriptions, weather, and ingestion.
 /// </summary>
-public class CoreCityEndpoints : EndpointsBase
+public class CityEndpoints : EndpointsBase
 {
     /// <summary>
     /// Maps the city-related endpoints to the specified route builder.

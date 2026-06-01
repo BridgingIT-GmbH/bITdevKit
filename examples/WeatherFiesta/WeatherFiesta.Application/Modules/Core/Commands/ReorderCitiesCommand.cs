@@ -38,7 +38,7 @@ public partial class ReorderCitiesCommand
         var userCitiesResult = await UserCity.FindAllAsync(allSpec, null, cancellationToken);
         if (userCitiesResult.IsFailure)
         {
-            return Result<Unit>.Failure(userCitiesResult.Errors.Select(e => e.Message));
+            return userCitiesResult.Wrap<Unit>();
         }
 
         var userCities = userCitiesResult.Value;

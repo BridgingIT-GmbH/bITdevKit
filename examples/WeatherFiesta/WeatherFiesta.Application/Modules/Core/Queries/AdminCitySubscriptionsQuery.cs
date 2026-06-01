@@ -40,7 +40,7 @@ public partial class AdminCitySubscriptionsQuery
         var cityResult = await City.FindAllAsync(citySpec, null, cancellationToken);
         if (cityResult.IsFailure)
         {
-            return Result<List<AdminCitySubscriptionModel>>.Failure(cityResult.Errors.Select(e => e.Message));
+            return cityResult.Wrap<List<AdminCitySubscriptionModel>>();
         }
 
         var city = cityResult.Value.FirstOrDefault();
@@ -54,7 +54,7 @@ public partial class AdminCitySubscriptionsQuery
         var subscriptionsResult = await UserCity.FindAllAsync(subSpec, null, cancellationToken);
         if (subscriptionsResult.IsFailure)
         {
-            return Result<List<AdminCitySubscriptionModel>>.Failure(subscriptionsResult.Errors.Select(e => e.Message));
+            return subscriptionsResult.Wrap<List<AdminCitySubscriptionModel>>();
         }
 
         var subscriptions = subscriptionsResult.Value;

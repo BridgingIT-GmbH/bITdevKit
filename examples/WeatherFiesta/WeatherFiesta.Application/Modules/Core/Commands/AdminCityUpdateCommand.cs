@@ -52,7 +52,7 @@ public partial class AdminCityUpdateCommand
         var cityResult = await City.FindAllAsync(spec, null, cancellationToken);
         if (cityResult.IsFailure)
         {
-            return Result<CityModel>.Failure(cityResult.Errors.Select(e => e.Message));
+            return cityResult.Wrap<CityModel>();
         }
 
         var city = cityResult.Value.FirstOrDefault();
@@ -71,9 +71,9 @@ public partial class AdminCityUpdateCommand
         var result = await city.UpdateAsync(cancellationToken);
         if (result.IsFailure)
         {
-            return Result<CityModel>.Failure(result.Errors.Select(e => e.Message));
+            return result.Wrap<CityModel>();
         }
 
-        return Result<CityModel>.Success(mapper.Map<City, CityModel>(result.Value));
+        return result.Wrap(mapper.Map<City, CityModel>(result.Value));
     }
 }

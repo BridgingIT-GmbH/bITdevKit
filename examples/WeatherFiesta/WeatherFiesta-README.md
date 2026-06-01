@@ -38,7 +38,7 @@ Presentation    →  Minimal API endpoints, CoreModule registration
 | **Queries** | `CitySuggestionQuery`, `UserCitiesQuery`, `CityWeatherQuery`, `CitySunQuery`, `CityAlertsQuery`, `CityCompareQuery`, `CityExportQuery`, `CityWeatherExportQuery`, `CityRecommendationsQuery`, `DashboardQuery`, `UserProfileQuery`, `UserPreferencesQuery`, `UserSubscriptionQuery`, `AdminCitiesQuery`, `AdminCitySubscriptionsQuery`, `AdminUserSubscriptionsQuery`, `AdminUserSubscriptionQuery` |
 | **Models (DTOs)** | `CityModel`, `UserCityModel`, `CitySuggestionModel`, `CurrentWeatherModel`, `WeatherForecastModel`, `HourlyForecastModel`, `WeatherAlertModel`, `WeatherRecommendationModel`, `DashboardModel`, `UserProfileModel`, `UnitPreferencesModel`, `UserSubscriptionModel`, `AdminCityModel`, `AdminCityCreateModel`, `AdminCityUpdateModel`, `AdminCitySubscriptionModel` |
 | **Abstractions** | `IWeatherAgent` — ingests weather data; `IWeatherGeocodingClient` — city search/geocoding |
-| **Tasks** | `CoreIngestionJob` (Quartz scheduled weather ingestion), `CoreSubscriptionSeederTask` (seeds default subscriptions on startup) |
+| **Tasks** | `WeatherIngestionJob` (Quartz scheduled weather ingestion), `CoreSubscriptionSeederTask` (seeds default subscriptions on startup) |
 | **Messages** | `WeatherActivityMessage` / `WeatherActivityMessageHandler` |
 
 ### Infrastructure
@@ -240,7 +240,7 @@ Integration tests in `WeatherFiesta.IntegrationTests` use:
 - **No mocks for internal logic** — real handlers, ActiveEntity, and IRequester pipeline execute
 - **Only external HTTP services mocked** — `IWeatherAgent` and `IWeatherGeocodingClient` via NSubstitute
 - **Test authentication** — `TestAuthenticationHandler` returns a fully authenticated user with `CoreAdmin` role
-- **Seeded test data** — `WeatherFiestaTestData.SeedAsync` populates the InMemory database
+- **Seeded test data** — `TestData.SeedAsync` populates the InMemory database
 
 ```bash
 # Run integration tests
@@ -333,7 +333,7 @@ WeatherFiesta/
 │           │   ├── UserProfileQuery.cs
 │           │   └── UserSubscriptionQuery.cs
 │           └── Tasks/
-│               ├── CoreIngestionJob.cs
+│               ├── WeatherIngestionJob.cs
 │               └── CoreSubscriptionSeederTask.cs
 ├── WeatherFiesta.Infrastructure/
 │   └── Modules/
@@ -380,5 +380,5 @@ WeatherFiesta/
     ├── CoreUserEndpointsTests.cs
     ├── CoreWeatherEndpointsTests.cs
     ├── WeatherFiestaApplicationFactory.cs
-    └── WeatherFiestaTestData.cs
+    └── TestData.cs
 ```

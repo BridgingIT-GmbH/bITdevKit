@@ -47,7 +47,7 @@ public partial class CitySunQuery
         var subscriptionsResult = await UserCity.FindAllAsync(subSpec, null, cancellationToken);
         if (subscriptionsResult.IsFailure)
         {
-            return Result<CitySunResponse>.Failure(subscriptionsResult.Errors.Select(e => e.Message));
+            return subscriptionsResult.Wrap<CitySunResponse>();
         }
 
         var subscriptions = subscriptionsResult.Value;
@@ -60,7 +60,7 @@ public partial class CitySunQuery
         var forecastsResult = await WeatherForecast.FindAllAsync(forecastSpec, null, cancellationToken);
         if (forecastsResult.IsFailure)
         {
-            return Result<CitySunResponse>.Failure(forecastsResult.Errors.Select(e => e.Message));
+            return forecastsResult.Wrap<CitySunResponse>();
         }
 
         var forecasts = forecastsResult.Value;

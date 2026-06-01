@@ -119,7 +119,7 @@ public class CoreModule : WebModuleBase
                 .StartupDelay("00:00:30"), configuration)
             .WithSqlServerStore(moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default"))
             .WithBehavior<MetricsJobSchedulingBehavior>()
-            .WithJob<CoreIngestionJob>()
+            .WithJob<WeatherIngestionJob>()
                 .Cron(moduleConfiguration.IngestionCron)
                 .Named("core_ingestion")
                 .RegisterScoped()
@@ -135,12 +135,12 @@ public class CoreModule : WebModuleBase
         services.AddTransient<IConsoleCommand, CityResetConsoleCommand>();
 
         // Endpoints
-        services.AddEndpoints<CoreCityEndpoints>();
-        services.AddEndpoints<CoreWeatherEndpoints>();
-        services.AddEndpoints<CoreUserEndpoints>();
-        services.AddEndpoints<CoreDashboardEndpoints>();
-        services.AddEndpoints<CoreAdminEndpoints>();
-        services.AddEndpoints<CoreSubscriptionEndpoints>();
+        services.AddEndpoints<CityEndpoints>();
+        services.AddEndpoints<WeatherEndpoints>();
+        services.AddEndpoints<UserEndpoints>();
+        services.AddEndpoints<DashboardEndpoints>();
+        services.AddEndpoints<AdminEndpoints>();
+        services.AddEndpoints<SubscriptionEndpoints>();
 
         return services;
     }

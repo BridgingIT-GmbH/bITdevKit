@@ -9,7 +9,7 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modul
 /// Endpoints for administrative city management operations.
 /// All endpoints require the CoreAdmin role.
 /// </summary>
-public class CoreAdminEndpoints : EndpointsBase
+public class AdminEndpoints : EndpointsBase
 {
     /// <summary>
     /// Maps the admin endpoints to the specified route builder.

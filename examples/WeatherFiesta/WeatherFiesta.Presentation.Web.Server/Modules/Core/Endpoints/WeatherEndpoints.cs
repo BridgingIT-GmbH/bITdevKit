@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modul
 /// <summary>
 /// Endpoints for weather-related operations including alerts, sun data, comparison, and export.
 /// </summary>
-public class CoreWeatherEndpoints : EndpointsBase
+public class WeatherEndpoints : EndpointsBase
 {
     /// <summary>
     /// Maps the weather-related endpoints to the specified route builder.

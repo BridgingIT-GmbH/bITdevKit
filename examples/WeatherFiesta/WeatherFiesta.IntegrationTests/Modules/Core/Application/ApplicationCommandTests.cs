@@ -3,22 +3,25 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests;
+namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests.Application;
 
 /// <summary>
 /// Direct command handler tests using IRequester.SendAsync with InMemory EF Core.
 /// Tests the full pipeline (validation, retry, timeout, transactions) without HTTP.
 /// </summary>
-public class ApplicationCommandTests : IClassFixture<WeatherFiestaApplicationFactory>
+[Trait("Category", "Integration")]
+[Collection(WeatherFiestaTestCollection.Name)]
+public class ApplicationCommandTests
 {
     private readonly WeatherFiestaApplicationFactory factory;
     private readonly IRequester requester;
 
-    public ApplicationCommandTests(WeatherFiestaApplicationFactory factory)
+    public ApplicationCommandTests(WeatherFiestaApplicationFactory factory, ITestOutputHelper output)
     {
         this.factory = factory;
+        factory.SetOutput(output);
+        factory.ResetDatabaseAsync().GetAwaiter().GetResult();
         this.requester = factory.Services.GetRequiredService<IRequester>();
-        factory.SeedAsync().GetAwaiter().GetResult();
     }
 
     // ──────────────────────────────────────────────────────────────────────────────
@@ -102,7 +105,7 @@ public class ApplicationCommandTests : IClassFixture<WeatherFiestaApplicationFac
     {
         // Arrange
         await this.factory.ResetDatabaseAsync();
-        var command = new CityUnsubscribeCommand(WeatherFiestaTestData.LondonCityGuid.ToString());
+        var command = new CityUnsubscribeCommand(TestData.LondonCityGuid.ToString());
 
         // Act
         var result = await this.requester.SendAsync(command);
@@ -115,7 +118,7 @@ public class ApplicationCommandTests : IClassFixture<WeatherFiestaApplicationFac
     public async Task CityUnsubscribeCommand_WhenNotSubscribed_ReturnsFailure()
     {
         // Arrange — Berlin is not subscribed
-        var command = new CityUnsubscribeCommand(WeatherFiestaTestData.BerlinCityGuid.ToString());
+        var command = new CityUnsubscribeCommand(TestData.BerlinCityGuid.ToString());
 
         // Act
         var result = await this.requester.SendAsync(command);
@@ -150,7 +153,7 @@ public class ApplicationCommandTests : IClassFixture<WeatherFiestaApplicationFac
 
         // Act — set Paris as primary
         var result = await this.requester.SendAsync(
-            new SetPrimaryCityCommand(WeatherFiestaTestData.ParisCityGuid.ToString()));
+            new SetPrimaryCityCommand(TestData.ParisCityGuid.ToString()));
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -160,7 +163,7 @@ public class ApplicationCommandTests : IClassFixture<WeatherFiestaApplicationFac
     public async Task SetPrimaryCityCommand_WhenNotSubscribed_ReturnsFailure()
     {
         // Arrange
-        var command = new SetPrimaryCityCommand(WeatherFiestaTestData.BerlinCityGuid.ToString());
+        var command = new SetPrimaryCityCommand(TestData.BerlinCityGuid.ToString());
 
         // Act
         var result = await this.requester.SendAsync(command);
@@ -198,8 +201,8 @@ public class ApplicationCommandTests : IClassFixture<WeatherFiestaApplicationFac
         {
             CityIds =
             [
-                WeatherFiestaTestData.ParisCityGuid.ToString(),
-                WeatherFiestaTestData.LondonCityGuid.ToString()
+                TestData.ParisCityGuid.ToString(),
+                TestData.LondonCityGuid.ToString()
             ]
         };
         var result = await this.requester.SendAsync(command);
@@ -343,7 +346,7 @@ public class ApplicationCommandTests : IClassFixture<WeatherFiestaApplicationFac
     {
         // Arrange
         await this.factory.ResetDatabaseAsync();
-        var command = new AdminCityDeleteCommand(WeatherFiestaTestData.LondonCityGuid.ToString());
+        var command = new AdminCityDeleteCommand(TestData.LondonCityGuid.ToString());
 
         // Act
         var result = await this.requester.SendAsync(command);
@@ -376,7 +379,7 @@ public class ApplicationCommandTests : IClassFixture<WeatherFiestaApplicationFac
         await this.factory.ResetDatabaseAsync();
         var command = new AdminUserSubscriptionUpdateCommand
         {
-            UserId = WeatherFiestaTestData.TestUserId,
+            UserId = TestData.TestUserId,
             Model = new AdminSubscriptionUpdateModel
             {
                 Plan = "Pro",
@@ -400,7 +403,7 @@ public class ApplicationCommandTests : IClassFixture<WeatherFiestaApplicationFac
         // Arrange
         var command = new AdminUserSubscriptionUpdateCommand
         {
-            UserId = WeatherFiestaTestData.TestUserId,
+            UserId = TestData.TestUserId,
             Model = new AdminSubscriptionUpdateModel
             {
                 Plan = "NonExistent",

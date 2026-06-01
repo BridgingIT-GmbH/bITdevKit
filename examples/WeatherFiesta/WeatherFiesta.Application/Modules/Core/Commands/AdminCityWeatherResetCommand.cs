@@ -38,7 +38,7 @@ public partial class AdminCityWeatherResetCommand
         var cityResult = await City.FindAllAsync(spec, null, cancellationToken);
         if (cityResult.IsFailure)
         {
-            return Result<Unit>.Failure(cityResult.Errors.Select(e => e.Message));
+            return cityResult.Wrap<Unit>();
         }
 
         var city = cityResult.Value.FirstOrDefault();
@@ -52,7 +52,7 @@ public partial class AdminCityWeatherResetCommand
         var forecastsResult = await WeatherForecast.FindAllAsync(forecastSpec, null, cancellationToken);
         if (forecastsResult.IsFailure)
         {
-            return Result<Unit>.Failure(forecastsResult.Errors.Select(e => e.Message));
+            return forecastsResult.Wrap<Unit>();
         }
 
         foreach (var forecast in forecastsResult.Value)
@@ -65,7 +65,7 @@ public partial class AdminCityWeatherResetCommand
         var weathersResult = await CurrentWeather.FindAllAsync(weatherSpec, null, cancellationToken);
         if (weathersResult.IsFailure)
         {
-            return Result<Unit>.Failure(weathersResult.Errors.Select(e => e.Message));
+            return weathersResult.Wrap<Unit>();
         }
 
         foreach (var weather in weathersResult.Value)

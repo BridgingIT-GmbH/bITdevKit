@@ -23,13 +23,13 @@ public partial class UserSubscriptionQuery
         var userId = currentUserAccessor.UserId;
 
         var spec = new SubscriptionByUserSpecification(userId);
-        var subscriptionResult = await UserSubscription.FindOneAsync(spec, null, cancellationToken);
+        var subscriptionResult = await UserSubscription.FindAllAsync(spec, null, cancellationToken);
         if (subscriptionResult.IsFailure)
         {
-            return Result<UserSubscriptionModel>.Failure(subscriptionResult.Errors.Select(e => e.Message));
+            return subscriptionResult.Wrap<UserSubscriptionModel>();
         }
 
-        var subscription = subscriptionResult.Value;
+        var subscription = subscriptionResult.Value.FirstOrDefault();
         if (subscription is null)
         {
             // Auto-assign Free plan on first access
@@ -37,7 +37,7 @@ public partial class UserSubscriptionQuery
             var insertResult = await subscription.InsertAsync(cancellationToken);
             if (insertResult.IsFailure)
             {
-                return Result<UserSubscriptionModel>.Failure(insertResult.Errors.Select(e => e.Message));
+                return insertResult.Wrap<UserSubscriptionModel>();
             }
         }
 

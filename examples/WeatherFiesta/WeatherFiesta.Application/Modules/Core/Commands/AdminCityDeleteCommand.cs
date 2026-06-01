@@ -38,7 +38,7 @@ public partial class AdminCityDeleteCommand
         var cityResult = await City.FindAllAsync(spec, null, cancellationToken);
         if (cityResult.IsFailure)
         {
-            return Result<Unit>.Failure(cityResult.Errors.Select(e => e.Message));
+            return cityResult.Wrap<Unit>();
         }
 
         var city = cityResult.Value.FirstOrDefault();
@@ -52,7 +52,7 @@ public partial class AdminCityDeleteCommand
         var forecastsResult = await WeatherForecast.FindAllAsync(forecastSpec, null, cancellationToken);
         if (forecastsResult.IsFailure)
         {
-            return Result<Unit>.Failure(forecastsResult.Errors.Select(e => e.Message));
+            return forecastsResult.Wrap<Unit>();
         }
 
         foreach (var forecast in forecastsResult.Value)
@@ -65,7 +65,7 @@ public partial class AdminCityDeleteCommand
         var weathersResult = await CurrentWeather.FindAllAsync(weatherSpec, null, cancellationToken);
         if (weathersResult.IsFailure)
         {
-            return Result<Unit>.Failure(weathersResult.Errors.Select(e => e.Message));
+            return weathersResult.Wrap<Unit>();
         }
 
         foreach (var weather in weathersResult.Value)
@@ -78,7 +78,7 @@ public partial class AdminCityDeleteCommand
         var userCitiesResult = await UserCity.FindAllAsync(userCitySpec, null, cancellationToken);
         if (userCitiesResult.IsFailure)
         {
-            return Result<Unit>.Failure(userCitiesResult.Errors.Select(e => e.Message));
+            return userCitiesResult.Wrap<Unit>();
         }
 
         foreach (var userCity in userCitiesResult.Value)
@@ -90,7 +90,7 @@ public partial class AdminCityDeleteCommand
         var result = await city.DeleteAsync(cancellationToken);
         if (result.IsFailure)
         {
-            return Result<Unit>.Failure(result.Errors.Select(e => e.Message));
+            return Result<Unit>.Failure(result);
         }
 
         return Result<Unit>.Success(Unit.Value);

@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modul
 /// <summary>
 /// Endpoints for the weather dashboard aggregating cities, alerts, and recommendations.
 /// </summary>
-public class CoreDashboardEndpoints : EndpointsBase
+public class DashboardEndpoints : EndpointsBase
 {
     /// <summary>
     /// Maps the dashboard endpoints to the specified route builder.

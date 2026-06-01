@@ -3,23 +3,26 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests;
+namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests.Presentation;
 
 /// <summary>
 /// Integration tests for city management endpoints.
 /// Uses real IRequester pipeline with InMemory EF Core.
 /// Only external services (IWeatherGeocodingClient) are mocked.
 /// </summary>
-public class CoreCityEndpointsTests : IClassFixture<WeatherFiestaApplicationFactory>
+[Trait("Category", "Integration")]
+[Collection(WeatherFiestaTestCollection.Name)]
+public class CityEndpointsTests
 {
     private readonly HttpClient client;
     private readonly WeatherFiestaApplicationFactory factory;
 
-    public CoreCityEndpointsTests(WeatherFiestaApplicationFactory factory)
+    public CityEndpointsTests(WeatherFiestaApplicationFactory factory, ITestOutputHelper output)
     {
         this.factory = factory;
+        factory.SetOutput(output);
+        factory.ResetDatabaseAsync().GetAwaiter().GetResult();
         this.client = factory.CreateClient();
-        factory.SeedAsync().GetAwaiter().GetResult();
     }
 
     [Fact]
@@ -134,7 +137,7 @@ public class CoreCityEndpointsTests : IClassFixture<WeatherFiestaApplicationFact
         var cities = await response.Content.ReadFromJsonAsync<List<UserCityModel>>();
         cities.ShouldNotBeNull();
         cities.ShouldNotBeEmpty();
-        cities.ShouldContain(c => c.CityId == WeatherFiestaTestData.LondonCityGuid.ToString());
+        cities.ShouldContain(c => c.CityId == TestData.LondonCityGuid.ToString());
     }
 
     [Fact]
@@ -142,7 +145,7 @@ public class CoreCityEndpointsTests : IClassFixture<WeatherFiestaApplicationFact
     {
         // Arrange — reset DB so we have a clean state
         await this.factory.ResetDatabaseAsync();
-        var cityId = WeatherFiestaTestData.LondonCityGuid.ToString();
+        var cityId = TestData.LondonCityGuid.ToString();
 
         // Act
         var response = await this.client.DeleteAsync($"/api/core/cities/{cityId}");
@@ -177,7 +180,7 @@ public class CoreCityEndpointsTests : IClassFixture<WeatherFiestaApplicationFact
         await this.client.PostAsJsonAsync("/api/core/cities",
             new CityCreateModel { Name = "Paris", CountryCode = "FR" });
 
-        var parisId = WeatherFiestaTestData.ParisCityGuid.ToString();
+        var parisId = TestData.ParisCityGuid.ToString();
 
         // Act
         var response = await this.client.PutAsync($"/api/core/cities/{parisId}/primary", null);
@@ -193,7 +196,7 @@ public class CoreCityEndpointsTests : IClassFixture<WeatherFiestaApplicationFact
 
         // Act
         var response = await this.client.GetAsync(
-            $"/api/core/cities/{WeatherFiestaTestData.LondonCityGuid}/weather");
+            $"/api/core/cities/{TestData.LondonCityGuid}/weather");
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -208,7 +211,7 @@ public class CoreCityEndpointsTests : IClassFixture<WeatherFiestaApplicationFact
 
         // Act
         var response = await this.client.PostAsync(
-            $"/api/core/cities/{WeatherFiestaTestData.LondonCityGuid}/ingest", null);
+            $"/api/core/cities/{TestData.LondonCityGuid}/ingest", null);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.NoContent);

@@ -15,6 +15,7 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
 {
     private readonly string dbName = $"WeatherFiestaTestDb_{Guid.NewGuid():N}";
     private bool seeded;
+    private ITestOutputHelper output;
 
     /// <summary>Gets the mocked weather agent (external HTTP service).</summary>
     public IWeatherAgent WeatherAgent { get; } = Substitute.For<IWeatherAgent>();
@@ -24,6 +25,15 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
 
     /// <summary>Gets the fake current user accessor.</summary>
     public ICurrentUserAccessor CurrentUserAccessor { get; private set; }
+
+    /// <summary>
+    /// Sets the xUnit test output helper for logging integration test output.
+    /// Must be called before any service resolution or client creation.
+    /// </summary>
+    public void SetOutput(ITestOutputHelper output)
+    {
+        this.output = output;
+    }
 
     /// <inheritdoc/>
     public async Task InitializeAsync()
@@ -50,7 +60,7 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
         using var scope = this.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
         await dbContext.Database.EnsureCreatedAsync();
-        await WeatherFiestaTestData.SeedAsync(dbContext);
+        await TestData.SeedAsync(dbContext);
         this.seeded = true;
     }
 
@@ -64,7 +74,7 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
         var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
         await dbContext.Database.EnsureDeletedAsync();
         await dbContext.Database.EnsureCreatedAsync();
-        await WeatherFiestaTestData.SeedAsync(dbContext);
+        await TestData.SeedAsync(dbContext);
         this.seeded = true;
     }
 
@@ -134,8 +144,7 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
             // AddDbContext to avoid EF Core's IDatabaseProvider singleton conflict.
             // AddDbContext registers provider services that clash when SqlServer was registered first.
             var inMemoryOptions = new DbContextOptionsBuilder<CoreDbContext>()
-                .UseInMemoryDatabase(this.dbName)
-                .Options;
+                .UseInMemoryDatabase(this.dbName).Options;
             services.AddSingleton(inMemoryOptions);
             services.AddScoped<CoreDbContext>();
 
@@ -158,6 +167,17 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
                 options.DefaultChallengeScheme = "TestScheme";
             }).AddScheme<AuthenticationSchemeOptions, TestAuthenticationHandler>(
                 "TestScheme", _ => { });
+
+            // Configure logging with xUnit output
+            services.AddLogging(logging =>
+            {
+                logging.SetMinimumLevel(LogLevel.Debug);
+                logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
+                if (this.output is not null)
+                {
+                    logging.AddProvider(new XunitLoggerProvider(this.output));
+                }
+            });
         });
     }
 
@@ -184,7 +204,7 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
     private static ICurrentUserAccessor CreateFakeCurrentUserAccessor()
     {
         var fake = Substitute.For<ICurrentUserAccessor>();
-        fake.UserId.Returns(WeatherFiestaTestData.TestUserId);
+        fake.UserId.Returns(TestData.TestUserId);
         fake.UserName.Returns("Test User");
         fake.IsAuthenticated.Returns(true);
         return fake;
@@ -209,7 +229,7 @@ public class TestAuthenticationHandler : AuthenticationHandler<AuthenticationSch
     {
         var claims = new[]
         {
-            new Claim(ClaimTypes.NameIdentifier, WeatherFiestaTestData.TestUserId),
+            new Claim(ClaimTypes.NameIdentifier, TestData.TestUserId),
             new Claim(ClaimTypes.Name, "Test User"),
             new Claim(ClaimTypes.Role, "CoreAdmin")
         };

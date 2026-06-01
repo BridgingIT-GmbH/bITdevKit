@@ -91,10 +91,10 @@ public partial class AdminUserSubscriptionUpdateCommand
         var result = await subscription.UpdateAsync(cancellationToken);
         if (result.IsFailure)
         {
-            return Result<UserSubscriptionModel>.Failure(result.Errors.Select(e => e.Message));
+            return result.Wrap<UserSubscriptionModel>();
         }
 
-        return Result<UserSubscriptionModel>.Success(mapper.Map<UserSubscription, UserSubscriptionModel>(subscription));
+        return result.Wrap(mapper.Map<UserSubscription, UserSubscriptionModel>(subscription));
     }
 }
 

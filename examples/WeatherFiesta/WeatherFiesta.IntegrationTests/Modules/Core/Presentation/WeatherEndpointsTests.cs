@@ -3,22 +3,25 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests;
+namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests.Presentation;
 
 /// <summary>
 /// Integration tests for weather-related endpoints.
 /// Uses real IRequester pipeline with InMemory EF Core.
 /// </summary>
-public class CoreWeatherEndpointsTests : IClassFixture<WeatherFiestaApplicationFactory>
+[Trait("Category", "Integration")]
+[Collection(WeatherFiestaTestCollection.Name)]
+public class WeatherEndpointsTests
 {
     private readonly HttpClient client;
     private readonly WeatherFiestaApplicationFactory factory;
 
-    public CoreWeatherEndpointsTests(WeatherFiestaApplicationFactory factory)
+    public WeatherEndpointsTests(WeatherFiestaApplicationFactory factory, ITestOutputHelper output)
     {
         this.factory = factory;
+        factory.SetOutput(output);
+        factory.ResetDatabaseAsync().GetAwaiter().GetResult();
         this.client = factory.CreateClient();
-        factory.SeedAsync().GetAwaiter().GetResult();
     }
 
     [Fact]
@@ -42,7 +45,7 @@ public class CoreWeatherEndpointsTests : IClassFixture<WeatherFiestaApplicationF
 
         // Act
         var response = await this.client.GetAsync(
-            $"/api/core/cities/{WeatherFiestaTestData.LondonCityGuid}/sun?days=1");
+            $"/api/core/cities/{TestData.LondonCityGuid}/sun?days=1");
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -73,7 +76,7 @@ public class CoreWeatherEndpointsTests : IClassFixture<WeatherFiestaApplicationF
 
         // Act
         var response = await this.client.GetAsync(
-            $"/api/core/cities/{WeatherFiestaTestData.LondonCityGuid}/weather/export?days=3");
+            $"/api/core/cities/{TestData.LondonCityGuid}/weather/export?days=3");
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -89,20 +92,20 @@ public class CoreWeatherEndpointsTests : IClassFixture<WeatherFiestaApplicationF
 
         // Act
         var response = await this.client.GetAsync(
-            $"/api/core/cities/{WeatherFiestaTestData.LondonCityGuid}/recommendations");
+            $"/api/core/cities/{TestData.LondonCityGuid}/recommendations");
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var result = await response.Content.ReadFromJsonAsync<CityRecommendationsResponse>();
         result.ShouldNotBeNull();
-        result.CityId.ShouldBe(WeatherFiestaTestData.LondonCityGuid.ToString());
+        result.CityId.ShouldBe(TestData.LondonCityGuid.ToString());
     }
 
     [Fact]
     public async Task GetRecommendations_WhenNotSubscribed_ReturnsError()
     {
         // Arrange — use a city ID the user is not subscribed to
-        var unsubscribedCityId = WeatherFiestaTestData.BerlinCityGuid.ToString();
+        var unsubscribedCityId = TestData.BerlinCityGuid.ToString();
 
         // Act
         var response = await this.client.GetAsync(

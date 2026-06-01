@@ -35,7 +35,7 @@ public partial class UserProfileUpdateCommand
         var profileResult = await UserProfile.FindAllAsync(spec, null, cancellationToken);
         if (profileResult.IsFailure)
         {
-            return Result<UserProfileModel>.Failure(profileResult.Errors.Select(e => e.Message));
+            return profileResult.Wrap<UserProfileModel>();
         }
 
         var profile = profileResult.Value.FirstOrDefault();
@@ -49,10 +49,10 @@ public partial class UserProfileUpdateCommand
         var result = await profile.UpdateAsync(cancellationToken);
         if (result.IsFailure)
         {
-            return Result<UserProfileModel>.Failure(result.Errors.Select(e => e.Message));
+            return result.Wrap<UserProfileModel>();
         }
 
-        return Result<UserProfileModel>.Success(new UserProfileModel
+        return result.Wrap(new UserProfileModel
         {
             Id = profile.Id.Value.ToString(),
             Email = profile.Email,

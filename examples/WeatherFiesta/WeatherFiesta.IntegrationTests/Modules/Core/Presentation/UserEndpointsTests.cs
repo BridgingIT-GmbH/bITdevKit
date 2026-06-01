@@ -3,22 +3,25 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests;
+namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests.Presentation;
 
 /// <summary>
 /// Integration tests for user profile and preferences endpoints.
 /// Uses real IRequester pipeline with InMemory EF Core.
 /// </summary>
-public class CoreUserEndpointsTests : IClassFixture<WeatherFiestaApplicationFactory>
+[Trait("Category", "Integration")]
+[Collection(WeatherFiestaTestCollection.Name)]
+public class UserEndpointsTests
 {
     private readonly HttpClient client;
     private readonly WeatherFiestaApplicationFactory factory;
 
-    public CoreUserEndpointsTests(WeatherFiestaApplicationFactory factory)
+    public UserEndpointsTests(WeatherFiestaApplicationFactory factory, ITestOutputHelper output)
     {
         this.factory = factory;
+        factory.SetOutput(output);
+        factory.ResetDatabaseAsync().GetAwaiter().GetResult();
         this.client = factory.CreateClient();
-        factory.SeedAsync().GetAwaiter().GetResult();
     }
 
     [Fact]

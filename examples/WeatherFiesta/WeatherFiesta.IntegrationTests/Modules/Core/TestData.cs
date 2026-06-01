@@ -9,7 +9,7 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests;
 /// Static test data and seeding logic for WeatherFiesta integration tests.
 /// All entities have deterministic IDs for reliable assertions.
 /// </summary>
-public static class WeatherFiestaTestData
+public static class TestData
 {
     // ──────────────────────────────────────────────────────────────────────────────
     // User IDs
@@ -79,6 +79,41 @@ public static class WeatherFiestaTestData
         var londonSubscription = UserCity.Create(TestUserId, london.Id, isPrimary: true, displayOrder: 0);
         londonSubscription.Id = UserCityId.Create(LondonSubscriptionGuid);
         dbContext.UserCities.Add(londonSubscription);
+
+        // Current weather for recommendation and dashboard scenarios.
+        var londonWeather = CurrentWeather.Create(london.Id);
+        londonWeather.Temperature = 16m;
+        londonWeather.ApparentTemperature = 14m;
+        londonWeather.Humidity = 82;
+        londonWeather.WeatherCode = 51;
+        londonWeather.WindSpeed = 18m;
+        londonWeather.WindDirection = 225;
+        londonWeather.WindGusts = 32m;
+        londonWeather.Precipitation = 1.2m;
+        londonWeather.CloudCover = 90;
+        londonWeather.Pressure = 1008m;
+        londonWeather.RetrievedAt = DateTime.UtcNow;
+        dbContext.CurrentWeathers.Add(londonWeather);
+
+        var londonForecast = WeatherForecast.Create(london.Id);
+        londonForecast.ForecastDate = DateOnly.FromDateTime(DateTime.UtcNow);
+        londonForecast.DayWeatherCode = 51;
+        londonForecast.TemperatureMax = 17m;
+        londonForecast.TemperatureMin = 11m;
+        londonForecast.ApparentTemperatureMax = 15m;
+        londonForecast.ApparentTemperatureMin = 9m;
+        londonForecast.PrecipitationSum = 2.4m;
+        londonForecast.PrecipitationProbabilityMax = 70;
+        londonForecast.WindSpeedMax = 22m;
+        londonForecast.WindGustsMax = 38m;
+        londonForecast.DominantWindDirection = 225;
+        londonForecast.UvIndexMax = 3m;
+        londonForecast.SunshineDurationSeconds = 16200;
+        londonForecast.DaylightDurationSeconds = 54600;
+        londonForecast.Sunrise = DateTime.UtcNow.Date.AddHours(4).AddMinutes(50);
+        londonForecast.Sunset = DateTime.UtcNow.Date.AddHours(21).AddMinutes(20);
+        londonForecast.RetrievedAt = DateTime.UtcNow;
+        dbContext.WeatherForecasts.Add(londonForecast);
 
         // User profile
         var profile = UserProfile.Create(TestUserId, "test@example.com", "Test User");

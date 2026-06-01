@@ -3,22 +3,25 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests;
+namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests.Presentation;
 
 /// <summary>
 /// Integration tests for subscription management endpoints.
 /// Uses real IRequester pipeline with InMemory EF Core.
 /// </summary>
-public class CoreSubscriptionEndpointsTests : IClassFixture<WeatherFiestaApplicationFactory>
+[Trait("Category", "Integration")]
+[Collection(WeatherFiestaTestCollection.Name)]
+public class SubscriptionEndpointsTests
 {
     private readonly HttpClient client;
     private readonly WeatherFiestaApplicationFactory factory;
 
-    public CoreSubscriptionEndpointsTests(WeatherFiestaApplicationFactory factory)
+    public SubscriptionEndpointsTests(WeatherFiestaApplicationFactory factory, ITestOutputHelper output)
     {
         this.factory = factory;
+        factory.SetOutput(output);
+        factory.ResetDatabaseAsync().GetAwaiter().GetResult();
         this.client = factory.CreateClient();
-        factory.SeedAsync().GetAwaiter().GetResult();
     }
 
     [Fact]
@@ -35,7 +38,7 @@ public class CoreSubscriptionEndpointsTests : IClassFixture<WeatherFiestaApplica
         content.ShouldNotBeNull();
         content.Plan.ShouldBe("Free");
         content.Status.ShouldBe("Active");
-        content.UserId.ShouldBe(WeatherFiestaTestData.TestUserId);
+        content.UserId.ShouldBe(TestData.TestUserId);
     }
 
     [Fact]
@@ -57,7 +60,7 @@ public class CoreSubscriptionEndpointsTests : IClassFixture<WeatherFiestaApplica
     public async Task AdminGetUserSubscription_ReturnsOk()
     {
         // Arrange
-        var userId = WeatherFiestaTestData.TestUserId;
+        var userId = TestData.TestUserId;
 
         // Act
         var response = await this.client.GetAsync($"/api/core/admin/subscriptions/{userId}");
@@ -75,7 +78,7 @@ public class CoreSubscriptionEndpointsTests : IClassFixture<WeatherFiestaApplica
     {
         // Arrange
         await this.factory.ResetDatabaseAsync();
-        var userId = WeatherFiestaTestData.TestUserId;
+        var userId = TestData.TestUserId;
         var updateModel = new AdminSubscriptionUpdateModel
         {
             Plan = "Pro",

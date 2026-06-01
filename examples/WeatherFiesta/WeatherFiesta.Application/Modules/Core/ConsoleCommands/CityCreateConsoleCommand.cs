@@ -96,9 +96,9 @@ public class CityCreateConsoleCommand : ConsoleCommandBase, IGroupedConsoleComma
 
         // Step 2: Show what we found
         console.MarkupLine("[bold]Creating city:[/]");
-        console.MarkupLine($"  Name:       {Markup.Escape(geocodingResult.Name)}");
-        console.MarkupLine($"  Country:    {Markup.Escape(geocodingResult.Country)} ({Markup.Escape(geocodingResult.CountryCode)})");
-        console.MarkupLine($"  Timezone:   {Markup.Escape(geocodingResult.TimeZone)}");
+        console.MarkupLine($"  Name:       {Markup.Escape(geocodingResult.Name ?? "Unknown")}");
+        console.MarkupLine($"  Country:    {Markup.Escape(geocodingResult.Country ?? "Unknown")} ({Markup.Escape(geocodingResult.CountryCode ?? "N/A")})");
+        console.MarkupLine($"  Timezone:   {Markup.Escape(geocodingResult.TimeZone ?? "UTC")}");
         console.MarkupLine($"  Location:   {geocodingResult.Latitude}, {geocodingResult.Longitude}");
         if (geocodingResult.Elevation.HasValue)
         {
@@ -115,10 +115,10 @@ public class CityCreateConsoleCommand : ConsoleCommandBase, IGroupedConsoleComma
 
         var model = new AdminCityCreateModel
         {
-            Name = geocodingResult.Name,
-            Country = geocodingResult.Country,
-            CountryCode = geocodingResult.CountryCode,
-            TimeZone = geocodingResult.TimeZone,
+            Name = geocodingResult.Name ?? "Unknown",
+            Country = geocodingResult.Country ?? "Unknown",
+            CountryCode = geocodingResult.CountryCode ?? "XX",
+            TimeZone = geocodingResult.TimeZone ?? "UTC",
             Latitude = geocodingResult.Latitude,
             Longitude = geocodingResult.Longitude,
             Elevation = geocodingResult.Elevation,

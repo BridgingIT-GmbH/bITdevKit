@@ -30,7 +30,7 @@ public partial class UserCitiesQuery
         var userCitiesResult = await UserCity.FindAllAsync(spec, null, cancellationToken);
         if (userCitiesResult.IsFailure)
         {
-            return Result<List<UserCityModel>>.Failure(userCitiesResult.Errors.Select(e => e.Message));
+            return userCitiesResult.Wrap<List<UserCityModel>>();
         }
 
         var userCities = userCitiesResult.Value;
@@ -46,7 +46,7 @@ public partial class UserCitiesQuery
             var weatherResult = await CurrentWeather.FindAllAsync(weatherSpec, null, cancellationToken);
             if (weatherResult.IsFailure)
             {
-                return Result<List<UserCityModel>>.Failure(weatherResult.Errors.Select(e => e.Message));
+                return weatherResult.Wrap<List<UserCityModel>>();
             }
 
             var weather = weatherResult.Value.FirstOrDefault();

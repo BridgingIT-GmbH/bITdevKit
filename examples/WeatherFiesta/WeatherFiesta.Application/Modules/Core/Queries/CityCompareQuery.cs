@@ -47,7 +47,7 @@ public partial class CityCompareQuery
             var subsResult = await UserCity.FindAllAsync(subSpec, null, cancellationToken);
             if (subsResult.IsFailure)
             {
-                return Result<CityCompareResponse>.Failure(subsResult.Errors.Select(e => e.Message));
+                return subsResult.Wrap<CityCompareResponse>();
             }
 
             var subs = subsResult.Value;
@@ -60,7 +60,7 @@ public partial class CityCompareQuery
             var weatherResult = await CurrentWeather.FindAllAsync(weatherSpec, null, cancellationToken);
             if (weatherResult.IsFailure)
             {
-                return Result<CityCompareResponse>.Failure(weatherResult.Errors.Select(e => e.Message));
+                return weatherResult.Wrap<CityCompareResponse>();
             }
 
             var weather = weatherResult.Value.FirstOrDefault();
@@ -83,7 +83,7 @@ public partial class CityCompareQuery
         var userProfileResult = await UserProfile.FindAllAsync(userProfileSpec, null, cancellationToken);
         if (userProfileResult.IsFailure)
         {
-            return Result<CityCompareResponse>.Failure(userProfileResult.Errors.Select(e => e.Message));
+            return userProfileResult.Wrap<CityCompareResponse>();
         }
 
         var userProfile = userProfileResult.Value.FirstOrDefault();

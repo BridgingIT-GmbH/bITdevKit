@@ -42,7 +42,7 @@ public partial class SetPrimaryCityCommand
         var targetSubscriptionsResult = await UserCity.FindAllAsync(targetSpec, null, cancellationToken);
         if (targetSubscriptionsResult.IsFailure)
         {
-            return Result<Unit>.Failure(targetSubscriptionsResult.Errors.Select(e => e.Message));
+            return targetSubscriptionsResult.Wrap<Unit>();
         }
 
         var targetSubscriptions = targetSubscriptionsResult.Value;
@@ -56,7 +56,7 @@ public partial class SetPrimaryCityCommand
         var allUserCitiesResult = await UserCity.FindAllAsync(allSpec, null, cancellationToken);
         if (allUserCitiesResult.IsFailure)
         {
-            return Result<Unit>.Failure(allUserCitiesResult.Errors.Select(e => e.Message));
+            return allUserCitiesResult.Wrap<Unit>();
         }
 
         var allUserCities = allUserCitiesResult.Value;

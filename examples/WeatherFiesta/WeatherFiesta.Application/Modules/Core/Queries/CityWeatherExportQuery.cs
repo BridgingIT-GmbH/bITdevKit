@@ -47,7 +47,7 @@ public partial class CityWeatherExportQuery
         var subsResult = await UserCity.FindAllAsync(subSpec, null, cancellationToken);
         if (subsResult.IsFailure)
         {
-            return Result<CityExportResponse>.Failure(subsResult.Errors.Select(e => e.Message));
+            return subsResult.Wrap<CityExportResponse>();
         }
 
         var subs = subsResult.Value;
@@ -60,7 +60,7 @@ public partial class CityWeatherExportQuery
         var cityResult = await City.FindAllAsync(citySpec, null, cancellationToken);
         if (cityResult.IsFailure)
         {
-            return Result<CityExportResponse>.Failure(cityResult.Errors.Select(e => e.Message));
+            return cityResult.Wrap<CityExportResponse>();
         }
 
         var city = cityResult.Value.FirstOrDefault();
@@ -69,7 +69,7 @@ public partial class CityWeatherExportQuery
         var forecastsResult = await WeatherForecast.FindAllAsync(forecastSpec, null, cancellationToken);
         if (forecastsResult.IsFailure)
         {
-            return Result<CityExportResponse>.Failure(forecastsResult.Errors.Select(e => e.Message));
+            return forecastsResult.Wrap<CityExportResponse>();
         }
 
         var forecasts = forecastsResult.Value;

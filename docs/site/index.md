@@ -118,9 +118,9 @@ hide:
     <h3>Storage</h3>
     <p>Document and file storage abstractions, monitoring, behaviors and provider-based extensibility.</p>
   </a>
-  <a class="capability-card" href="reference/features-jobscheduling/">
-    <h3>Scheduling</h3>
-    <p>Startup tasks, background jobs and operational scheduling capabilities for hosted applications.</p>
+  <a class="capability-card" href="reference/features-jobs/">
+    <h3>Jobs</h3>
+    <p>Code-first durable scheduling with triggers, batches, history, maintenance jobs and source-level integrations.</p>
   </a>
   <a class="capability-card" href="reference/features-presentation-endpoints/">
     <h3>Presentation</h3>

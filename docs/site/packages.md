@@ -44,6 +44,7 @@ application abstractions:
 - `Application.Messaging`
 - `Application.Queueing`
 - `Application.Notifications`
+- `Application.Jobs`
 - `Application.JobScheduling`
 - `Application.Storage`
 - `Application.DataPorter`

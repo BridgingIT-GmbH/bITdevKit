@@ -12,9 +12,10 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 [IntegrationTest("Application")]
-public class EntityFrameworkOrchestrationRuntimeTests
+public class EntityFrameworkOrchestrationRuntimeTests(ITestOutputHelper output)
 {
     [Fact]
     public async Task SweepOnceAsync_WhenStateTimeoutIsRecovered_CompletesWithEntityFrameworkPersistence()
@@ -121,13 +122,13 @@ public class EntityFrameworkOrchestrationRuntimeTests
         (await WaitForInstanceAsync(fixture.Queries, leasedInstanceId, item => item.Status == OrchestrationStatus.Completed)).CurrentState.ShouldBe("Expired");
     }
 
-    private static async Task<TestFixture> CreateFixtureAsync(FakeOrchestrationClock clock)
+    private async Task<TestFixture> CreateFixtureAsync(FakeOrchestrationClock clock)
     {
         var connection = new SqliteConnection("Data Source=:memory:");
         await connection.OpenAsync();
 
         var services = new ServiceCollection();
-        services.AddLogging();
+        ConfigureLogging(services);
         services.AddSingleton<IHostApplicationLifetime, TestHostApplicationLifetime>();
         services.AddSingleton<IOrchestrationClock>(clock);
         services.AddSingleton(new OrchestrationExecutionSettings { EnableBackgroundExecution = false });
@@ -148,6 +149,16 @@ public class EntityFrameworkOrchestrationRuntimeTests
             serviceProvider.GetRequiredService<IOrchestrationService>(),
             serviceProvider.GetRequiredService<IOrchestrationQueryStore>(),
             serviceProvider.GetRequiredService<OrchestrationRecoveryService>());
+    }
+
+    private void ConfigureLogging(IServiceCollection services)
+    {
+        services.AddLogging(builder =>
+        {
+            builder.SetMinimumLevel(LogLevel.Debug);
+            builder.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
+            builder.AddProvider(new XunitLoggerProvider(output));
+        });
     }
 
     private static async Task<Guid> CreateInstanceAsync<TOrchestration, TData>(ServiceProvider serviceProvider, TData data)

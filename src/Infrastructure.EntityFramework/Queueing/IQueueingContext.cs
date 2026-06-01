@@ -1,7 +1,4 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Queueing;
-
-using BridgingIT.DevKit.Application.Queueing;
-
 /// <summary>
 /// Defines the Entity Framework capability contract required by the SQL-backed queue broker.
 /// </summary>

@@ -10,7 +10,7 @@ using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-public class OrchestrationRuntimeServiceTests
+public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : OrchestrationTestBase(output)
 {
     [Fact]
     public async Task DispatchAsync_WhenSignalWaitIsConfigured_PersistsWaitingStateAndCompletesAfterSignal()
@@ -584,9 +584,10 @@ public class OrchestrationRuntimeServiceTests
         history.Count(item => item.EventType == "TimerConsumed").ShouldBe(1);
     }
 
-    private static ServiceProvider CreateServices(Action<IServiceCollection> configure, IOrchestrationStorageProvider persistenceProvider = null)
+    private ServiceProvider CreateServices(Action<IServiceCollection> configure, IOrchestrationStorageProvider persistenceProvider = null)
     {
         var services = new ServiceCollection();
+        this.ConfigureLogging(services);
         if (persistenceProvider is not null)
         {
             services.AddSingleton(persistenceProvider);

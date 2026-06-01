@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Application.Jobs\Application.Jobs.csproj" />
     <ProjectReference Include="..\Application.Orchestrations\Application.Orchestrations.csproj" />
     <ProjectReference Include="..\Application.Identity\Application.Identity.csproj" />
     <ProjectReference Include="..\Application.Messaging\Application.Messaging.csproj" />
@@ -29,6 +30,7 @@
     <ProjectReference Include="..\Application.Notifications\Application.Notifications.csproj" />
     <ProjectReference Include="..\Application.Storage\Application.Storage.csproj" />
     <ProjectReference Include="..\Application.Utilities\Application.Utilities.csproj" />
+    <ProjectReference Include="..\Common.Options\Common.Options.csproj" />
     <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj" />
     <ProjectReference Include="..\Domain.Mediator\Domain.Mediator.csproj" />
     <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj" />

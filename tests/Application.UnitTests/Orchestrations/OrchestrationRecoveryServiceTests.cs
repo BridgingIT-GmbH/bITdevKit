@@ -12,7 +12,7 @@ using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-public class OrchestrationRecoveryServiceTests
+public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : OrchestrationTestBase(output)
 {
     [Fact]
     public async Task RepairWaitingInstanceAsync_WhenDelayWaitCrashesAfterWaitingSnapshot_PersistsMissingTimerWithoutReplayingActivity()
@@ -356,14 +356,14 @@ public class OrchestrationRecoveryServiceTests
         await hostedService.StopAsync(CancellationToken.None);
     }
 
-    private static ServiceProvider CreateServices(
+    private ServiceProvider CreateServices(
         Action<IServiceCollection> configure,
         FakeOrchestrationClock clock = null,
         IOrchestrationStorageProvider persistenceProvider = null,
         OrchestrationExecutionSettings settings = null)
     {
         var services = new ServiceCollection();
-        services.AddLogging();
+        this.ConfigureLogging(services);
         services.AddSingleton<IHostApplicationLifetime, TestHostApplicationLifetime>();
         services.AddSingleton(settings ?? new OrchestrationExecutionSettings { EnableBackgroundExecution = false });
         services.AddSingleton<IOrchestrationClock>(clock ?? new FakeOrchestrationClock());

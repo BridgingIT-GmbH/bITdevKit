@@ -16,7 +16,7 @@ The feature is intended for background work that belongs inside the application 
 
 Unlike the current JobScheduling feature, the new Jobs feature owns its runtime model, persistence model, trigger model, and management APIs. Durable providers coordinate multi-node execution through provider-backed locks or leases, which allows horizontally scaled workers to process large workloads while avoiding a full clustered scheduler design.
 
-The design keeps the public API provider-neutral. Cron handling uses a devkit-owned abstraction with a Cronos-backed default implementation, storage uses replaceable providers, and integrations with Requester, Notifier, Messaging, Queueing, and Orchestration use public feature abstractions. Requester and Notifier live in the Common namespace/package and may be referenced directly by Jobs; Messaging, Queueing, and Orchestration remain optional integration packages. This keeps the scheduler replaceable internally while giving application developers a stable `IJob`/`IJobExecutionContext` programming model.
+The design keeps the public API provider-neutral. Cron handling uses a devkit-owned abstraction with a Cronos-backed default implementation, storage uses replaceable providers, and integrations with Requester, Notifier, Messaging, Queueing, and Orchestration use public feature abstractions. Requester and Notifier live in the Common namespace/package and may be referenced directly by Jobs; Messaging, Queueing, and Orchestration own their Jobs integration extensions inside their existing feature packages and may only use Jobs contracts from Common.Abstractions, without referencing the Jobs runtime package. This keeps the scheduler replaceable internally while giving application developers a stable `IJob`/`IJobExecutionContext` programming model.
 
 ---
 
@@ -32,7 +32,7 @@ It includes:
 
 - shared `IJob`/`IJob<TData>` and `IJobExecutionContext`/`IJobExecutionContext<TData>` contracts that can live in `Common.Abstractions`
 - the `Application.Jobs` `JobBase`/`JobBase<TData>` base classes, concrete `JobExecutionContext` implementations and typed data access
-- job definitions, trigger definitions, data, metadata, groups, and modules
+- job definitions, trigger definitions, data, properties, groups, and modules
 - fluent registration and appsettings merge behavior
 - trigger types for manual, one-time, delayed, startup-delay, cron, calendar, and event-based scheduling
 - multiple triggers per job
@@ -57,7 +57,7 @@ It includes:
 - previous-run context hydration for delta processing
 - missed-job detection after downtime
 - dependency and chaining execution rules
-- host/worker targeting
+- host/scheduler instance targeting
 - lease acquisition, renewal, release, expiration, and recovery through provider abstractions
 - correlation id propagation into logs and telemetry
 
@@ -80,9 +80,9 @@ It includes:
 - previous-execution lookup
 - execution-history retention and purge support
 - query and metrics support for operational APIs
-- serializer integration for context data and metadata
-- model configuration/migration hooks for host applications
-- `DbContext` integration through a capability interface such as `IJobSchedulerContext`
+- serializer integration for context data and properties
+- annotated EF entities included in the host application's normal migration flow
+- `DbContext` integration through a capability interface such as `IJobsContext`
 
 Alternative providers may be added later, provided they preserve the same observable runtime behavior, especially occurrence identity, lease exclusivity, retry semantics, batch atomicity, batch roll-up behavior and execution-history behavior.
 
@@ -117,7 +117,7 @@ It includes:
 - orchestration integration (job starts orchestration)
 - built-in devkit maintenance jobs
 - scheduler and job xUnit harness integration
-- data mapping from job data and metadata into external messages/queue items/requests/notifications/orchestration starts
+- data mapping from job data and properties into external messages/queue items/requests/notifications/orchestration starts
 - shared job abstractions that may need to live in `Common.Abstractions` to avoid circular dependencies
 
 Integrations for features outside Common must remain optional. The scheduler core may reference Requester and Notifier common abstractions directly, but it must remain usable when no Requester/Notifier services are registered. Messaging, Queueing, Orchestration, presentation endpoints and durable providers must remain optional.
@@ -162,7 +162,7 @@ This glossary captures the working terminology used by the Jobs feature. Names m
 | Term                          | Meaning                                                                                                                                                  |
 | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Job                           | A unit of background work implemented as an `IJob` or derived from the base `JobBase` class.                                                             |
-| Job Definition                | The resolved in-memory representation of a registered job type, including stable name, display name, description, metadata, defaults, data type, concurrency, retry, timeout and trigger definitions. |
+| Job Definition                | The resolved in-memory representation of a registered job type, including stable name, display name, description, properties, defaults, data type, concurrency, retry, timeout and trigger definitions. |
 | Job Name                      | A stable identifier for a job definition. It is used by configuration, management APIs, query APIs and persisted runtime records.                        |
 | Job Display Name              | An optional human-readable name for dashboards, API clients and operational views. If omitted, the display name is resolved from the optional module name and dashified job type name. |
 | Job Group                     | A grouping value used for scoping, querying, operations or migration compatibility with the existing JobScheduling feature. If no group is configured, the resolved group is `DEFAULT`. |
@@ -180,12 +180,12 @@ This glossary captures the working terminology used by the Jobs feature. Names m
 | Execution History             | Append-only lifecycle records describing occurrence transitions, execution attempt transitions, operator actions, retry scheduling, leases and diagnostics. |
 | Previous Execution            | The immediately preceding execution attempt for the same occurrence. It is mainly useful when the current attempt is a retry.                             |
 | Previous Successful Execution | The latest successful execution for the same job and trigger before the current occurrence, used for delta processing.                                    |
-| JobExecutionContext           | The runtime context passed to a job through the `IJobExecutionContext` public contract. It exposes metadata, typed data, previous run information, cancellation, messages, correlation and control operations. |
+| JobExecutionContext           | The runtime context passed to a job through the `IJobExecutionContext` public contract. It exposes properties, typed data, previous run information, cancellation, messages, correlation and control operations. |
 | Data                          | Structured input supplied by a code-registered trigger or manual dispatch and exposed to the job through `IJobExecutionContext<TData>` as `ctx.Data`. `Unit` represents no input data. |
-| Metadata                      | Non-input key/value information attached to jobs, triggers, occurrences or executions for filtering, diagnostics or runtime decisions.                 |
-| Scheduler Instance            | One running scheduler host inside an application instance. It has an instance id used for leases, diagnostics and telemetry.                             |
-| Worker                        | A scheduler runtime component that acquires due occurrences and dispatches job executions.                                                               |
-| Worker Pool                   | The bounded set of workers or execution slots used to process jobs concurrently.                                                                         |
+| Properties                      | Non-input key/value information attached to jobs, triggers, occurrences or executions for filtering, diagnostics or runtime decisions.                 |
+| Scheduler Instance            | One running scheduler host inside an application instance. It has an instance id used for leases, diagnostics, telemetry and `TargetInstances(...)` matching. |
+| Worker                        | A scheduler runtime component or execution slot inside a scheduler instance that acquires due occurrences and dispatches job executions. It is not a public target identity. |
+| Worker Pool                   | The bounded set of workers or execution slots inside a scheduler instance used to process jobs concurrently.                                             |
 | Lease                         | A provider-backed ownership record that allows one scheduler instance to execute a due occurrence.                                                       |
 | Lock                          | A provider-specific mechanism used to implement lease acquisition or exclusive updates.                                                                  |
 | Lease Renewal                 | The act of extending ownership while a job is still running.                                                                                             |
@@ -196,11 +196,11 @@ This glossary captures the working terminology used by the Jobs feature. Names m
 | Durable Provider              | A storage provider that persists runtime state, occurrences, executions, history and leases across process restarts.                                    |
 | In-Memory Provider            | The default lightweight provider for tests, local development and transient workloads. It does not provide durable recovery across restarts.             |
 | Entity Framework Provider     | The first durable provider, integrating scheduler persistence into an application `DbContext`.                                                           |
-| `IJobSchedulerContext`        | Proposed capability interface implemented by an application `DbContext` to host scheduler persistence sets.                                              |
+| `IJobsContext`        | Proposed capability interface implemented by an application `DbContext` to host scheduler persistence sets.                                              |
 | Cron Trigger                  | A trigger based on a cron expression. The initial design supports 5-part cron and 6-part cron with seconds.                                              |
 | Cron Engine                   | The devkit-owned abstraction responsible for cron parsing, validation and occurrence calculation.                                                        |
 | Cronos Implementation         | The default cron engine implementation based on Cronos, hidden behind the devkit cron abstraction.                                                       |
-| Serializer                    | The scheduler-wide `ISerializer` used for context data, trigger data, occurrence data, metadata and retained diagnostic data. The default is `SystemTextJsonSerializer`. |
+| Serializer                    | The scheduler-wide `ISerializer` used for context data, trigger data, occurrence data, properties and retained diagnostic data. The default is `SystemTextJsonSerializer`. |
 | Time Zone                     | The explicit `TimeZoneInfo` used when calculating cron occurrences. Scheduler calculations start from UTC instants.                                      |
 | Calendar Trigger              | A trigger based on calendar-style schedules beyond direct cron expression strings.                                                                       |
 | Manual Trigger                | A trigger that allows a job to be dispatched explicitly through services or operations APIs.                                                             |
@@ -251,7 +251,7 @@ The Jobs feature is defined by the following core characteristics. These are the
 - Typed data contracts are inferred from `JobBase<TData>` and exposed through `IJobExecutionContext<TData>` or equivalent typed access.
 - `JobBase` is shorthand for `JobBase<Unit>` and represents a job with no data.
 - Inline lambda/delegate jobs may be supported as a lightweight convenience, but they still execute through the normal job definition, context, trigger and history pipeline.
-- Fluent configuration is the canonical authoring model; attributes and job properties may provide defaults or metadata when they do not obscure the runtime contract.
+- Fluent configuration is the canonical authoring model; attributes and job properties may provide defaults or properties when they do not obscure the runtime contract.
 - The runtime passes all execution state through `IJobExecutionContext`.
 - Method-based job handlers are intentionally not part of the target model.
 
@@ -259,7 +259,7 @@ The Jobs feature is defined by the following core characteristics. These are the
 
 - A job can have one or more triggers.
 - Supported trigger types include manual, one-time, delayed, startup-delay, cron, calendar and event-based triggers.
-- Trigger-level configuration can override job defaults for schedule, data, priority, retry policy, timeout, enabled state and worker targeting.
+- Trigger-level configuration can override job defaults for schedule, data, priority, retry policy, timeout, enabled state and scheduler instance targeting.
 - Event-based triggers are provider-neutral in the core and can be connected through built-in Notifier adapters and optional Messaging/Queueing adapters. Requester-backed work is modeled as outbound job integration by default, not as an event source.
 - Triggers produce concrete occurrences; durable providers persist occurrences before execution.
 
@@ -292,7 +292,7 @@ The Jobs feature is defined by the following core characteristics. These are the
 ### Persistence and Lease Coordination
 
 - In-memory storage is the default for tests, local development and transient scenarios.
-- Durable providers persist runtime state, occurrences, executions, history and lease metadata.
+- Durable providers persist runtime state, occurrences, executions, history and lease properties.
 - Active job and trigger definitions come from the resolved startup registration, not from durable storage.
 - Durable providers coordinate multi-node execution through locks or leases.
 - Lease acquisition must prevent two scheduler instances from executing the same occurrence concurrently.
@@ -302,10 +302,10 @@ The Jobs feature is defined by the following core characteristics. These are the
 ### Entity Framework Provider
 
 - The first durable provider is Entity Framework.
-- EF persistence should attach to an application `DbContext` through a capability interface such as `IJobSchedulerContext`.
+- EF persistence should attach to an application `DbContext` through a capability interface such as `IJobsContext`.
 - The scheduler must not require a separate technical scheduler database or `DbContext`.
 - The consuming application owns migrations and schema evolution.
-- The EF provider should expose model configuration/migration hooks where needed.
+- Jobs EF entities should carry their mapping through attributes and EF conventions so implementing `IJobsContext` is enough for host migrations.
 
 ### Operational Surface
 
@@ -357,7 +357,7 @@ Its execution contract is defined by the following rules:
   - Durable execution is coordinated through provider-backed locks or leases.
   - A worker must acquire a lease for a due occurrence before executing it.
   - A worker must still hold a valid lease when persisting the execution result.
-  - Lease metadata must include enough owner and expiration information for diagnostics and recovery.
+  - Lease properties must include enough owner and expiration information for diagnostics and recovery.
 
 - **Bounded parallelism**
 
@@ -369,15 +369,15 @@ Its execution contract is defined by the following rules:
 - **Context-centered job execution**
 
   - Jobs receive all runtime data through `IJobExecutionContext`.
-  - The context includes job identity, trigger identity, occurrence identity, data, metadata, correlation id, scheduler instance id and cancellation token.
+  - The context includes job identity, trigger identity, occurrence identity, data, properties, correlation id, scheduler instance id and cancellation token.
   - The context includes previous-run information so jobs can process deltas.
   - Jobs should not depend on scheduler storage directly for ordinary execution state.
 
 - **Result-driven completion**
 
   - Job execution should complete with `Result` or `Result<T>` semantics.
-  - Successful executions persist completion metadata, result messages and duration.
-  - Failed executions persist failure metadata, messages, errors and duration.
+  - Successful executions persist completion properties, result messages and duration.
+  - Failed executions persist failure properties, messages, errors and duration.
   - Exceptions are captured by the runtime and passed through configured exception handling before final status is decided.
 
 - **Durable progression points**
@@ -439,7 +439,7 @@ The lease contract is:
 - a scheduler instance must acquire the lease before executing the occurrence
 - the scheduler instance must still hold a valid lease when persisting execution status
 - leases are time-bound and renewable so another node can recover work after node failure
-- lease owner identity and expiration metadata are persisted or otherwise durably coordinated
+- lease owner identity and expiration properties are persisted or otherwise durably coordinated
 - if a worker loses its lease, it must stop mutating the occurrence immediately
 - a new worker may continue only from the latest persisted occurrence and execution state
 - leases prevent concurrent execution of the same occurrence, but they do not by themselves make job business logic idempotent
@@ -459,12 +459,12 @@ The runtime shall process scheduled jobs using the following high-level algorith
 8. Create an execution record with status `Running`.
 9. Create a DI scope for the job execution.
 10. Resolve the `IJob` implementation.
-11. Hydrate `IJobExecutionContext`, including data, metadata, cancellation token, correlation id and previous-run information.
+11. Hydrate `IJobExecutionContext`, including data, properties, cancellation token, correlation id and previous-run information.
 12. Execute `IJob.ExecuteAsync(...)`.
 13. Capture returned `Result`, messages, errors, duration and any context updates.
-14. If execution succeeds, persist `Completed` status, completion metadata and execution history.
+14. If execution succeeds, persist `Completed` status, completion properties and execution history.
 15. If execution fails and a retry policy applies, persist failed-attempt history and schedule the next retry attempt for the same occurrence.
-16. If execution fails and no retry applies, persist terminal failure status and failure metadata.
+16. If execution fails and no retry applies, persist terminal failure status and failure properties.
 17. Release the lease after the final persisted state transition for the attempt.
 18. Continue scanning and dispatching until the scheduler stops or no eligible work remains.
 
@@ -595,10 +595,10 @@ Common trigger rules:
 
 - Trigger names must be stable and unique within a job.
 - Trigger type and trigger options must be validated during registration or configuration validation.
-- Trigger-level settings can override job-level defaults for data, priority, retry policy, timeout, concurrency behavior, enabled state, worker targeting and operational metadata.
+- Trigger-level settings can override job-level defaults for data, priority, retry policy, timeout, concurrency behavior, enabled state, scheduler instance targeting and operational properties.
 - Durable providers must persist trigger runtime state and materialized occurrences when the job or trigger is durable.
 - Trigger materialization must be idempotent. The same trigger input must not create duplicate occurrences after retries, restarts or multi-node scans.
-- Each materialized occurrence must include the originating job name, trigger name, trigger type, scheduled time when applicable, data, correlation metadata and deterministic identity data.
+- Each materialized occurrence must include the originating job name, trigger name, trigger type, scheduled time when applicable, data, correlation properties and deterministic identity data.
 - Disabled triggers must not create new occurrences, but existing occurrences should remain queryable and controllable unless explicitly cancelled or purged.
 
 ### Manual Trigger
@@ -608,7 +608,7 @@ A manual trigger creates an occurrence only when an application service, operato
 Expected behavior:
 
 - Manual triggers are useful for support operations, user-requested actions, administrative tasks and ad hoc reprocessing.
-- A manual dispatch can provide data and metadata that override or augment the trigger defaults.
+- A manual dispatch can provide data and properties that override or augment the trigger defaults.
 - Durable manual dispatch must persist the occurrence before execution so the request is visible to operations and can survive process failure.
 - Manual dispatch should still use the normal lease, retry, timeout, cancellation, context hydration and history rules.
 - Manual triggers can be enabled or disabled like other triggers. A disabled manual trigger should reject new dispatch requests with a `Result` failure.
@@ -687,7 +687,7 @@ Expected behavior:
 - Durable event-trigger adapters must persist or otherwise durably acknowledge an accepted event before materializing a job occurrence.
 - Event-trigger adapters must define the transaction boundary with the source feature. If the source feature cannot atomically persist the event and scheduler occurrence, the adapter must use an idempotency key so retries can safely re-materialize the occurrence.
 - Event identity, message id, notification id or an explicit idempotency key should be used when available to prevent duplicate occurrences.
-- Event data mapping should support typed job data and correlation metadata propagation.
+- Event data mapping should support typed job data and correlation properties propagation.
 - Event-trigger failures should be reported through `Result` values, logging, metrics and execution history where applicable.
 
 ### Custom Trigger
@@ -735,9 +735,9 @@ Exceptions thrown by jobs are treated as execution failures of the current execu
 
 The runtime shall:
 
-- persist the failed execution attempt, including exception metadata suitable for diagnostics
+- persist the failed execution attempt, including exception properties suitable for diagnostics
 - evaluate the trigger-level retry policy first, then the job-level retry policy, then the scheduler default
-- persist retry scheduling metadata before the next attempt becomes eligible
+- persist retry scheduling properties before the next attempt becomes eligible
 - preserve the original occurrence identity for all retry attempts so history remains understandable
 - mark the occurrence `Failed` when no retry or recovery path remains
 
@@ -764,7 +764,7 @@ Durable retry records shall include at least:
 - execution attempt number
 - failed-at timestamp
 - next retry due UTC
-- failure message and exception metadata when available
+- failure message and exception properties when available
 - scheduler instance that observed the failure
 
 Retries must re-enter the normal occurrence acquisition, lease, execution, cancellation, timeout and history pipeline.
@@ -803,7 +803,7 @@ Lease recovery is required for:
 - transient database or storage connectivity failures
 - scheduler instance restarts
 
-The provider shall persist enough lease metadata to diagnose and recover abandoned work:
+The provider shall persist enough lease properties to diagnose and recover abandoned work:
 
 - occurrence identifier
 - lease owner scheduler instance id
@@ -872,7 +872,7 @@ Dependency scope must be explicit:
 - **Chain dependency**: a successor occurrence created by chaining records the predecessor occurrence id and required predecessor outcome.
 - **Definition-level dependency templates**, if supported, only describe how to create occurrence dependencies during materialization; they are not runtime state by themselves.
 
-The persisted model must make dependency evaluation durable. Providers should represent dependency links as separate provider rows or as structured occurrence dependency metadata with equivalent query and concurrency behavior. A plain serialized blob that cannot be queried for blocked-work recovery is not sufficient for durable providers.
+The persisted model must make dependency evaluation durable. Providers should represent dependency links as separate provider rows or as structured occurrence dependency properties with equivalent query and concurrency behavior. A plain serialized blob that cannot be queried for blocked-work recovery is not sufficient for durable providers.
 
 Dependency links are not batch membership. Batches use `JobBatchOccurrence` to group parallel child occurrences for progress and bulk operations. `JobOccurrenceDependency` is used only when one occurrence must wait for another occurrence, including normal job chaining.
 
@@ -884,7 +884,7 @@ Dependency links should include at least:
 - dependency status, such as pending, satisfied, failed, skipped or cancelled
 - failure policy for the dependent occurrence
 - created UTC and updated UTC
-- optional reason, source chain id and metadata
+- optional reason, source chain id and properties
 
 When a due occurrence has unsatisfied dependencies:
 
@@ -902,7 +902,7 @@ After prerequisite retry exhaustion or terminal failure, the dependent occurrenc
 
 The default policy should be conservative: keep dependent work blocked and visible unless the registration explicitly chooses a terminal outcome. Manual retry of the prerequisite or dependent occurrence must re-evaluate dependency links and record the operator action in history.
 
-Chained jobs must be materialized as normal occurrences with their own trigger or chaining metadata and must use the same retry, lease, timeout, cancellation and history rules as directly scheduled jobs.
+Chained jobs must be materialized as normal occurrences with their own trigger or chaining properties and must use the same retry, lease, timeout, cancellation and history rules as directly scheduled jobs.
 
 The Jobs feature is not a SAGA orchestration engine. Rollback-style workflows should be modeled through explicit compensating jobs, chaining, or the Orchestration feature when workflow compensation semantics are required.
 
@@ -937,7 +937,7 @@ Batch dispatch items may create immediate or scheduled child occurrences. Depend
 
 Empty batches are valid. An empty batch starts as `Completed` for `RequireAllSucceeded` and can move back to `Processing` when child occurrences are attached later.
 
-Durable providers must persist batch state in queryable form. Batch membership should be represented by separate batch and batch-occurrence rows, or an equivalent provider model that supports querying by batch id, child occurrence id and child status. Batch membership must not exist only as opaque serialized occurrence metadata.
+Durable providers must persist batch state in queryable form. Batch membership should be represented by separate batch and batch-occurrence rows, or an equivalent provider model that supports querying by batch id, child occurrence id and child status. Batch membership must not exist only as opaque serialized occurrence properties.
 
 A batch record should include at least:
 
@@ -948,8 +948,8 @@ A batch record should include at least:
 - created UTC, started UTC, completed UTC and updated UTC where applicable
 - created, pending, processing, succeeded, failed, cancelled and finished child counts
 - latest failure summary
-- correlation id, causation id and safe metadata
-- archive state and audit metadata
+- correlation id, causation id and safe properties
+- archive state and audit properties
 
 A batch-child link should include at least:
 
@@ -958,7 +958,7 @@ A batch-child link should include at least:
 - child status projection
 - created UTC and updated UTC
 - optional sequence/order value
-- optional source step, source feature or source id metadata
+- optional source step, source feature or source id properties
 
 Batch status is a roll-up over persisted batch intent and child occurrence outcomes:
 
@@ -1006,7 +1006,7 @@ The runtime shall persist scheduler state whenever execution crosses a meaningfu
 This includes:
 
 - registration reconciliation state for currently registered jobs and triggers
-- job runtime-state changes such as operational enable/disable, pause/resume and last-seen metadata
+- job runtime-state changes such as operational enable/disable, pause/resume and last-seen properties
 - trigger runtime-state changes such as operational enable/disable, pause/resume and materialization watermarks
 - occurrence materialization
 - occurrence lease acquisition, renewal and release
@@ -1029,7 +1029,7 @@ The durable model shall include at least:
   - last seen UTC
   - optional operational enabled override
   - pause state and reason where supported
-  - audit metadata
+  - audit properties
 
 - **Trigger runtime state**
 
@@ -1041,7 +1041,7 @@ The durable model shall include at least:
   - pause state and reason where supported
   - last materialized due UTC
   - next due UTC projection where useful
-  - audit metadata
+  - audit properties
 
 - **Occurrences**
 
@@ -1052,7 +1052,7 @@ The durable model shall include at least:
   - due UTC
   - status
   - priority
-  - data and metadata
+  - data and properties
   - correlation identifier
   - idempotency key when available
   - attempt counters and retry linkage
@@ -1066,7 +1066,7 @@ The durable model shall include at least:
   - child count projections
   - latest failure summary
   - correlation and causation identifiers
-  - safe metadata and audit metadata
+  - safe properties and audit properties
   - archive state
 
 - **Batch child links**
@@ -1075,8 +1075,8 @@ The durable model shall include at least:
   - occurrence identifier
   - child status projection
   - optional sequence/order value
-  - source metadata when available
-  - audit metadata
+  - source properties when available
+  - audit properties
 
 - **Occurrence dependencies**
 
@@ -1086,13 +1086,13 @@ The durable model shall include at least:
   - required terminal outcome or accepted status set
   - dependency status
   - dependency failure policy
-  - reason and source metadata
-  - audit metadata
+  - reason and source properties
+  - audit properties
 
 - **Execution history**
 
   - append-oriented records describing execution start, completion, failure, retry, timeout, cancellation, interruption, pause/resume and terminal outcomes
-  - each record includes UTC timestamp, job name, trigger name, occurrence id, execution id, scheduler instance id and relevant metadata
+  - each record includes UTC timestamp, job name, trigger name, occurrence id, execution id, scheduler instance id and relevant properties
   - exception details suitable for diagnostics without requiring provider-specific access
 
 - **Lease records**
@@ -1127,7 +1127,7 @@ The auditability contract is:
 - mutable persisted scheduler records should also store `CreatedBy` and `UpdatedBy` when a current user identity is available
 - this applies at least to job runtime state, trigger runtime state, occurrences, executions, leases where persisted, and operational maintenance records where applicable
 - append-oriented execution history shall capture `RecordedAt` and, when available, `RecordedBy` for the recorded scheduler action
-- audit metadata shall be updated as registration state is reconciled, runtime overrides are changed, occurrences are materialized, executions progress, and maintenance actions are performed
+- audit properties shall be updated as registration state is reconciled, runtime overrides are changed, occurrences are materialized, executions progress, and maintenance actions are performed
 
 The runtime and provider may use `ICurrentUserAccessor` to resolve the current user identity for these audit fields.
 
@@ -1185,7 +1185,7 @@ The provider contract shall cover at least:
 - atomic batch acceptance and attach support
 - previous execution lookup
 - scheduler querying for operations, endpoints and dashboards
-- serializer integration for context data and metadata
+- serializer integration for context data and properties
 
 Provider implementations must preserve the same observable behavior, especially:
 
@@ -1220,7 +1220,7 @@ The runtime needs the following minimum abstractions.
 - **`IJobRuntimeStateStore`**
 
   - Stores and loads durable runtime state for registered jobs.
-  - Updates operational enabled overrides, pause state and last-seen registration metadata.
+  - Updates operational enabled overrides, pause state and last-seen registration properties.
   - Marks stale runtime state for jobs that are no longer registered.
   - Never creates active job definitions without a matching registration.
 
@@ -1281,7 +1281,7 @@ The runtime needs the following minimum abstractions.
 
 - **`ISerializer`**
 
-  - Serializes `IJobExecutionContext.Data`, trigger data, occurrence data, metadata and retained diagnostic data.
+  - Serializes `IJobExecutionContext.Data`, trigger data, occurrence data, properties and retained diagnostic data.
   - Deserializes persisted data back into the typed job data model.
   - Keeps data persistence provider-neutral and avoids leaking storage representation into the runtime.
   - The Jobs feature shall use `BridgingIT.DevKit.Common.ISerializer`.
@@ -1326,7 +1326,7 @@ The abstractions should be composable and provider-neutral.
 The provider model shall follow this responsibility shape:
 
 ```csharp
-public interface IJobSchedulerStoreProvider
+public interface IJobStoreProvider
 {
     IJobRuntimeStateStore JobStates { get; }
     IJobTriggerRuntimeStateStore TriggerStates { get; }
@@ -1642,14 +1642,14 @@ Occurrence list models shall support operational list views. Each row should inc
 Occurrence detail models shall include:
 
 - the same row summary fields
-- sanitized job data and metadata previews
+- sanitized job data and properties previews
 - parameter names and values when safe to expose
 - full attempt summary with execution ids, status, duration, result messages and error summary
 - state history timeline records
-- lease and recovery metadata
+- lease and recovery properties
 - links or ids for batch, source feature, source id, causation id and related orchestration/message/queue records where available
 
-`GET /api/_system/jobs/retries` is a filtered occurrence view optimized for retry pages. It shall return retry-scheduled or retryable failed occurrences with retry attempt count, max attempts, reason/error summary, retry due time, created time, job display and paging metadata. It shall support the same paging and page-size options as occurrence lists.
+`GET /api/_system/jobs/retries` is a filtered occurrence view optimized for retry pages. It shall return retry-scheduled or retryable failed occurrences with retry attempt count, max attempts, reason/error summary, retry due time, created time, job display and paging properties. It shall support the same paging and page-size options as occurrence lists.
 
 `GET /api/_system/jobs/batches` shall return batch summaries. Each row should include batch id, display id, description, current status, progress percentage, child occurrence counts by status, created UTC, started UTC, completed UTC, latest failure summary and whether bulk operations are available.
 
@@ -1659,12 +1659,12 @@ Occurrence detail models shall include:
 - current status and progress percentage
 - child occurrence counts by state
 - created, started, completed and updated timestamps
-- safe metadata and correlation values
+- safe properties and correlation values
 - capability flags for retry, cancel, pause, resume, archive/delete and selected-child operations
 
 `GET /api/_system/jobs/batches/{batchId}/occurrences` shall support filtering by child occurrence status and the same paging, sorting and selected bulk-action model as occurrence lists.
 
-`GET /api/_system/jobs/recurring` shall return recurring trigger rows with job name, trigger name, display name, cron/calendar expression, time zone, enabled/paused state, last occurrence, next due occurrence, last execution status, missed-occurrence policy and safe metadata.
+`GET /api/_system/jobs/recurring` shall return recurring trigger rows with job name, trigger name, display name, cron/calendar expression, time zone, enabled/paused state, last occurrence, next due occurrence, last execution status, missed-occurrence policy and safe properties.
 
 `GET /api/_system/jobs/servers` shall return scheduler server/instance rows with scheduler instance id, host name, process id where available, app version where available, started UTC, last heartbeat UTC, heartbeat age, queues/groups/modules handled, worker slot count, active execution count, acquired lease count and status such as `Active`, `Stale` or `Offline`.
 
@@ -1683,7 +1683,7 @@ public class JobDispatchRequest
     public string CorrelationId { get; set; }
     public string IdempotencyKey { get; set; }
     public object Data { get; set; }
-    public IDictionary<string, string> Metadata { get; set; }
+    public IDictionary<string, string> Properties { get; set; }
 }
 ```
 
@@ -1755,7 +1755,7 @@ The feature shall provide job-focused test utilities so job authors can test job
 The testing utility contract shall support at least:
 
 - creating a job execution context without starting a hosted scheduler
-- supplying typed data, metadata, correlation id, scheduler instance id and cancellation tokens
+- supplying typed data, properties, correlation id, scheduler instance id and cancellation tokens
 - supplying `PreviousExecution` and `PreviousSuccessfulExecution` records
 - executing a job inline for deterministic unit tests
 - registering jobs and triggers in a test scheduler runtime
@@ -1781,7 +1781,7 @@ The intended unit-test surface should provide a small job test harness around th
 - helpers for creating `IJobExecutionContext`
 - typed data helpers
 - previous-execution helpers
-- assertion helpers for result, messages and context metadata
+- assertion helpers for result, messages, context properties and context items
 - cancellation helpers
 
 Typical job logic testing should support a shape like:
@@ -1890,7 +1890,7 @@ Outbound job integrations should be testable without real Requester, Notifier, M
 The test utilities should support:
 
 - substituting fake or mocked `IMessageBroker`, `IQueueBroker`, `INotifier`, `IRequester`, and `IOrchestrationService`
-- mapping job data and metadata into typed outbound payloads
+- mapping job data and properties into typed outbound payloads
 - supplying correlation, causation, and idempotency values
 - asserting accepted, failed, and retried outbound integration steps
 - asserting resulting messages, errors, and execution history
@@ -1900,7 +1900,7 @@ The test utilities should support:
 The testing support is ready when:
 
 - a job can be executed in an xUnit test by providing dependencies and an `IJobExecutionContext`
-- a test can provide typed data, metadata and previous-run information
+- a test can provide typed data, properties and previous-run information
 - a test can assert `Result`, messages, history and status without querying provider internals
 - a test can run scheduler behavior with in-memory persistence and a controllable clock
 - a test can materialize and execute cron, one-time, delayed, startup-delay, and manual triggers deterministically
@@ -1928,7 +1928,7 @@ Operational queries and persisted history must make this distinction visible.
 - **Materialized**
 
   - A trigger has produced a concrete occurrence.
-  - The occurrence has a stable identifier, job name, trigger name, trigger type, due time, data, metadata and correlation data.
+  - The occurrence has a stable identifier, job name, trigger name, trigger type, due time, data, properties and correlation data.
   - Durable providers persist the occurrence before it can be acquired for execution.
 
 - **Scheduled**
@@ -1964,7 +1964,7 @@ Operational queries and persisted history must make this distinction visible.
 - **RetryScheduled**
 
   - An execution attempt failed or timed out and a retry policy selected a later retry.
-  - Retry metadata is persisted before the occurrence becomes eligible again.
+  - Retry properties is persisted before the occurrence becomes eligible again.
   - The occurrence remains linked to its original scheduled intent and previous attempts.
 
 - **Paused**
@@ -1976,19 +1976,19 @@ Operational queries and persisted history must make this distinction visible.
 - **Completed**
 
   - The occurrence finished successfully.
-  - Completion metadata, result messages, duration and history are persisted.
+  - Completion properties, result messages, duration and history are persisted.
   - Completed occurrences are no longer runnable but remain queryable until archived or purged according to retention settings.
 
 - **Failed**
 
   - The occurrence has no remaining retry or recovery path.
-  - Failure metadata, error details, final attempt information and history are persisted.
+  - Failure properties, error details, final attempt information and history are persisted.
   - Failed occurrences may be manually retried when the management API allows the transition.
 
 - **Cancelled**
 
   - The occurrence was cancelled before or during execution.
-  - Cancellation reason, actor metadata when available, timestamps and history are persisted.
+  - Cancellation reason, actor properties when available, timestamps and history are persisted.
   - Cancelled occurrences are terminal unless a management operation explicitly dispatches a replacement occurrence or starts an allowed retry attempt.
 
 - **Archived**
@@ -2029,7 +2029,7 @@ Execution attempts are durable execution records linked to one occurrence. Retri
 - **TimedOut**
 
   - The configured timeout elapsed.
-  - The runtime requests cancellation and records timeout metadata.
+  - The runtime requests cancellation and records timeout properties.
   - Timeout may lead to retry, failure or cancellation depending on policy.
 
 - **Cancelled**
@@ -2100,7 +2100,7 @@ While paused:
 - active trigger definitions should not materialize new occurrences when the trigger or job is paused
 - existing due occurrences must not start new execution attempts when their job, trigger or occurrence is paused
 - running executions continue unless the pause operation also requests cancellation or interruption
-- pause reason, actor metadata when available, and timestamps are persisted
+- pause reason, actor properties when available, and timestamps are persisted
 
 Resuming re-enables normal scheduling and execution progression. If a paused occurrence became overdue while paused, it is handled according to its missed-occurrence and recovery policy after resume.
 
@@ -2113,7 +2113,7 @@ Cancellation and interruption are distinct operational concepts.
 
 The runtime shall:
 
-- persist cancellation or interruption request metadata
+- persist cancellation or interruption request properties
 - propagate cancellation tokens to running jobs
 - record whether the job cooperatively observed cancellation
 - prevent stale workers from finalizing occurrences after lease loss
@@ -2127,7 +2127,7 @@ When retry is selected:
 
 1. The failed attempt is finalized in its execution record and append-only lifecycle history.
 2. Retry policy calculates the next retry due UTC.
-3. Retry metadata is persisted.
+3. Retry properties is persisted.
 4. The same occurrence transitions to `RetryScheduled` or equivalent provider state.
 5. When retry due time arrives, the occurrence becomes due again and must be reacquired through the normal lease pipeline.
 
@@ -2196,7 +2196,7 @@ The history model should record at least:
 - manual dispatch and operator-initiated retry
 - archival and purge actions where retained
 
-History records should include UTC timestamps, scheduler instance id, actor identity when available, reason text when supplied, correlation id and enough metadata to reconstruct the operational story of an occurrence.
+History records should include UTC timestamps, scheduler instance id, actor identity when available, reason text when supplied, correlation id and enough properties to reconstruct the operational story of an occurrence.
 
 ---
 
@@ -2204,7 +2204,7 @@ History records should include UTC timestamps, scheduler instance id, actor iden
 
 Each job execution operates with a dedicated `IJobExecutionContext`.
 
-The job context is the shared execution contract passed to `IJob.ExecuteAsync(...)`. It gives the job access to scheduler metadata, typed input data, previous-run information, messages, correlation data, cancellation state and controlled scheduler operations. `Application.Jobs` may provide concrete `JobExecutionContext` implementations, but public job implementations should depend on the interfaces.
+The job context is the shared execution contract passed to `IJob.ExecuteAsync(...)`. It gives the job access to scheduler properties, typed input data, previous-run information, messages, correlation data, cancellation state and controlled scheduler operations. `Application.Jobs` may provide concrete `JobExecutionContext` implementations, but public job implementations should depend on the interfaces.
 
 Unlike an orchestration context, a job context is execution-scoped. It is not intended to be a long-lived workflow state snapshot. Durable business state should be stored in application-owned persistence. The scheduler persists the runtime facts needed to explain, retry, recover and inspect the job execution.
 
@@ -2212,7 +2212,7 @@ Unlike an orchestration context, a job context is execution-scoped. It is not in
 
 The job context contains:
 
-- **Execution metadata**
+- **Execution identity and status**
 
   - job name
   - job type identity
@@ -2232,12 +2232,12 @@ The job context contains:
   - optional trigger, dispatch or event input data
   - typed data access through `ctx.Data` for jobs configured with typed data
   - untyped data access for generic infrastructure and diagnostics
-  - input source metadata, such as manual dispatch, cron, notification, message or queue adapter
+  - input source properties, such as manual dispatch, cron, notification, message or queue adapter
 
-- **Metadata and properties**
+- **Properties and items**
 
-  - immutable or scheduler-owned metadata from the job definition, trigger and occurrence
-  - execution-scoped properties for values produced during the current attempt
+  - immutable or scheduler-owned properties from the job definition, trigger and occurrence
+    - execution-scoped items for values produced during the current attempt
   - correlation and diagnostic properties used by logs, telemetry and history
 
 - **Previous run information**
@@ -2245,7 +2245,7 @@ The job context contains:
   - previous execution attempt for the same occurrence, when the current attempt is not the first attempt
   - previous successful execution for the same job/trigger identity before the current occurrence
   - optional job-level previous successful execution across triggers before the current occurrence
-  - previous status, timestamps, data source metadata, result messages and error details when retained
+  - previous status, timestamps, data source properties, result messages and error details when retained
 
 - **Runtime services**
 
@@ -2258,7 +2258,7 @@ The job context contains:
 
   - messages produced by the job
   - warnings or diagnostics
-  - execution-scoped result metadata
+    - execution-scoped result items
   - optional tags/properties to persist into execution history
 
 - **Control operations**
@@ -2276,8 +2276,8 @@ The job context contains:
 - Jobs should use constructor dependency injection for ordinary application services.
 - Context service-provider access, if exposed, is an advanced escape hatch and should not replace constructor injection for normal job dependencies.
 - Job execution is context-centered, but job results are still returned through `Result` or `Result<T>`.
-- Context messages and execution metadata supplement the returned result; they do not replace the result contract.
-- Context properties are execution-scoped unless explicitly persisted into execution history by the runtime.
+- Context messages and execution items supplement the returned result; they do not replace the result contract.
+- Context items are execution-scoped unless explicitly persisted into execution history by the runtime.
 - Context types and data must remain serialization-friendly when durable providers persist them.
 - Context should not hold non-durable live resources as persisted data, such as open streams, database connections or unmanaged handles.
 
@@ -2290,7 +2290,7 @@ The primary data contract is the job base type:
 - `JobBase<TData>` declares that the job expects `TData`.
 - `JobBase` is shorthand for `JobBase<Unit>` and declares that the job has no data.
 - `WithData<TData>()` is optional when the job type already inherits `JobBase<TData>`.
-- `WithData<TData>()` can still be used as explicit metadata, for non-generic `IJob` implementations, or when fluent configuration must declare the data contract for generated/dynamic job definitions.
+- `WithData<TData>()` can still be used as explicit properties, for non-generic `IJob` implementations, or when fluent configuration must declare the data contract for generated/dynamic job definitions.
 - If both `JobBase<TData>` and `WithData<TOther>()` are present and the types differ, startup validation must fail.
 - The typed input is exposed through the execution context as `ctx.Data`.
 
@@ -2318,7 +2318,7 @@ Equivalent APIs are acceptable if they preserve:
 
 - compile-time data type clarity at the job boundary
 - validation when the persisted data cannot be deserialized into the expected type
-- access to raw data source metadata for diagnostics
+- access to raw data source properties for diagnostics
 - provider-neutral serialization through `ISerializer`
 
 Jobs without data use `Unit`:
@@ -2345,7 +2345,7 @@ The context should expose:
 - `PreviousExecution`: the immediately preceding attempt for the same occurrence, populated only when a previous attempt exists for the occurrence
 - `PreviousSuccessfulExecution`: the most recent successful execution for the same job/trigger identity before the current occurrence
 - optional job-level previous successful execution across all triggers before the current occurrence
-- previous data source metadata when retained
+- previous data source properties when retained
 - previous messages and error summaries when retained
 - previous started, completed and duration values
 
@@ -2358,7 +2358,7 @@ The context may expose controlled operations that communicate intent back to the
 Supported operations should include:
 
 - adding execution messages
-- adding execution properties or tags
+- adding execution items or tags
 - requesting retry with a reason
 - requesting cancellation with a reason
 - requesting pause with a reason where policy allows it
@@ -2373,11 +2373,11 @@ The job context is part of the durable runtime contract, but it is not persisted
 
 The runtime shall persist the durable parts of the context at meaningful boundaries:
 
-- occurrence data and metadata when the occurrence is materialized
-- execution metadata when an attempt starts
+- occurrence data and properties when the occurrence is materialized
+- execution items when an attempt starts
 - previous-run references or enough identifiers to reconstruct them where needed
-- context messages and execution properties selected for history when an attempt completes, fails, times out, is cancelled or is interrupted
-- result messages, errors, exception metadata and duration at attempt finalization
+- context messages and execution items selected for history when an attempt completes, fails, times out, is cancelled or is interrupted
+- result messages, errors, exception properties and duration at attempt finalization
 - correlation id and idempotency key throughout occurrence and execution history
 
 The runtime should not persist arbitrary live context objects. Persisted context data must be serializable, provider-neutral and safe to inspect through operations APIs.
@@ -2391,9 +2391,9 @@ Jobs should use context data such as occurrence id, idempotency key, previous su
 For delta processing, the preferred pattern is:
 
 1. Read `PreviousSuccessfulExecution` from the context.
-2. Use its completion timestamp or checkpoint metadata as the lower bound.
+2. Use its completion timestamp or checkpoint properties as the lower bound.
 3. Process changed application data.
-4. Return `Result.Success()` with messages or execution metadata that explains the processed range.
+4. Return `Result.Success()` with messages or execution items that explain the processed range.
 
 ### Context Testing
 
@@ -2403,12 +2403,12 @@ Tests should be able to supply:
 
 - job, trigger, occurrence and execution identifiers
 - typed data
-- metadata and properties
+- properties and items
 - previous execution records
 - correlation id and idempotency key
 - cancellation tokens
 - test clock values
-- expected context messages and output metadata
+- expected context messages and output items
 
 ---
 
@@ -2427,7 +2427,7 @@ For durable providers:
 - trigger materialization must be idempotent
 - occurrence identity must be deterministic enough to prevent duplicates across restarts and multi-node scans
 - due occurrence selection must use stable ordering such as priority, due UTC and provider-defined tie-breakers
-- retry eligibility must be derived from persisted attempt and retry metadata
+- retry eligibility must be derived from persisted attempt and retry properties
 - missed-occurrence recovery must use persisted trigger runtime state, watermarks and due UTC values
 - a worker must not rely on worker-local memory as the only source for durable scheduling decisions
 
@@ -2472,7 +2472,7 @@ The scheduler should support:
 - per-job concurrency
 - per-trigger concurrency
 - optional group or module concurrency
-- host or worker targeting
+- host or scheduler instance targeting
 
 Concurrency limits must be evaluated before a due occurrence is started. When concurrency prevents execution, the occurrence should remain due or be represented as blocked so operations can explain why it is not running.
 
@@ -2507,7 +2507,7 @@ While paused:
 - paused jobs and triggers must not materialize new occurrences
 - paused occurrences must not start new execution attempts
 - running executions continue unless cancellation or interruption is requested explicitly
-- pause metadata and reason should be persisted for durable providers
+- pause properties and reason should be persisted for durable providers
 
 Resuming re-enables normal scheduler progression from the latest persisted state. If work became overdue while paused, missed-occurrence and recovery policies decide what is eligible after resume.
 
@@ -2819,7 +2819,7 @@ public class JobDispatchOptions
     public string TriggerName { get; set; }
     public string CorrelationId { get; set; }
     public string IdempotencyKey { get; set; }
-    public IReadOnlyDictionary<string, string> Metadata { get; set; }
+    public PropertyBag Properties { get; set; }
     public bool Durable { get; set; } = true;
 }
 
@@ -2861,7 +2861,7 @@ public class JobBatchCreateRequest
     public string CorrelationId { get; set; }
     public string CausationId { get; set; }
     public string IdempotencyKey { get; set; }
-    public IReadOnlyDictionary<string, string> Metadata { get; set; }
+    public PropertyBag Properties { get; set; }
 }
 
 public class JobBatchDispatchRequest : JobBatchCreateRequest
@@ -3007,7 +3007,7 @@ public class JobSchedulerMetricsRequest
 
 Additional models such as `JobDefinitionModel`, `JobTriggerModel`, `JobRecurringTriggerModel`, `JobOccurrenceModel`, `JobRetryModel`, `JobBatchModel`, `JobExecutionModel`, `JobLeaseModel`, `JobExecutionHistoryModel`, `JobSchedulerServerModel`, `JobDashboardModel`, `JobDashboardNavigationModel`, `JobDashboardOverviewModel`, `JobDashboardTimelineModel`, `JobBulkOperationFailureModel` and `JobSchedulerMetricsModel` should mirror the query and endpoint contracts described in the Observability & Management section.
 
-`JobDefinitionModel` must be built from the active registration model plus persisted runtime state. It must include at least job name, display name, job type identity, description, group, module, effective enabled state, data type metadata, trigger count and latest execution summary so dashboards and operational clients can present registered jobs without inspecting implementation types.
+`JobDefinitionModel` must be built from the active registration model plus persisted runtime state. It must include at least job name, display name, job type identity, description, group, module, effective enabled state, data type properties, trigger count and latest execution summary so dashboards and operational clients can present registered jobs without inspecting implementation types.
 
 Runtime-state query models should also expose whether a persisted runtime-state row is orphaned because its job or trigger is no longer registered. Orphaned rows are support/cleanup data, not active definitions.
 
@@ -3024,7 +3024,7 @@ The scheduler shall preserve these constraints across providers and integrations
 - A job must not mutate scheduler provider state directly for normal execution flow.
 - A job must receive scheduler state through `IJobExecutionContext`.
 - A job may use application services through dependency injection.
-- A job may produce messages and metadata through the context and returned `Result`.
+- A job may produce messages and properties through the context and returned `Result`.
 - A job may request control operations through the context only where policy allows it.
 - Provider implementations may optimize storage and query shape, but they may not weaken occurrence identity, lease, retry, history or query semantics.
 
@@ -3125,7 +3125,7 @@ Registration:
 ```csharp
 builder.Services.AddScoped<IDatabaseCleanupService, DatabaseCleanupService>();
 
-builder.Services.AddJobScheduler(builder.Configuration.GetSection("JobScheduler"), scheduler => scheduler
+builder.Services.AddJobScheduler(builder.Configuration.GetSection("JobScheduler"))
     .UseEntityFramework<AppDbContext>(storage => storage
         .HistoryRetention(TimeSpan.FromDays(30))
         .LeaseDuration(TimeSpan.FromMinutes(2))
@@ -3161,7 +3161,7 @@ builder.Services.AddJobScheduler(builder.Configuration.GetSection("JobScheduler"
                 RetentionDays: 30,
                 BatchSize: 500,
                 DryRun: true))
-            .Enabled())));
+            .Enabled()));
 ```
 
 On-demand execution:
@@ -3194,7 +3194,7 @@ Expected behavior:
 - The manual trigger does not create work until it is dispatched through the scheduler service or operations API.
 - Both triggers execute the same `DatabaseCleanupJob` implementation and receive a typed `DatabaseCleanupRequest`.
 - The job-level concurrency limit prevents recurring and manual cleanup from running at the same time.
-- Durable providers lease the occurrence before execution, persist history, and retain context messages and cleanup metadata for operations.
+- Durable providers lease the occurrence before execution, persist history, and retain context messages and cleanup properties for operations.
 
 ---
 
@@ -3256,7 +3256,7 @@ public class RecalculateOrderProjectionChunkJob(IOrderProjectionChunkService pro
 Registration:
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithJob<RecalculateOrderProjectionChunkJob>("orders-recalculate-projection-chunk", job => job
         .WithName("Recalculate Order Projection Chunk")
         .WithDescription("Recalculates order projections for a chunk of order ids.")
@@ -3268,7 +3268,7 @@ builder.Services.AddJobScheduler(scheduler => scheduler
                 maxDelay: TimeSpan.FromMinutes(10)))
         .AddTrigger("manual", trigger => trigger
             .Manual()
-            .Enabled())));
+            .Enabled()));
 ```
 
 Creating and dispatching the batch:
@@ -3466,7 +3466,7 @@ public class SendOrderImportNotificationJob(INotificationService notifications)
 Registration:
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithJob<ImportOrdersJob>("orders-import", job => job
         .WithName("Order Import")
         .WithDescription("Imports orders from an external source.")
@@ -3501,7 +3501,7 @@ builder.Services.AddJobScheduler(scheduler => scheduler
     .WithJob<SendOrderImportNotificationJob>("orders-import-notify", job => job
         .WithName("Order Import Notification")
         .WithDescription("Sends the completion notification for an order import.")
-        .WithTimeout(TimeSpan.FromMinutes(2))));
+        .WithTimeout(TimeSpan.FromMinutes(2)));
 ```
 
 Dispatching the first job starts the chain:
@@ -3561,8 +3561,8 @@ Common migration mapping:
 | `JobBase`                                             | new `JobBase` base class or direct `IJob` implementation                    |
 | `Process(IJobExecutionContext, CancellationToken)`    | `ExecuteAsync(IJobExecutionContext, CancellationToken)`                     |
 | `.WithJob<T>().Cron(...).Named(...).RegisterScoped()` | `.WithJob<T>("name", job => job.WithDescription("...").AddTrigger("trigger", t => t.Cron(...)))` |
-| `.WithData(key, value)`                               | `.Data(...)`, `.Metadata(...)`, or typed `IJobExecutionContext<TData>`      |
-| job group                                             | job group, module, or metadata-based scope                                  |
+| `.WithData(key, value)`                               | `.Data(...)`, `.WithProperty(...)`, or typed `IJobExecutionContext<TData>`      |
+| job group                                             | job group, module, or properties-based scope                                  |
 | `LastProcessedDate`                                   | `IJobExecutionContext.PreviousSuccessfulExecution.CompletedUtc` or equivalent |
 | `ElapsedMilliseconds`                                 | execution history duration                                                  |
 | `Status` / `ErrorMessage`                             | execution history status, messages, and errors                              |
@@ -3575,7 +3575,7 @@ Common migration mapping:
 
 The fluent API should make the common setup compact while still exposing enough detail for durable, multi-node workloads. The intended shape is one scheduler builder, one job builder per `IJob` implementation, and one trigger builder per trigger attached to that job.
 
-Fluent registration is the primary configuration source and the authoritative source of active job and trigger definitions. Appsettings-based configuration is intended for environment-specific values such as schedules, enabled state, retry settings and worker targeting, and it may only override matching registrations. Attribute-based and property-based configuration may provide defaults or metadata on job classes, but must remain visible through the same resolved job and trigger definitions as fluent configuration.
+Fluent registration is the primary configuration source and the authoritative source of active job and trigger definitions. Appsettings-based configuration is intended for environment-specific values such as schedules, enabled state, retry settings and scheduler instance targeting, and it may only override matching registrations. Attribute-based and property-based configuration may provide defaults or properties on job classes, but must remain visible through the same resolved job and trigger definitions as fluent configuration.
 
 Durable storage overlays runtime state onto the active registration model. It must not become the source of truth for job names, display names, descriptions, groups, modules, job types, trigger schedules or default configuration.
 
@@ -3588,7 +3588,7 @@ The resolved configuration model should support behavior/decorator registration 
 - repeated calls merge into one resolved scheduler definition before startup validation
 - reconciliation with durable runtime state happens after the active registration model is resolved
 - scheduler-wide settings must be compatible; incompatible duplicate infrastructure settings should fail validation
-- duplicate job names are allowed only when they refer to the same job type and compatible metadata
+- duplicate job names are allowed only when they refer to the same job type and compatible properties
 - duplicate trigger names for the same job are allowed only when they define compatible trigger configuration or an explicit override is configured
 - serializer configuration is scheduler-wide; repeated `AddJobScheduler(...)` calls must use the same compatible serializer configuration or fail startup validation
 - module registrations must not create separate scheduler runtimes unless the API explicitly supports named scheduler instances later
@@ -3600,7 +3600,7 @@ Module name resolution:
 - if `IModuleContextAccessor.Find(jobType)` returns no module, the job has no module name
 - if no explicit module name is supplied and no module can be resolved, the job has no module name
 - an explicit `.Module(...)` value wins over `IModuleContextAccessor`
-- module name is metadata for grouping, querying, operations, concurrency scopes and diagnostics; it must not change job identity by itself
+- module name is properties for grouping, querying, operations, concurrency scopes and diagnostics; it must not change job identity by itself
 
 Group resolution:
 
@@ -3634,7 +3634,7 @@ Enablement semantics:
 ### Basic Shape
 
 ```csharp
-builder.Services.AddJobScheduler(builder.Configuration.GetSection("JobScheduler"), scheduler => scheduler
+builder.Services.AddJobScheduler(builder.Configuration.GetSection("JobScheduler"))
     .InstanceId(ctx => ctx.Environment.MachineName)
     .StartupDelay(TimeSpan.FromSeconds(10))
     .WorkerPool(pool => pool
@@ -3664,14 +3664,14 @@ builder.Services.AddJobScheduler(builder.Configuration.GetSection("JobScheduler"
         .AddTrigger("nightly", trigger => trigger
             .Cron("0 0 2 * * *")
             .TimeZone(TimeZoneInfo.Utc)
-            .Enabled())));
+            .Enabled()));
 ```
 
 The top-level builder owns scheduler-wide concerns:
 
 - scheduler identity and startup behavior
 - worker pool settings
-- serializer configuration for context data and metadata
+- serializer configuration for context data and properties
 - storage provider and lease settings
 - global behaviors
 - configuration merge behavior
@@ -3685,7 +3685,7 @@ The job builder owns defaults for one `IJob` implementation:
 - optional display name for APIs, dashboard views and operational discovery
 - description for APIs, dashboard views and operational discovery
 - enabled/disabled state
-- metadata
+- properties
 - DI lifetime
 - default priority
 - default retry policy
@@ -3696,15 +3696,15 @@ The job builder owns defaults for one `IJob` implementation:
 Serializer configuration should follow the existing devkit builder style used by messaging and queueing infrastructure:
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
-    .Serializer(new SystemTextJsonSerializer()));
+builder.Services.AddJobScheduler()
+    .Serializer(new SystemTextJsonSerializer());
 ```
 
 Serializer behavior:
 
 - `.Serializer(ISerializer serializer)` configures the scheduler-wide serializer and returns the scheduler builder.
 - If `.Serializer(...)` is not called, the scheduler uses `SystemTextJsonSerializer`.
-- The serializer is used for `IJobExecutionContext.Data`, trigger data, occurrence data, metadata and retained diagnostic data.
+- The serializer is used for `IJobExecutionContext.Data`, trigger data, occurrence data, properties and retained diagnostic data.
 - Durable providers must use the configured serializer when writing and reading persisted scheduler data.
 - In-memory providers should use the same serializer boundary where serialization behavior is observable, so tests can catch serializer compatibility issues.
 - Null serializer configuration must not replace the current or default serializer.
@@ -3718,18 +3718,18 @@ The trigger builder owns execution conditions and trigger-specific overrides:
 - data
 - priority override
 - retry override
-- host/worker targeting
+- host/scheduler instance targeting
 
 Behavior/decorator registration should support both forms:
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithBehavior<JobLoggingBehavior>()
     .WithBehavior<JobMetricsBehavior>()
     .WithJob<GenerateDailyReportsJob>("daily-reports", job => job
         .WithName("Daily Reports")
         .WithDescription("Generates daily operational reports.")
-        .AddTrigger("nightly", trigger => trigger.Cron("0 0 2 * * *"))));
+        .AddTrigger("nightly", trigger => trigger.Cron("0 0 2 * * *")));
 
 [WithBehavior(typeof(JobLoggingBehavior))]
 public class GenerateDailyReportsJob : JobBase
@@ -3748,17 +3748,16 @@ public class GenerateDailyReportsJob : JobBase
 The in-memory provider is the default. Durable providers must expose lease settings because they own multi-node coordination.
 
 ```csharp
-builder.Services.AddJobScheduler(builder.Configuration.GetSection("JobScheduler"), scheduler => scheduler
+builder.Services.AddJobScheduler(builder.Configuration.GetSection("JobScheduler"))
     .UseEntityFramework<AppDbContext>(storage => storage
         .HistoryRetention(TimeSpan.FromDays(30))
         .LeaseDuration(TimeSpan.FromMinutes(2))
         .LeaseRenewalInterval(TimeSpan.FromSeconds(30))
         .MissedJobCheckInterval(TimeSpan.FromSeconds(15))
-        .MaxLeaseRecoveryBatchSize(100)
-        .UseModelConfiguration())
+        .MaxLeaseRecoveryBatchSize(100))
     .WorkerPool(pool => pool
         .MaxConcurrency(32)
-        .BatchSize(250)));
+        .BatchSize(250));
 ```
 
 The provider contract should make these concepts explicit:
@@ -3770,7 +3769,6 @@ The provider contract should make these concepts explicit:
 - `HistoryRetention`: how long execution history is retained before purge operations can remove it.
 - `BatchOperationSize`: optional limit for how many child occurrence state transitions one batch control operation should process in one provider transaction.
 - `BatchRollupMode`: provider choice for synchronous roll-up updates, provider-maintained projections or background roll-up repair, provided observable query results remain consistent after accepted operations.
-- `UseModelConfiguration()`: applies provider model configuration needed by the host application's migrations.
 
 Batch provider behavior must be explicit:
 
@@ -3795,7 +3793,7 @@ This means:
 The EF provider shall use a capability interface shape similar to:
 
 ```csharp
-public interface IJobSchedulerContext
+public interface IJobsContext
 {
     DbSet<JobRuntimeState> JobRuntimeStates { get; set; }
     DbSet<JobTriggerRuntimeState> JobTriggerRuntimeStates { get; set; }
@@ -3822,9 +3820,10 @@ The Jobs EF entities should follow the same conventions as the Entity Framework 
 - mutable rows use `[ConcurrencyCheck] Guid ConcurrencyVersion` and an `AdvanceConcurrencyVersion()` helper
 - auditable mutable rows use `CreatedDate`, `UpdatedDate`, `CreatedBy` and `UpdatedBy`
 - archive state uses `IsArchived` and `ArchivedUtc` where rows are retained but removed from the active working set
-- serialized job data is stored in a column named `Data`; metadata is stored in a column named `Metadata`
+- serialized job data is stored in a column named `Data`; properties is stored in a column named `Properties`
+- EF persistence entities use `DateTimeOffset` timestamp columns consistently with the other Entity Framework feature providers. Provider implementations must handle database-specific translation limits internally, such as SQLite client-side ordering for `DateTimeOffset` values, without requiring consumer `DbContext` model-builder configuration.
 
-The following shape is the minimum target model. The database stores runtime state and execution records, not authoritative job or trigger definitions. Implementations may add provider-specific column types or filtered indexes through `UseModelConfiguration()`, but they should preserve these property names, identity fields and indexes unless there is a documented provider reason. The status enum names are illustrative of the required Application-layer lifecycle enums and should map directly to the lifecycle states defined in this specification.
+The following shape is the minimum target model. The database stores runtime state and execution records, not authoritative job or trigger definitions. Jobs EF entities should be annotation/convention based so a host only has to implement `IJobsContext` and expose the sets. Implementations may add provider-specific column types or filtered indexes internally where the database supports them, but they should preserve these property names, identity fields and indexes unless there is a documented provider reason. The status enum names are illustrative of the required Application-layer lifecycle enums and should map directly to the lifecycle states defined in this specification.
 
 ```csharp
 using System.ComponentModel.DataAnnotations;
@@ -3893,10 +3892,10 @@ public class JobRuntimeState
     public DateTimeOffset? OrphanedUtc { get; set; }
 
     /// <summary>
-    /// Gets or sets serialized operational metadata.
+    /// Gets or sets serialized operational properties.
     /// </summary>
-    [Column("Metadata")]
-    public string SerializedMetadata { get; set; }
+    [Column("Properties")]
+    public string SerializedProperties { get; set; }
 
     /// <summary>
     /// Gets or sets the creation timestamp.
@@ -4018,10 +4017,10 @@ public class JobTriggerRuntimeState
     public DateTimeOffset? LastMaterializedDueUtc { get; set; }
 
     /// <summary>
-    /// Gets or sets serialized operational metadata.
+    /// Gets or sets serialized operational properties.
     /// </summary>
-    [Column("Metadata")]
-    public string SerializedMetadata { get; set; }
+    [Column("Properties")]
+    public string SerializedProperties { get; set; }
 
     /// <summary>
     /// Gets or sets the creation timestamp.
@@ -4166,10 +4165,10 @@ public class JobOccurrence
     public string SerializedData { get; set; }
 
     /// <summary>
-    /// Gets or sets serialized occurrence metadata.
+    /// Gets or sets serialized occurrence properties.
     /// </summary>
-    [Column("Metadata")]
-    public string SerializedMetadata { get; set; }
+    [Column("Properties")]
+    public string SerializedProperties { get; set; }
 
     /// <summary>
     /// Gets or sets the correlation identifier.
@@ -4302,10 +4301,10 @@ public class JobOccurrenceDependency
     public string Reason { get; set; }
 
     /// <summary>
-    /// Gets or sets serialized dependency metadata.
+    /// Gets or sets serialized dependency properties.
     /// </summary>
-    [Column("Metadata")]
-    public string SerializedMetadata { get; set; }
+    [Column("Properties")]
+    public string SerializedProperties { get; set; }
 
     /// <summary>
     /// Gets or sets the creation timestamp.
@@ -4425,10 +4424,10 @@ public class JobBatch
     public string CausationId { get; set; }
 
     /// <summary>
-    /// Gets or sets serialized batch metadata.
+    /// Gets or sets serialized batch properties.
     /// </summary>
-    [Column("Metadata")]
-    public string SerializedMetadata { get; set; }
+    [Column("Properties")]
+    public string SerializedProperties { get; set; }
 
     /// <summary>
     /// Gets or sets the UTC timestamp when the batch was created.
@@ -4814,10 +4813,10 @@ public class JobExecutionHistory
     public string SerializedData { get; set; }
 
     /// <summary>
-    /// Gets or sets serialized event metadata.
+    /// Gets or sets serialized event properties.
     /// </summary>
-    [Column("Metadata")]
-    public string SerializedMetadata { get; set; }
+    [Column("Properties")]
+    public string SerializedProperties { get; set; }
 
     /// <summary>
     /// Gets or sets the exception type when the event represents a failure.
@@ -4961,7 +4960,7 @@ Indexing requirements:
 - Occurrence, execution and history archive indexes must support retention and purge scans without walking the active working set.
 - Execution and history indexes must support detail timelines, retry diagnostics and retention/purge scans.
 - The execution completed-time index must support previous-success lookup without scanning all executions for a job.
-- Provider-specific model configuration may add filtered unique indexes for non-null idempotency keys and active leases where the database supports them.
+- Provider-specific internals may add filtered unique indexes for non-null idempotency keys and active leases where the database supports them.
 
 And the consuming application may compose it into its own context together with other feature contracts:
 
@@ -4969,7 +4968,7 @@ And the consuming application may compose it into its own context together with 
 public class AppDbContext : DbContext,
     IMessagingContext,
     IQueueingContext,
-    IJobSchedulerContext
+    IJobsContext
 {
     public DbSet<BrokerMessage> BrokerMessages { get; set; }
     public DbSet<QueueMessage> QueueMessages { get; set; }
@@ -4988,18 +4987,18 @@ public class AppDbContext : DbContext,
 
 Registration and implementation patterns should follow the existing feature style:
 
-- EF scheduler services use generic registration constrained as `where TContext : DbContext, IJobSchedulerContext`
+- EF scheduler services use generic registration constrained as `where TContext : DbContext, IJobsContext`
 - the provider reads and writes scheduler rows through the application's own `DbContext`
 - the provider controls its own `DbContext` scope by resolving scoped `TContext` instances from `IServiceProvider`
 - runtime code depends on scheduler persistence abstractions, not directly on Entity Framework APIs
-- provider model configuration must be available to the host application's migrations through `UseModelConfiguration()` or equivalent
+- implementing `IJobsContext` and exposing the Jobs sets must be enough for the host application's migrations to include the Jobs tables and indexes
 
 ### Multiple Triggers Per Job
 
 A single job can have several triggers. Each trigger creates its own occurrence stream but points to the same job implementation.
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithJob<SendAccountDigestJob>("account-digest", job => job
         .WithName("Account Digest")
         .WithDescription("Sends account digest notifications on configured schedules.")
@@ -5017,7 +5016,7 @@ builder.Services.AddJobScheduler(scheduler => scheduler
             .Enabled(false))
         .AddTrigger("manual", trigger => trigger
             .Manual()
-            .Enabled())));
+            .Enabled()));
 ```
 
 Trigger-level settings override job-level defaults. For example, a job can define a default retry policy while one high-priority trigger uses a shorter retry interval or a different data value.
@@ -5098,7 +5097,7 @@ The Cronos package is allowed here because it is a cron expression library, not 
 ### One-Time, Delayed, and Startup Triggers
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithJob<RebuildSearchIndexJob>("search-index-rebuild", job => job
         .WithName("Search Index Rebuild")
         .WithDescription("Rebuilds the search index after startup or on demand.")
@@ -5107,7 +5106,7 @@ builder.Services.AddJobScheduler(scheduler => scheduler
         .AddTrigger("scheduled-maintenance", trigger => trigger
             .At(new DateTimeOffset(2026, 6, 1, 2, 0, 0, TimeSpan.Zero)))
         .AddTrigger("manual", trigger => trigger
-            .Manual())));
+            .Manual()));
 ```
 
 `At(...)` represents a persisted one-time trigger. `StartupDelay(...)` is evaluated when the scheduler starts and should still go through the same occurrence and lease pipeline as other triggers.
@@ -5203,7 +5202,7 @@ The context should distinguish between:
 
 - `PreviousExecution`: the immediately preceding attempt for the same occurrence, populated for retry attempts
 - `PreviousSuccessfulExecution`: the most recent successful execution for the same job/trigger identity before the current occurrence
-- current execution metadata such as execution id, job name, trigger name, started UTC, correlation id, data, and scheduler instance id
+- current execution identity and status such as execution id, job name, trigger name, started UTC, correlation id, data, and scheduler instance id
 
 For jobs with multiple triggers, previous successful execution lookup should be scoped by job and trigger by default. A job-level lookup can be exposed separately for scenarios that need the latest successful execution across all triggers for the same job.
 
@@ -5257,10 +5256,10 @@ Example:
 - If no group is configured, validation must resolve the group to `DEFAULT`.
 - Trigger names must be unique within a job.
 - A job must have at least one code-registered trigger; manual-only jobs register a manual trigger in code.
-- Job context data, trigger data and metadata must be serializable by the configured scheduler serializer.
+- Job context data, trigger data and properties must be serializable by the configured scheduler serializer.
 - Durable triggers must have deterministic persisted identifiers.
 - Lease settings must be valid before the scheduler starts.
-- Host/worker targeting must fail clearly when no eligible worker can execute a trigger.
+- host/scheduler instance targeting must fail clearly when no eligible scheduler instance can execute a trigger.
 - Duplicate registrations from multiple modules should merge only when they refer to the same job and trigger identity with compatible configuration.
 - Persisted runtime-state rows that do not match an active registration must be treated as orphaned and must not be executable.
 
@@ -5281,9 +5280,9 @@ This is a meaningful product advantage for the devkit. Many schedulers and backg
 All integrations must preserve the core Jobs contracts:
 
 - integrations are part of normal job execution; they do not bypass the job runtime
-- job data, metadata, correlation, previous-run information, and execution context should be explicitly mappable into target payloads and target metadata
+- job data, properties, correlation, previous-run information, and execution context should be explicitly mappable into target payloads and target properties
 - integrations must use public feature abstractions rather than provider tables or transport-specific internals
-- integrations must propagate correlation id, causation id, tenant/module metadata, job identity, occurrence identity, and execution identity where available
+- integrations must propagate correlation id, causation id, tenant/module properties, job identity, occurrence identity, and execution identity where available
 - integrations must return `Result`/`Result<T>` for recoverable execution, mapping and validation failures unless the target abstraction uses exceptions/results differently
 - integrations must be testable with substitutes or fakes for the target abstractions
 - integrations must not make `Application.Jobs` depend directly on optional source feature packages unless those abstractions already live in Common
@@ -5297,7 +5296,7 @@ The target dependency shape is:
 - `Common.Abstractions` owns the smallest stable job contracts that other features may reference
 - `Application.Jobs` owns the scheduler runtime, worker pool, fluent registration, concrete trigger implementations, persistence abstractions, management services and query services
 - `Application.Jobs` may own Requester and Notifier outbound integrations because they depend only on Common abstractions
-- optional integration packages own feature-specific outbound integrations outside Common, for example `Application.Jobs.Queueing`, `Application.Jobs.Messaging`, `Application.Jobs.Pipelines` and `Application.Jobs.Orchestrations`
+- feature packages own feature-specific outbound integrations through Common.Abstractions job contracts without depending on the Jobs runtime package, for example `Application.Queueing`, `Application.Messaging`, `Application.Pipelines` and `Application.Orchestrations`
 - provider packages own durable implementations, for example `Infrastructure.EntityFramework.Jobs`
 - presentation packages own operational endpoints and optional dashboard assets
 
@@ -5345,7 +5344,7 @@ Typical outbound job integrations include:
 - start an orchestration (orchestration)
 - execute a Pipeline (pipeline)
 
-These integrations should use the public abstractions of the target feature and map `IJobExecutionContext<TData>` into the target payload, and into target-specific metadata only where that target feature exposes a clear metadata surface.
+These integrations should use the public abstractions of the target feature and map `IJobExecutionContext<TData>` into the target payload, and into target-specific properties only where that target feature exposes a clear properties surface.
 
 ### Declarative Integration Jobs
 
@@ -5361,12 +5360,12 @@ The target helper catalog should align conceptually with the orchestration featu
 - `ExecutePipelineJob` for `IPipelineFactory`
 - `StartOrchestrationJob` for `IOrchestrationService`
 
-The important design point is that these integrations share a declarative authoring style, not a single identical payload contract. Each target feature has its own payload model, metadata surface, success semantics, and follow-up behavior:
+The important design point is that these integrations share a declarative authoring style, not a single identical payload contract. Each target feature has its own payload model, properties surface, success semantics, and follow-up behavior:
 
 - requester jobs build request objects and may optionally map typed responses
 - notifier jobs build notification objects and usually only care whether publish succeeded
 - messaging jobs build broker message payloads plus broker-specific properties
-- queueing jobs build queue message payloads plus enqueue metadata
+- queueing jobs build queue message payloads plus enqueue properties
 - orchestration jobs build orchestration start data and may optionally capture the dispatched instance identity
 - pipeline jobs build pipeline contexts and may map pipeline state back after execution
 
@@ -5384,7 +5383,7 @@ Registration model:
 Example shape:
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithRequestSendJob<ExportCustomersCommand>("export-customers", job => job
         .WithDescription("Exports changed customers to storage each night.")
         .WithData<ExportCustomersData>()
@@ -5396,13 +5395,13 @@ builder.Services.AddJobScheduler(scheduler => scheduler
             }))
         .AddTrigger("nightly", trigger => trigger
             .Cron("0 0 2 * * *")
-            .Data(new ExportCustomersData("customers", DeltaMode.ChangedSincePreviousSuccess)))));
+            .Data(new ExportCustomersData("customers", DeltaMode.ChangedSincePreviousSuccess))));
 ```
 
 Equivalent command-oriented shape:
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithCommandJob<ExportCustomersCommand>("export-customers", job => job
         .WithDescription("Exports changed customers to storage each night.")
         .WithData<ExportCustomersData>()
@@ -5414,21 +5413,21 @@ builder.Services.AddJobScheduler(scheduler => scheduler
         })
         .AddTrigger("nightly", trigger => trigger
             .Cron("0 0 2 * * *")
-            .Data(new ExportCustomersData("customers", DeltaMode.ChangedSincePreviousSuccess)))));
+            .Data(new ExportCustomersData("customers", DeltaMode.ChangedSincePreviousSuccess))));
 ```
 
 Representative fluent shapes for the other integrations:
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithNotificationPublishJob<CustomerReviewedNotification>("notify-customer-review", job => job
         .WithData<CustomerReviewedJobData>()
         .WithNotification(notification => notification
-            .Notification(context => new CustomerReviewedNotification(context.Data.CustomerId)))));
+            .Notification(context => new CustomerReviewedNotification(context.Data.CustomerId))));
 ```
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithMessagingPublishJob<InvoicePaidMessage>("publish-invoice-paid", job => job
         .WithData<InvoicePaidJobData>()
         .WithMessage(message => message
@@ -5436,22 +5435,22 @@ builder.Services.AddJobScheduler(scheduler => scheduler
             {
                 InvoiceId = context.Data.InvoiceId,
                 Amount = context.Data.Amount,
-            }))));
+            })));
 ```
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithQueueingSendJob<GenerateInvoiceQueueMessage>("queue-invoice-processing", job => job
         .WithData<QueueInvoiceProcessingData>()
         .WithMessage(message => message
             .Message(context => new GenerateInvoiceQueueMessage
             {
                 InvoiceId = context.Data.InvoiceId,
-            }))));
+            })));
 ```
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithPipelineExecuteJob<OrderSyncPipeline, OrderSyncPipelineContext>("sync-order-pipeline", job => job
         .WithData<OrderSyncJobData>()
         .WithPipeline(pipeline => pipeline
@@ -5459,11 +5458,11 @@ builder.Services.AddJobScheduler(scheduler => scheduler
             {
                 OrderId = context.Data.OrderId,
             })
-            .MapFromContext((context, pipelineContext) => context.Items["SyncToken"] = pipelineContext.Token))));
+            .MapFromContext((context, pipelineContext) => context.Items["SyncToken"] = pipelineContext.Token)));
 ```
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithOrchestrationExecuteJob<OrderFulfillmentOrchestration, OrderFulfillmentData>("start-order-fulfillment", job => job
         .WithData<StartOrderFulfillmentJobData>()
         .WithOrchestration(orchestration => orchestration
@@ -5471,7 +5470,7 @@ builder.Services.AddJobScheduler(scheduler => scheduler
             {
                 OrderId = context.Data.OrderId,
             })
-            .StoreInstanceId((context, instanceId) => context.Items["ChildInstanceId"] = instanceId))));
+            .StoreInstanceId((context, instanceId) => context.Items["ChildInstanceId"] = instanceId)));
 ```
 
 Pseudo implementation:
@@ -5531,13 +5530,13 @@ These helpers should keep integration work explicit in the job definition:
 - the outbound payload is built from `IJobExecutionContext<TData>`
 - builders should primarily support constructing the outbound payload directly from context, for example through `Request(context => ...)`, `Notification(context => ...)`, `Message(context => ...)`, or equivalent integration-specific factories
 - builders may additionally support mutating a pre-created payload through hooks such as `MapToRequest(...)`, `MapToNotification(...)`, `MapToMessage(...)`, `MapToQueueMessage(...)`, `MapToPipelineContext(...)`, and `MapToOrchestrationData(...)` when that is useful
-- target-specific metadata mapping is optional and should only be exposed where the target abstraction has a clear metadata surface; the primary required contract is context-to-payload construction
-- requester-, pipeline-, and orchestration-based helpers may optionally map successful results back into job messages, execution metadata, or follow-up dispatch decisions
+- target-specific properties mapping is optional and should only be exposed where the target abstraction has a clear properties surface; the primary required contract is context-to-payload construction
+- requester-, pipeline-, and orchestration-based helpers may optionally map successful results back into job messages, execution items, or follow-up dispatch decisions
 - missing registrations, failed `Result`s, and thrown exceptions should fail the job through the normal job failure and retry behavior
 
 This means the feature should prefer a family of integration-specific builders with a consistent mental model over a single giant builder that tries to configure requests, notifications, queue messages, broker messages, and orchestration starts through the same property set.
 
-Unlike orchestration activities, these job helpers do not define workflow state transitions. Their customization points are outbound payload construction, target-specific metadata mapping where supported, trigger configuration, and optional success/failure handling inside the normal job execution model.
+Unlike orchestration activities, these job helpers do not define workflow state transitions. Their customization points are outbound payload construction, target-specific properties mapping where supported, trigger configuration, and optional success/failure handling inside the normal job execution model.
 
 Custom `IJob` and `JobBase` implementations remain supported and are still required for advanced cases such as multi-step integration flows, bespoke batching, conditional branching across several dependencies, or domain-specific side effects. The following sections keep those custom job shapes as the escape hatch and underlying execution model.
 
@@ -5546,10 +5545,10 @@ Custom `IJob` and `JobBase` implementations remain supported and are still requi
 All outbound job integrations must preserve the core Jobs contracts:
 
 - integrations are part of normal job execution; they do not bypass the job runtime
-- job data, correlation, previous-run information, and execution context should be explicitly mappable into target payloads, and into target-specific metadata where available
+- job data, correlation, previous-run information, and execution context should be explicitly mappable into target payloads, and into target-specific properties where available
 - integrations must use public feature abstractions rather than provider tables or transport-specific internals
 - integrations must be testable with substitutes or fakes for the target abstractions
-- correlation id, causation id, tenant/module metadata, job name, trigger name, occurrence id, and execution id should flow into target feature metadata where available
+- correlation id, causation id, tenant/module properties, job name, trigger name, occurrence id, and execution id should flow into target feature properties where available
 - the target feature remains owner of its own runtime state and dispatch lifecycle after acceptance
 
 Additional outbound-job-specific principles:
@@ -5595,7 +5594,7 @@ A job may publish a message through the public Messaging abstraction. The prefer
 Declarative shape:
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithMessagingPublishJob<InvoicePaidMessage>("publish-invoice-paid", job => job
         .WithData<InvoicePaidJobData>()
         .WithMessage(message => message
@@ -5603,7 +5602,7 @@ builder.Services.AddJobScheduler(scheduler => scheduler
             {
                 InvoiceId = context.Data.InvoiceId,
                 Amount = context.Data.Amount,
-            }))));
+            })));
 ```
 
 Example shape:
@@ -5633,7 +5632,7 @@ Requirements:
 - a declarative `PublishMessageJob` should be available through optional Messaging integration registration methods such as `WithMessagingPublishJob<TMessage>(...)`, and custom jobs must remain supported
 - jobs may publish messages through the public Messaging abstraction
 - job data should be explicitly mappable into message payload
-- message-specific metadata may be mapped when the messaging abstraction exposes a clear property surface
+- message-specific properties may be mapped when the messaging abstraction exposes a clear property surface
 - if Messaging is not registered or publish fails, the job execution fails with an error
 
 ### Job Queueing Integration
@@ -5643,14 +5642,14 @@ A job may enqueue a queue message through the public Queueing abstraction. The p
 Declarative shape:
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithQueueingSendJob<GenerateInvoiceQueueMessage>("queue-invoice-processing", job => job
         .WithData<QueueInvoiceProcessingData>()
         .WithMessage(message => message
             .Message(context => new GenerateInvoiceQueueMessage
             {
                 InvoiceId = context.Data.InvoiceId,
-            }))));
+            })));
 ```
 
 Example shape:
@@ -5679,7 +5678,7 @@ Requirements:
 - a declarative `SendQueueMessageJob` should be available through optional Queueing integration registration methods such as `WithQueueingSendJob<TQueueMessage>(...)`, and custom jobs must remain supported
 - jobs may enqueue queue messages through the public Queueing abstraction
 - job data should be explicitly mappable into queue payload
-- queue-specific metadata may be mapped when the queueing abstraction exposes a clear metadata surface
+- queue-specific properties may be mapped when the queueing abstraction exposes a clear properties surface
 - if Queueing is not registered or enqueue fails, the job execution fails with an error
 
 ### Job Requester Integration
@@ -5693,7 +5692,7 @@ Jobs should model background actions. Because of that, a dedicated query-oriente
 Declarative shape:
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithRequestSendJob<ExportCustomersCommand>("export-customers", job => job
         .WithData<ExportCustomersData>()
         .WithRequest(context => new ExportCustomersCommand
@@ -5701,7 +5700,7 @@ builder.Services.AddJobScheduler(scheduler => scheduler
                 Profile = context.Data.Profile,
                 DeltaMode = context.Data.DeltaMode,
                 SinceUtc = context.PreviousSuccessfulExecution?.CompletedUtc,
-            })));
+            }));
 ```
 
 Example shape:
@@ -5734,8 +5733,8 @@ Requirements:
 - `WithCommandJob<TCommand>(...)` should be a thin alias over `WithRequestSendJob<TRequest>(...)`, and `WithCommand(...)` should be a thin alias over `WithRequest(...)`
 - jobs may send requests through `IRequester`
 - job data should be explicitly mappable into request payload
-- request-specific metadata may be mapped when the requester abstraction exposes a clear request context surface
-- successful requester responses may be mapped into job messages, execution metadata, or follow-up behavior when the configured default job supports that shape
+- request-specific properties may be mapped when the requester abstraction exposes a clear request context surface
+- successful requester responses may be mapped into job messages, execution items, or follow-up behavior when the configured default job supports that shape
 - if Requester is not registered or send fails, the job execution fails with an error
 
 ### Job Notifier Integration
@@ -5745,11 +5744,11 @@ A job may publish a notification through `INotifier`. The preferred authoring mo
 Declarative shape:
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithNotificationPublishJob<CustomerReviewedNotification>("notify-customer-review", job => job
         .WithData<CustomerReviewedJobData>()
         .WithNotification(notification => notification
-            .Notification(context => new CustomerReviewedNotification(context.Data.CustomerId)))));
+            .Notification(context => new CustomerReviewedNotification(context.Data.CustomerId))));
 ```
 
 Example shape:
@@ -5780,7 +5779,7 @@ Requirements:
 - a declarative `PublishNotificationJob` should be available through a first-class base builder method such as `WithNotificationPublishJob<TNotification>(...)`, and custom jobs must remain supported
 - jobs may publish notifications through `INotifier`
 - job data should be explicitly mappable into notification payload
-- notification-specific metadata may be mapped when the notifier abstraction exposes a clear context surface
+- notification-specific properties may be mapped when the notifier abstraction exposes a clear context surface
 - if Notifier is not registered or publish fails, the job execution fails with an error
 
 ### Job Pipeline Integration
@@ -5790,7 +5789,7 @@ A job may execute a pipeline through the public pipeline abstractions. The prefe
 Declarative shape:
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithPipelineExecuteJob<OrderSyncPipeline, OrderSyncPipelineContext>("sync-order-pipeline", job => job
         .WithData<OrderSyncJobData>()
         .WithPipeline(pipeline => pipeline
@@ -5798,7 +5797,7 @@ builder.Services.AddJobScheduler(scheduler => scheduler
             {
                 OrderId = context.Data.OrderId,
             })
-            .MapFromContext((context, pipelineContext) => context.Items["SyncToken"] = pipelineContext.Token))));
+            .MapFromContext((context, pipelineContext) => context.Items["SyncToken"] = pipelineContext.Token)));
 ```
 
 Example shape:
@@ -5832,8 +5831,8 @@ Requirements:
 - a declarative `ExecutePipelineJob` should be available through optional Pipeline integration registration methods such as `WithPipelineExecuteJob<TPipeline, TPipelineContext>(...)`, and custom jobs must remain supported
 - jobs may execute pipelines through the public pipeline abstractions
 - job data should be explicitly mappable into pipeline context
-- pipeline-state mapping back into job items or execution metadata may be supported where the configured default job exposes that hook
-- successful pipeline execution may map pipeline state back into job messages, items, or execution metadata
+- pipeline-state mapping back into job items or execution items may be supported where the configured default job exposes that hook
+- successful pipeline execution may map pipeline state back into job messages, items, or execution items
 - if Pipeline integration is not registered or pipeline execution fails, the job execution fails with an error
 
 ### Job Orchestration Integration
@@ -5843,7 +5842,7 @@ A job may start an orchestration through the public orchestration service. The p
 Declarative shape:
 
 ```csharp
-builder.Services.AddJobScheduler(scheduler => scheduler
+builder.Services.AddJobScheduler()
     .WithOrchestrationExecuteJob<OrderFulfillmentOrchestration, OrderFulfillmentData>("start-order-fulfillment", job => job
         .WithData<StartOrderFulfillmentJobData>()
         .WithOrchestration(orchestration => orchestration
@@ -5851,7 +5850,7 @@ builder.Services.AddJobScheduler(scheduler => scheduler
             {
                 OrderId = context.Data.OrderId,
             })
-            .StoreInstanceId((context, instanceId) => context.Items["ChildInstanceId"] = instanceId))));
+            .StoreInstanceId((context, instanceId) => context.Items["ChildInstanceId"] = instanceId)));
 ```
 
 Example shape:
@@ -5883,8 +5882,8 @@ Requirements:
 - a declarative `StartOrchestrationJob` should be available through optional orchestration integration registration methods such as `WithOrchestrationExecuteJob<TOrchestration, TOrchestrationData>(...)`, and custom jobs must remain supported
 - jobs may start orchestrations through `IOrchestrationService`
 - job data should be explicitly mappable into orchestration start data
-- orchestration dispatch metadata and returned instance identifiers may be mapped when the orchestration abstractions expose that surface
-- successful orchestration dispatch results may be mapped into job messages or execution metadata when the configured default job supports that shape
+- orchestration dispatch properties and returned instance identifiers may be mapped when the orchestration abstractions expose that surface
+- successful orchestration dispatch results may be mapped into job messages or execution items when the configured default job supports that shape
 - if orchestration services are not registered or dispatch fails, the job execution fails with an error
 
 ### Built-In Maintenance Jobs
@@ -5916,7 +5915,7 @@ Acceptance criteria:
 
 - Given a maintenance job is registered, when it runs on multiple nodes, then lease rules prevent duplicate mutation of the same scheduler occurrence.
 - Given dry-run mode is enabled, when the job executes, then it records what would be changed without mutating target data.
-- Given a batch limit is configured, when more records match, then the job processes at most the configured batch and records remaining-work metadata.
+- Given a batch limit is configured, when more records match, then the job processes at most the configured batch and records remaining-work properties.
 
 ### XUnit Harness Integration
 
@@ -5928,9 +5927,9 @@ Requirements:
 - the harness must support substituting fake or mocked `IMessageBroker`, `IQueueBroker`, `INotifier`, `IRequester`, `IPipelineFactory`, and `IOrchestrationService`
 - the harness must support fake clock control for cron, delayed, one-time, startup-delay and missed-occurrence scenarios
 - the harness must support in-memory occurrence, lease, execution and history stores
-- the harness must expose assertions for materialized occurrences, execution status, messages, metadata, previous-run context, retries, leases and idempotency
+- the harness must expose assertions for materialized occurrences, execution status, messages, properties, previous-run context, retries, leases and idempotency
 - the harness must support both declarative integration jobs and custom job implementations with the same observable runtime behavior
-- outbound integration helpers should expose test-friendly seams for asserting mapped payloads and any target-specific metadata supported by that integration
+- outbound integration helpers should expose test-friendly seams for asserting mapped payloads and any target-specific properties supported by that integration
 - tests must be able to run a single job, run one due occurrence, or run until idle
 - tests must not require ASP.NET Core hosting, real EF storage, real brokers or wall-clock waiting
 
@@ -5965,7 +5964,7 @@ harness.History.ShouldContainMessage("publish-invoice-paid");
 
 Acceptance criteria:
 
-- Given a fake broker is registered, when a job publishes a message, then the harness can assert the mapped payload and any supported target metadata.
+- Given a fake broker is registered, when a job publishes a message, then the harness can assert the mapped payload and any supported target properties.
 - Given an outbound integration dependency is not registered, when the job executes that path, then the failed `Result` and execution history are assertable.
 - Given a cron-triggered declarative outbound job has a previous successful execution, when the harness runs the job, then `ctx.PreviousSuccessfulExecution` is populated.
 
@@ -5977,21 +5976,20 @@ Appsettings may configure:
 
 - enabled state for outbound integration helpers
 - feature-specific target names such as queue name or message type alias
-- batch sizes and retention windows for built-in maintenance jobs
 - schedule overrides for built-in maintenance jobs
-- dry-run mode for maintenance jobs
 - host targeting for expensive jobs
 
 Appsettings must not create active jobs or triggers. Every appsettings job or trigger entry must match a code-registered job or trigger.
+Built-in maintenance job parameters such as batch size, retention window, dry-run mode and target filters must be supplied as typed dispatch data or explicit maintenance-service requests. They must not be resolved from appsettings, because maintenance behavior is operationally sensitive and code must remain leading.
 
 ### Integration Security and Operations
 
-Operational endpoints and dashboards must expose integration metadata safely.
+Operational endpoints and dashboards must expose integration properties safely.
 
 Requirements:
 
 - sensitive message data, queue content, domain event data, import rows and file contents must not be exposed by default
-- metadata should prefer identifiers, counts, types and hashes over full data bodies
+- properties should prefer identifiers, counts, types and hashes over full data bodies
 - dashboard models should show source feature, source id, correlation id, causation id, module and group
 - operational actions such as retry, archive, purge and repair must respect the authorization model of the owning feature
 - built-in maintenance jobs should support dry-run mode before destructive purge operations

@@ -1,5 +1,7 @@
 # JobScheduling Feature Documentation
 
+> Legacy Quartz-backed scheduler. For new development, prefer [Jobs](./features-jobs.md). Migration is source-level only; Quartz tables and trigger records are not reused by `Application.Jobs`.
+
 > Schedule and run background jobs with flexible timing, DI integration, and operational visibility.
 
 [TOC]

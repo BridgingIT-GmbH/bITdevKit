@@ -24,6 +24,7 @@
     <File Path="CHANGELOG.md" />
   </Folder>
   <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/Application.Benchmarks/Application.Benchmarks.csproj" />
     <Project Path="benchmarks/Common.Benchmarks/Common.Benchmarks.csproj" />
   </Folder>
   <Folder Name="/docs/">
@@ -172,6 +173,7 @@
     <Project Path="src/Application.Entities.Messaging/Application.Entities.Messaging.csproj" />
     <Project Path="src/Application.Entities/Application.Entities.csproj" />
     <Project Path="src/Application.Identity/Application.Identity.csproj" />
+    <Project Path="src/Application.Jobs/Application.Jobs.csproj" />
     <Project Path="src/Application.JobScheduling/Application.JobScheduling.csproj" />
     <Project Path="src/Application.Messaging/Application.Messaging.csproj" />
     <Project Path="src/Application.Notifications/Application.Notifications.csproj" />
@@ -219,6 +221,7 @@
     <Project Path="src/Presentation.Web.Notifications/Presentation.Web.Notifications.csproj" />
     <Project Path="src/Presentation.Web.Orchestrations/Presentation.Web.Orchestrations.csproj" />
     <Project Path="src/Presentation.Web.Queueing/Presentation.Web.Queueing.csproj" />
+    <Project Path="src/Presentation.Web.Jobs/Presentation.Web.Jobs.csproj" />
     <Project Path="src/Presentation.Web/Presentation.Web.csproj" />
     <Project Path="src/Presentation/Presentation.csproj" />
   </Folder>

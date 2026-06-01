@@ -10,14 +10,14 @@ using BridgingIT.DevKit.Application.Orchestrations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-public class OrchestrationBehaviorTests
+public class OrchestrationBehaviorTests(ITestOutputHelper output) : OrchestrationTestBase(output)
 {
     [Fact]
     public async Task ExecuteAsync_WhenBehaviorIsRegistered_AppliesToAllOrchestrations()
     {
         var recorder = new BehaviorRecorder();
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddSingleton(recorder))
             .WithBehavior<RecordingOrchestrationBehavior>()
             .WithOrchestration<FirstBehaviorOrchestration>()
@@ -46,7 +46,7 @@ public class OrchestrationBehaviorTests
     {
         var recorder = new BehaviorRecorder();
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddSingleton(recorder))
             .WithBehavior<RecordingOrchestrationBehavior>()
             .WithOrchestration<RetryBehaviorOrchestration>()
@@ -67,7 +67,7 @@ public class OrchestrationBehaviorTests
     {
         var recorder = new BehaviorRecorder();
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddSingleton(recorder))
             .WithBehavior<RecordingOrchestrationBehavior>()
             .WithOrchestration<SignalBehaviorOrchestration>()
@@ -91,7 +91,7 @@ public class OrchestrationBehaviorTests
     {
         var recorder = new BehaviorRecorder();
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddSingleton(recorder))
             .WithBehavior<RecordingOrchestrationBehavior>()
             .WithOrchestration<CompensationBehaviorOrchestration>()
@@ -111,7 +111,7 @@ public class OrchestrationBehaviorTests
     [Fact]
     public async Task ExecuteAsync_WhenDummyBehaviorIsRegistered_RemainsPassThrough()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithBehavior<DummyOrchestrationBehavior>()
             .WithOrchestration<FirstBehaviorOrchestration>()
             .Build();
@@ -125,7 +125,7 @@ public class OrchestrationBehaviorTests
     [Fact]
     public async Task ExecuteAsync_WhenChaosBehaviorIsRegisteredAndOrchestrationOptsIn_InjectsConfiguredFailure()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithBehavior<ChaosExceptionOrchestrationBehavior>()
             .WithOrchestration<ChaosBehaviorOrchestration>()
             .Build();

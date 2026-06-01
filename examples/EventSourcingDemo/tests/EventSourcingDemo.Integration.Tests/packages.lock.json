@@ -422,14 +422,6 @@
           "Microsoft.Extensions.FileProviders.Physical": "10.0.5"
         }
       },
-      "Microsoft.Extensions.DependencyInjection": {
-        "type": "Transitive",
-        "resolved": "10.0.5",
-        "contentHash": "v1SVsowG6YE1YnHVGmLWz57YTRCQRx9pH5ebIESXfm5isI9gA3QaMyg/oMTzPpXYZwSAVDzYItGJKfmV+pqXkQ==",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.5"
-        }
-      },
       "Microsoft.Extensions.DependencyModel": {
         "type": "Transitive",
         "resolved": "10.0.5",
@@ -982,6 +974,22 @@
           "Microsoft.AspNetCore.Authorization": "[10.0.5, )"
         }
       },
+      "BridgingIT.DevKit.Application.Jobs": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Cronos": "[0.13.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.DependencyInjection": "[10.0.5, )",
+          "Microsoft.Extensions.Hosting.Abstractions": "[10.0.5, )",
+          "Microsoft.Extensions.Logging": "[10.0.5, )",
+          "Microsoft.Extensions.TimeProvider.Testing": "[10.4.0, )"
+        }
+      },
       "BridgingIT.DevKit.Application.JobScheduling": {
         "type": "Project",
         "dependencies": {
@@ -1000,6 +1008,7 @@
       "BridgingIT.DevKit.Application.Messaging": {
         "type": "Project",
         "dependencies": {
+          "BridgingIT.DevKit.Application.Jobs": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
@@ -1026,6 +1035,7 @@
       "BridgingIT.DevKit.Application.Orchestrations": {
         "type": "Project",
         "dependencies": {
+          "BridgingIT.DevKit.Application.Jobs": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
@@ -1038,6 +1048,7 @@
       "BridgingIT.DevKit.Application.Queueing": {
         "type": "Project",
         "dependencies": {
+          "BridgingIT.DevKit.Application.Jobs": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
@@ -1297,12 +1308,14 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Application.Identity": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Jobs": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Notifications": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Orchestrations": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Queueing": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
           "BridgingIT.DevKit.Application.Utilities": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Serialization": "[1.0.0, )",
           "BridgingIT.DevKit.Domain.Mediator": "[1.0.0, )",
           "BridgingIT.DevKit.Domain.Outbox": "[1.0.0, )",
@@ -1363,6 +1376,12 @@
           "BridgingIT.DevKit.Infrastructure.EntityFramework.Outbox": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )"
         }
+      },
+      "Cronos": {
+        "type": "CentralTransitive",
+        "requested": "[0.13.0, )",
+        "resolved": "0.13.0",
+        "contentHash": "Nkve+Yi0+ol3ntSBRHeW0ka9cJQ8vndSUvvkXqF9LVqwpoqWueyxu/HS275r98RDOmF7/mzRnZW5XXUBXob+TA=="
       },
       "CsvHelper": {
         "type": "CentralTransitive",
@@ -1627,6 +1646,15 @@
         "dependencies": {
           "Microsoft.Extensions.Configuration": "10.0.5",
           "Microsoft.Extensions.Configuration.Abstractions": "10.0.5"
+        }
+      },
+      "Microsoft.Extensions.DependencyInjection": {
+        "type": "CentralTransitive",
+        "requested": "[10.0.5, )",
+        "resolved": "10.0.5",
+        "contentHash": "v1SVsowG6YE1YnHVGmLWz57YTRCQRx9pH5ebIESXfm5isI9gA3QaMyg/oMTzPpXYZwSAVDzYItGJKfmV+pqXkQ==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "10.0.5"
         }
       },
       "Microsoft.Extensions.DependencyInjection.Abstractions": {

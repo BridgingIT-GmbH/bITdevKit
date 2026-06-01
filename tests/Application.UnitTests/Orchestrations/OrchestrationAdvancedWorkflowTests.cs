@@ -10,12 +10,12 @@ using BridgingIT.DevKit.Application.Orchestrations;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 
-public partial class OrchestrationAdvancedWorkflowTests
+public partial class OrchestrationAdvancedWorkflowTests(ITestOutputHelper output) : OrchestrationTestBase(output)
 {
     [Fact]
     public async Task DispatchAsync_WhenCompensatingActivitiesExist_ExecutesCompensationsInReverseOrder()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<CompensationOrderingOrchestration>()
             .Build();
 
@@ -41,7 +41,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task DispatchAsync_WhenChildOrchestrationIsConfigured_StartsAndWaitsForChildLifecycle()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<ParentWorkflowOrchestration>()
             .WithOrchestration<ImmediateChildWorkflowOrchestration>()
             .Build();
@@ -64,7 +64,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task DispatchAsync_WhenParallelBranchesRun_CompletesAfterAllBranchesFinish()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<ParallelWorkflowOrchestration>()
             .Build();
 
@@ -83,7 +83,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task DispatchAsync_WhenLoopConditionBecomesFalse_StopsAfterExpectedIterations()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<LoopWorkflowOrchestration>()
             .Build();
 
@@ -100,7 +100,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task AdvanceTimeAsync_WhenRetryPolicyUsesDurableDelay_RetriesUntilSuccess()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<RetryPolicyWorkflowOrchestration>()
             .Build();
 
@@ -124,7 +124,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task SignalAsync_WhenApprovalHelperReceivesApprovalSignal_TransitionsAndMapsPayload()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<ApprovalHelperWorkflowOrchestration>()
             .Build();
 
@@ -149,7 +149,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task SignalAsync_WhenHumanTaskHelperCompletes_TransitionsAndCapturesOutcome()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<HumanTaskWorkflowOrchestration>()
             .Build();
 

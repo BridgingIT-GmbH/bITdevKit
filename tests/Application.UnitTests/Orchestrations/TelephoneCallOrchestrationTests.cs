@@ -8,12 +8,12 @@ namespace BridgingIT.DevKit.Application.UnitTests.Orchestrations;
 using BridgingIT.DevKit.Application.Orchestrations;
 using Shouldly;
 
-public class TelephoneCallOrchestrationTests
+public class TelephoneCallOrchestrationTests(ITestOutputHelper output) : OrchestrationTestBase(output)
 {
     [Fact]
     public async Task SignalAsync_WhenCallCompletesNormally_ReturnsToOffHook()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<TelephoneCallOrchestration>()
             .Build();
 
@@ -47,7 +47,7 @@ public class TelephoneCallOrchestrationTests
     [Fact]
     public async Task SignalAsync_WhenCallIsPlacedOnHoldAndResumed_RecordsHoldMusicTransitions()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<TelephoneCallOrchestration>()
             .Build();
 
@@ -78,7 +78,7 @@ public class TelephoneCallOrchestrationTests
     [Fact]
     public async Task SignalAsync_WhenPhoneIsDestroyedOnHold_TerminatesDestroyedPhone()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<TelephoneCallOrchestration>()
             .Build();
 

@@ -1,6 +1,6 @@
 # Jobs Feature - Agent Execution Prompts
 
-This document contains bounded execution prompts for implementing the Jobs feature described in [spec-application-jobs.md](spec-application-jobs.md).
+This document contains bounded execution prompts for implementing the Jobs feature described in [spec-application-jobs.md](./docs/specs/spec-application-jobs.md).
 
 The prompts are designed for AI coding agents such as VS Code Copilot Agent Mode, Copilot CLI `/fleet`, Cursor Agents, Claude Code, or similar tools.
 
@@ -90,7 +90,7 @@ General rules:
 - Infrastructure may depend on Application/Common, but Application must not depend on Infrastructure
 - Presentation endpoints must depend on service/query abstractions, not provider tables
 - Common abstractions must stay small and stable
-- use Result/Result<T>/ResultPaged<T> for client-facing operations
+- use Result/Result<T>/ResultPaged<T> for client-facing operations documented in docs/features-results.md
 - add XML documentation for public/protected APIs introduced in the phase
 - add tests for every runtime behavior implemented in the phase
 
@@ -149,7 +149,7 @@ Implementation focus:
   - JobBase
   - JobBase<TData>
   - Unit data marker if not already available
-- core model types for job definitions, trigger definitions, retry, timeout, priority, concurrency and metadata
+- core model types for job definitions, trigger definitions, retry, timeout, priority, concurrency and properties
 - fluent registration builder for code-first jobs and triggers
 - startup validation for job names, trigger names, data contracts and required descriptions
 - appsettings merge model that only overrides matching code-registered jobs/triggers
@@ -293,7 +293,7 @@ Required tests:
 - previous successful execution lookup
 - dependency link storage and lookup
 - batch creation and membership storage
-- serializer is used for data/metadata boundaries
+- serializer is used for data/properties boundaries
 - in-memory provider does not act as authoritative job/trigger definition storage
 
 Behavioral guarantees:
@@ -389,7 +389,7 @@ Implementation focus:
 - due occurrence scan
 - trigger materialization scan
 - stable ordering by priority, due UTC and provider tie-breaker
-- worker targeting hooks only if required by current registration model
+- scheduler instance targeting hooks only if required by current registration model
 - graceful startup and shutdown
 - scheduler instance identity for diagnostics
 - server status model if already required by query contracts
@@ -708,7 +708,7 @@ Implement the Entity Framework provider.
 Implementation focus:
 
 - Infrastructure.EntityFramework.Jobs package/project
-- IJobSchedulerContext capability interface
+- IJobsContext capability interface
 - EF persistence models from the specification
 - Job runtime state table
 - Trigger runtime state table
@@ -728,7 +728,7 @@ Implementation focus:
   - execution finalization
 - optimistic concurrency using ConcurrencyVersion
 - serializer integration
-- UseModelConfiguration() or equivalent
+- annotation/convention-based Jobs EF entities so implementing IJobsContext is enough
 
 Implementation exclusions:
 
@@ -741,7 +741,7 @@ Implementation exclusions:
 Required tests:
 
 - EF context can host scheduler sets with application DbContext
-- migrations/model configuration include required tables and indexes
+- migrations include required tables and indexes when the application DbContext implements IJobsContext
 - occurrence deduplication by deterministic key
 - lease uniqueness and ownership checks
 - execution/history persistence
@@ -792,7 +792,7 @@ Implementation focus:
   - dashboard summary/timeline models
 - paging, sorting and filtering
 - enum-bound status filters
-- safe data/metadata previews
+- safe data/properties previews
 - provider capability flags where necessary
 
 Implementation exclusions:
@@ -900,7 +900,7 @@ Implementation focus:
   - Orchestration execute jobs
 - declarative integration job registration methods
 - context-to-payload factories
-- target-specific metadata mapping where target abstraction supports it
+- target-specific properties mapping where target abstraction supports it
 - clear failure Result when required target abstraction is not registered
 
 Implementation exclusions:
@@ -1182,3 +1182,5 @@ Run the specified build/test checkpoint.
 Review architecture before continuing.
 Do not let later phases backfill foundational semantics without human approval.
 Validate API shape before continuing.
+
+

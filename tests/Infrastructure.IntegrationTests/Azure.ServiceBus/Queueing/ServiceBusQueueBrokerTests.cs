@@ -11,14 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 [Collection(nameof(TestEnvironmentCollection))]
 [IntegrationTest("Infrastructure")]
-public class ServiceBusQueueBrokerTests
+public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
 {
-    private readonly TestEnvironmentFixture fixture;
-
-    public ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
-    {
-        this.fixture = fixture;
-    }
+    private readonly TestEnvironmentFixture fixture = fixture;
 
     [SkippableFact]
     public async Task Broker_WhenSubscribed_CreatesQueueAndProcessesMessage()

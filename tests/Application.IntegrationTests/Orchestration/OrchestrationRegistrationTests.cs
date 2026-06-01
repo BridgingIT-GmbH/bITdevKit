@@ -5,9 +5,10 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.Orchestrations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 [IntegrationTest("Application")]
-public class OrchestrationRegistrationTests
+public class OrchestrationRegistrationTests(ITestOutputHelper output)
 {
     [Fact]
     public void AddOrchestrations_WithEntityFramework_RegistersEntityFrameworkPersistenceProvider()
@@ -16,7 +17,12 @@ public class OrchestrationRegistrationTests
         var serializer = new SystemTextJsonSerializer();
         var databaseRoot = new InMemoryDatabaseRoot();
 
-        services.AddLogging();
+        services.AddLogging(builder =>
+        {
+            builder.SetMinimumLevel(LogLevel.Debug);
+            builder.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
+            builder.AddProvider(new XunitLoggerProvider(output));
+        });
         services.AddDbContext<TestRegistrationOrchestrationDbContext>(options =>
             options.UseInMemoryDatabase($"orchestration-registration-{Guid.NewGuid():N}", databaseRoot));
 

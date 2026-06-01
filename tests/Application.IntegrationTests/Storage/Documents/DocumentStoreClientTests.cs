@@ -12,5 +12,6 @@ using Application.Storage;
 public class DocumentStoreClientTests(ITestOutputHelper output, TestEnvironmentFixture fixture) // TODO: implement the tests with the InMemoryProvider together
 {
     private readonly TestEnvironmentFixture fixture = fixture;
-    private readonly IDocumentStoreClient<PersonStub> sut = new DocumentStoreClient<PersonStub>(new InMemoryDocumentStoreProvider(XunitLoggerFactory.Create(output)));
+    private readonly IDocumentStoreClient<PersonStub> sut = new DocumentStoreClient<PersonStub>(
+        new InMemoryDocumentStoreProvider(XunitLoggerFactory.Create(output)));
 }

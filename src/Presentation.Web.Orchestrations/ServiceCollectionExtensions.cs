@@ -2,6 +2,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web.Orchestrations;
 
 /// <summary>
@@ -56,6 +57,32 @@ public static class ServiceCollectionExtensions
         if (enabled)
         {
             context.Services.AddEndpoints<OrchestrationEndpoints>(enabled);
+        }
+
+        return context;
+    }
+
+    /// <summary>
+    /// Registers orchestration console commands from the fluent orchestration builder.
+    /// </summary>
+    public static OrchestrationBuilderContext AddConsoleCommands(this OrchestrationBuilderContext context, bool enabled = true)
+    {
+        EnsureArg.IsNotNull(context, nameof(context));
+
+        if (enabled)
+        {
+            context.Services.AddTransient<IConsoleCommand, OrchestrationDefinitionsConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, OrchestrationListConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, OrchestrationHistoryConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, OrchestrationMetricsConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, OrchestrationSignalConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, OrchestrationPauseConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, OrchestrationResumeConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, OrchestrationCancelConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, OrchestrationTerminateConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, OrchestrationArchiveConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, OrchestrationReleaseLeaseConsoleCommand>();
+            context.Services.AddTransient<IConsoleCommand, OrchestrationRequeueTimersConsoleCommand>();
         }
 
         return context;

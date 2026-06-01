@@ -51,7 +51,7 @@ That sequence gives you the shortest path to understanding how the kit is intend
 - If you are evaluating the architectural approach, start with the [DDD Introduction](reference/introduction-ddd-guide.md), [Domain](reference/features-domain.md), [Domain Repositories](reference/features-domain-repositories.md), and [Domain Specifications](reference/features-domain-specifications.md).
 - If you are building application workflows, start with [Results](reference/features-results.md), [Application Commands and Queries](reference/features-application-commands-queries.md), [Application Events](reference/features-application-events.md), and [Requester and Notifier](reference/features-requester-notifier.md).
 - If you are structuring a modular monolith, start with [Modules](reference/features-modules.md), [Pipelines](reference/features-pipelines.md), and [Presentation Endpoints](reference/features-presentation-endpoints.md).
-- If you are integrating operational infrastructure, start with [Messaging](reference/features-messaging.md), [Queueing](reference/features-queueing.md), [JobScheduling](reference/features-jobscheduling.md), [DocumentStorage](reference/features-storage-documents.md), and [FileStorage](reference/features-storage-files.md).
+- If you are integrating operational infrastructure, start with [Messaging](reference/features-messaging.md), [Queueing](reference/features-queueing.md), [Jobs](reference/features-jobs.md), [DocumentStorage](reference/features-storage-documents.md), and [FileStorage](reference/features-storage-files.md).
 
 ## Explore the example applications
 

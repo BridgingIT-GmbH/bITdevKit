@@ -3,7 +3,7 @@ namespace BridgingIT.DevKit.Application.UnitTests.Orchestrations;
 using BridgingIT.DevKit.Application.Orchestrations;
 using Microsoft.Extensions.DependencyInjection;
 
-public class MetricsOrchestrationBehaviorTests
+public class MetricsOrchestrationBehaviorTests(ITestOutputHelper output) : OrchestrationTestBase(output)
 {
     [Fact]
     public async Task ExecuteAsync_WhenActivityRuns_EmitsExecutionMetrics()

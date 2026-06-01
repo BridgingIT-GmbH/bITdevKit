@@ -414,15 +414,18 @@ public sealed class EntityFrameworkOrchestrationTestSupport : IDisposable
         ArgumentNullException.ThrowIfNull(output);
         ArgumentNullException.ThrowIfNull(configureDbContext);
 
-        this.LoggerFactory = XunitLoggerFactory.Create(output);
-
         var services = new ServiceCollection();
-        services.AddSingleton(this.LoggerFactory);
-        services.AddLogging();
+        services.AddLogging(builder =>
+        {
+            builder.SetMinimumLevel(LogLevel.Debug);
+            builder.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
+            builder.AddProvider(new XunitLoggerProvider(output));
+        });
         services.AddDbContext<OrchestrationTestDbContext>(configureDbContext);
         services.AddOrchestrations().WithEntityFramework<OrchestrationTestDbContext>();
 
         this.ServiceProvider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
+        this.LoggerFactory = this.ServiceProvider.GetRequiredService<ILoggerFactory>();
 
         using var scope = this.ServiceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<OrchestrationTestDbContext>();
@@ -434,7 +437,7 @@ public sealed class EntityFrameworkOrchestrationTestSupport : IDisposable
         dbContext.SaveChanges();
     }
 
-    public ILoggerFactory LoggerFactory { get; }
+    public ILoggerFactory LoggerFactory { get; private set; }
 
     public ServiceProvider ServiceProvider { get; }
 
@@ -456,7 +459,6 @@ public sealed class EntityFrameworkOrchestrationTestSupport : IDisposable
     public void Dispose()
     {
         this.ServiceProvider.Dispose();
-        this.LoggerFactory.Dispose();
     }
 
     private static void EnsureOrchestrationTablesCreated(OrchestrationTestDbContext dbContext)

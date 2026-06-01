@@ -65,6 +65,7 @@ nav:
           - AppState: reference/features-presentation-appstate.md
       - Storage, Scheduling and Utilities:
           - StartupTasks: reference/features-startuptasks.md
+          - Jobs: reference/features-jobs.md
           - JobScheduling: reference/features-jobscheduling.md
           - DocumentStorage: reference/features-storage-documents.md
           - FileStorage: reference/features-storage-files.md

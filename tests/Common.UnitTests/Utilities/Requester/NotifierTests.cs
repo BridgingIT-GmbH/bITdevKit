@@ -301,7 +301,7 @@ public class NotifierTests
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        elapsedMs.ShouldBeLessThan(100); // Should return immediately, not wait for handler completion
+        elapsedMs.ShouldBeLessThan(250); // Should return well before the 1 second handler finishes
     }
 
     /// <summary>

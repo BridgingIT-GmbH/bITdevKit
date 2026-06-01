@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 internal sealed class TestDefinitionData : IOrchestrationData
@@ -27,7 +28,7 @@ internal sealed class TestDefinitionOrchestration : Orchestration<TestDefinition
     }
 }
 
-public class OrchestrationEndpointsApplication : WebApplicationFactory<OrchestrationEndpointsTests>
+public class OrchestrationEndpointsApplication(ITestOutputHelper output) : WebApplicationFactory<OrchestrationEndpointsTests>
 {
     public IOrchestrationService OrchestrationService { get; } = Substitute.For<IOrchestrationService>();
 
@@ -45,7 +46,11 @@ public class OrchestrationEndpointsApplication : WebApplicationFactory<Orchestra
         appBuilder.WebHost.UseTestServer();
 
         appBuilder.Services.AddRouting();
-        appBuilder.Services.AddLogging();
+        appBuilder.Services.AddLogging(builder =>
+        {
+            builder.SetMinimumLevel(LogLevel.Debug);
+            builder.AddProvider(new XunitLoggerProvider(output));
+        });
         appBuilder.Services.AddTransient<TestDefinitionOrchestration>();
         appBuilder.Services.AddSingleton(this.OrchestrationService);
         appBuilder.Services.AddSingleton(this.OrchestrationQueryService);
@@ -74,9 +79,9 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
     private readonly IOrchestrationDiagramService orchestrationDiagramService;
     private readonly OrchestrationRegistrationStore registrations;
 
-    public OrchestrationEndpointsTests()
+    public OrchestrationEndpointsTests(ITestOutputHelper output)
     {
-        this.factory = new OrchestrationEndpointsApplication();
+        this.factory = new OrchestrationEndpointsApplication(output);
         this.client = this.factory.CreateClient();
         this.orchestrationService = this.factory.OrchestrationService;
         this.orchestrationQueryService = this.factory.OrchestrationQueryService;

@@ -24,7 +24,7 @@ public class MetricsJobSchedulingBehavior(IMeterFactory meterFactory = null) : I
     /// </summary>
     /// <param name="context">The Quartz execution context.</param>
     /// <param name="next">The next job execution delegate.</param>
-    public async Task Execute(IJobExecutionContext context, JobDelegate next)
+    public async Task Execute(Quartz.IJobExecutionContext context, JobDelegate next)
     {
         if (meterFactory is null || context.CancellationToken.IsCancellationRequested)
         {

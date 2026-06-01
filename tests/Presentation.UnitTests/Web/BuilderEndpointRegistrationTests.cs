@@ -5,9 +5,11 @@
 
 namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 
+using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Presentation.Web;
+using BridgingIT.DevKit.Presentation.Web.Jobs;
 using BridgingIT.DevKit.Presentation.Web.Messaging;
 using BridgingIT.DevKit.Presentation.Web.Orchestrations;
 using BridgingIT.DevKit.Presentation.Web.Queueing;
@@ -79,6 +81,28 @@ public class BuilderEndpointRegistrationTests
             .ShouldBeTrue();
         services.Any(descriptor =>
             descriptor.ServiceType == typeof(OrchestrationEndpointsOptions) &&
+            ReferenceEquals(descriptor.ImplementationInstance, options))
+            .ShouldBeTrue();
+    }
+
+    [Fact]
+    public void JobsBuilder_AddEndpoints_RegistersJobsEndpointsAndOptions()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        var options = new JobSchedulerEndpointsOptions { RequireAuthorization = true };
+
+        // Act
+        services.AddJobScheduler()
+            .AddEndpoints(options);
+
+        // Assert
+        services.Any(descriptor =>
+            descriptor.ServiceType == typeof(IEndpoints) &&
+            descriptor.ImplementationType == typeof(JobSchedulerEndpoints))
+            .ShouldBeTrue();
+        services.Any(descriptor =>
+            descriptor.ServiceType == typeof(JobSchedulerEndpointsOptions) &&
             ReferenceEquals(descriptor.ImplementationInstance, options))
             .ShouldBeTrue();
     }
@@ -221,6 +245,29 @@ public class BuilderEndpointRegistrationTests
         options.RequireAuthorization.ShouldBeTrue();
         options.GroupPath.ShouldBe("/api/test/orchestrations/direct");
         options.GroupTag.ShouldBe("orchestrations-direct");
+    }
+
+    [Fact]
+    public void JobsBuilder_AddEndpoints_WithOptionsBuilder_RegistersConfiguredOptions()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddJobScheduler()
+            .AddEndpoints(options => options
+                .RequireAuthorization()
+                .GroupPath("/api/test/jobs")
+                .GroupTag("jobs"));
+
+        // Assert
+        var options = services.Single(descriptor => descriptor.ServiceType == typeof(JobSchedulerEndpointsOptions))
+            .ImplementationInstance as JobSchedulerEndpointsOptions;
+
+        options.ShouldNotBeNull();
+        options.RequireAuthorization.ShouldBeTrue();
+        options.GroupPath.ShouldBe("/api/test/jobs");
+        options.GroupTag.ShouldBe("jobs");
     }
 
     [Fact]

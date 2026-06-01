@@ -278,11 +278,149 @@
       "problemMatcher": "$msCompile"
     },
     {
-      "type": "dotnet",
-      "task": "watch Common.Benchmarks",
-      "file": "F:\\projects\\bit\\bIT.bITdevKit\\benchmarks\\Common.Benchmarks\\Common.Benchmarks.csproj",
-      "problemMatcher": [],
-      "label": "dotnet: watch Common.Benchmarks"
+      "label": "Application.Benchmarks - run",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "-c",
+        "Release",
+        "--project",
+        "${workspaceFolder}/benchmarks/Application.Benchmarks/Application.Benchmarks.csproj",
+        "--",
+        "--job",
+        "Dry"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Common.Benchmarks - run",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "-c",
+        "Release",
+        "--project",
+        "${workspaceFolder}/benchmarks/Common.Benchmarks/Common.Benchmarks.csproj"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Common.Benchmarks - run (SimpleRequester)",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "-c",
+        "Release",
+        "--project",
+        "${workspaceFolder}/benchmarks/Common.Benchmarks/Common.Benchmarks.csproj",
+        "--",
+        "--filter",
+        "*SimpleRequesterBenchmarks*"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Common.Benchmarks - run (Requester)",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "-c",
+        "Release",
+        "--project",
+        "${workspaceFolder}/benchmarks/Common.Benchmarks/Common.Benchmarks.csproj",
+        "--",
+        "--filter",
+        "*RequesterBenchmarks*"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Common.Benchmarks - run (SimpleNotifier)",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "-c",
+        "Release",
+        "--project",
+        "${workspaceFolder}/benchmarks/Common.Benchmarks/Common.Benchmarks.csproj",
+        "--",
+        "--filter",
+        "*SimpleNotifierBenchmarks*"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Common.Benchmarks - run (Notifier)",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "-c",
+        "Release",
+        "--project",
+        "${workspaceFolder}/benchmarks/Common.Benchmarks/Common.Benchmarks.csproj",
+        "--",
+        "--filter",
+        "*NotifierBenchmarks*"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Common.Benchmarks - run (Pipeline)",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "-c",
+        "Release",
+        "--project",
+        "${workspaceFolder}/benchmarks/Common.Benchmarks/Common.Benchmarks.csproj",
+        "--",
+        "--filter",
+        "*PipelineBenchmarks*"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Application.Benchmarks - run (Jobs)",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "-c",
+        "Release",
+        "--project",
+        "${workspaceFolder}/benchmarks/Application.Benchmarks/Application.Benchmarks.csproj",
+        "--",
+        "--job",
+        "Dry",
+        "--filter",
+        "*JobsBenchmarks*"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Application.Benchmarks - run (Orchestrations)",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "run",
+        "-c",
+        "Release",
+        "--project",
+        "${workspaceFolder}/benchmarks/Application.Benchmarks/Application.Benchmarks.csproj",
+        "--",
+        "--job",
+        "Dry",
+        "--filter",
+        "*OrchestrationsBenchmarks*"
+      ],
+      "problemMatcher": []
     }
   ]
 }

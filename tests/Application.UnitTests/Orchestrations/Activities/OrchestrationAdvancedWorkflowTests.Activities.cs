@@ -23,7 +23,7 @@ public partial class OrchestrationAdvancedWorkflowTests
                 return Task.FromResult(Result<string>.Success("customer-42"));
             });
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddScoped(_ => requester))
             .WithOrchestration<QueryRequestWorkflowOrchestration>()
             .Build();
@@ -47,7 +47,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task DispatchAsync_WhenQueryActivityRequesterIsMissing_FailsActivity()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<QueryRequestWorkflowOrchestration>()
             .Build();
 
@@ -72,7 +72,7 @@ public partial class OrchestrationAdvancedWorkflowTests
         requester.SendAsync<TestCommandRequest, string>(Arg.Any<TestCommandRequest>(), Arg.Any<SendOptions>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(Result<string>.Success("accepted")));
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddScoped(_ => requester))
             .WithOrchestration<CommandRequestWithoutMappingWorkflowOrchestration>()
             .Build();
@@ -95,7 +95,7 @@ public partial class OrchestrationAdvancedWorkflowTests
         requester.SendAsync<TestCommandRequest, string>(Arg.Any<TestCommandRequest>(), Arg.Any<SendOptions>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(Result<string>.Success("command-done")));
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddScoped(_ => requester))
             .WithOrchestration<CommandRequestWithMappingWorkflowOrchestration>()
             .Build();
@@ -118,7 +118,7 @@ public partial class OrchestrationAdvancedWorkflowTests
         requester.SendAsync<TestCommandRequest, string>(Arg.Any<TestCommandRequest>(), Arg.Any<SendOptions>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(Result<string>.Failure().WithError(new Error("command failed"))));
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddScoped(_ => requester))
             .WithOrchestration<CommandRequestWithMappingWorkflowOrchestration>()
             .Build();
@@ -141,7 +141,7 @@ public partial class OrchestrationAdvancedWorkflowTests
         requester.SendAsync<TestSendRequest, string>(Arg.Any<TestSendRequest>(), Arg.Any<SendOptions>(), Arg.Any<CancellationToken>())
             .Returns(Task.FromResult(Result<string>.Success("request-done")));
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddScoped(_ => requester))
             .WithOrchestration<SendRequestWorkflowOrchestration>()
             .Build();
@@ -164,7 +164,7 @@ public partial class OrchestrationAdvancedWorkflowTests
         requester.SendAsync<TestSendRequest, string>(Arg.Any<TestSendRequest>(), Arg.Any<SendOptions>(), Arg.Any<CancellationToken>())
             .Returns(_ => Task.FromException<Result<string>>(new InvalidOperationException("requester exploded")));
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddScoped(_ => requester))
             .WithOrchestration<SendRequestWorkflowOrchestration>()
             .Build();
@@ -192,7 +192,7 @@ public partial class OrchestrationAdvancedWorkflowTests
                 return Task.FromResult<IResult>(Result.Success());
             });
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddScoped(_ => notifier))
             .WithOrchestration<PublishNotificationWorkflowOrchestration>()
             .Build();
@@ -216,7 +216,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task DispatchAsync_WhenPublishNotificationActivityNotifierIsMissing_FailsActivity()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<PublishNotificationWorkflowOrchestration>()
             .Build();
 
@@ -246,7 +246,7 @@ public partial class OrchestrationAdvancedWorkflowTests
                     : Task.FromResult(Result<string>.Success("retried-query"));
             });
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddScoped(_ => requester))
             .WithOrchestration<RetryingQueryRequestWorkflowOrchestration>()
             .Build();
@@ -282,7 +282,7 @@ public partial class OrchestrationAdvancedWorkflowTests
                     : Task.FromResult<IResult>(Result.Success());
             });
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddScoped(_ => notifier))
             .WithOrchestration<RetryingPublishNotificationWorkflowOrchestration>()
             .Build();
@@ -315,7 +315,7 @@ public partial class OrchestrationAdvancedWorkflowTests
                 return Task.CompletedTask;
             });
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddScoped(_ => broker))
             .WithOrchestration<PublishMessageWorkflowOrchestration>()
             .Build();
@@ -341,7 +341,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task DispatchAsync_WhenPublishMessageActivityBrokerIsMissing_FailsActivity()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<PublishMessageWorkflowOrchestration>()
             .Build();
 
@@ -365,7 +365,7 @@ public partial class OrchestrationAdvancedWorkflowTests
         broker.Publish(Arg.Any<IMessage>(), Arg.Any<CancellationToken>())
             .Returns(_ => Task.FromException(new InvalidOperationException("publish exploded")));
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddScoped(_ => broker))
             .WithOrchestration<PublishMessageWorkflowOrchestration>()
             .Build();
@@ -395,7 +395,7 @@ public partial class OrchestrationAdvancedWorkflowTests
                     : Task.CompletedTask;
             });
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddScoped(_ => broker))
             .WithOrchestration<RetryingPublishMessageWorkflowOrchestration>()
             .Build();
@@ -428,7 +428,7 @@ public partial class OrchestrationAdvancedWorkflowTests
                 return Task.CompletedTask;
             });
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddScoped(_ => broker))
             .WithOrchestration<SendQueueMessageWorkflowOrchestration>()
             .Build();
@@ -456,7 +456,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task DispatchAsync_WhenSendQueueMessageActivityBrokerIsMissing_FailsActivity()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<SendQueueMessageWorkflowOrchestration>()
             .Build();
 
@@ -478,7 +478,7 @@ public partial class OrchestrationAdvancedWorkflowTests
         broker.Enqueue(Arg.Any<IQueueMessage>(), Arg.Any<CancellationToken>())
             .Returns(_ => Task.FromException(new InvalidOperationException("queue exploded")));
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddScoped(_ => broker))
             .WithOrchestration<SendQueueMessageWorkflowOrchestration>()
             .Build();
@@ -508,7 +508,7 @@ public partial class OrchestrationAdvancedWorkflowTests
                     : Task.CompletedTask;
             });
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services => services.AddScoped(_ => broker))
             .WithOrchestration<RetryingSendQueueMessageWorkflowOrchestration>()
             .Build();
@@ -532,7 +532,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task DispatchAsync_WhenExecutePipelineActivitySucceeds_MapsContextInBothDirections()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services =>
             {
                 services.AddLogging();
@@ -570,7 +570,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task DispatchAsync_WhenExecutePipelineActivityPipelineFactoryIsMissing_FailsActivity()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<ExecuteNamedPipelineWorkflowOrchestration>()
             .Build();
 
@@ -589,7 +589,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task DispatchAsync_WhenExecutePipelineActivityPipelineReturnsFailedResult_FailsActivity()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services =>
             {
                 services.AddLogging();
@@ -613,7 +613,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task DispatchAsync_WhenExecutePipelineActivityPipelineThrows_FailsActivity()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services =>
             {
                 services.AddLogging();
@@ -637,7 +637,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task AdvanceTimeAsync_WhenExecutePipelineActivityUsesRetryPolicy_RetriesUntilPipelineSucceeds()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services =>
             {
                 services.AddLogging();

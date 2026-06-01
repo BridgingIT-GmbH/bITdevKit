@@ -19,7 +19,7 @@ public partial class OrchestrationAdvancedWorkflowTests
         var probe = new ReplayProbe();
         var provider = new LeaseFaultingPersistenceProvider("ParallelBranchActivityExecuted", triggerOccurrence: 1);
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services =>
             {
                 services.AddSingleton(probe);
@@ -48,7 +48,7 @@ public partial class OrchestrationAdvancedWorkflowTests
         var probe = new ReplayProbe();
         var provider = new LeaseFaultingPersistenceProvider("LoopIterationCompleted", triggerOccurrence: 1);
 
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .ConfigureServices(services =>
             {
                 services.AddSingleton(probe);
@@ -73,7 +73,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task DispatchAsync_WhenChildHelperReentersSameState_StartsFreshChildInstance()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<ChildStateReentryOrchestration>()
             .WithOrchestration<ReentryChildOrchestration>()
             .Build();
@@ -91,7 +91,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task DispatchAsync_WhenParallelHelperReentersSameState_RerunsBranches()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<ParallelStateReentryOrchestration>()
             .Build();
 
@@ -108,7 +108,7 @@ public partial class OrchestrationAdvancedWorkflowTests
     [Fact]
     public async Task SignalAsync_WhenApprovalHelperReentersSameState_RecreatesPendingMetadata()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<ApprovalStateReentryOrchestration>()
             .Build();
 
@@ -201,9 +201,10 @@ public partial class OrchestrationAdvancedWorkflowTests
         history.ShouldNotContain(item => item.EventType == "Terminated");
     }
 
-    private static ServiceProvider CreateServices(Action<IServiceCollection> configure)
+    private ServiceProvider CreateServices(Action<IServiceCollection> configure)
     {
         var services = new ServiceCollection();
+        this.ConfigureLogging(services);
         services.AddSingleton(new OrchestrationExecutionSettings { EnableBackgroundExecution = false });
         configure(services);
         return services.BuildServiceProvider();

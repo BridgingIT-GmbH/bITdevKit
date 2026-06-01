@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.UnitTests.Orchestrations;
 using BridgingIT.DevKit.Application.Orchestrations;
 using Microsoft.Extensions.DependencyInjection;
 
-public class OrchestrationQueryServiceTests
+public class OrchestrationQueryServiceTests(ITestOutputHelper output) : OrchestrationTestBase(output)
 {
     [Fact]
     public async Task GetAsync_AndGetContextAsync_WhenInstanceExists_ReturnPersistedModels()
@@ -220,9 +220,10 @@ public class OrchestrationQueryServiceTests
         result.Value.AverageDurationSeconds.Value.ShouldBe(600d, 0.001d);
     }
 
-    private static ServiceProvider CreateServices()
+    private ServiceProvider CreateServices()
     {
         var services = new ServiceCollection();
+        this.ConfigureLogging(services);
         services.AddOrchestrations();
 
         return services.BuildServiceProvider();

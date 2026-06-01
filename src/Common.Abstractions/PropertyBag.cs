@@ -35,6 +35,33 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
     }
 
     /// <summary>
+    /// Gets the current entry count.
+    /// </summary>
+    public int Count
+    {
+        get
+        {
+            this.@lock.EnterReadLock();
+            try
+            {
+                return this.items.Count;
+            }
+            finally
+            {
+                this.@lock.ExitReadLock();
+            }
+        }
+    }
+
+    /// <summary>
+    /// Adds or replaces a value for a key.
+    /// </summary>
+    public void Add(string key, object value)
+    {
+        this.Set(key, value);
+    }
+
+    /// <summary>
     /// Set a value for a key.
     /// </summary>
     public void Set(string key, object value)
@@ -91,6 +118,22 @@ public class PropertyBag : IEnumerable<KeyValuePair<string, object>>
         }
         value = default;
         return false;
+    }
+
+    /// <summary>
+    /// Try to get the raw value for a key.
+    /// </summary>
+    public bool TryGetValue(string key, out object value)
+    {
+        this.@lock.EnterReadLock();
+        try
+        {
+            return this.items.TryGetValue(key, out value);
+        }
+        finally
+        {
+            this.@lock.ExitReadLock();
+        }
     }
 
     /// <summary>

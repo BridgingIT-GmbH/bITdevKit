@@ -12,12 +12,6 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        //BenchmarkRunner.Run<MediatRBenchmarks>();
-        //BenchmarkRunner.Run<RequesterBenchmarks>();
-        BenchmarkRunner.Run<SimpleRequesterBenchmarks>();
-        //BenchmarkRunner.Run<NotifierBenchmarks>();
-        BenchmarkRunner.Run<SimpleNotifierBenchmarks>();
-        //BenchmarkRunner.Run<ResultBenchmarks>();
-        //BenchmarkRunner.Run<ResultNonGenericBenchmarks>();
+        BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
     }
 }

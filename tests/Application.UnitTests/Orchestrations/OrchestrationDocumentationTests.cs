@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.Orchestrations;
 
-public class OrchestrationDocumentationTests
+public class OrchestrationDocumentationTests(ITestOutputHelper output) : OrchestrationTestBase(output)
 {
     [Fact]
     public void FeaturesDocument_UsesCurrentProjectAndNamespaceNames()

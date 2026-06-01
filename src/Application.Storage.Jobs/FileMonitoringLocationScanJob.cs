@@ -18,7 +18,7 @@ public partial class FileMonitoringLocationScanJob(
 {
     RetryJobSchedulingOptions IRetryJobScheduling.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
 
-    public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
+    public override async Task Process(Quartz.IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
         using var scope = scopeFactory.CreateScope();
         var fileMonitoringService = scope.ServiceProvider.GetRequiredService<IFileMonitoringService>();

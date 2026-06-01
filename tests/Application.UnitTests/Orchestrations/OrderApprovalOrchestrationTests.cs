@@ -8,12 +8,12 @@ namespace BridgingIT.DevKit.Application.UnitTests.Orchestrations;
 using BridgingIT.DevKit.Application.Orchestrations;
 using Shouldly;
 
-public class OrderApprovalOrchestrationTests
+public class OrderApprovalOrchestrationTests(ITestOutputHelper output) : OrchestrationTestBase(output)
 {
     [Fact]
     public async Task DispatchAsync_WhenApprovalIsNotRequired_CompletesConfirmedOrder()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<OrderApprovalOrchestration>()
             .Build();
 
@@ -38,7 +38,7 @@ public class OrderApprovalOrchestrationTests
     [Fact]
     public async Task DispatchAsync_WhenApprovalSignalIsReceived_CompletesConfirmedOrder()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<OrderApprovalOrchestration>()
             .Build();
 
@@ -73,7 +73,7 @@ public class OrderApprovalOrchestrationTests
     [Fact]
     public async Task AdvanceTimeAsync_WhenApprovalTimesOut_TerminatesRejectedOrder()
     {
-        await using var sut = OrchestrationTestHarness.CreateBuilder()
+        await using var sut = this.CreateHarnessBuilder()
             .WithOrchestration<OrderApprovalOrchestration>()
             .Build();
 

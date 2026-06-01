@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.UnitTests.Orchestrations;
 using BridgingIT.DevKit.Application.Orchestrations;
 using Microsoft.Extensions.DependencyInjection;
 
-public class InMemoryOrchestrationExecutorTests
+public class InMemoryOrchestrationExecutorTests(ITestOutputHelper output) : OrchestrationTestBase(output)
 {
     [Fact]
     public async Task ExecuteAsync_WhenStateProgressesThroughTransition_CompletesInTargetState()
@@ -192,9 +192,10 @@ public class InMemoryOrchestrationExecutorTests
         result.FailureReason.ShouldContain("must define at least one state");
     }
 
-    private static ServiceProvider CreateServices(Action<IServiceCollection> configure)
+    private ServiceProvider CreateServices(Action<IServiceCollection> configure)
     {
         var services = new ServiceCollection();
+        this.ConfigureLogging(services);
         configure(services);
 
         return services.BuildServiceProvider();

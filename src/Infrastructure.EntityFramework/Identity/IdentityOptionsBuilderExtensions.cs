@@ -8,7 +8,6 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Application.Identity;
 
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 public static class IdentityOptionsBuilderExtensions
 {

@@ -112,7 +112,8 @@ The best entry point into the current documentation set is the
 ### Storage, Scheduling and Utilities
 
 - [StartupTasks](./docs/features-startuptasks.md)
-- [JobScheduling](./docs/features-jobscheduling.md)
+- [Jobs](./docs/features-jobs.md)
+- [JobScheduling](./docs/features-jobscheduling.md) (legacy Quartz-backed feature)
 - [DocumentStorage](./docs/features-storage-documents.md)
 - [FileStorage](./docs/features-storage-files.md)
 - [Storage Monitoring](./docs/features-storage-monitoring.md)

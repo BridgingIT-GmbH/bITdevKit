@@ -33,7 +33,7 @@ public class ForecastImportJob
 
     ChaosExceptionJobSchedulingOptions IChaosExceptionJobScheduling.Options => new() { InjectionRate = 0.10 };
 
-    public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
+    public override async Task Process(Quartz.IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
         var response = await this.mediator.Send(new CityFindAllQuery(), cancellationToken).AnyContext();
 

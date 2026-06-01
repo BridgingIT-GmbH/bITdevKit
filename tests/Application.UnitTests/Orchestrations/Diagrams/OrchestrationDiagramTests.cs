@@ -5,7 +5,7 @@ using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BridgingIT.DevKit.Application.UnitTests.Orchestrations;
-public sealed class OrchestrationDiagramTests : IDisposable
+public sealed class OrchestrationDiagramTests : OrchestrationTestBase, IDisposable
 {
     private readonly ServiceProvider provider;
     private readonly IOrchestrationDiagramService diagramService;
@@ -15,10 +15,11 @@ public sealed class OrchestrationDiagramTests : IDisposable
     private readonly OrchestrationInstanceDiagramProjector instanceProjector;
     private readonly IDiagramRendererFactory rendererFactory;
 
-    public OrchestrationDiagramTests()
+    public OrchestrationDiagramTests(ITestOutputHelper output)
+        : base(output)
     {
         var services = new ServiceCollection();
-        services.AddLogging();
+        this.ConfigureLogging(services);
         services.AddOrchestrations()
             .WithOrchestration<OrderApprovalOrchestration>()
             .WithOrchestration<TelephoneCallOrchestration>()

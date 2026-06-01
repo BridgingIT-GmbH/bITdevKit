@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.UnitTests.Orchestrations;
 using BridgingIT.DevKit.Application.Orchestrations;
 using Microsoft.Extensions.DependencyInjection;
 
-public class OrchestrationAdministrationServiceTests
+public class OrchestrationAdministrationServiceTests(ITestOutputHelper output) : OrchestrationTestBase(output)
 {
     [Fact]
     public async Task ArchiveAsync_WhenInstanceIsTerminal_ArchivesInstance()
@@ -105,9 +105,10 @@ public class OrchestrationAdministrationServiceTests
         (await queries.GetInstanceAsync(instanceId)).ShouldBeNull();
     }
 
-    private static ServiceProvider CreateServices()
+    private ServiceProvider CreateServices()
     {
         var services = new ServiceCollection();
+        this.ConfigureLogging(services);
         services.AddOrchestrations();
 
         return services.BuildServiceProvider();

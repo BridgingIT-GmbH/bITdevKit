@@ -9,7 +9,7 @@ using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
-public class OrchestrationPersistenceProviderTests
+public class OrchestrationPersistenceProviderTests(ITestOutputHelper output) : OrchestrationTestBase(output)
 {
     [Fact]
     public async Task CreateAsync_WhenContextIsPersisted_StoresSnapshotAndRehydratesPersistedContext()
@@ -195,9 +195,10 @@ public class OrchestrationPersistenceProviderTests
         metrics.InstanceCountsByOrchestration["Orders"].ShouldBe(2);
     }
 
-    private static ServiceProvider CreateServices(Action<IServiceCollection> configure)
+    private ServiceProvider CreateServices(Action<IServiceCollection> configure)
     {
         var services = new ServiceCollection();
+        this.ConfigureLogging(services);
         configure(services);
 
         return services.BuildServiceProvider();

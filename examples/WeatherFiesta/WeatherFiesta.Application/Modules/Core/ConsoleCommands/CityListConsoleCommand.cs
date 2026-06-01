@@ -76,7 +76,7 @@ public class CityListConsoleCommand : ConsoleCommandBase
                     Markup.Escape(city.TimeZone ?? "-"),
                     city.Elevation?.ToString() ?? "-",
                     weather is not null ? $"{weather.Temperature}°C" : "-",
-                    condition is not null ? condition.Description : (weather?.WeatherCode.ToString() ?? "-"));
+                    condition is not null ? condition.Value : (weather?.WeatherCode.ToString() ?? "-"));
             }
 
             console.Write(table);
@@ -100,7 +100,7 @@ public class CityListConsoleCommand : ConsoleCommandBase
                     Markup.Escape(city.Name),
                     Markup.Escape(city.Country),
                     weather is not null ? $"{weather.Temperature}°C" : "-",
-                    condition is not null ? condition.Description : (weather?.WeatherCode.ToString() ?? "-"));
+                    condition is not null ? condition.Value : (weather?.WeatherCode.ToString() ?? "-"));
             }
 
             console.Write(table);

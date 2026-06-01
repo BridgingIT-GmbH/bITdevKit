@@ -99,7 +99,7 @@ public class CityForecastConsoleCommand : ConsoleCommandBase
         foreach (var f in forecasts)
         {
             var condition = Enumeration.GetAll<WeatherConditionCode>().FirstOrDefault(c => c.Id == f.DayWeatherCode);
-            var weatherDesc = condition is not null ? condition.Description : f.DayWeatherCode.ToString();
+            var weatherDesc = condition is not null ? condition.Value : f.DayWeatherCode.ToString();
 
             table.AddRow(
                 f.ForecastDate.ToString("ddd MMM dd"),

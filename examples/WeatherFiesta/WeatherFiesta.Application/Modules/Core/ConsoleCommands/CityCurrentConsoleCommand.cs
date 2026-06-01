@@ -73,7 +73,7 @@ public class CityCurrentConsoleCommand : ConsoleCommandBase
 
         var panel = new Panel($"[bold]{Markup.Escape(city.Name)}, {Markup.Escape(city.Country)}[/]\n\n" +
             $"  [bold]Temperature:[/]     {weather.Temperature}°C (feels {weather.ApparentTemperature}°C)\n" +
-            $"  [bold]Conditions:[/]      {condition?.Description ?? weather.WeatherCode.ToString()}\n" +
+            $"  [bold]Conditions:[/]      {condition?.Value ?? weather.WeatherCode.ToString()}\n" +
             $"  [bold]Humidity:[/]        {weather.Humidity}%\n" +
             $"  [bold]Wind:[/]            {weather.WindSpeed} km/h from {weather.WindDirection}° (gusts {weather.WindGusts} km/h)\n" +
             $"  [bold]Pressure:[/]        {weather.Pressure} hPa\n" +

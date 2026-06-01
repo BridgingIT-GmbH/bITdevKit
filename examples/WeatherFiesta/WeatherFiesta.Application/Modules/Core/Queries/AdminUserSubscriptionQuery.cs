@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Admin query to retrieve a specific user's subscription.
 /// </summary>

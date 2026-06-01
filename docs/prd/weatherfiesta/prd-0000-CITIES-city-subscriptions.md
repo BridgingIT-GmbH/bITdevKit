@@ -2,7 +2,7 @@
 id: PRD-0000
 title: City Subscriptions
 slice: CITIES
-status: Pending
+status: Implemented
 ---
 
 # Product Requirements: City Subscriptions
@@ -21,7 +21,7 @@ Authenticated users can search for cities, subscribe to them, view their subscri
 ## Stories
 
 ### Story 1: City name suggestions
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: All data requirements and API contracts are defined. External dependency on Open-Meteo Geocoding API is documented.
 - User Story: As an authenticated user, I want to see city name suggestions as I type, so that I can quickly find and subscribe to the right city.
@@ -43,7 +43,7 @@ Notes:
 - Technical context: GET /cities/suggestions?name={query}&countryCode={code}
 
 ### Story 2: Subscribe to a city
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Full API contract defined. Geocoding lookup and auto-selection logic specified. Reactivation logic defined.
 - User Story: As an authenticated user, I want to subscribe to a city by name, so that it appears on my dashboard.
@@ -67,7 +67,7 @@ Notes:
 - Technical context: POST /cities. City deduplication by ExternalId or (Latitude, Longitude). UserCity deduplication by (UserId, CityId).
 
 ### Story 3: View my cities
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple query endpoint. Data model and API contract defined.
 - User Story: As an authenticated user, I want to see a list of cities I'm subscribed to, so that I can manage my subscriptions.
@@ -87,7 +87,7 @@ Notes:
 - Technical context: GET /cities. Joins UserCity with City and CurrentWeather.
 
 ### Story 4: Unsubscribe from a city
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple soft-delete operation. Business rules defined.
 - User Story: As an authenticated user, I want to remove a city from my subscriptions, so that it no longer appears on my dashboard.
@@ -109,7 +109,7 @@ Notes:
 - Technical context: DELETE /cities/{cityId}. Soft-delete only — City is never deleted by regular users.
 
 ### Story 5: Set primary city
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple flag update on UserCity. Business rules defined.
 - User Story: As an authenticated user, I want to mark one of my subscribed cities as primary, so that my dashboard opens to that city by default.

@@ -2,7 +2,7 @@
 id: PRD-0300
 title: Admin City Management
 slice: ADMIN
-status: Pending
+status: Implemented
 ---
 
 # Product Requirements: Admin City Management
@@ -20,7 +20,7 @@ Admin users can manage the global city catalog directly (without geocoding), vie
 ## Stories
 
 ### Story 1: Admin - Manage cities
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Full API contract defined. Admin role requirement clear. No external dependencies for direct city creation.
 - User Story: As an admin user, I want to create, update, and delete cities directly, so that I can manage the city catalog without relying on geocoding.
@@ -43,7 +43,7 @@ Notes:
 - Technical context: Admin endpoints under /api/core/admin. Requires admin role. No geocoding — admin provides exact coordinates.
 
 ### Story 2: Admin - View subscriptions
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple query. API contract defined.
 - User Story: As an admin user, I want to see which users are subscribed to a city, so that I can understand usage patterns.
@@ -60,7 +60,7 @@ Notes:
 - Technical context: GET /admin/cities/{cityId}/subscriptions. Returns both active and soft-deleted subscriptions for full visibility.
 
 ### Story 3: Admin - Trigger ingestion for any city
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Same mechanism as user-facing ingestion, just without subscription check.
 - User Story: As an admin user, I want to trigger weather data ingestion for any city, so that I can ensure data freshness.
@@ -77,7 +77,7 @@ Notes:
 - Technical context: POST /admin/cities/{cityId}/ingest. Same queue mechanism as user-facing ingestion, but no subscription verification.
 
 ### Story 4: Admin - List all cities
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple query. API contract defined.
 - User Story: As an admin user, I want to list all global cities in the system, so that I can see the full city catalog.

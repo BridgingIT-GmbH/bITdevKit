@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <AssemblyName>BridgingIT.DevKit.Examples.WeatherFiesta.Application</AssemblyName>
@@ -14,10 +14,9 @@
     <ProjectReference Include="..\..\..\src\Common.Caching\Common.Caching.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Mapping\Common.Mapping.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Utilities\Common.Utilities.csproj" />
-    <ProjectReference Include="..\..\..\src\Application.JobScheduling\Application.JobScheduling.csproj" />
+    <ProjectReference Include="..\..\..\src\Application.Jobs\Application.Jobs.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Messaging\Application.Messaging.csproj" />
     <ProjectReference Include="..\WeatherFiesta.Domain\WeatherFiesta.Domain.csproj" />
-    <ProjectReference Include="..\..\..\src\Presentation\Presentation.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Utilities.CodeGen\Common.Utilities.CodeGen.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
   </ItemGroup>
 </Project>

@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Model;
+namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 
 /// <summary>
 /// Represents the current weather conditions for a city at a point in time.

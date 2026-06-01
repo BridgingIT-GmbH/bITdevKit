@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Query to retrieve weather recommendations for a subscribed city.
 /// Recommendations are computed at query time using WeatherRuleEngine.EvaluateRecommendations().
@@ -32,19 +30,19 @@ public partial class CityRecommendationsQuery
     [Handle]
     private async Task<Result<CityRecommendationsResponse>> HandleAsync(
         ICurrentUserAccessor currentUserAccessor,
+        IOptions<CoreModuleConfiguration> moduleConfiguration,
         CancellationToken cancellationToken)
     {
         var userId = currentUserAccessor.UserId;
-        var cityId = Domain.Model.CityId.Create(this.CityId);
-        // TODO: inject staleThreshold from CoreModuleConfiguration.StaleThresholdMinutes instead of hardcoding
-        var staleThreshold = TimeSpan.FromMinutes(60);
+        var cityId = Domain.Modules.Core.Model.CityId.Create(this.CityId);
+        var staleThreshold = TimeSpan.FromMinutes(moduleConfiguration.Value.StaleThresholdMinutes);
 
         // Verify subscription
         var subSpec = new UserCityByUserAndCitySpecification(userId, cityId);
         var subsResult = await UserCity.FindAllAsync(subSpec, null, cancellationToken);
         if (subsResult.IsFailure)
         {
-            return Result<CityRecommendationsResponse>.Failure(subsResult.Errors.Select(e => e.Message));
+            return subsResult.Wrap<CityRecommendationsResponse>();
         }
 
         var subs = subsResult.Value;
@@ -57,7 +55,7 @@ public partial class CityRecommendationsQuery
         var weatherResult = await CurrentWeather.FindAllAsync(weatherSpec, null, cancellationToken);
         if (weatherResult.IsFailure)
         {
-            return Result<CityRecommendationsResponse>.Failure(weatherResult.Errors.Select(e => e.Message));
+            return weatherResult.Wrap<CityRecommendationsResponse>();
         }
 
         var weather = weatherResult.Value.FirstOrDefault();
@@ -72,7 +70,7 @@ public partial class CityRecommendationsQuery
         var forecastResult = await WeatherForecast.FindAllAsync(forecastSpec, null, cancellationToken);
         if (forecastResult.IsFailure)
         {
-            return Result<CityRecommendationsResponse>.Failure(forecastResult.Errors.Select(e => e.Message));
+            return forecastResult.Wrap<CityRecommendationsResponse>();
         }
 
         var todayForecast = forecastResult.Value.FirstOrDefault();
@@ -91,7 +89,7 @@ public partial class CityRecommendationsQuery
         var userProfileResult = await UserProfile.FindAllAsync(userProfileSpec, null, cancellationToken);
         if (userProfileResult.IsFailure)
         {
-            return Result<CityRecommendationsResponse>.Failure(userProfileResult.Errors.Select(e => e.Message));
+            return userProfileResult.Wrap<CityRecommendationsResponse>();
         }
 
         var userProfile = userProfileResult.Value.FirstOrDefault();
@@ -99,13 +97,13 @@ public partial class CityRecommendationsQuery
         return Result<CityRecommendationsResponse>.Success(new CityRecommendationsResponse
         {
             CityId = this.CityId,
-            Recommendations = recommendations.Select(r => new WeatherRecommendationModel
+            Recommendations = recommendations.ConvertAll(r => new WeatherRecommendationModel
             {
                 Category = r.Category.Value,
                 Severity = r.Severity.Value,
                 Title = r.Title,
                 Message = r.Message
-            }).ToList(),
+            }),
             StaleDataWarning = weather.IsStale(staleThreshold),
             StaleDataWarningMessage = weather.IsStale(staleThreshold)
                 ? $"Data may be outdated — last updated {(int)(DateTime.UtcNow - weather.RetrievedAt).TotalMinutes} minutes ago"

@@ -2,7 +2,7 @@
 id: PRD-0400
 title: User Profile
 slice: USER
-status: Pending
+status: Implemented
 ---
 
 # Product Requirements: User Profile
@@ -20,7 +20,7 @@ Authenticated users can view and update their profile, configure display prefere
 ## Stories
 
 ### Story 1: View user profile
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple query endpoint. Data model and API contract defined.
 - User Story: As an authenticated user, I want to view my profile, so that I can see my account information.
@@ -37,7 +37,7 @@ Notes:
 - Technical context: GET /users/me. Returns user identity plus preferences in a single response.
 
 ### Story 2: Update user profile
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple update endpoint. Fields and validation rules defined.
 - User Story: As an authenticated user, I want to update my profile information, so that my account details stay current.
@@ -57,7 +57,7 @@ Notes:
 - Technical context: PUT /users/me. Partial updates supported — only provided fields are updated.
 
 ### Story 3: User unit preferences
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple preference storage. No external dependencies. API contract defined.
 - User Story: As an authenticated user, I want to set my preferred temperature and wind speed units, so that the frontend can display weather data in my preferred units.
@@ -78,7 +78,7 @@ Notes:
 - Design decision: API returns metric + preference metadata. Frontend handles conversion. This keeps the API simple and stateless for weather data.
 
 ### Story 4: Delete account
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple soft-delete with cascade rules defined. No external dependencies.
 - User Story: As an authenticated user, I want to delete my account, so that my personal data is removed from the system.

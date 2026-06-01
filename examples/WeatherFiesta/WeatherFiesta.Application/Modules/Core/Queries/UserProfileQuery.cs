@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Query to retrieve the current user's profile.
 /// Returns UserProfileModel with name, email, and preferences.
@@ -26,7 +24,7 @@ public partial class UserProfileQuery
         var profileResult = await UserProfile.FindAllAsync(spec, null, cancellationToken);
         if (profileResult.IsFailure)
         {
-            return Result<UserProfileModel>.Failure(profileResult.Errors.Select(e => e.Message));
+            return profileResult.Wrap<UserProfileModel>();
         }
 
         var profile = profileResult.Value.FirstOrDefault();

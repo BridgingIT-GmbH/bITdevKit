@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Query to retrieve sunrise/sunset data for a subscribed city.
 /// Returns sun data for the specified number of days from the forecast.
@@ -39,7 +37,7 @@ public partial class CitySunQuery
         CancellationToken cancellationToken)
     {
         var userId = currentUserAccessor.UserId;
-        var cityId = Domain.Model.CityId.Create(this.CityId);
+        var cityId = Domain.Modules.Core.Model.CityId.Create(this.CityId);
         var days = this.Days ?? 1;
 
         // Verify subscription
@@ -47,7 +45,7 @@ public partial class CitySunQuery
         var subscriptionsResult = await UserCity.FindAllAsync(subSpec, null, cancellationToken);
         if (subscriptionsResult.IsFailure)
         {
-            return Result<CitySunResponse>.Failure(subscriptionsResult.Errors.Select(e => e.Message));
+            return subscriptionsResult.Wrap<CitySunResponse>();
         }
 
         var subscriptions = subscriptionsResult.Value;
@@ -60,7 +58,7 @@ public partial class CitySunQuery
         var forecastsResult = await WeatherForecast.FindAllAsync(forecastSpec, null, cancellationToken);
         if (forecastsResult.IsFailure)
         {
-            return Result<CitySunResponse>.Failure(forecastsResult.Errors.Select(e => e.Message));
+            return forecastsResult.Wrap<CitySunResponse>();
         }
 
         var forecasts = forecastsResult.Value;

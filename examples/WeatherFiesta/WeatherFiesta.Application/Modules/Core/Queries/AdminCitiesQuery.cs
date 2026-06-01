@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Admin query to list all cities with subscription counts.
 /// </summary>
@@ -22,7 +20,7 @@ public partial class AdminCitiesQuery
         var citiesResult = await City.FindAllAsync(null, cancellationToken);
         if (citiesResult.IsFailure)
         {
-            return Result<List<AdminCityModel>>.Failure(citiesResult.Errors.Select(e => e.Message));
+            return citiesResult.Wrap<List<AdminCityModel>>();
         }
 
         var cities = citiesResult.Value;
@@ -33,11 +31,11 @@ public partial class AdminCitiesQuery
             var model = mapper.Map<City, AdminCityModel>(city);
 
             // Count active subscriptions for this city
-            var subSpec = new Specification<UserCity>(uc => uc.CityId == city.Id && !uc.AuditState.IsDeleted());
+            var subSpec = new Specification<UserCity>(uc => uc.CityId == city.Id && uc.AuditState.Deleted != true);
             var subCountResult = await UserCity.CountAsync(subSpec, null, cancellationToken);
             if (subCountResult.IsFailure)
             {
-                return Result<List<AdminCityModel>>.Failure(subCountResult.Errors.Select(e => e.Message));
+                return subCountResult.Wrap<List<AdminCityModel>>();
             }
 
             model.SubscriptionCount = (int)subCountResult.Value;

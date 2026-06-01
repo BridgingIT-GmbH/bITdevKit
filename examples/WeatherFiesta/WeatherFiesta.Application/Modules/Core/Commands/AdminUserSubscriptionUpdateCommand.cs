@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Admin command to update a user's subscription plan, status, and billing cycle.
 /// </summary>
@@ -80,21 +78,23 @@ public partial class AdminUserSubscriptionUpdateCommand
             case "Expired":
                 subscription.Expire();
                 break;
-            // Pending: no action needed, just set the status
+            case "Pending":
+                subscription.MarkPending();
+                break;
         }
 
         if (this.Model.EndDate.HasValue)
         {
-            subscription.EndDate = this.Model.EndDate.Value;
+            subscription.SetEndDate(this.Model.EndDate.Value);
         }
 
         var result = await subscription.UpdateAsync(cancellationToken);
         if (result.IsFailure)
         {
-            return Result<UserSubscriptionModel>.Failure(result.Errors.Select(e => e.Message));
+            return result.Wrap<UserSubscriptionModel>();
         }
 
-        return Result<UserSubscriptionModel>.Success(mapper.Map<UserSubscription, UserSubscriptionModel>(subscription));
+        return result.Wrap(mapper.Map<UserSubscription, UserSubscriptionModel>(subscription));
     }
 }
 

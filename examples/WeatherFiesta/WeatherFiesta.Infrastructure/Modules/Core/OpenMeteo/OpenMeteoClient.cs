@@ -40,6 +40,11 @@ public class OpenMeteoClientOptions
 /// </summary>
 public class OpenMeteoClient : IOpenMeteoClient
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
+
     private readonly HttpClient httpClient;
     private readonly OpenMeteoClientOptions options;
     private readonly ILogger<OpenMeteoClient> logger;
@@ -87,7 +92,7 @@ public class OpenMeteoClient : IOpenMeteoClient
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync(cancellationToken);
-        return JsonSerializer.Deserialize<GeocodingResponse>(json);
+        return JsonSerializer.Deserialize<GeocodingResponse>(json, JsonOptions);
     }
 
     /// <inheritdoc />
@@ -101,9 +106,18 @@ public class OpenMeteoClient : IOpenMeteoClient
         response.EnsureSuccessStatusCode();
 
         var json = await response.Content.ReadAsStringAsync(cancellationToken);
-        var geocodingResponse = JsonSerializer.Deserialize<GeocodingResponse>(json);
 
-        return geocodingResponse?.Results?.FirstOrDefault();
+        // The /v1/get endpoint returns the city object directly (not wrapped in results[])
+        var result = JsonSerializer.Deserialize<GeocodingResult>(json, JsonOptions);
+
+        // Fallback: if the response contains a results array, use the first entry
+        if (result?.Name is null)
+        {
+            var geocodingResponse = JsonSerializer.Deserialize<GeocodingResponse>(json, JsonOptions);
+            return geocodingResponse?.Results?.FirstOrDefault();
+        }
+
+        return result;
     }
 
     /// <inheritdoc />
@@ -243,13 +257,19 @@ public class OpenMeteoClient : IOpenMeteoClient
 
     private static int GetInt32Safe(JsonElement element, int defaultValue = 0)
     {
-        return element.ValueKind == JsonValueKind.Null ? defaultValue : element.GetInt32();
+        if (element.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined)
+        {
+            return defaultValue;
+        }
+
+        return element.TryGetInt32(out var value) ? value : (int)element.GetDouble();
     }
 
     private static int GetInt32Safe(JsonElement parent, string propertyName, int defaultValue = 0)
     {
         if (!parent.TryGetProperty(propertyName, out var element)) return defaultValue;
-        return element.ValueKind == JsonValueKind.Null ? defaultValue : element.GetInt32();
+        if (element.ValueKind is JsonValueKind.Null or JsonValueKind.Undefined) return defaultValue;
+        return element.TryGetInt32(out var value) ? value : (int)element.GetDouble();
     }
 
     private static decimal GetDecimalSafe(JsonElement element, decimal defaultValue = 0m)

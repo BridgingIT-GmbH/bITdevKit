@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Admin command to trigger weather data ingestion for a city without subscription check.
 /// </summary>
@@ -32,13 +30,13 @@ public partial class AdminCityIngestCommand
     private async Task<Result<Unit>> HandleAsync(
         CancellationToken cancellationToken)
     {
-        var cityId = Domain.Model.CityId.Create(this.CityId);
+        var cityId = Domain.Modules.Core.Model.CityId.Create(this.CityId);
 
         var spec = new Specification<City>(c => c.Id == cityId);
         var cityResult = await City.FindAllAsync(spec, null, cancellationToken);
         if (cityResult.IsFailure)
         {
-            return Result<Unit>.Failure(cityResult.Errors.Select(e => e.Message));
+            return cityResult.Wrap<Unit>();
         }
 
         var city = cityResult.Value.FirstOrDefault();

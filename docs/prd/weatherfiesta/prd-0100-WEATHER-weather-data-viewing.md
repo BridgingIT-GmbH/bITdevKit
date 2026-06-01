@@ -2,7 +2,7 @@
 id: PRD-0100
 title: Weather Data Viewing
 slice: WEATHER
-status: Pending
+status: Implemented
 ---
 
 # Product Requirements: Weather Data Viewing
@@ -21,7 +21,7 @@ Authenticated users can view current weather, 7-day forecasts, and hourly breakd
 ## Stories
 
 ### Story 1: View current weather
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Data model and API contract fully defined. Subscription check specified.
 - User Story: As an authenticated user, I want to see current weather conditions for a city I'm subscribed to, so that I know what it's like right now.
@@ -43,7 +43,7 @@ Notes:
 - Technical context: GET /cities/{cityId}/weather?days={n}. Returns combined current + daily response.
 
 ### Story 2: View 7-day forecast
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Data model and API contract defined. Hourly data as JSON on daily forecast.
 - User Story: As an authenticated user, I want to see a 7-day weather forecast for a city I'm subscribed to, so that I can plan ahead.
@@ -64,7 +64,7 @@ Notes:
 - Technical context: WeatherForecast records are upserted every 30 minutes. HourlyForecasts stored as JSON column.
 
 ### Story 3: View hourly forecast
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Hourly data is embedded in daily forecast response as JSON array.
 - User Story: As an authenticated user, I want to see hourly weather details for a specific day, so that I can plan activities at a granular level.
@@ -81,7 +81,7 @@ Notes:
 - Technical context: HourlyForecasts stored as JSON column on WeatherForecast. No separate table.
 
 ### Story 4: Manual weather ingestion
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple queue trigger. API contract defined.
 - User Story: As an authenticated user, I want to manually trigger weather data refresh for a city I'm subscribed to, so that I get the latest data without waiting for the scheduled job.
@@ -99,7 +99,7 @@ Notes:
 - Technical context: POST /cities/{cityId}/ingest. Queues a message for async processing. Actual data update happens asynchronously.
 
 ### Story 5: System weather alerts
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Alert rules are based on WMO weather codes already in the data model. No user-defined thresholds needed.
 - User Story: As an authenticated user, I want to see weather alerts for extreme conditions in my subscribed cities, so that I can be aware of dangerous weather.

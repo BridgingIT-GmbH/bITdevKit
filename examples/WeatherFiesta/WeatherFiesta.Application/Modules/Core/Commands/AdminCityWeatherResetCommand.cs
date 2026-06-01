@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Admin command to delete all weather data for a city.
 /// </summary>
@@ -32,13 +30,13 @@ public partial class AdminCityWeatherResetCommand
     private async Task<Result<Unit>> HandleAsync(
         CancellationToken cancellationToken)
     {
-        var cityId = Domain.Model.CityId.Create(this.CityId);
+        var cityId = Domain.Modules.Core.Model.CityId.Create(this.CityId);
 
         var spec = new Specification<City>(c => c.Id == cityId);
         var cityResult = await City.FindAllAsync(spec, null, cancellationToken);
         if (cityResult.IsFailure)
         {
-            return Result<Unit>.Failure(cityResult.Errors.Select(e => e.Message));
+            return cityResult.Wrap<Unit>();
         }
 
         var city = cityResult.Value.FirstOrDefault();
@@ -52,7 +50,7 @@ public partial class AdminCityWeatherResetCommand
         var forecastsResult = await WeatherForecast.FindAllAsync(forecastSpec, null, cancellationToken);
         if (forecastsResult.IsFailure)
         {
-            return Result<Unit>.Failure(forecastsResult.Errors.Select(e => e.Message));
+            return forecastsResult.Wrap<Unit>();
         }
 
         foreach (var forecast in forecastsResult.Value)
@@ -65,7 +63,7 @@ public partial class AdminCityWeatherResetCommand
         var weathersResult = await CurrentWeather.FindAllAsync(weatherSpec, null, cancellationToken);
         if (weathersResult.IsFailure)
         {
-            return Result<Unit>.Failure(weathersResult.Errors.Select(e => e.Message));
+            return weathersResult.Wrap<Unit>();
         }
 
         foreach (var weather in weathersResult.Value)

@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Admin command to create a city directly without geocoding.
 /// </summary>
@@ -31,21 +29,27 @@ public partial class AdminCityCreateCommand
         IMapper mapper,
         CancellationToken cancellationToken)
     {
+        var locationResult = Location.Create(this.Model.Latitude, this.Model.Longitude);
+        if (locationResult.IsFailure)
+        {
+            return locationResult.Wrap<CityModel>();
+        }
+
         var city = City.Create(
             this.Model.Name,
             this.Model.Country,
             this.Model.CountryCode,
             this.Model.TimeZone,
-            Location.Create(this.Model.Latitude, this.Model.Longitude),
+            locationResult.Value,
             this.Model.ExternalId,
             this.Model.Elevation);
 
         var result = await city.InsertAsync(cancellationToken);
         if (result.IsFailure)
         {
-            return Result<CityModel>.Failure(result.Errors.Select(e => e.Message));
+            return result.Wrap<CityModel>();
         }
 
-        return Result<CityModel>.Success(mapper.Map<City, CityModel>(result.Value));
+        return result.Wrap(mapper.Map<City, CityModel>(city));
     }
 }

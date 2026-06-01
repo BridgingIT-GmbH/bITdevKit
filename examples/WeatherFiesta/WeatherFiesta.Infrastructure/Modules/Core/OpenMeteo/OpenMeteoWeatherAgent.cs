@@ -6,10 +6,10 @@
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure.OpenMeteo;
 
 using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Abstractions;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 using Microsoft.Extensions.Logging;
-using AppCurrentWeather = BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Abstractions.CurrentWeatherData;
-using AppHourlyForecast = BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Abstractions.HourlyForecastData;
+using AppCurrentWeather = Application.Modules.Core.CurrentWeatherData;
+using AppHourlyForecast = Application.Modules.Core.HourlyForecastData;
 
 /// <summary>
 /// Implements <see cref="IWeatherAgent"/> by delegating to the Open-Meteo API

@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core;
 
 using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Model;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 
 /// <summary>
 /// Domain event published when a new City is created.
@@ -18,10 +18,10 @@ public partial class CityCreatedDomainEvent(City city) : DomainEventBase
     public CityId CityId { get; } = city.Id;
 
     /// <summary>Gets the latitude coordinate of the city.</summary>
-    public decimal Latitude { get; } = city.Location?.Latitude ?? 0;
+    public decimal Latitude { get; } = city.Location.Latitude;
 
     /// <summary>Gets the longitude coordinate of the city.</summary>
-    public decimal Longitude { get; } = city.Location?.Longitude ?? 0;
+    public decimal Longitude { get; } = city.Location.Longitude;
 
     /// <summary>Gets the IANA timezone identifier of the city.</summary>
     public string TimeZone { get; } = city.TimeZone;

@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Admin query to list subscriptions for a city including soft-deleted ones.
 /// </summary>
@@ -33,14 +31,14 @@ public partial class AdminCitySubscriptionsQuery
         IMapper mapper,
         CancellationToken cancellationToken)
     {
-        var cityId = Domain.Model.CityId.Create(this.CityId);
+        var cityId = Domain.Modules.Core.Model.CityId.Create(this.CityId);
 
         // Verify city exists
         var citySpec = new Specification<City>(c => c.Id == cityId);
         var cityResult = await City.FindAllAsync(citySpec, null, cancellationToken);
         if (cityResult.IsFailure)
         {
-            return Result<List<AdminCitySubscriptionModel>>.Failure(cityResult.Errors.Select(e => e.Message));
+            return cityResult.Wrap<List<AdminCitySubscriptionModel>>();
         }
 
         var city = cityResult.Value.FirstOrDefault();
@@ -54,7 +52,7 @@ public partial class AdminCitySubscriptionsQuery
         var subscriptionsResult = await UserCity.FindAllAsync(subSpec, null, cancellationToken);
         if (subscriptionsResult.IsFailure)
         {
-            return Result<List<AdminCitySubscriptionModel>>.Failure(subscriptionsResult.Errors.Select(e => e.Message));
+            return subscriptionsResult.Wrap<List<AdminCitySubscriptionModel>>();
         }
 
         var subscriptions = subscriptionsResult.Value;

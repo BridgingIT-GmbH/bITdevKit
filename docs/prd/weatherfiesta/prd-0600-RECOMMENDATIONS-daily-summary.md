@@ -2,7 +2,7 @@
 id: PRD-0600
 title: Daily Summary and Recommendations
 slice: RECOMMENDATIONS
-status: Pending
+status: Implemented
 ---
 
 # Product Requirements: Daily Summary and Recommendations
@@ -37,7 +37,7 @@ Covers AC: Story 1 AC1-6, Story 2 AC1-4, Story 3 AC1-3
 ## Stories
 
 ### Story 1: View daily recommendations for a city
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Recommendation rules are fully defined. All source data (current weather, forecasts) exists in PRD-0100. No external dependencies.
 - User Story: As an authenticated user, I want to see daily weather recommendations for a city I'm subscribed to, so that I know how to prepare for the day.
@@ -59,7 +59,7 @@ Notes:
 - Design decision: sourceCondition values in recommendations are always in metric units (celsius, kmh). The user's unit preferences are included as metadata for frontend conversion, consistent with PRD-0400 Story 3 AC5.
 
 ### Story 2: Recommendation rules
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: All rules are defined with clear thresholds and source data fields. No ambiguity.
 - User Story: As the system, I want to apply defined recommendation rules to weather data, so that users receive consistent, actionable advice.
@@ -83,7 +83,7 @@ Notes:
 - Design decision: Thresholds are system-defined for v1. User-defined thresholds are out of scope (see PRD-0100 Story 5 design decision).
 
 ### Story 3: Recommendation categories and severity
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple enumeration. No external dependencies.
 - User Story: As a developer, I want well-defined recommendation categories and severity levels, so that the frontend can display recommendations with appropriate icons and styling.

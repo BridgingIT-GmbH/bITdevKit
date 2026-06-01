@@ -2,7 +2,7 @@
 id: PRD-0500
 title: Dashboard Summary
 slice: DASHBOARD
-status: Pending
+status: Implemented
 ---
 
 # Product Requirements: Dashboard Summary
@@ -36,7 +36,7 @@ Covers AC: Story 1 AC1-5, Story 2 AC1-4, Story 3 AC1-4, Story 4 AC1-3, Story 5 A
 ## Stories
 
 ### Story 1: View dashboard
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Aggregation endpoint. All source data defined in PRD-0000, PRD-0100. No external dependencies.
 - User Story: As an authenticated user, I want to see a dashboard with weather highlights for all my subscribed cities, so that I get a quick overview without navigating to each city individually.
@@ -56,7 +56,7 @@ Notes:
 - Dependencies: PRD-0000 (subscriptions, primary city), PRD-0100 (current weather, forecasts, alerts), PRD-0600 (recommendation rules)
 
 ### Story 2: Primary city highlight
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Depends on primary city (PRD-0000 Story 5) and current weather (PRD-0100 Story 1). Data already available.
 - User Story: As an authenticated user, I want to see my primary city's current weather prominently on the dashboard, so that I immediately see the weather that matters most to me.
@@ -74,7 +74,7 @@ Notes:
 - Technical context: Primary city data sourced from CurrentWeather table. Unit preferences from user profile (PRD-0400 Story 3).
 
 ### Story 3: Cross-city highlights
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Computed from existing weather data. No new data storage.
 - User Story: As an authenticated user, I want to see weather highlights across all my subscribed cities, so that I can quickly compare conditions.
@@ -93,7 +93,7 @@ Notes:
 - Design decision: Highlights use apparent temperature (not raw temperature) because it accounts for wind chill and humidity — what it actually feels like.
 
 ### Story 4: Alert summary on dashboard
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Aggregates existing alert data from PRD-0100 Story 5. No new data.
 - User Story: As an authenticated user, I want to see a count of active weather alerts on my dashboard, so that I'm immediately aware of dangerous conditions.
@@ -111,7 +111,7 @@ Notes:
 - Dependencies: PRD-0100 Story 5 (system weather alerts)
 
 ### Story 5: Recommendation highlights on dashboard
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Aggregates existing recommendation data from PRD-0600. No new data.
 - User Story: As an authenticated user, I want to see a summary of weather recommendations on my dashboard, so that I can quickly see what actions I should take today.

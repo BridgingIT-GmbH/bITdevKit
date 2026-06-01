@@ -48,6 +48,21 @@ public class JobTestHarnessTests(ITestOutputHelper output) : JobSchedulerTestBas
     }
 
     [Fact]
+    public async Task SchedulerHarnessCanDispatchJobWithoutDescription()
+    {
+        using var harness = this.CreateHarness(jobs =>
+            jobs.WithJob<EchoJob>("echo-job", job => job
+                .AddTrigger("manual", trigger => trigger.Manual())));
+
+        var result = await harness.DispatchAndWaitAsync<EchoJob>(
+            new EchoJobData { Message = "hello-jobs" });
+
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.Status.ShouldBe(JobExecutionStatus.Completed);
+        result.Value.Messages.ShouldContain("hello-jobs");
+    }
+
+    [Fact]
     public async Task HarnessCanMaterializeCronManualDelayedAndStartupTriggers()
     {
         using var harness = this.CreateHarness(jobs =>

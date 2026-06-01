@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
 
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 using Mapster;
 
 /// <summary>

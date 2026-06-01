@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Query to compare current weather across multiple subscribed cities.
 /// Returns weather data for each city with comparative highlights.
@@ -30,24 +28,37 @@ public partial class CityCompareQuery
     private async Task<Result<CityCompareResponse>> HandleAsync(
         IMapper mapper,
         ICurrentUserAccessor currentUserAccessor,
+        IOptions<CoreModuleConfiguration> moduleConfiguration,
         CancellationToken cancellationToken)
     {
         var userId = currentUserAccessor.UserId;
-        // TODO: inject staleThreshold from CoreModuleConfiguration.StaleThresholdMinutes instead of hardcoding
-        var staleThreshold = TimeSpan.FromMinutes(60);
+        var staleThreshold = TimeSpan.FromMinutes(moduleConfiguration.Value.StaleThresholdMinutes);
+
+        // Enforce subscription plan comparison limit
+        var subscriptionResult = await this.GetOrCreateSubscriptionAsync(userId, cancellationToken);
+        if (subscriptionResult.IsFailure)
+        {
+            return subscriptionResult.Wrap<CityCompareResponse>();
+        }
+
+        var comparisonResult = Rule.Check(new SubscriptionComparisonAllowedRule(subscriptionResult.Value));
+        if (comparisonResult.IsFailure)
+        {
+            return Result<CityCompareResponse>.Failure(comparisonResult);
+        }
 
         var result = new CityCompareResponse();
 
         foreach (var cityIdStr in this.CityIds)
         {
-            var cityId = Domain.Model.CityId.Create(cityIdStr);
+            var cityId = CityId.Create(cityIdStr);
 
             // Verify subscription
             var subSpec = new UserCityByUserAndCitySpecification(userId, cityId);
             var subsResult = await UserCity.FindAllAsync(subSpec, null, cancellationToken);
             if (subsResult.IsFailure)
             {
-                return Result<CityCompareResponse>.Failure(subsResult.Errors.Select(e => e.Message));
+                return subsResult.Wrap<CityCompareResponse>();
             }
 
             var subs = subsResult.Value;
@@ -60,7 +71,7 @@ public partial class CityCompareQuery
             var weatherResult = await CurrentWeather.FindAllAsync(weatherSpec, null, cancellationToken);
             if (weatherResult.IsFailure)
             {
-                return Result<CityCompareResponse>.Failure(weatherResult.Errors.Select(e => e.Message));
+                return weatherResult.Wrap<CityCompareResponse>();
             }
 
             var weather = weatherResult.Value.FirstOrDefault();
@@ -83,7 +94,7 @@ public partial class CityCompareQuery
         var userProfileResult = await UserProfile.FindAllAsync(userProfileSpec, null, cancellationToken);
         if (userProfileResult.IsFailure)
         {
-            return Result<CityCompareResponse>.Failure(userProfileResult.Errors.Select(e => e.Message));
+            return userProfileResult.Wrap<CityCompareResponse>();
         }
 
         var userProfile = userProfileResult.Value.FirstOrDefault();
@@ -131,6 +142,47 @@ public partial class CityCompareQuery
         }
 
         return Result<CityCompareResponse>.Success(result);
+    }
+
+    private async Task<Result<UserSubscription>> GetOrCreateSubscriptionAsync(string userId, CancellationToken cancellationToken)
+    {
+        var result = await UserSubscription.FindAllAsync(new SubscriptionByUserSpecification(userId), null, cancellationToken);
+        if (result.IsFailure)
+        {
+            return Result<UserSubscription>.Failure(result);
+        }
+
+        var subscriptions = result.Value;
+        if (subscriptions.Any())
+        {
+            var subscription = subscriptions
+                .OrderBy(s => s.AuditState.IsDeleted())
+                .ThenBy(s => s.StartDate)
+                .First();
+
+            if (subscription.AuditState.IsDeleted())
+            {
+                subscription.Reactivate();
+                var updateResult = await subscription.UpsertAsync(cancellationToken);
+                if (updateResult.IsFailure)
+                {
+                    return updateResult.Wrap<UserSubscription>();
+                }
+
+                subscription = updateResult.Value.entity;
+            }
+
+            if (!subscription.IsActive)
+            {
+                return Result<UserSubscription>.Failure(new DomainPolicyError(["Subscription is not active."]));
+            }
+
+            return Result<UserSubscription>.Success(subscription);
+        }
+
+        var newSubscription = UserSubscription.CreateFree(userId);
+        var insertResult = await newSubscription.InsertAsync(cancellationToken);
+        return insertResult;
     }
 }
 

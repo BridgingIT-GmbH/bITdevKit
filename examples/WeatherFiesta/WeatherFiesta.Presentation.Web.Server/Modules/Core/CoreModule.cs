@@ -5,15 +5,16 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
 
-using BridgingIT.DevKit.Application.JobScheduling;
+using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Abstractions;
-using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.ConsoleCommands;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Tasks;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure.OpenMeteo;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 
 /// <summary>
 /// Core module for WeatherFiesta registering DbContext, repositories, jobs, and endpoints.
@@ -26,13 +27,17 @@ public class CoreModule : WebModuleBase
         IConfiguration configuration = null,
         IWebHostEnvironment environment = null)
     {
+        // Configuration
         var moduleConfiguration = this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
 
         // DbContext
-        services.AddSqlServerDbContext<CoreDbContext>(o => o
-                .UseConnectionString(moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default"))
-                .UseLogger()/*.UseSimpleLogger()*/)
-            .WithHealthCheck()
+        var connectionString = moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default");
+        services.AddDbContext<CoreDbContext>((sp, options) => options
+            .UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(typeof(CoreDbContext).Assembly.GetName().Name))
+            .UseLoggerFactory(sp.GetRequiredService<ILoggerFactory>()));
+        services.AddScoped<IDbContextResolver, DbContextResolver>();
+
+        new DbContextBuilderContext<CoreDbContext>(services, connectionString: connectionString, provider: Provider.SqlServer)
             //.WithDatabaseMigratorService(o => o
             .WithDatabaseCreatorService(o => o
                 .Enabled()
@@ -111,18 +116,24 @@ public class CoreModule : WebModuleBase
         services.AddScoped<IWeatherAgent, OpenMeteoWeatherAgent>();
 
         // Geocoding client adapter (Application-level abstraction)
-        services.AddScoped<IWeatherGeocodingClient, WeatherGeocodingClientAdapter>();
+        services.AddScoped<IWeatherGeocodingClient, OpenMeteoGeocodingClient>();
 
-        // Job scheduling
-        services.AddJobScheduling(o => o
-                .Enabled()
-                .StartupDelay("00:00:30"), configuration)
-            .WithSqlServerStore(moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default"))
-            .WithBehavior<MetricsJobSchedulingBehavior>()
-            .WithJob<CoreIngestionJob>()
-                .Cron(moduleConfiguration.IngestionCron)
-                .Named("core_ingestion")
-                .RegisterScoped()
+        // Jobs
+        services.AddJobScheduler(configuration)
+            .StartupDelay(TimeSpan.FromSeconds(15))
+            .WithJob<WeatherIngestionJob>("core_ingestion", job => job
+                .Description("Ingests stale weather data for WeatherFiesta cities.")
+                .UseLifetime(ServiceLifetime.Scoped)
+                .WithConcurrency(1)
+                .AddTrigger("cron", trigger => trigger.Cron(moduleConfiguration.Jobs.IngestionCron))
+                .AddTrigger("manual", trigger => trigger.Manual()))
+            .WithJob<WeatherCleanupJob>("core_cleanup", job => job
+                .Description("Deletes stale weather data for WeatherFiesta cities.")
+                .UseLifetime(ServiceLifetime.Scoped)
+                .WithConcurrency(1)
+                .AddTrigger("cron", trigger => trigger.Cron(moduleConfiguration.Jobs.CleanupCron))
+                .AddTrigger("manual", trigger => trigger.Manual()))
+            .WithEntityFramework<CoreDbContext>()
             .AddEndpoints()
             .AddConsoleCommands();
 
@@ -135,12 +146,12 @@ public class CoreModule : WebModuleBase
         services.AddTransient<IConsoleCommand, CityResetConsoleCommand>();
 
         // Endpoints
-        services.AddEndpoints<CoreCityEndpoints>();
-        services.AddEndpoints<CoreWeatherEndpoints>();
-        services.AddEndpoints<CoreUserEndpoints>();
-        services.AddEndpoints<CoreDashboardEndpoints>();
-        services.AddEndpoints<CoreAdminEndpoints>();
-        services.AddEndpoints<CoreSubscriptionEndpoints>();
+        services.AddEndpoints<CityEndpoints>();
+        services.AddEndpoints<WeatherEndpoints>();
+        services.AddEndpoints<UserEndpoints>();
+        services.AddEndpoints<DashboardEndpoints>();
+        services.AddEndpoints<AdminEndpoints>();
+        services.AddEndpoints<SubscriptionEndpoints>();
 
         return services;
     }

@@ -6,49 +6,14 @@
     "version": "v1.0"
   },
   "paths": {
-    "/api/_system/jobs": {
+    "/api/_system/jobs/definitions/{jobName}": {
       "get": {
         "tags": [
-          "_System.JobScheduling"
-        ],
-        "summary": "Get all jobs",
-        "description": "Retrieves a list of all scheduled jobs.",
-        "operationId": "_System.JobScheduling.GetJobs",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/JobInfo"
-                  }
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/_system/jobs/{jobName}/{jobGroup}": {
-      "get": {
-        "tags": [
-          "_System.JobScheduling"
+          "_system/jobs"
         ],
         "summary": "Get job details",
-        "description": "Retrieves details for a specific job.",
-        "operationId": "_System.JobScheduling.GetJob",
+        "description": "Retrieves a single registered job definition with operational state.",
+        "operationId": "_System.Jobs.GetJob",
         "parameters": [
           {
             "name": "jobName",
@@ -57,14 +22,6 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "jobGroup",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
           }
         ],
         "responses": {
@@ -73,7 +30,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobInfo"
+                  "$ref": "#/components/schemas/JobSchedulerJobModel"
                 }
               }
             }
@@ -101,14 +58,14 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/{jobGroup}/runs": {
+    "/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}": {
       "get": {
         "tags": [
-          "_System.JobScheduling"
+          "_system/jobs"
         ],
-        "summary": "Get job run history",
-        "description": "Retrieves execution history for a specific job with optional filters.",
-        "operationId": "_System.JobScheduling.GetJobRuns",
+        "summary": "Get trigger details",
+        "description": "Retrieves a single registered trigger with operational state.",
+        "operationId": "_System.Jobs.GetTrigger",
         "parameters": [
           {
             "name": "jobName",
@@ -119,64 +76,11 @@
             }
           },
           {
-            "name": "jobGroup",
+            "name": "triggerName",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "startDate",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "endDate",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "status",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "priority",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
-          {
-            "name": "instanceName",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "resultContains",
-            "in": "query",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "take",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
             }
           }
         ],
@@ -186,10 +90,2929 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/JobRun"
-                  }
+                  "$ref": "#/components/schemas/JobSchedulerTriggerModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/definitions/{jobName}/dispatch": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Dispatch a job",
+        "description": "Dispatches a registered job using its configured manual trigger.",
+        "operationId": "_System.Jobs.DispatchJob",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobDispatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfJobDispatchResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/definitions/{jobName}/enable": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Enable a job",
+        "description": "Enables a registered job through durable runtime state.",
+        "operationId": "_System.Jobs.EnableJob",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/definitions/{jobName}/disable": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Disable a job",
+        "description": "Disables a registered job through durable runtime state.",
+        "operationId": "_System.Jobs.DisableJob",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/definitions/{jobName}/pause": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Pause a job",
+        "description": "Pauses a registered job without mutating its code-first definition.",
+        "operationId": "_System.Jobs.PauseJob",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/definitions/{jobName}/resume": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Resume a job",
+        "description": "Resumes a previously paused job.",
+        "operationId": "_System.Jobs.ResumeJob",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/pause": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Pause a trigger",
+        "description": "Pauses a registered trigger without mutating its code-first definition.",
+        "operationId": "_System.Jobs.PauseTrigger",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "triggerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/resume": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Resume a trigger",
+        "description": "Resumes a previously paused trigger.",
+        "operationId": "_System.Jobs.ResumeTrigger",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "triggerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/enable": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Enable a trigger",
+        "description": "Enables a registered trigger through durable runtime state.",
+        "operationId": "_System.Jobs.EnableTrigger",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "triggerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/disable": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Disable a trigger",
+        "description": "Disables a registered trigger through durable runtime state.",
+        "operationId": "_System.Jobs.DisableTrigger",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "triggerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/occurrences/{occurrenceId}": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Get occurrence details",
+        "description": "Retrieves one materialized occurrence by its internal occurrence identifier.",
+        "parameters": [
+          {
+            "name": "occurrenceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobSchedulerOccurrenceModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/occurrences/{occurrenceId}/history": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Get occurrence history",
+        "description": "Retrieves execution history for one occurrence.",
+        "parameters": [
+          {
+            "name": "occurrenceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerExecutionHistoryModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/occurrences/{occurrenceId}/pause": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Pause an occurrence",
+        "description": "Pauses an eligible occurrence before a new attempt starts.",
+        "operationId": "_System.Jobs.PauseOccurrence",
+        "parameters": [
+          {
+            "name": "occurrenceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/occurrences/{occurrenceId}/resume": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Resume an occurrence",
+        "description": "Resumes a previously paused occurrence.",
+        "operationId": "_System.Jobs.ResumeOccurrence",
+        "parameters": [
+          {
+            "name": "occurrenceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/occurrences/{occurrenceId}/cancel": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Cancel an occurrence",
+        "description": "Requests cancellation of an occurrence.",
+        "operationId": "_System.Jobs.CancelOccurrence",
+        "parameters": [
+          {
+            "name": "occurrenceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/occurrences/{occurrenceId}/interrupt": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Interrupt an occurrence",
+        "description": "Requests interruption of a running occurrence.",
+        "operationId": "_System.Jobs.InterruptOccurrence",
+        "parameters": [
+          {
+            "name": "occurrenceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/occurrences/{occurrenceId}/retry": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Retry an occurrence",
+        "description": "Requests retry of an eligible failed occurrence.",
+        "operationId": "_System.Jobs.RetryOccurrence",
+        "parameters": [
+          {
+            "name": "occurrenceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/occurrences/{occurrenceId}/archive": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Archive an occurrence",
+        "description": "Archives a terminal occurrence.",
+        "operationId": "_System.Jobs.ArchiveOccurrence",
+        "parameters": [
+          {
+            "name": "occurrenceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/occurrences/{occurrenceId}/repair/release-lease": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Release an occurrence lease",
+        "description": "Releases an active occurrence lease so the occurrence can be repaired or recovered.",
+        "operationId": "_System.Jobs.ReleaseOccurrenceLease",
+        "parameters": [
+          {
+            "name": "occurrenceId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/occurrences/bulk/retry": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Retry occurrences",
+        "description": "Retries the selected eligible failed occurrences as one bulk operation.",
+        "operationId": "_System.Jobs.RetryOccurrences",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobBulkOccurrenceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfJobBulkOperationResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/occurrences/bulk/cancel": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Cancel occurrences",
+        "description": "Cancels the selected eligible occurrences as one bulk operation.",
+        "operationId": "_System.Jobs.CancelOccurrences",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobBulkOccurrenceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfJobBulkOperationResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/occurrences/bulk/archive": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Archive occurrences",
+        "description": "Archives the selected eligible retained occurrences as one bulk operation.",
+        "operationId": "_System.Jobs.ArchiveOccurrences",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobBulkOccurrenceRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfJobBulkOperationResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/batches": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "List batches",
+        "description": "Retrieves job batches with paging, filtering, and sorting.",
+        "operationId": "_System.Jobs.GetBatches",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerBatchModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Create a batch",
+        "description": "Creates an empty or described durable batch record.",
+        "operationId": "_System.Jobs.CreateBatch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobBatchCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfJobBatchDispatchResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/batches/{batchId}": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Get batch details",
+        "description": "Retrieves a single job batch.",
+        "operationId": "_System.Jobs.GetBatch",
+        "parameters": [
+          {
+            "name": "batchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobSchedulerBatchModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/batches/{batchId}/occurrences": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "List batch child occurrences",
+        "description": "Retrieves child occurrences for a specific batch.",
+        "operationId": "_System.Jobs.GetBatchOccurrences",
+        "parameters": [
+          {
+            "name": "batchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerBatchChildOccurrenceModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/batches/{batchId}/history": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "List batch history",
+        "description": "Retrieves append-only history for a specific batch.",
+        "operationId": "_System.Jobs.GetBatchHistory",
+        "parameters": [
+          {
+            "name": "batchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerBatchHistoryModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/batches/dispatch": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Dispatch a batch",
+        "description": "Creates a batch and dispatches child occurrences as one accepted operation.",
+        "operationId": "_System.Jobs.DispatchBatch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobBatchDispatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfJobBatchDispatchResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/batches/{batchId}/attach": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Attach to batch",
+        "description": "Attaches additional child occurrences to an existing batch.",
+        "operationId": "_System.Jobs.AttachToBatch",
+        "parameters": [
+          {
+            "name": "batchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobBatchDispatchRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfJobBatchDispatchResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/batches/{batchId}/retry": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Retry batch",
+        "description": "Retries eligible failed child occurrences for a batch.",
+        "operationId": "_System.Jobs.RetryBatch",
+        "parameters": [
+          {
+            "name": "batchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfJobBulkOperationResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/batches/{batchId}/cancel": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Cancel batch",
+        "description": "Cancels eligible child occurrences for a batch.",
+        "operationId": "_System.Jobs.CancelBatch",
+        "parameters": [
+          {
+            "name": "batchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfJobBulkOperationResult"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/batches/{batchId}/pause": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Pause batch",
+        "description": "Pauses eligible child occurrences for a batch.",
+        "operationId": "_System.Jobs.PauseBatch",
+        "parameters": [
+          {
+            "name": "batchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/batches/{batchId}/resume": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Resume batch",
+        "description": "Resumes eligible child occurrences for a batch.",
+        "operationId": "_System.Jobs.ResumeBatch",
+        "parameters": [
+          {
+            "name": "batchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/batches/{batchId}/archive": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Archive batch",
+        "description": "Archives a batch and eligible retained child occurrences.",
+        "operationId": "_System.Jobs.ArchiveBatch",
+        "parameters": [
+          {
+            "name": "batchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/maintenance/purge-history": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Purge history",
+        "description": "Purges archived execution history older than the configured retention window.",
+        "operationId": "_System.Jobs.PurgeHistory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobPurgeHistoryJobData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobMaintenanceReport"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/maintenance/release-expired-leases": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Release expired leases",
+        "description": "Releases expired leases and repairs the affected occurrences.",
+        "operationId": "_System.Jobs.ReleaseExpiredLeases",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReleaseExpiredLeasesJobData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobMaintenanceReport"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/maintenance/recover-stuck-occurrences": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Recover stuck occurrences",
+        "description": "Recovers stale occurrences that no longer have a valid active lease.",
+        "operationId": "_System.Jobs.RecoverStuckOccurrences",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobRecoverStuckOccurrencesJobData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobMaintenanceReport"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/maintenance/detect-orphaned-runtime-state": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Detect orphaned runtime state",
+        "description": "Detects runtime-state rows that no longer correspond to active code-first registrations.",
+        "operationId": "_System.Jobs.DetectOrphanedRuntimeState",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobDetectOrphanedRuntimeStateJobData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobMaintenanceReport"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/dashboard/summary": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Get dashboard summary",
+        "description": "Retrieves aggregate counts and summary diagnostics for the jobs dashboard.",
+        "operationId": "_System.Jobs.GetDashboardSummary",
+        "parameters": [
+          {
+            "name": "From",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "To",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "FromUtc",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "ToUtc",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfJobSchedulerDashboardSummaryModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/dashboard/timeline": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Get dashboard timeline",
+        "description": "Retrieves timeline buckets for occurrences or executions.",
+        "operationId": "_System.Jobs.GetDashboardTimeline",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfJobSchedulerTimelineModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/dashboard": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Get dashboard",
+        "description": "Retrieves the primary dashboard summary projection.",
+        "parameters": [
+          {
+            "name": "From",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "To",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "FromUtc",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "ToUtc",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfJobSchedulerDashboardSummaryModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/dashboard/navigation": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Get dashboard navigation",
+        "description": "Retrieves dashboard navigation metadata derived from the dashboard summary projection.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfJobSchedulerDashboardNavigationModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/dashboard/overview": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Get dashboard overview",
+        "description": "Retrieves dashboard overview data derived from the dashboard summary projection.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfJobSchedulerDashboardOverviewModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "List jobs",
+        "description": "Retrieves registered jobs with operational overlay, paging, filtering, and sorting.",
+        "operationId": "_System.Jobs.GetJobs",
+        "parameters": [
+          {
+            "name": "JobName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Group",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Module",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Enabled",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Paused",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "IncludeOrphanedRuntimeState",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "SortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SortDescending",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerJobModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/triggers": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "List triggers",
+        "description": "Retrieves job triggers with paging, filtering, and sorting.",
+        "operationId": "_System.Jobs.GetTriggers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerTriggerModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/triggers/recurring": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "List recurring triggers",
+        "description": "Retrieves recurring job triggers with paging, filtering, and sorting.",
+        "operationId": "_System.Jobs.GetRecurringTriggers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerRecurringTriggerModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/occurrences": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "List occurrences",
+        "description": "Retrieves materialized job occurrences with paging, filtering, and sorting.",
+        "operationId": "_System.Jobs.GetOccurrences",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerOccurrenceModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -208,11 +3031,515 @@
       },
       "delete": {
         "tags": [
-          "_System.JobScheduling"
+          "_system/jobs"
         ],
-        "summary": "Purge old job run history",
-        "description": "Purges job run history older than a specified date.",
-        "operationId": "_System.JobScheduling.PurgeJobRuns",
+        "summary": "Purge occurrences",
+        "description": "Purges retained terminal occurrences by age and optional status, job, trigger, and archive filters.",
+        "operationId": "_System.Jobs.PurgeOccurrences",
+        "parameters": [
+          {
+            "name": "OlderThan",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "Statuses",
+            "in": "query",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/JobOccurrenceStatus"
+              }
+            }
+          },
+          {
+            "name": "JobName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "TriggerName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "IsArchived",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "DryRun",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "BatchSize",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobMaintenanceReport"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/retries": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "List retries",
+        "description": "Retrieves retry-scheduled or retryable occurrences.",
+        "operationId": "_System.Jobs.GetRetries",
+        "parameters": [
+          {
+            "name": "JobName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "TriggerName",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "CorrelationId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SchedulerInstanceId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "HasRemainingAttempts",
+            "in": "query",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Skip",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "Take",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "SortBy",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "SortDescending",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerRetryModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/dependencies": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "List dependencies",
+        "description": "Retrieves persisted occurrence dependency links with prerequisite and dependent state.",
+        "operationId": "_System.Jobs.GetDependencies",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerDependencyModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/executions": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "List executions",
+        "description": "Retrieves execution attempts with paging, filtering, and sorting.",
+        "operationId": "_System.Jobs.GetExecutions",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerExecutionModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/history": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "List execution history",
+        "description": "Retrieves retained execution history with paging, filtering, and sorting.",
+        "operationId": "_System.Jobs.GetHistory",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerExecutionHistoryModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/leases": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "List leases",
+        "description": "Retrieves active and expired occurrence lease diagnostics.",
+        "operationId": "_System.Jobs.GetLeases",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerLeaseModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/servers": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "List scheduler servers",
+        "description": "Retrieves observed scheduler server instances.",
+        "operationId": "_System.Jobs.GetServers",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerServerModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/metrics": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Get scheduler metrics",
+        "description": "Retrieves aggregate jobs metrics for operational monitoring.",
+        "operationId": "_System.Jobs.GetMetrics",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultOfJobSchedulerMetricsModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/recurring": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "List recurring jobs",
+        "description": "Retrieves recurring job triggers using the spec-shaped operational route.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerRecurringTriggerModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/recurring/{jobName}/{triggerName}": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Get recurring trigger details",
+        "description": "Retrieves a single recurring trigger using the spec-shaped operational route.",
         "parameters": [
           {
             "name": "jobName",
@@ -223,26 +3550,27 @@
             }
           },
           {
-            "name": "jobGroup",
+            "name": "triggerName",
             "in": "path",
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "olderThan",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "date-time"
             }
           }
         ],
         "responses": {
           "200": {
             "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobSchedulerRecurringTriggerModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
@@ -264,14 +3592,13 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/{jobGroup}/stats": {
+    "/api/_system/jobs/{jobName}/triggers": {
       "get": {
         "tags": [
-          "_System.JobScheduling"
+          "_system/jobs"
         ],
-        "summary": "Get job run statistics",
-        "description": "Retrieves aggregated statistics for a job’s execution history.",
-        "operationId": "_System.JobScheduling.GetJobRunStats",
+        "summary": "List job triggers",
+        "description": "Retrieves triggers for a specific job using the spec-shaped operational route.",
         "parameters": [
           {
             "name": "jobName",
@@ -279,30 +3606,6 @@
             "required": true,
             "schema": {
               "type": "string"
-            }
-          },
-          {
-            "name": "jobGroup",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "startDate",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            }
-          },
-          {
-            "name": "endDate",
-            "in": "query",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
             }
           }
         ],
@@ -312,7 +3615,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobRunStats"
+                  "$ref": "#/components/schemas/ResultPagedOfJobSchedulerTriggerModel"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
                 }
               }
             }
@@ -330,14 +3643,13 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/{jobGroup}/triggers": {
+    "/api/_system/jobs/{jobName}/triggers/{triggerName}": {
       "get": {
         "tags": [
-          "_System.JobScheduling"
+          "_system/jobs"
         ],
-        "summary": "Get job triggers",
-        "description": "Retrieves all triggers associated with a specific job.",
-        "operationId": "_System.JobScheduling.GetJobTriggers",
+        "summary": "Get trigger details",
+        "description": "Retrieves a single trigger using the spec-shaped operational route.",
         "parameters": [
           {
             "name": "jobName",
@@ -348,7 +3660,7 @@
             }
           },
           {
-            "name": "jobGroup",
+            "name": "triggerName",
             "in": "path",
             "required": true,
             "schema": {
@@ -362,10 +3674,17 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TriggerInfo"
-                  }
+                  "$ref": "#/components/schemas/JobSchedulerTriggerModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -383,25 +3702,67 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/{jobGroup}/trigger": {
+    "/api/_system/jobs/{jobName}": {
+      "get": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Get job details",
+        "description": "Retrieves a single registered job definition with operational state using the spec-shaped route.",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobSchedulerJobModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/{jobName}/dispatch": {
       "post": {
         "tags": [
-          "_System.JobScheduling"
+          "_system/jobs"
         ],
-        "summary": "Trigger job immediately",
-        "description": "Triggers a job to run immediately with optional data.",
-        "operationId": "_System.JobScheduling.TriggerJob",
+        "summary": "Dispatch a job",
+        "description": "Dispatches a registered job using the spec-shaped operational route.",
         "parameters": [
           {
             "name": "jobName",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "jobGroup",
             "in": "path",
             "required": true,
             "schema": {
@@ -413,14 +3774,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "oneOf": [
-                  {
-                    "type": "null"
-                  },
-                  {
-                    "type": "object"
-                  }
-                ]
+                "$ref": "#/components/schemas/JobDispatchRequest"
               }
             }
           }
@@ -431,13 +3785,23 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/ResultOfJobDispatchResult"
                 }
               }
             }
           },
           "400": {
             "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
             "content": {
               "application/json": {
                 "schema": {
@@ -459,14 +3823,153 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/{jobGroup}/pause": {
+    "/api/_system/jobs/{jobName}/enable": {
       "post": {
         "tags": [
-          "_System.JobScheduling"
+          "_system/jobs"
+        ],
+        "summary": "Enable a job",
+        "description": "Enables a registered job using the spec-shaped operational route.",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/{jobName}/disable": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Disable a job",
+        "description": "Disables a registered job using the spec-shaped operational route.",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/{jobName}/pause": {
+      "post": {
+        "tags": [
+          "_system/jobs"
         ],
         "summary": "Pause a job",
-        "description": "Pauses the execution of a specific job.",
-        "operationId": "_System.JobScheduling.PauseJob",
+        "description": "Pauses a registered job using the spec-shaped operational route.",
         "parameters": [
           {
             "name": "jobName",
@@ -475,16 +3978,17 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "jobGroup",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -496,8 +4000,18 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request",
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
             "content": {
               "application/json": {
                 "schema": {
@@ -519,14 +4033,13 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/{jobGroup}/resume": {
+    "/api/_system/jobs/{jobName}/resume": {
       "post": {
         "tags": [
-          "_System.JobScheduling"
+          "_system/jobs"
         ],
-        "summary": "Resume a paused job",
-        "description": "Resumes the execution of a paused job.",
-        "operationId": "_System.JobScheduling.ResumeJob",
+        "summary": "Resume a job",
+        "description": "Resumes a previously paused job using the spec-shaped operational route.",
         "parameters": [
           {
             "name": "jobName",
@@ -535,16 +4048,17 @@
             "schema": {
               "type": "string"
             }
-          },
-          {
-            "name": "jobGroup",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -556,8 +4070,18 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request",
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
             "content": {
               "application/json": {
                 "schema": {
@@ -579,14 +4103,13 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/{jobGroup}/interrupt": {
+    "/api/_system/jobs/{jobName}/triggers/{triggerName}/pause": {
       "post": {
         "tags": [
-          "_System.JobScheduling"
+          "_system/jobs"
         ],
-        "summary": "Interrupt a running job",
-        "description": "Interrupts the execution of a currently running job.",
-        "operationId": "_System.JobScheduling.InterruptJob",
+        "summary": "Pause a trigger",
+        "description": "Pauses a registered trigger using the spec-shaped operational route.",
         "parameters": [
           {
             "name": "jobName",
@@ -597,7 +4120,7 @@
             }
           },
           {
-            "name": "jobGroup",
+            "name": "triggerName",
             "in": "path",
             "required": true,
             "schema": {
@@ -605,6 +4128,15 @@
             }
           }
         ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -616,8 +4148,252 @@
               }
             }
           },
-          "400": {
-            "description": "Bad Request",
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/{jobName}/triggers/{triggerName}/resume": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Resume a trigger",
+        "description": "Resumes a previously paused trigger using the spec-shaped operational route.",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "triggerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/{jobName}/triggers/{triggerName}/enable": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Enable a trigger",
+        "description": "Enables a registered trigger using the spec-shaped operational route.",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "triggerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/_system/jobs/{jobName}/triggers/{triggerName}/disable": {
+      "post": {
+        "tags": [
+          "_system/jobs"
+        ],
+        "summary": "Disable a trigger",
+        "description": "Disables a registered trigger using the spec-shaped operational route.",
+        "parameters": [
+          {
+            "name": "jobName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "triggerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/JobReasonRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
             "content": {
               "application/json": {
                 "schema": {
@@ -1208,7 +4984,7 @@
       }
     },
     "/api/core/cities/compare": {
-      "get": {
+      "post": {
         "tags": [
           "Core.Weather"
         ],
@@ -3967,10 +7743,469 @@
           }
         }
       },
-      "JobInfo": {
+      "JobBatchCompletionPolicy": {
+        "enum": [
+          "RequireAllSucceeded",
+          "AllowPartialCompletion"
+        ]
+      },
+      "JobBatchCreateRequest": {
         "type": "object",
         "properties": {
-          "name": {
+          "batchId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "completionPolicy": {
+            "$ref": "#/components/schemas/JobBatchCompletionPolicy"
+          },
+          "correlationId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "causationId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "idempotencyKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "properties": {
+            "$ref": "#/components/schemas/PropertyBag"
+          }
+        }
+      },
+      "JobBatchDispatchItem": {
+        "type": "object",
+        "properties": {
+          "jobName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "data": { },
+          "options": {
+            "$ref": "#/components/schemas/JobDispatchOptions"
+          },
+          "sequence": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "dueUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "sourceStep": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "JobBatchDispatchRequest": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/JobBatchDispatchItem"
+            }
+          },
+          "batchId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "completionPolicy": {
+            "$ref": "#/components/schemas/JobBatchCompletionPolicy"
+          },
+          "correlationId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "causationId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "idempotencyKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "properties": {
+            "$ref": "#/components/schemas/PropertyBag"
+          }
+        }
+      },
+      "JobBatchStatus": {
+        "enum": [
+          "Created",
+          "Processing",
+          "Completed",
+          "CompletedWithFailures",
+          "Failed",
+          "Cancelled",
+          "Archived"
+        ]
+      },
+      "JobBulkOccurrenceRequest": {
+        "type": "object",
+        "properties": {
+          "occurrenceIds": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "reason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "JobDetectOrphanedRuntimeStateJobData": {
+        "type": "object",
+        "properties": {
+          "dryRun": {
+            "type": "boolean"
+          },
+          "batchSize": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "JobDispatchOptions": {
+        "type": "object",
+        "properties": {
+          "triggerName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "correlationId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "idempotencyKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "properties": {
+            "$ref": "#/components/schemas/PropertyBag"
+          },
+          "durable": {
+            "type": "boolean"
+          }
+        }
+      },
+      "JobDispatchRequest": {
+        "type": "object",
+        "properties": {
+          "data": { },
+          "options": {
+            "$ref": "#/components/schemas/JobDispatchOptions"
+          }
+        }
+      },
+      "JobExecutionStatus": {
+        "enum": [
+          "Started",
+          "Completed",
+          "Failed",
+          "TimedOut",
+          "Cancelled",
+          "Interrupted",
+          "Retried",
+          null
+        ]
+      },
+      "JobMaintenanceReport": {
+        "required": [
+          "operation",
+          "dryRun",
+          "matchedCount",
+          "processedCount",
+          "remainingCount",
+          "affectedIds",
+          "diagnostics"
+        ],
+        "type": "object",
+        "properties": {
+          "operation": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "dryRun": {
+            "type": "boolean"
+          },
+          "matchedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "processedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "remainingCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "affectedIds": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "diagnostics": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "JobOccurrenceStatus": {
+        "enum": [
+          "Materialized",
+          "Scheduled",
+          "Due",
+          "Blocked",
+          "Running",
+          "RetryScheduled",
+          "Completed",
+          "Failed",
+          "Cancelled",
+          "Paused",
+          "Archived",
+          null
+        ]
+      },
+      "JobPurgeHistoryJobData": {
+        "type": "object",
+        "properties": {
+          "retentionWindow": {
+            "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
+            "type": "string"
+          },
+          "dryRun": {
+            "type": "boolean"
+          },
+          "batchSize": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "JobReasonRequest": {
+        "type": "object",
+        "properties": {
+          "reason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "JobRecoverStuckOccurrencesJobData": {
+        "type": "object",
+        "properties": {
+          "stuckFor": {
+            "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
+            "type": "string"
+          },
+          "dryRun": {
+            "type": "boolean"
+          },
+          "batchSize": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "JobReleaseExpiredLeasesJobData": {
+        "type": "object",
+        "properties": {
+          "dryRun": {
+            "type": "boolean"
+          },
+          "batchSize": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "JobSchedulerBatchModel": {
+        "type": "object",
+        "properties": {
+          "batchId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "externalBatchId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobBatchStatus"
+          },
+          "completionPolicy": {
+            "$ref": "#/components/schemas/JobBatchCompletionPolicy"
+          },
+          "correlationId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "causationId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "idempotencyKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "acceptedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "succeededCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "failedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "cancelledCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "archivedCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "childOccurrenceCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "propertyKeys": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "propertyCount": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "JobSchedulerJobModel": {
+        "type": "object",
+        "properties": {
+          "jobName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "displayName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
             "type": [
               "null",
               "string"
@@ -3982,67 +8217,136 @@
               "string"
             ]
           },
-          "description": {
+          "module": {
             "type": [
               "null",
               "string"
             ]
           },
-          "type": {
+          "jobType": {
             "type": [
               "null",
               "string"
             ]
           },
-          "status": {
+          "registeredEnabled": {
+            "type": "boolean"
+          },
+          "effectiveEnabled": {
+            "type": "boolean"
+          },
+          "paused": {
+            "type": "boolean"
+          },
+          "isOrphanedRuntimeState": {
+            "type": "boolean"
+          },
+          "hasOrphanedRuntimeState": {
+            "type": "boolean"
+          },
+          "priority": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timeout": {
+            "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
             "type": [
               "null",
               "string"
             ]
+          },
+          "concurrencyLimit": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
           },
           "triggerCount": {
             "type": "integer",
             "format": "int32"
           },
-          "lastRun": {
-            "$ref": "#/components/schemas/JobRun"
+          "recurringTriggerCount": {
+            "type": "integer",
+            "format": "int32"
           },
-          "isRunning": {
+          "pendingOccurrenceCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "runningOccurrenceCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "failedOccurrenceCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lastOccurrenceUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "lastExecutionUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "lastExecutionStatus": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/JobExecutionStatus"
+              }
+            ]
+          },
+          "hasFailedLatestExecution": {
             "type": "boolean"
           },
-          "lastRunStats": {
-            "$ref": "#/components/schemas/JobRunStats"
-          },
-          "category": {
+          "dataType": {
             "type": [
               "null",
               "string"
             ]
           },
-          "triggers": {
+          "targetInstances": {
             "type": [
               "null",
               "array"
             ],
             "items": {
-              "$ref": "#/components/schemas/TriggerInfo"
+              "type": "string"
             }
           },
-          "runs": {
+          "propertyKeys": {
             "type": [
               "null",
               "array"
             ],
             "items": {
-              "$ref": "#/components/schemas/JobRun"
+              "type": "string"
             }
+          },
+          "propertyCount": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
-      "JobRun": {
+      "JobSchedulerOccurrenceModel": {
         "type": "object",
         "properties": {
-          "id": {
+          "occurrenceId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "occurrenceKey": {
             "type": [
               "null",
               "string"
@@ -4054,13 +8358,147 @@
               "string"
             ]
           },
-          "jobGroup": {
+          "triggerName": {
             "type": [
               "null",
               "string"
             ]
           },
-          "description": {
+          "triggerType": {
+            "$ref": "#/components/schemas/JobTriggerType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/JobOccurrenceStatus"
+          },
+          "dueUtc": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "scheduledUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "createdDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "correlationId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "causationId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "idempotencyKey": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "resumeStatus": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/JobOccurrenceStatus"
+              }
+            ]
+          },
+          "blockedReason": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "dependencyCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "pendingDependencyCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "failedDependencyCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "dataType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "dataPreview": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "propertyKeys": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "propertyCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "attemptCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "latestExecutionStatus": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/JobExecutionStatus"
+              }
+            ]
+          },
+          "leaseOwnerSchedulerInstanceId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "batchInternalId": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "uuid"
+          },
+          "externalBatchId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "JobSchedulerRecurringTriggerModel": {
+        "type": "object",
+        "properties": {
+          "jobName": {
             "type": [
               "null",
               "string"
@@ -4072,78 +8510,17 @@
               "string"
             ]
           },
-          "triggerGroup": {
-            "type": [
-              "null",
-              "string"
-            ]
+          "triggerType": {
+            "$ref": "#/components/schemas/JobTriggerType"
           },
-          "startTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "startTimeText": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "endTime": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          },
-          "endTimeText": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "scheduledTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "durationMs": {
-            "type": [
-              "null",
-              "integer"
-            ],
-            "format": "int64"
-          },
-          "durationText": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "status": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "isRunning": {
+          "registeredEnabled": {
             "type": "boolean"
           },
-          "errorMessage": {
-            "type": [
-              "null",
-              "string"
-            ]
+          "effectiveEnabled": {
+            "type": "boolean"
           },
-          "data": {
-            "type": [
-              "null",
-              "object"
-            ]
-          },
-          "instanceName": {
-            "type": [
-              "null",
-              "string"
-            ]
+          "paused": {
+            "type": "boolean"
           },
           "priority": {
             "type": [
@@ -4152,74 +8529,277 @@
             ],
             "format": "int32"
           },
-          "result": {
+          "timeout": {
+            "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
             "type": [
               "null",
               "string"
             ]
           },
-          "retryCount": {
-            "type": "integer",
+          "retryMaxAttempts": {
+            "type": [
+              "null",
+              "integer"
+            ],
             "format": "int32"
           },
-          "category": {
+          "retryUsesExponentialBackoff": {
+            "type": "boolean"
+          },
+          "schedule": {
             "type": [
               "null",
               "string"
+            ]
+          },
+          "dueUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "delay": {
+            "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextDueUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "lastMaterializedScheduledUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "hasMaterializedOccurrence": {
+            "type": "boolean"
+          },
+          "timeZoneId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "dataType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "targetInstances": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "dataPreview": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "propertyKeys": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "propertyCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lastOccurrenceUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "lastOccurrenceStatus": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/JobOccurrenceStatus"
+              }
             ]
           }
         }
       },
-      "JobRunStats": {
+      "JobSchedulerTriggerModel": {
         "type": "object",
         "properties": {
-          "totalRuns": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "successCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "failureCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "interruptCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "avgRunDurationMs": {
-            "type": "number",
-            "format": "double"
-          },
-          "avgRunDurationText": {
+          "jobName": {
             "type": [
               "null",
               "string"
             ]
           },
-          "maxRunDurationMs": {
-            "type": "integer",
-            "format": "int64"
-          },
-          "maxRunDurationText": {
+          "triggerName": {
             "type": [
               "null",
               "string"
             ]
           },
-          "minRunDurationMs": {
-            "type": "integer",
-            "format": "int64"
+          "triggerType": {
+            "$ref": "#/components/schemas/JobTriggerType"
           },
-          "minRunDurationText": {
+          "registeredEnabled": {
+            "type": "boolean"
+          },
+          "effectiveEnabled": {
+            "type": "boolean"
+          },
+          "paused": {
+            "type": "boolean"
+          },
+          "priority": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "timeout": {
+            "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
             "type": [
               "null",
               "string"
+            ]
+          },
+          "retryMaxAttempts": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int32"
+          },
+          "retryUsesExponentialBackoff": {
+            "type": "boolean"
+          },
+          "schedule": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "dueUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "delay": {
+            "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "nextDueUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "lastMaterializedScheduledUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "hasMaterializedOccurrence": {
+            "type": "boolean"
+          },
+          "timeZoneId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "dataType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "targetInstances": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "dataPreview": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "propertyKeys": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "propertyCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "lastOccurrenceUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "lastOccurrenceStatus": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/JobOccurrenceStatus"
+              }
             ]
           }
         }
+      },
+      "JobTriggerType": {
+        "enum": [
+          "Manual",
+          "OneTime",
+          "Delayed",
+          "StartupDelay",
+          "Cron",
+          "Calendar",
+          "Event",
+          "Custom"
+        ]
       },
       "MetricLatencyModel": {
         "type": "object",
@@ -4485,6 +9065,28 @@
         "additionalProperties": { },
         "description": "Represents an individual error entry with flexible structure for additional data"
       },
+      "PropertyBag": { },
+      "ResultOfJobBatchDispatchResult": { },
+      "ResultOfJobBulkOperationResult": { },
+      "ResultOfJobDispatchResult": { },
+      "ResultOfJobSchedulerDashboardNavigationModel": { },
+      "ResultOfJobSchedulerDashboardOverviewModel": { },
+      "ResultOfJobSchedulerDashboardSummaryModel": { },
+      "ResultOfJobSchedulerMetricsModel": { },
+      "ResultOfJobSchedulerTimelineModel": { },
+      "ResultPagedOfJobSchedulerBatchChildOccurrenceModel": { },
+      "ResultPagedOfJobSchedulerBatchHistoryModel": { },
+      "ResultPagedOfJobSchedulerBatchModel": { },
+      "ResultPagedOfJobSchedulerDependencyModel": { },
+      "ResultPagedOfJobSchedulerExecutionHistoryModel": { },
+      "ResultPagedOfJobSchedulerExecutionModel": { },
+      "ResultPagedOfJobSchedulerJobModel": { },
+      "ResultPagedOfJobSchedulerLeaseModel": { },
+      "ResultPagedOfJobSchedulerOccurrenceModel": { },
+      "ResultPagedOfJobSchedulerRecurringTriggerModel": { },
+      "ResultPagedOfJobSchedulerRetryModel": { },
+      "ResultPagedOfJobSchedulerServerModel": { },
+      "ResultPagedOfJobSchedulerTriggerModel": { },
       "ResultProblemData": {
         "type": "object",
         "properties": {
@@ -4691,67 +9293,6 @@
           "priority": {
             "type": "integer",
             "format": "int32"
-          }
-        }
-      },
-      "TriggerInfo": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "group": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "description": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "cronExpression": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "nextFireTime": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          },
-          "nextFireTimeText": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "previousFireTime": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          },
-          "previousFireTimeText": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "state": {
-            "type": [
-              "null",
-              "string"
-            ]
           }
         }
       },
@@ -5198,7 +9739,7 @@
   ],
   "tags": [
     {
-      "name": "_System.JobScheduling"
+      "name": "_system/jobs"
     },
     {
       "name": "Core.Cities"

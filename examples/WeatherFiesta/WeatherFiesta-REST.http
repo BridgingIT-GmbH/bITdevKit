@@ -8,6 +8,14 @@
 @baseUrl = https://localhost:5001
 @token = {{login.response.body.$.access_token}}
 
+### Deterministic IDs from WeatherFiesta.IntegrationTests TestData.
+### London and Paris are seeded; Berlin is defined for create/unsubscribed scenarios.
+@cityId = 00000000-0000-0000-0000-000000000010
+@cityId1 = 00000000-0000-0000-0000-000000000010
+@cityId2 = 00000000-0000-0000-0000-000000000020
+@cityId3 = 00000000-0000-0000-0000-000000000030
+@userId = 00000000-0000-0000-0000-000000000001
+
 
 ### ============================================================
 ### AUTHENTICATION
@@ -19,7 +27,6 @@ POST {{baseUrl}}/api/_system/identity/connect/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=password&username=luke.skywalker&password=password&client_id=weatherfiesta-api&scope=openid profile email offline_access
-
 
 ### ============================================================
 ### CITY ENDPOINTS (api/core/cities)
@@ -36,11 +43,7 @@ Content-Type: application/json
 
 {
   "name": "Berlin",
-  "country": "Germany",
-  "countryCode": "DE",
-  "latitude": 52.52,
-  "longitude": 13.405,
-  "timeZone": "Europe/Berlin"
+  "countryCode": "DE"
 }
 
 ### List User Cities — all subscriptions with weather
@@ -88,7 +91,7 @@ GET {{baseUrl}}/api/core/cities/{{cityId}}/sun?days=7
 Authorization: Bearer {{token}}
 
 ### Compare Weather Across Cities
-GET {{baseUrl}}/api/core/cities/compare
+POST {{baseUrl}}/api/core/cities/compare
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -124,8 +127,7 @@ Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
-  "firstName": "Luke",
-  "lastName": "Skywalker",
+  "name": "Luke Skywalker",
   "email": "luke@rebel-alliance.org"
 }
 
@@ -158,7 +160,7 @@ Authorization: Bearer {{token}}
 
 
 ### ============================================================
-### ADMIN ENDPOINTS (api/core/admin/cities) — CoreAdmin role required
+### ADMIN ENDPOINTS (api/core/admin/cities) — Administrators role required
 ### ============================================================
 
 ### Admin — Create City (no geocoding)
@@ -209,6 +211,10 @@ Authorization: Bearer {{token}}
 
 ### Admin — Reset City Weather Data
 DELETE {{baseUrl}}/api/core/admin/cities/{{cityId}}/weather
+Authorization: Bearer {{token}}
+
+### Admin — Delete User (hard-delete WeatherFiesta data)
+DELETE {{baseUrl}}/api/core/admin/users/{{userId}}
 Authorization: Bearer {{token}}
 
 

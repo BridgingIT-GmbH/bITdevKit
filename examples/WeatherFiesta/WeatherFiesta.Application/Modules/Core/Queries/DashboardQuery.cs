@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Query to retrieve the full weather dashboard aggregating primary city,
 /// highlights, alerts, and recommendations for all subscribed cities.
@@ -19,17 +17,17 @@ public partial class DashboardQuery
     private async Task<Result<DashboardModel>> HandleAsync(
         IMapper mapper,
         ICurrentUserAccessor currentUserAccessor,
+        IOptions<CoreModuleConfiguration> moduleConfiguration,
         CancellationToken cancellationToken)
     {
         var userId = currentUserAccessor.UserId;
-        // TODO: inject staleThreshold from CoreModuleConfiguration.StaleThresholdMinutes instead of hardcoding
-        var staleThreshold = TimeSpan.FromMinutes(60);
+        var staleThreshold = TimeSpan.FromMinutes(moduleConfiguration.Value.StaleThresholdMinutes);
 
         var spec = new UserCitiesByUserSpecification(userId);
         var userCitiesResult = await UserCity.FindAllAsync(spec, null, cancellationToken);
         if (userCitiesResult.IsFailure)
         {
-            return Result<DashboardModel>.Failure(userCitiesResult.Errors.Select(e => e.Message));
+            return userCitiesResult.Wrap<DashboardModel>();
         }
 
         var userCities = userCitiesResult.Value;
@@ -41,30 +39,25 @@ public partial class DashboardQuery
         // Primary city
         var primary = userCities.FirstOrDefault(uc => uc.IsPrimary) ?? userCities.OrderBy(uc => uc.DisplayOrder).First();
 
-        // Load weather for all subscribed cities
-        var cityWeathers = new Dictionary<string, CurrentWeather>();
-        foreach (var uc in userCities)
+        // Load weather for all subscribed cities in one query to avoid N+1 round-trips.
+        var cityIds = userCities.Select(uc => uc.CityId).ToList();
+        var weatherSpec = new Specification<CurrentWeather>(cw => cityIds.Contains(cw.CityId));
+        var weatherResult = await CurrentWeather.FindAllAsync(weatherSpec, null, cancellationToken);
+        if (weatherResult.IsFailure)
         {
-            var weatherSpec = new Specification<CurrentWeather>(cw => cw.CityId == uc.CityId);
-            var weatherResult = await CurrentWeather.FindAllAsync(weatherSpec, null, cancellationToken);
-            if (weatherResult.IsFailure)
-            {
-                return Result<DashboardModel>.Failure(weatherResult.Errors.Select(e => e.Message));
-            }
-
-            var weather = weatherResult.Value.FirstOrDefault();
-            if (weather is not null)
-            {
-                cityWeathers[uc.CityId.Value.ToString()] = weather;
-            }
+            return weatherResult.Wrap<DashboardModel>();
         }
+
+        var cityWeathers = weatherResult.Value
+            .GroupBy(cw => cw.CityId.Value.ToString())
+            .ToDictionary(g => g.Key, g => g.First());
 
         // Load unit preferences
         var userProfileSpec = new Specification<UserProfile>(up => up.Id == UserProfileId.Create(Guid.Parse(userId)));
         var userProfileResult = await UserProfile.FindAllAsync(userProfileSpec, null, cancellationToken);
         if (userProfileResult.IsFailure)
         {
-            return Result<DashboardModel>.Failure(userProfileResult.Errors.Select(e => e.Message));
+            return userProfileResult.Wrap<DashboardModel>();
         }
 
         var userProfile = userProfileResult.Value.FirstOrDefault();
@@ -102,13 +95,13 @@ public partial class DashboardQuery
             var recs = WeatherRuleEngine.EvaluateRecommendations(
                 primaryWeather.WeatherCode, primaryWeather.Temperature, primaryWeather.WindSpeed,
                 primaryWeather.Humidity, primaryWeather.Precipitation, 0, 0);
-            recommendations = recs.Select(r => new WeatherRecommendationModel
+            recommendations = recs.ConvertAll(r => new WeatherRecommendationModel
             {
                 Category = r.Category.Value,
                 Severity = r.Severity.Value,
                 Title = r.Title,
                 Message = r.Message
-            }).ToList();
+            });
         }
 
         // Compute highlights
@@ -124,11 +117,29 @@ public partial class DashboardQuery
             };
         }
 
+        UserCityModel MapUserCity(UserCity userCity)
+        {
+            var model = mapper.Map<UserCity, UserCityModel>(userCity);
+            if (!cityWeathers.TryGetValue(userCity.CityId.Value.ToString(), out var weather))
+            {
+                return model;
+            }
+
+            model.CurrentWeather = mapper.Map<CurrentWeather, CurrentWeatherModel>(weather);
+            model.StaleDataWarning = weather.IsStale(staleThreshold);
+            if (model.StaleDataWarning)
+            {
+                var minutesSinceUpdate = (int)(DateTime.UtcNow - weather.RetrievedAt).TotalMinutes;
+                model.StaleDataWarningMessage = $"Data may be outdated — last updated {minutesSinceUpdate} minutes ago";
+            }
+
+            return model;
+        }
+
         return Result<DashboardModel>.Success(new DashboardModel
         {
-            // TODO: City navigation property on UserCityModel is never populated — needs eager loading
-            PrimaryCity = mapper.Map<UserCity, UserCityModel>(primary),
-            Cities = userCities.OrderBy(uc => uc.DisplayOrder).Select(mapper.Map<UserCity, UserCityModel>).ToList(),
+            PrimaryCity = MapUserCity(primary),
+            Cities = userCities.OrderBy(uc => uc.DisplayOrder).Select(MapUserCity).ToList(),
             Highlights = highlights,
             Alerts = allAlerts,
             Recommendations = recommendations,

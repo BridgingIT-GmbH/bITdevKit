@@ -4,7 +4,6 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 global using BridgingIT.DevKit.Infrastructure.EntityFramework;
-global using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Model;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.EntityFrameworkCore.Metadata.Builders;
 global using Microsoft.Extensions.Logging;

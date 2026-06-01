@@ -5,7 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core;
 
-using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Model;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 
 /// <summary>
 /// Evaluates weather alert and recommendation rules at query time.

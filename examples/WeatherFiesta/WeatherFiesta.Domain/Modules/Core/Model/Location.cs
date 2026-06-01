@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Model;
+namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 
 /// <summary>
 /// Represents a geographic location as a value object with latitude and longitude coordinates.
@@ -29,21 +29,36 @@ public class Location : ValueObject
     /// </summary>
     /// <param name="latitude">The latitude coordinate (-90 to 90).</param>
     /// <param name="longitude">The longitude coordinate (-180 to 180).</param>
-    /// <returns>A new <see cref="Location"/> instance.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown when coordinates are out of valid range.</exception>
-    public static Location Create(decimal latitude, decimal longitude)
+    /// <returns>A result containing a new <see cref="Location"/> instance when validation succeeds.</returns>
+    public static Result<Location> Create(decimal latitude, decimal longitude)
     {
-        if (latitude < -90 || latitude > 90)
-        {
-            throw new ArgumentOutOfRangeException(nameof(latitude), "Latitude must be between -90 and 90.");
-        }
+        var result = Result.Merge(
+            Rule.Check(new LatitudeInRangeRule(latitude)),
+            Rule.Check(new LongitudeInRangeRule(longitude)));
 
-        if (longitude < -180 || longitude > 180)
-        {
-            throw new ArgumentOutOfRangeException(nameof(longitude), "Longitude must be between -180 and 180.");
-        }
+        return result.IsFailure
+            ? Result<Location>.Failure(result)
+            : Result<Location>.Success(new Location(latitude, longitude));
+    }
 
-        return new Location(latitude, longitude);
+    private sealed class LatitudeInRangeRule(decimal latitude) : RuleBase
+    {
+        public override string Message => "Latitude must be between -90 and 90.";
+
+        public override Result Execute()
+        {
+            return Result.SuccessIf(latitude is >= -90 and <= 90, new DomainPolicyError([this.Message]));
+        }
+    }
+
+    private sealed class LongitudeInRangeRule(decimal longitude) : RuleBase
+    {
+        public override string Message => "Longitude must be between -180 and 180.";
+
+        public override Result Execute()
+        {
+            return Result.SuccessIf(longitude is >= -180 and <= 180, new DomainPolicyError([this.Message]));
+        }
     }
 
     /// <summary>

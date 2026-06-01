@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Command to reorder the user's city subscriptions.
 /// Updates DisplayOrder based on the position in the provided list.
@@ -38,7 +36,7 @@ public partial class ReorderCitiesCommand
         var userCitiesResult = await UserCity.FindAllAsync(allSpec, null, cancellationToken);
         if (userCitiesResult.IsFailure)
         {
-            return Result<Unit>.Failure(userCitiesResult.Errors.Select(e => e.Message));
+            return userCitiesResult.Wrap<Unit>();
         }
 
         var userCities = userCitiesResult.Value;
@@ -55,7 +53,7 @@ public partial class ReorderCitiesCommand
         // Reorder: set DisplayOrder based on position in the list
         for (var i = 0; i < this.CityIds.Count; i++)
         {
-            var cityId = Domain.Model.CityId.Create(this.CityIds[i]);
+            var cityId = CityId.Create(this.CityIds[i]);
             var userCity = userCities.First(uc => uc.CityId == cityId);
             userCity.SetDisplayOrder(i);
             await userCity.UpdateAsync(cancellationToken);

@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core;
 
 using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Model;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 
 /// <summary>
 /// Finds the user subscription for a given user.

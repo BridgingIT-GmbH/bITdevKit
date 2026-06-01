@@ -2,7 +2,7 @@
 id: PRD-0101
 title: Sunrise and Sunset
 slice: WEATHER
-status: Pending
+status: Implemented
 ---
 
 # Product Requirements: Sunrise and Sunset
@@ -20,7 +20,7 @@ Authenticated users can view sunrise, sunset, and daylight information for their
 ## Stories
 
 ### Story 1: View today's sun times
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Data already exists in WeatherForecast records. Simple projection endpoint.
 - User Story: As an authenticated user, I want to see today's sunrise and sunset times for a city I'm subscribed to, so that I can plan my day around daylight hours.
@@ -42,7 +42,7 @@ Notes:
 - Design decision: Unit preferences metadata is not included in sun endpoint responses because sun data (sunrise, sunset, durations) has no unit-dependent fields. All times are in ISO 8601 format and durations are in seconds.
 
 ### Story 2: View multi-day sun times
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Same data source as Story 1, just extended date range. Simple parameter addition.
 - User Story: As an authenticated user, I want to see sunrise and sunset times for the next several days, so that I can plan activities across the week.
@@ -61,7 +61,7 @@ Notes:
 - Technical context: GET /cities/{cityId}/sun?days={n}. Same data source as Story 1, iterated over multiple WeatherForecast records.
 
 ### Story 3: Is-day indicator
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple boolean computed from current time vs sunrise/sunset. No new data.
 - User Story: As an authenticated user, I want to know if it is currently daytime in a subscribed city, so that I can see at a glance whether it's day or night there.

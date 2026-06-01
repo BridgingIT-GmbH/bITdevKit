@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
 using System.Text;
-using BridgingIT.DevKit.Domain;
 
 /// <summary>
 /// Query to export forecast data for a specific subscribed city as CSV.
@@ -36,18 +35,20 @@ public partial class CityWeatherExportQuery
     [Handle]
     private async Task<Result<CityExportResponse>> HandleAsync(
         ICurrentUserAccessor currentUserAccessor,
+        IOptions<CoreModuleConfiguration> moduleConfiguration,
         CancellationToken cancellationToken)
     {
         var userId = currentUserAccessor.UserId;
-        var cityId = Domain.Model.CityId.Create(this.CityId);
-        var days = this.Days ?? 7;
+        var cityId = Domain.Modules.Core.Model.CityId.Create(this.CityId);
+        var days = this.Days ?? moduleConfiguration.Value.ForecastDays;
+        var staleThreshold = TimeSpan.FromMinutes(moduleConfiguration.Value.StaleThresholdMinutes);
 
         // Verify subscription
         var subSpec = new UserCityByUserAndCitySpecification(userId, cityId);
         var subsResult = await UserCity.FindAllAsync(subSpec, null, cancellationToken);
         if (subsResult.IsFailure)
         {
-            return Result<CityExportResponse>.Failure(subsResult.Errors.Select(e => e.Message));
+            return subsResult.Wrap<CityExportResponse>();
         }
 
         var subs = subsResult.Value;
@@ -56,11 +57,27 @@ public partial class CityWeatherExportQuery
             return Result<CityExportResponse>.Failure("City subscription not found.");
         }
 
+        // Enforce subscription plan export and forecast limits
+        var subscriptionResult = await this.GetOrCreateSubscriptionAsync(userId, cancellationToken);
+        if (subscriptionResult.IsFailure)
+        {
+            return subscriptionResult.Wrap<CityExportResponse>();
+        }
+
+        var exportResult = Rule.Check(new SubscriptionExportAllowedRule(subscriptionResult.Value));
+        if (exportResult.IsFailure)
+        {
+            return Result<CityExportResponse>.Failure(exportResult);
+        }
+
+        var maxForecastDays = subscriptionResult.Value.Plan.Details.MaxForecastDays;
+        days = maxForecastDays > 0 ? Math.Min(days, maxForecastDays) : days;
+
         var citySpec = new Specification<City>(c => c.Id == cityId);
         var cityResult = await City.FindAllAsync(citySpec, null, cancellationToken);
         if (cityResult.IsFailure)
         {
-            return Result<CityExportResponse>.Failure(cityResult.Errors.Select(e => e.Message));
+            return cityResult.Wrap<CityExportResponse>();
         }
 
         var city = cityResult.Value.FirstOrDefault();
@@ -69,7 +86,7 @@ public partial class CityWeatherExportQuery
         var forecastsResult = await WeatherForecast.FindAllAsync(forecastSpec, null, cancellationToken);
         if (forecastsResult.IsFailure)
         {
-            return Result<CityExportResponse>.Failure(forecastsResult.Errors.Select(e => e.Message));
+            return forecastsResult.Wrap<CityExportResponse>();
         }
 
         var forecasts = forecastsResult.Value;
@@ -79,8 +96,7 @@ public partial class CityWeatherExportQuery
 
         foreach (var f in forecasts.OrderBy(f => f.ForecastDate).Take(days))
         {
-            // TODO: inject staleThreshold from CoreModuleConfiguration.StaleThresholdMinutes instead of hardcoding
-            var isStale = f.IsStale(TimeSpan.FromMinutes(60));
+            var isStale = f.IsStale(staleThreshold);
             csv.AppendLine($"{f.ForecastDate:yyyy-MM-dd},{f.DayWeatherCode},{f.TemperatureMax},{f.TemperatureMin},{f.PrecipitationSum},{f.WindSpeedMax},{f.UvIndexMax},{f.Sunrise:O},{f.Sunset:O},{isStale}");
         }
 
@@ -90,5 +106,46 @@ public partial class CityWeatherExportQuery
             FileName = $"forecast-{city?.Name?.Replace(" ", "-")?.ToLower()}-{DateTime.UtcNow:yyyy-MM-dd}.csv",
             ContentType = "text/csv"
         });
+    }
+
+    private async Task<Result<UserSubscription>> GetOrCreateSubscriptionAsync(string userId, CancellationToken cancellationToken)
+    {
+        var result = await UserSubscription.FindAllAsync(new SubscriptionByUserSpecification(userId), null, cancellationToken);
+        if (result.IsFailure)
+        {
+            return Result<UserSubscription>.Failure(result);
+        }
+
+        var subscriptions = result.Value;
+        if (subscriptions.Any())
+        {
+            var subscription = subscriptions
+                .OrderBy(s => s.AuditState.IsDeleted())
+                .ThenBy(s => s.StartDate)
+                .First();
+
+            if (subscription.AuditState.IsDeleted())
+            {
+                subscription.Reactivate();
+                var updateResult = await subscription.UpsertAsync(cancellationToken);
+                if (updateResult.IsFailure)
+                {
+                    return updateResult.Wrap<UserSubscription>();
+                }
+
+                subscription = updateResult.Value.entity;
+            }
+
+            if (!subscription.IsActive)
+            {
+                return Result<UserSubscription>.Failure(new DomainPolicyError(["Subscription is not active."]));
+            }
+
+            return Result<UserSubscription>.Success(subscription);
+        }
+
+        var newSubscription = UserSubscription.CreateFree(userId);
+        var insertResult = await newSubscription.InsertAsync(cancellationToken);
+        return insertResult;
     }
 }

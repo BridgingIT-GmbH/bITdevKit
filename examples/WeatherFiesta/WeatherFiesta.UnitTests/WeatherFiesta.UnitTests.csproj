@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>BridgingIT.DevKit.Examples.WeatherFiesta.UnitTests</AssemblyName>
+    <RootNamespace>BridgingIT.DevKit.Examples.WeatherFiesta.UnitTests</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Using Include="BridgingIT.DevKit.Common" />
+    <Using Include="BridgingIT.DevKit.Domain" />
+    <Using Include="BridgingIT.DevKit.Examples.WeatherFiesta.Domain" />
+    <Using Include="BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core" />
+    <Using Include="BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Models" />
+    <Using Include="NSubstitute" />
+    <Using Include="Shouldly" />
+    <Using Include="Xunit" />
+    <Using Include="System.Net" />
+    <Using Include="System.Net.Http.Json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="NSubstitute" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.collector">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
+    <ProjectReference Include="..\WeatherFiesta.Application\WeatherFiesta.Application.csproj" />
+    <ProjectReference Include="..\WeatherFiesta.Domain\WeatherFiesta.Domain.csproj" />
+    <ProjectReference Include="..\WeatherFiesta.Infrastructure\WeatherFiesta.Infrastructure.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+</Project>

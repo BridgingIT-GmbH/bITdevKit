@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Model;
+namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 
 /// <summary>
 /// Represents a user's subscription plan with billing details and status.
@@ -13,22 +13,22 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Model;
 public class UserSubscription : ActiveEntity<UserSubscription, UserSubscriptionId>, IAuditable, IConcurrency
 {
     /// <summary>Gets or sets the user identifier.</summary>
-    public string UserId { get; set; }
+    public string UserId { get; private set; }
 
     /// <summary>Gets or sets the subscription plan.</summary>
-    public SubscriptionPlan Plan { get; set; }
+    public SubscriptionPlan Plan { get; private set; }
 
     /// <summary>Gets or sets the subscription status.</summary>
-    public SubscriptionStatus Status { get; set; }
+    public SubscriptionStatus Status { get; private set; }
 
     /// <summary>Gets or sets the billing cycle.</summary>
-    public SubscriptionBillingCycle BillingCycle { get; set; }
+    public SubscriptionBillingCycle BillingCycle { get; private set; }
 
     /// <summary>Gets or sets the subscription start date.</summary>
-    public DateTime StartDate { get; set; }
+    public DateTime StartDate { get; private set; }
 
     /// <summary>Gets or sets the optional subscription end date.</summary>
-    public DateTime? EndDate { get; set; }
+    public DateTime? EndDate { get; private set; }
 
     /// <summary>Gets a value indicating whether the subscription is currently active.</summary>
     public bool IsActive => this.Status == SubscriptionStatus.Active &&
@@ -76,6 +76,24 @@ public class UserSubscription : ActiveEntity<UserSubscription, UserSubscriptionI
     public void Activate()
     {
         this.Status = SubscriptionStatus.Active;
+        this.EndDate = null;
+    }
+
+    /// <summary>
+    /// Marks the subscription as pending.
+    /// </summary>
+    public void MarkPending()
+    {
+        this.Status = SubscriptionStatus.Pending;
+    }
+
+    /// <summary>
+    /// Reactivates a previously soft-deleted subscription.
+    /// </summary>
+    public void Reactivate()
+    {
+        this.AuditState.SetUndeleted();
+        this.Activate();
     }
 
     /// <summary>
@@ -94,5 +112,14 @@ public class UserSubscription : ActiveEntity<UserSubscription, UserSubscriptionI
     {
         this.Status = SubscriptionStatus.Expired;
         this.EndDate = DateTime.UtcNow;
+    }
+
+    /// <summary>
+    /// Sets the subscription end date.
+    /// </summary>
+    /// <param name="endDate">The end date.</param>
+    public void SetEndDate(DateTime endDate)
+    {
+        this.EndDate = endDate;
     }
 }

@@ -184,7 +184,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
     }
 
     [Fact]
-    public void Build_MissingDescription_FailsValidation()
+    public void Build_MissingDescription_Succeeds()
     {
         // Arrange
         var services = new ServiceCollection();
@@ -192,11 +192,40 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         var context = services.AddJobScheduler();
 
         // Act
-        var action = () => context.WithJob<SampleJob>("cleanup", job => job
+        context.WithJob<SampleJob>("cleanup", job => job
             .AddTrigger("manual", trigger => trigger.Manual()));
 
+        var definition = GetStore(services)
+            .GetDefinitions()
+            .Single();
+
         // Assert
-        action.ShouldThrow<InvalidOperationException>();
+        definition.JobName.ShouldBe("cleanup");
+        definition.Description.ShouldBeNull();
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void Build_EmptyExplicitDescription_SucceedsAndClearsDescription(string description)
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        this.ConfigureLogging(services);
+        var context = services.AddJobScheduler();
+
+        // Act
+        context.WithJob<SampleJob>("cleanup", job => job
+            .Description(description)
+            .AddTrigger("manual", trigger => trigger.Manual()));
+
+        var definition = GetStore(services)
+            .GetDefinitions()
+            .Single();
+
+        // Assert
+        definition.Description.ShouldBeNull();
     }
 
     [Fact]

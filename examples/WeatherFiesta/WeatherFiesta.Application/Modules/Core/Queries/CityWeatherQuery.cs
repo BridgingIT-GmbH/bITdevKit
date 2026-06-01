@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Query to retrieve current weather and daily forecast for a subscribed city.
 /// Includes staleness warning and unit preferences metadata.
@@ -37,19 +35,19 @@ public partial class CityWeatherQuery
     private async Task<Result<CityWeatherResponse>> HandleAsync(
         IMapper mapper,
         ICurrentUserAccessor currentUserAccessor,
+        IOptions<CoreModuleConfiguration> moduleConfiguration,
         CancellationToken cancellationToken)
     {
         var userId = currentUserAccessor.UserId;
-        var cityId = Domain.Model.CityId.Create(this.CityId);
-        // TODO: inject staleThreshold from CoreModuleConfiguration.StaleThresholdMinutes instead of hardcoding
-        var staleThreshold = TimeSpan.FromMinutes(60);
+        var cityId = Domain.Modules.Core.Model.CityId.Create(this.CityId);
+        var staleThreshold = TimeSpan.FromMinutes(moduleConfiguration.Value.StaleThresholdMinutes);
 
         // Verify subscription
         var subSpec = new UserCityByUserAndCitySpecification(userId, cityId);
         var subscriptionsResult = await UserCity.FindAllAsync(subSpec, null, cancellationToken);
         if (subscriptionsResult.IsFailure)
         {
-            return Result<CityWeatherResponse>.Failure(subscriptionsResult.Errors.Select(e => e.Message));
+            return subscriptionsResult.Wrap<CityWeatherResponse>();
         }
 
         var subscriptions = subscriptionsResult.Value;
@@ -58,12 +56,23 @@ public partial class CityWeatherQuery
             return Result<CityWeatherResponse>.Failure("City subscription not found.");
         }
 
+        // Load user subscription for plan enforcement
+        var subscriptionResult = await this.GetOrCreateSubscriptionAsync(userId, cancellationToken);
+        if (subscriptionResult.IsFailure)
+        {
+            return subscriptionResult.Wrap<CityWeatherResponse>();
+        }
+
+        var requestedDays = this.ForecastDays ?? moduleConfiguration.Value.ForecastDays;
+        var maxForecastDays = subscriptionResult.Value.Plan.Details.MaxForecastDays;
+        var forecastDays = maxForecastDays > 0 ? Math.Min(requestedDays, maxForecastDays) : requestedDays;
+
         // Load current weather
         var weatherSpec = new Specification<CurrentWeather>(cw => cw.CityId == cityId);
         var currentWeatherResult = await CurrentWeather.FindAllAsync(weatherSpec, null, cancellationToken);
         if (currentWeatherResult.IsFailure)
         {
-            return Result<CityWeatherResponse>.Failure(currentWeatherResult.Errors.Select(e => e.Message));
+            return currentWeatherResult.Wrap<CityWeatherResponse>();
         }
 
         var currentWeather = currentWeatherResult.Value.FirstOrDefault();
@@ -73,7 +82,7 @@ public partial class CityWeatherQuery
         var forecastsResult = await WeatherForecast.FindAllAsync(forecastSpec, null, cancellationToken);
         if (forecastsResult.IsFailure)
         {
-            return Result<CityWeatherResponse>.Failure(forecastsResult.Errors.Select(e => e.Message));
+            return forecastsResult.Wrap<CityWeatherResponse>();
         }
 
         var forecasts = forecastsResult.Value;
@@ -83,7 +92,7 @@ public partial class CityWeatherQuery
         var userProfileResult = await UserProfile.FindAllAsync(userProfileSpec, null, cancellationToken);
         if (userProfileResult.IsFailure)
         {
-            return Result<CityWeatherResponse>.Failure(userProfileResult.Errors.Select(e => e.Message));
+            return userProfileResult.Wrap<CityWeatherResponse>();
         }
 
         var userProfile = userProfileResult.Value.FirstOrDefault();
@@ -91,7 +100,7 @@ public partial class CityWeatherQuery
         var response = new CityWeatherResponse
         {
             CurrentWeather = currentWeather is not null ? mapper.Map<CurrentWeather, CurrentWeatherModel>(currentWeather) : null,
-            Forecasts = forecasts.OrderBy(f => f.ForecastDate).Select(mapper.Map<WeatherForecast, WeatherForecastModel>).ToList(),
+            Forecasts = forecasts.OrderBy(f => f.ForecastDate).Take(forecastDays).Select(mapper.Map<WeatherForecast, WeatherForecastModel>).ToList(),
             UnitPreferences = userProfile is not null
                 ? new UnitPreferencesModel
                 {
@@ -112,6 +121,47 @@ public partial class CityWeatherQuery
         }
 
         return Result<CityWeatherResponse>.Success(response);
+    }
+
+    private async Task<Result<UserSubscription>> GetOrCreateSubscriptionAsync(string userId, CancellationToken cancellationToken)
+    {
+        var result = await UserSubscription.FindAllAsync(new SubscriptionByUserSpecification(userId), null, cancellationToken);
+        if (result.IsFailure)
+        {
+            return Result<UserSubscription>.Failure(result);
+        }
+
+        var subscriptions = result.Value;
+        if (subscriptions.Any())
+        {
+            var subscription = subscriptions
+                .OrderBy(s => s.AuditState.IsDeleted())
+                .ThenBy(s => s.StartDate)
+                .First();
+
+            if (subscription.AuditState.IsDeleted())
+            {
+                subscription.Reactivate();
+                var updateResult = await subscription.UpsertAsync(cancellationToken);
+                if (updateResult.IsFailure)
+                {
+                    return updateResult.Wrap<UserSubscription>();
+                }
+
+                subscription = updateResult.Value.entity;
+            }
+
+            if (!subscription.IsActive)
+            {
+                return Result<UserSubscription>.Failure(new DomainPolicyError(["Subscription is not active."]));
+            }
+
+            return Result<UserSubscription>.Success(subscription);
+        }
+
+        var newSubscription = UserSubscription.CreateFree(userId);
+        var insertResult = await newSubscription.InsertAsync(cancellationToken);
+        return insertResult;
     }
 }
 

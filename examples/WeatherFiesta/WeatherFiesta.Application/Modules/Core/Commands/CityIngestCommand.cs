@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Command to trigger weather data ingestion for a subscribed city.
 /// Validates the subscription and returns accepted status.
@@ -36,13 +34,13 @@ public partial class CityIngestCommand
         CancellationToken cancellationToken)
     {
         var userId = currentUserAccessor.UserId;
-        var cityId = Domain.Model.CityId.Create(this.CityId);
+        var cityId = Domain.Modules.Core.Model.CityId.Create(this.CityId);
 
         var spec = new UserCityByUserAndCitySpecification(userId, cityId);
         var subscriptionsResult = await UserCity.FindAllAsync(spec, null, cancellationToken);
         if (subscriptionsResult.IsFailure)
         {
-            return Result<Unit>.Failure(subscriptionsResult.Errors.Select(e => e.Message));
+            return subscriptionsResult.Wrap<Unit>();
         }
 
         var subscriptions = subscriptionsResult.Value;

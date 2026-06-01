@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
 
+using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Orchestrations;
 using DevKit.Domain.Model;
 
@@ -14,7 +16,7 @@ using DevKit.Domain.Model;
 /// </summary>
 public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     ModuleDbContextBase(options),
-    IOutboxDomainEventContext, IOrchestrationContext
+    IOutboxDomainEventContext, IOrchestrationContext, IJobsContext
 {
     /// <summary>Gets or sets the cities DbSet.</summary>
     public DbSet<City> Cities { get; set; }
@@ -44,6 +46,28 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     public DbSet<OrchestrationSignal> OrchestrationSignals { get; set; }
 
     public DbSet<OrchestrationTimer> OrchestrationTimers { get; set; }
+
+    public DbSet<JobRuntimeStateEntity> JobRuntimeStates { get; set; }
+
+    public DbSet<JobTriggerRuntimeStateEntity> JobTriggerRuntimeStates { get; set; }
+
+    public DbSet<JobOccurrenceEntity> JobOccurrences { get; set; }
+
+    public DbSet<JobOccurrenceDependencyEntity> JobOccurrenceDependencies { get; set; }
+
+    public DbSet<JobBatchEntity> JobBatches { get; set; }
+
+    public DbSet<JobBatchOccurrenceEntity> JobBatchOccurrences { get; set; }
+
+    public DbSet<JobExecutionEntity> JobExecutions { get; set; }
+
+    public DbSet<JobExecutionHistoryEntity> JobExecutionHistory { get; set; }
+
+    public DbSet<JobBatchHistoryEntity> JobBatchHistory { get; set; }
+
+    public DbSet<JobAcceptedEventEntity> JobAcceptedEvents { get; set; }
+
+    public DbSet<JobLeaseEntity> JobLeases { get; set; }
 
     /// <inheritdoc />
     protected override void OnModelCreating(ModelBuilder modelBuilder)

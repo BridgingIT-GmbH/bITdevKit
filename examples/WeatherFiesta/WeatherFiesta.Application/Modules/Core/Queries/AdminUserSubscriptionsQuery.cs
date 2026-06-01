@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Admin query to list all subscriptions.
 /// </summary>
@@ -22,7 +20,7 @@ public partial class AdminUserSubscriptionsQuery
         var subscriptionsResult = await UserSubscription.FindAllAsync(null, cancellationToken);
         if (subscriptionsResult.IsFailure)
         {
-            return Result<List<UserSubscriptionModel>>.Failure(subscriptionsResult.Errors.Select(e => e.Message));
+            return subscriptionsResult.Wrap<List<UserSubscriptionModel>>();
         }
 
         var subscriptions = subscriptionsResult.Value;

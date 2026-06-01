@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Command to update the current user's unit preferences (temperature and wind speed units).
 /// </summary>
@@ -35,7 +33,7 @@ public partial class UserPreferencesUpdateCommand
         var profileResult = await UserProfile.FindAllAsync(spec, null, cancellationToken);
         if (profileResult.IsFailure)
         {
-            return Result<UnitPreferencesModel>.Failure(profileResult.Errors.Select(e => e.Message));
+            return profileResult.Wrap<UnitPreferencesModel>();
         }
 
         var profile = profileResult.Value.FirstOrDefault();
@@ -52,10 +50,10 @@ public partial class UserPreferencesUpdateCommand
         var result = await profile.UpdateAsync(cancellationToken);
         if (result.IsFailure)
         {
-            return Result<UnitPreferencesModel>.Failure(result.Errors.Select(e => e.Message));
+            return result.Wrap<UnitPreferencesModel>();
         }
 
-        return Result<UnitPreferencesModel>.Success(new UnitPreferencesModel
+        return result.Wrap(new UnitPreferencesModel
         {
             TemperatureUnit = profile.TemperatureUnit.Value,
             TemperatureSymbol = profile.TemperatureUnit.Symbol,

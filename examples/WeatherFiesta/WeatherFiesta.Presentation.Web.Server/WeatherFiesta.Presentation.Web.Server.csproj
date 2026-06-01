@@ -56,7 +56,6 @@
     <PackageReference Include="Serilog.Sinks.MSSqlServer" />
     <PackageReference Include="Serilog.Sinks.Seq" />
     <PackageReference Include="Serilog.Sinks.Trace" />
-    <PackageReference Include="Quartz.Serialization.Json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -65,7 +64,7 @@
     <ProjectReference Include="..\..\..\src\Presentation.Configuration\Presentation.Configuration.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Serilog\Presentation.Serilog.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.EntityFramework\Presentation.Web.EntityFramework.csproj" />
-    <ProjectReference Include="..\..\..\src\Presentation.Web.JobScheduling\Presentation.Web.JobScheduling.csproj" />
+    <ProjectReference Include="..\..\..\src\Presentation.Web.Jobs\Presentation.Web.Jobs.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web\Presentation.Web.csproj" />
     <ProjectReference Include="..\WeatherFiesta.Application\WeatherFiesta.Application.csproj" />
     <ProjectReference Include="..\WeatherFiesta.Infrastructure\WeatherFiesta.Infrastructure.csproj" />

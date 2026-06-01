@@ -2,7 +2,7 @@
 id: PRD-0200
 title: Data Ingestion
 slice: INGESTION
-status: Pending
+status: Implemented
 ---
 
 # Product Requirements: Data Ingestion
@@ -31,7 +31,7 @@ Covers AC: Story 1 AC1-3, Story 2 AC1-3
 ## Stories
 
 ### Story 1: Scheduled ingestion
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Ingestion flow, idempotency, and error handling are defined. Open-Meteo API parameters documented.
 - User Story: As the system, I want to ingest weather data for all cities every 30 minutes, so that data stays fresh.
@@ -56,7 +56,7 @@ Notes:
 - Technical context: All cities ingested regardless of subscriber count.
 
 ### Story 2: On-demand ingestion (new city)
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Trigger mechanism defined in PRD-0000 Story 2. Queue-based processing.
 - User Story: As the system, I want to trigger weather ingestion immediately when a new city is created, so that users see weather data without waiting for the next scheduled run.
@@ -74,7 +74,7 @@ Notes:
 - Technical context: Domain event triggers queue message. Queue handler dispatches ingestion pipeline.
 
 ### Story 3: Admin weather data reset
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple delete operation. API contract defined.
 - User Story: As an admin user, I want to reset all weather data for a city, so that I can clear stale or corrupted data and trigger a fresh ingestion.

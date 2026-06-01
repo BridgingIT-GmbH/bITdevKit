@@ -104,6 +104,26 @@ builder.Services.AddJobScheduler()
         .AddTrigger("nightly", trigger => trigger.Cron("0 0 2 * * *")));
 ```
 
+Jobs includes small cron convenience helpers for code-first registrations:
+
+```csharp
+builder.Services.AddJobScheduler()
+    .WithJob<CleanupCustomersJob>("cleanup-customers", job => job
+        .Description("Removes stale customer records.")
+        .AddTrigger("nightly", trigger => trigger.Cron(CronExpressions.DailyAt2AM))
+        .AddTrigger("recheck", trigger => trigger.Cron(
+            new CronExpressionBuilder()
+                .EveryMinutes(30)
+                .Build())));
+```
+
+Cron helper notes:
+
+- `CronExpressions` contains common Jobs cron constants such as `Every30Minutes`, `DailyAt2AM`, and `WeeklyOnMondayAtMidnight`.
+- `CronExpressionBuilder` builds standard five-field Jobs cron expressions by default.
+- Seconds-based builder methods such as `EverySeconds(...)` emit the supported six-field Jobs format.
+- `IJobCronEngine` is registered by `AddJobScheduler()` and can be injected into validators or services that need cron validation or occurrence calculation.
+
 For lightweight function-oriented logic, use the inline delegate overload. Inline jobs are still normal job definitions: they create occurrences, hydrate `IJobExecutionContext`, honor triggers and runtime state, and write execution history through the same pipeline as class-based jobs.
 
 ```csharp

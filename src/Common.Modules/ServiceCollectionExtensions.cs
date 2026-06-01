@@ -188,11 +188,11 @@ public static class ServiceCollectionExtensions
             var sectionConfiguration = configuration.GetModuleSection(module);
             var builder = services.AddOptions<TOptions>()
                 .Bind(sectionConfiguration)
-                .Validate(
-                    validationOptions => // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0#options-validation
+                .Validate<IServiceProvider>(
+                    (validationOptions, serviceProvider) => // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0#options-validation
                     {
                         Log.Logger.Information("{LogKey} validate (module={ModuleName}, type={ConfigurationType}, method=Validator) ", ModuleConstants.LogKey, module.Name, typeof(TOptions).Name);
-                        return Factory<TValidator>.Create()
+                        return Factory<TValidator>.Create(serviceProvider)
                             .Validate(validationOptions, strategy => strategy.ThrowOnFailures()).IsValid;
                     });
 

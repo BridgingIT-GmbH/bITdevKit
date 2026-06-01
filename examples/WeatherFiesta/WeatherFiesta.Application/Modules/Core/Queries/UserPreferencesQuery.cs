@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Query to retrieve the current user's unit preferences.
 /// Returns UnitPreferencesModel with temperature and wind speed units.
@@ -26,7 +24,7 @@ public partial class UserPreferencesQuery
         var profileResult = await UserProfile.FindAllAsync(spec, null, cancellationToken);
         if (profileResult.IsFailure)
         {
-            return Result<UnitPreferencesModel>.Failure(profileResult.Errors.Select(e => e.Message));
+            return profileResult.Wrap<UnitPreferencesModel>();
         }
 
         var profile = profileResult.Value.FirstOrDefault();

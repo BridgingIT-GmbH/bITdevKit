@@ -36,5 +36,9 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\WeatherFiesta.Presentation.Web.Server\WeatherFiesta.Presentation.Web.Server.csproj" />
+    <ProjectReference Include="..\..\..\src\Common.Utilities.Xunit\Common.Utilities.Xunit.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

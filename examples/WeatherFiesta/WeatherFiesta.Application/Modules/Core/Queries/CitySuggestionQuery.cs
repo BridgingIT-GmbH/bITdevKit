@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Abstractions;
-
 /// <summary>
 /// Query to search for city suggestions using the Open-Meteo geocoding API.
 /// Returns up to 10 matching cities for autocomplete/typeahead use.

@@ -2,7 +2,7 @@
 id: PRD-0103
 title: Data Export
 slice: WEATHER
-status: Pending
+status: Implemented
 ---
 
 # Product Requirements: Data Export
@@ -20,7 +20,7 @@ Authenticated users can export weather data for their subscribed cities as CSV f
 ## Stories
 
 ### Story 1: Export current weather as CSV
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple CSV projection of existing data. No new storage. Format well-defined.
 - User Story: As an authenticated user, I want to export current weather data for my subscribed cities as a CSV file, so that I can analyze it in a spreadsheet.
@@ -42,7 +42,7 @@ Notes:
 - Design decision: CSV exports always use metric units (celsius, kmh) per PRD-0400 Story 3 AC5. User preferences are not applied to export data.
 
 ### Story 2: Export daily forecast as CSV
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Same mechanism as Story 1, extended to forecast data. Format well-defined.
 - User Story: As an authenticated user, I want to export daily forecast data for a specific city as a CSV file, so that I can track weather patterns over time.
@@ -64,7 +64,7 @@ Notes:
 - Design decision: Per-city export for forecasts because a multi-city forecast CSV would be wide and confusing. Current weather export (Story 1) covers all cities because it's one row per city.
 
 ### Story 3: Export format and encoding
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Standard CSV conventions. No ambiguity.
 - User Story: As an authenticated user, I want the exported CSV to be well-formatted and compatible with common spreadsheet applications, so that I can open it directly without manual cleanup.

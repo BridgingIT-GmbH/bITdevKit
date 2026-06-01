@@ -2,7 +2,7 @@
 id: PRD-0001
 title: City Reorder
 slice: CITIES
-status: Pending
+status: Implemented
 ---
 
 # Product Requirements: City Reorder
@@ -20,7 +20,7 @@ Authenticated users can reorder their subscribed cities to control the display o
 ## Stories
 
 ### Story 1: Reorder subscribed cities
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple ordering field on UserCity. Business rules for primary city interaction defined.
 - User Story: As an authenticated user, I want to reorder my subscribed cities, so that they appear in my preferred order on the dashboard and city list.
@@ -40,7 +40,7 @@ Notes:
 - Design decision: Full-list replacement semantics — the client sends the complete ordered list, not incremental moves. This avoids conflicts and keeps the API simple.
 
 ### Story 2: Primary city and display order interaction
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Interaction rules are clear and testable. Primary city behavior already defined in PRD-0000 Story 5.
 - User Story: As an authenticated user, I want the primary city to always appear first regardless of display order, so that my most important city is never buried in the list.
@@ -59,7 +59,7 @@ Notes:
 - Dependencies: PRD-0000 Story 5 (set primary city)
 
 ### Story 3: Default display order
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple default behavior. No external dependencies.
 - User Story: As an authenticated user, I want my cities to have a sensible default order before I manually reorder them, so that the list is organized from the start.

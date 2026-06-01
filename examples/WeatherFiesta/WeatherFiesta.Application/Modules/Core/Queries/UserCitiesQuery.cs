@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Query to retrieve all city subscriptions for the current user,
 /// including current weather data and staleness warnings.
@@ -20,17 +18,17 @@ public partial class UserCitiesQuery
     private async Task<Result<List<UserCityModel>>> HandleAsync(
         IMapper mapper,
         ICurrentUserAccessor currentUserAccessor,
+        IOptions<CoreModuleConfiguration> moduleConfiguration,
         CancellationToken cancellationToken)
     {
         var userId = currentUserAccessor.UserId;
-        // TODO: inject staleThreshold from CoreModuleConfiguration.StaleThresholdMinutes instead of hardcoding
-        var staleThreshold = TimeSpan.FromMinutes(60);
+        var staleThreshold = TimeSpan.FromMinutes(moduleConfiguration.Value.StaleThresholdMinutes);
 
         var spec = new UserCitiesByUserSpecification(userId);
         var userCitiesResult = await UserCity.FindAllAsync(spec, null, cancellationToken);
         if (userCitiesResult.IsFailure)
         {
-            return Result<List<UserCityModel>>.Failure(userCitiesResult.Errors.Select(e => e.Message));
+            return userCitiesResult.Wrap<List<UserCityModel>>();
         }
 
         var userCities = userCitiesResult.Value;
@@ -46,7 +44,7 @@ public partial class UserCitiesQuery
             var weatherResult = await CurrentWeather.FindAllAsync(weatherSpec, null, cancellationToken);
             if (weatherResult.IsFailure)
             {
-                return Result<List<UserCityModel>>.Failure(weatherResult.Errors.Select(e => e.Message));
+                return weatherResult.Wrap<List<UserCityModel>>();
             }
 
             var weather = weatherResult.Value.FirstOrDefault();

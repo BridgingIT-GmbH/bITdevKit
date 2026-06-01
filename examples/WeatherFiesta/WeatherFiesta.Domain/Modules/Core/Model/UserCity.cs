@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Model;
+namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 
 /// <summary>
 /// Represents a user's subscription to a city, including display ordering and primary city designation.
@@ -13,16 +13,16 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Model;
 public class UserCity : ActiveEntity<UserCity, UserCityId>, IAuditable, IConcurrency
 {
     /// <summary>Gets or sets the user identifier.</summary>
-    public string UserId { get; set; }
+    public string UserId { get; private set; }
 
     /// <summary>Gets or sets the city identifier.</summary>
-    public CityId CityId { get; set; }
+    public CityId CityId { get; private set; }
 
     /// <summary>Gets or sets a value indicating whether this is the user's primary city.</summary>
-    public bool IsPrimary { get; set; }
+    public bool IsPrimary { get; private set; }
 
     /// <summary>Gets or sets the display order for sorting cities in the UI.</summary>
-    public int DisplayOrder { get; set; }
+    public int DisplayOrder { get; private set; }
 
     /// <summary>Gets or sets the audit state tracking creation, updates, and soft deletes.</summary>
     public AuditState AuditState { get; set; } = new();

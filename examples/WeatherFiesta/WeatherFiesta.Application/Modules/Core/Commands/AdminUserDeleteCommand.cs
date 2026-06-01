@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Admin command to hard-delete a user and all associated data
 /// (profile, city subscriptions, subscription plan).
@@ -33,14 +31,14 @@ public partial class AdminUserDeleteCommand
     private async Task<Result<Unit>> HandleAsync(
         CancellationToken cancellationToken)
     {
-        var userProfileId = Domain.Model.UserProfileId.Create(Guid.Parse(this.UserId));
+        var userProfileId = UserProfileId.Create(Guid.Parse(this.UserId));
 
         // Find user profile
         var profileSpec = new Specification<UserProfile>(up => up.Id == userProfileId);
         var profileResult = await UserProfile.FindAllAsync(profileSpec, null, cancellationToken);
         if (profileResult.IsFailure)
         {
-            return Result<Unit>.Failure(profileResult.Errors.Select(e => e.Message));
+            return profileResult.Wrap<Unit>();
         }
 
         var profile = profileResult.Value.FirstOrDefault();
@@ -54,7 +52,7 @@ public partial class AdminUserDeleteCommand
         var userCitiesResult = await UserCity.FindAllAsync(userCitySpec, null, cancellationToken);
         if (userCitiesResult.IsFailure)
         {
-            return Result<Unit>.Failure(userCitiesResult.Errors.Select(e => e.Message));
+            return userCitiesResult.Wrap<Unit>();
         }
 
         foreach (var userCity in userCitiesResult.Value)
@@ -67,7 +65,7 @@ public partial class AdminUserDeleteCommand
         var subscriptionResult = await UserSubscription.FindAllAsync(subscriptionSpec, null, cancellationToken);
         if (subscriptionResult.IsFailure)
         {
-            return Result<Unit>.Failure(subscriptionResult.Errors.Select(e => e.Message));
+            return subscriptionResult.Wrap<Unit>();
         }
 
         foreach (var subscription in subscriptionResult.Value)
@@ -79,7 +77,7 @@ public partial class AdminUserDeleteCommand
         var deleteResult = await profile.DeleteAsync(cancellationToken);
         if (deleteResult.IsFailure)
         {
-            return Result<Unit>.Failure(deleteResult.Errors.Select(e => e.Message));
+            return Result<Unit>.Failure(deleteResult);
         }
 
         return Result<Unit>.Success(Unit.Value);

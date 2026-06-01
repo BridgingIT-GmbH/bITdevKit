@@ -72,11 +72,11 @@ public class JobDefinitionBuilder<TJob>
     }
 
     /// <summary>
-    /// Sets the required description.
+    /// Sets the optional description.
     /// </summary>
     public JobDefinitionBuilder<TJob> Description(string value)
     {
-        this.description = string.IsNullOrWhiteSpace(value) ? throw new InvalidOperationException($"The job '{this.JobName}' requires a non-empty description.") : value.Trim();
+        this.description = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
         return this;
     }
 
@@ -285,10 +285,6 @@ public class JobDefinitionBuilder<TJob>
     public JobDefinition Build()
     {
         var resolvedDataType = this.GetResolvedDataType();
-        if (string.IsNullOrWhiteSpace(this.description))
-        {
-            throw new InvalidOperationException($"The job '{this.JobName}' requires a description.");
-        }
 
         if (this.triggers.Count == 0)
         {

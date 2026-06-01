@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Query to retrieve weather alerts for all subscribed cities.
 /// Alerts are computed at query time using WeatherRuleEngine.EvaluateAlerts().
@@ -19,17 +17,17 @@ public partial class CityAlertsQuery
     private async Task<Result<List<CityAlertsModel>>> HandleAsync(
         IMapper mapper,
         ICurrentUserAccessor currentUserAccessor,
+        IOptions<CoreModuleConfiguration> moduleConfiguration,
         CancellationToken cancellationToken)
     {
         var userId = currentUserAccessor.UserId;
-        // TODO: inject staleThreshold from CoreModuleConfiguration.StaleThresholdMinutes instead of hardcoding
-        var staleThreshold = TimeSpan.FromMinutes(60);
+        var staleThreshold = TimeSpan.FromMinutes(moduleConfiguration.Value.StaleThresholdMinutes);
 
         var spec = new UserCitiesByUserSpecification(userId);
         var userCitiesResult = await UserCity.FindAllAsync(spec, null, cancellationToken);
         if (userCitiesResult.IsFailure)
         {
-            return Result<List<CityAlertsModel>>.Failure(userCitiesResult.Errors.Select(e => e.Message));
+            return userCitiesResult.Wrap<List<CityAlertsModel>>();
         }
 
         var userCities = userCitiesResult.Value;
@@ -41,7 +39,7 @@ public partial class CityAlertsQuery
             var weatherResult = await CurrentWeather.FindAllAsync(weatherSpec, null, cancellationToken);
             if (weatherResult.IsFailure)
             {
-                return Result<List<CityAlertsModel>>.Failure(weatherResult.Errors.Select(e => e.Message));
+                return weatherResult.Wrap<List<CityAlertsModel>>();
             }
 
             var weather = weatherResult.Value.FirstOrDefault();

@@ -4,7 +4,7 @@
 
 ### 1.1 Purpose
 
-This document defines the technical architecture for WeatherFiesta, a weather dashboard application built on the bITdevKit framework. It translates the product requirements (11 PRDs, 41 stories) and architectural decisions (6 ADRs) into concrete implementation guidance.
+This document defines the technical architecture for WeatherFiesta, a weather dashboard application built on the bITdevKit framework. It reflects the current product requirements (13 PRDs, 46 stories), implementation status, and architectural decisions (6 ADRs) as concrete implementation guidance.
 
 ### 1.2 Scope
 
@@ -14,7 +14,7 @@ WeatherFiesta is a single-module application within a bITdevKit modular monolith
 - Data ingestion from Open-Meteo (scheduled and on-demand)
 - Dashboard aggregation (primary city, highlights, alerts, recommendations)
 - User profile and unit preferences
-- Admin city management
+- Admin city and user management
 
 ### 1.3 Audience
 
@@ -49,21 +49,22 @@ Developers implementing WeatherFiesta, architects reviewing the design, and QA e
 - API always returns metric data (ADR-0003) — frontend handles unit conversion
 - Staleness computed at query time (ADR-0002) — no stored staleness flag
 - Alerts and recommendations computed at query time (ADR-0005) — no database storage
-- Pipeline pattern for city creation and ingestion (ADR-0004) — no orchestration for v1
+- Command handlers and scheduled jobs are used for city creation and ingestion in the current implementation; dedicated orchestration is not used for v1
 
 ## 2. Requirements Summary
 
 ### 2.1 Functional Requirements
 
-| Slice | Stories | Key Capabilities |
-|-------|---------|-----------------|
-| CITIES | 8 | Geocoding, subscribe, unsubscribe, reactivate, primary city, reorder |
-| WEATHER | 14 | Current weather, forecast, hourly, alerts, sun times, comparison, export |
-| INGESTION | 3 | Scheduled ingestion, on-demand ingestion, admin reset |
-| ADMIN | 4 | City CRUD, view subscriptions, trigger ingestion, list cities |
-| USER | 4 | View/update profile, unit preferences, delete account |
-| DASHBOARD | 5 | Dashboard view, primary highlight, cross-city highlights, alert summary, recommendation highlights |
-| RECOMMENDATIONS | 3 | Per-city recommendations, 7 rules, categories & severity |
+| Slice | Stories | Status | Key Capabilities |
+|-------|---------|--------|------------------|
+| CITIES | 8 | Implemented | Geocoding, subscribe, unsubscribe, reactivate, primary city, reorder |
+| WEATHER | 14 | Partial | Current weather, forecast, hourly, alerts, sun times, current-weather comparison, export. Multi-day comparison remains pending. |
+| INGESTION | 3 | Implemented | Scheduled ingestion, on-demand ingestion, admin reset |
+| ADMIN | 5 | Implemented | City CRUD, view subscriptions, trigger ingestion, list cities, hard-delete WeatherFiesta user data |
+| USER | 4 | Implemented | View/update profile, unit preferences, delete account |
+| DASHBOARD | 5 | Implemented | Dashboard view, primary highlight, cross-city highlights, alert summary, recommendation highlights |
+| RECOMMENDATIONS | 3 | Implemented | Per-city recommendations, 7 rules, categories and severity |
+| SUBSCRIPTION | 4 | Implemented | Free plan assignment, user subscription view, admin subscription management, feature gating |
 
 ### 2.2 Non-Functional Requirements
 
@@ -92,7 +93,7 @@ Developers implementing WeatherFiesta, architects reviewing the design, and QA e
 | Query-time staleness computation | No background staleness job, RetrievedAt timestamp on every weather record |
 | Query-time alert/recommendation computation | No Alert/Recommendation tables, shared WeatherRuleEngine |
 | API returns metric only | No server-side unit conversion, preferences as metadata |
-| Pipeline pattern for city creation | Composable steps, testable, idempotent |
+| Handler-based city creation flow | Direct requester flow, testable, idempotent |
 | Soft-delete for UserCity | Reactivation on re-subscribe, DisplayOrder gap closing |
 | Hard-delete for City (admin) | Cascading delete of weather data and subscriptions |
 | Open-Meteo free API | No API key, rate limit ~10,000 requests/day |
@@ -139,7 +140,7 @@ WeatherFiesta follows the bITdevKit Clean Onion architecture within a single mod
 ```
 ┌─────────────────────────────────────────────────────┐
 │                  Presentation Layer                   │
-│  Minimal API endpoints (27 endpoints)                │
+│  Minimal API endpoints (32 endpoints)                │
 │  Route prefix: api/core/                             │
 │  Depends on: Application                              │
 ├─────────────────────────────────────────────────────┤
@@ -164,13 +165,13 @@ WeatherFiesta follows the bITdevKit Clean Onion architecture within a single mod
 
 ```
 Core.Application/
-├── CITIES/           # Commands, Queries, Handlers, Specs
-├── WEATHER/          # Commands, Queries, Handlers, Specs
-├── INGESTION/        # Pipeline steps, Handlers, Specs
-├── ADMIN/            # Commands, Queries, Handlers, Specs
-├── USER/             # Commands, Queries, Handlers, Specs
-├── DASHBOARD/        # Queries, Handlers, Specs
-└── RECOMMENDATIONS/  # Queries, Handlers, Specs
+├── Commands/         # City, weather, admin, user, subscription commands
+├── Queries/          # City, weather, dashboard, admin, user, subscription queries
+├── Jobs/             # Scheduled weather ingestion
+├── Rules/            # Subscription gating rules
+├── Messages/         # Weather activity message handling
+├── Models/           # Request/response DTOs
+└── ConsoleCommands/  # Operational city commands
 ```
 
 ## 6. Terminology
@@ -184,8 +185,8 @@ Core.Application/
 | UserProfile | User identity and preferences (temperatureUnit, windSpeedUnit) |
 | StaleDataWarning | Computed flag: true when RetrievedAt > 60 minutes ago |
 | WeatherRuleEngine | Shared domain service that evaluates alert and recommendation rules |
-| CityCreatePipeline | 5-step pipeline: Geocode → CheckExists → PersistCity → PersistUserCity → EnqueueIngestion |
-| IngestWeatherPipeline | 4-step pipeline: FetchCurrent → UpsertCurrent → FetchForecast → UpsertForecasts |
+| CityCreateCommand | Command handler flow: Geocode → CheckExists → PersistCity → RegisterCityCreatedDomainEvent → PersistUserCity |
+| WeatherIngestionJob | Scheduled job flow: Find stale cities → Fetch weather → Upsert current weather → Upsert forecasts |
 | DisplayOrder | Integer on UserCity controlling list order; gaps closed on unsubscribe |
 | CityCreatedDomainEvent | Domain event published when a new City is created. Payload: CityId, Latitude, Longitude, TimeZone. Published via outbox for reliable delivery. Triggers weather ingestion. |
 | IsPrimary | Boolean on UserCity; exactly one per user; always first in list |
@@ -206,17 +207,17 @@ Core.Application/
 | WeatherCode (Smart Enum) | WMO code → description mapping | Domain |
 | WeatherRuleEngine | Alert and recommendation rule evaluation | Domain |
 | CityCreateCommand | Subscribe to city (triggers pipeline) | Application |
-| IngestWeatherCommand | Fetch and store weather data (triggers pipeline) | Application |
-| 27 endpoint handlers | Request/response orchestration | Application |
+| WeatherIngestionJob | Fetch and store weather data for stale cities | Application |
+| 32 endpoint handlers | Request/response orchestration | Application |
 | OpenMeteoClient | HTTP client for Open-Meteo APIs | Infrastructure |
 | CoreDbContext | EF Core DbContext for all entities | Infrastructure |
 | Quartz ingestion job | Scheduled 30-minute weather ingestion | Infrastructure |
 | CoreModule | Module registration (WebModuleBase) | Presentation |
-| 27 minimal API endpoints | HTTP request/response mapping | Presentation |
+| 32 minimal API endpoints | HTTP request/response mapping | Presentation |
 
 ### 7.5 API Endpoint Mapping
 
-#### User Endpoints (20)
+#### User Endpoints (21)
 
 | Method | Route | Command/Query | Handler | Auth | PRD |
 |--------|-------|---------------|---------|------|-----|
@@ -230,7 +231,7 @@ Core.Application/
 | POST | /api/core/cities/{cityId}/ingest | CityIngestCommand | CityIngestCommandHandler | User | PRD-0100 S4 |
 | GET | /api/core/cities/alerts | CityAlertsQuery | CityAlertsQueryHandler | User | PRD-0100 S5 |
 | GET | /api/core/cities/{cityId}/sun | CitySunQuery | CitySunQueryHandler | User | PRD-0101 S1-S3 |
-| GET | /api/core/cities/compare | CityCompareQuery | CityCompareQueryHandler | User | PRD-0102 S1-S3 |
+| POST | /api/core/cities/compare | CityCompareQuery | CityCompareQueryHandler | User | PRD-0102 S1-S3 |
 | GET | /api/core/cities/export | CityExportQuery | CityExportQueryHandler | User | PRD-0103 S1 |
 | GET | /api/core/cities/{cityId}/weather/export | CityWeatherExportQuery | CityWeatherExportQueryHandler | User | PRD-0103 S2 |
 | GET | /api/core/cities/{cityId}/recommendations | CityRecommendationsQuery | CityRecommendationsQueryHandler | User | PRD-0600 S1 |
@@ -242,7 +243,7 @@ Core.Application/
 | DELETE | /api/core/users/me | UserDeleteCommand | UserDeleteCommandHandler | User | PRD-0400 S4 |
 | GET | /api/core/users/subscription | UserSubscriptionQuery | UserSubscriptionQueryHandler | User | PRD-0700 S2 |
 
-#### Admin Endpoints (7)
+#### Admin Endpoints (11)
 
 | Method | Route | Command/Query | Handler | Auth | PRD |
 |--------|-------|---------------|---------|------|-----|
@@ -253,9 +254,10 @@ Core.Application/
 | GET | /api/core/admin/cities/{cityId}/subscriptions | AdminCitySubscriptionsQuery | AdminCitySubscriptionsQueryHandler | Admin | PRD-0300 S2 |
 | POST | /api/core/admin/cities/{cityId}/ingest | AdminCityIngestCommand | AdminCityIngestCommandHandler | Admin | PRD-0300 S3 |
 | DELETE | /api/core/admin/cities/{cityId}/weather | AdminCityWeatherResetCommand | AdminCityWeatherResetCommandHandler | Admin | PRD-0200 S3 |
-| GET | /api/core/admin/subscriptions | AdminSubscriptionsQuery | AdminSubscriptionsQueryHandler | Admin | PRD-0700 S3 |
-| GET | /api/core/admin/subscriptions/{userId} | AdminSubscriptionQuery | AdminSubscriptionQueryHandler | Admin | PRD-0700 S3 |
-| PUT | /api/core/admin/subscriptions/{userId} | AdminSubscriptionUpdateCommand | AdminSubscriptionUpdateCommandHandler | Admin | PRD-0700 S3 |
+| DELETE | /api/core/admin/users/{userId} | AdminUserDeleteCommand | AdminUserDeleteCommandHandler | Admin | PRD-0301 S1 |
+| GET | /api/core/admin/subscriptions | AdminUserSubscriptionsQuery | AdminUserSubscriptionsQueryHandler | Admin | PRD-0700 S3 |
+| GET | /api/core/admin/subscriptions/{userId} | AdminUserSubscriptionQuery | AdminUserSubscriptionQueryHandler | Admin | PRD-0700 S3 |
+| PUT | /api/core/admin/subscriptions/{userId} | AdminUserSubscriptionUpdateCommand | AdminUserSubscriptionUpdateCommandHandler | Admin | PRD-0700 S3 |
 
 ## 8. Runtime Architecture
 
@@ -264,29 +266,30 @@ Core.Application/
 ```
 User → POST /api/core/cities
   → Endpoint → IRequester.SendAsync(CityCreateCommand)
-    → ValidationPipelineBehavior
-      → CityCreatePipeline
-        → GeocodeCityStep (Open-Meteo Geocoding API)
-        → CheckCityExistsStep (dedup by ExternalId or Lat/Lng)
-        → PersistCityStep (save City aggregate)
-        → PersistUserCityStep (save UserCity subscription)
-        → EnqueueIngestionStep (queue IngestWeatherCommand)
-    ← Result<CityCreateResult>
+    → Validation/Retry/Timeout handler behaviors
+      → CityCreateCommand handler
+        → SearchCityAsync (Open-Meteo Geocoding API adapter)
+        → Check existing City by ExternalId
+        → Persist City aggregate and register CityCreatedDomainEvent
+        → Enforce subscription city limit
+        → Persist or reactivate UserCity subscription
+    ← Result<CityModel>
   ← 201 Created
 ```
 
 ### 8.2 Weather Ingestion Flow
 
 ```
-Quartz Job (every 30 min) OR Manual Trigger
-  → IRequester.SendAsync(IngestWeatherCommand)
-    → RetryPipelineBehavior (3 retries, 1s backoff)
-      → IngestWeatherPipeline
-        → FetchCurrentWeatherStep (Open-Meteo Forecast API)
-        → UpsertCurrentWeatherStep (upsert by CityId)
-        → FetchDailyForecastStep (Open-Meteo Forecast API)
-        → UpsertForecastsStep (upsert by CityId + ForecastDate)
-      ← Result<IngestWeatherResult>
+Quartz WeatherIngestionJob (every 30 min)
+  → Find stale cities using StaleCitiesForIngestionSpecification
+  → For each stale city:
+    → IWeatherAgent.IngestWeatherAsync(latitude, longitude)
+    → Upsert CurrentWeather by CityId
+    → Upsert WeatherForecast by CityId + ForecastDate
+
+Manual Trigger
+  → CityIngestCommand or AdminCityIngestCommand
+  → IWeatherAgent.IngestWeatherAsync for the selected city
 ```
 
 ### 8.3 Dashboard Read Flow
@@ -322,7 +325,21 @@ Admin → DELETE /api/core/admin/cities/{cityId}
   ← 204 No Content
 ```
 
-### 8.5 Staleness Computation
+### 8.5 Admin User Hard-Delete Flow
+
+```
+Admin → DELETE /api/core/admin/users/{userId}
+  → Endpoint → IRequester.SendAsync(AdminUserDeleteCommand)
+    → Handler
+      → Load UserProfile
+      → Delete UserCity records for the user
+      → Delete UserSubscription records for the user
+      → Delete UserProfile
+    ← Result<Success>
+  ← 204 No Content
+```
+
+### 8.6 Staleness Computation
 
 ```
 On every weather-related read:
@@ -334,7 +351,7 @@ On every weather-related read:
   // When fresh, StaleDataWarning is omitted (not false)
 ```
 
-### 8.6 Unit Preferences Metadata
+### 8.7 Unit Preferences Metadata
 
 ```
 On every weather-related response:
@@ -388,7 +405,7 @@ On every weather-related response:
 
 **Indexes**: IX_UserCities_UserId_CityId (UNIQUE, filtered WHERE IsDeleted = 0), IX_UserCities_UserId_DisplayOrder (filtered WHERE IsDeleted = 0)
 
-#### CurrentWeather Table
+#### CurrentWeathers Table
 
 | Column | Type | Constraints | Notes |
 |--------|------|-------------|-------|
@@ -457,7 +474,7 @@ On every weather-related response:
 
 **Indexes**: IX_UserProfiles_Email (UNIQUE, filtered WHERE IsDeleted = 0)
 
-#### OutboxMessages Table
+#### OutboxDomainEvents Table
 
 | Column | Type | Constraints | Notes |
 |--------|------|-------------|-------|
@@ -467,7 +484,7 @@ On every weather-related response:
 | CreatedAt | datetime2 | NOT NULL | UTC |
 | ProcessedAt | datetime2 | NULL | UTC, null if not yet processed |
 
-**Indexes**: IX_OutboxMessages_ProcessedAt (WHERE ProcessedAt IS NULL) for polling unprocessed messages.
+**Indexes**: implementation follows the bITdevKit outbox schema for polling unprocessed domain events.
 
 Note: This follows the bITdevKit outbox pattern (ADR-0006). The outbox worker polls every 30 seconds for unprocessed messages and publishes them.
 
@@ -517,14 +534,7 @@ Each HourlyForecast entry contains: Hour, Temperature, RelativeHumidity, Apparen
 
 ### 9.4 Soft-Delete Filtering
 
-EF Core global query filter on UserCity and UserProfile:
-
-```csharp
-modelBuilder.Entity<UserCity>().HasQueryFilter(uc => !uc.IsDeleted);
-modelBuilder.Entity<UserProfile>().HasQueryFilter(up => !up.IsDeleted);
-```
-
-Admin endpoints use `IgnoreQueryFilters()` to include soft-deleted records.
+Soft-delete filtering is handled by repository specifications rather than EF Core global query filters. Regular user queries use specifications that exclude deleted rows, while admin and reactivation paths use dedicated specifications that include deleted rows where needed.
 
 City does NOT have a soft-delete filter — cities are hard-deleted by admin only.
 
@@ -536,7 +546,7 @@ When admin hard-deletes a City:
 3. Delete all UserCity records (by CityId) — including soft-deleted ones
 4. Delete the City record
 
-This is executed in a single transaction. EF Core cascade delete is NOT used (to avoid accidental cascades). Each delete is explicit in the handler.
+The handler explicitly deletes weather, forecast, subscription, and city records. EF relationships also configure cascade behavior for City to CurrentWeathers and WeatherForecasts, while UserCity uses restrict behavior so admin deletion remains deliberate.
 
 ## 10. Integration Architecture
 
@@ -583,7 +593,7 @@ Implementation uses `IHttpClientFactory` with typed client, Polly retry policy (
 
 - All user endpoints require authentication
 - UserId resolved from authenticated claims: `User.FindFirst(ClaimTypes.NameIdentifier)?.Value`
-- Admin endpoints require "Admin" role claim
+- Admin endpoints require the `CoreAdmin` role claim
 - Unauthenticated requests return 401 Unauthorized
 
 ### 11.2 Authorization
@@ -601,8 +611,10 @@ Implementation uses `IHttpClientFactory` with typed client, Polly retry policy (
 |-------------------|--------------|--------|
 | User city/weather/dashboard endpoints | Authenticated user | Default policy |
 | User profile/preferences endpoints | Authenticated user | Default policy |
-| Admin city management endpoints | Admin | "CoreAdmin" policy |
-| Admin weather reset/ingest endpoints | Admin | "CoreAdmin" policy |
+| Admin city management endpoints | CoreAdmin | Role requirement |
+| Admin user management endpoints | CoreAdmin | Role requirement |
+| Admin subscription endpoints | CoreAdmin | Role requirement |
+| Admin weather reset/ingest endpoints | CoreAdmin | Role requirement |
 
 ### 11.3 Data Isolation
 
@@ -624,8 +636,8 @@ Implementation uses `IHttpClientFactory` with typed client, Polly retry policy (
 ### 12.1 Retry Policy
 
 - Open-Meteo API calls: 3 retries with 1-second exponential backoff (handled by RetryPipelineBehavior)
-- City creation pipeline: No retry (idempotent by dedup)
-- Weather ingestion pipeline: Retry on transient errors, skip on permanent errors
+- City creation command: handler retry configured with 2 retries and 300ms delay, with idempotency from deduplication
+- Weather ingestion job: catches per-city failures, logs them, and continues processing remaining stale cities
 
 ### 12.2 Idempotency
 
@@ -634,7 +646,7 @@ Implementation uses `IHttpClientFactory` with typed client, Polly retry policy (
 | City creation | ExternalId or (Latitude, Longitude) | Returns existing city if found |
 | UserCity creation | (UserId, CityId) | Returns 409 if active, reactivates if soft-deleted |
 | Weather ingestion | (CityId) | Upsert semantics — overwrites existing data |
-| Manual ingestion trigger | (CityId) | Returns 202 even if already queued |
+| Manual ingestion trigger | (CityId) | Returns no content after triggering ingestion for the selected city |
 | Set primary city | (UserId, CityId) | Sets IsPrimary=true, all others false |
 
 ### 12.3 Concurrency
@@ -646,7 +658,7 @@ Implementation uses `IHttpClientFactory` with typed client, Polly retry policy (
 ### 12.4 Data Integrity
 
 - City deduplication prevents duplicate cities (ExternalId unique constraint, Lat/Lng proximity check)
-- UserCity unique constraint prevents duplicate subscriptions (UserId + CityId, filtered WHERE IsDeleted = 0)
+- UserCity unique constraint prevents duplicate subscriptions (UserId + CityId)
 - WeatherForecast unique constraint prevents duplicate forecasts (CityId + ForecastDate)
 - CurrentWeather unique constraint ensures one record per city (CityId)
 
@@ -663,6 +675,8 @@ logger.LogInformation("Weather data ingested for city {CityId}, records: {Curren
 ```
 
 ### 13.2 Metrics
+
+The following metrics are target observability signals for the module. The current implementation primarily exposes structured logs; dedicated metric instruments can be added when production monitoring is wired.
 
 | Metric | Type | Labels |
 |--------|------|--------|
@@ -695,7 +709,7 @@ WeatherFiesta runs as part of the bITdevKit modular monolith host. No separate d
 
 - Single instance deployment for v1
 - Horizontal scaling possible (stateless API, shared database)
-- Quartz clustering mode for multi-instance ingestion (prevent duplicate jobs)
+- Quartz `[DisallowConcurrentExecution]` prevents overlapping ingestion job runs in a single scheduler instance; clustering can be enabled later for multi-instance deployments.
 
 ## 15. Configuration
 
@@ -723,7 +737,7 @@ WeatherFiesta runs as part of the bITdevKit modular monolith host. No separate d
 | Single module (not 7) | ADR-0001 | City is shared root entity; dashboard needs cross-slice queries |
 | Staleness computed at query time | ADR-0002 | No stored flag; always accurate; simple DateTime comparison |
 | API returns metric, frontend converts | ADR-0003 | Cacheable responses; one data format; consistent |
-| Pipeline pattern for city creation and ingestion | ADR-0004 | Composable steps; testable; idempotent; no saga needed for v1 |
+| Handler-based city creation and ingestion flows | ADR-0004 | Direct requester/job flows; testable; idempotent; no saga needed for v1 |
 | Alerts/recommendations computed at query time | ADR-0005 | No storage; deterministic; always current; shared rule engine. Alert severities: Thunderstorm=Warning, Hail=Warning, Severe wind=Severe, Extreme heat=Warning, Blizzard=Warning, Hurricane=Extreme |
 | ExternalId dedup, UserCity soft-delete, City hard-delete | ADR-0006 | ExternalId is exact; soft-delete enables reactivation; hard-delete for admin cleanup |
 | Clean Onion architecture | ADR-0001 (bITdevKit) | Domain isolation; testability; framework independence |
@@ -778,9 +792,9 @@ WeatherFiesta runs as part of the bITdevKit modular monolith host. No separate d
 ### 18.3 Application Tests
 
 - CityCreateCommand validation (name length, countryCode format)
-- CityCreatePipeline step execution order
-- IngestWeatherPipeline step execution order
-- All 27 endpoint request/response contracts
+- CityCreateCommand validation, deduplication, subscription limit enforcement, and user subscription persistence
+- WeatherIngestionJob processing and command trigger behavior
+- All 32 endpoint request/response contracts
 - Authorization checks (user vs admin)
 - Concurrency conflict handling
 
@@ -788,7 +802,7 @@ WeatherFiesta runs as part of the bITdevKit modular monolith host. No separate d
 
 - EF Core entity configurations (column types, constraints, indexes)
 - HourlyForecasts JSON column mapping
-- Soft-delete query filters
+- Soft-delete specifications
 - Repository specifications (active cities, user subscriptions, stale data)
 - Open-Meteo client deserialization (canned payloads)
 
@@ -817,6 +831,8 @@ Every PRD story maps to at least one test. Key mappings:
 | PRD-0400 S4 (Delete account) | Application | Soft-delete cascade, primary city cleared |
 | PRD-0500 S1 (Dashboard) | Application | Aggregation, primary city, highlights |
 | PRD-0600 S2 (Recommendation rules) | Domain | All 7 rules, severity sorting |
+| PRD-0700 S3 (Admin subscriptions) | API | List, get, update subscription endpoints |
+| PRD-0301 S1 (Admin user delete) | API/Application | Admin role check, related data deletion |
 
 ## 19. Risks and Trade-offs
 
@@ -826,7 +842,7 @@ Every PRD story maps to at least one test. Key mappings:
 | Query-time staleness | Always accurate, no background job | Computed on every read; negligible cost |
 | Query-time alerts/recommendations | No storage, deterministic | Computed on every request; may need caching at scale |
 | Metric-only API responses | Cacheable, consistent, one format | Frontend must implement conversion |
-| Pipeline pattern | Composable, testable, idempotent | No compensation logic; partial failures leave stale data until next ingestion |
+| Handler-based command flows | Simple, direct use of bITdevKit requester behaviors and ActiveEntity | Less explicit step composition than a dedicated pipeline type |
 | UserCity soft-delete | Reactivation, data preservation | DisplayOrder gap closing requires UPDATE on unsubscribe |
 | City hard-delete (admin) | Clean removal, no orphan data | Users lose subscriptions silently (v1: no notification) |
 | ExternalId dedup | Exact matching, no duplicates | Some geocoding results lack ExternalId; falls back to Lat/Lng |
@@ -838,9 +854,9 @@ Every PRD story maps to at least one test. Key mappings:
 | # | Question | Impact | Resolution |
 |---|----------|--------|------------|
 | 1 | How is UserId resolved from the authenticated principal? | All user endpoints need UserId | Host application provides claims; Core reads ClaimTypes.NameIdentifier |
-| 2 | What admin role/policy name is used? | Admin endpoints need authorization | Configured via `Core:AdminRoleName` setting, default "CoreAdmin" |
-| 3 | Does bITdevKit support `AddPipeline<TCmd,TResult>().WithStep<T>()` natively? | CityCreatePipeline and IngestWeatherPipeline registration | Needs validation against bITdevKit source; may need custom pipeline infrastructure |
-| 4 | Should CityCreatedDomainEvent or EnqueueIngestionStep trigger ingestion? | ADR-0004 shows pipeline step; ADR-0006 mentions domain event | Both: pipeline step enqueues immediately for synchronous flow; domain event published via outbox for reliability. Dedup is handled by idempotent upsert semantics on the ingestion side — if the same city is ingested twice, the upsert overwrites existing data without error. |
+| 2 | What admin role/policy name is used? | Admin endpoints need authorization | Configured via `Core:AdminRoleName` setting, default "Administrators" |
+| 3 | Should the PRD language continue to call these flows pipelines? | ADR-0004 originally described named pipeline step types | Resolved for implementation docs: WeatherFiesta currently implements direct command/job flows with bITdevKit requester behaviors rather than dedicated pipeline step types. |
+| 4 | Should CityCreatedDomainEvent or explicit commands trigger ingestion? | City creation and manual ingestion use different triggers | Resolved: city creation registers CityCreatedDomainEvent for outbox publication; manual ingestion uses explicit user/admin commands. |
 | 5 | How are HourlyForecasts deserialized from JSON? | EF Core JSON column mapping strategy | Use `OwnsMany` with JSON serialization; SQL Server JSON functions for querying if needed later |
 | 6 | What happens if DisplayOrder gap closing conflicts with concurrent unsubscribes? | Same user unsubscribing two cities simultaneously | UserCity updates are per-user; row-level locking prevents conflicts |
 | 7 | Should the dashboard use a single aggregated query or multiple queries? | Performance for N cities | Single query with JOINs for v1; consider read model if performance degrades |

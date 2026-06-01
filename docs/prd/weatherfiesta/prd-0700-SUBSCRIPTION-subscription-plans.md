@@ -2,7 +2,7 @@
 id: PRD-0700
 title: Subscription Plans
 slice: SUBSCRIPTION
-status: Pending
+status: Implemented
 ---
 
 # Product Requirements: Subscription Plans
@@ -30,7 +30,7 @@ All users must have an active subscription to use WeatherFiesta. New users are a
 ## Stories
 
 ### Story 1: Auto-assign Free plan on first login
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: UserProfile already created on first login. Subscription creation is additive.
 - User Story: As a new user, when I first log in, I want to be automatically assigned the Free plan, so I can start using the app immediately.
@@ -52,7 +52,7 @@ Notes:
 - The Subscription.UserId matches the UserProfile.Id (same GUID).
 
 ### Story 2: View current subscription
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Simple query. Data model defined.
 - User Story: As an authenticated user, I want to view my current subscription plan, so I know what features I have access to.
@@ -69,7 +69,7 @@ Notes:
 - Technical context: GET /api/core/users/subscription. Returns the full subscription with plan details.
 
 ### Story 3: Admin - Manage user subscriptions
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Admin CRUD pattern. Same as admin city management.
 - User Story: As an admin user, I want to view and modify any user's subscription, so I can upgrade, downgrade, or cancel plans.
@@ -89,7 +89,7 @@ Notes:
 - Design decision: Downgrading does NOT remove data. The user keeps existing subscriptions but cannot add new ones beyond the plan limit.
 
 ### Story 4: Plan-based feature gating
-- Status: Pending
+- Status: Implemented
 - Ready: Yes
 - Ready Reason: Plan limits are checked at the handler level. Simple comparison logic.
 - User Story: As a user on the Free plan, I want to be prevented from exceeding my plan limits, so I understand what features are available to me.

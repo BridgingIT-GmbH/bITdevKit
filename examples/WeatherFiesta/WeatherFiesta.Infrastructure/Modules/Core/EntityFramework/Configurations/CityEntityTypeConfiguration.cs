@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
 
+using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
+
 /// <summary>
 /// EF Core entity type configuration for the <see cref="City"/> aggregate.
 /// </summary>

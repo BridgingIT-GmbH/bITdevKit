@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Command to unsubscribe the current user from a city.
 /// Soft-deletes the subscription and closes DisplayOrder gaps.
@@ -36,13 +34,13 @@ public partial class CityUnsubscribeCommand
         CancellationToken cancellationToken)
     {
         var userId = currentUserAccessor.UserId;
-        var cityId = Domain.Model.CityId.Create(this.CityId);
+        var cityId = Domain.Modules.Core.Model.CityId.Create(this.CityId);
 
         var spec = new UserCityByUserAndCitySpecification(userId, cityId);
         var userCitiesResult = await UserCity.FindAllAsync(spec, null, cancellationToken);
         if (userCitiesResult.IsFailure)
         {
-            return Result<Unit>.Failure(userCitiesResult.Errors.Select(e => e.Message));
+            return userCitiesResult.Wrap<Unit>();
         }
 
         var userCities = userCitiesResult.Value;
@@ -60,7 +58,7 @@ public partial class CityUnsubscribeCommand
         var result = await userCity.UpdateAsync(cancellationToken);
         if (result.IsFailure)
         {
-            return Result<Unit>.Failure(result.Errors.Select(e => e.Message));
+            return result.Wrap<Unit>();
         }
 
         // Close DisplayOrder gaps for remaining subscriptions
@@ -68,7 +66,7 @@ public partial class CityUnsubscribeCommand
             new UserCitiesByUserSpecification(userId), null, cancellationToken);
         if (allUserCitiesResult.IsFailure)
         {
-            return Result<Unit>.Failure(allUserCitiesResult.Errors.Select(e => e.Message));
+            return allUserCitiesResult.Wrap<Unit>();
         }
 
         var allUserCities = allUserCitiesResult.Value;

@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-
 /// <summary>
 /// Admin command to update city details.
 /// </summary>
@@ -46,13 +44,13 @@ public partial class AdminCityUpdateCommand
         IMapper mapper,
         CancellationToken cancellationToken)
     {
-        var cityId = Domain.Model.CityId.Create(this.CityId);
+        var cityId = Domain.Modules.Core.Model.CityId.Create(this.CityId);
 
         var spec = new Specification<City>(c => c.Id == cityId);
         var cityResult = await City.FindAllAsync(spec, null, cancellationToken);
         if (cityResult.IsFailure)
         {
-            return Result<CityModel>.Failure(cityResult.Errors.Select(e => e.Message));
+            return cityResult.Wrap<CityModel>();
         }
 
         var city = cityResult.Value.FirstOrDefault();
@@ -61,19 +59,30 @@ public partial class AdminCityUpdateCommand
             return Result<CityModel>.Failure("City not found.");
         }
 
-        city.Name = this.Model.Name;
-        city.Country = this.Model.Country;
-        city.CountryCode = this.Model.CountryCode;
-        city.TimeZone = this.Model.TimeZone;
-        city.Location = Location.Create(this.Model.Latitude, this.Model.Longitude);
-        city.Elevation = this.Model.Elevation;
+        var locationResult = Location.Create(this.Model.Latitude, this.Model.Longitude);
+        if (locationResult.IsFailure)
+        {
+            return locationResult.Wrap<CityModel>();
+        }
+
+        var changeResult = city.ChangeDetails(
+            this.Model.Name,
+            this.Model.Country,
+            this.Model.CountryCode,
+            this.Model.TimeZone,
+            locationResult.Value,
+            this.Model.Elevation);
+        if (changeResult.IsFailure)
+        {
+            return changeResult.Wrap<CityModel>();
+        }
 
         var result = await city.UpdateAsync(cancellationToken);
         if (result.IsFailure)
         {
-            return Result<CityModel>.Failure(result.Errors.Select(e => e.Message));
+            return result.Wrap<CityModel>();
         }
 
-        return Result<CityModel>.Success(mapper.Map<City, CityModel>(result.Value));
+        return result.Wrap(mapper.Map<City, CityModel>(result.Value));
     }
 }

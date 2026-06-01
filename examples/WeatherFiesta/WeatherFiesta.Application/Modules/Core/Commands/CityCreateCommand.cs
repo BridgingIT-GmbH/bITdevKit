@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Abstractions;
-
 /// <summary>
 /// Command to create a city and subscribe the current user to it.
 /// Geocodes the city name via the geocoding client, deduplicates by ExternalId,
@@ -53,7 +50,7 @@ public partial class CityCreateCommand
         var existingCitiesResult = await City.FindAllAsync(existingCitySpec, null, cancellationToken);
         if (existingCitiesResult.IsFailure)
         {
-            return Result<CityModel>.Failure(existingCitiesResult.Errors.Select(e => e.Message));
+            return existingCitiesResult.Wrap<CityModel>();
         }
 
         var existingCities = existingCitiesResult.Value;
@@ -66,12 +63,18 @@ public partial class CityCreateCommand
         else
         {
             // Step 3: Create and persist the city
+            var locationResult = Location.Create(geocodingResult.Latitude, geocodingResult.Longitude);
+            if (locationResult.IsFailure)
+            {
+                return locationResult.Wrap<CityModel>();
+            }
+
             city = City.Create(
                 geocodingResult.Name,
                 geocodingResult.Country,
                 geocodingResult.CountryCode,
                 geocodingResult.TimeZone,
-                Location.Create(geocodingResult.Latitude, geocodingResult.Longitude),
+                locationResult.Value,
                 geocodingResult.ExternalId,
                 geocodingResult.Elevation);
 
@@ -80,7 +83,7 @@ public partial class CityCreateCommand
             var cityResult = await city.InsertAsync(cancellationToken);
             if (cityResult.IsFailure)
             {
-                return Result<CityModel>.Failure(cityResult.Errors.Select(e => e.Message));
+                return cityResult.Wrap<CityModel>();
             }
 
             city = cityResult.Value;
@@ -91,15 +94,41 @@ public partial class CityCreateCommand
         var existingUserCitiesResult = await UserCity.FindAllAsync(userCitySpec, null, cancellationToken);
         if (existingUserCitiesResult.IsFailure)
         {
-            return Result<CityModel>.Failure(existingUserCitiesResult.Errors.Select(e => e.Message));
+            return existingUserCitiesResult.Wrap<CityModel>();
         }
 
         var existingUserCities = existingUserCitiesResult.Value;
-        UserCity userCity;
-        if (existingUserCities.Any())
+        var userCityExists = existingUserCities.Any();
+        var userCity = userCityExists ? existingUserCities.First() : null;
+        var needsCitySlot = userCity is null || userCity.AuditState.IsDeleted();
+
+        long existingActiveCount = 0;
+        if (needsCitySlot)
+        {
+            // Step 5: Enforce subscription plan city limit
+            var subscriptionResult = await this.GetOrCreateSubscriptionAsync(userId, cancellationToken);
+            if (subscriptionResult.IsFailure)
+            {
+                return subscriptionResult.Wrap<CityModel>();
+            }
+
+            var existingCountResult = await UserCity.CountAsync(
+                new UserCitiesByUserSpecification(userId), null, cancellationToken);
+            if (existingCountResult.IsFailure)
+            {
+                return existingCountResult.Wrap<CityModel>();
+            }
+
+            var cityLimitResult = Rule.Check(new SubscriptionCityLimitRule(subscriptionResult.Value, existingCountResult.Value));
+            if (cityLimitResult.IsFailure)
+            {
+                return Result<CityModel>.Failure(cityLimitResult);
+            }
+        }
+
+        if (userCityExists)
         {
             // Reactivate soft-deleted subscription
-            userCity = existingUserCities.First();
             if (userCity.AuditState.IsDeleted())
             {
                 userCity.Reactivate();
@@ -107,26 +136,59 @@ public partial class CityCreateCommand
         }
         else
         {
-            // Step 5: Create new subscription (first city becomes primary)
-            var existingCountResult = await UserCity.CountAsync(
-                new UserCitiesByUserSpecification(userId), null, cancellationToken);
-            if (existingCountResult.IsFailure)
-            {
-                return Result<CityModel>.Failure(existingCountResult.Errors.Select(e => e.Message));
-            }
-
-            var isPrimary = existingCountResult.Value == 0;
-
+            // Create new subscription (first city becomes primary)
+            var isPrimary = existingActiveCount == 0;
             userCity = UserCity.Create(userId, city.Id, isPrimary);
         }
 
         var userCityResult = await userCity.UpsertAsync(cancellationToken);
         if (userCityResult.IsFailure)
         {
-            return Result<CityModel>.Failure(userCityResult.Errors.Select(e => e.Message));
+            return userCityResult.Wrap<CityModel>();
         }
 
-        return Result<CityModel>.Success(mapper.Map<City, CityModel>(city));
+        return userCityResult.Wrap(mapper.Map<City, CityModel>(city));
+    }
+
+    private async Task<Result<UserSubscription>> GetOrCreateSubscriptionAsync(string userId, CancellationToken cancellationToken)
+    {
+        var result = await UserSubscription.FindAllAsync(new SubscriptionByUserSpecification(userId), null, cancellationToken);
+        if (result.IsFailure)
+        {
+            return Result<UserSubscription>.Failure(result);
+        }
+
+        var subscriptions = result.Value;
+        if (subscriptions.Any())
+        {
+            var subscription = subscriptions
+                .OrderBy(s => s.AuditState.IsDeleted())
+                .ThenBy(s => s.StartDate)
+                .First();
+
+            if (subscription.AuditState.IsDeleted())
+            {
+                subscription.Reactivate();
+                var updateResult = await subscription.UpsertAsync(cancellationToken);
+                if (updateResult.IsFailure)
+                {
+                    return updateResult.Wrap<UserSubscription>();
+                }
+
+                subscription = updateResult.Value.entity;
+            }
+
+            if (!subscription.IsActive)
+            {
+                return Result<UserSubscription>.Failure(new DomainPolicyError(["Subscription is not active."]));
+            }
+
+            return Result<UserSubscription>.Success(subscription);
+        }
+
+        var newSubscription = UserSubscription.CreateFree(userId);
+        var insertResult = await newSubscription.InsertAsync(cancellationToken);
+        return insertResult;
     }
 }
 

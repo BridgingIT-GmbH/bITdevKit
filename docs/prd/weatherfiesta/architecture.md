@@ -364,7 +364,7 @@ All mutable entities implement `IConcurrency` (RowVersion). Optimistic concurren
 
 - All user endpoints require authenticated user
 - UserId resolved from `ClaimTypes.NameIdentifier`
-- Admin endpoints require "CoreAdmin" role
+- Admin endpoints require "Administrators" role
 
 ### 6.2 Authorization Matrix
 

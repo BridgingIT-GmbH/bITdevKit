@@ -9,8 +9,8 @@ using System.Linq.Expressions;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Model;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -97,7 +97,14 @@ public class CoreSeederTask(
                 continue;
             }
 
-            var city = City.Create(name, country, code, tz, Location.Create(lat, lon), externalId, elevation);
+            var locationResult = Location.Create(lat, lon);
+            if (locationResult.IsFailure)
+            {
+                this.logger.LogWarning("{LogKey} failed to seed city {CityName}: {Errors}", "IFR", name, string.Join(", ", locationResult.Errors.Select(e => e.Message)));
+                continue;
+            }
+
+            var city = City.Create(name, country, code, tz, locationResult.Value, externalId, elevation);
             city.AuditState.SetCreated("seed", nameof(CoreSeederTask));
             var insertResult = await city.InsertAsync(cancellationToken);
 

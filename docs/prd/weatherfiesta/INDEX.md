@@ -21,6 +21,7 @@ WeatherFiesta is a weather dashboard application for tracking weather across mul
 | PRD-0103 | WEATHER | Data Export | [prd-0103-WEATHER-data-export.md](./prd-0103-WEATHER-data-export.md) |
 | PRD-0200 | INGESTION | Data Ingestion | [prd-0200-ingestion-data-ingestion.md](./prd-0200-ingestion-data-ingestion.md) |
 | PRD-0300 | ADMIN | Admin City Management | [prd-0300-admin-city-management.md](./prd-0300-admin-city-management.md) |
+| PRD-0301 | ADMIN | Admin User Management | [prd-0301-ADMIN-user-management.md](./prd-0301-ADMIN-user-management.md) |
 | PRD-0400 | USER | User Profile | [prd-0400-USER-user-profile.md](./prd-0400-USER-user-profile.md) |
 | PRD-0500 | DASHBOARD | Dashboard Summary | [prd-0500-DASHBOARD-dashboard-summary.md](./prd-0500-DASHBOARD-dashboard-summary.md) |
 | PRD-0600 | RECOMMENDATIONS | Daily Summary and Recommendations | [prd-0600-RECOMMENDATIONS-daily-summary.md](./prd-0600-RECOMMENDATIONS-daily-summary.md) |

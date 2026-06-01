@@ -38,7 +38,7 @@ Presentation    →  Minimal API endpoints, CoreModule registration
 | **Queries** | `CitySuggestionQuery`, `UserCitiesQuery`, `CityWeatherQuery`, `CitySunQuery`, `CityAlertsQuery`, `CityCompareQuery`, `CityExportQuery`, `CityWeatherExportQuery`, `CityRecommendationsQuery`, `DashboardQuery`, `UserProfileQuery`, `UserPreferencesQuery`, `UserSubscriptionQuery`, `AdminCitiesQuery`, `AdminCitySubscriptionsQuery`, `AdminUserSubscriptionsQuery`, `AdminUserSubscriptionQuery` |
 | **Models (DTOs)** | `CityModel`, `UserCityModel`, `CitySuggestionModel`, `CurrentWeatherModel`, `WeatherForecastModel`, `HourlyForecastModel`, `WeatherAlertModel`, `WeatherRecommendationModel`, `DashboardModel`, `UserProfileModel`, `UnitPreferencesModel`, `UserSubscriptionModel`, `AdminCityModel`, `AdminCityCreateModel`, `AdminCityUpdateModel`, `AdminCitySubscriptionModel` |
 | **Abstractions** | `IWeatherAgent` — ingests weather data; `IWeatherGeocodingClient` — city search/geocoding |
-| **Tasks** | `CoreIngestionJob` (Quartz scheduled weather ingestion), `CoreSubscriptionSeederTask` (seeds default subscriptions on startup) |
+| **Tasks** | `WeatherIngestionJob` (Jobs scheduled weather ingestion), `WeatherCleanupJob` (Jobs scheduled weather retention cleanup), `CoreSubscriptionSeederTask` (seeds default subscriptions on startup) |
 | **Messages** | `WeatherActivityMessage` / `WeatherActivityMessageHandler` |
 
 ### Infrastructure
@@ -54,7 +54,7 @@ Presentation    →  Minimal API endpoints, CoreModule registration
 | Artifact | Purpose |
 |---|---|
 | **Endpoints** | `CoreCityEndpoints`, `CoreWeatherEndpoints`, `CoreUserEndpoints`, `CoreDashboardEndpoints`, `CoreAdminEndpoints`, `CoreSubscriptionEndpoints` |
-| **Module** | `CoreModule` — registers all services, DbContext, Quartz jobs, startup tasks |
+| **Module** | `CoreModule` — registers all services, DbContext, Jobs scheduler, startup tasks |
 | **Configuration** | `CoreModuleConfiguration` with `OpenMeteoOptions` |
 | **Mapping** | `CoreModuleMapperRegister` (Mapster profiles) |
 
@@ -185,11 +185,14 @@ Base URL: `https://localhost:5001`
     },
     "SeederTaskStartupDelay": "00:00:05",
     "StaleThresholdMinutes": 60,
-    "IngestionCron": "0 */30 * * * ?",
+    "Jobs": {
+      "IngestionCron": "*/30 * * * *",
+      "CleanupCron": "0 2 * * *",
+      "CleanupRetentionDays": 31
+    },
     "ForecastDays": 16,
     "GeocodingMinQueryLength": 3,
     "ComparisonMaxCities": 10,
-    "AdminRoleName": "CoreAdmin",
     "DefaultPlan": "Free",
     "OpenMeteo": {
       "GeocodingBaseUrl": "https://geocoding-api.open-meteo.com/v1",
@@ -240,7 +243,7 @@ Integration tests in `WeatherFiesta.IntegrationTests` use:
 - **No mocks for internal logic** — real handlers, ActiveEntity, and IRequester pipeline execute
 - **Only external HTTP services mocked** — `IWeatherAgent` and `IWeatherGeocodingClient` via NSubstitute
 - **Test authentication** — `TestAuthenticationHandler` returns a fully authenticated user with `CoreAdmin` role
-- **Seeded test data** — `WeatherFiestaTestData.SeedAsync` populates the InMemory database
+- **Seeded test data** — `TestData.SeedAsync` populates the InMemory database
 
 ```bash
 # Run integration tests
@@ -332,9 +335,11 @@ WeatherFiesta/
 │           │   ├── UserPreferencesQuery.cs
 │           │   ├── UserProfileQuery.cs
 │           │   └── UserSubscriptionQuery.cs
+│           ├── Jobs/
+│           │   ├── WeatherCleanupJob.cs
+│           │   └── WeatherIngestionJob.cs
 │           └── Tasks/
-│               ├── CoreIngestionJob.cs
-│               └── CoreSubscriptionSeederTask.cs
+│               └── CoreSeederTask.cs
 ├── WeatherFiesta.Infrastructure/
 │   └── Modules/
 │       └── Core/
@@ -359,7 +364,6 @@ WeatherFiesta/
 │   ├── Modules/
 │   │   └── Core/
 │   │       ├── CoreModule.cs
-│   │       ├── CoreModuleConfiguration.cs
 │   │       ├── CoreModuleMapperRegister.cs
 │   │       └── Endpoints/
 │   │           ├── CoreAdminEndpoints.cs
@@ -380,5 +384,5 @@ WeatherFiesta/
     ├── CoreUserEndpointsTests.cs
     ├── CoreWeatherEndpointsTests.cs
     ├── WeatherFiestaApplicationFactory.cs
-    └── WeatherFiestaTestData.cs
+    └── TestData.cs
 ```

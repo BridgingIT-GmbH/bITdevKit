@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core;
 
 using System.Linq.Expressions;
 using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Model;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 
 /// <summary>
 /// Finds a city by its ExternalId (Open-Meteo geocoding ID).
@@ -27,7 +27,7 @@ public class UserCitiesByUserSpecification(string userId) : Specification<UserCi
 {
     public override Expression<Func<UserCity, bool>> ToExpression()
     {
-        return uc => uc.UserId == userId && !uc.AuditState.IsDeleted();
+        return uc => uc.UserId == userId && uc.AuditState.Deleted != true;
     }
 }
 
@@ -38,7 +38,7 @@ public class UserCityByUserAndCitySpecification(string userId, CityId cityId) : 
 {
     public override Expression<Func<UserCity, bool>> ToExpression()
     {
-        return uc => uc.UserId == userId && uc.CityId == cityId && !uc.AuditState.IsDeleted();
+        return uc => uc.UserId == userId && uc.CityId == cityId && uc.AuditState.Deleted != true;
     }
 }
 

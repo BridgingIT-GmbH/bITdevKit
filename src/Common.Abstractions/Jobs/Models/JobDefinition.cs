@@ -44,7 +44,7 @@ public sealed record JobDefinition
     public bool HasExplicitDisplayName { get; init; }
 
     /// <summary>
-    /// Gets or sets the required description.
+    /// Gets or sets the optional description.
     /// </summary>
     public string Description { get; init; }
 

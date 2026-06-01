@@ -5,26 +5,43 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
 
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.Extensions.Configuration;
 
 /// <summary>
 /// A factory for creating instances of <see cref="CoreDbContext"/> during design-time operations,
 /// such as Entity Framework Core migrations. Extends the generic factory to provide SQL Server-specific configuration
 /// for the CoreModule, using a convention-based connection string key.
 /// </summary>
-public class CoreDbContextFactory : SqlServerModuleDbContextFactory<CoreDbContext>
+public class CoreDbContextFactory : IDesignTimeDbContextFactory<CoreDbContext>
 {
-    /// <summary>
-    /// Initializes a new instance of the <see cref="CoreDbContextFactory"/> class with settings specific to CoreModule.
-    /// Uses SQL Server as the database provider and retrieves the connection string from a convention-based key
-    /// ("Modules:Core:ConnectionStrings:Default") or a command-line override.
-    /// </summary>
-    public CoreDbContextFactory()
-        : base(
-            options: (builder, connectionString) =>
-                builder.UseSqlServer(
-                    connectionString,
-                    sqlOptions => sqlOptions.MigrationsAssembly(typeof(CoreDbContext).Assembly.GetName().Name)))
-    { }
+    /// <inheritdoc />
+    public CoreDbContext CreateDbContext(string[] args)
+    {
+        var connectionString = args?.FirstOrDefault(a => a.StartsWith("--connection-string=", StringComparison.OrdinalIgnoreCase))?["--connection-string=".Length..];
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: false)
+                .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: false)
+                .AddEnvironmentVariables()
+                .Build();
+
+            connectionString = configuration["Modules:Core:ConnectionStrings:Default"];
+        }
+
+        if (string.IsNullOrWhiteSpace(connectionString))
+        {
+            throw new InvalidOperationException("Connection string for key 'Modules:Core:ConnectionStrings:Default' not found in configuration or command-line arguments.");
+        }
+
+        var optionsBuilder = new DbContextOptionsBuilder<CoreDbContext>();
+        optionsBuilder.UseSqlServer(
+            connectionString,
+            sqlOptions => sqlOptions.MigrationsAssembly(typeof(CoreDbContext).Assembly.GetName().Name));
+
+        return new CoreDbContext(optionsBuilder.Options);
+    }
 }

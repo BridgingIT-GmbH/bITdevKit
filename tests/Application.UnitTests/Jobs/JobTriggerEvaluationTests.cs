@@ -165,6 +165,46 @@ public class JobTriggerEvaluationTests(ITestOutputHelper output) : JobSchedulerT
     }
 
     [Fact]
+    public void Materialize_CronTriggerWithDefaultMissedPolicy_CreatesOneOccurrence()
+    {
+        var nowUtc = new DateTimeOffset(2026, 05, 26, 10, 16, 00, TimeSpan.Zero);
+        var timeProvider = new FakeTimeProvider(nowUtc);
+        var sut = CreateSut(timeProvider);
+        var job = CreateJobDefinition();
+        var trigger = CreateTrigger(builder => builder.Cron("*/5 * * * *"));
+
+        var result = sut.Materialize(job, trigger, new JobTriggerEvaluationRequest
+        {
+            RuntimeState = new JobTriggerRuntimeState(
+                new DateTimeOffset(2026, 05, 26, 10, 00, 00, TimeSpan.Zero),
+                null,
+                new DateTimeOffset(2026, 05, 26, 10, 00, 00, TimeSpan.Zero),
+                false),
+        });
+
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.Occurrences.Count.ShouldBe(1);
+        result.Value.Occurrences[0].ScheduledUtc.ShouldBe(new DateTimeOffset(2026, 05, 26, 10, 15, 00, TimeSpan.Zero));
+    }
+
+    [Fact]
+    public void Materialize_OneTimeTriggerWithDefaultMissedPolicy_WhenAlreadyPastDue_CreatesOccurrence()
+    {
+        var nowUtc = new DateTimeOffset(2026, 05, 26, 10, 16, 00, TimeSpan.Zero);
+        var timeProvider = new FakeTimeProvider(nowUtc);
+        var sut = CreateSut(timeProvider);
+        var job = CreateJobDefinition();
+        var dueUtc = new DateTimeOffset(2026, 05, 26, 10, 15, 00, TimeSpan.Zero);
+        var trigger = CreateTrigger(builder => builder.At(dueUtc));
+
+        var result = sut.Materialize(job, trigger, new JobTriggerEvaluationRequest());
+
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.Occurrences.Count.ShouldBe(1);
+        result.Value.Occurrences[0].ScheduledUtc.ShouldBe(dueUtc);
+    }
+
+    [Fact]
     public void Materialize_CronTriggerCreatesDeterministicOccurrenceKeys()
     {
         var nowUtc = new DateTimeOffset(2026, 05, 26, 10, 16, 00, TimeSpan.Zero);

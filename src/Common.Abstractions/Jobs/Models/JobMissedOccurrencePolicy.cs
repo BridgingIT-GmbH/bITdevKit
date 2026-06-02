@@ -13,12 +13,12 @@ public enum JobMissedOccurrencePolicy
     /// <summary>
     /// Ignores occurrences that became due while the scheduler was inactive.
     /// </summary>
-    Skip = 0,
+    Skip = 1,
 
     /// <summary>
     /// Creates a single catch-up occurrence for the missed window.
     /// </summary>
-    RunOnce = 1,
+    RunOnce = 0,
 
     /// <summary>
     /// Creates every missed occurrence up to the active safety limit.

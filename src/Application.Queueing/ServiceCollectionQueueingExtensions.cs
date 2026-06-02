@@ -114,7 +114,7 @@ public static class ServiceCollectionQueueingExtensions
             scan.FromApplicationDependencies(a => !a.FullName.MatchAny(Blacklists.ApplicationDependencies))
                 .AddClasses(classes => classes.AssignableTo(typeof(IQueueMessageHandler<>)), true));
 
-        Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton<IQueueSubscriptionMap, QueueSubscriptionMap>(services);
+        Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton<IQueueSubscriptionMap, QueueSubscriptionMap>(services);
 
         if (!IsBuildTimeOpenApiGeneration())
         {
@@ -281,5 +281,4 @@ public static class ServiceCollectionQueueingExtensions
     {
         return Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
     }
-
 }

@@ -444,6 +444,26 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
     }
 
     [Fact]
+    public void AddJobScheduler_WhenOtherHostedServiceAlreadyRegistered_RegistersSchedulerHostedService()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        this.ConfigureLogging(services);
+        services.AddSingleton<IHostApplicationLifetime, TestHostApplicationLifetime>();
+        services.AddHostedService<OtherHostedService>();
+
+        // Act
+        services.AddJobScheduler();
+
+        using var provider = services.BuildServiceProvider();
+        var hostedServices = provider.GetServices<IHostedService>().ToList();
+
+        // Assert
+        hostedServices.OfType<OtherHostedService>().Count().ShouldBe(1);
+        hostedServices.OfType<JobSchedulerBackgroundService>().Count().ShouldBe(1);
+    }
+
+    [Fact]
     public void WithExceptionHandler_RegistersSingleHandlerImplementation()
     {
         var services = new ServiceCollection();
@@ -537,6 +557,13 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         public void StopApplication()
         {
         }
+    }
+
+    private sealed class OtherHostedService : IHostedService
+    {
+        public Task StartAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+
+        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
     }
 
     private sealed class TestHostEnvironment : IHostEnvironment

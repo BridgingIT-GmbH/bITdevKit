@@ -30,24 +30,21 @@ public class CoreModule : WebModuleBase
         // Configuration
         var moduleConfiguration = this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
 
-        // DbContext
-        var connectionString = moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default");
-        services.AddDbContext<CoreDbContext>((sp, options) => options
-            .UseSqlServer(connectionString, sqlOptions => sqlOptions.MigrationsAssembly(typeof(CoreDbContext).Assembly.GetName().Name))
-            .UseLoggerFactory(sp.GetRequiredService<ILoggerFactory>()));
-        services.AddScoped<IDbContextResolver, DbContextResolver>();
-
-        new DbContextBuilderContext<CoreDbContext>(services, connectionString: connectionString, provider: Provider.SqlServer)
-            //.WithDatabaseMigratorService(o => o
+        // Database configuration
+        services.AddSqlServerDbContext<CoreDbContext>(o => o
+                .UseConnectionString(moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default"))
+                .UseLogger()/*.UseSimpleLogger()*/)
+            .WithHealthCheck()
             .WithDatabaseCreatorService(o => o
-                .Enabled()
-                .DeleteOnStartup()
-                .HaltOnFailure())
+                .Enabled(environment.IsLocalDevelopment())
+                .HaltOnFailure()
+                .DeleteOnStartup(environment.IsLocalDevelopment()))
             .WithOutboxDomainEventService(o => o
                 .AutoArchiveAfter(TimeSpan.FromHours(1))
                 .ProcessingModeImmediate()
                 .ProcessingInterval("00:00:30")
                 .StartupDelay("00:00:15"));
+                //.PurgeOnStartup());
 
         // ActiveEntity registrations
         services.AddActiveEntity(cfg =>
@@ -125,13 +122,17 @@ public class CoreModule : WebModuleBase
                 .Description("Ingests stale weather data for WeatherFiesta cities.")
                 .UseLifetime(ServiceLifetime.Scoped)
                 .WithConcurrency(1)
-                .AddTrigger("cron", trigger => trigger.Cron(moduleConfiguration.Jobs.IngestionCron))
+                .AddTrigger("cron", trigger => trigger
+                    .Cron(moduleConfiguration.Jobs.IngestionCron)
+                    .WithMissedOccurrencePolicy(JobMissedOccurrencePolicy.RunOnce))
                 .AddTrigger("manual", trigger => trigger.Manual()))
             .WithJob<WeatherCleanupJob>("core_cleanup", job => job
                 .Description("Deletes stale weather data for WeatherFiesta cities.")
                 .UseLifetime(ServiceLifetime.Scoped)
                 .WithConcurrency(1)
-                .AddTrigger("cron", trigger => trigger.Cron(moduleConfiguration.Jobs.CleanupCron))
+                .AddTrigger("cron", trigger => trigger
+                    .Cron(moduleConfiguration.Jobs.CleanupCron)
+                    .WithMissedOccurrencePolicy(JobMissedOccurrencePolicy.RunOnce))
                 .AddTrigger("manual", trigger => trigger.Manual()))
             .WithEntityFramework<CoreDbContext>()
             .AddEndpoints()

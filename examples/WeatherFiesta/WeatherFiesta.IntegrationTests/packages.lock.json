@@ -148,6 +148,11 @@
           "System.Diagnostics.EventLog": "6.0.0"
         }
       },
+      "ClosedXML.Parser": {
+        "type": "Transitive",
+        "resolved": "2.0.0",
+        "contentHash": "ngTqjYreDYNytG1W5d3ewHsw0ukmmrgV7EKnS4/40rXoYZGt07jrBvo+N+GxT49rcageUMUiprV0jYT4nwVBHQ=="
+      },
       "DiffEngine": {
         "type": "Transitive",
         "resolved": "11.3.0",
@@ -162,10 +167,31 @@
         "resolved": "1.7.0",
         "contentHash": "2hrXR83b5g6/ZMJOA36hXp4t56yb7G1mF3Hg6IkrHxvtyaoXRn2WVdgDPN3V8+GugOlUBbTWXgPaka4dXw1QIg=="
       },
+      "DocumentFormat.OpenXml": {
+        "type": "Transitive",
+        "resolved": "3.1.1",
+        "contentHash": "2z9QBzeTLNNKWM9SaOSDMegfQk/7hDuElOsmF77pKZMkFRP/GHA/W/4yOAQD9kn15N/FsFxHn3QVYkatuZghiA==",
+        "dependencies": {
+          "DocumentFormat.OpenXml.Framework": "3.1.1"
+        }
+      },
+      "DocumentFormat.OpenXml.Framework": {
+        "type": "Transitive",
+        "resolved": "3.1.1",
+        "contentHash": "6APEp/ElZV58S/4v8mf4Ke3ONEDORs64MqdD64Z7wWpcHANB9oovQsGIwtqjnKihulOj7T0a6IxHIHOfMqKOng==",
+        "dependencies": {
+          "System.IO.Packaging": "8.0.1"
+        }
+      },
       "EmptyFiles": {
         "type": "Transitive",
         "resolved": "4.4.0",
         "contentHash": "gwJEfIGS7FhykvtZoscwXj/XwW+mJY6UbAZk+qtLKFUGWC95kfKXnj8VkxsZQnWBxJemM/q664rGLN5nf+OHZw=="
+      },
+      "ExcelNumberFormat": {
+        "type": "Transitive",
+        "resolved": "1.1.0",
+        "contentHash": "R3BVHPs9O+RkExbZYTGT0+9HLbi8ZrNij1Yziyw6znd3J7P3uoIR07uwTLGOogtz1p6+0sna66eBoXu7tBiVQA=="
       },
       "Google.Protobuf": {
         "type": "Transitive",
@@ -434,19 +460,19 @@
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks": {
         "type": "Transitive",
-        "resolved": "8.0.19",
-        "contentHash": "GvB0NtqipGPLfTf+DslLzxwsOQjpobSFxwm1N2hp/KvNwMklGrFWQ9CS/EmYXAS1N5yU0hPP7B1ZtOFNZdqY4A==",
+        "resolved": "10.0.8",
+        "contentHash": "IlXZUZIA9b99yQURc8jOLmmS6GD42vj6t+LqWs6Dd+naggObSbEXDw8DU8DUu2tL8CnyG96F4pDLhjd7BmZPAQ==",
         "dependencies": {
-          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "8.0.19",
-          "Microsoft.Extensions.Hosting.Abstractions": "8.0.1",
-          "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
-          "Microsoft.Extensions.Options": "8.0.2"
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "10.0.8",
+          "Microsoft.Extensions.Hosting.Abstractions": "10.0.8",
+          "Microsoft.Extensions.Logging.Abstractions": "10.0.8",
+          "Microsoft.Extensions.Options": "10.0.8"
         }
       },
       "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": {
         "type": "Transitive",
-        "resolved": "8.0.19",
-        "contentHash": "GFCKN00eRy9tKrukgfS3pFZU0SujmZuS1ozA0oRFD2KD5gdzwqjmeblSXyBwb4G9Gj2/Ax7VrabNYiaF1Wjr3g=="
+        "resolved": "10.0.8",
+        "contentHash": "0j06qq5I1YGSIi4M86UaVITBprvn3bTWKmQiLDNEqnZ2d+UxaFb+tVqemxVzr5lkr6GTR83ExUfSIpCnBaTZFA=="
       },
       "Microsoft.Extensions.FileProviders.Abstractions": {
         "type": "Transitive",
@@ -754,10 +780,24 @@
           "OpenTelemetry.PersistentStorage.Abstractions": "1.0.3"
         }
       },
+      "PDFsharp": {
+        "type": "Transitive",
+        "resolved": "6.2.4",
+        "contentHash": "GhTr9F1uOYXHCIEOB5PXIgqn5a8WLsJL2m0eewTA0IvY1j6N4HGXHKKmEyB90/N6vrjmYamf41V9zbmdW2HY3g==",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
+          "System.Security.Cryptography.Pkcs": "8.0.1"
+        }
+      },
       "Polly.Core": {
         "type": "Transitive",
         "resolved": "8.6.6",
         "contentHash": "lCBL9mmhF9TZxHG3beVRkyjlLohkIC464xIAq7J7Y59C+z42hmsdUaeCKl2SIAYertOUU5TeBXyQDLDQGIKePQ=="
+      },
+      "RBush.Signed": {
+        "type": "Transitive",
+        "resolved": "4.0.0",
+        "contentHash": "aP5KQxL5RnFNGW1f0euYVBfCatkLw5iEzMRJcXKq8LWWP4Cp3+qoSq1tDDL2vvJ2rM0ychmVMa2VaEKLS6uX4w=="
       },
       "Serilog.Extensions.Logging": {
         "type": "Transitive",
@@ -783,6 +823,11 @@
         "dependencies": {
           "Serilog": "4.0.0"
         }
+      },
+      "SixLabors.Fonts": {
+        "type": "Transitive",
+        "resolved": "1.0.0",
+        "contentHash": "LFQsCZlV0xlUyXAOMUo5kkSl+8zAQXXbbdwWchtk0B4o7zotZhQsQOcJUELGHdfPfm/xDAsz6hONAuV25bJaAg=="
       },
       "Spectre.Console.Ansi": {
         "type": "Transitive",
@@ -867,6 +912,11 @@
         "resolved": "10.0.8",
         "contentHash": "+Ro7WgIom+BDNH+YhTuZKL6QJ0ctfOpTyfUG/h3aU5KwXt3OaNf0wYWrTvoBUj+34Dy5V8dN9yCco1hAJQ4txw=="
       },
+      "System.IO.Packaging": {
+        "type": "Transitive",
+        "resolved": "8.0.1",
+        "contentHash": "KYkIOAvPexQOLDxPO2g0BVoWInnQhPpkFzRqvNrNrMhVT6kqhVr0zEb6KCHlptLFukxnZrjuMVAnxK7pOGUYrw=="
+      },
       "System.Management": {
         "type": "Transitive",
         "resolved": "6.0.1",
@@ -930,6 +980,21 @@
         "resolved": "16.3.0",
         "contentHash": "SgMOdxbz8X65z8hraIs6hOEdnkH6hESTAIUa7viEngHOYaH+6q5XJmwr1+yb9vJpNQ19hCQY69xbFsLtXpobQA=="
       },
+      "BridgingIT.DevKit.Application.DataPorter": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Results": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "ClosedXML": "[0.105.0, )",
+          "CsvHelper": "[33.1.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Extensions.Configuration.Abstractions": "[10.0.8, )",
+          "Microsoft.Extensions.Configuration.Binder": "[10.0.8, )",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "[10.0.8, )",
+          "Microsoft.Extensions.Logging.Abstractions": "[10.0.8, )",
+          "PDFsharp-MigraDoc": "[6.2.4, )"
+        }
+      },
       "BridgingIT.DevKit.Application.Identity": {
         "type": "Project",
         "dependencies": {
@@ -953,6 +1018,21 @@
           "Microsoft.Extensions.Hosting.Abstractions": "[10.0.8, )",
           "Microsoft.Extensions.Logging": "[10.0.8, )",
           "Microsoft.Extensions.TimeProvider.Testing": "[10.6.0, )"
+        }
+      },
+      "BridgingIT.DevKit.Application.JobScheduling": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Options": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Humanizer.Core": "[3.0.10, )",
+          "Polly": "[8.6.6, )",
+          "Polly.Contrib.Simmy": "[0.3.0, )",
+          "Quartz": "[3.18.1, 3.18.1]",
+          "Quartz.Extensions.DependencyInjection": "[3.18.1, 3.18.1]"
         }
       },
       "BridgingIT.DevKit.Application.Messaging": {
@@ -1019,6 +1099,14 @@
           "Polly.Contrib.Simmy": "[0.3.0, )",
           "Scrutor": "[4.2.2, 5.0.0)",
           "SharpCompress": "[0.49.1, )"
+        }
+      },
+      "BridgingIT.DevKit.Application.Storage.Jobs": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.JobScheduling": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )"
         }
       },
       "BridgingIT.DevKit.Application.Utilities": {
@@ -1227,6 +1315,7 @@
           "BridgingIT.DevKit.Examples.WeatherFiesta.Application": "[1.0.0, )",
           "BridgingIT.DevKit.Examples.WeatherFiesta.Domain": "[1.0.0, )",
           "BridgingIT.DevKit.Infrastructure.EntityFramework": "[1.0.0, )",
+          "BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Microsoft.EntityFrameworkCore.Relational": "[10.0.8, )",
           "Microsoft.EntityFrameworkCore.SqlServer": "[10.0.8, )"
@@ -1236,6 +1325,11 @@
         "type": "Project",
         "dependencies": {
           "Azure.Monitor.OpenTelemetry.Exporter": "[1.8.1, )",
+          "BridgingIT.DevKit.Application.DataPorter": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Storage.Jobs": "[1.0.0, )",
+          "BridgingIT.DevKit.Application.Utilities": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
           "BridgingIT.DevKit.Examples.WeatherFiesta.Application": "[1.0.0, )",
@@ -1245,6 +1339,10 @@
           "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web.EntityFramework": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web.Jobs": "[1.0.0, )",
+          "BridgingIT.DevKit.Presentation.Web.Messaging": "[1.0.0, )",
+          "BridgingIT.DevKit.Presentation.Web.Orchestrations": "[1.0.0, )",
+          "BridgingIT.DevKit.Presentation.Web.Queueing": "[1.0.0, )",
+          "BridgingIT.DevKit.Presentation.Web.Storage": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Microsoft.ApplicationInsights.AspNetCore": "[3.1.2, )",
           "Microsoft.AspNetCore.Components.WebAssembly.Server": "[10.0.8, )",
@@ -1257,6 +1355,7 @@
           "OpenTelemetry.Instrumentation.Http": "[1.15.1, )",
           "OpenTelemetry.Instrumentation.Runtime": "[1.15.1, )",
           "OpenTelemetry.Instrumentation.SqlClient": "[1.15.2, )",
+          "Presentation.Web.Notifications": "[1.0.0, )",
           "Scalar.AspNetCore": "[2.14.14, )",
           "Serilog.AspNetCore": "[10.0.0, )",
           "Serilog.Enrichers.Environment": "[3.0.1, )",
@@ -1290,6 +1389,17 @@
           "Microsoft.EntityFrameworkCore.InMemory": "[10.0.8, )",
           "Microsoft.EntityFrameworkCore.Relational": "[10.0.8, )",
           "System.Linq.Dynamic.Core": "[1.7.2, )"
+        }
+      },
+      "BridgingIT.DevKit.Infrastructure.EntityFramework.SqlServer": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.JobScheduling": "[1.0.0, )",
+          "BridgingIT.DevKit.Infrastructure.EntityFramework": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )",
+          "Microsoft.Data.SqlClient": "[7.0.1, )",
+          "Microsoft.EntityFrameworkCore.SqlServer": "[10.0.8, )",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "[10.0.8, )"
         }
       },
       "BridgingIT.DevKit.Presentation": {
@@ -1365,6 +1475,50 @@
           "Ensure.That": "[10.1.0, )"
         }
       },
+      "BridgingIT.DevKit.Presentation.Web.Messaging": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
+          "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )"
+        }
+      },
+      "BridgingIT.DevKit.Presentation.Web.Orchestrations": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Orchestrations": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
+          "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )"
+        }
+      },
+      "BridgingIT.DevKit.Presentation.Web.Queueing": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Queueing": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
+          "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )"
+        }
+      },
+      "BridgingIT.DevKit.Presentation.Web.Storage": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
+          "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )"
+        }
+      },
+      "presentation.web.notifications": {
+        "type": "Project",
+        "dependencies": {
+          "BridgingIT.DevKit.Application.Notifications": "[1.0.0, )",
+          "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
+          "Ensure.That": "[10.1.0, )"
+        }
+      },
       "Azure.Extensions.AspNetCore.Configuration.Secrets": {
         "type": "CentralTransitive",
         "requested": "[1.5.1, )",
@@ -1394,6 +1548,19 @@
           "Azure.Core": "1.56.0",
           "OpenTelemetry.Extensions.Hosting": "1.15.3",
           "OpenTelemetry.PersistentStorage.FileSystem": "1.0.3"
+        }
+      },
+      "ClosedXML": {
+        "type": "CentralTransitive",
+        "requested": "[0.105.0, )",
+        "resolved": "0.105.0",
+        "contentHash": "U0hAdnYyPvF7TqHMFloxrS7pmozab79tFFF4c/bgPtqeelUs7ILpUd3r3c7C0a/DXsUZb3k1n4Pf7Q2LMyMQOg==",
+        "dependencies": {
+          "ClosedXML.Parser": "2.0.0",
+          "DocumentFormat.OpenXml": "[3.1.1, 4.0.0)",
+          "ExcelNumberFormat": "1.1.0",
+          "RBush.Signed": "4.0.0",
+          "SixLabors.Fonts": "1.0.0"
         }
       },
       "Cronos": {
@@ -1718,6 +1885,17 @@
         "resolved": "10.0.8",
         "contentHash": "21nbDV60SRPWGIivsyl6lqBeEJNG1sginhhfWgRrr3Ais7aQ12To25OAHQxgoiJkjqy1aQ6RxpZBGYuTi7Ge6A=="
       },
+      "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": {
+        "type": "CentralTransitive",
+        "requested": "[10.0.8, )",
+        "resolved": "10.0.8",
+        "contentHash": "VyjlpOHGpT9xoNFKNd/27FBF4eBimMcCCIfMxkeju/8uUnugwsxHfzZX2iP+ilYeoYB4HeT5gAoswTIKD6SYJw==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.Relational": "10.0.8",
+          "Microsoft.Extensions.Diagnostics.HealthChecks": "10.0.8",
+          "Microsoft.Extensions.Diagnostics.HealthChecks.Abstractions": "10.0.8"
+        }
+      },
       "Microsoft.Extensions.Hosting": {
         "type": "CentralTransitive",
         "requested": "[10.0.8, )",
@@ -1963,6 +2141,17 @@
           "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.15.3, 2.0.0)"
         }
       },
+      "PDFsharp-MigraDoc": {
+        "type": "CentralTransitive",
+        "requested": "[6.2.4, )",
+        "resolved": "6.2.4",
+        "contentHash": "ZlRUJaAAo4K2oMt1v02GTeGOHIOoOvcH1e1WYMpunCG1MK8jd4EBrbzSHoYSN7yOfKWFtOIUfzvmKhRGPsyWQQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.3",
+          "PDFsharp": "6.2.4",
+          "System.Security.Cryptography.Pkcs": "8.0.1"
+        }
+      },
       "Polly": {
         "type": "CentralTransitive",
         "requested": "[8.6.6, )",
@@ -1979,6 +2168,26 @@
         "contentHash": "pLKgfb7LmPqVOzjqdbjWH3pCkJWSnZIygPHfhP4d4JjmNov+sd2IxcFm/m8vPZa6lcRylgTvwIuvWhqR1Z1DYA==",
         "dependencies": {
           "Polly": "7.1.0"
+        }
+      },
+      "Quartz": {
+        "type": "CentralTransitive",
+        "requested": "[3.18.1, 3.18.1]",
+        "resolved": "3.18.1",
+        "contentHash": "q/n/gKLcApDlTk90BRNvj6P8HKR+vbtZEQxo5BAbeEoN5e/8/aqRuG6yH7tVg02CeAXAD40boS74s9hVnh4XDw==",
+        "dependencies": {
+          "Microsoft.Extensions.Logging.Abstractions": "2.1.1"
+        }
+      },
+      "Quartz.Extensions.DependencyInjection": {
+        "type": "CentralTransitive",
+        "requested": "[3.18.1, 3.18.1]",
+        "resolved": "3.18.1",
+        "contentHash": "ct+sIqr7n961jvo695GnqHjB+dhK6b/Y9LSXxK6n9EJ6JzMXpwcusd5u2lCqVqqNHaiGBLXp37E75hpPXHQkzA==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "10.0.0",
+          "Microsoft.Extensions.Options": "10.0.0",
+          "Quartz": "3.18.1"
         }
       },
       "RazorSlices": {

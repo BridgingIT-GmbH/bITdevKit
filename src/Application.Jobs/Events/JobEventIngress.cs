@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Jobs;
 
-using System.Diagnostics;
 using BridgingIT.DevKit.Common;
 
 /// <summary>

@@ -14,6 +14,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework.SqlServer\Infrastructure.EntityFramework.SqlServer.csproj" />
     <ProjectReference Include="..\..\..\src\Infrastructure.EntityFramework\Infrastructure.EntityFramework.csproj" />
     <ProjectReference Include="..\WeatherFiesta.Application\WeatherFiesta.Application.csproj" />
     <ProjectReference Include="..\WeatherFiesta.Domain\WeatherFiesta.Domain.csproj" />

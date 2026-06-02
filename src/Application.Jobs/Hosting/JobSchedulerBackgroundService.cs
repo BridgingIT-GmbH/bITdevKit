@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Jobs;
 
-using System.Diagnostics;
-using BridgingIT.DevKit.Application.Jobs;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;

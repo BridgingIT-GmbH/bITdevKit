@@ -59,12 +59,22 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\src\Application.Messaging\Application.Messaging.csproj" />
+    <ProjectReference Include="..\..\..\src\Application.Storage.Jobs\Application.Storage.Jobs.csproj" />
+    <ProjectReference Include="..\..\..\src\Application.Storage\Application.Storage.csproj" />
+    <ProjectReference Include="..\..\..\src\Application.Utilities\Application.Utilities.csproj" />
+    <ProjectReference Include="..\..\..\src\Application.DataPorter/Application.DataPorter.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Extensions.Web\Common.Extensions.Web.csproj" />
     <ProjectReference Include="..\..\..\src\Common.Extensions\Common.Extensions.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Configuration\Presentation.Configuration.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Serilog\Presentation.Serilog.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.EntityFramework\Presentation.Web.EntityFramework.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web.Jobs\Presentation.Web.Jobs.csproj" />
+    <ProjectReference Include="..\..\..\src\Presentation.Web.Messaging\Presentation.Web.Messaging.csproj" />
+    <ProjectReference Include="..\..\..\src\Presentation.Web.Notifications\Presentation.Web.Notifications.csproj" />
+    <ProjectReference Include="..\..\..\src\Presentation.Web.Orchestrations\Presentation.Web.Orchestrations.csproj" />
+    <ProjectReference Include="..\..\..\src\Presentation.Web.Queueing\Presentation.Web.Queueing.csproj" />
+    <ProjectReference Include="..\..\..\src\Presentation.Web.Storage\Presentation.Web.Storage.csproj" />
     <ProjectReference Include="..\..\..\src\Presentation.Web\Presentation.Web.csproj" />
     <ProjectReference Include="..\WeatherFiesta.Application\WeatherFiesta.Application.csproj" />
     <ProjectReference Include="..\WeatherFiesta.Infrastructure\WeatherFiesta.Infrastructure.csproj" />

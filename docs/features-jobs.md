@@ -348,6 +348,7 @@ If the host already has several module DbContexts, the Jobs provider can attach 
 - Jobs and triggers remain code-first definitions. Durable storage never becomes the source of truth for registrations.
 - Runtime state can override a registered job or trigger to enable, disable, pause, or resume it without mutating source code.
 - Manual dispatch, recurring materialization, retries, chaining, and batch grouping all converge on the same durable occurrence model.
+- Cron and calendar triggers default to `JobMissedOccurrencePolicy.RunOnce`, so each scheduler sweep creates one occurrence for the latest due time in the covered window. Use `.WithMissedOccurrencePolicy(JobMissedOccurrencePolicy.Skip)` only when missed windows should advance without creating work.
 - Batches are grouping and bulk-control constructs, not workflow definitions. If you need durable business state transitions, use [Orchestrations](./features-orchestrations.md).
 
 ### Lifetime And Resolved Properties

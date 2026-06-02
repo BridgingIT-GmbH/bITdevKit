@@ -17,6 +17,10 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
     private bool seeded;
     private ITestOutputHelper output;
 
+    public WeatherFiestaApplicationFactory()
+    {
+    }
+
     /// <summary>Gets the mocked weather agent (external HTTP service).</summary>
     public IWeatherAgent WeatherAgent { get; } = Substitute.For<IWeatherAgent>();
 

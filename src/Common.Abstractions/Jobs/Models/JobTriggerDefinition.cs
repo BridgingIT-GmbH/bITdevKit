@@ -60,7 +60,7 @@ public sealed record JobTriggerDefinition
     /// <summary>
     /// Gets or sets the missed-occurrence policy.
     /// </summary>
-    public JobMissedOccurrencePolicy MissedOccurrencePolicy { get; init; } = JobMissedOccurrencePolicy.Skip;
+    public JobMissedOccurrencePolicy MissedOccurrencePolicy { get; init; } = JobMissedOccurrencePolicy.RunOnce;
 
     /// <summary>
     /// Gets or sets the properties.

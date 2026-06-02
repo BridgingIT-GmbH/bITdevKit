@@ -32,7 +32,7 @@ public class JobTriggerDefinitionBuilder
     private DateTimeOffset? dueUtc;
     private TimeSpan? delay;
     private TimeZoneInfo timeZone = TimeZoneInfo.Utc;
-    private JobMissedOccurrencePolicy missedOccurrencePolicy = JobMissedOccurrencePolicy.Skip;
+    private JobMissedOccurrencePolicy missedOccurrencePolicy = JobMissedOccurrencePolicy.RunOnce;
     private Type customTriggerProviderType;
     private string eventSource;
     private Type eventDataType;

@@ -80,6 +80,38 @@ public class JobSchedulerBackgroundServiceTests(ITestOutputHelper output) : JobS
     }
 
     [Fact]
+    public async Task SweepOnceAsync_CronTriggerWithDefaultMissedPolicy_MaterializesAndExecutesOccurrence()
+    {
+        var provider = CreateProvider(
+            options =>
+            {
+                options.EnableBackgroundExecution = false;
+                options.MaxConcurrency = 1;
+                options.BatchSize = 10;
+            },
+            services =>
+            {
+                services.AddJobScheduler().WithJob<SuccessfulBackgroundJob>("cron", job => job
+                    .Description("Cron work.")
+                    .AddTrigger("every-minute", trigger => trigger.Cron("* * * * *")));
+            });
+
+        var fakeTime = (FakeTimeProvider)provider.GetRequiredService<TimeProvider>();
+        var sut = provider.GetRequiredService<JobSchedulerBackgroundService>();
+        var store = provider.GetRequiredService<IJobStoreProvider>();
+
+        await sut.SweepOnceAsync();
+        fakeTime.Advance(TimeSpan.FromMinutes(1));
+        await sut.SweepOnceAsync();
+
+        var occurrences = await store.Queries.ListOccurrencesAsync();
+        occurrences.Count.ShouldBeGreaterThanOrEqualTo(1);
+        occurrences.ShouldAllBe(x => x.JobName == "cron");
+        occurrences.ShouldAllBe(x => x.TriggerName == "every-minute");
+        occurrences.ShouldAllBe(x => x.Status == JobOccurrenceStatus.Completed);
+    }
+
+    [Fact]
     public async Task SweepOnceAsync_WorkerPoolMaxConcurrencyIsRespected()
     {
         ConcurrencyTrackingJob.Reset();

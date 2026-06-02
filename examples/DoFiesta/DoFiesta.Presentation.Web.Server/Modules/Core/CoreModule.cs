@@ -104,7 +104,7 @@ public class CoreModule : WebModuleBase
                 .UseConnectionString(moduleConfiguration.ConnectionStrings.GetValueOrDefault("Default"))
                 .UseLogger()/*.UseSimpleLogger()*/)
             .WithSequenceNumberGenerator()
-            .WithHealthCheck() // TODO: implement in devkit and use in all dbcontext registrations
+            .WithHealthCheck()
             .WithDatabaseCreatorService(o => o
                 .Enabled(environment.IsLocalDevelopment())
                 .HaltOnFailure())

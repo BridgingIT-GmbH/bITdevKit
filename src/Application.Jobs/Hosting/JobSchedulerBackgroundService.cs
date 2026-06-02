@@ -14,8 +14,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// </summary>
 public class JobSchedulerBackgroundService : BackgroundService
 {
-    private const string LogKey = "[Jobs]";
-
     private readonly TimeProvider timeProvider;
     private readonly JobSchedulerService scheduler;
     private readonly IHostApplicationLifetime applicationLifetime;
@@ -60,17 +58,17 @@ JobSchedulerHostedOptions options = null,
         var recovered = await this.scheduler.RecoverExpiredLeasesAsync(cancellationToken).ConfigureAwait(false);
         if (recovered > 0)
         {
-            this.logger.LogDebug("{LogKey} recovered {Count} expired lease occurrence(s)", LogKey, recovered);
+            this.logger.LogDebug("[{LogKey}] recovered {Count} expired lease occurrence(s)", Constants.LogKey, recovered);
         }
 
         var materialized = await this.scheduler.MaterializeScheduledOccurrencesAsync(this.schedulerStartedUtc, this.options.MaxCatchUpOccurrences, cancellationToken).ConfigureAwait(false);
         if (materialized.IsFailure)
         {
-            this.logger.LogWarning("{LogKey} background trigger materialization failed ({Message})", LogKey, materialized.Messages.FirstOrDefault() ?? materialized.Errors.FirstOrDefault()?.Message);
+            this.logger.LogWarning("[{LogKey}] background trigger materialization failed ({Message})", Constants.LogKey, materialized.Messages.FirstOrDefault() ?? materialized.Errors.FirstOrDefault()?.Message);
         }
         else if (materialized.Value.Count > 0)
         {
-            this.logger.LogDebug("{LogKey} materialized {Count} scheduler occurrence(s)", LogKey, materialized.Value.Count);
+            this.logger.LogDebug("[{LogKey}] materialized {Count} scheduler occurrence(s)", Constants.LogKey, materialized.Value.Count);
         }
 
         var dueOccurrences = await this.scheduler.ListReadyOccurrencesAsync(cancellationToken).ConfigureAwait(false);
@@ -119,7 +117,7 @@ JobSchedulerHostedOptions options = null,
     /// <inheritdoc />
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} job scheduler background service stopping (instanceId={SchedulerInstanceId})", LogKey, this.scheduler.SchedulerInstanceId);
+        this.logger.LogInformation("[{LogKey}] job scheduler background service stopping (instanceId={SchedulerInstanceId})", Constants.LogKey, this.scheduler.SchedulerInstanceId);
 
         this.linkedCts?.Cancel();
         if (this.startupTask != null)
@@ -134,7 +132,7 @@ JobSchedulerHostedOptions options = null,
             }
         }
 
-        this.logger.LogInformation("{LogKey} job scheduler background service stopped (instanceId={SchedulerInstanceId})", LogKey, this.scheduler.SchedulerInstanceId);
+        this.logger.LogInformation("[{LogKey}] job scheduler background service stopped (instanceId={SchedulerInstanceId})", Constants.LogKey, this.scheduler.SchedulerInstanceId);
         await base.StopAsync(cancellationToken).ConfigureAwait(false);
     }
 
@@ -153,13 +151,13 @@ JobSchedulerHostedOptions options = null,
         {
             if (this.options.StartupDelay > TimeSpan.Zero)
             {
-                this.logger.LogDebug("{LogKey} job scheduler startup delayed by {Delay}ms (instanceId={SchedulerInstanceId})", LogKey, this.options.StartupDelay.TotalMilliseconds, this.scheduler.SchedulerInstanceId);
+                this.logger.LogDebug("[{LogKey}] job scheduler startup delayed by {Delay}ms (instanceId={SchedulerInstanceId})", Constants.LogKey, this.options.StartupDelay.TotalMilliseconds, this.scheduler.SchedulerInstanceId);
                 await Task.Delay(this.options.StartupDelay, this.timeProvider, cancellationToken).ConfigureAwait(false);
             }
 
             this.logger.LogInformation(
-                "{LogKey} job scheduler background service starting (instanceId={SchedulerInstanceId}, sweepInterval={SweepInterval}ms, batchSize={BatchSize}, maxConcurrency={MaxConcurrency})",
-                LogKey,
+                "[{LogKey}] job scheduler background service starting (instanceId={SchedulerInstanceId}, sweepInterval={SweepInterval}ms, batchSize={BatchSize}, maxConcurrency={MaxConcurrency})",
+                Constants.LogKey,
                 this.scheduler.SchedulerInstanceId,
                 this.options.SweepInterval.TotalMilliseconds,
                 this.options.BatchSize,
@@ -180,7 +178,7 @@ JobSchedulerHostedOptions options = null,
         catch (Exception exception)
         {
             await this.HandleUnhandledExceptionAsync(exception, cancellationToken).ConfigureAwait(false);
-            this.logger.LogError(exception, "{LogKey} job scheduler background service failed unexpectedly: {ErrorMessage}", LogKey, exception.Message);
+            this.logger.LogError(exception, "[{LogKey}] job scheduler background service failed unexpectedly: {ErrorMessage}", Constants.LogKey, exception.Message);
             throw;
         }
     }
@@ -228,7 +226,7 @@ JobSchedulerHostedOptions options = null,
             var result = await this.scheduler.ExecuteStoredOccurrenceAsync(occurrenceId, cancellationToken).ConfigureAwait(false);
             if (result.IsFailure)
             {
-                this.logger.LogDebug("{LogKey} background occurrence execution skipped or failed (instanceId={SchedulerInstanceId}, occurrenceId={OccurrenceId}, message={Message})", LogKey, this.scheduler.SchedulerInstanceId, occurrenceId, result.Messages.FirstOrDefault() ?? result.Errors.FirstOrDefault()?.Message);
+                this.logger.LogDebug("[{LogKey}] background occurrence execution skipped or failed (instanceId={SchedulerInstanceId}, occurrenceId={OccurrenceId}, message={Message})", Constants.LogKey, this.scheduler.SchedulerInstanceId, occurrenceId, result.Messages.FirstOrDefault() ?? result.Errors.FirstOrDefault()?.Message);
             }
         }
         finally

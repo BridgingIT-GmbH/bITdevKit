@@ -2124,7 +2124,7 @@ public class JobSchedulerService(
         Task renewalTask,
         CancellationToken cancellationToken)
     {
-        IReadOnlyList<string> executionMessages = messages is { Count: > 0 } ? messages : [message];
+        var executionMessages = messages is { Count: > 0 } ? messages : [message];
         var shouldRetry = retryPolicy is { MaxAttempts: > 0 } && attemptNumber < retryPolicy.MaxAttempts;
         if (shouldRetry)
         {

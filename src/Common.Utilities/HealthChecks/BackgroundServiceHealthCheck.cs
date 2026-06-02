@@ -49,18 +49,20 @@ public sealed class BackgroundServiceHealthCheck<TService>(
         var data = new Dictionary<string, object>
         {
             ["service"] = typeof(TService).FullName,
-            ["state"] = monitoredTask?.Status.ToString() ?? "NotStarted",
+            ["state"] = ToHealthState(monitoredTask),
             ["source"] = trackedTask.Source ?? nameof(BackgroundService.ExecuteTask),
         };
 
         if (executeTask is not null)
         {
-            data["executeTaskState"] = executeTask.Status.ToString();
+            data["executeTaskState"] = ToHealthState(executeTask);
+            data["executeTaskStatus"] = executeTask.Status.ToString();
         }
 
         if (trackedTask.Task is not null)
         {
-            data[$"{trackedTask.Source}State"] = trackedTask.Task.Status.ToString();
+            data[$"{trackedTask.Source}State"] = ToHealthState(trackedTask.Task);
+            data[$"{trackedTask.Source}Status"] = trackedTask.Task.Status.ToString();
         }
 
         if (monitoredTask is null)
@@ -102,6 +104,31 @@ public sealed class BackgroundServiceHealthCheck<TService>(
 
         var processingTask = serviceType.GetField("processingTask", Flags)?.GetValue(service) as Task;
         return processingTask is null ? (null, null) : (processingTask, "processingTask");
+    }
+
+    private static string ToHealthState(Task task)
+    {
+        if (task is null)
+        {
+            return "NotStarted";
+        }
+
+        if (task.IsFaulted)
+        {
+            return "Faulted";
+        }
+
+        if (task.IsCanceled)
+        {
+            return "Canceled";
+        }
+
+        if (task.IsCompleted)
+        {
+            return "Completed";
+        }
+
+        return "Running";
     }
 }
 

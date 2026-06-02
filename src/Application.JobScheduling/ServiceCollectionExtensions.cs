@@ -6,7 +6,6 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using System.Collections.Specialized;
-using System.Reflection;
 using BridgingIT.DevKit.Application;
 using BridgingIT.DevKit.Application.JobScheduling;
 using BridgingIT.DevKit.Common;
@@ -143,7 +142,7 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<JobRunHistoryListener>(); // scheduler.ListenerManager.AddJobListener called in JobSchedulingService
 
-        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             services.AddHostedService<JobSchedulingService>();
             services.TryAddBackgroundServiceHealthCheck<JobSchedulingService>(
@@ -362,10 +361,5 @@ public static class ServiceCollectionExtensions
         }
 
         return context;
-    }
-
-    private static bool IsBuildTimeOpenApiGeneration() // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi?view=aspnetcore-9.0&tabs=visual-studio%2Cvisual-studio-code#customizing-run-time-behavior-during-build-time-document-generation
-    {
-        return Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
     }
 }

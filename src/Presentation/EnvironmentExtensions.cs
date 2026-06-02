@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Presentation;
 
 using System;
-using System.Reflection;
 using Microsoft.Extensions.Hosting;
 
 /// <summary>
@@ -104,5 +103,5 @@ public static class EnvironmentExtensions
     /// which is used by the tooling when generating OpenAPI docs at build time.
     /// </remarks>
     public static bool IsBuildTimeOpenApiGeneration() =>
-        Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
+        Common.EnvironmentExtensions.IsBuildTimeOpenApiGeneration();
 }

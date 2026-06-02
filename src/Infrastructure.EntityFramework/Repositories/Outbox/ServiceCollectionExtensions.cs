@@ -67,7 +67,7 @@ public static partial class ServiceCollectionExtensions
             new OutboxDomainEventQueue(sp.GetRequiredService<ILoggerFactory>(),
                 id => sp.GetRequiredService<IOutboxDomainEventWorker>().ProcessAsync(id)));
 
-        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             services.AddHostedService<OutboxDomainEventService>();
             services.TryAddBackgroundServiceHealthCheck<OutboxDomainEventService>(
@@ -133,7 +133,7 @@ public static partial class ServiceCollectionExtensions
             new OutboxDomainEventQueue(sp.GetRequiredService<ILoggerFactory>(),
                 id => sp.GetRequiredService<IOutboxDomainEventWorker>().ProcessAsync(id)));
 
-        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             services.AddHostedService(sp =>
             new OutboxDomainEventService(

@@ -5,7 +5,6 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using System.Reflection;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Common;
 using Configuration;
@@ -68,7 +67,7 @@ public static class ServiceCollectionMessagingExtensions
                     !a.FullName.MatchAny(Blacklists.ApplicationDependencies))
                 .AddClasses(classes => classes.AssignableTo(typeof(IMessageHandler<>)), true));
 
-        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             services.AddHostedService(sp => // should be scoped
             new MessagingService(
@@ -189,8 +188,4 @@ public static class ServiceCollectionMessagingExtensions
         return context;
     }
 
-    private static bool IsBuildTimeOpenApiGeneration() // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi?view=aspnetcore-9.0&tabs=visual-studio%2Cvisual-studio-code#customizing-run-time-behavior-during-build-time-document-generation
-    {
-        return Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
-    }
 }

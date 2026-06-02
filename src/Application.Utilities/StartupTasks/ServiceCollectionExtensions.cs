@@ -6,7 +6,6 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using System.Linq.Expressions;
-using System.Reflection;
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Common;
 using Extensions;
@@ -34,7 +33,7 @@ public static partial class ServiceCollectionExtensions
         contextOptions ??= options ?? new StartupTaskServiceOptions();
 
         services.TryAddSingleton(contextOptions);
-        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             services.AddHostedService<StartupTasksService>();
             services.TryAddBackgroundServiceHealthCheck<StartupTasksService>(
@@ -182,10 +181,5 @@ public static partial class ServiceCollectionExtensions
         }
 
         throw new InvalidOperationException("Unable to determine the implementation type.");
-    }
-
-    private static bool IsBuildTimeOpenApiGeneration() // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi?view=aspnetcore-9.0&tabs=visual-studio%2Cvisual-studio-code#customizing-run-time-behavior-during-build-time-document-generation
-    {
-        return Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
     }
 }

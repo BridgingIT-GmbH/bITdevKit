@@ -1,6 +1,5 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
-using System.Reflection;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Common;
 using Configuration;
@@ -117,7 +116,7 @@ public static class ServiceCollectionQueueingExtensions
 
         Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton<IQueueSubscriptionMap, QueueSubscriptionMap>(services);
 
-        if (!IsBuildTimeOpenApiGeneration())
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
         {
             services.AddHostedService<QueueingService>();
             services.TryAddBackgroundServiceHealthCheck<QueueingService>(
@@ -279,10 +278,5 @@ public static class ServiceCollectionQueueingExtensions
         {
             target.StartupDelay = source.StartupDelay;
         }
-    }
-
-    private static bool IsBuildTimeOpenApiGeneration()
-    {
-        return Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
     }
 }

@@ -217,7 +217,7 @@ public static class ModuleExtensions
             return default;
         }
 
-        if (IsBuildTimeOpenApiGeneration()) // dont use validator when generating OpenAPI docs at build time
+        if (EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // dont use validator when generating OpenAPI docs at build time
         {
             return services.Configure<TOptions>(configuration, module, validateOnStart);
         }
@@ -298,14 +298,4 @@ public static class ModuleExtensions
         });
     }
 
-    /// <summary>
-    /// Detects when the app is running under **OpenAPI build-time document generation**
-    /// (special case for Swagger in .NET 9, see official docs).
-    /// </summary>
-    /// <remarks>
-    /// This checks whether the entry assembly name is <c>GetDocument.Insider</c>,
-    /// which is used by the tooling when generating OpenAPI docs at build time.
-    /// </remarks>
-    private static bool IsBuildTimeOpenApiGeneration() =>
-        Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
 }

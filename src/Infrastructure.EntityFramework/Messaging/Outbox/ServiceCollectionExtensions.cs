@@ -53,7 +53,7 @@ public static partial class ServiceCollectionExtensions
             new OutboxMessageQueue(sp.GetRequiredService<ILoggerFactory>(),
                 id => sp.GetRequiredService<IOutboxMessageWorker>().ProcessAsync(id)));
 
-        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             services.AddHostedService<OutboxMessageService>();
             services.TryAddBackgroundServiceHealthCheck<OutboxMessageService>(
@@ -81,7 +81,7 @@ public static partial class ServiceCollectionExtensions
     {
         services.AddSingleton(options ?? new OutboxMessageOptions());
 
-        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             services.AddHostedService(sp =>
             new OutboxMessageService(

@@ -5,7 +5,6 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using System.Reflection;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Hosting;
 
@@ -26,7 +25,7 @@ public static partial class ServiceCollectionExtensions
         where TContext : DbContext
     {
         services.AddSingleton<IDatabaseReadyService, DatabaseReadyService>();
-        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             services.AddHostedService(sp =>
             new DatabaseCreatorService<TContext>(
@@ -59,7 +58,7 @@ public static partial class ServiceCollectionExtensions
     {
         services.AddSingleton<IDatabaseReadyService, DatabaseReadyService>();
 
-        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             services.AddHostedService(sp =>
             new DatabaseMigratorService<TContext>(
@@ -83,7 +82,7 @@ public static partial class ServiceCollectionExtensions
     {
         services.AddSingleton<IDatabaseReadyService, DatabaseReadyService>();
 
-        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             services.AddHostedService(sp =>
             new DatabaseCheckerService<TContext>(
@@ -100,8 +99,4 @@ public static partial class ServiceCollectionExtensions
         return services;
     }
 
-    private static bool IsBuildTimeOpenApiGeneration() // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi?view=aspnetcore-9.0&tabs=visual-studio%2Cvisual-studio-code#customizing-run-time-behavior-during-build-time-document-generation
-    {
-        return Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
-    }
 }

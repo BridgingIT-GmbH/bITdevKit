@@ -31,9 +31,9 @@ public class JobSchedulerBackgroundService : BackgroundService
     /// </summary>
     public JobSchedulerBackgroundService(
         TimeProvider timeProvider,
-JobSchedulerService scheduler,
+        JobSchedulerService scheduler,
         IHostApplicationLifetime applicationLifetime,
-JobSchedulerHostedOptions options = null,
+        JobSchedulerHostedOptions options = null,
         IEnumerable<IJobSchedulerExceptionHandler> exceptionHandlers = null,
         ILoggerFactory loggerFactory = null)
     {

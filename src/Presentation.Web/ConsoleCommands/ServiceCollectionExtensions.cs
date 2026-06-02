@@ -34,6 +34,7 @@ public static partial class ServiceCollectionExtensions
         services.AddTransient<IConsoleCommand, HelpConsoleCommand>();
         services.AddTransient<IConsoleCommand, QuitConsoleCommand>();
         services.AddTransient<IConsoleCommand, MetricsConsoleCommand>();
+        services.AddTransient<IConsoleCommand, HealthConsoleCommand>();
         services.AddTransient<IConsoleCommand, InfoConsoleCommand>();
         services.AddTransient<IConsoleCommand, GcCollectConsoleCommand>();
         services.AddTransient<IConsoleCommand, ThreadsConsoleCommand>();

@@ -56,7 +56,7 @@ public static partial class ServiceCollectionExtensions
                 sp.GetRequiredService<EntityFrameworkMessageBrokerOptions>(),
                 sp.GetService<MessageBrokerControlState>()));
 
-        if (!IsBuildTimeOpenApiGeneration())
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
         {
             context.Services.AddHostedService(sp =>
                 new EntityFrameworkMessageBrokerService(

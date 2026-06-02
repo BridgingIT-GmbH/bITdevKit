@@ -5,7 +5,6 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using System.Reflection;
 using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.Notifications;
@@ -48,7 +47,7 @@ public class NotificationServiceInfrastructureBuilder(IServiceCollection service
                 sp.GetRequiredService<ILoggerFactory>(),
                 id => sp.GetRequiredService<IOutboxNotificationEmailWorker>().ProcessAsync(id)));
 
-        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             this.Services.AddHostedService<OutboxNotificationEmailService>();
             this.Services.TryAddBackgroundServiceHealthCheck<OutboxNotificationEmailService>(
@@ -61,10 +60,6 @@ public class NotificationServiceInfrastructureBuilder(IServiceCollection service
         return this;
     }
 
-    private static bool IsBuildTimeOpenApiGeneration() // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi?view=aspnetcore-9.0&tabs=visual-studio%2Cvisual-studio-code#customizing-run-time-behavior-during-build-time-document-generation
-    {
-        return Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
-    }
 }
 
 /// <summary>
@@ -107,7 +102,7 @@ public static class NotificationServiceBuilderExtensions
                 sp.GetRequiredService<ILoggerFactory>(),
                 id => sp.GetRequiredService<IOutboxNotificationEmailWorker>().ProcessAsync(id)));
 
-        if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             serviceBuilder.Services.AddHostedService<OutboxNotificationEmailService>();
             serviceBuilder.Services.TryAddBackgroundServiceHealthCheck<OutboxNotificationEmailService>(
@@ -120,8 +115,4 @@ public static class NotificationServiceBuilderExtensions
         return serviceBuilder;
     }
 
-    private static bool IsBuildTimeOpenApiGeneration() // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/openapi/aspnetcore-openapi?view=aspnetcore-9.0&tabs=visual-studio%2Cvisual-studio-code#customizing-run-time-behavior-during-build-time-document-generation
-    {
-        return Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
-    }
 }

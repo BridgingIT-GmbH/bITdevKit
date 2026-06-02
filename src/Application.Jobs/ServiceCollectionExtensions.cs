@@ -9,7 +9,6 @@ using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using System.Reflection;
 
 /// <summary>
 /// Provides dependency injection registration helpers for jobs.
@@ -52,7 +51,7 @@ public static class ServiceCollectionExtensions
         services.TryAddSingleton<IJobSchedulerService>(sp => sp.GetRequiredService<JobSchedulerService>());
         services.TryAddSingleton<JobSchedulerBackgroundService>();
 
-        if (!IsBuildTimeOpenApiGeneration())
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
         {
             services.AddHostedService(sp => sp.GetRequiredService<JobSchedulerBackgroundService>());
             services.TryAddBackgroundServiceHealthCheck<JobSchedulerBackgroundService>(
@@ -321,10 +320,5 @@ public static class ServiceCollectionExtensions
     private sealed class JobRegistrationStoreHolder(JobRegistrationStore value)
     {
         public JobRegistrationStore Value { get; } = value;
-    }
-
-    private static bool IsBuildTimeOpenApiGeneration()
-    {
-        return Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
     }
 }

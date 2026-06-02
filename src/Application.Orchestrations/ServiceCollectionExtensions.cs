@@ -8,7 +8,6 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using System.Reflection;
 
 /// <summary>
 /// Provides dependency injection registration helpers for orchestration.
@@ -40,7 +39,7 @@ public static class ServiceCollectionExtensions
         services.TryAddSingleton<IOrchestrationExecutor>(serviceProvider => serviceProvider.GetRequiredService<InMemoryOrchestrationExecutor>());
         services.TryAddSingleton<IOrchestrationService>(serviceProvider => serviceProvider.GetRequiredService<InMemoryOrchestrationExecutor>());
         services.TryAddSingleton<OrchestrationRecoveryService>();
-        if (!IsBuildTimeOpenApiGeneration())
+        if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
         {
             services.AddHostedService(serviceProvider => serviceProvider.GetRequiredService<OrchestrationRecoveryService>());
             services.TryAddBackgroundServiceHealthCheck<OrchestrationRecoveryService>(
@@ -188,10 +187,5 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(registrations);
 
         return registrations;
-    }
-
-    private static bool IsBuildTimeOpenApiGeneration()
-    {
-        return Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
     }
 }

@@ -7,6 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using System.Reflection;
 using BridgingIT.DevKit.Application.Notifications;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.Notifications;
 using Microsoft.EntityFrameworkCore;
 
@@ -50,6 +51,9 @@ public class NotificationServiceInfrastructureBuilder(IServiceCollection service
         if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             this.Services.AddHostedService<OutboxNotificationEmailService>();
+            this.Services.TryAddBackgroundServiceHealthCheck<OutboxNotificationEmailService>(
+                $"{nameof(OutboxNotificationEmailService)}-{typeof(TContext).Name}",
+                tags: ["background", "notifications", "outbox"]);
         }
 
         this.Options.IsOutboxConfigured = true;
@@ -106,6 +110,9 @@ public static class NotificationServiceBuilderExtensions
         if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             serviceBuilder.Services.AddHostedService<OutboxNotificationEmailService>();
+            serviceBuilder.Services.TryAddBackgroundServiceHealthCheck<OutboxNotificationEmailService>(
+                $"{nameof(OutboxNotificationEmailService)}-{typeof(TContext).Name}",
+                tags: ["background", "notifications", "outbox"]);
         }
 
         serviceBuilder.Options.IsOutboxConfigured = true;

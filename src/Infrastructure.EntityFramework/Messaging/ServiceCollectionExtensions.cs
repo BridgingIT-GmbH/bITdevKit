@@ -6,6 +6,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Messaging;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 using Configuration;
 using Extensions;
@@ -63,6 +64,9 @@ public static partial class ServiceCollectionExtensions
                     sp.GetRequiredService<IHostApplicationLifetime>(),
                     sp.GetRequiredService<EntityFrameworkMessageBrokerOptions>(),
                     ct => sp.GetRequiredService<EntityFrameworkMessageBrokerWorker<TContext>>().ProcessAsync(ct)));
+            context.Services.TryAddBackgroundServiceHealthCheck<EntityFrameworkMessageBrokerService>(
+                $"{nameof(EntityFrameworkMessageBrokerService)}-{typeof(TContext).Name}",
+                tags: ["background", "messaging", "entityframework"]);
         }
 
         return context;

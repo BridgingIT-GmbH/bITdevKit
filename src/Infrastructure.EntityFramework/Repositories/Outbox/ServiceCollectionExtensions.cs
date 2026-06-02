@@ -6,6 +6,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Domain.Outbox;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
@@ -69,6 +70,9 @@ public static partial class ServiceCollectionExtensions
         if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             services.AddHostedService<OutboxDomainEventService>();
+            services.TryAddBackgroundServiceHealthCheck<OutboxDomainEventService>(
+                $"{nameof(OutboxDomainEventService)}-{typeof(TContext).Name}",
+                tags: ["background", "domain-events", "outbox"]);
         }
 
         return services;
@@ -138,6 +142,9 @@ public static partial class ServiceCollectionExtensions
                 sp.GetRequiredService<IHostApplicationLifetime>(),
                 sp.GetService<IDatabaseReadyService>(),
                 sp.GetService<OutboxDomainEventOptions>()));
+            services.TryAddBackgroundServiceHealthCheck<OutboxDomainEventService>(
+                $"{nameof(OutboxDomainEventService)}-{typeof(TContext).Name}",
+                tags: ["background", "domain-events", "outbox"]);
         }
 
         return services;

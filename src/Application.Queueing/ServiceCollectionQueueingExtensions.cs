@@ -2,6 +2,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using System.Reflection;
 using BridgingIT.DevKit.Application.Queueing;
+using BridgingIT.DevKit.Common;
 using Configuration;
 using Microsoft.Extensions.Hosting;
 
@@ -119,6 +120,9 @@ public static class ServiceCollectionQueueingExtensions
         if (!IsBuildTimeOpenApiGeneration())
         {
             services.AddHostedService<QueueingService>();
+            services.TryAddBackgroundServiceHealthCheck<QueueingService>(
+                nameof(QueueingService),
+                tags: ["background", "queueing"]);
         }
 
         var context = new QueueingBuilderContext(services, configuration, contextOptions, registrationStore);

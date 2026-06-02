@@ -86,7 +86,7 @@ public class WeatherJobOptions
     public string IngestionCron { get; set; } = CronExpressions.Every30Minutes;
 
     /// <summary>Gets or sets the cron expression for the weather data cleanup job.</summary>
-    public string CleanupCron { get; set; } = CronExpressions.DailyAt2AM;
+    public string CleanupCron { get; set; } = CronExpressions.Every5Minutes;
 
     /// <summary>Gets or sets the number of days to keep weather data.</summary>
     public int CleanupRetentionDays { get; set; } = 31;

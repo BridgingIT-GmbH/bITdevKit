@@ -37,6 +37,9 @@ public static partial class ServiceCollectionExtensions
         if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             services.AddHostedService<StartupTasksService>();
+            services.TryAddBackgroundServiceHealthCheck<StartupTasksService>(
+                nameof(StartupTasksService),
+                tags: ["background", "startup-tasks"]);
         }
 
         return new StartupTasksBuilderContext(services);

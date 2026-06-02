@@ -19,6 +19,7 @@ public class DatabaseCreatorService<TContext> : IHostedService
     private readonly IDatabaseReadyService databaseReadyService;
     private readonly IHostApplicationLifetime applicationLifetime;
     private readonly DatabaseCreatorOptions options;
+    private Task startupTask;
 
     public DatabaseCreatorService(
         ILoggerFactory loggerFactory,
@@ -56,7 +57,7 @@ public class DatabaseCreatorService<TContext> : IHostedService
 
         var registration = this.applicationLifetime.ApplicationStarted.Register(() =>
         {
-            _ = Task.Run(async () =>
+            this.startupTask = Task.Run(async () =>
             {
                 if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
@@ -162,9 +163,12 @@ public class DatabaseCreatorService<TContext> : IHostedService
         return;
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
+    public async Task StopAsync(CancellationToken cancellationToken)
     {
-        return Task.CompletedTask;
+        if (this.startupTask is not null)
+        {
+            await Task.WhenAny(this.startupTask, Task.Delay(TimeSpan.FromSeconds(10), cancellationToken));
+        }
     }
 
     private async Task<bool> CheckDatabaseAccessible(string contextName, TContext context, CancellationToken cancellationToken)

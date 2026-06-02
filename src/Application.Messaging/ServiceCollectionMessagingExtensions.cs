@@ -7,6 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using System.Reflection;
 using BridgingIT.DevKit.Application.Messaging;
+using BridgingIT.DevKit.Common;
 using Configuration;
 using Extensions;
 using Microsoft.Extensions.Hosting;
@@ -75,6 +76,9 @@ public static class ServiceCollectionMessagingExtensions
                 sp.GetRequiredService<IHostApplicationLifetime>(),
                 sp,
                 contextOptions));
+            services.TryAddBackgroundServiceHealthCheck<MessagingService>(
+                nameof(MessagingService),
+                tags: ["background", "messaging"]);
         }
         services.TryAddSingleton<ISubscriptionMap, SubscriptionMap>();
         services.TryAddSingleton<MessageBrokerControlState>();

@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 
@@ -411,7 +411,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
     }
 
     [Fact]
-    public void AddJobScheduler_WhenCalledMultipleTimes_ComposesOneSchedulerAndAccumulatesRegistrations()
+    public async Task AddJobScheduler_WhenCalledMultipleTimes_ComposesOneSchedulerAndAccumulatesRegistrations()
     {
         // Arrange
         var services = new ServiceCollection();
@@ -435,12 +435,14 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         var scheduler = provider.GetRequiredService<IJobSchedulerService>();
         var schedulerService = provider.GetRequiredService<JobSchedulerService>();
         var hostedServices = provider.GetServices<IHostedService>().OfType<JobSchedulerBackgroundService>().ToList();
+        var healthReport = await provider.GetRequiredService<HealthCheckService>().CheckHealthAsync();
 
         // Assert
         first.Registrations.ShouldBeSameAs(second.Registrations);
         definitions.Select(x => x.JobName).OrderBy(x => x).ShouldBe(["cleanup", "rebuild-index"]);
         scheduler.ShouldBeSameAs(schedulerService);
         hostedServices.Count.ShouldBe(1);
+        healthReport.Entries.ShouldContainKey(nameof(JobSchedulerBackgroundService));
     }
 
     [Fact]

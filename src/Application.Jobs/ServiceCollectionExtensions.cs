@@ -55,6 +55,9 @@ public static class ServiceCollectionExtensions
         if (!IsBuildTimeOpenApiGeneration())
         {
             services.AddHostedService(sp => sp.GetRequiredService<JobSchedulerBackgroundService>());
+            services.TryAddBackgroundServiceHealthCheck<JobSchedulerBackgroundService>(
+                nameof(JobSchedulerBackgroundService),
+                tags: ["background", "jobs"]);
         }
 
         var registrations = EnsureRegistrationStore(services);

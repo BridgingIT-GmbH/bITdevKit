@@ -6,6 +6,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using System.Reflection;
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Hosting;
 
 public static partial class ServiceCollectionExtensions
@@ -34,6 +35,9 @@ public static partial class ServiceCollectionExtensions
                 sp,
                 sp.GetService<IDatabaseReadyService>(),
                 options));
+            services.TryAddBackgroundServiceHealthCheck<DatabaseCreatorService<TContext>>(
+                $"DatabaseCreatorService-{typeof(TContext).Name}",
+                tags: ["background", "database", "entityframework"]);
         }
 
         return services;
@@ -64,6 +68,9 @@ public static partial class ServiceCollectionExtensions
                 sp,
                 sp.GetService<IDatabaseReadyService>(),
                 options));
+            services.TryAddBackgroundServiceHealthCheck<DatabaseMigratorService<TContext>>(
+                $"DatabaseMigratorService-{typeof(TContext).Name}",
+                tags: ["background", "database", "entityframework"]);
         }
 
         return services;
@@ -85,6 +92,9 @@ public static partial class ServiceCollectionExtensions
                 sp,
                 sp.GetService<IDatabaseReadyService>(),
                 options));
+            services.TryAddBackgroundServiceHealthCheck<DatabaseCheckerService<TContext>>(
+                $"DatabaseCheckerService-{typeof(TContext).Name}",
+                tags: ["background", "database", "entityframework"]);
         }
 
         return services;

@@ -3,13 +3,13 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Hosting;
+using System.Reflection;
 
-namespace Microsoft.Extensions.DependencyInjection;
 /// <summary>
 /// Provides dependency injection registration helpers for orchestration.
 /// </summary>
@@ -40,8 +40,13 @@ public static class ServiceCollectionExtensions
         services.TryAddSingleton<IOrchestrationExecutor>(serviceProvider => serviceProvider.GetRequiredService<InMemoryOrchestrationExecutor>());
         services.TryAddSingleton<IOrchestrationService>(serviceProvider => serviceProvider.GetRequiredService<InMemoryOrchestrationExecutor>());
         services.TryAddSingleton<OrchestrationRecoveryService>();
-        services.AddSingleton<IHostedService>(serviceProvider =>
-            serviceProvider.GetRequiredService<OrchestrationRecoveryService>());
+        if (!IsBuildTimeOpenApiGeneration())
+        {
+            services.AddHostedService(serviceProvider => serviceProvider.GetRequiredService<OrchestrationRecoveryService>());
+            services.TryAddBackgroundServiceHealthCheck<OrchestrationRecoveryService>(
+                nameof(OrchestrationRecoveryService),
+                tags: ["background", "orchestrations"]);
+        }
         services.TryAddSingleton<IOrchestrationQueryService>(serviceProvider =>
             new OrchestrationQueryService(serviceProvider.GetRequiredService<IOrchestrationQueryStore>()));
         services.TryAddSingleton<IOrchestrationAdministrationService>(serviceProvider =>
@@ -183,5 +188,10 @@ public static class ServiceCollectionExtensions
         services.AddSingleton(registrations);
 
         return registrations;
+    }
+
+    private static bool IsBuildTimeOpenApiGeneration()
+    {
+        return Assembly.GetEntryAssembly()?.GetName().Name == "GetDocument.Insider";
     }
 }

@@ -17,6 +17,7 @@ public class DatabaseMigratorService<TContext> : IHostedService
     private readonly IDatabaseReadyService databaseReadyService;
     private readonly IHostApplicationLifetime applicationLifetime;
     private readonly DatabaseMigratorOptions options;
+    private Task startupTask;
 
     public DatabaseMigratorService(
         ILoggerFactory loggerFactory,
@@ -54,7 +55,7 @@ public class DatabaseMigratorService<TContext> : IHostedService
 
         var registration = this.applicationLifetime.ApplicationStarted.Register(() =>
         {
-            _ = Task.Run(async () =>
+            this.startupTask = Task.Run(async () =>
             {
                 if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
@@ -158,9 +159,12 @@ public class DatabaseMigratorService<TContext> : IHostedService
         });
     }
 
-    public Task StopAsync(CancellationToken cancellationToken)
+    public async Task StopAsync(CancellationToken cancellationToken)
     {
-        return Task.CompletedTask;
+        if (this.startupTask is not null)
+        {
+            await Task.WhenAny(this.startupTask, Task.Delay(TimeSpan.FromSeconds(10), cancellationToken));
+        }
     }
 
     private async Task<bool> CheckDatabaseAccessible(string contextName, TContext context, CancellationToken cancellationToken)

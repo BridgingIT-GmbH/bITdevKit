@@ -9,6 +9,7 @@ using System.Collections.Specialized;
 using System.Reflection;
 using BridgingIT.DevKit.Application;
 using BridgingIT.DevKit.Application.JobScheduling;
+using BridgingIT.DevKit.Common;
 using Configuration;
 using Extensions;
 using Quartz.Impl;
@@ -145,6 +146,9 @@ public static class ServiceCollectionExtensions
         if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             services.AddHostedService<JobSchedulingService>();
+            services.TryAddBackgroundServiceHealthCheck<JobSchedulingService>(
+                nameof(JobSchedulingService),
+                tags: ["background", "job-scheduling"]);
         }
 
         return new JobSchedulingBuilderContext(services, null, contextOptions);
@@ -248,7 +252,7 @@ public static class ServiceCollectionExtensions
     ///         .RegisterScoped();
     /// </example>
     public static JobScheduleBuilder<TJob> WithJob<TJob>(this JobSchedulingBuilderContext context)
-        where TJob : class, IJob
+        where TJob : class, Quartz.IJob
     {
         return new JobScheduleBuilder<TJob>(context.Services);
     }

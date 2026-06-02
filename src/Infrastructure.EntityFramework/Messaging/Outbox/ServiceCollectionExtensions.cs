@@ -6,6 +6,7 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Application.Messaging;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 using Microsoft.Extensions.Hosting;
 
@@ -55,6 +56,9 @@ public static partial class ServiceCollectionExtensions
         if (!IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             services.AddHostedService<OutboxMessageService>();
+            services.TryAddBackgroundServiceHealthCheck<OutboxMessageService>(
+                $"{nameof(OutboxMessageService)}-{typeof(TContext).Name}",
+                tags: ["background", "messaging", "outbox"]);
         }
 
         return services;
@@ -85,6 +89,9 @@ public static partial class ServiceCollectionExtensions
                 sp.GetRequiredService<TWorker>(),
                 sp.GetRequiredService<IHostApplicationLifetime>(),
                 sp.GetService<OutboxMessageOptions>()));
+            services.TryAddBackgroundServiceHealthCheck<OutboxMessageService>(
+                $"{nameof(OutboxMessageService)}-{typeof(TContext).Name}",
+                tags: ["background", "messaging", "outbox"]);
         }
 
         return services;

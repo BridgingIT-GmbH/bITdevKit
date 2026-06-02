@@ -14,6 +14,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
     private readonly IOutboxMessageWorker worker;
     private readonly IHostApplicationLifetime applicationLifetime;
     private readonly OutboxMessageOptions options;
+    private Task processingTask;
     private PeriodicTimer processTimer;
     private SemaphoreSlim semaphore;
 
@@ -35,6 +36,10 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
         this.logger.LogInformation("{LogKey} outbox message service stopped", Constants.LogKey);
+        if (this.processingTask is not null)
+        {
+            await Task.WhenAny(this.processingTask, Task.Delay(TimeSpan.FromSeconds(10), cancellationToken));
+        }
 
         await base.StopAsync(cancellationToken);
     }
@@ -54,59 +59,62 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
             return Task.CompletedTask;
         }
 
-        var registration = this.applicationLifetime.ApplicationStarted.Register(async () =>
+        this.applicationLifetime.ApplicationStarted.Register(() =>
         {
-            if (this.options.StartupDelay.TotalMilliseconds > 0)
+            this.processingTask = Task.Run(async () =>
             {
-                this.logger.LogDebug("{LogKey} outbox message service startup delayed", Constants.LogKey);
-                if (!cancellationToken.IsCancellationRequested)
+                if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
-                    try
+                    this.logger.LogDebug("{LogKey} outbox message service startup delayed", Constants.LogKey);
+                    if (!cancellationToken.IsCancellationRequested)
                     {
-                        await Task.Delay(this.options.StartupDelay, cancellationToken);
-                    }
-                    catch (TaskCanceledException)
-                    {
-                        // Ignore cancellation during startup delay
+                        try
+                        {
+                            await Task.Delay(this.options.StartupDelay, cancellationToken);
+                        }
+                        catch (TaskCanceledException)
+                        {
+                            // Ignore cancellation during startup delay
+                        }
                     }
                 }
-            }
 
-            if (this.options.PurgeProcessedOnStartup)
-            {
-                await this.worker.PurgeAsync(true, cancellationToken);
-            }
-            else if (this.options.PurgeOnStartup)
-            {
-                await this.worker.PurgeAsync(false, cancellationToken);
-            }
-
-            this.semaphore = new SemaphoreSlim(1);
-            this.logger.LogInformation("{LogKey} outbox message service started", Constants.LogKey);
-
-            this.processTimer = new PeriodicTimer(this.options.ProcessingInterval);
-
-            try
-            {
-                while (await this.processTimer.WaitForNextTickAsync(cancellationToken))
+                if (this.options.PurgeProcessedOnStartup)
                 {
-                    var jitter = this.options.ProcessingJitter.TotalMilliseconds > 0
-                        ? TimeSpan.FromMilliseconds(Random.Shared.Next(0, (int)this.options.ProcessingJitter.TotalMilliseconds))
-                        : TimeSpan.Zero;
-                    var processingDelay = this.options.ProcessingDelay + jitter;
-                    if (processingDelay > TimeSpan.Zero) // Apply processing delay with jitter before processing
-                    {
-                        this.logger.LogDebug("{LogKey} outbox message delay processing by {ProcessingDelay}ms", Constants.LogKey, processingDelay.TotalMilliseconds);
-                        await Task.Delay(processingDelay, cancellationToken);
-                    }
-
-                    await this.ProcessWorkAsync(cancellationToken);
+                    await this.worker.PurgeAsync(true, cancellationToken);
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                this.logger.LogInformation("{LogKey} outbox message service stopped", Constants.LogKey);
-            }
+                else if (this.options.PurgeOnStartup)
+                {
+                    await this.worker.PurgeAsync(false, cancellationToken);
+                }
+
+                this.semaphore = new SemaphoreSlim(1);
+                this.logger.LogInformation("{LogKey} outbox message service started", Constants.LogKey);
+
+                this.processTimer = new PeriodicTimer(this.options.ProcessingInterval);
+
+                try
+                {
+                    while (await this.processTimer.WaitForNextTickAsync(cancellationToken))
+                    {
+                        var jitter = this.options.ProcessingJitter.TotalMilliseconds > 0
+                            ? TimeSpan.FromMilliseconds(Random.Shared.Next(0, (int)this.options.ProcessingJitter.TotalMilliseconds))
+                            : TimeSpan.Zero;
+                        var processingDelay = this.options.ProcessingDelay + jitter;
+                        if (processingDelay > TimeSpan.Zero) // Apply processing delay with jitter before processing
+                        {
+                            this.logger.LogDebug("{LogKey} outbox message delay processing by {ProcessingDelay}ms", Constants.LogKey, processingDelay.TotalMilliseconds);
+                            await Task.Delay(processingDelay, cancellationToken);
+                        }
+
+                        await this.ProcessWorkAsync(cancellationToken);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    this.logger.LogInformation("{LogKey} outbox message service stopped", Constants.LogKey);
+                }
+            }, cancellationToken);
         });
 
         return Task.CompletedTask;

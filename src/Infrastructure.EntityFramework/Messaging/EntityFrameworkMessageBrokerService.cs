@@ -16,6 +16,7 @@ public class EntityFrameworkMessageBrokerService : BackgroundService
     private readonly EntityFrameworkMessageBrokerOptions options;
     private readonly IHostApplicationLifetime applicationLifetime;
     private readonly Func<CancellationToken, Task> processWork;
+    private Task processingTask;
     private PeriodicTimer processTimer;
     private SemaphoreSlim semaphore;
 
@@ -45,6 +46,11 @@ public class EntityFrameworkMessageBrokerService : BackgroundService
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
         this.logger.LogInformation("{LogKey} entity framework message broker service stopped", Constants.LogKey);
+        if (this.processingTask is not null)
+        {
+            await Task.WhenAny(this.processingTask, Task.Delay(TimeSpan.FromSeconds(10), cancellationToken));
+        }
+
         await base.StopAsync(cancellationToken);
     }
 
@@ -65,40 +71,43 @@ public class EntityFrameworkMessageBrokerService : BackgroundService
             return Task.CompletedTask;
         }
 
-        this.applicationLifetime.ApplicationStarted.Register(async () =>
+        this.applicationLifetime.ApplicationStarted.Register(() =>
         {
-            if (this.options.StartupDelay > TimeSpan.Zero && !cancellationToken.IsCancellationRequested)
+            this.processingTask = Task.Run(async () =>
             {
+                if (this.options.StartupDelay > TimeSpan.Zero && !cancellationToken.IsCancellationRequested)
+                {
+                    try
+                    {
+                        await Task.Delay(this.options.StartupDelay, cancellationToken);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        return;
+                    }
+                }
+
+                this.semaphore = new SemaphoreSlim(1, 1);
+                this.processTimer = new PeriodicTimer(this.options.ProcessingInterval);
+                this.logger.LogInformation("{LogKey} entity framework message broker service started", Constants.LogKey);
+
                 try
                 {
-                    await Task.Delay(this.options.StartupDelay, cancellationToken);
-                }
-                catch (TaskCanceledException)
-                {
-                    return;
-                }
-            }
-
-            this.semaphore = new SemaphoreSlim(1, 1);
-            this.processTimer = new PeriodicTimer(this.options.ProcessingInterval);
-            this.logger.LogInformation("{LogKey} entity framework message broker service started", Constants.LogKey);
-
-            try
-            {
-                while (await this.processTimer.WaitForNextTickAsync(cancellationToken))
-                {
-                    if (this.options.ProcessingDelay > TimeSpan.Zero)
+                    while (await this.processTimer.WaitForNextTickAsync(cancellationToken))
                     {
-                        await Task.Delay(this.options.ProcessingDelay, cancellationToken);
-                    }
+                        if (this.options.ProcessingDelay > TimeSpan.Zero)
+                        {
+                            await Task.Delay(this.options.ProcessingDelay, cancellationToken);
+                        }
 
-                    await this.ProcessWorkAsync(cancellationToken);
+                        await this.ProcessWorkAsync(cancellationToken);
+                    }
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                this.logger.LogInformation("{LogKey} entity framework message broker service stopped", Constants.LogKey);
-            }
+                catch (OperationCanceledException)
+                {
+                    this.logger.LogInformation("{LogKey} entity framework message broker service stopped", Constants.LogKey);
+                }
+            }, cancellationToken);
         });
 
         return Task.CompletedTask;

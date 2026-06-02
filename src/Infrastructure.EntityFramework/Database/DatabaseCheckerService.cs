@@ -20,6 +20,7 @@ public class DatabaseCheckerService<TContext> : IHostedService
     private readonly IDatabaseReadyService databaseReadyService;
     private readonly IHostApplicationLifetime applicationLifetime;
     private readonly DatabaseCheckerOptions options;
+    private Task startupTask;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="DatabaseCheckerService{TContext}" /> class.
@@ -65,7 +66,7 @@ public class DatabaseCheckerService<TContext> : IHostedService
 
         var registration = this.applicationLifetime.ApplicationStarted.Register(() =>
         {
-            _ = Task.Run(async () =>
+            this.startupTask = Task.Run(async () =>
             {
                 if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
@@ -149,10 +150,13 @@ public class DatabaseCheckerService<TContext> : IHostedService
     ///     Stops the checker service.
     /// </summary>
     /// <param name="cancellationToken">A token that can be used to cancel stop processing.</param>
-    /// <returns>A completed task.</returns>
-    public Task StopAsync(CancellationToken cancellationToken)
+    /// <returns>A task that completes when stop coordination finishes.</returns>
+    public async Task StopAsync(CancellationToken cancellationToken)
     {
-        return Task.CompletedTask;
+        if (this.startupTask is not null)
+        {
+            await Task.WhenAny(this.startupTask, Task.Delay(TimeSpan.FromSeconds(10), cancellationToken));
+        }
     }
 
     private bool IsInMemoryContext(TContext context)

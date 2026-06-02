@@ -135,6 +135,27 @@ public class HourlyForecastData
     /// <summary>Gets or sets the relative humidity percentage.</summary>
     public double RelativeHumidity { get; set; }
 
+    /// <summary>Gets or sets the apparent (feels-like) temperature in Celsius.</summary>
+    public double ApparentTemperatureCelsius { get; set; }
+
+    /// <summary>Gets or sets the precipitation amount in mm.</summary>
+    public double PrecipitationMm { get; set; }
+
+    /// <summary>Gets or sets the wind direction in degrees.</summary>
+    public int WindDirectionDegrees { get; set; }
+
+    /// <summary>Gets or sets the wind gusts in km/h.</summary>
+    public double WindGustsKmh { get; set; }
+
+    /// <summary>Gets or sets the cloud cover percentage.</summary>
+    public int CloudCoverPercent { get; set; }
+
+    /// <summary>Gets or sets the visibility in meters.</summary>
+    public double VisibilityMeters { get; set; }
+
+    /// <summary>Gets or sets a value indicating whether it is daytime.</summary>
+    public bool IsDay { get; set; }
+
     /// <summary>Gets or sets the UV index.</summary>
     public double? UvIndex { get; set; }
 }

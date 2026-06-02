@@ -46,16 +46,14 @@ public class CoreModuleMapperRegister : IRegister
             .Map(dest => dest.Id, src => src.Id.Value.ToString())
             .Map(dest => dest.CityId, src => src.CityId.Value.ToString())
             .Map(dest => dest.WeatherDescription, src => GetWeatherDescription(src.WeatherCode))
-            .Map(dest => dest.WeatherIcon, src => GetWeatherIcon(src.WeatherCode))
-            .Map(dest => dest.ConcurrencyVersion, src => src.ConcurrencyVersion.ToString());
+            .Map(dest => dest.WeatherIcon, src => GetWeatherIcon(src.WeatherCode));
 
         // WeatherForecast → WeatherForecastModel
         config.ForType<WeatherForecast, WeatherForecastModel>()
             .Map(dest => dest.Id, src => src.Id.Value.ToString())
             .Map(dest => dest.CityId, src => src.CityId.Value.ToString())
             .Map(dest => dest.DayWeatherDescription, src => GetWeatherDescription(src.DayWeatherCode))
-            .Map(dest => dest.DayWeatherIcon, src => GetWeatherIcon(src.DayWeatherCode))
-            .Map(dest => dest.ConcurrencyVersion, src => src.ConcurrencyVersion.ToString());
+            .Map(dest => dest.DayWeatherIcon, src => GetWeatherIcon(src.DayWeatherCode));
 
         // HourlyForecast → HourlyForecastModel
         config.ForType<HourlyForecast, HourlyForecastModel>()
@@ -64,8 +62,10 @@ public class CoreModuleMapperRegister : IRegister
         // UserProfile → UserProfileModel
         config.ForType<UserProfile, UserProfileModel>()
             .Map(dest => dest.Id, src => src.Id.Value.ToString())
+            .Map(dest => dest.UserId, src => src.UserId)
             .Map(dest => dest.TemperatureUnit, src => src.TemperatureUnit.Value)
             .Map(dest => dest.WindSpeedUnit, src => src.WindSpeedUnit.Value)
+            .Map(dest => dest.CreatedAt, src => src.AuditState.CreatedDate.DateTime)
             .Map(dest => dest.ConcurrencyVersion, src => src.ConcurrencyVersion.ToString());
 
         // WeatherAlert → WeatherAlertModel

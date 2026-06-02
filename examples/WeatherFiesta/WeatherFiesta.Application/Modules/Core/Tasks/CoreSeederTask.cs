@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Tasks;
 
-using System.Linq.Expressions;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Repositories;
@@ -302,7 +301,7 @@ public class CoreSeederTask(
     private async Task SeedProfileAsync(FakeUser user, CancellationToken cancellationToken)
     {
         var existingResult = await UserProfile
-            .ExistsAsync(UserProfileId.Create(Guid.Parse(user.Id)), cancellationToken: cancellationToken);
+            .ExistsAsync(new UserProfileByUserSpecification(user.Id), cancellationToken: cancellationToken);
 
         if (existingResult.IsFailure)
         {
@@ -431,27 +430,5 @@ public class CoreSeederTask(
             : SubscriptionBillingCycle.Monthly;
         subscription.ChangePlan(plan, billingCycle);
         return subscription;
-    }
-}
-
-/// <summary>
-/// Finds a <see cref="CurrentWeather"/> by its associated <see cref="CityId"/>.
-/// </summary>
-public class CurrentWeatherByCitySpecification(CityId cityId) : Specification<CurrentWeather>
-{
-    public override Expression<Func<CurrentWeather, bool>> ToExpression()
-    {
-        return cw => cw.CityId == cityId;
-    }
-}
-
-/// <summary>
-/// Finds a <see cref="WeatherForecast"/> by <see cref="CityId"/> and forecast date.
-/// </summary>
-public class WeatherForecastByCityAndDateSpecification(CityId cityId, DateOnly forecastDate) : Specification<WeatherForecast>
-{
-    public override Expression<Func<WeatherForecast, bool>> ToExpression()
-    {
-        return wf => wf.CityId == cityId && wf.ForecastDate == forecastDate;
     }
 }

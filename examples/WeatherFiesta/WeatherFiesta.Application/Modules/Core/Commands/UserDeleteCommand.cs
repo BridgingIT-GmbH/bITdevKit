@@ -20,7 +20,7 @@ public partial class UserDeleteCommand
         var userId = currentUserAccessor.UserId;
 
         // Soft-delete user profile
-        var profileSpec = new Specification<UserProfile>(up => up.Id == UserProfileId.Create(Guid.Parse(userId)));
+        var profileSpec = new UserProfileByUserSpecification(userId);
         var profileResult = await UserProfile.FindAllAsync(profileSpec, null, cancellationToken);
         if (profileResult.IsFailure)
         {

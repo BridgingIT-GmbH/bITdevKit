@@ -39,7 +39,7 @@ public class HelpConsoleCommand : ConsoleCommandBase
                 if (specific is not null) { ConsoleCommandBinder.WriteHelp(console, specific, detailed: true); return Task.CompletedTask; }
             }
             // Try regular (non-group) command match
-            var direct = commands.FirstOrDefault(c => c.Matches(this.Target));
+            var direct = commands.FirstOrDefault(c => c is not IGroupedConsoleCommand && c.Matches(this.Target));
             if (direct is not null && string.IsNullOrWhiteSpace(this.Sub)) { ConsoleCommandBinder.WriteHelp(console, direct, detailed: true); return Task.CompletedTask; }
             // Group listing (if Target matches a group)
             var grouped = commands.OfType<IGroupedConsoleCommand>()

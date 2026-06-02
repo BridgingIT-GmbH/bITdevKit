@@ -13,7 +13,6 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Components;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
-using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -108,11 +107,11 @@ builder.Services.AddMapping().WithMapster();
 // Register the purge queue as a singleton
 builder.Services.AddScoped<ILogEntryService, LogEntryService<CoreDbContext>>();
 builder.Services.AddSingleton<LogEntryMaintenanceQueue>();
-if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
+if (!BridgingIT.DevKit.Common.EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
 {
     builder.Services.AddHostedService<LogEntryMaintenanceService<CoreDbContext>>();
 }
-builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopment() || EnvironmentExtensions.IsBuildTimeOpenApiGeneration());
+builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopment() || BridgingIT.DevKit.Common.EnvironmentExtensions.IsBuildTimeOpenApiGeneration());
 
 // logging services and endpoints
 
@@ -159,8 +158,7 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
 //     .RequireAuthorization(false));
 builder.Services.AddEndpoints<SystemEndpoints>();
 MetricsServiceCollectionExtensions.AddMetrics(
-    builder.Services,
-    options => options
+    builder.Services, o => o
         .Enabled()
         .AddEndpoints());
 builder.Services.AddAppOpenTelemetry(builder.Configuration, builder.Environment);

@@ -13,7 +13,7 @@ using Spectre.Console;
 /// <summary>
 /// Console command that shows current weather for a specific city.
 /// </summary>
-public class CityCurrentConsoleCommand : ConsoleCommandBase
+public class CityCurrentConsoleCommand : AppGroupConsoleCommandBase
 {
     /// <summary>Gets or sets the city name to look up.</summary>
     [ConsoleCommandArgument(0, Description = "City name to get weather for", Required = true)]
@@ -24,7 +24,7 @@ public class CityCurrentConsoleCommand : ConsoleCommandBase
     public string Format { get; set; } = "table";
 
     /// <summary>Initializes a new instance of the <see cref="CityCurrentConsoleCommand"/> class.</summary>
-    public CityCurrentConsoleCommand() : base("city-current", "Get current weather for a city", "cc") { }
+    public CityCurrentConsoleCommand() : base("current", "Get current weather for a city", "city-current", "cc") { }
 
     /// <inheritdoc />
     public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)

@@ -20,7 +20,7 @@ public partial class UserProfileQuery
     {
         var userId = currentUserAccessor.UserId;
 
-        var spec = new Specification<UserProfile>(up => up.Id == UserProfileId.Create(Guid.Parse(userId)));
+        var spec = new UserProfileByUserSpecification(userId);
         var profileResult = await UserProfile.FindAllAsync(spec, null, cancellationToken);
         if (profileResult.IsFailure)
         {
@@ -36,6 +36,7 @@ public partial class UserProfileQuery
         return Result<UserProfileModel>.Success(new UserProfileModel
         {
             Id = profile.Id.Value.ToString(),
+            UserId = profile.UserId,
             Email = profile.Email,
             Name = profile.Name,
             TemperatureUnit = profile.TemperatureUnit.Value,

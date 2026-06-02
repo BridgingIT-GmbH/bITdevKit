@@ -13,6 +13,9 @@ public class UserProfileModel
     /// <summary>Gets or sets the user profile identifier.</summary>
     public string Id { get; set; }
 
+    /// <summary>Gets or sets the user identifier.</summary>
+    public string UserId { get; set; }
+
     /// <summary>Gets or sets the user's email address.</summary>
     public string Email { get; set; }
 

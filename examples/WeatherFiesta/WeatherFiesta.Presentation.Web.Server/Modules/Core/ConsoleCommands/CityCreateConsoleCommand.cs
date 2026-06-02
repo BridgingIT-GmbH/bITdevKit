@@ -15,21 +15,15 @@ using Spectre.Console;
 /// <summary>
 /// Console command to create a city by name using geocoding lookup.
 /// </summary>
-public class CityCreateConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
+public class CityCreateConsoleCommand : AppGroupConsoleCommandBase
 {
     /// <summary>Gets or sets the city name to search for.</summary>
     [ConsoleCommandArgument(0, Description = "City name to create", Required = true)]
-    public new string Name { get; set; }
+    public string CityName { get; set; }
 
     /// <summary>Gets or sets the ISO country code to filter geocoding results.</summary>
     [ConsoleCommandOption("code", Alias = "c", Description = "ISO country code to filter results (e.g. NL, DE, FR)")]
     public string CountryCode { get; set; }
-
-    /// <inheritdoc />
-    public string GroupName => "city";
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<string> GroupAliases => ["cities"];
 
     /// <summary>Initializes a new instance of the <see cref="CityCreateConsoleCommand"/> class.</summary>
     public CityCreateConsoleCommand() : base("create", "Create a city by name using geocoding lookup", "add") { }
@@ -40,11 +34,11 @@ public class CityCreateConsoleCommand : ConsoleCommandBase, IGroupedConsoleComma
         var geocodingClient = services.GetRequiredService<IWeatherGeocodingClient>();
 
         // Step 1: Geocode the city name
-        var searchResult = await geocodingClient.SearchCitiesAsync(this.Name, this.CountryCode, CancellationToken.None);
+        var searchResult = await geocodingClient.SearchCitiesAsync(this.CityName, this.CountryCode, CancellationToken.None);
 
         if (searchResult?.Results is null || searchResult.Results.Count == 0)
         {
-            console.MarkupLine($"[red]No geocoding results found for '{Markup.Escape(this.Name)}'.[/]");
+            console.MarkupLine($"[red]No geocoding results found for '{Markup.Escape(this.CityName)}'.[/]");
             return;
         }
 
@@ -57,7 +51,7 @@ public class CityCreateConsoleCommand : ConsoleCommandBase, IGroupedConsoleComma
         else
         {
             // Multiple results — show table and let user pick
-            console.MarkupLine($"[yellow]Found {searchResult.Results.Count} cities matching '{Markup.Escape(this.Name)}'. Please select one:[/]");
+            console.MarkupLine($"[yellow]Found {searchResult.Results.Count} cities matching '{Markup.Escape(this.CityName)}'. Please select one:[/]");
 
             var table = new Table().Border(TableBorder.Rounded);
             table.AddColumn("#");

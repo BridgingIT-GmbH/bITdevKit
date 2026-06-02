@@ -5,20 +5,30 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests;
 
+using Microsoft.Data.SqlClient;
+using Testcontainers.MsSql;
+
 /// <summary>
 /// Custom WebApplicationFactory for WeatherFiesta integration tests.
-/// Uses InMemory EF Core so real handlers, ActiveEntity, and IRequester pipeline
-/// run against a test database. Only external HTTP services are mocked.
-/// Each factory instance gets a unique InMemory DB name for isolation.
+/// Uses a test EF Core database so real handlers, ActiveEntity, and IRequester pipeline
+/// run against isolated data. Only external HTTP services are mocked.
 /// </summary>
 public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly string dbName = $"WeatherFiestaTestDb_{Guid.NewGuid():N}";
+    private readonly MsSqlContainer sqlContainer;
+    private string sqlServerConnectionString;
     private bool seeded;
     private ITestOutputHelper output;
 
     public WeatherFiestaApplicationFactory()
     {
+        this.sqlContainer = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest").Build();
+    }
+
+    internal WeatherFiestaApplicationFactory(string sqlServerConnectionString)
+    {
+        this.sqlServerConnectionString = sqlServerConnectionString;
     }
 
     /// <summary>Gets the mocked weather agent (external HTTP service).</summary>
@@ -42,17 +52,42 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
     /// <inheritdoc/>
     public async Task InitializeAsync()
     {
+        if (this.sqlContainer is not null)
+        {
+            await this.sqlContainer.StartAsync();
+            this.sqlServerConnectionString = new SqlConnectionStringBuilder(this.sqlContainer.GetConnectionString())
+            {
+                InitialCatalog = $"WeatherFiesta_{Guid.NewGuid():N}"
+            }.ConnectionString;
+        }
+
         await SeedAsync();
     }
 
     /// <inheritdoc/>
     public new async Task DisposeAsync()
     {
-        await Task.CompletedTask;
+        try
+        {
+            if (!string.IsNullOrWhiteSpace(this.sqlServerConnectionString))
+            {
+                using var scope = this.Services.CreateScope();
+                var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+                await dbContext.Database.EnsureDeletedAsync();
+            }
+        }
+        finally
+        {
+            await base.DisposeAsync();
+            if (this.sqlContainer is not null)
+            {
+                await this.sqlContainer.DisposeAsync();
+            }
+        }
     }
 
     /// <summary>
-    /// Seeds the InMemory database with test data (idempotent per factory instance).
+    /// Seeds the test database with test data (idempotent per factory instance).
     /// </summary>
     public async Task SeedAsync()
     {
@@ -62,6 +97,7 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
         }
 
         using var scope = this.Services.CreateScope();
+        ActiveEntityConfigurator.SetGlobalServiceProvider(this.Services);
         var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
         await dbContext.Database.EnsureCreatedAsync();
         await TestData.SeedAsync(dbContext);
@@ -69,12 +105,13 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
     }
 
     /// <summary>
-    /// Resets the InMemory database by deleting and recreating it.
+    /// Resets the test database by deleting and recreating it.
     /// Each factory has a unique DB name so this only affects this instance.
     /// </summary>
     public async Task ResetDatabaseAsync()
     {
         using var scope = this.Services.CreateScope();
+        ActiveEntityConfigurator.SetGlobalServiceProvider(this.Services);
         var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
         await dbContext.Database.EnsureDeletedAsync();
         await dbContext.Database.EnsureCreatedAsync();
@@ -88,20 +125,24 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
 
         builder.ConfigureServices(services =>
         {
-            // Remove SqlServer-related registrations.
+            // Remove DbContext registrations from the application host.
             // Remove by index (backwards) because ServiceDescriptor.Equals checks
             // factory delegates, making Remove(descriptor) fail for factory-registered services.
             for (var i = services.Count - 1; i >= 0; i--)
             {
                 var st = services[i].ServiceType;
                 var it = services[i].ImplementationType;
+                var useInMemory = string.IsNullOrWhiteSpace(this.sqlServerConnectionString);
+                var isSqlServerProviderRegistration = it?.Assembly?.GetName().Name == "Microsoft.EntityFrameworkCore.SqlServer" ||
+                    (st.IsGenericType && st.GenericTypeArguments.Any(
+                        t => t?.Assembly?.GetName().Name == "Microsoft.EntityFrameworkCore.SqlServer"));
+
                 if (st == typeof(DbContextOptions<CoreDbContext>) ||
                     st == typeof(DbContextOptions) ||
                     st == typeof(CoreDbContext) ||
-                    it?.Assembly?.GetName().Name == "Microsoft.EntityFrameworkCore.SqlServer" ||
-                    (st.IsGenericType &&
-                     st.GenericTypeArguments.Any(
-                         t => t?.Assembly?.GetName().Name == "Microsoft.EntityFrameworkCore.SqlServer")))
+                    st == typeof(IDbContextResolver) ||
+                    (!string.IsNullOrWhiteSpace(this.sqlServerConnectionString) && it == typeof(DbContextResolver)) ||
+                    (useInMemory && isSqlServerProviderRegistration))
                 {
                     services.RemoveAt(i);
                 }
@@ -131,18 +172,30 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
                 }
             }
 
-            // Register InMemory DbContext with a unique DB name per factory instance.
-            // Using manual registration (singleton options + scoped context) instead of
-            // AddDbContext to avoid EF Core's IDatabaseProvider singleton conflict.
-            // AddDbContext registers provider services that clash when SqlServer was registered first.
-            var inMemoryOptions = new DbContextOptionsBuilder<CoreDbContext>()
-                .UseInMemoryDatabase(this.dbName).Options;
-            services.AddSingleton(inMemoryOptions);
-            services.AddScoped<CoreDbContext>();
+            if (string.IsNullOrWhiteSpace(this.sqlServerConnectionString))
+            {
+                // Register InMemory DbContext with a unique DB name per factory instance.
+                // Using manual registration (singleton options + scoped context) instead of
+                // AddDbContext to avoid EF Core's IDatabaseProvider singleton conflict.
+                // AddDbContext registers provider services that clash when SqlServer was registered first.
+                var inMemoryOptions = new DbContextOptionsBuilder<CoreDbContext>()
+                    .UseInMemoryDatabase(this.dbName).Options;
+                services.AddSingleton(inMemoryOptions);
+                services.AddScoped<CoreDbContext>();
+            }
+            else
+            {
+                services.AddDbContext<CoreDbContext>(options => options.UseSqlServer(this.sqlServerConnectionString));
+            }
 
             // Register IDbContextResolver (needed by DatabaseTransactionPipelineBehavior).
             // AddSqlServerDbContext normally registers this, but we removed SqlServer.
             services.AddScoped<IDbContextResolver, DbContextResolver>();
+
+            if (!string.IsNullOrWhiteSpace(this.sqlServerConnectionString))
+            {
+                RegisterSqlActiveEntityProviders(services);
+            }
 
             // Mock external HTTP services only
             ReplaceService(services, this.WeatherAgent);
@@ -170,6 +223,61 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
                     logging.AddProvider(new XunitLoggerProvider(this.output));
                 }
             });
+        });
+    }
+
+    private static void RegisterSqlActiveEntityProviders(IServiceCollection services)
+    {
+        for (var i = services.Count - 1; i >= 0; i--)
+        {
+            var serviceType = services[i].ServiceType;
+            if (serviceType.IsGenericType &&
+                (serviceType.GetGenericTypeDefinition() == typeof(IActiveEntityEntityProvider<,>) ||
+                 serviceType.GetGenericTypeDefinition() == typeof(IActiveEntityBehavior<>)))
+            {
+                services.RemoveAt(i);
+            }
+        }
+
+        services.AddActiveEntity(cfg =>
+        {
+            cfg.For<City, CityId>()
+                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
+                .AddLoggingBehavior()
+                .AddMetricsBehavior()
+                .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true)
+                .AddDomainEventPublishingBehavior(new ActiveEntityDomainEventPublishingBehaviorOptions { PublishBefore = false });
+
+            cfg.For<UserCity, UserCityId>()
+                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
+                .AddLoggingBehavior()
+                .AddMetricsBehavior()
+                .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true);
+
+            cfg.For<CurrentWeather, CurrentWeatherId>()
+                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
+                .AddLoggingBehavior()
+                .AddMetricsBehavior();
+
+            cfg.For<WeatherForecast, WeatherForecastId>()
+                .UseEntityFrameworkProvider(o => o
+                    .Context<CoreDbContext>()
+                    .Options<CoreDbContext>(options => options.GenericMergeStrategy()))
+                .AddLoggingBehavior()
+                .AddMetricsBehavior();
+
+            cfg.For<UserProfile, UserProfileId>()
+                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
+                .AddLoggingBehavior()
+                .AddMetricsBehavior()
+                .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true);
+
+            cfg.For<UserSubscription, UserSubscriptionId>()
+                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
+                .AddLoggingBehavior()
+                .AddMetricsBehavior()
+                .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true)
+                .AddDomainEventPublishingBehavior(new ActiveEntityDomainEventPublishingBehaviorOptions { PublishBefore = false });
         });
     }
 

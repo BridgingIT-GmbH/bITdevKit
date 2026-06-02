@@ -10,6 +10,9 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Mode
 /// </summary>
 public class HourlyForecastModel
 {
+    /// <summary>Gets or sets the identifier.</summary>
+    public Guid Id { get; set; }
+
     /// <summary>Gets or sets the hour of the forecast (0-23).</summary>
     public int Hour { get; set; }
 

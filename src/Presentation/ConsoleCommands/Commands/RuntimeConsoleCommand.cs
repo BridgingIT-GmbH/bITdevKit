@@ -9,15 +9,16 @@ using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
 using System.Diagnostics;
 
-public class MetricsConsoleCommand : ConsoleCommandBase
+public class RuntimeConsoleCommand : ConsoleCommandBase
 {
     /// <summary>
-    /// Dumps aggregated runtime metrics (requests, memory, GC, latency).
-    /// Usage: <c>metrics</c>
+    /// Dumps process/runtime diagnostics (requests, memory, GC, latency).
+    /// Usage: <c>runtime</c>
     /// Alias: <c>dump</c>
     /// </summary>
-    public MetricsConsoleCommand() : base("metrics", "Dump key runtime metrics", "dump") { }
-    /// <summary>Outputs current runtime metrics.</summary>
+    public RuntimeConsoleCommand() : base("runtime", "Dump process/runtime diagnostics", "dump", "rt") { }
+
+    /// <summary>Outputs current process/runtime diagnostics.</summary>
     public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
     {
         var stats = services.GetRequiredService<ConsoleCommandInteractiveRuntimeStats>();

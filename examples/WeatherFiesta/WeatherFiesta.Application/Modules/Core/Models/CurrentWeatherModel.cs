@@ -61,6 +61,4 @@ public class CurrentWeatherModel
     /// <summary>Gets or sets the stale data warning message.</summary>
     public string StaleDataWarningMessage { get; set; }
 
-    /// <summary>Gets or sets the concurrency version for optimistic concurrency.</summary>
-    public string ConcurrencyVersion { get; set; }
 }

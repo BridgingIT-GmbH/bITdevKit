@@ -149,10 +149,17 @@ public class OpenMeteoWeatherAgent : IWeatherAgent
         {
             Hour = source.Time,
             TemperatureCelsius = (double)source.Temperature,
+            ApparentTemperatureCelsius = (double)source.ApparentTemperature,
             WeatherCode = source.WeatherCode,
             PrecipitationProbability = source.PrecipitationProbability,
+            PrecipitationMm = (double)source.Precipitation,
             WindSpeedKmh = (double)source.WindSpeed,
+            WindDirectionDegrees = source.WindDirection,
+            WindGustsKmh = (double)source.WindGusts,
             RelativeHumidity = source.RelativeHumidity,
+            CloudCoverPercent = source.CloudCover,
+            VisibilityMeters = (double)source.Visibility,
+            IsDay = source.IsDay,
             UvIndex = null // Open-Meteo hourly does not provide UV index
         };
     }

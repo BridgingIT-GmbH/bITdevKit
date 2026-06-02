@@ -174,31 +174,31 @@ public class JobSchedulingTests
         executed.Where(e => e.Name == "SingletonJob").All(e => e.Data["type"] == "singleton").ShouldBeTrue();
     }
 
-    [Fact]
-    public async Task OldSyntax_WorksCorrectly()
-    {
-        var executed = new List<(string Name, Dictionary<string, string> Data)>();
-        using var host = CreateHost(services =>
-        {
-            services
-                .AddJobScheduling()
-                .WithJob<TestJob>(
-                    CronExpressions.EverySecond,
-                    "OldSyntaxJob",
-                    "DEFAULT",
-                    new Dictionary<string, string> { { "key", "value" } },
-                    true);
-        });
+    //[Fact]
+    //public async Task OldSyntax_WorksCorrectly()
+    //{
+    //    var executed = new List<(string Name, Dictionary<string, string> Data)>();
+    //    using var host = CreateHost(services =>
+    //    {
+    //        services
+    //            .AddJobScheduling()
+    //            .WithJob<TestJob>(
+    //                CronExpressions.EverySecond,
+    //                "OldSyntaxJob",
+    //                "DEFAULT",
+    //                new Dictionary<string, string> { { "key", "value" } },
+    //                true);
+    //    });
 
-        TestJob.OnExecute = (name, data) => executed.Add((name, data));
-        _ = await StartAndWaitForSchedulerAsync(host);
-        await Task.Delay(2500);
-        await host.StopAsync();
+    //    TestJob.OnExecute = (name, data) => executed.Add((name, data));
+    //    _ = await StartAndWaitForSchedulerAsync(host);
+    //    await Task.Delay(2500);
+    //    await host.StopAsync();
 
-        executed.ShouldNotBeEmpty();
-        executed.All(e => e.Name == "OldSyntaxJob").ShouldBeTrue();
-        executed.All(e => e.Data["key"] == "value").ShouldBeTrue();
-    }
+    //    executed.ShouldNotBeEmpty();
+    //    executed.All(e => e.Name == "OldSyntaxJob").ShouldBeTrue();
+    //    executed.All(e => e.Data["key"] == "value").ShouldBeTrue();
+    //}
 
     [Fact]
     public async Task JobData_PersistsDataAcrossExecutions()

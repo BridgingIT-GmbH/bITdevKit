@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobSchedulerTestBase(output)
 {
     private const string TelemetrySourceName = "BridgingIT.DevKit.Application.Jobs";
+    private const string TelemetryMeterName = Metrics.MeterName;
 
     [Fact]
     public async Task DispatchAndWaitEmitsExecutionActivityAndMetrics()
@@ -23,7 +24,7 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
                 .Description("telemetry")
                 .AddTrigger("manual", trigger => trigger.Manual())));
         using var activities = new ActivityCollector(TelemetrySourceName);
-        using var measurements = new MeterCollector(TelemetrySourceName);
+        using var measurements = new MeterCollector(TelemetryMeterName);
 
         var result = await harness.DispatchAndWaitAsync<TelemetryJob>(options: new JobDispatchOptions { CorrelationId = "corr-123" });
         var occurrence = await harness.FindOccurrenceAsync("telemetry-job", "manual");
@@ -32,10 +33,10 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
         occurrence.ShouldNotBeNull();
         occurrence.CorrelationId.ShouldBe("corr-123");
         activities.Items.ShouldContain(x => x.OperationName == "jobs.management");
-        measurements.Items.ShouldContain(x => x.Name == "jobs.executions.started");
-        measurements.Items.ShouldContain(x => x.Name == "jobs.executions.completed");
-        measurements.Items.ShouldContain(x => x.Name == "jobs.execution.duration.ms");
-        measurements.Items.ShouldContain(x => x.Name == "jobs.occurrence.age.ms");
+        measurements.Items.ShouldContain(x => x.Name == "jobs_executions_started");
+        measurements.Items.ShouldContain(x => x.Name == "jobs_executions_completed");
+        measurements.Items.ShouldContain(x => x.Name == "jobs_execution_duration");
+        measurements.Items.ShouldContain(x => x.Name == "jobs_occurrence_age");
     }
 
     [Fact]
@@ -49,14 +50,14 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
         harness.Advance(TimeSpan.FromMinutes(1));
 
         using var activities = new ActivityCollector(TelemetrySourceName);
-        using var measurements = new MeterCollector(TelemetrySourceName);
+        using var measurements = new MeterCollector(TelemetryMeterName);
 
         var result = await harness.MaterializeDueTriggersAsync();
 
         result.IsSuccess.ShouldBeTrue();
         result.Value.Count.ShouldBeGreaterThan(0);
         activities.Items.ShouldContain(x => x.OperationName == "jobs.trigger.materialize");
-        measurements.Items.ShouldContain(x => x.Name == "jobs.occurrences.materialized");
+        measurements.Items.ShouldContain(x => x.Name == "jobs_occurrences_materialized");
     }
 
     [Fact]
@@ -65,7 +66,7 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
         using var harness = this.CreateHarness(_ => { });
         var ingress = harness.Services.GetRequiredService<IJobEventIngress>();
         using var activities = new ActivityCollector(TelemetrySourceName);
-        using var measurements = new MeterCollector(TelemetrySourceName);
+        using var measurements = new MeterCollector(TelemetryMeterName);
 
         var result = await ingress.AcceptAsync("crm.customers", new AcceptedPayload("customer-42"), new JobAcceptedEventOptions
         {
@@ -78,7 +79,7 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
             x.OperationName == "jobs.event.accept"
             && Equals(x.GetTagItem("jobs.event.source"), "crm.customers")
             && Equals(x.GetTagItem("jobs.correlation.id"), "evt-corr"));
-        measurements.Items.ShouldContain(x => x.Name == "jobs.events.accepted");
+        measurements.Items.ShouldContain(x => x.Name == "jobs_events_accepted");
     }
 
     [Fact]
@@ -92,7 +93,7 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
         (await harness.Scheduler.DisableJobAsync("managed-job")).IsSuccess.ShouldBeTrue();
 
         using var activities = new ActivityCollector(TelemetrySourceName);
-        using var measurements = new MeterCollector(TelemetrySourceName);
+        using var measurements = new MeterCollector(TelemetryMeterName);
 
         var result = await harness.Scheduler.EnableJobAsync("managed-job");
 
@@ -102,7 +103,7 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
             && Equals(x.GetTagItem("jobs.operation"), "enable-job")
             && Equals(x.GetTagItem("jobs.job.name"), "managed-job"));
         measurements.Items.Any(x =>
-            x.Name == "jobs.management.operations"
+            x.Name == "jobs_management_operations"
             && x.Tags.TryGetValue("jobs.operation", out var operation)
             && Equals(operation, "enable-job")).ShouldBeTrue();
     }

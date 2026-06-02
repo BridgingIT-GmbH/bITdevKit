@@ -3,6 +3,8 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+using BridgingIT.DevKit.Application.Utilities;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
 using System.Text.Json;
 
 // ===============================================================================================
@@ -62,6 +64,17 @@ builder.Services.AddFakeIdentityProvider(o => o
     .WithClient("Scalar", "scalar", $"{builder.Configuration["Authentication:Authority"]}/scalar/"));
 
 builder.Services.AddEndpoints<SystemEndpoints>();
+
+// ===============================================================================================
+// Register log services and endpoints
+if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // TODO: provide fluent configuration builder extension
+{
+    builder.Services.AddScoped<ILogEntryService, LogEntryService<CoreDbContext>>();
+    builder.Services.AddSingleton<LogEntryMaintenanceQueue>();
+    builder.Services.AddHostedService<LogEntryMaintenanceService<CoreDbContext>>();
+    builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopment() || EnvironmentExtensions.IsBuildTimeOpenApiGeneration());
+    builder.Services.TryAddBackgroundServiceHealthCheck<LogEntryMaintenanceService<CoreDbContext>>(nameof(LogEntryMaintenanceService<>), tags: ["background", "jobs"]);
+}
 
 // ===============================================================================================
 // Configure Metrics and Telemetry

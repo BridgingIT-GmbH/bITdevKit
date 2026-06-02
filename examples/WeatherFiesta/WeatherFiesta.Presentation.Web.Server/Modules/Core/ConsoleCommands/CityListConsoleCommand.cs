@@ -13,14 +13,18 @@ using Spectre.Console;
 /// <summary>
 /// Console command that lists all cities with their current weather conditions.
 /// </summary>
-public class CityListConsoleCommand : ConsoleCommandBase
+public class CityListConsoleCommand : AppGroupConsoleCommandBase
 {
+    /// <summary>Gets or sets the optional city, country, or country-code filter.</summary>
+    [ConsoleCommandArgument(0, Description = "Optional city, country, or country-code filter")]
+    public string Filter { get; set; }
+
     /// <summary>Gets or sets a value indicating whether to show detailed city information.</summary>
     [ConsoleCommandOption("detailed", Alias = "d", Description = "Show detailed information including coordinates and timezone")]
     public bool Detailed { get; set; }
 
     /// <summary>Initializes a new instance of the <see cref="CityListConsoleCommand"/> class.</summary>
-    public CityListConsoleCommand() : base("city-list", "List all cities with current weather", "cities", "cl") { }
+    public CityListConsoleCommand() : base("cities", "List all cities with current weather", "list", "ls", "city-list", "cl") { }
 
     /// <inheritdoc />
     public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
@@ -34,10 +38,20 @@ public class CityListConsoleCommand : ConsoleCommandBase
         }
 
         var cities = cityResult.Value.ToList();
+        if (!string.IsNullOrWhiteSpace(this.Filter))
+        {
+            cities = cities
+                .Where(city => city.Name.Contains(this.Filter, StringComparison.OrdinalIgnoreCase)
+                    || city.Country.Contains(this.Filter, StringComparison.OrdinalIgnoreCase)
+                    || city.CountryCode.Contains(this.Filter, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+        }
 
         if (cities.Count == 0)
         {
-            console.MarkupLine("[yellow]No cities found. Seed data first.[/]");
+            console.MarkupLine(string.IsNullOrWhiteSpace(this.Filter)
+                ? "[yellow]No cities found. Seed data first.[/]"
+                : $"[yellow]No cities found matching '{Markup.Escape(this.Filter)}'.[/]");
             return;
         }
 

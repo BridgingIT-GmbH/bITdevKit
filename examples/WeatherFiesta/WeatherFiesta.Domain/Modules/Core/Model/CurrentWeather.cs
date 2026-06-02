@@ -10,7 +10,7 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 /// </summary>
 [DebuggerDisplay("Id={Id}, CityId={CityId}, Temperature={Temperature}°C")]
 [TypedEntityId<Guid>]
-public class CurrentWeather : ActiveEntity<CurrentWeather, CurrentWeatherId>, IConcurrency
+public class CurrentWeather : ActiveEntity<CurrentWeather, CurrentWeatherId>
 {
     /// <summary>Gets or sets the city identifier.</summary>
     public CityId CityId { get; set; }
@@ -47,9 +47,6 @@ public class CurrentWeather : ActiveEntity<CurrentWeather, CurrentWeatherId>, IC
 
     /// <summary>Gets or sets the UTC timestamp when the weather data was retrieved.</summary>
     public DateTime RetrievedAt { get; set; }
-
-    /// <summary>Gets or sets the concurrency version for optimistic concurrency control.</summary>
-    public Guid ConcurrencyVersion { get; set; }
 
     private CurrentWeather() { } // EF Core
 

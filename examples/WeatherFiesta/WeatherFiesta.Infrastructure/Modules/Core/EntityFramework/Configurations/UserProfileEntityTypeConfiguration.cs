@@ -22,7 +22,11 @@ public class UserProfileEntityTypeConfiguration : IEntityTypeConfiguration<UserP
             .ValueGeneratedNever();
 
         builder.Property(e => e.Id)
+            .ValueGeneratedOnAdd()
             .HasConversion(id => id.Value, value => UserProfileId.Create(value));
+
+        builder.Property(x => x.UserId)
+            .IsRequired();
 
         builder.Property(x => x.Email)
             .IsRequired()
@@ -41,6 +45,9 @@ public class UserProfileEntityTypeConfiguration : IEntityTypeConfiguration<UserP
             .IsRequired();
 
         builder.HasIndex(x => x.Email)
+            .IsUnique();
+
+        builder.HasIndex(x => x.UserId)
             .IsUnique();
 
         builder.OwnsOneAuditState();

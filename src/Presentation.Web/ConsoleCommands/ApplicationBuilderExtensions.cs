@@ -121,7 +121,7 @@ public static partial class ApplicationBuilderExtensions
                 var sub = tokens[1]; consumed = 2; cmd = groupedCandidates.FirstOrDefault(c => c.Matches(sub));
                 if (cmd is null) { console.MarkupLine($"[yellow]Unknown subcommand '{sub}' for group '{primary}'.[/]"); continue; }
             }
-            else { cmd = all.FirstOrDefault(c => c.Matches(primary)); }
+            else { cmd = all.FirstOrDefault(c => c is not IGroupedConsoleCommand && c.Matches(primary)); }
             if (cmd is null) { console.MarkupLine("[yellow]Unknown command[/]. Type [bold]help[/] for list."); continue; }
             console.MarkupLine("[cyan]=== " + (cmd is IGroupedConsoleCommand gc ? gc.GroupName + " " + cmd.Name : cmd.Name) + " ===[/][grey] " + cmd.Description + "[/]");
 

@@ -12,7 +12,7 @@ using BridgingIT.DevKit.Common;
 internal static class JobSchedulerInstrumentation
 {
     public const string ActivitySourceName = "BridgingIT.DevKit.Application.Jobs";
-    public const string MeterName = "BridgingIT.DevKit.Application.Jobs";
+    public const string MeterName = Metrics.MeterName;
 
     private const string SchedulerInstanceIdTag = "jobs.scheduler.instance_id";
     private const string JobNameTag = "jobs.job.name";
@@ -29,24 +29,24 @@ internal static class JobSchedulerInstrumentation
 
     private static readonly ActivitySource ActivitySource = new(ActivitySourceName);
     private static readonly Meter Meter = new(MeterName);
-    private static readonly Counter<long> SweepCycles = Meter.CreateCounter<long>("jobs.sweep.cycles");
-    private static readonly Counter<long> MaterializedOccurrences = Meter.CreateCounter<long>("jobs.occurrences.materialized");
-    private static readonly Counter<long> EventAccepted = Meter.CreateCounter<long>("jobs.events.accepted");
-    private static readonly Counter<long> ManagementOperations = Meter.CreateCounter<long>("jobs.management.operations");
-    private static readonly Counter<long> LeasesAcquired = Meter.CreateCounter<long>("jobs.leases.acquired");
-    private static readonly Counter<long> LeasesRenewed = Meter.CreateCounter<long>("jobs.leases.renewed");
-    private static readonly Counter<long> LeasesRecovered = Meter.CreateCounter<long>("jobs.leases.recovered");
-    private static readonly Counter<long> ExecutionsStarted = Meter.CreateCounter<long>("jobs.executions.started");
-    private static readonly Counter<long> ExecutionsCompleted = Meter.CreateCounter<long>("jobs.executions.completed");
-    private static readonly Counter<long> ExecutionsFailed = Meter.CreateCounter<long>("jobs.executions.failed");
-    private static readonly Counter<long> ExecutionsRetried = Meter.CreateCounter<long>("jobs.executions.retried");
-    private static readonly Counter<long> ExecutionsTimedOut = Meter.CreateCounter<long>("jobs.executions.timedout");
-    private static readonly Counter<long> ExecutionsCancelled = Meter.CreateCounter<long>("jobs.executions.cancelled");
-    private static readonly Counter<long> ExecutionsInterrupted = Meter.CreateCounter<long>("jobs.executions.interrupted");
-    private static readonly UpDownCounter<long> ActiveExecutions = Meter.CreateUpDownCounter<long>("jobs.executions.active");
-    private static readonly Histogram<double> ExecutionDurationMs = Meter.CreateHistogram<double>("jobs.execution.duration.ms", unit: "ms");
-    private static readonly Histogram<double> OccurrenceAgeMs = Meter.CreateHistogram<double>("jobs.occurrence.age.ms", unit: "ms");
-    private static readonly Histogram<double> WorkerUtilization = Meter.CreateHistogram<double>("jobs.worker.utilization");
+    private static readonly Counter<long> SweepCycles = Meter.CreateCounter<long>("jobs_sweep_cycles");
+    private static readonly Counter<long> MaterializedOccurrences = Meter.CreateCounter<long>("jobs_occurrences_materialized");
+    private static readonly Counter<long> EventAccepted = Meter.CreateCounter<long>("jobs_events_accepted");
+    private static readonly Counter<long> ManagementOperations = Meter.CreateCounter<long>("jobs_management_operations");
+    private static readonly Counter<long> LeasesAcquired = Meter.CreateCounter<long>("jobs_leases_acquired");
+    private static readonly Counter<long> LeasesRenewed = Meter.CreateCounter<long>("jobs_leases_renewed");
+    private static readonly Counter<long> LeasesRecovered = Meter.CreateCounter<long>("jobs_leases_recovered");
+    private static readonly Counter<long> ExecutionsStarted = Meter.CreateCounter<long>("jobs_executions_started");
+    private static readonly Counter<long> ExecutionsCompleted = Meter.CreateCounter<long>("jobs_executions_completed");
+    private static readonly Counter<long> ExecutionsFailed = Meter.CreateCounter<long>("jobs_executions_failed");
+    private static readonly Counter<long> ExecutionsRetried = Meter.CreateCounter<long>("jobs_executions_retried");
+    private static readonly Counter<long> ExecutionsTimedOut = Meter.CreateCounter<long>("jobs_executions_timedout");
+    private static readonly Counter<long> ExecutionsCancelled = Meter.CreateCounter<long>("jobs_executions_cancelled");
+    private static readonly Counter<long> ExecutionsInterrupted = Meter.CreateCounter<long>("jobs_executions_interrupted");
+    private static readonly UpDownCounter<long> ActiveExecutions = Meter.CreateUpDownCounter<long>("jobs_executions_active");
+    private static readonly Histogram<double> ExecutionDurationMs = Meter.CreateHistogram<double>("jobs_execution_duration", unit: "ms");
+    private static readonly Histogram<double> OccurrenceAgeMs = Meter.CreateHistogram<double>("jobs_occurrence_age", unit: "ms");
+    private static readonly Histogram<double> WorkerUtilization = Meter.CreateHistogram<double>("jobs_worker_utilization");
 
     public static Activity StartSweepActivity(string schedulerInstanceId)
     {
@@ -132,11 +132,6 @@ internal static class JobSchedulerInstrumentation
             LeasesRecovered.Add(recoveredCount, tags);
         }
 
-        if (materializedCount > 0)
-        {
-            MaterializedOccurrences.Add(materializedCount, tags);
-        }
-
         WorkerUtilization.Record(maxConcurrency <= 0 ? 0d : (double)activeExecutionCount / maxConcurrency, tags);
     }
 
@@ -180,6 +175,7 @@ internal static class JobSchedulerInstrumentation
     public static void RecordExecutionCompleted(string schedulerInstanceId, JobOccurrence occurrence, JobTriggerDefinition trigger, Guid executionId, JobExecutionStatus status, TimeSpan duration, string correlationId)
     {
         var tags = CreateTags(schedulerInstanceId, occurrence.JobName, occurrence.TriggerName, trigger?.TriggerType, occurrence.OccurrenceId, executionId, correlationId);
+        ActiveExecutions.Add(-1, tags);
         tags.Add(StatusTag, status.ToString());
 
         switch (status)
@@ -205,7 +201,6 @@ internal static class JobSchedulerInstrumentation
         }
 
         ExecutionDurationMs.Record(Math.Max(0d, duration.TotalMilliseconds), tags);
-        ActiveExecutions.Add(-1, tags);
     }
 
     public static void RecordManagementOperation(string operation, bool success, string jobName = null, string triggerName = null, Guid? occurrenceId = null)

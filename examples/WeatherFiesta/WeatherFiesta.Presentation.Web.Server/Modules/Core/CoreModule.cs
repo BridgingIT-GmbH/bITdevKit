@@ -52,30 +52,38 @@ public class CoreModule : WebModuleBase
             cfg.For<City, CityId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
                 .AddLoggingBehavior()
+                .AddMetricsBehavior()
                 .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true)
                 .AddDomainEventPublishingBehavior(new ActiveEntityDomainEventPublishingBehaviorOptions { PublishBefore = false });
 
             cfg.For<UserCity, UserCityId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
                 .AddLoggingBehavior()
+                .AddMetricsBehavior()
                 .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true);
 
             cfg.For<CurrentWeather, CurrentWeatherId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
-                .AddLoggingBehavior();
+                .AddLoggingBehavior()
+                .AddMetricsBehavior();
 
             cfg.For<WeatherForecast, WeatherForecastId>()
-                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
-                .AddLoggingBehavior();
+                .UseEntityFrameworkProvider(o => o
+                    .Context<CoreDbContext>()
+                    .Options<CoreDbContext>(options => options.GenericMergeStrategy()))
+                .AddLoggingBehavior()
+                .AddMetricsBehavior();
 
             cfg.For<UserProfile, UserProfileId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
                 .AddLoggingBehavior()
+                .AddMetricsBehavior()
                 .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true);
 
             cfg.For<UserSubscription, UserSubscriptionId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
                 .AddLoggingBehavior()
+                .AddMetricsBehavior()
                 .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true)
                 .AddDomainEventPublishingBehavior(new ActiveEntityDomainEventPublishingBehaviorOptions { PublishBefore = false });
         });
@@ -135,6 +143,8 @@ public class CoreModule : WebModuleBase
                     .WithMissedOccurrencePolicy(JobMissedOccurrencePolicy.RunOnce))
                 .AddTrigger("manual", trigger => trigger.Manual()))
             .WithEntityFramework<CoreDbContext>()
+            .WithBehavior<JobMetricsBehavior>()
+            .WithBehavior<ModuleScopeBehavior>()
             .AddEndpoints()
             .AddConsoleCommands();
 

@@ -7533,12 +7533,6 @@
               "null",
               "string"
             ]
-          },
-          "concurrencyVersion": {
-            "type": [
-              "null",
-              "string"
-            ]
           }
         }
       },
@@ -7684,6 +7678,10 @@
       "HourlyForecastModel": {
         "type": "object",
         "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
           "hour": {
             "type": "integer",
             "format": "int32"
@@ -9402,6 +9400,12 @@
               "string"
             ]
           },
+          "userId": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "email": {
             "type": [
               "null",
@@ -9682,12 +9686,6 @@
             "type": "boolean"
           },
           "staleDataWarningMessage": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "concurrencyVersion": {
             "type": [
               "null",
               "string"

@@ -15,7 +15,7 @@ using Spectre.Console;
 /// <summary>
 /// Console command to reset weather data for a city (delete existing data and re-ingest).
 /// </summary>
-public class CityResetConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
+public class CityResetConsoleCommand : AppGroupConsoleCommandBase
 {
     /// <summary>Gets or sets the city name to reset weather data for.</summary>
     [ConsoleCommandArgument(0, Description = "City name to reset weather data for", Required = true)]
@@ -24,12 +24,6 @@ public class CityResetConsoleCommand : ConsoleCommandBase, IGroupedConsoleComman
     /// <summary>Gets or sets a value indicating whether to also trigger weather data ingestion after reset.</summary>
     [ConsoleCommandOption("ingest", Alias = "i", Description = "Also trigger weather data ingestion after reset")]
     public bool Ingest { get; set; }
-
-    /// <inheritdoc />
-    public string GroupName => "city";
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<string> GroupAliases => ["cities"];
 
     /// <summary>Initializes a new instance of the <see cref="CityResetConsoleCommand"/> class.</summary>
     public CityResetConsoleCommand() : base("reset", "Reset weather data for a city (delete and optionally re-ingest)") { }

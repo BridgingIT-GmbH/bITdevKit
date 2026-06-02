@@ -31,10 +31,8 @@ public partial class AdminUserDeleteCommand
     private async Task<Result<Unit>> HandleAsync(
         CancellationToken cancellationToken)
     {
-        var userProfileId = UserProfileId.Create(Guid.Parse(this.UserId));
-
         // Find user profile
-        var profileSpec = new Specification<UserProfile>(up => up.Id == userProfileId);
+        var profileSpec = new UserProfileByUserSpecification(this.UserId);
         var profileResult = await UserProfile.FindAllAsync(profileSpec, null, cancellationToken);
         if (profileResult.IsFailure)
         {

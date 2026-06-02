@@ -29,7 +29,7 @@ public partial class UserPreferencesUpdateCommand
     {
         var userId = currentUserAccessor.UserId;
 
-        var spec = new Specification<UserProfile>(up => up.Id == UserProfileId.Create(Guid.Parse(userId)));
+        var spec = new UserProfileByUserSpecification(userId);
         var profileResult = await UserProfile.FindAllAsync(spec, null, cancellationToken);
         if (profileResult.IsFailure)
         {

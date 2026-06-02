@@ -17,10 +17,6 @@ public class WeatherForecastEntityTypeConfiguration : IEntityTypeConfiguration<W
     {
         builder.ToTable("WeatherForecasts").HasKey(x => x.Id).IsClustered(false);
 
-        builder.Property(e => e.ConcurrencyVersion)
-            .IsConcurrencyToken()
-            .ValueGeneratedNever();
-
         builder.Property(e => e.Id)
             .ValueGeneratedOnAdd()
             .HasConversion(id => id.Value, value => WeatherForecastId.Create(value));
@@ -90,6 +86,7 @@ public class WeatherForecastEntityTypeConfiguration : IEntityTypeConfiguration<W
 
         builder.OwnsMany(x => x.HourlyForecasts, h =>
         {
+            h.Property(hf => hf.Id).ValueGeneratedOnAdd();
             h.Property(hf => hf.Hour).HasColumnName("Hour");
             h.Property(hf => hf.Temperature).HasColumnName("Temperature").HasColumnType("decimal(5,2)");
             h.Property(hf => hf.RelativeHumidity).HasColumnName("RelativeHumidity");
@@ -101,7 +98,7 @@ public class WeatherForecastEntityTypeConfiguration : IEntityTypeConfiguration<W
             h.Property(hf => hf.WindDirection).HasColumnName("WindDirection");
             h.Property(hf => hf.WindGusts).HasColumnName("WindGusts").HasColumnType("decimal(5,2)");
             h.Property(hf => hf.CloudCover).HasColumnName("CloudCover");
-            h.Property(hf => hf.Visibility).HasColumnName("Visibility").HasColumnType("decimal(5,2)");
+            h.Property(hf => hf.Visibility).HasColumnName("Visibility").HasColumnType("decimal(10,2)");
             h.Property(hf => hf.IsDay).HasColumnName("IsDay");
         });
 

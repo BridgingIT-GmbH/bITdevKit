@@ -53,8 +53,15 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
         "repositories_read",
         "repositories_write",
         "repositories_delete",
+        "activeentity_read",
+        "activeentity_write",
+        "activeentity_delete",
         "jobscheduling_execute",
-        "orchestrations_activity_execute"
+        "jobs_executions_completed",
+        "jobs_occurrences_materialized",
+        "jobs_events_accepted",
+        "orchestrations_activity_execute",
+        "orchestrations_finish"
     ];
 
     private static readonly HashSet<string> BaseFailureSeries =
@@ -70,8 +77,17 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
         "repositories_read_failure",
         "repositories_write_failure",
         "repositories_delete_failure",
+        "activeentity_read_failure",
+        "activeentity_write_failure",
+        "activeentity_delete_failure",
         "jobscheduling_execute_failure",
-        "orchestrations_activity_execute_failure"
+        "jobs_executions_failed",
+        "jobs_executions_retried",
+        "jobs_executions_timedout",
+        "jobs_executions_cancelled",
+        "jobs_executions_interrupted",
+        "orchestrations_activity_execute_failure",
+        "orchestrations_finish_failure"
     ];
 
     private static readonly HashSet<string> BaseCurrentSeries =
@@ -88,6 +104,7 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
         "repositories_write_current",
         "repositories_delete_current",
         "jobscheduling_execute_current",
+        "jobs_executions_active",
         "orchestrations_activity_execute_current"
     ];
 
@@ -109,7 +126,7 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
                 return;
             }
 
-            this.instruments[instrument.Name] = IsHistogram(instrument) ? MetricInstrumentKind.Histogram : MetricInstrumentKind.Counter;
+            this.instruments[instrument.Name] = GetInstrumentKind(instrument);
             listener.EnableMeasurementEvents(instrument);
         };
 
@@ -130,6 +147,7 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
         var snapshot = new MetricsSnapshotModel
         {
             CapturedAtUtc = capturedAtUtc,
+            Meter = Metrics.MeterName,
             ProcessStartedAtUtc = this.processStartedAtUtc,
             UptimeSeconds = Math.Max(0, (capturedAtUtc - this.processStartedAtUtc).TotalSeconds)
         };
@@ -143,7 +161,7 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
             }
 
             var feature = GetOrAddFeature(snapshot.Features, featureName);
-            if (pair.Key.EndsWith("_current", StringComparison.Ordinal))
+            if (IsCurrentSeries(pair.Key) || this.instruments.GetValueOrDefault(pair.Key) == MetricInstrumentKind.UpDownCounter)
             {
                 feature.Current[pair.Key] = pair.Value;
             }
@@ -184,7 +202,7 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
                 .Where(pair => BaseCurrentSeries.Contains(pair.Key))
                 .Sum(pair => pair.Value);
             feature.TopThroughput = feature.Counters
-                .Where(pair => !pair.Key.EndsWith("_failure", StringComparison.Ordinal))
+                .Where(pair => !IsFailureSeries(pair.Key))
                 .OrderByDescending(pair => pair.Value)
                 .ThenBy(pair => pair.Key, StringComparer.Ordinal)
                 .Take(5)
@@ -197,7 +215,7 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
                 .Select(pair => new MetricValueModel { Name = pair.Key, Value = pair.Value })
                 .ToList();
             feature.TopFailures = feature.Counters
-                .Where(pair => pair.Key.EndsWith("_failure", StringComparison.Ordinal))
+                .Where(pair => IsFailureSeries(pair.Key))
                 .OrderByDescending(pair => pair.Value)
                 .ThenBy(pair => pair.Key, StringComparer.Ordinal)
                 .Take(5)
@@ -300,9 +318,19 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
             return "repositories";
         }
 
+        if (series.StartsWith("activeentity_", StringComparison.Ordinal))
+        {
+            return "activeentity";
+        }
+
         if (series.StartsWith("jobscheduling_", StringComparison.Ordinal))
         {
             return "jobscheduling";
+        }
+
+        if (series.StartsWith("jobs_", StringComparison.Ordinal))
+        {
+            return "jobs";
         }
 
         if (series.StartsWith("orchestrations_", StringComparison.Ordinal))
@@ -313,17 +341,47 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
         return null;
     }
 
-    private static bool IsHistogram(Instrument instrument)
+    private static MetricInstrumentKind GetInstrumentKind(Instrument instrument)
     {
-        return instrument.GetType().IsGenericType && instrument.GetType().GetGenericTypeDefinition() == typeof(Histogram<>);
+        if (!instrument.GetType().IsGenericType)
+        {
+            return MetricInstrumentKind.Counter;
+        }
+
+        var definition = instrument.GetType().GetGenericTypeDefinition();
+        if (definition == typeof(Histogram<>))
+        {
+            return MetricInstrumentKind.Histogram;
+        }
+
+        return definition == typeof(UpDownCounter<>)
+            ? MetricInstrumentKind.UpDownCounter
+            : MetricInstrumentKind.Counter;
     }
+
+    private static bool IsCurrentSeries(string series) =>
+        series.EndsWith("_current", StringComparison.Ordinal) ||
+        series.EndsWith(".active", StringComparison.Ordinal);
+
+    private static bool IsFailureSeries(string series) =>
+        series.EndsWith("_failure", StringComparison.Ordinal) ||
+        series.EndsWith(".failed", StringComparison.Ordinal) ||
+        series.EndsWith(".retried", StringComparison.Ordinal) ||
+        series.EndsWith(".timedout", StringComparison.Ordinal) ||
+        series.EndsWith(".cancelled", StringComparison.Ordinal) ||
+        series.EndsWith(".interrupted", StringComparison.Ordinal) ||
+        series.EndsWith("_failed", StringComparison.Ordinal) ||
+        series.EndsWith("_retried", StringComparison.Ordinal) ||
+        series.EndsWith("_timedout", StringComparison.Ordinal) ||
+        series.EndsWith("_cancelled", StringComparison.Ordinal) ||
+        series.EndsWith("_interrupted", StringComparison.Ordinal);
 
     private List<BdkMetricDescriptorModel> BuildAvailableMetrics(Dictionary<string, BdkFeatureSnapshotModel> features)
     {
         return features
             .OrderBy(pair => pair.Key, StringComparer.Ordinal)
             .SelectMany(pair =>
-                pair.Value.Counters.Keys.Select(name => new BdkMetricDescriptorModel { Name = name, Feature = pair.Key, Kind = "total" })
+                pair.Value.Counters.Keys.Select(name => new BdkMetricDescriptorModel { Name = name, Feature = pair.Key, Kind = IsFailureSeries(name) ? "failure" : "total" })
                     .Concat(pair.Value.Current.Keys.Select(name => new BdkMetricDescriptorModel { Name = name, Feature = pair.Key, Kind = "current" }))
                     .Concat(pair.Value.Durations.Keys.Select(name => new BdkMetricDescriptorModel { Name = name, Feature = pair.Key, Kind = "duration", Unit = "ms" })))
             .DistinctBy(model => model.Name)
@@ -354,6 +412,7 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
     private enum MetricInstrumentKind
     {
         Counter,
+        UpDownCounter,
         Histogram
     }
 

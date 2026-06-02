@@ -53,7 +53,7 @@ public partial class DashboardQuery
             .ToDictionary(g => g.Key, g => g.First());
 
         // Load unit preferences
-        var userProfileSpec = new Specification<UserProfile>(up => up.Id == UserProfileId.Create(Guid.Parse(userId)));
+        var userProfileSpec = new UserProfileByUserSpecification(userId);
         var userProfileResult = await UserProfile.FindAllAsync(userProfileSpec, null, cancellationToken);
         if (userProfileResult.IsFailure)
         {

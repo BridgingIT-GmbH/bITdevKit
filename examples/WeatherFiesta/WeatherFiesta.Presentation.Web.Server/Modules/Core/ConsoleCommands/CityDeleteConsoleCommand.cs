@@ -15,7 +15,7 @@ using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 /// <summary>
 /// Console command to delete a city by name (with confirmation).
 /// </summary>
-public class CityDeleteConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
+public class CityDeleteConsoleCommand : AppGroupConsoleCommandBase
 {
     /// <summary>Gets or sets the city name to delete.</summary>
     [ConsoleCommandArgument(0, Description = "City name to delete", Required = true)]
@@ -24,12 +24,6 @@ public class CityDeleteConsoleCommand : ConsoleCommandBase, IGroupedConsoleComma
     /// <summary>Gets or sets a value indicating whether to skip the confirmation prompt.</summary>
     [ConsoleCommandOption("force", Alias = "f", Description = "Skip confirmation prompt")]
     public bool Force { get; set; }
-
-    /// <inheritdoc />
-    public string GroupName => "city";
-
-    /// <inheritdoc />
-    public IReadOnlyCollection<string> GroupAliases => ["cities"];
 
     /// <summary>Initializes a new instance of the <see cref="CityDeleteConsoleCommand"/> class.</summary>
     public CityDeleteConsoleCommand() : base("delete", "Delete a city and all its weather data", "remove", "rm") { }

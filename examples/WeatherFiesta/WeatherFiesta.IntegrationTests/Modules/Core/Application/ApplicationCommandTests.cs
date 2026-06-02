@@ -6,24 +6,39 @@
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests.Application;
 
 using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
+using Microsoft.Data.SqlClient;
 
 /// <summary>
-/// Direct command handler tests using IRequester.SendAsync with InMemory EF Core.
+/// Direct command handler tests using IRequester.SendAsync with SQL Server EF Core.
 /// Tests the full pipeline (validation, retry, timeout, transactions) without HTTP.
 /// </summary>
 [Trait("Category", "Integration")]
-[Collection(WeatherFiestaTestCollection.Name)]
-public class ApplicationCommandTests
+[Collection(WeatherFiestaSqlServerCollection.Name)]
+public class ApplicationCommandTests : IAsyncLifetime
 {
-    private readonly WeatherFiestaApplicationFactory factory;
-    private readonly IRequester requester;
+    private readonly WeatherFiestaApplicationTestHost testHost;
+    private IRequester requester;
 
-    public ApplicationCommandTests(WeatherFiestaApplicationFactory factory, ITestOutputHelper output)
+    public ApplicationCommandTests(WeatherFiestaSqlServerFixture fixture, ITestOutputHelper output)
     {
-        this.factory = factory;
-        factory.SetOutput(output);
-        factory.ResetDatabaseAsync().GetAwaiter().GetResult();
-        this.requester = factory.Services.GetRequiredService<IRequester>();
+        var connectionString = new SqlConnectionStringBuilder(fixture.ConnectionString)
+        {
+            InitialCatalog = $"WeatherFiesta_{Guid.NewGuid():N}"
+        }.ConnectionString;
+
+        this.testHost = new WeatherFiestaApplicationTestHost(connectionString, output);
+    }
+
+    public async Task InitializeAsync()
+    {
+        this.testHost.Build();
+        await this.testHost.ResetDatabaseAsync();
+        this.requester = this.testHost.Requester;
+    }
+
+    public async Task DisposeAsync()
+    {
+        await this.testHost.DisposeAsync();
     }
 
     // ──────────────────────────────────────────────────────────────────────────────
@@ -34,8 +49,8 @@ public class ApplicationCommandTests
     public async Task CityCreateCommand_WithValidData_ReturnsSuccess()
     {
         // Arrange
-        await this.factory.ResetDatabaseAsync();
-        this.factory.GeocodingClient
+        await this.testHost.ResetDatabaseAsync();
+        this.testHost.GeocodingClient
             .SearchCityAsync("Amsterdam", "NL", Arg.Any<CancellationToken>())
             .Returns(new GeocodingResultModel
             {
@@ -66,7 +81,7 @@ public class ApplicationCommandTests
     public async Task CityCreateCommand_WhenGeocodingFails_ReturnsFailure()
     {
         // Arrange
-        this.factory.GeocodingClient
+        this.testHost.GeocodingClient
             .SearchCityAsync("Unknown", "XX", Arg.Any<CancellationToken>())
             .Returns(Task.FromResult<GeocodingResultModel>(null));
 
@@ -86,12 +101,12 @@ public class ApplicationCommandTests
     public async Task CityCreateCommand_WhenFreePlanCityLimitReached_ReturnsFailure()
     {
         // Arrange - Free plan allows max 3 cities (London seeded + Paris + Berlin = 3)
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
 
         await AddUserCityAsync(CityId.Create(TestData.ParisCityGuid), Guid.NewGuid(), 1);
         await AddUserCityAsync(CityId.Create(TestData.BerlinCityGuid), Guid.NewGuid(), 2);
 
-        this.factory.GeocodingClient
+        this.testHost.GeocodingClient
             .SearchCityAsync("Amsterdam", "NL", Arg.Any<CancellationToken>())
             .Returns(new GeocodingResultModel
             {
@@ -140,7 +155,7 @@ public class ApplicationCommandTests
     public async Task CityUnsubscribeCommand_WhenSubscribed_ReturnsSuccess()
     {
         // Arrange
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
         var command = new CityUnsubscribeCommand(TestData.LondonCityGuid.ToString());
 
         // Act
@@ -171,9 +186,9 @@ public class ApplicationCommandTests
     public async Task SetPrimaryCityCommand_WhenSubscribed_ReturnsSuccess()
     {
         // Arrange
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
         // Add Paris as second city
-        this.factory.GeocodingClient
+        this.testHost.GeocodingClient
             .SearchCityAsync("Paris", "FR", Arg.Any<CancellationToken>())
             .Returns(new GeocodingResultModel
             {
@@ -216,9 +231,9 @@ public class ApplicationCommandTests
     public async Task ReorderCitiesCommand_WithMultipleCities_ReturnsSuccess()
     {
         // Arrange
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
         // Add Paris
-        this.factory.GeocodingClient
+        this.testHost.GeocodingClient
             .SearchCityAsync("Paris", "FR", Arg.Any<CancellationToken>())
             .Returns(new GeocodingResultModel
             {
@@ -255,7 +270,7 @@ public class ApplicationCommandTests
     public async Task UserProfileUpdateCommand_WithValidData_ReturnsSuccess()
     {
         // Arrange
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
         var command = new UserProfileUpdateCommand
         {
             Model = new UserProfileUpdateModel
@@ -302,7 +317,7 @@ public class ApplicationCommandTests
     public async Task UserPreferencesUpdateCommand_WithValidData_ReturnsSuccess()
     {
         // Arrange
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
         var command = new UserPreferencesUpdateCommand
         {
             Model = new UserPreferencesUpdateModel
@@ -329,7 +344,7 @@ public class ApplicationCommandTests
     public async Task AdminCityCreateCommand_WithValidData_ReturnsSuccess()
     {
         // Arrange
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
         var command = new AdminCityCreateCommand
         {
             Model = new AdminCityCreateModel
@@ -381,7 +396,7 @@ public class ApplicationCommandTests
     public async Task AdminCityDeleteCommand_WhenCityExists_ReturnsSuccess()
     {
         // Arrange
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
         var command = new AdminCityDeleteCommand(TestData.LondonCityGuid.ToString());
 
         // Act
@@ -412,7 +427,7 @@ public class ApplicationCommandTests
     public async Task AdminSubscriptionUpdateCommand_WithValidData_ReturnsSuccess()
     {
         // Arrange
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
         var command = new AdminUserSubscriptionUpdateCommand
         {
             UserId = TestData.TestUserId,
@@ -461,8 +476,18 @@ public class ApplicationCommandTests
 
     private async Task AddUserCityAsync(CityId cityId, Guid userCityGuid, int displayOrder)
     {
-        using var scope = this.factory.Services.CreateScope();
+        using var scope = this.testHost.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+        if (!dbContext.Cities.Any(c => c.Id == cityId))
+        {
+            var city = cityId.Value == TestData.ParisCityGuid
+                ? TestData.CreateParis()
+                : TestData.CreateBerlin();
+            city.Id = cityId;
+            dbContext.Cities.Add(city);
+            await dbContext.SaveChangesAsync();
+        }
+
         var userCity = UserCity.Create(TestData.TestUserId, cityId, isPrimary: false, displayOrder: displayOrder);
         userCity.Id = UserCityId.Create(userCityGuid);
         dbContext.UserCities.Add(userCity);

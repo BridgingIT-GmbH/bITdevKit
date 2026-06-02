@@ -5,23 +5,39 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests.Application;
 
+using Microsoft.Data.SqlClient;
+
 /// <summary>
-/// Direct query handler tests using IRequester.SendAsync with InMemory EF Core.
+/// Direct query handler tests using IRequester.SendAsync with SQL Server EF Core.
 /// Tests the full pipeline (validation, retry, timeout) without HTTP.
 /// </summary>
 [Trait("Category", "Integration")]
-[Collection(WeatherFiestaTestCollection.Name)]
-public class ApplicationQueryTests
+[Collection(WeatherFiestaSqlServerCollection.Name)]
+public class ApplicationQueryTests : IAsyncLifetime
 {
-    private readonly WeatherFiestaApplicationFactory factory;
-    private readonly IRequester requester;
+    private readonly WeatherFiestaApplicationTestHost testHost;
+    private IRequester requester;
 
-    public ApplicationQueryTests(WeatherFiestaApplicationFactory factory, ITestOutputHelper output)
+    public ApplicationQueryTests(WeatherFiestaSqlServerFixture fixture, ITestOutputHelper output)
     {
-        this.factory = factory;
-        factory.SetOutput(output);
-        factory.ResetDatabaseAsync().GetAwaiter().GetResult();
-        this.requester = factory.Services.GetRequiredService<IRequester>();
+        var connectionString = new SqlConnectionStringBuilder(fixture.ConnectionString)
+        {
+            InitialCatalog = $"WeatherFiesta_{Guid.NewGuid():N}"
+        }.ConnectionString;
+
+        this.testHost = new WeatherFiestaApplicationTestHost(connectionString, output);
+    }
+
+    public async Task InitializeAsync()
+    {
+        this.testHost.Build();
+        await this.testHost.ResetDatabaseAsync();
+        this.requester = this.testHost.Requester;
+    }
+
+    public async Task DisposeAsync()
+    {
+        await this.testHost.DisposeAsync();
     }
 
     // ──────────────────────────────────────────────────────────────────────────────
@@ -47,7 +63,7 @@ public class ApplicationQueryTests
     public async Task UserCitiesQuery_WhenNoCities_ReturnsEmpty()
     {
         // Arrange
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
         // Unsubscribe from London
         await this.requester.SendAsync(
             new CityUnsubscribeCommand(TestData.LondonCityGuid.ToString()));
@@ -114,7 +130,7 @@ public class ApplicationQueryTests
     public async Task DashboardQuery_WhenNoCities_ReturnsEmpty()
     {
         // Arrange
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
         await this.requester.SendAsync(
             new CityUnsubscribeCommand(TestData.LondonCityGuid.ToString()));
 
@@ -170,9 +186,9 @@ public class ApplicationQueryTests
     public async Task UserSubscriptionQuery_WhenNoSubscription_AutoCreatesFree()
     {
         // Arrange — user without subscription
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
         // Delete the seeded subscription directly from DB
-        using var scope = this.factory.Services.CreateScope();
+        using var scope = this.testHost.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
         var subs = db.UserSubscriptions.Where(s => s.UserId == TestData.TestUserId).ToList();
         db.UserSubscriptions.RemoveRange(subs);
@@ -190,7 +206,7 @@ public class ApplicationQueryTests
     public async Task UserSubscriptionQuery_WhenSubscriptionSoftDeleted_ReactivatesWithoutDuplicate()
     {
         // Arrange
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
         await SetSubscriptionPlanAsync(SubscriptionPlan.Basic);
         await SoftDeleteSubscriptionAsync();
 
@@ -201,7 +217,7 @@ public class ApplicationQueryTests
         result.IsSuccess.ShouldBeTrue();
         result.Value.Plan.ShouldBe("Basic");
 
-        using var scope = this.factory.Services.CreateScope();
+        using var scope = this.testHost.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
         var subscriptions = dbContext.UserSubscriptions.Where(s => s.UserId == TestData.TestUserId).ToList();
         subscriptions.Count.ShouldBe(1);
@@ -310,7 +326,7 @@ public class ApplicationQueryTests
     public async Task CitySuggestionQuery_WhenResultsFound_ReturnsSuccess()
     {
         // Arrange
-        this.factory.GeocodingClient
+        this.testHost.GeocodingClient
             .SearchCitiesAsync("London", "GB", Arg.Any<CancellationToken>())
             .Returns(new GeocodingResponseModel
             {
@@ -340,7 +356,7 @@ public class ApplicationQueryTests
     public async Task CitySuggestionQuery_WhenNoResults_ReturnsEmpty()
     {
         // Arrange
-        this.factory.GeocodingClient
+        this.testHost.GeocodingClient
             .SearchCitiesAsync("xyznonexistent", null, Arg.Any<CancellationToken>())
             .Returns(new GeocodingResponseModel { Results = [] });
 
@@ -415,7 +431,7 @@ public class ApplicationQueryTests
     public async Task CityExportQuery_WhenPlanAllowsExport_ReturnsSuccess()
     {
         // Arrange
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
         await SetSubscriptionPlanAsync(SubscriptionPlan.Basic);
 
         // Act
@@ -431,7 +447,7 @@ public class ApplicationQueryTests
     public async Task CityExportQuery_WhenSubscriptionSoftDeleted_ReactivatesWithoutDuplicate()
     {
         // Arrange
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
         await SetSubscriptionPlanAsync(SubscriptionPlan.Basic);
         await SoftDeleteSubscriptionAsync();
 
@@ -441,7 +457,7 @@ public class ApplicationQueryTests
         // Assert
         result.IsSuccess.ShouldBeTrue();
 
-        using var scope = this.factory.Services.CreateScope();
+        using var scope = this.testHost.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
         var subscriptions = dbContext.UserSubscriptions.Where(s => s.UserId == TestData.TestUserId).ToList();
         subscriptions.Count.ShouldBe(1);
@@ -458,7 +474,7 @@ public class ApplicationQueryTests
     public async Task CityWeatherQuery_WhenForecastDaysExceedPlanLimit_ClampsForecasts()
     {
         // Arrange - Free plan max 7 forecast days
-        await this.factory.ResetDatabaseAsync();
+        await this.testHost.ResetDatabaseAsync();
         await SeedLondonForecastsAsync(16);
 
         // Act
@@ -509,7 +525,7 @@ public class ApplicationQueryTests
 
     private async Task SetSubscriptionPlanAsync(SubscriptionPlan plan)
     {
-        using var scope = this.factory.Services.CreateScope();
+        using var scope = this.testHost.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
         var subscription = dbContext.UserSubscriptions.Single(s => s.UserId == TestData.TestUserId);
         var billingCycle = plan == SubscriptionPlan.Free
@@ -522,7 +538,7 @@ public class ApplicationQueryTests
 
     private async Task SoftDeleteSubscriptionAsync()
     {
-        using var scope = this.factory.Services.CreateScope();
+        using var scope = this.testHost.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
         var subscription = dbContext.UserSubscriptions.Single(s => s.UserId == TestData.TestUserId);
         subscription.AuditState.SetDeleted("test", "soft-delete subscription");
@@ -531,7 +547,7 @@ public class ApplicationQueryTests
 
     private async Task SeedLondonForecastsAsync(int count)
     {
-        using var scope = this.factory.Services.CreateScope();
+        using var scope = this.testHost.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
         var londonId = CityId.Create(TestData.LondonCityGuid);
 

@@ -8,10 +8,13 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 /// <summary>
 /// Represents a user's profile with display information and weather unit preferences.
 /// </summary>
-[DebuggerDisplay("Id={Id}, Email={Email}, Name={Name}")]
+[DebuggerDisplay("Id={Id}, UserId={UserId}, Email={Email}, Name={Name}")]
 [TypedEntityId<Guid>]
 public class UserProfile : ActiveEntity<UserProfile, UserProfileId>, IAuditable, IConcurrency
 {
+    /// <summary>Gets or sets the user identifier.</summary>
+    public string UserId { get; set; }
+
     /// <summary>Gets or sets the user's email address.</summary>
     public string Email { get; set; }
 
@@ -43,7 +46,7 @@ public class UserProfile : ActiveEntity<UserProfile, UserProfileId>, IAuditable,
     {
         return new UserProfile
         {
-            Id = UserProfileId.Create(Guid.Parse(userId)),
+            UserId = userId,
             Email = email,
             Name = name,
             TemperatureUnit = TemperatureUnit.Celsius,

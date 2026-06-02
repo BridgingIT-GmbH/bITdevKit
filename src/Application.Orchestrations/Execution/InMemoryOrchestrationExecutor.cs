@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Application.Orchestrations;
 
 using System.Collections.Concurrent;
+using System.Diagnostics.Metrics;
 using System.Reflection;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,6 +36,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
     private readonly IOrchestrationClock clock;
     private readonly OrchestrationExecutionSettings executionSettings;
     private readonly ILogger<InMemoryOrchestrationExecutor> logger;
+    private readonly IMeterFactory meterFactory;
     private readonly ConcurrentDictionary<Guid, byte> scheduledTimerWatchers = new ConcurrentDictionary<Guid, byte>();
     private readonly AsyncLocal<ActivityCheckpointSession> currentCheckpointSession = new();
 
@@ -161,6 +163,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         this.clock = serviceProvider.GetRequiredService<IOrchestrationClock>();
         this.executionSettings = serviceProvider.GetService<OrchestrationExecutionSettings>() ?? new OrchestrationExecutionSettings();
         this.logger = (serviceProvider.GetService<ILoggerFactory>() ?? NullLoggerFactory.Instance).CreateLogger<InMemoryOrchestrationExecutor>();
+        this.meterFactory = serviceProvider.GetService<IMeterFactory>();
     }
 
     /// <inheritdoc />
@@ -479,6 +482,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         {
             var definition = orchestrationDefinition.GetDefinition();
             var snapshot = await this.persistenceProvider.Instances.CreateAsync(context, cancellationToken: cancellationToken).ConfigureAwait(false);
+            this.RecordOrchestrationStarted(context.OrchestrationName);
             await this.AppendHistoryAsync(context.InstanceId, "Created", null, null, context.OrchestrationName, cancellationToken).ConfigureAwait(false);
 
             await this.WithLeaseAsync(
@@ -498,6 +502,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             context.Status = OrchestrationStatus.Failed;
             context.FailureReason = exception.Message;
             context.CompletedUtc ??= this.clock.UtcNow;
+            this.RecordOrchestrationFinished(context);
         }
         catch (Exception exception) when (exception is not OperationCanceledException)
         {
@@ -518,6 +523,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             {
                 await this.persistenceProvider.Instances.SaveAsync(snapshot, context, cancellationToken).ConfigureAwait(false);
                 await this.AppendHistoryAsync(context.InstanceId, "Failed", context.CurrentState, context.CurrentActivity, context.FailureReason, cancellationToken).ConfigureAwait(false);
+                this.RecordOrchestrationFinished(context);
             }
         }
 
@@ -557,6 +563,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             orchestration.Name);
 
         await this.persistenceProvider.Instances.CreateAsync(context, cancellationToken: cancellationToken).ConfigureAwait(false);
+        this.RecordOrchestrationStarted(context.OrchestrationName);
         await this.AppendHistoryAsync(context.InstanceId, "Created", null, null, context.OrchestrationName, cancellationToken).ConfigureAwait(false);
 
         return context.InstanceId;
@@ -1379,6 +1386,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                 await this.ObsoletePendingStateArtifactsAsync(context.InstanceId, context.CurrentState, lease, cancellationToken).ConfigureAwait(false);
                 snapshot = await this.SaveSnapshotAsync(snapshot, context, lease, "Persist completion result", cancellationToken).ConfigureAwait(false);
                 await this.AppendHistoryAsync(lease, context.InstanceId, "Completed", context.CurrentState, null, outcome.Reason, cancellationToken).ConfigureAwait(false);
+                this.RecordOrchestrationFinished(context);
                 break;
 
             case OrchestrationOutcomeKind.Cancel:
@@ -1408,6 +1416,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                     context.FailureReason = this.BuildCompensationFailureReason("Cancellation", outcome.Reason);
                     snapshot = await this.SaveSnapshotAsync(snapshot, context, lease, "Persist compensation failure after cancellation", cancellationToken).ConfigureAwait(false);
                     await this.AppendHistoryAsync(lease, context.InstanceId, "Failed", context.CurrentState, null, context.FailureReason, cancellationToken).ConfigureAwait(false);
+                    this.RecordOrchestrationFinished(context);
                     break;
                 }
 
@@ -1415,6 +1424,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                 context.FailureReason = outcome.Reason;
                 snapshot = await this.SaveSnapshotAsync(snapshot, context, lease, "Persist cancellation result", cancellationToken).ConfigureAwait(false);
                 await this.AppendHistoryAsync(lease, context.InstanceId, "Cancelled", context.CurrentState, null, outcome.Reason, cancellationToken).ConfigureAwait(false);
+                this.RecordOrchestrationFinished(context);
                 break;
 
             case OrchestrationOutcomeKind.Terminate:
@@ -1444,6 +1454,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                     context.FailureReason = this.BuildCompensationFailureReason("Termination", outcome.Reason);
                     snapshot = await this.SaveSnapshotAsync(snapshot, context, lease, "Persist compensation failure after termination", cancellationToken).ConfigureAwait(false);
                     await this.AppendHistoryAsync(lease, context.InstanceId, "Failed", context.CurrentState, null, context.FailureReason, cancellationToken).ConfigureAwait(false);
+                    this.RecordOrchestrationFinished(context);
                     break;
                 }
 
@@ -1451,6 +1462,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                 context.FailureReason = outcome.Reason;
                 snapshot = await this.SaveSnapshotAsync(snapshot, context, lease, "Persist termination result", cancellationToken).ConfigureAwait(false);
                 await this.AppendHistoryAsync(lease, context.InstanceId, "Terminated", context.CurrentState, null, outcome.Reason, cancellationToken).ConfigureAwait(false);
+                this.RecordOrchestrationFinished(context);
                 break;
 
             default:
@@ -1986,6 +1998,11 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                     this.ClearWaitMetadata(context);
                     snapshot = await this.SaveSnapshotAsync(snapshot, context, lease, $"persist lifecycle change '{historyEvent}'", cancellationToken).ConfigureAwait(false);
                     await this.AppendHistoryAsync(lease, instanceId, historyEvent, context.CurrentState, null, details, cancellationToken).ConfigureAwait(false);
+                    if (this.IsTerminal(context.Status))
+                    {
+                        this.RecordOrchestrationFinished(context);
+                    }
+
                     return Result.Success();
                 },
                 cancellationToken)
@@ -2012,6 +2029,29 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         await this.ObsoletePendingStateArtifactsAsync(context.InstanceId, context.CurrentState, lease, cancellationToken).ConfigureAwait(false);
         await this.SaveSnapshotAsync(snapshot, context, lease, "persist failure state", cancellationToken).ConfigureAwait(false);
         await this.AppendHistoryAsync(lease, context.InstanceId, "Failed", context.CurrentState, context.CurrentActivity, reason, cancellationToken).ConfigureAwait(false);
+        this.RecordOrchestrationFinished(context);
+    }
+
+    private void RecordOrchestrationStarted(string orchestrationName)
+    {
+        var series = Metrics.Series("orchestrations_start");
+        Metrics.Increment(this.meterFactory, series);
+        Metrics.Increment(this.meterFactory, Metrics.Series("orchestrations_start", orchestrationName));
+    }
+
+    private void RecordOrchestrationFinished<TData>(OrchestrationContext<TData> context)
+        where TData : class, IOrchestrationData
+    {
+        var series = Metrics.Series("orchestrations_finish");
+        var typedSeries = Metrics.Series("orchestrations_finish", context.OrchestrationName, context.Status.ToString());
+        Metrics.Increment(this.meterFactory, series);
+        Metrics.Increment(this.meterFactory, typedSeries);
+
+        if (context.Status == OrchestrationStatus.Failed)
+        {
+            Metrics.Increment(this.meterFactory, Metrics.FailureSeries(series));
+            Metrics.Increment(this.meterFactory, Metrics.FailureSeries(typedSeries));
+        }
     }
 
     private async Task<ActivityExecutionResolution> ResolveActivityOutcomeAsync<TData>(

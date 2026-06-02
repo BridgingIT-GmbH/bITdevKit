@@ -34,6 +34,26 @@ public static class ActiveEntityConfiguratorExtensions
     }
 
     /// <summary>
+    /// Adds a metrics behavior for the entity.
+    /// </summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TId">The type of the entity's identifier.</typeparam>
+    /// <param name="configurator">The entity configurator.</param>
+    /// <returns>The configurator instance for fluent chaining.</returns>
+    /// <example>
+    /// <code>
+    /// configurator.AddMetricsBehavior&lt;Customer, CustomerId&gt;();
+    /// </code>
+    /// </example>
+    public static ActiveEntityConfigurator<TEntity, TId> AddMetricsBehavior<TEntity, TId>(
+        this ActiveEntityConfigurator<TEntity, TId> configurator)
+        where TEntity : class, IEntity
+    {
+        configurator.AddBehaviorType(typeof(ActiveEntityMetricsBehavior<TEntity>));
+        return configurator;
+    }
+
+    /// <summary>
     /// Adds a domain event publishing behavior for the entity with optional configuration options.
     /// </summary>
     /// <typeparam name="TEntity">The entity type.</typeparam>

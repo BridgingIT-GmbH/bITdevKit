@@ -17,10 +17,6 @@ public class CurrentWeatherEntityTypeConfiguration : IEntityTypeConfiguration<Cu
     {
         builder.ToTable("CurrentWeathers").HasKey(x => x.Id).IsClustered(false);
 
-        builder.Property(e => e.ConcurrencyVersion)
-            .IsConcurrencyToken()
-            .ValueGeneratedNever();
-
         builder.Property(e => e.Id)
             .ValueGeneratedOnAdd()
             .HasConversion(id => id.Value, value => CurrentWeatherId.Create(value));

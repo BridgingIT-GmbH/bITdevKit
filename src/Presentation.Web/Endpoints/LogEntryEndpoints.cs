@@ -20,14 +20,30 @@ using Microsoft.Extensions.Logging;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 /// <summary>
-/// Configures HTTP endpoints for querying, streaming, purging, exporting, and retrieving statistics for log entries.
+///     Configures HTTP endpoints for querying, streaming, purging, exporting, and retrieving statistics for log entries.
 /// </summary>
+/// <param name="options">The endpoint options that control the route group and whether the endpoints are enabled.</param>
+/// <param name="logger">The optional logger used when log operations fail or validation errors are caught.</param>
+/// <remarks>
+///     The endpoint group is mapped only when <see cref="EndpointsOptionsBase.Enabled" /> is <c>true</c>. The mapped routes
+///     delegate all log storage and maintenance work to <see cref="ILogEntryService" />, translate validation and service
+///     exceptions into problem responses, and include endpoint metadata for generated API descriptions.
+/// </remarks>
 public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<LogEntryEndpoints> logger = null) : EndpointsBase
 {
     private readonly LogEntryEndpointsOptions options = options ?? new LogEntryEndpointsOptions();
     private readonly ILogger<LogEntryEndpoints> logger = logger;
 
-    /// <inheritdoc/>
+    /// <summary>
+    ///     Maps the log entry query, stream, cleanup, statistics, and export routes to the configured endpoint group.
+    /// </summary>
+    /// <param name="app">The route builder that receives the log endpoint group.</param>
+    /// <remarks>
+    ///     When options are disabled, no routes are mapped. Otherwise the method creates the configured group and maps:
+    ///     <c>GET</c> for paged queries, <c>GET stream</c> for newline-delimited JSON streaming, <c>DELETE</c> for cleanup,
+    ///     <c>GET stats</c> for aggregated statistics, and <c>GET export</c> for downloadable log exports. Each route declares
+    ///     success and problem response metadata for Minimal API/OpenAPI consumers.
+    /// </remarks>
     public override void Map(IEndpointRouteBuilder app)
     {
         if (!this.options.Enabled)

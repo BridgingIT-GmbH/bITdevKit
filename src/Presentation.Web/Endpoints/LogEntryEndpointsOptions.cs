@@ -6,12 +6,16 @@
 namespace BridgingIT.DevKit.Presentation.Web.Endpoints;
 
 /// <summary>
-/// Configuration options for the log endpoints.
+///     Configures the built-in log entry endpoint group.
 /// </summary>
+/// <remarks>
+///     The constructor enables authorization and sets the default group path to <c>/api/_system/logentries</c>. Route
+///     handlers use these options when the endpoint group is created.
+/// </remarks>
 public class LogEntryEndpointsOptions : EndpointsOptionsBase
 {
     /// <summary>
-    /// Initializes a new instance of the <see cref="LogEntryEndpointsOptions"/> class.
+    ///     Initializes a new instance of the <see cref="LogEntryEndpointsOptions" /> class with secure system-log defaults.
     /// </summary>
     public LogEntryEndpointsOptions()
     {

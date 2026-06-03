@@ -1819,6 +1819,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-orchestrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Orchestrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-filtering/" class="md-nav__link">
         
   
@@ -2244,6 +2272,34 @@
     
   
     StartupTasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-jobs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Jobs
   
 
     
@@ -2959,9 +3015,9 @@
     else Entity Framework
       note right of Transport: Persisted broker rows, worker leases, retries, and operational endpoints
      else RabbitMQ
-       note right of Transport: Fanout exchange; all queues receive all messages; auto-ack; no broker redelivery
+       note right of Transport: Fanout exchange, all queues receive all messages auto-ack, no broker redelivery
      else Azure Queue Storage
-       note right of Transport: One queue per message type; visibility timeout retry; delete on success
+       note right of Transport: One queue per message type, visibility timeout retry, delete on success
      else InProcess
        note right of Transport: Immediate in-memory completion
      end</code></pre>
@@ -3145,12 +3201,12 @@
 <p>RabbitMQ topology (fanout exchange with one queue per subscriber):</p>
 <pre class="mermaid"><code>flowchart LR
   P[Publisher] --&gt;|Publish any message| E[Fanout Exchange 'messaging']
-  E --&gt;|broadcast| Q1[Queue A &lt;br/&gt;(Module A)]
-  E --&gt;|broadcast| Q2[Queue B &lt;br/&gt;(Module B)]
-  E --&gt;|broadcast| Q3[Queue C &lt;br/&gt;(Module C)]
-  Q1 --&gt; C1[Consumer filters &lt;br/&gt;by message type]
-  Q2 --&gt; C2[Consumer filters &lt;br/&gt;by message type]
-  Q3 --&gt; C3[Consumer filters &lt;br/&gt;by message type]</code></pre>
+  E --&gt;|broadcast| Q1[Queue A - Module A]
+  E --&gt;|broadcast| Q2[Queue B - Module B]
+  E --&gt;|broadcast| Q3[Queue C - Module C]
+  Q1 --&gt; C1[Consumer filters - by message type]
+  Q2 --&gt; C2[Consumer filters - by message type]
+  Q3 --&gt; C3[Consumer filters - by message type]</code></pre>
 <p><strong>Important behaviors:</strong></p>
 <ol>
 <li>

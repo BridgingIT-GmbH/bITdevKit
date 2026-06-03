@@ -359,17 +359,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#request-flow-in-practice" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Request flow in practice
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#example-applications" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -381,21 +370,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#templates-for-new-solutions-and-modules" class="md-nav__link">
+  <a href="#templates-for-solutions-and-modules" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Templates for new solutions and modules
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#common-early-decisions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Common early decisions
+        Templates for solutions and modules
       
     </span>
   </a>
@@ -1595,6 +1573,34 @@
   
   
     <li class="md-nav__item">
+      <a href="reference/features-orchestrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Orchestrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="reference/features-filtering/" class="md-nav__link">
         
   
@@ -2040,6 +2046,34 @@
   
   
     <li class="md-nav__item">
+      <a href="reference/features-jobs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Jobs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="reference/features-jobscheduling/" class="md-nav__link">
         
   
@@ -2370,17 +2404,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#request-flow-in-practice" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Request flow in practice
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#example-applications" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2392,21 +2415,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#templates-for-new-solutions-and-modules" class="md-nav__link">
+  <a href="#templates-for-solutions-and-modules" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Templates for new solutions and modules
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#common-early-decisions" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Common early decisions
+        Templates for solutions and modules
       
     </span>
   </a>
@@ -2541,13 +2553,17 @@
     <h3>Pipelines</h3>
     <p>Structured, observable multi-step workflows for in-process execution with low-friction defaults.</p>
   </a>
+  <a class="capability-card" href="reference/features-orchestrations/">
+    <h3>Orchestrations</h3>
+    <p>Durable, stateful workflows with explicit states, activities, signals, timers and operational endpoints.</p>
+  </a>
   <a class="capability-card" href="reference/features-storage-documents/">
     <h3>Storage</h3>
     <p>Document and file storage abstractions, monitoring, behaviors and provider-based extensibility.</p>
   </a>
-  <a class="capability-card" href="reference/features-jobscheduling/">
-    <h3>Scheduling</h3>
-    <p>Startup tasks, background jobs and operational scheduling capabilities for hosted applications.</p>
+  <a class="capability-card" href="reference/features-jobs/">
+    <h3>Jobs</h3>
+    <p>Code-first durable scheduling with triggers, batches, history, maintenance jobs and source-level integrations.</p>
   </a>
   <a class="capability-card" href="reference/features-presentation-endpoints/">
     <h3>Presentation</h3>
@@ -2591,21 +2607,6 @@
   </div>
 </div>
 
-<h2 id="request-flow-in-practice">Request flow in practice<a class="headerlink" href="#request-flow-in-practice" title="Permanent link">&para;</a></h2>
-<div class="snippet-panel">
-<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/customers&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">CustomerCreateModel</span><span class="w"> </span><span class="n">model</span><span class="p">,</span><span class="w"> </span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">command</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CustomerCreateCommand</span><span class="p">(</span><span class="n">model</span><span class="p">);</span>
-<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="n">command</span><span class="p">);</span>
-
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">MapHttpCreated</span><span class="p">();</span>
-<span class="p">});</span>
-</code></pre></div>
-</div>
-<p class="section-linkout">
-  <a class="inline-link" href="architecture/">See the request flow and layer map</a>
-</p>
-
 <h2 id="example-applications">Example applications<a class="headerlink" href="#example-applications" title="Permanent link">&para;</a></h2>
 <div class="examples-grid">
   <article class="example-card">
@@ -2629,7 +2630,7 @@
   <a class="inline-link" href="examples/">Explore the examples</a>
 </p>
 
-<h2 id="templates-for-new-solutions-and-modules">Templates for new solutions and modules<a class="headerlink" href="#templates-for-new-solutions-and-modules" title="Permanent link">&para;</a></h2>
+<h2 id="templates-for-solutions-and-modules">Templates for solutions and modules<a class="headerlink" href="#templates-for-solutions-and-modules" title="Permanent link">&para;</a></h2>
 <div class="architecture-panel">
   <div>
     <p class="section-kicker">SCAFFOLDING</p>
@@ -2645,11 +2646,11 @@
     <span>Solution</span>
     <span>Module</span>
     <span>Tests</span>
-    <span>Presentation</span>
   </div>
 </div>
 
-<h2 id="common-early-decisions">Common early decisions<a class="headerlink" href="#common-early-decisions" title="Permanent link">&para;</a></h2>
+<!-- ## Common decisions
+
 <div class="gateway-grid">
   <a class="gateway-card" href="decisions-messaging-vs-queueing/">
     <h3>Messaging vs Queueing</h3>
@@ -2667,7 +2668,7 @@
     <h3>Why bITdevKit</h3>
     <p>See when the devkit pays off and when a simpler stack may be enough.</p>
   </a>
-</div>
+</div> -->
 
 <!-- ## Getting started
 

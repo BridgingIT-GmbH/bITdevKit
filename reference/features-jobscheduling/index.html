@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/reference/features-jobscheduling/">
       
       
-        <link rel="prev" href="../features-startuptasks/">
+        <link rel="prev" href="../features-jobs/">
       
       
         <link rel="next" href="../features-storage-documents/">
@@ -1466,6 +1466,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-orchestrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Orchestrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-filtering/" class="md-nav__link">
         
   
@@ -1893,6 +1921,34 @@
     
   
     StartupTasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-jobs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Jobs
   
 
     
@@ -2955,6 +3011,7 @@
 
 <h1 id="jobscheduling-feature-documentation">JobScheduling Feature Documentation<a class="headerlink" href="#jobscheduling-feature-documentation" title="Permanent link">&para;</a></h1>
 <blockquote>
+<p>Legacy Quartz-backed scheduler. For new development, prefer <a href="../features-jobs/">Jobs</a>. Migration is source-level only; Quartz tables and trigger records are not reused by <code>Application.Jobs</code>.</p>
 <p>Schedule and run background jobs with flexible timing, DI integration, and operational visibility.</p>
 </blockquote>
 <div class="toc">

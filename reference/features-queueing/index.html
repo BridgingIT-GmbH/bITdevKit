@@ -1764,6 +1764,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-orchestrations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Orchestrations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-filtering/" class="md-nav__link">
         
   
@@ -2189,6 +2217,34 @@
     
   
     StartupTasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-jobs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Jobs
   
 
     
@@ -2867,44 +2923,44 @@
 </ul>
 <h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
 <h3 id="in-process-broker">In-process broker<a class="headerlink" href="#in-process-broker" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddQueueing</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">())</span>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddQueueing</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">())</span>
 <span class="w">  </span><span class="p">.</span><span class="n">WithInProcessBroker</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">InProcessQueueBrokerConfiguration</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">   </span><span class="n">MaxDegreeOfParallelism</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">   </span><span class="n">EnsureOrdered</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span>
-<span class="w"> </span><span class="p">})</span>
+<span class="w">    </span><span class="n">MaxDegreeOfParallelism</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="n">EnsureOrdered</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span>
+<span class="w">  </span><span class="p">})</span>
 <span class="w"> </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">();</span>
 </code></pre></div>
 <h3 id="entity-framework-broker">Entity Framework broker<a class="headerlink" href="#entity-framework-broker" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(...);</span>
 
-<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddQueueing</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">())</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddQueueing</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">  </span><span class="p">.</span><span class="n">WithEntityFrameworkBroker</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">EntityFrameworkQueueBrokerConfiguration</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">   </span><span class="n">AutoSave</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
-<span class="w">   </span><span class="n">ProcessingInterval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span>
-<span class="w">   </span><span class="n">LeaseDuration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+<span class="w">     </span><span class="n">AutoSave</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ProcessingInterval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">15</span><span class="p">),</span>
+<span class="w">    </span><span class="n">LeaseDuration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="w">  </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">());</span>
 </code></pre></div>
 <h3 id="azure-service-bus-broker">Azure Service Bus broker<a class="headerlink" href="#azure-service-bus-broker" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddQueueing</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">())</span>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddQueueing</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">  </span><span class="p">.</span><span class="n">WithServiceBusBroker</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ServiceBusQueueBrokerConfiguration</span>
 <span class="w">  </span><span class="p">{</span>
-<span class="w">   </span><span class="n">ConnectionString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">configuration</span><span class="p">[</span><span class="s">&quot;Queueing:ServiceBus:ConnectionString&quot;</span><span class="p">],</span>
-<span class="w">   </span><span class="n">QueueNamePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bit&quot;</span><span class="p">,</span>
-<span class="w">   </span><span class="n">AutoCreateQueue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
-<span class="w">   </span><span class="n">MaxConcurrentCalls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
-<span class="w">   </span><span class="n">MaxDeliveryAttempts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span>
+<span class="w">    </span><span class="n">ConnectionString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">configuration</span><span class="p">[</span><span class="s">&quot;Queueing:ServiceBus:ConnectionString&quot;</span><span class="p">],</span>
+<span class="w">    </span><span class="n">QueueNamePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;bit&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="n">AutoCreateQueue</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
+<span class="w">    </span><span class="n">MaxConcurrentCalls</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span>
+<span class="w">    </span><span class="n">MaxDeliveryAttempts</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">5</span>
 <span class="w">  </span><span class="p">})</span>
 <span class="w">  </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">());</span>
 </code></pre></div>
 <h3 id="azure-queue-storage-broker">Azure Queue Storage broker<a class="headerlink" href="#azure-queue-storage-broker" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddQueueing</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=&gt;</span>
-<span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">())</span>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddQueueing</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">  </span><span class="p">.</span><span class="n">WithAzureQueueStorageBroker</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">AzureQueueStorageQueueBrokerConfiguration</span>
 <span class="w">  </span><span class="p">{</span>
 <span class="w">   </span><span class="n">ConnectionString</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">configuration</span><span class="p">[</span><span class="s">&quot;Queueing:AzureQueueStorage:ConnectionString&quot;</span><span class="p">],</span>
@@ -3082,7 +3138,7 @@
   E --&gt; Q1[Queue: OrderQueuedMessage]
   E --&gt; Q2[Queue: InvoiceQueuedMessage]
   Q1 --&gt; C1[Consumer A]
-  Q1 --&gt; C2[Consumer B &lt;br/&gt;(competing)]
+  Q1 --&gt; C2[Consumer B - competing with A]
   Q2 --&gt; C3[Consumer C]</code></pre>
 <p><strong>Competing consumers:</strong></p>
 <ul>

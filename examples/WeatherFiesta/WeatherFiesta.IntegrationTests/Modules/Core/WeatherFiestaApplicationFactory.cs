@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests;
 
+using BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
 using Microsoft.Data.SqlClient;
 using Testcontainers.MsSql;
 
@@ -194,7 +195,8 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
 
             if (!string.IsNullOrWhiteSpace(this.sqlServerConnectionString))
             {
-                RegisterSqlActiveEntityProviders(services);
+                RemoveActiveEntityRegistrations(services);
+                services.AddActiveEntities();
             }
 
             // Mock external HTTP services only
@@ -226,7 +228,10 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
         });
     }
 
-    private static void RegisterSqlActiveEntityProviders(IServiceCollection services)
+    /// <summary>
+    /// Removes ActiveEntity registrations so SQL tests can re-add the shared Core module registrations.
+    /// </summary>
+    private static void RemoveActiveEntityRegistrations(IServiceCollection services)
     {
         for (var i = services.Count - 1; i >= 0; i--)
         {
@@ -238,47 +243,6 @@ public class WeatherFiestaApplicationFactory : WebApplicationFactory<Program>, I
                 services.RemoveAt(i);
             }
         }
-
-        services.AddActiveEntity(cfg =>
-        {
-            cfg.For<City, CityId>()
-                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
-                .AddLoggingBehavior()
-                .AddMetricsBehavior()
-                .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true)
-                .AddDomainEventPublishingBehavior(new ActiveEntityDomainEventPublishingBehaviorOptions { PublishBefore = false });
-
-            cfg.For<UserCity, UserCityId>()
-                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
-                .AddLoggingBehavior()
-                .AddMetricsBehavior()
-                .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true);
-
-            cfg.For<CurrentWeather, CurrentWeatherId>()
-                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
-                .AddLoggingBehavior()
-                .AddMetricsBehavior();
-
-            cfg.For<WeatherForecast, WeatherForecastId>()
-                .UseEntityFrameworkProvider(o => o
-                    .Context<CoreDbContext>()
-                    .Options<CoreDbContext>(options => options.GenericMergeStrategy()))
-                .AddLoggingBehavior()
-                .AddMetricsBehavior();
-
-            cfg.For<UserProfile, UserProfileId>()
-                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
-                .AddLoggingBehavior()
-                .AddMetricsBehavior()
-                .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true);
-
-            cfg.For<UserSubscription, UserSubscriptionId>()
-                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
-                .AddLoggingBehavior()
-                .AddMetricsBehavior()
-                .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true)
-                .AddDomainEventPublishingBehavior(new ActiveEntityDomainEventPublishingBehaviorOptions { PublishBefore = false });
-        });
     }
 
     /// <summary>

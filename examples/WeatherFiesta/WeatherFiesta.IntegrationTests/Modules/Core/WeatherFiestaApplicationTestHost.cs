@@ -78,7 +78,7 @@ public sealed class WeatherFiestaApplicationTestHost : IAsyncDisposable
             .WithBehavior(typeof(RetryPipelineBehavior<,>))
             .WithBehavior(typeof(TimeoutPipelineBehavior<,>));
 
-        RegisterActiveEntity(services);
+        services.AddActiveEntities();
 
         services.AddSingleton(this.WeatherAgent);
         services.AddSingleton(this.GeocodingClient);
@@ -116,50 +116,6 @@ public sealed class WeatherFiestaApplicationTestHost : IAsyncDisposable
         {
             await this.serviceProvider.DisposeAsync();
         }
-    }
-
-    private static void RegisterActiveEntity(IServiceCollection services)
-    {
-        services.AddActiveEntity(cfg =>
-        {
-            cfg.For<City, CityId>()
-                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
-                .AddLoggingBehavior()
-                .AddMetricsBehavior()
-                .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true)
-                .AddDomainEventPublishingBehavior(new ActiveEntityDomainEventPublishingBehaviorOptions { PublishBefore = false });
-
-            cfg.For<UserCity, UserCityId>()
-                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
-                .AddLoggingBehavior()
-                .AddMetricsBehavior()
-                .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true);
-
-            cfg.For<CurrentWeather, CurrentWeatherId>()
-                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
-                .AddLoggingBehavior()
-                .AddMetricsBehavior();
-
-            cfg.For<WeatherForecast, WeatherForecastId>()
-                .UseEntityFrameworkProvider(o => o
-                    .Context<CoreDbContext>()
-                    .Options<CoreDbContext>(options => options.GenericMergeStrategy()))
-                .AddLoggingBehavior()
-                .AddMetricsBehavior();
-
-            cfg.For<UserProfile, UserProfileId>()
-                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
-                .AddLoggingBehavior()
-                .AddMetricsBehavior()
-                .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true);
-
-            cfg.For<UserSubscription, UserSubscriptionId>()
-                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
-                .AddLoggingBehavior()
-                .AddMetricsBehavior()
-                .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true)
-                .AddDomainEventPublishingBehavior(new ActiveEntityDomainEventPublishingBehaviorOptions { PublishBefore = false });
-        });
     }
 
     private static ICurrentUserAccessor CreateFakeCurrentUserAccessor()

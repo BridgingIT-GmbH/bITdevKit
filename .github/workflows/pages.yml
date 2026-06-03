@@ -25,6 +25,7 @@ defaults:
 jobs:
   publish:
     name: Build and publish landing site
+    if: github.repository == 'BridgingIT-GmbH/bITdevKit'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository

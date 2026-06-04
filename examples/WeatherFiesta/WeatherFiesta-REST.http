@@ -26,7 +26,11 @@
 POST {{baseUrl}}/api/_system/identity/connect/token
 Content-Type: application/x-www-form-urlencoded
 
-grant_type=password&username=luke.skywalker&password=password&client_id=weatherfiesta-api&scope=openid profile email offline_access
+grant_type=password
+&client_id=weatherfiesta-api
+&username=luke.skywalker@starwars.com
+&password=starwars
+&scope=openid profile email roles
 
 ### ============================================================
 ### CITY ENDPOINTS (api/core/cities)

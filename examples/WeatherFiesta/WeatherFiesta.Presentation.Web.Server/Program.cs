@@ -64,6 +64,7 @@ builder.Services.AddFakeIdentityProvider(o => o
     .WithClient("Scalar", "scalar", $"{builder.Configuration["Authentication:Authority"]}/scalar/"));
 
 builder.Services.AddEndpoints<SystemEndpoints>();
+builder.Services.AddDashboard(o => o.Enabled(true));
 
 // ===============================================================================================
 // Register log services and endpoints

@@ -354,6 +354,7 @@ grant_type=authorization_code
 grant_type=password
 &client_id=client_id
 &username=user@example.com
+&password=password
 &scope=openid profile
 ```
 

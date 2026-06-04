@@ -9,7 +9,7 @@
     "/api/_system/jobs/definitions/{jobName}": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Get job details",
         "description": "Retrieves a single registered job definition with operational state.",
@@ -61,7 +61,7 @@
     "/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Get trigger details",
         "description": "Retrieves a single registered trigger with operational state.",
@@ -121,7 +121,7 @@
     "/api/_system/jobs/definitions/{jobName}/dispatch": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Dispatch a job",
         "description": "Dispatches a registered job using its configured manual trigger.",
@@ -192,7 +192,7 @@
     "/api/_system/jobs/definitions/{jobName}/enable": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Enable a job",
         "description": "Enables a registered job through durable runtime state.",
@@ -263,7 +263,7 @@
     "/api/_system/jobs/definitions/{jobName}/disable": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Disable a job",
         "description": "Disables a registered job through durable runtime state.",
@@ -334,7 +334,7 @@
     "/api/_system/jobs/definitions/{jobName}/pause": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Pause a job",
         "description": "Pauses a registered job without mutating its code-first definition.",
@@ -405,7 +405,7 @@
     "/api/_system/jobs/definitions/{jobName}/resume": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Resume a job",
         "description": "Resumes a previously paused job.",
@@ -476,7 +476,7 @@
     "/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/pause": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Pause a trigger",
         "description": "Pauses a registered trigger without mutating its code-first definition.",
@@ -555,7 +555,7 @@
     "/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/resume": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Resume a trigger",
         "description": "Resumes a previously paused trigger.",
@@ -634,7 +634,7 @@
     "/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/enable": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Enable a trigger",
         "description": "Enables a registered trigger through durable runtime state.",
@@ -713,7 +713,7 @@
     "/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/disable": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Disable a trigger",
         "description": "Disables a registered trigger through durable runtime state.",
@@ -792,7 +792,7 @@
     "/api/_system/jobs/occurrences/{occurrenceId}": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Get occurrence details",
         "description": "Retrieves one materialized occurrence by its internal occurrence identifier.",
@@ -844,7 +844,7 @@
     "/api/_system/jobs/occurrences/{occurrenceId}/history": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Get occurrence history",
         "description": "Retrieves execution history for one occurrence.",
@@ -896,7 +896,7 @@
     "/api/_system/jobs/occurrences/{occurrenceId}/pause": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Pause an occurrence",
         "description": "Pauses an eligible occurrence before a new attempt starts.",
@@ -968,7 +968,7 @@
     "/api/_system/jobs/occurrences/{occurrenceId}/resume": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Resume an occurrence",
         "description": "Resumes a previously paused occurrence.",
@@ -1040,7 +1040,7 @@
     "/api/_system/jobs/occurrences/{occurrenceId}/cancel": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Cancel an occurrence",
         "description": "Requests cancellation of an occurrence.",
@@ -1112,7 +1112,7 @@
     "/api/_system/jobs/occurrences/{occurrenceId}/interrupt": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Interrupt an occurrence",
         "description": "Requests interruption of a running occurrence.",
@@ -1184,7 +1184,7 @@
     "/api/_system/jobs/occurrences/{occurrenceId}/retry": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Retry an occurrence",
         "description": "Requests retry of an eligible failed occurrence.",
@@ -1256,7 +1256,7 @@
     "/api/_system/jobs/occurrences/{occurrenceId}/archive": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Archive an occurrence",
         "description": "Archives a terminal occurrence.",
@@ -1328,7 +1328,7 @@
     "/api/_system/jobs/occurrences/{occurrenceId}/repair/release-lease": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Release an occurrence lease",
         "description": "Releases an active occurrence lease so the occurrence can be repaired or recovered.",
@@ -1400,7 +1400,7 @@
     "/api/_system/jobs/occurrences/bulk/retry": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Retry occurrences",
         "description": "Retries the selected eligible failed occurrences as one bulk operation.",
@@ -1451,7 +1451,7 @@
     "/api/_system/jobs/occurrences/bulk/cancel": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Cancel occurrences",
         "description": "Cancels the selected eligible occurrences as one bulk operation.",
@@ -1502,7 +1502,7 @@
     "/api/_system/jobs/occurrences/bulk/archive": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Archive occurrences",
         "description": "Archives the selected eligible retained occurrences as one bulk operation.",
@@ -1553,7 +1553,7 @@
     "/api/_system/jobs/batches": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "List batches",
         "description": "Retrieves job batches with paging, filtering, and sorting.",
@@ -1593,7 +1593,7 @@
       },
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Create a batch",
         "description": "Creates an empty or described durable batch record.",
@@ -1644,7 +1644,7 @@
     "/api/_system/jobs/batches/{batchId}": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Get batch details",
         "description": "Retrieves a single job batch.",
@@ -1696,7 +1696,7 @@
     "/api/_system/jobs/batches/{batchId}/occurrences": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "List batch child occurrences",
         "description": "Retrieves child occurrences for a specific batch.",
@@ -1758,7 +1758,7 @@
     "/api/_system/jobs/batches/{batchId}/history": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "List batch history",
         "description": "Retrieves append-only history for a specific batch.",
@@ -1820,7 +1820,7 @@
     "/api/_system/jobs/batches/dispatch": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Dispatch a batch",
         "description": "Creates a batch and dispatches child occurrences as one accepted operation.",
@@ -1881,7 +1881,7 @@
     "/api/_system/jobs/batches/{batchId}/attach": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Attach to batch",
         "description": "Attaches additional child occurrences to an existing batch.",
@@ -1962,7 +1962,7 @@
     "/api/_system/jobs/batches/{batchId}/retry": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Retry batch",
         "description": "Retries eligible failed child occurrences for a batch.",
@@ -2033,7 +2033,7 @@
     "/api/_system/jobs/batches/{batchId}/cancel": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Cancel batch",
         "description": "Cancels eligible child occurrences for a batch.",
@@ -2104,7 +2104,7 @@
     "/api/_system/jobs/batches/{batchId}/pause": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Pause batch",
         "description": "Pauses eligible child occurrences for a batch.",
@@ -2175,7 +2175,7 @@
     "/api/_system/jobs/batches/{batchId}/resume": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Resume batch",
         "description": "Resumes eligible child occurrences for a batch.",
@@ -2237,7 +2237,7 @@
     "/api/_system/jobs/batches/{batchId}/archive": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Archive batch",
         "description": "Archives a batch and eligible retained child occurrences.",
@@ -2308,7 +2308,7 @@
     "/api/_system/jobs/maintenance/purge-history": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Purge history",
         "description": "Purges archived execution history older than the configured retention window.",
@@ -2359,7 +2359,7 @@
     "/api/_system/jobs/maintenance/release-expired-leases": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Release expired leases",
         "description": "Releases expired leases and repairs the affected occurrences.",
@@ -2410,7 +2410,7 @@
     "/api/_system/jobs/maintenance/recover-stuck-occurrences": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Recover stuck occurrences",
         "description": "Recovers stale occurrences that no longer have a valid active lease.",
@@ -2461,7 +2461,7 @@
     "/api/_system/jobs/maintenance/detect-orphaned-runtime-state": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Detect orphaned runtime state",
         "description": "Detects runtime-state rows that no longer correspond to active code-first registrations.",
@@ -2512,7 +2512,7 @@
     "/api/_system/jobs/dashboard/summary": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Get dashboard summary",
         "description": "Retrieves aggregate counts and summary diagnostics for the jobs dashboard.",
@@ -2588,7 +2588,7 @@
     "/api/_system/jobs/dashboard/timeline": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Get dashboard timeline",
         "description": "Retrieves timeline buckets for occurrences or executions.",
@@ -2630,7 +2630,7 @@
     "/api/_system/jobs/dashboard": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Get dashboard",
         "description": "Retrieves the primary dashboard summary projection.",
@@ -2705,7 +2705,7 @@
     "/api/_system/jobs/dashboard/navigation": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Get dashboard navigation",
         "description": "Retrieves dashboard navigation metadata derived from the dashboard summary projection.",
@@ -2746,7 +2746,7 @@
     "/api/_system/jobs/dashboard/overview": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Get dashboard overview",
         "description": "Retrieves dashboard overview data derived from the dashboard summary projection.",
@@ -2787,7 +2787,7 @@
     "/api/_system/jobs": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "List jobs",
         "description": "Retrieves registered jobs with operational overlay, paging, filtering, and sorting.",
@@ -2907,7 +2907,7 @@
     "/api/_system/jobs/triggers": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "List triggers",
         "description": "Retrieves job triggers with paging, filtering, and sorting.",
@@ -2949,7 +2949,7 @@
     "/api/_system/jobs/triggers/recurring": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "List recurring triggers",
         "description": "Retrieves recurring job triggers with paging, filtering, and sorting.",
@@ -2991,7 +2991,7 @@
     "/api/_system/jobs/occurrences": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "List occurrences",
         "description": "Retrieves materialized job occurrences with paging, filtering, and sorting.",
@@ -3031,7 +3031,7 @@
       },
       "delete": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Purge occurrences",
         "description": "Purges retained terminal occurrences by age and optional status, job, trigger, and archive filters.",
@@ -3131,7 +3131,7 @@
     "/api/_system/jobs/retries": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "List retries",
         "description": "Retrieves retry-scheduled or retryable occurrences.",
@@ -3243,7 +3243,7 @@
     "/api/_system/jobs/dependencies": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "List dependencies",
         "description": "Retrieves persisted occurrence dependency links with prerequisite and dependent state.",
@@ -3285,7 +3285,7 @@
     "/api/_system/jobs/executions": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "List executions",
         "description": "Retrieves execution attempts with paging, filtering, and sorting.",
@@ -3327,7 +3327,7 @@
     "/api/_system/jobs/history": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "List execution history",
         "description": "Retrieves retained execution history with paging, filtering, and sorting.",
@@ -3369,7 +3369,7 @@
     "/api/_system/jobs/leases": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "List leases",
         "description": "Retrieves active and expired occurrence lease diagnostics.",
@@ -3411,7 +3411,7 @@
     "/api/_system/jobs/servers": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "List scheduler servers",
         "description": "Retrieves observed scheduler server instances.",
@@ -3453,7 +3453,7 @@
     "/api/_system/jobs/metrics": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Get scheduler metrics",
         "description": "Retrieves aggregate jobs metrics for operational monitoring.",
@@ -3495,7 +3495,7 @@
     "/api/_system/jobs/recurring": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "List recurring jobs",
         "description": "Retrieves recurring job triggers using the spec-shaped operational route.",
@@ -3536,7 +3536,7 @@
     "/api/_system/jobs/recurring/{jobName}/{triggerName}": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Get recurring trigger details",
         "description": "Retrieves a single recurring trigger using the spec-shaped operational route.",
@@ -3595,7 +3595,7 @@
     "/api/_system/jobs/{jobName}/triggers": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "List job triggers",
         "description": "Retrieves triggers for a specific job using the spec-shaped operational route.",
@@ -3646,7 +3646,7 @@
     "/api/_system/jobs/{jobName}/triggers/{triggerName}": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Get trigger details",
         "description": "Retrieves a single trigger using the spec-shaped operational route.",
@@ -3705,7 +3705,7 @@
     "/api/_system/jobs/{jobName}": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Get job details",
         "description": "Retrieves a single registered job definition with operational state using the spec-shaped route.",
@@ -3756,7 +3756,7 @@
     "/api/_system/jobs/{jobName}/dispatch": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Dispatch a job",
         "description": "Dispatches a registered job using the spec-shaped operational route.",
@@ -3826,7 +3826,7 @@
     "/api/_system/jobs/{jobName}/enable": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Enable a job",
         "description": "Enables a registered job using the spec-shaped operational route.",
@@ -3896,7 +3896,7 @@
     "/api/_system/jobs/{jobName}/disable": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Disable a job",
         "description": "Disables a registered job using the spec-shaped operational route.",
@@ -3966,7 +3966,7 @@
     "/api/_system/jobs/{jobName}/pause": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Pause a job",
         "description": "Pauses a registered job using the spec-shaped operational route.",
@@ -4036,7 +4036,7 @@
     "/api/_system/jobs/{jobName}/resume": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Resume a job",
         "description": "Resumes a previously paused job using the spec-shaped operational route.",
@@ -4106,7 +4106,7 @@
     "/api/_system/jobs/{jobName}/triggers/{triggerName}/pause": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Pause a trigger",
         "description": "Pauses a registered trigger using the spec-shaped operational route.",
@@ -4184,7 +4184,7 @@
     "/api/_system/jobs/{jobName}/triggers/{triggerName}/resume": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Resume a trigger",
         "description": "Resumes a previously paused trigger using the spec-shaped operational route.",
@@ -4262,7 +4262,7 @@
     "/api/_system/jobs/{jobName}/triggers/{triggerName}/enable": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Enable a trigger",
         "description": "Enables a registered trigger using the spec-shaped operational route.",
@@ -4340,7 +4340,7 @@
     "/api/_system/jobs/{jobName}/triggers/{triggerName}/disable": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_System.Jobs"
         ],
         "summary": "Disable a trigger",
         "description": "Disables a registered trigger using the spec-shaped operational route.",
@@ -6322,6 +6322,50 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Index",
+        "description": "Shows the dashboard index page.",
+        "operationId": "_bdk.Dashboard.Index",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/metrics": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Metrics",
+        "description": "Shows the dashboard metrics page.",
+        "operationId": "_bdk.Dashboard.Metrics",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }
@@ -9737,7 +9781,7 @@
   ],
   "tags": [
     {
-      "name": "_system/jobs"
+      "name": "_System.Jobs"
     },
     {
       "name": "Core.Cities"
@@ -9762,6 +9806,9 @@
     },
     {
       "name": "_System"
+    },
+    {
+      "name": "_bdk.Dashboard"
     },
     {
       "name": "_System.Metrics"

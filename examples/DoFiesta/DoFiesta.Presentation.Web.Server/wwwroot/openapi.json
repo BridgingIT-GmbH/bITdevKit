@@ -1838,7 +1838,7 @@
     "/api/_system/locations": {
       "get": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "List registered storage locations",
         "description": "Retrieves the registered file storage providers and their exposed location metadata.",
@@ -1863,7 +1863,7 @@
     "/api/_system/{providerName}/provider": {
       "get": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "Get provider information",
         "description": "Retrieves information about the configured file storage provider.",
@@ -1905,7 +1905,7 @@
     "/api/_system/{providerName}/health": {
       "get": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "Check provider health",
         "description": "Runs the configured provider health check.",
@@ -1957,7 +1957,7 @@
     "/api/_system/{providerName}/files/exists": {
       "get": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "Check whether a file exists",
         "description": "Checks whether the specified file path exists in the configured provider.",
@@ -2026,7 +2026,7 @@
     "/api/_system/{providerName}/files/content": {
       "get": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "Read file content",
         "description": "Streams the file content for the specified provider-backed path.",
@@ -2086,7 +2086,7 @@
       },
       "put": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "Write file content",
         "description": "Writes the raw request body to the specified provider-backed file path.",
@@ -2175,7 +2175,7 @@
     "/api/_system/{providerName}/files": {
       "delete": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "Delete a file",
         "description": "Deletes the specified provider-backed file path.",
@@ -2252,7 +2252,7 @@
       },
       "get": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "List files",
         "description": "Lists files from the configured provider with optional recursion and continuation support.",
@@ -2343,7 +2343,7 @@
     "/api/_system/{providerName}/files/metadata": {
       "get": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "Get file metadata",
         "description": "Retrieves metadata for the specified provider-backed file path.",
@@ -2412,7 +2412,7 @@
     "/api/_system/{providerName}/files/checksum": {
       "get": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "Get file checksum",
         "description": "Computes a checksum for the specified provider-backed file path.",
@@ -2481,7 +2481,7 @@
     "/api/_system/{providerName}/directories/exists": {
       "get": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "Check whether a directory exists",
         "description": "Checks whether the specified provider-backed directory path exists.",
@@ -2550,7 +2550,7 @@
     "/api/_system/{providerName}/directories": {
       "get": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "List directories",
         "description": "Lists directories from the configured provider with optional recursion.",
@@ -2635,7 +2635,7 @@
       },
       "post": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "Create a directory",
         "description": "Creates the specified provider-backed directory path.",
@@ -2712,7 +2712,7 @@
       },
       "delete": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "Delete a directory",
         "description": "Deletes the specified provider-backed directory path.",
@@ -2799,7 +2799,7 @@
     "/api/_system/{providerName}/events": {
       "get": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "List file events",
         "description": "Lists stored monitoring events for the provider-backed location, optionally filtered by path, event type, date range, and result size.",
@@ -2909,7 +2909,7 @@
     "/api/_system/{providerName}/events/scan": {
       "post": {
         "tags": [
-          "_System.Storage"
+          "_System.FileStorage"
         ],
         "summary": "Scan a monitored location",
         "description": "Triggers an on-demand file monitoring scan for the provider-backed location and returns the detected events.",
@@ -10466,7 +10466,7 @@
       "name": "_System.Orchestrations"
     },
     {
-      "name": "_System.Storage"
+      "name": "_System.FileStorage"
     },
     {
       "name": "CoreModule.TodoItems"

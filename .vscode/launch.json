@@ -89,6 +89,81 @@
         "order": 5,
         "hidden": false
       }
+    },
+    {
+      "name": "WeatherFiesta.Presentation.Web.Server Debug",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "WeatherFiesta - build",
+      "program": "${workspaceFolder}/examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/bin/Debug/net10.0/BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.dll",
+      "args": ["--urls", "https://localhost:5001;http://localhost:5000"],
+      "cwd": "${workspaceFolder}/examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server",
+      "stopAtEntry": false,
+      "justMyCode": true,
+      "console": "internalConsole",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https://localhost:5001\\S*)",
+        "uriFormat": "%s"
+      },
+      "presentation": {
+        "group": "WeatherFiesta",
+        "order": 1,
+        "hidden": false
+      }
+    },
+    {
+      "name": "WeatherFiesta.Presentation.Web.Server Run",
+      "type": "coreclr",
+      "request": "launch",
+      "noDebug": true,
+      "preLaunchTask": "WeatherFiesta - build",
+      "program": "${workspaceFolder}/examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/bin/Debug/net10.0/BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.dll",
+      "args": ["--urls", "https://localhost:5001;http://localhost:5000"],
+      "cwd": "${workspaceFolder}/examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server",
+      "justMyCode": true,
+      "console": "internalConsole",
+      "env": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "serverReadyAction": {
+        "action": "openExternally",
+        "pattern": "\\bNow listening on:\\s+(https://localhost:5001\\S*)",
+        "uriFormat": "%s"
+      },
+      "presentation": {
+        "group": "WeatherFiesta",
+        "order": 2,
+        "hidden": false
+      }
+    },
+    {
+      "name": "WeatherFiesta.Presentation.Web.Server Watch + Attach",
+      "type": "coreclr",
+      "request": "attach",
+      "preLaunchTask": "WeatherFiesta - watch",
+      "processId": "${command:pickProcess}",
+      "justMyCode": true,
+      "presentation": {
+        "group": "WeatherFiesta",
+        "order": 3,
+        "hidden": false
+      }
+    },
+    {
+      "name": "WeatherFiesta.Presentation.Web.Server Attach (manual)",
+      "type": "coreclr",
+      "request": "attach",
+      "processId": "${command:pickProcess}",
+      "justMyCode": true,
+      "presentation": {
+        "group": "WeatherFiesta",
+        "order": 5,
+        "hidden": false
+      }
     }
   ]
 }

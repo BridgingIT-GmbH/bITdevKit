@@ -1,0 +1,523 @@
+@using BridgingIT.DevKit.Presentation.Web
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using BridgingIT.DevKit.Common
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.Extensions.Logging
+@using RazorSlices
+@inherits RazorSlice
+
+@{
+    var metricsModel = CreateModel();
+}
+
+@if (metricsModel.UnavailableServices.Count > 0)
+{
+    <div class="alert alert-warning py-2 mb-2">
+        Metrics unavailable: @string.Join(", ", metricsModel.UnavailableServices). Enable metrics with <code>AddMetrics(...)</code> to populate these panels.
+    </div>
+}
+
+@if (metricsModel.Errors.Count > 0)
+{
+    <div class="alert alert-danger py-2 mb-2">
+        @foreach (var error in metricsModel.Errors)
+        {
+            <div>@error</div>
+        }
+    </div>
+}
+
+<div class="row g-2 mb-2">
+    <div class="col-6 col-lg-2">
+        <div class="card h-100">
+            <div class="card-body p-3">
+                <div class="text-muted small">App Success</div>
+                <div class="fs-4 fw-semibold">@FormatNumber(GetSummary(metricsModel, "totalSuccess"))</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="card h-100">
+            <div class="card-body p-3">
+                <div class="text-muted small">App Failure</div>
+                <div class="fs-4 fw-semibold text-danger">@FormatNumber(GetSummary(metricsModel, "totalFailure"))</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="card h-100">
+            <div class="card-body p-3">
+                <div class="text-muted small">App Current</div>
+                <div class="fs-4 fw-semibold">@FormatNumber(GetSummary(metricsModel, "totalCurrent"))</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="card h-100">
+            <div class="card-body p-3">
+                <div class="text-muted small">.NET CPU</div>
+                <div class="fs-4 fw-semibold">@FormatNumber(metricsModel.DotNet.CpuUsagePercent)%</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="card h-100">
+            <div class="card-body p-3">
+                <div class="text-muted small">Working Set</div>
+                <div class="fs-5 fw-semibold">@FormatNumber(metricsModel.DotNet.WorkingSetMb) MB</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-6 col-lg-2">
+        <div class="card h-100">
+            <div class="card-body p-3">
+                <div class="text-muted small">ASP.NET Requests</div>
+                <div class="fs-4 fw-semibold">@FormatCount(metricsModel.AspNet.TotalRequests)</div>
+                <div class="text-muted small">@FormatNumber(metricsModel.AspNet.AverageLatencyMs) ms avg</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ul class="nav nav-tabs mb-2" id="dashboardMetricsTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="metrics-app-tab" data-bs-toggle="tab" data-bs-target="#metrics-app" type="button" role="tab" aria-controls="metrics-app" aria-selected="true">App</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="metrics-dotnet-tab" data-bs-toggle="tab" data-bs-target="#metrics-dotnet" type="button" role="tab" aria-controls="metrics-dotnet" aria-selected="false">.NET</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="metrics-aspnet-tab" data-bs-toggle="tab" data-bs-target="#metrics-aspnet" type="button" role="tab" aria-controls="metrics-aspnet" aria-selected="false">ASP.NET</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="metrics-routes-tab" data-bs-toggle="tab" data-bs-target="#metrics-routes" type="button" role="tab" aria-controls="metrics-routes" aria-selected="false">Routes</button>
+    </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade show active" id="metrics-app" role="tabpanel" aria-labelledby="metrics-app-tab" tabindex="0">
+        <div class="row g-2 mb-2">
+            <div class="col-12 col-xl-4">
+                <div class="card h-100">
+                    <div class="card-body p-3">
+                        <h6 class="card-title">Top Current</h6>
+                        @RenderMetricList(metricsModel.App.TopCurrent, "No live current metrics are available.", false)
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-xl-4">
+                <div class="card h-100">
+                    <div class="card-body p-3">
+                        <h6 class="card-title">Top Failures</h6>
+                        @RenderMetricList(metricsModel.App.TopFailures, "No failure metrics are currently recorded.", true)
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-xl-4">
+                <div class="card h-100">
+                    <div class="card-body p-3">
+                        <h6 class="card-title">Latency Highlights</h6>
+                        @if (metricsModel.App.LatencyHighlights.Count == 0)
+                        {
+                            <div class="text-muted small">No latency histograms are available yet.</div>
+                        }
+                        else
+                        {
+                            <div class="table-responsive">
+                                <table class="table table-sm align-middle mb-0">
+                                    <tbody>
+                                    @foreach (var metric in metricsModel.App.LatencyHighlights.Take(5))
+                                    {
+                                        <tr>
+                                            <td>@metric.Name</td>
+                                            <td class="text-end text-nowrap">@FormatNumber(metric.Average) ms avg</td>
+                                        </tr>
+                                    }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-2">
+            <div class="card-body p-3">
+                <h6 class="card-title">Feature Overview</h6>
+                @if (metricsModel.Overview.Features.Count == 0)
+                {
+                    <div class="text-muted small">No feature overview data is available.</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle">
+                            <thead>
+                            <tr>
+                                <th>Feature</th>
+                                <th class="text-end">Success</th>
+                                <th class="text-end">Failure</th>
+                                <th class="text-end">Current</th>
+                                <th>Top Throughput</th>
+                                <th>Top Current</th>
+                                <th>Slowest Series</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var feature in metricsModel.Overview.Features.Values.OrderBy(feature => feature.Name, StringComparer.OrdinalIgnoreCase))
+                            {
+                                <tr>
+                                    <td class="fw-medium">@feature.Name</td>
+                                    <td class="text-end">@FormatNumber(feature.SuccessTotal)</td>
+                                    <td class="text-end @(feature.FailureTotal > 0 ? "text-danger" : "")">@FormatNumber(feature.FailureTotal)</td>
+                                    <td class="text-end">@FormatNumber(feature.CurrentTotal)</td>
+                                    <td>@FormatMetricPair(feature.TopThroughput)</td>
+                                    <td>@FormatMetricPair(feature.TopCurrent)</td>
+                                    <td>@FormatLatencyPair(feature.SlowestSeries)</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="metrics-dotnet" role="tabpanel" aria-labelledby="metrics-dotnet-tab" tabindex="0">
+        <div class="row g-2">
+            <div class="col-12 col-xl-6">
+                <div class="card h-100">
+                    <div class="card-body p-3">
+                        <h6 class="card-title">Memory & GC</h6>
+                        <table class="table table-sm mb-0">
+                            <tbody>
+                            <tr><td>Working Set</td><td class="text-end">@FormatNumber(metricsModel.DotNet.WorkingSetMb) MB</td></tr>
+                            <tr><td>Private Memory</td><td class="text-end">@FormatNumber(metricsModel.DotNet.PrivateMemoryMb) MB</td></tr>
+                            <tr><td>Managed Memory</td><td class="text-end">@FormatNumber(metricsModel.DotNet.ManagedMemoryMb) MB</td></tr>
+                            <tr><td>Heap Size</td><td class="text-end">@FormatNumber(metricsModel.DotNet.HeapSizeMb) MB</td></tr>
+                            <tr><td>Fragmented Memory</td><td class="text-end">@FormatNumber(metricsModel.DotNet.FragmentedMemoryMb) MB</td></tr>
+                            <tr><td>Total Allocated</td><td class="text-end">@FormatNumber(metricsModel.DotNet.TotalAllocatedMb) MB</td></tr>
+                            <tr><td>GC Gen0</td><td class="text-end">@FormatCount(metricsModel.DotNet.Gen0Collections)</td></tr>
+                            <tr><td>GC Gen1</td><td class="text-end">@FormatCount(metricsModel.DotNet.Gen1Collections)</td></tr>
+                            <tr><td>GC Gen2</td><td class="text-end">@FormatCount(metricsModel.DotNet.Gen2Collections)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-xl-6">
+                <div class="card h-100">
+                    <div class="card-body p-3">
+                        <h6 class="card-title">Threads & Runtime</h6>
+                        <table class="table table-sm mb-0">
+                            <tbody>
+                            <tr><td>CPU Usage</td><td class="text-end">@FormatNumber(metricsModel.DotNet.CpuUsagePercent)%</td></tr>
+                            <tr><td>Thread Count</td><td class="text-end">@FormatCount(metricsModel.DotNet.ThreadCount)</td></tr>
+                            <tr><td>Worker Threads Used</td><td class="text-end">@FormatCount(metricsModel.DotNet.WorkerThreadsUsed)</td></tr>
+                            <tr><td>Worker Threads Available</td><td class="text-end">@FormatCount(metricsModel.DotNet.WorkerThreadsAvailable)</td></tr>
+                            <tr><td>IO Threads Used</td><td class="text-end">@FormatCount(metricsModel.DotNet.IoThreadsUsed)</td></tr>
+                            <tr><td>IO Threads Available</td><td class="text-end">@FormatCount(metricsModel.DotNet.IoThreadsAvailable)</td></tr>
+                            <tr><td>Pending Work Items</td><td class="text-end">@FormatCount(metricsModel.DotNet.PendingWorkItems)</td></tr>
+                            <tr><td>Uptime</td><td class="text-end">@FormatUptime(metricsModel.DotNet.UptimeSeconds)</td></tr>
+                            <tr><td>Captured</td><td class="text-end">@FormatTimestamp(metricsModel.DotNet.CapturedAtUtc)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="metrics-aspnet" role="tabpanel" aria-labelledby="metrics-aspnet-tab" tabindex="0">
+        <div class="row g-2">
+            <div class="col-12 col-xl-6">
+                <div class="card h-100">
+                    <div class="card-body p-3">
+                        <h6 class="card-title">Requests</h6>
+                        <table class="table table-sm mb-0">
+                            <tbody>
+                            <tr><td>Total Requests</td><td class="text-end">@FormatCount(metricsModel.AspNet.TotalRequests)</td></tr>
+                            <tr><td>Active Requests</td><td class="text-end">@FormatCount(metricsModel.AspNet.ActiveRequests)</td></tr>
+                            <tr><td>Max Concurrent Requests</td><td class="text-end">@FormatCount(metricsModel.AspNet.MaxObservedConcurrentRequests)</td></tr>
+                            <tr><td>Failed Requests</td><td class="text-end text-danger">@FormatCount(metricsModel.AspNet.FailedRequests)</td></tr>
+                            <tr><td>Failure Rate</td><td class="text-end">@FormatNumber(metricsModel.AspNet.FailureRatePercent)%</td></tr>
+                            <tr><td>Average Latency</td><td class="text-end">@FormatNumber(metricsModel.AspNet.AverageLatencyMs) ms</td></tr>
+                            <tr><td>Requests Per Minute</td><td class="text-end">@FormatNumber(metricsModel.AspNet.RequestsPerMinute)</td></tr>
+                            <tr><td>Last Request</td><td class="text-end">@FormatTimestamp(metricsModel.AspNet.LastRequestAtUtc)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-xl-6">
+                <div class="card h-100">
+                    <div class="card-body p-3">
+                        <h6 class="card-title">Status Codes</h6>
+                        <table class="table table-sm mb-0">
+                            <tbody>
+                            <tr><td>1xx</td><td class="text-end">@FormatCount(metricsModel.AspNet.Status1xx)</td></tr>
+                            <tr><td>2xx</td><td class="text-end">@FormatCount(metricsModel.AspNet.Status2xx)</td></tr>
+                            <tr><td>3xx</td><td class="text-end">@FormatCount(metricsModel.AspNet.Status3xx)</td></tr>
+                            <tr><td>4xx</td><td class="text-end">@FormatCount(metricsModel.AspNet.Status4xx)</td></tr>
+                            <tr><td>5xx</td><td class="text-end text-danger">@FormatCount(metricsModel.AspNet.Status5xx)</td></tr>
+                            <tr><td>Tracked Routes</td><td class="text-end">@FormatCount(metricsModel.AspNet.TrackedRouteCount)</td></tr>
+                            <tr><td>Total Latency</td><td class="text-end">@FormatCount(metricsModel.AspNet.TotalLatencyMs) ms</td></tr>
+                            <tr><td>Uptime</td><td class="text-end">@FormatUptime(metricsModel.AspNet.UptimeSeconds)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-pane fade" id="metrics-routes" role="tabpanel" aria-labelledby="metrics-routes-tab" tabindex="0">
+        <div class="card">
+            <div class="card-body p-3">
+                <h6 class="card-title">Busiest Routes</h6>
+                @if (metricsModel.AspNetRoutes.Routes.Count == 0)
+                {
+                    <div class="text-muted small">No ASP.NET route metrics are available yet.</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle">
+                            <thead>
+                            <tr>
+                                <th>Method</th>
+                                <th>Route</th>
+                                <th class="text-end">Requests</th>
+                                <th class="text-end">Failures</th>
+                                <th class="text-end">Avg Latency</th>
+                                <th class="text-end">Last Request</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var route in metricsModel.AspNetRoutes.Routes.Take(25))
+                            {
+                                <tr>
+                                    <td><span class="badge">@route.Method</span></td>
+                                    <td><code>@route.Route</code></td>
+                                    <td class="text-end">@FormatCount(route.RequestCount)</td>
+                                    <td class="text-end @(route.FailureCount > 0 ? "text-danger" : "")">@FormatCount(route.FailureCount)</td>
+                                    <td class="text-end">@FormatNumber(route.AverageLatencyMs) ms</td>
+                                    <td class="text-end">@FormatTimestamp(route.LastRequestAtUtc)</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    private DashboardMetricsViewModel CreateModel()
+    {
+        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var bdkSnapshotService = this.HttpContext.RequestServices.GetService<IMetricsSnapshotService>();
+        var dotNetSnapshotService = this.HttpContext.RequestServices.GetService<IDotNetMetricsSnapshotService>();
+        var aspNetSnapshotService = this.HttpContext.RequestServices.GetService<IAspNetMetricsSnapshotService>();
+        var logger = this.HttpContext.RequestServices.GetService<ILogger<DashboardMetricsViewModel>>();
+        var result = new DashboardMetricsViewModel
+        {
+            CapturedAtUtc = DateTimeOffset.UtcNow,
+            ContentPath = CombinePath(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.MetricsContent)
+        };
+
+        if (bdkSnapshotService is null)
+        {
+            result.UnavailableServices.Add("Devkit metrics");
+        }
+        else
+        {
+            try
+            {
+                result.App = bdkSnapshotService.GetSnapshot();
+                result.Overview = BuildOverview(result.App);
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "Failed to retrieve dashboard devkit metrics snapshot.");
+                result.Errors.Add("Devkit metrics could not be loaded.");
+            }
+        }
+
+        if (dotNetSnapshotService is null)
+        {
+            result.UnavailableServices.Add(".NET runtime metrics");
+        }
+        else
+        {
+            try
+            {
+                result.DotNet = dotNetSnapshotService.GetSnapshot();
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "Failed to retrieve dashboard .NET metrics snapshot.");
+                result.Errors.Add(".NET runtime metrics could not be loaded.");
+            }
+        }
+
+        if (aspNetSnapshotService is null)
+        {
+            result.UnavailableServices.Add("ASP.NET request metrics");
+        }
+        else
+        {
+            try
+            {
+                result.AspNet = aspNetSnapshotService.GetSnapshot();
+                result.AspNetRoutes = aspNetSnapshotService.GetRouteSnapshot();
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "Failed to retrieve dashboard ASP.NET metrics snapshot.");
+                result.Errors.Add("ASP.NET request metrics could not be loaded.");
+            }
+        }
+
+        return result;
+    }
+
+    private static MetricsOverviewSnapshotModel BuildOverview(MetricsSnapshotModel snapshot)
+    {
+        snapshot ??= new MetricsSnapshotModel();
+
+        var overview = new MetricsOverviewSnapshotModel
+        {
+            CapturedAtUtc = snapshot.CapturedAtUtc,
+            ProcessStartedAtUtc = snapshot.ProcessStartedAtUtc,
+            UptimeSeconds = snapshot.UptimeSeconds,
+            TopFailures = snapshot.TopFailures ?? [],
+            TopThroughput = snapshot.TopThroughput ?? [],
+            TopCurrent = snapshot.TopCurrent ?? [],
+            LatencyHighlights = snapshot.LatencyHighlights ?? [],
+            SummaryCards = new Dictionary<string, double>(StringComparer.Ordinal)
+            {
+                ["totalSuccess"] = snapshot.Features.Values.Sum(feature => feature.SuccessTotal),
+                ["totalFailure"] = snapshot.Features.Values.Sum(feature => feature.FailureTotal),
+                ["totalCurrent"] = snapshot.Features.Values.Sum(feature => feature.CurrentTotal),
+                ["featureCount"] = snapshot.Features.Count,
+                ["latencySeriesCount"] = snapshot.Features.Values.Sum(feature => feature.Durations.Count)
+            }
+        };
+
+        foreach (var feature in snapshot.Features.OrderBy(pair => pair.Key, StringComparer.Ordinal))
+        {
+            overview.Features[feature.Key] = new MetricsOverviewFeatureModel
+            {
+                Name = string.IsNullOrWhiteSpace(feature.Value.Name) ? feature.Key : feature.Value.Name,
+                SuccessTotal = feature.Value.SuccessTotal,
+                FailureTotal = feature.Value.FailureTotal,
+                CurrentTotal = feature.Value.CurrentTotal,
+                TopThroughput = feature.Value.TopThroughput.FirstOrDefault(),
+                TopCurrent = feature.Value.TopCurrent.FirstOrDefault(),
+                SlowestSeries = feature.Value.LatencyHighlights.FirstOrDefault()
+            };
+        }
+
+        return overview;
+    }
+
+    private static double GetSummary(DashboardMetricsViewModel model, string key)
+    {
+        return model.Overview.SummaryCards.TryGetValue(key, out var value) ? value : 0;
+    }
+
+    private IHtmlContent RenderMetricList(IEnumerable<MetricValueModel> metrics, string emptyText, bool danger)
+    {
+        var items = (metrics ?? []).Take(5).ToList();
+        if (items.Count == 0)
+        {
+            return new HtmlString($"<div class=\"text-muted small\">{emptyText}</div>");
+        }
+
+        var rows = string.Join(
+            string.Empty,
+            items.Select(metric =>
+                $"<tr><td>{HtmlEncode(metric.Name)}</td><td class=\"text-end text-nowrap {(danger ? "text-danger" : string.Empty)}\">{FormatNumber(metric.Value)}</td></tr>"));
+
+        return new HtmlString($"<div class=\"table-responsive\"><table class=\"table table-sm align-middle mb-0\"><tbody>{rows}</tbody></table></div>");
+    }
+
+    private static string FormatMetricPair(MetricValueModel metric)
+    {
+        return string.IsNullOrWhiteSpace(metric?.Name)
+            ? "-"
+            : $"{metric.Name} ({FormatNumber(metric.Value)})";
+    }
+
+    private static string FormatLatencyPair(MetricLatencyModel metric)
+    {
+        return string.IsNullOrWhiteSpace(metric?.Name)
+            ? "-"
+            : $"{metric.Name} ({FormatNumber(metric.Average)} ms avg)";
+    }
+
+    private static string FormatNumber(double value)
+    {
+        var rounded = Math.Round(value, 2);
+        return Math.Abs(rounded % 1) < 0.0001
+            ? rounded.ToString("N0", CultureInfo.InvariantCulture)
+            : rounded.ToString("N2", CultureInfo.InvariantCulture);
+    }
+
+    private static string FormatCount(long value)
+    {
+        return value.ToString("N0", CultureInfo.InvariantCulture);
+    }
+
+    private static string FormatCount(int value)
+    {
+        return value.ToString("N0", CultureInfo.InvariantCulture);
+    }
+
+    private static string FormatTimestamp(DateTimeOffset? value)
+    {
+        return value.HasValue ? value.Value.LocalDateTime.ToString("g", CultureInfo.InvariantCulture) : "-";
+    }
+
+    private static string FormatTimestamp(DateTimeOffset value)
+    {
+        return value == default ? "-" : value.LocalDateTime.ToString("g", CultureInfo.InvariantCulture);
+    }
+
+    private static string FormatUptime(double uptimeSeconds)
+    {
+        if (uptimeSeconds <= 0)
+        {
+            return "-";
+        }
+
+        var uptime = TimeSpan.FromSeconds(uptimeSeconds);
+        if (uptime.TotalDays >= 1)
+        {
+            return $"{(int)uptime.TotalDays}d {uptime.Hours}h";
+        }
+
+        if (uptime.TotalHours >= 1)
+        {
+            return $"{(int)uptime.TotalHours}h {uptime.Minutes}m";
+        }
+
+        return $"{uptime.Minutes}m {uptime.Seconds}s";
+    }
+
+    private static string HtmlEncode(string value)
+    {
+        return System.Net.WebUtility.HtmlEncode(value ?? string.Empty);
+    }
+
+    private static string CombinePath(string groupPath, string endpointPath)
+    {
+        return $"/{(groupPath ?? string.Empty).Trim('/')}/{(endpointPath ?? string.Empty).Trim('/')}";
+    }
+}

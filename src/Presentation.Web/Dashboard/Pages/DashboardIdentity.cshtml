@@ -1,0 +1,288 @@
+@using BridgingIT.DevKit.Presentation.Web
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using BridgingIT.DevKit.Common
+@using Microsoft.AspNetCore.Authentication
+@using Microsoft.AspNetCore.Authentication.Cookies
+@using Microsoft.Extensions.DependencyInjection
+@using System.Security.Claims
+@using RazorSlices
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+@{
+    var identityModel = await CreateModelAsync();
+}
+
+<div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
+    <h4 class="m-0">Identity</h4>
+    <div class="d-flex align-items-center gap-2">
+        <span class="text-muted small">Captured @identityModel.CapturedAtUtc.LocalDateTime.ToString("g", CultureInfo.InvariantCulture)</span>
+        @if (identityModel.CanLoginWithClientCredentials)
+        {
+            <form method="post" action="@identityModel.ClientCredentialsLoginPath" class="m-0">
+                <input type="hidden" name="returnUrl" value="@identityModel.ClientCredentialsReturnUrl" />
+                <button type="submit" class="btn btn-outline-secondary btn-sm" title="Use fake identity provider client credentials">
+                    <i class="bi bi-box-arrow-in-right me-1"></i>Client credentials
+                </button>
+            </form>
+        }
+    </div>
+</div>
+
+@if (!identityModel.IsAccessorRegistered)
+{
+    <div class="alert alert-warning py-2 mb-2">
+        The current user accessor is not registered for this application.
+    </div>
+}
+
+@if (identityModel.Messages.Count > 0)
+{
+    <div class="alert alert-success py-2 mb-2">
+        @foreach (var message in identityModel.Messages)
+        {
+            <div>@message</div>
+        }
+    </div>
+}
+
+@if (identityModel.Errors.Count > 0)
+{
+    <div class="alert alert-danger py-2 mb-2">
+        @foreach (var error in identityModel.Errors)
+        {
+            <div>@error</div>
+        }
+    </div>
+}
+
+<div class="row g-2 mb-2">
+    <div class="col-12 col-lg-4">
+        <div class="card h-100">
+            <div class="card-body p-3">
+                <div class="d-flex align-items-center mb-2">
+                    <i class="bi bi-person-circle fs-3 text-secondary me-2"></i>
+                    <div>
+                        <h6 class="card-title mb-0">Current User</h6>
+                        <div class="text-muted small">@DisplayValue(identityModel.UserName)</div>
+                    </div>
+                </div>
+                <table class="table table-sm mb-0">
+                    <tbody>
+                    <tr>
+                        <td>Status</td>
+                        <td class="text-end">
+                            @if (identityModel.IsAuthenticated)
+                            {
+                                <span class="badge bg-success">Authenticated</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary">Anonymous</span>
+                            }
+                        </td>
+                    </tr>
+                    <tr><td>User ID</td><td class="text-end text-break">@DisplayValue(identityModel.UserId)</td></tr>
+                    <tr><td>Email</td><td class="text-end text-break">@DisplayValue(identityModel.Email)</td></tr>
+                    <tr><td>Authentication</td><td class="text-end">@DisplayValue(identityModel.AuthenticationType)</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    @if (identityModel.CanLoginWithClientCredentials)
+    {
+        <div class="col-12 col-lg-8">
+            <div class="card h-100">
+                <div class="card-body p-3">
+                    <h6 class="card-title">Fake Identity Provider</h6>
+                    <table class="table table-sm mb-0">
+                        <tbody>
+                        <tr><td>Client</td><td class="text-end text-break">@DisplayValue(identityModel.ClientCredentialsClientName)</td></tr>
+                        <tr><td>Client ID</td><td class="text-end text-break"><code>@DisplayValue(identityModel.ClientCredentialsClientId)</code></td></tr>
+                        <tr><td>Token Endpoint</td><td class="text-end text-break"><code>@DisplayValue(identityModel.ClientCredentialsTokenEndpoint)</code></td></tr>
+                        <tr><td>Return URL</td><td class="text-end text-break"><code>@DisplayValue(identityModel.ClientCredentialsReturnUrl)</code></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="col-12 @(identityModel.CanLoginWithClientCredentials ? "" : "col-lg-8")">
+        <div class="card h-100">
+            <div class="card-body p-3">
+                <h6 class="card-title">Roles</h6>
+                @if (identityModel.Roles.Count == 0)
+                {
+                    <div class="text-muted small">No roles are available for the current user.</div>
+                }
+                else
+                {
+                    <div class="d-flex flex-wrap gap-2">
+                        @foreach (var role in identityModel.Roles)
+                        {
+                            <span class="badge">@role</span>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <h6 class="card-title mb-0">Claims</h6>
+            <span class="badge">@identityModel.Claims.Count</span>
+        </div>
+
+        @if (identityModel.Claims.Count == 0)
+        {
+            <div class="text-muted small">No claims are available for the current user.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-sm align-middle">
+                    <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Value</th>
+                        <th>Issuer</th>
+                        <th>Value Type</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var claim in identityModel.Claims)
+                    {
+                        <tr>
+                            <td class="text-break"><code>@claim.Type</code></td>
+                            <td class="text-break">@DisplayValue(claim.Value)</td>
+                            <td class="text-break">@DisplayValue(claim.Issuer)</td>
+                            <td class="text-break">@DisplayValue(claim.ValueType)</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
+</div>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "Identity" };
+
+    private async Task<DashboardIdentityViewModel> CreateModelAsync()
+    {
+        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var fakeIdentityProviderOptions = this.HttpContext.RequestServices.GetService<FakeIdentityProviderEndpointsOptions>();
+        var currentUserAccessor = this.HttpContext.RequestServices.GetService<ICurrentUserAccessor>();
+        var fakeIdentityProvider = this.HttpContext.RequestServices.GetService<IFakeIdentityProvider>();
+        var tokenService = this.HttpContext.RequestServices.GetService<ITokenService>();
+        var cookiePrincipal = (await this.HttpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme)).Principal;
+        var principal = currentUserAccessor?.IsAuthenticated == true
+            ? currentUserAccessor.Principal
+            : cookiePrincipal ?? currentUserAccessor?.Principal ?? this.HttpContext.User;
+        var client = GetClientCredentialsClient(fakeIdentityProviderOptions);
+        var identityPath = CombinePath(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.Identity);
+
+        var result = new DashboardIdentityViewModel
+        {
+            IsAccessorRegistered = currentUserAccessor is not null,
+            IsAuthenticated = currentUserAccessor?.IsAuthenticated
+                ?? principal?.Identity?.IsAuthenticated
+                ?? false,
+            AuthenticationType = principal?.Identity?.AuthenticationType,
+            UserId = currentUserAccessor?.IsAuthenticated == true
+                ? currentUserAccessor.UserId
+                : principal?.FindFirstValue(ClaimTypes.NameIdentifier) ?? principal?.FindFirstValue("sub"),
+            UserName = currentUserAccessor?.IsAuthenticated == true
+                ? currentUserAccessor.UserName
+                : principal?.Identity?.Name ?? principal?.FindFirstValue(ClaimTypes.Name),
+            Email = currentUserAccessor?.IsAuthenticated == true
+                ? currentUserAccessor.Email
+                : principal?.FindFirstValue(ClaimTypes.Email),
+            CanLoginWithClientCredentials = fakeIdentityProviderOptions is not null && fakeIdentityProvider is not null && tokenService is not null && client is not null,
+            ClientCredentialsLoginPath = CombinePath(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.IdentityClientCredentialsLogin),
+            ClientCredentialsReturnUrl = BuildLocalReturnUrl(identityPath),
+            ClientCredentialsTokenEndpoint = BuildFakeIdentityProviderTokenEndpoint(fakeIdentityProviderOptions),
+            ClientCredentialsClientName = client?.Name,
+            ClientCredentialsClientId = client?.ClientId,
+            CapturedAtUtc = DateTimeOffset.UtcNow
+        };
+
+        if (this.HttpContext.Request.Query.TryGetValue("identity_message", out var message))
+        {
+            result.Messages.AddRange(message.Where(value => !string.IsNullOrWhiteSpace(value)));
+        }
+
+        if (this.HttpContext.Request.Query.TryGetValue("identity_error", out var error))
+        {
+            result.Errors.AddRange(error.Where(value => !string.IsNullOrWhiteSpace(value)));
+        }
+
+        var roles = currentUserAccessor?.IsAuthenticated == true
+            ? currentUserAccessor.Roles
+            : principal?.FindAll(ClaimTypes.Role).Select(claim => claim.Value).ToArray() ?? [];
+
+        result.Roles.AddRange(roles
+            .Where(role => !string.IsNullOrWhiteSpace(role))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(role => role, StringComparer.OrdinalIgnoreCase));
+
+        if (principal is not null)
+        {
+            result.Claims.AddRange(principal.Claims
+                .OrderBy(claim => claim.Type, StringComparer.OrdinalIgnoreCase)
+                .ThenBy(claim => claim.Value, StringComparer.OrdinalIgnoreCase)
+                .Select(claim => new DashboardIdentityClaimViewModel
+                {
+                    Type = claim.Type,
+                    Value = claim.Value,
+                    ValueType = claim.ValueType,
+                    Issuer = claim.Issuer
+                }));
+        }
+
+        return result;
+    }
+
+    private static string DisplayValue(string value)
+    {
+        return string.IsNullOrWhiteSpace(value) ? "-" : value;
+    }
+
+    private static FakeIdentityProviderClient GetClientCredentialsClient(FakeIdentityProviderEndpointsOptions options)
+    {
+        return options?.Clients?.FirstOrDefault(client => client.IsConfidentialClient)
+            ?? options?.Clients?.FirstOrDefault();
+    }
+
+    private string BuildLocalReturnUrl(string path)
+    {
+        var pathBase = this.HttpContext.Request.PathBase.Value?.TrimEnd('/') ?? string.Empty;
+        return $"{pathBase}/{path.Trim('/')}";
+    }
+
+    private string BuildFakeIdentityProviderTokenEndpoint(FakeIdentityProviderEndpointsOptions options)
+    {
+        if (options is null)
+        {
+            return null;
+        }
+
+        var issuer = options.Issuer.EmptyToNull()
+            ?? $"{this.HttpContext.Request.Scheme}://{this.HttpContext.Request.Host}";
+
+        return $"{issuer.TrimEnd('/')}/{options.GroupPath.Trim('/')}/{options.EndpointPaths.Token.Trim('/')}";
+    }
+
+    private static string CombinePath(string groupPath, string endpointPath)
+    {
+        return $"/{(groupPath ?? string.Empty).Trim('/')}/{(endpointPath ?? string.Empty).Trim('/')}";
+    }
+}

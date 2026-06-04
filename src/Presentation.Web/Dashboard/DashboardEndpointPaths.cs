@@ -7,5 +7,11 @@ namespace BridgingIT.DevKit.Presentation.Web.Dashboard;
 
 public class DashboardEndpointPaths
 {
+    public string Identity { get; set; } = "/identity";
+
+    public string IdentityClientCredentialsLogin { get; set; } = "/identity/client-credentials/login";
+
     public string Metrics { get; set; } = "/metrics";
+
+    public string MetricsContent { get; set; } = "/metrics/content";
 }

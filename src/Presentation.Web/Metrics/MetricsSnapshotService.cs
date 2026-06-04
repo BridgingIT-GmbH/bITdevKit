@@ -121,7 +121,7 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
     {
         this.listener.InstrumentPublished = (instrument, listener) =>
         {
-            if (!string.Equals(instrument.Meter.Name, Metrics.MeterName, StringComparison.Ordinal))
+            if (!string.Equals(instrument.Meter.Name, BridgingIT.DevKit.Common.Metrics.MeterName, StringComparison.Ordinal))
             {
                 return;
             }
@@ -147,7 +147,7 @@ public class MetricsSnapshotService : IMetricsSnapshotService, IDisposable
         var snapshot = new MetricsSnapshotModel
         {
             CapturedAtUtc = capturedAtUtc,
-            Meter = Metrics.MeterName,
+            Meter = BridgingIT.DevKit.Common.Metrics.MeterName,
             ProcessStartedAtUtc = this.processStartedAtUtc,
             UptimeSeconds = Math.Max(0, (capturedAtUtc - this.processStartedAtUtc).TotalSeconds)
         };

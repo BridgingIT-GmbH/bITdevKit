@@ -6351,6 +6351,68 @@
         }
       }
     },
+    "/_bdk/dashboard/identity": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Identity",
+        "description": "Shows the dashboard identity page.",
+        "operationId": "_bdk.Dashboard.Identity",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/identity/client-credentials/login": {
+      "post": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Identity Client Credentials Login",
+        "description": "Signs in to the dashboard using the fake identity provider client-credentials flow.",
+        "operationId": "_bdk.Dashboard.IdentityClientCredentialsLogin",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "returnUrl": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "returnUrl": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "302": {
+            "description": "Found"
+          }
+        }
+      }
+    },
     "/_bdk/dashboard/metrics": {
       "get": {
         "tags": [
@@ -6359,6 +6421,28 @@
         "summary": "Dashboard Metrics",
         "description": "Shows the dashboard metrics page.",
         "operationId": "_bdk.Dashboard.Metrics",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/metrics/content": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Metrics Content",
+        "description": "Shows the dashboard metrics content fragment.",
+        "operationId": "_bdk.Dashboard.MetricsContent",
         "responses": {
           "200": {
             "description": "OK",

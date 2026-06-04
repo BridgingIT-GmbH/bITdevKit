@@ -20,6 +20,24 @@ public class DashboardEndpointPathsBuilder
         return this;
     }
 
+    public DashboardEndpointPathsBuilder IdentityPath(string path)
+    {
+        this._paths.Identity = path;
+        return this;
+    }
+
+    public DashboardEndpointPathsBuilder IdentityClientCredentialsLoginPath(string path)
+    {
+        this._paths.IdentityClientCredentialsLogin = path;
+        return this;
+    }
+
+    public DashboardEndpointPathsBuilder MetricsContentPath(string path)
+    {
+        this._paths.MetricsContent = path;
+        return this;
+    }
+
     public DashboardEndpointPaths Build()
     {
         return this._paths;

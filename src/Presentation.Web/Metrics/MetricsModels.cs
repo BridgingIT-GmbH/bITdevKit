@@ -182,7 +182,7 @@ public class MetricsSnapshotModel : MetricsSnapshotBase
     /// <summary>
     /// Gets or sets the source meter name.
     /// </summary>
-    public string Meter { get; set; } = Metrics.MeterName;
+    public string Meter { get; set; } = BridgingIT.DevKit.Common.Metrics.MeterName;
 
     /// <summary>
     /// Gets or sets the feature groups in the snapshot.

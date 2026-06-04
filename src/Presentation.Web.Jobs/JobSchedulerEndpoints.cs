@@ -48,7 +48,9 @@ public class JobSchedulerEndpoints(
             return;
         }
 
-        var group = this.MapGroup(app, this.options);
+        var group = this.MapGroup(app, this.options)
+            .WithTags("_System.Jobs");
+
         var definitions = group.MapGroup("definitions");
         var occurrences = group.MapGroup("occurrences");
         var batches = group.MapGroup("batches");

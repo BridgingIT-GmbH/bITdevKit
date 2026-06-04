@@ -1,0 +1,12 @@
+@using BridgingIT.DevKit.Presentation.Web
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+<div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
+  <h4 class="m-0">Dashboard</h4>
+</div>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "Dashboard" };
+}

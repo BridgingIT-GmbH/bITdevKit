@@ -45,7 +45,8 @@ public class QueueingEndpoints(
             return;
         }
 
-        var group = this.MapGroup(app, this.options);
+        var group = this.MapGroup(app, this.options)
+            .WithTags("_System.Queueing");
         var messagesGroup = group.MapGroup("messages");
 
         messagesGroup.MapGet("stats", this.GetMessageStats)

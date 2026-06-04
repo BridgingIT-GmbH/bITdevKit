@@ -46,7 +46,8 @@ public class OrchestrationEndpoints(
             return;
         }
 
-        var group = this.MapGroup(app, this.options);
+        var group = this.MapGroup(app, this.options)
+            .WithTags("_System.Orchestrations");
 
         group.MapGet("definitions", this.GetDefinitions)
             .Produces<IEnumerable<string>>()

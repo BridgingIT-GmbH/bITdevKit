@@ -44,7 +44,8 @@ public class MetricsEndpoints(
             return;
         }
 
-        var group = this.MapGroup(app, this.options).WithTags("_System.Metrics");
+        var group = this.MapGroup(app, this.options)
+            .WithTags("_System.Metrics");
 
         group.MapGet(string.Empty, this.GetMetrics)
             .WithName("_System.Metrics.Get")

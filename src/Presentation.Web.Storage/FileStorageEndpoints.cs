@@ -54,6 +54,7 @@ public class FileStorageEndpoints(
         }
 
         var group = this.MapGroup(app, this.options)
+            .WithTags("_System.FileStorage")
             .DisableAntiforgery();
 
         group.MapGet("locations", (CancellationToken cancellationToken) =>

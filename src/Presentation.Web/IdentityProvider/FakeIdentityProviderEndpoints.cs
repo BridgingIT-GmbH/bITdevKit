@@ -33,7 +33,8 @@ public class FakeIdentityProviderEndpoints(
             return;
         }
 
-        var group = this.MapGroup(app, options).WithTags("_System.IdentityProvider")
+        var group = this.MapGroup(app, options)
+            .WithTags("_System.IdentityProvider")
             .DisableAntiforgery()
             .RequireCors(nameof(IdentityProvider));
         var paths = options.EndpointPaths;

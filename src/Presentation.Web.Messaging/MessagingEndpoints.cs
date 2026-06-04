@@ -45,7 +45,8 @@ public class MessagingEndpoints(
             return;
         }
 
-        var group = this.MapGroup(app, this.options);
+        var group = this.MapGroup(app, this.options)
+            .WithTags("_System.Messaging");
 
         group.MapGet("stats", this.GetMessageStats)
             .Produces<BrokerMessageStats>()

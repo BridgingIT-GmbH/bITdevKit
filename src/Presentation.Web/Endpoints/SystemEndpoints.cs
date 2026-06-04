@@ -49,7 +49,8 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
             return;
         }
 
-        var group = this.MapGroup(app, this.options).WithTags("_System"); ;
+        var group = this.MapGroup(app, this.options)
+            .WithTags("_System"); ;
 
         group.MapGet(string.Empty, this.GetSystem)
             .WithName("_System.Get")

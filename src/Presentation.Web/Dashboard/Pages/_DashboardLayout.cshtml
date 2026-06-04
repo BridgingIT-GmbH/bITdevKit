@@ -1,5 +1,5 @@
-@using BridgingIT.DevKit.Presentation.Web.Pages
-@inherits RazorLayoutSlice<BridgingIT.DevKit.Presentation.Web.Pages.LayoutModel>
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@inherits RazorLayoutSlice<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardLayoutModel>
 
 <!DOCTYPE html>
 <html lang="en" class="h-100">
@@ -340,15 +340,14 @@
         <div class="row">
             @if (!Model.HideSideBar)
             {
-                @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Pages._SideBar, SidebarItem[]>(
+                @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardSideBar, DashboardSidebarItem[]>(
                     new[] // TODO: inject from DI https://github.com/DamianEdwards/RazorSlices/issues/53
                     {
-                        new SidebarItem("Dashboard", "house", "/api/_system/dashboard"),
-                        new SidebarItem("Authorize", "person", "/api/_system/identity/connect/authorize2?response_type=code"),
-                        new SidebarItem("Messaging", "file-text", "/api/_system/dashboard/messaging"),
-                        new SidebarItem("JobScheduling", "cart", "/api/_system/dashboard/jobscheduling"),
-                        new SidebarItem("Metrics", "people", "/api/_system/dashboard/metrics"),
-                        new SidebarItem("Logs", "bar-chart", "/api/_system/dashboard/logs"),
+                        new DashboardSidebarItem("Dashboard", "house", "/_bdk/dashboard"),
+                        new DashboardSidebarItem("Messaging", "file-text", "/_bdk/dashboard/messaging"),
+                        new DashboardSidebarItem("JobScheduling", "cart", "/_bdk/dashboard/jobscheduling"),
+                        new DashboardSidebarItem("Metrics", "people", "/_bdk/dashboard/metrics"),
+                        new DashboardSidebarItem("Logs", "bar-chart", "/_bdk/dashboard/logs"),
                     }))
                 @await RenderSectionAsync("nav-menu")
                 <button class="btn sidebar-toggle d-none d-md-flex" type="button" aria-label="Toggle sidebar">

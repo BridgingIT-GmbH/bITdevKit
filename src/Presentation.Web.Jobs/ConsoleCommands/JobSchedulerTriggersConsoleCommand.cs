@@ -26,7 +26,7 @@ public class JobSchedulerTriggersConsoleCommand : JobSchedulerConsoleCommandBase
     public JobSchedulerTriggersConsoleCommand()
         : base("triggers", "List job triggers", "trigger-list") { }
 
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var query = this.GetRequired<IJobSchedulerQueryService>(console, services);
         if (query is null)

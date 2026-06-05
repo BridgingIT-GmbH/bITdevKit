@@ -31,7 +31,7 @@ public class CityForecastConsoleCommand : AppGroupConsoleCommandBase
     public CityForecastConsoleCommand() : base("forecast", "Get weather forecast for a city", "city-forecast", "cf") { }
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var cityResult = await City.FindAllAsync(
             c => c.AuditState.Deleted != true && c.Name.Contains(this.CityName),

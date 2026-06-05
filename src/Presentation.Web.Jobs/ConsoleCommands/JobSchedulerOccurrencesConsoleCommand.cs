@@ -32,7 +32,7 @@ public class JobSchedulerOccurrencesConsoleCommand : JobSchedulerConsoleCommandB
     public JobSchedulerOccurrencesConsoleCommand()
         : base("occurrences", "List materialized job occurrences", "occ") { }
 
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         if (!TryParseDate(this.From, out var from) || !TryParseDate(this.To, out var to))
         {

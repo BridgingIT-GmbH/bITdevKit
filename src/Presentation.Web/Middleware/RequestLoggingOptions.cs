@@ -64,7 +64,7 @@ public class RequestLoggingOptions
     public string[] PathBlackListPatterns { get; set; } =
     [
         "/*.js", "/*.css", "/*.map", "/*.html", "/swagger*", "/favicon.ico", "/_framework*", "/_vs*", "/health*",
-        "/notificationhub*", "/_content*", "/signalrhub*", "/api/_system/logentries*"
+        "/notificationhub*", "/_content*", "/signalrhub*", "/api/_system/*", "/_bdk/*"
     ];
 
 #pragma warning disable SA1313 // Parameter names should begin with lower-case letter

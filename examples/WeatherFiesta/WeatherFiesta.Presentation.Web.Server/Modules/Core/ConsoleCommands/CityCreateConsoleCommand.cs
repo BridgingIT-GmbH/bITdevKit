@@ -29,7 +29,7 @@ public class CityCreateConsoleCommand : AppGroupConsoleCommandBase
     public CityCreateConsoleCommand() : base("create", "Create a city by name using geocoding lookup", "add") { }
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var geocodingClient = services.GetRequiredService<IWeatherGeocodingClient>();
 

@@ -18,7 +18,7 @@ public class RequesterInfoConsoleCommand : ConsoleCommandBase, IGroupedConsoleCo
 
     public IReadOnlyCollection<string> GroupAliases => ["req"];
 
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var requester = services.GetRequiredService<IRequester>();
         if (requester != null)

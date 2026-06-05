@@ -29,7 +29,7 @@ public class CityResetConsoleCommand : AppGroupConsoleCommandBase
     public CityResetConsoleCommand() : base("reset", "Reset weather data for a city (delete and optionally re-ingest)") { }
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         // Resolve city name to ID
         var cityResult = await City.FindAllAsync(

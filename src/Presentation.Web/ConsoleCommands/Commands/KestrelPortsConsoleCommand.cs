@@ -20,7 +20,7 @@ public class KestrelPortsConsoleCommand : ConsoleCommandBase
     public KestrelPortsConsoleCommand() : base("ports", "Show Kestrel bound addresses", "urls", "kestrel") { }
 
     /// <summary>Executes ports listing.</summary>
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var server = services.GetService<IServer>();
         var feature = server?.Features.Get<IServerAddressesFeature>();

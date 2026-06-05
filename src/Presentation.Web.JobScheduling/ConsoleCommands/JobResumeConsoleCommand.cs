@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -18,7 +18,7 @@ public class JobResumeConsoleCommand : JobGroupConsoleCommandBase
 
     public JobResumeConsoleCommand() : base("resume", "Resume paused job") { }
 
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(this.JobName))
         {

@@ -19,7 +19,7 @@ public class RuntimeConsoleCommand : ConsoleCommandBase
     public RuntimeConsoleCommand() : base("runtime", "Dump process/runtime diagnostics", "dump", "rt") { }
 
     /// <summary>Outputs current process/runtime diagnostics.</summary>
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var stats = services.GetRequiredService<ConsoleCommandInteractiveRuntimeStats>();
         var proc = Process.GetCurrentProcess();

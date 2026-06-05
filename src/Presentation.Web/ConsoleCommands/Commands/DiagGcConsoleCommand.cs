@@ -20,7 +20,7 @@ public class DiagGcConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
     public IReadOnlyCollection<string> GroupAliases => ["d"];
     [ConsoleCommandOption("force", Alias = "f", Description = "Force full GC before reporting")] public bool Force { get; set; }
     public DiagGcConsoleCommand() : base("gc", "GC statistics (optionally force collection)") { }
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var env = services.GetRequiredService<IWebHostEnvironment>();
         var allow = env.IsDevelopment();
@@ -39,7 +39,7 @@ public class DiagThreadsConsoleCommand : ConsoleCommandBase, IGroupedConsoleComm
     public string GroupName => "diag";
     public IReadOnlyCollection<string> GroupAliases => ["d"];
     public DiagThreadsConsoleCommand() : base("threads", "Thread pool statistics (diag)") { }
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     { console.Write(DiagnosticTablesBuilder.BuildThreads()); return Task.CompletedTask; }
 }
 
@@ -48,7 +48,7 @@ public class DiagMemConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
     public string GroupName => "diag";
     public IReadOnlyCollection<string> GroupAliases => ["d"];
     public DiagMemConsoleCommand() : base("mem", "Detailed memory usage (diag)") { }
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     { console.Write(DiagnosticTablesBuilder.BuildMemory()); return Task.CompletedTask; }
 }
 
@@ -57,7 +57,7 @@ public class DiagPerfConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
     public string GroupName => "diag";
     public IReadOnlyCollection<string> GroupAliases => ["d"];
     public DiagPerfConsoleCommand() : base("perf", "Point-in-time performance snapshot") { }
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     { var stats = services.GetRequiredService<ConsoleCommandInteractiveRuntimeStats>(); console.Write(DiagnosticTablesBuilder.BuildPerf(stats)); return Task.CompletedTask; }
 }
 
@@ -66,7 +66,7 @@ public class DiagEnvConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
     public string GroupName => "diag";
     public IReadOnlyCollection<string> GroupAliases => ["d"];
     public DiagEnvConsoleCommand() : base("env", "Runtime & environment info (diag)") { }
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     { console.Write(DiagnosticTablesBuilder.BuildEnv()); return Task.CompletedTask; }
 }
 

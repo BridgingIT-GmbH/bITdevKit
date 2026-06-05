@@ -29,7 +29,7 @@ public class CityDeleteConsoleCommand : AppGroupConsoleCommandBase
     public CityDeleteConsoleCommand() : base("delete", "Delete a city and all its weather data", "remove", "rm") { }
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         // Resolve city name to ID
         var cityId = await this.ResolveCityIdAsync(console);

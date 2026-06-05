@@ -56,7 +56,7 @@ public class MetricsConsoleCommand : ConsoleCommandBase
     public MetricsConsoleCommand() : base("metrics", "Show devkit meter metrics", "m") { }
 
     /// <inheritdoc />
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var snapshotService = services.GetService<IMetricsSnapshotService>();
         if (snapshotService is null)

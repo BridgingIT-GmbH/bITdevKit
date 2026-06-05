@@ -27,7 +27,7 @@ public class CityCurrentConsoleCommand : AppGroupConsoleCommandBase
     public CityCurrentConsoleCommand() : base("current", "Get current weather for a city", "city-current", "cc") { }
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var cityResult = await City.FindAllAsync(
             c => c.AuditState.Deleted != true && c.Name.Contains(this.CityName),

@@ -7,6 +7,7 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web;
+using BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard;
 using Spectre.Console;
 
 /// <summary>
@@ -24,6 +25,10 @@ public static partial class ServiceCollectionExtensions
     {
         services.AddSingleton(_ => AnsiConsole.Create(new AnsiConsoleSettings { Ansi = AnsiSupport.Detect, ColorSystem = ColorSystemSupport.Detect }));
         services.AddSingleton<ConsoleCommandInteractiveRuntimeStats>();
+        services.AddSingleton<ConsoleCommandExecutor>();
+        services.AddSingleton<WebConsoleSessionManager>();
+        services.AddSingleton<WebAnsiConsoleFactory>();
+        services.AddSignalR();
 
         // built-in commands
         services.AddTransient<IConsoleCommand, StatusConsoleCommand>();

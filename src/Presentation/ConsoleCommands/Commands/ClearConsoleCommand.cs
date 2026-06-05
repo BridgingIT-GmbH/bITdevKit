@@ -17,7 +17,7 @@ public class ClearConsoleCommand : ConsoleCommandBase
     public ClearConsoleCommand() : base("clear", "Clear the screen", "cls", "c") { }
 
     /// <summary>Executes screen clear.</summary>
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         AnsiConsole.Clear();
 

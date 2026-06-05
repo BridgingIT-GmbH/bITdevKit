@@ -24,11 +24,14 @@ public abstract class ConsoleCommandBase(string name, string description, params
     public string Description { get; } = description;
 
     /// <inheritdoc />
+    public virtual bool IsWebConsoleEnabled => true;
+
+    /// <inheritdoc />
     public bool Matches(string input) => string.Equals(this.Name, input, StringComparison.OrdinalIgnoreCase) || this.Aliases.Any(a => string.Equals(a, input, StringComparison.OrdinalIgnoreCase));
 
     /// <inheritdoc />
     public virtual void OnAfterBind(IAnsiConsole console, string[] tokens) { }
 
     /// <inheritdoc />
-    public abstract Task ExecuteAsync(IAnsiConsole console, IServiceProvider services);
+    public abstract Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default);
 }

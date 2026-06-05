@@ -18,7 +18,7 @@ public class InfoConsoleCommand : ConsoleCommandBase
     /// </summary>
     public InfoConsoleCommand() : base("info", ".NET runtime & process info", ["i"]) { }
     /// <summary>Displays process and runtime information.</summary>
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var proc = Process.GetCurrentProcess();
         var gcMode = GCSettings.IsServerGC ? "Server" : "Workstation";

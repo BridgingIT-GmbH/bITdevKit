@@ -30,8 +30,32 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Group = "bdk",
             GroupOrder = 0,
             Order = 40,
+            Description = "Inspect log entries",
             Card = GetCardAsync
         };
+
+        yield return new DashboardPage("Logs Stream", "terminal", DashboardEndpoints.BuildLogEntriesStreamPath(options))
+        {
+            Group = "bdk",
+            GroupOrder = 0,
+            Order = 41,
+            Description = "Live log stream",
+            Card = GetStreamCard
+        };
+    }
+
+    private static ValueTask<DashboardPageCard> GetStreamCard(HttpContext context)
+    {
+        var logEntryService = context.RequestServices.GetService<ILogEntryService>();
+        return ValueTask.FromResult(new DashboardPageCard("Logs Stream", "Live log tail", logEntryService is null ? "Unavailable" : "Live")
+        {
+            Detail = logEntryService is null ? "ILogEntryService is not registered" : "Stream stored log entries from the database",
+            Icon = "terminal",
+            Url = DashboardEndpoints.BuildLogEntriesStreamPath(context.RequestServices.GetRequiredService<DashboardEndpointsOptions>()),
+            Group = "bdk",
+            GroupOrder = 0,
+            Order = 41
+        });
     }
 
     private static async ValueTask<DashboardPageCard> GetCardAsync(HttpContext context)

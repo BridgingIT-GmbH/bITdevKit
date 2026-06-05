@@ -25,6 +25,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Group = "bdk",
             GroupOrder = 0,
             Order = 0,
+            Description = "Dashboard overview",
             ShowOnIndex = false
         };
     }

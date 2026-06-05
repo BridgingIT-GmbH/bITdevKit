@@ -21,7 +21,7 @@ public class StatusConsoleCommand : ConsoleCommandBase
     /// </summary>
     public StatusConsoleCommand() : base("status", "Show basic server status", ["stats"]) { }
     /// <summary>Executes the status command output.</summary>
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var stats = services.GetRequiredService<ConsoleCommandInteractiveRuntimeStats>();
         var env = services.GetRequiredService<IWebHostEnvironment>();

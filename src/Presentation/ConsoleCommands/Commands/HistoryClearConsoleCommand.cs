@@ -17,7 +17,7 @@ public class HistoryClearConsoleCommand : ConsoleCommandBase, IGroupedConsoleCom
     [ConsoleCommandOption("keep-last", Alias = "k", Description = "Keep last N entries", Default = 10)] public int KeepLast { get; set; }
     public HistoryClearConsoleCommand() : base("clear", "Clear command history (optionally keep last N)") { }
 
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         ConsoleCommandHistory.ClearKeepLast(Math.Max(0, this.KeepLast));
         console.MarkupLine(this.KeepLast > 0 ? $"[green]History cleared; kept last {this.KeepLast} entries.[/]" : "[green]History fully cleared.[/]");

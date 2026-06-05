@@ -28,6 +28,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Group = "bdk",
             GroupOrder = 0,
             Order = 20,
+            Description = "Application and runtime metrics",
             Card = context =>
             {
                 var aspNetMetrics = context.RequestServices.GetService<IAspNetMetricsSnapshotService>();

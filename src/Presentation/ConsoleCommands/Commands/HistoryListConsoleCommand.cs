@@ -18,7 +18,7 @@ public class HistoryListConsoleCommand : ConsoleCommandBase, IGroupedConsoleComm
     [ConsoleCommandOption("max", Alias = "m", Description = "Max items to show", Default = 50)] public int Max { get; set; }
     public HistoryListConsoleCommand() : base("list", "List command history") { }
 
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var all = ConsoleCommandHistory.GetAll(); var take = this.Max <= 0 ? 50 : this.Max;
         var seq = all.Select((l, i) => (i + 1, l)).Reverse().Take(take).Reverse();

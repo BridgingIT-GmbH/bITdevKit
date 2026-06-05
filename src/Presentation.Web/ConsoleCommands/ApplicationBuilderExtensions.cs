@@ -12,8 +12,6 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 /// <summary>
@@ -50,8 +48,9 @@ public static partial class ApplicationBuilderExtensions
                     await Task.Delay(startupDelay.Value);
                 }
                 var console = app.Services.GetRequiredService<IAnsiConsole>();
+                var executor = app.Services.GetRequiredService<ConsoleCommandExecutor>();
 
-                await RunLoopAsync(app, console);
+                await RunLoopAsync(app, console, executor);
             });
         });
     }
@@ -83,7 +82,7 @@ public static partial class ApplicationBuilderExtensions
     /// </summary>
     /// <param name="app">The running web application.</param>
     /// <param name="console">The Spectre console abstraction.</param>
-    private static async Task RunLoopAsync(WebApplication app, IAnsiConsole console)
+    private static async Task RunLoopAsync(WebApplication app, IAnsiConsole console, ConsoleCommandExecutor executor)
     {
         PrintBanner(console);
 
@@ -95,83 +94,13 @@ public static partial class ApplicationBuilderExtensions
             if (line is null) { break; }
             if (string.IsNullOrWhiteSpace(line)) { continue; }
 
-            ConsoleCommandHistory.Append(line);
-            var tokens = SplitArgs(line);
-            if (tokens.Length == 0) { continue; }
-
-            var primary = tokens[0];
-            using var scope = app.Services.CreateScope();
-            var all = scope.ServiceProvider.GetServices<IConsoleCommand>().ToList();
-            IConsoleCommand cmd = null;
-            var groupedCandidates = all.OfType<IGroupedConsoleCommand>()
-                .Where(g => string.Equals(g.GroupName, primary, StringComparison.OrdinalIgnoreCase)
-                    || g.GroupAliases?.Any(a => string.Equals(a, primary, StringComparison.OrdinalIgnoreCase)) == true)
-                .ToList();
-            var consumed = 1;
-            if (groupedCandidates.Count != 0)
-            {
-                if (tokens.Length == 1)
-                {
-                    // list subcommands for this group
-                    var table = new Table().Border(TableBorder.Minimal).Title($"[bold cyan]{primary} (group) subcommands[/]");
-                    table.AddColumn("Sub"); table.AddColumn("Description");
-                    foreach (var sc in groupedCandidates.OrderBy(c => c.Name)) { table.AddRow(sc.Name, sc.Description); }
-                    console.Write(table); continue;
-                }
-                var sub = tokens[1]; consumed = 2; cmd = groupedCandidates.FirstOrDefault(c => c.Matches(sub));
-                if (cmd is null) { console.MarkupLine($"[yellow]Unknown subcommand '{sub}' for group '{primary}'.[/]"); continue; }
-            }
-            else { cmd = all.FirstOrDefault(c => c is not IGroupedConsoleCommand && c.Matches(primary)); }
-            if (cmd is null) { console.MarkupLine("[yellow]Unknown command[/]. Type [bold]help[/] for list."); continue; }
-            console.MarkupLine("[cyan]=== " + (cmd is IGroupedConsoleCommand gc ? gc.GroupName + " " + cmd.Name : cmd.Name) + " ===[/][grey] " + cmd.Description + "[/]");
-
-            var bindTokens = tokens.Skip(consumed).ToArray();
-            var (ok, errors) = ConsoleCommandBinder.TryBind(cmd, bindTokens);
-            if (!ok)
-            {
-                foreach (var e in errors)
-                {
-                    console.MarkupLine("[red]" + e + "[/]");
-                }
-
-                ConsoleCommandBinder.WriteHelp(console, cmd, detailed: true);
-                continue;
-            }
-            try { cmd.OnAfterBind(console, tokens); }
-            catch (Exception hookEx) { console.MarkupLine("[red]Post-bind validation failed:[/] " + hookEx.Message); continue; }
-            try { await cmd.ExecuteAsync(console, scope.ServiceProvider); }
-            catch (Exception ex) { console.MarkupLine("[red]Command failed:[/] " + ex.Message); }
+            await executor.ExecuteAsync(
+                line,
+                console,
+                app.Services,
+                ConsoleCommandExecutionSource.Terminal,
+                app.Lifetime.ApplicationStopping);
         }
-    }
-
-    /// <summary>
-    /// Splits a raw command line into tokens honoring quoted segments.
-    /// </summary>
-    /// <param name="commandLine">The raw command line string.</param>
-    /// <returns>Token array.</returns>
-    private static string[] SplitArgs(string commandLine)
-    {
-        var list = new List<string>();
-        var current = new StringBuilder();
-        var inQuotes = false;
-
-        foreach (var ch in commandLine)
-        {
-            switch (ch)
-            {
-                case '"': inQuotes = !inQuotes; break;
-                case ' ' when !inQuotes:
-                    if (current.Length > 0) { list.Add(current.ToString()); current.Clear(); }
-                    break;
-                default: current.Append(ch); break;
-            }
-        }
-        if (current.Length > 0)
-        {
-            list.Add(current.ToString());
-        }
-
-        return list.ToArray();
     }
 
     /// <summary>

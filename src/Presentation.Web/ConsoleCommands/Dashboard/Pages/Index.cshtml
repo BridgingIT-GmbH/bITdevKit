@@ -1,0 +1,585 @@
+@using BridgingIT.DevKit.Application.Utilities
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using Microsoft.Extensions.DependencyInjection
+@using RazorSlices
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+@{
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var hubPath = BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard.DashboardEndpoints.BuildConsoleHubPath(dashboardOptions);
+    var logStreamHubPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesStreamHubPath(dashboardOptions);
+    var logStreamAvailable = this.HttpContext.RequestServices.GetService<ILogEntryService>() is not null;
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css">
+
+<style>
+    #dashboard-console-content {
+        height: calc(100vh - 9.5rem);
+        min-height: 30rem;
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+        overflow: hidden;
+    }
+
+    #console-terminal {
+        flex: 1 1 auto;
+        min-height: 12rem;
+        background: #111;
+    }
+
+    #console-terminal .xterm {
+        height: 100%;
+    }
+
+    #console-logstream-panel {
+        flex: 0 0 32%;
+        min-height: 10rem;
+        display: flex;
+        flex-direction: column;
+        border-top: 1px solid var(--bs-border-color);
+    }
+
+    #console-logstream-panel.d-none {
+        display: none !important;
+    }
+
+    #console-logstream-header {
+        flex: 0 0 auto;
+        padding: .25rem 0;
+    }
+
+    #console-logstream-terminal {
+        flex: 1 1 auto;
+        min-height: 0;
+        background: #111;
+    }
+
+    #console-logstream-terminal .xterm {
+        height: 100%;
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
+    <div>
+        <h4 class="m-0">Console</h4>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        <span id="console-status" class="text-muted small">Connecting</span>
+        <button type="button" id="console-logs-toggle" class="btn btn-outline-secondary btn-sm" title="Show command log stream">
+            <i class="bi bi-journal-text"></i>
+            <span class="d-none d-lg-inline ms-1">Logs</span>
+        </button>
+        <button type="button" id="console-cancel" class="btn btn-outline-secondary btn-sm" title="Cancel running command">
+            <i class="bi bi-x-circle"></i>
+        </button>
+        <button type="button" id="console-clear" class="btn btn-outline-secondary btn-sm" title="Clear terminal">
+            <i class="bi bi-eraser"></i>
+        </button>
+    </div>
+</div>
+
+<div id="dashboard-console-content">
+    <div id="console-terminal"></div>
+    <div id="console-logstream-panel" class="d-none">
+        <div id="console-logstream-header" class="d-flex justify-content-between align-items-center small text-muted">
+            <span>Command logs</span>
+            <span id="console-logstream-status">Disconnected</span>
+        </div>
+        <div id="console-logstream-terminal"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@8.0.7/dist/browser/signalr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.min.js"></script>
+<script>
+    (() => {
+        const hubPath = '@hubPath';
+        const logStreamHubPath = '@logStreamHubPath';
+        const logStreamAvailable = @logStreamAvailable.ToString().ToLowerInvariant();
+        const sessionKey = 'bdk.dashboard.console.sessionId';
+        const logsVisibleKey = 'bdk.dashboard.console.logsVisible';
+        const contentElement = document.getElementById('dashboard-console-content');
+        const terminalElement = document.getElementById('console-terminal');
+        const logStreamPanelElement = document.getElementById('console-logstream-panel');
+        const logStreamTerminalElement = document.getElementById('console-logstream-terminal');
+        const logStreamStatusElement = document.getElementById('console-logstream-status');
+        const statusElement = document.getElementById('console-status');
+        const logsToggleButton = document.getElementById('console-logs-toggle');
+        const cancelButton = document.getElementById('console-cancel');
+        const clearButton = document.getElementById('console-clear');
+        const sessionId = getSessionId();
+        const prompt = '> ';
+        const terminal = new Terminal({
+            cols: 120,
+            rows: 32,
+            convertEol: true,
+            cursorBlink: true,
+            scrollback: 10000,
+            theme: {
+                background: '#111111',
+                foreground: '#f3f3f3',
+                cursor: '#ff7d45'
+            }
+        });
+        const fitAddon = new FitAddon.FitAddon();
+        let logTerminal = null;
+        let logFitAddon = null;
+        let logStreamSubscription = null;
+        let logStreamRequested = localStorage.getItem(logsVisibleKey) === 'true';
+
+        let currentLine = '';
+        let cursorIndex = 0;
+        let history = [];
+        let historyIndex = 0;
+        let commandRunning = false;
+        let promptVisible = false;
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl(`${hubPath}?sessionId=${encodeURIComponent(sessionId)}`)
+            .withAutomaticReconnect()
+            .build();
+        const logConnection = new signalR.HubConnectionBuilder()
+            .withUrl(logStreamHubPath)
+            .withAutomaticReconnect()
+            .build();
+
+        terminal.loadAddon(fitAddon);
+        terminal.open(terminalElement);
+        fitTerminal();
+        terminal.focus();
+        setLogStreamVisible(logStreamRequested);
+
+        function getSessionId() {
+            let value = sessionStorage.getItem(sessionKey);
+            if (!value) {
+                value = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+                sessionStorage.setItem(sessionKey, value);
+            }
+
+            return value;
+        }
+
+        function setStatus(text, isError) {
+            statusElement.textContent = text;
+            statusElement.classList.toggle('text-danger', isError === true);
+            statusElement.classList.toggle('text-muted', isError !== true);
+        }
+
+        function setLogStatus(text, isError) {
+            logStreamStatusElement.textContent = text;
+            logStreamStatusElement.classList.toggle('text-danger', isError === true);
+            logStreamStatusElement.classList.toggle('text-muted', isError !== true);
+        }
+
+        function writePrompt() {
+            currentLine = '';
+            cursorIndex = 0;
+            terminal.write(prompt);
+            promptVisible = true;
+        }
+
+        function redrawInput() {
+            terminal.write(`\r\x1b[2K${prompt}${currentLine}`);
+            const columnsToMoveLeft = currentLine.length - cursorIndex;
+            if (columnsToMoveLeft > 0) {
+                terminal.write(`\x1b[${columnsToMoveLeft}D`);
+            }
+
+            promptVisible = true;
+        }
+
+        function setCurrentLine(value) {
+            currentLine = value || '';
+            cursorIndex = currentLine.length;
+            redrawInput();
+        }
+
+        function insertInput(value) {
+            currentLine = `${currentLine.slice(0, cursorIndex)}${value}${currentLine.slice(cursorIndex)}`;
+            cursorIndex += value.length;
+            redrawInput();
+        }
+
+        function deleteBeforeCursor() {
+            if (cursorIndex === 0) {
+                return;
+            }
+
+            currentLine = `${currentLine.slice(0, cursorIndex - 1)}${currentLine.slice(cursorIndex)}`;
+            cursorIndex--;
+            redrawInput();
+        }
+
+        function deleteAtCursor() {
+            if (cursorIndex >= currentLine.length) {
+                return;
+            }
+
+            currentLine = `${currentLine.slice(0, cursorIndex)}${currentLine.slice(cursorIndex + 1)}`;
+            redrawInput();
+        }
+
+        function moveCursorLeft() {
+            if (cursorIndex === 0) {
+                return;
+            }
+
+            cursorIndex--;
+            terminal.write('\x1b[D');
+        }
+
+        function moveCursorRight() {
+            if (cursorIndex >= currentLine.length) {
+                return;
+            }
+
+            cursorIndex++;
+            terminal.write('\x1b[C');
+        }
+
+        function moveCursorHome() {
+            cursorIndex = 0;
+            redrawInput();
+        }
+
+        function moveCursorEnd() {
+            cursorIndex = currentLine.length;
+            redrawInput();
+        }
+
+        function addLocalHistory(line) {
+            if (!line || history[history.length - 1] === line) {
+                historyIndex = history.length;
+                return;
+            }
+
+            history.push(line);
+            if (history.length > 100) {
+                history = history.slice(history.length - 100);
+            }
+
+            historyIndex = history.length;
+        }
+
+        function showPreviousHistory() {
+            if (history.length === 0) {
+                return;
+            }
+
+            historyIndex = Math.max(0, historyIndex - 1);
+            setCurrentLine(history[historyIndex]);
+        }
+
+        function showNextHistory() {
+            if (history.length === 0) {
+                return;
+            }
+
+            historyIndex = Math.min(history.length, historyIndex + 1);
+            setCurrentLine(historyIndex >= history.length ? '' : history[historyIndex]);
+        }
+
+        async function submitLine() {
+            const line = currentLine.trim();
+            currentLine = '';
+            cursorIndex = 0;
+            promptVisible = false;
+            terminal.write('\r\n');
+
+            if (!line) {
+                writePrompt();
+                return;
+            }
+
+            addLocalHistory(line);
+
+            try {
+                await connection.invoke('SendCommand', line);
+            } catch (error) {
+                terminal.write(`Failed to send command: ${error.message || error}\r\n`);
+                writePrompt();
+            }
+        }
+
+        function fitTerminal() {
+            fitAddon.fit();
+            if (logTerminal && !logStreamPanelElement.classList.contains('d-none')) {
+                logFitAddon.fit();
+            }
+        }
+
+        function sendResize() {
+            fitTerminal();
+            connection.invoke('Resize', terminal.cols, terminal.rows).catch(() => { });
+        }
+
+        function ensureLogTerminal() {
+            if (logTerminal) {
+                return;
+            }
+
+            logTerminal = new Terminal({
+                cols: 120,
+                rows: 12,
+                convertEol: true,
+                cursorBlink: false,
+                scrollback: 5000,
+                theme: {
+                    background: '#111111',
+                    foreground: '#d8d8d8'
+                }
+            });
+            logFitAddon = new FitAddon.FitAddon();
+            logTerminal.loadAddon(logFitAddon);
+            logTerminal.open(logStreamTerminalElement);
+        }
+
+        async function ensureLogConnection() {
+            if (logConnection.state === signalR.HubConnectionState.Connected) {
+                return;
+            }
+
+            if (logConnection.state === signalR.HubConnectionState.Disconnected) {
+                await logConnection.start();
+            }
+        }
+
+        async function startLogStream() {
+            ensureLogTerminal();
+            logFitAddon.fit();
+
+            if (!logStreamAvailable) {
+                setLogStatus('Unavailable', true);
+                logTerminal.write('\x1b[33mILogEntryService is not registered. Command logs cannot be streamed.\x1b[0m\r\n');
+                return;
+            }
+
+            try {
+                await ensureLogConnection();
+            } catch (error) {
+                setLogStatus('Disconnected', true);
+                logTerminal.write(`\x1b[31mLog stream connection failed: ${error.message || error}\x1b[0m\r\n`);
+                return;
+            }
+
+            if (logStreamSubscription) {
+                logStreamSubscription.dispose();
+            }
+
+            setLogStatus('Streaming', false);
+            logTerminal.write('\x1b[90mStreaming command logs...\x1b[0m\r\n');
+            logStreamSubscription = logConnection.stream('StreamLogs', {
+                Level: 'Information',
+                LogKey: null
+            }).subscribe({
+                next: message => {
+                    const text = message?.text || message?.Text || '';
+                    logTerminal.write(text);
+                },
+                error: error => {
+                    setLogStatus('Failed', true);
+                    logTerminal.write(`\x1b[31mLog stream failed: ${error.message || error}\x1b[0m\r\n`);
+                    logStreamSubscription = null;
+                },
+                complete: () => {
+                    setLogStatus('Stopped', true);
+                    logStreamSubscription = null;
+                }
+            });
+        }
+
+        function stopLogStream() {
+            if (logStreamSubscription) {
+                logStreamSubscription.dispose();
+                logStreamSubscription = null;
+            }
+
+            setLogStatus(logConnection.state === signalR.HubConnectionState.Connected ? 'Connected' : 'Disconnected', false);
+        }
+
+        function setLogStreamVisible(isVisible) {
+            logStreamRequested = isVisible;
+            localStorage.setItem(logsVisibleKey, String(isVisible));
+            logStreamPanelElement.classList.toggle('d-none', !isVisible);
+            logsToggleButton.classList.toggle('active', isVisible);
+            logsToggleButton.setAttribute('aria-pressed', String(isVisible));
+            logsToggleButton.title = isVisible ? 'Hide command log stream' : 'Show command log stream';
+
+            setTimeout(() => {
+                fitTerminal();
+                terminal.focus();
+            }, 0);
+
+            if (isVisible) {
+                startLogStream();
+            } else {
+                stopLogStream();
+            }
+        }
+
+        terminal.onData(data => {
+            if (data === '\r') {
+                submitLine();
+                return;
+            }
+
+            if (data === '\u007F') {
+                deleteBeforeCursor();
+                return;
+            }
+
+            if (data === '\u0003') {
+                connection.invoke('CancelCommand').catch(() => { });
+                terminal.write('^C\r\n');
+                return;
+            }
+
+            if (data === '\x1b[A') {
+                showPreviousHistory();
+                return;
+            }
+
+            if (data === '\x1b[B') {
+                showNextHistory();
+                return;
+            }
+
+            if (data === '\x1b[D') {
+                moveCursorLeft();
+                return;
+            }
+
+            if (data === '\x1b[C') {
+                moveCursorRight();
+                return;
+            }
+
+            if (data === '\x1b[H' || data === '\x1b[1~') {
+                moveCursorHome();
+                return;
+            }
+
+            if (data === '\x1b[F' || data === '\x1b[4~') {
+                moveCursorEnd();
+                return;
+            }
+
+            if (data === '\x1b[3~') {
+                deleteAtCursor();
+                return;
+            }
+
+            if (data >= ' ' && !data.startsWith('\x1b')) {
+                insertInput(data);
+            }
+        });
+
+        connection.on('console.ready', metadata => {
+            setStatus('Connected', false);
+            window.bdkDashboard.clearRefreshError(contentElement);
+            fitTerminal();
+            if (!promptVisible && !commandRunning) {
+                if (metadata && metadata.replayedOutput > 0) {
+                    terminal.write('\r\n');
+                } else {
+                    terminal.write('Connected to dashboard console.\r\n');
+                }
+
+                writePrompt();
+            }
+            sendResize();
+        });
+
+        connection.on('console.history', items => {
+            history = Array.isArray(items) ? items.filter(item => item && item.trim()) : [];
+            historyIndex = history.length;
+        });
+
+        connection.on('console.output', text => {
+            terminal.write(text || '');
+        });
+
+        connection.on('console.started', _ => {
+            commandRunning = true;
+            setStatus('Running', false);
+        });
+
+        connection.on('console.completed', _ => {
+            commandRunning = false;
+            setStatus('Connected', false);
+            writePrompt();
+        });
+
+        connection.on('console.cancelled', _ => {
+            commandRunning = false;
+            setStatus('Cancelled', true);
+            terminal.write('\r\nCommand cancelled.\r\n');
+            writePrompt();
+        });
+
+        connection.onreconnecting(() => {
+            setStatus('Reconnecting', true);
+            window.bdkDashboard.showRefreshError(contentElement, 'Console connection lost. The server may not be running. Reconnecting...');
+        });
+
+        connection.onreconnected(() => {
+            setStatus('Connected', false);
+            window.bdkDashboard.clearRefreshError(contentElement);
+            sendResize();
+        });
+
+        connection.onclose(() => {
+            setStatus('Disconnected', true);
+            window.bdkDashboard.showRefreshError(contentElement, 'Console connection is disconnected. The server may not be running.');
+        });
+
+        logConnection.onreconnecting(() => {
+            setLogStatus('Reconnecting', true);
+        });
+
+        logConnection.onreconnected(() => {
+            setLogStatus('Connected', false);
+            if (logStreamRequested) {
+                startLogStream();
+            }
+        });
+
+        logConnection.onclose(() => {
+            setLogStatus('Disconnected', true);
+        });
+
+        logsToggleButton.addEventListener('click', () => {
+            setLogStreamVisible(logStreamPanelElement.classList.contains('d-none'));
+        });
+
+        cancelButton.addEventListener('click', () => {
+            connection.invoke('CancelCommand').catch(() => { });
+        });
+
+        clearButton.addEventListener('click', () => {
+            terminal.clear();
+            logTerminal?.clear();
+            currentLine = '';
+            cursorIndex = 0;
+            writePrompt();
+        });
+
+        window.addEventListener('resize', sendResize);
+
+        connection.start()
+            .catch(error => {
+                setStatus('Disconnected', true);
+                terminal.write(`Connection failed: ${error.message || error}\r\n`);
+                window.bdkDashboard.showRefreshError(contentElement, 'Console connection failed. The server may not be running.');
+            });
+    })();
+</script>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "Console" };
+}

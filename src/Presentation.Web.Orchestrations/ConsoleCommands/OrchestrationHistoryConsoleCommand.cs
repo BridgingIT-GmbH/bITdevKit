@@ -16,7 +16,7 @@ public class OrchestrationHistoryConsoleCommand : OrchestrationConsoleCommandBas
     public OrchestrationHistoryConsoleCommand()
         : base("history", "Show orchestration instance history", "hist") { }
 
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var query = this.GetRequired<IOrchestrationQueryService>(console, services);
         if (query is null)

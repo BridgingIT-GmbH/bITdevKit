@@ -2,7 +2,7 @@
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @inherits RazorSlice<DashboardSidebarItem[]>
 
-<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+<nav id="sidebarMenu" class="d-md-block sidebar collapse">
     <div class="position-sticky pt-3">
         @{
             var groups = Model
@@ -10,6 +10,11 @@
                 .ThenBy(item => item.Group, StringComparer.OrdinalIgnoreCase)
                 .GroupBy(item => item.Group ?? "Dashboard")
                 .ToArray();
+            var requestPath = this.HttpContext.Request.Path.Value?.TrimEnd('/') ?? string.Empty;
+            var activeItem = Model
+                .Where(item => IsPathMatch(requestPath, item.Url))
+                .OrderByDescending(item => item.Url.Split('?')[0].TrimEnd('/').Length)
+                .FirstOrDefault();
         }
 
         @for (var groupIndex = 0; groupIndex < groups.Length; groupIndex++)
@@ -22,14 +27,12 @@
             <ul class="nav flex-column mb-2">
             @foreach (var item in group.OrderBy(item => item.Order).ThenBy(item => item.Title, StringComparer.OrdinalIgnoreCase))
             {
-                var itemPath = item.Url.Split('?')[0].TrimEnd('/');
-                var requestPath = this.HttpContext.Request.Path.Value?.TrimEnd('/') ?? string.Empty;
-                var isActive = string.Equals(requestPath, itemPath, StringComparison.OrdinalIgnoreCase)
-                    || (itemPath.Count(ch => ch == '/') > 2 && requestPath.StartsWith($"{itemPath}/", StringComparison.OrdinalIgnoreCase));
+                var isActive = ReferenceEquals(item, activeItem);
+                var tooltip = string.IsNullOrWhiteSpace(item.Tooltip) ? item.Title : item.Tooltip;
                 <li class="nav-item">
-                    <a class="nav-link @(isActive ? "active" : "")" href="@item.Url">
+                    <a class="nav-link @(isActive ? "active" : "")" href="@item.Url" title="@tooltip" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="@tooltip">
                         <i class="bi bi-@(item.Icon) me-2"></i>
-                        @item.Title
+                        <span class="nav-link-title">@item.Title</span>
                         @if (item.HasBadge && item.BadgeCount.HasValue)
                         {
                             <span class="badge rounded-pill bg-primary ms-2">@item.BadgeCount</span>
@@ -44,5 +47,10 @@
 </nav>
 
 @functions {
-
+    private static bool IsPathMatch(string requestPath, string itemUrl)
+    {
+        var itemPath = itemUrl.Split('?')[0].TrimEnd('/');
+        return string.Equals(requestPath, itemPath, StringComparison.OrdinalIgnoreCase)
+            || (itemPath.Count(ch => ch == '/') > 2 && requestPath.StartsWith($"{itemPath}/", StringComparison.OrdinalIgnoreCase));
+    }
 }

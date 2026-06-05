@@ -1,4 +1,4 @@
-﻿// MIT-License
+// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -21,7 +21,7 @@ public class JobListConsoleCommand : JobGroupConsoleCommandBase
 
     public JobListConsoleCommand() : base("list", "List all jobs in group") { }
 
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         await this.ExecuteWithJobServiceAsync(console, services, async jobService =>
         {

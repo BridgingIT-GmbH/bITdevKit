@@ -6439,6 +6439,28 @@
         }
       }
     },
+    "/_bdk/dashboard/logentries/stream": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Log Entries Stream",
+        "description": "Streams stored log entries to a dashboard terminal view.",
+        "operationId": "_bdk.Dashboard.LogEntriesStream",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/_bdk/dashboard/identity": {
       "get": {
         "tags": [
@@ -6589,7 +6611,29 @@
         }
       }
     },
-    "/_bdk/dashboard/weatherfiesta/cities": {
+    "/_bdk/dashboard/console": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Console",
+        "description": "Shows the dashboard web console.",
+        "operationId": "_bdk.Dashboard.Console",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/app/cities": {
       "get": {
         "tags": [
           "_bdk.Dashboard.WeatherFiesta"
@@ -6611,7 +6655,7 @@
         }
       }
     },
-    "/_bdk/dashboard/weatherfiesta/cities/content": {
+    "/_bdk/dashboard/app/cities/content": {
       "get": {
         "tags": [
           "_bdk.Dashboard.WeatherFiesta"

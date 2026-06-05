@@ -31,7 +31,7 @@ public class SampleConsoleCommand : ConsoleCommandBase
         }
     }
     /// <summary>Executes sample output logic.</summary>
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var table = new Table().Border(TableBorder.Minimal);
         table.AddColumn("Field"); table.AddColumn("Value");

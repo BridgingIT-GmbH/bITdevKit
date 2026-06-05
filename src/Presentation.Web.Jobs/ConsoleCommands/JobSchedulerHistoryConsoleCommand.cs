@@ -34,7 +34,7 @@ public class JobSchedulerHistoryConsoleCommand : JobSchedulerConsoleCommandBase
     public JobSchedulerHistoryConsoleCommand()
         : base("history", "Show retained job execution history", "hist") { }
 
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         if (!TryParseDate(this.From, out var from) || !TryParseDate(this.To, out var to))
         {

@@ -17,7 +17,7 @@ public abstract class OrchestrationRuntimeControlConsoleCommandBase(string name,
     [ConsoleCommandOption("reason", Alias = "r", Description = "Reason recorded with the operation")]
     public string Reason { get; set; }
 
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var runtime = this.GetRequired<IOrchestrationService>(console, services);
         if (runtime is null)
@@ -93,7 +93,7 @@ public abstract class OrchestrationAdministrationControlConsoleCommandBase(strin
     [ConsoleCommandArgument(0, Description = "Orchestration instance id", Required = true)]
     public Guid InstanceId { get; set; }
 
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var administration = this.GetRequired<IOrchestrationAdministrationService>(console, services);
         if (administration is null)

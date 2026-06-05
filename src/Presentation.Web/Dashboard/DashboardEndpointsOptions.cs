@@ -14,10 +14,13 @@ public class DashboardEndpointsOptions : EndpointsOptionsBase
         this.Enabled = true;
         this.GroupPath = "/_bdk/dashboard";
         this.GroupTag = "_bdk/dashboard";
+        this.Title = "BDK Dashboard";
         this.EndpointPaths = new DashboardEndpointPaths(); // Default endpoint paths
     }
 
     public DashboardEndpointPaths EndpointPaths { get; set; }
+
+    public string Title { get; set; }
 
     public List<Assembly> PluginAssemblies { get; } = [];
 }

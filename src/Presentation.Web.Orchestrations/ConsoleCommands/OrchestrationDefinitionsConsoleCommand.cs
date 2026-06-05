@@ -14,7 +14,7 @@ public class OrchestrationDefinitionsConsoleCommand : OrchestrationConsoleComman
     public OrchestrationDefinitionsConsoleCommand()
         : base("definitions", "List registered orchestration definitions", "defs") { }
 
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var registrations = this.GetRequired<OrchestrationRegistrationStore>(console, services);
         if (registrations is null)

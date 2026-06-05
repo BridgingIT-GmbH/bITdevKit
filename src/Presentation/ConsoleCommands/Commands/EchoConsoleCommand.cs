@@ -33,7 +33,7 @@ public class EchoConsoleCommand : ConsoleCommandBase
         }
     }
     /// <summary>Outputs the echoed text lines.</summary>
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var output = this.Upper ? this.Text.ToUpperInvariant() : this.Text;
         for (var i = 1; i <= this.Repeat; i++)

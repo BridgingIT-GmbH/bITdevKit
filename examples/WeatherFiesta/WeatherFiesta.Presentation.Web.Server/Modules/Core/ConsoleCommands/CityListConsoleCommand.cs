@@ -27,7 +27,7 @@ public class CityListConsoleCommand : AppGroupConsoleCommandBase
     public CityListConsoleCommand() : base("cities", "List all cities with current weather", "list", "ls", "city-list", "cl") { }
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var cityResult = await City.FindAllAsync(null, CancellationToken.None);
 

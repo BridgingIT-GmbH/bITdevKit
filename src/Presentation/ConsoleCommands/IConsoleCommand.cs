@@ -22,6 +22,9 @@ public interface IConsoleCommand
     /// <summary>Gets a short description of the command purpose.</summary>
     string Description { get; }
 
+    /// <summary>Gets a value indicating whether this command is available from the dashboard web console.</summary>
+    bool IsWebConsoleEnabled { get; }
+
     /// <summary>Determines whether user input matches the command name or an alias.</summary>
     bool Matches(string input);
 
@@ -29,5 +32,5 @@ public interface IConsoleCommand
     void OnAfterBind(IAnsiConsole console, string[] tokens);
 
     /// <summary>Executes the command logic asynchronously.</summary>
-    Task ExecuteAsync(IAnsiConsole console, IServiceProvider services);
+    Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default);
 }

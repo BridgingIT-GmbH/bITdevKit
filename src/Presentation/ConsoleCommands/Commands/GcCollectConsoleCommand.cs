@@ -18,7 +18,7 @@ public class GcCollectConsoleCommand : ConsoleCommandBase
     public GcCollectConsoleCommand() : base("gc", "Force GC collect and show freed memory", ["col"]) { }
 
     /// <summary>Executes (optional) GC collection and displays memory stats.</summary>
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var before = GC.GetTotalMemory(false);
         if (!this.NoCollect)

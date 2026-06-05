@@ -21,7 +21,11 @@ public class BrowseConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
     [ConsoleCommandOption("no-https", Description = "Prefer HTTP instead of HTTPS")] public bool NoHttps { get; set; }
     [ConsoleCommandOption("all", Description = "Open all bound addresses")] public bool All { get; set; }
     public BrowseConsoleCommand() : base("open", "Open default browser on Kestrel address", "web") { }
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+
+    /// <inheritdoc />
+    public override bool IsWebConsoleEnabled => false;
+
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var server = services.GetService<IServer>(); var feature = server?.Features.Get<IServerAddressesFeature>(); var addresses = feature?.Addresses?.ToList() ?? [];
         if (addresses.Count == 0) { console.MarkupLine("[yellow]No server addresses available (server not fully started?).[/]"); return Task.CompletedTask; }

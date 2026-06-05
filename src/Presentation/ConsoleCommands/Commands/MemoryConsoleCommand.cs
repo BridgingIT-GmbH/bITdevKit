@@ -21,7 +21,7 @@ public class MemoryConsoleCommand : ConsoleCommandBase
     public MemoryConsoleCommand() : base("memory", "Show memory usage", ["mem"]) { }
 
     /// <summary>Executes the memory command.</summary>
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var proc = Process.GetCurrentProcess();
         var managed = GC.GetTotalMemory(false);

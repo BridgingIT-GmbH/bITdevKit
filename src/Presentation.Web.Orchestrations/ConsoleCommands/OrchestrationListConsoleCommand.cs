@@ -34,7 +34,7 @@ public class OrchestrationListConsoleCommand : OrchestrationConsoleCommandBase
     public OrchestrationListConsoleCommand()
         : base("list", "List orchestration instances") { }
 
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         if (!TryParseDate(this.From, out var from) || !TryParseDate(this.To, out var to))
         {

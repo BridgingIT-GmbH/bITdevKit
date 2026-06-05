@@ -36,9 +36,14 @@ public class DashboardPage(string title, string icon, string url)
     public string Url { get; init; } = url;
 
     /// <summary>
+    /// Gets or sets optional sidebar tooltip text.
+    /// </summary>
+    public string Description { get; init; }
+
+    /// <summary>
     /// Gets or sets the sidebar group name.
     /// </summary>
-    public string Group { get; init; } = "Dashboard";
+    public string Group { get; init; } = "bdk";
 
     /// <summary>
     /// Gets or sets the group ordering value.

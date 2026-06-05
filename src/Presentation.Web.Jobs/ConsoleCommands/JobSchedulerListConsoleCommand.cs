@@ -34,7 +34,7 @@ public class JobSchedulerListConsoleCommand : JobSchedulerConsoleCommandBase
     public JobSchedulerListConsoleCommand()
         : base("list", "List registered jobs") { }
 
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         if (this.Enabled && this.Disabled)
         {

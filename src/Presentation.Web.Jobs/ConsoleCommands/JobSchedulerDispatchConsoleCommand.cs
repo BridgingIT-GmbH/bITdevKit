@@ -25,7 +25,7 @@ public class JobSchedulerDispatchConsoleCommand : JobSchedulerConsoleCommandBase
     public JobSchedulerDispatchConsoleCommand()
         : base("dispatch", "Dispatch a job through its manual trigger", "trigger", "run") { }
 
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var scheduler = this.GetRequired<IJobSchedulerService>(console, services);
         if (scheduler is null)

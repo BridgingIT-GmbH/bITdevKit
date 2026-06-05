@@ -15,7 +15,7 @@ public class HistorySearchConsoleCommand : ConsoleCommandBase, IGroupedConsoleCo
     public IReadOnlyCollection<string> GroupAliases => ["hist"];
     [ConsoleCommandArgument(0, Description = "Search text", Required = true)] public string Text { get; set; }
     public HistorySearchConsoleCommand() : base("search", "Search command history by substring") { }
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var query = this.Text ?? string.Empty;
         var matches = ConsoleCommandHistory.GetAll().Select((l, i) => (i + 1, l))

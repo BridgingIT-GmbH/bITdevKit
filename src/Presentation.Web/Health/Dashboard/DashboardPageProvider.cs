@@ -29,6 +29,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Group = "bdk",
             GroupOrder = 0,
             Order = 30,
+            Description = "Registered health check status",
             Card = GetCardAsync
         };
     }

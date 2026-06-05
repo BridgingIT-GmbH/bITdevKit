@@ -24,9 +24,10 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
     {
         yield return new DashboardPage("Cities", "cloud-sun", DashboardEndpoints.BuildCitiesPath(options))
         {
-            Group = "WeatherFiesta",
+            Group = "App",
             GroupOrder = 100,
             Order = 0,
+            Description = "WeatherFiesta city dashboard",
             Card = async context =>
             {
                 var requester = context.RequestServices.GetService<IRequester>();
@@ -49,11 +50,11 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
     {
         return new DashboardPageCard("Cities", "WeatherFiesta", value)
         {
+            Group = "App",
+            GroupOrder = 100,
             Detail = detail,
             Icon = "cloud-sun",
             Url = DashboardEndpoints.BuildCitiesPath(options),
-            Group = "WeatherFiesta",
-            GroupOrder = 100,
             Order = 0
         };
     }

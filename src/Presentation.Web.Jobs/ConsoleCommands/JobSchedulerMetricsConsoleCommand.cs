@@ -19,7 +19,7 @@ public class JobSchedulerMetricsConsoleCommand : JobSchedulerConsoleCommandBase
     public JobSchedulerMetricsConsoleCommand()
         : base("metrics", "Show aggregate job scheduler metrics", "stats") { }
 
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var query = this.GetRequired<IJobSchedulerQueryService>(console, services);
         if (query is null)

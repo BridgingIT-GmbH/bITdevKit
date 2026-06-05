@@ -23,6 +23,8 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
     private const string LogEntriesPath = "/logentries";
     private const string LogEntriesContentPath = "/logentries/content";
     private const string LogEntriesRowsPath = "/logentries/rows";
+    private const string LogEntriesStreamPath = "/logentries/stream";
+    private const string LogEntriesStreamHubPath = "/logentries/stream/hub";
 
     /// <inheritdoc />
     public override void Map(IEndpointRouteBuilder app)
@@ -54,6 +56,16 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             "_bdk.Dashboard.LogEntriesRows",
             "Dashboard Log Entries Rows",
             "Shows dashboard log entry rows.");
+
+        group.MapDashboardPage<Pages.Stream>(
+            LogEntriesStreamPath,
+            "_bdk.Dashboard.LogEntriesStream",
+            "Dashboard Log Entries Stream",
+            "Streams stored log entries to a dashboard terminal view.");
+
+        group.MapHub<WebLogStreamHub>(LogEntriesStreamHubPath)
+            .WithSummary("Dashboard Log Entries Stream Hub")
+            .WithDescription("Streams stored log entries to the dashboard log stream terminal.");
     }
 
     internal static string BuildLogEntriesPath(DashboardEndpointsOptions options)
@@ -69,5 +81,15 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
     internal static string BuildLogEntriesRowsPath(DashboardEndpointsOptions options)
     {
         return DashboardPath.Combine(options?.GroupPath, LogEntriesRowsPath);
+    }
+
+    internal static string BuildLogEntriesStreamPath(DashboardEndpointsOptions options)
+    {
+        return DashboardPath.Combine(options?.GroupPath, LogEntriesStreamPath);
+    }
+
+    internal static string BuildLogEntriesStreamHubPath(DashboardEndpointsOptions options)
+    {
+        return DashboardPath.Combine(options?.GroupPath, LogEntriesStreamHubPath);
     }
 }

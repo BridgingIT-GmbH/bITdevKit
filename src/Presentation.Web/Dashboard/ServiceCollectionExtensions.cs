@@ -30,6 +30,7 @@ public static partial class ServiceCollectionExtensions
 
         // Register services for the dashboard endpoints
         services.AddSingleton(options);
+        services.AddSignalR();
 
         // Register the page generator
         //if (options.PageGenerator != null)

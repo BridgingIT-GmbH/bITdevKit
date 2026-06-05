@@ -17,7 +17,7 @@ public class ThreadsConsoleCommand : ConsoleCommandBase
     public ThreadsConsoleCommand() : base("threads", "Thread pool statistics", ["tr"]) { }
 
     /// <summary>Outputs thread pool statistics.</summary>
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         ThreadPool.GetAvailableThreads(out var workerAvail, out var ioAvail);
         ThreadPool.GetMaxThreads(out var workerMax, out var ioMax);

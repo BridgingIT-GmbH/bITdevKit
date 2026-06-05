@@ -17,7 +17,7 @@ public abstract class JobSchedulerJobControlConsoleCommandBase(string name, stri
     [ConsoleCommandOption("reason", Alias = "r", Description = "Reason recorded with the operation")]
     public string Reason { get; set; }
 
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var scheduler = this.GetRequired<IJobSchedulerService>(console, services);
         if (scheduler is null)

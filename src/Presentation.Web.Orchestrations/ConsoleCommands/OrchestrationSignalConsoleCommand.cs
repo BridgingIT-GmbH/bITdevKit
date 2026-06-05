@@ -25,7 +25,7 @@ public class OrchestrationSignalConsoleCommand : OrchestrationConsoleCommandBase
     public OrchestrationSignalConsoleCommand()
         : base("signal", "Deliver a signal to an orchestration instance") { }
 
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var runtime = this.GetRequired<IOrchestrationService>(console, services);
         if (runtime is null)

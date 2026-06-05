@@ -22,8 +22,8 @@ using IResult = Microsoft.AspNetCore.Http.IResult;
 /// </example>
 public class DashboardEndpoints(DashboardEndpointsOptions options) : EndpointsBase, IDashboardEndpoints
 {
-    private const string CitiesPath = "/weatherfiesta/cities";
-    private const string CitiesContentPath = "/weatherfiesta/cities/content";
+    private const string CitiesPath = "/app/cities";
+    private const string CitiesContentPath = "/app/cities/content";
 
     /// <inheritdoc />
     public override void Map(IEndpointRouteBuilder app)

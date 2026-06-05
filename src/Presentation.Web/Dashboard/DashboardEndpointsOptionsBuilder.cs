@@ -37,6 +37,13 @@ public class DashboardEndpointsOptionsBuilder
         return this;
     }
 
+    public DashboardEndpointsOptionsBuilder WithTitle(string title)
+    {
+        this.options.Title = string.IsNullOrWhiteSpace(title) ? "BDK Dashboard" : title.Trim();
+
+        return this;
+    }
+
     /// <summary>
     /// Adds an assembly that contains dashboard plugin endpoints.
     /// </summary>

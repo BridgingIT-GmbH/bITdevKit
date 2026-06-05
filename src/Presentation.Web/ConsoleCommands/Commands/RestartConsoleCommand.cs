@@ -20,8 +20,12 @@ public class RestartConsoleCommand : ConsoleCommandBase
     /// Aliases: <c>re</c>, <c>reload</c>
     /// </summary>
     public RestartConsoleCommand() : base("restart", "Restart the application (development only)", "re") { }
+
+    /// <inheritdoc />
+    public override bool IsWebConsoleEnabled => false;
+
     /// <summary>Performs application restart procedure.</summary>
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var env = services.GetRequiredService<IWebHostEnvironment>();
         if (!env.IsDevelopment()) { console.MarkupLine("[red]Restart denied: not a development environment.[/]"); return Task.CompletedTask; }

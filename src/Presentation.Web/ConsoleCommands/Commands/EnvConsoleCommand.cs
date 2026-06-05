@@ -18,7 +18,7 @@ public class EnvConsoleCommand : ConsoleCommandBase
     public EnvConsoleCommand() : base("env", "Show environment info") { }
 
     /// <summary>Executes environment info output.</summary>
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var env = services.GetRequiredService<IWebHostEnvironment>();
         var table = new Table().Border(TableBorder.Minimal);

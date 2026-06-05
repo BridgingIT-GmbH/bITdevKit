@@ -5,11 +5,9 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Dashboard.Pages;
 
-using System.Reflection;
-
 public class DashboardLayoutModel
 {
-    public string ProductName { get; set; } = Assembly.GetEntryAssembly()?.GetName().Name;
+    public string ProductName { get; set; }
 
     public string Title { get; set; } = "";
 
@@ -33,13 +31,15 @@ public class DashboardSidebarItem
 
     public int GroupOrder { get; init; }
 
-    public string Group { get; init; } = "Dashboard";
+    public string Group { get; init; } = "bdk";
 
     public string Title { get; init; }
 
     public string Icon { get; init; }
 
     public string Url { get; init; }
+
+    public string Tooltip { get; init; }
 
     public bool HasBadge { get; init; }
 

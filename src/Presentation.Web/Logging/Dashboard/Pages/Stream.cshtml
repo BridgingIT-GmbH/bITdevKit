@@ -1,0 +1,279 @@
+@using BridgingIT.DevKit.Application.Utilities
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
+@using Microsoft.Extensions.DependencyInjection
+@using RazorSlices
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+@{
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var hubPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesStreamHubPath(dashboardOptions);
+    var serviceAvailable = this.HttpContext.RequestServices.GetService<ILogEntryService>() is not null;
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css">
+
+<style>
+    .dashboard-logstream-page {
+        height: calc(100vh - 3.5rem);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        padding-bottom: .75rem;
+    }
+
+    .dashboard-logstream-filter {
+        flex: 0 0 auto;
+    }
+
+    #dashboard-logstream-content {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    #logstream-terminal {
+        height: 100%;
+        background: #111;
+    }
+
+    #logstream-terminal .xterm {
+        height: 100%;
+    }
+</style>
+
+<div class="dashboard-logstream-page">
+    <div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
+        <div>
+            <h4 class="m-0">Logs Stream</h4>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+            <span id="logstream-count" class="text-muted small">0 entries</span>
+            <span id="logstream-status" class="text-muted small">Disconnected</span>
+            <button type="button" id="logstream-stop" class="btn btn-outline-secondary btn-sm" title="Stop stream">
+                <i class="bi bi-stop-circle"></i>
+            </button>
+            <button type="button" id="logstream-clear" class="btn btn-outline-secondary btn-sm" title="Clear terminal">
+                <i class="bi bi-eraser"></i>
+            </button>
+        </div>
+    </div>
+
+    @if (!serviceAvailable)
+    {
+        <div class="alert alert-warning py-2">
+            Log streaming unavailable: register <code>ILogEntryService</code> to populate this page.
+        </div>
+    }
+
+    <form id="logstream-filter-form" class="card dashboard-logstream-filter mb-2">
+        <div class="card-body p-2">
+            <div class="row g-2 align-items-end">
+                <div class="col-12 col-md-3 col-xl-2">
+                    <label class="form-label small" for="logstream-level">Minimum level</label>
+                    <select id="logstream-level" name="level" class="form-select form-select-sm">
+                        <option value="All">All levels</option>
+                        <option value="Trace">Verbose</option>
+                        <option value="Debug">Debug</option>
+                        <option value="Information" selected>Information</option>
+                        <option value="Warning">Warning</option>
+                        <option value="Error">Error</option>
+                        <option value="Critical">Fatal</option>
+                    </select>
+                </div>
+                <div class="col-12 col-md-4 col-xl-3">
+                    <label class="form-label small" for="logstream-logkey">LogKey</label>
+                    <input id="logstream-logkey" name="logKey" class="form-control form-control-sm" placeholder="All log keys">
+                </div>
+                <div class="col-12 col-md-3 col-xl-2 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary btn-sm flex-fill">Start Stream</button>
+                    <button type="button" id="logstream-reset" class="btn btn-outline-secondary btn-sm">Reset</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div id="dashboard-logstream-content">
+        <div id="logstream-terminal"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@8.0.7/dist/browser/signalr.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.min.js"></script>
+<script>
+    (() => {
+        const hubPath = '@hubPath';
+        const serviceAvailable = @serviceAvailable.ToString().ToLowerInvariant();
+        const contentElement = document.getElementById('dashboard-logstream-content');
+        const terminalElement = document.getElementById('logstream-terminal');
+        const formElement = document.getElementById('logstream-filter-form');
+        const resetElement = document.getElementById('logstream-reset');
+        const stopElement = document.getElementById('logstream-stop');
+        const clearElement = document.getElementById('logstream-clear');
+        const statusElement = document.getElementById('logstream-status');
+        const countElement = document.getElementById('logstream-count');
+        const terminal = new Terminal({
+            cols: 120,
+            rows: 32,
+            convertEol: true,
+            cursorBlink: false,
+            scrollback: 20000,
+            theme: {
+                background: '#111111',
+                foreground: '#f3f3f3'
+            }
+        });
+        const fitAddon = new FitAddon.FitAddon();
+
+        let streamSubscription = null;
+        let shouldStream = false;
+        let entryCount = 0;
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl(hubPath)
+            .withAutomaticReconnect()
+            .build();
+
+        terminal.loadAddon(fitAddon);
+        terminal.open(terminalElement);
+        fitTerminal();
+
+        function fitTerminal() {
+            fitAddon.fit();
+        }
+
+        function setStatus(text, isError) {
+            statusElement.textContent = text;
+            statusElement.classList.toggle('text-danger', isError === true);
+            statusElement.classList.toggle('text-muted', isError !== true);
+        }
+
+        function updateCount() {
+            countElement.textContent = `${entryCount} ${entryCount === 1 ? 'entry' : 'entries'}`;
+        }
+
+        function requestFromForm() {
+            const formData = new FormData(formElement);
+            return {
+                Level: formData.get('level') || 'Information',
+                LogKey: formData.get('logKey') || null
+            };
+        }
+
+        function stopStream() {
+            if (streamSubscription) {
+                streamSubscription.dispose();
+                streamSubscription = null;
+            }
+
+            shouldStream = false;
+            setStatus(connection.state === signalR.HubConnectionState.Connected ? 'Connected' : 'Disconnected', false);
+        }
+
+        function startStream() {
+            if (!serviceAvailable) {
+                terminal.write('\x1b[33mILogEntryService is not registered. Log streaming is unavailable.\x1b[0m\r\n');
+                return;
+            }
+
+            if (connection.state !== signalR.HubConnectionState.Connected) {
+                terminal.write('\x1b[33mLog stream is not connected yet.\x1b[0m\r\n');
+                return;
+            }
+
+            if (streamSubscription) {
+                streamSubscription.dispose();
+            }
+
+            shouldStream = true;
+            entryCount = 0;
+            updateCount();
+            setStatus('Streaming', false);
+            terminal.write('\x1b[90mStarting log stream...\x1b[0m\r\n');
+
+            streamSubscription = connection.stream('StreamLogs', requestFromForm()).subscribe({
+                next: message => {
+                    if (!message) {
+                        return;
+                    }
+
+                    const text = message.text || message.Text || '';
+                    const kind = message.kind || message.Kind || 'output';
+                    terminal.write(text);
+                    if (kind === 'output') {
+                        entryCount++;
+                        updateCount();
+                    }
+                },
+                error: error => {
+                    setStatus('Stream failed', true);
+                    terminal.write(`\x1b[31mLog stream failed: ${error.message || error}\x1b[0m\r\n`);
+                    streamSubscription = null;
+                },
+                complete: () => {
+                    if (shouldStream) {
+                        setStatus('Stream stopped', true);
+                    }
+
+                    streamSubscription = null;
+                }
+            });
+        }
+
+        formElement.addEventListener('submit', event => {
+            event.preventDefault();
+            terminal.clear();
+            startStream();
+        });
+
+        resetElement.addEventListener('click', () => {
+            formElement.reset();
+        });
+
+        stopElement.addEventListener('click', stopStream);
+
+        clearElement.addEventListener('click', () => {
+            terminal.clear();
+        });
+
+        window.addEventListener('resize', fitTerminal);
+
+        connection.onreconnecting(() => {
+            setStatus('Reconnecting', true);
+            window.bdkDashboard.showRefreshError(contentElement, 'Log stream connection lost. The server may not be running. Reconnecting...');
+        });
+
+        connection.onreconnected(() => {
+            setStatus('Connected', false);
+            window.bdkDashboard.clearRefreshError(contentElement);
+            if (shouldStream) {
+                terminal.write('\x1b[90mReconnected. Restarting log stream...\x1b[0m\r\n');
+                startStream();
+            }
+        });
+
+        connection.onclose(() => {
+            setStatus('Disconnected', true);
+            window.bdkDashboard.showRefreshError(contentElement, 'Log stream connection is disconnected. The server may not be running.');
+        });
+
+        connection.start()
+            .then(() => {
+                setStatus('Connected', false);
+                window.bdkDashboard.clearRefreshError(contentElement);
+                startStream();
+            })
+            .catch(error => {
+                setStatus('Disconnected', true);
+                terminal.write(`\x1b[31mConnection failed: ${error.message || error}\x1b[0m\r\n`);
+                window.bdkDashboard.showRefreshError(contentElement, 'Log stream connection failed. The server may not be running.');
+            });
+    })();
+</script>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "Logs Stream" };
+}

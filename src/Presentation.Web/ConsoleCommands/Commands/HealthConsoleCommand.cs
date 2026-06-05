@@ -30,7 +30,7 @@ public class HealthConsoleCommand : ConsoleCommandBase
     public HealthConsoleCommand() : base("health", "Run health checks", "hc", "healthz") { }
 
     /// <inheritdoc />
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var healthCheckService = services.GetService<HealthCheckService>();
         if (healthCheckService is null)

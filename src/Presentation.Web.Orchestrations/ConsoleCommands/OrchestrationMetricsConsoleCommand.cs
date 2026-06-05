@@ -22,7 +22,7 @@ public class OrchestrationMetricsConsoleCommand : OrchestrationConsoleCommandBas
     public OrchestrationMetricsConsoleCommand()
         : base("metrics", "Show aggregate orchestration metrics", "stats") { }
 
-    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var query = this.GetRequired<IOrchestrationQueryService>(console, services);
         if (query is null)

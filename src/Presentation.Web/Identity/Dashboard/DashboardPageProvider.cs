@@ -26,6 +26,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Group = "bdk",
             GroupOrder = 0,
             Order = 10,
+            Description = "Current identity and claims",
             Card = _ => ValueTask.FromResult(new DashboardPageCard("Identity", "Current request user", httpContext.User?.Identity?.IsAuthenticated == true ? "Authenticated" : "Anonymous")
             {
                 Detail = httpContext.User?.Identity?.Name,

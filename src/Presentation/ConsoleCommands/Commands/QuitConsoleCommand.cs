@@ -17,8 +17,12 @@ public class QuitConsoleCommand : ConsoleCommandBase
     /// Aliases: <c>exit</c>, <c>q</c>
     /// </summary>
     public QuitConsoleCommand() : base("quit", "Stop the server", "exit", "q") { }
+
+    /// <inheritdoc />
+    public override bool IsWebConsoleEnabled => false;
+
     /// <summary>Stops application execution.</summary>
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         console.MarkupLine("[red]Stopping...[/]");
         services.GetRequiredService<IHostApplicationLifetime>().StopApplication();

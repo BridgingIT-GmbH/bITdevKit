@@ -24,7 +24,7 @@ public class HelpConsoleCommand : ConsoleCommandBase
     public HelpConsoleCommand() : base("help", "List available commands", "?") { }
 
     /// <summary>Executes help listing.</summary>
-    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
+    public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         var commands = services.GetServices<IConsoleCommand>().ToList();
         if (!string.IsNullOrWhiteSpace(this.Target))

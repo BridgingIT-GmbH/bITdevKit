@@ -1298,24 +1298,24 @@ Recommended models:
 
 Recommended operational endpoint group:
 
-- path: `/api/_system/queueing/messages`
-- tag: `_System.Queueing`
+- path: `/_bdk/api/queueing/messages`
+- tag: `_bdk_.Queueing`
 
 Recommended routes:
 
-- `GET /api/_system/queueing/messages`
-- `GET /api/_system/queueing/messages/{id}`
-- `GET /api/_system/queueing/messages/{id}/content`
-- `GET /api/_system/queueing/messages/stats`
-- `POST /api/_system/queueing/messages/{id}/retry`
-- `POST /api/_system/queueing/messages/{id}/lease/release`
-- `POST /api/_system/queueing/queues/{queueName}/pause`
-- `POST /api/_system/queueing/queues/{queueName}/resume`
-- `POST /api/_system/queueing/types/{type}/pause`
-- `POST /api/_system/queueing/types/{type}/resume`
-- `POST /api/_system/queueing/types/{type}/circuit/reset`
-- `POST /api/_system/queueing/messages/{id}/archive`
-- `DELETE /api/_system/queueing/messages`
+- `GET /_bdk/api/queueing/messages`
+- `GET /_bdk/api/queueing/messages/{id}`
+- `GET /_bdk/api/queueing/messages/{id}/content`
+- `GET /_bdk/api/queueing/messages/stats`
+- `POST /_bdk/api/queueing/messages/{id}/retry`
+- `POST /_bdk/api/queueing/messages/{id}/lease/release`
+- `POST /_bdk/api/queueing/queues/{queueName}/pause`
+- `POST /_bdk/api/queueing/queues/{queueName}/resume`
+- `POST /_bdk/api/queueing/types/{type}/pause`
+- `POST /_bdk/api/queueing/types/{type}/resume`
+- `POST /_bdk/api/queueing/types/{type}/circuit/reset`
+- `POST /_bdk/api/queueing/messages/{id}/archive`
+- `DELETE /_bdk/api/queueing/messages`
 
 The content endpoint keeps list and summary responses compact while still exposing the stored serialized payload when needed.
 
@@ -1344,8 +1344,8 @@ builder.Services.AddQueueing(builder.Configuration)
 
 builder.Services.AddSingleton(new QueueingEndpointsOptions
 {
-    GroupPath = "/api/_system/queueing/messages",
-    GroupTag = "_System.Queueing"
+    GroupPath = "/_bdk/api/queueing/messages",
+    GroupTag = "_bdk.Queueing"
 });
 
 builder.Services.AddEndpoints<QueueingEndpoints>(builder.Environment.IsDevelopment());

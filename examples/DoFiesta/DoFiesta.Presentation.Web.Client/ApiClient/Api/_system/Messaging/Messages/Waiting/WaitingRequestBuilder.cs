@@ -22,7 +22,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public WaitingRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/messaging/messages/waiting{?take*}", pathParameters)
+        public WaitingRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/messaging/messages/waiting{?take*}", pathParameters)
         {
         }
         /// <summary>
@@ -30,7 +30,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public WaitingRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/messaging/messages/waiting{?take*}", rawUrl)
+        public WaitingRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/messaging/messages/waiting{?take*}", rawUrl)
         {
         }
         /// <summary>
@@ -89,7 +89,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         /// Retrieves messages that were published with no handler registrations.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class WaitingRequestBuilderGetQueryParameters 
+        public partial class WaitingRequestBuilderGetQueryParameters
         {
             [QueryParameter("take")]
             public int? Take { get; set; }

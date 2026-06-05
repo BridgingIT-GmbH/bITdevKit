@@ -22,7 +22,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logen
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public StatsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/logentries/stats{?endTime*,groupByIntervalHours*,startTime*}", pathParameters)
+        public StatsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/logentries/stats{?endTime*,groupByIntervalHours*,startTime*}", pathParameters)
         {
         }
         /// <summary>
@@ -30,7 +30,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logen
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public StatsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/logentries/stats{?endTime*,groupByIntervalHours*,startTime*}", rawUrl)
+        public StatsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/logentries/stats{?endTime*,groupByIntervalHours*,startTime*}", rawUrl)
         {
         }
         /// <summary>
@@ -90,7 +90,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logen
         /// Retrieves aggregated statistics for log entries, grouped by time intervals. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class StatsRequestBuilderGetQueryParameters 
+        public partial class StatsRequestBuilderGetQueryParameters
         {
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable

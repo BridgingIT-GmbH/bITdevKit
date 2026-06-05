@@ -28,7 +28,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public EventsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/{providerName}/events{?eventType*,fromDate*,path*,take*,tillDate*}", pathParameters)
+        public EventsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/{providerName}/events{?eventType*,fromDate*,path*,take*,tillDate*}", pathParameters)
         {
         }
         /// <summary>
@@ -36,7 +36,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public EventsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/{providerName}/events{?eventType*,fromDate*,path*,take*,tillDate*}", rawUrl)
+        public EventsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/{providerName}/events{?eventType*,fromDate*,path*,take*,tillDate*}", rawUrl)
         {
         }
         /// <summary>
@@ -98,7 +98,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         /// Lists stored monitoring events for the provider-backed location, optionally filtered by path, event type, date range, and result size.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class EventsRequestBuilderGetQueryParameters 
+        public partial class EventsRequestBuilderGetQueryParameters
         {
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable

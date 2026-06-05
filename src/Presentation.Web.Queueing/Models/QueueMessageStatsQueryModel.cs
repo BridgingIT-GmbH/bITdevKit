@@ -5,7 +5,7 @@ namespace BridgingIT.DevKit.Presentation.Web.Queueing.Models;
 /// </summary>
 /// <example>
 /// <code>
-/// GET /api/_system/queueing/messages/stats?isArchived=false
+/// GET /_bdk/api/queueing/messages/stats?isArchived=false
 /// </code>
 /// </example>
 public class QueueMessageStatsQueryModel

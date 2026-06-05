@@ -89,8 +89,8 @@ public class FileStorageEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task GetProviderInfo_ShouldExposeRegisteredProvidersByName()
     {
-        var response = await this.client.GetAsync("/api/_system/documents/provider");
-        var hiddenResponse = await this.client.GetAsync("/api/_system/hidden/provider");
+        var response = await this.client.GetAsync("/_bdk/api/documents/provider");
+        var hiddenResponse = await this.client.GetAsync("/_bdk/api/hidden/provider");
         var result = await response.Content.ReadFromJsonAsync<FileStorageProviderInfoModel>();
         var hiddenResult = await hiddenResponse.Content.ReadFromJsonAsync<FileStorageProviderInfoModel>();
 
@@ -107,7 +107,7 @@ public class FileStorageEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task GetLocations_ShouldReturnAllRegisteredProviders()
     {
-        var response = await this.client.GetAsync("/api/_system/locations");
+        var response = await this.client.GetAsync("/_bdk/api/locations");
         var result = await response.Content.ReadFromJsonAsync<List<FileStorageProviderInfoModel>>();
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -121,7 +121,7 @@ public class FileStorageEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task UnknownProvider_ShouldReturnNotFound()
     {
-        var response = await this.client.GetAsync("/api/_system/missing/provider");
+        var response = await this.client.GetAsync("/_bdk/api/missing/provider");
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
@@ -130,10 +130,10 @@ public class FileStorageEndpointsTests : IAsyncDisposable
     public async Task PutAndGetFileContent_ShouldRoundTripBytes()
     {
         var putResponse = await this.client.PutAsync(
-            "/api/_system/documents/files/content?path=docs/guide.txt",
+            "/_bdk/api/documents/files/content?path=docs/guide.txt",
             new ByteArrayContent(Encoding.UTF8.GetBytes("Hello from endpoint storage")));
 
-        var getResponse = await this.client.GetAsync("/api/_system/documents/files/content?path=docs/guide.txt");
+        var getResponse = await this.client.GetAsync("/_bdk/api/documents/files/content?path=docs/guide.txt");
         var content = await getResponse.Content.ReadAsStringAsync();
 
         putResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -147,7 +147,7 @@ public class FileStorageEndpointsTests : IAsyncDisposable
         var provider = this.factory.CreateProvider("documents");
         await provider.WriteBytesAsync("meta/file.txt", Encoding.UTF8.GetBytes("meta"), cancellationToken: CancellationToken.None);
 
-        var response = await this.client.GetAsync("/api/_system/documents/files/metadata?path=meta/file.txt");
+        var response = await this.client.GetAsync("/_bdk/api/documents/files/metadata?path=meta/file.txt");
         var metadata = await response.Content.ReadFromJsonAsync<FileMetadata>();
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -163,7 +163,7 @@ public class FileStorageEndpointsTests : IAsyncDisposable
         await provider.WriteBytesAsync("docs/alpha.txt", Encoding.UTF8.GetBytes("alpha"), cancellationToken: CancellationToken.None);
         await provider.WriteBytesAsync("docs/beta.txt", Encoding.UTF8.GetBytes("beta"), cancellationToken: CancellationToken.None);
 
-        var response = await this.client.GetAsync("/api/_system/documents/files?path=docs&searchPattern=*.txt&recursive=true");
+        var response = await this.client.GetAsync("/_bdk/api/documents/files?path=docs&searchPattern=*.txt&recursive=true");
         var files = await response.Content.ReadFromJsonAsync<FileStorageFilesResponseModel>();
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -175,12 +175,12 @@ public class FileStorageEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task DirectoryLifecycle_ShouldCreateAndDeleteDirectory()
     {
-        var createResponse = await this.client.PostAsync("/api/_system/documents/directories?path=ops/archive", null);
-        var existsAfterCreateResponse = await this.client.GetAsync("/api/_system/documents/directories/exists?path=ops/archive");
+        var createResponse = await this.client.PostAsync("/_bdk/api/documents/directories?path=ops/archive", null);
+        var existsAfterCreateResponse = await this.client.GetAsync("/_bdk/api/documents/directories/exists?path=ops/archive");
         var existsAfterCreate = await existsAfterCreateResponse.Content.ReadFromJsonAsync<FileStorageExistsResponseModel>();
 
-        var deleteResponse = await this.client.DeleteAsync("/api/_system/documents/directories?path=ops/archive&recursive=true");
-        var existsAfterDeleteResponse = await this.client.GetAsync("/api/_system/documents/directories/exists?path=ops/archive");
+        var deleteResponse = await this.client.DeleteAsync("/_bdk/api/documents/directories?path=ops/archive&recursive=true");
+        var existsAfterDeleteResponse = await this.client.GetAsync("/_bdk/api/documents/directories/exists?path=ops/archive");
         var existsAfterDelete = await existsAfterDeleteResponse.Content.ReadFromJsonAsync<FileStorageExistsResponseModel>();
 
         createResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -197,7 +197,7 @@ public class FileStorageEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task GetFileContent_MissingFile_ShouldReturnNotFound()
     {
-        var response = await this.client.GetAsync("/api/_system/documents/files/content?path=missing/file.txt");
+        var response = await this.client.GetAsync("/_bdk/api/documents/files/content?path=missing/file.txt");
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
@@ -222,7 +222,7 @@ public class FileStorageEndpointsTests : IAsyncDisposable
             DetectedDate = DateTimeOffset.UtcNow.AddMinutes(1)
         });
 
-        var response = await this.client.GetAsync("/api/_system/documents/events?path=docs/guide.txt&eventType=Changed");
+        var response = await this.client.GetAsync("/_bdk/api/documents/events?path=docs/guide.txt&eventType=Changed");
         var result = await response.Content.ReadFromJsonAsync<FileStorageFileEventsResponseModel>();
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -240,7 +240,7 @@ public class FileStorageEndpointsTests : IAsyncDisposable
         var provider = this.factory.CreateProvider("documents");
         await provider.WriteBytesAsync("events/new.txt", Encoding.UTF8.GetBytes("scan me"), cancellationToken: CancellationToken.None);
 
-        var response = await this.client.PostAsync("/api/_system/documents/events/scan?waitForProcessing=true", null);
+        var response = await this.client.PostAsync("/_bdk/api/documents/events/scan?waitForProcessing=true", null);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         var result = await response.Content.ReadFromJsonAsync<FileStorageFileEventScanResponseModel>();
@@ -253,7 +253,7 @@ public class FileStorageEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task ScanFileEvents_ForUnmonitoredProvider_ShouldReturnNotFound()
     {
-        var response = await this.client.PostAsync("/api/_system/hidden/events/scan?waitForProcessing=true", null);
+        var response = await this.client.PostAsync("/_bdk/api/hidden/events/scan?waitForProcessing=true", null);
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }

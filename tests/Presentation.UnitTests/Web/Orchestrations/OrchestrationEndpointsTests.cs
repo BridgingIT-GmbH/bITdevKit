@@ -116,7 +116,7 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
             page: 1,
             pageSize: 50));
 
-        var response = await this.client.GetAsync("/api/_system/orchestrations?statuses=Waiting&take=50");
+        var response = await this.client.GetAsync("/_bdk/api/orchestrations?statuses=Waiting&take=50");
         var content = await response.Content.ReadAsStringAsync();
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -130,7 +130,7 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
         this.orchestrationQueryService.QueryAsync(Arg.Any<OrchestrationQueryRequest>(), Arg.Any<CancellationToken>())
             .Returns(ResultPaged<OrchestrationInstanceModel>.Failure().WithError(new Error("Unknown orchestration status 'Bogus'.")));
 
-        var response = await this.client.GetAsync("/api/_system/orchestrations?statuses=Bogus");
+        var response = await this.client.GetAsync("/_bdk/api/orchestrations?statuses=Bogus");
         var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
@@ -145,7 +145,7 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
         this.orchestrationQueryService.GetAsync(instanceId, Arg.Any<CancellationToken>())
             .Returns(Result<OrchestrationInstanceModel>.Failure().WithError(new Error($"Orchestration instance '{instanceId}' was not found.")));
 
-        var response = await this.client.GetAsync($"/api/_system/orchestrations/{instanceId}");
+        var response = await this.client.GetAsync($"/_bdk/api/orchestrations/{instanceId}");
         var content = await response.Content.ReadAsStringAsync();
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
@@ -157,7 +157,7 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
     {
         this.registrations.Add(typeof(TestDefinitionOrchestration));
 
-        var response = await this.client.GetAsync("/api/_system/orchestrations/definitions");
+        var response = await this.client.GetAsync("/_bdk/api/orchestrations/definitions");
         var content = await response.Content.ReadAsStringAsync();
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -170,7 +170,7 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
         this.orchestrationDiagramService.GetDefinitionDiagramAsync(nameof(TestDefinitionOrchestration), Arg.Any<CancellationToken>())
             .Returns(Result<string>.Success("stateDiagram-v2\n    [*] --> Created"));
 
-        var response = await this.client.GetAsync($"/api/_system/orchestrations/definitions/{nameof(TestDefinitionOrchestration)}/diagram");
+        var response = await this.client.GetAsync($"/_bdk/api/orchestrations/definitions/{nameof(TestDefinitionOrchestration)}/diagram");
         var content = await response.Content.ReadAsStringAsync();
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -184,7 +184,7 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
         this.orchestrationDiagramService.GetDefinitionDiagramAsync(nameof(TestDefinitionOrchestration), DiagramRenderFormat.Svg, Arg.Any<CancellationToken>())
             .Returns(Result<DiagramRenderResult>.Success(DiagramRenderResult.FromText(DiagramRenderFormat.Svg, "<svg aria-label=\"State diagram\"></svg>")));
 
-        var response = await this.client.GetAsync($"/api/_system/orchestrations/definitions/{nameof(TestDefinitionOrchestration)}/diagram/svg");
+        var response = await this.client.GetAsync($"/_bdk/api/orchestrations/definitions/{nameof(TestDefinitionOrchestration)}/diagram/svg");
         var content = await response.Content.ReadAsStringAsync();
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -199,7 +199,7 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
         this.orchestrationDiagramService.GetInstanceDiagramAsync(instanceId, Arg.Any<OrchestrationDiagramOptions>(), Arg.Any<CancellationToken>())
             .Returns(Result<string>.Failure().WithError(new Error($"Orchestration instance '{instanceId}' was not found.")));
 
-        var response = await this.client.GetAsync($"/api/_system/orchestrations/{instanceId}/diagram");
+        var response = await this.client.GetAsync($"/_bdk/api/orchestrations/{instanceId}/diagram");
         var content = await response.Content.ReadAsStringAsync();
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
@@ -213,7 +213,7 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
         this.orchestrationDiagramService.GetInstanceDiagramAsync(instanceId, DiagramRenderFormat.Svg, Arg.Any<OrchestrationDiagramOptions>(), Arg.Any<CancellationToken>())
             .Returns(Result<DiagramRenderResult>.Failure().WithError(new Error($"Orchestration instance '{instanceId}' was not found.")));
 
-        var response = await this.client.GetAsync($"/api/_system/orchestrations/{instanceId}/diagram/svg");
+        var response = await this.client.GetAsync($"/_bdk/api/orchestrations/{instanceId}/diagram/svg");
         var content = await response.Content.ReadAsStringAsync();
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
@@ -225,7 +225,7 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
     {
         var instanceId = Guid.NewGuid();
 
-        var response = await this.client.PostAsJsonAsync($"/api/_system/orchestrations/{instanceId}/signal", new { signalName = "" });
+        var response = await this.client.PostAsJsonAsync($"/_bdk/api/orchestrations/{instanceId}/signal", new { signalName = "" });
         var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
@@ -240,7 +240,7 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
         this.orchestrationService.PauseAsync(instanceId, Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(Result.Failure().WithError(new Error($"Orchestration instance '{instanceId}' is already paused.")));
 
-        var response = await this.client.PostAsJsonAsync($"/api/_system/orchestrations/{instanceId}/pause", new { reason = "hold" });
+        var response = await this.client.PostAsJsonAsync($"/_bdk/api/orchestrations/{instanceId}/pause", new { reason = "hold" });
         var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
 
         response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
@@ -255,7 +255,7 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
         this.orchestrationAdministrationService.ArchiveAsync(instanceId, Arg.Any<CancellationToken>())
             .Returns(Result<string>.Success($"Orchestration instance '{instanceId}' was archived."));
 
-        var response = await this.client.PostAsync($"/api/_system/orchestrations/{instanceId}/archive", null);
+        var response = await this.client.PostAsync($"/_bdk/api/orchestrations/{instanceId}/archive", null);
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         await this.orchestrationAdministrationService.Received(1).ArchiveAsync(instanceId, Arg.Any<CancellationToken>());
@@ -268,7 +268,7 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
         this.orchestrationAdministrationService.ReleaseLeaseAsync(instanceId, Arg.Any<CancellationToken>())
             .Returns(Result<string>.Failure().WithError(new Error($"Orchestration instance '{instanceId}' was not found.")));
 
-        var response = await this.client.PostAsync($"/api/_system/orchestrations/{instanceId}/repair/release-lease", null);
+        var response = await this.client.PostAsync($"/_bdk/api/orchestrations/{instanceId}/repair/release-lease", null);
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
@@ -279,7 +279,7 @@ public class OrchestrationEndpointsTests : IAsyncDisposable
         this.orchestrationAdministrationService.PurgeAsync(Arg.Any<OrchestrationPurgeRequest>(), Arg.Any<CancellationToken>())
             .Returns(Result<OrchestrationPurgeResult>.Success(new OrchestrationPurgeResult { PurgedInstanceCount = 1 }));
 
-        var response = await this.client.DeleteAsync("/api/_system/orchestrations?olderThan=2026-01-01T00:00:00Z&statuses=Completed&isArchived=true");
+        var response = await this.client.DeleteAsync("/_bdk/api/orchestrations?olderThan=2026-01-01T00:00:00Z&statuses=Completed&isArchived=true");
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         await this.orchestrationAdministrationService.Received(1).PurgeAsync(

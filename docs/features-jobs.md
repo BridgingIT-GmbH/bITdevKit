@@ -284,7 +284,7 @@ builder.Services.AddJobScheduler()
         .RequireAuthorization());
 ```
 
-The default Jobs endpoint group is `/api/_system/jobs`.
+The default Jobs endpoint group is `/_bdk/api/jobs`.
 
 ## Entity Framework DbContext Setup
 
@@ -1105,9 +1105,9 @@ var metrics = await query.GetMetricsAsync(new JobSchedulerMetricsRequest(), canc
 
 Common operational query parameters:
 
-- `GET /api/_system/jobs` supports `jobName`, `group`, `module`, `enabled`, `includeOrphanedRuntimeState`, `skip`, `take`, `sortBy`, and `sortDescending`
-- `GET /api/_system/jobs/occurrences` and `GET /api/_system/jobs/executions` support `jobName`, `triggerName`, `triggerType`, `statuses`, `schedulerInstanceId`, `correlationId`, `idempotencyKey`, `dueFrom`, `dueTo`, `startedFrom`, `startedTo`, `completedFrom`, `completedTo`, `skip`, `take`, `sortBy`, and `sortDescending`
-- `GET /api/_system/jobs/dashboard/timeline` supports `from`, `to`, `bucket`, `mode`, `jobName`, `triggerName`, `schedulerInstanceId`, and `statuses`
+- `GET /_bdk/api/jobs` supports `jobName`, `group`, `module`, `enabled`, `includeOrphanedRuntimeState`, `skip`, `take`, `sortBy`, and `sortDescending`
+- `GET /_bdk/api/jobs/occurrences` and `GET /_bdk/api/jobs/executions` support `jobName`, `triggerName`, `triggerType`, `statuses`, `schedulerInstanceId`, `correlationId`, `idempotencyKey`, `dueFrom`, `dueTo`, `startedFrom`, `startedTo`, `completedFrom`, `completedTo`, `skip`, `take`, `sortBy`, and `sortDescending`
+- `GET /_bdk/api/jobs/dashboard/timeline` supports `from`, `to`, `bucket`, `mode`, `jobName`, `triggerName`, `schedulerInstanceId`, and `statuses`
 
 When `includeOrphanedRuntimeState=true`, the jobs list also returns synthetic support rows for persisted runtime-state records whose job registration no longer exists. Registered jobs with removed trigger runtime-state rows expose that condition through the same query surface so support tooling can spot cleanup work without reading provider tables directly.
 
@@ -1351,117 +1351,117 @@ builder.Services.AddJobScheduler()
 
 ### Endpoint Surface
 
-`Presentation.Web.Jobs` exposes the same scheduler/query/maintenance surface over HTTP. The default route group is `/api/_system/jobs`.
+`Presentation.Web.Jobs` exposes the same scheduler/query/maintenance surface over HTTP. The default route group is `/_bdk/api/jobs`.
 
 #### Read Endpoints
 
 | Method | Route | Description |
 | --- | --- | --- |
-| `GET` | `/api/_system/jobs` | List registered jobs with runtime overlay, paging, filtering, and sorting. |
-| `GET` | `/api/_system/jobs/{jobName}` | Get one job definition with operational state. |
-| `GET` | `/api/_system/jobs/definitions/{jobName}` | Canonical definition route for one job definition. |
-| `GET` | `/api/_system/jobs/triggers` | List triggers across all jobs. |
-| `GET` | `/api/_system/jobs/triggers/recurring` | List recurring triggers across all jobs. |
-| `GET` | `/api/_system/jobs/recurring` | Spec-shaped alias for recurring triggers. |
-| `GET` | `/api/_system/jobs/recurring/{jobName}/{triggerName}` | Get one recurring trigger projection. |
-| `GET` | `/api/_system/jobs/{jobName}/triggers` | List triggers for one job. |
-| `GET` | `/api/_system/jobs/{jobName}/triggers/{triggerName}` | Get one trigger using the spec-shaped route. |
-| `GET` | `/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}` | Canonical definition route for one trigger. |
-| `GET` | `/api/_system/jobs/occurrences` | List materialized occurrences. |
-| `GET` | `/api/_system/jobs/occurrences/{occurrenceId}` | Get one occurrence by internal identifier. |
-| `GET` | `/api/_system/jobs/occurrences/{occurrenceId}/history` | Get retained history for one occurrence. |
-| `GET` | `/api/_system/jobs/retries` | List retry-scheduled or retryable occurrences. |
-| `GET` | `/api/_system/jobs/dependencies` | List persisted occurrence dependency links with dependent and prerequisite state. |
-| `GET` | `/api/_system/jobs/batches` | List durable batches. |
-| `GET` | `/api/_system/jobs/batches/{batchId}` | Get one batch. |
-| `GET` | `/api/_system/jobs/batches/{batchId}/occurrences` | List child occurrences for one batch. |
-| `GET` | `/api/_system/jobs/batches/{batchId}/history` | List append-only batch history for one batch. |
-| `GET` | `/api/_system/jobs/executions` | List execution attempts. |
-| `GET` | `/api/_system/jobs/history` | List retained execution history. |
-| `GET` | `/api/_system/jobs/leases` | List active and expired lease diagnostics. |
-| `GET` | `/api/_system/jobs/servers` | List observed scheduler server instances. |
-| `GET` | `/api/_system/jobs/metrics` | Get aggregate operational metrics. |
+| `GET` | `/_bdk/api/jobs` | List registered jobs with runtime overlay, paging, filtering, and sorting. |
+| `GET` | `/_bdk/api/jobs/{jobName}` | Get one job definition with operational state. |
+| `GET` | `/_bdk/api/jobs/definitions/{jobName}` | Canonical definition route for one job definition. |
+| `GET` | `/_bdk/api/jobs/triggers` | List triggers across all jobs. |
+| `GET` | `/_bdk/api/jobs/triggers/recurring` | List recurring triggers across all jobs. |
+| `GET` | `/_bdk/api/jobs/recurring` | Spec-shaped alias for recurring triggers. |
+| `GET` | `/_bdk/api/jobs/recurring/{jobName}/{triggerName}` | Get one recurring trigger projection. |
+| `GET` | `/_bdk/api/jobs/{jobName}/triggers` | List triggers for one job. |
+| `GET` | `/_bdk/api/jobs/{jobName}/triggers/{triggerName}` | Get one trigger using the spec-shaped route. |
+| `GET` | `/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}` | Canonical definition route for one trigger. |
+| `GET` | `/_bdk/api/jobs/occurrences` | List materialized occurrences. |
+| `GET` | `/_bdk/api/jobs/occurrences/{occurrenceId}` | Get one occurrence by internal identifier. |
+| `GET` | `/_bdk/api/jobs/occurrences/{occurrenceId}/history` | Get retained history for one occurrence. |
+| `GET` | `/_bdk/api/jobs/retries` | List retry-scheduled or retryable occurrences. |
+| `GET` | `/_bdk/api/jobs/dependencies` | List persisted occurrence dependency links with dependent and prerequisite state. |
+| `GET` | `/_bdk/api/jobs/batches` | List durable batches. |
+| `GET` | `/_bdk/api/jobs/batches/{batchId}` | Get one batch. |
+| `GET` | `/_bdk/api/jobs/batches/{batchId}/occurrences` | List child occurrences for one batch. |
+| `GET` | `/_bdk/api/jobs/batches/{batchId}/history` | List append-only batch history for one batch. |
+| `GET` | `/_bdk/api/jobs/executions` | List execution attempts. |
+| `GET` | `/_bdk/api/jobs/history` | List retained execution history. |
+| `GET` | `/_bdk/api/jobs/leases` | List active and expired lease diagnostics. |
+| `GET` | `/_bdk/api/jobs/servers` | List observed scheduler server instances. |
+| `GET` | `/_bdk/api/jobs/metrics` | Get aggregate operational metrics. |
 
 #### Dashboard Endpoints
 
 | Method | Route | Description |
 | --- | --- | --- |
-| `GET` | `/api/_system/jobs/dashboard` | Primary dashboard summary projection. |
-| `GET` | `/api/_system/jobs/dashboard/summary` | Aggregate counts and diagnostics for the dashboard. |
-| `GET` | `/api/_system/jobs/dashboard/timeline` | Timeline buckets for occurrences or executions. |
-| `GET` | `/api/_system/jobs/dashboard/navigation` | Navigation projection derived from dashboard summary data. |
-| `GET` | `/api/_system/jobs/dashboard/overview` | Overview projection derived from dashboard summary data. |
+| `GET` | `/_bdk/api/jobs/dashboard` | Primary dashboard summary projection. |
+| `GET` | `/_bdk/api/jobs/dashboard/summary` | Aggregate counts and diagnostics for the dashboard. |
+| `GET` | `/_bdk/api/jobs/dashboard/timeline` | Timeline buckets for occurrences or executions. |
+| `GET` | `/_bdk/api/jobs/dashboard/navigation` | Navigation projection derived from dashboard summary data. |
+| `GET` | `/_bdk/api/jobs/dashboard/overview` | Overview projection derived from dashboard summary data. |
 
 Dashboard projections:
 
-- `/api/_system/jobs/dashboard/navigation` returns job facet counts plus link descriptors that support tools can use to build a navigation shell without private provider access
-- `/api/_system/jobs/dashboard/overview` returns headline counts for enabled triggers, due/running/failed work, retries, leases, batches, servers, and the oldest due occurrence
+- `/_bdk/api/jobs/dashboard/navigation` returns job facet counts plus link descriptors that support tools can use to build a navigation shell without private provider access
+- `/_bdk/api/jobs/dashboard/overview` returns headline counts for enabled triggers, due/running/failed work, retries, leases, batches, servers, and the oldest due occurrence
 
 #### Job And Trigger Control Endpoints
 
 | Method | Route | Description |
 | --- | --- | --- |
-| `POST` | `/api/_system/jobs/{jobName}/dispatch` | Dispatch a registered job using the spec-shaped route. |
-| `POST` | `/api/_system/jobs/definitions/{jobName}/dispatch` | Dispatch a registered job using the canonical definition route. |
-| `POST` | `/api/_system/jobs/{jobName}/enable` | Enable a job through durable runtime state. |
-| `POST` | `/api/_system/jobs/definitions/{jobName}/enable` | Canonical route for enabling a job. |
-| `POST` | `/api/_system/jobs/{jobName}/disable` | Disable a job through durable runtime state. |
-| `POST` | `/api/_system/jobs/definitions/{jobName}/disable` | Canonical route for disabling a job. |
-| `POST` | `/api/_system/jobs/{jobName}/pause` | Pause a job without mutating its code-first definition. |
-| `POST` | `/api/_system/jobs/definitions/{jobName}/pause` | Canonical route for pausing a job. |
-| `POST` | `/api/_system/jobs/{jobName}/resume` | Resume a paused job. |
-| `POST` | `/api/_system/jobs/definitions/{jobName}/resume` | Canonical route for resuming a job. |
-| `POST` | `/api/_system/jobs/{jobName}/triggers/{triggerName}/enable` | Enable a trigger through durable runtime state. |
-| `POST` | `/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/enable` | Canonical route for enabling a trigger. |
-| `POST` | `/api/_system/jobs/{jobName}/triggers/{triggerName}/disable` | Disable a trigger through durable runtime state. |
-| `POST` | `/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/disable` | Canonical route for disabling a trigger. |
-| `POST` | `/api/_system/jobs/{jobName}/triggers/{triggerName}/pause` | Pause a trigger without changing source registration. |
-| `POST` | `/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/pause` | Canonical route for pausing a trigger. |
-| `POST` | `/api/_system/jobs/{jobName}/triggers/{triggerName}/resume` | Resume a paused trigger. |
-| `POST` | `/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/resume` | Canonical route for resuming a trigger. |
+| `POST` | `/_bdk/api/jobs/{jobName}/dispatch` | Dispatch a registered job using the spec-shaped route. |
+| `POST` | `/_bdk/api/jobs/definitions/{jobName}/dispatch` | Dispatch a registered job using the canonical definition route. |
+| `POST` | `/_bdk/api/jobs/{jobName}/enable` | Enable a job through durable runtime state. |
+| `POST` | `/_bdk/api/jobs/definitions/{jobName}/enable` | Canonical route for enabling a job. |
+| `POST` | `/_bdk/api/jobs/{jobName}/disable` | Disable a job through durable runtime state. |
+| `POST` | `/_bdk/api/jobs/definitions/{jobName}/disable` | Canonical route for disabling a job. |
+| `POST` | `/_bdk/api/jobs/{jobName}/pause` | Pause a job without mutating its code-first definition. |
+| `POST` | `/_bdk/api/jobs/definitions/{jobName}/pause` | Canonical route for pausing a job. |
+| `POST` | `/_bdk/api/jobs/{jobName}/resume` | Resume a paused job. |
+| `POST` | `/_bdk/api/jobs/definitions/{jobName}/resume` | Canonical route for resuming a job. |
+| `POST` | `/_bdk/api/jobs/{jobName}/triggers/{triggerName}/enable` | Enable a trigger through durable runtime state. |
+| `POST` | `/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}/enable` | Canonical route for enabling a trigger. |
+| `POST` | `/_bdk/api/jobs/{jobName}/triggers/{triggerName}/disable` | Disable a trigger through durable runtime state. |
+| `POST` | `/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}/disable` | Canonical route for disabling a trigger. |
+| `POST` | `/_bdk/api/jobs/{jobName}/triggers/{triggerName}/pause` | Pause a trigger without changing source registration. |
+| `POST` | `/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}/pause` | Canonical route for pausing a trigger. |
+| `POST` | `/_bdk/api/jobs/{jobName}/triggers/{triggerName}/resume` | Resume a paused trigger. |
+| `POST` | `/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}/resume` | Canonical route for resuming a trigger. |
 
 #### Occurrence Control Endpoints
 
 | Method | Route | Description |
 | --- | --- | --- |
-| `POST` | `/api/_system/jobs/occurrences/{occurrenceId}/pause` | Pause an eligible occurrence before another attempt starts. |
-| `POST` | `/api/_system/jobs/occurrences/{occurrenceId}/resume` | Resume a paused occurrence. |
-| `POST` | `/api/_system/jobs/occurrences/{occurrenceId}/cancel` | Request cancellation of an occurrence. |
-| `POST` | `/api/_system/jobs/occurrences/{occurrenceId}/interrupt` | Request interruption of a running occurrence. |
-| `POST` | `/api/_system/jobs/occurrences/{occurrenceId}/retry` | Retry an eligible failed occurrence. |
-| `POST` | `/api/_system/jobs/occurrences/{occurrenceId}/archive` | Archive a terminal occurrence. |
-| `POST` | `/api/_system/jobs/occurrences/{occurrenceId}/repair/release-lease` | Release an active lease for repair or recovery. |
-| `POST` | `/api/_system/jobs/occurrences/bulk/retry` | Retry selected eligible failed occurrences as one bulk operation. |
-| `POST` | `/api/_system/jobs/occurrences/bulk/cancel` | Cancel selected eligible occurrences as one bulk operation. |
-| `POST` | `/api/_system/jobs/occurrences/bulk/archive` | Archive selected eligible retained occurrences as one bulk operation. |
-| `DELETE` | `/api/_system/jobs/occurrences` | Purge retained terminal occurrences by age and optional filters. |
+| `POST` | `/_bdk/api/jobs/occurrences/{occurrenceId}/pause` | Pause an eligible occurrence before another attempt starts. |
+| `POST` | `/_bdk/api/jobs/occurrences/{occurrenceId}/resume` | Resume a paused occurrence. |
+| `POST` | `/_bdk/api/jobs/occurrences/{occurrenceId}/cancel` | Request cancellation of an occurrence. |
+| `POST` | `/_bdk/api/jobs/occurrences/{occurrenceId}/interrupt` | Request interruption of a running occurrence. |
+| `POST` | `/_bdk/api/jobs/occurrences/{occurrenceId}/retry` | Retry an eligible failed occurrence. |
+| `POST` | `/_bdk/api/jobs/occurrences/{occurrenceId}/archive` | Archive a terminal occurrence. |
+| `POST` | `/_bdk/api/jobs/occurrences/{occurrenceId}/repair/release-lease` | Release an active lease for repair or recovery. |
+| `POST` | `/_bdk/api/jobs/occurrences/bulk/retry` | Retry selected eligible failed occurrences as one bulk operation. |
+| `POST` | `/_bdk/api/jobs/occurrences/bulk/cancel` | Cancel selected eligible occurrences as one bulk operation. |
+| `POST` | `/_bdk/api/jobs/occurrences/bulk/archive` | Archive selected eligible retained occurrences as one bulk operation. |
+| `DELETE` | `/_bdk/api/jobs/occurrences` | Purge retained terminal occurrences by age and optional filters. |
 
 #### Batch Endpoints
 
 | Method | Route | Description |
 | --- | --- | --- |
-| `POST` | `/api/_system/jobs/batches` | Create an empty or described durable batch record. |
-| `POST` | `/api/_system/jobs/batches/dispatch` | Create a batch and dispatch its child occurrences in one operation. |
-| `POST` | `/api/_system/jobs/batches/{batchId}/attach` | Attach additional occurrences to an existing batch. |
-| `POST` | `/api/_system/jobs/batches/{batchId}/retry` | Retry eligible failed child occurrences for a batch. |
-| `POST` | `/api/_system/jobs/batches/{batchId}/cancel` | Cancel eligible child occurrences for a batch. |
-| `POST` | `/api/_system/jobs/batches/{batchId}/pause` | Pause eligible child occurrences for a batch. |
-| `POST` | `/api/_system/jobs/batches/{batchId}/resume` | Resume eligible child occurrences for a batch. |
-| `POST` | `/api/_system/jobs/batches/{batchId}/archive` | Archive a batch and eligible retained child occurrences. |
+| `POST` | `/_bdk/api/jobs/batches` | Create an empty or described durable batch record. |
+| `POST` | `/_bdk/api/jobs/batches/dispatch` | Create a batch and dispatch its child occurrences in one operation. |
+| `POST` | `/_bdk/api/jobs/batches/{batchId}/attach` | Attach additional occurrences to an existing batch. |
+| `POST` | `/_bdk/api/jobs/batches/{batchId}/retry` | Retry eligible failed child occurrences for a batch. |
+| `POST` | `/_bdk/api/jobs/batches/{batchId}/cancel` | Cancel eligible child occurrences for a batch. |
+| `POST` | `/_bdk/api/jobs/batches/{batchId}/pause` | Pause eligible child occurrences for a batch. |
+| `POST` | `/_bdk/api/jobs/batches/{batchId}/resume` | Resume eligible child occurrences for a batch. |
+| `POST` | `/_bdk/api/jobs/batches/{batchId}/archive` | Archive a batch and eligible retained child occurrences. |
 
 #### Maintenance Endpoints
 
 | Method | Route | Description |
 | --- | --- | --- |
-| `POST` | `/api/_system/jobs/maintenance/purge-history` | Purge archived execution history older than the retention window. |
-| `POST` | `/api/_system/jobs/maintenance/release-expired-leases` | Release expired leases and repair affected occurrences. |
-| `POST` | `/api/_system/jobs/maintenance/recover-stuck-occurrences` | Recover stale occurrences without a valid active lease. |
-| `POST` | `/api/_system/jobs/maintenance/detect-orphaned-runtime-state` | Detect runtime-state rows that no longer match active registrations. |
+| `POST` | `/_bdk/api/jobs/maintenance/purge-history` | Purge archived execution history older than the retention window. |
+| `POST` | `/_bdk/api/jobs/maintenance/release-expired-leases` | Release expired leases and repair affected occurrences. |
+| `POST` | `/_bdk/api/jobs/maintenance/recover-stuck-occurrences` | Recover stale occurrences without a valid active lease. |
+| `POST` | `/_bdk/api/jobs/maintenance/detect-orphaned-runtime-state` | Detect runtime-state rows that no longer match active registrations. |
 
 The occurrence purge endpoint accepts query parameters comparable to other retained operational endpoints:
 
 ```http
-DELETE /api/_system/jobs/occurrences?olderThan=2026-04-01T00:00:00Z&statuses=Archived&jobName=cleanup-customers&triggerName=nightly&isArchived=true&batchSize=250
+DELETE /_bdk/api/jobs/occurrences?olderThan=2026-04-01T00:00:00Z&statuses=Archived&jobName=cleanup-customers&triggerName=nightly&isArchived=true&batchSize=250
 ```
 
 ### Operational Semantics

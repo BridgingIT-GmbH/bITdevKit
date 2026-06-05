@@ -22,8 +22,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// <example>
 /// <code>
 /// services.AddQueueingEndpoints(options => options
-///     .GroupPath("/api/_system/queueing")
-///     .GroupTag("_System.Queueing"));
+///     .GroupPath("/_bdk/api/queueing")
+///     .GroupTag("_bdk.Queueing"));
 /// </code>
 /// </example>
 public class QueueingEndpoints(
@@ -46,20 +46,20 @@ public class QueueingEndpoints(
         }
 
         var group = this.MapGroup(app, this.options)
-            .WithTags("_System.Queueing");
+            .WithTags("_bdk.Queueing");
         var messagesGroup = group.MapGroup("messages");
 
         messagesGroup.MapGet("stats", this.GetMessageStats)
             .Produces<QueueMessageStats>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.GetMessageStats")
+            .WithName("_bdk.Queueing.GetMessageStats")
             .WithSummary("Get queue message statistics")
             .WithDescription("Retrieves aggregated statistics for retained queue messages.");
 
         messagesGroup.MapGet(string.Empty, this.GetMessages)
             .Produces<IEnumerable<QueueMessageInfo>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.GetMessages")
+            .WithName("_bdk.Queueing.GetMessages")
             .WithSummary("List queue messages")
             .WithDescription("Retrieves retained queue messages with optional operational filters.");
 
@@ -67,7 +67,7 @@ public class QueueingEndpoints(
             .Produces<QueueMessageInfo>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.GetMessage")
+            .WithName("_bdk.Queueing.GetMessage")
             .WithSummary("Get queue message details")
             .WithDescription("Retrieves a single retained queue message.");
 
@@ -75,7 +75,7 @@ public class QueueingEndpoints(
             .Produces<QueueMessageContentInfo>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.GetMessageContent")
+            .WithName("_bdk.Queueing.GetMessageContent")
             .WithSummary("Get queue message payload")
             .WithDescription("Retrieves the stored serialized payload for a retained queue message.");
 
@@ -84,7 +84,7 @@ public class QueueingEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.RetryMessage")
+            .WithName("_bdk.Queueing.RetryMessage")
             .WithSummary("Retry a queue message")
             .WithDescription("Resets a retained queue message so it can be processed again.");
 
@@ -92,7 +92,7 @@ public class QueueingEndpoints(
         //    .Produces<string>()
         //    .Produces<string>((int)HttpStatusCode.NotFound)
         //    .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-        //    .WithName("_System.Queueing.ReleaseLease")
+        //    .WithName("_bdk.Queueing.ReleaseLease")
         //    .WithSummary("Release a queue message lease")
         //    .WithDescription("Releases the current lease for a retained queue message.");
 
@@ -101,70 +101,70 @@ public class QueueingEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.ArchiveMessage")
+            .WithName("_bdk.Queueing.ArchiveMessage")
             .WithSummary("Archive a queue message")
             .WithDescription("Archives a terminal retained queue message.");
 
         messagesGroup.MapDelete(string.Empty, this.PurgeMessages)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.PurgeMessages")
+            .WithName("_bdk.Queueing.PurgeMessages")
             .WithSummary("Purge queue messages")
             .WithDescription("Purges retained queue messages by age and optional status filters.");
 
         group.MapGet("stats", this.GetSummary)
             .Produces<QueueBrokerSummary>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.GetSummary")
+            .WithName("_bdk.Queueing.GetSummary")
             .WithSummary("Get queue broker summary")
             .WithDescription("Retrieves aggregated queue broker state, including runtime capabilities and pause status.");
 
         group.MapGet("subscriptions", this.GetSubscriptions)
             .Produces<IEnumerable<QueueSubscriptionInfo>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.GetSubscriptions")
+            .WithName("_bdk.Queueing.GetSubscriptions")
             .WithSummary("List queue subscriptions")
             .WithDescription("Retrieves the currently active queue message type to handler registrations.");
 
         messagesGroup.MapGet("waiting", this.GetWaitingMessages)
             .Produces<IEnumerable<QueueMessageInfo>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.GetWaitingMessages")
+            .WithName("_bdk.Queueing.GetWaitingMessages")
             .WithSummary("List waiting queue messages")
             .WithDescription("Retrieves messages that are currently waiting for a compatible handler registration.");
 
         group.MapPost("queues/{queueName}/pause", this.PauseQueue)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.PauseQueue")
+            .WithName("_bdk.Queueing.PauseQueue")
             .WithSummary("Pause a queue")
             .WithDescription("Pauses queue processing for the specified logical queue name.");
 
         group.MapPost("queues/{queueName}/resume", this.ResumeQueue)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.ResumeQueue")
+            .WithName("_bdk.Queueing.ResumeQueue")
             .WithSummary("Resume a queue")
             .WithDescription("Resumes queue processing for the specified logical queue name.");
 
         group.MapPost("types/{type}/pause", this.PauseMessageType)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.PauseMessageType")
+            .WithName("_bdk.Queueing.PauseMessageType")
             .WithSummary("Pause a queue message type")
             .WithDescription("Pauses queue processing for the specified queue message type token.");
 
         group.MapPost("types/{type}/resume", this.ResumeMessageType)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.ResumeMessageType")
+            .WithName("_bdk.Queueing.ResumeMessageType")
             .WithSummary("Resume a queue message type")
             .WithDescription("Resumes queue processing for the specified queue message type token.");
 
         group.MapPost("types/{type}/circuit/reset", this.ResetMessageTypeCircuit)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Queueing.ResetMessageTypeCircuit")
+            .WithName("_bdk.Queueing.ResetMessageTypeCircuit")
             .WithSummary("Reset a queue message type circuit")
             .WithDescription("Resets the operational circuit state for the specified queue message type token.");
 

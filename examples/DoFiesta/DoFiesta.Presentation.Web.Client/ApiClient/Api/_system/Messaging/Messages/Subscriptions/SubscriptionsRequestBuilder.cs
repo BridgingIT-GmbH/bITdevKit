@@ -22,7 +22,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public SubscriptionsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/messaging/messages/subscriptions", pathParameters)
+        public SubscriptionsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/messaging/messages/subscriptions", pathParameters)
         {
         }
         /// <summary>
@@ -30,7 +30,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public SubscriptionsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/messaging/messages/subscriptions", rawUrl)
+        public SubscriptionsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/messaging/messages/subscriptions", rawUrl)
         {
         }
         /// <summary>

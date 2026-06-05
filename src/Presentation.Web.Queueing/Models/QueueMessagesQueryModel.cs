@@ -7,7 +7,7 @@ using BridgingIT.DevKit.Application.Queueing;
 /// </summary>
 /// <example>
 /// <code>
-/// GET /api/_system/queueing/messages?status=Failed&amp;queueName=Orders&amp;take=100
+/// GET /_bdk/api/queueing/messages?status=Failed&amp;queueName=Orders&amp;take=100
 /// </code>
 /// </example>
 public class QueueMessagesQueryModel

@@ -12,8 +12,8 @@ namespace BridgingIT.DevKit.Presentation.Web.JobScheduling;
 /// <code>
 /// services.AddJobScheduling()
 ///     .AddEndpoints(options => options
-///         .GroupPath("/api/_system/jobs")
-///         .GroupTag("_system/jobs")
+///         .GroupPath("/_bdk/api/jobs")
+///         .GroupTag("_bdk/jobs")
 ///         .RequireAuthorization());
 /// </code>
 /// </example>
@@ -24,7 +24,7 @@ public class JobSchedulingEndpointsOptions : EndpointsOptionsBase
     /// </summary>
     public JobSchedulingEndpointsOptions()
     {
-        this.GroupPath = "/api/_system/jobs";
-        this.GroupTag = "_system/jobs";
+        this.GroupPath = "/_bdk/api/jobs";
+        this.GroupTag = "_bdk/jobs";
     }
 }

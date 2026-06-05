@@ -97,7 +97,7 @@ public class MessagingEndpointsTests : IAsyncDisposable
             ]);
 
         // Act
-        var response = await this.client.GetAsync("/api/_system/messaging/messages?status=Pending&type=OrderSubmitted&messageId=msg-1&lockedBy=node-a&isArchived=false&includeHandlers=true&take=25");
+        var response = await this.client.GetAsync("/_bdk/api/messaging/messages?status=Pending&type=OrderSubmitted&messageId=msg-1&lockedBy=node-a&isArchived=false&includeHandlers=true&take=25");
         var result = await response.Content.ReadFromJsonAsync<List<BrokerMessageInfo>>();
 
         // Assert
@@ -136,7 +136,7 @@ public class MessagingEndpointsTests : IAsyncDisposable
             });
 
         // Act
-        var response = await this.client.GetAsync($"/api/_system/messaging/messages/{id}/content");
+        var response = await this.client.GetAsync($"/_bdk/api/messaging/messages/{id}/content");
         var result = await response.Content.ReadFromJsonAsync<BrokerMessageContentInfo>();
 
         // Assert
@@ -168,7 +168,7 @@ public class MessagingEndpointsTests : IAsyncDisposable
 
         // Act
         var response = await this.client.PostAsJsonAsync(
-            $"/api/_system/messaging/messages/{id}/handlers/retry",
+            $"/_bdk/api/messaging/messages/{id}/handlers/retry",
             new RetryBrokerMessageHandlerModel { HandlerType = "MyApp.Messages.OrderSubmittedHandler" });
 
         // Assert
@@ -198,7 +198,7 @@ public class MessagingEndpointsTests : IAsyncDisposable
             });
 
         // Act
-        var response = await this.client.PostAsync($"/api/_system/messaging/messages/{id}/retry", null);
+        var response = await this.client.PostAsync($"/_bdk/api/messaging/messages/{id}/retry", null);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
@@ -227,7 +227,7 @@ public class MessagingEndpointsTests : IAsyncDisposable
 
         // Act
         var response = await this.client.PostAsJsonAsync(
-            $"/api/_system/messaging/messages/{id}/handlers/retry",
+            $"/_bdk/api/messaging/messages/{id}/handlers/retry",
             new RetryBrokerMessageHandlerModel { HandlerType = "Missing.Handler" });
 
         // Assert
@@ -251,7 +251,7 @@ public class MessagingEndpointsTests : IAsyncDisposable
             });
 
         // Act
-        var response = await this.client.PostAsync($"/api/_system/messaging/messages/{id}/archive", null);
+        var response = await this.client.PostAsync($"/_bdk/api/messaging/messages/{id}/archive", null);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
@@ -267,7 +267,7 @@ public class MessagingEndpointsTests : IAsyncDisposable
 
         // Act
         var response = await this.client.DeleteAsync(
-            $"/api/_system/messaging/messages?olderThan={Uri.EscapeDataString(olderThan.ToString("O"))}&statuses=Succeeded&statuses=Expired&isArchived=true");
+            $"/_bdk/api/messaging/messages?olderThan={Uri.EscapeDataString(olderThan.ToString("O"))}&statuses=Succeeded&statuses=Expired&isArchived=true");
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -282,7 +282,7 @@ public class MessagingEndpointsTests : IAsyncDisposable
     public async Task PauseMessageType_ShouldInvokeService()
     {
         var type = "MyApp.Messages.OrderSubmitted, MyApp";
-        var response = await this.client.PostAsync($"/api/_system/messaging/messages/types/{Uri.EscapeDataString(type)}/pause", null);
+        var response = await this.client.PostAsync($"/_bdk/api/messaging/messages/types/{Uri.EscapeDataString(type)}/pause", null);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         await this.messageBrokerService.Received(1).PauseMessageTypeAsync(type, Arg.Any<CancellationToken>());
     }
@@ -291,7 +291,7 @@ public class MessagingEndpointsTests : IAsyncDisposable
     public async Task ResumeMessageType_ShouldInvokeService()
     {
         var type = "MyApp.Messages.OrderSubmitted, MyApp";
-        var response = await this.client.PostAsync($"/api/_system/messaging/messages/types/{Uri.EscapeDataString(type)}/resume", null);
+        var response = await this.client.PostAsync($"/_bdk/api/messaging/messages/types/{Uri.EscapeDataString(type)}/resume", null);
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         await this.messageBrokerService.Received(1).ResumeMessageTypeAsync(type, Arg.Any<CancellationToken>());
     }
@@ -302,7 +302,7 @@ public class MessagingEndpointsTests : IAsyncDisposable
         this.messageBrokerService.GetSummaryAsync(Arg.Any<CancellationToken>())
             .Returns(new BrokerMessageBrokerSummary { Total = 5, Pending = 2 });
 
-        var response = await this.client.GetAsync("/api/_system/messaging/messages/summary");
+        var response = await this.client.GetAsync("/_bdk/api/messaging/messages/summary");
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         await this.messageBrokerService.Received(1).GetSummaryAsync(Arg.Any<CancellationToken>());
     }
@@ -313,7 +313,7 @@ public class MessagingEndpointsTests : IAsyncDisposable
         this.messageBrokerService.GetSubscriptionsAsync(Arg.Any<CancellationToken>())
             .Returns([new BrokerMessageSubscriptionInfo { MessageType = "TestMessage", HandlerType = "TestHandler" }]);
 
-        var response = await this.client.GetAsync("/api/_system/messaging/messages/subscriptions");
+        var response = await this.client.GetAsync("/_bdk/api/messaging/messages/subscriptions");
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         await this.messageBrokerService.Received(1).GetSubscriptionsAsync(Arg.Any<CancellationToken>());
     }
@@ -324,7 +324,7 @@ public class MessagingEndpointsTests : IAsyncDisposable
         this.messageBrokerService.GetWaitingMessagesAsync(10, Arg.Any<CancellationToken>())
             .Returns([]);
 
-        var response = await this.client.GetAsync("/api/_system/messaging/messages/waiting?take=10");
+        var response = await this.client.GetAsync("/_bdk/api/messaging/messages/waiting?take=10");
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         await this.messageBrokerService.Received(1).GetWaitingMessagesAsync(10, Arg.Any<CancellationToken>());
     }

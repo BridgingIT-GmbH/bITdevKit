@@ -71,7 +71,7 @@ public class QueueingEndpointsTests : IAsyncDisposable
             });
 
         // Act
-        var response = await this.client.GetAsync("/api/_system/queueing/stats");
+        var response = await this.client.GetAsync("/_bdk/api/queueing/stats");
         var result = await response.Content.ReadFromJsonAsync<QueueBrokerSummary>();
 
         // Assert
@@ -98,7 +98,7 @@ public class QueueingEndpointsTests : IAsyncDisposable
             ]);
 
         // Act
-        var response = await this.client.GetAsync("/api/_system/queueing/subscriptions");
+        var response = await this.client.GetAsync("/_bdk/api/queueing/subscriptions");
         var result = await response.Content.ReadFromJsonAsync<List<QueueSubscriptionInfo>>();
 
         // Assert
@@ -127,7 +127,7 @@ public class QueueingEndpointsTests : IAsyncDisposable
             ]);
 
         // Act
-        var response = await this.client.GetAsync("/api/_system/queueing/messages/waiting?take=25");
+        var response = await this.client.GetAsync("/_bdk/api/queueing/messages/waiting?take=25");
         var result = await response.Content.ReadFromJsonAsync<List<QueueMessageInfo>>();
 
         // Assert
@@ -141,7 +141,7 @@ public class QueueingEndpointsTests : IAsyncDisposable
     public async Task PauseQueue_ShouldInvokeService()
     {
         // Act
-        var response = await this.client.PostAsync("/api/_system/queueing/queues/orders/pause", null);
+        var response = await this.client.PostAsync("/_bdk/api/queueing/queues/orders/pause", null);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -152,7 +152,7 @@ public class QueueingEndpointsTests : IAsyncDisposable
     public async Task ResumeMessageType_ShouldInvokeService()
     {
         // Act
-        var response = await this.client.PostAsync("/api/_system/queueing/types/OrderQueuedMessage/resume", null);
+        var response = await this.client.PostAsync("/_bdk/api/queueing/types/OrderQueuedMessage/resume", null);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -188,7 +188,7 @@ public class QueueingEndpointsTests : IAsyncDisposable
             ]);
 
         // Act
-        var response = await this.client.GetAsync("/api/_system/queueing/messages?status=Failed&type=OrderQueuedMessage&queueName=orders&messageId=msg-1&isArchived=false&take=10");
+        var response = await this.client.GetAsync("/_bdk/api/queueing/messages?status=Failed&type=OrderQueuedMessage&queueName=orders&messageId=msg-1&isArchived=false&take=10");
         var result = await response.Content.ReadFromJsonAsync<List<QueueMessageInfo>>();
 
         // Assert
@@ -225,7 +225,7 @@ public class QueueingEndpointsTests : IAsyncDisposable
             });
 
         // Act
-        var response = await this.client.GetAsync($"/api/_system/queueing/messages/{id}");
+        var response = await this.client.GetAsync($"/_bdk/api/queueing/messages/{id}");
         var result = await response.Content.ReadFromJsonAsync<QueueMessageInfo>();
 
         // Assert
@@ -253,7 +253,7 @@ public class QueueingEndpointsTests : IAsyncDisposable
             });
 
         // Act
-        var response = await this.client.GetAsync($"/api/_system/queueing/messages/{id}/content");
+        var response = await this.client.GetAsync($"/_bdk/api/queueing/messages/{id}/content");
         var result = await response.Content.ReadFromJsonAsync<QueueMessageContentInfo>();
 
         // Assert
@@ -275,7 +275,7 @@ public class QueueingEndpointsTests : IAsyncDisposable
             });
 
         // Act
-        var response = await this.client.GetAsync("/api/_system/queueing/messages/stats?isArchived=true");
+        var response = await this.client.GetAsync("/_bdk/api/queueing/messages/stats?isArchived=true");
         var result = await response.Content.ReadFromJsonAsync<QueueMessageStats>();
 
         // Assert
@@ -299,7 +299,7 @@ public class QueueingEndpointsTests : IAsyncDisposable
             });
 
         // Act
-        var response = await this.client.PostAsync($"/api/_system/queueing/messages/{id}/retry", null);
+        var response = await this.client.PostAsync($"/_bdk/api/queueing/messages/{id}/retry", null);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -321,7 +321,7 @@ public class QueueingEndpointsTests : IAsyncDisposable
             });
 
         // Act
-        var response = await this.client.PostAsync($"/api/_system/queueing/messages/{id}/archive", null);
+        var response = await this.client.PostAsync($"/_bdk/api/queueing/messages/{id}/archive", null);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -343,7 +343,7 @@ public class QueueingEndpointsTests : IAsyncDisposable
             });
 
         // Act
-        var response = await this.client.PostAsync($"/api/_system/queueing/messages/{id}/archive", null);
+        var response = await this.client.PostAsync($"/_bdk/api/queueing/messages/{id}/archive", null);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
@@ -359,7 +359,7 @@ public class QueueingEndpointsTests : IAsyncDisposable
             .Returns((QueueMessageInfo)null);
 
         // Act
-        var response = await this.client.PostAsync($"/api/_system/queueing/messages/{id}/archive", null);
+        var response = await this.client.PostAsync($"/_bdk/api/queueing/messages/{id}/archive", null);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
@@ -370,7 +370,7 @@ public class QueueingEndpointsTests : IAsyncDisposable
     public async Task PurgeMessages_ShouldPassFiltersToService()
     {
         // Act
-        var response = await this.client.DeleteAsync("/api/_system/queueing/messages?olderThan=2026-01-01T00:00:00Z&statuses=Succeeded&statuses=Expired&isArchived=true");
+        var response = await this.client.DeleteAsync("/_bdk/api/queueing/messages?olderThan=2026-01-01T00:00:00Z&statuses=Succeeded&statuses=Expired&isArchived=true");
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -385,7 +385,7 @@ public class QueueingEndpointsTests : IAsyncDisposable
     public async Task ResetMessageTypeCircuit_ShouldInvokeService()
     {
         // Act
-        var response = await this.client.PostAsync("/api/_system/queueing/types/OrderQueuedMessage/circuit/reset", null);
+        var response = await this.client.PostAsync("/_bdk/api/queueing/types/OrderQueuedMessage/circuit/reset", null);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);

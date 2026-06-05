@@ -21,7 +21,7 @@ public static class IdentityOptionsBuilderExtensions
     /// {
     ///     identity
     ///         // Configure entity permissions
-    ///         .EnableEvaluationEndpoints()  // Enables /api/_system/identity/entities/permissions endpoints
+    ///         .EnableEvaluationEndpoints()  // Enables /_bdk/api/identity/entities/permissions endpoints
     /// });
     /// </code>
     /// </example>
@@ -46,7 +46,7 @@ public static class IdentityOptionsBuilderExtensions
     /// {
     ///     identity
     ///         // Configure entity permissions
-    ///         .EnableEvaluationEndpoints()  // Enables /api/_system/identity/entities/permissions endpoints
+    ///         .EnableEvaluationEndpoints()  // Enables /_bdk/api/identity/entities/permissions endpoints
     /// });
     /// </code>
     /// </example>
@@ -104,7 +104,7 @@ public static class IdentityOptionsBuilderExtensions
     /// {
     ///     identity
     ///         // Configure entity permissions
-    ///         .EnableManagementEndpoints()  // Enables /api/_system/identity/management/entities/permissions endpoints
+    ///         .EnableManagementEndpoints()  // Enables /_bdk/api/identity/management/entities/permissions endpoints
     /// });
     /// </code>
     /// </example>
@@ -129,7 +129,7 @@ public static class IdentityOptionsBuilderExtensions
     /// {
     ///     identity
     ///         // Configure entity permissions
-    ///         .EnableManagementEndpoints()  // Enables /api/_system/identity/management/entities/permissions endpoints
+    ///         .EnableManagementEndpoints()  // Enables /_bdk/api/identity/management/entities/permissions endpoints
     /// });
     /// </code>
     /// </example>

@@ -1540,59 +1540,59 @@ That means:
 The endpoint contract shall expose routes shaped like:
 
 ```text
-GET    /api/_system/jobs/dashboard
-GET    /api/_system/jobs/dashboard/navigation
-GET    /api/_system/jobs/dashboard/overview
-GET    /api/_system/jobs/dashboard/timeline
-GET    /api/_system/jobs
-GET    /api/_system/jobs/{jobName}
-GET    /api/_system/jobs/{jobName}/triggers
-GET    /api/_system/jobs/{jobName}/triggers/{triggerName}
-GET    /api/_system/jobs/recurring
-GET    /api/_system/jobs/recurring/{jobName}/{triggerName}
-GET    /api/_system/jobs/occurrences
-GET    /api/_system/jobs/occurrences/{occurrenceId}
-GET    /api/_system/jobs/occurrences/{occurrenceId}/history
-GET    /api/_system/jobs/retries
-GET    /api/_system/jobs/executions
-GET    /api/_system/jobs/batches
-GET    /api/_system/jobs/batches/{batchId}
-GET    /api/_system/jobs/batches/{batchId}/occurrences
-GET    /api/_system/jobs/leases
-GET    /api/_system/jobs/servers
-GET    /api/_system/jobs/metrics
-POST   /api/_system/jobs/{jobName}/dispatch
-POST   /api/_system/jobs/{jobName}/enable
-POST   /api/_system/jobs/{jobName}/disable
-POST   /api/_system/jobs/{jobName}/pause
-POST   /api/_system/jobs/{jobName}/resume
-POST   /api/_system/jobs/{jobName}/triggers/{triggerName}/enable
-POST   /api/_system/jobs/{jobName}/triggers/{triggerName}/disable
-POST   /api/_system/jobs/{jobName}/triggers/{triggerName}/pause
-POST   /api/_system/jobs/{jobName}/triggers/{triggerName}/resume
-POST   /api/_system/jobs/occurrences/{occurrenceId}/cancel
-POST   /api/_system/jobs/occurrences/{occurrenceId}/interrupt
-POST   /api/_system/jobs/occurrences/{occurrenceId}/retry
-POST   /api/_system/jobs/occurrences/{occurrenceId}/archive
-POST   /api/_system/jobs/occurrences/{occurrenceId}/repair/release-lease
-POST   /api/_system/jobs/occurrences/bulk/retry
-POST   /api/_system/jobs/occurrences/bulk/cancel
-POST   /api/_system/jobs/occurrences/bulk/archive
-POST   /api/_system/jobs/batches
-POST   /api/_system/jobs/batches/{batchId}/attach
-POST   /api/_system/jobs/batches/{batchId}/retry
-POST   /api/_system/jobs/batches/{batchId}/cancel
-POST   /api/_system/jobs/batches/{batchId}/pause
-POST   /api/_system/jobs/batches/{batchId}/resume
-POST   /api/_system/jobs/batches/{batchId}/archive
-DELETE /api/_system/jobs/occurrences
+GET    /_bdk/api/jobs/dashboard
+GET    /_bdk/api/jobs/dashboard/navigation
+GET    /_bdk/api/jobs/dashboard/overview
+GET    /_bdk/api/jobs/dashboard/timeline
+GET    /_bdk/api/jobs
+GET    /_bdk/api/jobs/{jobName}
+GET    /_bdk/api/jobs/{jobName}/triggers
+GET    /_bdk/api/jobs/{jobName}/triggers/{triggerName}
+GET    /_bdk/api/jobs/recurring
+GET    /_bdk/api/jobs/recurring/{jobName}/{triggerName}
+GET    /_bdk/api/jobs/occurrences
+GET    /_bdk/api/jobs/occurrences/{occurrenceId}
+GET    /_bdk/api/jobs/occurrences/{occurrenceId}/history
+GET    /_bdk/api/jobs/retries
+GET    /_bdk/api/jobs/executions
+GET    /_bdk/api/jobs/batches
+GET    /_bdk/api/jobs/batches/{batchId}
+GET    /_bdk/api/jobs/batches/{batchId}/occurrences
+GET    /_bdk/api/jobs/leases
+GET    /_bdk/api/jobs/servers
+GET    /_bdk/api/jobs/metrics
+POST   /_bdk/api/jobs/{jobName}/dispatch
+POST   /_bdk/api/jobs/{jobName}/enable
+POST   /_bdk/api/jobs/{jobName}/disable
+POST   /_bdk/api/jobs/{jobName}/pause
+POST   /_bdk/api/jobs/{jobName}/resume
+POST   /_bdk/api/jobs/{jobName}/triggers/{triggerName}/enable
+POST   /_bdk/api/jobs/{jobName}/triggers/{triggerName}/disable
+POST   /_bdk/api/jobs/{jobName}/triggers/{triggerName}/pause
+POST   /_bdk/api/jobs/{jobName}/triggers/{triggerName}/resume
+POST   /_bdk/api/jobs/occurrences/{occurrenceId}/cancel
+POST   /_bdk/api/jobs/occurrences/{occurrenceId}/interrupt
+POST   /_bdk/api/jobs/occurrences/{occurrenceId}/retry
+POST   /_bdk/api/jobs/occurrences/{occurrenceId}/archive
+POST   /_bdk/api/jobs/occurrences/{occurrenceId}/repair/release-lease
+POST   /_bdk/api/jobs/occurrences/bulk/retry
+POST   /_bdk/api/jobs/occurrences/bulk/cancel
+POST   /_bdk/api/jobs/occurrences/bulk/archive
+POST   /_bdk/api/jobs/batches
+POST   /_bdk/api/jobs/batches/{batchId}/attach
+POST   /_bdk/api/jobs/batches/{batchId}/retry
+POST   /_bdk/api/jobs/batches/{batchId}/cancel
+POST   /_bdk/api/jobs/batches/{batchId}/pause
+POST   /_bdk/api/jobs/batches/{batchId}/resume
+POST   /_bdk/api/jobs/batches/{batchId}/archive
+DELETE /_bdk/api/jobs/occurrences
 ```
 
 The dashboard endpoints are convenience read models over the same query services used by the detailed resources. They must not bypass provider-neutral query abstractions or expose provider tables directly. Dashboard endpoints may combine summary counts, provider/runtime facts and timeline buckets, but their contract should stay focused on scheduler state and must not prescribe a particular UI composition.
 
 Dashboard timeline query parameters should support at least `from`, `to`, `bucket`, `mode`, `jobName`, `triggerName`, `schedulerInstanceId` and status filters. Timeline buckets should use UTC start/end timestamps and counts grouped by public status enums.
 
-Query parameters for `GET /api/_system/jobs` shall support at least:
+Query parameters for `GET /_bdk/api/jobs` shall support at least:
 
 - `jobName`
 - `group`
@@ -1606,7 +1606,7 @@ Query parameters for `GET /api/_system/jobs` shall support at least:
 
 Job definition list models shall include status facet counts for operational clients. At minimum, the response should expose counts for enabled, disabled, paused, orphaned runtime state and failed latest execution where those concepts are available.
 
-Query parameters for `GET /api/_system/jobs/occurrences` and `GET /api/_system/jobs/executions` shall support at least:
+Query parameters for `GET /_bdk/api/jobs/occurrences` and `GET /_bdk/api/jobs/executions` shall support at least:
 
 - `jobName`
 - `triggerName`
@@ -1649,11 +1649,11 @@ Occurrence detail models shall include:
 - lease and recovery properties
 - links or ids for batch, source feature, source id, causation id and related orchestration/message/queue records where available
 
-`GET /api/_system/jobs/retries` is a filtered occurrence view optimized for retry pages. It shall return retry-scheduled or retryable failed occurrences with retry attempt count, max attempts, reason/error summary, retry due time, created time, job display and paging properties. It shall support the same paging and page-size options as occurrence lists.
+`GET /_bdk/api/jobs/retries` is a filtered occurrence view optimized for retry pages. It shall return retry-scheduled or retryable failed occurrences with retry attempt count, max attempts, reason/error summary, retry due time, created time, job display and paging properties. It shall support the same paging and page-size options as occurrence lists.
 
-`GET /api/_system/jobs/batches` shall return batch summaries. Each row should include batch id, display id, description, current status, progress percentage, child occurrence counts by status, created UTC, started UTC, completed UTC, latest failure summary and whether bulk operations are available.
+`GET /_bdk/api/jobs/batches` shall return batch summaries. Each row should include batch id, display id, description, current status, progress percentage, child occurrence counts by status, created UTC, started UTC, completed UTC, latest failure summary and whether bulk operations are available.
 
-`GET /api/_system/jobs/batches/{batchId}` shall return:
+`GET /_bdk/api/jobs/batches/{batchId}` shall return:
 
 - batch id and description
 - current status and progress percentage
@@ -1662,15 +1662,15 @@ Occurrence detail models shall include:
 - safe properties and correlation values
 - capability flags for retry, cancel, pause, resume, archive/delete and selected-child operations
 
-`GET /api/_system/jobs/batches/{batchId}/occurrences` shall support filtering by child occurrence status and the same paging, sorting and selected bulk-action model as occurrence lists.
+`GET /_bdk/api/jobs/batches/{batchId}/occurrences` shall support filtering by child occurrence status and the same paging, sorting and selected bulk-action model as occurrence lists.
 
-`GET /api/_system/jobs/recurring` shall return recurring trigger rows with job name, trigger name, display name, cron/calendar expression, time zone, enabled/paused state, last occurrence, next due occurrence, last execution status, missed-occurrence policy and safe properties.
+`GET /_bdk/api/jobs/recurring` shall return recurring trigger rows with job name, trigger name, display name, cron/calendar expression, time zone, enabled/paused state, last occurrence, next due occurrence, last execution status, missed-occurrence policy and safe properties.
 
-`GET /api/_system/jobs/servers` shall return scheduler server/instance rows with scheduler instance id, host name, process id where available, app version where available, started UTC, last heartbeat UTC, heartbeat age, queues/groups/modules handled, worker slot count, active execution count, acquired lease count and status such as `Active`, `Stale` or `Offline`.
+`GET /_bdk/api/jobs/servers` shall return scheduler server/instance rows with scheduler instance id, host name, process id where available, app version where available, started UTC, last heartbeat UTC, heartbeat age, queues/groups/modules handled, worker slot count, active execution count, acquired lease count and status such as `Active`, `Stale` or `Offline`.
 
 HTTP query values for status filters shall use the public enum member names. Endpoint models should accept route and query strings for natural HTTP binding, then validate and normalize them before calling runtime or query services. Internal query services should bind status filters to `JobOccurrenceStatus`, `JobExecutionStatus`, `JobBatchStatus` or `JobSchedulerServerStatus` instead of passing raw strings through the application.
 
-Query parameters for `GET /api/_system/jobs/metrics` shall support the same filter subset that is meaningful for aggregated metrics.
+Query parameters for `GET /_bdk/api/jobs/metrics` shall support the same filter subset that is meaningful for aggregated metrics.
 
 Operational list endpoints shall support page sizes commonly used by support tools, including `10`, `20`, `50`, `100`, `500`, `1000` and `5000`, while still allowing hosts to configure a maximum page size. Requests above the configured maximum shall return `400 Bad Request` or be capped according to explicit endpoint options.
 
@@ -1712,7 +1712,7 @@ Bulk action responses shall include requested count, succeeded count, failed cou
 
 Batch creation endpoints shall use the same request shapes as `CreateBatchAsync(...)`, `DispatchBatchAsync(...)` and `AttachToBatchAsync(...)`. A batch creation request with no child items creates an empty completed batch. A batch dispatch or attach request with child items must atomically accept the batch operation or return a `Result`/HTTP failure without leaving runnable orphaned occurrences.
 
-The `DELETE /api/_system/jobs/occurrences` endpoint shall support purge-style query parameters comparable to the retained operational endpoints used by queueing, messaging and orchestration, for example:
+The `DELETE /_bdk/api/jobs/occurrences` endpoint shall support purge-style query parameters comparable to the retained operational endpoints used by queueing, messaging and orchestration, for example:
 
 - `olderThan`
 - `statuses`
@@ -3535,7 +3535,7 @@ Expected behavior:
 
 ## Replacement of JobScheduling
 
-`Application.Jobs` is intended to supersede the existing `Application.JobScheduling` feature. The current JobScheduling implementation is Quartz-backed and exposes `AddJobScheduling(...)`, `JobBase`, Quartz-flavored cron behavior, Quartz persistence setup, and `/api/_system/jobs` operational endpoints. The new Jobs feature should provide equivalent scheduling value through devkit-owned abstractions, persistence providers, leases, and management APIs.
+`Application.Jobs` is intended to supersede the existing `Application.JobScheduling` feature. The current JobScheduling implementation is Quartz-backed and exposes `AddJobScheduling(...)`, `JobBase`, Quartz-flavored cron behavior, Quartz persistence setup, and `/_bdk/api/jobs` operational endpoints. The new Jobs feature should provide equivalent scheduling value through devkit-owned abstractions, persistence providers, leases, and management APIs.
 
 Replacement goals:
 

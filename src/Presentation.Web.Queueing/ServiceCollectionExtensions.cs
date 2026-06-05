@@ -89,8 +89,8 @@ public static class ServiceCollectionExtensions
     /// <code>
     /// services.AddQueueingEndpoints(options => options
     ///     .RequireAuthorization()
-    ///     .GroupPath("/api/_system/queueing")
-    ///     .GroupTag("_System.Queueing"));
+    ///     .GroupPath("/_bdk/api/queueing")
+    ///     .GroupTag("_bdk.Queueing"));
     /// </code>
     /// </example>
     public static IServiceCollection AddQueueingEndpoints(
@@ -115,8 +115,8 @@ public static class ServiceCollectionExtensions
     /// <example>
     /// <code>
     /// services.AddQueueingEndpoints(options => options
-    ///     .GroupPath("/api/_system/queueing")
-    ///     .GroupTag("_System.Queueing"));
+    ///     .GroupPath("/_bdk/api/queueing")
+    ///     .GroupTag("_bdk.Queueing"));
     /// </code>
     /// </example>
     public static IServiceCollection AddQueueingEndpoints(

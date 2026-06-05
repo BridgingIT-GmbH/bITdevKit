@@ -328,15 +328,15 @@ var stats = await logs.GetStatisticsAsync(
 
 By default the endpoint group is:
 
-`/api/_system/logentries`
+`/_bdk/api/logentries`
 
 The built-in routes cover:
 
-- `GET /api/_system/logentries`
-- `GET /api/_system/logentries/stream`
-- `GET /api/_system/logentries/stats`
-- `GET /api/_system/logentries/export`
-- `DELETE /api/_system/logentries`
+- `GET /_bdk/api/logentries`
+- `GET /_bdk/api/logentries/stream`
+- `GET /_bdk/api/logentries/stats`
+- `GET /_bdk/api/logentries/export`
+- `DELETE /_bdk/api/logentries`
 
 The default endpoint options require authorization, which makes these endpoints suitable for internal admin and support surfaces rather than public APIs.
 

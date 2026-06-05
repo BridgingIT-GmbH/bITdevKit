@@ -161,7 +161,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
     public async Task WellKnownConfiguration_ShouldReturnValidEndpoints()
     {
         // Act
-        var response = await this.client.GetAsync("/api/_system/identity/connect/.well-known/openid-configuration");
+        var response = await this.client.GetAsync("/_bdk/api/identity/connect/.well-known/openid-configuration");
         var config = await response.Content.ReadFromJsonAsync<OpenIdConfiguration>();
 
         // Assert
@@ -187,7 +187,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
     };
 
         // Act - Request the authorization page
-        var response = await this.client.GetAsync($"/api/_system/identity/connect/authorize{query}");
+        var response = await this.client.GetAsync($"/_bdk/api/identity/connect/authorize{query}");
         var content = await response.Content.ReadAsStringAsync();
 
         // Assert - Verify we get the login page with our test users
@@ -212,7 +212,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
 
         // Act Step 1 - Submit user selection to get authorization code
         var authorizeResponse = await this.client.GetAsync(
-            $"/api/_system/identity/connect/authorize/callback{query}&email={this.testConfig.DefaultUser.Email}");
+            $"/_bdk/api/identity/connect/authorize/callback{query}&email={this.testConfig.DefaultUser.Email}");
 
         // Verify the redirect and extract the authorization code
         authorizeResponse.StatusCode.ShouldBe(HttpStatusCode.Redirect);
@@ -233,7 +233,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
         });
 
         var tokenResponse = await this.client.PostAsync(
-            "/api/_system/identity/connect/token", tokenRequest);
+            "/_bdk/api/identity/connect/token", tokenRequest);
         var tokens = await tokenResponse.Content.ReadFromJsonAsync<TokenResponse>();
 
         // Assert token response
@@ -245,7 +245,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
 
         // Act Step 3 - Use the access token to get user info
         var userInfoRequest = new HttpRequestMessage(HttpMethod.Get,
-            "/api/_system/identity/connect/userinfo");
+            "/_bdk/api/identity/connect/userinfo");
         userInfoRequest.Headers.Authorization =
             new AuthenticationHeaderValue("Bearer", tokens.AccessToken);
 
@@ -272,7 +272,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
     });
 
         // Act - Request token using client credentials
-        var response = await this.client.PostAsync("/api/_system/identity/connect/token", tokenRequest);
+        var response = await this.client.PostAsync("/_bdk/api/identity/connect/token", tokenRequest);
         var tokens = await response.Content.ReadFromJsonAsync<TokenResponse>();
 
         // Assert - Verify we get a valid access token without refresh token
@@ -296,7 +296,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
 
         // Act - Request token with invalid client
         var response = await this.client.PostAsync(
-            "/api/_system/identity/connect/token", tokenRequest);
+            "/_bdk/api/identity/connect/token", tokenRequest);
         var error = await response.Content.ReadFromJsonAsync<OAuth2Error>();
 
         // Assert - Verify we get the correct error response
@@ -309,7 +309,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
     public async Task DebugEndpoint_ShouldReturnConfiguration()
     {
         // Act - Request debug info endpoint
-        var response = await this.client.GetAsync("/api/_system/identity/connect/debuginfo");
+        var response = await this.client.GetAsync("/_bdk/api/identity/connect/debuginfo");
         var debug = await response.Content.ReadFromJsonAsync<DebugInfoResponse>();
 
         // Assert - Verify debug info matches our test configuration
@@ -340,7 +340,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
         });
 
         var response = await this.client.PostAsync(
-            "/api/_system/identity/connect/token", refreshRequest);
+            "/_bdk/api/identity/connect/token", refreshRequest);
         var newTokens = await response.Content.ReadFromJsonAsync<TokenResponse>();
 
         // Verify we get new tokens that are different from the original ones
@@ -361,7 +361,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
         });
 
         var response = await this.client.PostAsync(
-            "/api/_system/identity/connect/token", tokenRequest);
+            "/_bdk/api/identity/connect/token", tokenRequest);
         var error = await response.Content.ReadFromJsonAsync<OAuth2Error>();
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
@@ -372,7 +372,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
     public async Task UserInfo_WithInvalidToken_ShouldReturn401()
     {
         var request = new HttpRequestMessage(HttpMethod.Get,
-            "/api/_system/identity/connect/userinfo");
+            "/_bdk/api/identity/connect/userinfo");
         request.Headers.Authorization =
             new AuthenticationHeaderValue("Bearer", "invalid-token");
 
@@ -390,7 +390,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
     };
 
         var response = await this.client.GetAsync(
-            $"/api/_system/identity/connect/logout{query}");
+            $"/_bdk/api/identity/connect/logout{query}");
 
         response.StatusCode.ShouldBe(HttpStatusCode.Redirect);
         var location = response.Headers.Location.ToString();
@@ -411,7 +411,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
         };
 
         var response = await this.client.GetAsync(
-            $"/api/_system/identity/connect/authorize{query}");
+            $"/_bdk/api/identity/connect/authorize{query}");
         var error = await response.Content.ReadFromJsonAsync<OAuth2Error>();
 
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
@@ -433,7 +433,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
         };
 
         var authorizeResponse = await this.client.GetAsync(
-            $"/api/_system/identity/connect/authorize/callback{query}&email={this.testConfig.DefaultUser.Email}");
+            $"/_bdk/api/identity/connect/authorize/callback{query}&email={this.testConfig.DefaultUser.Email}");
         authorizeResponse.StatusCode.ShouldBe(HttpStatusCode.Redirect);
 
         var location = authorizeResponse.Headers.Location.ToString();
@@ -448,7 +448,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
         });
 
         var tokenResponse = await this.client.PostAsync(
-            "/api/_system/identity/connect/token", tokenRequest);
+            "/_bdk/api/identity/connect/token", tokenRequest);
         tokenResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         // Step 2: Now request authorize again with the same HttpClient (cookie jar is shared)
@@ -461,7 +461,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
             { "state", state }
         };
 
-        var ssoResponse = await this.client.GetAsync($"/api/_system/identity/connect/authorize{ssoQuery}");
+        var ssoResponse = await this.client.GetAsync($"/_bdk/api/identity/connect/authorize{ssoQuery}");
 
         // Assert - Should redirect with code, not show login page
         ssoResponse.StatusCode.ShouldBe(HttpStatusCode.Redirect);
@@ -494,7 +494,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
         };
 
         var authorizeResponse = await ssoDisabledClient.GetAsync(
-            $"/api/_system/identity/connect/authorize/callback{query}&email={ssoDisabledConfig.DefaultUser.Email}");
+            $"/_bdk/api/identity/connect/authorize/callback{query}&email={ssoDisabledConfig.DefaultUser.Email}");
         authorizeResponse.StatusCode.ShouldBe(HttpStatusCode.Redirect);
 
         var location = authorizeResponse.Headers.Location.ToString();
@@ -509,7 +509,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
         });
 
         var tokenResponse = await ssoDisabledClient.PostAsync(
-            "/api/_system/identity/connect/token", tokenRequest);
+            "/_bdk/api/identity/connect/token", tokenRequest);
         tokenResponse.StatusCode.ShouldBe(HttpStatusCode.OK);
 
         // Step 2: Request authorize again - SSO is disabled so should show login page
@@ -522,7 +522,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
             { "state", state }
         };
 
-        var ssoResponse = await ssoDisabledClient.GetAsync($"/api/_system/identity/connect/authorize{ssoQuery}");
+        var ssoResponse = await ssoDisabledClient.GetAsync($"/_bdk/api/identity/connect/authorize{ssoQuery}");
         var ssoContent = await ssoResponse.Content.ReadAsStringAsync();
 
         // Assert - Should show login page, not redirect
@@ -551,7 +551,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
     });
 
         var response = await this.client.PostAsync(
-            "/api/_system/identity/connect/token", tokenRequest);
+            "/_bdk/api/identity/connect/token", tokenRequest);
         var tokens = await response.Content.ReadFromJsonAsync<TokenResponse>();
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -572,7 +572,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
     };
 
         var authorizeResponse = await this.client.GetAsync(
-            $"/api/_system/identity/connect/authorize/callback{query}&email={this.testConfig.DefaultUser.Email}");
+            $"/_bdk/api/identity/connect/authorize/callback{query}&email={this.testConfig.DefaultUser.Email}");
 
         var location = authorizeResponse.Headers.Location.ToString();
         var code = HttpUtility.ParseQueryString(new Uri(location).Query)["code"];
@@ -586,7 +586,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
     });
 
         var tokenResponse = await this.client.PostAsync(
-            "/api/_system/identity/connect/token", tokenRequest);
+            "/_bdk/api/identity/connect/token", tokenRequest);
         return await tokenResponse.Content.ReadFromJsonAsync<TokenResponse>();
     }
 
@@ -603,7 +603,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
     };
 
         var response = await this.client.GetAsync(
-            $"/api/_system/identity/connect/authorize/callback{query}&email={this.testConfig.DefaultUser.Email}");
+            $"/_bdk/api/identity/connect/authorize/callback{query}&email={this.testConfig.DefaultUser.Email}");
 
         var location = response.Headers.Location.ToString();
         return HttpUtility.ParseQueryString(new Uri(location).Query)["code"];

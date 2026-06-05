@@ -46,7 +46,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public FilesRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/{providerName}/files?recursive={recursive}{&continuationToken*,path*,searchPattern*}", pathParameters)
+        public FilesRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/{providerName}/files?recursive={recursive}{&continuationToken*,path*,searchPattern*}", pathParameters)
         {
         }
         /// <summary>
@@ -54,7 +54,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public FilesRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/{providerName}/files?recursive={recursive}{&continuationToken*,path*,searchPattern*}", rawUrl)
+        public FilesRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/{providerName}/files?recursive={recursive}{&continuationToken*,path*,searchPattern*}", rawUrl)
         {
         }
         /// <summary>
@@ -123,7 +123,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         public RequestInformation ToDeleteRequestInformation(Action<RequestConfiguration<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.Files.FilesRequestBuilder.FilesRequestBuilderDeleteQueryParameters>> requestConfiguration = default)
         {
 #endif
-            var requestInfo = new RequestInformation(Method.DELETE, "{+baseurl}/api/_system/{providerName}/files{?path*}", PathParameters);
+            var requestInfo = new RequestInformation(Method.DELETE, "{+baseurl}/_bdk/api/{providerName}/files{?path*}", PathParameters);
             requestInfo.Configure(requestConfiguration);
             requestInfo.Headers.TryAdd("Accept", "application/json");
             return requestInfo;
@@ -160,7 +160,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         /// Deletes the specified provider-backed file path.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class FilesRequestBuilderDeleteQueryParameters 
+        public partial class FilesRequestBuilderDeleteQueryParameters
         {
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -184,7 +184,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         /// Lists files from the configured provider with optional recursion and continuation support.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class FilesRequestBuilderGetQueryParameters 
+        public partial class FilesRequestBuilderGetQueryParameters
         {
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable

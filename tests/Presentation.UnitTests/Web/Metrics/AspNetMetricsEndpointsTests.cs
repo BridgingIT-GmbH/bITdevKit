@@ -65,7 +65,7 @@ public class AspNetMetricsEndpointsTests : IAsyncDisposable
         (await this.client.GetAsync("/api/test/ok/42")).StatusCode.ShouldBe(HttpStatusCode.OK);
         (await this.client.GetAsync("/api/test/fail")).StatusCode.ShouldBe(HttpStatusCode.InternalServerError);
 
-        var response = await this.client.GetAsync("/api/_system/metrics/aspnet/routes");
+        var response = await this.client.GetAsync("/_bdk/api/metrics/aspnet/routes");
         var snapshot = await response.Content.ReadFromJsonAsync<AspNetRouteMetricsSnapshotModel>();
 
         // Assert
@@ -101,7 +101,7 @@ public class AspNetMetricsEndpointsTests : IAsyncDisposable
 
         (await client.GetAsync("/api/test/ok/7")).StatusCode.ShouldBe(HttpStatusCode.OK);
 
-        var response = await client.GetAsync("/api/_system/metrics/aspnet/routes");
+        var response = await client.GetAsync("/_bdk/api/metrics/aspnet/routes");
         var snapshot = await response.Content.ReadFromJsonAsync<AspNetRouteMetricsSnapshotModel>();
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -116,7 +116,7 @@ public class AspNetMetricsEndpointsTests : IAsyncDisposable
         await using var factory = new AspNetMetricsEndpointsDisabledApplication();
         using var client = factory.CreateClient();
 
-        var response = await client.GetAsync("/api/_system/metrics/aspnet/routes");
+        var response = await client.GetAsync("/_bdk/api/metrics/aspnet/routes");
 
         response.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }

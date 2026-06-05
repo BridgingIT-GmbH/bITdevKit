@@ -22,7 +22,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs.
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public StatsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/jobs/{jobName}/{jobGroup}/stats{?endDate*,startDate*}", pathParameters)
+        public StatsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/jobs/{jobName}/{jobGroup}/stats{?endDate*,startDate*}", pathParameters)
         {
         }
         /// <summary>
@@ -30,7 +30,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs.
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public StatsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/jobs/{jobName}/{jobGroup}/stats{?endDate*,startDate*}", rawUrl)
+        public StatsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/jobs/{jobName}/{jobGroup}/stats{?endDate*,startDate*}", rawUrl)
         {
         }
         /// <summary>
@@ -88,7 +88,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs.
         /// Retrieves aggregated statistics for a job’s execution history.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class StatsRequestBuilderGetQueryParameters 
+        public partial class StatsRequestBuilderGetQueryParameters
         {
             [QueryParameter("endDate")]
             public DateTimeOffset? EndDate { get; set; }

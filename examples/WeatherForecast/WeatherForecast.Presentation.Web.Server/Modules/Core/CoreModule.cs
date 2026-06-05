@@ -223,14 +223,14 @@ public class CoreModule : WebModuleBase
     {
         //TODO: currently nswag does not generate swagger for minimal endpoints when versioning is also used https://github.com/RicoSuter/NSwag/pull/3814
         //      solution https://github.com/RicoSuter/NSwag/issues/3945 >> + https://github.com/JKamsker/Versioned-Minimal-and-Controller-AspNetCore
-        //app.MapGet("/_system/correlationid", (HttpContext ctx) => ctx.TryGetCorrelationId());
+        //app.MapGet("/_bdk/correlationid", (HttpContext ctx) => ctx.TryGetCorrelationId());
 
         // WARN: causes RouteHandlerAnalyzer' threw an exception of type 'System.NullReferenceException' with message 'Object reference not set to an instance of an object.
         //       https://github.com/dotnet/aspnetcore/issues/41794
-        //app.MapGet("/_system/hello", () => "Hello World!")
+        //app.MapGet("/_bdk/hello", () => "Hello World!")
         //    .WithTags("General");
 
-        //app.MapGet("/_system/sum/{a}/{b}", (Func<int, int, int>)((a, b) => a + b))
+        //app.MapGet("/_bdk/sum/{a}/{b}", (Func<int, int, int>)((a, b) => a + b))
         //    .WithName("CalculateSum")
         //    .WithTags("Calculator");
 

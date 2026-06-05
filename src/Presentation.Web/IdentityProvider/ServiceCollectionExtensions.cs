@@ -26,7 +26,7 @@ public static partial class ServiceCollectionExtensions
         }
 
         // Add middlware that redirects the request to the identity provider configuration
-        // https://localhost:5001/.well-known/openid-configuratio ---> https://localhost:5001/api/_system/identity/connect/.well-known/openid-configuration
+        // https://localhost:5001/.well-known/openid-configuratio ---> https://localhost:5001/_bdk/api/identity/connect/.well-known/openid-configuration
 
         // Register services for the identity provider endpoints
         services.AddSingleton(options);

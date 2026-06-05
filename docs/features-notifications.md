@@ -241,19 +241,19 @@ services.AddNotificationService<EmailMessage>(builder.Configuration, o =>
      .WithOutbox<AppDbContext>()
      .AddEndpoints(options => options
          .RequireAuthorization()
-         .GroupPath("/api/_system/notifications/emails"));
+         .GroupPath("/_bdk/api/notifications/emails"));
 });
 ```
 
 The endpoint group exposes:
 
-- `GET /api/_system/notifications/emails` to list persisted emails with filters such as `status`, `subject`, `lockedBy`, and `take`
-- `GET /api/_system/notifications/emails/stats` to retrieve aggregate outbox counts
-- `GET /api/_system/notifications/emails/{id}` to inspect one email
-- `GET /api/_system/notifications/emails/{id}/content` to fetch the stored body
-- `POST /api/_system/notifications/emails/{id}/retry` to reset a failed row back to pending
-- `DELETE /api/_system/notifications/emails/{id}` to delete one row
-- `DELETE /api/_system/notifications/emails` to purge rows by age and status
+- `GET /_bdk/api/notifications/emails` to list persisted emails with filters such as `status`, `subject`, `lockedBy`, and `take`
+- `GET /_bdk/api/notifications/emails/stats` to retrieve aggregate outbox counts
+- `GET /_bdk/api/notifications/emails/{id}` to inspect one email
+- `GET /_bdk/api/notifications/emails/{id}/content` to fetch the stored body
+- `POST /_bdk/api/notifications/emails/{id}/retry` to reset a failed row back to pending
+- `DELETE /_bdk/api/notifications/emails/{id}` to delete one row
+- `DELETE /_bdk/api/notifications/emails` to purge rows by age and status
 
 For typed operational access inside the application layer, use `INotificationEmailOutboxService`.
 

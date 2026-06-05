@@ -98,8 +98,8 @@ public static class ServiceCollectionExtensions
     /// <code>
     /// services.AddFileStorageEndpoints(options => options
     ///     .RequireAuthorization()
-    ///     .GroupPath("/api/_system")
-    ///     .GroupTag("_System.Storage"));
+    ///     .GroupPath("/_bdk/api")
+    ///     .GroupTag("_bdk.Storage"));
     /// </code>
     /// </example>
     public static IServiceCollection AddFileStorageEndpoints(

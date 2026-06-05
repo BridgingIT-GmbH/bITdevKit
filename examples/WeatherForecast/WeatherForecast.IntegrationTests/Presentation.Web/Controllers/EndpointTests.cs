@@ -72,7 +72,7 @@ public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactory
     }
 
     [Theory]
-    [InlineData("api/_system/echo")]
+    [InlineData("_bdk/api/echo")]
     public async Task SystemEchoGetTest(string route)
     {
         // arrang/act
@@ -86,7 +86,7 @@ public class EndpointTests(ITestOutputHelper output, CustomWebApplicationFactory
     }
 
     [Theory]
-    [InlineData("api/_system/info")]
+    [InlineData("_bdk/api/info")]
     public async Task SystemInfoGetTest(string route)
     {
         // Arrange & Act

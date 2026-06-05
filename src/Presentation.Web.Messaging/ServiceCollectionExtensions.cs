@@ -89,8 +89,8 @@ public static class ServiceCollectionExtensions
     /// <code>
     /// services.AddMessagingEndpoints(options => options
     ///     .RequireAuthorization()
-    ///     .GroupPath("/api/_system/messaging/messages")
-    ///     .GroupTag("_System.Messaging"));
+    ///     .GroupPath("/_bdk/api/messaging/messages")
+    ///     .GroupTag("_bdk.Messaging"));
     /// </code>
     /// </example>
     public static IServiceCollection AddMessagingEndpoints(
@@ -115,8 +115,8 @@ public static class ServiceCollectionExtensions
     /// <example>
     /// <code>
     /// services.AddMessagingEndpoints(options => options
-    ///     .GroupPath("/api/_system/messaging/messages")
-    ///     .GroupTag("_System.Messaging"));
+    ///     .GroupPath("/_bdk/api/messaging/messages")
+    ///     .GroupTag("_bdk.Messaging"));
     /// </code>
     /// </example>
     public static IServiceCollection AddMessagingEndpoints(

@@ -6,14 +6,14 @@
     "version": "v1.0"
   },
   "paths": {
-    "/api/_system/jobs": {
+    "/_bdk/api/jobs": {
       "get": {
         "tags": [
-          "_System.JobScheduling"
+          "_bdk.JobScheduling"
         ],
         "summary": "Get all jobs",
         "description": "Retrieves a list of all scheduled jobs.",
-        "operationId": "_System.JobScheduling.GetJobs",
+        "operationId": "_bdk.JobScheduling.GetJobs",
         "responses": {
           "200": {
             "description": "OK",
@@ -41,14 +41,14 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/{jobGroup}": {
+    "/_bdk/api/jobs/{jobName}/{jobGroup}": {
       "get": {
         "tags": [
-          "_System.JobScheduling"
+          "_bdk.JobScheduling"
         ],
         "summary": "Get job details",
         "description": "Retrieves details for a specific job.",
-        "operationId": "_System.JobScheduling.GetJob",
+        "operationId": "_bdk.JobScheduling.GetJob",
         "parameters": [
           {
             "name": "jobName",
@@ -101,14 +101,14 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/{jobGroup}/runs": {
+    "/_bdk/api/jobs/{jobName}/{jobGroup}/runs": {
       "get": {
         "tags": [
-          "_System.JobScheduling"
+          "_bdk.JobScheduling"
         ],
         "summary": "Get job run history",
         "description": "Retrieves execution history for a specific job with optional filters.",
-        "operationId": "_System.JobScheduling.GetJobRuns",
+        "operationId": "_bdk.JobScheduling.GetJobRuns",
         "parameters": [
           {
             "name": "jobName",
@@ -208,11 +208,11 @@
       },
       "delete": {
         "tags": [
-          "_System.JobScheduling"
+          "_bdk.JobScheduling"
         ],
         "summary": "Purge old job run history",
         "description": "Purges job run history older than a specified date.",
-        "operationId": "_System.JobScheduling.PurgeJobRuns",
+        "operationId": "_bdk.JobScheduling.PurgeJobRuns",
         "parameters": [
           {
             "name": "jobName",
@@ -264,14 +264,14 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/{jobGroup}/stats": {
+    "/_bdk/api/jobs/{jobName}/{jobGroup}/stats": {
       "get": {
         "tags": [
-          "_System.JobScheduling"
+          "_bdk.JobScheduling"
         ],
         "summary": "Get job run statistics",
         "description": "Retrieves aggregated statistics for a job’s execution history.",
-        "operationId": "_System.JobScheduling.GetJobRunStats",
+        "operationId": "_bdk.JobScheduling.GetJobRunStats",
         "parameters": [
           {
             "name": "jobName",
@@ -330,14 +330,14 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/{jobGroup}/triggers": {
+    "/_bdk/api/jobs/{jobName}/{jobGroup}/triggers": {
       "get": {
         "tags": [
-          "_System.JobScheduling"
+          "_bdk.JobScheduling"
         ],
         "summary": "Get job triggers",
         "description": "Retrieves all triggers associated with a specific job.",
-        "operationId": "_System.JobScheduling.GetJobTriggers",
+        "operationId": "_bdk.JobScheduling.GetJobTriggers",
         "parameters": [
           {
             "name": "jobName",
@@ -383,14 +383,14 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/{jobGroup}/trigger": {
+    "/_bdk/api/jobs/{jobName}/{jobGroup}/trigger": {
       "post": {
         "tags": [
-          "_System.JobScheduling"
+          "_bdk.JobScheduling"
         ],
         "summary": "Trigger job immediately",
         "description": "Triggers a job to run immediately with optional data.",
-        "operationId": "_System.JobScheduling.TriggerJob",
+        "operationId": "_bdk.JobScheduling.TriggerJob",
         "parameters": [
           {
             "name": "jobName",
@@ -459,14 +459,14 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/{jobGroup}/pause": {
+    "/_bdk/api/jobs/{jobName}/{jobGroup}/pause": {
       "post": {
         "tags": [
-          "_System.JobScheduling"
+          "_bdk.JobScheduling"
         ],
         "summary": "Pause a job",
         "description": "Pauses the execution of a specific job.",
-        "operationId": "_System.JobScheduling.PauseJob",
+        "operationId": "_bdk.JobScheduling.PauseJob",
         "parameters": [
           {
             "name": "jobName",
@@ -519,14 +519,14 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/{jobGroup}/resume": {
+    "/_bdk/api/jobs/{jobName}/{jobGroup}/resume": {
       "post": {
         "tags": [
-          "_System.JobScheduling"
+          "_bdk.JobScheduling"
         ],
         "summary": "Resume a paused job",
         "description": "Resumes the execution of a paused job.",
-        "operationId": "_System.JobScheduling.ResumeJob",
+        "operationId": "_bdk.JobScheduling.ResumeJob",
         "parameters": [
           {
             "name": "jobName",
@@ -579,14 +579,14 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/{jobGroup}/interrupt": {
+    "/_bdk/api/jobs/{jobName}/{jobGroup}/interrupt": {
       "post": {
         "tags": [
-          "_System.JobScheduling"
+          "_bdk.JobScheduling"
         ],
         "summary": "Interrupt a running job",
         "description": "Interrupts the execution of a currently running job.",
-        "operationId": "_System.JobScheduling.InterruptJob",
+        "operationId": "_bdk.JobScheduling.InterruptJob",
         "parameters": [
           {
             "name": "jobName",
@@ -639,14 +639,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/definitions": {
+    "/_bdk/api/orchestrations/definitions": {
       "get": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "List orchestration definitions",
         "description": "Retrieves registered orchestration definition names.",
-        "operationId": "_System.Orchestrations.GetDefinitions",
+        "operationId": "_bdk.Orchestrations.GetDefinitions",
         "responses": {
           "200": {
             "description": "OK",
@@ -674,14 +674,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/definitions/{name}/diagram": {
+    "/_bdk/api/orchestrations/definitions/{name}/diagram": {
       "get": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Get orchestration definition diagram",
         "description": "Retrieves Mermaid-compatible state diagram text for a registered orchestration definition.",
-        "operationId": "_System.Orchestrations.GetDefinitionDiagram",
+        "operationId": "_bdk.Orchestrations.GetDefinitionDiagram",
         "parameters": [
           {
             "name": "name",
@@ -726,14 +726,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/definitions/{name}/diagram/svg": {
+    "/_bdk/api/orchestrations/definitions/{name}/diagram/svg": {
       "get": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Get orchestration definition SVG diagram",
         "description": "Retrieves rendered SVG markup for a registered orchestration definition.",
-        "operationId": "_System.Orchestrations.GetDefinitionDiagramSvg",
+        "operationId": "_bdk.Orchestrations.GetDefinitionDiagramSvg",
         "parameters": [
           {
             "name": "name",
@@ -778,14 +778,14 @@
         }
       }
     },
-    "/api/_system/orchestrations": {
+    "/_bdk/api/orchestrations": {
       "get": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "List orchestration instances",
         "description": "Retrieves persisted orchestration instances with optional operational filters.",
-        "operationId": "_System.Orchestrations.GetInstances",
+        "operationId": "_bdk.Orchestrations.GetInstances",
         "responses": {
           "200": {
             "description": "OK",
@@ -824,11 +824,11 @@
       },
       "delete": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Purge orchestration data",
         "description": "Purges retained orchestration data by age and optional status filters.",
-        "operationId": "_System.Orchestrations.Purge",
+        "operationId": "_bdk.Orchestrations.Purge",
         "responses": {
           "200": {
             "description": "OK",
@@ -863,14 +863,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/metrics": {
+    "/_bdk/api/orchestrations/metrics": {
       "get": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Get orchestration metrics",
         "description": "Retrieves persisted orchestration metrics for dashboards and support tooling.",
-        "operationId": "_System.Orchestrations.GetMetrics",
+        "operationId": "_bdk.Orchestrations.GetMetrics",
         "responses": {
           "200": {
             "description": "OK",
@@ -905,14 +905,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/{instanceId}": {
+    "/_bdk/api/orchestrations/{instanceId}": {
       "get": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Get orchestration details",
         "description": "Retrieves a single persisted orchestration instance.",
-        "operationId": "_System.Orchestrations.GetInstance",
+        "operationId": "_bdk.Orchestrations.GetInstance",
         "parameters": [
           {
             "name": "instanceId",
@@ -958,14 +958,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/{instanceId}/context": {
+    "/_bdk/api/orchestrations/{instanceId}/context": {
       "get": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Get orchestration context",
         "description": "Retrieves the latest persisted orchestration context snapshot.",
-        "operationId": "_System.Orchestrations.GetContext",
+        "operationId": "_bdk.Orchestrations.GetContext",
         "parameters": [
           {
             "name": "instanceId",
@@ -1011,14 +1011,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/{instanceId}/history": {
+    "/_bdk/api/orchestrations/{instanceId}/history": {
       "get": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Get orchestration history",
         "description": "Retrieves persisted execution history for an orchestration instance.",
-        "operationId": "_System.Orchestrations.GetHistory",
+        "operationId": "_bdk.Orchestrations.GetHistory",
         "parameters": [
           {
             "name": "instanceId",
@@ -1067,14 +1067,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/{instanceId}/signals": {
+    "/_bdk/api/orchestrations/{instanceId}/signals": {
       "get": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Get orchestration signals",
         "description": "Retrieves persisted signal records for an orchestration instance.",
-        "operationId": "_System.Orchestrations.GetSignals",
+        "operationId": "_bdk.Orchestrations.GetSignals",
         "parameters": [
           {
             "name": "instanceId",
@@ -1123,14 +1123,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/{instanceId}/timers": {
+    "/_bdk/api/orchestrations/{instanceId}/timers": {
       "get": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Get orchestration timers",
         "description": "Retrieves persisted timer records for an orchestration instance.",
-        "operationId": "_System.Orchestrations.GetTimers",
+        "operationId": "_bdk.Orchestrations.GetTimers",
         "parameters": [
           {
             "name": "instanceId",
@@ -1179,14 +1179,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/{instanceId}/diagram": {
+    "/_bdk/api/orchestrations/{instanceId}/diagram": {
       "get": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Get orchestration instance diagram",
         "description": "Retrieves Mermaid-compatible state diagram text for a persisted orchestration instance.",
-        "operationId": "_System.Orchestrations.GetInstanceDiagram",
+        "operationId": "_bdk.Orchestrations.GetInstanceDiagram",
         "parameters": [
           {
             "name": "instanceId",
@@ -1232,14 +1232,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/{instanceId}/diagram/svg": {
+    "/_bdk/api/orchestrations/{instanceId}/diagram/svg": {
       "get": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Get orchestration instance SVG diagram",
         "description": "Retrieves rendered SVG markup for a persisted orchestration instance.",
-        "operationId": "_System.Orchestrations.GetInstanceDiagramSvg",
+        "operationId": "_bdk.Orchestrations.GetInstanceDiagramSvg",
         "parameters": [
           {
             "name": "instanceId",
@@ -1285,14 +1285,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/{instanceId}/signal": {
+    "/_bdk/api/orchestrations/{instanceId}/signal": {
       "post": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Deliver an orchestration signal",
         "description": "Persists and delivers a signal for an orchestration instance.",
-        "operationId": "_System.Orchestrations.Signal",
+        "operationId": "_bdk.Orchestrations.Signal",
         "parameters": [
           {
             "name": "instanceId",
@@ -1367,14 +1367,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/{instanceId}/pause": {
+    "/_bdk/api/orchestrations/{instanceId}/pause": {
       "post": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Pause an orchestration",
         "description": "Pauses a non-terminal orchestration instance.",
-        "operationId": "_System.Orchestrations.Pause",
+        "operationId": "_bdk.Orchestrations.Pause",
         "parameters": [
           {
             "name": "instanceId",
@@ -1439,14 +1439,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/{instanceId}/resume": {
+    "/_bdk/api/orchestrations/{instanceId}/resume": {
       "post": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Resume an orchestration",
         "description": "Resumes a previously paused orchestration instance.",
-        "operationId": "_System.Orchestrations.Resume",
+        "operationId": "_bdk.Orchestrations.Resume",
         "parameters": [
           {
             "name": "instanceId",
@@ -1502,14 +1502,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/{instanceId}/cancel": {
+    "/_bdk/api/orchestrations/{instanceId}/cancel": {
       "post": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Cancel an orchestration",
         "description": "Cancels a non-terminal orchestration instance.",
-        "operationId": "_System.Orchestrations.Cancel",
+        "operationId": "_bdk.Orchestrations.Cancel",
         "parameters": [
           {
             "name": "instanceId",
@@ -1574,14 +1574,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/{instanceId}/terminate": {
+    "/_bdk/api/orchestrations/{instanceId}/terminate": {
       "post": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Terminate an orchestration",
         "description": "Terminates a non-terminal orchestration instance.",
-        "operationId": "_System.Orchestrations.Terminate",
+        "operationId": "_bdk.Orchestrations.Terminate",
         "parameters": [
           {
             "name": "instanceId",
@@ -1646,14 +1646,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/{instanceId}/archive": {
+    "/_bdk/api/orchestrations/{instanceId}/archive": {
       "post": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Archive an orchestration",
         "description": "Archives a terminal orchestration instance.",
-        "operationId": "_System.Orchestrations.Archive",
+        "operationId": "_bdk.Orchestrations.Archive",
         "parameters": [
           {
             "name": "instanceId",
@@ -1709,14 +1709,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/{instanceId}/repair/release-lease": {
+    "/_bdk/api/orchestrations/{instanceId}/repair/release-lease": {
       "post": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Release an orchestration lease",
         "description": "Releases an active lease for a stuck orchestration instance.",
-        "operationId": "_System.Orchestrations.ReleaseLease",
+        "operationId": "_bdk.Orchestrations.ReleaseLease",
         "parameters": [
           {
             "name": "instanceId",
@@ -1772,14 +1772,14 @@
         }
       }
     },
-    "/api/_system/orchestrations/{instanceId}/repair/requeue-timers": {
+    "/_bdk/api/orchestrations/{instanceId}/repair/requeue-timers": {
       "post": {
         "tags": [
-          "_System.Orchestrations"
+          "_bdk.Orchestrations"
         ],
         "summary": "Requeue orchestration timers",
         "description": "Requeues persisted timers for a stuck orchestration instance.",
-        "operationId": "_System.Orchestrations.RequeueTimers",
+        "operationId": "_bdk.Orchestrations.RequeueTimers",
         "parameters": [
           {
             "name": "instanceId",
@@ -1835,14 +1835,14 @@
         }
       }
     },
-    "/api/_system/locations": {
+    "/_bdk/api/locations": {
       "get": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "List registered storage locations",
         "description": "Retrieves the registered file storage providers and their exposed location metadata.",
-        "operationId": "_System.Storage.ListProviders",
+        "operationId": "_bdk.Storage.ListProviders",
         "responses": {
           "200": {
             "description": "OK",
@@ -1860,14 +1860,14 @@
         }
       }
     },
-    "/api/_system/{providerName}/provider": {
+    "/_bdk/api/{providerName}/provider": {
       "get": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "Get provider information",
         "description": "Retrieves information about the configured file storage provider.",
-        "operationId": "_System.Storage.GetProviderInfo",
+        "operationId": "_bdk.Storage.GetProviderInfo",
         "parameters": [
           {
             "name": "providerName",
@@ -1902,14 +1902,14 @@
         }
       }
     },
-    "/api/_system/{providerName}/health": {
+    "/_bdk/api/{providerName}/health": {
       "get": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "Check provider health",
         "description": "Runs the configured provider health check.",
-        "operationId": "_System.Storage.CheckHealth",
+        "operationId": "_bdk.Storage.CheckHealth",
         "parameters": [
           {
             "name": "providerName",
@@ -1954,14 +1954,14 @@
         }
       }
     },
-    "/api/_system/{providerName}/files/exists": {
+    "/_bdk/api/{providerName}/files/exists": {
       "get": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "Check whether a file exists",
         "description": "Checks whether the specified file path exists in the configured provider.",
-        "operationId": "_System.Storage.FileExists",
+        "operationId": "_bdk.Storage.FileExists",
         "parameters": [
           {
             "name": "providerName",
@@ -2023,14 +2023,14 @@
         }
       }
     },
-    "/api/_system/{providerName}/files/content": {
+    "/_bdk/api/{providerName}/files/content": {
       "get": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "Read file content",
         "description": "Streams the file content for the specified provider-backed path.",
-        "operationId": "_System.Storage.ReadFile",
+        "operationId": "_bdk.Storage.ReadFile",
         "parameters": [
           {
             "name": "providerName",
@@ -2086,11 +2086,11 @@
       },
       "put": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "Write file content",
         "description": "Writes the raw request body to the specified provider-backed file path.",
-        "operationId": "_System.Storage.WriteFile",
+        "operationId": "_bdk.Storage.WriteFile",
         "parameters": [
           {
             "name": "providerName",
@@ -2172,14 +2172,14 @@
         }
       }
     },
-    "/api/_system/{providerName}/files": {
+    "/_bdk/api/{providerName}/files": {
       "delete": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "Delete a file",
         "description": "Deletes the specified provider-backed file path.",
-        "operationId": "_System.Storage.DeleteFile",
+        "operationId": "_bdk.Storage.DeleteFile",
         "parameters": [
           {
             "name": "providerName",
@@ -2252,11 +2252,11 @@
       },
       "get": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "List files",
         "description": "Lists files from the configured provider with optional recursion and continuation support.",
-        "operationId": "_System.Storage.ListFiles",
+        "operationId": "_bdk.Storage.ListFiles",
         "parameters": [
           {
             "name": "providerName",
@@ -2340,14 +2340,14 @@
         }
       }
     },
-    "/api/_system/{providerName}/files/metadata": {
+    "/_bdk/api/{providerName}/files/metadata": {
       "get": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "Get file metadata",
         "description": "Retrieves metadata for the specified provider-backed file path.",
-        "operationId": "_System.Storage.GetFileMetadata",
+        "operationId": "_bdk.Storage.GetFileMetadata",
         "parameters": [
           {
             "name": "providerName",
@@ -2409,14 +2409,14 @@
         }
       }
     },
-    "/api/_system/{providerName}/files/checksum": {
+    "/_bdk/api/{providerName}/files/checksum": {
       "get": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "Get file checksum",
         "description": "Computes a checksum for the specified provider-backed file path.",
-        "operationId": "_System.Storage.GetChecksum",
+        "operationId": "_bdk.Storage.GetChecksum",
         "parameters": [
           {
             "name": "providerName",
@@ -2478,14 +2478,14 @@
         }
       }
     },
-    "/api/_system/{providerName}/directories/exists": {
+    "/_bdk/api/{providerName}/directories/exists": {
       "get": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "Check whether a directory exists",
         "description": "Checks whether the specified provider-backed directory path exists.",
-        "operationId": "_System.Storage.DirectoryExists",
+        "operationId": "_bdk.Storage.DirectoryExists",
         "parameters": [
           {
             "name": "providerName",
@@ -2547,14 +2547,14 @@
         }
       }
     },
-    "/api/_system/{providerName}/directories": {
+    "/_bdk/api/{providerName}/directories": {
       "get": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "List directories",
         "description": "Lists directories from the configured provider with optional recursion.",
-        "operationId": "_System.Storage.ListDirectories",
+        "operationId": "_bdk.Storage.ListDirectories",
         "parameters": [
           {
             "name": "providerName",
@@ -2635,11 +2635,11 @@
       },
       "post": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "Create a directory",
         "description": "Creates the specified provider-backed directory path.",
-        "operationId": "_System.Storage.CreateDirectory",
+        "operationId": "_bdk.Storage.CreateDirectory",
         "parameters": [
           {
             "name": "providerName",
@@ -2712,11 +2712,11 @@
       },
       "delete": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "Delete a directory",
         "description": "Deletes the specified provider-backed directory path.",
-        "operationId": "_System.Storage.DeleteDirectory",
+        "operationId": "_bdk.Storage.DeleteDirectory",
         "parameters": [
           {
             "name": "providerName",
@@ -2796,14 +2796,14 @@
         }
       }
     },
-    "/api/_system/{providerName}/events": {
+    "/_bdk/api/{providerName}/events": {
       "get": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "List file events",
         "description": "Lists stored monitoring events for the provider-backed location, optionally filtered by path, event type, date range, and result size.",
-        "operationId": "_System.Storage.ListFileEvents",
+        "operationId": "_bdk.Storage.ListFileEvents",
         "parameters": [
           {
             "name": "providerName",
@@ -2906,14 +2906,14 @@
         }
       }
     },
-    "/api/_system/{providerName}/events/scan": {
+    "/_bdk/api/{providerName}/events/scan": {
       "post": {
         "tags": [
-          "_System.FileStorage"
+          "_bdk.FileStorage"
         ],
         "summary": "Scan a monitored location",
         "description": "Triggers an on-demand file monitoring scan for the provider-backed location and returns the detected events.",
-        "operationId": "_System.Storage.ScanFileEvents",
+        "operationId": "_bdk.Storage.ScanFileEvents",
         "parameters": [
           {
             "name": "providerName",
@@ -3894,14 +3894,14 @@
         }
       }
     },
-    "/api/_system/messaging/messages/stats": {
+    "/_bdk/api/messaging/messages/stats": {
       "get": {
         "tags": [
-          "_System.Messaging"
+          "_bdk.Messaging"
         ],
         "summary": "Get broker message statistics",
         "description": "Retrieves aggregated statistics for persisted broker messages.",
-        "operationId": "_System.Messaging.GetMessageStats",
+        "operationId": "_bdk.Messaging.GetMessageStats",
         "parameters": [
           {
             "name": "StartDate",
@@ -3951,14 +3951,14 @@
         }
       }
     },
-    "/api/_system/messaging/messages": {
+    "/_bdk/api/messaging/messages": {
       "get": {
         "tags": [
-          "_System.Messaging"
+          "_bdk.Messaging"
         ],
         "summary": "List persisted broker messages",
         "description": "Retrieves persisted broker messages with optional operational filters.",
-        "operationId": "_System.Messaging.GetMessages",
+        "operationId": "_bdk.Messaging.GetMessages",
         "parameters": [
           {
             "name": "Status",
@@ -4056,11 +4056,11 @@
       },
       "delete": {
         "tags": [
-          "_System.Messaging"
+          "_bdk.Messaging"
         ],
         "summary": "Purge broker messages",
         "description": "Purges persisted broker messages by age and optional status filters.",
-        "operationId": "_System.Messaging.PurgeMessages",
+        "operationId": "_bdk.Messaging.PurgeMessages",
         "parameters": [
           {
             "name": "OlderThan",
@@ -4112,14 +4112,14 @@
         }
       }
     },
-    "/api/_system/messaging/messages/{id}": {
+    "/_bdk/api/messaging/messages/{id}": {
       "get": {
         "tags": [
-          "_System.Messaging"
+          "_bdk.Messaging"
         ],
         "summary": "Get broker message details",
         "description": "Retrieves a single persisted broker message including optional handler details.",
-        "operationId": "_System.Messaging.GetMessage",
+        "operationId": "_bdk.Messaging.GetMessage",
         "parameters": [
           {
             "name": "id",
@@ -4173,14 +4173,14 @@
         }
       }
     },
-    "/api/_system/messaging/messages/{id}/content": {
+    "/_bdk/api/messaging/messages/{id}/content": {
       "get": {
         "tags": [
-          "_System.Messaging"
+          "_bdk.Messaging"
         ],
         "summary": "Get broker message payload",
         "description": "Retrieves the stored serialized payload for a persisted broker message.",
-        "operationId": "_System.Messaging.GetMessageContent",
+        "operationId": "_bdk.Messaging.GetMessageContent",
         "parameters": [
           {
             "name": "id",
@@ -4226,14 +4226,14 @@
         }
       }
     },
-    "/api/_system/messaging/messages/{id}/retry": {
+    "/_bdk/api/messaging/messages/{id}/retry": {
       "post": {
         "tags": [
-          "_System.Messaging"
+          "_bdk.Messaging"
         ],
         "summary": "Retry a broker message",
         "description": "Resets a persisted broker message so retryable handler work can be processed again.",
-        "operationId": "_System.Messaging.RetryMessage",
+        "operationId": "_bdk.Messaging.RetryMessage",
         "parameters": [
           {
             "name": "id",
@@ -4289,14 +4289,14 @@
         }
       }
     },
-    "/api/_system/messaging/messages/{id}/handlers/retry": {
+    "/_bdk/api/messaging/messages/{id}/handlers/retry": {
       "post": {
         "tags": [
-          "_System.Messaging"
+          "_bdk.Messaging"
         ],
         "summary": "Retry a broker message handler",
         "description": "Resets a single persisted handler entry so it can be processed again.",
-        "operationId": "_System.Messaging.RetryMessageHandler",
+        "operationId": "_bdk.Messaging.RetryMessageHandler",
         "parameters": [
           {
             "name": "id",
@@ -4371,14 +4371,14 @@
         }
       }
     },
-    "/api/_system/messaging/messages/{id}/archive": {
+    "/_bdk/api/messaging/messages/{id}/archive": {
       "post": {
         "tags": [
-          "_System.Messaging"
+          "_bdk.Messaging"
         ],
         "summary": "Archive a broker message",
         "description": "Archives a terminal persisted broker message.",
-        "operationId": "_System.Messaging.ArchiveMessage",
+        "operationId": "_bdk.Messaging.ArchiveMessage",
         "parameters": [
           {
             "name": "id",
@@ -4434,14 +4434,14 @@
         }
       }
     },
-    "/api/_system/messaging/messages/types/{type}/pause": {
+    "/_bdk/api/messaging/messages/types/{type}/pause": {
       "post": {
         "tags": [
-          "_System.Messaging"
+          "_bdk.Messaging"
         ],
         "summary": "Pause message type processing",
         "description": "Pauses processing for the specified message type.",
-        "operationId": "_System.Messaging.PauseMessageType",
+        "operationId": "_bdk.Messaging.PauseMessageType",
         "parameters": [
           {
             "name": "type",
@@ -4476,14 +4476,14 @@
         }
       }
     },
-    "/api/_system/messaging/messages/types/{type}/resume": {
+    "/_bdk/api/messaging/messages/types/{type}/resume": {
       "post": {
         "tags": [
-          "_System.Messaging"
+          "_bdk.Messaging"
         ],
         "summary": "Resume message type processing",
         "description": "Resumes processing for the specified message type.",
-        "operationId": "_System.Messaging.ResumeMessageType",
+        "operationId": "_bdk.Messaging.ResumeMessageType",
         "parameters": [
           {
             "name": "type",
@@ -4518,14 +4518,14 @@
         }
       }
     },
-    "/api/_system/messaging/messages/summary": {
+    "/_bdk/api/messaging/messages/summary": {
       "get": {
         "tags": [
-          "_System.Messaging"
+          "_bdk.Messaging"
         ],
         "summary": "Get broker summary",
         "description": "Retrieves aggregated broker state, including runtime capabilities and pause status.",
-        "operationId": "_System.Messaging.GetSummary",
+        "operationId": "_bdk.Messaging.GetSummary",
         "responses": {
           "200": {
             "description": "OK",
@@ -4550,14 +4550,14 @@
         }
       }
     },
-    "/api/_system/messaging/messages/subscriptions": {
+    "/_bdk/api/messaging/messages/subscriptions": {
       "get": {
         "tags": [
-          "_System.Messaging"
+          "_bdk.Messaging"
         ],
         "summary": "List message subscriptions",
         "description": "Retrieves the currently active message type to handler registrations.",
-        "operationId": "_System.Messaging.GetSubscriptions",
+        "operationId": "_bdk.Messaging.GetSubscriptions",
         "responses": {
           "200": {
             "description": "OK",
@@ -4585,14 +4585,14 @@
         }
       }
     },
-    "/api/_system/messaging/messages/waiting": {
+    "/_bdk/api/messaging/messages/waiting": {
       "get": {
         "tags": [
-          "_System.Messaging"
+          "_bdk.Messaging"
         ],
         "summary": "List waiting messages",
         "description": "Retrieves messages that were published with no handler registrations.",
-        "operationId": "_System.Messaging.GetWaitingMessages",
+        "operationId": "_bdk.Messaging.GetWaitingMessages",
         "parameters": [
           {
             "name": "take",
@@ -4630,14 +4630,14 @@
         }
       }
     },
-    "/api/_system/queueing/messages/stats": {
+    "/_bdk/api/queueing/messages/stats": {
       "get": {
         "tags": [
-          "_System.Queueing"
+          "_bdk.Queueing"
         ],
         "summary": "Get queue message statistics",
         "description": "Retrieves aggregated statistics for retained queue messages.",
-        "operationId": "_System.Queueing.GetMessageStats",
+        "operationId": "_bdk.Queueing.GetMessageStats",
         "parameters": [
           {
             "name": "StartDate",
@@ -4687,14 +4687,14 @@
         }
       }
     },
-    "/api/_system/queueing/messages": {
+    "/_bdk/api/queueing/messages": {
       "get": {
         "tags": [
-          "_System.Queueing"
+          "_bdk.Queueing"
         ],
         "summary": "List queue messages",
         "description": "Retrieves retained queue messages with optional operational filters.",
-        "operationId": "_System.Queueing.GetMessages",
+        "operationId": "_bdk.Queueing.GetMessages",
         "parameters": [
           {
             "name": "Status",
@@ -4791,11 +4791,11 @@
       },
       "delete": {
         "tags": [
-          "_System.Queueing"
+          "_bdk.Queueing"
         ],
         "summary": "Purge queue messages",
         "description": "Purges retained queue messages by age and optional status filters.",
-        "operationId": "_System.Queueing.PurgeMessages",
+        "operationId": "_bdk.Queueing.PurgeMessages",
         "parameters": [
           {
             "name": "OlderThan",
@@ -4847,14 +4847,14 @@
         }
       }
     },
-    "/api/_system/queueing/messages/{id}": {
+    "/_bdk/api/queueing/messages/{id}": {
       "get": {
         "tags": [
-          "_System.Queueing"
+          "_bdk.Queueing"
         ],
         "summary": "Get queue message details",
         "description": "Retrieves a single retained queue message.",
-        "operationId": "_System.Queueing.GetMessage",
+        "operationId": "_bdk.Queueing.GetMessage",
         "parameters": [
           {
             "name": "id",
@@ -4900,14 +4900,14 @@
         }
       }
     },
-    "/api/_system/queueing/messages/{id}/content": {
+    "/_bdk/api/queueing/messages/{id}/content": {
       "get": {
         "tags": [
-          "_System.Queueing"
+          "_bdk.Queueing"
         ],
         "summary": "Get queue message payload",
         "description": "Retrieves the stored serialized payload for a retained queue message.",
-        "operationId": "_System.Queueing.GetMessageContent",
+        "operationId": "_bdk.Queueing.GetMessageContent",
         "parameters": [
           {
             "name": "id",
@@ -4953,14 +4953,14 @@
         }
       }
     },
-    "/api/_system/queueing/messages/{id}/retry": {
+    "/_bdk/api/queueing/messages/{id}/retry": {
       "post": {
         "tags": [
-          "_System.Queueing"
+          "_bdk.Queueing"
         ],
         "summary": "Retry a queue message",
         "description": "Resets a retained queue message so it can be processed again.",
-        "operationId": "_System.Queueing.RetryMessage",
+        "operationId": "_bdk.Queueing.RetryMessage",
         "parameters": [
           {
             "name": "id",
@@ -5016,14 +5016,14 @@
         }
       }
     },
-    "/api/_system/queueing/messages/{id}/archive": {
+    "/_bdk/api/queueing/messages/{id}/archive": {
       "post": {
         "tags": [
-          "_System.Queueing"
+          "_bdk.Queueing"
         ],
         "summary": "Archive a queue message",
         "description": "Archives a terminal retained queue message.",
-        "operationId": "_System.Queueing.ArchiveMessage",
+        "operationId": "_bdk.Queueing.ArchiveMessage",
         "parameters": [
           {
             "name": "id",
@@ -5079,14 +5079,14 @@
         }
       }
     },
-    "/api/_system/queueing/messages/waiting": {
+    "/_bdk/api/queueing/messages/waiting": {
       "get": {
         "tags": [
-          "_System.Queueing"
+          "_bdk.Queueing"
         ],
         "summary": "List waiting queue messages",
         "description": "Retrieves messages that are currently waiting for a compatible handler registration.",
-        "operationId": "_System.Queueing.GetWaitingMessages",
+        "operationId": "_bdk.Queueing.GetWaitingMessages",
         "parameters": [
           {
             "name": "take",
@@ -5124,14 +5124,14 @@
         }
       }
     },
-    "/api/_system/queueing/stats": {
+    "/_bdk/api/queueing/stats": {
       "get": {
         "tags": [
-          "_System.Queueing"
+          "_bdk.Queueing"
         ],
         "summary": "Get queue broker summary",
         "description": "Retrieves aggregated queue broker state, including runtime capabilities and pause status.",
-        "operationId": "_System.Queueing.GetSummary",
+        "operationId": "_bdk.Queueing.GetSummary",
         "responses": {
           "200": {
             "description": "OK",
@@ -5156,14 +5156,14 @@
         }
       }
     },
-    "/api/_system/queueing/subscriptions": {
+    "/_bdk/api/queueing/subscriptions": {
       "get": {
         "tags": [
-          "_System.Queueing"
+          "_bdk.Queueing"
         ],
         "summary": "List queue subscriptions",
         "description": "Retrieves the currently active queue message type to handler registrations.",
-        "operationId": "_System.Queueing.GetSubscriptions",
+        "operationId": "_bdk.Queueing.GetSubscriptions",
         "responses": {
           "200": {
             "description": "OK",
@@ -5191,14 +5191,14 @@
         }
       }
     },
-    "/api/_system/queueing/queues/{queueName}/pause": {
+    "/_bdk/api/queueing/queues/{queueName}/pause": {
       "post": {
         "tags": [
-          "_System.Queueing"
+          "_bdk.Queueing"
         ],
         "summary": "Pause a queue",
         "description": "Pauses queue processing for the specified logical queue name.",
-        "operationId": "_System.Queueing.PauseQueue",
+        "operationId": "_bdk.Queueing.PauseQueue",
         "parameters": [
           {
             "name": "queueName",
@@ -5233,14 +5233,14 @@
         }
       }
     },
-    "/api/_system/queueing/queues/{queueName}/resume": {
+    "/_bdk/api/queueing/queues/{queueName}/resume": {
       "post": {
         "tags": [
-          "_System.Queueing"
+          "_bdk.Queueing"
         ],
         "summary": "Resume a queue",
         "description": "Resumes queue processing for the specified logical queue name.",
-        "operationId": "_System.Queueing.ResumeQueue",
+        "operationId": "_bdk.Queueing.ResumeQueue",
         "parameters": [
           {
             "name": "queueName",
@@ -5275,14 +5275,14 @@
         }
       }
     },
-    "/api/_system/queueing/types/{type}/pause": {
+    "/_bdk/api/queueing/types/{type}/pause": {
       "post": {
         "tags": [
-          "_System.Queueing"
+          "_bdk.Queueing"
         ],
         "summary": "Pause a queue message type",
         "description": "Pauses queue processing for the specified queue message type token.",
-        "operationId": "_System.Queueing.PauseMessageType",
+        "operationId": "_bdk.Queueing.PauseMessageType",
         "parameters": [
           {
             "name": "type",
@@ -5317,14 +5317,14 @@
         }
       }
     },
-    "/api/_system/queueing/types/{type}/resume": {
+    "/_bdk/api/queueing/types/{type}/resume": {
       "post": {
         "tags": [
-          "_System.Queueing"
+          "_bdk.Queueing"
         ],
         "summary": "Resume a queue message type",
         "description": "Resumes queue processing for the specified queue message type token.",
-        "operationId": "_System.Queueing.ResumeMessageType",
+        "operationId": "_bdk.Queueing.ResumeMessageType",
         "parameters": [
           {
             "name": "type",
@@ -5359,14 +5359,14 @@
         }
       }
     },
-    "/api/_system/queueing/types/{type}/circuit/reset": {
+    "/_bdk/api/queueing/types/{type}/circuit/reset": {
       "post": {
         "tags": [
-          "_System.Queueing"
+          "_bdk.Queueing"
         ],
         "summary": "Reset a queue message type circuit",
         "description": "Resets the operational circuit state for the specified queue message type token.",
-        "operationId": "_System.Queueing.ResetMessageTypeCircuit",
+        "operationId": "_bdk.Queueing.ResetMessageTypeCircuit",
         "parameters": [
           {
             "name": "type",
@@ -5401,14 +5401,14 @@
         }
       }
     },
-    "/api/_system/notifications/emails/stats": {
+    "/_bdk/api/notifications/emails/stats": {
       "get": {
         "tags": [
-          "_System.Notifications"
+          "_bdk.Notifications"
         ],
         "summary": "Get notification email statistics",
         "description": "Retrieves aggregated statistics for persisted notification emails.",
-        "operationId": "_System.Notifications.GetEmailStats",
+        "operationId": "_bdk.Notifications.GetEmailStats",
         "parameters": [
           {
             "name": "StartDate",
@@ -5458,14 +5458,14 @@
         }
       }
     },
-    "/api/_system/notifications/emails": {
+    "/_bdk/api/notifications/emails": {
       "get": {
         "tags": [
-          "_System.Notifications"
+          "_bdk.Notifications"
         ],
         "summary": "List notification emails",
         "description": "Retrieves persisted notification emails with optional operational filters.",
-        "operationId": "_System.Notifications.GetEmails",
+        "operationId": "_bdk.Notifications.GetEmails",
         "parameters": [
           {
             "name": "Status",
@@ -5548,11 +5548,11 @@
       },
       "delete": {
         "tags": [
-          "_System.Notifications"
+          "_bdk.Notifications"
         ],
         "summary": "Purge notification emails",
         "description": "Purges persisted notification emails by age and optional status filters.",
-        "operationId": "_System.Notifications.PurgeEmails",
+        "operationId": "_bdk.Notifications.PurgeEmails",
         "parameters": [
           {
             "name": "OlderThan",
@@ -5604,14 +5604,14 @@
         }
       }
     },
-    "/api/_system/notifications/emails/{id}": {
+    "/_bdk/api/notifications/emails/{id}": {
       "get": {
         "tags": [
-          "_System.Notifications"
+          "_bdk.Notifications"
         ],
         "summary": "Get notification email details",
         "description": "Retrieves a single persisted notification email.",
-        "operationId": "_System.Notifications.GetEmail",
+        "operationId": "_bdk.Notifications.GetEmail",
         "parameters": [
           {
             "name": "id",
@@ -5657,14 +5657,14 @@
         }
       }
     },
-    "/api/_system/notifications/emails/{id}/content": {
+    "/_bdk/api/notifications/emails/{id}/content": {
       "get": {
         "tags": [
-          "_System.Notifications"
+          "_bdk.Notifications"
         ],
         "summary": "Get notification email body",
         "description": "Retrieves the persisted body content for a notification email.",
-        "operationId": "_System.Notifications.GetEmailContent",
+        "operationId": "_bdk.Notifications.GetEmailContent",
         "parameters": [
           {
             "name": "id",
@@ -5710,14 +5710,14 @@
         }
       }
     },
-    "/api/_system/notifications/emails/{id}/retry": {
+    "/_bdk/api/notifications/emails/{id}/retry": {
       "post": {
         "tags": [
-          "_System.Notifications"
+          "_bdk.Notifications"
         ],
         "summary": "Retry a notification email",
         "description": "Resets a failed notification email so it can be processed again by the outbox worker.",
-        "operationId": "_System.Notifications.RetryEmail",
+        "operationId": "_bdk.Notifications.RetryEmail",
         "parameters": [
           {
             "name": "id",
@@ -5773,14 +5773,14 @@
         }
       }
     },
-    "/api/_system/notifications/emails/{id}/archive": {
+    "/_bdk/api/notifications/emails/{id}/archive": {
       "post": {
         "tags": [
-          "_System.Notifications"
+          "_bdk.Notifications"
         ],
         "summary": "Archive a notification email",
         "description": "Archives a terminal notification email so it leaves the active working set without being purged.",
-        "operationId": "_System.Notifications.ArchiveEmail",
+        "operationId": "_bdk.Notifications.ArchiveEmail",
         "parameters": [
           {
             "name": "id",
@@ -5836,14 +5836,14 @@
         }
       }
     },
-    "/api/_system/logentries": {
+    "/_bdk/api/logentries": {
       "get": {
         "tags": [
-          "_System.Logs"
+          "_bdk.Logs"
         ],
         "summary": "Get logs",
         "description": "Retrieves a paged list of log entries with optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).",
-        "operationId": "_System.Logs.GetLogEntries",
+        "operationId": "_bdk.Logs.GetLogEntries",
         "parameters": [
           {
             "name": "startTime",
@@ -5989,11 +5989,11 @@
       },
       "delete": {
         "tags": [
-          "_System.Logs"
+          "_bdk.Logs"
         ],
         "summary": "Cleanup logs",
         "description": "Queues a maintenance operation for log entries older than a specified date or age, with options to archive, set batch size, and delay interval. Date must be in ISO 8601 format (e.g., 2025-04-01T00:00:00Z).",
-        "operationId": "_System.Logs.CleanupLogEntries",
+        "operationId": "_bdk.Logs.CleanupLogEntries",
         "parameters": [
           {
             "name": "olderThan",
@@ -6071,14 +6071,14 @@
         }
       }
     },
-    "/api/_system/logentries/stream": {
+    "/_bdk/api/logentries/stream": {
       "get": {
         "tags": [
-          "_System.Logs"
+          "_bdk.Logs"
         ],
         "summary": "Stream logs",
         "description": "Streams log entries in real-time based on optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).",
-        "operationId": "_System.Logs.StreamLogEntries",
+        "operationId": "_bdk.Logs.StreamLogEntries",
         "parameters": [
           {
             "name": "startTime",
@@ -6204,14 +6204,14 @@
         }
       }
     },
-    "/api/_system/logentries/stats": {
+    "/_bdk/api/logentries/stats": {
       "get": {
         "tags": [
-          "_System.Logs"
+          "_bdk.Logs"
         ],
         "summary": "Get log statistics",
         "description": "Retrieves aggregated statistics for log entries, grouped by time intervals. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).",
-        "operationId": "_System.Logs.GetLogEntriesStatistics",
+        "operationId": "_bdk.Logs.GetLogEntriesStatistics",
         "parameters": [
           {
             "name": "startTime",
@@ -6270,14 +6270,14 @@
         }
       }
     },
-    "/api/_system/logentries/export": {
+    "/_bdk/api/logentries/export": {
       "get": {
         "tags": [
-          "_System.Logs"
+          "_bdk.Logs"
         ],
         "summary": "Export logs",
         "description": "Exports log entries as a downloadable file in the specified format (csv, json, txt). Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).",
-        "operationId": "_System.Logs.ExportLogEntries",
+        "operationId": "_bdk.Logs.ExportLogEntries",
         "parameters": [
           {
             "name": "startTime",
@@ -6405,13 +6405,13 @@
         }
       }
     },
-    "/api/_system": {
+    "/_bdk/api": {
       "get": {
         "tags": [
-          "_System"
+          "_bdk"
         ],
-        "summary": "_System.Get",
-        "operationId": "_System.Get",
+        "summary": "_bdk.Get",
+        "operationId": "_bdk.Get",
         "responses": {
           "200": {
             "description": "OK",
@@ -6439,13 +6439,13 @@
         }
       }
     },
-    "/api/_system/echo": {
+    "/_bdk/api/echo": {
       "get": {
         "tags": [
-          "_System"
+          "_bdk"
         ],
-        "summary": "_System.GetEcho",
-        "operationId": "_System.GetEcho",
+        "summary": "_bdk.GetEcho",
+        "operationId": "_bdk.GetEcho",
         "responses": {
           "200": {
             "description": "OK",
@@ -6470,13 +6470,13 @@
         }
       }
     },
-    "/api/_system/info": {
+    "/_bdk/api/info": {
       "get": {
         "tags": [
-          "_System"
+          "_bdk"
         ],
-        "summary": "_System.GetInfo",
-        "operationId": "_System.GetInfo",
+        "summary": "_bdk.GetInfo",
+        "operationId": "_bdk.GetInfo",
         "responses": {
           "200": {
             "description": "OK",
@@ -6501,13 +6501,13 @@
         }
       }
     },
-    "/api/_system/modules": {
+    "/_bdk/api/modules": {
       "get": {
         "tags": [
-          "_System"
+          "_bdk"
         ],
-        "summary": "_System.GetModules",
-        "operationId": "_System.GetModules",
+        "summary": "_bdk.GetModules",
+        "operationId": "_bdk.GetModules",
         "responses": {
           "200": {
             "description": "OK",
@@ -6535,13 +6535,13 @@
         }
       }
     },
-    "/api/_system/metrics": {
+    "/_bdk/api/metrics": {
       "get": {
         "tags": [
-          "_System.Metrics"
+          "_bdk.Metrics"
         ],
-        "summary": "_System.Metrics.Get",
-        "operationId": "_System.Metrics.Get",
+        "summary": "_bdk.Metrics.Get",
+        "operationId": "_bdk.Metrics.Get",
         "responses": {
           "200": {
             "description": "OK",
@@ -6569,13 +6569,13 @@
         }
       }
     },
-    "/api/_system/metrics/bdk": {
+    "/_bdk/api/metrics/bdk": {
       "get": {
         "tags": [
-          "_System.Metrics"
+          "_bdk.Metrics"
         ],
-        "summary": "_System.Metrics.GetBdk",
-        "operationId": "_System.Metrics.GetBdk",
+        "summary": "_bdk.Metrics.GetBdk",
+        "operationId": "_bdk.Metrics.GetBdk",
         "responses": {
           "200": {
             "description": "OK",
@@ -6610,13 +6610,13 @@
         }
       }
     },
-    "/api/_system/metrics/dotnet": {
+    "/_bdk/api/metrics/dotnet": {
       "get": {
         "tags": [
-          "_System.Metrics"
+          "_bdk.Metrics"
         ],
-        "summary": "_System.Metrics.GetDotNet",
-        "operationId": "_System.Metrics.GetDotNet",
+        "summary": "_bdk.Metrics.GetDotNet",
+        "operationId": "_bdk.Metrics.GetDotNet",
         "responses": {
           "200": {
             "description": "OK",
@@ -6651,13 +6651,13 @@
         }
       }
     },
-    "/api/_system/metrics/aspnet": {
+    "/_bdk/api/metrics/aspnet": {
       "get": {
         "tags": [
-          "_System.Metrics"
+          "_bdk.Metrics"
         ],
-        "summary": "_System.Metrics.GetAspNet",
-        "operationId": "_System.Metrics.GetAspNet",
+        "summary": "_bdk.Metrics.GetAspNet",
+        "operationId": "_bdk.Metrics.GetAspNet",
         "responses": {
           "200": {
             "description": "OK",
@@ -6692,13 +6692,13 @@
         }
       }
     },
-    "/api/_system/metrics/aspnet/routes": {
+    "/_bdk/api/metrics/aspnet/routes": {
       "get": {
         "tags": [
-          "_System.Metrics"
+          "_bdk.Metrics"
         ],
-        "summary": "_System.Metrics.GetAspNetRoutes",
-        "operationId": "_System.Metrics.GetAspNetRoutes",
+        "summary": "_bdk.Metrics.GetAspNetRoutes",
+        "operationId": "_bdk.Metrics.GetAspNetRoutes",
         "responses": {
           "200": {
             "description": "OK",
@@ -6733,13 +6733,13 @@
         }
       }
     },
-    "/api/_system/metrics/overview": {
+    "/_bdk/api/metrics/overview": {
       "get": {
         "tags": [
-          "_System.Metrics"
+          "_bdk.Metrics"
         ],
-        "summary": "_System.Metrics.GetOverview",
-        "operationId": "_System.Metrics.GetOverview",
+        "summary": "_bdk.Metrics.GetOverview",
+        "operationId": "_bdk.Metrics.GetOverview",
         "responses": {
           "200": {
             "description": "OK",
@@ -10460,13 +10460,13 @@
   ],
   "tags": [
     {
-      "name": "_System.JobScheduling"
+      "name": "_bdk.JobScheduling"
     },
     {
-      "name": "_System.Orchestrations"
+      "name": "_bdk.Orchestrations"
     },
     {
-      "name": "_System.FileStorage"
+      "name": "_bdk.FileStorage"
     },
     {
       "name": "CoreModule.TodoItems"
@@ -10478,22 +10478,22 @@
       "name": "CoreModule.TodoItems.DataPorter"
     },
     {
-      "name": "_System.Messaging"
+      "name": "_bdk.Messaging"
     },
     {
-      "name": "_System.Queueing"
+      "name": "_bdk.Queueing"
     },
     {
-      "name": "_System.Notifications"
+      "name": "_bdk.Notifications"
     },
     {
-      "name": "_System.Logs"
+      "name": "_bdk.Logs"
     },
     {
-      "name": "_System"
+      "name": "_bdk"
     },
     {
-      "name": "_System.Metrics"
+      "name": "_bdk.Metrics"
     }
   ]
 }

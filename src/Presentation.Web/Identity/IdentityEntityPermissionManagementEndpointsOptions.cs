@@ -9,8 +9,8 @@ public class IdentityEntityPermissionManagementEndpointsOptions : EndpointsOptio
 {
     public IdentityEntityPermissionManagementEndpointsOptions()
     {
-        this.GroupPath = "/api/_system/identity/management/entities/permissions";
-        this.GroupTag = "_system/identity/management";
+        this.GroupPath = "/_bdk/api/identity/management/entities/permissions";
+        this.GroupTag = "_bdk/identity/management";
         this.RequireAuthorization = true;
     }
 }

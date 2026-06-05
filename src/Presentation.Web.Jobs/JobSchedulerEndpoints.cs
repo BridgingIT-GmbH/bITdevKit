@@ -25,8 +25,8 @@ using HttpResult = Microsoft.AspNetCore.Http.IResult;
 /// <code>
 /// services.AddJobScheduler()
 ///     .AddEndpoints(options => options
-///         .GroupPath("/api/_system/jobs")
-///         .GroupTag("_system/jobs")
+///         .GroupPath("/_bdk/api/jobs")
+///         .GroupTag("_bdk/jobs")
 ///         .RequireAuthorization());
 /// </code>
 /// </example>
@@ -49,7 +49,7 @@ public class JobSchedulerEndpoints(
         }
 
         var group = this.MapGroup(app, this.options)
-            .WithTags("_System.Jobs");
+            .WithTags("_bdk.Jobs");
 
         var definitions = group.MapGroup("definitions");
         var occurrences = group.MapGroup("occurrences");
@@ -61,7 +61,7 @@ public class JobSchedulerEndpoints(
             .Produces<ResultPaged<JobSchedulerJobModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetJobs")
+            .WithName("_bdk.Jobs.GetJobs")
             .WithSummary("List jobs")
             .WithDescription("Retrieves registered jobs with operational overlay, paging, filtering, and sorting.");
 
@@ -69,7 +69,7 @@ public class JobSchedulerEndpoints(
             .Produces<JobSchedulerJobModel>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetJob")
+            .WithName("_bdk.Jobs.GetJob")
             .WithSummary("Get job details")
             .WithDescription("Retrieves a single registered job definition with operational state.");
 
@@ -77,7 +77,7 @@ public class JobSchedulerEndpoints(
             .Produces<ResultPaged<JobSchedulerTriggerModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetTriggers")
+            .WithName("_bdk.Jobs.GetTriggers")
             .WithSummary("List triggers")
             .WithDescription("Retrieves job triggers with paging, filtering, and sorting.");
 
@@ -85,7 +85,7 @@ public class JobSchedulerEndpoints(
             .Produces<ResultPaged<JobSchedulerRecurringTriggerModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetRecurringTriggers")
+            .WithName("_bdk.Jobs.GetRecurringTriggers")
             .WithSummary("List recurring triggers")
             .WithDescription("Retrieves recurring job triggers with paging, filtering, and sorting.");
 
@@ -93,7 +93,7 @@ public class JobSchedulerEndpoints(
             .Produces<JobSchedulerTriggerModel>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetTrigger")
+            .WithName("_bdk.Jobs.GetTrigger")
             .WithSummary("Get trigger details")
             .WithDescription("Retrieves a single registered trigger with operational state.");
 
@@ -101,7 +101,7 @@ public class JobSchedulerEndpoints(
             .Produces<ResultPaged<JobSchedulerOccurrenceModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetOccurrences")
+            .WithName("_bdk.Jobs.GetOccurrences")
             .WithSummary("List occurrences")
             .WithDescription("Retrieves materialized job occurrences with paging, filtering, and sorting.");
 
@@ -109,7 +109,7 @@ public class JobSchedulerEndpoints(
             .Produces<JobMaintenanceReport>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.PurgeOccurrences")
+            .WithName("_bdk.Jobs.PurgeOccurrences")
             .WithSummary("Purge occurrences")
             .WithDescription("Purges retained terminal occurrences by age and optional status, job, trigger, and archive filters.");
 
@@ -117,7 +117,7 @@ public class JobSchedulerEndpoints(
             .Produces<ResultPaged<JobSchedulerRetryModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetRetries")
+            .WithName("_bdk.Jobs.GetRetries")
             .WithSummary("List retries")
             .WithDescription("Retrieves retry-scheduled or retryable occurrences.");
 
@@ -125,7 +125,7 @@ public class JobSchedulerEndpoints(
             .Produces<ResultPaged<JobSchedulerDependencyModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetDependencies")
+            .WithName("_bdk.Jobs.GetDependencies")
             .WithSummary("List dependencies")
             .WithDescription("Retrieves persisted occurrence dependency links with prerequisite and dependent state.");
 
@@ -133,7 +133,7 @@ public class JobSchedulerEndpoints(
             .Produces<ResultPaged<JobSchedulerBatchModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetBatches")
+            .WithName("_bdk.Jobs.GetBatches")
             .WithSummary("List batches")
             .WithDescription("Retrieves job batches with paging, filtering, and sorting.");
 
@@ -141,7 +141,7 @@ public class JobSchedulerEndpoints(
             .Produces<JobSchedulerBatchModel>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetBatch")
+            .WithName("_bdk.Jobs.GetBatch")
             .WithSummary("Get batch details")
             .WithDescription("Retrieves a single job batch.");
 
@@ -150,7 +150,7 @@ public class JobSchedulerEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetBatchOccurrences")
+            .WithName("_bdk.Jobs.GetBatchOccurrences")
             .WithSummary("List batch child occurrences")
             .WithDescription("Retrieves child occurrences for a specific batch.");
 
@@ -159,7 +159,7 @@ public class JobSchedulerEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetBatchHistory")
+            .WithName("_bdk.Jobs.GetBatchHistory")
             .WithSummary("List batch history")
             .WithDescription("Retrieves append-only history for a specific batch.");
 
@@ -167,7 +167,7 @@ public class JobSchedulerEndpoints(
             .Produces<ResultPaged<JobSchedulerExecutionModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetExecutions")
+            .WithName("_bdk.Jobs.GetExecutions")
             .WithSummary("List executions")
             .WithDescription("Retrieves execution attempts with paging, filtering, and sorting.");
 
@@ -175,7 +175,7 @@ public class JobSchedulerEndpoints(
             .Produces<ResultPaged<JobSchedulerExecutionHistoryModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetHistory")
+            .WithName("_bdk.Jobs.GetHistory")
             .WithSummary("List execution history")
             .WithDescription("Retrieves retained execution history with paging, filtering, and sorting.");
 
@@ -183,7 +183,7 @@ public class JobSchedulerEndpoints(
             .Produces<ResultPaged<JobSchedulerLeaseModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetLeases")
+            .WithName("_bdk.Jobs.GetLeases")
             .WithSummary("List leases")
             .WithDescription("Retrieves active and expired occurrence lease diagnostics.");
 
@@ -191,7 +191,7 @@ public class JobSchedulerEndpoints(
             .Produces<ResultPaged<JobSchedulerServerModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetServers")
+            .WithName("_bdk.Jobs.GetServers")
             .WithSummary("List scheduler servers")
             .WithDescription("Retrieves observed scheduler server instances.");
 
@@ -199,7 +199,7 @@ public class JobSchedulerEndpoints(
             .Produces<Result<JobSchedulerMetricsModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetMetrics")
+            .WithName("_bdk.Jobs.GetMetrics")
             .WithSummary("Get scheduler metrics")
             .WithDescription("Retrieves aggregate jobs metrics for operational monitoring.");
 
@@ -207,7 +207,7 @@ public class JobSchedulerEndpoints(
             .Produces<Result<JobSchedulerDashboardSummaryModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetDashboardSummary")
+            .WithName("_bdk.Jobs.GetDashboardSummary")
             .WithSummary("Get dashboard summary")
             .WithDescription("Retrieves aggregate counts and summary diagnostics for the jobs dashboard.");
 
@@ -215,7 +215,7 @@ public class JobSchedulerEndpoints(
             .Produces<Result<JobSchedulerTimelineModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.GetDashboardTimeline")
+            .WithName("_bdk.Jobs.GetDashboardTimeline")
             .WithSummary("Get dashboard timeline")
             .WithDescription("Retrieves timeline buckets for occurrences or executions.");
 
@@ -294,7 +294,7 @@ public class JobSchedulerEndpoints(
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.DispatchJob")
+            .WithName("_bdk.Jobs.DispatchJob")
             .WithSummary("Dispatch a job")
             .WithDescription("Dispatches a registered job using its configured manual trigger.");
 
@@ -311,7 +311,7 @@ public class JobSchedulerEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.EnableJob")
+            .WithName("_bdk.Jobs.EnableJob")
             .WithSummary("Enable a job")
             .WithDescription("Enables a registered job through durable runtime state.");
 
@@ -328,7 +328,7 @@ public class JobSchedulerEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.DisableJob")
+            .WithName("_bdk.Jobs.DisableJob")
             .WithSummary("Disable a job")
             .WithDescription("Disables a registered job through durable runtime state.");
 
@@ -345,7 +345,7 @@ public class JobSchedulerEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.PauseJob")
+            .WithName("_bdk.Jobs.PauseJob")
             .WithSummary("Pause a job")
             .WithDescription("Pauses a registered job without mutating its code-first definition.");
 
@@ -362,7 +362,7 @@ public class JobSchedulerEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.ResumeJob")
+            .WithName("_bdk.Jobs.ResumeJob")
             .WithSummary("Resume a job")
             .WithDescription("Resumes a previously paused job.");
 
@@ -379,7 +379,7 @@ public class JobSchedulerEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.PauseTrigger")
+            .WithName("_bdk.Jobs.PauseTrigger")
             .WithSummary("Pause a trigger")
             .WithDescription("Pauses a registered trigger without mutating its code-first definition.");
 
@@ -396,7 +396,7 @@ public class JobSchedulerEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.ResumeTrigger")
+            .WithName("_bdk.Jobs.ResumeTrigger")
             .WithSummary("Resume a trigger")
             .WithDescription("Resumes a previously paused trigger.");
 
@@ -413,7 +413,7 @@ public class JobSchedulerEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.EnableTrigger")
+            .WithName("_bdk.Jobs.EnableTrigger")
             .WithSummary("Enable a trigger")
             .WithDescription("Enables a registered trigger through durable runtime state.");
 
@@ -430,7 +430,7 @@ public class JobSchedulerEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.DisableTrigger")
+            .WithName("_bdk.Jobs.DisableTrigger")
             .WithSummary("Disable a trigger")
             .WithDescription("Disables a registered trigger through durable runtime state.");
 
@@ -447,7 +447,7 @@ public class JobSchedulerEndpoints(
             .Produces<ProblemDetails>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.PauseOccurrence")
+            .WithName("_bdk.Jobs.PauseOccurrence")
             .WithSummary("Pause an occurrence")
             .WithDescription("Pauses an eligible occurrence before a new attempt starts.");
 
@@ -456,7 +456,7 @@ public class JobSchedulerEndpoints(
             .Produces<ProblemDetails>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.ResumeOccurrence")
+            .WithName("_bdk.Jobs.ResumeOccurrence")
             .WithSummary("Resume an occurrence")
             .WithDescription("Resumes a previously paused occurrence.");
 
@@ -465,7 +465,7 @@ public class JobSchedulerEndpoints(
             .Produces<ProblemDetails>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.CancelOccurrence")
+            .WithName("_bdk.Jobs.CancelOccurrence")
             .WithSummary("Cancel an occurrence")
             .WithDescription("Requests cancellation of an occurrence.");
 
@@ -474,7 +474,7 @@ public class JobSchedulerEndpoints(
             .Produces<ProblemDetails>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.InterruptOccurrence")
+            .WithName("_bdk.Jobs.InterruptOccurrence")
             .WithSummary("Interrupt an occurrence")
             .WithDescription("Requests interruption of a running occurrence.");
 
@@ -483,7 +483,7 @@ public class JobSchedulerEndpoints(
             .Produces<ProblemDetails>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.RetryOccurrence")
+            .WithName("_bdk.Jobs.RetryOccurrence")
             .WithSummary("Retry an occurrence")
             .WithDescription("Requests retry of an eligible failed occurrence.");
 
@@ -492,7 +492,7 @@ public class JobSchedulerEndpoints(
             .Produces<ProblemDetails>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.ArchiveOccurrence")
+            .WithName("_bdk.Jobs.ArchiveOccurrence")
             .WithSummary("Archive an occurrence")
             .WithDescription("Archives a terminal occurrence.");
 
@@ -501,7 +501,7 @@ public class JobSchedulerEndpoints(
             .Produces<ProblemDetails>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.ReleaseOccurrenceLease")
+            .WithName("_bdk.Jobs.ReleaseOccurrenceLease")
             .WithSummary("Release an occurrence lease")
             .WithDescription("Releases an active occurrence lease so the occurrence can be repaired or recovered.");
 
@@ -509,7 +509,7 @@ public class JobSchedulerEndpoints(
             .Produces<Result<JobBulkOperationResult>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.RetryOccurrences")
+            .WithName("_bdk.Jobs.RetryOccurrences")
             .WithSummary("Retry occurrences")
             .WithDescription("Retries the selected eligible failed occurrences as one bulk operation.");
 
@@ -517,7 +517,7 @@ public class JobSchedulerEndpoints(
             .Produces<Result<JobBulkOperationResult>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.CancelOccurrences")
+            .WithName("_bdk.Jobs.CancelOccurrences")
             .WithSummary("Cancel occurrences")
             .WithDescription("Cancels the selected eligible occurrences as one bulk operation.");
 
@@ -525,7 +525,7 @@ public class JobSchedulerEndpoints(
             .Produces<Result<JobBulkOperationResult>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.ArchiveOccurrences")
+            .WithName("_bdk.Jobs.ArchiveOccurrences")
             .WithSummary("Archive occurrences")
             .WithDescription("Archives the selected eligible retained occurrences as one bulk operation.");
 
@@ -533,7 +533,7 @@ public class JobSchedulerEndpoints(
             .Produces<Result<JobBatchDispatchResult>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.CreateBatch")
+            .WithName("_bdk.Jobs.CreateBatch")
             .WithSummary("Create a batch")
             .WithDescription("Creates an empty or described durable batch record.");
 
@@ -542,7 +542,7 @@ public class JobSchedulerEndpoints(
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.DispatchBatch")
+            .WithName("_bdk.Jobs.DispatchBatch")
             .WithSummary("Dispatch a batch")
             .WithDescription("Creates a batch and dispatches child occurrences as one accepted operation.");
 
@@ -552,7 +552,7 @@ public class JobSchedulerEndpoints(
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.AttachToBatch")
+            .WithName("_bdk.Jobs.AttachToBatch")
             .WithSummary("Attach to batch")
             .WithDescription("Attaches additional child occurrences to an existing batch.");
 
@@ -561,7 +561,7 @@ public class JobSchedulerEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.RetryBatch")
+            .WithName("_bdk.Jobs.RetryBatch")
             .WithSummary("Retry batch")
             .WithDescription("Retries eligible failed child occurrences for a batch.");
 
@@ -570,7 +570,7 @@ public class JobSchedulerEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.CancelBatch")
+            .WithName("_bdk.Jobs.CancelBatch")
             .WithSummary("Cancel batch")
             .WithDescription("Cancels eligible child occurrences for a batch.");
 
@@ -579,7 +579,7 @@ public class JobSchedulerEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.PauseBatch")
+            .WithName("_bdk.Jobs.PauseBatch")
             .WithSummary("Pause batch")
             .WithDescription("Pauses eligible child occurrences for a batch.");
 
@@ -588,7 +588,7 @@ public class JobSchedulerEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.ResumeBatch")
+            .WithName("_bdk.Jobs.ResumeBatch")
             .WithSummary("Resume batch")
             .WithDescription("Resumes eligible child occurrences for a batch.");
 
@@ -597,7 +597,7 @@ public class JobSchedulerEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.ArchiveBatch")
+            .WithName("_bdk.Jobs.ArchiveBatch")
             .WithSummary("Archive batch")
             .WithDescription("Archives a batch and eligible retained child occurrences.");
 
@@ -605,7 +605,7 @@ public class JobSchedulerEndpoints(
             .Produces<JobMaintenanceReport>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.PurgeHistory")
+            .WithName("_bdk.Jobs.PurgeHistory")
             .WithSummary("Purge history")
             .WithDescription("Purges archived execution history older than the configured retention window.");
 
@@ -613,7 +613,7 @@ public class JobSchedulerEndpoints(
             .Produces<JobMaintenanceReport>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.ReleaseExpiredLeases")
+            .WithName("_bdk.Jobs.ReleaseExpiredLeases")
             .WithSummary("Release expired leases")
             .WithDescription("Releases expired leases and repairs the affected occurrences.");
 
@@ -621,7 +621,7 @@ public class JobSchedulerEndpoints(
             .Produces<JobMaintenanceReport>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.RecoverStuckOccurrences")
+            .WithName("_bdk.Jobs.RecoverStuckOccurrences")
             .WithSummary("Recover stuck occurrences")
             .WithDescription("Recovers stale occurrences that no longer have a valid active lease.");
 
@@ -629,7 +629,7 @@ public class JobSchedulerEndpoints(
             .Produces<JobMaintenanceReport>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Jobs.DetectOrphanedRuntimeState")
+            .WithName("_bdk.Jobs.DetectOrphanedRuntimeState")
             .WithSummary("Detect orphaned runtime state")
             .WithDescription("Detects runtime-state rows that no longer correspond to active code-first registrations.");
 

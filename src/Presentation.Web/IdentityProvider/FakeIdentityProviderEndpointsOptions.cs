@@ -13,10 +13,10 @@ public class FakeIdentityProviderEndpointsOptions : EndpointsOptionsBase
     public FakeIdentityProviderEndpointsOptions()
     {
         this.Enabled = true;
-        this.GroupPath = "/api/_system/identity/connect";
-        this.GroupTag = "_system/identity/connect";
+        this.GroupPath = "/_bdk/api/identity/connect";
+        this.GroupTag = "_bdk/identity/connect";
         this.RequireAuthorization = false;
-        this.Issuer = "https://localhost:5001"; // should match Client Authority  "https://localhost:5001/api/_system/identity/connect"
+        this.Issuer = "https://localhost:5001"; // should match Client Authority  "https://localhost:5001/_bdk/api/identity/connect"
         this.EndpointPaths = new FakeIdentityProviderEndpointPaths(); // Default endpoint paths
         this.AccessTokenLifetime = TimeSpan.FromHours(24);
         this.RefreshTokenLifetime = TimeSpan.FromDays(7);

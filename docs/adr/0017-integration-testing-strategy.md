@@ -141,7 +141,7 @@ public sealed class EndpointTestFixture : IAsyncLifetime
 public class EndpointTestFixtureOptions
 {
     public bool UseAuthentication { get; set; }
-    public string TokenEndpoint { get; set; } = "/api/_system/fake-identity/token";
+    public string TokenEndpoint { get; set; } = "/_bdk/api/fake-identity/token";
     public string ClientId { get; set; } = "test_client";
     public string Username { get; set; } = "test@example.com";
     public string Password { get; set; } = "Test123!";

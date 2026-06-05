@@ -13,8 +13,8 @@ using BridgingIT.DevKit.Presentation.Web;
 /// <example>
 /// <code>
 /// services.AddMessagingEndpoints(options => options
-///     .GroupPath("/api/_system/messaging/messages")
-///     .GroupTag("_System.Messaging"));
+///     .GroupPath("/_bdk/api/messaging/messages")
+///     .GroupTag("_bdk.Messaging"));
 /// </code>
 /// </example>
 public class MessagingEndpointsOptions : EndpointsOptionsBase
@@ -24,7 +24,7 @@ public class MessagingEndpointsOptions : EndpointsOptionsBase
     /// </summary>
     public MessagingEndpointsOptions()
     {
-        this.GroupPath = "/api/_system/messaging/messages";
-        this.GroupTag = "_System.Messaging";
+        this.GroupPath = "/_bdk/api/messaging/messages";
+        this.GroupTag = "_bdk.Messaging";
     }
 }

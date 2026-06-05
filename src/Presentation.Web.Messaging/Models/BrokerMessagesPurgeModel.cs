@@ -12,7 +12,7 @@ using BridgingIT.DevKit.Application.Messaging;
 /// </summary>
 /// <example>
 /// <code>
-/// DELETE /api/_system/messaging/messages?olderThan=2026-01-01T00:00:00Z&amp;statuses=Succeeded&amp;statuses=Expired
+/// DELETE /_bdk/api/messaging/messages?olderThan=2026-01-01T00:00:00Z&amp;statuses=Succeeded&amp;statuses=Expired
 /// </code>
 /// </example>
 public class BrokerMessagesPurgeModel

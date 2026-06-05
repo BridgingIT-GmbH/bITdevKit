@@ -13,8 +13,8 @@ using BridgingIT.DevKit.Presentation.Web;
 /// <example>
 /// <code>
 /// services.AddNotificationEndpoints(options => options
-///     .GroupPath("/api/_system/notifications/emails")
-///     .GroupTag("_System.Notifications"));
+///     .GroupPath("/_bdk/api/notifications/emails")
+///     .GroupTag("_bdk.Notifications"));
 /// </code>
 /// </example>
 public class NotificationEmailEndpointsOptions : EndpointsOptionsBase
@@ -24,7 +24,7 @@ public class NotificationEmailEndpointsOptions : EndpointsOptionsBase
     /// </summary>
     public NotificationEmailEndpointsOptions()
     {
-        this.GroupPath = "/api/_system/notifications/emails";
-        this.GroupTag = "_System.Notifications";
+        this.GroupPath = "/_bdk/api/notifications/emails";
+        this.GroupTag = "_bdk.Notifications";
     }
 }

@@ -195,7 +195,7 @@ The output adapter should expose width and height matching the web terminal.
 Default route:
 
 ```text
-/_system/console/hub
+/_bdk_/console/hub
 ```
 
 ### Client-to-Server Methods
@@ -221,7 +221,7 @@ Default route:
 Default route:
 
 ```text
-/_system/console
+/_bdk_/console
 ```
 
 The `.cshtml` page contains:
@@ -352,8 +352,8 @@ builder.Services
     .AddWebConsole(options =>
     {
         options.Enabled = builder.Environment.IsDevelopment();
-        options.PagePath = "/_system/console";
-        options.HubPath = "/_system/console/hub";
+        options.PagePath = "/_bdk_/console";
+        options.HubPath = "/_bdk_/console/hub";
         options.RequireAuthorization = true;
         options.Columns = 120;
         options.Rows = 32;
@@ -386,8 +386,8 @@ Example appsettings:
   "ConsoleCommands": {
     "WebConsole": {
       "Enabled": true,
-      "PagePath": "/_system/console",
-      "HubPath": "/_system/console/hub",
+      "PagePath": "/_bdk_/console",
+      "HubPath": "/_bdk_/console/hub",
       "RequireAuthorization": true,
       "AllowedEnvironments": [ "Development", "Local" ],
       "Columns": 120,
@@ -485,7 +485,7 @@ Recommended package behavior: embedded static web assets.
 ## Razor Page Sketch
 
 ```html
-@page "/_system/console"
+@page "/_bdk_/console"
 @{
     Layout = null;
 }
@@ -524,7 +524,7 @@ Recommended package behavior: embedded static web assets.
         terminal.open(document.getElementById("terminal"));
 
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/_system/console/hub")
+            .withUrl("/_bdk_/console/hub")
             .withAutomaticReconnect()
             .build();
 
@@ -898,7 +898,7 @@ If the existing Console Commands feature already lives in `Presentation.Web`, th
 ## Operational Considerations
 
 * The web console should be visibly marked as a system/admin page.
-* Default routes should sit below `_system`.
+* Default routes should sit below `_bdk_`.
 * Endpoint metadata should allow exclusion from public OpenAPI descriptions unless explicitly enabled.
 * Long-running commands should be cancellable.
 * Sensitive commands should perform their own environment/authorization checks.

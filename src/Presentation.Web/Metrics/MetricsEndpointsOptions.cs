@@ -22,8 +22,8 @@ public class MetricsEndpointsOptions : EndpointsOptionsBase
     /// </summary>
     public MetricsEndpointsOptions()
     {
-        this.GroupPath = "/api/_system/metrics";
-        this.GroupTag = "_System.Metrics";
+        this.GroupPath = "/_bdk/api/metrics";
+        this.GroupTag = "_bdk.Metrics";
         this.RequireAuthorization = true;
     }
 

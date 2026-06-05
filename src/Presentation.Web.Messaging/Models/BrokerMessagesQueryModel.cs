@@ -12,7 +12,7 @@ using BridgingIT.DevKit.Application.Messaging;
 /// </summary>
 /// <example>
 /// <code>
-/// GET /api/_system/messaging/messages?status=Pending&amp;includeHandlers=true&amp;take=100
+/// GET /_bdk/api/messaging/messages?status=Pending&amp;includeHandlers=true&amp;take=100
 /// </code>
 /// </example>
 public class BrokerMessagesQueryModel

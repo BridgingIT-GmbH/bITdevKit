@@ -343,12 +343,12 @@
                 @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Pages._SideBar, SidebarItem[]>(
                     new[] // TODO: inject from DI https://github.com/DamianEdwards/RazorSlices/issues/53
                     {
-                        new SidebarItem("Dashboard", "house", "/api/_system/dashboard"),
-                        new SidebarItem("Authorize", "person", "/api/_system/identity/connect/authorize2?response_type=code"),
-                        new SidebarItem("Messaging", "file-text", "/api/_system/dashboard/messaging"),
-                        new SidebarItem("JobScheduling", "cart", "/api/_system/dashboard/jobscheduling"),
-                        new SidebarItem("Metrics", "people", "/api/_system/dashboard/metrics"),
-                        new SidebarItem("Logs", "bar-chart", "/api/_system/dashboard/logs"),
+                        new SidebarItem("Dashboard", "house", "/_bdk/api/dashboard"),
+                        new SidebarItem("Authorize", "person", "/_bdk/api/identity/connect/authorize2?response_type=code"),
+                        new SidebarItem("Messaging", "file-text", "/_bdk/api/dashboard/messaging"),
+                        new SidebarItem("JobScheduling", "cart", "/_bdk/api/dashboard/jobscheduling"),
+                        new SidebarItem("Metrics", "people", "/_bdk/api/dashboard/metrics"),
+                        new SidebarItem("Logs", "bar-chart", "/_bdk/api/dashboard/logs"),
                     }))
                 @await RenderSectionAsync("nav-menu")
                 <button class="btn sidebar-toggle d-none d-md-flex" type="button" aria-label="Toggle sidebar">

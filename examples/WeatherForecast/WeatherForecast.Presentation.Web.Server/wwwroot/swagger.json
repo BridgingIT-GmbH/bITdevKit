@@ -11,10 +11,10 @@
     }
   ],
   "paths": {
-    "/api/_system": {
+    "/_bdk/api": {
       "get": {
         "tags": [
-          "_system"
+          "_bdk"
         ],
         "operationId": "GetApiSystem",
         "responses": {
@@ -44,10 +44,10 @@
         }
       }
     },
-    "/api/_system/echo": {
+    "/_bdk/api/echo": {
       "get": {
         "tags": [
-          "_system"
+          "_bdk"
         ],
         "operationId": "GetApiSystemEcho",
         "responses": {
@@ -74,10 +74,10 @@
         }
       }
     },
-    "/api/_system/info": {
+    "/_bdk/api/info": {
       "get": {
         "tags": [
-          "_system"
+          "_bdk"
         ],
         "operationId": "GetApiSystemInfo",
         "responses": {
@@ -104,10 +104,10 @@
         }
       }
     },
-    "/api/_system/modules": {
+    "/_bdk/api/modules": {
       "get": {
         "tags": [
-          "_system"
+          "_bdk"
         ],
         "operationId": "GetApiSystemModules",
         "responses": {
@@ -137,10 +137,10 @@
         }
       }
     },
-    "/api/_system/jobs": {
+    "/_bdk/api/jobs": {
       "get": {
         "tags": [
-          "_system/jobs"
+          "_bdk/jobs"
         ],
         "operationId": "GetApiSystemJobs",
         "responses": {
@@ -170,10 +170,10 @@
         }
       }
     },
-    "/api/_system/jobs/{name}": {
+    "/_bdk/api/jobs/{name}": {
       "post": {
         "tags": [
-          "_system/jobs"
+          "_bdk/jobs"
         ],
         "operationId": "PostApiSystemJobs",
         "parameters": [

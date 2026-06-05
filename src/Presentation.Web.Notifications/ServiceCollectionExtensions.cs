@@ -88,8 +88,8 @@ public static class ServiceCollectionExtensions
     /// <code>
     /// services.AddNotificationEndpoints(options => options
     ///     .RequireAuthorization()
-    ///     .GroupPath("/api/_system/notifications/emails")
-    ///     .GroupTag("_System.Notifications"));
+    ///     .GroupPath("/_bdk/api/notifications/emails")
+    ///     .GroupTag("_bdk.Notifications"));
     /// </code>
     /// </example>
     public static IServiceCollection AddNotificationEndpoints(

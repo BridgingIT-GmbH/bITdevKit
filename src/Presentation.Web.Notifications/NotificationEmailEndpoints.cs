@@ -25,7 +25,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// <code>
 /// services.AddNotificationEndpoints(options => options
 ///     .RequireAuthorization()
-///     .GroupPath("/api/_system/notifications/emails"));
+///     .GroupPath("/_bdk/api/notifications/emails"));
 /// </code>
 /// </example>
 public class NotificationEmailEndpoints(
@@ -53,14 +53,14 @@ public class NotificationEmailEndpoints(
         group.MapGet("stats", this.GetMessageStats)
             .Produces<NotificationEmailStats>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Notifications.GetEmailStats")
+            .WithName("_bdk.Notifications.GetEmailStats")
             .WithSummary("Get notification email statistics")
             .WithDescription("Retrieves aggregated statistics for persisted notification emails.");
 
         group.MapGet(string.Empty, this.GetMessages)
             .Produces<IEnumerable<NotificationEmailInfo>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Notifications.GetEmails")
+            .WithName("_bdk.Notifications.GetEmails")
             .WithSummary("List notification emails")
             .WithDescription("Retrieves persisted notification emails with optional operational filters.");
 
@@ -68,7 +68,7 @@ public class NotificationEmailEndpoints(
             .Produces<NotificationEmailInfo>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Notifications.GetEmail")
+            .WithName("_bdk.Notifications.GetEmail")
             .WithSummary("Get notification email details")
             .WithDescription("Retrieves a single persisted notification email.");
 
@@ -76,7 +76,7 @@ public class NotificationEmailEndpoints(
             .Produces<NotificationEmailContentInfo>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Notifications.GetEmailContent")
+            .WithName("_bdk.Notifications.GetEmailContent")
             .WithSummary("Get notification email body")
             .WithDescription("Retrieves the persisted body content for a notification email.");
 
@@ -85,7 +85,7 @@ public class NotificationEmailEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Notifications.RetryEmail")
+            .WithName("_bdk.Notifications.RetryEmail")
             .WithSummary("Retry a notification email")
             .WithDescription("Resets a failed notification email so it can be processed again by the outbox worker.");
 
@@ -94,14 +94,14 @@ public class NotificationEmailEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Notifications.ArchiveEmail")
+            .WithName("_bdk.Notifications.ArchiveEmail")
             .WithSummary("Archive a notification email")
             .WithDescription("Archives a terminal notification email so it leaves the active working set without being purged.");
 
         group.MapDelete(string.Empty, this.PurgeMessages)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Notifications.PurgeEmails")
+            .WithName("_bdk.Notifications.PurgeEmails")
             .WithSummary("Purge notification emails")
             .WithDescription("Purges persisted notification emails by age and optional status filters.");
 

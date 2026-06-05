@@ -46,7 +46,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public MessagesItemRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/messaging/messages/{id}?includeHandlers={includeHandlers}", pathParameters)
+        public MessagesItemRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/messaging/messages/{id}?includeHandlers={includeHandlers}", pathParameters)
         {
         }
         /// <summary>
@@ -54,7 +54,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public MessagesItemRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/messaging/messages/{id}?includeHandlers={includeHandlers}", rawUrl)
+        public MessagesItemRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/messaging/messages/{id}?includeHandlers={includeHandlers}", rawUrl)
         {
         }
         /// <summary>
@@ -112,7 +112,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         /// Retrieves a single persisted broker message including optional handler details.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class MessagesItemRequestBuilderGetQueryParameters 
+        public partial class MessagesItemRequestBuilderGetQueryParameters
         {
             [QueryParameter("includeHandlers")]
             public bool? IncludeHandlers { get; set; }

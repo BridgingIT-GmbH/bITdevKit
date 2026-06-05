@@ -45,12 +45,12 @@ public class OpenApiSecurityOptions
     /// <summary>
     /// Gets or sets the relative authorization endpoint path appended to <see cref="Authority"/>.
     /// </summary>
-    public string AuthorizationPath { get; set; } = "/api/_system/identity/connect/authorize";
+    public string AuthorizationPath { get; set; } = "/_bdk/api/identity/connect/authorize";
 
     /// <summary>
     /// Gets or sets the relative token endpoint path appended to <see cref="Authority"/>.
     /// </summary>
-    public string TokenPath { get; set; } = "/api/_system/identity/connect/token";
+    public string TokenPath { get; set; } = "/_bdk/api/identity/connect/token";
 
     /// <summary>
     /// Gets or sets the scopes exposed by the OAuth2 authorization code flow.

@@ -32,7 +32,7 @@ public class CoreEndpointTests(ITestOutputHelper output, CustomWebApplicationFac
     }
 
     //[Theory]
-    //[InlineData("api/_system/info")]
+    //[InlineData("_bdk/api/info")]
     //public async Task SystemInfoGetTest(string route)
     //{
     //    // Arrange & Act

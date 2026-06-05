@@ -47,12 +47,12 @@ public class OrchestrationEndpoints(
         }
 
         var group = this.MapGroup(app, this.options)
-            .WithTags("_System.Orchestrations");
+            .WithTags("_bdk.Orchestrations");
 
         group.MapGet("definitions", this.GetDefinitions)
             .Produces<IEnumerable<string>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.GetDefinitions")
+            .WithName("_bdk.Orchestrations.GetDefinitions")
             .WithSummary("List orchestration definitions")
             .WithDescription("Retrieves registered orchestration definition names.");
 
@@ -60,7 +60,7 @@ public class OrchestrationEndpoints(
             .Produces<string>((int)HttpStatusCode.OK, "text/plain")
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.GetDefinitionDiagram")
+            .WithName("_bdk.Orchestrations.GetDefinitionDiagram")
             .WithSummary("Get orchestration definition diagram")
             .WithDescription("Retrieves Mermaid-compatible state diagram text for a registered orchestration definition.");
 
@@ -68,7 +68,7 @@ public class OrchestrationEndpoints(
             .Produces<string>((int)HttpStatusCode.OK, "image/svg+xml")
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.GetDefinitionDiagramSvg")
+            .WithName("_bdk.Orchestrations.GetDefinitionDiagramSvg")
             .WithSummary("Get orchestration definition SVG diagram")
             .WithDescription("Retrieves rendered SVG markup for a registered orchestration definition.");
 
@@ -76,7 +76,7 @@ public class OrchestrationEndpoints(
             .Produces<IEnumerable<OrchestrationInstanceModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.GetInstances")
+            .WithName("_bdk.Orchestrations.GetInstances")
             .WithSummary("List orchestration instances")
             .WithDescription("Retrieves persisted orchestration instances with optional operational filters.");
 
@@ -84,7 +84,7 @@ public class OrchestrationEndpoints(
             .Produces<OrchestrationMetricsModel>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.GetMetrics")
+            .WithName("_bdk.Orchestrations.GetMetrics")
             .WithSummary("Get orchestration metrics")
             .WithDescription("Retrieves persisted orchestration metrics for dashboards and support tooling.");
 
@@ -92,7 +92,7 @@ public class OrchestrationEndpoints(
             .Produces<OrchestrationInstanceModel>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.GetInstance")
+            .WithName("_bdk.Orchestrations.GetInstance")
             .WithSummary("Get orchestration details")
             .WithDescription("Retrieves a single persisted orchestration instance.");
 
@@ -100,7 +100,7 @@ public class OrchestrationEndpoints(
             .Produces<OrchestrationContextSnapshotModel>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.GetContext")
+            .WithName("_bdk.Orchestrations.GetContext")
             .WithSummary("Get orchestration context")
             .WithDescription("Retrieves the latest persisted orchestration context snapshot.");
 
@@ -108,7 +108,7 @@ public class OrchestrationEndpoints(
             .Produces<IEnumerable<OrchestrationHistoryModel>>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.GetHistory")
+            .WithName("_bdk.Orchestrations.GetHistory")
             .WithSummary("Get orchestration history")
             .WithDescription("Retrieves persisted execution history for an orchestration instance.");
 
@@ -116,7 +116,7 @@ public class OrchestrationEndpoints(
             .Produces<IEnumerable<OrchestrationSignalModel>>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.GetSignals")
+            .WithName("_bdk.Orchestrations.GetSignals")
             .WithSummary("Get orchestration signals")
             .WithDescription("Retrieves persisted signal records for an orchestration instance.");
 
@@ -124,7 +124,7 @@ public class OrchestrationEndpoints(
             .Produces<IEnumerable<OrchestrationTimerModel>>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.GetTimers")
+            .WithName("_bdk.Orchestrations.GetTimers")
             .WithSummary("Get orchestration timers")
             .WithDescription("Retrieves persisted timer records for an orchestration instance.");
 
@@ -132,7 +132,7 @@ public class OrchestrationEndpoints(
             .Produces<string>((int)HttpStatusCode.OK, "text/plain")
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.GetInstanceDiagram")
+            .WithName("_bdk.Orchestrations.GetInstanceDiagram")
             .WithSummary("Get orchestration instance diagram")
             .WithDescription("Retrieves Mermaid-compatible state diagram text for a persisted orchestration instance.");
 
@@ -140,7 +140,7 @@ public class OrchestrationEndpoints(
             .Produces<string>((int)HttpStatusCode.OK, "image/svg+xml")
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.GetInstanceDiagramSvg")
+            .WithName("_bdk.Orchestrations.GetInstanceDiagramSvg")
             .WithSummary("Get orchestration instance SVG diagram")
             .WithDescription("Retrieves rendered SVG markup for a persisted orchestration instance.");
 
@@ -150,7 +150,7 @@ public class OrchestrationEndpoints(
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.Signal")
+            .WithName("_bdk.Orchestrations.Signal")
             .WithSummary("Deliver an orchestration signal")
             .WithDescription("Persists and delivers a signal for an orchestration instance.");
 
@@ -159,7 +159,7 @@ public class OrchestrationEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.Pause")
+            .WithName("_bdk.Orchestrations.Pause")
             .WithSummary("Pause an orchestration")
             .WithDescription("Pauses a non-terminal orchestration instance.");
 
@@ -168,7 +168,7 @@ public class OrchestrationEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.Resume")
+            .WithName("_bdk.Orchestrations.Resume")
             .WithSummary("Resume an orchestration")
             .WithDescription("Resumes a previously paused orchestration instance.");
 
@@ -177,7 +177,7 @@ public class OrchestrationEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.Cancel")
+            .WithName("_bdk.Orchestrations.Cancel")
             .WithSummary("Cancel an orchestration")
             .WithDescription("Cancels a non-terminal orchestration instance.");
 
@@ -186,7 +186,7 @@ public class OrchestrationEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.Terminate")
+            .WithName("_bdk.Orchestrations.Terminate")
             .WithSummary("Terminate an orchestration")
             .WithDescription("Terminates a non-terminal orchestration instance.");
 
@@ -195,7 +195,7 @@ public class OrchestrationEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.Archive")
+            .WithName("_bdk.Orchestrations.Archive")
             .WithSummary("Archive an orchestration")
             .WithDescription("Archives a terminal orchestration instance.");
 
@@ -204,7 +204,7 @@ public class OrchestrationEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.ReleaseLease")
+            .WithName("_bdk.Orchestrations.ReleaseLease")
             .WithSummary("Release an orchestration lease")
             .WithDescription("Releases an active lease for a stuck orchestration instance.");
 
@@ -213,7 +213,7 @@ public class OrchestrationEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.RequeueTimers")
+            .WithName("_bdk.Orchestrations.RequeueTimers")
             .WithSummary("Requeue orchestration timers")
             .WithDescription("Requeues persisted timers for a stuck orchestration instance.");
 
@@ -221,7 +221,7 @@ public class OrchestrationEndpoints(
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Orchestrations.Purge")
+            .WithName("_bdk.Orchestrations.Purge")
             .WithSummary("Purge orchestration data")
             .WithDescription("Purges retained orchestration data by age and optional status filters.");
 

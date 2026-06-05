@@ -58,7 +58,7 @@ builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopme
 The default `LogEntryEndpointsOptions` path remains:
 
 ```text
-/api/_system/logentries
+/_bdk/api/logentries
 ```
 
 The existing authorization behavior remains in place.
@@ -66,7 +66,7 @@ The existing authorization behavior remains in place.
 ### 4.2 Query API Additions
 
 Add `AfterId` to `LogEntryQueryRequest` and expose it as an optional
-`afterId` query parameter on `GET /api/_system/logentries`.
+`afterId` query parameter on `GET /_bdk/api/logentries`.
 
 Behavior:
 
@@ -105,7 +105,7 @@ fallback.
 Reuse the existing endpoint:
 
 ```text
-DELETE /api/_system/logentries
+DELETE /_bdk/api/logentries
 ```
 
 The UI should use the `olderThan` date path, not `ageDays`.
@@ -234,7 +234,7 @@ Tailing is required and should be treated as a core acceptance criterion.
 The tail implementation uses polling through the JSON query endpoint:
 
 ```text
-GET /api/_system/logentries?afterId={maxLoadedId}
+GET /_bdk/api/logentries?afterId={maxLoadedId}
 ```
 
 Behavior:
@@ -287,7 +287,7 @@ Dialog fields:
 Confirm behavior:
 
 - Disabled until a date is selected.
-- Calls `DELETE /api/_system/logentries`.
+- Calls `DELETE /_bdk/api/logentries`.
 - Sends `olderThan`, `archive`, and `batchSize`.
 - Shows success or error snackbar.
 - Closes on accepted response.

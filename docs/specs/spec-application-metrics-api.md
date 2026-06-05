@@ -641,11 +641,11 @@ No separate `Presentation.Web.Metrics` project or package is introduced.
 
 The metrics API uses one route group:
 
-- `/api/_system/metrics`
+- `/_bdk/api/metrics`
 
 With tag:
 
-- `_System.Metrics`
+- `_bdk_.Metrics`
 
 The metrics API exposes separate endpoint families for:
 
@@ -657,7 +657,7 @@ The metrics API exposes separate endpoint families for:
 
 #### 8.2.1 Discovery endpoint
 
-- `GET /api/_system/metrics`
+- `GET /_bdk/api/metrics`
 
 Returns links or route values for:
 
@@ -668,25 +668,25 @@ Returns links or route values for:
 
 #### 8.2.2 Devkit metrics endpoint
 
-- `GET /api/_system/metrics/bdk`
+- `GET /_bdk/api/metrics/bdk`
 
 Returns live cumulative snapshots of devkit-emitted metrics from the `bdk` meter.
 
 #### 8.2.3 .NET runtime metrics endpoint
 
-- `GET /api/_system/metrics/dotnet`
+- `GET /_bdk/api/metrics/dotnet`
 
 Returns curated process and CLR runtime metrics.
 
 #### 8.2.4 ASP.NET Core metrics endpoint
 
-- `GET /api/_system/metrics/aspnet`
+- `GET /_bdk/api/metrics/aspnet`
 
 Returns curated HTTP/server metrics.
 
 #### 8.2.5 Dashboard overview endpoint
 
-- `GET /api/_system/metrics/overview`
+- `GET /_bdk/api/metrics/overview`
 
 Returns a composed home-dashboard snapshot that combines selected values from:
 
@@ -836,8 +836,8 @@ Recommended registration style:
 
 ```csharp
 services.AddMetricsEndpoints(options => options
-    .GroupPath("/api/_system/metrics")
-    .GroupTag("_System.Metrics"));
+    .GroupPath("/_bdk/api/metrics")
+    .GroupTag("_bdk.Metrics"));
 ```
 
 ### 8.9 Security and exposure
@@ -854,11 +854,11 @@ The default exposure should be conservative and match existing system endpoint e
 
 ### 8.10 Acceptance criteria
 
-1. When metrics endpoints are registered, then `/api/_system/metrics` returns discovery links for `bdk`, `dotnet`, `aspnet`, and `overview`.
-2. When `GET /api/_system/metrics/bdk` is called, then it returns current cumulative devkit metrics grouped by feature.
-3. When `GET /api/_system/metrics/dotnet` is called, then it returns curated runtime/process values without exposing raw instrument internals.
-4. When `GET /api/_system/metrics/aspnet` is called after HTTP traffic occurs, then request-oriented counters increase accordingly.
-5. When `GET /api/_system/metrics/overview` is called, then it returns a composed dashboard snapshot based on the three underlying metric families.
+1. When metrics endpoints are registered, then `/_bdk/api/metrics` returns discovery links for `bdk`, `dotnet`, `aspnet`, and `overview`.
+2. When `GET /_bdk/api/metrics/bdk` is called, then it returns current cumulative devkit metrics grouped by feature.
+3. When `GET /_bdk/api/metrics/dotnet` is called, then it returns curated runtime/process values without exposing raw instrument internals.
+4. When `GET /_bdk/api/metrics/aspnet` is called after HTTP traffic occurs, then request-oriented counters increase accordingly.
+5. When `GET /_bdk/api/metrics/overview` is called, then it returns a composed dashboard snapshot based on the three underlying metric families.
 6. When a dashboard polls these endpoints over time, then it can build historical charts by appending successive snapshots without relying on server-side retained history.
 7. When the process restarts, then the response metadata allows clients to detect a new series origin.
 
@@ -877,10 +877,10 @@ The initial target is the DoFiesta example application. Its purpose is twofold:
 
 The DoFiesta operations page lives in the application UI layer and does not introduce new metric sources. It consumes:
 
-- `/api/_system/metrics/overview`
-- `/api/_system/metrics/bdk`
-- `/api/_system/metrics/dotnet`
-- `/api/_system/metrics/aspnet`
+- `/_bdk/api/metrics/overview`
+- `/_bdk/api/metrics/bdk`
+- `/_bdk/api/metrics/dotnet`
+- `/_bdk/api/metrics/aspnet`
 
 It is responsible for:
 

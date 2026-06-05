@@ -22,7 +22,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logen
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public ExportRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/logentries/export?format={format}{&ageDays*,correlationId*,endTime*,level*,logKey*,moduleName*,pageSize*,searchText*,shortTypeName*,spanId*,startTime*,threadId*,traceId*}", pathParameters)
+        public ExportRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/logentries/export?format={format}{&ageDays*,correlationId*,endTime*,level*,logKey*,moduleName*,pageSize*,searchText*,shortTypeName*,spanId*,startTime*,threadId*,traceId*}", pathParameters)
         {
         }
         /// <summary>
@@ -30,7 +30,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logen
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public ExportRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/logentries/export?format={format}{&ageDays*,correlationId*,endTime*,level*,logKey*,moduleName*,pageSize*,searchText*,shortTypeName*,spanId*,startTime*,threadId*,traceId*}", rawUrl)
+        public ExportRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/logentries/export?format={format}{&ageDays*,correlationId*,endTime*,level*,logKey*,moduleName*,pageSize*,searchText*,shortTypeName*,spanId*,startTime*,threadId*,traceId*}", rawUrl)
         {
         }
         /// <summary>
@@ -90,7 +90,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logen
         /// Exports log entries as a downloadable file in the specified format (csv, json, txt). Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class ExportRequestBuilderGetQueryParameters 
+        public partial class ExportRequestBuilderGetQueryParameters
         {
             [QueryParameter("ageDays")]
             public double? AgeDays { get; set; }

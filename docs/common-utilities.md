@@ -833,10 +833,10 @@ builder.Services.AddOpenTelemetry()
 
 Metrics exposes JSON snapshot endpoints such as:
 
-- `/api/_system/metrics/bdk`
-- `/api/_system/metrics/overview`
-- `/api/_system/metrics/dotnet`
-- `/api/_system/metrics/aspnet`
+- `/_bdk/api/metrics/bdk`
+- `/_bdk/api/metrics/overview`
+- `/_bdk/api/metrics/dotnet`
+- `/_bdk/api/metrics/aspnet`
 
 These endpoints are useful for dashboards, debugging, demos, and internal operational inspection. They are backed by in-process snapshot services that listen to the `bdk` meter and project the measurements into JSON models.
 

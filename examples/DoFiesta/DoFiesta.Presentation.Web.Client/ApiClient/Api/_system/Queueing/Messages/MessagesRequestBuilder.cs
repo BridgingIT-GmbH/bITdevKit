@@ -60,7 +60,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queue
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public MessagesRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/queueing/messages{?CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,MessageId*,OlderThan*,QueueName*,Status*,Statuses*,Take*,Type*}", pathParameters)
+        public MessagesRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/queueing/messages{?CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,MessageId*,OlderThan*,QueueName*,Status*,Statuses*,Take*,Type*}", pathParameters)
         {
         }
         /// <summary>
@@ -68,7 +68,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queue
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public MessagesRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/queueing/messages{?CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,MessageId*,OlderThan*,QueueName*,Status*,Statuses*,Take*,Type*}", rawUrl)
+        public MessagesRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/queueing/messages{?CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,MessageId*,OlderThan*,QueueName*,Status*,Statuses*,Take*,Type*}", rawUrl)
         {
         }
         /// <summary>
@@ -169,7 +169,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queue
         /// Purges retained queue messages by age and optional status filters.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class MessagesRequestBuilderDeleteQueryParameters 
+        public partial class MessagesRequestBuilderDeleteQueryParameters
         {
             public bool? IsArchived { get; set; }
             public DateTimeOffset? OlderThan { get; set; }
@@ -203,7 +203,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Queue
         /// Retrieves retained queue messages with optional operational filters.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class MessagesRequestBuilderGetQueryParameters 
+        public partial class MessagesRequestBuilderGetQueryParameters
         {
             public DateTimeOffset? CreatedAfter { get; set; }
             public DateTimeOffset? CreatedBefore { get; set; }

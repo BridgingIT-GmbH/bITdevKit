@@ -530,7 +530,7 @@
     private async Task<List<GenFileStorageProviderInfoModel>> ListLocationsAsync()
     {
         var requestInfo = this.ApiClient.Api._system
-            .WithUrl($"{this.RequestAdapter.BaseUrl?.TrimEnd('/')}/api/_system/locations")
+            .WithUrl($"{this.RequestAdapter.BaseUrl?.TrimEnd('/')}/_bdk/api/locations")
             .ToGetRequestInformation();
 
         var errorMapping = new Dictionary<string, global::Microsoft.Kiota.Abstractions.Serialization.ParsableFactory<global::Microsoft.Kiota.Abstractions.Serialization.IParsable>>

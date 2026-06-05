@@ -436,7 +436,7 @@ public class AppDbContext : DbContext, IMessagingContext
 
 When you add `Presentation.Web.Messaging`, the server can expose an operational API for persisted broker messages.
 
-- Base route: `/api/_system/messaging/messages`
+- Base route: `/_bdk/api/messaging/messages`
 - `GET /stats`: aggregate statistics for the persisted working set.
 - `GET /summary`: broker runtime summary including capabilities and paused types.
 - `GET /subscriptions`: active message type to handler registrations.

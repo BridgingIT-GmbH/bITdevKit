@@ -28,7 +28,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public DirectoriesRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/{providerName}/directories?recursive={recursive}{&path*,searchPattern*}", pathParameters)
+        public DirectoriesRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/{providerName}/directories?recursive={recursive}{&path*,searchPattern*}", pathParameters)
         {
         }
         /// <summary>
@@ -36,7 +36,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public DirectoriesRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/{providerName}/directories?recursive={recursive}{&path*,searchPattern*}", rawUrl)
+        public DirectoriesRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/{providerName}/directories?recursive={recursive}{&path*,searchPattern*}", rawUrl)
         {
         }
         /// <summary>
@@ -133,7 +133,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         public RequestInformation ToDeleteRequestInformation(Action<RequestConfiguration<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.Directories.DirectoriesRequestBuilder.DirectoriesRequestBuilderDeleteQueryParameters>> requestConfiguration = default)
         {
 #endif
-            var requestInfo = new RequestInformation(Method.DELETE, "{+baseurl}/api/_system/{providerName}/directories?recursive={recursive}{&path*}", PathParameters);
+            var requestInfo = new RequestInformation(Method.DELETE, "{+baseurl}/_bdk/api/{providerName}/directories?recursive={recursive}{&path*}", PathParameters);
             requestInfo.Configure(requestConfiguration);
             requestInfo.Headers.TryAdd("Accept", "application/json");
             return requestInfo;
@@ -171,7 +171,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         public RequestInformation ToPostRequestInformation(Action<RequestConfiguration<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.Directories.DirectoriesRequestBuilder.DirectoriesRequestBuilderPostQueryParameters>> requestConfiguration = default)
         {
 #endif
-            var requestInfo = new RequestInformation(Method.POST, "{+baseurl}/api/_system/{providerName}/directories{?path*}", PathParameters);
+            var requestInfo = new RequestInformation(Method.POST, "{+baseurl}/_bdk/api/{providerName}/directories{?path*}", PathParameters);
             requestInfo.Configure(requestConfiguration);
             requestInfo.Headers.TryAdd("Accept", "application/json");
             return requestInfo;
@@ -189,7 +189,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         /// Deletes the specified provider-backed directory path.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class DirectoriesRequestBuilderDeleteQueryParameters 
+        public partial class DirectoriesRequestBuilderDeleteQueryParameters
         {
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -215,7 +215,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         /// Lists directories from the configured provider with optional recursion.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class DirectoriesRequestBuilderGetQueryParameters 
+        public partial class DirectoriesRequestBuilderGetQueryParameters
         {
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -250,7 +250,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         /// Creates the specified provider-backed directory path.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class DirectoriesRequestBuilderPostQueryParameters 
+        public partial class DirectoriesRequestBuilderPostQueryParameters
         {
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable

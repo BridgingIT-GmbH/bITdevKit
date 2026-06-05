@@ -106,7 +106,7 @@ builder.Services
         .RequireAuthorization());
 ```
 
-The default route group is `/api/_system/orchestrations`.
+The default route group is `/_bdk/api/orchestrations`.
 
 ### Add Global Orchestration Behaviors
 
@@ -1250,26 +1250,26 @@ await harness.Assert(dispatch.Value).HaveStatusAsync(OrchestrationStatus.Termina
 
 ## Operational Endpoints
 
-When `Presentation.Web.Orchestrations` is registered, the default group path is `/api/_system/orchestrations`.
+When `Presentation.Web.Orchestrations` is registered, the default group path is `/_bdk/api/orchestrations`.
 
 Key routes:
 
-- `GET /api/_system/orchestrations`
-- `GET /api/_system/orchestrations/metrics`
-- `GET /api/_system/orchestrations/{instanceId}`
-- `GET /api/_system/orchestrations/{instanceId}/context`
-- `GET /api/_system/orchestrations/{instanceId}/history`
-- `GET /api/_system/orchestrations/{instanceId}/signals`
-- `GET /api/_system/orchestrations/{instanceId}/timers`
-- `POST /api/_system/orchestrations/{instanceId}/signal`
-- `POST /api/_system/orchestrations/{instanceId}/pause`
-- `POST /api/_system/orchestrations/{instanceId}/resume`
-- `POST /api/_system/orchestrations/{instanceId}/cancel`
-- `POST /api/_system/orchestrations/{instanceId}/terminate`
-- `POST /api/_system/orchestrations/{instanceId}/archive`
-- `POST /api/_system/orchestrations/{instanceId}/repair/release-lease`
-- `POST /api/_system/orchestrations/{instanceId}/repair/requeue-timers`
-- `DELETE /api/_system/orchestrations`
+- `GET /_bdk/api/orchestrations`
+- `GET /_bdk/api/orchestrations/metrics`
+- `GET /_bdk/api/orchestrations/{instanceId}`
+- `GET /_bdk/api/orchestrations/{instanceId}/context`
+- `GET /_bdk/api/orchestrations/{instanceId}/history`
+- `GET /_bdk/api/orchestrations/{instanceId}/signals`
+- `GET /_bdk/api/orchestrations/{instanceId}/timers`
+- `POST /_bdk/api/orchestrations/{instanceId}/signal`
+- `POST /_bdk/api/orchestrations/{instanceId}/pause`
+- `POST /_bdk/api/orchestrations/{instanceId}/resume`
+- `POST /_bdk/api/orchestrations/{instanceId}/cancel`
+- `POST /_bdk/api/orchestrations/{instanceId}/terminate`
+- `POST /_bdk/api/orchestrations/{instanceId}/archive`
+- `POST /_bdk/api/orchestrations/{instanceId}/repair/release-lease`
+- `POST /_bdk/api/orchestrations/{instanceId}/repair/requeue-timers`
+- `DELETE /_bdk/api/orchestrations`
 
 These routes are intended for:
 

@@ -93,7 +93,7 @@ public class JobSchedulerEndpointsTests : IAsyncDisposable
                 },
             ], 1, 1, 25));
 
-        var response = await this.client.GetAsync("/api/_system/jobs?jobName=cleanup&group=ops&module=Billing&enabled=true&includeOrphanedRuntimeState=true&skip=5&take=25&sortBy=JobName&sortDescending=false");
+        var response = await this.client.GetAsync("/_bdk/api/jobs?jobName=cleanup&group=ops&module=Billing&enabled=true&includeOrphanedRuntimeState=true&skip=5&take=25&sortBy=JobName&sortDescending=false");
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         await this.query.Received(1).QueryJobsAsync(
@@ -126,7 +126,7 @@ public class JobSchedulerEndpointsTests : IAsyncDisposable
                 Buckets = [],
             }));
 
-        var response = await this.client.GetAsync($"/api/_system/jobs/dashboard/timeline?mode=Executions&jobName=cleanup&triggerName=nightly&schedulerInstanceId=node-a&from={Uri.EscapeDataString(fromUtc.ToString("O"))}&to={Uri.EscapeDataString(toUtc.ToString("O"))}&bucket=15");
+        var response = await this.client.GetAsync($"/_bdk/api/jobs/dashboard/timeline?mode=Executions&jobName=cleanup&triggerName=nightly&schedulerInstanceId=node-a&from={Uri.EscapeDataString(fromUtc.ToString("O"))}&to={Uri.EscapeDataString(toUtc.ToString("O"))}&bucket=15");
 
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         await this.query.Received(1).GetDashboardTimelineAsync(
@@ -155,11 +155,11 @@ public class JobSchedulerEndpointsTests : IAsyncDisposable
                 AcceptedUtc = DateTimeOffset.UtcNow,
             }));
 
-        var response = await this.client.PostAsJsonAsync("/api/_system/jobs/cleanup/dispatch", new { });
+        var response = await this.client.PostAsJsonAsync("/_bdk/api/jobs/cleanup/dispatch", new { });
 
         response.StatusCode.ShouldBe(HttpStatusCode.Accepted);
         response.Headers.Location.ShouldNotBeNull();
-        response.Headers.Location!.ToString().ShouldEndWith($"/api/_system/jobs/occurrences/{occurrenceId}");
+        response.Headers.Location!.ToString().ShouldEndWith($"/_bdk/api/jobs/occurrences/{occurrenceId}");
         await this.scheduler.Received(1).DispatchAsync(
             "cleanup",
             Arg.Any<object>(),

@@ -839,7 +839,7 @@ Implement optional administration endpoints.
 Implementation focus:
 
 - endpoint registration extension
-- route mapping under /api/_system/jobs
+- route mapping under /_bdk/api/jobs
 - Result-to-HTTP mapping
 - ProblemDetails mapping
 - read endpoints for jobs, triggers, recurring triggers, occurrences, retries, batches, executions, history, leases, servers and metrics
@@ -1182,5 +1182,3 @@ Run the specified build/test checkpoint.
 Review architecture before continuing.
 Do not let later phases backfill foundational semantics without human approval.
 Validate API shape before continuing.
-
-

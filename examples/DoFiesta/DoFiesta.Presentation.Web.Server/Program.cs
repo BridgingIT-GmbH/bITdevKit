@@ -238,8 +238,8 @@ if (app.Environment.IsDevelopment())
              var idpOptions = app.Services.GetService<FakeIdentityProviderEndpointsOptions>();
              var idpClient = idpOptions?.Clients?.FirstOrDefault(c => c.Name.SafeEquals("Scalar"));
              flow.ClientId = idpClient?.ClientId;
-             flow.AuthorizationUrl = $"{idpOptions?.Issuer}/api/_system/identity/connect/authorize";
-             flow.TokenUrl = $"{idpOptions?.Issuer}/api/_system/identity/connect/token";
+             flow.AuthorizationUrl = $"{idpOptions?.Issuer}/_bdk/api/identity/connect/authorize";
+             flow.TokenUrl = $"{idpOptions?.Issuer}/_bdk/api/identity/connect/token";
              flow.RedirectUri = idpClient?.RedirectUris?.FirstOrDefault();
          });
     });

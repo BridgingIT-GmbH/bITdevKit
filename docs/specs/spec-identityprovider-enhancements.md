@@ -48,7 +48,7 @@ The client application exchanges the code for tokens as normal. The previous ses
 ### API
 
 ```
-POST /api/_system/identity/connect/switch-user
+POST /_bdk/api/identity/connect/switch-user
 Content-Type: application/x-www-form-urlencoded
 
 user_id=<target-user-id>
@@ -116,7 +116,7 @@ Both endpoints accept any token type (access token, ID token, refresh token). Ne
 #### Standard Introspection
 
 ```
-POST /api/_system/identity/connect/introspect
+POST /_bdk/api/identity/connect/introspect
 Content-Type: application/x-www-form-urlencoded
 
 token=<jwt-token>
@@ -149,7 +149,7 @@ token_type_hint=access_token|refresh_token|id_token  (optional)
 #### Convenience Decode
 
 ```
-GET /api/_system/identity/connect/decode?token=<jwt-token>
+GET /_bdk/api/identity/connect/decode?token=<jwt-token>
 ```
 
 **Response:**
@@ -275,7 +275,7 @@ builder.AddFakeIdentityProvider(options =>
 ### Debug Endpoint
 
 ```
-GET /api/_system/identity/connect/debug/claims?user_id=<id>&client_id=<id>
+GET /_bdk/api/identity/connect/debug/claims?user_id=<id>&client_id=<id>
 ```
 
 Returns the fully resolved claim set for a given user+client combination, useful for verifying claim merge behavior.
@@ -375,12 +375,12 @@ Sessions are tracked in-memory within the fake IDP. A session is created when a 
 
 ### API Endpoints
 
-All endpoints under `/api/_system/identity/connect/sessions`.
+All endpoints under `/_bdk/api/identity/connect/sessions`.
 
 #### List Active Sessions
 
 ```
-GET /api/_system/identity/connect/sessions
+GET /_bdk/api/identity/connect/sessions
 ```
 
 **Response:**
@@ -404,7 +404,7 @@ GET /api/_system/identity/connect/sessions
 #### Get Session Details
 
 ```
-GET /api/_system/identity/connect/sessions/{session_id}
+GET /_bdk/api/identity/connect/sessions/{session_id}
 ```
 
 **Response:**
@@ -431,7 +431,7 @@ GET /api/_system/identity/connect/sessions/{session_id}
 #### Revoke Session
 
 ```
-DELETE /api/_system/identity/connect/sessions/{session_id}
+DELETE /_bdk/api/identity/connect/sessions/{session_id}
 ```
 
 **Response:** `204 No Content` on success, `404 Not Found` if session doesn't exist.
@@ -439,7 +439,7 @@ DELETE /api/_system/identity/connect/sessions/{session_id}
 #### Revoke All Sessions
 
 ```
-DELETE /api/_system/identity/connect/sessions
+DELETE /_bdk/api/identity/connect/sessions
 ```
 
 **Response:** `204 No Content`. Revokes all sessions for the current authenticated user.

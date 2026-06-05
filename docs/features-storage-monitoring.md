@@ -251,8 +251,8 @@ This exposes:
 
 | Route | Purpose |
 | --- | --- |
-| `GET /api/_system/{provider}/events?path=...&eventType=...&fromDate=...&tillDate=...&take=...` | Query stored file events for the provider-backed monitoring location |
-| `POST /api/_system/{provider}/events/scan?waitForProcessing=true&searchPattern=...&maxFilesToScan=...&skipChecksum=false` | Trigger an on-demand scan and return the detected events |
+| `GET /_bdk/api/{provider}/events?path=...&eventType=...&fromDate=...&tillDate=...&take=...` | Query stored file events for the provider-backed monitoring location |
+| `POST /_bdk/api/{provider}/events/scan?waitForProcessing=true&searchPattern=...&maxFilesToScan=...&skipChecksum=false` | Trigger an on-demand scan and return the detected events |
 
 Important notes:
 

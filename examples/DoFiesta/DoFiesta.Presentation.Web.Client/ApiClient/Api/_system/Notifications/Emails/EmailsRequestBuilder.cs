@@ -54,7 +54,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Notif
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public EmailsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/notifications/emails{?CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,OlderThan*,Status*,Statuses*,Subject*,Take*}", pathParameters)
+        public EmailsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/notifications/emails{?CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,OlderThan*,Status*,Statuses*,Subject*,Take*}", pathParameters)
         {
         }
         /// <summary>
@@ -62,7 +62,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Notif
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public EmailsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/notifications/emails{?CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,OlderThan*,Status*,Statuses*,Subject*,Take*}", rawUrl)
+        public EmailsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/notifications/emails{?CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,OlderThan*,Status*,Statuses*,Subject*,Take*}", rawUrl)
         {
         }
         /// <summary>
@@ -163,7 +163,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Notif
         /// Purges persisted notification emails by age and optional status filters.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class EmailsRequestBuilderDeleteQueryParameters 
+        public partial class EmailsRequestBuilderDeleteQueryParameters
         {
             public bool? IsArchived { get; set; }
             public DateTimeOffset? OlderThan { get; set; }
@@ -197,7 +197,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Notif
         /// Retrieves persisted notification emails with optional operational filters.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class EmailsRequestBuilderGetQueryParameters 
+        public partial class EmailsRequestBuilderGetQueryParameters
         {
             public DateTimeOffset? CreatedAfter { get; set; }
             public DateTimeOffset? CreatedBefore { get; set; }

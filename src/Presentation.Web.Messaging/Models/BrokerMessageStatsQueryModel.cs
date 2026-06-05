@@ -10,7 +10,7 @@ namespace BridgingIT.DevKit.Presentation.Web.Messaging.Models;
 /// </summary>
 /// <example>
 /// <code>
-/// GET /api/_system/messaging/messages/stats?isArchived=false
+/// GET /_bdk/api/messaging/messages/stats?isArchived=false
 /// </code>
 /// </example>
 public class BrokerMessageStatsQueryModel

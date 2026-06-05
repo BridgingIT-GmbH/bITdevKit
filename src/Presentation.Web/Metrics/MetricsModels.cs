@@ -12,7 +12,7 @@ using BridgingIT.DevKit.Common;
 /// </summary>
 /// <example>
 /// <code>
-/// var snapshot = await httpClient.GetFromJsonAsync&lt;BdkMetricsSnapshotModel&gt;(\"/api/_system/metrics/bdk\");
+/// var snapshot = await httpClient.GetFromJsonAsync&lt;BdkMetricsSnapshotModel&gt;(\"/_bdk/api/metrics/bdk\");
 /// var capturedAt = snapshot.CapturedAtUtc;
 /// </code>
 /// </example>
@@ -173,7 +173,7 @@ public class BdkFeatureSnapshotModel
 /// </summary>
 /// <example>
 /// <code>
-/// var snapshot = await httpClient.GetFromJsonAsync&lt;BdkMetricsSnapshotModel&gt;(\"/api/_system/metrics/bdk\");
+/// var snapshot = await httpClient.GetFromJsonAsync&lt;BdkMetricsSnapshotModel&gt;(\"/_bdk/api/metrics/bdk\");
 /// var currentQueueWork = snapshot.Features[\"queueing\"].CurrentTotal;
 /// </code>
 /// </example>
@@ -287,7 +287,7 @@ public class MetricsOverviewFeatureModel
 /// </summary>
 /// <example>
 /// <code>
-/// var overview = await httpClient.GetFromJsonAsync&lt;MetricsOverviewSnapshotModel&gt;(\"/api/_system/metrics/overview\");
+/// var overview = await httpClient.GetFromJsonAsync&lt;MetricsOverviewSnapshotModel&gt;(\"/_bdk/api/metrics/overview\");
 /// var currentWork = overview.SummaryCards[\"totalCurrent\"];
 /// </code>
 /// </example>
@@ -403,7 +403,7 @@ public class AspNetMetricsSnapshotModel : MetricsSnapshotBase
 /// </summary>
 /// <example>
 /// <code>
-/// var snapshot = await httpClient.GetFromJsonAsync&lt;AspNetRouteMetricsSnapshotModel&gt;("/api/_system/metrics/aspnet/routes");
+/// var snapshot = await httpClient.GetFromJsonAsync&lt;AspNetRouteMetricsSnapshotModel&gt;("/_bdk/api/metrics/aspnet/routes");
 /// var slowest = snapshot.Routes.FirstOrDefault();
 /// </code>
 /// </example>

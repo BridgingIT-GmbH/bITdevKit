@@ -22,7 +22,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public ScanRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/{providerName}/events/scan{?maxFilesToScan*,searchPattern*,skipChecksum*,waitForProcessing*}", pathParameters)
+        public ScanRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/{providerName}/events/scan{?maxFilesToScan*,searchPattern*,skipChecksum*,waitForProcessing*}", pathParameters)
         {
         }
         /// <summary>
@@ -30,7 +30,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public ScanRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/{providerName}/events/scan{?maxFilesToScan*,searchPattern*,skipChecksum*,waitForProcessing*}", rawUrl)
+        public ScanRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/{providerName}/events/scan{?maxFilesToScan*,searchPattern*,skipChecksum*,waitForProcessing*}", rawUrl)
         {
         }
         /// <summary>
@@ -92,7 +92,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Item.
         /// Triggers an on-demand file monitoring scan for the provider-backed location and returns the detected events.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class ScanRequestBuilderPostQueryParameters 
+        public partial class ScanRequestBuilderPostQueryParameters
         {
             [QueryParameter("maxFilesToScan")]
             public int? MaxFilesToScan { get; set; }

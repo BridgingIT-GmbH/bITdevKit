@@ -45,17 +45,17 @@ public class MetricsEndpoints(
         }
 
         var group = this.MapGroup(app, this.options)
-            .WithTags("_System.Metrics");
+            .WithTags("_bdk.Metrics");
 
         group.MapGet(string.Empty, this.GetMetrics)
-            .WithName("_System.Metrics.Get")
+            .WithName("_bdk.Metrics.Get")
             .Produces<Dictionary<string, string>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         if (this.options.BdkEnabled)
         {
             group.MapGet("bdk", this.GetBdkMetrics)
-                .WithName("_System.Metrics.GetBdk")
+                .WithName("_bdk.Metrics.GetBdk")
                 .Produces<MetricsSnapshotModel>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
                 .Produces<ProblemDetails>((int)HttpStatusCode.ServiceUnavailable);
@@ -64,7 +64,7 @@ public class MetricsEndpoints(
         if (this.options.DotNetEnabled)
         {
             group.MapGet("dotnet", this.GetDotNetMetrics)
-                .WithName("_System.Metrics.GetDotNet")
+                .WithName("_bdk.Metrics.GetDotNet")
                 .Produces<DotNetMetricsSnapshotModel>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
                 .Produces<ProblemDetails>((int)HttpStatusCode.ServiceUnavailable);
@@ -73,13 +73,13 @@ public class MetricsEndpoints(
         if (this.options.AspNetEnabled)
         {
             group.MapGet("aspnet", this.GetAspNetMetrics)
-                .WithName("_System.Metrics.GetAspNet")
+                .WithName("_bdk.Metrics.GetAspNet")
                 .Produces<AspNetMetricsSnapshotModel>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
                 .Produces<ProblemDetails>((int)HttpStatusCode.ServiceUnavailable);
 
             group.MapGet("aspnet/routes", this.GetAspNetRouteMetrics)
-                .WithName("_System.Metrics.GetAspNetRoutes")
+                .WithName("_bdk.Metrics.GetAspNetRoutes")
                 .Produces<AspNetRouteMetricsSnapshotModel>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
                 .Produces<ProblemDetails>((int)HttpStatusCode.ServiceUnavailable);
@@ -88,7 +88,7 @@ public class MetricsEndpoints(
         if (this.options.OverviewEnabled)
         {
             group.MapGet("overview", this.GetOverview)
-                .WithName("_System.Metrics.GetOverview")
+                .WithName("_bdk.Metrics.GetOverview")
                 .Produces<MetricsOverviewSnapshotModel>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
                 .Produces<ProblemDetails>((int)HttpStatusCode.ServiceUnavailable);

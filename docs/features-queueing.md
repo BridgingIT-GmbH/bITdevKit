@@ -189,8 +189,8 @@ builder.Services.AddQueueing(builder.Configuration)
   .WithSubscription<OrderQueuedMessage, OrderQueuedHandler>()
   .WithEntityFrameworkBroker<AppDbContext>()
   .AddEndpoints(options => options
-    .GroupPath("/api/_system/queueing")
-    .GroupTag("_System.Queueing")
+    .GroupPath("/_bdk/api/queueing")
+    .GroupTag("_bdk.Queueing")
     .RequireAuthorization());
 ```
 
@@ -198,22 +198,22 @@ If you prefer separate registration, the existing `builder.Services.AddQueueingE
 
 Routes:
 
-- `GET /api/_system/queueing/stats`
-- `GET /api/_system/queueing/subscriptions`
-- `GET /api/_system/queueing/messages`
-- `GET /api/_system/queueing/messages/{id}`
-- `GET /api/_system/queueing/messages/{id}/content`
-- `GET /api/_system/queueing/messages/stats`
-- `GET /api/_system/queueing/messages/waiting?take=50`
-- `POST /api/_system/queueing/messages/{id}/retry`
-- `POST /api/_system/queueing/messages/{id}/lease/release`
-- `POST /api/_system/queueing/messages/{id}/archive`
-- `DELETE /api/_system/queueing/messages`
-- `POST /api/_system/queueing/queues/{queueName}/pause`
-- `POST /api/_system/queueing/queues/{queueName}/resume`
-- `POST /api/_system/queueing/types/{type}/pause`
-- `POST /api/_system/queueing/types/{type}/resume`
-- `POST /api/_system/queueing/types/{type}/circuit/reset`
+- `GET /_bdk/api/queueing/stats`
+- `GET /_bdk/api/queueing/subscriptions`
+- `GET /_bdk/api/queueing/messages`
+- `GET /_bdk/api/queueing/messages/{id}`
+- `GET /_bdk/api/queueing/messages/{id}/content`
+- `GET /_bdk/api/queueing/messages/stats`
+- `GET /_bdk/api/queueing/messages/waiting?take=50`
+- `POST /_bdk/api/queueing/messages/{id}/retry`
+- `POST /_bdk/api/queueing/messages/{id}/lease/release`
+- `POST /_bdk/api/queueing/messages/{id}/archive`
+- `DELETE /_bdk/api/queueing/messages`
+- `POST /_bdk/api/queueing/queues/{queueName}/pause`
+- `POST /_bdk/api/queueing/queues/{queueName}/resume`
+- `POST /_bdk/api/queueing/types/{type}/pause`
+- `POST /_bdk/api/queueing/types/{type}/resume`
+- `POST /_bdk/api/queueing/types/{type}/circuit/reset`
 
 ### In-process semantics
 

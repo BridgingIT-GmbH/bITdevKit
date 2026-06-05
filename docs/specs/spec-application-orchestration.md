@@ -826,7 +826,7 @@ services.AddOrchestrations()
     .WithEntityFramework<AppDbContext>(options => options
         .UseSerializer(new SystemTextJsonSerializer()))
     .AddEndpoints(options => options
-        .Prefix("/api/_system/orchestrations"));
+        .Prefix("/_bdk/api/orchestrations"));
 ```
 
 The endpoint implementation behind this registration model is intended to live in `Presentation.Web.Orchestration`.
@@ -1711,25 +1711,25 @@ That means:
 The endpoint contract shall expose routes shaped like:
 
 ```text
-GET    /api/_system/orchestrations
-GET    /api/_system/orchestrations/{instanceId}
-GET    /api/_system/orchestrations/{instanceId}/context
-GET    /api/_system/orchestrations/{instanceId}/history
-GET    /api/_system/orchestrations/{instanceId}/signals
-GET    /api/_system/orchestrations/{instanceId}/timers
-GET    /api/_system/orchestrations/metrics
-POST   /api/_system/orchestrations/{instanceId}/signal
-POST   /api/_system/orchestrations/{instanceId}/pause
-POST   /api/_system/orchestrations/{instanceId}/resume
-POST   /api/_system/orchestrations/{instanceId}/cancel
-POST   /api/_system/orchestrations/{instanceId}/terminate
-POST   /api/_system/orchestrations/{instanceId}/archive
-POST   /api/_system/orchestrations/{instanceId}/repair/release-lease
-POST   /api/_system/orchestrations/{instanceId}/repair/requeue-timers
-DELETE /api/_system/orchestrations
+GET    /_bdk/api/orchestrations
+GET    /_bdk/api/orchestrations/{instanceId}
+GET    /_bdk/api/orchestrations/{instanceId}/context
+GET    /_bdk/api/orchestrations/{instanceId}/history
+GET    /_bdk/api/orchestrations/{instanceId}/signals
+GET    /_bdk/api/orchestrations/{instanceId}/timers
+GET    /_bdk/api/orchestrations/metrics
+POST   /_bdk/api/orchestrations/{instanceId}/signal
+POST   /_bdk/api/orchestrations/{instanceId}/pause
+POST   /_bdk/api/orchestrations/{instanceId}/resume
+POST   /_bdk/api/orchestrations/{instanceId}/cancel
+POST   /_bdk/api/orchestrations/{instanceId}/terminate
+POST   /_bdk/api/orchestrations/{instanceId}/archive
+POST   /_bdk/api/orchestrations/{instanceId}/repair/release-lease
+POST   /_bdk/api/orchestrations/{instanceId}/repair/requeue-timers
+DELETE /_bdk/api/orchestrations
 ```
 
-Query parameters for `GET /api/_system/orchestrations` shall support at least:
+Query parameters for `GET /_bdk/api/orchestrations` shall support at least:
 
 * `orchestrationName`
 * `statuses`
@@ -1745,7 +1745,7 @@ Query parameters for `GET /api/_system/orchestrations` shall support at least:
 * `sortBy`
 * `sortDescending`
 
-Query parameters for `GET /api/_system/orchestrations/metrics` shall support the same filter subset that is meaningful for aggregated metrics.
+Query parameters for `GET /_bdk/api/orchestrations/metrics` shall support the same filter subset that is meaningful for aggregated metrics.
 
 The `POST /signal` request body shall support at least:
 
@@ -1767,7 +1767,7 @@ public sealed class ReasonRequest
 }
 ```
 
-The `DELETE /api/_system/orchestrations` endpoint shall support purge-style query parameters comparable to the retained operational endpoints used by queueing and messaging, for example:
+The `DELETE /_bdk/api/orchestrations` endpoint shall support purge-style query parameters comparable to the retained operational endpoints used by queueing and messaging, for example:
 
 * `olderThan`
 * `statuses`
@@ -1775,74 +1775,74 @@ The `DELETE /api/_system/orchestrations` endpoint shall support purge-style quer
 
 The endpoint response contract shall follow this pattern:
 
-* `GET /api/_system/orchestrations`
+* `GET /_bdk/api/orchestrations`
   * `200 OK` with `ResultPaged<OrchestrationInstanceModel>`
   * `500 Internal Server Error` with `ProblemDetails`
-* `GET /api/_system/orchestrations/{instanceId}`
+* `GET /_bdk/api/orchestrations/{instanceId}`
   * `200 OK` with `OrchestrationInstanceModel`
   * `404 Not Found` with plain text message
   * `500 Internal Server Error` with `ProblemDetails`
-* `GET /api/_system/orchestrations/{instanceId}/context`
+* `GET /_bdk/api/orchestrations/{instanceId}/context`
   * `200 OK` with `OrchestrationContextSnapshotModel`
   * `404 Not Found` with plain text message
   * `500 Internal Server Error` with `ProblemDetails`
-* `GET /api/_system/orchestrations/{instanceId}/history`
+* `GET /_bdk/api/orchestrations/{instanceId}/history`
   * `200 OK` with `IEnumerable<OrchestrationHistoryModel>`
   * `404 Not Found` with plain text message when the orchestration instance does not exist
   * `500 Internal Server Error` with `ProblemDetails`
-* `GET /api/_system/orchestrations/{instanceId}/signals`
+* `GET /_bdk/api/orchestrations/{instanceId}/signals`
   * `200 OK` with `IEnumerable<OrchestrationSignalModel>`
   * `404 Not Found` with plain text message when the orchestration instance does not exist
   * `500 Internal Server Error` with `ProblemDetails`
-* `GET /api/_system/orchestrations/{instanceId}/timers`
+* `GET /_bdk/api/orchestrations/{instanceId}/timers`
   * `200 OK` with `IEnumerable<OrchestrationTimerModel>`
   * `404 Not Found` with plain text message when the orchestration instance does not exist
   * `500 Internal Server Error` with `ProblemDetails`
-* `GET /api/_system/orchestrations/metrics`
+* `GET /_bdk/api/orchestrations/metrics`
   * `200 OK` with `OrchestrationMetricsModel`
   * `500 Internal Server Error` with `ProblemDetails`
-* `POST /api/_system/orchestrations/{instanceId}/signal`
+* `POST /_bdk/api/orchestrations/{instanceId}/signal`
   * `200 OK` with success message or accepted signal result
   * `404 Not Found` with plain text message
   * `400 Bad Request` with `ProblemDetails` when the request body is invalid
   * `409 Conflict` with `ProblemDetails` when the orchestration exists but cannot accept the signal in its current state
   * `500 Internal Server Error` with `ProblemDetails`
-* `POST /api/_system/orchestrations/{instanceId}/pause`
+* `POST /_bdk/api/orchestrations/{instanceId}/pause`
   * `200 OK` with success message
   * `404 Not Found` with plain text message
   * `409 Conflict` with `ProblemDetails` when the orchestration is already terminal or already paused
   * `500 Internal Server Error` with `ProblemDetails`
-* `POST /api/_system/orchestrations/{instanceId}/resume`
+* `POST /_bdk/api/orchestrations/{instanceId}/resume`
   * `200 OK` with success message
   * `404 Not Found` with plain text message
   * `409 Conflict` with `ProblemDetails` when the orchestration is not in a resumable state
   * `500 Internal Server Error` with `ProblemDetails`
-* `POST /api/_system/orchestrations/{instanceId}/cancel`
+* `POST /_bdk/api/orchestrations/{instanceId}/cancel`
   * `200 OK` with success message
   * `404 Not Found` with plain text message
   * `409 Conflict` with `ProblemDetails` when the orchestration is already terminal
   * `500 Internal Server Error` with `ProblemDetails`
-* `POST /api/_system/orchestrations/{instanceId}/terminate`
+* `POST /_bdk/api/orchestrations/{instanceId}/terminate`
   * `200 OK` with success message
   * `404 Not Found` with plain text message
   * `409 Conflict` with `ProblemDetails` when the orchestration is already terminal
   * `500 Internal Server Error` with `ProblemDetails`
-* `POST /api/_system/orchestrations/{instanceId}/archive`
+* `POST /_bdk/api/orchestrations/{instanceId}/archive`
   * `200 OK` with success message
   * `404 Not Found` with plain text message
   * `409 Conflict` with `ProblemDetails` when the orchestration is not archivable in its current state
   * `500 Internal Server Error` with `ProblemDetails`
-* `POST /api/_system/orchestrations/{instanceId}/repair/release-lease`
+* `POST /_bdk/api/orchestrations/{instanceId}/repair/release-lease`
   * `200 OK` with success message
   * `404 Not Found` with plain text message
   * `409 Conflict` with `ProblemDetails` when the repair action is not valid in the current state
   * `500 Internal Server Error` with `ProblemDetails`
-* `POST /api/_system/orchestrations/{instanceId}/repair/requeue-timers`
+* `POST /_bdk/api/orchestrations/{instanceId}/repair/requeue-timers`
   * `200 OK` with success message
   * `404 Not Found` with plain text message
   * `409 Conflict` with `ProblemDetails` when the repair action is not valid in the current state
   * `500 Internal Server Error` with `ProblemDetails`
-* `DELETE /api/_system/orchestrations`
+* `DELETE /_bdk/api/orchestrations`
   * `200 OK` with success message
   * `500 Internal Server Error` with `ProblemDetails`
 

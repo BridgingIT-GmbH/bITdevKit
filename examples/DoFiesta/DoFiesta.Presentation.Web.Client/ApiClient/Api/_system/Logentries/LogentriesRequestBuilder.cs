@@ -40,7 +40,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logen
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public LogentriesRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/logentries{?afterId*,ageDays*,archive*,batchSize*,continuationToken*,correlationId*,delayIntervalMilliseconds*,endTime*,level*,logKey*,moduleName*,olderThan*,pageSize*,searchText*,shortTypeName*,spanId*,startTime*,threadId*,traceId*}", pathParameters)
+        public LogentriesRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/logentries{?afterId*,ageDays*,archive*,batchSize*,continuationToken*,correlationId*,delayIntervalMilliseconds*,endTime*,level*,logKey*,moduleName*,olderThan*,pageSize*,searchText*,shortTypeName*,spanId*,startTime*,threadId*,traceId*}", pathParameters)
         {
         }
         /// <summary>
@@ -48,7 +48,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logen
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public LogentriesRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/logentries{?afterId*,ageDays*,archive*,batchSize*,continuationToken*,correlationId*,delayIntervalMilliseconds*,endTime*,level*,logKey*,moduleName*,olderThan*,pageSize*,searchText*,shortTypeName*,spanId*,startTime*,threadId*,traceId*}", rawUrl)
+        public LogentriesRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/logentries{?afterId*,ageDays*,archive*,batchSize*,continuationToken*,correlationId*,delayIntervalMilliseconds*,endTime*,level*,logKey*,moduleName*,olderThan*,pageSize*,searchText*,shortTypeName*,spanId*,startTime*,threadId*,traceId*}", rawUrl)
         {
         }
         /// <summary>
@@ -152,7 +152,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logen
         /// Queues a maintenance operation for log entries older than a specified date or age, with options to archive, set batch size, and delay interval. Date must be in ISO 8601 format (e.g., 2025-04-01T00:00:00Z).
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class LogentriesRequestBuilderDeleteQueryParameters 
+        public partial class LogentriesRequestBuilderDeleteQueryParameters
         {
             [QueryParameter("ageDays")]
             public double? AgeDays { get; set; }
@@ -184,7 +184,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logen
         /// Retrieves a paged list of log entries with optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class LogentriesRequestBuilderGetQueryParameters 
+        public partial class LogentriesRequestBuilderGetQueryParameters
         {
             [QueryParameter("afterId")]
             public long? AfterId { get; set; }

@@ -24,7 +24,7 @@ public class RequestMetricsMiddleware(
     private readonly string[] pathBlackListPatterns =
     [
         "/*.js", "/*.css", "/*.map", "/*.html", "/swagger*", "/favicon.ico", "/_framework*", "/_vs*", "/health*",
-        "/notificationhub*", "/_content*", "/signalrhub*", "/api/_system/logentries*"
+        "/notificationhub*", "/_content*", "/signalrhub*", "/_bdk/api/logentries*"
     ];
 
     public async Task Invoke(HttpContext context)

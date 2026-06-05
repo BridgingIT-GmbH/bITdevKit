@@ -393,7 +393,7 @@ The runtime API surface is optional and lives in `Presentation.Web`.
 
 Default group path:
 
-`/api/_system/identity/management/entities/permissions`
+`/_bdk/api/identity/management/entities/permissions`
 
 | Endpoint | Method | Purpose |
 | --- | --- | --- |
@@ -422,7 +422,7 @@ Request body for grant/revoke:
 
 Default group path:
 
-`/api/_system/identity/evaluate/entities/permissions`
+`/_bdk/api/identity/evaluate/entities/permissions`
 
 | Endpoint | Method | Purpose |
 | --- | --- | --- |

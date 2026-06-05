@@ -6,14 +6,14 @@
     "version": "v1.0"
   },
   "paths": {
-    "/api/_system/jobs/definitions/{jobName}": {
+    "/_bdk/api/jobs/definitions/{jobName}": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Get job details",
         "description": "Retrieves a single registered job definition with operational state.",
-        "operationId": "_System.Jobs.GetJob",
+        "operationId": "_bdk.Jobs.GetJob",
         "parameters": [
           {
             "name": "jobName",
@@ -58,14 +58,14 @@
         }
       }
     },
-    "/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}": {
+    "/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Get trigger details",
         "description": "Retrieves a single registered trigger with operational state.",
-        "operationId": "_System.Jobs.GetTrigger",
+        "operationId": "_bdk.Jobs.GetTrigger",
         "parameters": [
           {
             "name": "jobName",
@@ -118,14 +118,14 @@
         }
       }
     },
-    "/api/_system/jobs/definitions/{jobName}/dispatch": {
+    "/_bdk/api/jobs/definitions/{jobName}/dispatch": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Dispatch a job",
         "description": "Dispatches a registered job using its configured manual trigger.",
-        "operationId": "_System.Jobs.DispatchJob",
+        "operationId": "_bdk.Jobs.DispatchJob",
         "parameters": [
           {
             "name": "jobName",
@@ -189,14 +189,14 @@
         }
       }
     },
-    "/api/_system/jobs/definitions/{jobName}/enable": {
+    "/_bdk/api/jobs/definitions/{jobName}/enable": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Enable a job",
         "description": "Enables a registered job through durable runtime state.",
-        "operationId": "_System.Jobs.EnableJob",
+        "operationId": "_bdk.Jobs.EnableJob",
         "parameters": [
           {
             "name": "jobName",
@@ -260,14 +260,14 @@
         }
       }
     },
-    "/api/_system/jobs/definitions/{jobName}/disable": {
+    "/_bdk/api/jobs/definitions/{jobName}/disable": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Disable a job",
         "description": "Disables a registered job through durable runtime state.",
-        "operationId": "_System.Jobs.DisableJob",
+        "operationId": "_bdk.Jobs.DisableJob",
         "parameters": [
           {
             "name": "jobName",
@@ -331,14 +331,14 @@
         }
       }
     },
-    "/api/_system/jobs/definitions/{jobName}/pause": {
+    "/_bdk/api/jobs/definitions/{jobName}/pause": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Pause a job",
         "description": "Pauses a registered job without mutating its code-first definition.",
-        "operationId": "_System.Jobs.PauseJob",
+        "operationId": "_bdk.Jobs.PauseJob",
         "parameters": [
           {
             "name": "jobName",
@@ -402,14 +402,14 @@
         }
       }
     },
-    "/api/_system/jobs/definitions/{jobName}/resume": {
+    "/_bdk/api/jobs/definitions/{jobName}/resume": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Resume a job",
         "description": "Resumes a previously paused job.",
-        "operationId": "_System.Jobs.ResumeJob",
+        "operationId": "_bdk.Jobs.ResumeJob",
         "parameters": [
           {
             "name": "jobName",
@@ -473,14 +473,14 @@
         }
       }
     },
-    "/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/pause": {
+    "/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}/pause": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Pause a trigger",
         "description": "Pauses a registered trigger without mutating its code-first definition.",
-        "operationId": "_System.Jobs.PauseTrigger",
+        "operationId": "_bdk.Jobs.PauseTrigger",
         "parameters": [
           {
             "name": "jobName",
@@ -552,14 +552,14 @@
         }
       }
     },
-    "/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/resume": {
+    "/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}/resume": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Resume a trigger",
         "description": "Resumes a previously paused trigger.",
-        "operationId": "_System.Jobs.ResumeTrigger",
+        "operationId": "_bdk.Jobs.ResumeTrigger",
         "parameters": [
           {
             "name": "jobName",
@@ -631,14 +631,14 @@
         }
       }
     },
-    "/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/enable": {
+    "/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}/enable": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Enable a trigger",
         "description": "Enables a registered trigger through durable runtime state.",
-        "operationId": "_System.Jobs.EnableTrigger",
+        "operationId": "_bdk.Jobs.EnableTrigger",
         "parameters": [
           {
             "name": "jobName",
@@ -710,14 +710,14 @@
         }
       }
     },
-    "/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/disable": {
+    "/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}/disable": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Disable a trigger",
         "description": "Disables a registered trigger through durable runtime state.",
-        "operationId": "_System.Jobs.DisableTrigger",
+        "operationId": "_bdk.Jobs.DisableTrigger",
         "parameters": [
           {
             "name": "jobName",
@@ -789,10 +789,10 @@
         }
       }
     },
-    "/api/_system/jobs/occurrences/{occurrenceId}": {
+    "/_bdk/api/jobs/occurrences/{occurrenceId}": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Get occurrence details",
         "description": "Retrieves one materialized occurrence by its internal occurrence identifier.",
@@ -841,10 +841,10 @@
         }
       }
     },
-    "/api/_system/jobs/occurrences/{occurrenceId}/history": {
+    "/_bdk/api/jobs/occurrences/{occurrenceId}/history": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Get occurrence history",
         "description": "Retrieves execution history for one occurrence.",
@@ -893,14 +893,14 @@
         }
       }
     },
-    "/api/_system/jobs/occurrences/{occurrenceId}/pause": {
+    "/_bdk/api/jobs/occurrences/{occurrenceId}/pause": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Pause an occurrence",
         "description": "Pauses an eligible occurrence before a new attempt starts.",
-        "operationId": "_System.Jobs.PauseOccurrence",
+        "operationId": "_bdk.Jobs.PauseOccurrence",
         "parameters": [
           {
             "name": "occurrenceId",
@@ -965,14 +965,14 @@
         }
       }
     },
-    "/api/_system/jobs/occurrences/{occurrenceId}/resume": {
+    "/_bdk/api/jobs/occurrences/{occurrenceId}/resume": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Resume an occurrence",
         "description": "Resumes a previously paused occurrence.",
-        "operationId": "_System.Jobs.ResumeOccurrence",
+        "operationId": "_bdk.Jobs.ResumeOccurrence",
         "parameters": [
           {
             "name": "occurrenceId",
@@ -1037,14 +1037,14 @@
         }
       }
     },
-    "/api/_system/jobs/occurrences/{occurrenceId}/cancel": {
+    "/_bdk/api/jobs/occurrences/{occurrenceId}/cancel": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Cancel an occurrence",
         "description": "Requests cancellation of an occurrence.",
-        "operationId": "_System.Jobs.CancelOccurrence",
+        "operationId": "_bdk.Jobs.CancelOccurrence",
         "parameters": [
           {
             "name": "occurrenceId",
@@ -1109,14 +1109,14 @@
         }
       }
     },
-    "/api/_system/jobs/occurrences/{occurrenceId}/interrupt": {
+    "/_bdk/api/jobs/occurrences/{occurrenceId}/interrupt": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Interrupt an occurrence",
         "description": "Requests interruption of a running occurrence.",
-        "operationId": "_System.Jobs.InterruptOccurrence",
+        "operationId": "_bdk.Jobs.InterruptOccurrence",
         "parameters": [
           {
             "name": "occurrenceId",
@@ -1181,14 +1181,14 @@
         }
       }
     },
-    "/api/_system/jobs/occurrences/{occurrenceId}/retry": {
+    "/_bdk/api/jobs/occurrences/{occurrenceId}/retry": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Retry an occurrence",
         "description": "Requests retry of an eligible failed occurrence.",
-        "operationId": "_System.Jobs.RetryOccurrence",
+        "operationId": "_bdk.Jobs.RetryOccurrence",
         "parameters": [
           {
             "name": "occurrenceId",
@@ -1253,14 +1253,14 @@
         }
       }
     },
-    "/api/_system/jobs/occurrences/{occurrenceId}/archive": {
+    "/_bdk/api/jobs/occurrences/{occurrenceId}/archive": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Archive an occurrence",
         "description": "Archives a terminal occurrence.",
-        "operationId": "_System.Jobs.ArchiveOccurrence",
+        "operationId": "_bdk.Jobs.ArchiveOccurrence",
         "parameters": [
           {
             "name": "occurrenceId",
@@ -1325,14 +1325,14 @@
         }
       }
     },
-    "/api/_system/jobs/occurrences/{occurrenceId}/repair/release-lease": {
+    "/_bdk/api/jobs/occurrences/{occurrenceId}/repair/release-lease": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Release an occurrence lease",
         "description": "Releases an active occurrence lease so the occurrence can be repaired or recovered.",
-        "operationId": "_System.Jobs.ReleaseOccurrenceLease",
+        "operationId": "_bdk.Jobs.ReleaseOccurrenceLease",
         "parameters": [
           {
             "name": "occurrenceId",
@@ -1397,14 +1397,14 @@
         }
       }
     },
-    "/api/_system/jobs/occurrences/bulk/retry": {
+    "/_bdk/api/jobs/occurrences/bulk/retry": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Retry occurrences",
         "description": "Retries the selected eligible failed occurrences as one bulk operation.",
-        "operationId": "_System.Jobs.RetryOccurrences",
+        "operationId": "_bdk.Jobs.RetryOccurrences",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1448,14 +1448,14 @@
         }
       }
     },
-    "/api/_system/jobs/occurrences/bulk/cancel": {
+    "/_bdk/api/jobs/occurrences/bulk/cancel": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Cancel occurrences",
         "description": "Cancels the selected eligible occurrences as one bulk operation.",
-        "operationId": "_System.Jobs.CancelOccurrences",
+        "operationId": "_bdk.Jobs.CancelOccurrences",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1499,14 +1499,14 @@
         }
       }
     },
-    "/api/_system/jobs/occurrences/bulk/archive": {
+    "/_bdk/api/jobs/occurrences/bulk/archive": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Archive occurrences",
         "description": "Archives the selected eligible retained occurrences as one bulk operation.",
-        "operationId": "_System.Jobs.ArchiveOccurrences",
+        "operationId": "_bdk.Jobs.ArchiveOccurrences",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1550,14 +1550,14 @@
         }
       }
     },
-    "/api/_system/jobs/batches": {
+    "/_bdk/api/jobs/batches": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "List batches",
         "description": "Retrieves job batches with paging, filtering, and sorting.",
-        "operationId": "_System.Jobs.GetBatches",
+        "operationId": "_bdk.Jobs.GetBatches",
         "responses": {
           "200": {
             "description": "OK",
@@ -1593,11 +1593,11 @@
       },
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Create a batch",
         "description": "Creates an empty or described durable batch record.",
-        "operationId": "_System.Jobs.CreateBatch",
+        "operationId": "_bdk.Jobs.CreateBatch",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1641,14 +1641,14 @@
         }
       }
     },
-    "/api/_system/jobs/batches/{batchId}": {
+    "/_bdk/api/jobs/batches/{batchId}": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Get batch details",
         "description": "Retrieves a single job batch.",
-        "operationId": "_System.Jobs.GetBatch",
+        "operationId": "_bdk.Jobs.GetBatch",
         "parameters": [
           {
             "name": "batchId",
@@ -1693,14 +1693,14 @@
         }
       }
     },
-    "/api/_system/jobs/batches/{batchId}/occurrences": {
+    "/_bdk/api/jobs/batches/{batchId}/occurrences": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "List batch child occurrences",
         "description": "Retrieves child occurrences for a specific batch.",
-        "operationId": "_System.Jobs.GetBatchOccurrences",
+        "operationId": "_bdk.Jobs.GetBatchOccurrences",
         "parameters": [
           {
             "name": "batchId",
@@ -1755,14 +1755,14 @@
         }
       }
     },
-    "/api/_system/jobs/batches/{batchId}/history": {
+    "/_bdk/api/jobs/batches/{batchId}/history": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "List batch history",
         "description": "Retrieves append-only history for a specific batch.",
-        "operationId": "_System.Jobs.GetBatchHistory",
+        "operationId": "_bdk.Jobs.GetBatchHistory",
         "parameters": [
           {
             "name": "batchId",
@@ -1817,14 +1817,14 @@
         }
       }
     },
-    "/api/_system/jobs/batches/dispatch": {
+    "/_bdk/api/jobs/batches/dispatch": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Dispatch a batch",
         "description": "Creates a batch and dispatches child occurrences as one accepted operation.",
-        "operationId": "_System.Jobs.DispatchBatch",
+        "operationId": "_bdk.Jobs.DispatchBatch",
         "requestBody": {
           "content": {
             "application/json": {
@@ -1878,14 +1878,14 @@
         }
       }
     },
-    "/api/_system/jobs/batches/{batchId}/attach": {
+    "/_bdk/api/jobs/batches/{batchId}/attach": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Attach to batch",
         "description": "Attaches additional child occurrences to an existing batch.",
-        "operationId": "_System.Jobs.AttachToBatch",
+        "operationId": "_bdk.Jobs.AttachToBatch",
         "parameters": [
           {
             "name": "batchId",
@@ -1959,14 +1959,14 @@
         }
       }
     },
-    "/api/_system/jobs/batches/{batchId}/retry": {
+    "/_bdk/api/jobs/batches/{batchId}/retry": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Retry batch",
         "description": "Retries eligible failed child occurrences for a batch.",
-        "operationId": "_System.Jobs.RetryBatch",
+        "operationId": "_bdk.Jobs.RetryBatch",
         "parameters": [
           {
             "name": "batchId",
@@ -2030,14 +2030,14 @@
         }
       }
     },
-    "/api/_system/jobs/batches/{batchId}/cancel": {
+    "/_bdk/api/jobs/batches/{batchId}/cancel": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Cancel batch",
         "description": "Cancels eligible child occurrences for a batch.",
-        "operationId": "_System.Jobs.CancelBatch",
+        "operationId": "_bdk.Jobs.CancelBatch",
         "parameters": [
           {
             "name": "batchId",
@@ -2101,14 +2101,14 @@
         }
       }
     },
-    "/api/_system/jobs/batches/{batchId}/pause": {
+    "/_bdk/api/jobs/batches/{batchId}/pause": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Pause batch",
         "description": "Pauses eligible child occurrences for a batch.",
-        "operationId": "_System.Jobs.PauseBatch",
+        "operationId": "_bdk.Jobs.PauseBatch",
         "parameters": [
           {
             "name": "batchId",
@@ -2172,14 +2172,14 @@
         }
       }
     },
-    "/api/_system/jobs/batches/{batchId}/resume": {
+    "/_bdk/api/jobs/batches/{batchId}/resume": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Resume batch",
         "description": "Resumes eligible child occurrences for a batch.",
-        "operationId": "_System.Jobs.ResumeBatch",
+        "operationId": "_bdk.Jobs.ResumeBatch",
         "parameters": [
           {
             "name": "batchId",
@@ -2234,14 +2234,14 @@
         }
       }
     },
-    "/api/_system/jobs/batches/{batchId}/archive": {
+    "/_bdk/api/jobs/batches/{batchId}/archive": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Archive batch",
         "description": "Archives a batch and eligible retained child occurrences.",
-        "operationId": "_System.Jobs.ArchiveBatch",
+        "operationId": "_bdk.Jobs.ArchiveBatch",
         "parameters": [
           {
             "name": "batchId",
@@ -2305,14 +2305,14 @@
         }
       }
     },
-    "/api/_system/jobs/maintenance/purge-history": {
+    "/_bdk/api/jobs/maintenance/purge-history": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Purge history",
         "description": "Purges archived execution history older than the configured retention window.",
-        "operationId": "_System.Jobs.PurgeHistory",
+        "operationId": "_bdk.Jobs.PurgeHistory",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2356,14 +2356,14 @@
         }
       }
     },
-    "/api/_system/jobs/maintenance/release-expired-leases": {
+    "/_bdk/api/jobs/maintenance/release-expired-leases": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Release expired leases",
         "description": "Releases expired leases and repairs the affected occurrences.",
-        "operationId": "_System.Jobs.ReleaseExpiredLeases",
+        "operationId": "_bdk.Jobs.ReleaseExpiredLeases",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2407,14 +2407,14 @@
         }
       }
     },
-    "/api/_system/jobs/maintenance/recover-stuck-occurrences": {
+    "/_bdk/api/jobs/maintenance/recover-stuck-occurrences": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Recover stuck occurrences",
         "description": "Recovers stale occurrences that no longer have a valid active lease.",
-        "operationId": "_System.Jobs.RecoverStuckOccurrences",
+        "operationId": "_bdk.Jobs.RecoverStuckOccurrences",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2458,14 +2458,14 @@
         }
       }
     },
-    "/api/_system/jobs/maintenance/detect-orphaned-runtime-state": {
+    "/_bdk/api/jobs/maintenance/detect-orphaned-runtime-state": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Detect orphaned runtime state",
         "description": "Detects runtime-state rows that no longer correspond to active code-first registrations.",
-        "operationId": "_System.Jobs.DetectOrphanedRuntimeState",
+        "operationId": "_bdk.Jobs.DetectOrphanedRuntimeState",
         "requestBody": {
           "content": {
             "application/json": {
@@ -2509,14 +2509,14 @@
         }
       }
     },
-    "/api/_system/jobs/dashboard/summary": {
+    "/_bdk/api/jobs/dashboard/summary": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Get dashboard summary",
         "description": "Retrieves aggregate counts and summary diagnostics for the jobs dashboard.",
-        "operationId": "_System.Jobs.GetDashboardSummary",
+        "operationId": "_bdk.Jobs.GetDashboardSummary",
         "parameters": [
           {
             "name": "From",
@@ -2585,14 +2585,14 @@
         }
       }
     },
-    "/api/_system/jobs/dashboard/timeline": {
+    "/_bdk/api/jobs/dashboard/timeline": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Get dashboard timeline",
         "description": "Retrieves timeline buckets for occurrences or executions.",
-        "operationId": "_System.Jobs.GetDashboardTimeline",
+        "operationId": "_bdk.Jobs.GetDashboardTimeline",
         "responses": {
           "200": {
             "description": "OK",
@@ -2627,10 +2627,10 @@
         }
       }
     },
-    "/api/_system/jobs/dashboard": {
+    "/_bdk/api/jobs/dashboard": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Get dashboard",
         "description": "Retrieves the primary dashboard summary projection.",
@@ -2702,10 +2702,10 @@
         }
       }
     },
-    "/api/_system/jobs/dashboard/navigation": {
+    "/_bdk/api/jobs/dashboard/navigation": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Get dashboard navigation",
         "description": "Retrieves dashboard navigation metadata derived from the dashboard summary projection.",
@@ -2743,10 +2743,10 @@
         }
       }
     },
-    "/api/_system/jobs/dashboard/overview": {
+    "/_bdk/api/jobs/dashboard/overview": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Get dashboard overview",
         "description": "Retrieves dashboard overview data derived from the dashboard summary projection.",
@@ -2784,14 +2784,14 @@
         }
       }
     },
-    "/api/_system/jobs": {
+    "/_bdk/api/jobs": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "List jobs",
         "description": "Retrieves registered jobs with operational overlay, paging, filtering, and sorting.",
-        "operationId": "_System.Jobs.GetJobs",
+        "operationId": "_bdk.Jobs.GetJobs",
         "parameters": [
           {
             "name": "JobName",
@@ -2904,14 +2904,14 @@
         }
       }
     },
-    "/api/_system/jobs/triggers": {
+    "/_bdk/api/jobs/triggers": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "List triggers",
         "description": "Retrieves job triggers with paging, filtering, and sorting.",
-        "operationId": "_System.Jobs.GetTriggers",
+        "operationId": "_bdk.Jobs.GetTriggers",
         "responses": {
           "200": {
             "description": "OK",
@@ -2946,14 +2946,14 @@
         }
       }
     },
-    "/api/_system/jobs/triggers/recurring": {
+    "/_bdk/api/jobs/triggers/recurring": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "List recurring triggers",
         "description": "Retrieves recurring job triggers with paging, filtering, and sorting.",
-        "operationId": "_System.Jobs.GetRecurringTriggers",
+        "operationId": "_bdk.Jobs.GetRecurringTriggers",
         "responses": {
           "200": {
             "description": "OK",
@@ -2988,14 +2988,14 @@
         }
       }
     },
-    "/api/_system/jobs/occurrences": {
+    "/_bdk/api/jobs/occurrences": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "List occurrences",
         "description": "Retrieves materialized job occurrences with paging, filtering, and sorting.",
-        "operationId": "_System.Jobs.GetOccurrences",
+        "operationId": "_bdk.Jobs.GetOccurrences",
         "responses": {
           "200": {
             "description": "OK",
@@ -3031,11 +3031,11 @@
       },
       "delete": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Purge occurrences",
         "description": "Purges retained terminal occurrences by age and optional status, job, trigger, and archive filters.",
-        "operationId": "_System.Jobs.PurgeOccurrences",
+        "operationId": "_bdk.Jobs.PurgeOccurrences",
         "parameters": [
           {
             "name": "OlderThan",
@@ -3128,14 +3128,14 @@
         }
       }
     },
-    "/api/_system/jobs/retries": {
+    "/_bdk/api/jobs/retries": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "List retries",
         "description": "Retrieves retry-scheduled or retryable occurrences.",
-        "operationId": "_System.Jobs.GetRetries",
+        "operationId": "_bdk.Jobs.GetRetries",
         "parameters": [
           {
             "name": "JobName",
@@ -3240,14 +3240,14 @@
         }
       }
     },
-    "/api/_system/jobs/dependencies": {
+    "/_bdk/api/jobs/dependencies": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "List dependencies",
         "description": "Retrieves persisted occurrence dependency links with prerequisite and dependent state.",
-        "operationId": "_System.Jobs.GetDependencies",
+        "operationId": "_bdk.Jobs.GetDependencies",
         "responses": {
           "200": {
             "description": "OK",
@@ -3282,14 +3282,14 @@
         }
       }
     },
-    "/api/_system/jobs/executions": {
+    "/_bdk/api/jobs/executions": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "List executions",
         "description": "Retrieves execution attempts with paging, filtering, and sorting.",
-        "operationId": "_System.Jobs.GetExecutions",
+        "operationId": "_bdk.Jobs.GetExecutions",
         "responses": {
           "200": {
             "description": "OK",
@@ -3324,14 +3324,14 @@
         }
       }
     },
-    "/api/_system/jobs/history": {
+    "/_bdk/api/jobs/history": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "List execution history",
         "description": "Retrieves retained execution history with paging, filtering, and sorting.",
-        "operationId": "_System.Jobs.GetHistory",
+        "operationId": "_bdk.Jobs.GetHistory",
         "responses": {
           "200": {
             "description": "OK",
@@ -3366,14 +3366,14 @@
         }
       }
     },
-    "/api/_system/jobs/leases": {
+    "/_bdk/api/jobs/leases": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "List leases",
         "description": "Retrieves active and expired occurrence lease diagnostics.",
-        "operationId": "_System.Jobs.GetLeases",
+        "operationId": "_bdk.Jobs.GetLeases",
         "responses": {
           "200": {
             "description": "OK",
@@ -3408,14 +3408,14 @@
         }
       }
     },
-    "/api/_system/jobs/servers": {
+    "/_bdk/api/jobs/servers": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "List scheduler servers",
         "description": "Retrieves observed scheduler server instances.",
-        "operationId": "_System.Jobs.GetServers",
+        "operationId": "_bdk.Jobs.GetServers",
         "responses": {
           "200": {
             "description": "OK",
@@ -3450,14 +3450,14 @@
         }
       }
     },
-    "/api/_system/jobs/metrics": {
+    "/_bdk/api/jobs/metrics": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Get scheduler metrics",
         "description": "Retrieves aggregate jobs metrics for operational monitoring.",
-        "operationId": "_System.Jobs.GetMetrics",
+        "operationId": "_bdk.Jobs.GetMetrics",
         "responses": {
           "200": {
             "description": "OK",
@@ -3492,10 +3492,10 @@
         }
       }
     },
-    "/api/_system/jobs/recurring": {
+    "/_bdk/api/jobs/recurring": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "List recurring jobs",
         "description": "Retrieves recurring job triggers using the spec-shaped operational route.",
@@ -3533,10 +3533,10 @@
         }
       }
     },
-    "/api/_system/jobs/recurring/{jobName}/{triggerName}": {
+    "/_bdk/api/jobs/recurring/{jobName}/{triggerName}": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Get recurring trigger details",
         "description": "Retrieves a single recurring trigger using the spec-shaped operational route.",
@@ -3592,10 +3592,10 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/triggers": {
+    "/_bdk/api/jobs/{jobName}/triggers": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "List job triggers",
         "description": "Retrieves triggers for a specific job using the spec-shaped operational route.",
@@ -3643,10 +3643,10 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/triggers/{triggerName}": {
+    "/_bdk/api/jobs/{jobName}/triggers/{triggerName}": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Get trigger details",
         "description": "Retrieves a single trigger using the spec-shaped operational route.",
@@ -3702,10 +3702,10 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}": {
+    "/_bdk/api/jobs/{jobName}": {
       "get": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Get job details",
         "description": "Retrieves a single registered job definition with operational state using the spec-shaped route.",
@@ -3753,10 +3753,10 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/dispatch": {
+    "/_bdk/api/jobs/{jobName}/dispatch": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Dispatch a job",
         "description": "Dispatches a registered job using the spec-shaped operational route.",
@@ -3823,10 +3823,10 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/enable": {
+    "/_bdk/api/jobs/{jobName}/enable": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Enable a job",
         "description": "Enables a registered job using the spec-shaped operational route.",
@@ -3893,10 +3893,10 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/disable": {
+    "/_bdk/api/jobs/{jobName}/disable": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Disable a job",
         "description": "Disables a registered job using the spec-shaped operational route.",
@@ -3963,10 +3963,10 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/pause": {
+    "/_bdk/api/jobs/{jobName}/pause": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Pause a job",
         "description": "Pauses a registered job using the spec-shaped operational route.",
@@ -4033,10 +4033,10 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/resume": {
+    "/_bdk/api/jobs/{jobName}/resume": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Resume a job",
         "description": "Resumes a previously paused job using the spec-shaped operational route.",
@@ -4103,10 +4103,10 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/triggers/{triggerName}/pause": {
+    "/_bdk/api/jobs/{jobName}/triggers/{triggerName}/pause": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Pause a trigger",
         "description": "Pauses a registered trigger using the spec-shaped operational route.",
@@ -4181,10 +4181,10 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/triggers/{triggerName}/resume": {
+    "/_bdk/api/jobs/{jobName}/triggers/{triggerName}/resume": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Resume a trigger",
         "description": "Resumes a previously paused trigger using the spec-shaped operational route.",
@@ -4259,10 +4259,10 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/triggers/{triggerName}/enable": {
+    "/_bdk/api/jobs/{jobName}/triggers/{triggerName}/enable": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Enable a trigger",
         "description": "Enables a registered trigger using the spec-shaped operational route.",
@@ -4337,10 +4337,10 @@
         }
       }
     },
-    "/api/_system/jobs/{jobName}/triggers/{triggerName}/disable": {
+    "/_bdk/api/jobs/{jobName}/triggers/{triggerName}/disable": {
       "post": {
         "tags": [
-          "_System.Jobs"
+          "_bdk.Jobs"
         ],
         "summary": "Disable a trigger",
         "description": "Disables a registered trigger using the spec-shaped operational route.",
@@ -6199,13 +6199,13 @@
         }
       }
     },
-    "/api/_system": {
+    "/_bdk/api": {
       "get": {
         "tags": [
-          "_System"
+          "_bdk"
         ],
-        "summary": "_System.Get",
-        "operationId": "_System.Get",
+        "summary": "_bdk.Get",
+        "operationId": "_bdk.Get",
         "responses": {
           "200": {
             "description": "OK",
@@ -6233,13 +6233,13 @@
         }
       }
     },
-    "/api/_system/echo": {
+    "/_bdk/api/echo": {
       "get": {
         "tags": [
-          "_System"
+          "_bdk"
         ],
-        "summary": "_System.GetEcho",
-        "operationId": "_System.GetEcho",
+        "summary": "_bdk.GetEcho",
+        "operationId": "_bdk.GetEcho",
         "responses": {
           "200": {
             "description": "OK",
@@ -6264,13 +6264,13 @@
         }
       }
     },
-    "/api/_system/info": {
+    "/_bdk/api/info": {
       "get": {
         "tags": [
-          "_System"
+          "_bdk"
         ],
-        "summary": "_System.GetInfo",
-        "operationId": "_System.GetInfo",
+        "summary": "_bdk.GetInfo",
+        "operationId": "_bdk.GetInfo",
         "responses": {
           "200": {
             "description": "OK",
@@ -6295,13 +6295,13 @@
         }
       }
     },
-    "/api/_system/modules": {
+    "/_bdk/api/modules": {
       "get": {
         "tags": [
-          "_System"
+          "_bdk"
         ],
-        "summary": "_System.GetModules",
-        "operationId": "_System.GetModules",
+        "summary": "_bdk.GetModules",
+        "operationId": "_bdk.GetModules",
         "responses": {
           "200": {
             "description": "OK",
@@ -6677,13 +6677,13 @@
         }
       }
     },
-    "/api/_system/metrics": {
+    "/_bdk/api/metrics": {
       "get": {
         "tags": [
-          "_System.Metrics"
+          "_bdk.Metrics"
         ],
-        "summary": "_System.Metrics.Get",
-        "operationId": "_System.Metrics.Get",
+        "summary": "_bdk.Metrics.Get",
+        "operationId": "_bdk.Metrics.Get",
         "responses": {
           "200": {
             "description": "OK",
@@ -6711,13 +6711,13 @@
         }
       }
     },
-    "/api/_system/metrics/bdk": {
+    "/_bdk/api/metrics/bdk": {
       "get": {
         "tags": [
-          "_System.Metrics"
+          "_bdk.Metrics"
         ],
-        "summary": "_System.Metrics.GetBdk",
-        "operationId": "_System.Metrics.GetBdk",
+        "summary": "_bdk.Metrics.GetBdk",
+        "operationId": "_bdk.Metrics.GetBdk",
         "responses": {
           "200": {
             "description": "OK",
@@ -6752,13 +6752,13 @@
         }
       }
     },
-    "/api/_system/metrics/dotnet": {
+    "/_bdk/api/metrics/dotnet": {
       "get": {
         "tags": [
-          "_System.Metrics"
+          "_bdk.Metrics"
         ],
-        "summary": "_System.Metrics.GetDotNet",
-        "operationId": "_System.Metrics.GetDotNet",
+        "summary": "_bdk.Metrics.GetDotNet",
+        "operationId": "_bdk.Metrics.GetDotNet",
         "responses": {
           "200": {
             "description": "OK",
@@ -6793,13 +6793,13 @@
         }
       }
     },
-    "/api/_system/metrics/aspnet": {
+    "/_bdk/api/metrics/aspnet": {
       "get": {
         "tags": [
-          "_System.Metrics"
+          "_bdk.Metrics"
         ],
-        "summary": "_System.Metrics.GetAspNet",
-        "operationId": "_System.Metrics.GetAspNet",
+        "summary": "_bdk.Metrics.GetAspNet",
+        "operationId": "_bdk.Metrics.GetAspNet",
         "responses": {
           "200": {
             "description": "OK",
@@ -6834,13 +6834,13 @@
         }
       }
     },
-    "/api/_system/metrics/aspnet/routes": {
+    "/_bdk/api/metrics/aspnet/routes": {
       "get": {
         "tags": [
-          "_System.Metrics"
+          "_bdk.Metrics"
         ],
-        "summary": "_System.Metrics.GetAspNetRoutes",
-        "operationId": "_System.Metrics.GetAspNetRoutes",
+        "summary": "_bdk.Metrics.GetAspNetRoutes",
+        "operationId": "_bdk.Metrics.GetAspNetRoutes",
         "responses": {
           "200": {
             "description": "OK",
@@ -6875,13 +6875,13 @@
         }
       }
     },
-    "/api/_system/metrics/overview": {
+    "/_bdk/api/metrics/overview": {
       "get": {
         "tags": [
-          "_System.Metrics"
+          "_bdk.Metrics"
         ],
-        "summary": "_System.Metrics.GetOverview",
-        "operationId": "_System.Metrics.GetOverview",
+        "summary": "_bdk.Metrics.GetOverview",
+        "operationId": "_bdk.Metrics.GetOverview",
         "responses": {
           "200": {
             "description": "OK",
@@ -10085,7 +10085,7 @@
   ],
   "tags": [
     {
-      "name": "_System.Jobs"
+      "name": "_bdk.Jobs"
     },
     {
       "name": "Core.Cities"
@@ -10109,7 +10109,7 @@
       "name": "Core.Admin.Subscription"
     },
     {
-      "name": "_System"
+      "name": "_bdk"
     },
     {
       "name": "_bdk.Dashboard"
@@ -10118,7 +10118,7 @@
       "name": "_bdk.Dashboard.WeatherFiesta"
     },
     {
-      "name": "_System.Metrics"
+      "name": "_bdk.Metrics"
     }
   ]
 }

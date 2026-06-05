@@ -22,7 +22,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logen
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public StreamRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/logentries/stream{?ageDays*,correlationId*,level*,logKey*,moduleName*,pollingIntervalSeconds*,searchText*,shortTypeName*,spanId*,startTime*,threadId*,traceId*}", pathParameters)
+        public StreamRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/logentries/stream{?ageDays*,correlationId*,level*,logKey*,moduleName*,pollingIntervalSeconds*,searchText*,shortTypeName*,spanId*,startTime*,threadId*,traceId*}", pathParameters)
         {
         }
         /// <summary>
@@ -30,7 +30,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logen
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public StreamRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/logentries/stream{?ageDays*,correlationId*,level*,logKey*,moduleName*,pollingIntervalSeconds*,searchText*,shortTypeName*,spanId*,startTime*,threadId*,traceId*}", rawUrl)
+        public StreamRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/logentries/stream{?ageDays*,correlationId*,level*,logKey*,moduleName*,pollingIntervalSeconds*,searchText*,shortTypeName*,spanId*,startTime*,threadId*,traceId*}", rawUrl)
         {
         }
         /// <summary>
@@ -91,7 +91,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Logen
         /// Streams log entries in real-time based on optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class StreamRequestBuilderGetQueryParameters 
+        public partial class StreamRequestBuilderGetQueryParameters
         {
             [QueryParameter("ageDays")]
             public double? AgeDays { get; set; }

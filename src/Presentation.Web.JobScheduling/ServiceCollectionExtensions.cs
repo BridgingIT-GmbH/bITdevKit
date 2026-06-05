@@ -24,7 +24,7 @@ public static class ServiceCollectionExtensions
     /// services.AddJobScheduling()
     ///     .AddEndpoints(options => options
     ///         .RequireAuthorization()
-    ///         .GroupPath("/api/_system/jobs"), enabled: true);
+    ///         .GroupPath("/_bdk/api/jobs"), enabled: true);
     /// </code>
     /// </example>
     public static JobSchedulingBuilderContext AddEndpoints(

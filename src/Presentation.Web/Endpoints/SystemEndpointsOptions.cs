@@ -10,7 +10,7 @@ namespace BridgingIT.DevKit.Presentation.Web;
 /// </summary>
 /// <remarks>
 ///     The options control which system routes are exposed and whether host, process, runtime, and network details are
-///     included in the information response. The constructor sets the default group path to <c>/api/_system</c>.
+///     included in the information response. The constructor sets the default group path to <c>/_bdk/api</c>.
 /// </remarks>
 public class SystemEndpointsOptions : EndpointsOptionsBase
 {
@@ -19,8 +19,8 @@ public class SystemEndpointsOptions : EndpointsOptionsBase
     /// </summary>
     public SystemEndpointsOptions()
     {
-        this.GroupPath = "/api/_system";
-        this.GroupTag = "_system";
+        this.GroupPath = "/_bdk/api";
+        this.GroupTag = "_bdk";
     }
 
     /// <summary>

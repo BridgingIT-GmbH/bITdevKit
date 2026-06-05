@@ -50,17 +50,17 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
         }
 
         var group = this.MapGroup(app, this.options)
-            .WithTags("_System"); ;
+            .WithTags("_bdk"); ;
 
         group.MapGet(string.Empty, this.GetSystem)
-            .WithName("_System.Get")
+            .WithName("_bdk.Get")
             .Produces<Dictionary<string, string>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         if (this.options.EchoEnabled)
         {
             group.MapGet("echo", this.GetEcho)
-                .WithName("_System.GetEcho")
+                .WithName("_bdk.GetEcho")
                 .Produces<string>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
@@ -68,7 +68,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
         if (this.options.InfoEnabled)
         {
             group.MapGet("info", this.GetInfo)
-                .WithName("_System.GetInfo")
+                .WithName("_bdk.GetInfo")
                 .Produces<SystemInfo>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
@@ -76,7 +76,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
         if (this.options.ModulesEnabled)
         {
             group.MapGet("modules", this.GetModules)
-                .WithName("_System.GetModules")
+                .WithName("_bdk.GetModules")
                 .Produces<IEnumerable<SystemModule>>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }

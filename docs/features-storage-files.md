@@ -230,14 +230,14 @@ services.AddFileStorage(factory => factory
         .WithLifetime(ServiceLifetime.Singleton)))
     .AddEndpoints(options => options
         .RequireAuthorization()
-        .GroupPath("/api/_system")
-        .GroupTag("_System.Storage"));
+        .GroupPath("/_bdk/api")
+        .GroupTag("_bdk.Storage"));
 ```
 
 #### REST endpoint behavior
 
 - Works with **any** `IFileStorageProvider`, not only the Entity Framework provider
-- Uses `/api/_system/{providerName}` by default when `GroupPath` is not specified
+- Uses `/_bdk/api/{providerName}` by default when `GroupPath` is not specified
 - Publishes one endpoint set for all registered providers, with the provider selected from the sanitized route segment
 - Supports provider info, health checks, file/directory existence checks, file listing, directory listing, metadata, checksum, create/delete directory, delete file, file download, raw file upload, and file-event query/scan routes when storage monitoring is configured for that provider
 - Raw uploads write the request body directly to the provider-backed path; send them as `application/octet-stream`
@@ -246,19 +246,19 @@ services.AddFileStorage(factory => factory
 
 | Route | Purpose |
 | --- | --- |
-| `GET /api/_system/{provider}/provider` | Provider information |
-| `GET /api/_system/{provider}/health` | Provider health |
-| `GET /api/_system/{provider}/directories?path=...&recursive=true` | List directories |
-| `POST /api/_system/{provider}/directories?path=...` | Create directory |
-| `DELETE /api/_system/{provider}/directories?path=...&recursive=true` | Delete directory |
-| `GET /api/_system/{provider}/files?path=...&recursive=true` | List files |
-| `GET /api/_system/{provider}/files/content?path=...` | Download file content |
-| `PUT /api/_system/{provider}/files/content?path=...` | Upload or overwrite file content |
-| `GET /api/_system/{provider}/files/metadata?path=...` | Read file metadata |
-| `GET /api/_system/{provider}/files/checksum?path=...` | Read checksum |
-| `DELETE /api/_system/{provider}/files?path=...` | Delete file |
-| `GET /api/_system/{provider}/events?path=...&eventType=...&fromDate=...&tillDate=...&take=...` | Query stored file events for the provider-backed monitoring location |
-| `POST /api/_system/{provider}/events/scan?waitForProcessing=true&searchPattern=...&maxFilesToScan=...&skipChecksum=false` | Trigger an on-demand monitoring scan and return detected events |
+| `GET /_bdk/api/{provider}/provider` | Provider information |
+| `GET /_bdk/api/{provider}/health` | Provider health |
+| `GET /_bdk/api/{provider}/directories?path=...&recursive=true` | List directories |
+| `POST /_bdk/api/{provider}/directories?path=...` | Create directory |
+| `DELETE /_bdk/api/{provider}/directories?path=...&recursive=true` | Delete directory |
+| `GET /_bdk/api/{provider}/files?path=...&recursive=true` | List files |
+| `GET /_bdk/api/{provider}/files/content?path=...` | Download file content |
+| `PUT /_bdk/api/{provider}/files/content?path=...` | Upload or overwrite file content |
+| `GET /_bdk/api/{provider}/files/metadata?path=...` | Read file metadata |
+| `GET /_bdk/api/{provider}/files/checksum?path=...` | Read checksum |
+| `DELETE /_bdk/api/{provider}/files?path=...` | Delete file |
+| `GET /_bdk/api/{provider}/events?path=...&eventType=...&fromDate=...&tillDate=...&take=...` | Query stored file events for the provider-backed monitoring location |
+| `POST /_bdk/api/{provider}/events/scan?waitForProcessing=true&searchPattern=...&maxFilesToScan=...&skipChecksum=false` | Trigger an on-demand monitoring scan and return detected events |
 
 #### Endpoint notes
 
@@ -267,8 +267,8 @@ services.AddFileStorage(factory => factory
 - The endpoint layer resolves the named provider through `factory.CreateProvider(...)`, so HTTP callers always go through the same behaviors, lifetime, retries, and provider composition as in-process callers.
 - File-event routes require `AddFileMonitoring(...)` plus `UseProvider(...)` for the same provider name. Without monitoring registration, the event routes return `503`.
 - The endpoint group disables antiforgery so generated clients and operational dashboards can call the unsafe file and scan routes with bearer tokens.
-- The provider info route intentionally lives at `/provider` so it does not collide with other fixed `_system` endpoints such as `/api/_system/info`.
-- The DoFiesta example uses this endpoint package to back both the Operations > Files and Operations > File Events dashboards against the `"documents"` Entity Framework provider, and the WASM client consumes the generated Kiota client directly via `BackendApiClient.Api._system["documents"]`.
+- The provider info route intentionally lives at `/provider` so it does not collide with other fixed `_bdk` endpoints such as `/_bdk/api/info`.
+- The DoFiesta example uses this endpoint package to back both the Operations > Files and Operations > File Events dashboards against the `"documents"` Entity Framework provider, and the WASM client consumes the generated Kiota client directly via `BackendApiClient.Api._bdk_["documents"]`.
 
 ### Using Providers
 

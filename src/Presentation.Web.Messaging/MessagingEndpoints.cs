@@ -23,7 +23,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// <code>
 /// services.AddMessagingEndpoints(options => options
 ///     .RequireAuthorization()
-///     .GroupPath("/api/_system/messaging/messages"));
+///     .GroupPath("/_bdk/api/messaging/messages"));
 /// </code>
 /// </example>
 public class MessagingEndpoints(
@@ -46,19 +46,19 @@ public class MessagingEndpoints(
         }
 
         var group = this.MapGroup(app, this.options)
-            .WithTags("_System.Messaging");
+            .WithTags("_bdk.Messaging");
 
         group.MapGet("stats", this.GetMessageStats)
             .Produces<BrokerMessageStats>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Messaging.GetMessageStats")
+            .WithName("_bdk.Messaging.GetMessageStats")
             .WithSummary("Get broker message statistics")
             .WithDescription("Retrieves aggregated statistics for persisted broker messages.");
 
         group.MapGet(string.Empty, this.GetMessages)
             .Produces<IEnumerable<BrokerMessageInfo>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Messaging.GetMessages")
+            .WithName("_bdk.Messaging.GetMessages")
             .WithSummary("List persisted broker messages")
             .WithDescription("Retrieves persisted broker messages with optional operational filters.");
 
@@ -66,7 +66,7 @@ public class MessagingEndpoints(
             .Produces<BrokerMessageInfo>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Messaging.GetMessage")
+            .WithName("_bdk.Messaging.GetMessage")
             .WithSummary("Get broker message details")
             .WithDescription("Retrieves a single persisted broker message including optional handler details.");
 
@@ -74,7 +74,7 @@ public class MessagingEndpoints(
             .Produces<BrokerMessageContentInfo>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Messaging.GetMessageContent")
+            .WithName("_bdk.Messaging.GetMessageContent")
             .WithSummary("Get broker message payload")
             .WithDescription("Retrieves the stored serialized payload for a persisted broker message.");
 
@@ -83,7 +83,7 @@ public class MessagingEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Messaging.RetryMessage")
+            .WithName("_bdk.Messaging.RetryMessage")
             .WithSummary("Retry a broker message")
             .WithDescription("Resets a persisted broker message so retryable handler work can be processed again.");
 
@@ -93,7 +93,7 @@ public class MessagingEndpoints(
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Messaging.RetryMessageHandler")
+            .WithName("_bdk.Messaging.RetryMessageHandler")
             .WithSummary("Retry a broker message handler")
             .WithDescription("Resets a single persisted handler entry so it can be processed again.");
 
@@ -101,7 +101,7 @@ public class MessagingEndpoints(
         //    .Produces<string>()
         //    .Produces<string>((int)HttpStatusCode.NotFound)
         //    .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-        //    .WithName("_System.Messaging.ReleaseLease")
+        //    .WithName("_bdk.Messaging.ReleaseLease")
         //    .WithSummary("Release a broker message lease")
         //    .WithDescription("Releases the current lease for a persisted broker message.");
 
@@ -110,49 +110,49 @@ public class MessagingEndpoints(
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.Conflict)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Messaging.ArchiveMessage")
+            .WithName("_bdk.Messaging.ArchiveMessage")
             .WithSummary("Archive a broker message")
             .WithDescription("Archives a terminal persisted broker message.");
 
         group.MapPost("types/{type}/pause", this.PauseMessageType)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Messaging.PauseMessageType")
+            .WithName("_bdk.Messaging.PauseMessageType")
             .WithSummary("Pause message type processing")
             .WithDescription("Pauses processing for the specified message type.");
 
         group.MapPost("types/{type}/resume", this.ResumeMessageType)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Messaging.ResumeMessageType")
+            .WithName("_bdk.Messaging.ResumeMessageType")
             .WithSummary("Resume message type processing")
             .WithDescription("Resumes processing for the specified message type.");
 
         group.MapDelete(string.Empty, this.PurgeMessages)
             .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Messaging.PurgeMessages")
+            .WithName("_bdk.Messaging.PurgeMessages")
             .WithSummary("Purge broker messages")
             .WithDescription("Purges persisted broker messages by age and optional status filters.");
 
         group.MapGet("summary", this.GetSummary)
             .Produces<BrokerMessageBrokerSummary>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Messaging.GetSummary")
+            .WithName("_bdk.Messaging.GetSummary")
             .WithSummary("Get broker summary")
             .WithDescription("Retrieves aggregated broker state, including runtime capabilities and pause status.");
 
         group.MapGet("subscriptions", this.GetSubscriptions)
             .Produces<IEnumerable<BrokerMessageSubscriptionInfo>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Messaging.GetSubscriptions")
+            .WithName("_bdk.Messaging.GetSubscriptions")
             .WithSummary("List message subscriptions")
             .WithDescription("Retrieves the currently active message type to handler registrations.");
 
         group.MapGet("waiting", this.GetWaitingMessages)
             .Produces<IEnumerable<BrokerMessageInfo>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_System.Messaging.GetWaitingMessages")
+            .WithName("_bdk.Messaging.GetWaitingMessages")
             .WithSummary("List waiting messages")
             .WithDescription("Retrieves messages that were published with no handler registrations.");
 

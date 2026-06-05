@@ -657,11 +657,11 @@ public class JobSchedulerQueryService(
                 JobFacets = facets,
                 Links =
                 [
-                    new JobSchedulerDashboardNavigationLinkModel { Key = "jobs", Title = "Jobs", Route = "/api/_system/jobs", Count = jobs.Count },
-                    new JobSchedulerDashboardNavigationLinkModel { Key = "failed", Title = "Failed occurrences", Route = "/api/_system/jobs/occurrences?statuses=Failed", Count = snapshot.Occurrences.LongCount(x => x.Status == JobOccurrenceStatus.Failed) },
-                    new JobSchedulerDashboardNavigationLinkModel { Key = "retries", Title = "Retries", Route = "/api/_system/jobs/retries", Count = snapshot.Occurrences.LongCount(x => x.Status == JobOccurrenceStatus.RetryScheduled) },
-                    new JobSchedulerDashboardNavigationLinkModel { Key = "leases", Title = "Leases", Route = "/api/_system/jobs/leases", Count = snapshot.Leases.LongCount() },
-                    new JobSchedulerDashboardNavigationLinkModel { Key = "orphaned-runtime-state", Title = "Orphaned runtime state", Route = "/api/_system/jobs?includeOrphanedRuntimeState=true", Count = facets.OrphanedRuntimeStateCount },
+                    new JobSchedulerDashboardNavigationLinkModel { Key = "jobs", Title = "Jobs", Route = "/_bdk/api/jobs", Count = jobs.Count },
+                    new JobSchedulerDashboardNavigationLinkModel { Key = "failed", Title = "Failed occurrences", Route = "/_bdk/api/jobs/occurrences?statuses=Failed", Count = snapshot.Occurrences.LongCount(x => x.Status == JobOccurrenceStatus.Failed) },
+                    new JobSchedulerDashboardNavigationLinkModel { Key = "retries", Title = "Retries", Route = "/_bdk/api/jobs/retries", Count = snapshot.Occurrences.LongCount(x => x.Status == JobOccurrenceStatus.RetryScheduled) },
+                    new JobSchedulerDashboardNavigationLinkModel { Key = "leases", Title = "Leases", Route = "/_bdk/api/jobs/leases", Count = snapshot.Leases.LongCount() },
+                    new JobSchedulerDashboardNavigationLinkModel { Key = "orphaned-runtime-state", Title = "Orphaned runtime state", Route = "/_bdk/api/jobs?includeOrphanedRuntimeState=true", Count = facets.OrphanedRuntimeStateCount },
                 ],
             });
         }

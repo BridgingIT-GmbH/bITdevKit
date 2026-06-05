@@ -22,7 +22,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs.
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public RunsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/jobs/{jobName}/{jobGroup}/runs?olderThan={olderThan}{&endDate*,instanceName*,priority*,resultContains*,startDate*,status*,take*}", pathParameters)
+        public RunsRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/jobs/{jobName}/{jobGroup}/runs?olderThan={olderThan}{&endDate*,instanceName*,priority*,resultContains*,startDate*,status*,take*}", pathParameters)
         {
         }
         /// <summary>
@@ -30,7 +30,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs.
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public RunsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/jobs/{jobName}/{jobGroup}/runs?olderThan={olderThan}{&endDate*,instanceName*,priority*,resultContains*,startDate*,status*,take*}", rawUrl)
+        public RunsRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/jobs/{jobName}/{jobGroup}/runs?olderThan={olderThan}{&endDate*,instanceName*,priority*,resultContains*,startDate*,status*,take*}", rawUrl)
         {
         }
         /// <summary>
@@ -94,7 +94,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs.
         public RequestInformation ToDeleteRequestInformation(Action<RequestConfiguration<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs.Item.Item.Runs.RunsRequestBuilder.RunsRequestBuilderDeleteQueryParameters>> requestConfiguration = default)
         {
 #endif
-            var requestInfo = new RequestInformation(Method.DELETE, "{+baseurl}/api/_system/jobs/{jobName}/{jobGroup}/runs?olderThan={olderThan}", PathParameters);
+            var requestInfo = new RequestInformation(Method.DELETE, "{+baseurl}/_bdk/api/jobs/{jobName}/{jobGroup}/runs?olderThan={olderThan}", PathParameters);
             requestInfo.Configure(requestConfiguration);
             requestInfo.Headers.TryAdd("Accept", "application/json");
             return requestInfo;
@@ -113,7 +113,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs.
         public RequestInformation ToGetRequestInformation(Action<RequestConfiguration<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs.Item.Item.Runs.RunsRequestBuilder.RunsRequestBuilderGetQueryParameters>> requestConfiguration = default)
         {
 #endif
-            var requestInfo = new RequestInformation(Method.GET, "{+baseurl}/api/_system/jobs/{jobName}/{jobGroup}/runs{?endDate*,instanceName*,priority*,resultContains*,startDate*,status*,take*}", PathParameters);
+            var requestInfo = new RequestInformation(Method.GET, "{+baseurl}/_bdk/api/jobs/{jobName}/{jobGroup}/runs{?endDate*,instanceName*,priority*,resultContains*,startDate*,status*,take*}", PathParameters);
             requestInfo.Configure(requestConfiguration);
             requestInfo.Headers.TryAdd("Accept", "application/json");
             return requestInfo;
@@ -131,7 +131,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs.
         /// Purges job run history older than a specified date.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class RunsRequestBuilderDeleteQueryParameters 
+        public partial class RunsRequestBuilderDeleteQueryParameters
         {
             [QueryParameter("olderThan")]
             public DateTimeOffset? OlderThan { get; set; }
@@ -148,7 +148,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Jobs.
         /// Retrieves execution history for a specific job with optional filters.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class RunsRequestBuilderGetQueryParameters 
+        public partial class RunsRequestBuilderGetQueryParameters
         {
             [QueryParameter("endDate")]
             public DateTimeOffset? EndDate { get; set; }

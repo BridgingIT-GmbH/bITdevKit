@@ -222,7 +222,7 @@ dotnet run --project examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Serve
 In Development mode, a `FakeIdentityProvider` is registered with Star Wars test users. Token endpoint:
 
 ```
-POST /api/_system/identity/connect/token
+POST /_bdk/api/identity/connect/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=password&username=luke.skywalker&password=password&client_id=weatherfiesta-api&scope=openid profile email offline_access

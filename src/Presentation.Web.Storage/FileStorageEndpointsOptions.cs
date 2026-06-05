@@ -16,8 +16,8 @@ using BridgingIT.DevKit.Presentation.Web;
 ///     .RegisterProvider("documents", builder => builder.UseLocal("Documents", rootPath))
 ///     .RegisterProvider("archive", builder => builder.UseLocal("Archive", archiveRootPath)))
 ///     .AddEndpoints(options => options
-///         .GroupPath("/api/_system")
-///         .GroupTag("_System.Storage")
+///         .GroupPath("/_bdk/api")
+///         .GroupTag("_bdk.Storage")
 ///         .RequireAuthorization());
 /// </code>
 /// </example>
@@ -28,7 +28,7 @@ public class FileStorageEndpointsOptions : EndpointsOptionsBase
     /// </summary>
     public FileStorageEndpointsOptions()
     {
-        this.GroupPath = "/api/_system";
-        this.GroupTag = "_System.Storage";
+        this.GroupPath = "/_bdk/api";
+        this.GroupTag = "_bdk.Storage";
     }
 }

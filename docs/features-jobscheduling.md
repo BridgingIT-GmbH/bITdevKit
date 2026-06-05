@@ -123,7 +123,7 @@ app.Run();
 **Configuration Details:**
 - **Persistence**: `WithSqlServerStore` enables durable storage using a connection string from configuration (see `Appendix: Configuring Quartz.NET Persistence with SQL Server`).
 - **Behaviors**: Adds scoping and timeouts for enhanced control (e.g., `TimeoutJobSchedulingBehavior`).
-- **API Endpoints**: `AddEndpoints(builder.Environment.IsDevelopment())` enables job management endpoints under `/api/_system/jobs` in development mode (see `Appendix: Job Scheduling API Endpoints`).
+- **API Endpoints**: `AddEndpoints(builder.Environment.IsDevelopment())` enables job management endpoints under `/_bdk/api/jobs` in development mode (see `Appendix: Job Scheduling API Endpoints`).
 - **Jobs**: Registers diverse jobs with custom schedules and metadata.
 
 **Configuration in `appsettings.json`:**
@@ -193,7 +193,7 @@ public class LongRunningJob(ILoggerFactory loggerFactory) : JobBase(loggerFactor
     .RegisterScoped();
 ```
 
-**Notes**: Use `cancellationToken` to handle interruptions, manageable via `JobService` or API endpoints (e.g., `POST /api/_system/jobs/longrunning/DEFAULT/pause`).
+**Notes**: Use `cancellationToken` to handle interruptions, manageable via `JobService` or API endpoints (e.g., `POST /_bdk/api/jobs/longrunning/DEFAULT/pause`).
 
 ### Managing Jobs with JobService and API Endpoints
 
@@ -226,8 +226,8 @@ builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Confi
     .AddEndpoints(options => options.RequireAuthorization(), builder.Environment.IsDevelopment());
 ```
 
-These endpoints, mapped under `/api/_system/jobs`, provide RESTful access to job operations (see `Appendix: Job Scheduling API Endpoints` for details). For example, to trigger a job via HTTP:
-- **Request**: `POST /api/_system/jobs/longrunning/DEFAULT/trigger`
+These endpoints, mapped under `/_bdk/api/jobs`, provide RESTful access to job operations (see `Appendix: Job Scheduling API Endpoints` for details). For example, to trigger a job via HTTP:
+- **Request**: `POST /_bdk/api/jobs/longrunning/DEFAULT/trigger`
 - **Body**: `{"extra": "data"}`
 - **Response**: `202 Accepted` with message "Job longrunning in group DEFAULT triggered successfully."
 
@@ -528,7 +528,7 @@ The builder’s methods, such as `EveryMinutes(15)` ("0 0/15 * * * ?") or `Hours
 
 ## Appendix: Job Scheduling API Endpoints
 
-The JobScheduling feature supports optional RESTful API endpoints for managing jobs via HTTP, enabled by calling `AddEndpoints()` in the `AddJobScheduling` builder chain. These endpoints, implemented in `JobSchedulingEndpoints`, provide a convenient interface for querying and controlling jobs, especially useful in development or monitoring scenarios. By default, they are mapped under the `/api/_system/jobs` prefix, configurable via `JobSchedulingEndpointsOptions`.
+The JobScheduling feature supports optional RESTful API endpoints for managing jobs via HTTP, enabled by calling `AddEndpoints()` in the `AddJobScheduling` builder chain. These endpoints, implemented in `JobSchedulingEndpoints`, provide a convenient interface for querying and controlling jobs, especially useful in development or monitoring scenarios. By default, they are mapped under the `/_bdk/api/jobs` prefix, configurable via `JobSchedulingEndpointsOptions`.
 
 ### Enabling Endpoints
 
@@ -552,20 +552,20 @@ Below is a comprehensive list of endpoints, their HTTP methods, paths, parameter
 
 | **Endpoint**                        | **Method** | **Path**                                   | **Parameters**                                                                 | **Responses**                                                                                   | **Description**                                    |
 |-------------------------------------|------------|--------------------------------------------|--------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|----------------------------------------------------|
-| **Get All Jobs**                    | GET        | `/api/_system/jobs`                        | None                                                                           | `200 OK` (IEnumerable<JobInfo>), `500 Internal Server Error` (ProblemDetails)                   | Retrieves a list of all scheduled jobs.            |
-| **Get Job Details**                 | GET        | `/api/_system/jobs/{jobName}/{jobGroup}`   | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (JobInfo), `404 Not Found` (string), `500 Internal Server Error` (ProblemDetails)      | Retrieves details for a specific job.              |
-| **Get Job Runs**                    | GET        | `/api/_system/jobs/{jobName}/{jobGroup}/runs` | `jobName` (string), `jobGroup` (string), Query: `startDate`, `endDate`, `status`, `priority`, `instanceName`, `resultContains`, `take` (optional) | `200 OK` (IEnumerable<JobRun>), `500 Internal Server Error` (ProblemDetails)                    | Retrieves execution history with optional filters. |
-| **Get Job Run Stats**               | GET        | `/api/_system/jobs/{jobName}/{jobGroup}/stats` | `jobName` (string), `jobGroup` (string), Query: `startDate`, `endDate` (optional) | `200 OK` (JobRunStats), `500 Internal Server Error` (ProblemDetails)                            | Retrieves aggregated statistics for job runs.      |
-| **Get Job Triggers**                | GET        | `/api/_system/jobs/{jobName}/{jobGroup}/triggers` | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (IEnumerable<TriggerInfo>), `500 Internal Server Error` (ProblemDetails)               | Retrieves all triggers for a specific job.         |
-| **Trigger Job**                     | POST       | `/api/_system/jobs/{jobName}/{jobGroup}/trigger` | `jobName` (string), `jobGroup` (string), Body: `data` (Dictionary<string, object>, optional) | `202 Accepted` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Triggers a job to run immediately with optional data. |
-| **Pause Job**                       | POST       | `/api/_system/jobs/{jobName}/{jobGroup}/pause` | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Pauses the execution of a specific job.            |
-| **Resume Job**                      | POST       | `/api/_system/jobs/{jobName}/{jobGroup}/resume` | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Resumes a paused job.                              |
-| **Interrupt Job**                   | POST       | `/api/_system/jobs/{jobName}/{jobGroup}/interrupt` | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Interrupt a started job.                              |
-| **Purge Job Runs**                  | DELETE     | `/api/_system/jobs/{jobName}/{jobGroup}/runs` | `jobName` (string), `jobGroup` (string), Query: `olderThan` (DateTimeOffset)   | `200 OK` (string), `500 Internal Server Error` (ProblemDetails)                                 | Purges job run history older than a specified date.|
+| **Get All Jobs**                    | GET        | `/_bdk/api/jobs`                        | None                                                                           | `200 OK` (IEnumerable<JobInfo>), `500 Internal Server Error` (ProblemDetails)                   | Retrieves a list of all scheduled jobs.            |
+| **Get Job Details**                 | GET        | `/_bdk/api/jobs/{jobName}/{jobGroup}`   | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (JobInfo), `404 Not Found` (string), `500 Internal Server Error` (ProblemDetails)      | Retrieves details for a specific job.              |
+| **Get Job Runs**                    | GET        | `/_bdk/api/jobs/{jobName}/{jobGroup}/runs` | `jobName` (string), `jobGroup` (string), Query: `startDate`, `endDate`, `status`, `priority`, `instanceName`, `resultContains`, `take` (optional) | `200 OK` (IEnumerable<JobRun>), `500 Internal Server Error` (ProblemDetails)                    | Retrieves execution history with optional filters. |
+| **Get Job Run Stats**               | GET        | `/_bdk/api/jobs/{jobName}/{jobGroup}/stats` | `jobName` (string), `jobGroup` (string), Query: `startDate`, `endDate` (optional) | `200 OK` (JobRunStats), `500 Internal Server Error` (ProblemDetails)                            | Retrieves aggregated statistics for job runs.      |
+| **Get Job Triggers**                | GET        | `/_bdk/api/jobs/{jobName}/{jobGroup}/triggers` | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (IEnumerable<TriggerInfo>), `500 Internal Server Error` (ProblemDetails)               | Retrieves all triggers for a specific job.         |
+| **Trigger Job**                     | POST       | `/_bdk/api/jobs/{jobName}/{jobGroup}/trigger` | `jobName` (string), `jobGroup` (string), Body: `data` (Dictionary<string, object>, optional) | `202 Accepted` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Triggers a job to run immediately with optional data. |
+| **Pause Job**                       | POST       | `/_bdk/api/jobs/{jobName}/{jobGroup}/pause` | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Pauses the execution of a specific job.            |
+| **Resume Job**                      | POST       | `/_bdk/api/jobs/{jobName}/{jobGroup}/resume` | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Resumes a paused job.                              |
+| **Interrupt Job**                   | POST       | `/_bdk/api/jobs/{jobName}/{jobGroup}/interrupt` | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Interrupt a started job.                              |
+| **Purge Job Runs**                  | DELETE     | `/_bdk/api/jobs/{jobName}/{jobGroup}/runs` | `jobName` (string), `jobGroup` (string), Query: `olderThan` (DateTimeOffset)   | `200 OK` (string), `500 Internal Server Error` (ProblemDetails)                                 | Purges job run history older than a specified date.|
 
 ### Endpoint Details
 
-1. **GET /api/_system/jobs**
+1. **GET /_bdk/api/jobs**
    - **Description**: Lists all scheduled jobs with their current status and trigger details.
    - **Response Example**:
      ```json
@@ -575,14 +575,14 @@ Below is a comprehensive list of endpoints, their HTTP methods, paths, parameter
      ]
      ```
 
-2. **GET /api/_system/jobs/{jobName}/{jobGroup}**
+2. **GET /_bdk/api/jobs/{jobName}/{jobGroup}**
    - **Description**: Retrieves detailed information for a specific job, including last run and triggers.
    - **Response Example**:
      ```json
      {"Name": "firstecho", "Group": "DEFAULT", "Type": "EchoJob", "LastRun": {"Status": "Success", "StartTime": "2025-04-01T12:00:00Z"}}
      ```
 
-3. **GET /api/_system/jobs/{jobName}/{jobGroup}/runs**
+3. **GET /_bdk/api/jobs/{jobName}/{jobGroup}/runs**
    - **Description**: Fetches execution history with filters (e.g., date range, status).
    - **Query Parameters**:
      - `startDate`: Start of range (e.g., `2025-04-01T00:00:00Z`)
@@ -596,14 +596,14 @@ Below is a comprehensive list of endpoints, their HTTP methods, paths, parameter
      ]
      ```
 
-4. **GET /api/_system/jobs/{jobName}/{jobGroup}/stats**
+4. **GET /_bdk/api/jobs/{jobName}/{jobGroup}/stats**
    - **Description**: Provides aggregated stats (e.g., success/failure counts, average duration).
    - **Response Example**:
      ```json
      {"TotalRuns": 5, "SuccessCount": 4, "FailureCount": 1, "AvgRunDurationMs": 950}
      ```
 
-5. **GET /api/_system/jobs/{jobName}/{jobGroup}/triggers**
+5. **GET /_bdk/api/jobs/{jobName}/{jobGroup}/triggers**
    - **Description**: Lists all triggers associated with the job.
    - **Response Example**:
      ```json
@@ -612,7 +612,7 @@ Below is a comprehensive list of endpoints, their HTTP methods, paths, parameter
      ]
      ```
 
-6. **POST /api/_system/jobs/{jobName}/{jobGroup}/trigger**
+6. **POST /_bdk/api/jobs/{jobName}/{jobGroup}/trigger**
    - **Description**: Triggers the job immediately with optional data.
    - **Request Body**:
      ```json
@@ -620,15 +620,15 @@ Below is a comprehensive list of endpoints, their HTTP methods, paths, parameter
      ```
    - **Response**: `202 Accepted` with "Job {jobName} in group {jobGroup} triggered successfully."
 
-7. **POST /api/_system/jobs/{jobName}/{jobGroup}/pause**
+7. **POST /_bdk/api/jobs/{jobName}/{jobGroup}/pause**
    - **Description**: Pauses the job’s execution.
    - **Response**: `200 OK` with "Job {jobName} in group {jobGroup} paused successfully."
 
-8. **POST /api/_system/jobs/{jobName}/{jobGroup}/resume**
+8. **POST /_bdk/api/jobs/{jobName}/{jobGroup}/resume**
    - **Description**: Resumes a paused job.
    - **Response**: `200 OK` with "Job {jobName} in group {jobGroup} resumed successfully."
 
-9. **DELETE /api/_system/jobs/{jobName}/{jobGroup}/runs**
+9. **DELETE /_bdk/api/jobs/{jobName}/{jobGroup}/runs**
    - **Description**: Deletes job run history older than `olderThan`.
    - **Query Parameter**: `olderThan` (e.g., `2025-03-01T00:00:00Z`)
    - **Response**: `200 OK` with "Run history for job {jobName} in group {jobGroup} older than {olderThan} purged successfully."

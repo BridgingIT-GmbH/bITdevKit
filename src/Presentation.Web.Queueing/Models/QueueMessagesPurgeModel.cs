@@ -7,7 +7,7 @@ using BridgingIT.DevKit.Application.Queueing;
 /// </summary>
 /// <example>
 /// <code>
-/// DELETE /api/_system/queueing/messages?olderThan=2026-01-01T00:00:00Z&amp;statuses=Succeeded&amp;isArchived=true
+/// DELETE /_bdk/api/queueing/messages?olderThan=2026-01-01T00:00:00Z&amp;statuses=Succeeded&amp;isArchived=true
 /// </code>
 /// </example>
 public class QueueMessagesPurgeModel

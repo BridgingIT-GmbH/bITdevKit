@@ -849,13 +849,13 @@
     private string BuildOrchestrationsUrl()
     {
         var query = this.ToQueryString(this.BuildQueryParameters());
-        return string.IsNullOrWhiteSpace(query) ? "/api/_system/orchestrations" : $"/api/_system/orchestrations?{query}";
+        return string.IsNullOrWhiteSpace(query) ? "/_bdk/api/orchestrations" : $"/_bdk/api/orchestrations?{query}";
     }
 
     private string BuildMetricsUrl()
     {
         var query = this.ToQueryString(this.BuildQueryParameters(includePaging: false, includeCorrelation: false, includeSorting: false));
-        return string.IsNullOrWhiteSpace(query) ? "/api/_system/orchestrations/metrics" : $"/api/_system/orchestrations/metrics?{query}";
+        return string.IsNullOrWhiteSpace(query) ? "/_bdk/api/orchestrations/metrics" : $"/_bdk/api/orchestrations/metrics?{query}";
     }
 
     private string BuildAbsoluteUrl(string relativeUrl)

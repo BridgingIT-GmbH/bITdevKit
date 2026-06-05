@@ -78,7 +78,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public MessagesRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/messaging/messages?IncludeHandlers={IncludeHandlers}{&CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,MessageId*,OlderThan*,Status*,Statuses*,Take*,Type*}", pathParameters)
+        public MessagesRequestBuilder(Dictionary<string, object> pathParameters, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/messaging/messages?IncludeHandlers={IncludeHandlers}{&CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,MessageId*,OlderThan*,Status*,Statuses*,Take*,Type*}", pathParameters)
         {
         }
         /// <summary>
@@ -86,7 +86,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
-        public MessagesRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/api/_system/messaging/messages?IncludeHandlers={IncludeHandlers}{&CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,MessageId*,OlderThan*,Status*,Statuses*,Take*,Type*}", rawUrl)
+        public MessagesRequestBuilder(string rawUrl, IRequestAdapter requestAdapter) : base(requestAdapter, "{+baseurl}/_bdk/api/messaging/messages?IncludeHandlers={IncludeHandlers}{&CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,MessageId*,OlderThan*,Status*,Statuses*,Take*,Type*}", rawUrl)
         {
         }
         /// <summary>
@@ -150,7 +150,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         public RequestInformation ToDeleteRequestInformation(Action<RequestConfiguration<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.MessagesRequestBuilder.MessagesRequestBuilderDeleteQueryParameters>> requestConfiguration = default)
         {
 #endif
-            var requestInfo = new RequestInformation(Method.DELETE, "{+baseurl}/api/_system/messaging/messages{?IsArchived*,OlderThan*,Statuses*}", PathParameters);
+            var requestInfo = new RequestInformation(Method.DELETE, "{+baseurl}/_bdk/api/messaging/messages{?IsArchived*,OlderThan*,Statuses*}", PathParameters);
             requestInfo.Configure(requestConfiguration);
             requestInfo.Headers.TryAdd("Accept", "application/json");
             return requestInfo;
@@ -169,7 +169,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         public RequestInformation ToGetRequestInformation(Action<RequestConfiguration<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messaging.Messages.MessagesRequestBuilder.MessagesRequestBuilderGetQueryParameters>> requestConfiguration = default)
         {
 #endif
-            var requestInfo = new RequestInformation(Method.GET, "{+baseurl}/api/_system/messaging/messages?IncludeHandlers={IncludeHandlers}{&CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,MessageId*,Status*,Take*,Type*}", PathParameters);
+            var requestInfo = new RequestInformation(Method.GET, "{+baseurl}/_bdk/api/messaging/messages?IncludeHandlers={IncludeHandlers}{&CreatedAfter*,CreatedBefore*,IsArchived*,LockedBy*,MessageId*,Status*,Take*,Type*}", PathParameters);
             requestInfo.Configure(requestConfiguration);
             requestInfo.Headers.TryAdd("Accept", "application/json");
             return requestInfo;
@@ -187,7 +187,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         /// Purges persisted broker messages by age and optional status filters.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class MessagesRequestBuilderDeleteQueryParameters 
+        public partial class MessagesRequestBuilderDeleteQueryParameters
         {
             public bool? IsArchived { get; set; }
             public DateTimeOffset? OlderThan { get; set; }
@@ -221,7 +221,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Api._system.Messa
         /// Retrieves persisted broker messages with optional operational filters.
         /// </summary>
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class MessagesRequestBuilderGetQueryParameters 
+        public partial class MessagesRequestBuilderGetQueryParameters
         {
             public DateTimeOffset? CreatedAfter { get; set; }
             public DateTimeOffset? CreatedBefore { get; set; }

@@ -9,7 +9,7 @@ namespace BridgingIT.DevKit.Presentation.Web;
 ///     Configures the built-in log entry endpoint group.
 /// </summary>
 /// <remarks>
-///     The constructor enables authorization and sets the default group path to <c>/api/_system/logentries</c>. Route
+///     The constructor enables authorization and sets the default group path to <c>/_bdk/api/logentries</c>. Route
 ///     handlers use these options when the endpoint group is created.
 /// </remarks>
 public class LogEntryEndpointsOptions : EndpointsOptionsBase
@@ -19,8 +19,8 @@ public class LogEntryEndpointsOptions : EndpointsOptionsBase
     /// </summary>
     public LogEntryEndpointsOptions()
     {
-        this.GroupPath = "/api/_system/logentries";
-        this.GroupTag = "_system/logentries";
+        this.GroupPath = "/_bdk/api/logentries";
+        this.GroupTag = "_bdk/logentries";
         this.RequireAuthorization = true;
     }
 }

@@ -1,5 +1,5 @@
 @baseUrl = https://localhost:5001
-@authority = {{baseUrl}}/api/_system/identity/connect
+@authority = {{baseUrl}}/_bdk/api/identity/connect
 @client_id = blazor-wasm
 
 ### Test Users
@@ -46,7 +46,7 @@ grant_type=refresh_token
 ### 5. Authorization Code Flow
 ### 5.1 Get Authorization Code (Browser Required)
 ### Copy this URL to browser:
-### https://localhost:5001/api/_system/identity/connect/authorize?response_type=code&client_id=blazor-wasm&scope=openid%20profile%20email%20roles&redirect_uri=https%3A%2F%2Flocalhost%3A5001%2Fauthentication%2Flogin-callback&state=random123
+### https://localhost:5001/_bdk/api/identity/connect/authorize?response_type=code&client_id=blazor-wasm&scope=openid%20profile%20email%20roles&redirect_uri=https%3A%2F%2Flocalhost%3A5001%2Fauthentication%2Flogin-callback&state=random123
 GET {{authority}}/authorize
     ?response_type=code
     &client_id={{client_id}}

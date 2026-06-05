@@ -87,7 +87,7 @@ public class NotificationEmailEndpointsTests : IAsyncDisposable
             ]);
 
         // Act
-        var response = await this.client.GetAsync("/api/_system/notifications/emails?status=Pending&subject=Todo%20created&lockedBy=node-a&isArchived=false&take=25");
+        var response = await this.client.GetAsync("/_bdk/api/notifications/emails?status=Pending&subject=Todo%20created&lockedBy=node-a&isArchived=false&take=25");
         var result = await response.Content.ReadFromJsonAsync<List<NotificationEmailInfo>>();
 
         // Assert
@@ -119,7 +119,7 @@ public class NotificationEmailEndpointsTests : IAsyncDisposable
             });
 
         // Act
-        var response = await this.client.GetAsync("/api/_system/notifications/emails/stats?isArchived=true");
+        var response = await this.client.GetAsync("/_bdk/api/notifications/emails/stats?isArchived=true");
         var result = await response.Content.ReadFromJsonAsync<NotificationEmailStats>();
 
         // Assert
@@ -143,7 +143,7 @@ public class NotificationEmailEndpointsTests : IAsyncDisposable
             });
 
         // Act
-        var response = await this.client.PostAsync($"/api/_system/notifications/emails/{id}/archive", null);
+        var response = await this.client.PostAsync($"/_bdk/api/notifications/emails/{id}/archive", null);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -164,7 +164,7 @@ public class NotificationEmailEndpointsTests : IAsyncDisposable
             });
 
         // Act
-        var response = await this.client.PostAsync($"/api/_system/notifications/emails/{id}/archive", null);
+        var response = await this.client.PostAsync($"/_bdk/api/notifications/emails/{id}/archive", null);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
@@ -180,7 +180,7 @@ public class NotificationEmailEndpointsTests : IAsyncDisposable
 
         // Act
         var response = await this.client.DeleteAsync(
-            $"/api/_system/notifications/emails?olderThan={Uri.EscapeDataString(olderThan.ToString("O"))}&statuses=Sent&statuses=Failed&isArchived=true");
+            $"/_bdk/api/notifications/emails?olderThan={Uri.EscapeDataString(olderThan.ToString("O"))}&statuses=Sent&statuses=Failed&isArchived=true");
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);

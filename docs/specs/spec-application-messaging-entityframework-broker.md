@@ -816,8 +816,8 @@ The feature should also expose minimal REST endpoints in the same style as `JobS
 
 Recommended endpoint group:
 
-- path: `/api/_system/messaging/messages`
-- tag: `_System.Messaging`
+- path: `/_bdk/api/messaging/messages`
+- tag: `_bdk_.Messaging`
 
 Recommended endpoint class and options:
 
@@ -836,23 +836,23 @@ The endpoint implementation should follow the same pattern as `JobSchedulingEndp
 
 Recommended routes:
 
-- `GET /api/_system/messaging/messages`
+- `GET /_bdk/api/messaging/messages`
   - list messages with filters such as `status`, `type`, `messageId`, `lockedBy`, `isArchived`, `createdAfter`, `createdBefore`, `includeHandlers`, `take`
-- `GET /api/_system/messaging/messages/{id}`
+- `GET /_bdk/api/messaging/messages/{id}`
   - get one message including handler state, but without the full serialized payload by default
-- `GET /api/_system/messaging/messages/{id}/content`
+- `GET /_bdk/api/messaging/messages/{id}/content`
   - get the stored serialized message payload when operational inspection requires the message body
-- `GET /api/_system/messaging/messages/stats`
+- `GET /_bdk/api/messaging/messages/stats`
   - get aggregate message statistics
-- `POST /api/_system/messaging/messages/{id}/retry`
+- `POST /_bdk/api/messaging/messages/{id}/retry`
   - reset a failed/dead-lettered message back to retryable state where appropriate
-- `POST /api/_system/messaging/messages/{id}/handlers/retry`
+- `POST /_bdk/api/messaging/messages/{id}/handlers/retry`
   - retry one handler state using `handlerType` from route or body
-- `POST /api/_system/messaging/messages/{id}/lease/release`
+- `POST /_bdk/api/messaging/messages/{id}/lease/release`
   - release a stale lease for operational recovery
-- `POST /api/_system/messaging/messages/{id}/archive`
+- `POST /_bdk/api/messaging/messages/{id}/archive`
   - archive one terminal message explicitly
-- `DELETE /api/_system/messaging/messages`
+- `DELETE /_bdk/api/messaging/messages`
   - purge old messages by date and/or status
 
 The REST layer should delegate to `IMessageBrokerService` rather than reading `DbContext` directly.
@@ -861,7 +861,7 @@ The REST layer should delegate to `IMessageBrokerService` rather than reading `D
 
 The stored message payload should be available only through the dedicated detail-content route:
 
-- `GET /api/_system/messaging/messages/{id}/content`
+- `GET /_bdk/api/messaging/messages/{id}/content`
 
 This keeps list and summary responses compact and avoids returning potentially large or sensitive payloads unless explicitly requested.
 
@@ -885,8 +885,8 @@ builder.Services.AddMessaging(builder.Configuration)
 
 builder.Services.AddSingleton(new MessagingEndpointsOptions
 {
-    GroupPath = "/api/_system/messaging/messages",
-    GroupTag = "_System.Messaging"
+    GroupPath = "/_bdk/api/messaging/messages",
+    GroupTag = "_bdk.Messaging"
 });
 
 builder.Services.AddEndpoints<MessagingEndpoints>(builder.Environment.IsDevelopment());
@@ -910,7 +910,7 @@ public class MessagingEndpoints(
         }
 
         var group = this.MapGroup(app, this.options)
-            .WithTags("_System.Messaging");
+            .WithTags("_bdk.Messaging");
 
         // map routes here
 

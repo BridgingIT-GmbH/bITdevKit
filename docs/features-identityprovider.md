@@ -42,7 +42,7 @@ builder.Services.AddFakeIdentityProvider(options => {
           // Blazor WASM (Public Client)
           .WithClient(
               "blazor-wasm",
-              "Blazor WASM Frontend", 
+              "Blazor WASM Frontend",
               "https://localhost:5001/authentication/login-callback",
               "https://localhost:5001/authentication/logout-callback")
           // Confidential Client (Server)
@@ -55,7 +55,7 @@ builder.Services.AddFakeIdentityProvider(options => {
           .WithConfidentalClient(
               "blazor-server",
               "Blazor Server Frontend",
-              "server-secret", 
+              "server-secret",
               ["https://localhost:5003/signin-oidc"])
           // WebAPI Backend
           .WithConfidentalClient(
@@ -73,12 +73,12 @@ builder.Services.AddFakeIdentityProvider(options => {
 
 ### 3. Define Users
 ```csharp
-public static class Fakes 
+public static class Fakes
 {
     public static readonly FakeUser[] Users = [
-        new("luke.skywalker@starwars.com", "Luke Skywalker", 
+        new("luke.skywalker@starwars.com", "Luke Skywalker",
             [Role.Administrators, Role.Users], isDefault: true),
-        new("yoda@starwars.com", "Yoda", 
+        new("yoda@starwars.com", "Yoda",
             [Role.Administrators])
         // ...... Add more users
     ];
@@ -111,7 +111,7 @@ sequenceDiagram
     participant Client
     participant IDP
     participant User
-    
+
     Client->>IDP: GET /authorize
     alt User has auth cookie (SSO)
         IDP->>Client: Code (no login page)
@@ -139,7 +139,7 @@ sequenceDiagram
     participant Client
     participant IDP
     participant User
-    
+
     Client->>IDP: GET /authorize
     alt User has auth cookie (SSO)
         IDP->>Client: Code (no login page)
@@ -322,7 +322,7 @@ public class WeatherForecastController : ControllerBase
 Start OAuth2 flow and user selection.
 
 ```http
-GET /api/_system/identity/connect/authorize
+GET /_bdk/api/identity/connect/authorize
 ```
 
 Parameters:
@@ -336,7 +336,7 @@ Parameters:
 Issue tokens using various grant types.
 
 ```http
-POST /api/_system/identity/connect/token
+POST /_bdk/api/identity/connect/token
 Content-Type: application/x-www-form-urlencoded
 ```
 
@@ -388,7 +388,7 @@ Response:
 Get authenticated user data.
 
 ```http
-GET /api/_system/identity/connect/userinfo
+GET /_bdk/api/identity/connect/userinfo
 Authorization: Bearer token
 ```
 
@@ -406,7 +406,7 @@ Response:
 Development information about configuration.
 
 ```http
-GET /api/_system/identity/connect/debuginfo
+GET /_bdk/api/identity/connect/debuginfo
 ```
 
 Response:
@@ -434,17 +434,17 @@ Response:
 OpenID Connect discovery document.
 
 ```http
-GET /api/_system/identity/.well-known/openid-configuration
+GET /_bdk/api/identity/.well-known/openid-configuration
 ```
 
 Response:
 ```json
 {
   "issuer": "https://localhost:5001",
-  "authorization_endpoint": "https://localhost:5001/api/_system/identity/connect/authorize",
-  "token_endpoint": "https://localhost:5001/api/_system/identity/connect/token",
-  "userinfo_endpoint": "https://localhost:5001/api/_system/identity/connect/userinfo",
-  "end_session_endpoint": "https://localhost:5001/api/_system/identity/connect/logout"
+  "authorization_endpoint": "https://localhost:5001/_bdk/api/identity/connect/authorize",
+  "token_endpoint": "https://localhost:5001/_bdk/api/identity/connect/token",
+  "userinfo_endpoint": "https://localhost:5001/_bdk/api/identity/connect/userinfo",
+  "end_session_endpoint": "https://localhost:5001/_bdk/api/identity/connect/logout"
 }
 ```
 
@@ -495,7 +495,7 @@ Common error codes:
 .WithClient(
     "angular-app",
     "Angular Frontend",
-    ["http://localhost:4200/callback", 
+    ["http://localhost:4200/callback",
      "http://localhost:4200/silent-refresh"])
 
 // API documentation tools
@@ -513,7 +513,7 @@ Common error codes:
 - Client registrations
 
 ## Related Resources
-- OAuth 2.0 RFC 
+- OAuth 2.0 RFC
 - OpenID Connect Specification
 - JWT Documentation
 
@@ -611,7 +611,7 @@ builder.Services.AddFakeIdentityProvider(options =>
 {
     options.Users = Fakes.Users;  // Your hardcoded users
     options.TokenIssuer = "http://localhost:5000";  // Your IDP base URL
-    options.GroupPrefix = "/api/_system/identity";  // Base route for all endpoints
+    options.GroupPrefix = "/_bdk/api/identity";  // Base route for all endpoints
 });
 ```
 
@@ -621,9 +621,9 @@ public static class Fakes
 {
     public static readonly FakeUser[] Users =
     [
-        new("luke.skywalker@starwars.com", "Luke Skywalker", 
+        new("luke.skywalker@starwars.com", "Luke Skywalker",
             [Role.Administrators, Role.Users], isDefault: true),
-        new("yoda@starwars.com", "Yoda", 
+        new("yoda@starwars.com", "Yoda",
             [Role.Administrators])
     ];
 }
@@ -651,7 +651,7 @@ sequenceDiagram
     participant Browser
     participant App
     participant IDP
-    
+
     App->>Browser: 1. Redirect to /connect/authorize
     Browser->>IDP: 2. GET /connect/authorize
     IDP->>Browser: 3. Show user selection page
@@ -670,7 +670,7 @@ sequenceDiagram
 ### 2. Direct API Access (Password Grant)
 
 ```http
-POST /api/_system/identity/connect/token
+POST /_bdk/api/identity/connect/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=password
@@ -682,7 +682,7 @@ grant_type=password
 ### 3. Service-to-Service (Client Credentials)
 
 ```http
-POST /api/_system/identity/connect/token
+POST /_bdk/api/identity/connect/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=client_credentials
@@ -699,7 +699,7 @@ Any string can be used as client_id in the requests.
 Starts the OAuth2 authorization flow with user selection.
 
 ```http
-GET /api/_system/identity/connect/authorize?
+GET /_bdk/api/identity/connect/authorize?
     response_type=code
     &client_id=any_client_id
     &redirect_uri=http://localhost:4200/callback
@@ -712,7 +712,7 @@ Issues tokens using various grant types.
 
 #### Authorization Code Grant
 ```http
-POST /api/_system/identity/connect/token
+POST /_bdk/api/identity/connect/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=authorization_code
@@ -738,7 +738,7 @@ Sample Response:
 Returns information about the authenticated user.
 
 ```http
-GET /api/_system/identity/connect/userinfo
+GET /_bdk/api/identity/connect/userinfo
 Authorization: Bearer eyJhbGci...
 ```
 
@@ -760,17 +760,17 @@ Response:
 Returns the OpenID Connect discovery document.
 
 ```http
-GET /api/_system/identity/.well-known/openid-configuration
+GET /_bdk/api/identity/.well-known/openid-configuration
 ```
 
 Response:
 ```json
 {
   "issuer": "http://localhost:5000",
-  "authorization_endpoint": "http://localhost:5000/api/_system/identity/connect/authorize",
-  "token_endpoint": "http://localhost:5000/api/_system/identity/connect/token",
-  "userinfo_endpoint": "http://localhost:5000/api/_system/identity/connect/userinfo",
-  "end_session_endpoint": "http://localhost:5000/api/_system/identity/connect/logout",
+  "authorization_endpoint": "http://localhost:5000/_bdk/api/identity/connect/authorize",
+  "token_endpoint": "http://localhost:5000/_bdk/api/identity/connect/token",
+  "userinfo_endpoint": "http://localhost:5000/_bdk/api/identity/connect/userinfo",
+  "end_session_endpoint": "http://localhost:5000/_bdk/api/identity/connect/logout",
   "grant_types_supported": [
     "authorization_code",
     "password",
@@ -795,7 +795,7 @@ Response:
 Handles user logout with optional redirect.
 
 ```http
-POST /api/_system/identity/connect/logout?
+POST /_bdk/api/identity/connect/logout?
     post_logout_redirect_uri=http://localhost:4200
     &state=abc123
 ```

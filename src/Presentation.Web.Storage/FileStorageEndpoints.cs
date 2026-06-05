@@ -28,7 +28,7 @@ using HttpResult = Microsoft.AspNetCore.Http.IResult;
 ///         .UseLocal("Documents", rootPath)
 ///         .WithLifetime(ServiceLifetime.Singleton)))
 ///     .AddEndpoints(options => options
-///         .GroupPath("/api/_system")
+///         .GroupPath("/_bdk/api")
 ///         .RequireAuthorization());
 /// </code>
 /// </example>
@@ -37,7 +37,7 @@ public class FileStorageEndpoints(
     IFileStorageProviderFactory factory,
     FileStorageEndpointsOptions options = null) : EndpointsBase
 {
-    private const string RouteNamePrefix = "_System.Storage";
+    private const string RouteNamePrefix = "_bdk.Storage";
     private readonly ILogger<FileStorageEndpoints> logger = loggerFactory?.CreateLogger<FileStorageEndpoints>() ?? NullLogger<FileStorageEndpoints>.Instance;
     private readonly IFileStorageProviderFactory factory = factory ?? throw new ArgumentNullException(nameof(factory));
     private readonly FileStorageEndpointsOptions options = options ?? new FileStorageEndpointsOptions();
@@ -54,7 +54,7 @@ public class FileStorageEndpoints(
         }
 
         var group = this.MapGroup(app, this.options)
-            .WithTags("_System.FileStorage")
+            .WithTags("_bdk.FileStorage")
             .DisableAntiforgery();
 
         group.MapGet("locations", (CancellationToken cancellationToken) =>

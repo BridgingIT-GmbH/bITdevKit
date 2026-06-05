@@ -76,7 +76,7 @@ Unauthenticated direct hits to protected routes should redirect into the login f
 - After opening `Operations`, click `Notifications`.
 - The page filter label is `Subject contains`, but the backing provider query parameter is `subject`.
 - The notifications endpoint used by the page is:
-  - `GET /api/_system/notifications/emails?subject=<title-fragment>&take=10`
+  - `GET /_bdk/api/notifications/emails?subject=<title-fragment>&take=10`
 - A successfully queued todo email shows:
   - `to = luke.skywalker@starwars.com`
   - `from = DoFiesta <noreply@dofiesta.local>`
@@ -86,7 +86,7 @@ Unauthenticated direct hits to protected routes should redirect into the login f
 
 - The `Operations` nav toggle can end up outside the viewport when the todos page is scrolled deep into the list.
 - If a normal Playwright click on the nav toggle fails because of viewport layout, scroll back to the top or use the nav link after bringing the shell back into view.
-- Querying provider-backed endpoints from Playwright requires the bearer token from `sessionStorage`; cookies alone are not enough for `/api/_system/...` fetch calls.
+- Querying provider-backed endpoints from Playwright requires the bearer token from `sessionStorage`; cookies alone are not enough for `/_bdk/api/...` fetch calls.
 - For provider verification, prefer the notifications endpoint over direct database inspection.
 - A clean Playwright browser context currently loads `/` and the direct `/todos` route successfully. If a previously opened browser still requests an older hashed `dotnet.*.js` module, suspect stale client bootstrap state before suspecting the current server build.
 
@@ -99,7 +99,7 @@ Unauthenticated direct hits to protected routes should redirect into the login f
 5. Fill the `New Todo` textbox with a unique title and trigger the plus button in the same row.
 6. Click `Operations`, then `Notifications`.
 7. Filter by the unique title.
-8. Verify a matching email row exists through the notifications UI or `GET /api/_system/notifications/emails`.
+8. Verify a matching email row exists through the notifications UI or `GET /_bdk/api/notifications/emails`.
 
 ## Backend tables
 

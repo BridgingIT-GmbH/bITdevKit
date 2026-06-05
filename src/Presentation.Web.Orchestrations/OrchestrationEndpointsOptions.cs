@@ -12,7 +12,7 @@ public class OrchestrationEndpointsOptions : EndpointsOptionsBase
     /// </summary>
     public OrchestrationEndpointsOptions()
     {
-        this.GroupPath = "/api/_system/orchestrations";
-        this.GroupTag = "_System.Orchestrations";
+        this.GroupPath = "/_bdk/api/orchestrations";
+        this.GroupTag = "_bdk.Orchestrations";
     }
 }

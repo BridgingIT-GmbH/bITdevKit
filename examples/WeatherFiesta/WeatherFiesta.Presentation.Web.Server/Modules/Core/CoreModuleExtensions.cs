@@ -39,6 +39,12 @@ public static class CoreModuleExtensions
         // Geocoding client adapter (Application-level abstraction)
         services.AddScoped<IWeatherGeocodingClient, OpenMeteoGeocodingClient>();
 
+        services.AddHealthChecks()
+            .AddCheck<OpenMeteoHealthCheck>(
+                "openmeteo",
+                HealthStatus.Unhealthy,
+                ["external", "weather", "openmeteo"]);
+
         return services;
     }
 
@@ -90,4 +96,5 @@ public static class CoreModuleExtensions
                 .AddDomainEventPublishingBehavior(new ActiveEntityDomainEventPublishingBehaviorOptions { PublishBefore = false });
         });
     }
+
 }

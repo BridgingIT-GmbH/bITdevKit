@@ -181,9 +181,11 @@
 
             try {
                 contentElement.innerHTML = await fetchHtml(`${contentUrl}?${query}`);
+                window.bdkDashboard.clearRefreshError(contentElement);
                 setStatus(`Updated ${new Date().toLocaleTimeString()}`, false);
             } catch (error) {
                 if (error.name !== 'AbortError') {
+                    window.bdkDashboard.showRefreshError(contentElement);
                     setStatus('Refresh failed', true);
                 }
             } finally {
@@ -219,10 +221,12 @@
                     button.remove();
                 }
 
+                window.bdkDashboard.clearRefreshError(contentElement);
                 setStatus(`Loaded ${rows.length} older entries`, false);
             } catch (error) {
                 button.disabled = false;
                 if (error.name !== 'AbortError') {
+                    window.bdkDashboard.showRefreshError(contentElement);
                     setStatus('Load failed', true);
                 }
             } finally {
@@ -253,11 +257,13 @@
                 const tbody = contentElement.querySelector('#logentries-table-body');
                 rows.reverse().forEach(row => tbody.prepend(row));
 
+                window.bdkDashboard.clearRefreshError(contentElement);
                 if (rows.length > 0) {
                     setStatus(`Added ${rows.length} new entries`, false);
                 }
             } catch (error) {
                 if (error.name !== 'AbortError') {
+                    window.bdkDashboard.showRefreshError(contentElement);
                     setStatus('Tail failed', true);
                 }
             } finally {

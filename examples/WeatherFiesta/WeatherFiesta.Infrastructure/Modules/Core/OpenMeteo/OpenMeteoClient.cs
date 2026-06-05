@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure.OpenMeteo;
 
+using BridgingIT.DevKit.Common;
 using System.Globalization;
 using System.Text.Json;
 
@@ -63,6 +64,33 @@ public class OpenMeteoClient : IOpenMeteoClient
         this.httpClient = httpClient;
         this.options = options.Value;
         this.logger = logger;
+    }
+
+    /// <inheritdoc />
+    public async Task<Result> CheckHealthAsync(CancellationToken cancellationToken = default)
+    {
+        try
+        {
+            var geocoding = await this.SearchCitiesAsync("Berlin", "DE", cancellationToken);
+            if (geocoding is null)
+            {
+                return Result.Failure("Open-Meteo geocoding did not return the health check city.");
+            }
+
+            var weather = await this.GetWeatherAsync(52.5200m, 13.4050m, "auto", 1, cancellationToken);
+            if (weather?.Current is null)
+            {
+                return Result.Failure("Open-Meteo forecast did not return current weather.");
+            }
+
+            return Result.Success("Open-Meteo geocoding and forecast APIs are reachable.");
+        }
+        catch (Exception ex)
+        {
+            this.logger.LogWarning(ex, "[OpenMeteoClient] Health check failed: {ErrorMessage}", ex.Message);
+
+            return Result.Failure($"Open-Meteo client health check failed: {ex.Message}");
+        }
     }
 
     /// <inheritdoc />

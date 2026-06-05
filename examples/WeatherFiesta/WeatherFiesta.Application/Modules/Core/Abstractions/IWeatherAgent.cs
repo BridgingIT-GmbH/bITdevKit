@@ -14,6 +14,18 @@ using BridgingIT.DevKit.Common;
 public interface IWeatherAgent
 {
     /// <summary>
+    /// Checks whether the weather agent can retrieve and map data from its backing provider.
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A result describing the provider connectivity and mapping check outcome.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await weatherAgent.CheckHealthAsync(cancellationToken);
+    /// </code>
+    /// </example>
+    Task<Result> CheckHealthAsync(CancellationToken cancellationToken = default);
+
+    /// <summary>
     /// Ingests current weather and forecast data for the specified city.
     /// </summary>
     /// <param name="cityId">The city ID to ingest weather data for.</param>

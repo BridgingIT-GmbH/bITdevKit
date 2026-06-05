@@ -131,9 +131,11 @@
                 }
 
                 contentElement.innerHTML = await response.text();
+                window.bdkDashboard.clearRefreshError(contentElement);
                 setStatus(`Updated ${new Date().toLocaleTimeString()}`, false);
             } catch (error) {
                 if (error.name !== 'AbortError') {
+                    window.bdkDashboard.showRefreshError(contentElement);
                     setStatus('Refresh failed', true);
                 }
             } finally {

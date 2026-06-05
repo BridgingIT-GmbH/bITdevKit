@@ -5,11 +5,25 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure.OpenMeteo;
 
+using BridgingIT.DevKit.Common;
+
 /// <summary>
 /// Client abstraction for Open-Meteo weather and geocoding APIs.
 /// </summary>
 public interface IOpenMeteoClient
 {
+    /// <summary>
+    /// Checks whether the Open-Meteo geocoding and forecast APIs can be reached.
+    /// </summary>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>A result describing the connectivity check outcome.</returns>
+    /// <example>
+    /// <code>
+    /// var result = await client.CheckHealthAsync(cancellationToken);
+    /// </code>
+    /// </example>
+    Task<Result> CheckHealthAsync(CancellationToken cancellationToken = default);
+
     /// <summary>
     /// Searches for cities by name using the Open-Meteo Geocoding API.
     /// Returns the first match only.

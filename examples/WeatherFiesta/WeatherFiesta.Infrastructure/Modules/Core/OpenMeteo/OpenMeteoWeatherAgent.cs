@@ -38,6 +38,23 @@ public class OpenMeteoWeatherAgent : IWeatherAgent
     }
 
     /// <inheritdoc />
+    public async Task<Result> CheckHealthAsync(CancellationToken cancellationToken = default)
+    {
+        var result = await this.IngestWeatherAsync("openmeteo-healthcheck", 52.5200d, 13.4050d, cancellationToken);
+        if (result.IsFailure)
+        {
+            return Result.Failure(result.Messages, result.Errors);
+        }
+
+        if (result.Value?.CurrentWeather is null)
+        {
+            return Result.Failure("Open-Meteo weather agent did not return current weather.");
+        }
+
+        return Result.Success("Open-Meteo weather agent can retrieve and map provider data.");
+    }
+
+    /// <inheritdoc />
     public async Task<Result<WeatherIngestionResult>> IngestWeatherAsync(
         string cityId,
         double latitude,

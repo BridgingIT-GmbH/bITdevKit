@@ -144,7 +144,7 @@ public sealed class MyEndpointsOptions : EndpointsOptionsBase
 - `SystemEndpoints` ([src/Presentation.Web/Endpoints/SystemEndpoints.cs](src/Presentation.Web/Endpoints/SystemEndpoints.cs))
   - Grouped under a configurable `GroupPath`; provides `echo`, `info`, and `modules` routes based on options.
   - Options: `SystemEndpointsOptions` ([src/Presentation.Web/Endpoints/SystemEndpointsOptions.cs](src/Presentation.Web/Endpoints/SystemEndpointsOptions.cs)).
-- `LogEntryEndpoints` ([src/Presentation.Web/Endpoints/LogEntryEndpoints.cs](src/Presentation.Web/Endpoints/LogEntryEndpoints.cs))
+- `LogEntryEndpoints` ([src/Presentation.Web/Logging/LogEntryEndpoints.cs](src/Presentation.Web/Logging/LogEntryEndpoints.cs))
   - Minimal logging-related endpoints; configured via `LogEntryEndpointsOptions`.
 
 - `JobSchedulingEndpoints` ([src/Presentation.Web.JobScheduling/JobSchedulingEndpoints.cs](src/Presentation.Web.JobScheduling/JobSchedulingEndpoints.cs))

@@ -1,0 +1,57 @@
+@using BridgingIT.DevKit.Application.Utilities
+@using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
+@using Microsoft.Extensions.DependencyInjection
+@using RazorSlices
+@inherits RazorSlice
+
+@{
+    var response = await QueryAsync();
+}
+
+<template data-next-continuation-token="@response.ContinuationToken"></template>
+@foreach (var entry in response.Items)
+{
+    <tr class="@LogEntriesDashboard.GetRowClass(entry.Level)" data-log-id="@entry.Id">
+        <td class="text-nowrap" title="@LogEntriesDashboard.FormatTimestamp(entry.TimeStamp)">@LogEntriesDashboard.FormatShortTimestamp(entry.TimeStamp)</td>
+        <td><span class="badge @LogEntriesDashboard.GetLevelBadgeClass(entry.Level)">@LogEntriesDashboard.DisplayLevel(entry.Level)</span></td>
+        <td class="text-break">
+            <div>@LogEntriesDashboard.DisplayValue(entry.Message)</div>
+            @if (!string.IsNullOrWhiteSpace(entry.Exception))
+            {
+                <details class="small text-danger">
+                    <summary>Exception</summary>
+                    <pre class="mb-0">@entry.Exception</pre>
+                </details>
+            }
+        </td>
+        <td class="text-nowrap">
+            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" data-filter-name="traceId" data-filter-value="@entry.TraceId">@LogEntriesDashboard.ShortId(entry.TraceId)</button>
+        </td>
+        <td class="text-nowrap">
+            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" data-filter-name="spanId" data-filter-value="@entry.SpanId">@LogEntriesDashboard.ShortId(entry.SpanId)</button>
+        </td>
+        <td class="text-nowrap">
+            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" data-filter-name="correlationId" data-filter-value="@entry.CorrelationId">@LogEntriesDashboard.ShortId(entry.CorrelationId)</button>
+        </td>
+        <td class="text-nowrap">
+            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" data-filter-name="logKey" data-filter-value="@entry.LogKey">@LogEntriesDashboard.DisplayValue(entry.LogKey)</button>
+        </td>
+        <td class="text-nowrap">
+            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" data-filter-name="moduleName" data-filter-value="@entry.ModuleName">@LogEntriesDashboard.DisplayValue(entry.ModuleName)</button>
+        </td>
+    </tr>
+}
+
+@functions {
+    private async Task<LogEntryQueryResponse> QueryAsync()
+    {
+        var service = this.HttpContext.RequestServices.GetService<ILogEntryService>();
+        if (service is null)
+        {
+            return new LogEntryQueryResponse();
+        }
+
+        var filter = LogEntriesDashboard.CreateFilter(this.HttpContext);
+        return await service.QueryAsync(LogEntriesDashboard.CreateRequest(filter), this.HttpContext.RequestAborted);
+    }
+}

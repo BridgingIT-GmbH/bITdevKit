@@ -6373,6 +6373,72 @@
         }
       }
     },
+    "/_bdk/dashboard/logentries": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Log Entries",
+        "description": "Shows stored log entries from the registered log entry service.",
+        "operationId": "_bdk.Dashboard.LogEntries",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/logentries/content": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Log Entries Content",
+        "description": "Shows the dashboard log entries content fragment.",
+        "operationId": "_bdk.Dashboard.LogEntriesContent",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/logentries/rows": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Log Entries Rows",
+        "description": "Shows dashboard log entry rows.",
+        "operationId": "_bdk.Dashboard.LogEntriesRows",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/_bdk/dashboard/identity": {
       "get": {
         "tags": [

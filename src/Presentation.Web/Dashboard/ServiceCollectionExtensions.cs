@@ -5,7 +5,10 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using System.Reflection;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -47,9 +50,61 @@ public static partial class ServiceCollectionExtensions
         //     });
         // });
 
-        // Register endpoints for the dashboard
-        services.AddEndpoints<DashboardEndpoints>();
+        services.AddDashboardPlugins(options);
 
         return services;
+    }
+
+    private static IServiceCollection AddDashboardPlugins(this IServiceCollection services, DashboardEndpointsOptions options)
+    {
+        var assemblies = GetDashboardPluginAssemblies(options)
+            .Distinct()
+            .ToArray();
+
+        services.AddEndpoints(assemblies
+            .SelectMany(assembly => assembly.SafeGetTypes<IDashboardEndpoints>())
+            .Where(type => type.IsClass && !type.IsAbstract)
+            .Distinct());
+
+        var navigationDescriptors = assemblies
+            .SelectMany(assembly => assembly.SafeGetTypes<IDashboardNavigationProvider>())
+            .Where(type => type.IsClass && !type.IsAbstract)
+            .Select(type => ServiceDescriptor.Singleton(typeof(IDashboardNavigationProvider), type))
+            .ToArray();
+
+        services.TryAddEnumerable(navigationDescriptors);
+
+        var pageProviderDescriptors = assemblies
+            .SelectMany(assembly => assembly.SafeGetTypes<IDashboardPageProvider>())
+            .Where(type => type.IsClass && !type.IsAbstract)
+            .Select(type => ServiceDescriptor.Singleton(typeof(IDashboardPageProvider), type))
+            .ToArray();
+
+        services.TryAddEnumerable(pageProviderDescriptors);
+
+        return services;
+    }
+
+    private static IEnumerable<Assembly> GetDashboardPluginAssemblies(DashboardEndpointsOptions options)
+    {
+        yield return typeof(DashboardEndpoints).Assembly;
+
+        foreach (var assembly in options.PluginAssemblies)
+        {
+            if (assembly is not null)
+            {
+                yield return assembly;
+            }
+        }
+
+        foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            if (assembly.SafeGetTypes<IDashboardEndpoints>().Any() ||
+                assembly.SafeGetTypes<IDashboardNavigationProvider>().Any() ||
+                assembly.SafeGetTypes<IDashboardPageProvider>().Any())
+            {
+                yield return assembly;
+            }
+        }
     }
 }

@@ -7,6 +7,8 @@ namespace BridgingIT.DevKit.Presentation.Web.Dashboard;
 
 public class DashboardEndpointPaths
 {
+    public string IndexContent { get; set; } = "/content";
+
     public string Identity { get; set; } = "/identity";
 
     public string IdentityClientCredentialsLogin { get; set; } = "/identity/client-credentials/login";

@@ -1,4 +1,6 @@
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using Microsoft.Extensions.DependencyInjection
 @inherits RazorLayoutSlice<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardLayoutModel>
 
 <!DOCTYPE html>
@@ -340,16 +342,28 @@
         <div class="row">
             @if (!Model.HideSideBar)
             {
-                @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardSideBar, DashboardSidebarItem[]>(
-                    new[] // TODO: inject from DI https://github.com/DamianEdwards/RazorSlices/issues/53
+                var pageSidebarItems = new List<DashboardSidebarItem>();
+                foreach (var page in this.HttpContext.GetDashboardPages().Where(page => page.ShowInSidebar))
+                {
+                    pageSidebarItems.Add(new DashboardSidebarItem(page.Title, page.Icon, page.Url)
                     {
-                        new DashboardSidebarItem("Dashboard", "house", "/_bdk/dashboard"),
-                        new DashboardSidebarItem("Identity", "person-badge", "/_bdk/dashboard/identity"),
-                        new DashboardSidebarItem("Messaging", "file-text", "/_bdk/dashboard/messaging"),
-                        new DashboardSidebarItem("JobScheduling", "cart", "/_bdk/dashboard/jobscheduling"),
-                        new DashboardSidebarItem("Metrics", "people", "/_bdk/dashboard/metrics"),
-                        new DashboardSidebarItem("Logs", "bar-chart", "/_bdk/dashboard/logs"),
-                    }))
+                        Group = page.Group,
+                        GroupOrder = page.GroupOrder,
+                        Order = page.Order,
+                        HasBadge = page.Badge is not null,
+                        BadgeCount = page.Badge is null ? null : await page.Badge(this.HttpContext)
+                    });
+                }
+                var customSidebarItems = this.HttpContext.RequestServices
+                    .GetServices<IDashboardNavigationProvider>()
+                    .SelectMany(provider => provider.GetItems(this.HttpContext))
+                    .Where(item => item is not null);
+                var sidebarItems = pageSidebarItems
+                    .Concat(customSidebarItems)
+                    .ToArray();
+
+                @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardSideBar, DashboardSidebarItem[]>(
+                    sidebarItems))
                 @await RenderSectionAsync("nav-menu")
                 <button class="btn sidebar-toggle d-none d-md-flex" type="button" aria-label="Toggle sidebar">
                     <i class="bi bi-layout-sidebar"></i>

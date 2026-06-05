@@ -31,6 +31,10 @@ public class DashboardSidebarItem
 
     public int Order { get; init; }
 
+    public int GroupOrder { get; init; }
+
+    public string Group { get; init; } = "Dashboard";
+
     public string Title { get; init; }
 
     public string Icon { get; init; }

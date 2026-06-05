@@ -6329,14 +6329,36 @@
         }
       }
     },
-    "/_bdk/dashboard": {
+    "/_bdk/dashboard/metrics": {
       "get": {
         "tags": [
           "_bdk.Dashboard"
         ],
-        "summary": "Dashboard Index",
-        "description": "Shows the dashboard index page.",
-        "operationId": "_bdk.Dashboard.Index",
+        "summary": "Dashboard Metrics",
+        "description": "Shows the dashboard metrics page.",
+        "operationId": "_bdk.Dashboard.Metrics",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/metrics/content": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Metrics Content",
+        "description": "Shows the dashboard metrics content fragment.",
+        "operationId": "_bdk.Dashboard.MetricsContent",
         "responses": {
           "200": {
             "description": "OK",
@@ -6413,14 +6435,14 @@
         }
       }
     },
-    "/_bdk/dashboard/metrics": {
+    "/_bdk/dashboard/health": {
       "get": {
         "tags": [
           "_bdk.Dashboard"
         ],
-        "summary": "Dashboard Metrics",
-        "description": "Shows the dashboard metrics page.",
-        "operationId": "_bdk.Dashboard.Metrics",
+        "summary": "Dashboard Health",
+        "description": "Shows registered ASP.NET Core health checks.",
+        "operationId": "_bdk.Dashboard.Health",
         "responses": {
           "200": {
             "description": "OK",
@@ -6435,14 +6457,102 @@
         }
       }
     },
-    "/_bdk/dashboard/metrics/content": {
+    "/_bdk/dashboard/health/content": {
       "get": {
         "tags": [
           "_bdk.Dashboard"
         ],
-        "summary": "Dashboard Metrics Content",
-        "description": "Shows the dashboard metrics content fragment.",
-        "operationId": "_bdk.Dashboard.MetricsContent",
+        "summary": "Dashboard Health Content",
+        "description": "Shows the dashboard health content fragment.",
+        "operationId": "_bdk.Dashboard.HealthContent",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Index",
+        "description": "Shows the dashboard index page.",
+        "operationId": "_bdk.Dashboard.Index",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/content": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Index Content",
+        "description": "Shows the dashboard index card content fragment.",
+        "operationId": "_bdk.Dashboard.IndexContent",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/weatherfiesta/cities": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard.WeatherFiesta"
+        ],
+        "summary": "WeatherFiesta Dashboard Cities",
+        "description": "Shows WeatherFiesta city data inside the bITdevKit dashboard shell.",
+        "operationId": "_bdk.Dashboard.WeatherFiesta.Cities",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/weatherfiesta/cities/content": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard.WeatherFiesta"
+        ],
+        "summary": "WeatherFiesta Dashboard Cities Content",
+        "description": "Shows WeatherFiesta city dashboard content.",
+        "operationId": "_bdk.Dashboard.WeatherFiesta.CitiesContent",
         "responses": {
           "200": {
             "description": "OK",
@@ -9893,6 +10003,9 @@
     },
     {
       "name": "_bdk.Dashboard"
+    },
+    {
+      "name": "_bdk.Dashboard.WeatherFiesta"
     },
     {
       "name": "_System.Metrics"

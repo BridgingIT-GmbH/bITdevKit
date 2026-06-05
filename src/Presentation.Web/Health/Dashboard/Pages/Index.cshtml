@@ -1,45 +1,48 @@
 @using BridgingIT.DevKit.Presentation.Web
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using BridgingIT.DevKit.Presentation.Web.Health.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Health.Dashboard.Pages
 @using Microsoft.Extensions.DependencyInjection
 @using RazorSlices
+@using System.Globalization
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
     var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-    var contentPath = CombinePath(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.MetricsContent);
+    var contentPath = BridgingIT.DevKit.Presentation.Web.Health.Dashboard.DashboardEndpoints.BuildHealthContentPath(dashboardOptions);
 }
 
 <div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
-    <h4 class="m-0">Metrics</h4>
+    <h4 class="m-0">Health</h4>
     <div class="d-flex align-items-center gap-2">
-        <span id="metrics-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
-        <select id="metrics-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="Metrics refresh interval">
+        <span id="health-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <select id="health-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="Health refresh interval">
             <option value="">Off</option>
             <option value="1000">1 sec</option>
             <option value="5000">5 sec</option>
             <option value="15000">15 sec</option>
             <option value="30000">30 sec</option>
         </select>
-        <button type="button" id="metrics-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh metrics">
+        <button type="button" id="health-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh health checks">
             <i class="bi bi-arrow-clockwise"></i>
         </button>
     </div>
 </div>
 
-<div id="dashboard-metrics-content">
-    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardMetricsContent>())
+<div id="dashboard-health-content">
+    @(await RenderPartialAsync<Content>())
 </div>
 
 <script>
     (() => {
         const contentUrl = '@contentPath';
-        const storageKey = 'bdk.dashboard.metrics.refreshInterval';
-        const contentElement = document.getElementById('dashboard-metrics-content');
-        const selectElement = document.getElementById('metrics-refresh-interval');
-        const statusElement = document.getElementById('metrics-refresh-status');
-        const refreshButton = document.getElementById('metrics-refresh-now');
+        const storageKey = 'bdk.dashboard.health.refreshInterval';
+        const contentElement = document.getElementById('dashboard-health-content');
+        const selectElement = document.getElementById('health-refresh-interval');
+        const statusElement = document.getElementById('health-refresh-status');
+        const refreshButton = document.getElementById('health-refresh-now');
 
         let timeoutId = null;
         let abortController = null;
@@ -70,10 +73,10 @@
                 return;
             }
 
-            timeoutId = window.setTimeout(() => refreshMetrics(true), interval);
+            timeoutId = window.setTimeout(() => refreshHealth(true), interval);
         }
 
-        async function refreshMetrics(scheduleAfter) {
+        async function refreshHealth(scheduleAfter) {
             clearScheduledRefresh();
 
             if (abortController !== null) {
@@ -92,16 +95,7 @@
                     throw new Error(`HTTP ${response.status}`);
                 }
 
-                const activeTabTarget = contentElement.querySelector('.nav-link.active')?.getAttribute('data-bs-target');
                 contentElement.innerHTML = await response.text();
-
-                if (activeTabTarget !== null && activeTabTarget !== undefined) {
-                    const activeTab = contentElement.querySelector(`[data-bs-target="${activeTabTarget}"]`);
-                    if (activeTab !== null && window.bootstrap !== undefined) {
-                        window.bootstrap.Tab.getOrCreateInstance(activeTab).show();
-                    }
-                }
-
                 setStatus(`Updated ${new Date().toLocaleTimeString()}`, false);
             } catch (error) {
                 if (error.name !== 'AbortError') {
@@ -131,7 +125,7 @@
             scheduleNextRefresh();
         });
 
-        refreshButton.addEventListener('click', () => refreshMetrics(false));
+        refreshButton.addEventListener('click', () => refreshHealth(false));
 
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
@@ -140,7 +134,7 @@
             }
 
             if (getSelectedInterval() !== null) {
-                refreshMetrics(true);
+                refreshHealth(true);
             }
         });
 
@@ -149,10 +143,6 @@
 </script>
 
 @functions {
-    public DashboardLayoutModel LayoutModel => new() { Title = "Metrics" };
+    public DashboardLayoutModel LayoutModel => new() { Title = "Health" };
 
-    private static string CombinePath(string groupPath, string endpointPath)
-    {
-        return $"/{(groupPath ?? string.Empty).Trim('/')}/{(endpointPath ?? string.Empty).Trim('/')}";
-    }
 }

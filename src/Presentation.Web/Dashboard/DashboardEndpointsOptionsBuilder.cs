@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Dashboard;
 
+using System.Reflection;
+
 public class DashboardEndpointsOptionsBuilder
 {
     private readonly DashboardEndpointsOptions options;
@@ -36,17 +38,43 @@ public class DashboardEndpointsOptionsBuilder
     }
 
     /// <summary>
-    /// Configure the endpoint paths for the dashboard.
+    /// Adds an assembly that contains dashboard plugin endpoints.
     /// </summary>
-    /// <param name="configurePaths"></param>
-    /// <returns></returns>
-    public DashboardEndpointsOptionsBuilder WithPaths(Action<DashboardEndpointPathsBuilder> configurePaths)
+    /// <param name="assembly">The assembly to scan for <see cref="IDashboardEndpoints" /> implementations.</param>
+    /// <returns>The same builder instance.</returns>
+    public DashboardEndpointsOptionsBuilder WithPluginAssembly(Assembly assembly)
     {
-        var pathsBuilder = new DashboardEndpointPathsBuilder();
-        configurePaths(pathsBuilder);
-        this.options.EndpointPaths = pathsBuilder.Build();
+        if (assembly is not null && !this.options.PluginAssemblies.Contains(assembly))
+        {
+            this.options.PluginAssemblies.Add(assembly);
+        }
 
         return this;
+    }
+
+    /// <summary>
+    /// Adds assemblies that contain dashboard plugin endpoints.
+    /// </summary>
+    /// <param name="assemblies">The assemblies to scan for <see cref="IDashboardEndpoints" /> implementations.</param>
+    /// <returns>The same builder instance.</returns>
+    public DashboardEndpointsOptionsBuilder WithPluginAssemblies(params Assembly[] assemblies)
+    {
+        foreach (var assembly in assemblies ?? [])
+        {
+            this.WithPluginAssembly(assembly);
+        }
+
+        return this;
+    }
+
+    /// <summary>
+    /// Adds the assembly containing <typeparamref name="T" /> as a dashboard plugin assembly.
+    /// </summary>
+    /// <typeparam name="T">A marker type from the plugin assembly.</typeparam>
+    /// <returns>The same builder instance.</returns>
+    public DashboardEndpointsOptionsBuilder WithPluginAssemblyContaining<T>()
+    {
+        return this.WithPluginAssembly(typeof(T).Assembly);
     }
 
     /// <summary>

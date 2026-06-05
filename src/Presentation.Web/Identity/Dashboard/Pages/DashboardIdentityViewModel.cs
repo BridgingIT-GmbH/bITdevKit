@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Presentation.Web.Dashboard.Pages;
+namespace BridgingIT.DevKit.Presentation.Web.Identity.Dashboard.Pages;
 
 /// <summary>
 /// Represents the current user state shown on the dashboard identity page.

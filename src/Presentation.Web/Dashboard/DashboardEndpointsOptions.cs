@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Dashboard;
 
+using System.Reflection;
+
 public class DashboardEndpointsOptions : EndpointsOptionsBase
 {
     public DashboardEndpointsOptions()
@@ -16,4 +18,6 @@ public class DashboardEndpointsOptions : EndpointsOptionsBase
     }
 
     public DashboardEndpointPaths EndpointPaths { get; set; }
+
+    public List<Assembly> PluginAssemblies { get; } = [];
 }

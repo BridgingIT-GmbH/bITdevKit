@@ -1,0 +1,225 @@
+@using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core
+@using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Models
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using Microsoft.Extensions.DependencyInjection
+@using RazorSlices
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+@{
+    var cities = await GetCitiesAsync();
+    var selectedCityId = GetSelectedCityId(cities);
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var contentPath = BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core.Dashboard.DashboardEndpoints.BuildCitiesContentPath(dashboardOptions);
+}
+
+<div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
+    <div>
+        <h4 class="m-0">WeatherFiesta Cities</h4>
+        <div class="text-muted small">Application-provided dashboard plugin</div>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+        @if (cities.Count > 0)
+        {
+            <select id="weatherfiesta-city-select" class="form-select form-select-sm" style="width: 14rem" aria-label="Select city current weather">
+                @foreach (var city in cities.OrderBy(city => city.Name, StringComparer.OrdinalIgnoreCase))
+                {
+                    <option value="@city.Id" selected="@(string.Equals(city.Id, selectedCityId, StringComparison.OrdinalIgnoreCase))">
+                        @city.Name
+                    </option>
+                }
+            </select>
+        }
+        <span id="weatherfiesta-cities-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <select id="weatherfiesta-cities-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="WeatherFiesta cities refresh interval">
+            <option value="">Off</option>
+            <option value="1000">1 sec</option>
+            <option value="5000">5 sec</option>
+            <option value="15000">15 sec</option>
+            <option value="30000">30 sec</option>
+        </select>
+        <button type="button" id="weatherfiesta-cities-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh cities">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+</div>
+
+<div id="weatherfiesta-cities-content">
+    <div class="text-muted small py-2">Loading city dashboard content...</div>
+</div>
+
+<script>
+    (() => {
+        const contentUrl = '@contentPath';
+        const storageKey = 'bdk.dashboard.weatherfiesta.cities.refreshInterval';
+        const contentElement = document.getElementById('weatherfiesta-cities-content');
+        const citySelectElement = document.getElementById('weatherfiesta-city-select');
+        const selectElement = document.getElementById('weatherfiesta-cities-refresh-interval');
+        const statusElement = document.getElementById('weatherfiesta-cities-refresh-status');
+        const refreshButton = document.getElementById('weatherfiesta-cities-refresh-now');
+
+        let timeoutId = null;
+        let abortController = null;
+
+        function getSelectedInterval() {
+            const value = Number(selectElement.value);
+            return Number.isFinite(value) && value > 0 ? value : null;
+        }
+
+        function getContentUrl() {
+            const url = new URL(contentUrl, window.location.origin);
+            const cityId = citySelectElement?.value;
+            if (cityId) {
+                url.searchParams.set('cityId', cityId);
+            }
+
+            return url.toString();
+        }
+
+        function updatePageUrl() {
+            if (citySelectElement === null) {
+                return;
+            }
+
+            const url = new URL(window.location.href);
+            url.searchParams.set('cityId', citySelectElement.value);
+            window.history.replaceState(null, '', url.toString());
+        }
+
+        function setStatus(text, isError) {
+            statusElement.textContent = text;
+            statusElement.classList.toggle('text-danger', isError === true);
+            statusElement.classList.toggle('text-muted', isError !== true);
+        }
+
+        function clearScheduledRefresh() {
+            if (timeoutId !== null) {
+                window.clearTimeout(timeoutId);
+                timeoutId = null;
+            }
+        }
+
+        function scheduleNextRefresh() {
+            clearScheduledRefresh();
+
+            const interval = getSelectedInterval();
+            if (interval === null || document.hidden) {
+                return;
+            }
+
+            timeoutId = window.setTimeout(() => refreshCities(true), interval);
+        }
+
+        async function refreshCities(scheduleAfter) {
+            clearScheduledRefresh();
+
+            if (abortController !== null) {
+                abortController.abort();
+            }
+
+            abortController = new AbortController();
+
+            try {
+                const response = await fetch(getContentUrl(), {
+                    headers: { 'X-Requested-With': 'fetch' },
+                    signal: abortController.signal
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                contentElement.innerHTML = await response.text();
+                setStatus(`Updated ${new Date().toLocaleTimeString()}`, false);
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    setStatus('Refresh failed', true);
+                }
+            } finally {
+                abortController = null;
+
+                if (scheduleAfter) {
+                    scheduleNextRefresh();
+                }
+            }
+        }
+
+        const savedInterval = localStorage.getItem(storageKey);
+        if (savedInterval !== null) {
+            selectElement.value = savedInterval;
+        }
+
+        selectElement.addEventListener('change', () => {
+            localStorage.setItem(storageKey, selectElement.value);
+
+            if (abortController !== null) {
+                abortController.abort();
+            }
+
+            scheduleNextRefresh();
+        });
+
+        citySelectElement?.addEventListener('change', () => {
+            updatePageUrl();
+            refreshCities(false);
+            scheduleNextRefresh();
+        });
+
+        refreshButton.addEventListener('click', () => refreshCities(false));
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                clearScheduledRefresh();
+                return;
+            }
+
+            if (getSelectedInterval() !== null) {
+                refreshCities(true);
+            }
+        });
+
+        refreshCities(false);
+        scheduleNextRefresh();
+    })();
+</script>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "WeatherFiesta Cities" };
+
+    private async Task<List<AdminCityModel>> GetCitiesAsync()
+    {
+        var requester = this.HttpContext.RequestServices.GetService<IRequester>();
+        if (requester is null)
+        {
+            return [];
+        }
+
+        var result = await requester.SendAsync(new AdminCitiesQuery(), cancellationToken: this.HttpContext.RequestAborted);
+        return result.IsSuccess
+            ? result.Value
+                .OrderByDescending(city => city.SubscriptionCount)
+                .ThenBy(city => city.Name, StringComparer.OrdinalIgnoreCase)
+                .ToList()
+            : [];
+    }
+
+    private string GetSelectedCityId(IEnumerable<AdminCityModel> cities)
+    {
+        var cityIds = cities
+            .Select(city => city.Id)
+            .Where(id => !string.IsNullOrWhiteSpace(id))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        if (this.HttpContext.Request.Query.TryGetValue("cityId", out var selectedCityId) &&
+            cityIds.Contains(selectedCityId.ToString()))
+        {
+            return selectedCityId.ToString();
+        }
+
+        return cities
+            .OrderByDescending(city => city.SubscriptionCount)
+            .ThenBy(city => city.Name, StringComparer.OrdinalIgnoreCase)
+            .FirstOrDefault()?.Id;
+    }
+}

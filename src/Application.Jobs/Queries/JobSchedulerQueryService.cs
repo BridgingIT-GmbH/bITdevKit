@@ -14,7 +14,9 @@ using BridgingIT.DevKit.Common;
 public class JobSchedulerQueryService(
     JobRegistrationStore registrations,
     IJobStoreProvider stores,
-    TimeProvider timeProvider) : IJobSchedulerQueryService
+    TimeProvider timeProvider,
+    IJobCronEngine cronEngine,
+    IJobCalendarEngine calendarEngine) : IJobSchedulerQueryService
 {
     private static readonly JobSchedulerQueryCapabilities Capabilities = new();
 
@@ -68,7 +70,7 @@ public class JobSchedulerQueryService(
             var typeFilter = request.TriggerTypes.SafeNull().ToHashSet();
 
             var models = snapshot.Definitions
-                .SelectMany(definition => definition.Triggers.Select(trigger => MapTrigger(definition, trigger, snapshot)))
+                .SelectMany(definition => definition.Triggers.Select(trigger => MapTrigger(definition, trigger, snapshot, cronEngine, calendarEngine)))
                 .Where(model => Matches(model.JobName, request.JobName))
                 .Where(model => Matches(model.TriggerName, request.TriggerName))
                 .Where(model => typeFilter.Count == 0 || typeFilter.Contains(model.TriggerType))
@@ -107,7 +109,7 @@ public class JobSchedulerQueryService(
             var models = snapshot.Definitions
                 .SelectMany(definition => definition.Triggers
                     .Where(IsRecurringTrigger)
-                    .Select(trigger => MapRecurringTrigger(definition, trigger, snapshot)))
+                    .Select(trigger => MapRecurringTrigger(definition, trigger, snapshot, cronEngine, calendarEngine)))
                 .Where(model => Matches(model.JobName, request.JobName))
                 .Where(model => Matches(model.TriggerName, request.TriggerName))
                 .Where(model => typeFilter.Count == 0 || typeFilter.Contains(model.TriggerType))
@@ -601,7 +603,7 @@ public class JobSchedulerQueryService(
             cancellationToken.ThrowIfCancellationRequested();
             var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var jobs = BuildJobModels(snapshot, includeOrphanedRuntimeState: true);
-            var triggers = snapshot.Definitions.SelectMany(definition => definition.Triggers.Select(trigger => MapTrigger(definition, trigger, snapshot))).ToList();
+            var triggers = snapshot.Definitions.SelectMany(definition => definition.Triggers.Select(trigger => MapTrigger(definition, trigger, snapshot, cronEngine, calendarEngine))).ToList();
             var occurrences = snapshot.Occurrences
                 .Where(x => !request.From.HasValue || x.CreatedDate >= request.From.Value)
                 .Where(x => !request.To.HasValue || x.CreatedDate <= request.To.Value)
@@ -682,7 +684,7 @@ public class JobSchedulerQueryService(
             cancellationToken.ThrowIfCancellationRequested();
             var snapshot = await LoadSnapshotAsync(cancellationToken).ConfigureAwait(false);
             var jobs = BuildJobModels(snapshot, includeOrphanedRuntimeState: true);
-            var triggers = snapshot.Definitions.SelectMany(definition => definition.Triggers.Select(trigger => MapTrigger(definition, trigger, snapshot))).ToList();
+            var triggers = snapshot.Definitions.SelectMany(definition => definition.Triggers.Select(trigger => MapTrigger(definition, trigger, snapshot, cronEngine, calendarEngine))).ToList();
 
             return Result<JobSchedulerDashboardOverviewModel>.Success(new JobSchedulerDashboardOverviewModel
             {
@@ -815,13 +817,17 @@ public class JobSchedulerQueryService(
         };
     }
 
-    private static JobSchedulerTriggerModel MapTrigger(JobDefinition definition, JobTriggerDefinition trigger, QuerySnapshot snapshot)
+    private static JobSchedulerTriggerModel MapTrigger(
+        JobDefinition definition,
+        JobTriggerDefinition trigger,
+        QuerySnapshot snapshot,
+        IJobCronEngine cronEngine,
+        IJobCalendarEngine calendarEngine)
     {
         snapshot.TriggerRuntimeStates.TryGetValue(ToTriggerKey(definition.JobName, trigger.TriggerName), out var runtimeState);
         var occurrences = snapshot.OccurrencesByTrigger.GetValueOrDefault(ToTriggerKey(definition.JobName, trigger.TriggerName), []);
         var lastOccurrence = occurrences.OrderByDescending(x => x.UpdatedDate).ThenByDescending(x => x.DueUtc).FirstOrDefault();
-        var nextDueUtc = runtimeState?.DueUtc
-            ?? occurrences.Where(x => IsPendingOccurrence(x)).OrderBy(x => x.DueUtc).Select(x => (DateTimeOffset?)x.DueUtc).FirstOrDefault();
+        var nextDueUtc = ResolveNextDueUtc(trigger, runtimeState, occurrences, snapshot.NowUtc, cronEngine, calendarEngine);
 
         return new JobSchedulerTriggerModel
         {
@@ -852,9 +858,14 @@ public class JobSchedulerQueryService(
         };
     }
 
-    private static JobSchedulerRecurringTriggerModel MapRecurringTrigger(JobDefinition definition, JobTriggerDefinition trigger, QuerySnapshot snapshot)
+    private static JobSchedulerRecurringTriggerModel MapRecurringTrigger(
+        JobDefinition definition,
+        JobTriggerDefinition trigger,
+        QuerySnapshot snapshot,
+        IJobCronEngine cronEngine,
+        IJobCalendarEngine calendarEngine)
     {
-        var model = MapTrigger(definition, trigger, snapshot);
+        var model = MapTrigger(definition, trigger, snapshot, cronEngine, calendarEngine);
         return new JobSchedulerRecurringTriggerModel
         {
             JobName = model.JobName,
@@ -880,6 +891,44 @@ public class JobSchedulerQueryService(
             PropertyCount = model.PropertyCount,
             LastOccurrenceUtc = model.LastOccurrenceUtc,
             LastOccurrenceStatus = model.LastOccurrenceStatus,
+        };
+    }
+
+    private static DateTimeOffset? ResolveNextDueUtc(
+        JobTriggerDefinition trigger,
+        JobTriggerRuntimeState runtimeState,
+        IReadOnlyList<JobOccurrence> occurrences,
+        DateTimeOffset nowUtc,
+        IJobCronEngine cronEngine,
+        IJobCalendarEngine calendarEngine)
+    {
+        var pendingDueUtc = occurrences
+            .Where(IsPendingOccurrence)
+            .OrderBy(x => x.DueUtc)
+            .Select(x => (DateTimeOffset?)x.DueUtc)
+            .FirstOrDefault();
+
+        if (pendingDueUtc.HasValue)
+        {
+            return pendingDueUtc;
+        }
+
+        if (runtimeState?.DueUtc is { } runtimeDueUtc)
+        {
+            return runtimeDueUtc;
+        }
+
+        return trigger.TriggerType switch
+        {
+            JobTriggerType.OneTime => trigger.DueUtc,
+            JobTriggerType.Delayed or JobTriggerType.StartupDelay => runtimeState?.ActivatedUtc is { } activatedUtc && trigger.Delay.HasValue
+                ? activatedUtc + trigger.Delay.Value
+                : null,
+            JobTriggerType.Cron when !string.IsNullOrWhiteSpace(trigger.Schedule) =>
+                cronEngine.GetNextOccurrenceUtc(trigger.Schedule, nowUtc, trigger.TimeZone ?? TimeZoneInfo.Utc).Value,
+            JobTriggerType.Calendar when trigger.Calendar is not null =>
+                calendarEngine.GetNextOccurrenceUtc(trigger.Calendar, nowUtc, trigger.TimeZone ?? TimeZoneInfo.Utc).Value,
+            _ => null,
         };
     }
 
@@ -918,6 +967,11 @@ public class JobSchedulerQueryService(
             PropertyCount = occurrence.Properties?.Count ?? 0,
             AttemptCount = executions.Count,
             LatestExecutionStatus = lastExecution?.Status,
+            LatestExecutionStartedUtc = lastExecution?.StartedUtc,
+            LatestExecutionCompletedUtc = lastExecution?.CompletedUtc,
+            LatestExecutionDurationSeconds = lastExecution?.CompletedUtc.HasValue == true
+                ? (lastExecution.CompletedUtc.Value - lastExecution.StartedUtc).TotalSeconds
+                : null,
             LeaseOwnerSchedulerInstanceId = lease?.SchedulerInstanceId,
             BatchInternalId = batch?.BatchId,
             ExternalBatchId = batch?.ExternalBatchId,

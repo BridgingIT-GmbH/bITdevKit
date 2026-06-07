@@ -1,0 +1,485 @@
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages
+@using BridgingIT.DevKit.Application.Jobs
+@using BridgingIT.DevKit.Common
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.Extensions.Logging
+@using RazorSlices
+@using JobsDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.DashboardEndpoints
+@inherits RazorSlice
+
+@{
+    var vm = await CreateModelAsync();
+    var actionBase = vm.ActionBase;
+}
+
+@if (!vm.IsAvailable)
+{
+    <div class="alert alert-warning py-2 mb-0">
+        Jobs scheduler is not registered. Call <code>AddJobScheduler()</code> to populate this page.
+    </div>
+}
+else
+{
+    @if (vm.Errors.Count > 0)
+    {
+        <div class="alert alert-danger py-2 mb-2">
+            @foreach (var error in vm.Errors)
+            {
+                <div>@error</div>
+            }
+        </div>
+    }
+
+    var s = vm.Summary;
+    <div class="row g-2 jobs-card-grid">
+        <div class="col-6 col-lg-2">
+            <div class="card h-100">
+                <div class="card-body p-3">
+                    <div class="text-muted small">Jobs</div>
+                    <div class="fs-4 fw-semibold">@(s.JobFacets?.EnabledCount + s.JobFacets?.DisabledCount ?? vm.Jobs.Count)</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-2">
+            <div class="card h-100">
+                <div class="card-body p-3">
+                    <div class="text-muted small">Enabled</div>
+                    <div class="fs-4 fw-semibold text-success">@(s.JobFacets?.EnabledCount ?? 0)</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-2">
+            <div class="card h-100">
+                <div class="card-body p-3">
+                    <div class="text-muted small">Paused</div>
+                    <div class="fs-4 fw-semibold text-warning">@s.PausedJobCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-2">
+            <div class="card h-100">
+                <div class="card-body p-3">
+                    <div class="text-muted small">Running</div>
+                    <div class="fs-4 fw-semibold text-info">@s.RunningOccurrenceCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-2">
+            <div class="card h-100">
+                <div class="card-body p-3">
+                    <div class="text-muted small">Failed</div>
+                    <div class="fs-4 fw-semibold @(s.FailedOccurrenceCount > 0 ? "text-danger" : "")">@s.FailedOccurrenceCount</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-lg-2">
+            <div class="card h-100">
+                <div class="card-body p-3">
+                    <div class="text-muted small">Retrying</div>
+                    <div class="fs-4 fw-semibold @(s.RetryScheduledCount > 0 ? "text-warning" : "")">@s.RetryScheduledCount</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="jobs-data-zone">
+        <section class="jobs-panel">
+            <div class="jobs-panel-header">
+                <span>Jobs</span>
+                <span class="badge rounded-pill text-bg-secondary">@vm.Jobs.Count</span>
+            </div>
+            <div class="jobs-panel-body">
+            @if (vm.Jobs.Count == 0)
+            {
+                <div class="text-muted small py-2">No jobs are registered.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Job</th>
+                                <th>Group</th>
+                                <th>State</th>
+                                <th class="text-end">Triggers</th>
+                                <th class="text-end">Running</th>
+                                <th class="text-end">Failed</th>
+                                <th class="text-end">Next Exec</th>
+                                <th class="text-end">Last Exec</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var job in vm.Jobs)
+                        {
+                            var dispatchUrl = $"{actionBase}/dispatch/{Uri.EscapeDataString(job.JobName)}";
+                            var pauseUrl = $"{actionBase}/pause/{Uri.EscapeDataString(job.JobName)}";
+                            var resumeUrl = $"{actionBase}/resume/{Uri.EscapeDataString(job.JobName)}";
+                            var enableUrl = $"{actionBase}/enable/{Uri.EscapeDataString(job.JobName)}";
+                            var disableUrl = $"{actionBase}/disable/{Uri.EscapeDataString(job.JobName)}";
+                            var nextExecutionUtc = vm.NextExecutionByJobName.TryGetValue(job.JobName, out var nextDueUtc) ? nextDueUtc : null;
+                            var triggerDetails = vm.TriggerDetailsByJobName.TryGetValue(job.JobName, out var details) ? details : "No trigger details available.";
+                            <tr>
+                                <td>
+                                    <div class="fw-medium">@job.JobName</div>
+                                    @if (!string.IsNullOrWhiteSpace(job.DisplayName) && job.DisplayName != job.JobName)
+                                    {
+                                        <div class="text-muted small">@job.DisplayName</div>
+                                    }
+                                </td>
+                                <td class="text-muted small">@DisplayValue(job.Group)</td>
+                                <td>@RenderJobStateBadge(job)</td>
+                                <td class="text-end">
+                                    <span title="@triggerDetails">@job.TriggerCount</span>
+                                </td>
+                                <td class="text-end @(job.RunningOccurrenceCount > 0 ? "text-info" : "")">@job.RunningOccurrenceCount</td>
+                                <td class="text-end @(job.FailedOccurrenceCount > 0 ? "text-danger" : "")">@job.FailedOccurrenceCount</td>
+                                <td class="text-end text-muted small">@FormatRelative(nextExecutionUtc)</td>
+                                <td class="text-end text-muted small">@FormatRelative(job.LastExecutionUtc)</td>
+                                <td class="text-end text-nowrap">
+                                    <button class="btn btn-sm btn-outline-primary" title="Dispatch now"
+                                            onclick="window.bdkJobsAction('@dispatchUrl')">
+                                        <i class="bi bi-play-fill"></i>
+                                    </button>
+                                    @if (job.Paused)
+                                    {
+                                        <button class="btn btn-sm btn-outline-success ms-1" title="Resume job"
+                                                onclick="window.bdkJobsAction('@resumeUrl')">
+                                            <i class="bi bi-play-circle"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-sm btn-outline-warning ms-1" title="Pause job"
+                                                onclick="window.bdkJobsAction('@pauseUrl')">
+                                            <i class="bi bi-pause-circle"></i>
+                                        </button>
+                                    }
+                                    @if (job.EffectiveEnabled)
+                                    {
+                                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Disable job"
+                                                onclick="window.bdkJobsAction('@disableUrl')">
+                                            <i class="bi bi-slash-circle"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-sm btn-outline-success ms-1" title="Enable job"
+                                                onclick="window.bdkJobsAction('@enableUrl')">
+                                            <i class="bi bi-check-circle"></i>
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            </div>
+        </section>
+
+        <section class="jobs-panel">
+            <div class="jobs-panel-header">
+                <span>Occurrences</span>
+                <span class="badge rounded-pill text-bg-secondary">@vm.Occurrences.Count</span>
+            </div>
+            <div class="jobs-panel-body">
+            @if (vm.Occurrences.Count == 0)
+            {
+                <div class="text-muted small py-2">No occurrences found.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Job</th>
+                                <th>Trigger</th>
+                                <th>Created</th>
+                                <th>Took</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var occ in vm.Occurrences)
+                        {
+                            var cancelUrl = $"{actionBase}/occurrences/{occ.OccurrenceId}/cancel";
+                            var interruptUrl = $"{actionBase}/occurrences/{occ.OccurrenceId}/interrupt";
+                            var retryUrl = $"{actionBase}/occurrences/{occ.OccurrenceId}/retry";
+                            var isActive = occ.Status is JobOccurrenceStatus.Running or JobOccurrenceStatus.Due or JobOccurrenceStatus.Materialized or JobOccurrenceStatus.Scheduled;
+                            var isRunning = occ.Status == JobOccurrenceStatus.Running;
+                            var isFailed = occ.Status == JobOccurrenceStatus.Failed;
+                            <tr>
+                                <td>@RenderOccurrenceStatusBadge(occ.Status)</td>
+                                <td class="fw-medium">@occ.JobName</td>
+                                <td class="text-muted small">@DisplayValue(occ.TriggerName)</td>
+                                <td class="text-muted small">@FormatRelative(occ.CreatedDate)</td>
+                                <td class="text-muted small">@FormatDurationSeconds(occ.LatestExecutionDurationSeconds)</td>
+                                <td class="text-end text-nowrap">
+                                    @if (isRunning)
+                                    {
+                                        <button class="btn btn-sm btn-outline-warning" title="Interrupt"
+                                                onclick="window.bdkJobsAction('@interruptUrl')">
+                                            <i class="bi bi-stop-circle"></i>
+                                        </button>
+                                    }
+                                    @if (isActive)
+                                    {
+                                        <button class="btn btn-sm btn-outline-danger ms-1" title="Cancel"
+                                                onclick="window.bdkJobsAction('@cancelUrl')">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                    }
+                                    @if (isFailed)
+                                    {
+                                        <button class="btn btn-sm btn-outline-primary ms-1" title="Retry"
+                                                onclick="window.bdkJobsAction('@retryUrl')">
+                                            <i class="bi bi-arrow-repeat"></i>
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+                <div class="text-muted small mt-1">Showing @vm.Occurrences.Count most recent occurrences.</div>
+            }
+            </div>
+        </section>
+    </div>
+}
+
+@functions {
+    private async Task<DashboardJobsViewModel> CreateModelAsync()
+    {
+        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var query = this.HttpContext.RequestServices.GetService<IJobSchedulerQueryService>();
+        var logger = this.HttpContext.RequestServices.GetService<ILogger<Data>>();
+        var ct = this.HttpContext.RequestAborted;
+
+        var model = new DashboardJobsViewModel
+        {
+            ActionBase = JobsDashboardEndpoints.BuildJobsActionBase(dashboardOptions)
+        };
+
+        if (query is null)
+        {
+            model.IsAvailable = false;
+            return model;
+        }
+
+        try
+        {
+            var result = await query.GetDashboardSummaryAsync(cancellationToken: ct);
+            if (result.IsSuccess)
+            {
+                model.Summary = result.Value;
+            }
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "Jobs dashboard: summary failed.");
+            model.Errors.Add("Summary could not be loaded.");
+        }
+
+        try
+        {
+            var result = await query.QueryJobsAsync(new JobSchedulerJobQueryRequest { Take = 200, SortBy = "jobName", SortDescending = false }, ct);
+            if (result.IsSuccess)
+            {
+                model.Jobs = result.Value.ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "Jobs dashboard: jobs query failed.");
+            model.Errors.Add("Jobs list could not be loaded.");
+        }
+
+        try
+        {
+            var result = await query.QueryTriggersAsync(new JobSchedulerTriggerQueryRequest { Take = 500, SortBy = "jobName", SortDescending = false }, ct);
+            if (result.IsSuccess)
+            {
+                model.NextExecutionByJobName = result.Value
+                    .GroupBy(x => x.JobName)
+                    .ToDictionary(
+                        x => x.Key,
+                        x => x.Select(GetNextTriggerTime)
+                            .Where(y => y.HasValue)
+                            .OrderBy(y => y)
+                            .FirstOrDefault());
+
+                model.TriggerDetailsByJobName = result.Value
+                    .GroupBy(x => x.JobName)
+                    .ToDictionary(
+                        x => x.Key,
+                        x => string.Join(Environment.NewLine, x.Select(FormatTriggerDetails)));
+            }
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "Jobs dashboard: triggers query failed.");
+            model.Errors.Add("Next execution times could not be loaded.");
+        }
+
+        try
+        {
+            var result = await query.QueryOccurrencesAsync(new JobSchedulerOccurrenceQueryRequest { Take = 50, SortDescending = true }, ct);
+            if (result.IsSuccess)
+            {
+                model.Occurrences = result.Value.ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "Jobs dashboard: occurrences query failed.");
+            model.Errors.Add("Occurrences could not be loaded.");
+        }
+
+        return model;
+    }
+
+    private static string DisplayValue(string value) =>
+        string.IsNullOrWhiteSpace(value) ? "-" : value;
+
+    private static string FormatRelative(DateTimeOffset? value)
+    {
+        if (value is null) return "-";
+        var delta = DateTimeOffset.UtcNow - value.Value;
+        var abs = delta.Duration();
+        var suffix = delta.TotalSeconds >= 0 ? "ago" : "from now";
+        if (abs.TotalMinutes < 1) return $"{Math.Max(1, (int)abs.TotalSeconds)}s {suffix}";
+        if (abs.TotalHours < 1) return $"{(int)abs.TotalMinutes}m {suffix}";
+        if (abs.TotalDays < 1) return $"{(int)abs.TotalHours}h {suffix}";
+        return $"{(int)abs.TotalDays}d {suffix}";
+    }
+
+    private static string FormatDurationSeconds(double? value)
+    {
+        if (!value.HasValue)
+        {
+            return "-";
+        }
+
+        var duration = TimeSpan.FromSeconds(Math.Max(0, value.Value));
+        if (duration.TotalHours >= 1)
+        {
+            return $"{(int)duration.TotalHours}h {duration.Minutes}m";
+        }
+
+        if (duration.TotalMinutes >= 1)
+        {
+            return $"{(int)duration.TotalMinutes}m {duration.Seconds}s";
+        }
+
+        if (duration.TotalSeconds >= 1)
+        {
+            return $"{Math.Round(duration.TotalSeconds)}s";
+        }
+
+        return "<1s";
+    }
+
+    private static DateTimeOffset? GetNextTriggerTime(JobSchedulerTriggerModel trigger) =>
+        trigger.NextDueUtc ?? trigger.DueUtc;
+
+    private static string FormatTriggerDetails(JobSchedulerTriggerModel trigger)
+    {
+        var parts = new List<string>
+        {
+            $"{DisplayValue(trigger.TriggerName)} ({trigger.TriggerType})",
+            trigger.EffectiveEnabled ? "enabled" : "disabled"
+        };
+
+        if (trigger.Paused)
+        {
+            parts.Add("paused");
+        }
+
+        if (!string.IsNullOrWhiteSpace(trigger.Schedule))
+        {
+            parts.Add($"schedule: {trigger.Schedule}");
+        }
+
+        if (trigger.DueUtc.HasValue)
+        {
+            parts.Add($"due: {trigger.DueUtc.Value:yyyy-MM-dd HH:mm:ss} UTC");
+        }
+
+        if (trigger.Delay.HasValue)
+        {
+            parts.Add($"delay: {FormatDuration(trigger.Delay.Value)}");
+        }
+
+        if (trigger.NextDueUtc.HasValue)
+        {
+            parts.Add($"next: {trigger.NextDueUtc.Value:yyyy-MM-dd HH:mm:ss} UTC");
+        }
+
+        if (!string.IsNullOrWhiteSpace(trigger.TimeZoneId))
+        {
+            parts.Add($"tz: {trigger.TimeZoneId}");
+        }
+
+        return string.Join(" | ", parts);
+    }
+
+    private static string FormatDuration(TimeSpan value)
+    {
+        if (value.TotalDays >= 1)
+        {
+            return $"{(int)value.TotalDays}d {value.Hours}h";
+        }
+
+        if (value.TotalHours >= 1)
+        {
+            return $"{(int)value.TotalHours}h {value.Minutes}m";
+        }
+
+        if (value.TotalMinutes >= 1)
+        {
+            return $"{(int)value.TotalMinutes}m {value.Seconds}s";
+        }
+
+        return $"{Math.Max(1, (int)value.TotalSeconds)}s";
+    }
+
+    private static Microsoft.AspNetCore.Html.IHtmlContent RenderJobStateBadge(JobSchedulerJobModel job)
+    {
+        string label, css;
+        if (!job.EffectiveEnabled) { label = "Disabled"; css = "text-bg-secondary"; }
+        else if (job.Paused) { label = "Paused"; css = "text-bg-warning"; }
+        else if (job.HasFailedLatestExecution) { label = "Failed"; css = "text-bg-danger"; }
+        else if (job.RunningOccurrenceCount > 0) { label = "Running"; css = "text-bg-info"; }
+        else { label = "Active"; css = "text-bg-success"; }
+
+        return new Microsoft.AspNetCore.Html.HtmlString($"<span class=\"badge {css}\">{label}</span>");
+    }
+
+    private static Microsoft.AspNetCore.Html.IHtmlContent RenderOccurrenceStatusBadge(JobOccurrenceStatus status)
+    {
+        var css = status switch
+        {
+            JobOccurrenceStatus.Running => "text-bg-info",
+            JobOccurrenceStatus.Completed => "text-bg-success",
+            JobOccurrenceStatus.Failed => "text-bg-danger",
+            JobOccurrenceStatus.Cancelled => "text-bg-secondary",
+            JobOccurrenceStatus.Paused => "text-bg-warning",
+            JobOccurrenceStatus.Blocked => "text-bg-warning",
+            JobOccurrenceStatus.Due => "text-bg-primary",
+            JobOccurrenceStatus.Scheduled => "text-bg-primary",
+            JobOccurrenceStatus.Materialized => "text-bg-primary",
+            JobOccurrenceStatus.RetryScheduled => "text-bg-warning",
+            _ => "text-bg-secondary"
+        };
+        return new Microsoft.AspNetCore.Html.HtmlString($"<span class=\"badge {css}\">{status}</span>");
+    }
+}

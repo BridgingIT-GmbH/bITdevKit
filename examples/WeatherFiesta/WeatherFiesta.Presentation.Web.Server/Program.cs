@@ -64,7 +64,9 @@ builder.Services.AddFakeIdentityProvider(o => o
     .WithClient("Scalar", "scalar", $"{builder.Configuration["Authentication:Authority"]}/scalar/"));
 
 builder.Services.AddEndpoints<SystemEndpoints>();
-builder.Services.AddDashboard(o => o.Enabled(true));
+builder.Services.AddDashboard(o => o
+    .Enabled(true)
+    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.DashboardEndpoints>());
 
 // ===============================================================================================
 // Register log services and endpoints

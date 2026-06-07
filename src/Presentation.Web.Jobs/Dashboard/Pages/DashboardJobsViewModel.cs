@@ -23,6 +23,21 @@ public sealed class DashboardJobsViewModel
     public string ContentPath { get; set; } = "/_bdk/dashboard/jobs/content";
 
     /// <summary>
+    /// Gets or sets the base URL for dashboard job action POST endpoints.
+    /// </summary>
+    public string ActionBase { get; set; } = "/_bdk/dashboard/jobs";
+
+    /// <summary>
+    /// Gets or sets the realtime graph data URL.
+    /// </summary>
+    public string RealtimeDataPath { get; set; } = "/_bdk/dashboard/jobs/data/realtime";
+
+    /// <summary>
+    /// Gets or sets the history graph data URL.
+    /// </summary>
+    public string HistoryDataPath { get; set; } = "/_bdk/dashboard/jobs/data/history";
+
+    /// <summary>
     /// Gets or sets the dashboard summary (counts for the header cards).
     /// </summary>
     public JobSchedulerDashboardSummaryModel Summary { get; set; } = new();
@@ -31,6 +46,16 @@ public sealed class DashboardJobsViewModel
     /// Gets or sets the paged list of registered jobs.
     /// </summary>
     public IReadOnlyList<JobSchedulerJobModel> Jobs { get; set; } = [];
+
+    /// <summary>
+    /// Gets or sets the next due execution time per job name.
+    /// </summary>
+    public IReadOnlyDictionary<string, DateTimeOffset?> NextExecutionByJobName { get; set; } = new Dictionary<string, DateTimeOffset?>();
+
+    /// <summary>
+    /// Gets or sets the trigger details tooltip text per job name.
+    /// </summary>
+    public IReadOnlyDictionary<string, string> TriggerDetailsByJobName { get; set; } = new Dictionary<string, string>();
 
     /// <summary>
     /// Gets or sets the most recent occurrences across all jobs.

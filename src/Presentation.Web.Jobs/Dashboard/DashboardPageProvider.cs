@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard;
 
 using System.Globalization;
 using BridgingIT.DevKit.Application.Jobs;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -54,7 +55,11 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
 
         try
         {
-            var summary = await query.GetDashboardSummaryAsync(cancellationToken: context.RequestAborted);
+            var summaryTask = query.GetDashboardSummaryAsync(cancellationToken: context.RequestAborted);
+            var metricsTask = query.GetMetricsAsync(cancellationToken: context.RequestAborted);
+            await Task.WhenAll(summaryTask, metricsTask);
+
+            var summary = await summaryTask;
             if (summary.IsFailure)
             {
                 return new DashboardPageCard("Jobs", "Registered jobs", "Error")
@@ -69,10 +74,14 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             }
 
             var s = summary.Value;
-            var running = s.RunningOccurrenceCount;
-            var failed = s.FailedOccurrenceCount;
             var jobCount = s.JobFacets?.EnabledCount ?? 0;
-            var detail = $"{running} running, {failed} failed";
+
+            var metrics = await metricsTask;
+            var completed = metrics.IsSuccess
+                ? metrics.Value.OccurrenceCountsByStatus?.GetValueOrDefault(JobOccurrenceStatus.Completed) ?? 0
+                : 0;
+
+            var detail = $"{s.RunningOccurrenceCount} running, {completed.ToString("N0", CultureInfo.InvariantCulture)} completed, {s.FailedOccurrenceCount} failed";
             if (s.RetryScheduledCount > 0)
             {
                 detail += $", {s.RetryScheduledCount} retrying";

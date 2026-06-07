@@ -13,7 +13,7 @@ public enum JobOccurrenceStatus
     /// <summary>
     /// The occurrence was created but not yet promoted to active scheduling.
     /// </summary>
-    Materialized = 0,
+    Materialized = 0, // TODO: rename to Created or Pending
 
     /// <summary>
     /// The occurrence is scheduled for future execution.

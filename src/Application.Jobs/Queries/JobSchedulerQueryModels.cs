@@ -617,6 +617,12 @@ public class JobSchedulerOccurrenceModel
 
     public JobExecutionStatus? LatestExecutionStatus { get; init; }
 
+    public DateTimeOffset? LatestExecutionStartedUtc { get; init; }
+
+    public DateTimeOffset? LatestExecutionCompletedUtc { get; init; }
+
+    public double? LatestExecutionDurationSeconds { get; init; }
+
     public string LeaseOwnerSchedulerInstanceId { get; init; }
 
     public Guid? BatchInternalId { get; init; }

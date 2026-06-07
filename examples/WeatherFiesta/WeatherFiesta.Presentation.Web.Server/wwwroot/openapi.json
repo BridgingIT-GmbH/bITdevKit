@@ -6633,6 +6633,72 @@
         }
       }
     },
+    "/_bdk/dashboard/jobs": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Jobs",
+        "description": "Shows registered jobs with their triggers, occurrences, and management actions.",
+        "operationId": "_bdk.Dashboard.Jobs",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/jobs/content": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Jobs Content",
+        "description": "Shows the jobs dashboard content fragment.",
+        "operationId": "_bdk.Dashboard.JobsContent",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/jobs/data/content": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Jobs Data Content",
+        "description": "Shows the refreshable jobs dashboard data fragment.",
+        "operationId": "_bdk.Dashboard.JobsDataContent",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/_bdk/dashboard/app/cities": {
       "get": {
         "tags": [
@@ -8819,6 +8885,27 @@
                 "$ref": "#/components/schemas/JobExecutionStatus"
               }
             ]
+          },
+          "latestExecutionStartedUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "latestExecutionCompletedUtc": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "latestExecutionDurationSeconds": {
+            "type": [
+              "null",
+              "number"
+            ],
+            "format": "double"
           },
           "leaseOwnerSchedulerInstanceId": {
             "type": [

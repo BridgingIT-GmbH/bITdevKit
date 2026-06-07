@@ -52,6 +52,8 @@ public class WeatherIngestionJob(
                 break;
             }
 
+            await Task.Delay(1000, cancellationToken); // Artificial delay to simulate work and allow cancellation
+
             try
             {
                 if (city.Location is null)

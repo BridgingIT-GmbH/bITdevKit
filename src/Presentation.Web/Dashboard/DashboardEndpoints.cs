@@ -40,6 +40,18 @@ public class DashboardEndpoints(
             .WithSummary("Dashboard Index Content")
             .WithDescription("Shows the dashboard index card content fragment.")
             .Produces<string>((int)HttpStatusCode.OK);
+
+        group.MapDashboardPage<Pages.SystemOverview>(
+            options.EndpointPaths.System,
+            "_bdk.Dashboard.System",
+            "Dashboard System",
+            "Shows the dashboard system performance overview.");
+
+        group.MapDashboardPage<Pages.SystemOverviewContent>(
+            options.EndpointPaths.SystemContent,
+            "_bdk.Dashboard.SystemContent",
+            "Dashboard System Content",
+            "Shows the dashboard system performance content fragment.");
     }
 
     private Task<IResult> HandleIndex()

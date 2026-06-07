@@ -182,21 +182,7 @@
         }
 
         async function ensurePlotly() {
-            if (window.Plotly) {
-                return window.Plotly;
-            }
-            if (window.bdkPlotlyLoadPromise) {
-                return window.bdkPlotlyLoadPromise;
-            }
-            window.bdkPlotlyLoadPromise = new Promise((resolve, reject) => {
-                const script = document.createElement('script');
-                script.src = 'https://cdn.plot.ly/plotly-2.35.2.min.js';
-                script.async = true;
-                script.onload = () => resolve(window.Plotly);
-                script.onerror = () => reject(new Error('Failed to load Plotly.'));
-                document.head.appendChild(script);
-            });
-            return window.bdkPlotlyLoadPromise;
+            return window.bdkDashboard.loadPlotly();
         }
 
         function layout() {

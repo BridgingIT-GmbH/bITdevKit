@@ -1,5 +1,7 @@
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Models
+@using BridgingIT.DevKit.Domain.Repositories
+@using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using Microsoft.Extensions.DependencyInjection
@@ -50,30 +52,16 @@
 
 <script>
     (() => {
-        const contentUrl = '@contentPath';
-        const storageKey = 'bdk.dashboard.weatherfiesta.cities.refreshInterval';
-        const contentElement = document.getElementById('weatherfiesta-cities-content');
         const citySelectElement = document.getElementById('weatherfiesta-city-select');
-        const selectElement = document.getElementById('weatherfiesta-cities-refresh-interval');
-        const statusElement = document.getElementById('weatherfiesta-cities-refresh-status');
-        const refreshButton = document.getElementById('weatherfiesta-cities-refresh-now');
-
-        let timeoutId = null;
-        let abortController = null;
-
-        function getSelectedInterval() {
-            const value = Number(selectElement.value);
-            return Number.isFinite(value) && value > 0 ? value : null;
-        }
 
         function getContentUrl() {
-            const url = new URL(contentUrl, window.location.origin);
+            const url = new URL('@contentPath', window.location.origin);
             const cityId = citySelectElement?.value;
             if (cityId) {
                 url.searchParams.set('cityId', cityId);
             }
 
-            return url.toString();
+            return url;
         }
 
         function updatePageUrl() {
@@ -86,102 +74,21 @@
             window.history.replaceState(null, '', url.toString());
         }
 
-        function setStatus(text, isError) {
-            statusElement.textContent = text;
-            statusElement.classList.toggle('text-danger', isError === true);
-            statusElement.classList.toggle('text-muted', isError !== true);
-        }
-
-        function clearScheduledRefresh() {
-            if (timeoutId !== null) {
-                window.clearTimeout(timeoutId);
-                timeoutId = null;
-            }
-        }
-
-        function scheduleNextRefresh() {
-            clearScheduledRefresh();
-
-            const interval = getSelectedInterval();
-            if (interval === null || document.hidden) {
-                return;
-            }
-
-            timeoutId = window.setTimeout(() => refreshCities(true), interval);
-        }
-
-        async function refreshCities(scheduleAfter) {
-            clearScheduledRefresh();
-
-            if (abortController !== null) {
-                abortController.abort();
-            }
-
-            abortController = new AbortController();
-
-            try {
-                const response = await fetch(getContentUrl(), {
-                    headers: { 'X-Requested-With': 'fetch' },
-                    signal: abortController.signal
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-
-                contentElement.innerHTML = await response.text();
-                window.bdkDashboard.clearRefreshError(contentElement);
-                setStatus(`Updated ${new Date().toLocaleTimeString()}`, false);
-            } catch (error) {
-                if (error.name !== 'AbortError') {
-                    window.bdkDashboard.showRefreshError(contentElement);
-                    setStatus('Refresh failed', true);
-                }
-            } finally {
-                abortController = null;
-
-                if (scheduleAfter) {
-                    scheduleNextRefresh();
-                }
-            }
-        }
-
-        const savedInterval = localStorage.getItem(storageKey);
-        if (savedInterval !== null) {
-            selectElement.value = savedInterval;
-        }
-
-        selectElement.addEventListener('change', () => {
-            localStorage.setItem(storageKey, selectElement.value);
-
-            if (abortController !== null) {
-                abortController.abort();
-            }
-
-            scheduleNextRefresh();
+        const refresher = window.bdkDashboard.createRefresher({
+            buildUrl: getContentUrl,
+            contentSelector: '#weatherfiesta-cities-content',
+            statusSelector: '#weatherfiesta-cities-refresh-status',
+            intervalSelector: '#weatherfiesta-cities-refresh-interval',
+            refreshButtonSelector: '#weatherfiesta-cities-refresh-now',
+            storageKey: 'bdk.dashboard.weatherfiesta.cities.refreshInterval'
         });
 
         citySelectElement?.addEventListener('change', () => {
             updatePageUrl();
-            refreshCities(false);
-            scheduleNextRefresh();
+            refresher.refresh(true);
         });
 
-        refreshButton.addEventListener('click', () => refreshCities(false));
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                clearScheduledRefresh();
-                return;
-            }
-
-            if (getSelectedInterval() !== null) {
-                refreshCities(true);
-            }
-        });
-
-        refreshCities(false);
-        scheduleNextRefresh();
+        refresher.refresh(true);
     })();
 </script>
 
@@ -190,6 +97,12 @@
 
     private async Task<List<AdminCityModel>> GetCitiesAsync()
     {
+        var databaseReadyService = this.HttpContext.RequestServices.GetService<IDatabaseReadyService>();
+        if (databaseReadyService?.IsReady(nameof(CoreDbContext)) == false)
+        {
+            return [];
+        }
+
         var requester = this.HttpContext.RequestServices.GetService<IRequester>();
         if (requester is null)
         {

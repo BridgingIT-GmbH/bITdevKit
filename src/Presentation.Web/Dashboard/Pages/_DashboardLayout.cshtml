@@ -51,6 +51,259 @@
             window.bdkDashboard.refreshErrors.delete(`${contentElement.id || 'dashboard-content'}-refresh-error`);
             window.bdkDashboard.updateConnectionIndicator();
         };
+
+        window.bdkDashboard.assets = window.bdkDashboard.assets || {
+            plotly: 'https://cdn.plot.ly/plotly-2.35.2.min.js'
+        };
+
+        window.bdkDashboard.loadedScripts = window.bdkDashboard.loadedScripts || {};
+        window.bdkDashboard.loadScriptOnce = function(key, src) {
+            if (window.bdkDashboard.loadedScripts[key]) {
+                return window.bdkDashboard.loadedScripts[key];
+            }
+
+            window.bdkDashboard.loadedScripts[key] = new Promise((resolve, reject) => {
+                const existing = document.querySelector(`script[data-bdk-script="${key}"]`);
+                if (existing) {
+                    existing.addEventListener('load', () => resolve(existing), { once: true });
+                    existing.addEventListener('error', () => reject(new Error(`Failed to load ${src}.`)), { once: true });
+                    return;
+                }
+
+                const script = document.createElement('script');
+                script.src = src;
+                script.async = true;
+                script.dataset.bdkScript = key;
+                script.onload = () => resolve(script);
+                script.onerror = () => reject(new Error(`Failed to load ${src}.`));
+                document.head.appendChild(script);
+            });
+
+            return window.bdkDashboard.loadedScripts[key];
+        };
+
+        window.bdkDashboard.loadPlotly = async function() {
+            if (window.Plotly) {
+                return window.Plotly;
+            }
+
+            await window.bdkDashboard.loadScriptOnce('plotly', window.bdkDashboard.assets.plotly);
+            return window.Plotly;
+        };
+
+        window.bdkDashboard.resolveElement = function(value) {
+            if (typeof value === 'function') {
+                return value();
+            }
+
+            if (typeof value === 'string') {
+                return document.querySelector(value);
+            }
+
+            return value || null;
+        };
+
+        window.bdkDashboard.createRefresher = function(options) {
+            const settings = options || {};
+            const selectElement = window.bdkDashboard.resolveElement(settings.intervalSelector || settings.intervalElement);
+            const statusElement = window.bdkDashboard.resolveElement(settings.statusSelector || settings.statusElement);
+            const refreshButton = window.bdkDashboard.resolveElement(settings.refreshButtonSelector || settings.refreshButton);
+            const cacheBust = settings.cacheBust !== false;
+
+            let timeoutId = null;
+            let abortController = null;
+
+            function getContentElement() {
+                return window.bdkDashboard.resolveElement(settings.contentSelector || settings.contentElement);
+            }
+
+            function getSelectedInterval() {
+                if (!selectElement) {
+                    return null;
+                }
+
+                const value = Number(selectElement.value);
+                return Number.isFinite(value) && value > 0 ? value : null;
+            }
+
+            function setStatus(text, isError) {
+                if (!statusElement) {
+                    return;
+                }
+
+                statusElement.textContent = text;
+                statusElement.classList.toggle('text-danger', isError === true);
+                statusElement.classList.toggle('text-muted', isError !== true);
+            }
+
+            function clearScheduledRefresh() {
+                if (timeoutId !== null) {
+                    window.clearTimeout(timeoutId);
+                    timeoutId = null;
+                }
+            }
+
+            function buildUrl() {
+                const rawUrl = typeof settings.buildUrl === 'function'
+                    ? settings.buildUrl()
+                    : settings.contentUrl;
+
+                const url = rawUrl instanceof URL
+                    ? rawUrl
+                    : new URL(rawUrl, window.location.origin);
+
+                if (cacheBust) {
+                    url.searchParams.set('_', Date.now().toString());
+                }
+
+                return url.toString();
+            }
+
+            function restoreActiveTab(contentElement, activeTabTarget) {
+                if (!settings.preserveActiveTab || activeTabTarget === null || activeTabTarget === undefined) {
+                    return;
+                }
+
+                const activeTab = contentElement.querySelector(`[data-bs-target="${activeTabTarget}"]`);
+                if (activeTab !== null && window.bootstrap !== undefined) {
+                    window.bootstrap.Tab.getOrCreateInstance(activeTab).show();
+                }
+            }
+
+            function scheduleNextRefresh() {
+                clearScheduledRefresh();
+                const interval = getSelectedInterval();
+                if (interval === null || document.hidden) {
+                    return;
+                }
+
+                timeoutId = window.setTimeout(() => refresh(true), interval);
+            }
+
+            async function refresh(scheduleAfter = true) {
+                clearScheduledRefresh();
+
+                const contentElement = getContentElement();
+                if (!contentElement) {
+                    if (scheduleAfter) {
+                        scheduleNextRefresh();
+                    }
+
+                    return;
+                }
+
+                if (abortController !== null) {
+                    abortController.abort();
+                }
+
+                abortController = new AbortController();
+
+                try {
+                    const activeTabTarget = settings.preserveActiveTab
+                        ? contentElement.querySelector('.nav-link.active')?.getAttribute('data-bs-target')
+                        : null;
+                    const response = await fetch(buildUrl(), {
+                        cache: 'no-store',
+                        headers: { 'X-Requested-With': 'fetch' },
+                        signal: abortController.signal
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}`);
+                    }
+
+                    contentElement.innerHTML = await response.text();
+                    restoreActiveTab(contentElement, activeTabTarget);
+
+                    if (typeof settings.onSuccess === 'function') {
+                        settings.onSuccess(contentElement);
+                    }
+
+                    window.bdkDashboard.clearRefreshError(contentElement);
+                    setStatus(`Updated ${new Date().toLocaleTimeString()}`, false);
+                } catch (error) {
+                    if (error.name !== 'AbortError') {
+                        window.bdkDashboard.showRefreshError(contentElement);
+                        setStatus(settings.errorText || 'Refresh failed', true);
+                    }
+                } finally {
+                    abortController = null;
+                    if (scheduleAfter) {
+                        scheduleNextRefresh();
+                    }
+                }
+            }
+
+            if (selectElement && settings.storageKey) {
+                const savedInterval = localStorage.getItem(settings.storageKey);
+                if (savedInterval !== null) {
+                    selectElement.value = savedInterval;
+                }
+
+                selectElement.addEventListener('change', () => {
+                    localStorage.setItem(settings.storageKey, selectElement.value);
+
+                    if (abortController !== null) {
+                        abortController.abort();
+                    }
+
+                    scheduleNextRefresh();
+                });
+            }
+
+            if (refreshButton) {
+                refreshButton.addEventListener('click', () => refresh(true));
+            }
+
+            document.addEventListener('visibilitychange', () => {
+                if (document.hidden) {
+                    clearScheduledRefresh();
+                    return;
+                }
+
+                if (getSelectedInterval() !== null) {
+                    refresh(true);
+                }
+            });
+
+            scheduleNextRefresh();
+
+            return {
+                refresh,
+                schedule: scheduleNextRefresh,
+                clear: clearScheduledRefresh,
+                getSelectedInterval
+            };
+        };
+
+        window.bdkDashboard.postAction = async function(url, options) {
+            const settings = options || {};
+            const button = settings.button || document.activeElement;
+            if (button) {
+                button.disabled = true;
+            }
+
+            try {
+                const response = await fetch(url, {
+                    method: settings.method || 'POST',
+                    headers: { 'X-Requested-With': 'fetch' }
+                });
+
+                if (!response.ok) {
+                    console.error(settings.errorMessage || 'Dashboard action failed:', await response.text().catch(() => response.statusText));
+                }
+            } catch (error) {
+                console.error(settings.errorMessage || 'Dashboard action error:', error);
+            } finally {
+                if (button) {
+                    button.disabled = false;
+                }
+
+                if (settings.refresh) {
+                    await settings.refresh(true);
+                }
+            }
+        };
     </script>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect fill='%231a4151' width='16' height='16'/><path fill='%23d35a24' d='M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z'/><path fill='%23d35a24' d='M6.854 4.646a.5.5 0 0 1 0 .708L4.207 8l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0zm2.292 0a.5.5 0 0 0 0 .708L11.793 8l-2.647 2.646a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708 0z'/></svg>">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">

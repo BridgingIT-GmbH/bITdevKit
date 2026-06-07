@@ -1,5 +1,7 @@
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Models
+@using BridgingIT.DevKit.Domain.Repositories
+@using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure
 @using Microsoft.Extensions.DependencyInjection
 @using RazorSlices
 @inherits RazorSlice
@@ -167,12 +169,19 @@
 @functions {
     private async Task<WeatherFiestaDashboardCitiesViewModel> CreateModelAsync()
     {
-        var requester = this.HttpContext.RequestServices.GetService<IRequester>();
         var result = new WeatherFiestaDashboardCitiesViewModel
         {
             CapturedAtUtc = DateTimeOffset.UtcNow
         };
 
+        var databaseReadyService = this.HttpContext.RequestServices.GetService<IDatabaseReadyService>();
+        if (databaseReadyService?.IsReady(nameof(CoreDbContext)) == false)
+        {
+            result.Errors.Add("The database is still starting.");
+            return result;
+        }
+
+        var requester = this.HttpContext.RequestServices.GetService<IRequester>();
         if (requester is null)
         {
             result.Errors.Add("The requester service is not registered.");

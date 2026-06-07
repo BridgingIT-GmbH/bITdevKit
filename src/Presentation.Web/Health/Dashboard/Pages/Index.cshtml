@@ -14,6 +14,77 @@
     var contentPath = BridgingIT.DevKit.Presentation.Web.Health.Dashboard.DashboardEndpoints.BuildHealthContentPath(dashboardOptions);
 }
 
+<style>
+    .dashboard-health-checks {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+        gap: .75rem;
+    }
+
+    .dashboard-health-card {
+        min-height: 12rem;
+        overflow: hidden;
+    }
+
+    .dashboard-health-card-status {
+        border-left: .25rem solid var(--bs-secondary);
+    }
+
+    .dashboard-health-card-status-healthy {
+        border-left-color: var(--bs-success);
+    }
+
+    .dashboard-health-card-status-degraded {
+        border-left-color: var(--bs-warning);
+    }
+
+    .dashboard-health-card-status-unhealthy {
+        border-left-color: var(--bs-danger);
+    }
+
+    .dashboard-health-card-name {
+        overflow-wrap: anywhere;
+    }
+
+    .dashboard-health-tags,
+    .dashboard-health-data {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .35rem;
+    }
+
+    .dashboard-health-tag {
+        border: 1px solid var(--bs-border-color);
+        border-radius: 999px;
+        color: var(--bs-secondary-color);
+        font-size: .75rem;
+        line-height: 1;
+        padding: .25rem .45rem;
+    }
+
+    .dashboard-health-data-item {
+        border: 1px solid var(--bs-border-color);
+        border-radius: .35rem;
+        color: var(--bs-secondary-color);
+        font-size: .78rem;
+        line-height: 1.35;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+        padding: .25rem .4rem;
+    }
+
+    .dashboard-health-data-item code {
+        color: var(--bs-pink);
+        font-size: inherit;
+    }
+
+    @@media (max-width: 575.98px) {
+        .dashboard-health-checks {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
 <div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
     <h4 class="m-0">Health</h4>
     <div class="d-flex align-items-center gap-2">
@@ -37,110 +108,14 @@
 
 <script>
     (() => {
-        const contentUrl = '@contentPath';
-        const storageKey = 'bdk.dashboard.health.refreshInterval';
-        const contentElement = document.getElementById('dashboard-health-content');
-        const selectElement = document.getElementById('health-refresh-interval');
-        const statusElement = document.getElementById('health-refresh-status');
-        const refreshButton = document.getElementById('health-refresh-now');
-
-        let timeoutId = null;
-        let abortController = null;
-
-        function getSelectedInterval() {
-            const value = Number(selectElement.value);
-            return Number.isFinite(value) && value > 0 ? value : null;
-        }
-
-        function setStatus(text, isError) {
-            statusElement.textContent = text;
-            statusElement.classList.toggle('text-danger', isError === true);
-            statusElement.classList.toggle('text-muted', isError !== true);
-        }
-
-        function clearScheduledRefresh() {
-            if (timeoutId !== null) {
-                window.clearTimeout(timeoutId);
-                timeoutId = null;
-            }
-        }
-
-        function scheduleNextRefresh() {
-            clearScheduledRefresh();
-
-            const interval = getSelectedInterval();
-            if (interval === null || document.hidden) {
-                return;
-            }
-
-            timeoutId = window.setTimeout(() => refreshHealth(true), interval);
-        }
-
-        async function refreshHealth(scheduleAfter) {
-            clearScheduledRefresh();
-
-            if (abortController !== null) {
-                abortController.abort();
-            }
-
-            abortController = new AbortController();
-
-            try {
-                const response = await fetch(contentUrl, {
-                    headers: { 'X-Requested-With': 'fetch' },
-                    signal: abortController.signal
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-
-                contentElement.innerHTML = await response.text();
-                window.bdkDashboard.clearRefreshError(contentElement);
-                setStatus(`Updated ${new Date().toLocaleTimeString()}`, false);
-            } catch (error) {
-                if (error.name !== 'AbortError') {
-                    window.bdkDashboard.showRefreshError(contentElement);
-                    setStatus('Refresh failed', true);
-                }
-            } finally {
-                abortController = null;
-
-                if (scheduleAfter) {
-                    scheduleNextRefresh();
-                }
-            }
-        }
-
-        const savedInterval = localStorage.getItem(storageKey);
-        if (savedInterval !== null) {
-            selectElement.value = savedInterval;
-        }
-
-        selectElement.addEventListener('change', () => {
-            localStorage.setItem(storageKey, selectElement.value);
-
-            if (abortController !== null) {
-                abortController.abort();
-            }
-
-            scheduleNextRefresh();
+        window.bdkDashboard.createRefresher({
+            contentUrl: '@contentPath',
+            contentSelector: '#dashboard-health-content',
+            statusSelector: '#health-refresh-status',
+            intervalSelector: '#health-refresh-interval',
+            refreshButtonSelector: '#health-refresh-now',
+            storageKey: 'bdk.dashboard.health.refreshInterval'
         });
-
-        refreshButton.addEventListener('click', () => refreshHealth(false));
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                clearScheduledRefresh();
-                return;
-            }
-
-            if (getSelectedInterval() !== null) {
-                refreshHealth(true);
-            }
-        });
-
-        scheduleNextRefresh();
     })();
 </script>
 

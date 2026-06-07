@@ -24,7 +24,7 @@ public static partial class ServiceCollectionExtensions
         DatabaseCreatorOptions options = null)
         where TContext : DbContext
     {
-        services.AddSingleton<IDatabaseReadyService, DatabaseReadyService>();
+        services.TryAddDatabaseReadyHealthCheck();
         if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
             services.AddHostedService(sp =>
@@ -56,7 +56,7 @@ public static partial class ServiceCollectionExtensions
         DatabaseMigratorOptions options = null)
         where TContext : DbContext
     {
-        services.AddSingleton<IDatabaseReadyService, DatabaseReadyService>();
+        services.TryAddDatabaseReadyHealthCheck();
 
         if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {
@@ -80,7 +80,7 @@ public static partial class ServiceCollectionExtensions
         DatabaseCheckerOptions options = null)
         where TContext : DbContext
     {
-        services.AddSingleton<IDatabaseReadyService, DatabaseReadyService>();
+        services.TryAddDatabaseReadyHealthCheck();
 
         if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // avoid hosted service during build-time openapi generation
         {

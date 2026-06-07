@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard;
 using System.Globalization;
 using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,6 +40,20 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
     {
         var query = context.RequestServices.GetService<IJobSchedulerQueryService>();
         var url = DashboardEndpoints.BuildJobsPath(context.RequestServices.GetRequiredService<DashboardEndpointsOptions>());
+        var databaseReadyService = context.RequestServices.GetService<IDatabaseReadyService>();
+
+        if (databaseReadyService?.IsReady() == false)
+        {
+            return new DashboardPageCard("Jobs", "Registered jobs", "-")
+            {
+                Detail = "Database starting",
+                Icon = "calendar2-check",
+                Url = url,
+                Group = "bdk",
+                GroupOrder = 0,
+                Order = 40
+            };
+        }
 
         if (query is null)
         {

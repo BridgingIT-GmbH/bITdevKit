@@ -9314,6 +9314,50 @@
         }
       }
     },
+    "/_bdk/dashboard/system": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard System",
+        "description": "Shows the dashboard system performance overview.",
+        "operationId": "_bdk.Dashboard.System",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/system/content": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard System Content",
+        "description": "Shows the dashboard system performance content fragment.",
+        "operationId": "_bdk.Dashboard.SystemContent",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/_bdk/dashboard/console": {
       "get": {
         "tags": [

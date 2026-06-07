@@ -6,6 +6,8 @@
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core.Dashboard;
 
 using System.Globalization;
+using BridgingIT.DevKit.Domain.Repositories;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Http;
 
@@ -30,6 +32,12 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Description = "WeatherFiesta city dashboard",
             Card = async context =>
             {
+                var databaseReadyService = context.RequestServices.GetService<IDatabaseReadyService>();
+                if (databaseReadyService?.IsReady(nameof(CoreDbContext)) == false)
+                {
+                    return CreateCard("-", "Database starting");
+                }
+
                 var requester = context.RequestServices.GetService<IRequester>();
                 if (requester is null)
                 {

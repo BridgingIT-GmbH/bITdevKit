@@ -1,0 +1,399 @@
+@using BridgingIT.DevKit.Presentation.Web
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.Extensions.Logging
+@inherits RazorSlice
+
+@{
+    var model = CreateModel();
+    var applicationRoutes = model.AspNetRoutes.Routes
+        .Where(route => IsApplicationRoute(route.Route))
+        .ToList();
+    var totalStatus = Math.Max(1, model.AspNet.Status1xx + model.AspNet.Status2xx + model.AspNet.Status3xx + model.AspNet.Status4xx + model.AspNet.Status5xx);
+}
+
+@if (model.UnavailableServices.Count > 0)
+{
+    <div class="alert alert-warning py-2 mb-2">
+        Metrics unavailable: @string.Join(", ", model.UnavailableServices). Enable metrics with <code>AddMetrics(...)</code> to populate every panel.
+    </div>
+}
+
+@if (model.Errors.Count > 0)
+{
+    <div class="alert alert-danger py-2 mb-2">
+        @foreach (var error in model.Errors)
+        {
+            <div>@error</div>
+        }
+    </div>
+}
+
+<div class="dashboard-system-snapshot"
+     data-captured-at="@(model.CapturedAtUtc.ToUnixTimeMilliseconds())"
+     data-cpu="@(Invariant(model.DotNet.CpuUsagePercent))"
+     data-working-set="@(Invariant(model.DotNet.WorkingSetMb))"
+     data-requests-per-minute="@(Invariant(model.AspNet.RequestsPerMinute))"
+     data-average-latency="@(Invariant(model.AspNet.AverageLatencyMs))">
+    <div class="dashboard-system-grid mb-2">
+        @RenderKpi("CPU", $"{FormatNumber(model.DotNet.CpuUsagePercent)}%", "Process CPU usage", model.DotNet.CpuUsagePercent, "dashboard-system-meter-success")
+        @RenderKpi("Working Set", $"{FormatNumber(model.DotNet.WorkingSetMb)} MB", $"Private {FormatNumber(model.DotNet.PrivateMemoryMb)} MB", MemoryPercent(model.DotNet.WorkingSetMb, model.MemoryScaleMb), "dashboard-system-meter-warning")
+        @RenderKpi("Requests/min", FormatNumber(model.AspNet.RequestsPerMinute), $"{FormatCount(model.AspNet.TotalRequests)} total requests", PercentOf(model.AspNet.RequestsPerMinute, model.RequestScale), "dashboard-system-meter-success")
+        @RenderKpi("Latency", $"{FormatNumber(model.AspNet.AverageLatencyMs)} ms", $"{FormatCount(model.AspNet.ActiveRequests)} active requests", PercentOf(model.AspNet.AverageLatencyMs, model.LatencyScale), model.AspNet.AverageLatencyMs > 500 ? "dashboard-system-meter-danger" : "dashboard-system-meter-success")
+    </div>
+
+    <div class="dashboard-system-grid">
+        <section class="card dashboard-system-span-4">
+            <div class="card-body p-3">
+                <h6 class="card-title mb-3">Runtime Pressure</h6>
+                <div class="dashboard-system-gauge mb-3">
+                    @RenderGauge(model.DotNet.CpuUsagePercent)
+                    <div>
+                        <div class="dashboard-system-label">CPU</div>
+                        <div class="dashboard-system-value">@FormatNumber(model.DotNet.CpuUsagePercent)%</div>
+                        <div class="dashboard-system-subvalue">@Environment.ProcessorCount logical processors</div>
+                    </div>
+                </div>
+                @RenderMetricBar("Working set", model.DotNet.WorkingSetMb, model.MemoryScaleMb, "MB")
+                @RenderMetricBar("Private memory", model.DotNet.PrivateMemoryMb, model.MemoryScaleMb, "MB")
+                @RenderMetricBar("Managed memory", model.DotNet.ManagedMemoryMb, model.MemoryScaleMb, "MB")
+                @RenderMetricBar("Heap size", model.DotNet.HeapSizeMb, model.MemoryScaleMb, "MB")
+            </div>
+        </section>
+
+        <section class="card dashboard-system-span-4">
+            <div class="card-body p-3">
+                <h6 class="card-title mb-3">Traffic</h6>
+                <div class="dashboard-system-value">@FormatCount(model.AspNet.TotalRequests)</div>
+                <div class="dashboard-system-subvalue mb-3">@FormatNumber(model.AspNet.RequestsPerMinute) requests/min, @FormatNumber(model.AspNet.AverageLatencyMs) ms avg</div>
+                <div class="dashboard-system-statusbar mb-2" title="HTTP status distribution">
+                    <span class="bg-secondary" style="@CssPercent("--segment-value", PercentOf(model.AspNet.Status1xx, totalStatus))"></span>
+                    <span class="bg-success" style="@CssPercent("--segment-value", PercentOf(model.AspNet.Status2xx, totalStatus))"></span>
+                    <span class="bg-info" style="@CssPercent("--segment-value", PercentOf(model.AspNet.Status3xx, totalStatus))"></span>
+                    <span class="bg-warning" style="@CssPercent("--segment-value", PercentOf(model.AspNet.Status4xx, totalStatus))"></span>
+                    <span class="bg-danger" style="@CssPercent("--segment-value", PercentOf(model.AspNet.Status5xx, totalStatus))"></span>
+                </div>
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                    <span class="dashboard-system-chip">2xx <strong>@FormatCount(model.AspNet.Status2xx)</strong></span>
+                    <span class="dashboard-system-chip">4xx <strong>@FormatCount(model.AspNet.Status4xx)</strong></span>
+                    <span class="dashboard-system-chip">5xx <strong>@FormatCount(model.AspNet.Status5xx)</strong></span>
+                    <span class="dashboard-system-chip">Failed <strong>@FormatNumber(model.AspNet.FailureRatePercent)%</strong></span>
+                </div>
+                @RenderMetricBar("Active requests", model.AspNet.ActiveRequests, Math.Max(1, model.AspNet.MaxObservedConcurrentRequests), string.Empty)
+                @RenderMetricBar("Tracked routes", model.AspNet.TrackedRouteCount, Math.Max(1, model.AspNet.TrackedRouteCount), string.Empty)
+            </div>
+        </section>
+
+        <section class="card dashboard-system-span-4">
+            <div class="card-body p-3">
+                <h6 class="card-title mb-3">Thread Pool & GC</h6>
+                @RenderMetricBar("Worker threads used", model.DotNet.WorkerThreadsUsed, Math.Max(1, model.DotNet.WorkerThreadsUsed + model.DotNet.WorkerThreadsAvailable), string.Empty)
+                @RenderMetricBar("IO threads used", model.DotNet.IoThreadsUsed, Math.Max(1, model.DotNet.IoThreadsUsed + model.DotNet.IoThreadsAvailable), string.Empty)
+                @RenderMetricBar("Pending work items", Math.Max(0, model.DotNet.PendingWorkItems), Math.Max(1, Math.Max(0, model.DotNet.PendingWorkItems)), string.Empty)
+                <div class="d-flex flex-wrap gap-2 mt-3">
+                    <span class="dashboard-system-chip">Threads <strong>@FormatCount(model.DotNet.ThreadCount)</strong></span>
+                    <span class="dashboard-system-chip">Gen0 <strong>@FormatCount(model.DotNet.Gen0Collections)</strong></span>
+                    <span class="dashboard-system-chip">Gen1 <strong>@FormatCount(model.DotNet.Gen1Collections)</strong></span>
+                    <span class="dashboard-system-chip">Gen2 <strong>@FormatCount(model.DotNet.Gen2Collections)</strong></span>
+                </div>
+            </div>
+        </section>
+
+        <section class="card dashboard-system-span-6">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="card-title mb-0">CPU Trend</h6>
+                    <span class="text-muted small">last 48 samples</span>
+                </div>
+                @RenderTrendChart("system-cpu-history")
+            </div>
+        </section>
+
+        <section class="card dashboard-system-span-6">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="card-title mb-0">Memory Trend</h6>
+                    <span class="text-muted small">working set</span>
+                </div>
+                @RenderTrendChart("system-memory-history")
+            </div>
+        </section>
+
+        <section class="card dashboard-system-span-6">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="card-title mb-0">Request Rate</h6>
+                    <span class="text-muted small">requests/min</span>
+                </div>
+                @RenderTrendChart("system-request-history")
+            </div>
+        </section>
+
+        <section class="card dashboard-system-span-6">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-start mb-2">
+                    <h6 class="card-title mb-0">Latency Trend</h6>
+                    <span class="text-muted small">average ms</span>
+                </div>
+                @RenderTrendChart("system-latency-history")
+            </div>
+        </section>
+
+        <section class="card dashboard-system-span-8">
+            <div class="card-body p-3">
+                <h6 class="card-title">Busiest Routes</h6>
+                @if (applicationRoutes.Count == 0)
+                {
+                    <div class="text-muted small">No route metrics are available yet.</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>Route</th>
+                                <th class="text-end">Requests</th>
+                                <th class="text-end">Avg</th>
+                                <th class="text-end">Failure</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var route in applicationRoutes.Take(8))
+                            {
+                                <tr>
+                                    <td class="text-break"><span class="badge text-bg-secondary me-1">@route.Method</span>@route.Route</td>
+                                    <td class="text-end">@FormatCount(route.RequestCount)</td>
+                                    <td class="text-end">@FormatNumber(route.AverageLatencyMs) ms</td>
+                                    <td class="text-end @(route.FailureCount > 0 ? "text-danger" : "")">@FormatNumber(route.FailureRatePercent)%</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <section class="card dashboard-system-span-4">
+            <div class="card-body p-3">
+                <h6 class="card-title">Process</h6>
+                <table class="table table-sm align-middle mb-0">
+                    <tbody>
+                    <tr><td>Uptime</td><td class="text-end">@FormatUptime(model.DotNet.UptimeSeconds)</td></tr>
+                    <tr><td>Started</td><td class="text-end">@FormatTimestamp(model.DotNet.ProcessStartedAtUtc)</td></tr>
+                    <tr><td>Captured</td><td class="text-end">@FormatTimestamp(model.CapturedAtUtc)</td></tr>
+                    <tr><td>Total allocated</td><td class="text-end">@FormatNumber(model.DotNet.TotalAllocatedMb) MB</td></tr>
+                    <tr><td>Fragmented</td><td class="text-end">@FormatNumber(model.DotNet.FragmentedMemoryMb) MB</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+</div>
+
+@functions {
+    private DashboardSystemViewModel CreateModel()
+    {
+        var dotNetSnapshotService = this.HttpContext.RequestServices.GetService<IDotNetMetricsSnapshotService>();
+        var aspNetSnapshotService = this.HttpContext.RequestServices.GetService<IAspNetMetricsSnapshotService>();
+        var logger = this.HttpContext.RequestServices.GetService<ILogger<DashboardSystemViewModel>>();
+        var result = new DashboardSystemViewModel { CapturedAtUtc = DateTimeOffset.UtcNow };
+
+        if (dotNetSnapshotService is null)
+        {
+            result.UnavailableServices.Add(".NET runtime metrics");
+        }
+        else
+        {
+            try
+            {
+                result.DotNet = dotNetSnapshotService.GetSnapshot();
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "Failed to retrieve dashboard system .NET metrics snapshot.");
+                result.Errors.Add(".NET runtime metrics could not be loaded.");
+            }
+        }
+
+        if (aspNetSnapshotService is null)
+        {
+            result.UnavailableServices.Add("ASP.NET request metrics");
+        }
+        else
+        {
+            try
+            {
+                result.AspNet = aspNetSnapshotService.GetSnapshot();
+                result.AspNetRoutes = aspNetSnapshotService.GetRouteSnapshot();
+            }
+            catch (Exception ex)
+            {
+                logger?.LogError(ex, "Failed to retrieve dashboard system ASP.NET metrics snapshot.");
+                result.Errors.Add("ASP.NET request metrics could not be loaded.");
+            }
+        }
+
+        result.MemoryScaleMb = Math.Max(128, Math.Max(result.DotNet.WorkingSetMb, Math.Max(result.DotNet.PrivateMemoryMb, result.DotNet.TotalAllocatedMb)));
+        result.RequestScale = Math.Max(10, result.AspNet.RequestsPerMinute);
+        result.LatencyScale = Math.Max(100, result.AspNet.AverageLatencyMs);
+        return result;
+    }
+
+    private static bool IsApplicationRoute(string route)
+    {
+        return !route.StartsWith("/_bdk", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private IHtmlContent RenderKpi(string label, string value, string subvalue, double percent, string meterClass)
+    {
+        var html = $"""
+            <section class="card dashboard-system-span-3 dashboard-system-kpi">
+                <div class="card-body p-3 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="dashboard-system-label">{HtmlEncode(label)}</div>
+                        <div class="dashboard-system-value">{HtmlEncode(value)}</div>
+                        <div class="dashboard-system-subvalue">{HtmlEncode(subvalue)}</div>
+                    </div>
+                    <div class="dashboard-system-meter {HtmlEncode(meterClass)}" style="{CssPercent("--meter-value", percent)}"><span></span></div>
+                </div>
+            </section>
+            """;
+
+        return new HtmlString(html);
+    }
+
+    private IHtmlContent RenderGauge(double percent)
+    {
+        const double Circumference = 251.2;
+        var clamped = Math.Clamp(percent, 0, 100);
+        var offset = Circumference - (Circumference * clamped / 100d);
+        return new HtmlString($"""
+            <svg viewBox="0 0 100 100" role="img" aria-label="CPU usage {FormatNumber(clamped)} percent">
+                <circle class="dashboard-system-gauge-track" cx="50" cy="50" r="40"></circle>
+                <circle class="dashboard-system-gauge-value" cx="50" cy="50" r="40" stroke-dasharray="{Invariant(Circumference)}" stroke-dashoffset="{Invariant(offset)}"></circle>
+            </svg>
+            """);
+    }
+
+    private IHtmlContent RenderMetricBar(string label, double value, double max, string unit)
+    {
+        var displayUnit = string.IsNullOrWhiteSpace(unit) ? string.Empty : $" {unit}";
+        var html = $"""
+            <div class="mb-2">
+                <div class="d-flex justify-content-between gap-2 small mb-1">
+                    <span>{HtmlEncode(label)}</span>
+                    <span class="text-nowrap">{HtmlEncode(FormatNumber(value))}{HtmlEncode(displayUnit)}</span>
+                </div>
+                <div class="dashboard-system-meter" style="{CssPercent("--meter-value", PercentOf(value, max))}"><span></span></div>
+            </div>
+            """;
+
+        return new HtmlString(html);
+    }
+
+    private IHtmlContent RenderTrendChart(string id)
+    {
+        return new HtmlString($"""
+            <div class="dashboard-system-chart" id="{HtmlEncode(id)}">
+                <svg viewBox="0 0 300 92" preserveAspectRatio="none" aria-hidden="true">
+                    <line class="dashboard-system-chart-grid" x1="0" y1="23" x2="300" y2="23"></line>
+                    <line class="dashboard-system-chart-grid" x1="0" y1="46" x2="300" y2="46"></line>
+                    <line class="dashboard-system-chart-grid" x1="0" y1="69" x2="300" y2="69"></line>
+                    <polyline class="dashboard-system-chart-line" data-system-line points=""></polyline>
+                    <circle class="dashboard-system-chart-point" data-system-point cx="150" cy="46" r="3.5" opacity="0"></circle>
+                </svg>
+            </div>
+            """);
+    }
+
+    private static double PercentOf(double value, double max)
+    {
+        return max <= 0 ? 0 : Math.Clamp((value / max) * 100d, 0, 100);
+    }
+
+    private static double MemoryPercent(double value, double max)
+    {
+        return PercentOf(value, max);
+    }
+
+    private static string CssPercent(string name, double value)
+    {
+        return $"{name}: {Invariant(Math.Clamp(value, 0, 100))}%";
+    }
+
+    private static string FormatNumber(double value)
+    {
+        var rounded = Math.Round(value, 2);
+        return Math.Abs(rounded % 1) < 0.0001
+            ? rounded.ToString("N0", CultureInfo.InvariantCulture)
+            : rounded.ToString("N2", CultureInfo.InvariantCulture);
+    }
+
+    private static string FormatCount(long value)
+    {
+        return value.ToString("N0", CultureInfo.InvariantCulture);
+    }
+
+    private static string FormatCount(int value)
+    {
+        return value.ToString("N0", CultureInfo.InvariantCulture);
+    }
+
+    private static string FormatTimestamp(DateTimeOffset value)
+    {
+        return value == default ? "-" : value.LocalDateTime.ToString("g", CultureInfo.InvariantCulture);
+    }
+
+    private static string FormatUptime(double uptimeSeconds)
+    {
+        if (uptimeSeconds <= 0)
+        {
+            return "-";
+        }
+
+        var uptime = TimeSpan.FromSeconds(uptimeSeconds);
+        if (uptime.TotalDays >= 1)
+        {
+            return $"{(int)uptime.TotalDays}d {uptime.Hours}h";
+        }
+
+        if (uptime.TotalHours >= 1)
+        {
+            return $"{(int)uptime.TotalHours}h {uptime.Minutes}m";
+        }
+
+        return $"{uptime.Minutes}m {uptime.Seconds}s";
+    }
+
+    private static string Invariant(double value)
+    {
+        return value.ToString("0.###", CultureInfo.InvariantCulture);
+    }
+
+    private static string HtmlEncode(string value)
+    {
+        return System.Net.WebUtility.HtmlEncode(value ?? string.Empty);
+    }
+
+    private sealed class DashboardSystemViewModel
+    {
+        public DateTimeOffset CapturedAtUtc { get; init; }
+
+        public DotNetMetricsSnapshotModel DotNet { get; set; } = new();
+
+        public AspNetMetricsSnapshotModel AspNet { get; set; } = new();
+
+        public AspNetRouteMetricsSnapshotModel AspNetRoutes { get; set; } = new();
+
+        public List<string> UnavailableServices { get; } = [];
+
+        public List<string> Errors { get; } = [];
+
+        public double MemoryScaleMb { get; set; } = 128;
+
+        public double RequestScale { get; set; } = 10;
+
+        public double LatencyScale { get; set; } = 100;
+    }
+}

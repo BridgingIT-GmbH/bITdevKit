@@ -46,147 +46,22 @@
 
 <script>
     (() => {
-        const contentUrl = '@contentPath';
-        const storageKey = 'bdk.dashboard.jobs.refreshInterval';
         const shellElement = document.getElementById('dashboard-jobs-shell');
-        const selectElement = document.getElementById('jobs-refresh-interval');
-        const statusElement = document.getElementById('jobs-refresh-status');
-        const refreshButton = document.getElementById('jobs-refresh-now');
-
-        let timeoutId = null;
-        let abortController = null;
-
-        function getContentElement() {
-            return shellElement?.querySelector('#dashboard-jobs-content') ?? null;
-        }
-
-        function getSelectedInterval() {
-            const value = Number(selectElement.value);
-            return Number.isFinite(value) && value > 0 ? value : null;
-        }
-
-        function buildContentUrl() {
-            const url = new URL(contentUrl, window.location.origin);
-            url.searchParams.set('_', Date.now().toString());
-            return url.toString();
-        }
-
-        function setStatus(text, isError) {
-            statusElement.textContent = text;
-            statusElement.classList.toggle('text-danger', isError === true);
-            statusElement.classList.toggle('text-muted', isError !== true);
-        }
-
-        function clearScheduledRefresh() {
-            if (timeoutId !== null) {
-                window.clearTimeout(timeoutId);
-                timeoutId = null;
-            }
-        }
-
-        function scheduleNextRefresh() {
-            clearScheduledRefresh();
-            const interval = getSelectedInterval();
-            if (interval === null || document.hidden) {
-                return;
-            }
-            timeoutId = window.setTimeout(() => refreshJobs(true), interval);
-        }
-
-        async function refreshJobs(scheduleAfter) {
-            clearScheduledRefresh();
-
-            const contentElement = getContentElement();
-            if (!contentElement) {
-                if (scheduleAfter) {
-                    scheduleNextRefresh();
-                }
-                return;
-            }
-
-            if (abortController !== null) {
-                abortController.abort();
-            }
-            abortController = new AbortController();
-
-            try {
-                const response = await fetch(buildContentUrl(), {
-                    cache: 'no-store',
-                    headers: { 'X-Requested-With': 'fetch' },
-                    signal: abortController.signal
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-
-                contentElement.innerHTML = await response.text();
-
-                window.bdkDashboard.clearRefreshError(contentElement);
-                setStatus(`Updated ${new Date().toLocaleTimeString()}`, false);
-            } catch (error) {
-                if (error.name !== 'AbortError') {
-                    window.bdkDashboard.showRefreshError(contentElement);
-                    setStatus('Refresh failed', true);
-                }
-            } finally {
-                abortController = null;
-                if (scheduleAfter) {
-                    scheduleNextRefresh();
-                }
-            }
-        }
-
-        const savedInterval = localStorage.getItem(storageKey);
-        if (savedInterval !== null) {
-            selectElement.value = savedInterval;
-        }
-
-        selectElement.addEventListener('change', () => {
-            localStorage.setItem(storageKey, selectElement.value);
-            if (abortController !== null) {
-                abortController.abort();
-            }
-            scheduleNextRefresh();
+        const refresher = window.bdkDashboard.createRefresher({
+            contentUrl: '@contentPath',
+            contentSelector: () => shellElement?.querySelector('#dashboard-jobs-content') ?? null,
+            statusSelector: '#jobs-refresh-status',
+            intervalSelector: '#jobs-refresh-interval',
+            refreshButtonSelector: '#jobs-refresh-now',
+            storageKey: 'bdk.dashboard.jobs.refreshInterval'
         });
-
-        refreshButton.addEventListener('click', () => refreshJobs(false));
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                clearScheduledRefresh();
-                return;
-            }
-            if (getSelectedInterval() !== null) {
-                refreshJobs(true);
-            }
-        });
-
-        scheduleNextRefresh();
 
         // Global action helper — called from inline buttons in Content.cshtml
         window.bdkJobsAction = async function(url) {
-            const btn = document.activeElement;
-            if (btn) {
-                btn.disabled = true;
-            }
-            try {
-                const resp = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'X-Requested-With': 'fetch' }
-                });
-                if (!resp.ok) {
-                    const txt = await resp.text().catch(() => `HTTP ${resp.status}`);
-                    console.error('Job action failed:', txt);
-                }
-            } catch (err) {
-                console.error('Job action error:', err);
-            } finally {
-                if (btn) {
-                    btn.disabled = false;
-                }
-                await refreshJobs(false);
-            }
+            await window.bdkDashboard.postAction(url, {
+                refresh: refresher.refresh,
+                errorMessage: 'Job action failed:'
+            });
         };
     })();
 </script>

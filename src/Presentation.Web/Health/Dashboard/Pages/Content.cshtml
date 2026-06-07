@@ -61,67 +61,72 @@
     </div>
 </div>
 
-<div class="card">
-    <div class="card-body p-3">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h6 class="card-title mb-0">Registered Health Checks</h6>
-            <span class="badge @GetStatusBadgeClass(healthModel.Status)">@healthModel.StatusText</span>
-        </div>
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <h6 class="mb-0">Registered Health Checks</h6>
+        <span class="badge @GetStatusBadgeClass(healthModel.Status)">@healthModel.StatusText</span>
+    </div>
 
-        @if (healthModel.Entries.Count == 0)
-        {
-            <div class="text-muted small">No health check entries are available.</div>
-        }
-        else
-        {
-            <div class="table-responsive">
-                <table class="table table-sm align-middle mb-0">
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Status</th>
-                        <th>Description</th>
-                        <th>Tags</th>
-                        <th class="text-end">Duration</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    @foreach (var entry in healthModel.Entries.OrderBy(entry => entry.Status).ThenBy(entry => entry.Name, StringComparer.OrdinalIgnoreCase))
-                    {
-                        <tr>
-                            <td class="text-break">
-                                <div class="fw-semibold">@entry.Name</div>
-                                @if (!string.IsNullOrWhiteSpace(entry.Exception))
-                                {
-                                    <div class="text-danger small text-break">@entry.Exception</div>
-                                }
-                            </td>
-                            <td><span class="badge @GetStatusBadgeClass(entry.Status)">@entry.Status</span></td>
-                            <td class="text-break">@DisplayValue(entry.Description)</td>
-                            <td class="text-break">@DisplayTags(entry.Tags)</td>
-                            <td class="text-end text-nowrap">@FormatDuration(entry.Duration)</td>
-                        </tr>
+    @if (healthModel.Entries.Count == 0)
+    {
+        <div class="text-muted small">No health check entries are available.</div>
+    }
+    else
+    {
+        <div class="dashboard-health-checks">
+            @foreach (var entry in healthModel.Entries.OrderBy(entry => entry.Status).ThenBy(entry => entry.Name, StringComparer.OrdinalIgnoreCase))
+            {
+                <article class="card dashboard-health-card dashboard-health-card-status @GetStatusCardClass(entry.Status)">
+                    <div class="card-body p-3 d-flex flex-column gap-2">
+                        <div class="d-flex align-items-start justify-content-between gap-2">
+                            <div class="min-w-0">
+                                <h6 class="dashboard-health-card-name fw-semibold mb-1">@entry.Name</h6>
+                                <div class="text-muted small">@DisplayValue(entry.Description)</div>
+                            </div>
+                            <span class="badge @GetStatusBadgeClass(entry.Status) flex-shrink-0">@entry.Status</span>
+                        </div>
+
+                        <div class="d-flex align-items-center justify-content-between gap-2 small">
+                            <span class="text-muted">Duration</span>
+                            <span class="fw-semibold text-nowrap">@FormatDuration(entry.Duration)</span>
+                        </div>
+
+                        @if (entry.Tags.Count > 0)
+                        {
+                            <div>
+                                <div class="text-muted small mb-1">Tags</div>
+                                <div class="dashboard-health-tags">
+                                    @foreach (var tag in entry.Tags.OrderBy(tag => tag, StringComparer.OrdinalIgnoreCase))
+                                    {
+                                        <span class="dashboard-health-tag">@tag</span>
+                                    }
+                                </div>
+                            </div>
+                        }
+
                         @if (entry.Data.Count > 0)
                         {
-                            <tr>
-                                <td></td>
-                                <td colspan="4">
-                                    <div class="small text-muted">
-                                        @foreach (var item in entry.Data)
-                                        {
-                                            <span class="me-3"><code>@item.Key</code>: @DisplayValue(item.Value)</span>
-                                        }
-                                    </div>
-                                </td>
-                            </tr>
+                            <div>
+                                <div class="text-muted small mb-1">Data</div>
+                                <div class="dashboard-health-data">
+                                    @foreach (var item in entry.Data.OrderBy(item => item.Key, StringComparer.OrdinalIgnoreCase))
+                                    {
+                                        <span class="dashboard-health-data-item"><code>@item.Key</code>: @DisplayValue(item.Value)</span>
+                                    }
+                                </div>
+                            </div>
                         }
-                    }
-                    </tbody>
-                </table>
-            </div>
-        }
-    </div>
-</div>
+
+                        @if (!string.IsNullOrWhiteSpace(entry.Exception))
+                        {
+                            <div class="text-danger small text-break mt-auto">@entry.Exception</div>
+                        }
+                    </div>
+                </article>
+            }
+        </div>
+    }
+</section>
 
 @functions {
     private async Task<DashboardHealthViewModel> CreateModelAsync()
@@ -202,6 +207,17 @@
             HealthStatus.Healthy => "text-success",
             HealthStatus.Degraded => "text-warning",
             HealthStatus.Unhealthy => "text-danger",
+            _ => string.Empty
+        };
+    }
+
+    private static string GetStatusCardClass(HealthStatus status)
+    {
+        return status switch
+        {
+            HealthStatus.Healthy => "dashboard-health-card-status-healthy",
+            HealthStatus.Degraded => "dashboard-health-card-status-degraded",
+            HealthStatus.Unhealthy => "dashboard-health-card-status-unhealthy",
             _ => string.Empty
         };
     }

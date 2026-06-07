@@ -27,12 +27,6 @@ public class CoreModule : WebModuleBase
         // Configuration
         var moduleConfiguration = this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
 
-        // Startup tasks
-        services.AddStartupTasks(o => o
-                .Enabled()
-                .HaltOnFailure())
-            .WithTask<CoreSeederTask>(o => o.HaltOnFailure());
-
         // Orchestrations
         //services.AddOrchestrations()
         //    .WithOrchestration<TodoItemLifecycleOrchestration>()
@@ -42,7 +36,11 @@ public class CoreModule : WebModuleBase
 
         // Jobs
         services.AddJobScheduler(configuration)
-            .StartupDelay(TimeSpan.FromSeconds(15))
+            .StartupDelay(TimeSpan.FromSeconds(30))
+            .WorkerPool(pool => pool
+                .MaxConcurrency(16)
+                .BatchSize(32)
+                .PollInterval(TimeSpan.FromSeconds(5)))
             .WithJob<WeatherIngestionJob>("core_ingestion", job => job
                 .Description("Ingests stale weather data for WeatherFiesta cities.")
                 .UseLifetime(ServiceLifetime.Scoped)
@@ -82,6 +80,12 @@ public class CoreModule : WebModuleBase
                 //.PurgeOnStartup());
 
         services.AddActiveEntities();
+
+        // Startup tasks
+        services.AddStartupTasks(o => o
+                .Enabled()
+                .HaltOnFailure())
+            .WithTask<CoreSeederTask>(o => o.HaltOnFailure());
 
        // Open-Meteo client
         services.AddOpenMeteo(moduleConfiguration);

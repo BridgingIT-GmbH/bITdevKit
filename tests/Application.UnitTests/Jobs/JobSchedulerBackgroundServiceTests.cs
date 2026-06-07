@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Application.UnitTests.Jobs;
 using BridgingIT.DevKit.Application.Jobs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Time.Testing;
 
@@ -357,7 +358,7 @@ public class JobSchedulerBackgroundServiceTests(ITestOutputHelper output) : JobS
     }
 
     [Fact]
-    public async Task StartAsync_UnhandledBackgroundFailure_InvokesRegisteredExceptionHandler()
+    public async Task StartAsync_BackgroundSweepFailure_InvokesRegisteredExceptionHandlerAndKeepsServiceHealthy()
     {
         var handler = new RecordingSchedulerExceptionHandler();
         var provider = CreateProvider(
@@ -383,6 +384,7 @@ public class JobSchedulerBackgroundServiceTests(ITestOutputHelper output) : JobS
         await sut.StartAsync(CancellationToken.None);
         lifetime.NotifyStarted();
         var context = await handler.Invocation.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        var healthReport = await provider.GetRequiredService<HealthCheckService>().CheckHealthAsync();
         await sut.StopAsync(CancellationToken.None);
 
         context.Source.ShouldBe(JobSchedulerExceptionSource.BackgroundService);
@@ -392,6 +394,7 @@ public class JobSchedulerBackgroundServiceTests(ITestOutputHelper output) : JobS
         context.ExecutionId.ShouldBeNull();
         context.Exception.ShouldBeOfType<InvalidOperationException>();
         context.Exception.Message.ShouldBe("trigger evaluator boom");
+        healthReport.Entries[nameof(JobSchedulerBackgroundService)].Status.ShouldBe(HealthStatus.Healthy);
     }
 
     private ServiceProvider CreateProvider(Action<JobSchedulerHostedOptions> configureOptions, Action<IServiceCollection> configureServices)

@@ -35,119 +35,15 @@
 
 <script>
     (() => {
-        const contentUrl = '@contentPath';
-        const storageKey = 'bdk.dashboard.metrics.refreshInterval';
-        const contentElement = document.getElementById('dashboard-metrics-content');
-        const selectElement = document.getElementById('metrics-refresh-interval');
-        const statusElement = document.getElementById('metrics-refresh-status');
-        const refreshButton = document.getElementById('metrics-refresh-now');
-
-        let timeoutId = null;
-        let abortController = null;
-
-        function getSelectedInterval() {
-            const value = Number(selectElement.value);
-            return Number.isFinite(value) && value > 0 ? value : null;
-        }
-
-        function setStatus(text, isError) {
-            statusElement.textContent = text;
-            statusElement.classList.toggle('text-danger', isError === true);
-            statusElement.classList.toggle('text-muted', isError !== true);
-        }
-
-        function clearScheduledRefresh() {
-            if (timeoutId !== null) {
-                window.clearTimeout(timeoutId);
-                timeoutId = null;
-            }
-        }
-
-        function scheduleNextRefresh() {
-            clearScheduledRefresh();
-
-            const interval = getSelectedInterval();
-            if (interval === null || document.hidden) {
-                return;
-            }
-
-            timeoutId = window.setTimeout(() => refreshMetrics(true), interval);
-        }
-
-        async function refreshMetrics(scheduleAfter) {
-            clearScheduledRefresh();
-
-            if (abortController !== null) {
-                abortController.abort();
-            }
-
-            abortController = new AbortController();
-
-            try {
-                const response = await fetch(contentUrl, {
-                    headers: { 'X-Requested-With': 'fetch' },
-                    signal: abortController.signal
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-
-                const activeTabTarget = contentElement.querySelector('.nav-link.active')?.getAttribute('data-bs-target');
-                contentElement.innerHTML = await response.text();
-
-                if (activeTabTarget !== null && activeTabTarget !== undefined) {
-                    const activeTab = contentElement.querySelector(`[data-bs-target="${activeTabTarget}"]`);
-                    if (activeTab !== null && window.bootstrap !== undefined) {
-                        window.bootstrap.Tab.getOrCreateInstance(activeTab).show();
-                    }
-                }
-
-                window.bdkDashboard.clearRefreshError(contentElement);
-                setStatus(`Updated ${new Date().toLocaleTimeString()}`, false);
-            } catch (error) {
-                if (error.name !== 'AbortError') {
-                    window.bdkDashboard.showRefreshError(contentElement);
-                    setStatus('Refresh failed', true);
-                }
-            } finally {
-                abortController = null;
-
-                if (scheduleAfter) {
-                    scheduleNextRefresh();
-                }
-            }
-        }
-
-        const savedInterval = localStorage.getItem(storageKey);
-        if (savedInterval !== null) {
-            selectElement.value = savedInterval;
-        }
-
-        selectElement.addEventListener('change', () => {
-            localStorage.setItem(storageKey, selectElement.value);
-
-            if (abortController !== null) {
-                abortController.abort();
-            }
-
-            scheduleNextRefresh();
+        window.bdkDashboard.createRefresher({
+            contentUrl: '@contentPath',
+            contentSelector: '#dashboard-metrics-content',
+            statusSelector: '#metrics-refresh-status',
+            intervalSelector: '#metrics-refresh-interval',
+            refreshButtonSelector: '#metrics-refresh-now',
+            storageKey: 'bdk.dashboard.metrics.refreshInterval',
+            preserveActiveTab: true
         });
-
-        refreshButton.addEventListener('click', () => refreshMetrics(false));
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                clearScheduledRefresh();
-                return;
-            }
-
-            if (getSelectedInterval() !== null) {
-                refreshMetrics(true);
-            }
-        });
-
-        scheduleNextRefresh();
     })();
 </script>
 

@@ -38,7 +38,7 @@ public static class JobAliveExtensions
             context.WithJob<AliveJob>(AliveJob.JobName, job => job
                 .Name("Alive job")
                 .Description("Dispatches a built-in diagnostic job that records dashboard activity.")
-                .WithConcurrency(10)
+                .WithConcurrency(999)
                 .Group("_bdk")
                 .Module("_bdk")
                 .AddTrigger(AliveJob.TriggerName, trigger => trigger.Manual()));

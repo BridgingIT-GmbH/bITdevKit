@@ -9,6 +9,8 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Domain.Repositories;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Shouldly;
 using Xunit;
 
@@ -349,5 +351,72 @@ public class DatabaseReadyServiceTests
         // Act & Assert
         await Should.ThrowAsync<TimeoutException>(async () =>
             await this.service.WaitForReadyAsync("b", timeout: TimeSpan.FromMilliseconds(200)));
+    }
+
+    [Fact]
+    public async Task Should_HealthCheck_ReportHealthy_WhenReady()
+    {
+        // Arrange
+        this.service.SetReady("a");
+        this.service.SetReady("b");
+        var healthCheck = new DatabaseReadyHealthCheck(this.service);
+
+        // Act
+        var result = await healthCheck.CheckHealthAsync(new HealthCheckContext());
+
+        // Assert
+        result.Status.ShouldBe(HealthStatus.Healthy);
+        result.Data["state"].ShouldBe("Ready");
+    }
+
+    [Fact]
+    public async Task Should_HealthCheck_ReportUnhealthy_WhenFaulted()
+    {
+        // Arrange
+        this.service.SetReady("a");
+        this.service.SetFaulted("b", "migration failed");
+        var healthCheck = new DatabaseReadyHealthCheck(this.service);
+
+        // Act
+        var result = await healthCheck.CheckHealthAsync(new HealthCheckContext());
+
+        // Assert
+        result.Status.ShouldBe(HealthStatus.Unhealthy);
+        result.Description.ShouldContain("migration failed");
+        result.Data["state"].ShouldBe("Faulted");
+        result.Data["faultMessage"].ShouldBe("migration failed");
+    }
+
+    [Fact]
+    public async Task Should_HealthCheck_ReportDegraded_WhenPending()
+    {
+        // Arrange
+        var healthCheck = new DatabaseReadyHealthCheck(this.service);
+
+        // Act
+        var result = await healthCheck.CheckHealthAsync(new HealthCheckContext());
+
+        // Assert
+        result.Status.ShouldBe(HealthStatus.Degraded);
+        result.Data["state"].ShouldBe("Pending");
+    }
+
+    [Fact]
+    public async Task Should_Register_DatabaseReadyHealthCheck_Once()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddLogging();
+
+        // Act
+        services.TryAddDatabaseReadyHealthCheck();
+        services.TryAddDatabaseReadyHealthCheck();
+        using var provider = services.BuildServiceProvider();
+        var healthReport = await provider.GetRequiredService<HealthCheckService>().CheckHealthAsync();
+
+        // Assert
+        services.Count(d => d.ServiceType == typeof(IDatabaseReadyService)).ShouldBe(1);
+        healthReport.Entries.Count.ShouldBe(1);
+        healthReport.Entries.ShouldContainKey("database-ready");
     }
 }

@@ -45,7 +45,7 @@ builder.Services.AddNotifier()
     .WithBehavior(typeof(TimeoutPipelineBehavior<,>));
 
 builder.Services.AddMessaging(builder.Configuration, o => o
-        .StartupDelay("00:00:10"))
+        .StartupDelay("00:00:30"))
     .WithBehavior<ModuleScopeMessagePublisherBehavior>()
     .WithBehavior<ModuleScopeMessageHandlerBehavior>()
     .WithBehavior<MetricsMessagePublisherBehavior>()
@@ -56,7 +56,7 @@ builder.Services.AddMessaging(builder.Configuration, o => o
     .AddEndpoints();
 
 builder.Services.AddQueueing(builder.Configuration, o => o
-        .StartupDelay("00:00:10"))
+        .StartupDelay("00:00:30"))
     // .WithBehavior<ModuleScopeQueueEnquerBehavior>()
     // .WithBehavior<ModuleScopeQueueHAndlerBehavior>()
     .WithBehavior<MetricsQueueEnqueuerBehavior>()
@@ -64,11 +64,16 @@ builder.Services.AddQueueing(builder.Configuration, o => o
     .WithEntityFrameworkBroker<CoreDbContext>()
     .AddEndpoints();
 
+builder.Services.AddSingleton(new OrchestrationExecutionSettings
+{
+    StartupDelay = TimeSpan.FromSeconds(30)
+});
+
 builder.Services.AddOrchestrations()
-            // .WithOrchestration<TodoItemLifecycleOrchestration>()
-            .WithBehavior<MetricsOrchestrationBehavior>()
-            .WithEntityFramework<CoreDbContext>()
-            .AddEndpoints();
+    // .WithOrchestration<TodoItemLifecycleOrchestration>()
+    .WithBehavior<MetricsOrchestrationBehavior>()
+    .WithEntityFramework<CoreDbContext>()
+    .AddEndpoints();
 
 builder.Services.AddMapping().WithMapster();
 

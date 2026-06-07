@@ -151,12 +151,12 @@ public class OrchestrationRecoveryService : BackgroundService
                 this.settings.BackgroundSweepInterval.TotalMilliseconds,
                 this.settings.BackgroundSweepBatchSize);
 
-            await this.SweepOnceAsync(cancellationToken).ConfigureAwait(false);
+            await this.RunSweepSafelyAsync(cancellationToken).ConfigureAwait(false);
 
             while (!cancellationToken.IsCancellationRequested)
             {
                 await this.clock.DelayAsync(this.settings.BackgroundSweepInterval, cancellationToken).ConfigureAwait(false);
-                await this.SweepOnceAsync(cancellationToken).ConfigureAwait(false);
+                await this.RunSweepSafelyAsync(cancellationToken).ConfigureAwait(false);
             }
         }
         catch (OperationCanceledException)
@@ -167,6 +167,22 @@ public class OrchestrationRecoveryService : BackgroundService
         {
             this.logger.LogError(exception, "{LogKey} orchestration recovery service failed unexpectedly: {ErrorMessage}", Constants.LogKey, exception.Message);
             throw;
+        }
+    }
+
+    private async Task RunSweepSafelyAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await this.SweepOnceAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception exception)
+        {
+            this.logger.LogWarning(exception, "{LogKey} orchestration recovery sweep failed; the service will retry on the next interval: {ErrorMessage}", Constants.LogKey, exception.Message);
         }
     }
 

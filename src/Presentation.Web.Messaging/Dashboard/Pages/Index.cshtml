@@ -87,29 +87,11 @@
 
 <script>
     (() => {
-        const contentUrl = '@contentPath';
-        const storageKey = 'bdk.dashboard.messaging.refreshInterval';
         const shellElement = document.getElementById('dashboard-messaging-shell');
-        const selectElement = document.getElementById('messaging-refresh-interval');
-        const statusElement = document.getElementById('messaging-refresh-status');
-        const refreshButton = document.getElementById('messaging-refresh-now');
-        const applyButton = document.getElementById('messaging-filter-apply');
         const resetButton = document.getElementById('messaging-filter-reset');
 
-        let timeoutId = null;
-        let abortController = null;
-
-        function getContentElement() {
-            return shellElement?.querySelector('#dashboard-messaging-content') ?? null;
-        }
-
-        function getSelectedInterval() {
-            const value = Number(selectElement.value);
-            return Number.isFinite(value) && value > 0 ? value : null;
-        }
-
         function buildContentUrl() {
-            const url = new URL(contentUrl, window.location.origin);
+            const url = new URL('@contentPath', window.location.origin);
             const fields = [
                 ['status', document.getElementById('messaging-status-filter')?.value],
                 ['archive', document.getElementById('messaging-archive-filter')?.value],
@@ -122,130 +104,34 @@
                     url.searchParams.set(key, value);
                 }
             });
-            url.searchParams.set('_', Date.now().toString());
-            return url.toString();
+            return url;
         }
 
-        function setStatus(text, isError) {
-            statusElement.textContent = text;
-            statusElement.classList.toggle('text-danger', isError === true);
-            statusElement.classList.toggle('text-muted', isError !== true);
-        }
-
-        function clearScheduledRefresh() {
-            if (timeoutId !== null) {
-                window.clearTimeout(timeoutId);
-                timeoutId = null;
-            }
-        }
-
-        function scheduleNextRefresh() {
-            clearScheduledRefresh();
-            const interval = getSelectedInterval();
-            if (interval === null || document.hidden) {
-                return;
-            }
-            timeoutId = window.setTimeout(() => refreshMessaging(true), interval);
-        }
-
-        async function refreshMessaging(scheduleAfter) {
-            clearScheduledRefresh();
-            const contentElement = getContentElement();
-            if (!contentElement) {
-                if (scheduleAfter) {
-                    scheduleNextRefresh();
-                }
-                return;
-            }
-
-            if (abortController !== null) {
-                abortController.abort();
-            }
-            abortController = new AbortController();
-
-            try {
-                const response = await fetch(buildContentUrl(), {
-                    cache: 'no-store',
-                    headers: { 'X-Requested-With': 'fetch' },
-                    signal: abortController.signal
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-
-                contentElement.innerHTML = await response.text();
-                window.bdkDashboard.clearRefreshError(contentElement);
-                setStatus(`Updated ${new Date().toLocaleTimeString()}`, false);
-            } catch (error) {
-                if (error.name !== 'AbortError') {
-                    window.bdkDashboard.showRefreshError(contentElement);
-                    setStatus('Refresh failed', true);
-                }
-            } finally {
-                abortController = null;
-                if (scheduleAfter) {
-                    scheduleNextRefresh();
-                }
-            }
-        }
-
-        const savedInterval = localStorage.getItem(storageKey);
-        if (savedInterval !== null) {
-            selectElement.value = savedInterval;
-        }
-
-        selectElement.addEventListener('change', () => {
-            localStorage.setItem(storageKey, selectElement.value);
-            if (abortController !== null) {
-                abortController.abort();
-            }
-            scheduleNextRefresh();
+        const refresher = window.bdkDashboard.createRefresher({
+            buildUrl: buildContentUrl,
+            contentSelector: () => shellElement?.querySelector('#dashboard-messaging-content') ?? null,
+            statusSelector: '#messaging-refresh-status',
+            intervalSelector: '#messaging-refresh-interval',
+            refreshButtonSelector: '#messaging-refresh-now',
+            storageKey: 'bdk.dashboard.messaging.refreshInterval'
         });
 
-        refreshButton.addEventListener('click', () => refreshMessaging(false));
-        applyButton.addEventListener('click', () => refreshMessaging(false));
+        document.getElementById('messaging-filter-apply').addEventListener('click', () => refresher.refresh(true));
         resetButton.addEventListener('click', () => {
             document.getElementById('messaging-status-filter').value = '';
             document.getElementById('messaging-archive-filter').value = 'active';
             document.getElementById('messaging-take-filter').value = '50';
             document.getElementById('messaging-type-filter').value = '';
             document.getElementById('messaging-id-filter').value = '';
-            refreshMessaging(false);
-        });
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                clearScheduledRefresh();
-                return;
-            }
-            if (getSelectedInterval() !== null) {
-                refreshMessaging(true);
-            }
+            refresher.refresh(true);
         });
 
         window.bdkMessagingAction = async function(url) {
-            const btn = document.activeElement;
-            if (btn) {
-                btn.disabled = true;
-            }
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'X-Requested-With': 'fetch' }
-                });
-                if (!response.ok) {
-                    console.error('Messaging action failed:', await response.text().catch(() => response.statusText));
-                }
-            } finally {
-                if (btn) {
-                    btn.disabled = false;
-                }
-                await refreshMessaging(false);
-            }
+            await window.bdkDashboard.postAction(url, {
+                refresh: refresher.refresh,
+                errorMessage: 'Messaging action failed:'
+            });
         };
-
-        scheduleNextRefresh();
     })();
 </script>
 

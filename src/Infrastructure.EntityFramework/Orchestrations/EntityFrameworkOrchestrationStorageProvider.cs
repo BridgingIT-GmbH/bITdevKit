@@ -990,15 +990,15 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
                 Items = paged,
             };
 
-            this.logger.LogDebug(
-                "{LogKey} orchestration instances queried (provider=EntityFramework, context={DbContextType}, total={TotalCount}, returned={ReturnedCount}, orchestration={Orchestration}, skip={Skip}, take={Take})",
-                Constants.LogKey,
-                typeof(TContext).Name,
-                result.TotalCount,
-                result.Items.Count,
-                query.OrchestrationName,
-                query.Skip,
-                query.Take);
+            // this.logger.LogDebug(
+            //     "{LogKey} orchestration instances queried (provider=EntityFramework, context={DbContextType}, total={TotalCount}, returned={ReturnedCount}, orchestration={Orchestration}, skip={Skip}, take={Take})",
+            //     Constants.LogKey,
+            //     typeof(TContext).Name,
+            //     result.TotalCount,
+            //     result.Items.Count,
+            //     query.OrchestrationName,
+            //     query.Skip,
+            //     query.Take);
 
             return result;
         }
@@ -1067,15 +1067,15 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
             Items = rows.Select(this.ToSnapshot).ToArray(),
         };
 
-        this.logger.LogDebug(
-            "{LogKey} orchestration instances queried (provider=EntityFramework, context={DbContextType}, total={TotalCount}, returned={ReturnedCount}, orchestration={Orchestration}, skip={Skip}, take={Take})",
-            Constants.LogKey,
-            typeof(TContext).Name,
-            queried.TotalCount,
-            queried.Items.Count,
-            query.OrchestrationName,
-            query.Skip,
-            query.Take);
+        // this.logger.LogDebug(
+        //     "{LogKey} orchestration instances queried (provider=EntityFramework, context={DbContextType}, total={TotalCount}, returned={ReturnedCount}, orchestration={Orchestration}, skip={Skip}, take={Take})",
+        //     Constants.LogKey,
+        //     typeof(TContext).Name,
+        //     queried.TotalCount,
+        //     queried.Items.Count,
+        //     query.OrchestrationName,
+        //     query.Skip,
+        //     query.Take);
 
         return queried;
     }
@@ -1135,13 +1135,13 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
                 TimerCount = await dbContext.OrchestrationTimers.AsNoTracking().CountAsync(cancellationToken).ConfigureAwait(false),
             };
 
-            this.logger.LogDebug(
-                "{LogKey} orchestration metrics queried (provider=EntityFramework, context={DbContextType}, totalInstances={TotalInstances}, waitingInstances={WaitingInstances}, timerCount={TimerCount})",
-                Constants.LogKey,
-                typeof(TContext).Name,
-                metrics.TotalInstances,
-                metrics.WaitingInstances,
-                metrics.TimerCount);
+            // this.logger.LogDebug(
+            //     "{LogKey} orchestration metrics queried (provider=EntityFramework, context={DbContextType}, totalInstances={TotalInstances}, waitingInstances={WaitingInstances}, timerCount={TimerCount})",
+            //     Constants.LogKey,
+            //     typeof(TContext).Name,
+            //     metrics.TotalInstances,
+            //     metrics.WaitingInstances,
+            //     metrics.TimerCount);
 
             return metrics;
         }
@@ -1176,13 +1176,13 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
             TimerCount = await dbContext.OrchestrationTimers.AsNoTracking().CountAsync(cancellationToken).ConfigureAwait(false),
         };
 
-        this.logger.LogDebug(
-            "{LogKey} orchestration metrics queried (provider=EntityFramework, context={DbContextType}, totalInstances={TotalInstances}, waitingInstances={WaitingInstances}, timerCount={TimerCount})",
-            Constants.LogKey,
-            typeof(TContext).Name,
-            snapshot.TotalInstances,
-            snapshot.WaitingInstances,
-            snapshot.TimerCount);
+        // this.logger.LogDebug(
+        //     "{LogKey} orchestration metrics queried (provider=EntityFramework, context={DbContextType}, totalInstances={TotalInstances}, waitingInstances={WaitingInstances}, timerCount={TimerCount})",
+        //     Constants.LogKey,
+        //     typeof(TContext).Name,
+        //     snapshot.TotalInstances,
+        //     snapshot.WaitingInstances,
+        //     snapshot.TimerCount);
 
         return snapshot;
     }

@@ -9,6 +9,10 @@ public class DashboardEndpointPaths
 {
     public string IndexContent { get; set; } = "/content";
 
+    public string System { get; set; } = "/system";
+
+    public string SystemContent { get; set; } = "/system/content";
+
     public string Identity { get; set; } = "/identity";
 
     public string IdentityClientCredentialsLogin { get; set; } = "/identity/client-credentials/login";

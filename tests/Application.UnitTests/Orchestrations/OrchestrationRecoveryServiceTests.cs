@@ -10,6 +10,7 @@ using System.Reflection;
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 
 public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : OrchestrationTestBase(output)
@@ -356,6 +357,40 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
         await hostedService.StopAsync(CancellationToken.None);
     }
 
+    [Fact]
+    public async Task StartAsync_BackgroundSweepFailure_KeepsServiceHealthyAndRetriesNextInterval()
+    {
+        var clock = new FakeOrchestrationClock();
+        var settings = new OrchestrationExecutionSettings
+        {
+            EnableBackgroundExecution = true,
+            StartupDelay = TimeSpan.Zero,
+            BackgroundSweepInterval = TimeSpan.FromMilliseconds(20),
+        };
+        var provider = new TransientQueryFailurePersistenceProvider();
+
+        using var serviceProvider = CreateServices(
+            services => services.AddOrchestrations(),
+            clock,
+            provider,
+            settings: settings);
+
+        var hostedService = serviceProvider.GetRequiredService<OrchestrationRecoveryService>();
+        var applicationLifetime = (TestHostApplicationLifetime)serviceProvider.GetRequiredService<IHostApplicationLifetime>();
+
+        await hostedService.StartAsync(CancellationToken.None);
+        applicationLifetime.NotifyStarted();
+        await provider.FirstQueryFailed.Task.WaitAsync(TimeSpan.FromSeconds(5));
+
+        var healthReport = await serviceProvider.GetRequiredService<HealthCheckService>().CheckHealthAsync();
+
+        healthReport.Entries[nameof(OrchestrationRecoveryService)].Status.ShouldBe(HealthStatus.Healthy);
+
+        clock.Advance(TimeSpan.FromMilliseconds(20));
+        await provider.SecondQuerySucceeded.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        await hostedService.StopAsync(CancellationToken.None);
+    }
+
     private ServiceProvider CreateServices(
         Action<IServiceCollection> configure,
         FakeOrchestrationClock clock = null,
@@ -557,6 +592,96 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
         public IOrchestrationAdministrationStore Administration => this.inner.Administration;
 
         public ISerializer Serializer => this.inner.Serializer;
+    }
+
+    private sealed class TransientQueryFailurePersistenceProvider : IOrchestrationStorageProvider
+    {
+        private readonly InMemoryOrchestrationStorageProvider inner = new(new SystemTextJsonSerializer());
+
+        public TransientQueryFailurePersistenceProvider()
+        {
+            this.Queries = new TransientQueryFailureStore(this.inner.Queries);
+        }
+
+        public TaskCompletionSource<bool> FirstQueryFailed => this.Queries.FirstQueryFailed;
+
+        public TaskCompletionSource<bool> SecondQuerySucceeded => this.Queries.SecondQuerySucceeded;
+
+        public IOrchestrationInstanceStore Instances => this.inner.Instances;
+
+        public IOrchestrationLeaseStore Leases => this.inner.Leases;
+
+        public IOrchestrationHistoryStore History => this.inner.History;
+
+        public IOrchestrationSignalStore Signals => this.inner.Signals;
+
+        public IOrchestrationTimerStore Timers => this.inner.Timers;
+
+        public TransientQueryFailureStore Queries { get; }
+
+        IOrchestrationQueryStore IOrchestrationStorageProvider.Queries => this.Queries;
+
+        public IOrchestrationAdministrationStore Administration => this.inner.Administration;
+
+        public ISerializer Serializer => this.inner.Serializer;
+    }
+
+    private sealed class TransientQueryFailureStore(IOrchestrationQueryStore inner) : IOrchestrationQueryStore
+    {
+        private int queryCount;
+
+        public TaskCompletionSource<bool> FirstQueryFailed { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public TaskCompletionSource<bool> SecondQuerySucceeded { get; } = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public Task<OrchestrationInstanceSnapshot> GetInstanceAsync(Guid instanceId, CancellationToken cancellationToken = default)
+        {
+            return inner.GetInstanceAsync(instanceId, cancellationToken);
+        }
+
+        public Task<OrchestrationContext<TData>> GetContextAsync<TData>(
+            Guid instanceId,
+            IServiceProvider services = null,
+            CancellationToken cancellationToken = default)
+            where TData : class, IOrchestrationData
+        {
+            return inner.GetContextAsync<TData>(instanceId, services, cancellationToken);
+        }
+
+        public async Task<OrchestrationInstanceQueryResult> QueryAsync(
+            OrchestrationInstanceQuery query,
+            CancellationToken cancellationToken = default)
+        {
+            if (Interlocked.Increment(ref this.queryCount) == 1)
+            {
+                this.FirstQueryFailed.TrySetResult(true);
+                throw new InvalidOperationException("transient query failure");
+            }
+
+            var result = await inner.QueryAsync(query, cancellationToken).ConfigureAwait(false);
+            this.SecondQuerySucceeded.TrySetResult(true);
+            return result;
+        }
+
+        public Task<IReadOnlyCollection<OrchestrationHistoryEntry>> GetHistoryAsync(Guid instanceId, CancellationToken cancellationToken = default)
+        {
+            return inner.GetHistoryAsync(instanceId, cancellationToken);
+        }
+
+        public Task<IReadOnlyCollection<OrchestrationSignalRecord>> GetSignalsAsync(Guid instanceId, CancellationToken cancellationToken = default)
+        {
+            return inner.GetSignalsAsync(instanceId, cancellationToken);
+        }
+
+        public Task<IReadOnlyCollection<OrchestrationTimerRecord>> GetTimersAsync(Guid instanceId, CancellationToken cancellationToken = default)
+        {
+            return inner.GetTimersAsync(instanceId, cancellationToken);
+        }
+
+        public Task<OrchestrationMetricsSnapshot> GetMetricsAsync(CancellationToken cancellationToken = default)
+        {
+            return inner.GetMetricsAsync(cancellationToken);
+        }
     }
 
     private sealed class LeaseFaultingLeaseStore : IOrchestrationLeaseStore

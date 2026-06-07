@@ -88,29 +88,11 @@
 
 <script>
     (() => {
-        const contentUrl = '@contentPath';
-        const storageKey = 'bdk.dashboard.queueing.refreshInterval';
         const shellElement = document.getElementById('dashboard-queueing-shell');
-        const selectElement = document.getElementById('queueing-refresh-interval');
-        const statusElement = document.getElementById('queueing-refresh-status');
-        const refreshButton = document.getElementById('queueing-refresh-now');
-        const applyButton = document.getElementById('queueing-filter-apply');
         const resetButton = document.getElementById('queueing-filter-reset');
 
-        let timeoutId = null;
-        let abortController = null;
-
-        function getContentElement() {
-            return shellElement?.querySelector('#dashboard-queueing-content') ?? null;
-        }
-
-        function getSelectedInterval() {
-            const value = Number(selectElement.value);
-            return Number.isFinite(value) && value > 0 ? value : null;
-        }
-
         function buildContentUrl() {
-            const url = new URL(contentUrl, window.location.origin);
+            const url = new URL('@contentPath', window.location.origin);
             const fields = [
                 ['status', document.getElementById('queueing-status-filter')?.value],
                 ['archive', document.getElementById('queueing-archive-filter')?.value],
@@ -123,130 +105,34 @@
                     url.searchParams.set(key, value);
                 }
             });
-            url.searchParams.set('_', Date.now().toString());
-            return url.toString();
+            return url;
         }
 
-        function setStatus(text, isError) {
-            statusElement.textContent = text;
-            statusElement.classList.toggle('text-danger', isError === true);
-            statusElement.classList.toggle('text-muted', isError !== true);
-        }
-
-        function clearScheduledRefresh() {
-            if (timeoutId !== null) {
-                window.clearTimeout(timeoutId);
-                timeoutId = null;
-            }
-        }
-
-        function scheduleNextRefresh() {
-            clearScheduledRefresh();
-            const interval = getSelectedInterval();
-            if (interval === null || document.hidden) {
-                return;
-            }
-            timeoutId = window.setTimeout(() => refreshQueueing(true), interval);
-        }
-
-        async function refreshQueueing(scheduleAfter) {
-            clearScheduledRefresh();
-            const contentElement = getContentElement();
-            if (!contentElement) {
-                if (scheduleAfter) {
-                    scheduleNextRefresh();
-                }
-                return;
-            }
-
-            if (abortController !== null) {
-                abortController.abort();
-            }
-            abortController = new AbortController();
-
-            try {
-                const response = await fetch(buildContentUrl(), {
-                    cache: 'no-store',
-                    headers: { 'X-Requested-With': 'fetch' },
-                    signal: abortController.signal
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}`);
-                }
-
-                contentElement.innerHTML = await response.text();
-                window.bdkDashboard.clearRefreshError(contentElement);
-                setStatus(`Updated ${new Date().toLocaleTimeString()}`, false);
-            } catch (error) {
-                if (error.name !== 'AbortError') {
-                    window.bdkDashboard.showRefreshError(contentElement);
-                    setStatus('Refresh failed', true);
-                }
-            } finally {
-                abortController = null;
-                if (scheduleAfter) {
-                    scheduleNextRefresh();
-                }
-            }
-        }
-
-        const savedInterval = localStorage.getItem(storageKey);
-        if (savedInterval !== null) {
-            selectElement.value = savedInterval;
-        }
-
-        selectElement.addEventListener('change', () => {
-            localStorage.setItem(storageKey, selectElement.value);
-            if (abortController !== null) {
-                abortController.abort();
-            }
-            scheduleNextRefresh();
+        const refresher = window.bdkDashboard.createRefresher({
+            buildUrl: buildContentUrl,
+            contentSelector: () => shellElement?.querySelector('#dashboard-queueing-content') ?? null,
+            statusSelector: '#queueing-refresh-status',
+            intervalSelector: '#queueing-refresh-interval',
+            refreshButtonSelector: '#queueing-refresh-now',
+            storageKey: 'bdk.dashboard.queueing.refreshInterval'
         });
 
-        refreshButton.addEventListener('click', () => refreshQueueing(false));
-        applyButton.addEventListener('click', () => refreshQueueing(false));
+        document.getElementById('queueing-filter-apply').addEventListener('click', () => refresher.refresh(true));
         resetButton.addEventListener('click', () => {
             document.getElementById('queueing-status-filter').value = '';
             document.getElementById('queueing-archive-filter').value = 'active';
             document.getElementById('queueing-take-filter').value = '50';
             document.getElementById('queueing-queue-filter').value = '';
             document.getElementById('queueing-type-filter').value = '';
-            refreshQueueing(false);
-        });
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                clearScheduledRefresh();
-                return;
-            }
-            if (getSelectedInterval() !== null) {
-                refreshQueueing(true);
-            }
+            refresher.refresh(true);
         });
 
         window.bdkQueueingAction = async function(url) {
-            const btn = document.activeElement;
-            if (btn) {
-                btn.disabled = true;
-            }
-            try {
-                const response = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'X-Requested-With': 'fetch' }
-                });
-                if (!response.ok) {
-                    console.error('Queueing action failed:', await response.text().catch(() => response.statusText));
-                }
-            } finally {
-                if (btn) {
-                    btn.disabled = false;
-                }
-                await refreshQueueing(false);
-            }
+            await window.bdkDashboard.postAction(url, {
+                refresh: refresher.refresh,
+                errorMessage: 'Queueing action failed:'
+            });
         };
-
-        scheduleNextRefresh();
     })();
 </script>
 

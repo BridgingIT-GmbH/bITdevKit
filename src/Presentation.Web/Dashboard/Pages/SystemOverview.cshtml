@@ -1,0 +1,297 @@
+@using BridgingIT.DevKit.Presentation.Web
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using Microsoft.Extensions.DependencyInjection
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+@{
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var contentPath = DashboardPath.Combine(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.SystemContent);
+}
+
+<style>
+    .dashboard-system-grid {
+        display: grid;
+        gap: .75rem;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+    }
+
+    .dashboard-system-span-3 { grid-column: span 3; }
+    .dashboard-system-span-4 { grid-column: span 4; }
+    .dashboard-system-span-6 { grid-column: span 6; }
+    .dashboard-system-span-8 { grid-column: span 8; }
+    .dashboard-system-span-12 { grid-column: span 12; }
+
+    .dashboard-system-kpi {
+        min-height: 8.5rem;
+    }
+
+    .dashboard-system-label {
+        color: var(--bs-secondary-color);
+        font-size: .78rem;
+        text-transform: uppercase;
+    }
+
+    .dashboard-system-value {
+        font-size: clamp(1.5rem, 2vw, 2.25rem);
+        font-weight: 650;
+        line-height: 1.05;
+    }
+
+    .dashboard-system-subvalue {
+        color: var(--bs-secondary-color);
+        font-size: .84rem;
+    }
+
+    .dashboard-system-meter {
+        background: rgba(var(--bs-secondary-rgb), .14);
+        border-radius: 999px;
+        height: .55rem;
+        overflow: hidden;
+    }
+
+    .dashboard-system-meter > span {
+        background: var(--bs-primary);
+        display: block;
+        height: 100%;
+        width: var(--meter-value, 0%);
+    }
+
+    .dashboard-system-meter-success > span { background: var(--bs-success); }
+    .dashboard-system-meter-warning > span { background: var(--bs-warning); }
+    .dashboard-system-meter-danger > span { background: var(--bs-danger); }
+
+    .dashboard-system-gauge {
+        align-items: center;
+        display: grid;
+        grid-template-columns: 6.25rem 1fr;
+        gap: .75rem;
+    }
+
+    .dashboard-system-gauge svg {
+        height: 6.25rem;
+        width: 6.25rem;
+    }
+
+    .dashboard-system-gauge-track {
+        fill: none;
+        stroke: rgba(var(--bs-secondary-rgb), .18);
+        stroke-width: 10;
+    }
+
+    .dashboard-system-gauge-value {
+        fill: none;
+        stroke: var(--bs-primary);
+        stroke-linecap: round;
+        stroke-width: 10;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+    }
+
+    .dashboard-system-chart {
+        border: 1px solid var(--bs-border-color);
+        border-radius: .35rem;
+        height: 9rem;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    .dashboard-system-chart svg {
+        display: block;
+        height: 100%;
+        width: 100%;
+    }
+
+    .dashboard-system-chart-grid {
+        stroke: rgba(var(--bs-secondary-rgb), .18);
+        stroke-width: 1;
+    }
+
+    .dashboard-system-chart-line {
+        fill: none;
+        stroke: var(--bs-primary);
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 3;
+    }
+
+    .dashboard-system-chart-point {
+        fill: var(--bs-primary);
+        transition: opacity .15s ease;
+    }
+
+    .dashboard-system-statusbar {
+        display: flex;
+        height: .8rem;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(var(--bs-secondary-rgb), .14);
+    }
+
+    .dashboard-system-statusbar span {
+        width: var(--segment-value, 0%);
+    }
+
+    .dashboard-system-chip {
+        border: 1px solid var(--bs-border-color);
+        border-radius: 999px;
+        color: var(--bs-secondary-color);
+        display: inline-flex;
+        font-size: .8rem;
+        gap: .35rem;
+        padding: .25rem .5rem;
+    }
+
+    @@media (max-width: 1199.98px) {
+        .dashboard-system-span-3,
+        .dashboard-system-span-4,
+        .dashboard-system-span-6,
+        .dashboard-system-span-8 {
+            grid-column: span 6;
+        }
+    }
+
+    @@media (max-width: 767.98px) {
+        .dashboard-system-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-system-span-3,
+        .dashboard-system-span-4,
+        .dashboard-system-span-6,
+        .dashboard-system-span-8,
+        .dashboard-system-span-12 {
+            grid-column: span 1;
+        }
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
+    <h4 class="m-0">System</h4>
+    <div class="d-flex align-items-center gap-2">
+        <span id="system-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <select id="system-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="System refresh interval">
+            <option value="">Off</option>
+            <option value="1000">1 sec</option>
+            <option value="5000">5 sec</option>
+            <option value="15000">15 sec</option>
+            <option value="30000">30 sec</option>
+        </select>
+        <button type="button" id="system-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh system metrics">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+</div>
+
+<div id="dashboard-system-content">
+    @(await RenderPartialAsync<SystemOverviewContent>())
+</div>
+
+<script>
+    (() => {
+        const storageKey = 'bdk.dashboard.system.samples';
+        const maxSamples = 48;
+
+        function readSamples() {
+            try {
+                const raw = localStorage.getItem(storageKey);
+                return raw ? JSON.parse(raw) : [];
+            } catch {
+                return [];
+            }
+        }
+
+        function writeSamples(samples) {
+            localStorage.setItem(storageKey, JSON.stringify(samples.slice(-maxSamples)));
+        }
+
+        function numberFrom(element, name) {
+            const value = Number(element?.dataset?.[name]);
+            return Number.isFinite(value) ? value : 0;
+        }
+
+        function buildPoints(samples, key, maxValue) {
+            if (samples.length === 0) {
+                return '';
+            }
+
+            const width = 300;
+            const height = 92;
+            const max = Math.max(maxValue || 0, ...samples.map(item => Number(item[key]) || 0), 1);
+            return samples.map((item, index) => {
+                const x = samples.length === 1 ? width : (index / (samples.length - 1)) * width;
+                const y = height - ((Number(item[key]) || 0) / max) * height;
+                return `${x.toFixed(1)},${y.toFixed(1)}`;
+            }).join(' ');
+        }
+
+        function drawChart(id, samples, key, maxValue) {
+            const path = document.querySelector(`#${id} polyline[data-system-line]`);
+            if (path) {
+                path.setAttribute('points', buildPoints(samples, key, maxValue));
+            }
+
+            const point = document.querySelector(`#${id} circle[data-system-point]`);
+            if (!point) {
+                return;
+            }
+
+            if (samples.length !== 1) {
+                point.setAttribute('opacity', '0');
+                return;
+            }
+
+            const width = 300;
+            const height = 92;
+            const value = Number(samples[0][key]) || 0;
+            const max = Math.max(maxValue || 0, value, 1);
+            point.setAttribute('cx', (width / 2).toFixed(1));
+            point.setAttribute('cy', (height - (value / max) * height).toFixed(1));
+            point.setAttribute('opacity', '1');
+        }
+
+        window.bdkDashboard.updateSystemOverview = function(contentElement) {
+            const snapshot = contentElement?.querySelector('.dashboard-system-snapshot');
+            if (!snapshot) {
+                return;
+            }
+
+            const samples = readSamples();
+            const next = {
+                capturedAt: snapshot.dataset.capturedAt,
+                cpu: numberFrom(snapshot, 'cpu'),
+                memory: numberFrom(snapshot, 'workingSet'),
+                rpm: numberFrom(snapshot, 'requestsPerMinute'),
+                latency: numberFrom(snapshot, 'averageLatency')
+            };
+
+            if (samples.length === 0 || samples[samples.length - 1].capturedAt !== next.capturedAt) {
+                samples.push(next);
+                writeSamples(samples);
+            }
+
+            const current = samples.slice(-maxSamples);
+            drawChart('system-cpu-history', current, 'cpu', 100);
+            drawChart('system-memory-history', current, 'memory');
+            drawChart('system-request-history', current, 'rpm');
+            drawChart('system-latency-history', current, 'latency');
+        };
+
+        const refresher = window.bdkDashboard.createRefresher({
+            contentUrl: '@contentPath',
+            contentSelector: '#dashboard-system-content',
+            statusSelector: '#system-refresh-status',
+            intervalSelector: '#system-refresh-interval',
+            refreshButtonSelector: '#system-refresh-now',
+            storageKey: 'bdk.dashboard.system.refreshInterval',
+            onSuccess: window.bdkDashboard.updateSystemOverview
+        });
+
+        window.bdkDashboard.updateSystemOverview(document.querySelector('#dashboard-system-content'));
+    })();
+</script>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "System" };
+}

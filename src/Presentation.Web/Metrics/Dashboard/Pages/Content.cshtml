@@ -10,6 +10,9 @@
 
 @{
     var metricsModel = CreateModel();
+    var applicationRoutes = metricsModel.AspNetRoutes.Routes
+        .Where(route => IsApplicationRoute(route.Route))
+        .ToList();
 }
 
 @if (metricsModel.UnavailableServices.Count > 0)
@@ -279,7 +282,7 @@
         <div class="card">
             <div class="card-body p-3">
                 <h6 class="card-title">Busiest Routes</h6>
-                @if (metricsModel.AspNetRoutes.Routes.Count == 0)
+                @if (applicationRoutes.Count == 0)
                 {
                     <div class="text-muted small">No ASP.NET route metrics are available yet.</div>
                 }
@@ -298,7 +301,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                            @foreach (var route in metricsModel.AspNetRoutes.Routes.Take(25))
+                            @foreach (var route in applicationRoutes.Take(25))
                             {
                                 <tr>
                                     <td><span class="badge">@route.Method</span></td>
@@ -461,6 +464,11 @@
         return string.IsNullOrWhiteSpace(metric?.Name)
             ? "-"
             : $"{metric.Name} ({FormatNumber(metric.Average)} ms avg)";
+    }
+
+    private static bool IsApplicationRoute(string route)
+    {
+        return !route.StartsWith("/_bdk", StringComparison.OrdinalIgnoreCase);
     }
 
     private static string FormatNumber(double value)

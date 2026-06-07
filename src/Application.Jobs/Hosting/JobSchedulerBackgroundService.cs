@@ -163,12 +163,12 @@ public class JobSchedulerBackgroundService : BackgroundService
                 this.options.BatchSize,
                 this.options.MaxConcurrency);
 
-            await this.SweepOnceAsync(cancellationToken).ConfigureAwait(false);
+            await this.RunSweepSafelyAsync(cancellationToken).ConfigureAwait(false);
 
             while (!cancellationToken.IsCancellationRequested)
             {
                 await Task.Delay(this.options.SweepInterval, this.timeProvider, cancellationToken).ConfigureAwait(false);
-                await this.SweepOnceAsync(cancellationToken).ConfigureAwait(false);
+                await this.RunSweepSafelyAsync(cancellationToken).ConfigureAwait(false);
             }
         }
         catch (OperationCanceledException)
@@ -177,9 +177,25 @@ public class JobSchedulerBackgroundService : BackgroundService
         }
         catch (Exception exception)
         {
-            await this.HandleUnhandledExceptionAsync(exception, cancellationToken).ConfigureAwait(false);
             this.logger.LogError(exception, "[{LogKey}] job scheduler background service failed unexpectedly: {ErrorMessage}", Constants.LogKey, exception.Message);
             throw;
+        }
+    }
+
+    private async Task RunSweepSafelyAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await this.SweepOnceAsync(cancellationToken).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception exception)
+        {
+            await this.HandleUnhandledExceptionAsync(exception, cancellationToken).ConfigureAwait(false);
+            this.logger.LogWarning(exception, "[{LogKey}] job scheduler background sweep failed; the service will retry on the next interval: {ErrorMessage}", Constants.LogKey, exception.Message);
         }
     }
 

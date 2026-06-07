@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Presentation.Web.Messaging.Dashboard;
 
 using System.Globalization;
 using BridgingIT.DevKit.Application.Messaging;
+using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
@@ -39,6 +40,12 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
     {
         var service = context.RequestServices.GetService<IMessageBrokerService>();
         var url = DashboardEndpoints.BuildMessagingPath(context.RequestServices.GetRequiredService<DashboardEndpointsOptions>());
+        var databaseReadyService = context.RequestServices.GetService<IDatabaseReadyService>();
+
+        if (databaseReadyService?.IsReady() == false)
+        {
+            return CreateCard("-", "Database starting", url);
+        }
 
         if (service is null)
         {

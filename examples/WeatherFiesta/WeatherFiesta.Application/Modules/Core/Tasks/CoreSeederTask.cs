@@ -30,7 +30,9 @@ public class CoreSeederTask(
     {
         this.logger.LogInformation("{LogKey} seed cities, weather, profiles, and subscriptions (task={StartupTaskType})", "IFR", this.GetType().PrettyName());
 
-        await this.databaseReadyService.WaitForReadyAsync(cancellationToken: cancellationToken);
+        await this.databaseReadyService.WaitForReadyAsync(
+            timeout: TimeSpan.FromMinutes(2),
+            cancellationToken: cancellationToken);
 
         // 1. Seed cities
         var cityIds = await this.SeedCitiesAsync(cancellationToken);

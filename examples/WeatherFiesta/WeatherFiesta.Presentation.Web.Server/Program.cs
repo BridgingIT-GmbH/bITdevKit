@@ -3,6 +3,9 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+using BridgingIT.DevKit.Application.Messaging;
+using BridgingIT.DevKit.Application.Orchestrations;
+using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
 using System.Text.Json;
@@ -41,6 +44,32 @@ builder.Services.AddNotifier()
     .WithBehavior(typeof(RetryPipelineBehavior<,>))
     .WithBehavior(typeof(TimeoutPipelineBehavior<,>));
 
+builder.Services.AddMessaging(builder.Configuration, o => o
+        .StartupDelay("00:00:10"))
+    .WithBehavior<ModuleScopeMessagePublisherBehavior>()
+    .WithBehavior<ModuleScopeMessageHandlerBehavior>()
+    .WithBehavior<MetricsMessagePublisherBehavior>()
+    .WithBehavior<MetricsMessageHandlerBehavior>()
+    .WithBehavior<RetryMessageHandlerBehavior>()
+    .WithBehavior<TimeoutMessageHandlerBehavior>()
+    .WithEntityFrameworkBroker<CoreDbContext>()
+    .AddEndpoints();
+
+builder.Services.AddQueueing(builder.Configuration, o => o
+        .StartupDelay("00:00:10"))
+    // .WithBehavior<ModuleScopeQueueEnquerBehavior>()
+    // .WithBehavior<ModuleScopeQueueHAndlerBehavior>()
+    .WithBehavior<MetricsQueueEnqueuerBehavior>()
+    .WithBehavior<MetricsQueueHandlerBehavior>()
+    .WithEntityFrameworkBroker<CoreDbContext>()
+    .AddEndpoints();
+
+builder.Services.AddOrchestrations()
+            // .WithOrchestration<TodoItemLifecycleOrchestration>()
+            .WithBehavior<MetricsOrchestrationBehavior>()
+            .WithEntityFramework<CoreDbContext>()
+            .AddEndpoints();
+
 builder.Services.AddMapping().WithMapster();
 
 // ===============================================================================================
@@ -66,7 +95,10 @@ builder.Services.AddFakeIdentityProvider(o => o
 builder.Services.AddEndpoints<SystemEndpoints>();
 builder.Services.AddDashboard(o => o
     .Enabled(true)
-    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.DashboardEndpoints>());
+    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.DashboardEndpoints>()
+    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Messaging.Dashboard.DashboardEndpoints>()
+    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.DashboardEndpoints>()
+    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints>());
 
 // ===============================================================================================
 // Register log services and endpoints

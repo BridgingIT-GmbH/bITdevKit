@@ -36,9 +36,14 @@ public class DashboardPage(string title, string icon, string url)
     public string Url { get; init; } = url;
 
     /// <summary>
-    /// Gets or sets optional sidebar tooltip text.
+    /// Gets or sets the optional dashboard index card description.
     /// </summary>
     public string Description { get; init; }
+
+    /// <summary>
+    /// Gets or sets optional sidebar tooltip text.
+    /// </summary>
+    public string Tooltip { get; init; }
 
     /// <summary>
     /// Gets or sets the sidebar group name.

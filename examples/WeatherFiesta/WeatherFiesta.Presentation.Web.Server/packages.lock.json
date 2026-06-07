@@ -1208,7 +1208,8 @@
           "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
-          "Ensure.That": "[10.1.0, )"
+          "Ensure.That": "[10.1.0, )",
+          "RazorSlices": "[0.10.1, )"
         }
       },
       "BridgingIT.DevKit.Presentation.Web.Orchestrations": {
@@ -1217,7 +1218,8 @@
           "BridgingIT.DevKit.Application.Orchestrations": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
-          "Ensure.That": "[10.1.0, )"
+          "Ensure.That": "[10.1.0, )",
+          "RazorSlices": "[0.10.1, )"
         }
       },
       "BridgingIT.DevKit.Presentation.Web.Queueing": {
@@ -1226,7 +1228,8 @@
           "BridgingIT.DevKit.Application.Queueing": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
-          "Ensure.That": "[10.1.0, )"
+          "Ensure.That": "[10.1.0, )",
+          "RazorSlices": "[0.10.1, )"
         }
       },
       "BridgingIT.DevKit.Presentation.Web.Storage": {

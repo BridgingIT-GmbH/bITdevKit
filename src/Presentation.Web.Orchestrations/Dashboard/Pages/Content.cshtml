@@ -1,0 +1,311 @@
+@using OrchestrationsDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints
+@inherits RazorSlice
+
+@{
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var realtimeDataPath = OrchestrationsDashboardEndpoints.BuildOrchestrationsRealtimeDataPath(dashboardOptions);
+    var historyDataPath = OrchestrationsDashboardEndpoints.BuildOrchestrationsHistoryDataPath(dashboardOptions);
+}
+
+<style>
+    #orchestrations-dashboard-root {
+        height: calc(100vh - 14.25rem);
+        min-height: 560px;
+        display: flex;
+        flex-direction: column;
+        gap: .75rem;
+        overflow: hidden;
+    }
+
+    #orchestrations-dashboard-root > #dashboard-orchestrations-content {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        gap: .75rem;
+        overflow: hidden;
+    }
+
+    #orchestrations-dashboard-root .orchestrations-data-zone {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: .75rem;
+        overflow: hidden;
+    }
+
+    #orchestrations-dashboard-root .orchestrations-panel {
+        border: 1px solid var(--bs-border-color);
+        border-radius: .375rem;
+        background: var(--bs-body-bg);
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    #orchestrations-dashboard-root .orchestrations-panel-header {
+        padding: .6rem .75rem;
+        border-bottom: 1px solid var(--bs-border-color);
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: .5rem;
+    }
+
+    #orchestrations-dashboard-root .orchestrations-panel-body {
+        min-height: 0;
+        overflow: auto;
+        padding: .25rem .5rem .5rem .5rem;
+    }
+
+    #orchestrations-dashboard-root .orchestrations-side-zone {
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        gap: .75rem;
+        overflow: hidden;
+    }
+
+    #orchestrations-dashboard-root .orchestrations-graph-zone {
+        flex: 0 0 auto;
+        border: 1px solid var(--bs-border-color);
+        border-radius: .375rem;
+        background: var(--bs-body-bg);
+        min-height: 275px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+
+    #orchestrations-dashboard-root .orchestrations-graph-canvas {
+        height: 225px;
+        width: 100%;
+    }
+
+    #orchestrations-dashboard-root .orchestrations-history-window .btn {
+        min-width: 4.25rem;
+    }
+
+    @@media (min-width: 1400px) {
+        #orchestrations-dashboard-root .orchestrations-data-zone {
+            grid-template-columns: 1.35fr .75fr;
+        }
+    }
+</style>
+
+<div id="orchestrations-dashboard-root" data-realtime-url="@realtimeDataPath" data-history-url="@historyDataPath">
+    <div id="dashboard-orchestrations-content">
+        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.Data>())
+    </div>
+
+    <section class="orchestrations-graph-zone">
+        <ul class="nav nav-tabs px-2 pt-2" id="orchestrationsGraphTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="orchestrations-graph-realtime-tab" data-bs-toggle="tab" data-bs-target="#orchestrations-graph-realtime" type="button" role="tab">
+                    Realtime Graph
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="orchestrations-graph-history-tab" data-bs-toggle="tab" data-bs-target="#orchestrations-graph-history" type="button" role="tab">
+                    History Graph
+                </button>
+            </li>
+        </ul>
+        <div class="tab-content flex-grow-1">
+            <div class="tab-pane fade show active" id="orchestrations-graph-realtime" role="tabpanel" tabindex="0">
+                <div class="orchestrations-graph-canvas" id="orchestrations-realtime-graph"></div>
+            </div>
+            <div class="tab-pane fade" id="orchestrations-graph-history" role="tabpanel" tabindex="0">
+                <div class="d-flex justify-content-end p-2 orchestrations-history-window">
+                    <div class="btn-group btn-group-sm" role="group" aria-label="History window">
+                        <button class="btn btn-outline-secondary active" data-window="day" type="button">Day</button>
+                        <button class="btn btn-outline-secondary" data-window="week" type="button">Week</button>
+                        <button class="btn btn-outline-secondary" data-window="month" type="button">Month</button>
+                    </div>
+                </div>
+                <div class="orchestrations-graph-canvas" id="orchestrations-history-graph"></div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    (() => {
+        const root = document.getElementById('orchestrations-dashboard-root');
+        if (!root) {
+            return;
+        }
+
+        if (window.bdkOrchestrationsGraphState && typeof window.bdkOrchestrationsGraphState.dispose === 'function') {
+            window.bdkOrchestrationsGraphState.dispose();
+        }
+
+        const realtimeUrl = root.getAttribute('data-realtime-url');
+        const historyUrl = root.getAttribute('data-history-url');
+        const realtimeHost = document.getElementById('orchestrations-realtime-graph');
+        const historyHost = document.getElementById('orchestrations-history-graph');
+        const historyButtons = Array.from(root.querySelectorAll('.orchestrations-history-window [data-window]'));
+        const graphTabs = Array.from(root.querySelectorAll('[data-bs-toggle="tab"]'));
+        const sessionStorageKey = 'bdk.dashboard.orchestrations.sessionId';
+        const sessionId = getOrCreateSessionId();
+
+        let disposed = false;
+        let realtimeTimer = null;
+        let historyWindow = 'day';
+
+        function dispose() {
+            disposed = true;
+            if (realtimeTimer !== null) {
+                window.clearInterval(realtimeTimer);
+                realtimeTimer = null;
+            }
+            if (window.Plotly) {
+                if (realtimeHost) window.Plotly.purge(realtimeHost);
+                if (historyHost) window.Plotly.purge(historyHost);
+            }
+        }
+
+        function getOrCreateSessionId() {
+            try {
+                const existing = sessionStorage.getItem(sessionStorageKey);
+                if (existing) {
+                    return existing;
+                }
+                const created = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+                sessionStorage.setItem(sessionStorageKey, created);
+                return created;
+            } catch {
+                return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+            }
+        }
+
+        async function ensurePlotly() {
+            if (window.Plotly) {
+                return window.Plotly;
+            }
+            if (window.bdkPlotlyLoadPromise) {
+                return window.bdkPlotlyLoadPromise;
+            }
+            window.bdkPlotlyLoadPromise = new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.plot.ly/plotly-2.35.2.min.js';
+                script.async = true;
+                script.onload = () => resolve(window.Plotly);
+                script.onerror = () => reject(new Error('Failed to load Plotly.'));
+                document.head.appendChild(script);
+            });
+            return window.bdkPlotlyLoadPromise;
+        }
+
+        function layout() {
+            return {
+                margin: { l: 36, r: 16, t: 16, b: 28 },
+                paper_bgcolor: 'rgba(0,0,0,0)',
+                plot_bgcolor: 'rgba(0,0,0,0)',
+                font: { color: '#adb5bd', size: 11 },
+                xaxis: { showgrid: false, zeroline: false },
+                yaxis: { rangemode: 'tozero', showgrid: true, gridcolor: 'rgba(128,128,128,.2)', zeroline: false },
+                legend: { orientation: 'h', x: 0, y: -0.2 },
+                dragmode: false
+            };
+        }
+
+        async function render(host, traces) {
+            if (!host || disposed || host.clientWidth === 0) {
+                return;
+            }
+            try {
+                const Plotly = await ensurePlotly();
+                await Plotly.react(host, traces, layout(), {
+                    displayModeBar: false,
+                    responsive: true,
+                    staticPlot: true
+                });
+            } catch {
+                // best effort chart rendering
+            }
+        }
+
+        async function sampleRealtime() {
+            if (disposed) {
+                return;
+            }
+            try {
+                const url = new URL(realtimeUrl, window.location.origin);
+                url.searchParams.set('sessionId', sessionId);
+                const response = await fetch(url.toString(), { headers: { 'X-Requested-With': 'fetch' } });
+                if (!response.ok) {
+                    return;
+                }
+                const payload = await response.json();
+                const samples = Array.isArray(payload.samples) ? payload.samples : [];
+                const x = samples.map(sample => new Date(sample.timestampUtc));
+                await render(realtimeHost, [
+                    { x, y: samples.map(s => s.running ?? 0), name: 'Running', mode: 'lines', line: { color: '#0dcaf0', width: 2 }, type: 'scatter' },
+                    { x, y: samples.map(s => s.waiting ?? 0), name: 'Waiting', mode: 'lines', line: { color: '#ffc107', width: 2 }, type: 'scatter' },
+                    { x, y: samples.map(s => s.paused ?? 0), name: 'Paused', mode: 'lines', line: { color: '#adb5bd', width: 2 }, type: 'scatter' },
+                    { x, y: samples.map(s => s.failed ?? 0), name: 'Failed', mode: 'lines', line: { color: '#dc3545', width: 2 }, type: 'scatter' }
+                ]);
+            } catch {
+                // best effort graph polling
+            }
+        }
+
+        async function loadHistory() {
+            if (disposed) {
+                return;
+            }
+            try {
+                const response = await fetch(`${historyUrl}?window=${historyWindow}`, { headers: { 'X-Requested-With': 'fetch' } });
+                if (!response.ok) {
+                    return;
+                }
+                const payload = await response.json();
+                const buckets = Array.isArray(payload.buckets) ? payload.buckets : [];
+                const x = buckets.map(bucket => new Date(bucket.startUtc));
+                await render(historyHost, [
+                    { x, y: buckets.map(s => s.completed ?? 0), name: 'Completed', mode: 'lines', line: { color: '#198754', width: 2 }, type: 'scatter' },
+                    { x, y: buckets.map(s => s.running ?? 0), name: 'Running', mode: 'lines', line: { color: '#0dcaf0', width: 2 }, type: 'scatter' },
+                    { x, y: buckets.map(s => s.waiting ?? 0), name: 'Waiting', mode: 'lines', line: { color: '#ffc107', width: 2 }, type: 'scatter' },
+                    { x, y: buckets.map(s => s.failed ?? 0), name: 'Failed', mode: 'lines', line: { color: '#dc3545', width: 2 }, type: 'scatter' },
+                    { x, y: buckets.map(s => s.problem ?? 0), name: 'Problem', mode: 'lines', line: { color: '#6f42c1', width: 2 }, type: 'scatter' }
+                ]);
+            } catch {
+                // best effort graph loading
+            }
+        }
+
+        historyButtons.forEach(button => {
+            button.addEventListener('click', async () => {
+                historyButtons.forEach(x => x.classList.remove('active'));
+                button.classList.add('active');
+                historyWindow = button.getAttribute('data-window') || 'day';
+                await loadHistory();
+            });
+        });
+
+        graphTabs.forEach(tab => {
+            tab.addEventListener('shown.bs.tab', async event => {
+                const target = event.target;
+                if (!(target instanceof HTMLElement)) {
+                    return;
+                }
+                if (target.id === 'orchestrations-graph-history-tab') {
+                    await loadHistory();
+                }
+                if (window.Plotly) {
+                    const host = target.id === 'orchestrations-graph-history-tab' ? historyHost : realtimeHost;
+                    if (host) {
+                        window.Plotly.Plots.resize(host);
+                    }
+                }
+            });
+        });
+
+        sampleRealtime();
+        realtimeTimer = window.setInterval(sampleRealtime, 5000);
+        window.bdkOrchestrationsGraphState = { dispose };
+    })();
+</script>

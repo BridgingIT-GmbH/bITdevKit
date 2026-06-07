@@ -1,0 +1,241 @@
+@using QueueingDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.DashboardEndpoints
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+@{
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var contentPath = QueueingDashboardEndpoints.BuildQueueingContentPath(dashboardOptions);
+}
+
+<div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
+    <h4 class="m-0">Queueing</h4>
+    <div class="d-flex align-items-center gap-2">
+        <span id="queueing-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <select id="queueing-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="Queueing refresh interval">
+            <option value="">Off</option>
+            <option value="1000">1 sec</option>
+            <option value="5000">5 sec</option>
+            <option value="15000">15 sec</option>
+            <option value="30000">30 sec</option>
+        </select>
+        <button type="button" id="queueing-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh queueing">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+</div>
+
+<div class="card mb-2">
+    <div class="card-body py-2">
+        <div class="row g-2 align-items-end">
+            <div class="col-6 col-lg-2">
+                <label class="form-label small mb-1" for="queueing-status-filter">Status</label>
+                <select id="queueing-status-filter" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    <option>Pending</option>
+                    <option>WaitingForHandler</option>
+                    <option>Processing</option>
+                    <option>Succeeded</option>
+                    <option>Failed</option>
+                    <option>DeadLettered</option>
+                    <option>Expired</option>
+                </select>
+            </div>
+            <div class="col-6 col-lg-2">
+                <label class="form-label small mb-1" for="queueing-archive-filter">Archive</label>
+                <select id="queueing-archive-filter" class="form-select form-select-sm">
+                    <option value="active">Active</option>
+                    <option value="archived">Archived</option>
+                    <option value="all">All</option>
+                </select>
+            </div>
+            <div class="col-6 col-lg-2">
+                <label class="form-label small mb-1" for="queueing-take-filter">Rows</label>
+                <select id="queueing-take-filter" class="form-select form-select-sm">
+                    <option>25</option>
+                    <option selected>50</option>
+                    <option>100</option>
+                    <option>250</option>
+                </select>
+            </div>
+            <div class="col-12 col-lg-2">
+                <label class="form-label small mb-1" for="queueing-queue-filter">Queue</label>
+                <input id="queueing-queue-filter" class="form-control form-control-sm" placeholder="contains">
+            </div>
+            <div class="col-12 col-lg-2">
+                <label class="form-label small mb-1" for="queueing-type-filter">Type</label>
+                <input id="queueing-type-filter" class="form-control form-control-sm" placeholder="contains">
+            </div>
+            <div class="col-12 col-lg-2 d-flex gap-2">
+                <button type="button" id="queueing-filter-apply" class="btn btn-primary btn-sm flex-fill">Apply</button>
+                <button type="button" id="queueing-filter-reset" class="btn btn-outline-secondary btn-sm">Reset</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="dashboard-queueing-shell">
+    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.Pages.Content>())
+</div>
+
+<script>
+    (() => {
+        const contentUrl = '@contentPath';
+        const storageKey = 'bdk.dashboard.queueing.refreshInterval';
+        const shellElement = document.getElementById('dashboard-queueing-shell');
+        const selectElement = document.getElementById('queueing-refresh-interval');
+        const statusElement = document.getElementById('queueing-refresh-status');
+        const refreshButton = document.getElementById('queueing-refresh-now');
+        const applyButton = document.getElementById('queueing-filter-apply');
+        const resetButton = document.getElementById('queueing-filter-reset');
+
+        let timeoutId = null;
+        let abortController = null;
+
+        function getContentElement() {
+            return shellElement?.querySelector('#dashboard-queueing-content') ?? null;
+        }
+
+        function getSelectedInterval() {
+            const value = Number(selectElement.value);
+            return Number.isFinite(value) && value > 0 ? value : null;
+        }
+
+        function buildContentUrl() {
+            const url = new URL(contentUrl, window.location.origin);
+            const fields = [
+                ['status', document.getElementById('queueing-status-filter')?.value],
+                ['archive', document.getElementById('queueing-archive-filter')?.value],
+                ['take', document.getElementById('queueing-take-filter')?.value],
+                ['queue', document.getElementById('queueing-queue-filter')?.value],
+                ['type', document.getElementById('queueing-type-filter')?.value],
+            ];
+            fields.forEach(([key, value]) => {
+                if (value) {
+                    url.searchParams.set(key, value);
+                }
+            });
+            return url.toString();
+        }
+
+        function setStatus(text, isError) {
+            statusElement.textContent = text;
+            statusElement.classList.toggle('text-danger', isError === true);
+            statusElement.classList.toggle('text-muted', isError !== true);
+        }
+
+        function clearScheduledRefresh() {
+            if (timeoutId !== null) {
+                window.clearTimeout(timeoutId);
+                timeoutId = null;
+            }
+        }
+
+        function scheduleNextRefresh() {
+            clearScheduledRefresh();
+            const interval = getSelectedInterval();
+            if (interval === null || document.hidden) {
+                return;
+            }
+            timeoutId = window.setTimeout(() => refreshQueueing(true), interval);
+        }
+
+        async function refreshQueueing(scheduleAfter) {
+            clearScheduledRefresh();
+            const contentElement = getContentElement();
+            if (!contentElement) {
+                return;
+            }
+
+            if (abortController !== null) {
+                abortController.abort();
+            }
+            abortController = new AbortController();
+
+            try {
+                const response = await fetch(buildContentUrl(), {
+                    headers: { 'X-Requested-With': 'fetch' },
+                    signal: abortController.signal
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                contentElement.innerHTML = await response.text();
+                window.bdkDashboard.clearRefreshError(contentElement);
+                setStatus(`Updated ${new Date().toLocaleTimeString()}`, false);
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    window.bdkDashboard.showRefreshError(contentElement);
+                    setStatus('Refresh failed', true);
+                }
+            } finally {
+                abortController = null;
+                if (scheduleAfter) {
+                    scheduleNextRefresh();
+                }
+            }
+        }
+
+        const savedInterval = localStorage.getItem(storageKey);
+        if (savedInterval !== null) {
+            selectElement.value = savedInterval;
+        }
+
+        selectElement.addEventListener('change', () => {
+            localStorage.setItem(storageKey, selectElement.value);
+            if (abortController !== null) {
+                abortController.abort();
+            }
+            scheduleNextRefresh();
+        });
+
+        refreshButton.addEventListener('click', () => refreshQueueing(false));
+        applyButton.addEventListener('click', () => refreshQueueing(false));
+        resetButton.addEventListener('click', () => {
+            document.getElementById('queueing-status-filter').value = '';
+            document.getElementById('queueing-archive-filter').value = 'active';
+            document.getElementById('queueing-take-filter').value = '50';
+            document.getElementById('queueing-queue-filter').value = '';
+            document.getElementById('queueing-type-filter').value = '';
+            refreshQueueing(false);
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                clearScheduledRefresh();
+                return;
+            }
+            if (getSelectedInterval() !== null) {
+                refreshQueueing(true);
+            }
+        });
+
+        window.bdkQueueingAction = async function(url) {
+            const btn = document.activeElement;
+            if (btn) {
+                btn.disabled = true;
+            }
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'fetch' }
+                });
+                if (!response.ok) {
+                    console.error('Queueing action failed:', await response.text().catch(() => response.statusText));
+                }
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                }
+                await refreshQueueing(false);
+            }
+        };
+
+        scheduleNextRefresh();
+    })();
+</script>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "Queueing" };
+}

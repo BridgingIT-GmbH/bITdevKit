@@ -1,0 +1,432 @@
+@using BridgingIT.DevKit.Application.Orchestrations
+@using Microsoft.Extensions.Logging
+@using OrchestrationsDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints
+@inherits RazorSlice
+
+@{
+    var vm = await CreateModelAsync();
+    var actionBase = vm.ActionBase;
+}
+
+@if (!vm.IsAvailable)
+{
+    <div class="alert alert-warning py-2 mb-0">
+        Orchestrations are not registered. Call <code>AddOrchestrations()</code> to populate this page.
+    </div>
+}
+else
+{
+    @if (vm.Errors.Count > 0)
+    {
+        <div class="alert alert-danger py-2 mb-2">
+            @foreach (var error in vm.Errors)
+            {
+                <div>@error</div>
+            }
+        </div>
+    }
+
+    var metrics = vm.Metrics;
+    var problemCount = metrics.FailedCount + metrics.CancelledCount + metrics.TerminatedCount;
+
+    <div class="row g-2 orchestrations-card-grid">
+        @RenderMetricCard("Total", metrics.TotalCount, null)
+        @RenderMetricCard("Running", metrics.RunningCount, "text-info")
+        @RenderMetricCard("Waiting", metrics.WaitingCount, "text-warning")
+        @RenderMetricCard("Paused", metrics.PausedCount, null)
+        @RenderMetricCard("Completed", metrics.CompletedCount, "text-success")
+        @RenderMetricCard("Problem", problemCount, problemCount > 0 ? "text-danger" : null)
+    </div>
+
+    <div class="orchestrations-data-zone">
+        <section class="orchestrations-panel">
+            <div class="orchestrations-panel-header">
+                <span>Instances</span>
+                <span class="badge rounded-pill text-bg-secondary">@vm.Instances.Count</span>
+            </div>
+            <div class="orchestrations-panel-body">
+            @if (vm.Instances.Count == 0)
+            {
+                <div class="text-muted small py-2">No orchestration instances matched the current filters.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Updated</th>
+                                <th>Orchestration</th>
+                                <th>State</th>
+                                <th>Activity</th>
+                                <th>Correlation</th>
+                                <th class="text-end">Duration</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var instance in vm.Instances)
+                        {
+                            var pauseUrl = $"{actionBase}/{instance.InstanceId}/pause";
+                            var resumeUrl = $"{actionBase}/{instance.InstanceId}/resume";
+                            var cancelUrl = $"{actionBase}/{instance.InstanceId}/cancel";
+                            var terminateUrl = $"{actionBase}/{instance.InstanceId}/terminate";
+                            var archiveUrl = $"{actionBase}/{instance.InstanceId}/archive";
+                            var releaseLeaseUrl = $"{actionBase}/{instance.InstanceId}/repair/release-lease";
+                            var requeueTimersUrl = $"{actionBase}/{instance.InstanceId}/repair/requeue-timers";
+                            <tr>
+                                <td>@RenderStatusBadge(instance.Status)</td>
+                                <td class="text-muted small" title="@FormatTimestamp(instance.LastUpdatedUtc)">@FormatRelative(instance.LastUpdatedUtc)</td>
+                                <td>
+                                    <div class="fw-medium" title="@DisplayValue(instance.OrchestrationName)">@TrimValue(instance.OrchestrationName, 44)</div>
+                                    <div class="text-muted small">@TrimFromStart(instance.InstanceId.ToString(), 12)</div>
+                                </td>
+                                <td>@DisplayValue(instance.CurrentState)</td>
+                                <td title="@DisplayValue(instance.CurrentActivity)">@TrimValue(instance.CurrentActivity, 32)</td>
+                                <td class="text-muted small" title="@DisplayValue(instance.CorrelationId)">@TrimFromStart(instance.CorrelationId, 22)</td>
+                                <td class="text-end text-muted small">@FormatDuration(instance)</td>
+                                <td class="text-end text-nowrap">
+                                    @if (CanResume(instance))
+                                    {
+                                        <button class="btn btn-sm btn-outline-success" title="Resume" onclick="window.bdkOrchestrationAction('@resumeUrl')">
+                                            <i class="bi bi-play-circle"></i>
+                                        </button>
+                                    }
+                                    else if (CanPause(instance))
+                                    {
+                                        <button class="btn btn-sm btn-outline-warning" title="Pause" onclick="window.bdkOrchestrationAction('@pauseUrl')">
+                                            <i class="bi bi-pause-circle"></i>
+                                        </button>
+                                    }
+                                    @if (CanStop(instance))
+                                    {
+                                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Cancel" onclick="window.bdkOrchestrationAction('@cancelUrl')">
+                                            <i class="bi bi-x-circle"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger ms-1" title="Terminate" onclick="window.bdkOrchestrationAction('@terminateUrl')">
+                                            <i class="bi bi-stop-circle"></i>
+                                        </button>
+                                    }
+                                    @if (CanArchive(instance))
+                                    {
+                                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Archive" onclick="window.bdkOrchestrationAction('@archiveUrl')">
+                                            <i class="bi bi-archive"></i>
+                                        </button>
+                                    }
+                                    <button class="btn btn-sm btn-outline-secondary ms-1" title="Release lease" onclick="window.bdkOrchestrationAction('@releaseLeaseUrl')">
+                                        <i class="bi bi-unlock"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1" title="Requeue timers" onclick="window.bdkOrchestrationAction('@requeueTimersUrl')">
+                                        <i class="bi bi-clock-history"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            </div>
+        </section>
+
+        <div class="orchestrations-side-zone">
+            <section class="orchestrations-panel">
+                <div class="orchestrations-panel-header">
+                    <span>Definitions</span>
+                    <span class="badge rounded-pill text-bg-secondary">@vm.Definitions.Count</span>
+                </div>
+                <div class="orchestrations-panel-body">
+                @if (vm.Definitions.Count == 0)
+                {
+                    <div class="text-muted small py-2">No orchestration definitions have persisted instances.</div>
+                }
+                else
+                {
+                    @foreach (var definition in vm.Definitions)
+                    {
+                        <div class="d-flex justify-content-between border-bottom py-2">
+                            <span class="fw-medium" title="@definition.Name">@TrimValue(definition.Name, 52)</span>
+                            <span class="badge text-bg-secondary">@definition.Count.ToString("N0", CultureInfo.InvariantCulture)</span>
+                        </div>
+                    }
+                }
+                </div>
+            </section>
+
+            <section class="orchestrations-panel">
+                <div class="orchestrations-panel-header">
+                    <span>States</span>
+                    <span class="badge rounded-pill text-bg-secondary">@vm.States.Count</span>
+                </div>
+                <div class="orchestrations-panel-body">
+                @if (vm.States.Count == 0)
+                {
+                    <div class="text-muted small py-2">No state counts are available.</div>
+                }
+                else
+                {
+                    @foreach (var state in vm.States)
+                    {
+                        <div class="d-flex justify-content-between border-bottom py-2">
+                            <span class="fw-medium" title="@state.Name">@TrimValue(state.Name, 52)</span>
+                            <span class="badge text-bg-secondary">@state.Count.ToString("N0", CultureInfo.InvariantCulture)</span>
+                        </div>
+                    }
+                }
+                </div>
+            </section>
+
+            <section class="orchestrations-panel">
+                <div class="orchestrations-panel-header">
+                    <span>Runtime</span>
+                </div>
+                <div class="orchestrations-panel-body">
+                    <div class="d-flex justify-content-between border-bottom py-2">
+                        <span class="text-muted">Average duration</span>
+                        <span>@FormatDurationSeconds(metrics.AverageDurationSeconds)</span>
+                    </div>
+                    <div class="d-flex justify-content-between border-bottom py-2">
+                        <span class="text-muted">Oldest waiting</span>
+                        <span>@FormatRelative(metrics.OldestWaitingStartedUtc)</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+}
+
+@functions {
+    private async Task<DashboardOrchestrationsViewModel> CreateModelAsync()
+    {
+        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var query = this.HttpContext.RequestServices.GetService<IOrchestrationQueryService>();
+        var logger = this.HttpContext.RequestServices.GetService<ILogger<Data>>();
+        var cancellationToken = this.HttpContext.RequestAborted;
+        var model = new DashboardOrchestrationsViewModel
+        {
+            ActionBase = OrchestrationsDashboardEndpoints.BuildOrchestrationsActionBase(dashboardOptions)
+        };
+
+        if (query is null)
+        {
+            model.IsAvailable = false;
+            return model;
+        }
+
+        var request = CreateQueryRequest();
+        var metricRequest = new OrchestrationMetricsRequest
+        {
+            OrchestrationName = request.OrchestrationName,
+            Statuses = request.Statuses,
+            States = request.States,
+            StartedFrom = request.StartedFrom,
+            StartedTo = request.StartedTo,
+            CompletedFrom = request.CompletedFrom,
+            CompletedTo = request.CompletedTo
+        };
+
+        try
+        {
+            var result = await query.GetMetricsAsync(metricRequest, cancellationToken);
+            if (result.IsSuccess)
+            {
+                model.Metrics = result.Value;
+                model.Definitions = result.Value.CountsByOrchestration
+                    .OrderByDescending(pair => pair.Value)
+                    .ThenBy(pair => pair.Key, StringComparer.OrdinalIgnoreCase)
+                    .Take(12)
+                    .Select(pair => new OrchestrationDefinitionSummary(pair.Key, pair.Value))
+                    .ToList();
+                model.States = result.Value.CountsByState
+                    .OrderByDescending(pair => pair.Value)
+                    .ThenBy(pair => pair.Key, StringComparer.OrdinalIgnoreCase)
+                    .Take(12)
+                    .Select(pair => new OrchestrationStateSummary(pair.Key, pair.Value))
+                    .ToList();
+                model.CountsByStatus = new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase)
+                {
+                    ["Running"] = result.Value.RunningCount,
+                    ["Waiting"] = result.Value.WaitingCount,
+                    ["Paused"] = result.Value.PausedCount,
+                    ["Completed"] = result.Value.CompletedCount,
+                    ["Failed"] = result.Value.FailedCount,
+                    ["Cancelled"] = result.Value.CancelledCount,
+                    ["Terminated"] = result.Value.TerminatedCount,
+                };
+            }
+            else
+            {
+                model.Errors.Add(result.Errors.FirstOrDefault()?.Message ?? "Orchestration metrics could not be loaded.");
+            }
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "Orchestrations dashboard: metrics query failed.");
+            model.Errors.Add("Orchestration metrics could not be loaded.");
+        }
+
+        try
+        {
+            var result = await query.QueryAsync(request, cancellationToken);
+            if (result.IsSuccess)
+            {
+                model.Instances = result.Value.ToList();
+            }
+            else
+            {
+                model.Errors.Add(result.Errors.FirstOrDefault()?.Message ?? "Orchestration instances could not be loaded.");
+            }
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "Orchestrations dashboard: instances query failed.");
+            model.Errors.Add("Orchestration instances could not be loaded.");
+        }
+
+        return model;
+    }
+
+    private OrchestrationQueryRequest CreateQueryRequest()
+    {
+        var status = GetQuery("status");
+        var state = GetQuery("state");
+
+        return new OrchestrationQueryRequest
+        {
+            OrchestrationName = GetQuery("name"),
+            Statuses = string.IsNullOrWhiteSpace(status) ? null : [status],
+            States = string.IsNullOrWhiteSpace(state) ? null : [state],
+            CorrelationId = GetQuery("correlationId"),
+            Take = GetTake(),
+            SortBy = "LastUpdatedUtc",
+            SortDescending = true
+        };
+    }
+
+    private string GetQuery(string key) =>
+        this.HttpContext.Request.Query.TryGetValue(key, out var value) ? value.ToString() : null;
+
+    private int GetTake() =>
+        int.TryParse(GetQuery("take"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var take)
+            ? Math.Clamp(take, 1, 500)
+            : 50;
+
+    private static Microsoft.AspNetCore.Html.IHtmlContent RenderMetricCard(string title, long value, string css)
+    {
+        var valueClass = string.IsNullOrWhiteSpace(css) ? "fs-4 fw-semibold" : $"fs-4 fw-semibold {css}";
+        return new Microsoft.AspNetCore.Html.HtmlString($"""
+            <div class="col-6 col-lg-2">
+                <div class="card h-100">
+                    <div class="card-body p-3">
+                        <div class="text-muted small">{title}</div>
+                        <div class="{valueClass}">{value.ToString("N0", CultureInfo.InvariantCulture)}</div>
+                    </div>
+                </div>
+            </div>
+            """);
+    }
+
+    private static Microsoft.AspNetCore.Html.IHtmlContent RenderStatusBadge(string status)
+    {
+        var css = status switch
+        {
+            "Running" => "text-bg-info",
+            "Waiting" => "text-bg-warning",
+            "Paused" => "text-bg-secondary",
+            "Completed" => "text-bg-success",
+            "Failed" => "text-bg-danger",
+            "Cancelled" => "text-bg-danger",
+            "Terminated" => "text-bg-danger",
+            "Created" => "text-bg-primary",
+            _ => "text-bg-secondary"
+        };
+
+        return new Microsoft.AspNetCore.Html.HtmlString($"<span class=\"badge {css}\">{DisplayValue(status)}</span>");
+    }
+
+    private static bool CanPause(OrchestrationInstanceModel instance) =>
+        instance is not null && !IsTerminal(instance.Status) && !string.Equals(instance.Status, "Paused", StringComparison.OrdinalIgnoreCase);
+
+    private static bool CanResume(OrchestrationInstanceModel instance) =>
+        string.Equals(instance?.Status, "Paused", StringComparison.OrdinalIgnoreCase);
+
+    private static bool CanStop(OrchestrationInstanceModel instance) =>
+        instance is not null && !IsTerminal(instance.Status);
+
+    private static bool CanArchive(OrchestrationInstanceModel instance) =>
+        instance is not null && IsTerminal(instance.Status);
+
+    private static bool IsTerminal(string status) =>
+        string.Equals(status, "Completed", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(status, "Failed", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(status, "Cancelled", StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(status, "Terminated", StringComparison.OrdinalIgnoreCase);
+
+    private static string DisplayValue(string value) =>
+        string.IsNullOrWhiteSpace(value) ? "-" : value;
+
+    private static string FormatTimestamp(DateTimeOffset? value) =>
+        value?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz", CultureInfo.InvariantCulture) ?? "-";
+
+    private static string FormatRelative(DateTimeOffset? value)
+    {
+        if (value is null)
+        {
+            return "-";
+        }
+
+        var delta = DateTimeOffset.UtcNow - value.Value;
+        var abs = delta.Duration();
+        var suffix = delta.TotalSeconds >= 0 ? "ago" : "from now";
+        if (abs.TotalMinutes < 1) return $"{Math.Max(1, (int)abs.TotalSeconds)}s {suffix}";
+        if (abs.TotalHours < 1) return $"{(int)abs.TotalMinutes}m {suffix}";
+        if (abs.TotalDays < 1) return $"{(int)abs.TotalHours}h {suffix}";
+        return $"{(int)abs.TotalDays}d {suffix}";
+    }
+
+    private static string FormatDuration(OrchestrationInstanceModel instance)
+    {
+        if (instance is null)
+        {
+            return "-";
+        }
+
+        var end = instance.CompletedUtc ?? DateTimeOffset.UtcNow;
+        return FormatDurationSeconds(Math.Max(0, (end - instance.StartedUtc).TotalSeconds));
+    }
+
+    private static string FormatDurationSeconds(double? value)
+    {
+        if (!value.HasValue)
+        {
+            return "-";
+        }
+
+        var duration = TimeSpan.FromSeconds(Math.Max(0, value.Value));
+        if (duration.TotalHours >= 1) return $"{(int)duration.TotalHours}h {duration.Minutes}m";
+        if (duration.TotalMinutes >= 1) return $"{(int)duration.TotalMinutes}m {duration.Seconds}s";
+        if (duration.TotalSeconds >= 1) return $"{Math.Round(duration.TotalSeconds)}s";
+        return "<1s";
+    }
+
+    private static string TrimValue(string value, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return "-";
+        }
+
+        return value.Length <= maxLength ? value : $"{value[..maxLength]}...";
+    }
+
+    private static string TrimFromStart(string value, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return "-";
+        }
+
+        return value.Length <= maxLength ? value : $"...{value[^maxLength..]}";
+    }
+}

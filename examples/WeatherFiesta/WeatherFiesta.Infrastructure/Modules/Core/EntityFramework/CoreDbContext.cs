@@ -7,7 +7,9 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
 
 using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs;
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Orchestrations;
+using BridgingIT.DevKit.Infrastructure.EntityFramework.Queueing;
 using DevKit.Domain.Model;
 
 /// <summary>
@@ -16,7 +18,7 @@ using DevKit.Domain.Model;
 /// </summary>
 public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     ModuleDbContextBase(options),
-    IOutboxDomainEventContext, IOrchestrationContext, IJobsContext, ILoggingContext
+    IOutboxDomainEventContext, IOrchestrationContext, IJobsContext, IMessagingContext, IQueueingContext, ILoggingContext
 {
     /// <summary>Gets or sets the cities DbSet.</summary>
     public DbSet<City> Cities { get; set; }
@@ -38,6 +40,10 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
 
     /// <summary>Gets or sets the outbox domain events DbSet.</summary>
     public DbSet<OutboxDomainEvent> OutboxDomainEvents { get; set; }
+
+    public DbSet<BrokerMessage> BrokerMessages { get; set; }
+
+    public DbSet<QueueMessage> QueueMessages { get; set; }
 
     public DbSet<OrchestrationInstance> OrchestrationInstances { get; set; }
 

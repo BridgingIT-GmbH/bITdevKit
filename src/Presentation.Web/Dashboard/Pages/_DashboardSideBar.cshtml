@@ -30,7 +30,7 @@
                 var isActive = ReferenceEquals(item, activeItem);
                 var tooltip = string.IsNullOrWhiteSpace(item.Tooltip) ? item.Title : item.Tooltip;
                 <li class="nav-item">
-                    <a class="nav-link @(isActive ? "active" : "")" href="@item.Url" title="@tooltip" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="@tooltip">
+                    <a class="nav-link @(isActive ? "active" : "")" href="@item.Url" aria-label="@tooltip" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="@tooltip">
                         <i class="bi bi-@(item.Icon) me-2"></i>
                         <span class="nav-link-title">@item.Title</span>
                         @if (item.HasBadge && item.BadgeCount.HasValue)

@@ -1,0 +1,357 @@
+@using BridgingIT.DevKit.Application.Messaging
+@using Microsoft.Extensions.Logging
+@using MessagingDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Messaging.Dashboard.DashboardEndpoints
+@inherits RazorSlice
+
+@{
+    var vm = await CreateModelAsync();
+    var actionBase = vm.ActionBase;
+}
+
+@if (!vm.IsAvailable)
+{
+    <div class="alert alert-warning py-2 mb-0">
+        Messaging is not registered. Call <code>AddMessaging()</code> to populate this page.
+    </div>
+}
+else
+{
+    @if (vm.Errors.Count > 0)
+    {
+        <div class="alert alert-danger py-2 mb-2">
+            @foreach (var error in vm.Errors)
+            {
+                <div>@error</div>
+            }
+        </div>
+    }
+
+    <div class="row g-2 messaging-card-grid">
+        @RenderMetricCard("Total", vm.Stats.Total, null)
+        @RenderMetricCard("Pending", vm.Stats.Pending, "text-info")
+        @RenderMetricCard("Processing", vm.Stats.Processing, "text-warning")
+        @RenderMetricCard("Succeeded", vm.Stats.Succeeded, "text-success")
+        @RenderMetricCard("Failed", vm.Stats.Failed, vm.Stats.Failed > 0 ? "text-danger" : null)
+        @RenderMetricCard("Dead-lettered", vm.Stats.DeadLettered, vm.Stats.DeadLettered > 0 ? "text-danger" : null)
+    </div>
+
+    <div class="messaging-data-zone">
+        <section class="messaging-panel">
+            <div class="messaging-panel-header">
+                <span>Messages</span>
+                <span class="badge rounded-pill text-bg-secondary">@vm.Messages.Count</span>
+            </div>
+            <div class="messaging-panel-body">
+            @if (vm.Messages.Count == 0)
+            {
+                <div class="text-muted small py-2">No broker messages matched the current filters.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Created</th>
+                                <th>Type</th>
+                                <th>Message Id</th>
+                                <th class="text-end">Attempts</th>
+                                <th>Processed</th>
+                                <th>Lease</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var message in vm.Messages)
+                        {
+                            var retryUrl = $"{actionBase}/messages/{message.Id}/retry";
+                            var archiveUrl = $"{actionBase}/messages/{message.Id}/archive";
+                            <tr>
+                                <td>
+                                    @RenderStatusBadge(message.Status)
+                                    @if (message.IsArchived)
+                                    {
+                                        <span class="badge text-bg-secondary ms-1">Archived</span>
+                                    }
+                                </td>
+                                <td class="text-muted small" title="@FormatTimestamp(message.CreatedDate)">@FormatRelative(message.CreatedDate)</td>
+                                <td title="@DisplayValue(message.Type)">@TrimValue(message.Type, 46)</td>
+                                <td class="text-muted small" title="@DisplayValue(message.MessageId)">@TrimFromStart(message.MessageId, 26)</td>
+                                <td class="text-end">@message.AttemptCountSummary</td>
+                                <td class="text-muted small">@FormatRelative(message.ProcessedDate)</td>
+                                <td>
+                                    @if (!string.IsNullOrWhiteSpace(message.LockedBy))
+                                    {
+                                        <span class="badge text-bg-warning" title="@($"{message.LockedBy} until {FormatTimestamp(message.LockedUntil)}")">Leased</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td class="text-end text-nowrap">
+                                    @if (CanRetryMessage(message))
+                                    {
+                                        <button class="btn btn-sm btn-outline-warning" title="Retry message" onclick="window.bdkMessagingAction('@retryUrl')">
+                                            <i class="bi bi-arrow-repeat"></i>
+                                        </button>
+                                    }
+                                    @if (CanArchiveMessage(message))
+                                    {
+                                        <button class="btn btn-sm btn-outline-secondary ms-1" title="Archive message" onclick="window.bdkMessagingAction('@archiveUrl')">
+                                            <i class="bi bi-archive"></i>
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            </div>
+        </section>
+
+        <div class="messaging-side-zone">
+            <section class="messaging-panel">
+                <div class="messaging-panel-header">
+                    <span>Subscriptions</span>
+                    <span class="badge rounded-pill text-bg-secondary">@vm.Subscriptions.Count</span>
+                </div>
+                <div class="messaging-panel-body">
+                @if (vm.Subscriptions.Count == 0)
+                {
+                    <div class="text-muted small py-2">No message subscriptions are registered.</div>
+                }
+                else
+                {
+                    @foreach (var subscription in vm.Subscriptions)
+                    {
+                        var pauseUrl = $"{actionBase}/types/{Uri.EscapeDataString(subscription.MessageType)}/pause";
+                        var resumeUrl = $"{actionBase}/types/{Uri.EscapeDataString(subscription.MessageType)}/resume";
+                        <div class="border-bottom py-2">
+                            <div class="fw-medium" title="@subscription.MessageType">@TrimValue(subscription.MessageType, 54)</div>
+                            <div class="text-muted small" title="@subscription.HandlerType">@TrimValue(subscription.HandlerType, 54)</div>
+                            <div class="d-flex gap-2 align-items-center mt-2">
+                                @if (subscription.IsMessageTypePaused)
+                                {
+                                    <span class="badge text-bg-warning">Paused</span>
+                                    <button class="btn btn-sm btn-outline-success" onclick="window.bdkMessagingAction('@resumeUrl')">Resume</button>
+                                }
+                                else
+                                {
+                                    <button class="btn btn-sm btn-outline-warning" onclick="window.bdkMessagingAction('@pauseUrl')">Pause</button>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+                </div>
+            </section>
+
+            <section class="messaging-panel">
+                <div class="messaging-panel-header">
+                    <span>Waiting</span>
+                    <span class="badge rounded-pill text-bg-secondary">@vm.WaitingMessages.Count</span>
+                </div>
+                <div class="messaging-panel-body">
+                @if (vm.WaitingMessages.Count == 0)
+                {
+                    <div class="text-muted small py-2">No messages are waiting for handlers.</div>
+                }
+                else
+                {
+                    @foreach (var message in vm.WaitingMessages)
+                    {
+                        <div class="border-bottom py-2">
+                            <div class="fw-medium" title="@message.Type">@TrimValue(message.Type, 54)</div>
+                            <div class="text-muted small">@TrimFromStart(message.MessageId, 28)</div>
+                            <div class="text-muted small">@FormatRelative(message.CreatedDate)</div>
+                        </div>
+                    }
+                }
+                </div>
+            </section>
+        </div>
+    </div>
+}
+
+@functions {
+    private async Task<DashboardMessagingViewModel> CreateModelAsync()
+    {
+        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var service = this.HttpContext.RequestServices.GetService<IMessageBrokerService>();
+        var logger = this.HttpContext.RequestServices.GetService<ILogger<Data>>();
+        var cancellationToken = this.HttpContext.RequestAborted;
+        var model = new DashboardMessagingViewModel
+        {
+            ActionBase = MessagingDashboardEndpoints.BuildMessagingActionBase(dashboardOptions)
+        };
+
+        if (service is null)
+        {
+            model.IsAvailable = false;
+            return model;
+        }
+
+        var status = TryParseEnum<BrokerMessageStatus>(GetQuery("status"));
+        var archive = GetArchiveFilter(GetQuery("archive"));
+        var take = GetTake();
+        var type = GetQuery("type");
+        var messageId = GetQuery("messageId");
+
+        try
+        {
+            model.Stats = await service.GetMessageStatsAsync(isArchived: archive, cancellationToken: cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "Messaging dashboard: stats failed.");
+            model.Errors.Add("Message statistics could not be loaded.");
+        }
+
+        try
+        {
+            model.Summary = await service.GetSummaryAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "Messaging dashboard: summary failed.");
+        }
+
+        try
+        {
+            var messages = await service.GetMessagesAsync(
+                status,
+                type,
+                messageId,
+                isArchived: archive,
+                includeHandlers: false,
+                take: take,
+                cancellationToken: cancellationToken);
+            model.Messages = messages.OrderByDescending(message => message.CreatedDate).ToList();
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "Messaging dashboard: messages query failed.");
+            model.Errors.Add("Messages could not be loaded.");
+        }
+
+        try
+        {
+            model.Subscriptions = (await service.GetSubscriptionsAsync(cancellationToken)).ToList();
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "Messaging dashboard: subscriptions query failed.");
+            model.Errors.Add("Subscriptions could not be loaded.");
+        }
+
+        try
+        {
+            model.WaitingMessages = (await service.GetWaitingMessagesAsync(25, cancellationToken)).ToList();
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "Messaging dashboard: waiting messages query failed.");
+        }
+
+        return model;
+    }
+
+    private string GetQuery(string key) =>
+        this.HttpContext.Request.Query.TryGetValue(key, out var value) ? value.ToString() : null;
+
+    private int GetTake() =>
+        int.TryParse(GetQuery("take"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var take)
+            ? Math.Clamp(take, 1, 500)
+            : 50;
+
+    private static TEnum? TryParseEnum<TEnum>(string value)
+        where TEnum : struct =>
+        Enum.TryParse<TEnum>(value, true, out var parsed) ? parsed : null;
+
+    private static bool? GetArchiveFilter(string value) =>
+        string.Equals(value, "all", StringComparison.OrdinalIgnoreCase) ? null :
+        string.Equals(value, "archived", StringComparison.OrdinalIgnoreCase) ? true : false;
+
+    private static Microsoft.AspNetCore.Html.IHtmlContent RenderMetricCard(string title, int value, string css)
+    {
+        var valueClass = string.IsNullOrWhiteSpace(css) ? "fs-4 fw-semibold" : $"fs-4 fw-semibold {css}";
+        return new Microsoft.AspNetCore.Html.HtmlString($"""
+            <div class="col-6 col-lg-2">
+                <div class="card h-100">
+                    <div class="card-body p-3">
+                        <div class="text-muted small">{title}</div>
+                        <div class="{valueClass}">{value.ToString("N0", CultureInfo.InvariantCulture)}</div>
+                    </div>
+                </div>
+            </div>
+            """);
+    }
+
+    private static Microsoft.AspNetCore.Html.IHtmlContent RenderStatusBadge(BrokerMessageStatus status)
+    {
+        var css = status switch
+        {
+            BrokerMessageStatus.Pending => "text-bg-info",
+            BrokerMessageStatus.Processing => "text-bg-warning",
+            BrokerMessageStatus.Succeeded => "text-bg-success",
+            BrokerMessageStatus.Failed => "text-bg-danger",
+            BrokerMessageStatus.DeadLettered => "text-bg-danger",
+            BrokerMessageStatus.Expired => "text-bg-secondary",
+            _ => "text-bg-secondary"
+        };
+
+        return new Microsoft.AspNetCore.Html.HtmlString($"<span class=\"badge {css}\">{status}</span>");
+    }
+
+    private static bool CanRetryMessage(BrokerMessageInfo message) =>
+        !message.IsArchived && message.Status is BrokerMessageStatus.Failed or BrokerMessageStatus.DeadLettered or BrokerMessageStatus.Expired;
+
+    private static bool CanArchiveMessage(BrokerMessageInfo message) =>
+        !message.IsArchived && message.Status is BrokerMessageStatus.Succeeded or BrokerMessageStatus.DeadLettered or BrokerMessageStatus.Expired;
+
+    private static string DisplayValue(string value) =>
+        string.IsNullOrWhiteSpace(value) ? "-" : value;
+
+    private static string FormatTimestamp(DateTimeOffset? value) =>
+        value?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz", CultureInfo.InvariantCulture) ?? "-";
+
+    private static string FormatRelative(DateTimeOffset? value)
+    {
+        if (value is null)
+        {
+            return "-";
+        }
+
+        var delta = DateTimeOffset.UtcNow - value.Value;
+        var abs = delta.Duration();
+        var suffix = delta.TotalSeconds >= 0 ? "ago" : "from now";
+        if (abs.TotalMinutes < 1) return $"{Math.Max(1, (int)abs.TotalSeconds)}s {suffix}";
+        if (abs.TotalHours < 1) return $"{(int)abs.TotalMinutes}m {suffix}";
+        if (abs.TotalDays < 1) return $"{(int)abs.TotalHours}h {suffix}";
+        return $"{(int)abs.TotalDays}d {suffix}";
+    }
+
+    private static string TrimValue(string value, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return "-";
+        }
+
+        return value.Length <= maxLength ? value : $"{value[..maxLength]}...";
+    }
+
+    private static string TrimFromStart(string value, int maxLength)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return "-";
+        }
+
+        return value.Length <= maxLength ? value : $"...{value[^maxLength..]}";
+    }
+}

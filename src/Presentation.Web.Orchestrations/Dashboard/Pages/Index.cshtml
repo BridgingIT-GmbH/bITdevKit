@@ -1,0 +1,238 @@
+@using OrchestrationsDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+@{
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var contentPath = OrchestrationsDashboardEndpoints.BuildOrchestrationsContentPath(dashboardOptions);
+}
+
+<div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
+    <h4 class="m-0">Orchestrations</h4>
+    <div class="d-flex align-items-center gap-2">
+        <span id="orchestrations-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <select id="orchestrations-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="Orchestrations refresh interval">
+            <option value="">Off</option>
+            <option value="1000">1 sec</option>
+            <option value="5000">5 sec</option>
+            <option value="15000">15 sec</option>
+            <option value="30000">30 sec</option>
+        </select>
+        <button type="button" id="orchestrations-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh orchestrations">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+</div>
+
+<div class="card mb-2">
+    <div class="card-body py-2">
+        <div class="row g-2 align-items-end">
+            <div class="col-6 col-lg-2">
+                <label class="form-label small mb-1" for="orchestrations-status-filter">Status</label>
+                <select id="orchestrations-status-filter" class="form-select form-select-sm">
+                    <option value="">All</option>
+                    <option>Created</option>
+                    <option>Running</option>
+                    <option>Waiting</option>
+                    <option>Paused</option>
+                    <option>Completed</option>
+                    <option>Failed</option>
+                    <option>Cancelled</option>
+                    <option>Terminated</option>
+                </select>
+            </div>
+            <div class="col-6 col-lg-2">
+                <label class="form-label small mb-1" for="orchestrations-take-filter">Rows</label>
+                <select id="orchestrations-take-filter" class="form-select form-select-sm">
+                    <option>25</option>
+                    <option selected>50</option>
+                    <option>100</option>
+                    <option>250</option>
+                </select>
+            </div>
+            <div class="col-12 col-lg-2">
+                <label class="form-label small mb-1" for="orchestrations-name-filter">Name</label>
+                <input id="orchestrations-name-filter" class="form-control form-control-sm" placeholder="contains">
+            </div>
+            <div class="col-12 col-lg-2">
+                <label class="form-label small mb-1" for="orchestrations-state-filter">State</label>
+                <input id="orchestrations-state-filter" class="form-control form-control-sm" placeholder="contains">
+            </div>
+            <div class="col-12 col-lg-2">
+                <label class="form-label small mb-1" for="orchestrations-correlation-filter">Correlation</label>
+                <input id="orchestrations-correlation-filter" class="form-control form-control-sm" placeholder="id">
+            </div>
+            <div class="col-12 col-lg-2 d-flex gap-2">
+                <button type="button" id="orchestrations-filter-apply" class="btn btn-primary btn-sm flex-fill">Apply</button>
+                <button type="button" id="orchestrations-filter-reset" class="btn btn-outline-secondary btn-sm">Reset</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="dashboard-orchestrations-shell">
+    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.Content>())
+</div>
+
+<script>
+    (() => {
+        const contentUrl = '@contentPath';
+        const storageKey = 'bdk.dashboard.orchestrations.refreshInterval';
+        const shellElement = document.getElementById('dashboard-orchestrations-shell');
+        const selectElement = document.getElementById('orchestrations-refresh-interval');
+        const statusElement = document.getElementById('orchestrations-refresh-status');
+        const refreshButton = document.getElementById('orchestrations-refresh-now');
+        const applyButton = document.getElementById('orchestrations-filter-apply');
+        const resetButton = document.getElementById('orchestrations-filter-reset');
+
+        let timeoutId = null;
+        let abortController = null;
+
+        function getContentElement() {
+            return shellElement?.querySelector('#dashboard-orchestrations-content') ?? null;
+        }
+
+        function getSelectedInterval() {
+            const value = Number(selectElement.value);
+            return Number.isFinite(value) && value > 0 ? value : null;
+        }
+
+        function buildContentUrl() {
+            const url = new URL(contentUrl, window.location.origin);
+            const fields = [
+                ['status', document.getElementById('orchestrations-status-filter')?.value],
+                ['take', document.getElementById('orchestrations-take-filter')?.value],
+                ['name', document.getElementById('orchestrations-name-filter')?.value],
+                ['state', document.getElementById('orchestrations-state-filter')?.value],
+                ['correlationId', document.getElementById('orchestrations-correlation-filter')?.value],
+            ];
+            fields.forEach(([key, value]) => {
+                if (value) {
+                    url.searchParams.set(key, value);
+                }
+            });
+            return url.toString();
+        }
+
+        function setStatus(text, isError) {
+            statusElement.textContent = text;
+            statusElement.classList.toggle('text-danger', isError === true);
+            statusElement.classList.toggle('text-muted', isError !== true);
+        }
+
+        function clearScheduledRefresh() {
+            if (timeoutId !== null) {
+                window.clearTimeout(timeoutId);
+                timeoutId = null;
+            }
+        }
+
+        function scheduleNextRefresh() {
+            clearScheduledRefresh();
+            const interval = getSelectedInterval();
+            if (interval === null || document.hidden) {
+                return;
+            }
+            timeoutId = window.setTimeout(() => refreshOrchestrations(true), interval);
+        }
+
+        async function refreshOrchestrations(scheduleAfter) {
+            clearScheduledRefresh();
+            const contentElement = getContentElement();
+            if (!contentElement) {
+                return;
+            }
+
+            if (abortController !== null) {
+                abortController.abort();
+            }
+            abortController = new AbortController();
+
+            try {
+                const response = await fetch(buildContentUrl(), {
+                    headers: { 'X-Requested-With': 'fetch' },
+                    signal: abortController.signal
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                contentElement.innerHTML = await response.text();
+                window.bdkDashboard.clearRefreshError(contentElement);
+                setStatus(`Updated ${new Date().toLocaleTimeString()}`, false);
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    window.bdkDashboard.showRefreshError(contentElement);
+                    setStatus('Refresh failed', true);
+                }
+            } finally {
+                abortController = null;
+                if (scheduleAfter) {
+                    scheduleNextRefresh();
+                }
+            }
+        }
+
+        const savedInterval = localStorage.getItem(storageKey);
+        if (savedInterval !== null) {
+            selectElement.value = savedInterval;
+        }
+
+        selectElement.addEventListener('change', () => {
+            localStorage.setItem(storageKey, selectElement.value);
+            if (abortController !== null) {
+                abortController.abort();
+            }
+            scheduleNextRefresh();
+        });
+
+        refreshButton.addEventListener('click', () => refreshOrchestrations(false));
+        applyButton.addEventListener('click', () => refreshOrchestrations(false));
+        resetButton.addEventListener('click', () => {
+            document.getElementById('orchestrations-status-filter').value = '';
+            document.getElementById('orchestrations-take-filter').value = '50';
+            document.getElementById('orchestrations-name-filter').value = '';
+            document.getElementById('orchestrations-state-filter').value = '';
+            document.getElementById('orchestrations-correlation-filter').value = '';
+            refreshOrchestrations(false);
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                clearScheduledRefresh();
+                return;
+            }
+            if (getSelectedInterval() !== null) {
+                refreshOrchestrations(true);
+            }
+        });
+
+        window.bdkOrchestrationAction = async function(url) {
+            const btn = document.activeElement;
+            if (btn) {
+                btn.disabled = true;
+            }
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'X-Requested-With': 'fetch' }
+                });
+                if (!response.ok) {
+                    console.error('Orchestration action failed:', await response.text().catch(() => response.statusText));
+                }
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                }
+                await refreshOrchestrations(false);
+            }
+        };
+
+        scheduleNextRefresh();
+    })();
+</script>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "Orchestrations" };
+}

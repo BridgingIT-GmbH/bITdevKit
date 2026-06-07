@@ -60,6 +60,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\src\Application.Messaging\Application.Messaging.csproj" />
+    <ProjectReference Include="..\..\..\src\Application.Queueing\Application.Queueing.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Storage.Jobs\Application.Storage.Jobs.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Storage\Application.Storage.csproj" />
     <ProjectReference Include="..\..\..\src\Application.Utilities\Application.Utilities.csproj" />

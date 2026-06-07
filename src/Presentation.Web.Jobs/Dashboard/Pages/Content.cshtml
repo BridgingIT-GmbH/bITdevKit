@@ -137,6 +137,7 @@
                     <span><i class="jobs-dot" style="background:#198754"></i>Running</span>
                     <span><i class="jobs-dot" style="background:#dc3545"></i>Failed</span>
                     <span><i class="jobs-dot" style="background:#0d6efd"></i>Due</span>
+                    <span><i class="jobs-dot" style="background:#20c997"></i>Completed</span>
                 </div>
             </div>
             <div class="tab-pane fade" id="jobs-graph-history" role="tabpanel" tabindex="0">
@@ -286,7 +287,19 @@
                 running: Number(sample.running ?? 0),
                 failed: Number(sample.failed ?? 0),
                 due: Number(sample.due ?? 0),
+                completed: Number(sample.completed ?? 0),
             };
+        }
+
+        function getDeltaSeries(samples, propertyName) {
+            return samples.map((sample, index) => {
+                if (index === 0) {
+                    return 0;
+                }
+
+                const previous = samples[index - 1];
+                return Math.max(0, Number(sample[propertyName] ?? 0) - Number(previous[propertyName] ?? 0));
+            });
         }
 
         function trimRealtimeSamples(samples) {
@@ -311,8 +324,9 @@
             const x = realtimeSamples.map(x => new Date(x.timestampUtc));
             await renderPlot(realtimeHost, [
                 { x, y: realtimeSamples.map(x => x.running ?? 0), mode: 'lines', line: { color: '#198754', width: 2 }, type: 'scatter' },
-                { x, y: realtimeSamples.map(x => x.failed ?? 0), mode: 'lines', line: { color: '#dc3545', width: 2 }, type: 'scatter' },
                 { x, y: realtimeSamples.map(x => x.due ?? 0), mode: 'lines', line: { color: '#0d6efd', width: 2 }, type: 'scatter' },
+                { x, y: getDeltaSeries(realtimeSamples, 'completed'), mode: 'lines', line: { color: '#20c997', width: 2 }, type: 'scatter' },
+                { x, y: getDeltaSeries(realtimeSamples, 'failed'), mode: 'lines', line: { color: '#dc3545', width: 2 }, type: 'scatter' },
             ]);
         }
 
@@ -324,7 +338,11 @@
             try {
                 const url = new URL(realtimeUrl, window.location.origin);
                 url.searchParams.set('sessionId', realtimeSessionId);
-                const response = await fetch(url.toString(), { headers: { 'X-Requested-With': 'fetch' } });
+                url.searchParams.set('_', Date.now().toString());
+                const response = await fetch(url.toString(), {
+                    cache: 'no-store',
+                    headers: { 'X-Requested-With': 'fetch' }
+                });
                 if (!response.ok) {
                     return;
                 }
@@ -343,7 +361,13 @@
             }
 
             try {
-                const response = await fetch(`${historyUrl}?window=${historyWindow}`, { headers: { 'X-Requested-With': 'fetch' } });
+                const url = new URL(historyUrl, window.location.origin);
+                url.searchParams.set('window', historyWindow);
+                url.searchParams.set('_', Date.now().toString());
+                const response = await fetch(url.toString(), {
+                    cache: 'no-store',
+                    headers: { 'X-Requested-With': 'fetch' }
+                });
                 if (!response.ok) {
                     return;
                 }

@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Presentation.Web.Messaging.Dashboard;
 
 using System.Collections.Concurrent;
 using BridgingIT.DevKit.Application.Messaging;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -78,6 +79,27 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             return Results.Ok(new { sessionId, samples });
         }).WithName("_bdk.Dashboard.Messaging.RealtimeData").WithSummary("Messaging realtime data").ExcludeFromDescription();
 
+        if (IsAliveEnabled(app))
+        {
+            group.MapPost("/messaging/alive", async (HttpContext context, CancellationToken cancellationToken) =>
+            {
+                var broker = context.RequestServices.GetService<IMessageBroker>();
+                if (broker is null)
+                {
+                    return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+                }
+
+                var message = new AliveMessage("dashboard");
+                await broker.Publish(message, cancellationToken);
+
+                return Results.Ok(new
+                {
+                    messageId = message.MessageId,
+                    correlationId = message.CorrelationId,
+                });
+            }).WithName("_bdk.Dashboard.Messaging.Alive").WithSummary("Publish messaging alive probe").ExcludeFromDescription();
+        }
+
         group.MapPost("/messaging/messages/{id:guid}/retry", async (Guid id, HttpContext context, CancellationToken cancellationToken) =>
         {
             var service = context.RequestServices.GetService<IMessageBrokerService>();
@@ -138,6 +160,9 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
     internal static string BuildMessagingActionBase(DashboardEndpointsOptions opts) =>
         DashboardPath.Combine(opts?.GroupPath, MessagingPath);
+
+    private static bool IsAliveEnabled(IEndpointRouteBuilder app) =>
+        app.ServiceProvider.GetService<MessagingAliveOptions>()?.Enabled == true;
 
     private static string GetOrCreateRealtimeSessionId(HttpContext context)
     {

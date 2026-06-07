@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard;
 
 using System.Collections.Concurrent;
 using BridgingIT.DevKit.Application.Orchestrations;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -142,6 +143,29 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             });
         }).WithName("_bdk.Dashboard.Orchestrations.HistoryData").WithSummary("Orchestrations history data").ExcludeFromDescription();
 
+        if (IsAliveEnabled(app))
+        {
+            group.MapPost("/orchestrations/alive", async (HttpContext context, CancellationToken cancellationToken) =>
+            {
+                var service = context.RequestServices.GetService<IOrchestrationService>();
+                if (service is null)
+                {
+                    return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+                }
+
+                var data = new AliveOrchestrationData
+                {
+                    Source = "dashboard",
+                    CorrelationId = GuidGenerator.CreateSequential().ToString("N"),
+                };
+                var result = await service.DispatchAsync<AliveOrchestration, AliveOrchestrationData>(data, cancellationToken);
+
+                return result.IsSuccess
+                    ? Results.Ok(new { instanceId = result.Value, correlationId = data.CorrelationId })
+                    : Results.Problem(result.Errors.FirstOrDefault()?.Message);
+            }).WithName("_bdk.Dashboard.Orchestrations.Alive").WithSummary("Dispatch orchestration alive probe").ExcludeFromDescription();
+        }
+
         group.MapPost("/orchestrations/{instanceId:guid}/pause", async (Guid instanceId, HttpContext context, CancellationToken cancellationToken) =>
         {
             var service = context.RequestServices.GetService<IOrchestrationService>();
@@ -213,6 +237,9 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
     internal static string BuildOrchestrationsActionBase(DashboardEndpointsOptions opts) =>
         DashboardPath.Combine(opts?.GroupPath, OrchestrationsPath);
+
+    private static bool IsAliveEnabled(IEndpointRouteBuilder app) =>
+        app.ServiceProvider.GetService<OrchestrationAliveOptions>()?.Enabled == true;
 
     private static long GetCount(IReadOnlyDictionary<string, long> countsByStatus, string status) =>
         countsByStatus is not null && countsByStatus.TryGetValue(status, out var value) ? value : 0;

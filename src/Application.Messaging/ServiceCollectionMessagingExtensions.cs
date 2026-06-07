@@ -82,9 +82,12 @@ public static class ServiceCollectionMessagingExtensions
         services.TryAddSingleton<ISubscriptionMap, SubscriptionMap>();
         services.TryAddSingleton<MessageBrokerControlState>();
 
-        optionsAction?.Invoke(new MessagingBuilderContext(services));
+        var context = new MessagingBuilderContext(services, configuration, contextOptions)
+            .AliveEnabled();
 
-        return new MessagingBuilderContext(services, configuration, contextOptions);
+        optionsAction?.Invoke(context);
+
+        return context;
     }
 
     [Obsolete("Please use WithSubscription")]

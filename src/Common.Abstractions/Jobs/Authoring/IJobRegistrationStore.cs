@@ -16,6 +16,12 @@ public interface IJobRegistrationStore
     void Add(JobDefinition definition);
 
     /// <summary>
+    /// Removes a code-registered job definition by name.
+    /// </summary>
+    /// <param name="jobName">The stable job name.</param>
+    void Remove(string jobName);
+
+    /// <summary>
     /// Adds a global behavior type.
     /// </summary>
     void AddGlobalBehavior(Type behaviorType);

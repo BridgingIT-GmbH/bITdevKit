@@ -37,6 +37,24 @@ public class OrchestrationRegistrationStore
     }
 
     /// <summary>
+    /// Removes an orchestration type from the registration store.
+    /// </summary>
+    /// <param name="orchestrationType">The orchestration type to remove.</param>
+    public void Remove(Type orchestrationType)
+    {
+        ArgumentNullException.ThrowIfNull(orchestrationType);
+
+        this.orchestrationTypes.Remove(orchestrationType);
+        foreach (var name in this.orchestrationNames
+            .Where(item => item.Value == orchestrationType)
+            .Select(item => item.Key)
+            .ToArray())
+        {
+            this.orchestrationNames.Remove(name);
+        }
+    }
+
+    /// <summary>
     /// Determines whether the specified orchestration type has been registered.
     /// </summary>
     /// <param name="orchestrationType">The orchestration type to check.</param>

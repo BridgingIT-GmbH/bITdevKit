@@ -3,6 +3,7 @@
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages
+@using BridgingIT.DevKit.Application.Jobs
 @using Microsoft.Extensions.DependencyInjection
 @using RazorSlices
 @using JobsDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.DashboardEndpoints
@@ -12,11 +13,19 @@
 @{
     var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = JobsDashboardEndpoints.BuildJobsDataContentPath(dashboardOptions);
+    var actionBase = JobsDashboardEndpoints.BuildJobsActionBase(dashboardOptions);
+    var aliveEnabled = this.HttpContext.RequestServices.GetService<JobAliveOptions>()?.Enabled == true;
 }
 
 <div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
     <h4 class="m-0">Jobs</h4>
     <div class="d-flex align-items-center gap-2">
+        @if (aliveEnabled)
+        {
+            <button type="button" class="btn btn-outline-primary btn-sm" title="Dispatch alive job" onclick="window.bdkJobsAction('@($"{actionBase}/alive")')">
+                <i class="bi bi-broadcast"></i>
+            </button>
+        }
         <span id="jobs-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
         <select id="jobs-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="Jobs refresh interval">
             <option value="">Off</option>
@@ -56,6 +65,12 @@
             return Number.isFinite(value) && value > 0 ? value : null;
         }
 
+        function buildContentUrl() {
+            const url = new URL(contentUrl, window.location.origin);
+            url.searchParams.set('_', Date.now().toString());
+            return url.toString();
+        }
+
         function setStatus(text, isError) {
             statusElement.textContent = text;
             statusElement.classList.toggle('text-danger', isError === true);
@@ -83,6 +98,9 @@
 
             const contentElement = getContentElement();
             if (!contentElement) {
+                if (scheduleAfter) {
+                    scheduleNextRefresh();
+                }
                 return;
             }
 
@@ -92,7 +110,8 @@
             abortController = new AbortController();
 
             try {
-                const response = await fetch(contentUrl, {
+                const response = await fetch(buildContentUrl(), {
+                    cache: 'no-store',
                     headers: { 'X-Requested-With': 'fetch' },
                     signal: abortController.signal
                 });

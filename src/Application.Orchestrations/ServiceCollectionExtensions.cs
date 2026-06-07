@@ -58,7 +58,8 @@ public static class ServiceCollectionExtensions
         services.TryAddSingleton<IOrchestrationDiagramService, OrchestrationDiagramService>();
         services.AddInMemoryOrchestrationPersistence();
 
-        var context = new OrchestrationBuilderContext(services);
+        var context = new OrchestrationBuilderContext(services)
+            .AliveEnabled();
         optionsAction?.Invoke(context);
 
         return context;

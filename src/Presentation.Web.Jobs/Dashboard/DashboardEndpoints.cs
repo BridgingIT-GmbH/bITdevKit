@@ -160,6 +160,41 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             });
         }).WithName("_bdk.Dashboard.Jobs.HistoryData").WithSummary("Jobs history data").ExcludeFromDescription();
 
+        if (IsAliveEnabled(app))
+        {
+            group.MapPost("/jobs/alive", async (HttpContext ctx, CancellationToken ct) =>
+            {
+                var svc = ctx.RequestServices.GetService<IJobSchedulerService>();
+                if (svc is null)
+                {
+                    return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+                }
+
+                var data = new AliveJobData
+                {
+                    Source = "dashboard",
+                    CorrelationId = GuidGenerator.CreateSequential().ToString("N"),
+                };
+                var result = await svc.DispatchAsync(
+                    AliveJob.JobName,
+                    data,
+                    new JobDispatchOptions
+                    {
+                        TriggerName = AliveJob.TriggerName,
+                        CorrelationId = data.CorrelationId,
+                    },
+                    ct);
+
+                return result.IsSuccess
+                    ? Results.Ok(new
+                    {
+                        occurrenceId = result.Value.OccurrenceId,
+                        correlationId = result.Value.CorrelationId,
+                    })
+                    : Results.Problem(result.Errors.FirstOrDefault()?.Message);
+            }).WithName("_bdk.Dashboard.Jobs.Alive").WithSummary("Dispatch jobs alive probe").ExcludeFromDescription();
+        }
+
         // Job action endpoints — resolved directly from in-process IJobSchedulerService
         group.MapPost("/jobs/dispatch/{jobName}", async (string jobName, HttpContext ctx, CancellationToken ct) =>
         {
@@ -244,6 +279,9 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
     internal static string BuildJobsHistoryDataPath(DashboardEndpointsOptions opts) =>
         DashboardPath.Combine(opts?.GroupPath, JobsHistoryDataPath);
+
+    private static bool IsAliveEnabled(IEndpointRouteBuilder app) =>
+        app.ServiceProvider.GetService<JobAliveOptions>()?.Enabled == true;
 
     private static long GetCount(IReadOnlyDictionary<string, long> countsByStatus, string key)
     {

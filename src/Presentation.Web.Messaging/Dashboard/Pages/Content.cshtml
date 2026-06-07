@@ -173,7 +173,11 @@
             try {
                 const url = new URL(realtimeUrl, window.location.origin);
                 url.searchParams.set('sessionId', sessionId);
-                const response = await fetch(url.toString(), { headers: { 'X-Requested-With': 'fetch' } });
+                url.searchParams.set('_', Date.now().toString());
+                const response = await fetch(url.toString(), {
+                    cache: 'no-store',
+                    headers: { 'X-Requested-With': 'fetch' }
+                });
                 if (!response.ok) {
                     return;
                 }

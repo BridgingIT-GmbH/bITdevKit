@@ -63,7 +63,8 @@ public static class ServiceCollectionExtensions
         registrations.SetConfiguration(configuration);
         registrations.AddGlobalBehavior(typeof(JobMetricsBehavior));
 
-        return new JobBuilderContext(services, registrations);
+        return new JobBuilderContext(services, registrations)
+            .AliveEnabled();
     }
 
     /// <summary>

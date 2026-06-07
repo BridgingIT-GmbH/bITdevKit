@@ -29,6 +29,19 @@ public class QueueingRegistrationStore
 
         this.subscriptions.Add(new QueueSubscriptionRegistration(messageType, handlerType));
     }
+
+    /// <summary>
+    /// Removes a queue subscription when it has been registered.
+    /// </summary>
+    /// <param name="messageType">The queued message type.</param>
+    /// <param name="handlerType">The queue handler type.</param>
+    public void Remove(Type messageType, Type handlerType)
+    {
+        ArgumentNullException.ThrowIfNull(messageType);
+        ArgumentNullException.ThrowIfNull(handlerType);
+
+        this.subscriptions.RemoveAll(item => item.MessageType == messageType && item.HandlerType == handlerType);
+    }
 }
 
 /// <summary>

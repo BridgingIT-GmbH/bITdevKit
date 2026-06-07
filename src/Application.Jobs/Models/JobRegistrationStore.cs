@@ -41,6 +41,14 @@ public class JobRegistrationStore : IJobRegistrationStore
         this.registrations.Add(definition);
     }
 
+    /// <inheritdoc />
+    public void Remove(string jobName)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(jobName);
+
+        this.registrations.RemoveAll(x => string.Equals(x.JobName, jobName, StringComparison.OrdinalIgnoreCase));
+    }
+
     /// <summary>
     /// Sets the scheduler configuration section used for overrides.
     /// </summary>

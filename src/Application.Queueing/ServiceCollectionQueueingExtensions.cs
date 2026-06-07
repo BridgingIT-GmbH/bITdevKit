@@ -124,7 +124,8 @@ public static class ServiceCollectionQueueingExtensions
                 tags: ["background", "queueing"]);
         }
 
-        var context = new QueueingBuilderContext(services, configuration, contextOptions, registrationStore);
+        var context = new QueueingBuilderContext(services, configuration, contextOptions, registrationStore)
+            .AliveEnabled();
         optionsAction?.Invoke(context);
 
         return context;

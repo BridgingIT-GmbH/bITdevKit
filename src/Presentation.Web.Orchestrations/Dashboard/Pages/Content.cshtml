@@ -228,6 +228,17 @@
             }
         }
 
+        function getDeltaSeries(samples, propertyName) {
+            return samples.map((sample, index) => {
+                if (index === 0) {
+                    return 0;
+                }
+
+                const previous = samples[index - 1];
+                return Math.max(0, Number(sample[propertyName] ?? 0) - Number(previous[propertyName] ?? 0));
+            });
+        }
+
         async function sampleRealtime() {
             if (disposed) {
                 return;
@@ -235,7 +246,11 @@
             try {
                 const url = new URL(realtimeUrl, window.location.origin);
                 url.searchParams.set('sessionId', sessionId);
-                const response = await fetch(url.toString(), { headers: { 'X-Requested-With': 'fetch' } });
+                url.searchParams.set('_', Date.now().toString());
+                const response = await fetch(url.toString(), {
+                    cache: 'no-store',
+                    headers: { 'X-Requested-With': 'fetch' }
+                });
                 if (!response.ok) {
                     return;
                 }
@@ -246,7 +261,9 @@
                     { x, y: samples.map(s => s.running ?? 0), name: 'Running', mode: 'lines', line: { color: '#0dcaf0', width: 2 }, type: 'scatter' },
                     { x, y: samples.map(s => s.waiting ?? 0), name: 'Waiting', mode: 'lines', line: { color: '#ffc107', width: 2 }, type: 'scatter' },
                     { x, y: samples.map(s => s.paused ?? 0), name: 'Paused', mode: 'lines', line: { color: '#adb5bd', width: 2 }, type: 'scatter' },
-                    { x, y: samples.map(s => s.failed ?? 0), name: 'Failed', mode: 'lines', line: { color: '#dc3545', width: 2 }, type: 'scatter' }
+                    { x, y: getDeltaSeries(samples, 'completed'), name: 'Completed', mode: 'lines', line: { color: '#198754', width: 2 }, type: 'scatter' },
+                    { x, y: getDeltaSeries(samples, 'failed'), name: 'Failed', mode: 'lines', line: { color: '#dc3545', width: 2 }, type: 'scatter' },
+                    { x, y: getDeltaSeries(samples, 'problem'), name: 'Problem', mode: 'lines', line: { color: '#6f42c1', width: 2 }, type: 'scatter' }
                 ]);
             } catch {
                 // best effort graph polling
@@ -258,7 +275,13 @@
                 return;
             }
             try {
-                const response = await fetch(`${historyUrl}?window=${historyWindow}`, { headers: { 'X-Requested-With': 'fetch' } });
+                const url = new URL(historyUrl, window.location.origin);
+                url.searchParams.set('window', historyWindow);
+                url.searchParams.set('_', Date.now().toString());
+                const response = await fetch(url.toString(), {
+                    cache: 'no-store',
+                    headers: { 'X-Requested-With': 'fetch' }
+                });
                 if (!response.ok) {
                     return;
                 }

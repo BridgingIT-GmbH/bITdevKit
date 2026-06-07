@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard;
 
 using System.Collections.Concurrent;
 using BridgingIT.DevKit.Application.Queueing;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -79,6 +80,27 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
             return Results.Ok(new { sessionId, samples });
         }).WithName("_bdk.Dashboard.Queueing.RealtimeData").WithSummary("Queueing realtime data").ExcludeFromDescription();
+
+        if (IsAliveEnabled(app))
+        {
+            group.MapPost("/queueing/alive", async (HttpContext context, CancellationToken cancellationToken) =>
+            {
+                var broker = context.RequestServices.GetService<IQueueBroker>();
+                if (broker is null)
+                {
+                    return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+                }
+
+                var message = new AliveQueueMessage("dashboard");
+                await broker.Enqueue(message, cancellationToken);
+
+                return Results.Ok(new
+                {
+                    messageId = message.MessageId,
+                    correlationId = message.CorrelationId,
+                });
+            }).WithName("_bdk.Dashboard.Queueing.Alive").WithSummary("Enqueue queueing alive probe").ExcludeFromDescription();
+        }
 
         group.MapPost("/queueing/messages/{id:guid}/retry", async (Guid id, HttpContext context, CancellationToken cancellationToken) =>
         {
@@ -176,6 +198,9 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
     internal static string BuildQueueingActionBase(DashboardEndpointsOptions opts) =>
         DashboardPath.Combine(opts?.GroupPath, QueueingPath);
+
+    private static bool IsAliveEnabled(IEndpointRouteBuilder app) =>
+        app.ServiceProvider.GetService<QueueingAliveOptions>()?.Enabled == true;
 
     private static string GetOrCreateRealtimeSessionId(HttpContext context)
     {

@@ -1,15 +1,24 @@
 @using QueueingDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.DashboardEndpoints
+@using BridgingIT.DevKit.Application.Queueing
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
     var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = QueueingDashboardEndpoints.BuildQueueingContentPath(dashboardOptions);
+    var actionBase = QueueingDashboardEndpoints.BuildQueueingActionBase(dashboardOptions);
+    var aliveEnabled = this.HttpContext.RequestServices.GetService<QueueingAliveOptions>()?.Enabled == true;
 }
 
 <div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
     <h4 class="m-0">Queueing</h4>
     <div class="d-flex align-items-center gap-2">
+        @if (aliveEnabled)
+        {
+            <button type="button" class="btn btn-outline-primary btn-sm" title="Enqueue alive message" onclick="window.bdkQueueingAction('@($"{actionBase}/alive")')">
+                <i class="bi bi-broadcast"></i>
+            </button>
+        }
         <span id="queueing-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
         <select id="queueing-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="Queueing refresh interval">
             <option value="">Off</option>
@@ -114,6 +123,7 @@
                     url.searchParams.set(key, value);
                 }
             });
+            url.searchParams.set('_', Date.now().toString());
             return url.toString();
         }
 
@@ -143,6 +153,9 @@
             clearScheduledRefresh();
             const contentElement = getContentElement();
             if (!contentElement) {
+                if (scheduleAfter) {
+                    scheduleNextRefresh();
+                }
                 return;
             }
 
@@ -153,6 +166,7 @@
 
             try {
                 const response = await fetch(buildContentUrl(), {
+                    cache: 'no-store',
                     headers: { 'X-Requested-With': 'fetch' },
                     signal: abortController.signal
                 });

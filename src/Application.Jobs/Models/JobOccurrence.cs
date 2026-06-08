@@ -40,7 +40,7 @@ public sealed record JobOccurrence
     /// <summary>
     /// Gets the persisted occurrence status.
     /// </summary>
-    public JobOccurrenceStatus Status { get; init; } = JobOccurrenceStatus.Materialized;
+    public JobOccurrenceStatus Status { get; init; } = JobOccurrenceStatus.Pending;
 
     /// <summary>
     /// Gets the due UTC instant.

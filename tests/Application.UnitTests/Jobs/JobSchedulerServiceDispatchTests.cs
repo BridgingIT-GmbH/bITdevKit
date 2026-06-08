@@ -68,7 +68,7 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
         result.IsSuccess.ShouldBeTrue();
         var occurrence = await store.Occurrences.GetAsync(result.Value.OccurrenceId);
         var executions = await store.Executions.ListByOccurrenceAsync(result.Value.OccurrenceId);
-        occurrence.Status.ShouldBe(JobOccurrenceStatus.Materialized);
+        occurrence.Status.ShouldBe(JobOccurrenceStatus.Pending);
         executions.ShouldBeEmpty();
     }
 

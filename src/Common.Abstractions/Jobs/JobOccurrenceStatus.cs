@@ -6,14 +6,14 @@
 namespace BridgingIT.DevKit.Common;
 
 /// <summary>
-/// Represents the lifecycle status of a materialized job occurrence.
+/// Represents the lifecycle status of a job occurrence.
 /// </summary>
 public enum JobOccurrenceStatus
 {
     /// <summary>
     /// The occurrence was created but not yet promoted to active scheduling.
     /// </summary>
-    Materialized = 0, // TODO: rename to Created or Pending
+    Pending = 0,
 
     /// <summary>
     /// The occurrence is scheduled for future execution.

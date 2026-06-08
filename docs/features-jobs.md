@@ -44,11 +44,11 @@ Key characteristics:
 | Startup-delay trigger | A trigger evaluated after a scheduler instance starts and the configured startup delay elapses. |
 | Occurrence | One durable unit of work created by dispatch or trigger materialization. An occurrence may have zero or more execution attempts. |
 | Due occurrence | An occurrence whose due time has arrived and can be acquired by an eligible scheduler instance. |
-| Missed occurrence | An occurrence that should have been materialized or executed while the scheduler was stopped, unavailable, or unable to acquire work. |
+| Missed occurrence | An occurrence that should have been pending or executed while the scheduler was stopped, unavailable, or unable to acquire work. |
 | Manual dispatch | An explicit application or operator request to create an occurrence from a manual trigger. |
 | Accepted asynchronous dispatch | `DispatchAsync(...)` accepts and persists an occurrence, then returns without running it inline. Background execution later acquires and runs the occurrence. |
 | Inline dispatch | `DispatchAndWaitAsync(...)` creates an occurrence and waits for the current execution attempt to reach a terminal result. |
-| Background execution | Hosted scheduler processing that materializes due triggers, acquires leases, and runs eligible occurrences through the worker pool. |
+| Background execution | Hosted scheduler processing that pending due triggers, acquires leases, and runs eligible occurrences through the worker pool. |
 | Execution | One attempt to run an occurrence. Retries create additional executions for the same occurrence. |
 | Execution history | Append-only lifecycle records for occurrences, executions, retries, leases, operator actions, batch operations, and diagnostics. |
 | Job execution context | The `IJobExecutionContext` passed to a job execution. It exposes identity, typed data, properties, items, previous execution snapshots, messages, and cancellation. |
@@ -250,7 +250,7 @@ Targeting rules:
 
 - job-level `TargetInstances(...)` applies to all triggers that do not declare their own targets
 - trigger-level `TargetInstances(...)` overrides the job-level targets for that trigger only
-- background sweeps materialize due work as usual, but only eligible scheduler instances pick targeted occurrences for execution
+- background sweeps due work as usual, but only eligible scheduler instances pick targeted occurrences for execution
 - direct inline dispatch fails clearly when the current scheduler instance is not one of the trigger's effective targets
 
 Appsettings can override the same targeting properties for code-registered jobs:

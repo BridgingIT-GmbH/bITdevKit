@@ -214,7 +214,7 @@ public class JobSchedulerDependencyTests(ITestOutputHelper output) : JobSchedule
                 {
                     BatchId = batchId,
                     OccurrenceId = Guid.NewGuid(),
-                    ChildStatus = JobOccurrenceStatus.Materialized,
+                    ChildStatus = JobOccurrenceStatus.Pending,
                     CreatedDate = DateTimeOffset.UtcNow,
                     UpdatedDate = DateTimeOffset.UtcNow,
                 },

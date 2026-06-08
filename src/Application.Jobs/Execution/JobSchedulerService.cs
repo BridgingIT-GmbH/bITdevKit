@@ -956,7 +956,7 @@ public class JobSchedulerService(
                 continue;
             }
 
-            if (occurrence.Status is JobOccurrenceStatus.Materialized or JobOccurrenceStatus.Scheduled or JobOccurrenceStatus.Due or JobOccurrenceStatus.RetryScheduled or JobOccurrenceStatus.Blocked)
+            if (occurrence.Status is JobOccurrenceStatus.Pending or JobOccurrenceStatus.Scheduled or JobOccurrenceStatus.Due or JobOccurrenceStatus.RetryScheduled or JobOccurrenceStatus.Blocked)
             {
                 var paused = await this.PauseOccurrenceAsync(occurrence.OccurrenceId, reason, cancellationToken).ConfigureAwait(false);
                 if (paused.IsFailure)
@@ -1205,7 +1205,7 @@ public class JobSchedulerService(
             .ToDictionary(x => (x.JobName, x.TriggerName), x => x.State);
 
         return occurrences
-            .Where(x => x.Status is JobOccurrenceStatus.Materialized or JobOccurrenceStatus.Scheduled or JobOccurrenceStatus.Due or JobOccurrenceStatus.RetryScheduled)
+            .Where(x => x.Status is JobOccurrenceStatus.Pending or JobOccurrenceStatus.Scheduled or JobOccurrenceStatus.Due or JobOccurrenceStatus.RetryScheduled)
             .Where(x => x.DueUtc <= nowUtc)
             .Where(x => !this.activeExecutions.ContainsKey(x.OccurrenceId))
             .Where(x => !leases.ContainsKey(x.OccurrenceId))
@@ -1503,7 +1503,7 @@ public class JobSchedulerService(
             ? occurrence
             : await storeProvider.Occurrences.GetByKeyAsync(occurrence.OccurrenceKey, cancellationToken).ConfigureAwait(false);
 
-        await this.AppendHistoryAsync(persisted, null, "OccurrenceCreated", JobOccurrenceStatus.Materialized, null, null, cancellationToken).ConfigureAwait(false);
+        await this.AppendHistoryAsync(persisted, null, "OccurrenceCreated", JobOccurrenceStatus.Pending, null, null, cancellationToken).ConfigureAwait(false);
         if (created)
         {
             await this.CreateChainedOccurrencesAsync(persisted, cancellationToken).ConfigureAwait(false);
@@ -2732,7 +2732,7 @@ public class JobSchedulerService(
             JobName = materialized.JobName,
             TriggerName = materialized.TriggerName,
             TriggerType = materialized.TriggerType,
-            Status = JobOccurrenceStatus.Materialized,
+            Status = JobOccurrenceStatus.Pending,
             DueUtc = dueUtc,
             ScheduledUtc = dueUtcOverride ?? materialized.ScheduledUtc ?? dueUtc,
             Data = materialized.Data,
@@ -3222,7 +3222,7 @@ public class JobSchedulerService(
         var resumeStatus = occurrence.ResumeStatus ?? (occurrence.DueUtc <= nowUtc ? JobOccurrenceStatus.Due : JobOccurrenceStatus.Scheduled);
         return resumeStatus switch
         {
-            JobOccurrenceStatus.Materialized => occurrence.DueUtc <= nowUtc ? JobOccurrenceStatus.Due : JobOccurrenceStatus.Scheduled,
+            JobOccurrenceStatus.Pending => occurrence.DueUtc <= nowUtc ? JobOccurrenceStatus.Due : JobOccurrenceStatus.Scheduled,
             JobOccurrenceStatus.Scheduled => occurrence.DueUtc <= nowUtc ? JobOccurrenceStatus.Due : JobOccurrenceStatus.Scheduled,
             JobOccurrenceStatus.RetryScheduled => occurrence.DueUtc <= nowUtc ? JobOccurrenceStatus.Due : JobOccurrenceStatus.RetryScheduled,
             JobOccurrenceStatus.Due => JobOccurrenceStatus.Due,
@@ -3237,7 +3237,7 @@ public class JobSchedulerService(
         {
             JobOccurrenceStatus.Running => JobOccurrenceStatus.Due,
             JobOccurrenceStatus.RetryScheduled => occurrence.DueUtc <= nowUtc ? JobOccurrenceStatus.Due : JobOccurrenceStatus.RetryScheduled,
-            JobOccurrenceStatus.Materialized => occurrence.DueUtc <= nowUtc ? JobOccurrenceStatus.Due : JobOccurrenceStatus.Scheduled,
+            JobOccurrenceStatus.Pending => occurrence.DueUtc <= nowUtc ? JobOccurrenceStatus.Due : JobOccurrenceStatus.Scheduled,
             JobOccurrenceStatus.Scheduled => occurrence.DueUtc <= nowUtc ? JobOccurrenceStatus.Due : JobOccurrenceStatus.Scheduled,
             JobOccurrenceStatus.Due => JobOccurrenceStatus.Due,
             JobOccurrenceStatus.Blocked => JobOccurrenceStatus.Blocked,

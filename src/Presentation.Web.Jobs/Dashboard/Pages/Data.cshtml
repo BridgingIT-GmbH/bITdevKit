@@ -212,7 +212,7 @@ else
                             var cancelUrl = $"{actionBase}/occurrences/{occ.OccurrenceId}/cancel";
                             var interruptUrl = $"{actionBase}/occurrences/{occ.OccurrenceId}/interrupt";
                             var retryUrl = $"{actionBase}/occurrences/{occ.OccurrenceId}/retry";
-                            var isActive = occ.Status is JobOccurrenceStatus.Running or JobOccurrenceStatus.Due or JobOccurrenceStatus.Materialized or JobOccurrenceStatus.Scheduled;
+                            var isActive = occ.Status is JobOccurrenceStatus.Running or JobOccurrenceStatus.Due or JobOccurrenceStatus.Pending or JobOccurrenceStatus.Scheduled;
                             var isRunning = occ.Status == JobOccurrenceStatus.Running;
                             var isFailed = occ.Status == JobOccurrenceStatus.Failed;
                             <tr>
@@ -476,7 +476,7 @@ else
             JobOccurrenceStatus.Blocked => "text-bg-warning",
             JobOccurrenceStatus.Due => "text-bg-primary",
             JobOccurrenceStatus.Scheduled => "text-bg-primary",
-            JobOccurrenceStatus.Materialized => "text-bg-primary",
+            JobOccurrenceStatus.Pending => "text-bg-primary",
             JobOccurrenceStatus.RetryScheduled => "text-bg-warning",
             _ => "text-bg-secondary"
         };

@@ -188,7 +188,7 @@ public class JobPersistenceStoreTests(ITestOutputHelper output) : JobSchedulerTe
             {
                 BatchId = batchId,
                 OccurrenceId = Guid.NewGuid(),
-                ChildStatus = JobOccurrenceStatus.Materialized,
+                ChildStatus = JobOccurrenceStatus.Pending,
                 Sequence = 1,
                 CreatedDate = DateTimeOffset.UtcNow,
                 UpdatedDate = DateTimeOffset.UtcNow,
@@ -306,7 +306,7 @@ public class JobPersistenceStoreTests(ITestOutputHelper output) : JobSchedulerTe
             JobName = "cleanup",
             TriggerName = "manual",
             TriggerType = JobTriggerType.Manual,
-            Status = JobOccurrenceStatus.Materialized,
+            Status = JobOccurrenceStatus.Pending,
             DueUtc = new DateTimeOffset(2026, 05, 26, 12, 00, 00, TimeSpan.Zero),
             ScheduledUtc = null,
             Data = new SamplePayload("C-1"),

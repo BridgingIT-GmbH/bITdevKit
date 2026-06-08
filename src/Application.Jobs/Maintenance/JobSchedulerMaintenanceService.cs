@@ -288,7 +288,7 @@ public sealed class JobSchedulerMaintenanceService(
         var leases = (await storeProvider.Leases.ListAsync(cancellationToken).ConfigureAwait(false))
             .ToDictionary(x => x.OccurrenceId, x => x);
         var candidates = (await storeProvider.Queries.ListOccurrencesAsync(cancellationToken).ConfigureAwait(false))
-            .Where(x => x.Status is JobOccurrenceStatus.Running or JobOccurrenceStatus.Materialized or JobOccurrenceStatus.Scheduled or JobOccurrenceStatus.Due or JobOccurrenceStatus.RetryScheduled)
+            .Where(x => x.Status is JobOccurrenceStatus.Running or JobOccurrenceStatus.Pending or JobOccurrenceStatus.Scheduled or JobOccurrenceStatus.Due or JobOccurrenceStatus.RetryScheduled)
             .Where(x => x.UpdatedDate <= cutoffUtc)
             .Where(x => !leases.TryGetValue(x.OccurrenceId, out var lease) || lease.ExpiresUtc <= nowUtc)
             .OrderBy(x => x.UpdatedDate)
@@ -465,7 +465,7 @@ public sealed class JobSchedulerMaintenanceService(
         {
             JobOccurrenceStatus.Running => JobOccurrenceStatus.Due,
             JobOccurrenceStatus.RetryScheduled => occurrence.DueUtc <= nowUtc ? JobOccurrenceStatus.Due : JobOccurrenceStatus.RetryScheduled,
-            JobOccurrenceStatus.Materialized => occurrence.DueUtc <= nowUtc ? JobOccurrenceStatus.Due : JobOccurrenceStatus.Scheduled,
+            JobOccurrenceStatus.Pending => occurrence.DueUtc <= nowUtc ? JobOccurrenceStatus.Due : JobOccurrenceStatus.Scheduled,
             JobOccurrenceStatus.Scheduled => occurrence.DueUtc <= nowUtc ? JobOccurrenceStatus.Due : JobOccurrenceStatus.Scheduled,
             JobOccurrenceStatus.Due => JobOccurrenceStatus.Due,
             JobOccurrenceStatus.Blocked => JobOccurrenceStatus.Blocked,

@@ -1771,7 +1771,7 @@ public class JobSchedulerQueryService(
         => trigger.TriggerType is JobTriggerType.Cron or JobTriggerType.Calendar;
 
     private static bool IsPendingOccurrence(JobOccurrence occurrence)
-        => occurrence.Status is JobOccurrenceStatus.Materialized or JobOccurrenceStatus.Scheduled or JobOccurrenceStatus.Due or JobOccurrenceStatus.Blocked or JobOccurrenceStatus.RetryScheduled;
+        => occurrence.Status is JobOccurrenceStatus.Pending or JobOccurrenceStatus.Scheduled or JobOccurrenceStatus.Due or JobOccurrenceStatus.Blocked or JobOccurrenceStatus.RetryScheduled;
 
     private static JobRetryPolicy ResolveRetryPolicy(JobDefinition definition, JobTriggerDefinition trigger)
         => trigger?.RetryPolicy ?? definition?.RetryPolicy;

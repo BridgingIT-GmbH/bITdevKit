@@ -609,11 +609,11 @@
 
         try
         {
-            var overviewTask = this.Api._bdk.Api.Metrics.Overview.GetAsync();
-            var appTask = this.Api._bdk.Api.Metrics.Bdk.GetAsync();
-            var dotNetTask = this.Api._bdk.Api.Metrics.Dotnet.GetAsync();
-            var aspNetTask = this.Api._bdk.Api.Metrics.Aspnet.GetAsync();
-            var aspNetRoutesTask = this.Api._bdk.Api.Metrics.Aspnet.Routes.GetAsync();
+            var overviewTask = this.Api.Bdk.Api.Metrics.Overview.GetAsync();
+            var appTask = this.Api.Bdk.Api.Metrics.Bdk.GetAsync();
+            var dotNetTask = this.Api.Bdk.Api.Metrics.Dotnet.GetAsync();
+            var aspNetTask = this.Api.Bdk.Api.Metrics.Aspnet.GetAsync();
+            var aspNetRoutesTask = this.Api.Bdk.Api.Metrics.Aspnet.Routes.GetAsync();
 
             await Task.WhenAll(overviewTask, appTask, dotNetTask, aspNetTask, aspNetRoutesTask);
 

@@ -636,7 +636,7 @@
 
             this.UpdateRequestedState();
 
-            var providerTask = this.ApiClient._bdk.Api[this.selectedProviderName].Provider.GetAsync();
+            var providerTask = this.ApiClient.Bdk.Api[this.selectedProviderName].Provider.GetAsync();
             var allDirectoriesTask = this.ListDirectoriesAsync(path: null, recursive: true);
             var allFilesTask = this.ListFilesAsync(path: null, recursive: true);
             var currentDirectoriesTask = this.ListDirectoriesAsync(this.currentPath, recursive: false);
@@ -726,7 +726,7 @@
 
         try
         {
-            _ = await this.ApiClient._bdk.Api[this.selectedProviderName].Directories.PostAsync(
+            _ = await this.ApiClient.Bdk.Api[this.selectedProviderName].Directories.PostAsync(
                 configuration => configuration.QueryParameters.Path = path);
             this.Snackbar.Add($"Created folder '{path}'.", Severity.Success);
             this.newDirectoryName = string.Empty;
@@ -750,7 +750,7 @@
         try
         {
             await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(this.newTextFileContent ?? string.Empty));
-            _ = await this.ApiClient._bdk.Api[this.selectedProviderName].Files.Content.PutAsync(
+            _ = await this.ApiClient.Bdk.Api[this.selectedProviderName].Files.Content.PutAsync(
                 stream,
                 configuration => configuration.QueryParameters.Path = path);
             this.Snackbar.Add($"Saved text file '{path}'.", Severity.Success);
@@ -775,7 +775,7 @@
         try
         {
             await using var stream = this.uploadFile.OpenReadStream(MaxUploadSize);
-            _ = await this.ApiClient._bdk.Api[this.selectedProviderName].Files.Content.PutAsync(
+            _ = await this.ApiClient.Bdk.Api[this.selectedProviderName].Files.Content.PutAsync(
                 stream,
                 configuration => configuration.QueryParameters.Path = CombinePath(this.currentPath, this.uploadFile.Name));
 
@@ -833,7 +833,7 @@
     {
         try
         {
-            _ = await this.ApiClient._bdk.Api[this.selectedProviderName].Directories.DeleteAsync(
+            _ = await this.ApiClient.Bdk.Api[this.selectedProviderName].Directories.DeleteAsync(
                 configuration =>
                 {
                     configuration.QueryParameters.Path = path;
@@ -859,7 +859,7 @@
     {
         try
         {
-            _ = await this.ApiClient._bdk.Api[this.selectedProviderName].Files.DeleteAsync(
+            _ = await this.ApiClient.Bdk.Api[this.selectedProviderName].Files.DeleteAsync(
                 configuration => configuration.QueryParameters.Path = path);
             this.Snackbar.Add($"Deleted file '{path}'.", Severity.Success);
             await this.ReloadAsync();
@@ -874,9 +874,9 @@
     {
         try
         {
-            var metadataTask = this.ApiClient._bdk.Api[this.selectedProviderName].Files.Metadata.GetAsync(
+            var metadataTask = this.ApiClient.Bdk.Api[this.selectedProviderName].Files.Metadata.GetAsync(
                 configuration => configuration.QueryParameters.Path = path);
-            var checksumTask = this.ApiClient._bdk.Api[this.selectedProviderName].Files.Checksum.GetAsync(
+            var checksumTask = this.ApiClient.Bdk.Api[this.selectedProviderName].Files.Checksum.GetAsync(
                 configuration => configuration.QueryParameters.Path = path);
             var downloadTask = this.ReadFileBytesAsync(path);
 
@@ -951,7 +951,7 @@
         {
             try
             {
-                var metadata = await this.ApiClient._bdk.Api[this.selectedProviderName].Files.Metadata.GetAsync(
+                var metadata = await this.ApiClient.Bdk.Api[this.selectedProviderName].Files.Metadata.GetAsync(
                     configuration => configuration.QueryParameters.Path = path);
                 return new FileRow(path, Path.GetFileName(path), metadata?.Length, metadata?.LastModified?.UtcDateTime);
             }
@@ -966,7 +966,7 @@
 
     private async Task<List<GenFileStorageProviderInfoModel>> ListLocationsAsync()
     {
-        var requestInfo = this.ApiClient._bdk.Api
+        var requestInfo = this.ApiClient.Bdk.Api
             .WithUrl($"{this.RequestAdapter.BaseUrl?.TrimEnd('/')}/_bdk/api/locations")
             .ToGetRequestInformation();
 
@@ -990,7 +990,7 @@
     }
 
     private async Task<IReadOnlyList<string>> ListDirectoriesAsync(string path, bool recursive)
-        => await this.ApiClient._bdk.Api[this.selectedProviderName].Directories.GetAsync(
+        => await this.ApiClient.Bdk.Api[this.selectedProviderName].Directories.GetAsync(
             configuration =>
             {
                 configuration.QueryParameters.Path = path;
@@ -999,7 +999,7 @@
         ?? [];
 
     private async Task<GenFileStorageFilesResponseModel> ListFilesAsync(string path, bool recursive)
-        => await this.ApiClient._bdk.Api[this.selectedProviderName].Files.GetAsync(
+        => await this.ApiClient.Bdk.Api[this.selectedProviderName].Files.GetAsync(
             configuration =>
             {
                 configuration.QueryParameters.Path = path;
@@ -1009,7 +1009,7 @@
 
     private async Task<byte[]> ReadFileBytesAsync(string path)
     {
-        await using var content = await this.ApiClient._bdk.Api[this.selectedProviderName].Files.Content.GetAsync(
+        await using var content = await this.ApiClient.Bdk.Api[this.selectedProviderName].Files.Content.GetAsync(
             configuration => configuration.QueryParameters.Path = path)
             ?? throw new InvalidOperationException($"No file content was returned for '{path}'.");
 

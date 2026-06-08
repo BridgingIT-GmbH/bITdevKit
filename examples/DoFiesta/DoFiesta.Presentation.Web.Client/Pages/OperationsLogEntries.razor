@@ -339,7 +339,7 @@
 
     private async Task<BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.LogEntryQueryResponse> QueryLogsAsync(int size, string continuation, long? afterId)
     {
-        return await Api._bdk.Api.Logentries.GetAsync(c =>
+        return await Api.Bdk.Api.Logentries.GetAsync(c =>
         {
             c.QueryParameters.StartTime = ToIsoStart(startDate);
             c.QueryParameters.EndTime = ToIsoEnd(endDate);
@@ -361,7 +361,7 @@
     {
         try
         {
-            stats = await Api._bdk.Api.Logentries.Stats.GetAsync(c =>
+            stats = await Api.Bdk.Api.Logentries.Stats.GetAsync(c =>
             {
                 c.QueryParameters.StartTime = ToIsoStart(startDate);
                 c.QueryParameters.EndTime = ToIsoEnd(endDate);
@@ -465,7 +465,7 @@
         traceLogs = [];
         try
         {
-            var response = await Api._bdk.Api.Logentries.GetAsync(c =>
+            var response = await Api.Bdk.Api.Logentries.GetAsync(c =>
             {
                 c.QueryParameters.TraceId = activeTraceId;
                 c.QueryParameters.LevelAsLogLevel = levelFilter;
@@ -489,7 +489,7 @@
             return;
         }
 
-        await Api._bdk.Api.Logentries.DeleteAsync(c =>
+        await Api.Bdk.Api.Logentries.DeleteAsync(c =>
         {
             c.QueryParameters.OlderThan = ToIsoStart(cleanupOlderThanDate);
             c.QueryParameters.Archive = cleanupArchive;
@@ -507,7 +507,7 @@
 
         try
         {
-            await using var stream = await Api._bdk.Api.Logentries.Export.GetAsync(c =>
+            await using var stream = await Api.Bdk.Api.Logentries.Export.GetAsync(c =>
             {
                 c.QueryParameters.StartTime = ToIsoStart(startDate);
                 c.QueryParameters.EndTime = ToIsoEnd(endDate);

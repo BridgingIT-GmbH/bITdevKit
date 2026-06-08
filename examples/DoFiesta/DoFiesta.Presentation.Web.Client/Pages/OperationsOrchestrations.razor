@@ -605,11 +605,11 @@
 
         try
         {
-            var detailTask = this.Api._bdk.Api.Orchestrations[instanceId].GetAsync();
-            var contextTask = this.Api._bdk.Api.Orchestrations[instanceId].Context.GetAsync();
-            var historyTask = this.Api._bdk.Api.Orchestrations[instanceId].History.GetAsync();
-            var signalsTask = this.Api._bdk.Api.Orchestrations[instanceId].Signals.GetAsync();
-            var timersTask = this.Api._bdk.Api.Orchestrations[instanceId].Timers.GetAsync();
+            var detailTask = this.Api.Bdk.Api.Orchestrations[instanceId].GetAsync();
+            var contextTask = this.Api.Bdk.Api.Orchestrations[instanceId].Context.GetAsync();
+            var historyTask = this.Api.Bdk.Api.Orchestrations[instanceId].History.GetAsync();
+            var signalsTask = this.Api.Bdk.Api.Orchestrations[instanceId].Signals.GetAsync();
+            var timersTask = this.Api.Bdk.Api.Orchestrations[instanceId].Timers.GetAsync();
 
             await Task.WhenAll(detailTask, contextTask, historyTask, signalsTask, timersTask);
 
@@ -647,7 +647,7 @@
     private async Task PauseAsync(Guid instanceId)
     {
         await this.ExecuteInstanceActionAsync(
-            () => this.Api._bdk.Api.Orchestrations[instanceId].Pause.PostAsync(new GenModels.ReasonRequest
+            () => this.Api.Bdk.Api.Orchestrations[instanceId].Pause.PostAsync(new GenModels.ReasonRequest
             {
                 Reason = this.GetReason("Paused from the DoFiesta operations dashboard."),
             }),
@@ -657,14 +657,14 @@
     private async Task ResumeAsync(Guid instanceId)
     {
         await this.ExecuteInstanceActionAsync(
-            () => this.Api._bdk.Api.Orchestrations[instanceId].Resume.PostAsync(),
+            () => this.Api.Bdk.Api.Orchestrations[instanceId].Resume.PostAsync(),
             "Orchestration resumed.");
     }
 
     private async Task CancelAsync(Guid instanceId)
     {
         await this.ExecuteInstanceActionAsync(
-            () => this.Api._bdk.Api.Orchestrations[instanceId].Cancel.PostAsync(new GenModels.ReasonRequest
+            () => this.Api.Bdk.Api.Orchestrations[instanceId].Cancel.PostAsync(new GenModels.ReasonRequest
             {
                 Reason = this.GetReason("Cancelled from the DoFiesta operations dashboard."),
             }),
@@ -674,7 +674,7 @@
     private async Task TerminateAsync(Guid instanceId)
     {
         await this.ExecuteInstanceActionAsync(
-            () => this.Api._bdk.Api.Orchestrations[instanceId].Terminate.PostAsync(new GenModels.ReasonRequest
+            () => this.Api.Bdk.Api.Orchestrations[instanceId].Terminate.PostAsync(new GenModels.ReasonRequest
             {
                 Reason = this.GetReason("Terminated from the DoFiesta operations dashboard."),
             }),
@@ -684,21 +684,21 @@
     private async Task ArchiveAsync(Guid instanceId)
     {
         await this.ExecuteInstanceActionAsync(
-            () => this.Api._bdk.Api.Orchestrations[instanceId].Archive.PostAsync(),
+            () => this.Api.Bdk.Api.Orchestrations[instanceId].Archive.PostAsync(),
             "Orchestration archived.");
     }
 
     private async Task ReleaseLeaseAsync(Guid instanceId)
     {
         await this.ExecuteInstanceActionAsync(
-            () => this.Api._bdk.Api.Orchestrations[instanceId].Repair.ReleaseLease.PostAsync(),
+            () => this.Api.Bdk.Api.Orchestrations[instanceId].Repair.ReleaseLease.PostAsync(),
             "Orchestration lease released.");
     }
 
     private async Task RequeueTimersAsync(Guid instanceId)
     {
         await this.ExecuteInstanceActionAsync(
-            () => this.Api._bdk.Api.Orchestrations[instanceId].Repair.RequeueTimers.PostAsync(),
+            () => this.Api.Bdk.Api.Orchestrations[instanceId].Repair.RequeueTimers.PostAsync(),
             "Orchestration timers requeued.");
     }
 
@@ -710,7 +710,7 @@
         }
 
         await this.ExecuteInstanceActionAsync(
-            () => this.Api._bdk.Api.Orchestrations[this.selectedInstance.InstanceId.GetValueOrDefault()].Signal.PostAsync(
+            () => this.Api.Bdk.Api.Orchestrations[this.selectedInstance.InstanceId.GetValueOrDefault()].Signal.PostAsync(
                 new GenModels.OrchestrationSignalRequest
                 {
                     SignalName = this.signalName?.Trim(),
@@ -740,14 +740,14 @@
 
     private async Task<IReadOnlyList<GenModels.OrchestrationInstanceModel>> LoadInstancesAsync()
     {
-        return await this.Api._bdk.Api.Orchestrations
+        return await this.Api.Bdk.Api.Orchestrations
             .WithUrl(this.BuildAbsoluteUrl(this.BuildOrchestrationsUrl()))
             .GetAsync() ?? [];
     }
 
     private async Task<GenModels.OrchestrationMetricsModel> LoadMetricsAsync()
     {
-        return await this.Api._bdk.Api.Orchestrations.Metrics
+        return await this.Api.Bdk.Api.Orchestrations.Metrics
             .WithUrl(this.BuildAbsoluteUrl(this.BuildMetricsUrl()))
             .GetAsync() ?? new GenModels.OrchestrationMetricsModel();
     }
@@ -796,10 +796,10 @@
         try
         {
             var instanceTask = this.TryGetDiagramAsync(
-                () => this.Api._bdk.Api.Orchestrations[instanceId].Diagram.GetAsync(),
+                () => this.Api.Bdk.Api.Orchestrations[instanceId].Diagram.GetAsync(),
                 "Instance Mermaid diagram");
             var instanceSvgTask = this.TryGetDiagramAsync(
-                () => this.TryReadDiagramStreamAsync(() => this.Api._bdk.Api.Orchestrations[instanceId].Diagram.Svg.GetAsync()),
+                () => this.TryReadDiagramStreamAsync(() => this.Api.Bdk.Api.Orchestrations[instanceId].Diagram.Svg.GetAsync()),
                 "Instance SVG diagram");
 
             await Task.WhenAll(instanceTask, instanceSvgTask);

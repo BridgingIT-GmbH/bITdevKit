@@ -601,7 +601,7 @@
 
         try
         {
-            var result = await this.Api._bdk.Api.Jobs.GetAsync();
+            var result = await this.Api.Bdk.Api.Jobs.GetAsync();
 
             this.jobs.Clear();
             this.jobs.AddRange(result.SafeNull().OrderBy(job => job.Group).ThenBy(job => job.Name));
@@ -671,7 +671,7 @@
 
         try
         {
-            var runs = await this.Api._bdk.Api.Jobs[job.Name][job.Group].Runs.GetAsync(config =>
+            var runs = await this.Api.Bdk.Api.Jobs[job.Name][job.Group].Runs.GetAsync(config =>
             {
                 config.QueryParameters.Take = RunFetchLimit;
                 config.QueryParameters.StartDate = this.ToStartDateOffset(this.runStartDate);
@@ -746,7 +746,7 @@
         try
         {
             var payload = this.ParseTriggerPayload(this.triggerPayloadJson);
-            await this.Api._bdk.Api.Jobs[this.actionJob.Name][this.actionJob.Group].Trigger.PostAsync(payload);
+            await this.Api.Bdk.Api.Jobs[this.actionJob.Name][this.actionJob.Group].Trigger.PostAsync(payload);
 
             this.triggerDialogVisible = false;
             this.Snackbar.Add($"Job {this.actionJob.Name} triggered.", Severity.Success);
@@ -772,17 +772,17 @@
 
     private Task PauseJobAsync(JobInfo job)
     {
-        return this.ExecuteJobActionAsync(job, () => this.Api._bdk.Api.Jobs[job.Name][job.Group].Pause.PostAsync(), $"Job {job.Name} paused.");
+        return this.ExecuteJobActionAsync(job, () => this.Api.Bdk.Api.Jobs[job.Name][job.Group].Pause.PostAsync(), $"Job {job.Name} paused.");
     }
 
     private Task ResumeJobAsync(JobInfo job)
     {
-        return this.ExecuteJobActionAsync(job, () => this.Api._bdk.Api.Jobs[job.Name][job.Group].Resume.PostAsync(), $"Job {job.Name} resumed.");
+        return this.ExecuteJobActionAsync(job, () => this.Api.Bdk.Api.Jobs[job.Name][job.Group].Resume.PostAsync(), $"Job {job.Name} resumed.");
     }
 
     private Task InterruptJobAsync(JobInfo job)
     {
-        return this.ExecuteJobActionAsync(job, () => this.Api._bdk.Api.Jobs[job.Name][job.Group].Interrupt.PostAsync(), $"Job {job.Name} interrupted.");
+        return this.ExecuteJobActionAsync(job, () => this.Api.Bdk.Api.Jobs[job.Name][job.Group].Interrupt.PostAsync(), $"Job {job.Name} interrupted.");
     }
 
     private async Task ExecuteJobActionAsync(JobInfo job, Func<Task> action, string successMessage)

@@ -416,7 +416,7 @@
 
             this.UpdateRequestedState();
 
-            var providerTask = this.ApiClient._bdk.Api[this.selectedProviderName].Provider.GetAsync();
+            var providerTask = this.ApiClient.Bdk.Api[this.selectedProviderName].Provider.GetAsync();
             var eventsTask = this.LoadEventsAsync();
 
             await Task.WhenAll(providerTask, eventsTask);
@@ -478,7 +478,7 @@
 
         try
         {
-            this.lastScanResult = await this.ApiClient._bdk.Api[this.selectedProviderName].Events.Scan.PostAsync(configuration =>
+            this.lastScanResult = await this.ApiClient.Bdk.Api[this.selectedProviderName].Events.Scan.PostAsync(configuration =>
             {
                 configuration.QueryParameters.WaitForProcessing = true;
             });
@@ -516,7 +516,7 @@
         => this.navigationManager.NavigateTo(BuildFilesDashboardUri(this.selectedProviderName, GetFolderPath(filePath)));
 
     private async Task<GenFileStorageFileEventsResponseModel> LoadEventsAsync()
-        => await this.ApiClient._bdk.Api[this.selectedProviderName].Events.GetAsync(configuration =>
+        => await this.ApiClient.Bdk.Api[this.selectedProviderName].Events.GetAsync(configuration =>
             {
                 configuration.QueryParameters.Path = NormalizePath(this.pathFilter);
                 configuration.QueryParameters.EventType = string.Equals(this.selectedEventType, "All", StringComparison.OrdinalIgnoreCase)
@@ -529,7 +529,7 @@
 
     private async Task<List<GenFileStorageProviderInfoModel>> ListLocationsAsync()
     {
-        var requestInfo = this.ApiClient._bdk.Api
+        var requestInfo = this.ApiClient.Bdk.Api
             .WithUrl($"{this.RequestAdapter.BaseUrl?.TrimEnd('/')}/_bdk/api/locations")
             .ToGetRequestInformation();
 

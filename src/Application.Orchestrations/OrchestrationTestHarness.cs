@@ -408,7 +408,7 @@ public class OrchestrationTestHarnessBuilder
             configure(services);
         }
 
-        var context = services.AddOrchestrations();
+        var context = services.AddOrchestrations().AliveEnabled(false);
         foreach (var register in this.behaviorRegistrations)
         {
             register(context);

@@ -75,7 +75,7 @@ public sealed class JobSchedulerTestHarness : IDisposable
         services.AddSingleton<IHostApplicationLifetime, TestHostApplicationLifetime>();
         services.AddSingleton<TimeProvider>(new FakeTimeProvider(nowUtc ?? new DateTimeOffset(2026, 05, 26, 09, 00, 00, TimeSpan.Zero)));
 
-        var context = services.AddJobScheduler().WithBackgroundExecution(options =>
+        var context = services.AddJobScheduler().AliveEnabled(false).WithBackgroundExecution(options =>
         {
             options.EnableBackgroundExecution = false;
             configureOptions?.Invoke(options);

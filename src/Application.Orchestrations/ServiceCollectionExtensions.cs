@@ -33,7 +33,6 @@ public static class ServiceCollectionExtensions
         ArgumentNullException.ThrowIfNull(services);
 
         EnsureRegistrationStore(services);
-        services.TryAddSingleton(new OrchestrationExecutionSettings());
         services.TryAddSingleton<IOrchestrationClock, SystemOrchestrationClock>();
         services.TryAddSingleton<InMemoryOrchestrationExecutor>();
         services.TryAddSingleton<IOrchestrationExecutor>(serviceProvider => serviceProvider.GetRequiredService<InMemoryOrchestrationExecutor>());

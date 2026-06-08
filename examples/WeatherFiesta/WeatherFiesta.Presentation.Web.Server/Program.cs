@@ -64,12 +64,9 @@ builder.Services.AddQueueing(builder.Configuration, o => o
     .WithEntityFrameworkBroker<CoreDbContext>()
     .AddEndpoints();
 
-builder.Services.AddSingleton(new OrchestrationExecutionSettings
-{
-    StartupDelay = TimeSpan.FromSeconds(30)
-});
-
-builder.Services.AddOrchestrations()
+builder.Services.AddOrchestrations(o => o
+        .Enabled(true)
+        .StartupDelay("00:00:30"))
     // .WithOrchestration<TodoItemLifecycleOrchestration>()
     .WithBehavior<MetricsOrchestrationBehavior>()
     .WithEntityFramework<CoreDbContext>()

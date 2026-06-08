@@ -177,16 +177,16 @@ public class OrderApprovalOrchestration : Orchestration<OrderApprovalData>, ICha
 
 ### Background Execution Settings
 
-Automatic timer continuation and wait-boundary recovery are controlled through `OrchestrationExecutionSettings`.
+Automatic timer continuation and wait-boundary recovery are controlled through the `AddOrchestrations` fluent builder. The builder configures `OrchestrationExecutionSettings` for the runtime.
 
 ```csharp
-builder.Services.AddSingleton(new OrchestrationExecutionSettings
-{
-    EnableBackgroundExecution = true,
-    StartupDelay = TimeSpan.Zero,
-    BackgroundSweepInterval = TimeSpan.FromSeconds(5),
-    BackgroundSweepBatchSize = 100,
-});
+builder.Services
+    .AddOrchestrations(o => o
+        .Enabled(true)
+        .StartupDelay("00:00:30")
+        .BackgroundSweepInterval("00:00:15")
+        .BackgroundSweepBatchSize(20))
+    .WithOrchestration<OrderApprovalOrchestration>();
 ```
 
 When background execution is enabled, the runtime uses:

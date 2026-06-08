@@ -11,22 +11,22 @@ namespace BridgingIT.DevKit.Application.Orchestrations;
 public class OrchestrationExecutionSettings
 {
     /// <summary>
-    /// Gets a value indicating whether background execution and automatic recovery are enabled.
+    /// Gets or sets a value indicating whether background execution and automatic recovery are enabled.
     /// </summary>
-    public bool EnableBackgroundExecution { get; init; } = true;
+    public bool EnableBackgroundExecution { get; set; } = true;
 
     /// <summary>
-    /// Gets the delay applied before hosted recovery work starts after the application has started.
+    /// Gets or sets the delay applied before hosted recovery work starts after the application has started.
     /// </summary>
-    public TimeSpan StartupDelay { get; init; } = TimeSpan.Zero;
+    public TimeSpan StartupDelay { get; set; } = TimeSpan.Zero;
 
     /// <summary>
-    /// Gets the interval between background recovery sweeps.
+    /// Gets or sets the interval between background recovery sweeps.
     /// </summary>
-    public TimeSpan BackgroundSweepInterval { get; init; } = TimeSpan.FromSeconds(5);
+    public TimeSpan BackgroundSweepInterval { get; set; } = TimeSpan.FromSeconds(5);
 
     /// <summary>
-    /// Gets the maximum number of instances processed in a single recovery batch.
+    /// Gets or sets the maximum number of instances processed in a single recovery batch.
     /// </summary>
-    public int BackgroundSweepBatchSize { get; init; } = 100;
+    public int BackgroundSweepBatchSize { get; set; } = 100;
 }

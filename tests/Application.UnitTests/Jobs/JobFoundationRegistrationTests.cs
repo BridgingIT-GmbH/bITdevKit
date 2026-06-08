@@ -33,7 +33,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         this.ConfigureLogging(services);
 
         // Act
-        var context = services.AddJobScheduler();
+        var context = services.AddJobScheduler().AliveEnabled(false);
         context.WithJob<SampleJob>("cleanup", job => job
             .Description("Removes stale records.")
             .AddTrigger("manual", trigger => trigger.Manual()));
@@ -57,6 +57,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         this.ConfigureLogging(services);
 
         services.AddJobScheduler()
+            .AliveEnabled(false)
             .WithJob<SampleJob>("cleanup", job => job
                 .Description("Removes stale records.")
                 .UseLifetime(ServiceLifetime.Singleton)
@@ -72,7 +73,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
     {
         var services = new ServiceCollection();
         this.ConfigureLogging(services);
-        var context = services.AddJobScheduler();
+        var context = services.AddJobScheduler().AliveEnabled(false);
 
         var action = () => context.WithJob<SampleJob>("cleanup", job => job
             .Description("Removes stale records.")
@@ -89,6 +90,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         this.ConfigureLogging(services);
         services.AddSingleton<IModuleContextAccessor>(new StaticModuleContextAccessor(typeof(SampleJob), new TestModule("Reporting")));
         services.AddJobScheduler()
+            .AliveEnabled(false)
             .WithJob<SampleJob>("cleanup", job => job
                 .Description("Removes stale records.")
                 .AddTrigger("manual", trigger => trigger.Manual()));
@@ -107,6 +109,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         this.ConfigureLogging(services);
         services.AddSingleton<IModuleContextAccessor>(new StaticModuleContextAccessor(typeof(SampleJob), new TestModule("Ignored")));
         services.AddJobScheduler()
+            .AliveEnabled(false)
             .WithJob<SampleJob>("cleanup", job => job
                 .Description("Removes stale records.")
                 .Module("Explicit")
@@ -133,6 +136,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         var services = new ServiceCollection();
         this.ConfigureLogging(services);
         services.AddJobScheduler(configuration)
+            .AliveEnabled(false)
             .WithJob<SampleJob>("cleanup", job => job
                 .Description("Removes stale records.")
                 .TargetInstances("node-z")
@@ -151,7 +155,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         // Arrange
         var services = new ServiceCollection();
         this.ConfigureLogging(services);
-        var context = services.AddJobScheduler();
+        var context = services.AddJobScheduler().AliveEnabled(false);
         context.WithJob<SampleJob>("cleanup", job => job
             .Description("First job.")
             .AddTrigger("manual", trigger => trigger.Manual()));
@@ -171,7 +175,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         // Arrange
         var services = new ServiceCollection();
         this.ConfigureLogging(services);
-        var context = services.AddJobScheduler();
+        var context = services.AddJobScheduler().AliveEnabled(false);
 
         // Act
         var action = () => context.WithJob<SampleJob>("cleanup", job => job
@@ -189,7 +193,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         // Arrange
         var services = new ServiceCollection();
         this.ConfigureLogging(services);
-        var context = services.AddJobScheduler();
+        var context = services.AddJobScheduler().AliveEnabled(false);
 
         // Act
         context.WithJob<SampleJob>("cleanup", job => job
@@ -213,7 +217,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         // Arrange
         var services = new ServiceCollection();
         this.ConfigureLogging(services);
-        var context = services.AddJobScheduler();
+        var context = services.AddJobScheduler().AliveEnabled(false);
 
         // Act
         context.WithJob<SampleJob>("cleanup", job => job
@@ -234,7 +238,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         // Arrange
         var services = new ServiceCollection();
         this.ConfigureLogging(services);
-        var context = services.AddJobScheduler();
+        var context = services.AddJobScheduler().AliveEnabled(false);
 
         // Act
         context.WithJob<TypedSampleJob>("export-customers", job => job
@@ -255,7 +259,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         // Arrange
         var services = new ServiceCollection();
         this.ConfigureLogging(services);
-        var context = services.AddJobScheduler();
+        var context = services.AddJobScheduler().AliveEnabled(false);
 
         // Act
         var action = () => context.WithJob<TypedSampleJob>("export-customers", job => job
@@ -282,7 +286,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
 
         var services = new ServiceCollection();
         this.ConfigureLogging(services);
-        var context = services.AddJobScheduler(configuration);
+        var context = services.AddJobScheduler(configuration).AliveEnabled(false);
         context.WithJob<SampleJob>("cleanup", job => job
             .Description("Removes stale records.")
             .AddTrigger("nightly", trigger => trigger.Cron("0 0 2 * * *").Enabled()));
@@ -311,7 +315,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
 
         var services = new ServiceCollection();
         this.ConfigureLogging(services);
-        services.AddJobScheduler(configuration);
+        services.AddJobScheduler(configuration).AliveEnabled(false);
 
         // Act
         var action = () => GetStore(services).GetDefinitions();
@@ -333,7 +337,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
 
         var services = new ServiceCollection();
         this.ConfigureLogging(services);
-        var context = services.AddJobScheduler(configuration);
+        var context = services.AddJobScheduler(configuration).AliveEnabled(false);
         context.WithJob<SampleJob>("cleanup", job => job
             .Description("Removes stale records.")
             .AddTrigger("manual", trigger => trigger.Manual()));
@@ -359,7 +363,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
 
         var services = new ServiceCollection();
         this.ConfigureLogging(services);
-        services.AddJobScheduler(configuration);
+        services.AddJobScheduler(configuration).AliveEnabled(false);
 
         // Act
         var action = () => GetStore(services).GetDefinitions();
@@ -377,6 +381,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
 
         // Act
         services.AddJobScheduler()
+            .AliveEnabled(false)
             .WithJob("cleanup-inline", job => job
                 .WithDescription("Runs inline cleanup logic.")
                 .Execute((context, cancellationToken) => Task.FromResult(Result.Success()))
@@ -402,6 +407,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
 
         // Act
         var action = () => services.AddJobScheduler()
+            .AliveEnabled(false)
             .WithJob("cleanup-inline", job => job
                 .WithDescription("Runs inline cleanup logic.")
                 .AddTrigger("manual", trigger => trigger.Manual()));
@@ -419,13 +425,13 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         services.AddSingleton<IHostApplicationLifetime, TestHostApplicationLifetime>();
 
         // Act
-        var first = services.AddJobScheduler();
+        var first = services.AddJobScheduler().AliveEnabled(false);
         first.WithBackgroundExecution(options => options.EnableBackgroundExecution = false);
         first.WithJob<SampleJob>("cleanup", job => job
             .Description("Removes stale records.")
             .AddTrigger("manual", trigger => trigger.Manual()));
 
-        var second = services.AddJobScheduler();
+        var second = services.AddJobScheduler().AliveEnabled(false);
         second.WithJob<AnotherSampleJob>("rebuild-index", job => job
             .Description("Rebuilds the search index.")
             .AddTrigger("manual", trigger => trigger.Manual()));
@@ -455,7 +461,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         services.AddHostedService<OtherHostedService>();
 
         // Act
-        services.AddJobScheduler();
+        services.AddJobScheduler().AliveEnabled(false);
 
         using var provider = services.BuildServiceProvider();
         var hostedServices = provider.GetServices<IHostedService>().ToList();
@@ -472,6 +478,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         this.ConfigureLogging(services);
 
         services.AddJobScheduler()
+            .AliveEnabled(false)
             .WithExceptionHandler<RecordingSchedulerExceptionHandler>()
             .WithExceptionHandler<RecordingSchedulerExceptionHandler>();
 
@@ -487,7 +494,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
     {
         var services = new ServiceCollection();
         this.ConfigureLogging(services);
-        var context = services.AddJobScheduler();
+        var context = services.AddJobScheduler().AliveEnabled(false);
 
         var action = () => context.WithExceptionHandler(typeof(SampleJob));
 
@@ -502,6 +509,7 @@ public class JobFoundationRegistrationTests(ITestOutputHelper output) : JobSched
         services.AddSingleton<IHostEnvironment>(new TestHostEnvironment { ApplicationName = "jobs-app" });
 
         services.AddJobScheduler()
+            .AliveEnabled(false)
             .InstanceId(context => $"{context.Environment.MachineName}-jobs")
             .StartupDelay(TimeSpan.FromSeconds(10))
             .WorkerPool(pool => pool

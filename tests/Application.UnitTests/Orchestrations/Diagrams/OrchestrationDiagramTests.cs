@@ -20,7 +20,7 @@ public sealed class OrchestrationDiagramTests : OrchestrationTestBase, IDisposab
     {
         var services = new ServiceCollection();
         this.ConfigureLogging(services);
-        services.AddOrchestrations()
+        services.AddOrchestrations().AliveEnabled(false)
             .WithOrchestration<OrderApprovalOrchestration>()
             .WithOrchestration<TelephoneCallOrchestration>()
             .WithOrchestration<ParallelDiagramOrchestration>()

@@ -231,8 +231,8 @@ public class JobPersistenceStoreTests(ITestOutputHelper output) : JobSchedulerTe
         // Arrange
         var services = new ServiceCollection();
         this.ConfigureLogging(services);
-        services.AddJobScheduler();
-        var context = services.AddJobScheduler();
+        services.AddJobScheduler().AliveEnabled(false);
+        var context = services.AddJobScheduler().AliveEnabled(false);
         context.WithJob<JobFoundationRegistrationTests.SampleJobAccessor>("cleanup", job => job
             .Description("Removes stale records.")
             .AddTrigger("manual", trigger => trigger.Manual()));

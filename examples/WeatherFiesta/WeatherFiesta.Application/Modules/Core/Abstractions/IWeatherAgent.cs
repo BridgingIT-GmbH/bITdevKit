@@ -69,6 +69,9 @@ public class CurrentWeatherData
     /// <summary>Gets or sets the wind speed in km/h.</summary>
     public double WindSpeedKmh { get; set; }
 
+    /// <summary>Gets or sets the wind gusts in km/h.</summary>
+    public double WindGustsKmh { get; set; }
+
     /// <summary>Gets or sets the wind direction in degrees.</summary>
     public double WindDirectionDegrees { get; set; }
 
@@ -102,14 +105,35 @@ public class ForecastData
     /// <summary>Gets or sets the minimum temperature in Celsius.</summary>
     public double TemperatureMinCelsius { get; set; }
 
+    /// <summary>Gets or sets the maximum apparent temperature in Celsius.</summary>
+    public double ApparentTemperatureMaxCelsius { get; set; }
+
+    /// <summary>Gets or sets the minimum apparent temperature in Celsius.</summary>
+    public double ApparentTemperatureMinCelsius { get; set; }
+
     /// <summary>Gets or sets the weather condition code (WMO code).</summary>
     public int WeatherCode { get; set; }
+
+    /// <summary>Gets or sets the total precipitation sum in mm.</summary>
+    public double PrecipitationSumMm { get; set; }
 
     /// <summary>Gets or sets the precipitation probability percentage.</summary>
     public double PrecipitationProbability { get; set; }
 
     /// <summary>Gets or sets the maximum wind speed in km/h.</summary>
     public double WindSpeedMaxKmh { get; set; }
+
+    /// <summary>Gets or sets the maximum wind gusts in km/h.</summary>
+    public double WindGustsMaxKmh { get; set; }
+
+    /// <summary>Gets or sets the dominant wind direction in degrees.</summary>
+    public int DominantWindDirectionDegrees { get; set; }
+
+    /// <summary>Gets or sets the sunshine duration in seconds.</summary>
+    public int SunshineDurationSeconds { get; set; }
+
+    /// <summary>Gets or sets the daylight duration in seconds.</summary>
+    public int DaylightDurationSeconds { get; set; }
 
     /// <summary>Gets or sets the sunrise time.</summary>
     public DateTime? Sunrise { get; set; }

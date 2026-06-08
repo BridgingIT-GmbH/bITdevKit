@@ -32,6 +32,7 @@ public class WeatherIngestionJobTests
                     ApparentTemperatureCelsius = 20.2,
                     RelativeHumidity = 55,
                     WindSpeedKmh = 14,
+                    WindGustsKmh = 28,
                     WindDirectionDegrees = 180,
                     WeatherCode = 2,
                     PressureHpa = 1015,
@@ -46,10 +47,17 @@ public class WeatherIngestionJobTests
                         ForecastDate = DateTime.UtcNow.Date.AddDays(1),
                         TemperatureMaxCelsius = 24,
                         TemperatureMinCelsius = 16,
+                        ApparentTemperatureMaxCelsius = 25,
+                        ApparentTemperatureMinCelsius = 15,
                         WeatherCode = 3,
+                        PrecipitationSumMm = 2.4,
                         PrecipitationProbability = 20,
                         WindSpeedMaxKmh = 18,
+                        WindGustsMaxKmh = 31,
+                        DominantWindDirectionDegrees = 225,
                         UvIndex = 5,
+                        SunshineDurationSeconds = 18000,
+                        DaylightDurationSeconds = 54000,
                         Sunrise = DateTime.UtcNow.Date.AddHours(5),
                         Sunset = DateTime.UtcNow.Date.AddHours(21)
                     }
@@ -122,8 +130,16 @@ public class WeatherIngestionJobTests
 
             currentWeather.Temperature.ShouldBe(21.5m);
             currentWeather.WeatherCode.ShouldBe(2);
+            currentWeather.WindGusts.ShouldBe(28m);
             forecast.TemperatureMax.ShouldBe(24m);
             forecast.DayWeatherCode.ShouldBe(3);
+            forecast.ApparentTemperatureMax.ShouldBe(25m);
+            forecast.ApparentTemperatureMin.ShouldBe(15m);
+            forecast.PrecipitationSum.ShouldBe(2.4m);
+            forecast.WindGustsMax.ShouldBe(31m);
+            forecast.DominantWindDirection.ShouldBe(225);
+            forecast.SunshineDurationSeconds.ShouldBe(18000);
+            forecast.DaylightDurationSeconds.ShouldBe(54000);
         }
     }
 }

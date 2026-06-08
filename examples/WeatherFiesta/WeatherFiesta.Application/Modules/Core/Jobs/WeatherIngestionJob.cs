@@ -106,6 +106,7 @@ public class WeatherIngestionJob(
                         currentWeather.Humidity = (int)data.CurrentWeather.RelativeHumidity;
                         currentWeather.WeatherCode = data.CurrentWeather.WeatherCode;
                         currentWeather.WindSpeed = (decimal)data.CurrentWeather.WindSpeedKmh;
+                        currentWeather.WindGusts = (decimal)data.CurrentWeather.WindGustsKmh;
                         currentWeather.WindDirection = (int)data.CurrentWeather.WindDirectionDegrees;
                         currentWeather.Precipitation = (decimal)data.CurrentWeather.PrecipitationMm;
                         currentWeather.CloudCover = (int)data.CurrentWeather.CloudCoverPercent;
@@ -149,9 +150,16 @@ public class WeatherIngestionJob(
                         forecast.DayWeatherCode = forecastData.WeatherCode;
                         forecast.TemperatureMax = (decimal)forecastData.TemperatureMaxCelsius;
                         forecast.TemperatureMin = (decimal)forecastData.TemperatureMinCelsius;
+                        forecast.ApparentTemperatureMax = (decimal)forecastData.ApparentTemperatureMaxCelsius;
+                        forecast.ApparentTemperatureMin = (decimal)forecastData.ApparentTemperatureMinCelsius;
+                        forecast.PrecipitationSum = (decimal)forecastData.PrecipitationSumMm;
                         forecast.PrecipitationProbabilityMax = (int)forecastData.PrecipitationProbability;
                         forecast.WindSpeedMax = (decimal)forecastData.WindSpeedMaxKmh;
+                        forecast.WindGustsMax = (decimal)forecastData.WindGustsMaxKmh;
+                        forecast.DominantWindDirection = forecastData.DominantWindDirectionDegrees;
                         forecast.UvIndexMax = (decimal)(forecastData.UvIndex ?? 0);
+                        forecast.SunshineDurationSeconds = forecastData.SunshineDurationSeconds;
+                        forecast.DaylightDurationSeconds = forecastData.DaylightDurationSeconds;
                         forecast.Sunrise = forecastData.Sunrise ?? DateTime.MinValue;
                         forecast.Sunset = forecastData.Sunset ?? DateTime.MinValue;
                         forecast.RetrievedAt = DateTime.UtcNow;

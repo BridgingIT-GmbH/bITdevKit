@@ -27,7 +27,7 @@ public class WeatherIngestionJob(
     /// <inheritdoc />
     public override async Task<Result> ExecuteAsync(IJobExecutionContext<Unit> context, CancellationToken cancellationToken = default)
     {
-        logger.LogInformation("Core ingestion job started at {StartTime}", DateTime.UtcNow);
+        logger.LogInformation("weather ingestion job started at {StartTime}", DateTime.UtcNow);
 
         var staleSpec = new StaleCitiesForIngestionSpecification(TimeSpan.FromMinutes(moduleConfiguration.Value.StaleThresholdMinutes));
         var citiesResult = await City.FindAllAsync(staleSpec, null, cancellationToken);
@@ -48,7 +48,7 @@ public class WeatherIngestionJob(
         {
             if (cancellationToken.IsCancellationRequested)
             {
-                logger.LogWarning("Ingestion cancelled after processing {ProcessedCount} of {TotalCount} cities", successCount + failureCount, cities.Count);
+                logger.LogWarning("weather ingestion cancelled after processing {ProcessedCount} of {TotalCount} cities", successCount + failureCount, cities.Count);
                 break;
             }
 
@@ -58,7 +58,7 @@ public class WeatherIngestionJob(
             {
                 if (city.Location is null)
                 {
-                    logger.LogWarning("Weather ingestion skipped for city {CityId} ({CityName}): location is missing", city.Id, city.Name);
+                    logger.LogWarning("weather ingestion skipped for city {CityId} ({CityName}): location is missing", city.Id, city.Name);
                     failureCount++;
                     continue;
                 }
@@ -71,7 +71,7 @@ public class WeatherIngestionJob(
 
                 if (ingestResult.IsFailure)
                 {
-                    logger.LogWarning("Weather ingestion failed for city {CityId} ({CityName}): {Errors}",
+                    logger.LogWarning("weather ingestion failed for city {CityId} ({CityName}): {Errors}",
                         city.Id, city.Name, string.Join("; ", ingestResult.Errors.Select(e => e.Message)));
                     failureCount++;
                     continue;
@@ -191,17 +191,15 @@ public class WeatherIngestionJob(
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Unexpected error ingesting weather for city {CityId} ({CityName}): {ErrorMessage}",
-                    city.Id, city.Name, ex.Message);
-                failureCount++;
+                logger.LogError(ex, "Unexpected error ingesting weather for city {CityId} ({CityName}): {ErrorMessage}", city.Id, city.Name, ex.Message); failureCount++;
             }
         }
 
-        var message = $"Core ingestion job completed. Success={successCount}, Failed={failureCount}, Total={cities.Count}";
+        var message = $"weather ingestion job completed. Success={successCount}, Failed={failureCount}, Total={cities.Count}";
         context.Messages.Add(message);
 
         logger.LogInformation(
-            "Core ingestion job completed at {EndTime}. Success={SuccessCount}, Failed={FailureCount}, Total={TotalCount}",
+            "weather ingestion job completed at {EndTime}. Success={SuccessCount}, Failed={FailureCount}, Total={TotalCount}",
             DateTime.UtcNow, successCount, failureCount, cities.Count);
 
         return Result.Success(message);

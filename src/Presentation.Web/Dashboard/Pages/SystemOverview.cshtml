@@ -143,6 +143,142 @@
         padding: .25rem .5rem;
     }
 
+    .dashboard-system-db-grid {
+        display: grid;
+        gap: .75rem;
+        grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    }
+
+    .dashboard-system-db-heading {
+        align-items: center;
+        display: flex;
+        gap: .7rem;
+    }
+
+    .dashboard-system-db-icon {
+        align-items: center;
+        background: rgba(var(--bs-primary-rgb), .12);
+        border: 1px solid rgba(var(--bs-primary-rgb), .24);
+        border-radius: .45rem;
+        color: var(--bs-primary);
+        display: inline-flex;
+        height: 2.15rem;
+        justify-content: center;
+        width: 2.15rem;
+    }
+
+    .dashboard-system-db-summary {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: .45rem;
+        justify-content: flex-end;
+    }
+
+    .dashboard-system-db-pill {
+        align-items: center;
+        border: 1px solid var(--bs-border-color);
+        border-radius: 999px;
+        color: var(--bs-secondary-color);
+        display: inline-flex;
+        font-size: .78rem;
+        gap: .35rem;
+        padding: .25rem .55rem;
+    }
+
+    .dashboard-system-db-pill strong {
+        color: var(--bs-body-color);
+        font-weight: 650;
+    }
+
+    .dashboard-system-db-panel {
+        border: 1px solid var(--bs-border-color);
+        @* border-left: .25rem solid var(--bs-success); *@
+        border-radius: .45rem;
+        display: grid;
+        gap: .85rem;
+        padding: .95rem;
+    }
+
+    .dashboard-system-db-panel-unavailable {
+        border-left-color: var(--bs-danger);
+    }
+
+    .dashboard-system-db-title {
+        font-size: 1rem;
+        font-weight: 650;
+        line-height: 1.15;
+    }
+
+    .dashboard-system-db-provider {
+        color: var(--bs-secondary-color);
+        font-size: .78rem;
+        margin-top: .1rem;
+    }
+
+    .dashboard-system-db-name {
+        color: var(--bs-secondary-color);
+        font-size: .82rem;
+        overflow-wrap: anywhere;
+    }
+
+    .dashboard-system-db-status {
+        align-items: center;
+        border-radius: 999px;
+        display: inline-flex;
+        font-size: .74rem;
+        font-weight: 650;
+        gap: .35rem;
+        padding: .27rem .6rem;
+        white-space: nowrap;
+    }
+
+    .dashboard-system-db-status i {
+        font-size: .65rem;
+    }
+
+    .dashboard-system-db-metrics {
+        display: grid;
+        gap: .45rem;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .dashboard-system-db-metric {
+        background: rgba(var(--bs-secondary-rgb), .045);
+        border: 1px solid var(--bs-border-color);
+        border-radius: .38rem;
+        min-width: 0;
+        padding: .55rem .65rem;
+    }
+
+    .dashboard-system-db-metric span {
+        color: var(--bs-secondary-color);
+        display: block;
+        font-size: .72rem;
+        line-height: 1.1;
+    }
+
+    .dashboard-system-db-metric strong {
+        display: block;
+        font-size: .95rem;
+        font-weight: 650;
+        line-height: 1.25;
+        margin-top: .25rem;
+        overflow-wrap: anywhere;
+    }
+
+    .dashboard-system-db-wide {
+        grid-column: span 2;
+    }
+
+    .dashboard-system-db-alert {
+        border: 1px solid rgba(var(--bs-danger-rgb), .35);
+        border-radius: .38rem;
+        color: var(--bs-danger);
+        font-size: .82rem;
+        padding: .55rem .65rem;
+    }
+
     @@media (max-width: 1199.98px) {
         .dashboard-system-span-3,
         .dashboard-system-span-4,
@@ -162,6 +298,25 @@
         .dashboard-system-span-6,
         .dashboard-system-span-8,
         .dashboard-system-span-12 {
+            grid-column: span 1;
+        }
+
+        .dashboard-system-db-metrics {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @@media (max-width: 459.98px) {
+        .dashboard-system-db-summary {
+            justify-content: flex-start;
+            width: 100%;
+        }
+
+        .dashboard-system-db-metrics {
+            grid-template-columns: 1fr;
+        }
+
+        .dashboard-system-db-wide {
             grid-column: span 1;
         }
     }

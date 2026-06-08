@@ -1312,6 +1312,8 @@
           "Hellang.Middleware.ProblemDetails": "[6.5.1, )",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[10.0.8, )",
           "Microsoft.AspNetCore.OpenApi": "[10.0.8, )",
+          "Microsoft.EntityFrameworkCore": "[10.0.8, )",
+          "Microsoft.EntityFrameworkCore.Relational": "[10.0.8, )",
           "NSwag.AspNetCore": "[14.7.1, )",
           "RazorSlices": "[0.10.1, )",
           "Serilog.Extensions.Hosting": "[10.0.0, )",
@@ -1352,7 +1354,8 @@
           "BridgingIT.DevKit.Application.Messaging": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
-          "Ensure.That": "[10.1.0, )"
+          "Ensure.That": "[10.1.0, )",
+          "RazorSlices": "[0.10.1, )"
         }
       },
       "BridgingIT.DevKit.Presentation.Web.Orchestrations": {
@@ -1361,7 +1364,8 @@
           "BridgingIT.DevKit.Application.Orchestrations": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
-          "Ensure.That": "[10.1.0, )"
+          "Ensure.That": "[10.1.0, )",
+          "RazorSlices": "[0.10.1, )"
         }
       },
       "BridgingIT.DevKit.Presentation.Web.Queueing": {
@@ -1370,7 +1374,8 @@
           "BridgingIT.DevKit.Application.Queueing": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
-          "Ensure.That": "[10.1.0, )"
+          "Ensure.That": "[10.1.0, )",
+          "RazorSlices": "[0.10.1, )"
         }
       },
       "BridgingIT.DevKit.Presentation.Web.Storage": {

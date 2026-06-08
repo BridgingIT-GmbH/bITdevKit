@@ -50,6 +50,7 @@ public static class ServiceCollectionExtensions
         RegisterInterceptors(services, options, lifetime);
 
         services.AddDbContext<TContext>(ConfigureDbContext(services, options, sqlServerOptionsBuilder), lifetime);
+        services.AddDbContextRegistration<TContext>(Provider.SqlServer);
         services.AddScoped<IDbContextResolver, DbContextResolver>(); // needed for DatabaseTransactionPipelineBehavior to resolve DbContext by name (e.g., "Core" or "CoreDbContext")
 
         return new SqlServerDbContextBuilderContext<TContext>(services,
@@ -134,6 +135,7 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNullOrEmpty(connectionString, nameof(connectionString));
 
         services.AddDbContext<TContext>(o => o.UseSqlServer(connectionString, sqlServerOptionsBuilder), lifetime);
+        services.AddDbContextRegistration<TContext>(Provider.SqlServer);
 
         return new SqlServerDbContextBuilderContext<TContext>(services,
             lifetime,

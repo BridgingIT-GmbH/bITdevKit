@@ -66,10 +66,13 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
     /// </example>
     public async Task ProcessAsync(string eventId = null, CancellationToken cancellationToken = default)
     {
-        TypedLogger.LogProcessing(this.logger, Constants.LogKey, this.contextTypeName, eventId);
-
         var candidateIds = await this.GetCandidateEventIdsAsync(eventId, cancellationToken).AnyContext();
         var count = 0;
+
+        if (candidateIds.Count != 0)
+        {
+            TypedLogger.LogProcessing(this.logger, Constants.LogKey, this.contextTypeName, eventId);
+        }
 
         foreach (var outboxEventId in candidateIds)
         {
@@ -84,7 +87,10 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
             }
         }
 
-        TypedLogger.LogProcessed(this.logger, Constants.LogKey, this.contextTypeName, count);
+        if (candidateIds.Count != 0)
+        {
+            TypedLogger.LogProcessed(this.logger, Constants.LogKey, this.contextTypeName, count);
+        }
     }
 
     /// <summary>

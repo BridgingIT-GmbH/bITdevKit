@@ -99,4 +99,16 @@ public static partial class ServiceCollectionExtensions
         return services;
     }
 
+    public static IServiceCollection AddDbContextRegistration<TContext>(
+        this IServiceCollection services,
+        Provider provider)
+        where TContext : DbContext
+    {
+        services.AddSingleton(new DbContextRegistration(
+            typeof(TContext),
+            provider.ToString(),
+            typeof(TContext).Name));
+
+        return services;
+    }
 }

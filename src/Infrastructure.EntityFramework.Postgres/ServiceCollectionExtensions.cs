@@ -59,6 +59,7 @@ public static class ServiceCollectionExtensions
         }
 
         services.AddDbContext<TContext>(ConfigureDbContext(services, options, connectionString, postgresOptionsBuilder), lifetime);
+        services.AddDbContextRegistration<TContext>(Provider.Postgres);
 
         return new PostgresDbContextBuilderContext<TContext>(services,
             lifetime,
@@ -151,6 +152,7 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNullOrEmpty(connectionString, nameof(connectionString));
 
         services.AddDbContext<TContext>(o => o.UseNpgsql(connectionString, postgresOptionsBuilder), lifetime);
+        services.AddDbContextRegistration<TContext>(Provider.Postgres);
 
         return new PostgresDbContextBuilderContext<TContext>(services,
             lifetime,

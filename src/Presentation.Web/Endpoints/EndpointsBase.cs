@@ -12,60 +12,69 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 /// <summary>
-///     Provides common state and grouping behavior for endpoint modules.
+///     Provides shared endpoint registration state and route group configuration for Minimal API endpoint modules.
 /// </summary>
 /// <remarks>
-///     Derived types implement <see cref="Map" /> to add Minimal API routes. The base implementation supplies mapping
-///     state used by the application pipeline and a helper for applying shared group metadata and authorization settings.
+///     Derived endpoint modules implement <see cref="Map" /> to add their routes to an <see cref="IEndpointRouteBuilder" />.
+///     The application's endpoint mapper uses <see cref="Enabled" /> and <see cref="IsRegistered" /> to avoid mapping disabled
+///     endpoint modules or registering the same instance more than once.
 /// </remarks>
 public abstract class EndpointsBase : IEndpoints
 {
     /// <summary>
-    ///     Gets or sets whether this endpoint module should be mapped.
+    ///     Gets or sets whether this endpoint module participates in application endpoint registration.
     /// </summary>
     /// <remarks>
-    ///     The default value is <c>true</c>. Mapping extensions skip disabled endpoint modules without removing them from
-    ///     dependency injection.
+    ///     The value defaults to <c>true</c>. When the application maps registered <see cref="IEndpoints" /> instances, endpoint
+    ///     modules with this value set to <c>false</c> are skipped and their <see cref="Map" /> method is not called.
     /// </remarks>
     public bool Enabled { get; set; } = true;
 
     /// <summary>
-    ///     Gets or sets whether this endpoint module has already been mapped.
+    ///     Gets or sets whether this endpoint module has already been mapped by the application.
     /// </summary>
     /// <remarks>
-    ///     The mapping extension sets this value after <see cref="Map" /> succeeds so later mapping calls do not duplicate
-    ///     routes for the same endpoint instance.
+    ///     The application endpoint mapper sets this value after calling <see cref="Map" />. It is used together with
+    ///     <see cref="Enabled" /> to prevent duplicate route registration for the same endpoint instance.
     /// </remarks>
     public bool IsRegistered { get; set; }
 
     /// <summary>
-    ///     Adds this endpoint module's routes and metadata to the specified route builder.
+    ///     Maps the routes owned by the derived endpoint module to the supplied route builder.
     /// </summary>
-    /// <param name="app">The route builder or route group that receives the endpoint mappings.</param>
+    /// <param name="app">The application or route group builder that receives the endpoint routes.</param>
     /// <remarks>
-    ///     Implementations usually call <see cref="MapGroup" /> first and then add individual route handlers to the
-    ///     returned group.
+    ///     Implementations typically check their endpoint options before mapping routes, create a route group through
+    ///     <see cref="MapGroup" />, and then add Minimal API handlers and metadata to that group. The application endpoint
+    ///     mapper calls this method only for endpoint instances that are enabled and not yet registered.
     /// </remarks>
     public abstract void Map(IEndpointRouteBuilder app);
 
     /// <summary>
-    ///     Creates a route group using the supplied endpoint options and applies common endpoint metadata.
+    ///     Creates a route group using the configured group path, tag, API description, and authorization options.
     /// </summary>
-    /// <param name="app">The route builder that receives the group.</param>
-    /// <param name="options">The group path, tag, visibility, and authorization settings to apply.</param>
-    /// <returns>The configured <see cref="RouteGroupBuilder" /> that callers can use to add routes.</returns>
+    /// <param name="app">The route builder that receives the new group.</param>
+    /// <param name="options">The endpoint options that define group metadata and authorization requirements.</param>
+    /// <returns>
+    ///     A configured <see cref="RouteGroupBuilder" /> that callers can use to map individual routes.
+    /// </returns>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown when <paramref name="app" /> or <paramref name="options" /> is <c>null</c>.
+    /// </exception>
     /// <remarks>
     ///     The group is created at <see cref="EndpointsOptionsBase.GroupPath" /> and tagged with
-    ///     <see cref="EndpointsOptionsBase.GroupTag" />. When configured, the group is excluded from API descriptions. If
-    ///     authorization is enabled, role requirements take precedence over policy requirements; if neither roles nor a
-    ///     policy are supplied, default authorization is required.
+    ///     <see cref="EndpointsOptionsBase.GroupTag" />. When API description exclusion is enabled, the group is hidden from
+    ///     generated descriptions. When authorization is required, role-based authorization takes precedence over policy-based
+    ///     authorization; empty or whitespace role names are ignored. If no roles or policy are configured, the group requires
+    ///     the default authorization policy.
     ///
     ///     Example:
     ///     <code>
     ///     public override void Map(IEndpointRouteBuilder app)
     ///     {
     ///         var group = this.MapGroup(app, this.options);
-    ///         group.MapGet("items", () =&gt; Results.Ok());
+    ///
+    ///         group.MapGet("/status", () =&gt; Results.Ok());
     ///     }
     ///     </code>
     /// </remarks>

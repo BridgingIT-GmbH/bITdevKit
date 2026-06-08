@@ -1,0 +1,369 @@
+@using BridgingIT.DevKit.Common
+@using BridgingIT.DevKit.Presentation.Web
+@using System.Data
+@using System.Diagnostics
+@using Microsoft.EntityFrameworkCore
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.Extensions.Logging
+@inherits RazorSlice
+
+@{
+    var model = CreateModel();
+    var connectedCount = model.Databases.Count(database => database.IsConnected);
+    var unavailableCount = model.Databases.Count - connectedCount;
+}
+
+<section class="card dashboard-system-span-12">
+    <div class="card-body p-3">
+        <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
+            <div class="dashboard-system-db-heading">
+                @* <span class="dashboard-system-db-icon"><i class="bi bi-database"></i></span> *@
+                <div>
+                    <h6 class="card-title mb-0">Databases</h6>
+                    @* <div class="text-muted small">Registered Entity Framework contexts</div> *@
+                </div>
+            </div>
+            @* <div class="dashboard-system-db-summary">
+                <span class="dashboard-system-db-pill" title="Registered Entity Framework DbContext types available for dashboard sampling.">Contexts <strong>@FormatCount(model.Databases.Count)</strong></span>
+                <span class="dashboard-system-db-pill" title="Registered DbContexts that accepted a connection probe during this refresh.">Connected <strong>@FormatCount(connectedCount)</strong></span>
+                @if (unavailableCount > 0)
+                {
+                    <span class="dashboard-system-db-pill text-danger" title="Registered DbContexts that did not accept a connection probe during this refresh.">Unavailable <strong>@FormatCount(unavailableCount)</strong></span>
+                }
+            </div> *@
+        </div>
+        @if (model.Databases.Count == 0)
+        {
+            <div class="text-muted small">No registered Entity Framework database contexts are available for dashboard sampling.</div>
+        }
+        else
+        {
+            <div class="dashboard-system-db-grid">
+                @foreach (var database in model.Databases)
+                {
+                    <div class="dashboard-system-db-panel @(database.IsConnected ? "" : "dashboard-system-db-panel-unavailable")">
+                        <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                            <div class="min-w-0">
+                                <div class="dashboard-system-db-title text-break" title="The registered EF Core DbContext type.">@database.Name</div>
+                                <div class="dashboard-system-db-provider" title="Database provider and current database name.">@database.Provider, @(string.IsNullOrWhiteSpace(database.DatabaseName) ? "-" : database.DatabaseName)</div>
+                            </div>
+                            <span class="dashboard-system-db-status @(database.IsConnected ? "text-bg-success" : "text-bg-danger")"
+                                  title="Connection status from DbContext.Database.CanConnect during this refresh."
+                                  aria-label="Database connection status: @(database.IsConnected ? "Connected" : "Unavailable")">
+                                <i class="bi @(database.IsConnected ? "bi-check-circle-fill" : "bi-exclamation-triangle-fill")"></i>
+                                @(database.IsConnected ? "Connected" : "Unavailable")
+                            </span>
+                        </div>
+                        @* <div class="dashboard-system-db-name">
+                            <i class="bi bi-hdd-stack me-1"></i>@(string.IsNullOrWhiteSpace(database.DatabaseName) ? "-" : database.DatabaseName)
+                        </div> *@
+                        <div class="dashboard-system-db-metrics">
+                            <div class="dashboard-system-db-metric" title="Elapsed time for the connection probe using DbContext.Database.CanConnect."><span>Connect</span><strong>@FormatNullable(database.ConnectLatencyMs, " ms")</strong></div>
+                            <div class="dashboard-system-db-metric" title="Elapsed time for a lightweight SELECT 1 query through the DbContext connection."><span>Query</span><strong>@FormatNullable(database.QueryLatencyMs, " ms")</strong></div>
+                            <div class="dashboard-system-db-metric" title="Approximate database size in megabytes."><span>Size</span><strong>@FormatNullable(database.SizeMb, " MB")</strong></div>
+                            <div class="dashboard-system-db-metric" title="Physical base table count reported by the database provider metadata query."><span>Tables</span><strong>@FormatNullable(database.TableCount)</strong></div>
+                            <div class="dashboard-system-db-metric" title="EF Core model entity type count in this DbContext. This can differ from physical table count."><span>Entity Types</span><strong>@FormatCount(database.EntityTypes)</strong></div>
+                            <div class="dashboard-system-db-metric" title="Current database sessions or connections reported by provider metadata, when available."><span>Sessions</span><strong>@FormatNullable(database.ActiveSessions)</strong></div>
+                            <div class="dashboard-system-db-metric" title="Currently active/running database requests reported by provider metadata, when available."><span>Running</span><strong>@FormatNullable(database.RunningRequests)</strong></div>
+                            <div class="dashboard-system-db-metric" title="Blocked SQL Server requests or PostgreSQL lock waits reported by provider metadata, when available."><span>Blocking</span><strong class="@(database.BlockedRequests > 0 ? "text-danger" : "")">@FormatNullable(database.BlockedRequests)</strong></div>
+                            <div class="dashboard-system-db-metric dashboard-system-db-wide" title="EF Core migrations that are present in the application but not applied to this database."><span>Pending Migrations</span><strong class="@(database.PendingMigrations > 0 ? "text-warning" : "")">@FormatNullable(database.PendingMigrations)</strong></div>
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(database.Error))
+                        {
+                            <div class="dashboard-system-db-alert">@database.Error</div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@functions {
+    private DbContextContentViewModel CreateModel()
+    {
+        var databaseRegistrations = this.HttpContext.RequestServices.GetServices<DbContextRegistration>();
+        var logger = this.HttpContext.RequestServices.GetService<ILogger<DbContextContentViewModel>>();
+        var result = new DbContextContentViewModel();
+
+        foreach (var registration in databaseRegistrations
+            .GroupBy(registration => registration.ContextType)
+            .Select(group => group.First()))
+        {
+            result.Databases.Add(CreateDatabaseSnapshot(registration, logger));
+        }
+
+        return result;
+    }
+
+    private DbContextViewModel CreateDatabaseSnapshot(
+        DbContextRegistration registration,
+        ILogger<DbContextContentViewModel> logger)
+    {
+        var result = new DbContextViewModel
+        {
+            Name = registration.Name,
+            Provider = registration.Provider
+        };
+
+        try
+        {
+            using var scope = this.HttpContext.RequestServices.CreateScope();
+            if (scope.ServiceProvider.GetService(registration.ContextType) is not DbContext context)
+            {
+                result.Error = "DbContext is not resolvable from the service provider.";
+                return result;
+            }
+
+            result.Provider = GetProviderDisplayName(registration.Provider, context.Database.ProviderName);
+            result.DatabaseName = context.Database.GetDbConnection().Database;
+            result.EntityTypes = context.Model.GetEntityTypes().Count();
+
+            var stopwatch = Stopwatch.StartNew();
+            result.IsConnected = context.Database.CanConnect();
+            stopwatch.Stop();
+            result.ConnectLatencyMs = stopwatch.Elapsed.TotalMilliseconds;
+
+            if (!result.IsConnected)
+            {
+                result.Error = "Connection probe failed.";
+                return result;
+            }
+
+            result.QueryLatencyMs = MeasureQueryLatency(context);
+            result.TableCount = ExecuteScalarLong(context, GetTableCountSql(registration.Provider));
+            result.SizeMb = GetDatabaseSizeMb(context, registration.Provider);
+            result.ActiveSessions = ExecuteScalarLong(context, GetActiveSessionsSql(registration.Provider));
+            result.RunningRequests = ExecuteScalarLong(context, GetRunningRequestsSql(registration.Provider));
+            result.BlockedRequests = ExecuteScalarLong(context, GetBlockedRequestsSql(registration.Provider));
+            result.PendingMigrations = GetPendingMigrationCount(context);
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "Failed to retrieve dashboard database metrics for {DbContextType}.", registration.ContextType.FullName);
+            result.Error = ex.Message;
+        }
+
+        return result;
+    }
+
+    private static double? MeasureQueryLatency(DbContext context)
+    {
+        var stopwatch = Stopwatch.StartNew();
+        _ = ExecuteScalar(context, "SELECT 1");
+        stopwatch.Stop();
+        return stopwatch.Elapsed.TotalMilliseconds;
+    }
+
+    private static long? GetPendingMigrationCount(DbContext context)
+    {
+        try
+        {
+            return context.Database.GetPendingMigrations().LongCount();
+        }
+        catch
+        {
+            return null;
+        }
+    }
+
+    private static double? GetDatabaseSizeMb(DbContext context, string provider)
+    {
+        if (IsProvider(provider, "Sqlite"))
+        {
+            var pageCount = ExecuteScalarDouble(context, "PRAGMA page_count");
+            var pageSize = ExecuteScalarDouble(context, "PRAGMA page_size");
+            return pageCount is null || pageSize is null ? null : (pageCount.Value * pageSize.Value) / 1024d / 1024d;
+        }
+
+        return ExecuteScalarDouble(context, GetDatabaseSizeSql(provider));
+    }
+
+    private static object ExecuteScalar(DbContext context, string sql)
+    {
+        if (string.IsNullOrWhiteSpace(sql))
+        {
+            return null;
+        }
+
+        var connection = context.Database.GetDbConnection();
+        var closeConnection = connection.State == ConnectionState.Closed;
+        try
+        {
+            if (closeConnection)
+            {
+                connection.Open();
+            }
+
+            using var command = connection.CreateCommand();
+            command.CommandText = sql;
+            command.CommandTimeout = 2;
+            return command.ExecuteScalar();
+        }
+        catch
+        {
+            return null;
+        }
+        finally
+        {
+            if (closeConnection && connection.State != ConnectionState.Closed)
+            {
+                connection.Close();
+            }
+        }
+    }
+
+    private static long? ExecuteScalarLong(DbContext context, string sql)
+    {
+        var value = ExecuteScalar(context, sql);
+        return value is null || value == DBNull.Value ? null : Convert.ToInt64(value, CultureInfo.InvariantCulture);
+    }
+
+    private static double? ExecuteScalarDouble(DbContext context, string sql)
+    {
+        var value = ExecuteScalar(context, sql);
+        return value is null || value == DBNull.Value ? null : Convert.ToDouble(value, CultureInfo.InvariantCulture);
+    }
+
+    private static string GetTableCountSql(string provider)
+    {
+        if (IsProvider(provider, "SqlServer"))
+        {
+            return "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE TABLE'";
+        }
+
+        if (IsProvider(provider, "Postgres"))
+        {
+            return "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema NOT IN ('pg_catalog', 'information_schema') AND table_type = 'BASE TABLE'";
+        }
+
+        return IsProvider(provider, "Sqlite")
+            ? "SELECT COUNT(*) FROM sqlite_master WHERE type = 'table' AND name NOT LIKE 'sqlite_%'"
+            : null;
+    }
+
+    private static string GetDatabaseSizeSql(string provider)
+    {
+        if (IsProvider(provider, "SqlServer"))
+        {
+            return "SELECT COALESCE(SUM(size) * 8.0 / 1024.0, 0) FROM sys.database_files";
+        }
+
+        return IsProvider(provider, "Postgres")
+            ? "SELECT pg_database_size(current_database()) / 1024.0 / 1024.0"
+            : null;
+    }
+
+    private static string GetActiveSessionsSql(string provider)
+    {
+        if (IsProvider(provider, "SqlServer"))
+        {
+            return "SELECT COUNT(*) FROM sys.dm_exec_sessions WHERE database_id = DB_ID()";
+        }
+
+        return IsProvider(provider, "Postgres")
+            ? "SELECT COUNT(*) FROM pg_stat_activity WHERE datname = current_database()"
+            : null;
+    }
+
+    private static string GetRunningRequestsSql(string provider)
+    {
+        if (IsProvider(provider, "SqlServer"))
+        {
+            return "SELECT COUNT(*) FROM sys.dm_exec_requests WHERE database_id = DB_ID()";
+        }
+
+        return IsProvider(provider, "Postgres")
+            ? "SELECT COUNT(*) FROM pg_stat_activity WHERE datname = current_database() AND state = 'active'"
+            : null;
+    }
+
+    private static string GetBlockedRequestsSql(string provider)
+    {
+        if (IsProvider(provider, "SqlServer"))
+        {
+            return "SELECT COUNT(*) FROM sys.dm_exec_requests WHERE database_id = DB_ID() AND blocking_session_id <> 0";
+        }
+
+        return IsProvider(provider, "Postgres")
+            ? "SELECT COUNT(*) FROM pg_stat_activity WHERE datname = current_database() AND wait_event_type = 'Lock'"
+            : null;
+    }
+
+    private static string GetProviderDisplayName(string registeredProvider, string efProvider)
+    {
+        return !string.IsNullOrWhiteSpace(registeredProvider)
+            ? registeredProvider
+            : efProvider ?? "Unknown";
+    }
+
+    private static bool IsProvider(string provider, string expected)
+    {
+        return provider.Equals(expected, StringComparison.OrdinalIgnoreCase)
+            || provider.Contains(expected, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static string FormatCount(long value)
+    {
+        return value.ToString("N0", CultureInfo.InvariantCulture);
+    }
+
+    private static string FormatCount(int value)
+    {
+        return value.ToString("N0", CultureInfo.InvariantCulture);
+    }
+
+    private static string FormatNullable(long? value)
+    {
+        return value.HasValue ? value.Value.ToString("N0", CultureInfo.InvariantCulture) : "-";
+    }
+
+    private static string FormatNullable(double? value, string unit = null)
+    {
+        return value.HasValue ? $"{FormatNumber(value.Value)}{unit}" : "-";
+    }
+
+    private static string FormatNumber(double value)
+    {
+        var rounded = Math.Round(value, 2);
+        return Math.Abs(rounded % 1) < 0.0001
+            ? rounded.ToString("N0", CultureInfo.InvariantCulture)
+            : rounded.ToString("N2", CultureInfo.InvariantCulture);
+    }
+
+    private sealed class DbContextContentViewModel
+    {
+        public List<DbContextViewModel> Databases { get; } = [];
+    }
+
+    private sealed class DbContextViewModel
+    {
+        public string Name { get; set; }
+
+        public string Provider { get; set; }
+
+        public string DatabaseName { get; set; }
+
+        public bool IsConnected { get; set; }
+
+        public double? ConnectLatencyMs { get; set; }
+
+        public double? QueryLatencyMs { get; set; }
+
+        public double? SizeMb { get; set; }
+
+        public long? TableCount { get; set; }
+
+        public long? ActiveSessions { get; set; }
+
+        public long? RunningRequests { get; set; }
+
+        public long? BlockedRequests { get; set; }
+
+        public long? PendingMigrations { get; set; }
+
+        public int EntityTypes { get; set; }
+
+        public string Error { get; set; }
+    }
+}

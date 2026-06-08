@@ -31,7 +31,7 @@ public class WeatherCleanupJob(
         var cutoff = DateTime.UtcNow.AddDays(-retentionDays);
 
         logger.LogInformation(
-            "Core cleanup job started at {StartTime}. RetentionDays={RetentionDays}, Cutoff={Cutoff}",
+            "weather cleanup job started at {StartTime}. RetentionDays={RetentionDays}, Cutoff={Cutoff}",
             DateTime.UtcNow,
             retentionDays,
             cutoff);
@@ -113,7 +113,7 @@ public class WeatherCleanupJob(
 
         if (deleteErrors.Count > 0)
         {
-            var failureMessage = $"Core cleanup job failed. CurrentWeatherDeleted={currentWeatherDeleted}, ForecastsDeleted={forecastsDeleted}, Failures={deleteErrors.Count}, RetentionDays={retentionDays}";
+            var failureMessage = $"weather cleanup job failed. CurrentWeatherDeleted={currentWeatherDeleted}, ForecastsDeleted={forecastsDeleted}, Failures={deleteErrors.Count}, RetentionDays={retentionDays}";
             var failureMessages = new List<string> { failureMessage };
             failureMessages.AddRange(deleteMessages);
             context.Messages.Add(failureMessage);
@@ -121,11 +121,11 @@ public class WeatherCleanupJob(
             return Result.Failure(failureMessages, deleteErrors);
         }
 
-        var message = $"Core cleanup job completed. CurrentWeatherDeleted={currentWeatherDeleted}, ForecastsDeleted={forecastsDeleted}, RetentionDays={retentionDays}";
+        var message = $"weather cleanup job completed. CurrentWeatherDeleted={currentWeatherDeleted}, ForecastsDeleted={forecastsDeleted}, RetentionDays={retentionDays}";
         context.Messages.Add(message);
 
         logger.LogInformation(
-            "Core cleanup job completed at {EndTime}. CurrentWeatherDeleted={CurrentWeatherDeleted}, ForecastsDeleted={ForecastsDeleted}",
+            "weather cleanup job completed at {EndTime}. CurrentWeatherDeleted={CurrentWeatherDeleted}, ForecastsDeleted={ForecastsDeleted}",
             DateTime.UtcNow,
             currentWeatherDeleted,
             forecastsDeleted);

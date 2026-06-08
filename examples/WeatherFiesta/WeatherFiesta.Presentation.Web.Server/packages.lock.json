@@ -1177,6 +1177,8 @@
           "Hellang.Middleware.ProblemDetails": "[6.5.1, )",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[10.0.8, )",
           "Microsoft.AspNetCore.OpenApi": "[10.0.8, )",
+          "Microsoft.EntityFrameworkCore": "[10.0.8, )",
+          "Microsoft.EntityFrameworkCore.Relational": "[10.0.8, )",
           "NSwag.AspNetCore": "[14.7.1, )",
           "RazorSlices": "[0.10.1, )",
           "Serilog.Extensions.Hosting": "[10.0.0, )",

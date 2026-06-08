@@ -50,6 +50,7 @@ public static class ServiceCollectionExtensions
         RegisterInterceptors(services, options, lifetime);
 
         services.AddDbContext<TContext>(ConfigureDbContext(services, options, sqliteOptionsBuilder), lifetime);
+        services.AddDbContextRegistration<TContext>(Provider.Sqlite);
 
         return new SqliteDbContextBuilderContext<TContext>(services,
             lifetime,
@@ -135,6 +136,7 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNullOrEmpty(connectionString, nameof(connectionString));
 
         services.AddDbContext<TContext>(o => o.UseSqlite(connectionString, sqliteOptionsBuilder), lifetime);
+        services.AddDbContextRegistration<TContext>(Provider.Sqlite);
 
         return new SqliteDbContextBuilderContext<TContext>(services,
             lifetime,

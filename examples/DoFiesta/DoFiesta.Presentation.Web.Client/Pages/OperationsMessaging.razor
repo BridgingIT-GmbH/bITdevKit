@@ -617,7 +617,7 @@
 
     private async Task LoadStatsAsync()
     {
-        this.stats = await this.Api.Api._system.Messaging.Messages.Stats.GetAsync(config =>
+        this.stats = await this.Api._bdk.Api.Messaging.Messages.Stats.GetAsync(config =>
         {
             config.QueryParameters.IsArchived = this.GetArchiveFilter();
             config.QueryParameters.StartDate = this.ToStartDateOffset(this.createdStartDate);
@@ -627,7 +627,7 @@
 
     private async Task LoadMessagesAsync()
     {
-        var result = await this.Api.Api._system.Messaging.Messages.GetAsync(config =>
+        var result = await this.Api._bdk.Api.Messaging.Messages.GetAsync(config =>
         {
             config.QueryParameters.IncludeHandlers = false;
             config.QueryParameters.IsArchived = this.GetArchiveFilter();
@@ -659,7 +659,7 @@
     {
         try
         {
-            this.summary = await this.Api.Api._system.Messaging.Messages.Summary.GetAsync();
+            this.summary = await this.Api._bdk.Api.Messaging.Messages.Summary.GetAsync();
         }
         catch (KiotaApiException)
         {
@@ -671,7 +671,7 @@
     {
         try
         {
-            this.subscriptions = await this.Api.Api._system.Messaging.Messages.Subscriptions.GetAsync();
+            this.subscriptions = await this.Api._bdk.Api.Messaging.Messages.Subscriptions.GetAsync();
         }
         catch (KiotaApiException)
         {
@@ -683,7 +683,7 @@
     {
         try
         {
-            this.waitingMessages = await this.Api.Api._system.Messaging.Messages.Waiting.GetAsync(config =>
+            this.waitingMessages = await this.Api._bdk.Api.Messaging.Messages.Waiting.GetAsync(config =>
             {
                 config.QueryParameters.Take = 50;
             });
@@ -703,7 +703,7 @@
 
         try
         {
-            await this.Api.Api._system.Messaging.Messages.Types[messageType].Pause.PostAsync();
+            await this.Api._bdk.Api.Messaging.Messages.Types[messageType].Pause.PostAsync();
             this.Snackbar.Add($"Message type '{messageType}' paused.", Severity.Success);
             await this.ReloadAsync();
         }
@@ -722,7 +722,7 @@
 
         try
         {
-            await this.Api.Api._system.Messaging.Messages.Types[messageType].Resume.PostAsync();
+            await this.Api._bdk.Api.Messaging.Messages.Types[messageType].Resume.PostAsync();
             this.Snackbar.Add($"Message type '{messageType}' resumed.", Severity.Success);
             await this.ReloadAsync();
         }
@@ -744,7 +744,7 @@
 
         try
         {
-            this.selectedMessage = await this.Api.Api._system.Messaging.Messages[message.Id.Value].GetAsync(config =>
+            this.selectedMessage = await this.Api._bdk.Api.Messaging.Messages[message.Id.Value].GetAsync(config =>
             {
                 config.QueryParameters.IncludeHandlers = true;
             });
@@ -781,7 +781,7 @@
 
         try
         {
-            this.selectedContent = await this.Api.Api._system.Messaging.Messages[message.Id.Value].Content.GetAsync();
+            this.selectedContent = await this.Api._bdk.Api.Messaging.Messages[message.Id.Value].Content.GetAsync();
         }
         catch (KiotaApiException ex)
         {
@@ -802,7 +802,7 @@
 
         try
         {
-            await this.Api.Api._system.Messaging.Messages[message.Id.Value].Retry.PostAsync();
+            await this.Api._bdk.Api.Messaging.Messages[message.Id.Value].Retry.PostAsync();
             this.Snackbar.Add("Message retry requested.", Severity.Success);
             await this.RefreshStateAsync(message.Id.Value);
         }
@@ -821,7 +821,7 @@
 
         try
         {
-            await this.Api.Api._system.Messaging.Messages[this.selectedMessage.Id.Value].Handlers.Retry.PostAsync(
+            await this.Api._bdk.Api.Messaging.Messages[this.selectedMessage.Id.Value].Handlers.Retry.PostAsync(
                 new MessageRetryModel { HandlerType = handler.HandlerType });
 
             this.Snackbar.Add("Handler retry requested.", Severity.Success);
@@ -842,7 +842,7 @@
 
         try
         {
-            await this.Api.Api._system.Messaging.Messages[message.Id.Value].Archive.PostAsync();
+            await this.Api._bdk.Api.Messaging.Messages[message.Id.Value].Archive.PostAsync();
             this.Snackbar.Add("Message archived.", Severity.Success);
             await this.RefreshStateAsync(message.Id.Value);
         }

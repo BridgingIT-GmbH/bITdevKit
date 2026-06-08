@@ -506,7 +506,7 @@
 
     private async Task LoadStatsAsync()
     {
-        this.stats = await this.Api.Api._system.Notifications.Emails.Stats.GetAsync(config =>
+        this.stats = await this.Api._bdk.Api.Notifications.Emails.Stats.GetAsync(config =>
         {
             config.QueryParameters.IsArchived = this.GetArchiveFilter();
             config.QueryParameters.StartDate = this.ToStartDateOffset(this.createdStartDate);
@@ -516,7 +516,7 @@
 
     private async Task LoadNotificationsAsync()
     {
-        var result = await this.Api.Api._system.Notifications.Emails.GetAsync(config =>
+        var result = await this.Api._bdk.Api.Notifications.Emails.GetAsync(config =>
         {
             config.QueryParameters.IsArchived = this.GetArchiveFilter();
             config.QueryParameters.CreatedAfter = this.ToStartDateOffset(this.createdStartDate);
@@ -555,8 +555,8 @@
 
         try
         {
-            this.selectedNotification = await this.Api.Api._system.Notifications.Emails[notification.Id.Value].GetAsync();
-            this.selectedContent = await this.Api.Api._system.Notifications.Emails[notification.Id.Value].Content.GetAsync();
+            this.selectedNotification = await this.Api._bdk.Api.Notifications.Emails[notification.Id.Value].GetAsync();
+            this.selectedContent = await this.Api._bdk.Api.Notifications.Emails[notification.Id.Value].Content.GetAsync();
         }
         catch (KiotaApiException ex)
         {
@@ -577,7 +577,7 @@
 
         try
         {
-            await this.Api.Api._system.Notifications.Emails[notification.Id.Value].Retry.PostAsync();
+            await this.Api._bdk.Api.Notifications.Emails[notification.Id.Value].Retry.PostAsync();
             this.Snackbar.Add("Notification retry requested.", Severity.Success);
             await this.RefreshStateAsync(notification.Id.Value);
         }
@@ -596,7 +596,7 @@
 
         try
         {
-            await this.Api.Api._system.Notifications.Emails[notification.Id.Value].Archive.PostAsync();
+            await this.Api._bdk.Api.Notifications.Emails[notification.Id.Value].Archive.PostAsync();
             this.Snackbar.Add("Notification email archived.", Severity.Success);
             await this.RefreshStateAsync(notification.Id.Value);
         }
@@ -620,7 +620,7 @@
     {
         try
         {
-            var message = await this.Api.Api._system.Notifications.Emails.DeleteAsync(config =>
+            var message = await this.Api._bdk.Api.Notifications.Emails.DeleteAsync(config =>
             {
                 config.QueryParameters.IsArchived = this.GetArchiveFilter(this.purgeArchiveFilter);
                 config.QueryParameters.OlderThan = this.ToEndDateOffset(this.purgeOlderThan);

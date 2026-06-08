@@ -528,14 +528,14 @@
         try
         {
             var archiveScope = this.GetArchiveFilter();
-            this.stats = await Api.Api._system.Queueing.Messages.Stats.GetAsync(config =>
+            this.stats = await Api._bdk.Api.Queueing.Messages.Stats.GetAsync(config =>
             {
                 config.QueryParameters.IsArchived = archiveScope;
                 config.QueryParameters.StartDate = this.ToStartDateOffset(this.createdStartDate);
                 config.QueryParameters.EndDate = this.ToEndDateOffset(this.createdEndDate);
             }) ?? new GenModels.QueueMessageStats();
 
-            var loadedMessages = await Api.Api._system.Queueing.Messages.GetAsync(config =>
+            var loadedMessages = await Api._bdk.Api.Queueing.Messages.GetAsync(config =>
             {
                 config.QueryParameters.IsArchived = archiveScope;
                 config.QueryParameters.CreatedAfter = this.ToStartDateOffset(this.createdStartDate);
@@ -565,7 +565,7 @@
             this.messages.Clear();
             this.messages.AddRange(loadedMessages);
 
-            var loadedSubscriptions = await Api.Api._system.Queueing.Subscriptions.GetAsync() ?? [];
+            var loadedSubscriptions = await Api._bdk.Api.Queueing.Subscriptions.GetAsync() ?? [];
             this.subscriptions.Clear();
             this.subscriptions.AddRange(loadedSubscriptions);
         }
@@ -594,7 +594,7 @@
 
         try
         {
-            this.selectedMessage = await Api.Api._system.Queueing.Messages[id].GetAsync();
+            this.selectedMessage = await Api._bdk.Api.Queueing.Messages[id].GetAsync();
         }
         catch (KiotaApiException ex)
         {
@@ -618,7 +618,7 @@
 
         try
         {
-            this.selectedContent = await Api.Api._system.Queueing.Messages[id].Content.GetAsync();
+            this.selectedContent = await Api._bdk.Api.Queueing.Messages[id].Content.GetAsync();
         }
         catch (KiotaApiException ex)
         {
@@ -643,19 +643,19 @@
 
     private async Task RetryMessageAsync(Guid id)
     {
-        await this.ExecuteMutationAsync(() => Api.Api._system.Queueing.Messages[id].Retry.PostAsync(), "Queue message retried.");
+        await this.ExecuteMutationAsync(() => Api._bdk.Api.Queueing.Messages[id].Retry.PostAsync(), "Queue message retried.");
         await this.ReloadSelectionAsync(id);
     }
 
     private async Task ArchiveMessageAsync(Guid id)
     {
-        await this.ExecuteMutationAsync(() => Api.Api._system.Queueing.Messages[id].Archive.PostAsync(), "Queue message archived.");
+        await this.ExecuteMutationAsync(() => Api._bdk.Api.Queueing.Messages[id].Archive.PostAsync(), "Queue message archived.");
         await this.ReloadSelectionAsync(id);
     }
 
     private async Task ReleaseLeaseAsync(Guid id)
     {
-        //await this.ExecuteMutationAsync(() => Api.Api._system.Queueing.Messages[id].Lease.Release.PostAsync(), "Queue message lease released.");
+        //await this.ExecuteMutationAsync(() => Api._bdk.Api.Queueing.Messages[id].Lease.Release.PostAsync(), "Queue message lease released.");
         await this.ReloadSelectionAsync(id);
     }
 
@@ -666,7 +666,7 @@
             return;
         }
 
-        await this.ExecuteMutationAsync(() => Api.Api._system.Queueing.Types[type].Pause.PostAsync(), $"Queue message type '{type}' paused.");
+        await this.ExecuteMutationAsync(() => Api._bdk.Api.Queueing.Types[type].Pause.PostAsync(), $"Queue message type '{type}' paused.");
         await this.ReloadSelectionAsync(this.selectedMessage?.Id);
     }
 
@@ -677,7 +677,7 @@
             return;
         }
 
-        await this.ExecuteMutationAsync(() => Api.Api._system.Queueing.Types[type].Resume.PostAsync(), $"Queue message type '{type}' resumed.");
+        await this.ExecuteMutationAsync(() => Api._bdk.Api.Queueing.Types[type].Resume.PostAsync(), $"Queue message type '{type}' resumed.");
         await this.ReloadSelectionAsync(this.selectedMessage?.Id);
     }
 
@@ -688,7 +688,7 @@
             return;
         }
 
-        await this.ExecuteMutationAsync(() => Api.Api._system.Queueing.Types[type].Circuit.Reset.PostAsync(), $"Queue message type circuit '{type}' reset.");
+        await this.ExecuteMutationAsync(() => Api._bdk.Api.Queueing.Types[type].Circuit.Reset.PostAsync(), $"Queue message type circuit '{type}' reset.");
         await this.ReloadSelectionAsync(this.selectedMessage?.Id);
     }
 

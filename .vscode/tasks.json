@@ -106,6 +106,21 @@
       "problemMatcher": "$msCompile"
     },
     {
+      "label": "DoFiesta - kiota generate",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "msbuild",
+        "${workspaceFolder}/examples/DoFiesta/DoFiesta.Presentation.Web.Client/DoFiesta.Presentation.Web.Client.csproj",
+        "/t:KiotaGenerate",
+        "--nologo",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    },
+    {
       "label": "DoFiesta - tests (unit)",
       "command": "dotnet",
       "type": "shell",

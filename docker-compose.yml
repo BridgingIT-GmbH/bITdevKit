@@ -75,6 +75,35 @@ services:
     networks:
       - bdk
 
+  llm:
+    image: ghcr.io/ggml-org/llama.cpp:server
+    container_name: bdk_llm
+    restart: unless-stopped
+    ports:
+      - "8080:8080" # http://localhost:8080
+
+    environment:
+      # llama.cpp uses this cache when downloading models via -hf
+      LLAMA_CACHE: /cache
+
+    volumes:
+      # GGUF download/cache is kept outside the container image
+      - ./tools/llama/cache:/cache
+
+    command:
+      - -hf
+      - bartowski/Llama-3.2-1B-Instruct-GGUF:Q4_K_M
+      - --host
+      - 0.0.0.0
+      - --port
+      - "8080"
+      - --ctx-size
+      - "2048"
+      - --temp
+      - "0.2"
+      - -n
+      - "160"
+
 volumes:
   mssql:
     name: bdk_mssql

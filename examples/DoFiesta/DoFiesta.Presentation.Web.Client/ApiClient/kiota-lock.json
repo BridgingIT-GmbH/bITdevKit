@@ -1,8 +1,8 @@
 {
-  "descriptionHash": "46DBC6007A8681C576F8B3FDF39DDA194224E7C315336820C71E1B9C031612AC9A278B377BC5CE7FE8692CDE0B2811D203D5DA3092E987CB370E936E34B930B7",
+  "descriptionHash": "5481F915BD019762095A8EB7BFA99311FB72F22380DF122276FE28DDEE58B724F9177BD7E40E557F014E9E4692AEEC467297B1AA241958E628F7D1CEA897A00B",
   "descriptionLocation": "../../DoFiesta.Presentation.Web.Server/wwwroot/openapi.json",
   "lockFileVersion": "1.0.0",
-  "kiotaVersion": "1.29.0",
+  "kiotaVersion": "1.32.2",
   "clientClassName": "BackendApiClient",
   "typeAccessModifier": "Public",
   "clientNamespaceName": "BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen",

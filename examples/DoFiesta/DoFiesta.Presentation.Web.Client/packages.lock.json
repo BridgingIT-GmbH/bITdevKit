@@ -139,16 +139,6 @@
         "resolved": "13.0.4",
         "contentHash": "pdgNNMai3zv51W5aq268sujXUyx7SNdE2bj1wZcWjAQrKMFZV260lbqYop1d2GM67JI1huLRwxo9ZqnfF/lC6A=="
       },
-      "NSwag.ApiDescription.Client": {
-        "type": "Direct",
-        "requested": "[14.7.1, )",
-        "resolved": "14.7.1",
-        "contentHash": "Nus+Bhpl/eqY4LN9x1NGBJLuuHyRlOIA/bZqilzxctwRzvb1PWZ6Av+fY4ojOQkIjbPL28wn7yX4J/7AuI5S5A==",
-        "dependencies": {
-          "Microsoft.Extensions.ApiDescription.Client": "8.0.14",
-          "NSwag.MSBuild": "14.7.1"
-        }
-      },
       "System.ComponentModel.Annotations": {
         "type": "Direct",
         "requested": "[5.0.0, )",
@@ -256,11 +246,6 @@
         "dependencies": {
           "Microsoft.AspNetCore.SignalR.Common": "10.0.8"
         }
-      },
-      "Microsoft.Extensions.ApiDescription.Client": {
-        "type": "Transitive",
-        "resolved": "8.0.14",
-        "contentHash": "R7QsrA6RwSgAgjhV8zcGOEFWqvsAaKVk3WPwkXIoKaB91dFNp+IDwh9vH+WqTIJTg5DIKVocCokHXAjyTPD+2Q=="
       },
       "Microsoft.Extensions.Configuration": {
         "type": "Transitive",
@@ -782,12 +767,6 @@
         "requested": "[4.0.1, )",
         "resolved": "4.0.1",
         "contentHash": "jegBasNndmG21G3BmT51suFDCIz/sLN81j+IxmkZ4iWoaDi8LygeHiyNnYbXz5OQh9nCRJFIx1+PJrlYi1Gc9Q=="
-      },
-      "NSwag.MSBuild": {
-        "type": "CentralTransitive",
-        "requested": "[14.7.1, )",
-        "resolved": "14.7.1",
-        "contentHash": "4ks/+vtuFoP5D1Vsc0h7yCYyL8Rhhmnvwb9iHEm1//1y9oluQViQD9spqLaGjPv2Itjz5TQPLdkeky/wgRx8dg=="
       },
       "Polly": {
         "type": "CentralTransitive",

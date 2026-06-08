@@ -112,14 +112,6 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
                 if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
                 var mappingValue = parseNode.GetChildNode("")?.GetStringValue();
                 var result = new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrchestrationSignalRequest.OrchestrationSignalRequest_payload();
-                if("".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
-                {
-                    result.JsonElement = new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JsonElement();
-                }
-                else if("".Equals(mappingValue, StringComparison.OrdinalIgnoreCase))
-                {
-                    result.OrchestrationSignalRequestPayloadMember1 = new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrchestrationSignalRequest_payloadMember1();
-                }
                 return result;
             }
             /// <summary>

@@ -26,7 +26,6 @@ builder.Logging.SetMinimumLevel(LogLevel.Debug);
 builder.Logging.AddFilter("Microsoft.AspNetCore.Components.WebAssembly.Authentication", LogLevel.Debug);
 
 builder.Services.AddLocalization();
-builder.Services.AddScoped<IApiClient, ApiClient>();
 //builder.Services.AddHttpClient("backend-api")
 //    .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
 //    .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(30)));

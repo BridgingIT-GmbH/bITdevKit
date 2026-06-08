@@ -10,20 +10,7 @@
     <HotReloadAutoRestart>true</HotReloadAutoRestart>
   </PropertyGroup>
 
-  <!-- API Client generation (openapi2csclient) -->
-  <PropertyGroup>
-    <ApiSpecGenerate>true</ApiSpecGenerate>
-    <ApiSpecLocation>..\DoFiesta.Presentation.Web.Server\wwwroot\openapi.json</ApiSpecLocation>
-    <ApiClientClassName>ApiClient</ApiClientClassName>
-    <ApiClientNamespace>BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client</ApiClientNamespace>
-    <ApiClientOutputDirectory>./</ApiClientOutputDirectory>
-  </PropertyGroup>
-  <ItemGroup Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
-    <OpenApiReference Include="$(ApiSpecLocation)" CodeGenerator="NSwagCSharp" ClassName="$(ApiClientClassName)" OutputPath="$(ApiClientClassName).g.cs" Namespace="$(ApiClientNamespace)">
-      <Options>/GenerateBaseUrlProperty:False /UseBaseUrl:False /GenerateClientInterfaces:true /ResponseClass:ApiResponse /ExceptionClass:ApiException /GenerateResponseClasses:true /WrapResponses:true /OperationGenerationMode:SingleClientFromOperationId /ClassStyle:Poco /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.ICollection /ClientBaseClass:BridgingIT.DevKit.Presentation.Web.Client.ApiClientBase /DateTimeType:System.DateTime</Options>
-    </OpenApiReference>
-  </ItemGroup>
-
+  <!-- API Client generation (kiota) -->
   <PropertyGroup>
     <KiotaLanguage>csharp</KiotaLanguage>
     <KiotaNamespace>BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen</KiotaNamespace>
@@ -38,22 +25,12 @@
 
     <Message Text="Generating Kiota client from $(OpenApiJson)" Importance="high" />
     <Exec Command="dotnet kiota generate --log-level Error --language $(KiotaLanguage) --openapi $(OpenApiJson) --output $(KiotaOutDir) --namespace-name $(KiotaNamespace) --class-name $(KiotaClientName)" ContinueOnError="WarnAndContinue" />
-
-    <ItemGroup>
-      <Compile Include="$(KiotaOutDir)\**\*.cs" />
-    </ItemGroup>
   </Target>
 
   <ItemGroup>
     <Content Remove="**\kiota-lock.json" />
     <Content Remove="**\.kiota.log" />
   </ItemGroup>
-
-  <!--<Target Name="GenerateApiClient" BeforeTargets="CoreCompile" Inputs="$(ApiSpecLocation)" Outputs="$(ApiClientClassName).cs" Condition="Exists('$(ApiSpecLocation)') And '$(ApiSpecGenerate)' == 'true'">
-    <Exec Command="$(NSwagExe) openapi2csclient /input:$(ApiSpecLocation) /classname:ApiClient /namespace:$(RootNamespace) /output:$(ApiClientClassName).cs /GenerateClientInterfaces:true /ResponseClass:ApiResponse /ExceptionClass:ApiException /GenerateResponseClasses:true /WrapResponses:true /OperationGenerationMode:SingleClientFromOperationId /ClassStyle:Poco /JsonLibrary:SystemTextJson /ArrayType:System.Collections.Generic.IEnumerable /UseBaseUrl:True /ClientBaseClass:BridgingIT.DevKit.Presentation.Web.Client.ApiClientBase" ConsoleToMSBuild="true" ContinueOnError="WarnAndContinue">
-      <Output TaskParameter="ConsoleOutput" PropertyName="OutputOfExec" />
-    </Exec>
-  </Target>-->
 
   <ItemGroup>
     <PackageReference Include="Humanizer.Core" />
@@ -67,10 +44,6 @@
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     <PackageReference Include="MudBlazor" />
     <PackageReference Include="Newtonsoft.Json" />
-    <PackageReference Include="NSwag.ApiDescription.Client">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="System.ComponentModel.Annotations" />
   </ItemGroup>
 

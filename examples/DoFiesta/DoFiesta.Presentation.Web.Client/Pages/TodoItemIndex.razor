@@ -2,11 +2,13 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.Forms
 @using Microsoft.JSInterop
+@using Microsoft.Kiota.Abstractions
+@using Microsoft.Kiota.Abstractions.Serialization
 @using System.Net.Http.Json
 @using System.Net.Http.Headers
+@using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
 @inject BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.BackendApiClient Api
 @* @inject IStringLocalizer<Global> localizer *@
-@inject IApiClient ApiClient
 @inject ISnackbar Snackbar
 @inject IJSRuntime JS
 @inject HttpClient Http
@@ -88,20 +90,20 @@
                         <MudHidden Breakpoint="Breakpoint.Sm" Invert="true">
                             <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
                                         Color="Color.Primary" CheckMark SelectedValueChanged="OnStatusChipChanged">
-                                @foreach (var e in enums.TodoStatuses.Where(e => e.Enabled))
+                                @foreach (var e in enums.TodoStatuses.Where(e => e.Enabled == true))
                                 {
                                     <MudTooltip Text="@e.Description">
-                                        <MudChip T="int" Value="@e.Id">@e.Value</MudChip>
+                                        <MudChip T="int" Value="@(e.Id ?? 0)">@e.Value</MudChip>
                                     </MudTooltip>
                                 }
                             </MudChipSet>
                             <MudDivider Vertical="true" FlexItem="true" />
                             <MudChipSet T="int" SelectionMode="SelectionMode.ToggleSelection"
                                         Color="Color.Secondary" CheckMark SelectedValueChanged="OnPriorityChipChanged">
-                                @foreach (var e in enums.TodoPriorities.Where(e => e.Enabled))
+                                @foreach (var e in enums.TodoPriorities.Where(e => e.Enabled == true))
                                 {
                                     <MudTooltip Text="@e.Description">
-                                        <MudChip T="int" Value="@e.Id">>@e.Value</MudChip>
+                                        <MudChip T="int" Value="@(e.Id ?? 0)">>@e.Value</MudChip>
                                     </MudTooltip>
                                 }
                             </MudChipSet>
@@ -128,7 +130,7 @@
                         <MudTd>
                             <MudHidden Breakpoint="Breakpoint.Sm" Invert="true">
                                 @{
-                                    var (icon, color) = GetStatusIcon(todoItem.Status);
+                                    var (icon, color) = GetStatusIcon(todoItem.Status ?? 0);
                                     <MudIcon Icon="@icon" Color="@color" />
                                 }
                             </MudHidden>
@@ -141,25 +143,25 @@
                             </MudTooltip>
                         </MudTd>
                         <MudTd DataLabel="Status">
-                            <MudSelect Value="todoItem.Status" T="int"
+                            <MudSelect Value="todoItem.Status" T="int?"
                                        ValueChanged="async value => { todoItem.Status = value; await UpdateTodo(todoItem); }">
-                                @foreach (var status in enums.TodoStatuses.Where(e => e.Enabled))
+                                @foreach (var status in enums.TodoStatuses.Where(e => e.Enabled == true))
                                 {
-                                    <MudSelectItem Value="@status.Id">@status.Value</MudSelectItem>
+                                    <MudSelectItem T="int?" Value="@status.Id">@status.Value</MudSelectItem>
                                 }
                             </MudSelect>
                         </MudTd>
                         <MudTd DataLabel="Priority">
-                            <MudSelect Value="todoItem.Priority" T="int" ValueChanged="async value => { todoItem.Priority = value; await UpdateTodo(todoItem); }">
-                                @foreach (var priority in enums.TodoPriorities.Where(e => e.Enabled))
+                            <MudSelect Value="todoItem.Priority" T="int?" ValueChanged="async value => { todoItem.Priority = value; await UpdateTodo(todoItem); }">
+                                @foreach (var priority in enums.TodoPriorities.Where(e => e.Enabled == true))
                                 {
-                                    <MudSelectItem Value="@priority.Id">@priority.Value</MudSelectItem>
+                                    <MudSelectItem T="int?" Value="@priority.Id">@priority.Value</MudSelectItem>
                                 }
                             </MudSelect>
                         </MudTd>
                         <MudTd DataLabel="Due Date" HideSmall="true">
                             <MudStack Spacing="1">
-                                <MudDatePicker Date="todoItem.DueDate"
+                                <MudDatePicker Date="ToDateTime(todoItem.DueDate)"
                                                DateChanged="async date => await OnTodoDueDateChangedAsync(todoItem, date)"
                                                DateFormat="yyyy-MM-dd"
                                                Style="min-width: 150px;"
@@ -213,23 +215,23 @@
                               Lines="4" />
             </MudItem>
             <MudItem xs="12" md="6">
-                <MudSelect @bind-Value="createTodoModel.Status" T="int" Label="Status" Variant="Variant.Outlined">
-                    @foreach (var status in enums?.TodoStatuses?.Where(e => e.Enabled) ?? [])
+                <MudSelect @bind-Value="createTodoModel.Status" T="int?" Label="Status" Variant="Variant.Outlined">
+                    @foreach (var status in enums?.TodoStatuses?.Where(e => e.Enabled == true) ?? [])
                     {
-                        <MudSelectItem Value="@status.Id">@status.Value</MudSelectItem>
+                        <MudSelectItem T="int?" Value="@status.Id">@status.Value</MudSelectItem>
                     }
                 </MudSelect>
             </MudItem>
             <MudItem xs="12" md="6">
-                <MudSelect @bind-Value="createTodoModel.Priority" T="int" Label="Priority" Variant="Variant.Outlined">
-                    @foreach (var priority in enums?.TodoPriorities?.Where(e => e.Enabled) ?? [])
+                <MudSelect @bind-Value="createTodoModel.Priority" T="int?" Label="Priority" Variant="Variant.Outlined">
+                    @foreach (var priority in enums?.TodoPriorities?.Where(e => e.Enabled == true) ?? [])
                     {
-                        <MudSelectItem Value="@priority.Id">@priority.Value</MudSelectItem>
+                        <MudSelectItem T="int?" Value="@priority.Id">@priority.Value</MudSelectItem>
                     }
                 </MudSelect>
             </MudItem>
             <MudItem xs="12" md="6">
-                <MudDatePicker Date="createTodoModel.DueDate"
+                <MudDatePicker Date="ToDateTime(createTodoModel.DueDate)"
                                DateChanged="OnCreateTodoDueDateChanged"
                                Label="Due date"
                                DateFormat="yyyy-MM-dd"
@@ -460,8 +462,7 @@
     {
         try
         {
-            var response = await ApiClient.Core_Enumerations_GetAllAsync();
-            enums = response.Result;
+            enums = await Api.Api.Core.Enumerations.GetAsync() ?? new EnumerationModel();
         }
         catch (ApiException ex)
         {
@@ -481,47 +482,47 @@
                 .Build(); *@
 
             // TODO: re-implement filtering when supported in the API (schema fix!)
-            var filter = new Client.FilterModel() { Filters = new List<Client.FilterCriteria>(), Orderings = new List<Client.FilterOrderCriteria>() };
+            var filter = new BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterModel { Filters = [], Orderings = [] };
             if (filterStatusId.HasValue)
             {
                 filter.Filters.Add(
-                    new Client.FilterCriteria
+                    new FilterModel_filters
                         {
                             Field = "Status",
-                            Operator = Client.FilterCriteriaOperator.Eq,
-                            Value = filterStatusId.Value
+                            Operator = FilterModel_filters_operator.Eq,
+                            Value = new UntypedInteger(filterStatusId.Value)
                         });
             }
 
             if (filterPriorityId.HasValue)
             {
                 filter.Filters.Add(
-                    new Client.FilterCriteria
+                    new FilterModel_filters
                         {
                             Field = "Priority",
-                            Operator = Client.FilterCriteriaOperator.Gte,
-                            Value = filterPriorityId.Value
+                            Operator = FilterModel_filters_operator.Gte,
+                            Value = new UntypedInteger(filterPriorityId.Value)
                         });
             }
 
             if (!string.IsNullOrWhiteSpace(filterTitle))
             {
                 filter.Filters.Add(
-                    new Client.FilterCriteria
+                    new FilterModel_filters
                         {
                             Field = "Title",
-                            Operator = Client.FilterCriteriaOperator.Contains,
-                            Value = filterTitle
+                            Operator = FilterModel_filters_operator.Contains,
+                            Value = new UntypedString(filterTitle)
                         });
             }
 
             // set ordering
-            filter.Orderings.Add(new Client.FilterOrderCriteria
+            filter.Orderings.Add(new BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.FilterOrderCriteria
                 {
                     Field = "DueDate",
                     Direction = currentSortDirection == SortDirection.Ascending
-                                    ? Client.OrderDirection.Asc
-                                    : Client.OrderDirection.Desc
+                                    ? BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrderDirection.Asc
+                                    : BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrderDirection.Desc
                 });
 
             // filter.Filters.Add(
@@ -531,9 +532,7 @@
             //             SpecificationName = "TodoItemIsNotDeleted",
             //         });
 
-            //var response = await ApiClient.TodoItem_GetAllAsync(filter); // filtermodel is not serialized on querystring by nswag apiclient
-            var response = await ApiClient.CoreModule_TodoItems_SearchAsync(null/* filter */);
-            items = response.Result;
+            items = await Api.Api.Core.Todoitems.Search.PostAsync(filter) ?? [];
         }
         catch (ApiException ex)
         {
@@ -736,7 +735,7 @@
         try
         {
 
-            var response = await ApiClient.Core_TodoItems_CreateAsync(newItem);
+            _ = await Api.Api.Core.Todoitems.PostAsync(newItem);
 
             Snackbar.Add("Added successfully", Severity.Success);
             await LoadItems();
@@ -748,7 +747,7 @@
         catch (ApiException ex)
         {
             items.Remove(newItem);
-            Snackbar.Add($"Error adding todo: [{ex.StatusCode}] {ex.Message}", Severity.Error);
+            Snackbar.Add($"Error adding todo: [{ex.ResponseStatusCode}] {ex.Message}", Severity.Error);
         }
         finally
         {
@@ -776,7 +775,7 @@
     private Task OnCreateTodoDueTimeChanged(string value)
     {
         this.createTodoDueTime = string.IsNullOrWhiteSpace(value) ? DefaultDueTimeText : value;
-        this.createTodoModel.DueDate = CombineDueDateAndTime(this.createTodoModel.DueDate, this.createTodoDueTime);
+        this.createTodoModel.DueDate = CombineDueDateAndTime(ToDateTime(this.createTodoModel.DueDate), this.createTodoDueTime);
         return Task.CompletedTask;
     }
 
@@ -788,7 +787,7 @@
 
     private async Task OnTodoDueTimeChangedAsync(TodoItemModel item, string value)
     {
-        item.DueDate = CombineDueDateAndTime(item.DueDate, value);
+        item.DueDate = CombineDueDateAndTime(ToDateTime(item.DueDate), value);
         await UpdateTodo(item);
     }
 
@@ -804,7 +803,7 @@
 
         try
         {
-            await ApiClient.Core_TodoItems_CreateAsync(this.createTodoModel);
+            await Api.Api.Core.Todoitems.PostAsync(this.createTodoModel);
 
             this.showCreateTodoDialog = false;
             this.Snackbar.Add("Task created successfully", Severity.Success);
@@ -813,7 +812,7 @@
         }
         catch (ApiException ex)
         {
-            this.Snackbar.Add($"Error creating todo: [{ex.StatusCode}] {ex.Message}", Severity.Error);
+            this.Snackbar.Add($"Error creating todo: [{ex.ResponseStatusCode}] {ex.Message}", Severity.Error);
         }
         finally
         {
@@ -828,7 +827,7 @@
 
         try
         {
-            await ApiClient.Core_TodoItems_UpdateAsync(item.Id, item);
+            await Api.Api.Core.Todoitems[item.Id].PutAsync(item);
 
             Snackbar.Add("Updated successfully", Severity.Success);
             await LoadItems();
@@ -843,21 +842,26 @@
         }
     }
 
-    private static DateTime? CombineDueDateAndTime(DateTime? date, string timeText)
+    private static DateTimeOffset? CombineDueDateAndTime(DateTime? date, string timeText)
     {
         if (!date.HasValue)
         {
             return null;
         }
 
-        return date.Value.Date.Add(ParseDueTime(timeText));
+        return new DateTimeOffset(date.Value.Date.Add(ParseDueTime(timeText)));
     }
 
-    private static string FormatDueTime(DateTime? date)
+    private static string FormatDueTime(DateTimeOffset? date)
     {
         return date.HasValue
-            ? date.Value.ToString("HH:mm")
+            ? date.Value.LocalDateTime.ToString("HH:mm")
             : DefaultDueTimeText;
+    }
+
+    private static DateTime? ToDateTime(DateTimeOffset? date)
+    {
+        return date?.LocalDateTime;
     }
 
     private static TimeSpan ParseDueTime(string timeText)
@@ -871,8 +875,8 @@
     {
         this.createTodoModel = new TodoItemModel
         {
-            Status = enums?.TodoStatuses?.FirstOrDefault(e => e.Enabled)?.Id ?? 1,
-            Priority = enums?.TodoPriorities?.FirstOrDefault(e => e.Enabled)?.Id ?? newTodoPriority,
+            Status = enums?.TodoStatuses?.FirstOrDefault(e => e.Enabled == true)?.Id ?? 1,
+            Priority = enums?.TodoPriorities?.FirstOrDefault(e => e.Enabled == true)?.Id ?? newTodoPriority,
         };
         this.createTodoDueTime = DefaultDueTimeText;
     }
@@ -884,7 +888,7 @@
 
         try
         {
-            await ApiClient.Core_TodoItems_CompleteAllAsync();
+            await Api.Api.Core.Todoitems.Actions.Completeall.PostAsync();
 
             Snackbar.Add("Completed successfully", Severity.Success);
             await LoadItems();
@@ -907,7 +911,7 @@
 
         try
         {
-            await ApiClient.Core_TodoItems_DeleteAsync(item.Id);
+            await Api.Api.Core.Todoitems[item.Id].DeleteAsync();
 
             Snackbar.Add("Deleted successfully", Severity.Success);
             await LoadItems();

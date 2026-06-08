@@ -3,49 +3,49 @@
   "isRoot": true,
   "tools": {
     "nswag.consolecore": {
-      "version": "14.6.3",
+      "version": "14.7.1",
       "commands": [
         "nswag"
       ],
       "rollForward": false
     },
     "microsoft.dotnet-openapi": {
-      "version": "10.0.1",
+      "version": "10.0.8",
       "commands": [
         "dotnet-openapi"
       ],
       "rollForward": false
     },
     "microsoft.openapi.kiota": {
-      "version": "1.29.0",
+      "version": "1.32.2",
       "commands": [
         "kiota"
       ],
       "rollForward": false
     },
     "minver-cli": {
-      "version": "6.0.0",
+      "version": "7.0.0",
       "commands": [
         "minver"
       ],
       "rollForward": false
     },
     "csharpier": {
-      "version": "1.2.1",
+      "version": "1.3.0",
       "commands": [
         "csharpier"
       ],
       "rollForward": false
     },
     "dotnet-ef": {
-      "version": "10.0.1",
+      "version": "10.0.8",
       "commands": [
         "dotnet-ef"
       ],
       "rollForward": false
     },
     "dotnet-outdated-tool": {
-      "version": "4.6.9",
+      "version": "4.8.0",
       "commands": [
         "dotnet-outdated"
       ],

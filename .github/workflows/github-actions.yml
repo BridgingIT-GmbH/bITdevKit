@@ -55,6 +55,10 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "BUILD_VERSION=$VERSION" >> "$GITHUB_ENV"
 
+          echo "## Version" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Calculated version: \`$VERSION\`" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Show version
         run: |
           echo "Build version: ${{ steps.calculate_version.outputs.version }}"
@@ -63,8 +67,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
     needs: version
-    env:
-      BUILD_VERSION: ${{ needs.version.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
@@ -75,10 +77,6 @@ jobs:
           global-json-file: global.json
 
       - run: dotnet --info
-
-      - name: Show version
-        run: |
-          echo "Build version: ${BUILD_VERSION}"
 
       - name: Cache nuget packages
         uses: actions/cache@v3
@@ -92,7 +90,7 @@ jobs:
         run: dotnet restore --verbosity Normal
 
       - name: Build solution
-        run: dotnet build --configuration ${{ env.Build_Configuration }} --no-restore --nologo /p:Version="${BUILD_VERSION}" /p:PackageVersion="${BUILD_VERSION}"
+        run: dotnet build --configuration ${{ env.Build_Configuration }} --no-restore --nologo
 
       # - name: Vulnerability scan (nuget)
       #   run: |
@@ -116,8 +114,6 @@ jobs:
     name: Tests
     runs-on: ubuntu-latest
     needs: [ version, build ]
-    env:
-      BUILD_VERSION: ${{ needs.version.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
@@ -134,10 +130,6 @@ jobs:
           global-json-file: global.json
 
       - run: dotnet --info
-
-      - name: Show version
-        run: |
-          echo "Build version: ${BUILD_VERSION}"
 
       - name: Cache nuget packages
         uses: actions/cache@v3
@@ -189,8 +181,6 @@ jobs:
     name: Publish
     runs-on: ubuntu-latest
     needs: [ version, tests ]
-    env:
-      BUILD_VERSION: ${{ needs.version.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
@@ -207,10 +197,6 @@ jobs:
           global-json-file: global.json
 
       - run: dotnet --info
-
-      - name: Show version
-        run: |
-          echo "Build version: ${BUILD_VERSION}"
 
       - name: Cache nuget packages
         uses: actions/cache@v3
@@ -263,8 +249,7 @@ jobs:
           fi
 
           for package_project in "${package_projects[@]}"; do
-            # dotnet pack "$package_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --output "${NUGET_DIRECTORY}" --verbosity normal /p:Version="${BUILD_VERSION}" /p:PackageVersion="${BUILD_VERSION}"
-            dotnet pack "$package_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --output "${NUGET_DIRECTORY}" --verbosity normal"
+            dotnet pack "$package_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --output "${NUGET_DIRECTORY}" --verbosity normal
           done
 
       - name: Package push (nuget)

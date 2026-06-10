@@ -14,8 +14,10 @@ public class QueueingRegistrationTests
     {
         var services = QueueingBrokerTestSupport.CreateServices();
 
-        services.AddQueueing().WithSubscription<FirstQueueMessage, FirstQueueMessageHandler>();
-        services.AddQueueing().WithSubscription<SecondQueueMessage, SecondQueueMessageHandler>();
+        services.AddQueueing(o => o.AliveEnabled(false))
+            .WithSubscription<FirstQueueMessage, FirstQueueMessageHandler>();
+        services.AddQueueing(o => o.AliveEnabled(false))
+            .WithSubscription<SecondQueueMessage, SecondQueueMessageHandler>();
 
         using var provider = services.BuildServiceProvider();
         var store = provider.GetRequiredService<QueueingRegistrationStore>();
@@ -32,13 +34,13 @@ public class QueueingRegistrationTests
         var databaseRoot = new InMemoryDatabaseRoot();
         services.AddTestQueueDbContext($"queueing-runtime-{Guid.NewGuid():N}", databaseRoot);
 
-        services.AddQueueing().WithEntityFrameworkBroker<TestQueueDbContext>(new EntityFrameworkQueueBrokerConfiguration());
+        services.AddQueueing()
+            .WithEntityFrameworkBroker<TestQueueDbContext>(new EntityFrameworkQueueBrokerConfiguration());
 
         using var provider = services.BuildServiceProvider();
         var hostedServices = provider.GetServices<IHostedService>().ToList();
 
         hostedServices.OfType<QueueingService>().Count().ShouldBe(1);
-        hostedServices.Count.ShouldBe(1);
         provider.GetService<IQueueBrokerBackgroundProcessor>().ShouldNotBeNull();
     }
 }

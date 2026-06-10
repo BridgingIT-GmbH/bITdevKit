@@ -86,6 +86,8 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
                 result = result.Where(this.EnsurePredicate(specification));
             }
 
+            result = this.ApplySetOrdering(result, options);
+
             var entities = this.ShapeSet(result, options).ToList();
             foreach (var entity in entities)
             {
@@ -373,6 +375,8 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
                 result = result.Where(this.EnsurePredicate(specification));
             }
 
+            result = this.ApplySetOrdering(result, options);
+
             var entities = this.ShapeSet(result, options).ToList();
             foreach (var entity in entities)
             {
@@ -525,5 +529,30 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         }
 
         return orderedResult ?? result;
+    }
+
+    private IEnumerable<TEntity> ApplySetOrdering(
+        IEnumerable<TEntity> entities,
+        IFindOptions<TEntity> options = null)
+    {
+        if (options?.HasOrders() != true)
+        {
+            return entities;
+        }
+
+        IOrderedEnumerable<TEntity> orderedResult = null;
+        foreach (var order in (options.Orders ?? []).Insert(options.Order).Where(o => o?.Expression is not null))
+        {
+            var keySelector = order.Expression.Compile();
+            orderedResult = orderedResult is null
+                ? order.Direction == OrderDirection.Ascending
+                    ? entities.OrderBy(keySelector)
+                    : entities.OrderByDescending(keySelector)
+                : order.Direction == OrderDirection.Ascending
+                    ? orderedResult.ThenBy(keySelector)
+                    : orderedResult.ThenByDescending(keySelector);
+        }
+
+        return orderedResult ?? entities;
     }
 }

@@ -3339,7 +3339,7 @@
 <span class="w">          </span><span class="c1">// Blazor WASM (Public Client)</span>
 <span class="w">          </span><span class="p">.</span><span class="n">WithClient</span><span class="p">(</span>
 <span class="w">              </span><span class="s">&quot;blazor-wasm&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="s">&quot;Blazor WASM Frontend&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="s">&quot;Blazor WASM Frontend&quot;</span><span class="p">,</span>
 <span class="w">              </span><span class="s">&quot;https://localhost:5001/authentication/login-callback&quot;</span><span class="p">,</span>
 <span class="w">              </span><span class="s">&quot;https://localhost:5001/authentication/logout-callback&quot;</span><span class="p">)</span>
 <span class="w">          </span><span class="c1">// Confidential Client (Server)</span>
@@ -3352,7 +3352,7 @@
 <span class="w">          </span><span class="p">.</span><span class="n">WithConfidentalClient</span><span class="p">(</span>
 <span class="w">              </span><span class="s">&quot;blazor-server&quot;</span><span class="p">,</span>
 <span class="w">              </span><span class="s">&quot;Blazor Server Frontend&quot;</span><span class="p">,</span>
-<span class="w">              </span><span class="s">&quot;server-secret&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">              </span><span class="s">&quot;server-secret&quot;</span><span class="p">,</span>
 <span class="w">              </span><span class="na">[&quot;https://localhost:5003/signin-oidc&quot;]</span><span class="p">)</span>
 <span class="w">          </span><span class="c1">// WebAPI Backend</span>
 <span class="w">          </span><span class="p">.</span><span class="n">WithConfidentalClient</span><span class="p">(</span>
@@ -3368,12 +3368,12 @@
 <span class="p">});</span>
 </code></pre></div>
 <h3 id="3-define-users">3. Define Users<a class="headerlink" href="#3-define-users" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Fakes</span><span class="w"> </span>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Fakes</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">FakeUser</span><span class="p">[]</span><span class="w"> </span><span class="n">Users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span>
-<span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="s">&quot;luke.skywalker@starwars.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Luke Skywalker&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="s">&quot;luke.skywalker@starwars.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Luke Skywalker&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="na">[Role.Administrators, Role.Users]</span><span class="p">,</span><span class="w"> </span><span class="n">isDefault</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">),</span>
-<span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="s">&quot;yoda@starwars.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Yoda&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="s">&quot;yoda@starwars.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Yoda&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="na">[Role.Administrators]</span><span class="p">)</span>
 <span class="w">        </span><span class="c1">// ...... Add more users</span>
 <span class="w">    </span><span class="p">];</span>
@@ -3596,7 +3596,7 @@
 <h2 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h2>
 <h3 id="authorization-endpoint">Authorization Endpoint<a class="headerlink" href="#authorization-endpoint" title="Permanent link">&para;</a></h3>
 <p>Start OAuth2 flow and user selection.</p>
-<div class="highlight"><pre><span></span><code><span class="err">GET /api/_system/identity/connect/authorize</span>
+<div class="highlight"><pre><span></span><code><span class="err">GET /_bdk/api/identity/connect/authorize</span>
 </code></pre></div>
 <p>Parameters:
 - <code>response_type</code>: "code"
@@ -3606,7 +3606,7 @@
 - <code>state</code>: Security token</p>
 <h3 id="token-endpoint">Token Endpoint<a class="headerlink" href="#token-endpoint" title="Permanent link">&para;</a></h3>
 <p>Issue tokens using various grant types.</p>
-<div class="highlight"><pre><span></span><code><span class="err">POST /api/_system/identity/connect/token</span>
+<div class="highlight"><pre><span></span><code><span class="err">POST /_bdk/api/identity/connect/token</span>
 <span class="err">Content-Type: application/x-www-form-urlencoded</span>
 </code></pre></div>
 <p>Grant Types:
@@ -3622,6 +3622,7 @@
 <div class="highlight"><pre><span></span><code><span class="err">grant_type=password</span>
 <span class="err">&amp;client_id=client_id</span>
 <span class="err">&amp;username=user@example.com</span>
+<span class="err">&amp;password=password</span>
 <span class="err">&amp;scope=openid profile</span>
 </code></pre></div></p>
 </li>
@@ -3652,7 +3653,7 @@
 </code></pre></div></p>
 <h3 id="userinfo-endpoint">UserInfo Endpoint<a class="headerlink" href="#userinfo-endpoint" title="Permanent link">&para;</a></h3>
 <p>Get authenticated user data.</p>
-<div class="highlight"><pre><span></span><code><span class="err">GET /api/_system/identity/connect/userinfo</span>
+<div class="highlight"><pre><span></span><code><span class="err">GET /_bdk/api/identity/connect/userinfo</span>
 <span class="err">Authorization: Bearer token</span>
 </code></pre></div>
 <p>Response:
@@ -3665,7 +3666,7 @@
 </code></pre></div></p>
 <h3 id="debug-endpoint">Debug Endpoint<a class="headerlink" href="#debug-endpoint" title="Permanent link">&para;</a></h3>
 <p>Development information about configuration.</p>
-<div class="highlight"><pre><span></span><code><span class="err">GET /api/_system/identity/connect/debuginfo</span>
+<div class="highlight"><pre><span></span><code><span class="err">GET /_bdk/api/identity/connect/debuginfo</span>
 </code></pre></div>
 <p>Response:
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
@@ -3688,15 +3689,15 @@
 </code></pre></div></p>
 <h3 id="well-known-configuration">Well-Known Configuration<a class="headerlink" href="#well-known-configuration" title="Permanent link">&para;</a></h3>
 <p>OpenID Connect discovery document.</p>
-<div class="highlight"><pre><span></span><code><span class="err">GET /api/_system/identity/.well-known/openid-configuration</span>
+<div class="highlight"><pre><span></span><code><span class="err">GET /_bdk/api/identity/.well-known/openid-configuration</span>
 </code></pre></div>
 <p>Response:
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;issuer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;authorization_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/api/_system/identity/connect/authorize&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;token_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/api/_system/identity/connect/token&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;userinfo_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/api/_system/identity/connect/userinfo&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;end_session_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/api/_system/identity/connect/logout&quot;</span>
+<span class="w">  </span><span class="nt">&quot;authorization_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/_bdk/api/identity/connect/authorize&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;token_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/_bdk/api/identity/connect/token&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;userinfo_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/_bdk/api/identity/connect/userinfo&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;end_session_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://localhost:5001/_bdk/api/identity/connect/logout&quot;</span>
 <span class="p">}</span>
 </code></pre></div></p>
 <h2 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
@@ -3741,7 +3742,7 @@
 <span class="p">.</span><span class="n">WithClient</span><span class="p">(</span>
 <span class="w">    </span><span class="s">&quot;angular-app&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s">&quot;Angular Frontend&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="na">[&quot;http://localhost:4200/callback&quot;, </span>
+<span class="w">    </span><span class="na">[&quot;http://localhost:4200/callback&quot;,</span>
 <span class="na">     &quot;http://localhost:4200/silent-refresh&quot;]</span><span class="p">)</span>
 
 <span class="c1">// API documentation tools</span>
@@ -3760,7 +3761,7 @@
 </ul>
 <h2 id="related-resources">Related Resources<a class="headerlink" href="#related-resources" title="Permanent link">&para;</a></h2>
 <ul>
-<li>OAuth 2.0 RFC </li>
+<li>OAuth 2.0 RFC</li>
 <li>OpenID Connect Specification</li>
 <li>JWT Documentation</li>
 </ul>
@@ -3785,7 +3786,7 @@
 <span class="p">{</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Users</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Fakes</span><span class="p">.</span><span class="n">Users</span><span class="p">;</span><span class="w">  </span><span class="c1">// Your hardcoded users</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">TokenIssuer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;http://localhost:5000&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// Your IDP base URL</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">GroupPrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/api/_system/identity&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// Base route for all endpoints</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">GroupPrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/_bdk/api/identity&quot;</span><span class="p">;</span><span class="w">  </span><span class="c1">// Base route for all endpoints</span>
 <span class="p">});</span>
 </code></pre></div></p>
 <h3 id="3-define-users_1">3. Define Users<a class="headerlink" href="#3-define-users_1" title="Permanent link">&para;</a></h3>
@@ -3793,9 +3794,9 @@
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">FakeUser</span><span class="p">[]</span><span class="w"> </span><span class="n">Users</span><span class="w"> </span><span class="o">=</span>
 <span class="w">    </span><span class="na">[</span>
-<span class="na">        new(&quot;luke.skywalker@starwars.com&quot;, &quot;Luke Skywalker&quot;, </span>
+<span class="na">        new(&quot;luke.skywalker@starwars.com&quot;, &quot;Luke Skywalker&quot;,</span>
 <span class="na">            [Role.Administrators, Role.Users]</span><span class="p">,</span><span class="w"> </span><span class="n">isDefault</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">),</span>
-<span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="s">&quot;yoda@starwars.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Yoda&quot;</span><span class="p">,</span><span class="w"> </span>
+<span class="w">        </span><span class="k">new</span><span class="p">(</span><span class="s">&quot;yoda@starwars.com&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Yoda&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="na">[Role.Administrators]</span><span class="p">)</span>
 <span class="w">    </span><span class="p">];</span>
 <span class="p">}</span>
@@ -3833,7 +3834,7 @@
     Note over App,IDP: Get user data with access token
     IDP-&gt;&gt;App: 11. Return user info</code></pre>
 <h3 id="2-direct-api-access-password-grant">2. Direct API Access (Password Grant)<a class="headerlink" href="#2-direct-api-access-password-grant" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="err">POST /api/_system/identity/connect/token</span>
+<div class="highlight"><pre><span></span><code><span class="err">POST /_bdk/api/identity/connect/token</span>
 <span class="err">Content-Type: application/x-www-form-urlencoded</span>
 
 <span class="err">grant_type=password</span>
@@ -3842,7 +3843,7 @@
 <span class="err">&amp;scope=openid profile email roles</span>
 </code></pre></div>
 <h3 id="3-service-to-service-client-credentials">3. Service-to-Service (Client Credentials)<a class="headerlink" href="#3-service-to-service-client-credentials" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="err">POST /api/_system/identity/connect/token</span>
+<div class="highlight"><pre><span></span><code><span class="err">POST /_bdk/api/identity/connect/token</span>
 <span class="err">Content-Type: application/x-www-form-urlencoded</span>
 
 <span class="err">grant_type=client_credentials</span>
@@ -3854,7 +3855,7 @@ Any string can be used as client_id in the requests.</p>
 <h2 id="api-reference_1">API Reference<a class="headerlink" href="#api-reference_1" title="Permanent link">&para;</a></h2>
 <h3 id="authorization-endpoint_1">Authorization Endpoint<a class="headerlink" href="#authorization-endpoint_1" title="Permanent link">&para;</a></h3>
 <p>Starts the OAuth2 authorization flow with user selection.</p>
-<div class="highlight"><pre><span></span><code><span class="err">GET /api/_system/identity/connect/authorize?</span>
+<div class="highlight"><pre><span></span><code><span class="err">GET /_bdk/api/identity/connect/authorize?</span>
 <span class="err">    response_type=code</span>
 <span class="err">    &amp;client_id=any_client_id</span>
 <span class="err">    &amp;redirect_uri=http://localhost:4200/callback</span>
@@ -3864,7 +3865,7 @@ Any string can be used as client_id in the requests.</p>
 <h3 id="token-endpoint_1">Token Endpoint<a class="headerlink" href="#token-endpoint_1" title="Permanent link">&para;</a></h3>
 <p>Issues tokens using various grant types.</p>
 <h4 id="authorization-code-grant">Authorization Code Grant<a class="headerlink" href="#authorization-code-grant" title="Permanent link">&para;</a></h4>
-<div class="highlight"><pre><span></span><code><span class="err">POST /api/_system/identity/connect/token</span>
+<div class="highlight"><pre><span></span><code><span class="err">POST /_bdk/api/identity/connect/token</span>
 <span class="err">Content-Type: application/x-www-form-urlencoded</span>
 
 <span class="err">grant_type=authorization_code</span>
@@ -3885,7 +3886,7 @@ Any string can be used as client_id in the requests.</p>
 </code></pre></div></p>
 <h3 id="userinfo-endpoint_1">UserInfo Endpoint<a class="headerlink" href="#userinfo-endpoint_1" title="Permanent link">&para;</a></h3>
 <p>Returns information about the authenticated user.</p>
-<div class="highlight"><pre><span></span><code><span class="err">GET /api/_system/identity/connect/userinfo</span>
+<div class="highlight"><pre><span></span><code><span class="err">GET /_bdk/api/identity/connect/userinfo</span>
 <span class="err">Authorization: Bearer eyJhbGci...</span>
 </code></pre></div>
 <p>Response:
@@ -3902,15 +3903,15 @@ Any string can be used as client_id in the requests.</p>
 </code></pre></div></p>
 <h3 id="openid-configuration">OpenID Configuration<a class="headerlink" href="#openid-configuration" title="Permanent link">&para;</a></h3>
 <p>Returns the OpenID Connect discovery document.</p>
-<div class="highlight"><pre><span></span><code><span class="err">GET /api/_system/identity/.well-known/openid-configuration</span>
+<div class="highlight"><pre><span></span><code><span class="err">GET /_bdk/api/identity/.well-known/openid-configuration</span>
 </code></pre></div>
 <p>Response:
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;issuer&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:5000&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;authorization_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:5000/api/_system/identity/connect/authorize&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;token_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:5000/api/_system/identity/connect/token&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;userinfo_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:5000/api/_system/identity/connect/userinfo&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;end_session_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:5000/api/_system/identity/connect/logout&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;authorization_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:5000/_bdk/api/identity/connect/authorize&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;token_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:5000/_bdk/api/identity/connect/token&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;userinfo_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:5000/_bdk/api/identity/connect/userinfo&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;end_session_endpoint&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;http://localhost:5000/_bdk/api/identity/connect/logout&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;grant_types_supported&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="s2">&quot;authorization_code&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s2">&quot;password&quot;</span><span class="p">,</span>
@@ -3932,7 +3933,7 @@ Any string can be used as client_id in the requests.</p>
 </code></pre></div></p>
 <h3 id="logout-endpoint">Logout Endpoint<a class="headerlink" href="#logout-endpoint" title="Permanent link">&para;</a></h3>
 <p>Handles user logout with optional redirect.</p>
-<div class="highlight"><pre><span></span><code><span class="err">POST /api/_system/identity/connect/logout?</span>
+<div class="highlight"><pre><span></span><code><span class="err">POST /_bdk/api/identity/connect/logout?</span>
 <span class="err">    post_logout_redirect_uri=http://localhost:4200</span>
 <span class="err">    &amp;state=abc123</span>
 </code></pre></div>

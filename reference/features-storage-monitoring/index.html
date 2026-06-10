@@ -2902,11 +2902,11 @@ name can be used to query file events and trigger scans over HTTP.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>GET /api/_system/{provider}/events?path=...&amp;eventType=...&amp;fromDate=...&amp;tillDate=...&amp;take=...</code></td>
+<td><code>GET /_bdk/api/{provider}/events?path=...&amp;eventType=...&amp;fromDate=...&amp;tillDate=...&amp;take=...</code></td>
 <td>Query stored file events for the provider-backed monitoring location</td>
 </tr>
 <tr>
-<td><code>POST /api/_system/{provider}/events/scan?waitForProcessing=true&amp;searchPattern=...&amp;maxFilesToScan=...&amp;skipChecksum=false</code></td>
+<td><code>POST /_bdk/api/{provider}/events/scan?waitForProcessing=true&amp;searchPattern=...&amp;maxFilesToScan=...&amp;skipChecksum=false</code></td>
 <td>Trigger an on-demand scan and return the detected events</td>
 </tr>
 </tbody>

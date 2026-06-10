@@ -3766,7 +3766,7 @@
 </tr>
 <tr>
 <td>Missed occurrence</td>
-<td>An occurrence that should have been materialized or executed while the scheduler was stopped, unavailable, or unable to acquire work.</td>
+<td>An occurrence that should have been pending or executed while the scheduler was stopped, unavailable, or unable to acquire work.</td>
 </tr>
 <tr>
 <td>Manual dispatch</td>
@@ -3782,7 +3782,7 @@
 </tr>
 <tr>
 <td>Background execution</td>
-<td>Hosted scheduler processing that materializes due triggers, acquires leases, and runs eligible occurrences through the worker pool.</td>
+<td>Hosted scheduler processing that pending due triggers, acquires leases, and runs eligible occurrences through the worker pool.</td>
 </tr>
 <tr>
 <td>Execution</td>
@@ -4045,7 +4045,7 @@
 <ul>
 <li>job-level <code>TargetInstances(...)</code> applies to all triggers that do not declare their own targets</li>
 <li>trigger-level <code>TargetInstances(...)</code> overrides the job-level targets for that trigger only</li>
-<li>background sweeps materialize due work as usual, but only eligible scheduler instances pick targeted occurrences for execution</li>
+<li>background sweeps due work as usual, but only eligible scheduler instances pick targeted occurrences for execution</li>
 <li>direct inline dispatch fails clearly when the current scheduler instance is not one of the trigger's effective targets</li>
 </ul>
 <p>Appsettings can override the same targeting properties for code-registered jobs:</p>
@@ -4072,7 +4072,7 @@
 <span class="w">    </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">());</span>
 </code></pre></div>
-<p>The default Jobs endpoint group is <code>/api/_system/jobs</code>.</p>
+<p>The default Jobs endpoint group is <code>/_bdk/api/jobs</code>.</p>
 <h2 id="entity-framework-dbcontext-setup">Entity Framework DbContext Setup<a class="headerlink" href="#entity-framework-dbcontext-setup" title="Permanent link">&para;</a></h2>
 <p>To persist occurrences, executions, history, leases, batches, and runtime state in your application database, the host <code>DbContext</code> only needs to implement <code>IJobsContext</code> and expose the Jobs sets. The Jobs entities carry their EF mapping through attributes and conventions, so no Jobs-specific <code>ModelBuilder</code> call is required.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">AppDbContext</span><span class="p">(</span><span class="n">DbContextOptions</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">)</span>
@@ -4778,9 +4778,9 @@
 </code></pre></div>
 <p>Common operational query parameters:</p>
 <ul>
-<li><code>GET /api/_system/jobs</code> supports <code>jobName</code>, <code>group</code>, <code>module</code>, <code>enabled</code>, <code>includeOrphanedRuntimeState</code>, <code>skip</code>, <code>take</code>, <code>sortBy</code>, and <code>sortDescending</code></li>
-<li><code>GET /api/_system/jobs/occurrences</code> and <code>GET /api/_system/jobs/executions</code> support <code>jobName</code>, <code>triggerName</code>, <code>triggerType</code>, <code>statuses</code>, <code>schedulerInstanceId</code>, <code>correlationId</code>, <code>idempotencyKey</code>, <code>dueFrom</code>, <code>dueTo</code>, <code>startedFrom</code>, <code>startedTo</code>, <code>completedFrom</code>, <code>completedTo</code>, <code>skip</code>, <code>take</code>, <code>sortBy</code>, and <code>sortDescending</code></li>
-<li><code>GET /api/_system/jobs/dashboard/timeline</code> supports <code>from</code>, <code>to</code>, <code>bucket</code>, <code>mode</code>, <code>jobName</code>, <code>triggerName</code>, <code>schedulerInstanceId</code>, and <code>statuses</code></li>
+<li><code>GET /_bdk/api/jobs</code> supports <code>jobName</code>, <code>group</code>, <code>module</code>, <code>enabled</code>, <code>includeOrphanedRuntimeState</code>, <code>skip</code>, <code>take</code>, <code>sortBy</code>, and <code>sortDescending</code></li>
+<li><code>GET /_bdk/api/jobs/occurrences</code> and <code>GET /_bdk/api/jobs/executions</code> support <code>jobName</code>, <code>triggerName</code>, <code>triggerType</code>, <code>statuses</code>, <code>schedulerInstanceId</code>, <code>correlationId</code>, <code>idempotencyKey</code>, <code>dueFrom</code>, <code>dueTo</code>, <code>startedFrom</code>, <code>startedTo</code>, <code>completedFrom</code>, <code>completedTo</code>, <code>skip</code>, <code>take</code>, <code>sortBy</code>, and <code>sortDescending</code></li>
+<li><code>GET /_bdk/api/jobs/dashboard/timeline</code> supports <code>from</code>, <code>to</code>, <code>bucket</code>, <code>mode</code>, <code>jobName</code>, <code>triggerName</code>, <code>schedulerInstanceId</code>, and <code>statuses</code></li>
 </ul>
 <p>When <code>includeOrphanedRuntimeState=true</code>, the jobs list also returns synthetic support rows for persisted runtime-state records whose job registration no longer exists. Registered jobs with removed trigger runtime-state rows expose that condition through the same query surface so support tooling can spot cleanup work without reading provider tables directly.</p>
 <h3 id="maintenance-apis">Maintenance APIs<a class="headerlink" href="#maintenance-apis" title="Permanent link">&para;</a></h3>
@@ -5012,7 +5012,7 @@
 </code></pre></div>
 <h2 id="operational-notes">Operational Notes<a class="headerlink" href="#operational-notes" title="Permanent link">&para;</a></h2>
 <h3 id="endpoint-surface">Endpoint Surface<a class="headerlink" href="#endpoint-surface" title="Permanent link">&para;</a></h3>
-<p><code>Presentation.Web.Jobs</code> exposes the same scheduler/query/maintenance surface over HTTP. The default route group is <code>/api/_system/jobs</code>.</p>
+<p><code>Presentation.Web.Jobs</code> exposes the same scheduler/query/maintenance surface over HTTP. The default route group is <code>/_bdk/api/jobs</code>.</p>
 <h4 id="read-endpoints">Read Endpoints<a class="headerlink" href="#read-endpoints" title="Permanent link">&para;</a></h4>
 <table>
 <thead>
@@ -5025,122 +5025,122 @@
 <tbody>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs</code></td>
+<td><code>/_bdk/api/jobs</code></td>
 <td>List registered jobs with runtime overlay, paging, filtering, and sorting.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/{jobName}</code></td>
+<td><code>/_bdk/api/jobs/{jobName}</code></td>
 <td>Get one job definition with operational state.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/definitions/{jobName}</code></td>
+<td><code>/_bdk/api/jobs/definitions/{jobName}</code></td>
 <td>Canonical definition route for one job definition.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/triggers</code></td>
+<td><code>/_bdk/api/jobs/triggers</code></td>
 <td>List triggers across all jobs.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/triggers/recurring</code></td>
+<td><code>/_bdk/api/jobs/triggers/recurring</code></td>
 <td>List recurring triggers across all jobs.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/recurring</code></td>
+<td><code>/_bdk/api/jobs/recurring</code></td>
 <td>Spec-shaped alias for recurring triggers.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/recurring/{jobName}/{triggerName}</code></td>
+<td><code>/_bdk/api/jobs/recurring/{jobName}/{triggerName}</code></td>
 <td>Get one recurring trigger projection.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/{jobName}/triggers</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/triggers</code></td>
 <td>List triggers for one job.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/{jobName}/triggers/{triggerName}</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/triggers/{triggerName}</code></td>
 <td>Get one trigger using the spec-shaped route.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}</code></td>
+<td><code>/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}</code></td>
 <td>Canonical definition route for one trigger.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/occurrences</code></td>
+<td><code>/_bdk/api/jobs/occurrences</code></td>
 <td>List materialized occurrences.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/occurrences/{occurrenceId}</code></td>
+<td><code>/_bdk/api/jobs/occurrences/{occurrenceId}</code></td>
 <td>Get one occurrence by internal identifier.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/occurrences/{occurrenceId}/history</code></td>
+<td><code>/_bdk/api/jobs/occurrences/{occurrenceId}/history</code></td>
 <td>Get retained history for one occurrence.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/retries</code></td>
+<td><code>/_bdk/api/jobs/retries</code></td>
 <td>List retry-scheduled or retryable occurrences.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/dependencies</code></td>
+<td><code>/_bdk/api/jobs/dependencies</code></td>
 <td>List persisted occurrence dependency links with dependent and prerequisite state.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/batches</code></td>
+<td><code>/_bdk/api/jobs/batches</code></td>
 <td>List durable batches.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/batches/{batchId}</code></td>
+<td><code>/_bdk/api/jobs/batches/{batchId}</code></td>
 <td>Get one batch.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/batches/{batchId}/occurrences</code></td>
+<td><code>/_bdk/api/jobs/batches/{batchId}/occurrences</code></td>
 <td>List child occurrences for one batch.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/batches/{batchId}/history</code></td>
+<td><code>/_bdk/api/jobs/batches/{batchId}/history</code></td>
 <td>List append-only batch history for one batch.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/executions</code></td>
+<td><code>/_bdk/api/jobs/executions</code></td>
 <td>List execution attempts.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/history</code></td>
+<td><code>/_bdk/api/jobs/history</code></td>
 <td>List retained execution history.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/leases</code></td>
+<td><code>/_bdk/api/jobs/leases</code></td>
 <td>List active and expired lease diagnostics.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/servers</code></td>
+<td><code>/_bdk/api/jobs/servers</code></td>
 <td>List observed scheduler server instances.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/metrics</code></td>
+<td><code>/_bdk/api/jobs/metrics</code></td>
 <td>Get aggregate operational metrics.</td>
 </tr>
 </tbody>
@@ -5157,35 +5157,35 @@
 <tbody>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/dashboard</code></td>
+<td><code>/_bdk/api/jobs/dashboard</code></td>
 <td>Primary dashboard summary projection.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/dashboard/summary</code></td>
+<td><code>/_bdk/api/jobs/dashboard/summary</code></td>
 <td>Aggregate counts and diagnostics for the dashboard.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/dashboard/timeline</code></td>
+<td><code>/_bdk/api/jobs/dashboard/timeline</code></td>
 <td>Timeline buckets for occurrences or executions.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/dashboard/navigation</code></td>
+<td><code>/_bdk/api/jobs/dashboard/navigation</code></td>
 <td>Navigation projection derived from dashboard summary data.</td>
 </tr>
 <tr>
 <td><code>GET</code></td>
-<td><code>/api/_system/jobs/dashboard/overview</code></td>
+<td><code>/_bdk/api/jobs/dashboard/overview</code></td>
 <td>Overview projection derived from dashboard summary data.</td>
 </tr>
 </tbody>
 </table>
 <p>Dashboard projections:</p>
 <ul>
-<li><code>/api/_system/jobs/dashboard/navigation</code> returns job facet counts plus link descriptors that support tools can use to build a navigation shell without private provider access</li>
-<li><code>/api/_system/jobs/dashboard/overview</code> returns headline counts for enabled triggers, due/running/failed work, retries, leases, batches, servers, and the oldest due occurrence</li>
+<li><code>/_bdk/api/jobs/dashboard/navigation</code> returns job facet counts plus link descriptors that support tools can use to build a navigation shell without private provider access</li>
+<li><code>/_bdk/api/jobs/dashboard/overview</code> returns headline counts for enabled triggers, due/running/failed work, retries, leases, batches, servers, and the oldest due occurrence</li>
 </ul>
 <h4 id="job-and-trigger-control-endpoints">Job And Trigger Control Endpoints<a class="headerlink" href="#job-and-trigger-control-endpoints" title="Permanent link">&para;</a></h4>
 <table>
@@ -5199,92 +5199,92 @@
 <tbody>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/{jobName}/dispatch</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/dispatch</code></td>
 <td>Dispatch a registered job using the spec-shaped route.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/definitions/{jobName}/dispatch</code></td>
+<td><code>/_bdk/api/jobs/definitions/{jobName}/dispatch</code></td>
 <td>Dispatch a registered job using the canonical definition route.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/{jobName}/enable</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/enable</code></td>
 <td>Enable a job through durable runtime state.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/definitions/{jobName}/enable</code></td>
+<td><code>/_bdk/api/jobs/definitions/{jobName}/enable</code></td>
 <td>Canonical route for enabling a job.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/{jobName}/disable</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/disable</code></td>
 <td>Disable a job through durable runtime state.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/definitions/{jobName}/disable</code></td>
+<td><code>/_bdk/api/jobs/definitions/{jobName}/disable</code></td>
 <td>Canonical route for disabling a job.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/{jobName}/pause</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/pause</code></td>
 <td>Pause a job without mutating its code-first definition.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/definitions/{jobName}/pause</code></td>
+<td><code>/_bdk/api/jobs/definitions/{jobName}/pause</code></td>
 <td>Canonical route for pausing a job.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/{jobName}/resume</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/resume</code></td>
 <td>Resume a paused job.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/definitions/{jobName}/resume</code></td>
+<td><code>/_bdk/api/jobs/definitions/{jobName}/resume</code></td>
 <td>Canonical route for resuming a job.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/{jobName}/triggers/{triggerName}/enable</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/triggers/{triggerName}/enable</code></td>
 <td>Enable a trigger through durable runtime state.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/enable</code></td>
+<td><code>/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}/enable</code></td>
 <td>Canonical route for enabling a trigger.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/{jobName}/triggers/{triggerName}/disable</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/triggers/{triggerName}/disable</code></td>
 <td>Disable a trigger through durable runtime state.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/disable</code></td>
+<td><code>/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}/disable</code></td>
 <td>Canonical route for disabling a trigger.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/{jobName}/triggers/{triggerName}/pause</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/triggers/{triggerName}/pause</code></td>
 <td>Pause a trigger without changing source registration.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/pause</code></td>
+<td><code>/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}/pause</code></td>
 <td>Canonical route for pausing a trigger.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/{jobName}/triggers/{triggerName}/resume</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/triggers/{triggerName}/resume</code></td>
 <td>Resume a paused trigger.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/definitions/{jobName}/triggers/{triggerName}/resume</code></td>
+<td><code>/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}/resume</code></td>
 <td>Canonical route for resuming a trigger.</td>
 </tr>
 </tbody>
@@ -5301,57 +5301,57 @@
 <tbody>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/occurrences/{occurrenceId}/pause</code></td>
+<td><code>/_bdk/api/jobs/occurrences/{occurrenceId}/pause</code></td>
 <td>Pause an eligible occurrence before another attempt starts.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/occurrences/{occurrenceId}/resume</code></td>
+<td><code>/_bdk/api/jobs/occurrences/{occurrenceId}/resume</code></td>
 <td>Resume a paused occurrence.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/occurrences/{occurrenceId}/cancel</code></td>
+<td><code>/_bdk/api/jobs/occurrences/{occurrenceId}/cancel</code></td>
 <td>Request cancellation of an occurrence.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/occurrences/{occurrenceId}/interrupt</code></td>
+<td><code>/_bdk/api/jobs/occurrences/{occurrenceId}/interrupt</code></td>
 <td>Request interruption of a running occurrence.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/occurrences/{occurrenceId}/retry</code></td>
+<td><code>/_bdk/api/jobs/occurrences/{occurrenceId}/retry</code></td>
 <td>Retry an eligible failed occurrence.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/occurrences/{occurrenceId}/archive</code></td>
+<td><code>/_bdk/api/jobs/occurrences/{occurrenceId}/archive</code></td>
 <td>Archive a terminal occurrence.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/occurrences/{occurrenceId}/repair/release-lease</code></td>
+<td><code>/_bdk/api/jobs/occurrences/{occurrenceId}/repair/release-lease</code></td>
 <td>Release an active lease for repair or recovery.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/occurrences/bulk/retry</code></td>
+<td><code>/_bdk/api/jobs/occurrences/bulk/retry</code></td>
 <td>Retry selected eligible failed occurrences as one bulk operation.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/occurrences/bulk/cancel</code></td>
+<td><code>/_bdk/api/jobs/occurrences/bulk/cancel</code></td>
 <td>Cancel selected eligible occurrences as one bulk operation.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/occurrences/bulk/archive</code></td>
+<td><code>/_bdk/api/jobs/occurrences/bulk/archive</code></td>
 <td>Archive selected eligible retained occurrences as one bulk operation.</td>
 </tr>
 <tr>
 <td><code>DELETE</code></td>
-<td><code>/api/_system/jobs/occurrences</code></td>
+<td><code>/_bdk/api/jobs/occurrences</code></td>
 <td>Purge retained terminal occurrences by age and optional filters.</td>
 </tr>
 </tbody>
@@ -5368,42 +5368,42 @@
 <tbody>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/batches</code></td>
+<td><code>/_bdk/api/jobs/batches</code></td>
 <td>Create an empty or described durable batch record.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/batches/dispatch</code></td>
+<td><code>/_bdk/api/jobs/batches/dispatch</code></td>
 <td>Create a batch and dispatch its child occurrences in one operation.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/batches/{batchId}/attach</code></td>
+<td><code>/_bdk/api/jobs/batches/{batchId}/attach</code></td>
 <td>Attach additional occurrences to an existing batch.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/batches/{batchId}/retry</code></td>
+<td><code>/_bdk/api/jobs/batches/{batchId}/retry</code></td>
 <td>Retry eligible failed child occurrences for a batch.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/batches/{batchId}/cancel</code></td>
+<td><code>/_bdk/api/jobs/batches/{batchId}/cancel</code></td>
 <td>Cancel eligible child occurrences for a batch.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/batches/{batchId}/pause</code></td>
+<td><code>/_bdk/api/jobs/batches/{batchId}/pause</code></td>
 <td>Pause eligible child occurrences for a batch.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/batches/{batchId}/resume</code></td>
+<td><code>/_bdk/api/jobs/batches/{batchId}/resume</code></td>
 <td>Resume eligible child occurrences for a batch.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/batches/{batchId}/archive</code></td>
+<td><code>/_bdk/api/jobs/batches/{batchId}/archive</code></td>
 <td>Archive a batch and eligible retained child occurrences.</td>
 </tr>
 </tbody>
@@ -5420,28 +5420,28 @@
 <tbody>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/maintenance/purge-history</code></td>
+<td><code>/_bdk/api/jobs/maintenance/purge-history</code></td>
 <td>Purge archived execution history older than the retention window.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/maintenance/release-expired-leases</code></td>
+<td><code>/_bdk/api/jobs/maintenance/release-expired-leases</code></td>
 <td>Release expired leases and repair affected occurrences.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/maintenance/recover-stuck-occurrences</code></td>
+<td><code>/_bdk/api/jobs/maintenance/recover-stuck-occurrences</code></td>
 <td>Recover stale occurrences without a valid active lease.</td>
 </tr>
 <tr>
 <td><code>POST</code></td>
-<td><code>/api/_system/jobs/maintenance/detect-orphaned-runtime-state</code></td>
+<td><code>/_bdk/api/jobs/maintenance/detect-orphaned-runtime-state</code></td>
 <td>Detect runtime-state rows that no longer match active registrations.</td>
 </tr>
 </tbody>
 </table>
 <p>The occurrence purge endpoint accepts query parameters comparable to other retained operational endpoints:</p>
-<div class="highlight"><pre><span></span><code><span class="err">DELETE /api/_system/jobs/occurrences?olderThan=2026-04-01T00:00:00Z&amp;statuses=Archived&amp;jobName=cleanup-customers&amp;triggerName=nightly&amp;isArchived=true&amp;batchSize=250</span>
+<div class="highlight"><pre><span></span><code><span class="err">DELETE /_bdk/api/jobs/occurrences?olderThan=2026-04-01T00:00:00Z&amp;statuses=Archived&amp;jobName=cleanup-customers&amp;triggerName=nightly&amp;isArchived=true&amp;batchSize=250</span>
 </code></pre></div>
 <h3 id="operational-semantics">Operational Semantics<a class="headerlink" href="#operational-semantics" title="Permanent link">&para;</a></h3>
 <ul>

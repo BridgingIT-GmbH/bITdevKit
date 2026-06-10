@@ -3615,13 +3615,13 @@
 <span class="w">        </span><span class="p">.</span><span class="n">WithLifetime</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">)))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">()</span>
-<span class="w">        </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">&quot;/api/_system&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">GroupTag</span><span class="p">(</span><span class="s">&quot;_System.Storage&quot;</span><span class="p">));</span>
+<span class="w">        </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">&quot;/_bdk/api&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">GroupTag</span><span class="p">(</span><span class="s">&quot;_bdk.Storage&quot;</span><span class="p">));</span>
 </code></pre></div>
 <h4 id="rest-endpoint-behavior">REST endpoint behavior<a class="headerlink" href="#rest-endpoint-behavior" title="Permanent link">&para;</a></h4>
 <ul>
 <li>Works with <strong>any</strong> <code>IFileStorageProvider</code>, not only the Entity Framework provider</li>
-<li>Uses <code>/api/_system/{providerName}</code> by default when <code>GroupPath</code> is not specified</li>
+<li>Uses <code>/_bdk/api/{providerName}</code> by default when <code>GroupPath</code> is not specified</li>
 <li>Publishes one endpoint set for all registered providers, with the provider selected from the sanitized route segment</li>
 <li>Supports provider info, health checks, file/directory existence checks, file listing, directory listing, metadata, checksum, create/delete directory, delete file, file download, raw file upload, and file-event query/scan routes when storage monitoring is configured for that provider</li>
 <li>Raw uploads write the request body directly to the provider-backed path; send them as <code>application/octet-stream</code></li>
@@ -3636,55 +3636,55 @@
 </thead>
 <tbody>
 <tr>
-<td><code>GET /api/_system/{provider}/provider</code></td>
+<td><code>GET /_bdk/api/{provider}/provider</code></td>
 <td>Provider information</td>
 </tr>
 <tr>
-<td><code>GET /api/_system/{provider}/health</code></td>
+<td><code>GET /_bdk/api/{provider}/health</code></td>
 <td>Provider health</td>
 </tr>
 <tr>
-<td><code>GET /api/_system/{provider}/directories?path=...&amp;recursive=true</code></td>
+<td><code>GET /_bdk/api/{provider}/directories?path=...&amp;recursive=true</code></td>
 <td>List directories</td>
 </tr>
 <tr>
-<td><code>POST /api/_system/{provider}/directories?path=...</code></td>
+<td><code>POST /_bdk/api/{provider}/directories?path=...</code></td>
 <td>Create directory</td>
 </tr>
 <tr>
-<td><code>DELETE /api/_system/{provider}/directories?path=...&amp;recursive=true</code></td>
+<td><code>DELETE /_bdk/api/{provider}/directories?path=...&amp;recursive=true</code></td>
 <td>Delete directory</td>
 </tr>
 <tr>
-<td><code>GET /api/_system/{provider}/files?path=...&amp;recursive=true</code></td>
+<td><code>GET /_bdk/api/{provider}/files?path=...&amp;recursive=true</code></td>
 <td>List files</td>
 </tr>
 <tr>
-<td><code>GET /api/_system/{provider}/files/content?path=...</code></td>
+<td><code>GET /_bdk/api/{provider}/files/content?path=...</code></td>
 <td>Download file content</td>
 </tr>
 <tr>
-<td><code>PUT /api/_system/{provider}/files/content?path=...</code></td>
+<td><code>PUT /_bdk/api/{provider}/files/content?path=...</code></td>
 <td>Upload or overwrite file content</td>
 </tr>
 <tr>
-<td><code>GET /api/_system/{provider}/files/metadata?path=...</code></td>
+<td><code>GET /_bdk/api/{provider}/files/metadata?path=...</code></td>
 <td>Read file metadata</td>
 </tr>
 <tr>
-<td><code>GET /api/_system/{provider}/files/checksum?path=...</code></td>
+<td><code>GET /_bdk/api/{provider}/files/checksum?path=...</code></td>
 <td>Read checksum</td>
 </tr>
 <tr>
-<td><code>DELETE /api/_system/{provider}/files?path=...</code></td>
+<td><code>DELETE /_bdk/api/{provider}/files?path=...</code></td>
 <td>Delete file</td>
 </tr>
 <tr>
-<td><code>GET /api/_system/{provider}/events?path=...&amp;eventType=...&amp;fromDate=...&amp;tillDate=...&amp;take=...</code></td>
+<td><code>GET /_bdk/api/{provider}/events?path=...&amp;eventType=...&amp;fromDate=...&amp;tillDate=...&amp;take=...</code></td>
 <td>Query stored file events for the provider-backed monitoring location</td>
 </tr>
 <tr>
-<td><code>POST /api/_system/{provider}/events/scan?waitForProcessing=true&amp;searchPattern=...&amp;maxFilesToScan=...&amp;skipChecksum=false</code></td>
+<td><code>POST /_bdk/api/{provider}/events/scan?waitForProcessing=true&amp;searchPattern=...&amp;maxFilesToScan=...&amp;skipChecksum=false</code></td>
 <td>Trigger an on-demand monitoring scan and return detected events</td>
 </tr>
 </tbody>
@@ -3696,8 +3696,8 @@
 <li>The endpoint layer resolves the named provider through <code>factory.CreateProvider(...)</code>, so HTTP callers always go through the same behaviors, lifetime, retries, and provider composition as in-process callers.</li>
 <li>File-event routes require <code>AddFileMonitoring(...)</code> plus <code>UseProvider(...)</code> for the same provider name. Without monitoring registration, the event routes return <code>503</code>.</li>
 <li>The endpoint group disables antiforgery so generated clients and operational dashboards can call the unsafe file and scan routes with bearer tokens.</li>
-<li>The provider info route intentionally lives at <code>/provider</code> so it does not collide with other fixed <code>_system</code> endpoints such as <code>/api/_system/info</code>.</li>
-<li>The DoFiesta example uses this endpoint package to back both the Operations &gt; Files and Operations &gt; File Events dashboards against the <code>"documents"</code> Entity Framework provider, and the WASM client consumes the generated Kiota client directly via <code>BackendApiClient.Api._system["documents"]</code>.</li>
+<li>The provider info route intentionally lives at <code>/provider</code> so it does not collide with other fixed <code>_bdk</code> endpoints such as <code>/_bdk/api/info</code>.</li>
+<li>The DoFiesta example uses this endpoint package to back both the Operations &gt; Files and Operations &gt; File Events dashboards against the <code>"documents"</code> Entity Framework provider, and the WASM client consumes the generated Kiota client directly via <code>BackendApiClient.Api._bdk_["documents"]</code>.</li>
 </ul>
 <h3 id="using-providers">Using Providers<a class="headerlink" href="#using-providers" title="Permanent link">&para;</a></h3>
 <p>The <code>IFileStorageProvider</code> interface defines core file operations, returning <code>Result</code> or <code>Result&lt;T&gt;</code> for error handling and messaging. Use the factory-resolved provider to perform operations.</p>

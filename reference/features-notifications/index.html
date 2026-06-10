@@ -2987,18 +2987,18 @@
 <span class="w">     </span><span class="p">.</span><span class="n">WithOutbox</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">     </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
 <span class="w">         </span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">()</span>
-<span class="w">         </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">&quot;/api/_system/notifications/emails&quot;</span><span class="p">));</span>
+<span class="w">         </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">&quot;/_bdk/api/notifications/emails&quot;</span><span class="p">));</span>
 <span class="p">});</span>
 </code></pre></div>
 <p>The endpoint group exposes:</p>
 <ul>
-<li><code>GET /api/_system/notifications/emails</code> to list persisted emails with filters such as <code>status</code>, <code>subject</code>, <code>lockedBy</code>, and <code>take</code></li>
-<li><code>GET /api/_system/notifications/emails/stats</code> to retrieve aggregate outbox counts</li>
-<li><code>GET /api/_system/notifications/emails/{id}</code> to inspect one email</li>
-<li><code>GET /api/_system/notifications/emails/{id}/content</code> to fetch the stored body</li>
-<li><code>POST /api/_system/notifications/emails/{id}/retry</code> to reset a failed row back to pending</li>
-<li><code>DELETE /api/_system/notifications/emails/{id}</code> to delete one row</li>
-<li><code>DELETE /api/_system/notifications/emails</code> to purge rows by age and status</li>
+<li><code>GET /_bdk/api/notifications/emails</code> to list persisted emails with filters such as <code>status</code>, <code>subject</code>, <code>lockedBy</code>, and <code>take</code></li>
+<li><code>GET /_bdk/api/notifications/emails/stats</code> to retrieve aggregate outbox counts</li>
+<li><code>GET /_bdk/api/notifications/emails/{id}</code> to inspect one email</li>
+<li><code>GET /_bdk/api/notifications/emails/{id}/content</code> to fetch the stored body</li>
+<li><code>POST /_bdk/api/notifications/emails/{id}/retry</code> to reset a failed row back to pending</li>
+<li><code>DELETE /_bdk/api/notifications/emails/{id}</code> to delete one row</li>
+<li><code>DELETE /_bdk/api/notifications/emails</code> to purge rows by age and status</li>
 </ul>
 <p>For typed operational access inside the application layer, use <code>INotificationEmailOutboxService</code>.</p>
 <h2 id="configuration-notes">Configuration Notes<a class="headerlink" href="#configuration-notes" title="Permanent link">&para;</a></h2>

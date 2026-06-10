@@ -3158,7 +3158,7 @@
 <p><strong>Configuration Details:</strong>
 - <strong>Persistence</strong>: <code>WithSqlServerStore</code> enables durable storage using a connection string from configuration (see <code>Appendix: Configuring Quartz.NET Persistence with SQL Server</code>).
 - <strong>Behaviors</strong>: Adds scoping and timeouts for enhanced control (e.g., <code>TimeoutJobSchedulingBehavior</code>).
-- <strong>API Endpoints</strong>: <code>AddEndpoints(builder.Environment.IsDevelopment())</code> enables job management endpoints under <code>/api/_system/jobs</code> in development mode (see <code>Appendix: Job Scheduling API Endpoints</code>).
+- <strong>API Endpoints</strong>: <code>AddEndpoints(builder.Environment.IsDevelopment())</code> enables job management endpoints under <code>/_bdk/api/jobs</code> in development mode (see <code>Appendix: Job Scheduling API Endpoints</code>).
 - <strong>Jobs</strong>: Registers diverse jobs with custom schedules and metadata.</p>
 <p><strong>Configuration in <code>appsettings.json</code>:</strong>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
@@ -3216,7 +3216,7 @@
 <span class="w">    </span><span class="p">.</span><span class="n">Named</span><span class="p">(</span><span class="s">&quot;longrunning&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">RegisterScoped</span><span class="p">();</span>
 </code></pre></div></p>
-<p><strong>Notes</strong>: Use <code>cancellationToken</code> to handle interruptions, manageable via <code>JobService</code> or API endpoints (e.g., <code>POST /api/_system/jobs/longrunning/DEFAULT/pause</code>).</p>
+<p><strong>Notes</strong>: Use <code>cancellationToken</code> to handle interruptions, manageable via <code>JobService</code> or API endpoints (e.g., <code>POST /_bdk/api/jobs/longrunning/DEFAULT/pause</code>).</p>
 <h3 id="managing-jobs-with-jobservice-and-api-endpoints">Managing Jobs with JobService and API Endpoints<a class="headerlink" href="#managing-jobs-with-jobservice-and-api-endpoints" title="Permanent link">&para;</a></h3>
 <p>The <code>IJobService</code> interface enables runtime job management programmatically:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">IJobService</span>
@@ -3239,8 +3239,8 @@
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="s">&quot;00:00:10&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">(),</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">());</span>
 </code></pre></div>
-<p>These endpoints, mapped under <code>/api/_system/jobs</code>, provide RESTful access to job operations (see <code>Appendix: Job Scheduling API Endpoints</code> for details). For example, to trigger a job via HTTP:
-- <strong>Request</strong>: <code>POST /api/_system/jobs/longrunning/DEFAULT/trigger</code>
+<p>These endpoints, mapped under <code>/_bdk/api/jobs</code>, provide RESTful access to job operations (see <code>Appendix: Job Scheduling API Endpoints</code> for details). For example, to trigger a job via HTTP:
+- <strong>Request</strong>: <code>POST /_bdk/api/jobs/longrunning/DEFAULT/trigger</code>
 - <strong>Body</strong>: <code>{"extra": "data"}</code>
 - <strong>Response</strong>: <code>202 Accepted</code> with message "Job longrunning in group DEFAULT triggered successfully."</p>
 <h3 id="key-properties-of-jobbase">Key Properties of JobBase<a class="headerlink" href="#key-properties-of-jobbase" title="Permanent link">&para;</a></h3>
@@ -3490,7 +3490,7 @@
 </ul>
 <p>The builder’s methods, such as <code>EveryMinutes(15)</code> ("0 0/15 * * * ?") or <code>HoursRange(8, 17)</code> ("0 * 8-17 * * ?"), offer granular control. Enums like <code>CronDayOfWeek</code> and <code>CronMonth</code> ensure type safety, mapping to Quartz’s three-letter abbreviations (e.g., "WED", "JAN"), while integer inputs (e.g., <code>Minutes(59)</code>) simplify numeric fields.</p>
 <h2 id="appendix-job-scheduling-api-endpoints">Appendix: Job Scheduling API Endpoints<a class="headerlink" href="#appendix-job-scheduling-api-endpoints" title="Permanent link">&para;</a></h2>
-<p>The JobScheduling feature supports optional RESTful API endpoints for managing jobs via HTTP, enabled by calling <code>AddEndpoints()</code> in the <code>AddJobScheduling</code> builder chain. These endpoints, implemented in <code>JobSchedulingEndpoints</code>, provide a convenient interface for querying and controlling jobs, especially useful in development or monitoring scenarios. By default, they are mapped under the <code>/api/_system/jobs</code> prefix, configurable via <code>JobSchedulingEndpointsOptions</code>.</p>
+<p>The JobScheduling feature supports optional RESTful API endpoints for managing jobs via HTTP, enabled by calling <code>AddEndpoints()</code> in the <code>AddJobScheduling</code> builder chain. These endpoints, implemented in <code>JobSchedulingEndpoints</code>, provide a convenient interface for querying and controlling jobs, especially useful in development or monitoring scenarios. By default, they are mapped under the <code>/_bdk/api/jobs</code> prefix, configurable via <code>JobSchedulingEndpointsOptions</code>.</p>
 <h3 id="enabling-endpoints">Enabling Endpoints<a class="headerlink" href="#enabling-endpoints" title="Permanent link">&para;</a></h3>
 <p>Enable endpoints with a condition (e.g., development-only):</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="s">&quot;00:00:10&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
@@ -3517,7 +3517,7 @@
 <tr>
 <td><strong>Get All Jobs</strong></td>
 <td>GET</td>
-<td><code>/api/_system/jobs</code></td>
+<td><code>/_bdk/api/jobs</code></td>
 <td>None</td>
 <td><code>200 OK</code> (IEnumerable<JobInfo>), <code>500 Internal Server Error</code> (ProblemDetails)</td>
 <td>Retrieves a list of all scheduled jobs.</td>
@@ -3525,7 +3525,7 @@
 <tr>
 <td><strong>Get Job Details</strong></td>
 <td>GET</td>
-<td><code>/api/_system/jobs/{jobName}/{jobGroup}</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/{jobGroup}</code></td>
 <td><code>jobName</code> (string), <code>jobGroup</code> (string)</td>
 <td><code>200 OK</code> (JobInfo), <code>404 Not Found</code> (string), <code>500 Internal Server Error</code> (ProblemDetails)</td>
 <td>Retrieves details for a specific job.</td>
@@ -3533,7 +3533,7 @@
 <tr>
 <td><strong>Get Job Runs</strong></td>
 <td>GET</td>
-<td><code>/api/_system/jobs/{jobName}/{jobGroup}/runs</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/{jobGroup}/runs</code></td>
 <td><code>jobName</code> (string), <code>jobGroup</code> (string), Query: <code>startDate</code>, <code>endDate</code>, <code>status</code>, <code>priority</code>, <code>instanceName</code>, <code>resultContains</code>, <code>take</code> (optional)</td>
 <td><code>200 OK</code> (IEnumerable<JobRun>), <code>500 Internal Server Error</code> (ProblemDetails)</td>
 <td>Retrieves execution history with optional filters.</td>
@@ -3541,7 +3541,7 @@
 <tr>
 <td><strong>Get Job Run Stats</strong></td>
 <td>GET</td>
-<td><code>/api/_system/jobs/{jobName}/{jobGroup}/stats</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/{jobGroup}/stats</code></td>
 <td><code>jobName</code> (string), <code>jobGroup</code> (string), Query: <code>startDate</code>, <code>endDate</code> (optional)</td>
 <td><code>200 OK</code> (JobRunStats), <code>500 Internal Server Error</code> (ProblemDetails)</td>
 <td>Retrieves aggregated statistics for job runs.</td>
@@ -3549,7 +3549,7 @@
 <tr>
 <td><strong>Get Job Triggers</strong></td>
 <td>GET</td>
-<td><code>/api/_system/jobs/{jobName}/{jobGroup}/triggers</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/{jobGroup}/triggers</code></td>
 <td><code>jobName</code> (string), <code>jobGroup</code> (string)</td>
 <td><code>200 OK</code> (IEnumerable<TriggerInfo>), <code>500 Internal Server Error</code> (ProblemDetails)</td>
 <td>Retrieves all triggers for a specific job.</td>
@@ -3557,7 +3557,7 @@
 <tr>
 <td><strong>Trigger Job</strong></td>
 <td>POST</td>
-<td><code>/api/_system/jobs/{jobName}/{jobGroup}/trigger</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/{jobGroup}/trigger</code></td>
 <td><code>jobName</code> (string), <code>jobGroup</code> (string), Body: <code>data</code> (Dictionary<string, object>, optional)</td>
 <td><code>202 Accepted</code> (string), <code>400 Bad Request</code> (ProblemDetails), <code>500 Internal Server Error</code> (ProblemDetails)</td>
 <td>Triggers a job to run immediately with optional data.</td>
@@ -3565,7 +3565,7 @@
 <tr>
 <td><strong>Pause Job</strong></td>
 <td>POST</td>
-<td><code>/api/_system/jobs/{jobName}/{jobGroup}/pause</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/{jobGroup}/pause</code></td>
 <td><code>jobName</code> (string), <code>jobGroup</code> (string)</td>
 <td><code>200 OK</code> (string), <code>400 Bad Request</code> (ProblemDetails), <code>500 Internal Server Error</code> (ProblemDetails)</td>
 <td>Pauses the execution of a specific job.</td>
@@ -3573,7 +3573,7 @@
 <tr>
 <td><strong>Resume Job</strong></td>
 <td>POST</td>
-<td><code>/api/_system/jobs/{jobName}/{jobGroup}/resume</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/{jobGroup}/resume</code></td>
 <td><code>jobName</code> (string), <code>jobGroup</code> (string)</td>
 <td><code>200 OK</code> (string), <code>400 Bad Request</code> (ProblemDetails), <code>500 Internal Server Error</code> (ProblemDetails)</td>
 <td>Resumes a paused job.</td>
@@ -3581,7 +3581,7 @@
 <tr>
 <td><strong>Interrupt Job</strong></td>
 <td>POST</td>
-<td><code>/api/_system/jobs/{jobName}/{jobGroup}/interrupt</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/{jobGroup}/interrupt</code></td>
 <td><code>jobName</code> (string), <code>jobGroup</code> (string)</td>
 <td><code>200 OK</code> (string), <code>400 Bad Request</code> (ProblemDetails), <code>500 Internal Server Error</code> (ProblemDetails)</td>
 <td>Interrupt a started job.</td>
@@ -3589,7 +3589,7 @@
 <tr>
 <td><strong>Purge Job Runs</strong></td>
 <td>DELETE</td>
-<td><code>/api/_system/jobs/{jobName}/{jobGroup}/runs</code></td>
+<td><code>/_bdk/api/jobs/{jobName}/{jobGroup}/runs</code></td>
 <td><code>jobName</code> (string), <code>jobGroup</code> (string), Query: <code>olderThan</code> (DateTimeOffset)</td>
 <td><code>200 OK</code> (string), <code>500 Internal Server Error</code> (ProblemDetails)</td>
 <td>Purges job run history older than a specified date.</td>
@@ -3598,7 +3598,7 @@
 </table>
 <h3 id="endpoint-details">Endpoint Details<a class="headerlink" href="#endpoint-details" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong>GET /api/_system/jobs</strong></li>
+<li><strong>GET /_bdk/api/jobs</strong></li>
 <li><strong>Description</strong>: Lists all scheduled jobs with their current status and trigger details.</li>
 <li>
 <p><strong>Response Example</strong>:
@@ -3609,7 +3609,7 @@
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>GET /api/_system/jobs/{jobName}/{jobGroup}</strong></p>
+<p><strong>GET /_bdk/api/jobs/{jobName}/{jobGroup}</strong></p>
 </li>
 <li><strong>Description</strong>: Retrieves detailed information for a specific job, including last run and triggers.</li>
 <li>
@@ -3618,7 +3618,7 @@
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>GET /api/_system/jobs/{jobName}/{jobGroup}/runs</strong></p>
+<p><strong>GET /_bdk/api/jobs/{jobName}/{jobGroup}/runs</strong></p>
 </li>
 <li><strong>Description</strong>: Fetches execution history with filters (e.g., date range, status).</li>
 <li><strong>Query Parameters</strong>:<ul>
@@ -3636,7 +3636,7 @@
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>GET /api/_system/jobs/{jobName}/{jobGroup}/stats</strong></p>
+<p><strong>GET /_bdk/api/jobs/{jobName}/{jobGroup}/stats</strong></p>
 </li>
 <li><strong>Description</strong>: Provides aggregated stats (e.g., success/failure counts, average duration).</li>
 <li>
@@ -3645,7 +3645,7 @@
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>GET /api/_system/jobs/{jobName}/{jobGroup}/triggers</strong></p>
+<p><strong>GET /_bdk/api/jobs/{jobName}/{jobGroup}/triggers</strong></p>
 </li>
 <li><strong>Description</strong>: Lists all triggers associated with the job.</li>
 <li>
@@ -3656,7 +3656,7 @@
 </code></pre></div></p>
 </li>
 <li>
-<p><strong>POST /api/_system/jobs/{jobName}/{jobGroup}/trigger</strong></p>
+<p><strong>POST /_bdk/api/jobs/{jobName}/{jobGroup}/trigger</strong></p>
 </li>
 <li><strong>Description</strong>: Triggers the job immediately with optional data.</li>
 <li><strong>Request Body</strong>:
@@ -3666,21 +3666,21 @@
 <p><strong>Response</strong>: <code>202 Accepted</code> with "Job {jobName} in group {jobGroup} triggered successfully."</p>
 </li>
 <li>
-<p><strong>POST /api/_system/jobs/{jobName}/{jobGroup}/pause</strong></p>
+<p><strong>POST /_bdk/api/jobs/{jobName}/{jobGroup}/pause</strong></p>
 </li>
 <li><strong>Description</strong>: Pauses the job’s execution.</li>
 <li>
 <p><strong>Response</strong>: <code>200 OK</code> with "Job {jobName} in group {jobGroup} paused successfully."</p>
 </li>
 <li>
-<p><strong>POST /api/_system/jobs/{jobName}/{jobGroup}/resume</strong></p>
+<p><strong>POST /_bdk/api/jobs/{jobName}/{jobGroup}/resume</strong></p>
 </li>
 <li><strong>Description</strong>: Resumes a paused job.</li>
 <li>
 <p><strong>Response</strong>: <code>200 OK</code> with "Job {jobName} in group {jobGroup} resumed successfully."</p>
 </li>
 <li>
-<p><strong>DELETE /api/_system/jobs/{jobName}/{jobGroup}/runs</strong></p>
+<p><strong>DELETE /_bdk/api/jobs/{jobName}/{jobGroup}/runs</strong></p>
 </li>
 <li><strong>Description</strong>: Deletes job run history older than <code>olderThan</code>.</li>
 <li><strong>Query Parameter</strong>: <code>olderThan</code> (e.g., <code>2025-03-01T00:00:00Z</code>)</li>

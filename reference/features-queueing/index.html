@@ -3010,29 +3010,29 @@
 <span class="w">  </span><span class="p">.</span><span class="n">WithSubscription</span><span class="o">&lt;</span><span class="n">OrderQueuedMessage</span><span class="p">,</span><span class="w"> </span><span class="n">OrderQueuedHandler</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">  </span><span class="p">.</span><span class="n">WithEntityFrameworkBroker</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">  </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
-<span class="w">    </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">&quot;/api/_system/queueing&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">GroupTag</span><span class="p">(</span><span class="s">&quot;_System.Queueing&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">&quot;/_bdk/api/queueing&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">GroupTag</span><span class="p">(</span><span class="s">&quot;_bdk.Queueing&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">());</span>
 </code></pre></div>
 <p>If you prefer separate registration, the existing <code>builder.Services.AddQueueingEndpoints(options =&gt; options.RequireAuthorization())</code> helper is also available.</p>
 <p>Routes:</p>
 <ul>
-<li><code>GET /api/_system/queueing/stats</code></li>
-<li><code>GET /api/_system/queueing/subscriptions</code></li>
-<li><code>GET /api/_system/queueing/messages</code></li>
-<li><code>GET /api/_system/queueing/messages/{id}</code></li>
-<li><code>GET /api/_system/queueing/messages/{id}/content</code></li>
-<li><code>GET /api/_system/queueing/messages/stats</code></li>
-<li><code>GET /api/_system/queueing/messages/waiting?take=50</code></li>
-<li><code>POST /api/_system/queueing/messages/{id}/retry</code></li>
-<li><code>POST /api/_system/queueing/messages/{id}/lease/release</code></li>
-<li><code>POST /api/_system/queueing/messages/{id}/archive</code></li>
-<li><code>DELETE /api/_system/queueing/messages</code></li>
-<li><code>POST /api/_system/queueing/queues/{queueName}/pause</code></li>
-<li><code>POST /api/_system/queueing/queues/{queueName}/resume</code></li>
-<li><code>POST /api/_system/queueing/types/{type}/pause</code></li>
-<li><code>POST /api/_system/queueing/types/{type}/resume</code></li>
-<li><code>POST /api/_system/queueing/types/{type}/circuit/reset</code></li>
+<li><code>GET /_bdk/api/queueing/stats</code></li>
+<li><code>GET /_bdk/api/queueing/subscriptions</code></li>
+<li><code>GET /_bdk/api/queueing/messages</code></li>
+<li><code>GET /_bdk/api/queueing/messages/{id}</code></li>
+<li><code>GET /_bdk/api/queueing/messages/{id}/content</code></li>
+<li><code>GET /_bdk/api/queueing/messages/stats</code></li>
+<li><code>GET /_bdk/api/queueing/messages/waiting?take=50</code></li>
+<li><code>POST /_bdk/api/queueing/messages/{id}/retry</code></li>
+<li><code>POST /_bdk/api/queueing/messages/{id}/lease/release</code></li>
+<li><code>POST /_bdk/api/queueing/messages/{id}/archive</code></li>
+<li><code>DELETE /_bdk/api/queueing/messages</code></li>
+<li><code>POST /_bdk/api/queueing/queues/{queueName}/pause</code></li>
+<li><code>POST /_bdk/api/queueing/queues/{queueName}/resume</code></li>
+<li><code>POST /_bdk/api/queueing/types/{type}/pause</code></li>
+<li><code>POST /_bdk/api/queueing/types/{type}/resume</code></li>
+<li><code>POST /_bdk/api/queueing/types/{type}/circuit/reset</code></li>
 </ul>
 <h3 id="in-process-semantics">In-process semantics<a class="headerlink" href="#in-process-semantics" title="Permanent link">&para;</a></h3>
 <p>The in-process broker is the simplest queue transport. It uses an in-memory channel per message type and dispatches work within the same process.</p>

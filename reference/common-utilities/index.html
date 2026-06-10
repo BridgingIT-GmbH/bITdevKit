@@ -4363,10 +4363,10 @@
 <h3 id="endpoints">Endpoints<a class="headerlink" href="#endpoints" title="Permanent link">&para;</a></h3>
 <p>Metrics exposes JSON snapshot endpoints such as:</p>
 <ul>
-<li><code>/api/_system/metrics/bdk</code></li>
-<li><code>/api/_system/metrics/overview</code></li>
-<li><code>/api/_system/metrics/dotnet</code></li>
-<li><code>/api/_system/metrics/aspnet</code></li>
+<li><code>/_bdk/api/metrics/bdk</code></li>
+<li><code>/_bdk/api/metrics/overview</code></li>
+<li><code>/_bdk/api/metrics/dotnet</code></li>
+<li><code>/_bdk/api/metrics/aspnet</code></li>
 </ul>
 <p>These endpoints are useful for dashboards, debugging, demos, and internal operational inspection. They are backed by in-process snapshot services that listen to the <code>bdk</code> meter and project the measurements into JSON models.</p>
 <p>They are not an OTLP endpoint, and they are not a Prometheus scrape endpoint. Those concerns belong to the host application's OpenTelemetry configuration.</p>

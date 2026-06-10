@@ -4431,7 +4431,7 @@
 <span class="w">    </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">());</span>
 </code></pre></div>
-<p>The default route group is <code>/api/_system/orchestrations</code>.</p>
+<p>The default route group is <code>/_bdk/api/orchestrations</code>.</p>
 <h3 id="add-global-orchestration-behaviors">Add Global Orchestration Behaviors<a class="headerlink" href="#add-global-orchestration-behaviors" title="Permanent link">&para;</a></h3>
 <p>Orchestration behaviors are global runtime decorators. They are not registered per orchestration type. Once registered on <code>AddOrchestrations()</code>, they wrap activity execution for all orchestrations in the current application.</p>
 <p>This behavior pipeline applies to:</p>
@@ -4491,14 +4491,14 @@
 <span class="p">}</span>
 </code></pre></div>
 <h3 id="background-execution-settings">Background Execution Settings<a class="headerlink" href="#background-execution-settings" title="Permanent link">&para;</a></h3>
-<p>Automatic timer continuation and wait-boundary recovery are controlled through <code>OrchestrationExecutionSettings</code>.</p>
-<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">OrchestrationExecutionSettings</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="n">EnableBackgroundExecution</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">,</span>
-<span class="w">    </span><span class="n">StartupDelay</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">Zero</span><span class="p">,</span>
-<span class="w">    </span><span class="n">BackgroundSweepInterval</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">),</span>
-<span class="w">    </span><span class="n">BackgroundSweepBatchSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">,</span>
-<span class="p">});</span>
+<p>Automatic timer continuation and wait-boundary recovery are controlled through the <code>AddOrchestrations</code> fluent builder. The builder configures <code>OrchestrationExecutionSettings</code> for the runtime.</p>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddOrchestrations</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Enabled</span><span class="p">(</span><span class="k">true</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="s">&quot;00:00:30&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">BackgroundSweepInterval</span><span class="p">(</span><span class="s">&quot;00:00:15&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">BackgroundSweepBatchSize</span><span class="p">(</span><span class="mi">20</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithOrchestration</span><span class="o">&lt;</span><span class="n">OrderApprovalOrchestration</span><span class="o">&gt;</span><span class="p">();</span>
 </code></pre></div>
 <p>When background execution is enabled, the runtime uses:</p>
 <ul>
@@ -5334,25 +5334,25 @@
 <span class="k">await</span><span class="w"> </span><span class="n">harness</span><span class="p">.</span><span class="n">Assert</span><span class="p">(</span><span class="n">dispatch</span><span class="p">.</span><span class="n">Value</span><span class="p">).</span><span class="n">HaveStatusAsync</span><span class="p">(</span><span class="n">OrchestrationStatus</span><span class="p">.</span><span class="n">Terminated</span><span class="p">);</span>
 </code></pre></div>
 <h2 id="operational-endpoints">Operational Endpoints<a class="headerlink" href="#operational-endpoints" title="Permanent link">&para;</a></h2>
-<p>When <code>Presentation.Web.Orchestrations</code> is registered, the default group path is <code>/api/_system/orchestrations</code>.</p>
+<p>When <code>Presentation.Web.Orchestrations</code> is registered, the default group path is <code>/_bdk/api/orchestrations</code>.</p>
 <p>Key routes:</p>
 <ul>
-<li><code>GET /api/_system/orchestrations</code></li>
-<li><code>GET /api/_system/orchestrations/metrics</code></li>
-<li><code>GET /api/_system/orchestrations/{instanceId}</code></li>
-<li><code>GET /api/_system/orchestrations/{instanceId}/context</code></li>
-<li><code>GET /api/_system/orchestrations/{instanceId}/history</code></li>
-<li><code>GET /api/_system/orchestrations/{instanceId}/signals</code></li>
-<li><code>GET /api/_system/orchestrations/{instanceId}/timers</code></li>
-<li><code>POST /api/_system/orchestrations/{instanceId}/signal</code></li>
-<li><code>POST /api/_system/orchestrations/{instanceId}/pause</code></li>
-<li><code>POST /api/_system/orchestrations/{instanceId}/resume</code></li>
-<li><code>POST /api/_system/orchestrations/{instanceId}/cancel</code></li>
-<li><code>POST /api/_system/orchestrations/{instanceId}/terminate</code></li>
-<li><code>POST /api/_system/orchestrations/{instanceId}/archive</code></li>
-<li><code>POST /api/_system/orchestrations/{instanceId}/repair/release-lease</code></li>
-<li><code>POST /api/_system/orchestrations/{instanceId}/repair/requeue-timers</code></li>
-<li><code>DELETE /api/_system/orchestrations</code></li>
+<li><code>GET /_bdk/api/orchestrations</code></li>
+<li><code>GET /_bdk/api/orchestrations/metrics</code></li>
+<li><code>GET /_bdk/api/orchestrations/{instanceId}</code></li>
+<li><code>GET /_bdk/api/orchestrations/{instanceId}/context</code></li>
+<li><code>GET /_bdk/api/orchestrations/{instanceId}/history</code></li>
+<li><code>GET /_bdk/api/orchestrations/{instanceId}/signals</code></li>
+<li><code>GET /_bdk/api/orchestrations/{instanceId}/timers</code></li>
+<li><code>POST /_bdk/api/orchestrations/{instanceId}/signal</code></li>
+<li><code>POST /_bdk/api/orchestrations/{instanceId}/pause</code></li>
+<li><code>POST /_bdk/api/orchestrations/{instanceId}/resume</code></li>
+<li><code>POST /_bdk/api/orchestrations/{instanceId}/cancel</code></li>
+<li><code>POST /_bdk/api/orchestrations/{instanceId}/terminate</code></li>
+<li><code>POST /_bdk/api/orchestrations/{instanceId}/archive</code></li>
+<li><code>POST /_bdk/api/orchestrations/{instanceId}/repair/release-lease</code></li>
+<li><code>POST /_bdk/api/orchestrations/{instanceId}/repair/requeue-timers</code></li>
+<li><code>DELETE /_bdk/api/orchestrations</code></li>
 </ul>
 <p>These routes are intended for:</p>
 <ul>

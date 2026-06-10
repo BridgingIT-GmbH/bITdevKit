@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
 using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core;
-using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -20,7 +19,7 @@ using Microsoft.Extensions.Logging;
 /// <param name="weatherAgent">The weather agent for fetching weather data.</param>
 /// <param name="logger">The logger.</param>
 public class WeatherIngestionJob(
-    IWeatherAgent weatherAgent,
+    IPipelineFactory pipelineFactory,
     ILogger<WeatherIngestionJob> logger,
     IOptions<CoreModuleConfiguration> moduleConfiguration) : JobBase
 {
@@ -43,6 +42,7 @@ public class WeatherIngestionJob(
 
         var successCount = 0;
         var failureCount = 0;
+        var pipeline = pipelineFactory.Create<WeatherIngestionPipeline, WeatherIngestionContext>();
 
         foreach (var city in cities)
         {
@@ -56,142 +56,16 @@ public class WeatherIngestionJob(
 
             try
             {
-                if (city.Location is null)
-                {
-                    logger.LogWarning("weather ingestion skipped for city {CityId} ({CityName}): location is missing", city.Id, city.Name);
-                    failureCount++;
-                    continue;
-                }
-
-                var ingestResult = await weatherAgent.IngestWeatherAsync(
-                    city.Id.ToString(),
-                    (double)city.Location.Latitude,
-                    (double)city.Location.Longitude,
+                var pipelineResult = await pipeline.ExecuteAsync(
+                    new WeatherIngestionContext(city),
+                    (PipelineExecutionOptions)null,
                     cancellationToken);
-
-                if (ingestResult.IsFailure)
+                if (pipelineResult.IsFailure)
                 {
-                    logger.LogWarning("weather ingestion failed for city {CityId} ({CityName}): {Errors}",
-                        city.Id, city.Name, string.Join("; ", ingestResult.Errors.Select(e => e.Message)));
                     failureCount++;
+                    logger.LogWarning("weather ingestion pipeline failed for city {CityId} ({CityName}): {Errors}",
+                        city.Id, city.Name, string.Join("; ", pipelineResult.Errors.Select(e => e.Message)));
                     continue;
-                }
-
-                var data = ingestResult.Value;
-
-                // Upsert current weather
-                if (data.CurrentWeather is not null)
-                {
-                    var existingCurrentWeather = await CurrentWeather.FindOneAsync(new CurrentWeatherByCitySpecification(city.Id), null, cancellationToken);
-                    CurrentWeather currentWeather = null;
-                    if (existingCurrentWeather.IsSuccess)
-                    {
-                        currentWeather = existingCurrentWeather.Value;
-                    }
-                    else if (existingCurrentWeather.Errors.Any(e => e is NotFoundError))
-                    {
-                        currentWeather = CurrentWeather.Create(city.Id);
-                    }
-                    else
-                    {
-                        logger.LogWarning("Failed to find existing current weather for city {CityId} ({CityName}): {Errors}",
-                            city.Id, city.Name, string.Join("; ", existingCurrentWeather.Errors.Select(e => e.Message)));
-                        failureCount++;
-                    }
-
-                    if (currentWeather is not null)
-                    {
-                        currentWeather.Temperature = (decimal)data.CurrentWeather.TemperatureCelsius;
-                        currentWeather.ApparentTemperature = (decimal)data.CurrentWeather.ApparentTemperatureCelsius;
-                        currentWeather.Humidity = (int)data.CurrentWeather.RelativeHumidity;
-                        currentWeather.WeatherCode = data.CurrentWeather.WeatherCode;
-                        currentWeather.WindSpeed = (decimal)data.CurrentWeather.WindSpeedKmh;
-                        currentWeather.WindGusts = (decimal)data.CurrentWeather.WindGustsKmh;
-                        currentWeather.WindDirection = (int)data.CurrentWeather.WindDirectionDegrees;
-                        currentWeather.Precipitation = (decimal)data.CurrentWeather.PrecipitationMm;
-                        currentWeather.CloudCover = (int)data.CurrentWeather.CloudCoverPercent;
-                        currentWeather.Pressure = (decimal)data.CurrentWeather.PressureHpa;
-                        currentWeather.RetrievedAt = data.CurrentWeather.RetrievedAt;
-
-                        var upsertResult = await currentWeather.UpsertAsync(cancellationToken);
-                        if (upsertResult.IsFailure)
-                        {
-                            logger.LogWarning("Failed to upsert current weather for city {CityId} ({CityName}): {Errors}",
-                                city.Id, city.Name, string.Join("; ", upsertResult.Errors.Select(e => e.Message)));
-                        }
-                    }
-                }
-
-                // Upsert forecasts
-                if (data.Forecasts is not null)
-                {
-                    foreach (var forecastData in data.Forecasts)
-                    {
-                        var existingForecast = await WeatherForecast.FindOneAsync(new WeatherForecastByCityAndDateSpecification(city.Id, DateOnly.FromDateTime(forecastData.ForecastDate)), null, cancellationToken);
-                        WeatherForecast forecast = null;
-                        if (existingForecast.IsSuccess)
-                        {
-                            forecast = existingForecast.Value;
-                        }
-                        else if (existingForecast.Errors.Any(e => e is NotFoundError))
-                        {
-                            forecast = WeatherForecast.Create(city.Id);
-                        }
-                        else
-                        {
-                            logger.LogWarning("Failed to find existing forecast for city {CityId} ({CityName}) date {ForecastDate}: {Errors}",
-                                city.Id, city.Name, forecastData.ForecastDate,
-                                string.Join("; ", existingForecast.Errors.Select(e => e.Message)));
-                            failureCount++;
-                            continue;
-                        }
-
-                        forecast.ForecastDate = DateOnly.FromDateTime(forecastData.ForecastDate);
-                        forecast.DayWeatherCode = forecastData.WeatherCode;
-                        forecast.TemperatureMax = (decimal)forecastData.TemperatureMaxCelsius;
-                        forecast.TemperatureMin = (decimal)forecastData.TemperatureMinCelsius;
-                        forecast.ApparentTemperatureMax = (decimal)forecastData.ApparentTemperatureMaxCelsius;
-                        forecast.ApparentTemperatureMin = (decimal)forecastData.ApparentTemperatureMinCelsius;
-                        forecast.PrecipitationSum = (decimal)forecastData.PrecipitationSumMm;
-                        forecast.PrecipitationProbabilityMax = (int)forecastData.PrecipitationProbability;
-                        forecast.WindSpeedMax = (decimal)forecastData.WindSpeedMaxKmh;
-                        forecast.WindGustsMax = (decimal)forecastData.WindGustsMaxKmh;
-                        forecast.DominantWindDirection = forecastData.DominantWindDirectionDegrees;
-                        forecast.UvIndexMax = (decimal)(forecastData.UvIndex ?? 0);
-                        forecast.SunshineDurationSeconds = forecastData.SunshineDurationSeconds;
-                        forecast.DaylightDurationSeconds = forecastData.DaylightDurationSeconds;
-                        forecast.Sunrise = forecastData.Sunrise ?? DateTime.MinValue;
-                        forecast.Sunset = forecastData.Sunset ?? DateTime.MinValue;
-                        forecast.RetrievedAt = DateTime.UtcNow;
-                        forecast.HourlyForecasts.Clear();
-                        foreach (var h in forecastData.HourlyForecasts ?? [])
-                        {
-                            forecast.HourlyForecasts.Add(new HourlyForecast
-                            {
-                                Hour = h.Hour.Hour,
-                                Temperature = (decimal)h.TemperatureCelsius,
-                                ApparentTemperature = (decimal)h.ApparentTemperatureCelsius,
-                                WeatherCode = h.WeatherCode,
-                                PrecipitationProbability = (int)h.PrecipitationProbability,
-                                Precipitation = (decimal)h.PrecipitationMm,
-                                WindSpeed = (decimal)h.WindSpeedKmh,
-                                WindDirection = h.WindDirectionDegrees,
-                                WindGusts = (decimal)h.WindGustsKmh,
-                                RelativeHumidity = (int)h.RelativeHumidity,
-                                CloudCover = h.CloudCoverPercent,
-                                Visibility = (decimal)h.VisibilityMeters,
-                                IsDay = h.IsDay
-                            });
-                        }
-
-                        var forecastUpsertResult = await forecast.UpsertAsync(cancellationToken);
-                        if (forecastUpsertResult.IsFailure)
-                        {
-                            logger.LogWarning("Failed to upsert forecast for city {CityId} ({CityName}) date {ForecastDate}: {Errors}",
-                                city.Id, city.Name, forecastData.ForecastDate,
-                                string.Join("; ", forecastUpsertResult.Errors.Select(e => e.Message)));
-                        }
-                    }
                 }
 
                 successCount++;
@@ -199,7 +73,8 @@ public class WeatherIngestionJob(
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Unexpected error ingesting weather for city {CityId} ({CityName}): {ErrorMessage}", city.Id, city.Name, ex.Message); failureCount++;
+                logger.LogError(ex, "Unexpected error ingesting weather for city {CityId} ({CityName}): {ErrorMessage}", city.Id, city.Name, ex.Message);
+                failureCount++;
             }
         }
 

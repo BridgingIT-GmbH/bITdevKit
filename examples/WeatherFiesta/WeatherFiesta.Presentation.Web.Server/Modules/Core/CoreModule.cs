@@ -90,6 +90,11 @@ public class CoreModule : WebModuleBase
        // Open-Meteo client
         services.AddOpenMeteo(moduleConfiguration);
 
+        // Weather report text generation
+        services.AddPipelines()
+            .WithPipeline<WeatherIngestionPipeline>();
+        services.AddWeatherReportTextGeneration(configuration);
+
         // Application console commands
         services.AddTransient<IConsoleCommand, CityListConsoleCommand>();
         services.AddTransient<IConsoleCommand, CityCurrentConsoleCommand>();

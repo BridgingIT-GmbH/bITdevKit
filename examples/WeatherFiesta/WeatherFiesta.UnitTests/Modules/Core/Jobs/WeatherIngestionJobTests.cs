@@ -6,8 +6,9 @@
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.UnitTests.Modules.Core.Jobs;
 
 using BridgingIT.DevKit.Application.Jobs;
+using BridgingIT.DevKit.Application.Queueing;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
 
 /// <summary>
 /// Unit tests for <see cref="WeatherIngestionJob"/>.
@@ -19,6 +20,7 @@ public class WeatherIngestionJobTests
     {
         // Arrange
         var weatherAgent = Substitute.For<IWeatherAgent>();
+        var queueBroker = Substitute.For<IQueueBroker>();
         weatherAgent.IngestWeatherAsync(
                 Arg.Any<string>(),
                 Arg.Any<double>(),
@@ -72,6 +74,9 @@ public class WeatherIngestionJobTests
             {
                 services.AddLogging();
                 services.AddSingleton(weatherAgent);
+                services.AddSingleton(queueBroker);
+                services.AddPipelines()
+                    .WithPipeline<WeatherIngestionPipeline>();
                 services.Configure<CoreModuleConfiguration>(options =>
                 {
                     options.ConnectionStrings = new Dictionary<string, string> { ["Default"] = "Test" };
@@ -141,5 +146,18 @@ public class WeatherIngestionJobTests
             forecast.SunshineDurationSeconds.ShouldBe(18000);
             forecast.DaylightDurationSeconds.ShouldBe(54000);
         }
+
+        await queueBroker.Received(3).Enqueue(
+            Arg.Is<WeatherReportGenerationMessage>(m => m.GetCityId() == city.Id),
+            Arg.Any<CancellationToken>());
+        await queueBroker.Received(1).Enqueue(
+            Arg.Is<WeatherReportGenerationMessage>(m => m.GetCityId() == city.Id && m.ReportType == WeatherReportType.Today),
+            Arg.Any<CancellationToken>());
+        await queueBroker.Received(1).Enqueue(
+            Arg.Is<WeatherReportGenerationMessage>(m => m.GetCityId() == city.Id && m.ReportType == WeatherReportType.Tomorrow),
+            Arg.Any<CancellationToken>());
+        await queueBroker.Received(1).Enqueue(
+            Arg.Is<WeatherReportGenerationMessage>(m => m.GetCityId() == city.Id && m.ReportType == WeatherReportType.Week),
+            Arg.Any<CancellationToken>());
     }
 }

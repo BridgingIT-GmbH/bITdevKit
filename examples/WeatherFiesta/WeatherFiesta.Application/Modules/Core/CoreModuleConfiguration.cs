@@ -40,6 +40,9 @@ public class CoreModuleConfiguration
     /// <summary>Gets or sets the Open-Meteo API options.</summary>
     public OpenMeteoOptions OpenMeteo { get; set; } = new();
 
+    /// <summary>Gets or sets the weather report text generation options.</summary>
+    public WeatherReportTextGenerationOptions WeatherReportTextGeneration { get; set; } = new();
+
     /// <summary>
     /// FluentValidation validator for <see cref="CoreModuleConfiguration"/>.
     /// </summary>
@@ -163,4 +166,28 @@ public class OpenMeteoOptions
             RuleFor(x => x.InterCallDelayMs).GreaterThanOrEqualTo(0);
         }
     }
+}
+
+/// <summary>
+/// Options for local weather report text generation.
+/// </summary>
+public sealed class WeatherReportTextGenerationOptions
+{
+    /// <summary>Gets or sets the OpenAI-compatible endpoint.</summary>
+    public string Endpoint { get; set; } = "http://localhost:8080/v1";
+
+    /// <summary>Gets or sets the API key.</summary>
+    public string ApiKey { get; set; } = "no-key";
+
+    /// <summary>Gets or sets the model name.</summary>
+    public string Model { get; set; } = "weather-summary";
+
+    /// <summary>Gets or sets the sampling temperature.</summary>
+    public float Temperature { get; set; } = 0.1f;
+
+    /// <summary>Gets or sets the nucleus sampling value.</summary>
+    public float TopP { get; set; } = 0.8f;
+
+    /// <summary>Gets or sets the maximum output tokens.</summary>
+    public int MaxOutputTokens { get; set; } = 180;
 }

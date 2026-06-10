@@ -74,13 +74,13 @@ public class OpenMeteoClient : IOpenMeteoClient
             var geocoding = await this.SearchCitiesAsync("Berlin", "DE", cancellationToken);
             if (geocoding is null)
             {
-                return Result.Failure("Open-Meteo geocoding did not return the health check city.");
+                return Result.Failure().WithError("Open-Meteo geocoding did not return the health check city.");
             }
 
             var weather = await this.GetWeatherAsync(52.5200m, 13.4050m, "auto", 1, cancellationToken);
             if (weather?.Current is null)
             {
-                return Result.Failure("Open-Meteo forecast did not return current weather.");
+                return Result.Failure().WithError("Open-Meteo forecast did not return current weather.");
             }
 
             return Result.Success("Open-Meteo geocoding and forecast APIs are reachable.");
@@ -89,7 +89,7 @@ public class OpenMeteoClient : IOpenMeteoClient
         {
             this.logger.LogWarning(ex, "[OpenMeteoClient] Health check failed: {ErrorMessage}", ex.Message);
 
-            return Result.Failure($"Open-Meteo client health check failed: {ex.Message}");
+            return Result.Failure().WithError($"Open-Meteo client health check failed: {ex.Message}");
         }
     }
 

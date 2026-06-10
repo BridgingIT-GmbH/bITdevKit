@@ -64,6 +64,7 @@ public class CoreSeederTask(
         {
             await this.SeedCurrentWeatherAsync(cityName, cityId, cancellationToken);
             await this.SeedWeatherForecastsAsync(cityName, cityId, cancellationToken);
+            await this.SeedWeatherReportsAsync(cityName, cityId, cancellationToken);
         }
     }
 
@@ -300,6 +301,66 @@ public class CoreSeederTask(
         }
     }
 
+    private async Task SeedWeatherReportsAsync(string cityName, CityId cityId, CancellationToken cancellationToken)
+    {
+        var timeZoneId = GetCityTimeZoneId(cityName);
+        if (timeZoneId is null)
+        {
+            return;
+        }
+
+        var utcNow = DateTime.UtcNow;
+        var localToday = GetLocalDate(utcNow, timeZoneId);
+        var reports = new[]
+        {
+            (WeatherReportType.Current, CreateReportPeriod(localToday, localToday.AddDays(1), timeZoneId)),
+            (WeatherReportType.Today, CreateReportPeriod(localToday, localToday.AddDays(1), timeZoneId)),
+            (WeatherReportType.Tomorrow, CreateReportPeriod(localToday.AddDays(1), localToday.AddDays(2), timeZoneId)),
+            (WeatherReportType.Week, CreateReportPeriod(localToday, localToday.AddDays(7), timeZoneId))
+        };
+
+        foreach (var (reportType, period) in reports)
+        {
+            var existingResult = await WeatherReport.FindOneAsync(
+                new Specification<WeatherReport>(r =>
+                    r.CityId == cityId &&
+                    r.ReportType == reportType &&
+                    r.PeriodStartUtc == period.PeriodStartUtc &&
+                    r.PeriodEndUtc == period.PeriodEndUtc),
+                null,
+                cancellationToken);
+
+            if (existingResult.IsSuccess)
+            {
+                continue;
+            }
+
+            if (existingResult.IsFailure && !existingResult.Errors.Any(e => e is NotFoundError))
+            {
+                this.logger.LogWarning("{LogKey} failed to check existing weather report for {CityName} ({ReportType}): {Errors}", "IFR", cityName, reportType, string.Join(", ", existingResult.Errors.Select(e => e.Message)));
+                continue;
+            }
+
+            var report = WeatherReport.Create(
+                cityId,
+                reportType,
+                period.PeriodStartUtc,
+                period.PeriodEndUtc,
+                period.ForecastDateStart,
+                period.ForecastDateEndExclusive);
+            report.SetContent("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.");
+
+            var insertResult = await report.InsertAsync(cancellationToken);
+            if (insertResult.IsFailure)
+            {
+                this.logger.LogWarning("{LogKey} failed to seed weather report for {CityName} ({ReportType}): {Errors}", "IFR", cityName, reportType, string.Join(", ", insertResult.Errors.Select(e => e.Message)));
+                continue;
+            }
+
+            this.logger.LogInformation("{LogKey} seeded weather report for {CityName} ({ReportType})", "IFR", cityName, reportType);
+        }
+    }
+
     private async Task SeedProfileAsync(FakeUser user, CancellationToken cancellationToken)
     {
         var existingResult = await UserProfile
@@ -422,6 +483,41 @@ public class CoreSeederTask(
         }
 
         return forecasts;
+    }
+
+    private static WeatherReportPeriod CreateReportPeriod(DateOnly localStart, DateOnly localEndExclusive, string timeZoneId)
+    {
+        var timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+        var localStartDateTime = localStart.ToDateTime(TimeOnly.MinValue, DateTimeKind.Unspecified);
+        var localEndDateTime = localEndExclusive.ToDateTime(TimeOnly.MinValue, DateTimeKind.Unspecified);
+
+        return new WeatherReportPeriod(
+            TimeZoneInfo.ConvertTimeToUtc(localStartDateTime, timeZone),
+            TimeZoneInfo.ConvertTimeToUtc(localEndDateTime, timeZone),
+            localStart,
+            localEndExclusive,
+            timeZoneId);
+    }
+
+    private static DateOnly GetLocalDate(DateTime utcNow, string timeZoneId)
+    {
+        var timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+        var utc = utcNow.Kind == DateTimeKind.Utc ? utcNow : utcNow.ToUniversalTime();
+        var local = TimeZoneInfo.ConvertTimeFromUtc(utc, timeZone);
+
+        return DateOnly.FromDateTime(local);
+    }
+
+    private static string GetCityTimeZoneId(string cityName)
+    {
+        return cityName switch
+        {
+            "Amsterdam" => "Europe/Amsterdam",
+            "Berlin" => "Europe/Berlin",
+            "Paris" => "Europe/Paris",
+            "London" => "Europe/London",
+            _ => null
+        };
     }
 
     private static UserSubscription CreateSubscription(string userId, SubscriptionPlan plan)

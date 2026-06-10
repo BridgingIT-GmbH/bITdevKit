@@ -10,7 +10,6 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.Jobs;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Orchestrations;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Queueing;
-using DevKit.Domain.Model;
 
 /// <summary>
 /// Entity Framework Core DbContext for the WeatherFiesta Core module.
@@ -31,6 +30,9 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
 
     /// <summary>Gets or sets the weather forecasts DbSet.</summary>
     public DbSet<WeatherForecast> WeatherForecasts { get; set; }
+
+    /// <summary>Gets or sets the generated weather reports DbSet.</summary>
+    public DbSet<WeatherReport> WeatherReports { get; set; }
 
     /// <summary>Gets or sets the user profiles DbSet.</summary>
     public DbSet<UserProfile> UserProfiles { get; set; }

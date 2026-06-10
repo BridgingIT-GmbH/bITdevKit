@@ -5,10 +5,14 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
 
+using System.ClientModel;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure.OpenMeteo;
+using Microsoft.Extensions.AI;
+using Microsoft.Extensions.Options;
+using OpenAI;
 
 /// <summary>
 /// Extension methods for registering Core module services, including OpenMeteo client and ActiveEntity configurations.
@@ -82,6 +86,11 @@ public static class CoreModuleExtensions
                 .AddLoggingBehavior()
                 .AddMetricsBehavior();
 
+            cfg.For<WeatherReport, WeatherReportId>()
+                .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
+                .AddLoggingBehavior()
+                .AddMetricsBehavior();
+
             cfg.For<UserProfile, UserProfileId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
                 .AddLoggingBehavior()
@@ -97,4 +106,25 @@ public static class CoreModuleExtensions
         });
     }
 
+    /// <summary>
+    /// Adds the local OpenAI-compatible weather report text generator.
+    /// </summary>
+    public static IServiceCollection AddWeatherReportTextGeneration(
+        this IServiceCollection services,
+        IConfiguration configuration)
+    {
+        services.Configure<WeatherReportTextGenerationOptions>(configuration.GetSection("Modules:Core:WeatherReports:TextGeneration"));
+        services.AddSingleton(serviceProvider =>
+        {
+            var options = serviceProvider.GetRequiredService<IOptions<WeatherReportTextGenerationOptions>>().Value;
+            return new OpenAIClient(
+                    new ApiKeyCredential(options.ApiKey),
+                    new OpenAIClientOptions { Endpoint = new Uri(options.Endpoint.TrimEnd('/')) })
+                .GetChatClient(options.Model)
+                .AsIChatClient();
+        });
+        services.AddScoped<IWeatherReportTextGenerator, WeatherReportAITextGenerator>();
+
+        return services;
+    }
 }

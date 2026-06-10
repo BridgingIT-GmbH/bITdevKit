@@ -61,6 +61,7 @@ builder.Services.AddQueueing(builder.Configuration, o => o
     // .WithBehavior<ModuleScopeQueueHAndlerBehavior>()
     .WithBehavior<MetricsQueueEnqueuerBehavior>()
     .WithBehavior<MetricsQueueHandlerBehavior>()
+    .WithSubscription<WeatherReportGenerationMessage, WeatherReportGenerationHandler>()
     .WithEntityFrameworkBroker<CoreDbContext>()
     .AddEndpoints();
 

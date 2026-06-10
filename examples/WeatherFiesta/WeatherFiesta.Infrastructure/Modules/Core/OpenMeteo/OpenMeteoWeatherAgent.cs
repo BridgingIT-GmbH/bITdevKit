@@ -48,7 +48,7 @@ public class OpenMeteoWeatherAgent : IWeatherAgent
 
         if (result.Value?.CurrentWeather is null)
         {
-            return Result.Failure("Open-Meteo weather agent did not return current weather.");
+            return Result.Failure().WithError("Open-Meteo weather agent did not return current weather.");
         }
 
         return Result.Success("Open-Meteo weather agent can retrieve and map provider data.");
@@ -80,7 +80,7 @@ public class OpenMeteoWeatherAgent : IWeatherAgent
                     "[OpenMeteoWeatherAgent] No weather data returned for cityId={CityId}",
                     cityId);
 
-                return Result<WeatherIngestionResult>.Failure("No weather data returned from provider.");
+                return Result<WeatherIngestionResult>.Failure().WithError("No weather data returned from provider.");
             }
 
             var result = new WeatherIngestionResult
@@ -101,7 +101,7 @@ public class OpenMeteoWeatherAgent : IWeatherAgent
                 "[OpenMeteoWeatherAgent] Failed to ingest weather for cityId={CityId}: {ErrorMessage}",
                 cityId, ex.Message);
 
-            return Result<WeatherIngestionResult>.Failure($"Weather ingestion failed: {ex.Message}");
+            return Result<WeatherIngestionResult>.Failure().WithError($"Weather ingestion failed: {ex.Message}");
         }
     }
 

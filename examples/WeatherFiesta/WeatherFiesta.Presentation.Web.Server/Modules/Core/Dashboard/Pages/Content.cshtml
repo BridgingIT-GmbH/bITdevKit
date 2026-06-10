@@ -1,9 +1,12 @@
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Models
+@using BridgingIT.DevKit.Domain
 @using BridgingIT.DevKit.Domain.Repositories
+@using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure
 @using Microsoft.Extensions.DependencyInjection
 @using RazorSlices
+@using System.Text.Json
 @inherits RazorSlice
 
 @{
@@ -63,10 +66,19 @@
                 <h6 class="card-title mb-0">Current Weather</h6>
                 <div class="text-muted small">@DisplayValue(citiesModel.SelectedCity?.Name)</div>
             </div>
-            @if (citiesModel.CurrentWeather is not null)
-            {
-                <span class="badge">@DisplayValue(citiesModel.CurrentWeather.WeatherDescription)</span>
-            }
+            <div class="d-flex align-items-center gap-2">
+                @if (!string.IsNullOrWhiteSpace(citiesModel.SelectedCityWeatherJson))
+                {
+                    <button id="copy-selected-city-weather-json"
+                            type="button"
+                            class="btn btn-sm btn-outline-secondary"
+                            onclick="const payload=document.getElementById('selected-city-weather-json');if(!payload){return false;}payload.focus();payload.select();payload.setSelectionRange(0,payload.value.length);const copied=document.execCommand('copy');const label=this.dataset.copyLabel||this.textContent;this.dataset.copyLabel=label;this.textContent=copied?'Copied':'Copy failed';window.setTimeout(()=>this.textContent=label,1600);return false;">Copy JSON</button>
+                }
+                @if (citiesModel.CurrentWeather is not null)
+                {
+                    <span class="badge">@DisplayValue(citiesModel.CurrentWeather.WeatherDescription)</span>
+                }
+            </div>
         </div>
 
         @if (citiesModel.Cities.Count == 0)
@@ -115,6 +127,50 @@
                 @if (citiesModel.CurrentWeather.StaleDataWarning)
                 {
                     <span class="text-warning ms-2">@DisplayValue(citiesModel.CurrentWeather.StaleDataWarningMessage)</span>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@if (!string.IsNullOrWhiteSpace(citiesModel.SelectedCityWeatherJson))
+{
+    <textarea id="selected-city-weather-json" readonly style="position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0;">@citiesModel.SelectedCityWeatherJson</textarea>
+}
+
+<div class="card mb-2">
+    <div class="card-body p-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div>
+                <h6 class="card-title mb-0">Weather Reports</h6>
+                <div class="text-muted small">@DisplayValue(citiesModel.SelectedCity?.Name)</div>
+            </div>
+            <span class="badge">@citiesModel.Reports.Count</span>
+        </div>
+
+        @if (citiesModel.Cities.Count == 0)
+        {
+            <div class="text-muted small">No city is available for report selection.</div>
+        }
+        else if (citiesModel.Reports.Count == 0)
+        {
+            <div class="text-muted small">No weather reports are available for the selected city.</div>
+        }
+        else
+        {
+            <div class="row g-2">
+                @foreach (var report in citiesModel.Reports)
+                {
+                    <div class="col-12 col-lg-4">
+                        <div class="border rounded p-2 h-100">
+                            <div class="d-flex justify-content-between align-items-start gap-2 mb-1">
+                                <div class="fw-semibold">@FormatReportType(report.ReportType)</div>
+                                <span class="badge text-nowrap">@FormatDateRange(report.ForecastDateStart, report.ForecastDateEndExclusive)</span>
+                            </div>
+                            <div class="small">@DisplayValue(report.Summary)</div>
+                            <div class="text-muted small mt-2">Generated @report.GeneratedAt.ToLocalTime().ToString("g", CultureInfo.InvariantCulture)</div>
+                        </div>
+                    </div>
                 }
             </div>
         }
@@ -215,7 +271,157 @@
             }
         }
 
+        await LoadWeatherReportsAsync(result);
+        await LoadForecastsAsync(result);
+        result.SelectedCityWeatherJson = CreateSelectedCityWeatherJson(result);
+
         return result;
+    }
+
+    private async Task LoadForecastsAsync(WeatherFiestaDashboardCitiesViewModel model)
+    {
+        if (!Guid.TryParse(model.SelectedCityId, out var cityIdValue))
+        {
+            return;
+        }
+
+        var cityId = CityId.Create(cityIdValue);
+        var options = new FindOptions<WeatherForecast>()
+            .AddInclude(new IncludeOption<WeatherForecast>(forecast => forecast.HourlyForecasts));
+
+        var forecastsResult = await WeatherForecast.FindAllAsync(
+            new Specification<WeatherForecast>(forecast => forecast.CityId == cityId),
+            options,
+            this.HttpContext.RequestAborted);
+
+        if (forecastsResult.IsFailure)
+        {
+            model.Errors.AddRange(forecastsResult.Errors.Select(error => error.Message));
+            return;
+        }
+
+        model.Forecasts.AddRange(forecastsResult.Value
+            .OrderBy(forecast => forecast.ForecastDate)
+            .Select(MapForecast));
+    }
+
+    private async Task LoadWeatherReportsAsync(WeatherFiestaDashboardCitiesViewModel model)
+    {
+        if (!Guid.TryParse(model.SelectedCityId, out var cityIdValue))
+        {
+            return;
+        }
+
+        var cityId = CityId.Create(cityIdValue);
+        var reportTypes = new[]
+        {
+            WeatherReportType.Today,
+            WeatherReportType.Tomorrow,
+            WeatherReportType.Week
+        };
+
+        var reportsResult = await WeatherReport.FindAllAsync(
+            new Specification<WeatherReport>(report =>
+                report.CityId == cityId &&
+                reportTypes.Contains(report.ReportType)),
+            null,
+            this.HttpContext.RequestAborted);
+
+        if (reportsResult.IsFailure)
+        {
+            model.Errors.AddRange(reportsResult.Errors.Select(error => error.Message));
+            return;
+        }
+
+        model.Reports.AddRange(reportsResult.Value
+            .GroupBy(report => report.ReportType)
+            .Select(group => group
+                .OrderByDescending(report => report.GeneratedAt)
+                .ThenByDescending(report => report.PeriodStartUtc)
+                .First())
+            .OrderBy(report => GetReportTypeOrder(report.ReportType))
+            .Select(report => new WeatherReportDashboardModel
+            {
+                ReportType = report.ReportType,
+                ForecastDateStart = report.ForecastDateStart,
+                ForecastDateEndExclusive = report.ForecastDateEndExclusive,
+                Summary = report.Summary,
+                GeneratedAt = report.GeneratedAt
+            }));
+    }
+
+    private static WeatherForecastModel MapForecast(WeatherForecast forecast)
+    {
+        return new WeatherForecastModel
+        {
+            Id = forecast.Id.Value.ToString(),
+            CityId = forecast.CityId.Value.ToString(),
+            ForecastDate = forecast.ForecastDate,
+            DayWeatherCode = forecast.DayWeatherCode,
+            DayWeatherDescription = GetWeatherDescription(forecast.DayWeatherCode),
+            DayWeatherIcon = GetWeatherIcon(forecast.DayWeatherCode),
+            TemperatureMax = forecast.TemperatureMax,
+            TemperatureMin = forecast.TemperatureMin,
+            ApparentTemperatureMax = forecast.ApparentTemperatureMax,
+            ApparentTemperatureMin = forecast.ApparentTemperatureMin,
+            PrecipitationSum = forecast.PrecipitationSum,
+            PrecipitationProbabilityMax = forecast.PrecipitationProbabilityMax,
+            WindSpeedMax = forecast.WindSpeedMax,
+            WindGustsMax = forecast.WindGustsMax,
+            DominantWindDirection = forecast.DominantWindDirection,
+            UvIndexMax = forecast.UvIndexMax,
+            SunshineDurationSeconds = forecast.SunshineDurationSeconds,
+            DaylightDurationSeconds = forecast.DaylightDurationSeconds,
+            Sunrise = forecast.Sunrise,
+            Sunset = forecast.Sunset,
+            RetrievedAt = forecast.RetrievedAt,
+            HourlyForecasts = forecast.HourlyForecasts
+                .OrderBy(hourlyForecast => hourlyForecast.Hour)
+                .Select(MapHourlyForecast)
+                .ToList()
+        };
+    }
+
+    private static HourlyForecastModel MapHourlyForecast(HourlyForecast hourlyForecast)
+    {
+        return new HourlyForecastModel
+        {
+            Id = hourlyForecast.Id,
+            Hour = hourlyForecast.Hour,
+            Temperature = hourlyForecast.Temperature,
+            RelativeHumidity = hourlyForecast.RelativeHumidity,
+            ApparentTemperature = hourlyForecast.ApparentTemperature,
+            PrecipitationProbability = hourlyForecast.PrecipitationProbability,
+            Precipitation = hourlyForecast.Precipitation,
+            WeatherCode = hourlyForecast.WeatherCode,
+            WeatherDescription = GetWeatherDescription(hourlyForecast.WeatherCode),
+            WindSpeed = hourlyForecast.WindSpeed,
+            WindDirection = hourlyForecast.WindDirection,
+            WindGusts = hourlyForecast.WindGusts,
+            CloudCover = hourlyForecast.CloudCover,
+            Visibility = hourlyForecast.Visibility,
+            IsDay = hourlyForecast.IsDay
+        };
+    }
+
+    private static string CreateSelectedCityWeatherJson(WeatherFiestaDashboardCitiesViewModel model)
+    {
+        if (model.SelectedCity is null)
+        {
+            return null;
+        }
+
+        var payload = new
+        {
+            city = model.SelectedCity,
+            current = model.CurrentWeather,
+            forecasts = model.Forecasts
+        };
+
+        return JsonSerializer.Serialize(payload, new JsonSerializerOptions(JsonSerializerDefaults.Web)
+        {
+            WriteIndented = true
+        });
     }
 
     private string GetSelectedCityId(IEnumerable<AdminCityModel> cities)
@@ -274,6 +480,54 @@
         return value.ToString("0.#", CultureInfo.InvariantCulture);
     }
 
+    private static string FormatReportType(WeatherReportType reportType)
+    {
+        return reportType switch
+        {
+            WeatherReportType.Today => "Today",
+            WeatherReportType.Tomorrow => "Tomorrow",
+            WeatherReportType.Week => "Week",
+            WeatherReportType.Current => "Current",
+            _ => reportType.ToString()
+        };
+    }
+
+    private static string GetWeatherDescription(int weatherCode)
+    {
+        var condition = WeatherConditionCode.GetAll()
+            .FirstOrDefault(c => c.Id == weatherCode);
+
+        return condition?.Description ?? $"Unknown weather code {weatherCode}";
+    }
+
+    private static string GetWeatherIcon(int weatherCode)
+    {
+        var condition = WeatherConditionCode.GetAll()
+            .FirstOrDefault(c => c.Id == weatherCode);
+
+        return condition?.Icon ?? "?";
+    }
+
+    private static string FormatDateRange(DateOnly start, DateOnly endExclusive)
+    {
+        var endInclusive = endExclusive.AddDays(-1);
+        return start == endInclusive
+            ? start.ToString("MMM d", CultureInfo.InvariantCulture)
+            : $"{start.ToString("MMM d", CultureInfo.InvariantCulture)}-{endInclusive.ToString("MMM d", CultureInfo.InvariantCulture)}";
+    }
+
+    private static int GetReportTypeOrder(WeatherReportType reportType)
+    {
+        return reportType switch
+        {
+            WeatherReportType.Today => 0,
+            WeatherReportType.Tomorrow => 1,
+            WeatherReportType.Week => 2,
+            WeatherReportType.Current => 3,
+            _ => 99
+        };
+    }
+
     private sealed class WeatherFiestaDashboardCitiesViewModel
     {
         public DateTimeOffset CapturedAtUtc { get; init; }
@@ -288,6 +542,12 @@
 
         public CurrentWeatherModel CurrentWeather { get; set; }
 
+        public List<WeatherReportDashboardModel> Reports { get; } = [];
+
+        public List<WeatherForecastModel> Forecasts { get; } = [];
+
+        public string SelectedCityWeatherJson { get; set; }
+
         public int TotalSubscriptions => this.Cities.Sum(city => city.SubscriptionCount);
 
         public int CountryCount => this.Cities
@@ -300,5 +560,18 @@
             .OrderByDescending(city => city.SubscriptionCount)
             .ThenBy(city => city.Name, StringComparer.OrdinalIgnoreCase)
             .FirstOrDefault();
+    }
+
+    private sealed class WeatherReportDashboardModel
+    {
+        public WeatherReportType ReportType { get; init; }
+
+        public DateOnly ForecastDateStart { get; init; }
+
+        public DateOnly ForecastDateEndExclusive { get; init; }
+
+        public string Summary { get; init; }
+
+        public DateTime GeneratedAt { get; init; }
     }
 }

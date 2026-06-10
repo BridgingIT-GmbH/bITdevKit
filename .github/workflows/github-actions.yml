@@ -27,6 +27,8 @@ jobs:
   version:
     name: Version
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.calculate_version.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.4
@@ -43,16 +45,20 @@ jobs:
       - name: Install minver tool
         run: dotnet tool install --global minver-cli --version 4.3.0
 
-      - name: Calculate version # make VERSION available as env.version
+      - name: Calculate version
+        id: calculate_version
         run: |
           VERSION=$(minver -v d)
-          echo $VERSION
-          echo "version=$VERSION" >> "$GITHUB_ENV"
+          echo "Calculated version: $VERSION"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "BUILD_VERSION=$VERSION" >> "$GITHUB_ENV"
 
   build:
     name: Build
     runs-on: ubuntu-latest
     needs: version
+    env:
+      BUILD_VERSION: ${{ needs.version.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
@@ -76,7 +82,7 @@ jobs:
         run: dotnet restore --verbosity Normal
 
       - name: Build solution
-        run: dotnet build --configuration ${{ env.Build_Configuration }} --no-restore --nologo
+        run: dotnet build --configuration ${{ env.Build_Configuration }} --no-restore --nologo /p:Version="${BUILD_VERSION}" /p:PackageVersion="${BUILD_VERSION}"
 
       # - name: Vulnerability scan (nuget)
       #   run: |
@@ -99,7 +105,9 @@ jobs:
   tests:
     name: Tests
     runs-on: ubuntu-latest
-    needs: build
+    needs: [ version, build ]
+    env:
+      BUILD_VERSION: ${{ needs.version.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
@@ -166,7 +174,9 @@ jobs:
   publish:
     name: Publish
     runs-on: ubuntu-latest
-    needs: tests
+    needs: [ version, tests ]
+    env:
+      BUILD_VERSION: ${{ needs.version.outputs.version }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4.1.1
@@ -192,7 +202,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Evaluate publishing criteria
+      - name: Package evaluation (nuget)
         id: publishing
         run: |
           is_publishable=false
@@ -228,7 +238,7 @@ jobs:
           fi
 
           for package_project in "${package_projects[@]}"; do
-            dotnet pack "$package_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --output "${NUGET_DIRECTORY}" --verbosity normal
+            dotnet pack "$package_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --output "${NUGET_DIRECTORY}" --verbosity normal /p:Version="${BUILD_VERSION}" /p:PackageVersion="${BUILD_VERSION}"
           done
 
       - name: Package push (nuget)

@@ -69,7 +69,9 @@ jobs:
     needs: version
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.4
+        with:
+          fetch-depth: 0
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4.0.0
@@ -116,7 +118,9 @@ jobs:
     needs: [ version, build ]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.4
+        with:
+          fetch-depth: 0
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4.1.8
@@ -200,7 +204,9 @@ jobs:
     needs: [ version, tests ]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.1
+        uses: actions/checkout@v4.1.4
+        with:
+          fetch-depth: 0
 
       - name: Download build artifacts
         uses: actions/download-artifact@v4.1.8
@@ -275,7 +281,7 @@ jobs:
           fi
 
           for package_project in "${package_projects[@]}"; do
-            dotnet pack "$package_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --output "${NUGET_DIRECTORY}" --verbosity normal --version 1.0.100-preview.0.106
+            dotnet pack "$package_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --output "${NUGET_DIRECTORY}" --verbosity normal
           done
 
           mapfile -t packages < <(find "${NUGET_DIRECTORY}" -maxdepth 1 -name '*.nupkg' -type f | sort)

@@ -84,13 +84,54 @@ jobs:
       #     echo "Analyze dotnet list package command log output..."
       #     grep -q -i "critical\|high\|moderate\|low" build.log; [ $? -eq 0 ] && echo "Security Vulnerabilities found on the log output" && exit 1
 
+      - name: Publish build artifacts
+        uses: actions/upload-artifact@v4.3.3
+        with:
+          name: BuildOutput
+          if-no-files-found: error
+          retention-days: 1
+          path: |
+            src/**/bin/${{ env.Build_Configuration }}/**
+            src/**/obj/**
+            tests/**/bin/${{ env.Build_Configuration }}/**
+            tests/**/obj/**
+
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: BuildOutput
+          path: .
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4.0.0
+        with:
+          global-json-file: global.json
+
+      - run: dotnet --info
+
+      - name: Cache nuget packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
       - name: Run unit tests
         run: |
           shopt -s globstar nullglob
           test_projects=(tests/**/*UnitTests.csproj)
 
           for test_project in "${test_projects[@]}"; do
-            max_attempts=3
+            max_attempts=4
             test_succeeded=false
 
             for ((attempt = 1; attempt <= max_attempts; attempt++)); do
@@ -121,6 +162,35 @@ jobs:
           path: "**/test-results.trx"
           reporter: dotnet-trx
           fail-on-error: true
+
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    needs: tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4.1.8
+        with:
+          name: BuildOutput
+          path: .
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4.0.0
+        with:
+          global-json-file: global.json
+
+      - run: dotnet --info
+
+      - name: Cache nuget packages
+        uses: actions/cache@v3
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
 
       - name: Evaluate publishing criteria
         id: publishing

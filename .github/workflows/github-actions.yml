@@ -83,17 +83,17 @@ jobs:
       #     echo "Analyze dotnet list package command log output..."
       #     grep -q -i "critical\|high\|moderate\|low" build.log; [ $? -eq 0 ] && echo "Security Vulnerabilities found on the log output" && exit 1
 
-      - name: Run tests
-        run: dotnet test "${{ github.workspace }}/tests/**/*UnitTests.csproj" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --filter "FullyQualifiedName!~Examples" --logger "trx;LogFileName=test-results.trx" || true
-        # run: |
-        #   shopt -s globstar nullglob
-        #   test_projects=(tests/**/*UnitTests.csproj)
+      - name: Run unit tests
+        # run: dotnet test "${{ github.workspace }}/tests/**/*UnitTests.csproj" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --filter "FullyQualifiedName!~Examples" --logger "trx;LogFileName=test-results.trx" || true
+        run: |
+          shopt -s globstar nullglob
+          test_projects=(tests/**/*UnitTests.csproj)
 
-        #   for test_project in "${test_projects[@]}"; do
-        #     dotnet test "$test_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --logger "trx;LogFileName=test-results.trx"
-        #   done
+          for test_project in "${test_projects[@]}"; do
+            dotnet test "$test_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --logger "trx;LogFileName=test-results.trx"  || true
+          done
 
-      - name: Report test results # https://octopus.com/blog/githubactions-running-unit-tests
+      - name: Report unit test results # https://octopus.com/blog/githubactions-running-unit-tests
         uses: dorny/test-reporter@v1
         # if: always()
         with:

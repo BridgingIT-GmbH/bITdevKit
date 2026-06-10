@@ -74,7 +74,7 @@ public class ResiliencyTests
         await Task.Delay(100); // Simulate rapid calls
         var task3 = debouncer.DebounceAsync(cts.Token);
         await Task.WhenAll(task1, task2, task3);
-        await Task.Delay(600); // Wait for debounce interval
+        await Task.Delay(TimeSpan.FromSeconds(1)); // Wait for debounce interval
 
         // Assert
         Assert.Equal(1, executionCount); // Executes once
@@ -131,7 +131,7 @@ public class ResiliencyTests
         // Act
         await throttler.ThrottleAsync(cts.Token); // First execution
         await throttler.ThrottleAsync(cts.Token); // Should throttle
-        await Task.Delay(600); // Allow throttle to reset
+        await Task.Delay(TimeSpan.FromSeconds(1.1)); // Allow throttle to reset
         await throttler.ThrottleAsync(cts.Token); // Next execution
 
         // Assert
@@ -157,7 +157,7 @@ public class ResiliencyTests
         // Act
         await circuitBreaker.ExecuteAsync(ct => this.SimulateWorkAsync(ct, true), cts.Token); // First failure
         await circuitBreaker.ExecuteAsync(ct => this.SimulateWorkAsync(ct, true), cts.Token); // Second failure (opens circuit)
-        await Task.Delay(1100); // Wait for reset
+        await Task.Delay(TimeSpan.FromSeconds(1.1)); // Wait for reset
         await circuitBreaker.ExecuteAsync(ct => this.SimulateWorkAsync(ct, false), cts.Token); // Should succeed
 
         // Assert

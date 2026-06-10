@@ -90,12 +90,32 @@ jobs:
           test_projects=(tests/**/*UnitTests.csproj)
 
           for test_project in "${test_projects[@]}"; do
-            dotnet test "$test_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --logger "trx;LogFileName=test-results.trx"  || true
+            max_attempts=3
+            test_succeeded=false
+
+            for ((attempt = 1; attempt <= max_attempts; attempt++)); do
+              echo "Running $test_project (attempt $attempt of $max_attempts)"
+
+              if dotnet test "$test_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --logger "trx;LogFileName=test-results.trx"; then
+                test_succeeded=true
+                break
+              fi
+
+              if [[ "$attempt" -lt "$max_attempts" ]]; then
+                retry=$((attempt))
+                echo "::warning::Test run failed for $test_project. Retrying ($retry of 3)."
+              fi
+            done
+
+            if [[ "${test_succeeded}" != "true" ]]; then
+              echo "::error::Test project failed after 3 retries: $test_project"
+              exit 1
+            fi
           done
 
       - name: Report unit test results # https://octopus.com/blog/githubactions-running-unit-tests
         uses: dorny/test-reporter@v1
-        # if: always()
+        if: always()
         with:
           name: Tests
           path: "**/test-results.trx"

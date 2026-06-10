@@ -15,9 +15,10 @@ env: # https://docs.github.com/en/actions/learn-github-actions/variables
   Build_Configuration: Debug # cannot use Release due to assembly signing with missing .snk
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_NOLOGO: true
+  NUGET_PUSH: ${{ vars.NUGET_PUSH || 'false' }}
   NUGET_SOURCE: https://api.nuget.org/v3/index.json
   NUGET_DIRECTORY: ${{ github.workspace }}/artifacts/packages
-  PUBLISHABLE_BRANCHES: main,features/dotnet-10
+  PUBLISHABLE_BRANCHES: main,releases/dotnet9
 
 defaults:
   run:
@@ -53,6 +54,10 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "BUILD_VERSION=$VERSION" >> "$GITHUB_ENV"
 
+      - name: Show version
+        run: |
+          echo "Build version: ${{ steps.calculate_version.outputs.version }}"
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -69,6 +74,10 @@ jobs:
           global-json-file: global.json
 
       - run: dotnet --info
+
+      - name: Show version
+        run: |
+          echo "Build version: ${BUILD_VERSION}"
 
       - name: Cache nuget packages
         uses: actions/cache@v3
@@ -124,6 +133,10 @@ jobs:
           global-json-file: global.json
 
       - run: dotnet --info
+
+      - name: Show version
+        run: |
+          echo "Build version: ${BUILD_VERSION}"
 
       - name: Cache nuget packages
         uses: actions/cache@v3
@@ -194,6 +207,10 @@ jobs:
 
       - run: dotnet --info
 
+      - name: Show version
+        run: |
+          echo "Build version: ${BUILD_VERSION}"
+
       - name: Cache nuget packages
         uses: actions/cache@v3
         with:
@@ -206,6 +223,7 @@ jobs:
         id: publishing
         run: |
           is_publishable=false
+          should_push=false
 
           if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
             is_publishable=true
@@ -220,8 +238,14 @@ jobs:
             done
           fi
 
+          if [[ "${NUGET_PUSH,,}" == "true" ]]; then
+            should_push=true
+          fi
+
           echo "is_publishable=${is_publishable}" >> "$GITHUB_OUTPUT"
+          echo "should_push=${should_push}" >> "$GITHUB_OUTPUT"
           echo "Publishable branch: ${is_publishable}"
+          echo "NuGet push enabled: ${should_push}"
 
       - name: Package pack (nuget)
         if: ${{ success() && steps.publishing.outputs.is_publishable == 'true' }}
@@ -242,7 +266,7 @@ jobs:
           done
 
       - name: Package push (nuget)
-        if: ${{ success() && steps.publishing.outputs.is_publishable == 'true' }}
+        if: ${{ success() && steps.publishing.outputs.is_publishable == 'true' && steps.publishing.outputs.should_push == 'true' }}
         env:
           API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |

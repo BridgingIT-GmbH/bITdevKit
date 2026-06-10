@@ -275,7 +275,7 @@ jobs:
           fi
 
           for package_project in "${package_projects[@]}"; do
-            dotnet pack "$package_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --output "${NUGET_DIRECTORY}" --verbosity normal
+            dotnet pack "$package_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --output "${NUGET_DIRECTORY}" --verbosity normal --version 1.0.100-preview.0.106
           done
 
           mapfile -t packages < <(find "${NUGET_DIRECTORY}" -maxdepth 1 -name '*.nupkg' -type f | sort)

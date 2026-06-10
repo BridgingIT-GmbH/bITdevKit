@@ -57,7 +57,7 @@ jobs:
 
           echo "## Version" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "Calculated version: \`$VERSION\`" >> "$GITHUB_STEP_SUMMARY"
+          echo "\`$VERSION\`" >> "$GITHUB_STEP_SUMMARY"
 
       - name: Show version
         run: |
@@ -144,8 +144,22 @@ jobs:
           shopt -s globstar nullglob
           test_projects=(tests/**/*UnitTests.csproj)
 
+          echo "## Unit Tests" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Projects discovered: ${#test_projects[@]}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Project | Result | Attempts |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| --- | --- | ---: |" >> "$GITHUB_STEP_SUMMARY"
+
+          if [[ "${#test_projects[@]}" -eq 0 ]]; then
+            echo "| _none_ | Failed | 0 |" >> "$GITHUB_STEP_SUMMARY"
+            echo "::error::No unit test projects found."
+            exit 1
+          fi
+
           for test_project in "${test_projects[@]}"; do
             max_attempts=4
+            project_name=$(basename "$test_project")
             test_succeeded=false
 
             for ((attempt = 1; attempt <= max_attempts; attempt++)); do
@@ -163,9 +177,12 @@ jobs:
             done
 
             if [[ "${test_succeeded}" != "true" ]]; then
+              echo "| \`$project_name\` | Failed | $max_attempts |" >> "$GITHUB_STEP_SUMMARY"
               echo "::error::Test project failed after 3 retries: $test_project"
               exit 1
             fi
+
+            echo "| \`$project_name\` | Passed | $attempt |" >> "$GITHUB_STEP_SUMMARY"
           done
 
       - name: Report unit test results # https://octopus.com/blog/githubactions-running-unit-tests
@@ -234,6 +251,15 @@ jobs:
           echo "Publishable branch: ${is_publishable}"
           echo "NuGet push enabled: ${should_push}"
 
+          echo "## Package Publishing" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Item | Value |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| --- | --- |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Ref | \`${GITHUB_REF_NAME}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Ref type | \`${GITHUB_REF_TYPE}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Publishable ref | \`${is_publishable}\` |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| NuGet push enabled | \`${should_push}\` |" >> "$GITHUB_STEP_SUMMARY"
+
       - name: Package pack (nuget)
         if: ${{ success() && steps.publishing.outputs.is_publishable == 'true' }}
         run: |
@@ -252,6 +278,20 @@ jobs:
             dotnet pack "$package_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --output "${NUGET_DIRECTORY}" --verbosity normal
           done
 
+          mapfile -t packages < <(find "${NUGET_DIRECTORY}" -maxdepth 1 -name '*.nupkg' -type f | sort)
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Packages Created" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "Packages created: ${#packages[@]}" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Package |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| --- |" >> "$GITHUB_STEP_SUMMARY"
+
+          for package in "${packages[@]}"; do
+            echo "| \`$(basename "$package")\` |" >> "$GITHUB_STEP_SUMMARY"
+          done
+
       - name: Package push (nuget)
         if: ${{ success() && steps.publishing.outputs.is_publishable == 'true' && steps.publishing.outputs.should_push == 'true' }}
         env:
@@ -262,9 +302,20 @@ jobs:
             exit 1
           fi
 
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Packages Pushed" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Package | Result |" >> "$GITHUB_STEP_SUMMARY"
+          echo "| --- | --- |" >> "$GITHUB_STEP_SUMMARY"
+
           for package in "${NUGET_DIRECTORY}"/*.nupkg; do
             echo "Publishing package: $package"
-            # dotnet nuget push "$package" --source "${NUGET_SOURCE}" --api-key "${API_KEY}" --skip-duplicate
+            if dotnet nuget push "$package" --source "${NUGET_SOURCE}" --api-key "${API_KEY}" --skip-duplicate; then
+              echo "| \`$(basename "$package")\` | Pushed |" >> "$GITHUB_STEP_SUMMARY"
+            else
+              echo "| \`$(basename "$package")\` | Failed |" >> "$GITHUB_STEP_SUMMARY"
+              exit 1
+            fi
           done
 
       - name: Publish package artifacts

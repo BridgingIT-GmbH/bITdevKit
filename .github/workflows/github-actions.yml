@@ -263,7 +263,8 @@ jobs:
           fi
 
           for package_project in "${package_projects[@]}"; do
-            dotnet pack "$package_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --output "${NUGET_DIRECTORY}" --verbosity normal /p:Version="${BUILD_VERSION}" /p:PackageVersion="${BUILD_VERSION}"
+            # dotnet pack "$package_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --output "${NUGET_DIRECTORY}" --verbosity normal /p:Version="${BUILD_VERSION}" /p:PackageVersion="${BUILD_VERSION}"
+            dotnet pack "$package_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --output "${NUGET_DIRECTORY}" --verbosity normal"
           done
 
       - name: Package push (nuget)

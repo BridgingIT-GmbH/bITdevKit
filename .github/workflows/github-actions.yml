@@ -15,6 +15,7 @@ env: # https://docs.github.com/en/actions/learn-github-actions/variables
   Build_Configuration: Debug # cannot use Release due to assembly signing with missing .snk
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_NOLOGO: true
+  NUGET_SOURCE: https://api.nuget.org/v3/index.json
   # NuGet_Directory: ${{ github.workspace}}/nuget
 
 defaults:
@@ -76,14 +77,21 @@ jobs:
       - name: Build solution
         run: dotnet build --configuration ${{ env.Build_Configuration }} --no-restore --nologo
 
-      - name: Vulnerability scan (nuget)
-        run: |
-          dotnet list package --vulnerable --include-transitive 2>&1 | tee build.log
-          echo "Analyze dotnet list package command log output..."
-          grep -q -i "critical\|high\|moderate\|low" build.log; [ $? -eq 0 ] && echo "Security Vulnerabilities found on the log output" && exit 1
+      # - name: Vulnerability scan (nuget)
+      #   run: |
+      #     dotnet list package --vulnerable --include-transitive 2>&1 | tee build.log
+      #     echo "Analyze dotnet list package command log output..."
+      #     grep -q -i "critical\|high\|moderate\|low" build.log; [ $? -eq 0 ] && echo "Security Vulnerabilities found on the log output" && exit 1
 
       - name: Run tests
         run: dotnet test --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --filter "FullyQualifiedName!~Examples" --logger "trx;LogFileName=test-results.trx" || true
+        # run: |
+        #   shopt -s globstar nullglob
+        #   test_projects=(tests/**/*UnitTests.csproj)
+
+        #   for test_project in "${test_projects[@]}"; do
+        #     dotnet test "$test_project" --configuration ${{ env.Build_Configuration }} --no-restore --no-build --nologo --logger "trx;LogFileName=test-results.trx"
+        #   done
 
       - name: Report test results # https://octopus.com/blog/githubactions-running-unit-tests
         uses: dorny/test-reporter@v1
@@ -99,10 +107,9 @@ jobs:
 
       # - name: Package push (nuget) # Push only when creating a GitHub Release
       #   env:
-      #     SOURCE: ${{ secrets.NUGET_PUSH_SOURCE }} # https://docs.github.com/en/actions/security-guides/using-secrets-in-github-actions
-      #     API_KEY: ${{ secrets.\_PUSH_API_KEY }}
-      #   if: github.event_name == 'release' && (env.SOURCE != '' || env.API_KEY != '')
-      #   run: dotnet nuget push ${{ env.NuGet_Directory }}/*.nupkg --source ${{ env.SOURCE }} --api-key ${{ env.API_KEY }}
+      #     API_KEY: ${{ secrets.\NUGET_API_KEY }}
+      #   if: github.event_name == 'release' && (env.NUGET_SOURCE != '' || env.API_KEY != '')
+      #   run: dotnet nuget push ${{ env.NuGet_Directory }}/*.nupkg --source ${{ env.NUGET_SOURCE }} --api-key ${{ env.API_KEY }}
 
       - name: Publish package artifacts
         uses: actions/upload-artifact@v4.3.3

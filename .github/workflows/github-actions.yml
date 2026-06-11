@@ -9,7 +9,6 @@ permissions: # needed for test reporter
   checks: write
   actions: write
 
-
 env: # https://docs.github.com/en/actions/learn-github-actions/variables
   # Solution_Name: '**/*.sln'
   Build_Configuration: Debug # cannot use Release due to assembly signing with missing .snk

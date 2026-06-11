@@ -87,6 +87,21 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
+      # TODO: signing requires .snk file which cannot be stored in the repository
+      # - task: DownloadSecureFile@1
+      #   name: signkey
+      #   displayName: Download Secure File
+      #   inputs:
+      #     secureFile: 'bIT.snk'
+
+      # - task: Bash@3
+      #   displayName: Copy secure file
+      #   inputs:
+      #     targetType: 'inline'
+      #     script: |
+      #       # Copy secure file
+      #       cp -fr $(signkey.secureFilePath) $(Build.SourcesDirectory)/src/bIT.snk
+
       - name: Restore nuget packages
         run: dotnet restore --verbosity Normal
 

@@ -32,12 +32,12 @@ jobs:
       version: ${{ steps.calculate_version.outputs.version }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.4
+        uses: actions/checkout@v6.0.3
         with:
           fetch-depth: 0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4.0.0
+        uses: actions/setup-dotnet@v5.3.0
         with:
           global-json-file: global.json
 
@@ -68,19 +68,19 @@ jobs:
     needs: version
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.4
+        uses: actions/checkout@v6.0.3
         with:
           fetch-depth: 0
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4.0.0
+        uses: actions/setup-dotnet@v5.3.0
         with:
           global-json-file: global.json
 
       - run: dotnet --info
 
       - name: Cache nuget packages
-        uses: actions/cache@v3
+        uses: actions/cache@v5.0.5
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -100,7 +100,7 @@ jobs:
       #     grep -q -i "critical\|high\|moderate\|low" build.log; [ $? -eq 0 ] && echo "Security Vulnerabilities found on the log output" && exit 1
 
       - name: Publish build artifacts
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: BuildOutput
           if-no-files-found: error
@@ -117,25 +117,25 @@ jobs:
     needs: [ version, build ]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.4
+        uses: actions/checkout@v6.0.3
         with:
           fetch-depth: 0
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v8.0.1
         with:
           name: BuildOutput
           path: .
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4.0.0
+        uses: actions/setup-dotnet@v5.3.0
         with:
           global-json-file: global.json
 
       - run: dotnet --info
 
       - name: Cache nuget packages
-        uses: actions/cache@v3
+        uses: actions/cache@v5.0.5
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -189,7 +189,7 @@ jobs:
           done
 
       - name: Report unit test results # https://octopus.com/blog/githubactions-running-unit-tests
-        uses: dorny/test-reporter@v1
+        uses: dorny/test-reporter@v3.0.0
         if: always()
         with:
           name: Tests
@@ -203,25 +203,25 @@ jobs:
     needs: [ version, tests ]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.1.4
+        uses: actions/checkout@v6.0.3
         with:
           fetch-depth: 0
 
       - name: Download build artifacts
-        uses: actions/download-artifact@v4.1.8
+        uses: actions/download-artifact@v8.0.1
         with:
           name: BuildOutput
           path: .
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4.0.0
+        uses: actions/setup-dotnet@v5.3.0
         with:
           global-json-file: global.json
 
       - run: dotnet --info
 
       - name: Cache nuget packages
-        uses: actions/cache@v3
+        uses: actions/cache@v5.0.5
         with:
           path: ~/.nuget/packages
           key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
@@ -325,7 +325,7 @@ jobs:
 
       - name: Publish package artifacts
         if: ${{ success() && steps.publishing.outputs.is_publishable == 'true' }}
-        uses: actions/upload-artifact@v4.3.3
+        uses: actions/upload-artifact@v7.0.1
         with:
           name: NuGet packages
           if-no-files-found: error

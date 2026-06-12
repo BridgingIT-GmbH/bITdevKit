@@ -32,8 +32,7 @@ public class JobSchedulingEndpoints(
             return;
         }
 
-        var group = this.MapGroup(app, this.options)
-            .WithTags("_bdk.JobScheduling"); ;
+        var group = this.MapGroup(app, this.options);
 
         group.MapGet(string.Empty, this.GetJobs)
             .Produces<IEnumerable<JobInfo>>()

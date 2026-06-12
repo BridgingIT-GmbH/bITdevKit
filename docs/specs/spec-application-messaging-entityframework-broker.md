@@ -909,8 +909,7 @@ public class MessagingEndpoints(
             return;
         }
 
-        var group = this.MapGroup(app, this.options)
-            .WithTags("_bdk.Messaging");
+        var group = this.MapGroup(app, this.options);
 
         // map routes here
 

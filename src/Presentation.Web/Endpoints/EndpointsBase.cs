@@ -8,115 +8,321 @@ namespace BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
 /// <summary>
-///     Provides shared endpoint registration state and route group configuration for Minimal API endpoint modules.
+///     Provides a base implementation for modular Minimal API endpoint sets.
 /// </summary>
 /// <remarks>
-///     Derived endpoint modules implement <see cref="Map" /> to add their routes to an <see cref="IEndpointRouteBuilder" />.
-///     The application's endpoint mapper uses <see cref="Enabled" /> and <see cref="IsRegistered" /> to avoid mapping disabled
-///     endpoint modules or registering the same instance more than once.
+///     Derived classes implement <see cref="Map" /> to declare their routes. <see cref="MapGroup" /> creates a configured
+///     route group from <see cref="EndpointsOptionsBase" /> and applies shared endpoint metadata such as OpenAPI tags,
+///     authorization, CORS, rate limiting, route name prefix metadata, and custom metadata. All configuration is applied
+///     before the derived endpoint class maps individual routes into the returned group.
+///
+///     Example:
+///     <code>
+///     public sealed class OrdersEndpoints(OrdersEndpointsOptions options) : EndpointsBase
+///     {
+///         public override void Map(IEndpointRouteBuilder app)
+///         {
+///             var group = MapGroup(app, options);
+///
+///             group.MapGet("", () =&gt; Results.Ok())
+///                 .WithName(options, "List");
+///         }
+///     }
+///     </code>
 /// </remarks>
 public abstract class EndpointsBase : IEndpoints
 {
     /// <summary>
-    ///     Gets or sets whether this endpoint module participates in application endpoint registration.
+    ///     Gets or sets whether this endpoint set should be mapped.
     /// </summary>
     /// <remarks>
-    ///     The value defaults to <c>true</c>. When the application maps registered <see cref="IEndpoints" /> instances, endpoint
-    ///     modules with this value set to <c>false</c> are skipped and their <see cref="Map" /> method is not called.
+    ///     The endpoint mapping extension skips endpoint instances whose value is <c>false</c>. The default value is
+    ///     <c>true</c>.
     /// </remarks>
     public bool Enabled { get; set; } = true;
 
     /// <summary>
-    ///     Gets or sets whether this endpoint module has already been mapped by the application.
+    ///     Gets or sets whether this endpoint set has already been mapped.
     /// </summary>
     /// <remarks>
-    ///     The application endpoint mapper sets this value after calling <see cref="Map" />. It is used together with
-    ///     <see cref="Enabled" /> to prevent duplicate route registration for the same endpoint instance.
+    ///     The endpoint mapping extension sets this value after calling <see cref="Map" /> to avoid duplicate mapping when
+    ///     endpoint registration is invoked repeatedly for the same instance.
     /// </remarks>
     public bool IsRegistered { get; set; }
 
     /// <summary>
-    ///     Maps the routes owned by the derived endpoint module to the supplied route builder.
+    ///     Maps this endpoint set into the specified route builder.
     /// </summary>
-    /// <param name="app">The application or route group builder that receives the endpoint routes.</param>
+    /// <param name="app">The endpoint route builder that receives the route mappings.</param>
     /// <remarks>
-    ///     Implementations typically check their endpoint options before mapping routes, create a route group through
-    ///     <see cref="MapGroup" />, and then add Minimal API handlers and metadata to that group. The application endpoint
-    ///     mapper calls this method only for endpoint instances that are enabled and not yet registered.
+    ///     Derived classes typically call <see cref="MapGroup" /> with their endpoint options and then map individual
+    ///     endpoints into the returned <see cref="RouteGroupBuilder" />.
     /// </remarks>
     public abstract void Map(IEndpointRouteBuilder app);
 
     /// <summary>
-    ///     Creates a route group using the configured group path, tag, API description, and authorization options.
+    ///     Creates a route group and applies the shared endpoint group configuration from the supplied options.
     /// </summary>
-    /// <param name="app">The route builder that receives the new group.</param>
-    /// <param name="options">The endpoint options that define group metadata and authorization requirements.</param>
-    /// <returns>
-    ///     A configured <see cref="RouteGroupBuilder" /> that callers can use to map individual routes.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    ///     Thrown when <paramref name="app" /> or <paramref name="options" /> is <c>null</c>.
-    /// </exception>
+    /// <param name="app">The endpoint route builder that owns the new group.</param>
+    /// <param name="options">The endpoint group options to apply.</param>
+    /// <returns>A configured route group builder that callers can use to map individual endpoints.</returns>
     /// <remarks>
-    ///     The group is created at <see cref="EndpointsOptionsBase.GroupPath" /> and tagged with
-    ///     <see cref="EndpointsOptionsBase.GroupTag" />. When API description exclusion is enabled, the group is hidden from
-    ///     generated descriptions. When authorization is required, role-based authorization takes precedence over policy-based
-    ///     authorization; empty or whitespace role names are ignored. If no roles or policy are configured, the group requires
-    ///     the default authorization policy.
+    ///     The method validates <paramref name="app" /> and <paramref name="options" /> before mapping. It creates the group
+    ///     with <see cref="EndpointsOptionsBase.GroupPath" />, optionally normalizes the path, applies tags, OpenAPI group
+    ///     metadata, description visibility, authorization or anonymous metadata, CORS metadata, rate limiting metadata,
+    ///     route name prefix metadata, and custom metadata. Authorization role entries and authentication schemes that are
+    ///     blank are ignored. Anonymous access takes precedence over authorization metadata.
     ///
     ///     Example:
     ///     <code>
-    ///     public override void Map(IEndpointRouteBuilder app)
-    ///     {
-    ///         var group = this.MapGroup(app, this.options);
-    ///
-    ///         group.MapGet("/status", () =&gt; Results.Ok());
-    ///     }
+    ///     var group = MapGroup(app, options);
+    ///     group.MapGet("items", GetItems)
+    ///         .WithName(BuildRouteName(options, "GetItems"));
     ///     </code>
     /// </remarks>
+    /// <exception cref="ArgumentNullException">
+    ///     Thrown when <paramref name="app" /> or <paramref name="options" /> is <c>null</c>.
+    /// </exception>
     public RouteGroupBuilder MapGroup(IEndpointRouteBuilder app, EndpointsOptionsBase options)
     {
         EnsureArg.IsNotNull(app, nameof(app));
         EnsureArg.IsNotNull(options, nameof(options));
 
-        var group = app.MapGroup(options.GroupPath)
-            .WithTags(options.GroupTag);
+        var group = app.MapGroup(GetGroupPath(options))
+            .WithTags(GetGroupTags(options));
 
+        ConfigureOpenApi(group, options);
+        ConfigureDescription(group, options);
+        ConfigureAuthorization(group, options);
+        ConfigureCors(group, options);
+        ConfigureRateLimiting(group, options);
+        ConfigureRouteNamePrefix(group, options);
+        ConfigureMetadata(group, options);
+
+        return group;
+    }
+
+    /// <summary>
+    ///     Builds an endpoint route name using the optional prefix configured on the endpoint options.
+    /// </summary>
+    /// <param name="options">The endpoint options that may contain a route name prefix.</param>
+    /// <param name="name">The endpoint-specific route name.</param>
+    /// <returns>
+    ///     The unmodified <paramref name="name" /> when no prefix is configured; the prefix when
+    ///     <paramref name="name" /> is empty; otherwise the prefix and name joined by a single period.
+    /// </returns>
+    /// <remarks>
+    ///     ASP.NET Core does not automatically prepend endpoint names from route group metadata. Derived endpoint classes
+    ///     should call this helper before passing names to <c>WithName</c>. The helper trims trailing periods from the
+    ///     prefix and leading periods from the endpoint-specific name.
+    ///
+    ///     Example:
+    ///     <code>
+    ///     options.RouteNamePrefix = "Orders";
+    ///     var name = BuildRouteName(options, "List"); // Orders.List
+    ///     </code>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="options" /> is <c>null</c>.</exception>
+    public static string BuildRouteName(EndpointsOptionsBase options, string name)
+    {
+        EnsureArg.IsNotNull(options, nameof(options));
+
+        if (options.RouteNamePrefix.IsNullOrEmpty())
+        {
+            return name;
+        }
+
+        if (name.IsNullOrEmpty())
+        {
+            return options.RouteNamePrefix;
+        }
+
+        return $"{options.RouteNamePrefix.TrimEnd('.')}.{name.TrimStart('.')}";
+    }
+
+    private static string GetGroupPath(EndpointsOptionsBase options)
+    {
+        return options.NormalizeGroupPath
+            ? NormalizeGroupPath(options.GroupPath)
+            : options.GroupPath;
+    }
+
+    private static string NormalizeGroupPath(string path)
+    {
+        if (path.IsNullOrEmpty())
+        {
+            return "/";
+        }
+
+        var segments = path.Replace('\\', '/')
+            .Split('/', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        return segments.Length == 0
+            ? "/"
+            : $"/{string.Join('/', segments)}";
+    }
+
+    private static string[] GetGroupTags(EndpointsOptionsBase options)
+    {
+        return [options.GroupTag, .. options.GroupTags.SafeNull()];
+    }
+
+    private static void ConfigureOpenApi(RouteGroupBuilder group, EndpointsOptionsBase options)
+    {
+        if (!options.GroupName.IsNullOrEmpty())
+        {
+            group.WithGroupName(options.GroupName);
+        }
+
+        if (!options.Summary.IsNullOrEmpty())
+        {
+            group.WithSummary(options.Summary);
+        }
+
+        if (!options.Description.IsNullOrEmpty())
+        {
+            group.WithDescription(options.Description);
+        }
+
+        if (options.Deprecated)
+        {
+            group.WithMetadata(new ObsoleteAttribute());
+        }
+    }
+
+    private static void ConfigureDescription(RouteGroupBuilder group, EndpointsOptionsBase options)
+    {
         if (options.ExcludeFromDescription)
         {
             group.ExcludeFromDescription();
         }
+    }
 
-        if (options.RequireAuthorization)
+    private static void ConfigureAuthorization(RouteGroupBuilder group, EndpointsOptionsBase options)
+    {
+        if (options.AllowAnonymous)
         {
-            var roles = options.RequireRoles
-                .SafeNull()
-                .Where(r => !string.IsNullOrWhiteSpace(r))
-                .ToArray();
+            group.AllowAnonymous();
 
-            if (roles.SafeAny())
-            {
-                group.RequireAuthorization(
-                    new AuthorizeAttribute
-                    {
-                        Roles = string.Join(",", roles)
-                    });
-            }
-            else if (!options.RequirePolicy.IsNullOrEmpty())
-            {
-                group.RequireAuthorization(
-                    new AuthorizeAttribute(options.RequirePolicy));
-            }
-            else
-            {
-                group.RequireAuthorization();
-            }
+            return;
         }
 
-        return group;
+        if (!options.RequireAuthorization)
+        {
+            return;
+        }
+
+        var roles = GetRequiredRoles(options);
+        var schemes = GetRequiredAuthenticationSchemes(options);
+        if (roles.SafeAny())
+        {
+            var attribute = new AuthorizeAttribute
+            {
+                Roles = string.Join(",", roles)
+            };
+
+            ConfigureAuthenticationSchemes(attribute, schemes);
+            group.RequireAuthorization(attribute);
+
+            return;
+        }
+
+        if (!options.RequirePolicy.IsNullOrEmpty())
+        {
+            var attribute = new AuthorizeAttribute(options.RequirePolicy);
+
+            ConfigureAuthenticationSchemes(attribute, schemes);
+            group.RequireAuthorization(attribute);
+
+            return;
+        }
+
+        if (schemes.SafeAny())
+        {
+            group.RequireAuthorization(
+                new AuthorizeAttribute
+                {
+                    AuthenticationSchemes = string.Join(",", schemes)
+                });
+
+            return;
+        }
+
+        group.RequireAuthorization();
+    }
+
+    private static string[] GetRequiredRoles(EndpointsOptionsBase options)
+    {
+        return options.RequireRoles
+            .SafeNull()
+            .Where(r => !string.IsNullOrWhiteSpace(r))
+            .ToArray();
+    }
+
+    private static string[] GetRequiredAuthenticationSchemes(EndpointsOptionsBase options)
+    {
+        return options.RequireAuthenticationSchemes
+            .SafeNull()
+            .Where(s => !string.IsNullOrWhiteSpace(s))
+            .ToArray();
+    }
+
+    private static void ConfigureAuthenticationSchemes(AuthorizeAttribute attribute, string[] schemes)
+    {
+        if (schemes.SafeAny())
+        {
+            attribute.AuthenticationSchemes = string.Join(",", schemes);
+        }
+    }
+
+    private static void ConfigureCors(RouteGroupBuilder group, EndpointsOptionsBase options)
+    {
+        if (options.DisableCors)
+        {
+            group.WithMetadata(new DisableCorsAttribute());
+
+            return;
+        }
+
+        if (!options.RequireCorsPolicy.IsNullOrEmpty())
+        {
+            group.RequireCors(options.RequireCorsPolicy);
+        }
+    }
+
+    private static void ConfigureRateLimiting(RouteGroupBuilder group, EndpointsOptionsBase options)
+    {
+        if (options.DisableRateLimiting)
+        {
+            group.DisableRateLimiting();
+
+            return;
+        }
+
+        if (!options.RequireRateLimitingPolicy.IsNullOrEmpty())
+        {
+            group.RequireRateLimiting(options.RequireRateLimitingPolicy);
+        }
+    }
+
+    private static void ConfigureRouteNamePrefix(RouteGroupBuilder group, EndpointsOptionsBase options)
+    {
+        if (!options.RouteNamePrefix.IsNullOrEmpty())
+        {
+            group.WithMetadata(new EndpointRouteNamePrefixMetadata(options.RouteNamePrefix));
+        }
+    }
+
+    private static void ConfigureMetadata(RouteGroupBuilder group, EndpointsOptionsBase options)
+    {
+        foreach (var metadata in options.Metadata.SafeNull().Where(metadata => metadata is not null))
+        {
+            group.WithMetadata(metadata);
+        }
     }
 }

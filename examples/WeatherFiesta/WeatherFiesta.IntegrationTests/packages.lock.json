@@ -1464,7 +1464,6 @@
           "Microsoft.ApplicationInsights.AspNetCore": "[3.1.2, )",
           "Microsoft.AspNetCore.Components.WebAssembly.Server": "[10.0.8, )",
           "Microsoft.AspNetCore.OpenApi": "[10.0.8, )",
-          "Microsoft.Extensions.AI.OpenAI": "[10.3.0, )",
           "Microsoft.Extensions.ApiDescription.Server": "[10.0.8, )",
           "OpenTelemetry.Exporter.Console": "[1.15.3, )",
           "OpenTelemetry.Exporter.OpenTelemetryProtocol": "[1.15.3, )",
@@ -1630,9 +1629,11 @@
         "type": "Project",
         "dependencies": {
           "BridgingIT.DevKit.Application.Storage": "[1.0.0, )",
+          "BridgingIT.DevKit.Common.Extensions.Web": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Utilities": "[1.0.0, )",
           "BridgingIT.DevKit.Presentation.Web": "[1.0.0, )",
-          "Ensure.That": "[10.1.0, )"
+          "Ensure.That": "[10.1.0, )",
+          "RazorSlices": "[0.11.1, )"
         }
       },
       "presentation.web.notifications": {

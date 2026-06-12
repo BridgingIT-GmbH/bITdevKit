@@ -1,3 +1,4 @@
+namespace BridgingIT.DevKit.Presentation.Web.Orchestrations;
 
 using System.Net;
 using System.Text.Json;
@@ -14,7 +15,6 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using HttpResult = Microsoft.AspNetCore.Http.IResult;
 
-namespace BridgingIT.DevKit.Presentation.Web.Orchestrations;
 /// <summary>
 /// Exposes operational REST endpoints for inspecting and administering orchestration instances.
 /// </summary>
@@ -46,8 +46,7 @@ public class OrchestrationEndpoints(
             return;
         }
 
-        var group = this.MapGroup(app, this.options)
-            .WithTags("_bdk.Orchestrations");
+        var group = this.MapGroup(app, this.options);
 
         group.MapGet("definitions", this.GetDefinitions)
             .Produces<IEnumerable<string>>()

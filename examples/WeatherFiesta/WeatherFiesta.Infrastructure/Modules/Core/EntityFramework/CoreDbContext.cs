@@ -17,7 +17,7 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.Queueing;
 /// </summary>
 public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     ModuleDbContextBase(options),
-    IOutboxDomainEventContext, IOrchestrationContext, IJobsContext, IMessagingContext, IQueueingContext, ILoggingContext
+    IOutboxDomainEventContext, IOrchestrationContext, IJobsContext, IMessagingContext, IQueueingContext, ILoggingContext, IFileStorageContext
 {
     /// <summary>Gets or sets the cities DbSet.</summary>
     public DbSet<City> Cities { get; set; }
@@ -76,6 +76,12 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) :
     public DbSet<JobAcceptedEventEntity> JobAcceptedEvents { get; set; }
 
     public DbSet<JobLeaseEntity> JobLeases { get; set; }
+
+    public DbSet<FileStorageFileEntity> StorageFiles { get; set; }
+
+    public DbSet<FileStorageFileContentEntity> StorageFileContents { get; set; }
+
+    public DbSet<FileStorageDirectoryEntity> StorageDirectories { get; set; }
 
     public DbSet<LogEntry> LogEntries { get; set; }
 

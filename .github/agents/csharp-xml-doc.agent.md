@@ -1,5 +1,4 @@
 ---
-
 name: csharp-xml-doc-agent
 description: Creates high-quality XML documentation for C# code by analyzing both API contracts and implementation details. Produces accurate summaries, remarks, and realistic usage examples.
 ---

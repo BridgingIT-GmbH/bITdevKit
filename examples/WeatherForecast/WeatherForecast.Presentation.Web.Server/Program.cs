@@ -124,6 +124,25 @@ builder.Services.AddNotificationService<EmailMessage>(builder.Configuration, b =
         .ProcessingDelay(TimeSpan.FromMilliseconds(100))
         .ProcessingJitter(TimeSpan.FromMilliseconds(500))));
 
+builder.Services.AddFileStorage(factory => factory
+    .RegisterProvider("documents", storage => storage
+        .UseEntityFramework<CoreDbContext>(
+            "documents",
+            "Entity Framework backed operational file storage",
+            options => options
+                .PageSize(200)
+                .MaximumBufferedContentSize(8 * 1024 * 1024))
+        .WithLifetime(ServiceLifetime.Singleton))
+    .RegisterProvider("attachments", storage => storage
+        .UseEntityFramework<CoreDbContext>(
+            "attachments",
+            "Entity Framework backed attachment and import file storage",
+            options => options
+                .PageSize(200)
+                .MaximumBufferedContentSize(8 * 1024 * 1024))
+        .WithLifetime(ServiceLifetime.Singleton)))
+    .AddEndpoints(options => options.RequireAuthorization());
+
 ConfigureHealth(builder.Services);
 
 builder.Services.AddScoped<ICurrentUserAccessor, HttpCurrentUserAccessor>();

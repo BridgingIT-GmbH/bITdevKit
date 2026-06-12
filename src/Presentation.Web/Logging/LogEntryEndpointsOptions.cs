@@ -20,7 +20,7 @@ public class LogEntryEndpointsOptions : EndpointsOptionsBase
     public LogEntryEndpointsOptions()
     {
         this.GroupPath = "/_bdk/api/logentries";
-        this.GroupTag = "_bdk/logentries";
+        this.GroupTag = "_bdk.Logging.LogEntries";
         this.RequireAuthorization = true;
     }
 }

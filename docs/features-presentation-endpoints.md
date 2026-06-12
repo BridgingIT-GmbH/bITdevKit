@@ -6,21 +6,21 @@
 
 ## Overview
 
-The Endpoints feature provides a clean, modular way to define Minimal API endpoints as composable classes. Each endpoint set implements a simple contract and can be registered and mapped automatically, with optional grouping, authorization, and discovery via DI scanning.
+The Endpoints feature provides a clean, modular way to define Minimal API endpoints as composable classes. Each endpoint set implements a small contract and can be registered and mapped automatically, with configurable route groups, OpenAPI metadata, authorization, CORS, rate limiting, and discovery via DI scanning.
 
 ### Challenges
 
 - Modularity: Keep endpoint definitions isolated per feature or module.
 - Discovery: Register endpoints without manual wiring for each class.
-- Consistency: Apply grouping and authorization consistently across endpoints.
+- Consistency: Apply route grouping, endpoint metadata, authorization, CORS, and rate limiting consistently across endpoints.
 - Observability: Log registration to aid debugging in multi-module apps.
 
 ### Solution
 
-- Contracts: `IEndpoints` defines the minimal surface; `EndpointsBase` provides helpers.
+- Contracts: `IEndpoints` defines the minimal surface; `EndpointsBase` provides group and route-name helpers.
 - Registration: DI helpers add endpoints by type, instance, or assembly scanning.
 - Mapping: A single `MapEndpoints()` call maps all registered endpoints.
-- Grouping & Auth: `EndpointsOptionsBase` centralizes group path, tags, and authorization.
+- Group configuration: `EndpointsOptionsBase` and `EndpointsOptionsBuilderBase` centralize group path, tags, OpenAPI metadata, authorization, CORS, rate limiting, route naming, and custom metadata.
 
 ## Core Contracts
 
@@ -29,15 +29,27 @@ The Endpoints feature provides a clean, modular way to define Minimal API endpoi
   - `IsRegistered`: Prevent duplicate mapping.
   - `Map(IEndpointRouteBuilder)`: Define routes.
 - `EndpointsBase` ([src/Presentation.Web/Endpoints/EndpointsBase.cs](src/Presentation.Web/Endpoints/EndpointsBase.cs))
-  - `MapGroup(app, options)`: Build a `RouteGroupBuilder` with path, tags, and authorization.
+  - `MapGroup(app, options)`: Build a `RouteGroupBuilder` with path, tags, OpenAPI metadata, authorization, CORS, rate limiting, and custom metadata.
+  - `BuildRouteName(options, name)`: Build endpoint names with an optional group-level route name prefix.
   - Common properties: `Enabled`, `IsRegistered`.
+- Endpoint naming extensions ([src/Presentation.Web/Endpoints/EndpointConventionBuilderExtensions.cs](src/Presentation.Web/Endpoints/EndpointConventionBuilderExtensions.cs))
+  - `WithName(options, name)`: Assign an endpoint name after internally calling `BuildRouteName(options, name)`.
 - `EndpointsOptionsBase` ([src/Presentation.Web/Endpoints/EndpointsOptionsBase.cs](src/Presentation.Web/Endpoints/EndpointsOptionsBase.cs))
-  - `GroupPath`, `GroupTag`, `RequireAuthorization`, `RequireRoles`, `RequirePolicy`, `ExcludeFromDescription`.
+  - Routing and docs: `GroupPath`, `NormalizeGroupPath`, `GroupTag`, `GroupTags`, `GroupName`, `Summary`, `Description`, `Deprecated`, `ExcludeFromDescription`.
+  - Authorization: `RequireAuthorization`, `AllowAnonymous`, `RequireRoles`, `RequirePolicy`, `RequireAuthenticationSchemes`.
+  - Cross-cutting group policies: `RequireCorsPolicy`, `DisableCors`, `RequireRateLimitingPolicy`, `DisableRateLimiting`.
+  - Extensibility: `RouteNamePrefix`, `Metadata`.
+- `EndpointsOptionsBuilderBase<TOptions,TBuilder>` ([src/Presentation.Web/Endpoints/EndpointsOptionsBuilderBase.cs](src/Presentation.Web/Endpoints/EndpointsOptionsBuilderBase.cs))
+  - Fluent builder base for concrete endpoint options builders.
+  - Exposes shared methods such as `GroupPath(...)`, `GroupTag(...)`, `RequirePolicy(...)`, `RequireCorsPolicy(...)`, and `WithMetadata(...)`.
+- `EndpointRouteNamePrefixMetadata` ([src/Presentation.Web/Endpoints/EndpointRouteNamePrefixMetadata.cs](src/Presentation.Web/Endpoints/EndpointRouteNamePrefixMetadata.cs))
+  - Stores the configured route-name prefix as endpoint metadata.
+  - Endpoint implementations still call `BuildRouteName(options, name)` when assigning names with `WithName(...)`.
 - Registration helpers ([src/Presentation.Web/Endpoints/ServiceCollectionExtensions.cs](src/Presentation.Web/Endpoints/ServiceCollectionExtensions.cs))
   - `AddEndpoints(assemblies)` / `AddEndpoints(assembly)` / `AddEndpoints<T>()` / `AddEndpoints(endpoints)`.
   - Logs added endpoint types for visibility.
 - Mapping extension ([src/Presentation.Web/Endpoints/ApplicationBuilderExtensions.cs](src/Presentation.Web/Endpoints/ApplicationBuilderExtensions.cs))
-  - `MapEndpoints(WebApplication, RouteGroupBuilder?)`: Iterates `IEndpoints` in DI and calls `Map` when `Enabled`.
+  - `MapEndpoints(WebApplication, RouteGroupBuilder?)`: Iterates `IEndpoints` in DI and calls `Map` when `Enabled && !IsRegistered`.
 
 ## Architecture
 
@@ -52,21 +64,45 @@ classDiagram
   }
   class EndpointsBase
   class EndpointsOptionsBase {
+    +bool Enabled
     +string GroupPath
+    +bool NormalizeGroupPath
     +string GroupTag
+    +string[] GroupTags
+    +string GroupName
+    +string Summary
+    +string Description
+    +bool Deprecated
+    +string RouteNamePrefix
     +bool RequireAuthorization
+    +bool AllowAnonymous
     +string[] RequireRoles
     +string RequirePolicy
+    +string[] RequireAuthenticationSchemes
+    +string RequireCorsPolicy
+    +bool DisableCors
+    +string RequireRateLimitingPolicy
+    +bool DisableRateLimiting
     +bool ExcludeFromDescription
+    +IList~object~ Metadata
+  }
+  class EndpointsOptionsBuilderBase~TOptions,TBuilder~
+  class EndpointRouteNamePrefixMetadata {
+    +string Prefix
   }
   class SystemEndpoints
+  class SystemEndpointsOptions
   class LogEntryEndpoints
   class ServiceCollectionExtensions
   class ApplicationApplicationExtensions
 
   IEndpoints <|.. EndpointsBase
+  EndpointsOptionsBase <|-- SystemEndpointsOptions
   EndpointsBase <|-- SystemEndpoints
   EndpointsBase <|-- LogEntryEndpoints
+  EndpointsBase ..> EndpointsOptionsBase : configure group
+  EndpointsBase ..> EndpointRouteNamePrefixMetadata : add metadata
+  EndpointsOptionsBuilderBase~TOptions,TBuilder~ ..> EndpointsOptionsBase : builds
   ServiceCollectionExtensions ..> IEndpoints : register
   ApplicationApplicationExtensions ..> IEndpoints : map
 ```
@@ -95,7 +131,7 @@ sequenceDiagram
 
 ### DI Registration
 
-Register endpoints explicitly by type or via assembly scanning.
+Register endpoints explicitly by type, by instance, or via assembly scanning. Type-based registrations are added as singleton `IEndpoints` services.
 
 ```csharp
 // Per type
@@ -121,28 +157,55 @@ app.MapEndpoints(api);
 
 ### Grouping and Authorization
 
-Use `EndpointsBase.MapGroup(...)` with options to enforce authorization and group metadata.
+Use `EndpointsBase.MapGroup(...)` with options to apply path, tags, OpenAPI metadata, authorization, CORS, rate limiting, and custom metadata consistently.
 
 ```csharp
 public sealed class MyEndpoints(MyEndpointsOptions options) : EndpointsBase
 {
   public override void Map(IEndpointRouteBuilder app)
   {
-    var group = this.MapGroup(app, options); // path/tags/auth
-    group.MapGet("items", () => Results.Ok());
+    var group = this.MapGroup(app, options);
+
+    group.MapGet("items", () => Results.Ok())
+      .WithName(options, "ListItems");
   }
 }
 
 public sealed class MyEndpointsOptions : EndpointsOptionsBase
 {
-  public MyEndpointsOptions() { GroupPath = "/api/items"; GroupTag = "Items"; RequireAuthorization = true; }
+  public MyEndpointsOptions()
+  {
+    GroupPath = "/api/items";
+    GroupTag = "Items";
+    GroupName = "items";
+    RouteNamePrefix = "Items";
+    RequireAuthorization = true;
+  }
 }
+```
+
+For fluent option configuration, derive a concrete builder from `EndpointsOptionsBuilderBase<TOptions,TBuilder>`:
+
+```csharp
+public sealed class MyEndpointsOptionsBuilder
+    : EndpointsOptionsBuilderBase<MyEndpointsOptions, MyEndpointsOptionsBuilder>;
+
+var options = new MyEndpointsOptionsBuilder()
+  .GroupPath("/api/items")
+  .GroupTag("Items")
+  .GroupName("items")
+  .RouteNamePrefix("Items")
+  .RequirePolicy("Items.Read")
+  .RequireCorsPolicy("PublicApi")
+  .RequireRateLimitingPolicy("DefaultApi")
+  .Build();
 ```
 
 ## Built-in Endpoints
 
 - `SystemEndpoints` ([src/Presentation.Web/Endpoints/SystemEndpoints.cs](src/Presentation.Web/Endpoints/SystemEndpoints.cs))
-  - Grouped under a configurable `GroupPath`; provides `echo`, `info`, and `modules` routes based on options.
+  - Grouped under a configurable `GroupPath`; provides a root discovery route plus optional `echo`, `info`, and `modules` routes.
+  - `HideSensitiveInformation` hides host, network, process, runtime, memory, URL, and timezone values from the `info` response.
   - Options: `SystemEndpointsOptions` ([src/Presentation.Web/Endpoints/SystemEndpointsOptions.cs](src/Presentation.Web/Endpoints/SystemEndpointsOptions.cs)).
 - `LogEntryEndpoints` ([src/Presentation.Web/Logging/LogEntryEndpoints.cs](src/Presentation.Web/Logging/LogEntryEndpoints.cs))
   - Minimal logging-related endpoints; configured via `LogEntryEndpointsOptions`.
@@ -161,15 +224,25 @@ public sealed class EchoEndpoints(EchoEndpointsOptions options) : EndpointsBase
 {
   public override void Map(IEndpointRouteBuilder app)
   {
-    var group = this.MapGroup("api/system").RequireAuthorization()
-            .WithTags("System");
+    var group = this.MapGroup(app, options);
 
     group.MapGet("echo", ([FromQuery] string? message) =>
         TypedResults.Ok(new EchoModel{ Message = message ?? "pong" }))
-      .WithName("Echo.Get")
+      .WithName(options, "Get")
       .WithDescription("Simple echo endpoint.")
       .Produces<EchoModel>()
       .ProducesResultProblem(StatusCodes.Status400BadRequest);
+  }
+}
+
+public sealed class EchoEndpointsOptions : EndpointsOptionsBase
+{
+  public EchoEndpointsOptions()
+  {
+    GroupPath = "/api/system";
+    GroupTag = "System";
+    RouteNamePrefix = "Echo";
+    RequireAuthorization = true;
   }
 }
 ```
@@ -189,8 +262,14 @@ app.MapEndpoints();
 ## Troubleshooting
 
 - Endpoints not appearing: Ensure `app.MapEndpoints()` is called after DI registration.
-- Authorization not enforced: Verify `EndpointsOptionsBase` settings and that `MapGroup` is used.
-- Duplicate mapping: `IsRegistered` prevents re-map; avoid calling `MapEndpoints()` multiple times for the same builder.
+- Endpoint mapped twice: `IsRegistered` prevents re-map for the same endpoint instance; check whether multiple endpoint instances were registered.
+- Authorization not enforced: Verify `RequireAuthorization = true`, that `AllowAnonymous` is not enabled, and that endpoint routes are mapped through `MapGroup(app, options)`.
+- Roles ignored: Blank role values are filtered out. Roles take precedence over `RequirePolicy` when both are configured.
+- Policy ignored: Policy metadata is applied only when authorization is required and no non-blank roles are configured.
+- Authentication scheme not used: `RequireAuthenticationSchemes` is applied only when `RequireAuthorization` is enabled. Blank scheme values are filtered out.
+- CORS policy not applied: `DisableCors = true` takes precedence over `RequireCorsPolicy`.
+- Rate limiting policy not applied: `DisableRateLimiting = true` takes precedence over `RequireRateLimitingPolicy`.
+- Route names missing prefix: Use `.WithName(options, name)` or `BuildRouteName(options, name)` when calling `WithName(...)`; the prefix metadata is not applied automatically by ASP.NET Core.
 - Discovery by assembly: Confirm assemblies contain concrete classes implementing `IEndpoints`.
 
 ## Appendix A — Minimal API Syntax
@@ -240,12 +319,51 @@ group.MapDelete("items/{id}", async ([FromServices] IRequester requester,
 
 ### Grouping and Authorization Options
 
-- Build groups with `EndpointsBase.MapGroup(app, options)` for a consistent path, tags, and authorization.
+- Build groups with `EndpointsBase.MapGroup(app, options)` for consistent path, tags, docs metadata, authorization, CORS, rate limiting, and custom metadata.
+- Routing and OpenAPI options:
+  - `GroupPath`: base route path for the group.
+  - `NormalizeGroupPath = true`: normalize slashes, backslashes, and leading/trailing separators before the group is mapped. The stored `GroupPath` value is unchanged.
+  - `GroupTag` and `GroupTags`: apply one or more OpenAPI tags.
+  - `GroupName`, `Summary`, `Description`, `Deprecated`: apply OpenAPI group metadata.
+  - `RouteNamePrefix`: shared prefix for endpoint names when endpoints use `.WithName(options, name)` or `BuildRouteName(options, name)`.
 - Authorization options:
   - `RequireAuthorization = true`: enforce default authorization.
   - `RequireRoles = ["Admin", "Ops"]`: role-based access via AuthorizeAttribute roles.
   - `RequirePolicy = "PolicyName"`: policy-based access.
+  - `RequireAuthenticationSchemes = ["Bearer"]`: restrict authorization to named authentication schemes.
+  - `AllowAnonymous = true`: apply anonymous access metadata and skip group authorization metadata.
+- Authorization precedence:
+  - `AllowAnonymous` wins over all authorization settings.
+  - Non-blank roles win over policy.
+  - Policy wins over scheme-only authorization.
+  - Scheme-only authorization is applied when schemes are configured without roles or policy.
+  - Default authorization is applied when `RequireAuthorization = true` and no roles, policy, or schemes are configured.
+- CORS and rate limiting options:
+  - `RequireCorsPolicy = "PolicyName"`: apply a named CORS policy.
+  - `DisableCors = true`: disable CORS for the group.
+  - `RequireRateLimitingPolicy = "PolicyName"`: apply a named rate limiting policy.
+  - `DisableRateLimiting = true`: disable rate limiting for the group.
+- Extensibility options:
+  - `Metadata`: attach arbitrary endpoint metadata to the whole group.
 - `ExcludeFromDescription = true`: hide endpoints from OpenAPI description.
+
+### Endpoint Registration and Mapping Lifecycle
+
+1. Register endpoint instances, types, or assemblies with `AddEndpoints(...)`.
+2. Build the `WebApplication`.
+3. Call `app.MapEndpoints()` once during startup, or pass a parent `RouteGroupBuilder` to map all registered endpoint sets under an existing group.
+4. `MapEndpoints()` resolves `IEndpoints` from DI and maps only instances where `Enabled && !IsRegistered`.
+5. After `Map` is called, `IsRegistered` is set to `true` for that endpoint instance.
+
+This lifecycle keeps endpoint classes modular while still making duplicate mapping explicit and avoidable.
+
+### Endpoint System Test Coverage
+
+The endpoint system is covered by focused unit tests in [tests/Presentation.UnitTests/Web/Endpoints](tests/Presentation.UnitTests/Web/Endpoints):
+
+- `EndpointsBaseTests`: group metadata, authorization precedence, path normalization, CORS, rate limiting, route-name prefix metadata, and custom metadata.
+- `EndpointsOptionsBuilderBaseTests`: fluent builder methods and null-array normalization.
+- `EndpointRegistrationTests`: DI registration overloads, disabled registration, type registration, `MapEndpoints(...)`, duplicate prevention, and mapping into a supplied route group.
 
 ### Result and Metadata
 

@@ -837,7 +837,7 @@ Recommended registration style:
 ```csharp
 services.AddMetricsEndpoints(options => options
     .GroupPath("/_bdk/api/metrics")
-    .GroupTag("_bdk.Metrics"));
+    .GroupTag("_bdk/metrics"));
 ```
 
 ### 8.9 Security and exposure

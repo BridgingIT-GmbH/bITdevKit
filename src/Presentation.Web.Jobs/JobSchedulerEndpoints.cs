@@ -48,8 +48,7 @@ public class JobSchedulerEndpoints(
             return;
         }
 
-        var group = this.MapGroup(app, this.options)
-            .WithTags("_bdk.Jobs");
+        var group = this.MapGroup(app, this.options);
 
         var definitions = group.MapGroup("definitions");
         var occurrences = group.MapGroup("occurrences");

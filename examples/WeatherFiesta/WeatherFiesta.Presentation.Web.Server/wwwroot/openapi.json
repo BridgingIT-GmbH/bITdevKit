@@ -8902,13 +8902,1187 @@
         }
       }
     },
-    "/_bdk/api": {
+    "/_bdk/api/locations": {
       "get": {
         "tags": [
-          "_bdk"
+          "_bdk.Storage.Files"
         ],
-        "summary": "_bdk.Get",
-        "operationId": "_bdk.Get",
+        "summary": "List registered storage locations",
+        "description": "Retrieves the registered file storage providers and their exposed location metadata.",
+        "operationId": "_bdk.Storage.Files.ListProviders",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/FileStorageProviderInfoModel"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/{providerName}/provider": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Files"
+        ],
+        "summary": "Get provider information",
+        "description": "Retrieves information about the configured file storage provider.",
+        "operationId": "_bdk.Storage.Files.GetProviderInfo",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileStorageProviderInfoModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/{providerName}/health": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Files"
+        ],
+        "summary": "Check provider health",
+        "description": "Runs the configured provider health check.",
+        "operationId": "_bdk.Storage.Files.CheckHealth",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileStorageHealthResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/{providerName}/files/exists": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Files"
+        ],
+        "summary": "Check whether a file exists",
+        "description": "Checks whether the specified file path exists in the configured provider.",
+        "operationId": "_bdk.Storage.Files.FileExists",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileStorageExistsResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/{providerName}/files/content": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Files"
+        ],
+        "summary": "Read file content",
+        "description": "Streams the file content for the specified provider-backed path.",
+        "operationId": "_bdk.Storage.Files.ReadFile",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "_bdk.Storage.Files"
+        ],
+        "summary": "Write file content",
+        "description": "Writes the raw request body to the specified provider-backed file path.",
+        "operationId": "_bdk.Storage.Files.WriteFile",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/octet-stream": {
+              "schema": {
+                "$ref": "#/components/schemas/IFormFile"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/{providerName}/files": {
+      "delete": {
+        "tags": [
+          "_bdk.Storage.Files"
+        ],
+        "summary": "Delete a file",
+        "description": "Deletes the specified provider-backed file path.",
+        "operationId": "_bdk.Storage.Files.DeleteFile",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "_bdk.Storage.Files"
+        ],
+        "summary": "List files",
+        "description": "Lists files from the configured provider with optional recursion and continuation support.",
+        "operationId": "_bdk.Storage.Files.ListFiles",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchPattern",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recursive",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "continuationToken",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileStorageFilesResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/{providerName}/files/metadata": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Files"
+        ],
+        "summary": "Get file metadata",
+        "description": "Retrieves metadata for the specified provider-backed file path.",
+        "operationId": "_bdk.Storage.Files.GetFileMetadata",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileMetadata"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/{providerName}/files/checksum": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Files"
+        ],
+        "summary": "Get file checksum",
+        "description": "Computes a checksum for the specified provider-backed file path.",
+        "operationId": "_bdk.Storage.Files.GetChecksum",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileStorageChecksumResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/{providerName}/directories/exists": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Files"
+        ],
+        "summary": "Check whether a directory exists",
+        "description": "Checks whether the specified provider-backed directory path exists.",
+        "operationId": "_bdk.Storage.Files.DirectoryExists",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileStorageExistsResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/{providerName}/directories": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Files"
+        ],
+        "summary": "List directories",
+        "description": "Lists directories from the configured provider with optional recursion.",
+        "operationId": "_bdk.Storage.Files.ListDirectories",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "searchPattern",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recursive",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "_bdk.Storage.Files"
+        ],
+        "summary": "Create a directory",
+        "description": "Creates the specified provider-backed directory path.",
+        "operationId": "_bdk.Storage.Files.CreateDirectory",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "_bdk.Storage.Files"
+        ],
+        "summary": "Delete a directory",
+        "description": "Deletes the specified provider-backed directory path.",
+        "operationId": "_bdk.Storage.Files.DeleteDirectory",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "recursive",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/{providerName}/events": {
+      "get": {
+        "tags": [
+          "_bdk.Storage.Files"
+        ],
+        "summary": "List file events",
+        "description": "Lists stored monitoring events for the provider-backed location, optionally filtered by path, event type, date range, and result size.",
+        "operationId": "_bdk.Storage.Files.ListFileEvents",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "eventType",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "tillDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "take",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileStorageFileEventsResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/{providerName}/events/scan": {
+      "post": {
+        "tags": [
+          "_bdk.Storage.Files"
+        ],
+        "summary": "Scan a monitored location",
+        "description": "Triggers an on-demand file monitoring scan for the provider-backed location and returns the detected events.",
+        "operationId": "_bdk.Storage.Files.ScanFileEvents",
+        "parameters": [
+          {
+            "name": "providerName",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "waitForProcessing",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
+            "name": "searchPattern",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "maxFilesToScan",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "skipChecksum",
+            "in": "query",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileStorageFileEventScanResponseModel"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/api/system": {
+      "get": {
+        "tags": [
+          "_bdk.System"
+        ],
+        "summary": "_bdk.System.Get",
+        "operationId": "_bdk.System.Get",
         "responses": {
           "200": {
             "description": "OK",
@@ -8936,13 +10110,13 @@
         }
       }
     },
-    "/_bdk/api/echo": {
+    "/_bdk/api/system/echo": {
       "get": {
         "tags": [
-          "_bdk"
+          "_bdk.System"
         ],
-        "summary": "_bdk.GetEcho",
-        "operationId": "_bdk.GetEcho",
+        "summary": "_bdk.System.GetEcho",
+        "operationId": "_bdk.System.GetEcho",
         "responses": {
           "200": {
             "description": "OK",
@@ -8967,13 +10141,13 @@
         }
       }
     },
-    "/_bdk/api/info": {
+    "/_bdk/api/system/info": {
       "get": {
         "tags": [
-          "_bdk"
+          "_bdk.System"
         ],
-        "summary": "_bdk.GetInfo",
-        "operationId": "_bdk.GetInfo",
+        "summary": "_bdk.System.GetInfo",
+        "operationId": "_bdk.System.GetInfo",
         "responses": {
           "200": {
             "description": "OK",
@@ -8998,13 +10172,13 @@
         }
       }
     },
-    "/_bdk/api/modules": {
+    "/_bdk/api/system/modules": {
       "get": {
         "tags": [
-          "_bdk"
+          "_bdk.System"
         ],
-        "summary": "_bdk.GetModules",
-        "operationId": "_bdk.GetModules",
+        "summary": "_bdk.System.GetModules",
+        "operationId": "_bdk.System.GetModules",
         "responses": {
           "200": {
             "description": "OK",
@@ -9380,14 +10554,14 @@
         }
       }
     },
-    "/_bdk/dashboard/jobs": {
+    "/_bdk/dashboard/app/cities": {
       "get": {
         "tags": [
-          "_bdk.Dashboard"
+          "_bdk.Dashboard.WeatherFiesta"
         ],
-        "summary": "Dashboard Jobs",
-        "description": "Shows registered jobs with their triggers, occurrences, and management actions.",
-        "operationId": "_bdk.Dashboard.Jobs",
+        "summary": "WeatherFiesta Dashboard Cities",
+        "description": "Shows WeatherFiesta city data inside the bITdevKit dashboard shell.",
+        "operationId": "_bdk.Dashboard.WeatherFiesta.Cities",
         "responses": {
           "200": {
             "description": "OK",
@@ -9402,36 +10576,14 @@
         }
       }
     },
-    "/_bdk/dashboard/jobs/content": {
+    "/_bdk/dashboard/app/cities/content": {
       "get": {
         "tags": [
-          "_bdk.Dashboard"
+          "_bdk.Dashboard.WeatherFiesta"
         ],
-        "summary": "Dashboard Jobs Content",
-        "description": "Shows the jobs dashboard content fragment.",
-        "operationId": "_bdk.Dashboard.JobsContent",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/_bdk/dashboard/jobs/data/content": {
-      "get": {
-        "tags": [
-          "_bdk.Dashboard"
-        ],
-        "summary": "Dashboard Jobs Data Content",
-        "description": "Shows the refreshable jobs dashboard data fragment.",
-        "operationId": "_bdk.Dashboard.JobsDataContent",
+        "summary": "WeatherFiesta Dashboard Cities Content",
+        "description": "Shows WeatherFiesta city dashboard content.",
+        "operationId": "_bdk.Dashboard.WeatherFiesta.CitiesContent",
         "responses": {
           "200": {
             "description": "OK",
@@ -9578,14 +10730,14 @@
         }
       }
     },
-    "/_bdk/dashboard/app/cities": {
+    "/_bdk/dashboard/storage/files": {
       "get": {
         "tags": [
-          "_bdk.Dashboard.WeatherFiesta"
+          "_bdk.Dashboard"
         ],
-        "summary": "WeatherFiesta Dashboard Cities",
-        "description": "Shows WeatherFiesta city data inside the bITdevKit dashboard shell.",
-        "operationId": "_bdk.Dashboard.WeatherFiesta.Cities",
+        "summary": "Dashboard Files",
+        "description": "Shows registered file storage locations with file and directory management actions.",
+        "operationId": "_bdk.Dashboard.Storage.Files",
         "responses": {
           "200": {
             "description": "OK",
@@ -9600,14 +10752,80 @@
         }
       }
     },
-    "/_bdk/dashboard/app/cities/content": {
+    "/_bdk/dashboard/storage/files/content": {
       "get": {
         "tags": [
-          "_bdk.Dashboard.WeatherFiesta"
+          "_bdk.Dashboard"
         ],
-        "summary": "WeatherFiesta Dashboard Cities Content",
-        "description": "Shows WeatherFiesta city dashboard content.",
-        "operationId": "_bdk.Dashboard.WeatherFiesta.CitiesContent",
+        "summary": "Dashboard Files Content",
+        "description": "Shows the refreshable file storage dashboard content fragment.",
+        "operationId": "_bdk.Dashboard.Storage.FilesContent",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/jobs": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Jobs",
+        "description": "Shows registered jobs with their triggers, occurrences, and management actions.",
+        "operationId": "_bdk.Dashboard.Jobs",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/jobs/content": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Jobs Content",
+        "description": "Shows the jobs dashboard content fragment.",
+        "operationId": "_bdk.Dashboard.JobsContent",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/jobs/data/content": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard"
+        ],
+        "summary": "Dashboard Jobs Data Content",
+        "description": "Shows the refreshable jobs dashboard data fragment.",
+        "operationId": "_bdk.Dashboard.JobsDataContent",
         "responses": {
           "200": {
             "description": "OK",
@@ -11284,6 +12502,255 @@
           }
         }
       },
+      "FileMetadata": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "length": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "lastModified": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "FileStorageChecksumResponseModel": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "checksum": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "FileStorageExistsResponseModel": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "exists": {
+            "type": "boolean"
+          }
+        }
+      },
+      "FileStorageFileEventModel": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "scanId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "locationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "filePath": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "eventType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "detectedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "fileSize": {
+            "type": [
+              "null",
+              "integer"
+            ],
+            "format": "int64"
+          },
+          "lastModifiedDate": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "checksum": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "FileStorageFileEventScanResponseModel": {
+        "type": "object",
+        "properties": {
+          "providerName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "locationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "scanId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": [
+              "null",
+              "string"
+            ],
+            "format": "date-time"
+          },
+          "eventCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "events": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/FileStorageFileEventModel"
+            }
+          }
+        }
+      },
+      "FileStorageFileEventsResponseModel": {
+        "type": "object",
+        "properties": {
+          "providerName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "locationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "events": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "$ref": "#/components/schemas/FileStorageFileEventModel"
+            }
+          }
+        }
+      },
+      "FileStorageFilesResponseModel": {
+        "type": "object",
+        "properties": {
+          "files": {
+            "type": [
+              "null",
+              "array"
+            ],
+            "items": {
+              "type": "string"
+            }
+          },
+          "nextContinuationToken": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "FileStorageHealthResponseModel": {
+        "type": "object",
+        "properties": {
+          "providerName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "isHealthy": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": [
+              "null",
+              "string"
+            ]
+          }
+        }
+      },
+      "FileStorageProviderInfoModel": {
+        "type": "object",
+        "properties": {
+          "providerName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "locationName": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "description": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "supportsNotifications": {
+            "type": "boolean"
+          }
+        }
+      },
       "HourlyForecastModel": {
         "type": "object",
         "properties": {
@@ -11349,6 +12816,10 @@
             "type": "boolean"
           }
         }
+      },
+      "IFormFile": {
+        "type": "string",
+        "format": "binary"
       },
       "JobBatchCompletionPolicy": {
         "enum": [
@@ -14189,7 +15660,10 @@
       "name": "_bdk.Orchestrations"
     },
     {
-      "name": "_bdk"
+      "name": "_bdk.Storage.Files"
+    },
+    {
+      "name": "_bdk.System"
     },
     {
       "name": "_bdk.Dashboard"

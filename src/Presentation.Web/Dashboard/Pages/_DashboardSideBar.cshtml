@@ -3,7 +3,7 @@
 @inherits RazorSlice<DashboardSidebarItem[]>
 
 <nav id="sidebarMenu" class="d-md-block sidebar collapse">
-    <div class="position-sticky pt-3">
+    <div class="sidebar-sticky">
         @{
             var groups = Model
                 .OrderBy(item => item.GroupOrder)
@@ -20,11 +20,20 @@
         @for (var groupIndex = 0; groupIndex < groups.Length; groupIndex++)
         {
             var group = groups[groupIndex];
-            <div class="@(groupIndex > 0 ? "border-top mt-3 pt-2" : "")">
-            <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-2 mb-1 text-muted">
+            var groupId = $"dashboard-sidebar-group-{groupIndex}";
+            var groupKey = $"{group.Key}:{group.First().GroupOrder}";
+            <section class="dashboard-sidebar-group @(groupIndex > 0 ? "border-top" : "")"
+                     data-sidebar-group
+                     data-sidebar-group-key="@groupKey">
+            <button type="button"
+                    class="sidebar-heading dashboard-sidebar-group-toggle"
+                    data-sidebar-group-toggle
+                    aria-expanded="true"
+                    aria-controls="@groupId">
                 <span>@group.Key</span>
-            </h6>
-            <ul class="nav flex-column mb-2">
+                <i class="bi bi-chevron-right" aria-hidden="true"></i>
+            </button>
+            <ul id="@groupId" class="nav flex-column dashboard-sidebar-group-items" data-sidebar-group-items>
             @foreach (var item in group.OrderBy(item => item.Order).ThenBy(item => item.Title, StringComparer.OrdinalIgnoreCase))
             {
                 var isActive = ReferenceEquals(item, activeItem);
@@ -41,7 +50,7 @@
                 </li>
             }
             </ul>
-            </div>
+            </section>
         }
     </div>
 </nav>

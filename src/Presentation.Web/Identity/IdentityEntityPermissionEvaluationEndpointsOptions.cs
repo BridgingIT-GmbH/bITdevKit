@@ -12,7 +12,7 @@ public class IdentityEntityPermissionEvaluationEndpointsOptions : EndpointsOptio
     public IdentityEntityPermissionEvaluationEndpointsOptions()
     {
         this.GroupPath = "/_bdk/api/identity/evaluate/entities/permissions";
-        this.GroupTag = "_bdk/identity";
+        this.GroupTag = "_bdk.Identity";
         this.RequireAuthorization = true;
     }
 }

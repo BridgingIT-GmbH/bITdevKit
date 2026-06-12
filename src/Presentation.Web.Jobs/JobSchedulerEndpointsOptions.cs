@@ -27,7 +27,7 @@ public class JobSchedulerEndpointsOptions : EndpointsOptionsBase
     public JobSchedulerEndpointsOptions()
     {
         this.GroupPath = "/_bdk/api/jobs";
-        this.GroupTag = "_bdk/jobs";
+        this.GroupTag = "_bdk.Jobs";
         this.RequireAuthorization = true;
     }
 }

@@ -121,6 +121,7 @@
         const sessionId = getOrCreateSessionId();
         let disposed = false;
         let timer = null;
+        const themeChanged = () => sample();
 
         function dispose() {
             disposed = true;
@@ -128,6 +129,7 @@
                 window.clearInterval(timer);
                 timer = null;
             }
+            document.removeEventListener('bdk-dashboard-theme-changed', themeChanged);
             if (window.Plotly && graphHost) {
                 window.Plotly.purge(graphHost);
             }
@@ -172,22 +174,14 @@
                 const samples = Array.isArray(payload.samples) ? payload.samples : [];
                 const x = samples.map(sample => new Date(sample.timestampUtc));
                 const Plotly = await ensurePlotly();
+                const theme = window.bdkDashboard.getChartTheme();
                 await Plotly.react(graphHost, [
-                    { x, y: samples.map(s => s.pending ?? 0), name: 'Pending', mode: 'lines', line: { color: '#0d6efd', width: 2 }, type: 'scatter' },
-                    { x, y: samples.map(s => s.processing ?? 0), name: 'Processing', mode: 'lines', line: { color: '#ffc107', width: 2 }, type: 'scatter' },
-                    { x, y: samples.map(s => s.succeeded ?? 0), name: 'Succeeded', mode: 'lines', line: { color: '#198754', width: 2 }, type: 'scatter' },
-                    { x, y: samples.map(s => s.failed ?? 0), name: 'Failed', mode: 'lines', line: { color: '#dc3545', width: 2 }, type: 'scatter' },
-                    { x, y: samples.map(s => s.deadLettered ?? 0), name: 'Dead-lettered', mode: 'lines', line: { color: '#6f42c1', width: 2 }, type: 'scatter' }
-                ], {
-                    margin: { l: 36, r: 16, t: 16, b: 28 },
-                    paper_bgcolor: 'rgba(0,0,0,0)',
-                    plot_bgcolor: 'rgba(0,0,0,0)',
-                    font: { color: '#adb5bd', size: 11 },
-                    xaxis: { showgrid: false, zeroline: false },
-                    yaxis: { rangemode: 'tozero', showgrid: true, gridcolor: 'rgba(128,128,128,.2)', zeroline: false },
-                    legend: { orientation: 'h', x: 0, y: -0.2 },
-                    dragmode: false
-                }, {
+                    { x, y: samples.map(s => s.pending ?? 0), name: 'Pending', mode: 'lines', line: { color: theme.primary, width: 2 }, type: 'scatter' },
+                    { x, y: samples.map(s => s.processing ?? 0), name: 'Processing', mode: 'lines', line: { color: theme.warning, width: 2 }, type: 'scatter' },
+                    { x, y: samples.map(s => s.succeeded ?? 0), name: 'Succeeded', mode: 'lines', line: { color: theme.success, width: 2 }, type: 'scatter' },
+                    { x, y: samples.map(s => s.failed ?? 0), name: 'Failed', mode: 'lines', line: { color: theme.danger, width: 2 }, type: 'scatter' },
+                    { x, y: samples.map(s => s.deadLettered ?? 0), name: 'Dead-lettered', mode: 'lines', line: { color: theme.secondary, width: 2 }, type: 'scatter' }
+                ], window.bdkDashboard.createPlotlyLayout(), {
                     displayModeBar: false,
                     responsive: true,
                     staticPlot: true
@@ -198,6 +192,7 @@
         }
 
         sample();
+        document.addEventListener('bdk-dashboard-theme-changed', themeChanged);
         timer = window.setInterval(sample, 5000);
         window.bdkMessagingGraphState = { dispose };
     })();

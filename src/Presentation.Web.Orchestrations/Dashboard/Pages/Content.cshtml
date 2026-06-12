@@ -154,6 +154,12 @@
         let disposed = false;
         let realtimeTimer = null;
         let historyWindow = 'day';
+        const themeChanged = async () => {
+            await sampleRealtime();
+            if (document.getElementById('orchestrations-graph-history-tab')?.classList.contains('active')) {
+                await loadHistory();
+            }
+        };
 
         function dispose() {
             disposed = true;
@@ -161,6 +167,7 @@
                 window.clearInterval(realtimeTimer);
                 realtimeTimer = null;
             }
+            document.removeEventListener('bdk-dashboard-theme-changed', themeChanged);
             if (window.Plotly) {
                 if (realtimeHost) window.Plotly.purge(realtimeHost);
                 if (historyHost) window.Plotly.purge(historyHost);
@@ -186,16 +193,7 @@
         }
 
         function layout() {
-            return {
-                margin: { l: 36, r: 16, t: 16, b: 28 },
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)',
-                font: { color: '#adb5bd', size: 11 },
-                xaxis: { showgrid: false, zeroline: false },
-                yaxis: { rangemode: 'tozero', showgrid: true, gridcolor: 'rgba(128,128,128,.2)', zeroline: false },
-                legend: { orientation: 'h', x: 0, y: -0.2 },
-                dragmode: false
-            };
+            return window.bdkDashboard.createPlotlyLayout();
         }
 
         async function render(host, traces) {
@@ -243,13 +241,14 @@
                 const payload = await response.json();
                 const samples = Array.isArray(payload.samples) ? payload.samples : [];
                 const x = samples.map(sample => new Date(sample.timestampUtc));
+                const theme = window.bdkDashboard.getChartTheme();
                 await render(realtimeHost, [
-                    { x, y: samples.map(s => s.running ?? 0), name: 'Running', mode: 'lines', line: { color: '#0dcaf0', width: 2 }, type: 'scatter' },
-                    { x, y: samples.map(s => s.waiting ?? 0), name: 'Waiting', mode: 'lines', line: { color: '#ffc107', width: 2 }, type: 'scatter' },
-                    { x, y: samples.map(s => s.paused ?? 0), name: 'Paused', mode: 'lines', line: { color: '#adb5bd', width: 2 }, type: 'scatter' },
-                    { x, y: getDeltaSeries(samples, 'completed'), name: 'Completed', mode: 'lines', line: { color: '#198754', width: 2 }, type: 'scatter' },
-                    { x, y: getDeltaSeries(samples, 'failed'), name: 'Failed', mode: 'lines', line: { color: '#dc3545', width: 2 }, type: 'scatter' },
-                    { x, y: getDeltaSeries(samples, 'problem'), name: 'Problem', mode: 'lines', line: { color: '#6f42c1', width: 2 }, type: 'scatter' }
+                    { x, y: samples.map(s => s.running ?? 0), name: 'Running', mode: 'lines', line: { color: theme.info, width: 2 }, type: 'scatter' },
+                    { x, y: samples.map(s => s.waiting ?? 0), name: 'Waiting', mode: 'lines', line: { color: theme.warning, width: 2 }, type: 'scatter' },
+                    { x, y: samples.map(s => s.paused ?? 0), name: 'Paused', mode: 'lines', line: { color: theme.quiet, width: 2 }, type: 'scatter' },
+                    { x, y: getDeltaSeries(samples, 'completed'), name: 'Completed', mode: 'lines', line: { color: theme.success, width: 2 }, type: 'scatter' },
+                    { x, y: getDeltaSeries(samples, 'failed'), name: 'Failed', mode: 'lines', line: { color: theme.danger, width: 2 }, type: 'scatter' },
+                    { x, y: getDeltaSeries(samples, 'problem'), name: 'Problem', mode: 'lines', line: { color: theme.secondary, width: 2 }, type: 'scatter' }
                 ]);
             } catch {
                 // best effort graph polling
@@ -274,12 +273,13 @@
                 const payload = await response.json();
                 const buckets = Array.isArray(payload.buckets) ? payload.buckets : [];
                 const x = buckets.map(bucket => new Date(bucket.startUtc));
+                const theme = window.bdkDashboard.getChartTheme();
                 await render(historyHost, [
-                    { x, y: buckets.map(s => s.completed ?? 0), name: 'Completed', mode: 'lines', line: { color: '#198754', width: 2 }, type: 'scatter' },
-                    { x, y: buckets.map(s => s.running ?? 0), name: 'Running', mode: 'lines', line: { color: '#0dcaf0', width: 2 }, type: 'scatter' },
-                    { x, y: buckets.map(s => s.waiting ?? 0), name: 'Waiting', mode: 'lines', line: { color: '#ffc107', width: 2 }, type: 'scatter' },
-                    { x, y: buckets.map(s => s.failed ?? 0), name: 'Failed', mode: 'lines', line: { color: '#dc3545', width: 2 }, type: 'scatter' },
-                    { x, y: buckets.map(s => s.problem ?? 0), name: 'Problem', mode: 'lines', line: { color: '#6f42c1', width: 2 }, type: 'scatter' }
+                    { x, y: buckets.map(s => s.completed ?? 0), name: 'Completed', mode: 'lines', line: { color: theme.success, width: 2 }, type: 'scatter' },
+                    { x, y: buckets.map(s => s.running ?? 0), name: 'Running', mode: 'lines', line: { color: theme.info, width: 2 }, type: 'scatter' },
+                    { x, y: buckets.map(s => s.waiting ?? 0), name: 'Waiting', mode: 'lines', line: { color: theme.warning, width: 2 }, type: 'scatter' },
+                    { x, y: buckets.map(s => s.failed ?? 0), name: 'Failed', mode: 'lines', line: { color: theme.danger, width: 2 }, type: 'scatter' },
+                    { x, y: buckets.map(s => s.problem ?? 0), name: 'Problem', mode: 'lines', line: { color: theme.secondary, width: 2 }, type: 'scatter' }
                 ]);
             } catch {
                 // best effort graph loading
@@ -312,6 +312,8 @@
                 }
             });
         });
+
+        document.addEventListener('bdk-dashboard-theme-changed', themeChanged);
 
         sampleRealtime();
         realtimeTimer = window.setInterval(sampleRealtime, 5000);

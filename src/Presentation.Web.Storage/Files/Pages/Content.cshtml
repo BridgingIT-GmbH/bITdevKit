@@ -1,0 +1,921 @@
+@using BridgingIT.DevKit.Application.Storage
+@using BridgingIT.DevKit.Presentation.Web.Storage.Models
+@using Microsoft.Extensions.Logging
+@using System.Net
+@using System.Text
+@using StorageDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Storage.Files.DashboardEndpoints
+@inherits RazorSlice
+
+@{
+    var vm = await CreateModelAsync();
+}
+
+<style>
+    #storage-dashboard-root {
+        height: calc(100vh - 7.75rem);
+        min-height: 560px;
+        display: flex;
+        flex-direction: column;
+        gap: .45rem;
+        overflow: hidden;
+    }
+
+    #storage-dashboard-root .storage-toolbar {
+        flex: 0 0 auto;
+        border: 1px solid var(--bs-border-color);
+        border-radius: .1rem;
+        background: transparent;
+        padding: .55rem;
+    }
+
+    #storage-dashboard-root .storage-layout {
+        flex: 1 1 auto;
+        min-height: 0;
+        display: grid;
+        grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr);
+        gap: .5rem;
+        overflow: hidden;
+    }
+
+    #storage-dashboard-root .storage-panel {
+        border: 1px solid var(--bs-border-color);
+        border-radius: .1rem;
+        background: transparent;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+    }
+
+    #storage-dashboard-root .storage-panel-header {
+        padding: .48rem .6rem;
+        border-bottom: 1px solid var(--bs-border-color);
+        font-weight: 600;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: .5rem;
+    }
+
+    #storage-dashboard-root .storage-panel-body {
+        min-height: 0;
+        overflow: auto;
+        padding: .4rem;
+    }
+
+    #storage-dashboard-root .storage-panel-body-content {
+        padding-top: 0;
+    }
+
+    #storage-dashboard-root .storage-current-strip {
+        position: sticky;
+        top: 0;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .55rem;
+        margin: 0 -.4rem .4rem;
+        padding: .35rem .55rem;
+        border-bottom: 1px solid var(--dashboard-panel-border);
+        background: var(--bs-body-bg);
+    }
+
+    #storage-dashboard-root .storage-current-path {
+        min-width: 0;
+        overflow: hidden;
+        color: var(--bs-body-color);
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #storage-dashboard-root .storage-current-meta {
+        flex: 0 0 auto;
+        color: var(--bs-secondary-color);
+        font-size: .72rem;
+        white-space: nowrap;
+    }
+
+    #storage-dashboard-root .storage-tree {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    #storage-dashboard-root .storage-tree-children {
+        list-style: none;
+        margin: .1rem 0 .15rem .85rem;
+        padding: 0 0 0 .6rem;
+        border-left: 1px solid var(--bs-border-color);
+    }
+
+    #storage-dashboard-root .storage-tree-children[hidden] {
+        display: none;
+    }
+
+    #storage-dashboard-root .storage-tree-node {
+        margin: .02rem 0;
+    }
+
+    #storage-dashboard-root .storage-tree-row {
+        min-height: 1.85rem;
+        display: grid;
+        grid-template-columns: 1.35rem minmax(0, 1fr);
+        align-items: center;
+        border-radius: .1rem;
+        color: var(--bs-body-color);
+    }
+
+    #storage-dashboard-root .storage-tree-row:hover {
+        background: color-mix(in srgb, var(--bs-secondary-bg) 75%, transparent);
+    }
+
+    #storage-dashboard-root .storage-tree-row.is-active {
+        background: rgba(var(--bs-secondary-rgb), .16);
+        color: var(--bs-secondary);
+    }
+
+    #storage-dashboard-root .storage-tree-row.is-ancestor:not(.is-active) {
+        color: var(--bs-emphasis-color);
+    }
+
+    #storage-dashboard-root .storage-tree-toggle,
+    #storage-dashboard-root .storage-tree-link {
+        min-width: 0;
+        border: 0;
+        background: transparent;
+        color: inherit;
+    }
+
+    #storage-dashboard-root .storage-tree-toggle {
+        width: 1.35rem;
+        height: 1.35rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        color: var(--bs-secondary-color);
+    }
+
+    #storage-dashboard-root .storage-tree-toggle:disabled {
+        visibility: hidden;
+    }
+
+    #storage-dashboard-root .storage-tree-toggle .bi {
+        transition: transform .12s ease;
+    }
+
+    #storage-dashboard-root .storage-tree-node[aria-expanded="true"] > .storage-tree-row .storage-tree-toggle .bi {
+        transform: rotate(90deg);
+    }
+
+    #storage-dashboard-root .storage-tree-link {
+        width: 100%;
+        min-height: 1.85rem;
+        display: flex;
+        align-items: center;
+        gap: .42rem;
+        padding: .18rem .35rem .18rem .05rem;
+        text-align: left;
+    }
+
+    #storage-dashboard-root .storage-tree-link .bi {
+        flex: 0 0 auto;
+    }
+
+    #storage-dashboard-root .storage-tree-label {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #storage-dashboard-root .storage-name-cell {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        min-width: 0;
+    }
+
+    #storage-dashboard-root .storage-name-cell span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #storage-dashboard-root .storage-breadcrumbs {
+        min-height: 1.75rem;
+        display: flex;
+        align-items: center;
+        gap: .25rem;
+        overflow-x: auto;
+        scrollbar-width: thin;
+    }
+
+    #storage-dashboard-root .storage-breadcrumbs .btn {
+        flex: 0 0 auto;
+        max-width: 12rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #storage-dashboard-root .storage-actions {
+        display: inline-flex;
+        align-items: center;
+        gap: .18rem;
+        opacity: .24;
+        transition: opacity .12s ease;
+    }
+
+    #storage-dashboard-root tr:hover .storage-actions,
+    #storage-dashboard-root tr:focus-within .storage-actions,
+    #storage-dashboard-root .storage-actions:focus-within {
+        opacity: 1;
+    }
+
+    #storage-dashboard-root .storage-actions .btn {
+        --bs-btn-padding-y: .18rem;
+        --bs-btn-padding-x: .38rem;
+    }
+
+    #storage-dashboard-root .form-label {
+        color: var(--bs-secondary-color);
+        text-transform: uppercase;
+        letter-spacing: .04em;
+        font-size: .68rem;
+    }
+
+    #storage-dashboard-root .table {
+        margin-bottom: 0;
+    }
+
+    @@media (max-width: 991.98px) {
+        #storage-dashboard-root {
+            height: auto;
+            overflow: visible;
+        }
+
+        #storage-dashboard-root .storage-layout {
+            grid-template-columns: 1fr;
+            overflow: visible;
+        }
+
+        #storage-dashboard-root .storage-panel {
+            min-height: 16rem;
+            max-height: 70vh;
+        }
+
+        #storage-dashboard-root .storage-panel:last-child {
+            max-height: none;
+        }
+
+        #storage-dashboard-root .storage-actions {
+            opacity: 1;
+        }
+
+        #storage-dashboard-root .storage-current-strip {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: .2rem;
+        }
+    }
+</style>
+
+<div id="storage-dashboard-root" data-provider="@vm.SelectedProviderName" data-path="@vm.CurrentPath">
+    @if (!vm.IsAvailable)
+    {
+        <div class="alert alert-warning py-2 mb-0">
+            File storage is not registered. Call <code>AddFileStorage()</code> to populate this page.
+        </div>
+    }
+    else
+    {
+        @if (vm.Errors.Count > 0)
+        {
+            <div class="alert alert-danger py-2 mb-0">
+                @foreach (var error in vm.Errors)
+                {
+                    <div>@error</div>
+                }
+            </div>
+        }
+
+        <section class="storage-toolbar">
+            <div class="row g-2 align-items-end">
+                <div class="col-12 col-lg-3">
+                    <label class="form-label small mb-1" for="storage-provider-select">Provider</label>
+                    <select id="storage-provider-select" class="form-select form-select-sm" @(vm.Providers.Count == 0 ? "disabled" : null)>
+                        @foreach (var provider in vm.Providers)
+                        {
+                            <option value="@provider.ProviderName" @(string.Equals(provider.ProviderName, vm.SelectedProviderName, StringComparison.OrdinalIgnoreCase) ? "selected" : null)>
+                                @FormatProvider(provider)
+                            </option>
+                        }
+                    </select>
+                </div>
+                <div class="col-12 col-lg-5">
+                    <label class="form-label small mb-1">Path</label>
+                    <div class="storage-breadcrumbs">
+                        <button type="button" class="btn btn-sm @(string.IsNullOrWhiteSpace(vm.CurrentPath) ? "btn-primary" : "btn-outline-secondary")" data-storage-command="open" data-path="">/</button>
+                        @foreach (var crumb in GetBreadcrumbs(vm.CurrentPath))
+                        {
+                            <button type="button" class="btn btn-sm btn-outline-secondary" data-storage-command="open" data-path="@crumb.Path">@crumb.Name</button>
+                        }
+                    </div>
+                </div>
+                <div class="col-12 col-lg-4">
+                    <div class="d-flex flex-wrap gap-2 justify-content-lg-end">
+                        <button type="button" class="btn btn-primary btn-sm" data-storage-command="create-folder" @(string.IsNullOrWhiteSpace(vm.SelectedProviderName) ? "disabled" : null)>
+                            <i class="bi bi-folder-plus me-1"></i>Folder
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-storage-command="create-text" @(string.IsNullOrWhiteSpace(vm.SelectedProviderName) ? "disabled" : null)>
+                            <i class="bi bi-file-earmark-plus me-1"></i>Text File
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary btn-sm" data-storage-command="upload" @(string.IsNullOrWhiteSpace(vm.SelectedProviderName) ? "disabled" : null)>
+                            <i class="bi bi-upload me-1"></i>Upload
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="storage-layout">
+            <section class="storage-panel">
+                <div class="storage-panel-header">
+                    <span>Folders</span>
+                    <span class="badge rounded-pill text-bg-secondary">@CountDirectoryNodes(vm.DirectoryTree)</span>
+                </div>
+                <div class="storage-panel-body">
+                    <ul class="storage-tree" role="tree">
+                        <li class="storage-tree-node"
+                            role="treeitem"
+                            aria-expanded="true"
+                            aria-selected="@(string.IsNullOrWhiteSpace(vm.CurrentPath).ToString().ToLowerInvariant())"
+                            data-storage-tree-node
+                            data-path="">
+                            <div class="storage-tree-row @(string.IsNullOrWhiteSpace(vm.CurrentPath) ? "is-active" : null)">
+                                @if (vm.DirectoryTree.Count > 0)
+                                {
+                                    <button type="button"
+                                            class="storage-tree-toggle"
+                                            data-storage-tree-toggle
+                                            aria-label="Collapse Root"
+                                            title="Collapse Root">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="storage-tree-toggle" disabled aria-hidden="true" tabindex="-1">
+                                        <i class="bi bi-chevron-right"></i>
+                                    </button>
+                                }
+                                <button type="button"
+                                        class="storage-tree-link"
+                                        data-storage-command="open"
+                                        data-path=""
+                                        title="/">
+                                    <i class="bi bi-folder-fill"></i>
+                                    <span class="storage-tree-label">Root</span>
+                                </button>
+                            </div>
+                            @if (vm.DirectoryTree.Count > 0)
+                            {
+                                @RenderDirectoryTree(vm.DirectoryTree, vm.CurrentPath)
+                            }
+                        </li>
+                    </ul>
+                    @if (vm.DirectoryTree.Count == 0)
+                    {
+                        <div class="dashboard-empty">No folders are registered in this location.</div>
+                    }
+                </div>
+            </section>
+
+            <section class="storage-panel">
+                <div class="storage-panel-header">
+                    <span>Contents</span>
+                    <span class="text-muted small">@DisplayPath(vm.CurrentPath) · @vm.Directories.Count folder(s), @vm.Files.Count file(s)</span>
+                </div>
+                <div class="storage-panel-body storage-panel-body-content">
+                    <div class="storage-current-strip">
+                        <div class="storage-current-path" title="@DisplayPath(vm.CurrentPath)">
+                            <span class="text-muted">path</span> @DisplayPath(vm.CurrentPath)
+                        </div>
+                        <div class="storage-current-meta">
+                            @vm.SelectedProviderName · @vm.Directories.Count dir · @vm.Files.Count file
+                        </div>
+                    </div>
+                    @if (vm.Directories.Count == 0 && vm.Files.Count == 0)
+                    {
+                        <div class="dashboard-empty">This folder is empty.</div>
+                    }
+                    else
+                    {
+                        <div class="table-responsive">
+                            <table class="table table-sm align-middle">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th class="text-end">Size</th>
+                                        <th>Modified</th>
+                                        <th class="text-end"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (var directory in vm.Directories)
+                                {
+                                    <tr>
+                                        <td>
+                                            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none storage-name-cell" data-storage-command="open" data-path="@directory.Path" title="@directory.Path">
+                                                <i class="bi bi-folder-fill text-warning"></i>
+                                                <span>@directory.Name</span>
+                                            </button>
+                                        </td>
+                                        <td class="text-muted small">Folder</td>
+                                        <td class="text-end text-muted">-</td>
+                                        <td class="text-muted">-</td>
+                                        <td class="text-end text-nowrap">
+                                            <span class="storage-actions">
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" title="Rename folder" data-storage-command="rename" data-kind="directory" data-path="@directory.Path">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" title="Delete folder" data-storage-command="delete" data-kind="directory" data-path="@directory.Path">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                                @foreach (var file in vm.Files)
+                                {
+                                    var downloadUrl = BuildDownloadUrl(vm.DownloadPath, vm.SelectedProviderName, file.Path);
+                                    <tr>
+                                        <td>
+                                            <div class="storage-name-cell" title="@file.Path">
+                                                <i class="bi bi-file-earmark-text"></i>
+                                                <span>@file.Name</span>
+                                            </div>
+                                        </td>
+                                        <td class="text-muted small">@DisplayExtension(file.Path)</td>
+                                        <td class="text-end">@FormatSize(file.Length)</td>
+                                        <td class="text-muted small">@FormatTimestamp(file.LastModified)</td>
+                                        <td class="text-end text-nowrap">
+                                            <span class="storage-actions">
+                                                <a class="btn btn-sm btn-outline-secondary" title="Download file" href="@downloadUrl">
+                                                    <i class="bi bi-download"></i>
+                                                </a>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" title="Rename file" data-storage-command="rename" data-kind="file" data-path="@file.Path">
+                                                    <i class="bi bi-pencil"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" title="Copy file" data-storage-command="copy" data-kind="file" data-path="@file.Path">
+                                                    <i class="bi bi-copy"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-secondary" title="Move file" data-storage-command="move" data-kind="file" data-path="@file.Path">
+                                                    <i class="bi bi-arrows-move"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-sm btn-outline-danger" title="Delete file" data-storage-command="delete" data-kind="file" data-path="@file.Path">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    }
+                </div>
+            </section>
+        </div>
+    }
+</div>
+
+@functions {
+    private async Task<DashboardFilesViewModel> CreateModelAsync()
+    {
+        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var factory = this.HttpContext.RequestServices.GetService<IFileStorageProviderFactory>();
+        var logger = this.HttpContext.RequestServices.GetService<ILogger<Content>>();
+        var cancellationToken = this.HttpContext.RequestAborted;
+        var model = new DashboardFilesViewModel
+        {
+            ActionBase = StorageDashboardEndpoints.BuildFilesActionBase(dashboardOptions),
+            DownloadPath = StorageDashboardEndpoints.BuildFilesDownloadPath(dashboardOptions),
+            CurrentPath = NormalizePath(GetQuery("path"))
+        };
+
+        if (factory is null)
+        {
+            model.IsAvailable = false;
+            return model;
+        }
+
+        model.Providers = GetProviders(factory);
+        model.SelectedProviderName = ResolveSelectedProvider(model.Providers, GetQuery("provider"));
+
+        if (string.IsNullOrWhiteSpace(model.SelectedProviderName))
+        {
+            return model;
+        }
+
+        IFileStorageProvider provider;
+        try
+        {
+            provider = factory.CreateProvider(model.SelectedProviderName);
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "File storage dashboard: provider creation failed.");
+            model.Errors.Add("The selected storage location could not be loaded.");
+            return model;
+        }
+
+        try
+        {
+            var directoryResult = await provider.ListDirectoriesAsync(string.Empty, recursive: true, cancellationToken: cancellationToken);
+            if (directoryResult.IsSuccess)
+            {
+                model.DirectoryTree = BuildDirectoryNodes(directoryResult.Value);
+            }
+            else
+            {
+                model.Errors.Add(GetFailureMessage(directoryResult, "Directory tree could not be loaded."));
+            }
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "File storage dashboard: directory tree failed.");
+            model.Errors.Add("Directory tree could not be loaded.");
+        }
+
+        try
+        {
+            var directoryResult = await provider.ListDirectoriesAsync(model.CurrentPath, recursive: false, cancellationToken: cancellationToken);
+            if (directoryResult.IsSuccess)
+            {
+                model.Directories = BuildDirectoryRows(directoryResult.Value);
+            }
+            else
+            {
+                model.Errors.Add(GetFailureMessage(directoryResult, "Current folders could not be loaded."));
+            }
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "File storage dashboard: current directories failed.");
+            model.Errors.Add("Current folders could not be loaded.");
+        }
+
+        try
+        {
+            model.Files = await BuildFileRowsAsync(provider, model.CurrentPath, cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            logger?.LogWarning(ex, "File storage dashboard: files failed.");
+            model.Errors.Add("Current files could not be loaded.");
+        }
+
+        return model;
+    }
+
+    private string GetQuery(string key) =>
+        this.HttpContext.Request.Query.TryGetValue(key, out var value) ? value.ToString() : null;
+
+    private static IReadOnlyList<FileStorageProviderInfoModel> GetProviders(IFileStorageProviderFactory factory)
+    {
+        return factory.GetProviderNames()
+            .Select(providerName =>
+            {
+                var provider = factory.CreateProvider(providerName);
+                return new FileStorageProviderInfoModel
+                {
+                    ProviderName = providerName,
+                    LocationName = provider.LocationName,
+                    Description = provider.Description,
+                    SupportsNotifications = provider.SupportsNotifications
+                };
+            })
+            .OrderBy(provider => provider.LocationName ?? provider.ProviderName, StringComparer.OrdinalIgnoreCase)
+            .ThenBy(provider => provider.ProviderName, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+    }
+
+    private static string ResolveSelectedProvider(IReadOnlyList<FileStorageProviderInfoModel> providers, string requestedProvider)
+    {
+        if (!string.IsNullOrWhiteSpace(requestedProvider))
+        {
+            var matched = providers.FirstOrDefault(provider =>
+                string.Equals(provider.ProviderName, requestedProvider, StringComparison.OrdinalIgnoreCase));
+
+            if (matched is not null)
+            {
+                return matched.ProviderName;
+            }
+        }
+
+        return providers.FirstOrDefault()?.ProviderName;
+    }
+
+    private static IReadOnlyList<DashboardDirectoryNode> BuildDirectoryNodes(IEnumerable<string> directories)
+    {
+        var roots = new Dictionary<string, MutableDirectoryNode>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var path in directories
+            .Select(NormalizePath)
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
+        {
+            var segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            var children = roots;
+            var currentPath = string.Empty;
+
+            foreach (var segment in segments)
+            {
+                currentPath = string.IsNullOrWhiteSpace(currentPath)
+                    ? segment
+                    : $"{currentPath}/{segment}";
+
+                if (!children.TryGetValue(segment, out var node))
+                {
+                    node = new MutableDirectoryNode(currentPath, segment);
+                    children[segment] = node;
+                }
+
+                children = node.Children;
+            }
+        }
+
+        return ToDirectoryNodes(roots);
+    }
+
+    private static IReadOnlyList<DashboardDirectoryRow> BuildDirectoryRows(IEnumerable<string> directories) =>
+        directories
+            .Select(NormalizePath)
+            .Where(path => !string.IsNullOrWhiteSpace(path))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => GetName(path), StringComparer.OrdinalIgnoreCase)
+            .Select(path => new DashboardDirectoryRow(path, GetName(path)))
+            .ToArray();
+
+    private static async Task<IReadOnlyList<DashboardFileRow>> BuildFileRowsAsync(
+        IFileStorageProvider provider,
+        string currentPath,
+        CancellationToken cancellationToken)
+    {
+        var paths = new List<string>();
+        string continuationToken = null;
+        do
+        {
+            var result = await provider.ListFilesAsync(currentPath, "*.*", recursive: false, continuationToken, cancellationToken);
+            if (result.IsFailure)
+            {
+                throw new InvalidOperationException(GetFailureMessage(result, "Files could not be listed."));
+            }
+
+            paths.AddRange(result.Value.Files.Select(NormalizePath).Where(path => !string.IsNullOrWhiteSpace(path)));
+            continuationToken = result.Value.NextContinuationToken;
+        }
+        while (!string.IsNullOrWhiteSpace(continuationToken) && paths.Count < 1000);
+
+        var rows = await Task.WhenAll(paths
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(path => GetName(path), StringComparer.OrdinalIgnoreCase)
+            .Select(async path =>
+            {
+                try
+                {
+                    var metadata = await provider.GetFileMetadataAsync(path, cancellationToken);
+                    return metadata.IsSuccess
+                        ? new DashboardFileRow(path, GetName(path), metadata.Value.Length, metadata.Value.LastModified)
+                        : new DashboardFileRow(path, GetName(path), null, null);
+                }
+                catch
+                {
+                    return new DashboardFileRow(path, GetName(path), null, null);
+                }
+            }));
+
+        return rows;
+    }
+
+    private static IEnumerable<(string Path, string Name)> GetBreadcrumbs(string path)
+    {
+        var normalized = NormalizePath(path);
+        if (string.IsNullOrWhiteSpace(normalized))
+        {
+            yield break;
+        }
+
+        var segments = normalized.Split('/', StringSplitOptions.RemoveEmptyEntries);
+        for (var index = 0; index < segments.Length; index++)
+        {
+            yield return (string.Join('/', segments.Take(index + 1)), segments[index]);
+        }
+    }
+
+    private static string NormalizePath(string path) =>
+        string.IsNullOrWhiteSpace(path)
+            ? string.Empty
+            : path.Replace('\\', '/').Trim('/');
+
+    private static string GetName(string path)
+    {
+        var normalized = NormalizePath(path);
+        if (string.IsNullOrWhiteSpace(normalized))
+        {
+            return "/";
+        }
+
+        var index = normalized.LastIndexOf('/');
+        return index < 0 ? normalized : normalized[(index + 1)..];
+    }
+
+    private static string DisplayPath(string path) =>
+        string.IsNullOrWhiteSpace(path) ? "/" : path;
+
+    private static string DisplayExtension(string path)
+    {
+        var extension = Path.GetExtension(path);
+        return string.IsNullOrWhiteSpace(extension) ? "File" : extension.TrimStart('.').ToUpperInvariant();
+    }
+
+    private static string FormatProvider(FileStorageProviderInfoModel provider)
+    {
+        if (string.IsNullOrWhiteSpace(provider?.ProviderName))
+        {
+            return DisplayValue(provider?.LocationName);
+        }
+
+        return $"{DisplayValue(provider.LocationName)} ({provider.ProviderName})";
+    }
+
+    private static string DisplayValue(string value) =>
+        string.IsNullOrWhiteSpace(value) ? "-" : value;
+
+    private static string FormatTimestamp(DateTime? value) =>
+        value?.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) ?? "-";
+
+    private static string FormatSize(long? value)
+    {
+        if (value is null)
+        {
+            return "-";
+        }
+
+        const long kiloByte = 1024;
+        const long megaByte = kiloByte * 1024;
+        const long gigaByte = megaByte * 1024;
+
+        return value.Value switch
+        {
+            >= gigaByte => $"{value.Value / (double)gigaByte:0.##} GB",
+            >= megaByte => $"{value.Value / (double)megaByte:0.##} MB",
+            >= kiloByte => $"{value.Value / (double)kiloByte:0.##} KB",
+            _ => $"{value.Value} B"
+        };
+    }
+
+    private static string BuildDownloadUrl(string basePath, string providerName, string path)
+    {
+        var query = new List<string>();
+        if (!string.IsNullOrWhiteSpace(providerName))
+        {
+            query.Add($"provider={Uri.EscapeDataString(providerName)}");
+        }
+
+        if (!string.IsNullOrWhiteSpace(path))
+        {
+            query.Add($"path={Uri.EscapeDataString(path)}");
+        }
+
+        return query.Count == 0 ? basePath : $"{basePath}?{string.Join("&", query)}";
+    }
+
+    private static string GetFailureMessage(BridgingIT.DevKit.Common.Result result, string fallback) =>
+        result.Messages?.LastOrDefault()
+        ?? result.Errors?.FirstOrDefault()?.Message
+        ?? fallback;
+
+    private static int CountDirectoryNodes(IEnumerable<DashboardDirectoryNode> nodes) =>
+        nodes.Sum(node => 1 + CountDirectoryNodes(node.Children));
+
+    private static IReadOnlyList<DashboardDirectoryNode> ToDirectoryNodes(IReadOnlyDictionary<string, MutableDirectoryNode> nodes) =>
+        nodes.Values
+            .OrderBy(node => node.Name, StringComparer.OrdinalIgnoreCase)
+            .Select(node => new DashboardDirectoryNode(node.Path, node.Name, ToDirectoryNodes(node.Children)))
+            .ToArray();
+
+    private static Microsoft.AspNetCore.Html.IHtmlContent RenderDirectoryTree(
+        IReadOnlyList<DashboardDirectoryNode> nodes,
+        string currentPath)
+    {
+        var html = new StringBuilder("<ul class=\"storage-tree-children\" role=\"group\" data-storage-tree-children>");
+        foreach (var node in nodes)
+        {
+            RenderDirectoryNode(html, node, currentPath);
+        }
+
+        html.Append("</ul>");
+        return new Microsoft.AspNetCore.Html.HtmlString(html.ToString());
+    }
+
+    private static void RenderDirectoryNode(StringBuilder html, DashboardDirectoryNode node, string currentPath)
+    {
+        var active = string.Equals(node.Path, currentPath, StringComparison.OrdinalIgnoreCase);
+        var ancestor = IsAncestorPath(node.Path, currentPath);
+        var expanded = node.Children.Count > 0 && ancestor;
+        var rowClass = active
+            ? "is-active"
+            : ancestor ? "is-ancestor" : string.Empty;
+        var hasChildren = node.Children.Count > 0;
+        var encodedPath = WebUtility.HtmlEncode(node.Path);
+        var encodedName = WebUtility.HtmlEncode(node.Name);
+        var expandedValue = expanded.ToString().ToLowerInvariant();
+        var activeValue = active.ToString().ToLowerInvariant();
+        var toggleLabel = expanded ? $"Collapse {node.Name}" : $"Expand {node.Name}";
+        var encodedToggleLabel = WebUtility.HtmlEncode(toggleLabel);
+        var iconClass = expanded || active ? "bi-folder2-open" : "bi-folder";
+
+        html.Append("<li class=\"storage-tree-node\"");
+        html.Append(" role=\"treeitem\"");
+        html.Append($" aria-selected=\"{activeValue}\"");
+        html.Append(" data-storage-tree-node");
+        html.Append($" data-path=\"{encodedPath}\"");
+        if (hasChildren)
+        {
+            html.Append($" aria-expanded=\"{expandedValue}\"");
+        }
+
+        html.Append('>');
+        html.Append($"""
+            <div class="storage-tree-row {rowClass}">
+            """);
+
+        if (hasChildren)
+        {
+            html.Append($"""
+                    <button type="button"
+                            class="storage-tree-toggle"
+                            data-storage-tree-toggle
+                            aria-label="{encodedToggleLabel}"
+                            title="{encodedToggleLabel}">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                """);
+        }
+        else
+        {
+            html.Append("""
+                    <button type="button" class="storage-tree-toggle" disabled aria-hidden="true" tabindex="-1">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                """);
+        }
+
+        html.Append($"""
+                <button type="button"
+                        class="storage-tree-link"
+                        title="{encodedPath}"
+                        data-storage-command="open"
+                        data-path="{encodedPath}">
+                    <i class="bi {iconClass}"></i>
+                    <span class="storage-tree-label">{encodedName}</span>
+                </button>
+            </div>
+            """);
+
+        if (hasChildren)
+        {
+            html.Append($"<ul class=\"storage-tree-children\" role=\"group\" data-storage-tree-children{(expanded ? string.Empty : " hidden")}>");
+            foreach (var child in node.Children)
+            {
+                RenderDirectoryNode(html, child, currentPath);
+            }
+
+            html.Append("</ul>");
+        }
+
+        html.Append("</li>");
+    }
+
+    private static bool IsAncestorPath(string candidatePath, string currentPath)
+    {
+        var candidate = NormalizePath(candidatePath);
+        var current = NormalizePath(currentPath);
+
+        return string.Equals(candidate, current, StringComparison.OrdinalIgnoreCase)
+            || current.StartsWith($"{candidate}/", StringComparison.OrdinalIgnoreCase);
+    }
+
+    private sealed class MutableDirectoryNode(string path, string name)
+    {
+        public string Path { get; } = path;
+
+        public string Name { get; } = name;
+
+        public Dictionary<string, MutableDirectoryNode> Children { get; } = new(StringComparer.OrdinalIgnoreCase);
+    }
+}

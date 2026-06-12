@@ -14,7 +14,7 @@ public class FakeIdentityProviderEndpointsOptions : EndpointsOptionsBase
     {
         this.Enabled = true;
         this.GroupPath = "/_bdk/api/identity/connect";
-        this.GroupTag = "_bdk/identity/connect";
+        this.GroupTag = "_bdk.Identity.Connect";
         this.RequireAuthorization = false;
         this.Issuer = "https://localhost:5001"; // should match Client Authority  "https://localhost:5001/_bdk/api/identity/connect"
         this.EndpointPaths = new FakeIdentityProviderEndpointPaths(); // Default endpoint paths

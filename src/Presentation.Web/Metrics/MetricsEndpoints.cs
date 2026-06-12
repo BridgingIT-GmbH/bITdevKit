@@ -44,8 +44,7 @@ public class MetricsEndpoints(
             return;
         }
 
-        var group = this.MapGroup(app, this.options)
-            .WithTags("_bdk.Metrics");
+        var group = this.MapGroup(app, this.options);
 
         group.MapGet(string.Empty, this.GetMetrics)
             .WithName("_bdk.Metrics.Get")

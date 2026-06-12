@@ -73,6 +73,25 @@ builder.Services.AddOrchestrations(o => o
     .WithEntityFramework<CoreDbContext>()
     .AddEndpoints();
 
+builder.Services.AddFileStorage(factory => factory
+        .RegisterProvider("documents", storage => storage
+            .UseEntityFramework<CoreDbContext>(
+                "documents",
+                "Entity Framework backed operational file storage",
+                options => options
+                    .PageSize(200)
+                    .MaximumBufferedContentSize(8 * 1024 * 1024))
+            .WithLifetime(ServiceLifetime.Singleton))
+        .RegisterProvider("attachments", storage => storage
+            .UseEntityFramework<CoreDbContext>(
+                "attachments",
+                "Entity Framework backed attachment and import file storage",
+                options => options
+                    .PageSize(200)
+                    .MaximumBufferedContentSize(8 * 1024 * 1024))
+            .WithLifetime(ServiceLifetime.Singleton)))
+        .AddEndpoints(options => options.RequireAuthorization());
+
 builder.Services.AddMapping().WithMapster();
 
 // ===============================================================================================
@@ -96,12 +115,12 @@ builder.Services.AddFakeIdentityProvider(o => o
     .WithClient("Scalar", "scalar", $"{builder.Configuration["Authentication:Authority"]}/scalar/"));
 
 builder.Services.AddEndpoints<SystemEndpoints>();
-builder.Services.AddDashboard(o => o
-    .Enabled(true)
-    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.DashboardEndpoints>()
-    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Messaging.Dashboard.DashboardEndpoints>()
-    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.DashboardEndpoints>()
-    .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints>());
+builder.Services.AddDashboard(o => o.Enabled(true));
+    // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.DashboardEndpoints>()
+    // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Messaging.Dashboard.DashboardEndpoints>()
+    // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.DashboardEndpoints>()
+    // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints>()
+    // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Storage.Files.DashboardEndpoints>());
 
 // ===============================================================================================
 // Register log services and endpoints

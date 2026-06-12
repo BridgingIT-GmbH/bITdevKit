@@ -1,0 +1,440 @@
+@using StorageDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Storage.Files.DashboardEndpoints
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+@{
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var contentPath = StorageDashboardEndpoints.BuildFilesContentPath(dashboardOptions);
+    var actionBase = StorageDashboardEndpoints.BuildFilesActionBase(dashboardOptions);
+}
+
+<div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
+    <h4 class="m-0">Files</h4>
+    <div class="d-flex align-items-center gap-2">
+        <span id="storage-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <button type="button" id="storage-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh files">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+</div>
+
+<div id="dashboard-storage-shell">
+    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Files.Pages.Content>())
+</div>
+
+<div class="modal fade" id="storage-create-folder-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" data-storage-action="@($"{actionBase}/create-directory")">
+            <div class="modal-header">
+                <h5 class="modal-title">Create Folder</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="provider">
+                <input type="hidden" name="path">
+                <label class="form-label" for="storage-folder-name">Name</label>
+                <input id="storage-folder-name" class="form-control" name="name" autocomplete="off" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="storage-create-text-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <form class="modal-content" data-storage-action="@($"{actionBase}/create-text-file")">
+            <div class="modal-header">
+                <h5 class="modal-title">Create Text File</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="provider">
+                <input type="hidden" name="path">
+                <label class="form-label" for="storage-text-name">Name</label>
+                <input id="storage-text-name" class="form-control mb-3" name="name" autocomplete="off" required>
+                <label class="form-label" for="storage-text-content">Content</label>
+                <textarea id="storage-text-content" class="form-control font-monospace" name="content" rows="12"></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="storage-upload-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" data-storage-action="@($"{actionBase}/upload")" enctype="multipart/form-data">
+            <div class="modal-header">
+                <h5 class="modal-title">Upload File</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="provider">
+                <input type="hidden" name="path">
+                <input class="form-control" type="file" name="file" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Upload</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="storage-rename-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" data-storage-rename-form>
+            <div class="modal-header">
+                <h5 class="modal-title">Rename</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="provider">
+                <input type="hidden" name="path">
+                <input type="hidden" name="destinationPath">
+                <input type="hidden" name="kind">
+                <label class="form-label" for="storage-rename-name">Name</label>
+                <input id="storage-rename-name" class="form-control" name="name" autocomplete="off" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Rename</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="storage-copy-move-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" data-storage-copy-move-form>
+            <div class="modal-header">
+                <h5 class="modal-title">Copy Or Move</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="provider">
+                <input type="hidden" name="path">
+                <input type="hidden" name="mode">
+                <label class="form-label" for="storage-copy-move-destination">Destination path</label>
+                <input id="storage-copy-move-destination" class="form-control" name="destinationPath" autocomplete="off" required>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Apply</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="modal fade" id="storage-delete-modal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" data-storage-delete-form>
+            <div class="modal-header">
+                <h5 class="modal-title">Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="provider">
+                <input type="hidden" name="path">
+                <input type="hidden" name="kind">
+                <p class="mb-0" data-storage-delete-message></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    (() => {
+        const shellElement = document.getElementById('dashboard-storage-shell');
+        const baseContentUrl = '@contentPath';
+        const actionBase = '@actionBase';
+
+        function getState() {
+            const root = shellElement?.querySelector('#storage-dashboard-root');
+            return {
+                provider: root?.dataset.provider || '',
+                path: root?.dataset.path || ''
+            };
+        }
+
+        function setUrl(provider, path) {
+            const url = new URL(window.location.href);
+            if (provider) {
+                url.searchParams.set('provider', provider);
+            } else {
+                url.searchParams.delete('provider');
+            }
+            if (path) {
+                url.searchParams.set('path', path);
+            } else {
+                url.searchParams.delete('path');
+            }
+            window.history.replaceState({}, '', url);
+        }
+
+        function buildContentUrl(provider, path) {
+            const url = new URL(baseContentUrl, window.location.origin);
+            if (provider) {
+                url.searchParams.set('provider', provider);
+            }
+            if (path) {
+                url.searchParams.set('path', path);
+            }
+            return url;
+        }
+
+        async function refreshContent(provider, path) {
+            const response = await fetch(buildContentUrl(provider, path).toString(), {
+                cache: 'no-store',
+                headers: { 'X-Requested-With': 'fetch' }
+            });
+
+            if (response.ok) {
+                shellElement.innerHTML = await response.text();
+                document.getElementById('storage-refresh-status').textContent = `Updated ${new Date().toLocaleTimeString()}`;
+            }
+        }
+
+        const refresher = window.bdkDashboard.createRefresher({
+            buildUrl: () => {
+                const state = getState();
+                return buildContentUrl(state.provider, state.path);
+            },
+            contentSelector: () => shellElement,
+            statusSelector: '#storage-refresh-status',
+            refreshButtonSelector: '#storage-refresh-now'
+        });
+
+        function getTreeChildren(node) {
+            return Array.from(node.children).find(child => child.matches('[data-storage-tree-children]')) || null;
+        }
+
+        function setTreeNodeExpanded(node, expanded) {
+            if (!node || !node.hasAttribute('aria-expanded')) {
+                return;
+            }
+
+            const children = getTreeChildren(node);
+            node.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+            if (children) {
+                children.hidden = !expanded;
+            }
+
+            const toggle = node.querySelector(':scope > .storage-tree-row [data-storage-tree-toggle]');
+            if (toggle) {
+                const name = node.dataset.path || 'Root';
+                const action = expanded ? 'Collapse' : 'Expand';
+                toggle.setAttribute('aria-label', `${action} ${name}`);
+                toggle.setAttribute('title', `${action} ${name}`);
+            }
+        }
+
+        function showModal(id) {
+            const modalElement = document.getElementById(id);
+            const modal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
+            modal.show();
+            return modalElement;
+        }
+
+        function hideModal(form) {
+            const modalElement = form.closest('.modal');
+            if (modalElement) {
+                window.bootstrap.Modal.getOrCreateInstance(modalElement).hide();
+            }
+        }
+
+        function setContextFields(form) {
+            const state = getState();
+            form.elements.provider.value = state.provider;
+            if (form.elements.path && !form.dataset.keepPath) {
+                form.elements.path.value = state.path;
+            }
+        }
+
+        function nameFromPath(path) {
+            const normalized = (path || '').replaceAll('\\', '/').replace(/^\/+|\/+$/g, '');
+            const index = normalized.lastIndexOf('/');
+            return index < 0 ? normalized : normalized.substring(index + 1);
+        }
+
+        function parentPath(path) {
+            const normalized = (path || '').replaceAll('\\', '/').replace(/^\/+|\/+$/g, '');
+            const index = normalized.lastIndexOf('/');
+            return index < 0 ? '' : normalized.substring(0, index);
+        }
+
+        function combinePath(parent, name) {
+            const normalizedParent = (parent || '').replaceAll('\\', '/').replace(/^\/+|\/+$/g, '');
+            const normalizedName = (name || '').replaceAll('\\', '/').replace(/^\/+|\/+$/g, '');
+            return normalizedParent ? `${normalizedParent}/${normalizedName}` : normalizedName;
+        }
+
+        async function submitForm(form, actionUrl) {
+            const button = form.querySelector('[type="submit"]');
+            if (button) {
+                button.disabled = true;
+            }
+
+            try {
+                const response = await fetch(actionUrl, {
+                    method: 'POST',
+                    body: new FormData(form),
+                    headers: { 'X-Requested-With': 'fetch' }
+                });
+
+                if (!response.ok) {
+                    console.error('Storage action failed:', await response.text().catch(() => response.statusText));
+                    return;
+                }
+
+                hideModal(form);
+                form.reset();
+                await refresher.refresh(false);
+            } catch (error) {
+                console.error('Storage action error:', error);
+            } finally {
+                if (button) {
+                    button.disabled = false;
+                }
+            }
+        }
+
+        shellElement.addEventListener('click', async event => {
+            const treeToggle = event.target.closest('[data-storage-tree-toggle]');
+            if (treeToggle) {
+                event.preventDefault();
+                event.stopPropagation();
+                const node = treeToggle.closest('[data-storage-tree-node]');
+                const expanded = node?.getAttribute('aria-expanded') === 'true';
+                setTreeNodeExpanded(node, !expanded);
+                return;
+            }
+
+            const target = event.target.closest('[data-storage-command]');
+            if (!target) {
+                return;
+            }
+
+            const command = target.dataset.storageCommand;
+            const state = getState();
+
+            if (command === 'open') {
+                const path = target.dataset.path || '';
+                setUrl(state.provider, path);
+                await refreshContent(state.provider, path);
+                return;
+            }
+
+            if (command === 'create-folder') {
+                const modal = showModal('storage-create-folder-modal');
+                const form = modal.querySelector('form');
+                setContextFields(form);
+                form.querySelector('[name="name"]').focus();
+                return;
+            }
+
+            if (command === 'create-text') {
+                const modal = showModal('storage-create-text-modal');
+                const form = modal.querySelector('form');
+                setContextFields(form);
+                form.querySelector('[name="name"]').focus();
+                return;
+            }
+
+            if (command === 'upload') {
+                const modal = showModal('storage-upload-modal');
+                setContextFields(modal.querySelector('form'));
+                return;
+            }
+
+            if (command === 'rename') {
+                const modal = showModal('storage-rename-modal');
+                const form = modal.querySelector('form');
+                setContextFields(form);
+                form.elements.kind.value = target.dataset.kind || 'file';
+                form.elements.path.value = target.dataset.path || '';
+                form.elements.name.value = nameFromPath(target.dataset.path);
+                form.elements.destinationPath.value = target.dataset.path || '';
+                form.elements.name.focus();
+                return;
+            }
+
+            if (command === 'copy' || command === 'move') {
+                const modal = showModal('storage-copy-move-modal');
+                const form = modal.querySelector('form');
+                setContextFields(form);
+                form.elements.path.value = target.dataset.path || '';
+                form.elements.mode.value = command;
+                form.elements.destinationPath.value = target.dataset.path || '';
+                form.elements.destinationPath.focus();
+                return;
+            }
+
+            if (command === 'delete') {
+                const modal = showModal('storage-delete-modal');
+                const form = modal.querySelector('form');
+                setContextFields(form);
+                form.elements.kind.value = target.dataset.kind || 'file';
+                form.elements.path.value = target.dataset.path || '';
+                modal.querySelector('[data-storage-delete-message]').textContent =
+                    target.dataset.kind === 'directory'
+                        ? `Delete folder '${target.dataset.path}' and all nested content?`
+                        : `Delete file '${target.dataset.path}'?`;
+            }
+        });
+
+        shellElement.addEventListener('change', async event => {
+            const target = event.target.closest('#storage-provider-select');
+            if (!target) {
+                return;
+            }
+
+            const provider = target.value || '';
+            setUrl(provider, '');
+            await refreshContent(provider, '');
+        });
+
+        document.querySelectorAll('[data-storage-action]').forEach(form => {
+            form.addEventListener('submit', async event => {
+                event.preventDefault();
+                await submitForm(form, form.dataset.storageAction);
+            });
+        });
+
+        document.querySelector('[data-storage-rename-form]').addEventListener('submit', async event => {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const destination = combinePath(parentPath(form.elements.path.value), form.elements.name.value);
+            form.elements.destinationPath.value = destination;
+            const action = form.elements.kind.value === 'directory' ? 'rename-directory' : 'rename-file';
+            await submitForm(form, `${actionBase}/${action}`);
+        });
+
+        document.querySelector('[data-storage-copy-move-form]').addEventListener('submit', async event => {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const action = form.elements.mode.value === 'move' ? 'move-file' : 'copy-file';
+            await submitForm(form, `${actionBase}/${action}`);
+        });
+
+        document.querySelector('[data-storage-delete-form]').addEventListener('submit', async event => {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const action = form.elements.kind.value === 'directory' ? 'delete-directory' : 'delete-file';
+            await submitForm(form, `${actionBase}/${action}`);
+        });
+    })();
+</script>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "Files" };
+}

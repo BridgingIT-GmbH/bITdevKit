@@ -1838,11 +1838,11 @@
     "/_bdk/api/locations": {
       "get": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "List registered storage locations",
         "description": "Retrieves the registered file storage providers and their exposed location metadata.",
-        "operationId": "_bdk.Storage.ListProviders",
+        "operationId": "_bdk.Storage.Files.ListProviders",
         "responses": {
           "200": {
             "description": "OK",
@@ -1863,11 +1863,11 @@
     "/_bdk/api/{providerName}/provider": {
       "get": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "Get provider information",
         "description": "Retrieves information about the configured file storage provider.",
-        "operationId": "_bdk.Storage.GetProviderInfo",
+        "operationId": "_bdk.Storage.Files.GetProviderInfo",
         "parameters": [
           {
             "name": "providerName",
@@ -1905,11 +1905,11 @@
     "/_bdk/api/{providerName}/health": {
       "get": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "Check provider health",
         "description": "Runs the configured provider health check.",
-        "operationId": "_bdk.Storage.CheckHealth",
+        "operationId": "_bdk.Storage.Files.CheckHealth",
         "parameters": [
           {
             "name": "providerName",
@@ -1957,11 +1957,11 @@
     "/_bdk/api/{providerName}/files/exists": {
       "get": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "Check whether a file exists",
         "description": "Checks whether the specified file path exists in the configured provider.",
-        "operationId": "_bdk.Storage.FileExists",
+        "operationId": "_bdk.Storage.Files.FileExists",
         "parameters": [
           {
             "name": "providerName",
@@ -2026,11 +2026,11 @@
     "/_bdk/api/{providerName}/files/content": {
       "get": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "Read file content",
         "description": "Streams the file content for the specified provider-backed path.",
-        "operationId": "_bdk.Storage.ReadFile",
+        "operationId": "_bdk.Storage.Files.ReadFile",
         "parameters": [
           {
             "name": "providerName",
@@ -2086,11 +2086,11 @@
       },
       "put": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "Write file content",
         "description": "Writes the raw request body to the specified provider-backed file path.",
-        "operationId": "_bdk.Storage.WriteFile",
+        "operationId": "_bdk.Storage.Files.WriteFile",
         "parameters": [
           {
             "name": "providerName",
@@ -2175,11 +2175,11 @@
     "/_bdk/api/{providerName}/files": {
       "delete": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "Delete a file",
         "description": "Deletes the specified provider-backed file path.",
-        "operationId": "_bdk.Storage.DeleteFile",
+        "operationId": "_bdk.Storage.Files.DeleteFile",
         "parameters": [
           {
             "name": "providerName",
@@ -2252,11 +2252,11 @@
       },
       "get": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "List files",
         "description": "Lists files from the configured provider with optional recursion and continuation support.",
-        "operationId": "_bdk.Storage.ListFiles",
+        "operationId": "_bdk.Storage.Files.ListFiles",
         "parameters": [
           {
             "name": "providerName",
@@ -2343,11 +2343,11 @@
     "/_bdk/api/{providerName}/files/metadata": {
       "get": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "Get file metadata",
         "description": "Retrieves metadata for the specified provider-backed file path.",
-        "operationId": "_bdk.Storage.GetFileMetadata",
+        "operationId": "_bdk.Storage.Files.GetFileMetadata",
         "parameters": [
           {
             "name": "providerName",
@@ -2412,11 +2412,11 @@
     "/_bdk/api/{providerName}/files/checksum": {
       "get": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "Get file checksum",
         "description": "Computes a checksum for the specified provider-backed file path.",
-        "operationId": "_bdk.Storage.GetChecksum",
+        "operationId": "_bdk.Storage.Files.GetChecksum",
         "parameters": [
           {
             "name": "providerName",
@@ -2481,11 +2481,11 @@
     "/_bdk/api/{providerName}/directories/exists": {
       "get": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "Check whether a directory exists",
         "description": "Checks whether the specified provider-backed directory path exists.",
-        "operationId": "_bdk.Storage.DirectoryExists",
+        "operationId": "_bdk.Storage.Files.DirectoryExists",
         "parameters": [
           {
             "name": "providerName",
@@ -2550,11 +2550,11 @@
     "/_bdk/api/{providerName}/directories": {
       "get": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "List directories",
         "description": "Lists directories from the configured provider with optional recursion.",
-        "operationId": "_bdk.Storage.ListDirectories",
+        "operationId": "_bdk.Storage.Files.ListDirectories",
         "parameters": [
           {
             "name": "providerName",
@@ -2635,11 +2635,11 @@
       },
       "post": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "Create a directory",
         "description": "Creates the specified provider-backed directory path.",
-        "operationId": "_bdk.Storage.CreateDirectory",
+        "operationId": "_bdk.Storage.Files.CreateDirectory",
         "parameters": [
           {
             "name": "providerName",
@@ -2712,11 +2712,11 @@
       },
       "delete": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "Delete a directory",
         "description": "Deletes the specified provider-backed directory path.",
-        "operationId": "_bdk.Storage.DeleteDirectory",
+        "operationId": "_bdk.Storage.Files.DeleteDirectory",
         "parameters": [
           {
             "name": "providerName",
@@ -2799,11 +2799,11 @@
     "/_bdk/api/{providerName}/events": {
       "get": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "List file events",
         "description": "Lists stored monitoring events for the provider-backed location, optionally filtered by path, event type, date range, and result size.",
-        "operationId": "_bdk.Storage.ListFileEvents",
+        "operationId": "_bdk.Storage.Files.ListFileEvents",
         "parameters": [
           {
             "name": "providerName",
@@ -2909,11 +2909,11 @@
     "/_bdk/api/{providerName}/events/scan": {
       "post": {
         "tags": [
-          "_bdk.FileStorage"
+          "_bdk.Storage.Files"
         ],
         "summary": "Scan a monitored location",
         "description": "Triggers an on-demand file monitoring scan for the provider-backed location and returns the detected events.",
-        "operationId": "_bdk.Storage.ScanFileEvents",
+        "operationId": "_bdk.Storage.Files.ScanFileEvents",
         "parameters": [
           {
             "name": "providerName",
@@ -5839,11 +5839,11 @@
     "/_bdk/api/logentries": {
       "get": {
         "tags": [
-          "_bdk.Logs"
+          "_bdk.Logging.LogEntries"
         ],
         "summary": "Get logs",
         "description": "Retrieves a paged list of log entries with optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).",
-        "operationId": "_bdk.Logs.GetLogEntries",
+        "operationId": "_bdk.Logging.LogEntries.Get",
         "parameters": [
           {
             "name": "startTime",
@@ -5989,11 +5989,11 @@
       },
       "delete": {
         "tags": [
-          "_bdk.Logs"
+          "_bdk.Logging.LogEntries"
         ],
         "summary": "Cleanup logs",
         "description": "Queues a maintenance operation for log entries older than a specified date or age, with options to archive, set batch size, and delay interval. Date must be in ISO 8601 format (e.g., 2025-04-01T00:00:00Z).",
-        "operationId": "_bdk.Logs.CleanupLogEntries",
+        "operationId": "_bdk.Logging.LogEntries.Cleanup",
         "parameters": [
           {
             "name": "olderThan",
@@ -6074,11 +6074,11 @@
     "/_bdk/api/logentries/stream": {
       "get": {
         "tags": [
-          "_bdk.Logs"
+          "_bdk.Logging.LogEntries"
         ],
         "summary": "Stream logs",
         "description": "Streams log entries in real-time based on optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).",
-        "operationId": "_bdk.Logs.StreamLogEntries",
+        "operationId": "_bdk.Logging.LogEntries.Stream",
         "parameters": [
           {
             "name": "startTime",
@@ -6207,11 +6207,11 @@
     "/_bdk/api/logentries/stats": {
       "get": {
         "tags": [
-          "_bdk.Logs"
+          "_bdk.Logging.LogEntries"
         ],
         "summary": "Get log statistics",
         "description": "Retrieves aggregated statistics for log entries, grouped by time intervals. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).",
-        "operationId": "_bdk.Logs.GetLogEntriesStatistics",
+        "operationId": "_bdk.Logging.LogEntries.Statistics",
         "parameters": [
           {
             "name": "startTime",
@@ -6273,11 +6273,11 @@
     "/_bdk/api/logentries/export": {
       "get": {
         "tags": [
-          "_bdk.Logs"
+          "_bdk.Logging.LogEntries"
         ],
         "summary": "Export logs",
         "description": "Exports log entries as a downloadable file in the specified format (csv, json, txt). Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).",
-        "operationId": "_bdk.Logs.ExportLogEntries",
+        "operationId": "_bdk.Logging.LogEntries.Export",
         "parameters": [
           {
             "name": "startTime",
@@ -6405,13 +6405,13 @@
         }
       }
     },
-    "/_bdk/api": {
+    "/_bdk/api/system": {
       "get": {
         "tags": [
-          "_bdk"
+          "_bdk.System"
         ],
-        "summary": "_bdk.Get",
-        "operationId": "_bdk.Get",
+        "summary": "_bdk.System.Get",
+        "operationId": "_bdk.System.Get",
         "responses": {
           "200": {
             "description": "OK",
@@ -6439,13 +6439,13 @@
         }
       }
     },
-    "/_bdk/api/echo": {
+    "/_bdk/api/system/echo": {
       "get": {
         "tags": [
-          "_bdk"
+          "_bdk.System"
         ],
-        "summary": "_bdk.GetEcho",
-        "operationId": "_bdk.GetEcho",
+        "summary": "_bdk.System.GetEcho",
+        "operationId": "_bdk.System.GetEcho",
         "responses": {
           "200": {
             "description": "OK",
@@ -6470,13 +6470,13 @@
         }
       }
     },
-    "/_bdk/api/info": {
+    "/_bdk/api/system/info": {
       "get": {
         "tags": [
-          "_bdk"
+          "_bdk.System"
         ],
-        "summary": "_bdk.GetInfo",
-        "operationId": "_bdk.GetInfo",
+        "summary": "_bdk.System.GetInfo",
+        "operationId": "_bdk.System.GetInfo",
         "responses": {
           "200": {
             "description": "OK",
@@ -6501,13 +6501,13 @@
         }
       }
     },
-    "/_bdk/api/modules": {
+    "/_bdk/api/system/modules": {
       "get": {
         "tags": [
-          "_bdk"
+          "_bdk.System"
         ],
-        "summary": "_bdk.GetModules",
-        "operationId": "_bdk.GetModules",
+        "summary": "_bdk.System.GetModules",
+        "operationId": "_bdk.System.GetModules",
         "responses": {
           "200": {
             "description": "OK",
@@ -10466,7 +10466,7 @@
       "name": "_bdk.Orchestrations"
     },
     {
-      "name": "_bdk.FileStorage"
+      "name": "_bdk.Storage.Files"
     },
     {
       "name": "CoreModule.TodoItems"
@@ -10487,10 +10487,10 @@
       "name": "_bdk.Notifications"
     },
     {
-      "name": "_bdk.Logs"
+      "name": "_bdk.Logging.LogEntries"
     },
     {
-      "name": "_bdk"
+      "name": "_bdk.System"
     },
     {
       "name": "_bdk.Metrics"

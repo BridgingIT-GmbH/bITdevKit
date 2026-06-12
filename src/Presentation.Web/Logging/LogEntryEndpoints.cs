@@ -50,13 +50,13 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             return;
         }
 
-        var group = this.MapGroup(app, this.options).WithTags("_bdk.Logs");
+        var group = this.MapGroup(app, this.options);
 
         group.MapGet("", this.GetLogEntries)
             .Produces<LogEntryQueryResponse>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_bdk.Logs.GetLogEntries")
+            .WithName("_bdk.Logging.LogEntries.Get")
             .WithSummary("Get logs")
             .WithDescription("Retrieves a paged list of log entries with optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
 
@@ -64,7 +64,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             .Produces<IEnumerable<LogEntryModel>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_bdk.Logs.StreamLogEntries")
+            .WithName("_bdk.Logging.LogEntries.Stream")
             .WithSummary("Stream logs")
             .WithDescription("Streams log entries in real-time based on optional filters. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
 
@@ -72,7 +72,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             .Produces<string>((int)HttpStatusCode.Accepted)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_bdk.Logs.CleanupLogEntries")
+            .WithName("_bdk.Logging.LogEntries.Cleanup")
             .WithSummary("Cleanup logs")
             .WithDescription("Queues a maintenance operation for log entries older than a specified date or age, with options to archive, set batch size, and delay interval. Date must be in ISO 8601 format (e.g., 2025-04-01T00:00:00Z).");
 
@@ -80,7 +80,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             .Produces<LogEntryStatisticsModel>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_bdk.Logs.GetLogEntriesStatistics")
+            .WithName("_bdk.Logging.LogEntries.Statistics")
             .WithSummary("Get log statistics")
             .WithDescription("Retrieves aggregated statistics for log entries, grouped by time intervals. Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
 
@@ -90,7 +90,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
             //.Produces("text/plain")
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
-            .WithName("_bdk.Logs.ExportLogEntries")
+            .WithName("_bdk.Logging.LogEntries.Export")
             .WithSummary("Export logs")
             .WithDescription("Exports log entries as a downloadable file in the specified format (csv, json, txt). Dates must be in ISO 8601 format (e.g., 2025-04-15T00:00:00Z).");
     }

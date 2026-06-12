@@ -17,31 +17,40 @@ using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Logging;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
-
-
-
-
-
-
-
-
-
-
+/// <summary>
+///     Exposes diagnostic system endpoints for discovery, echo, runtime information, and registered modules.
+/// </summary>
+/// <remarks>
+///     The endpoint set maps routes under <see cref="SystemEndpointsOptions.GroupPath" /> when the options are enabled.
+///     Individual <c>echo</c>, <c>info</c>, and <c>modules</c> routes are controlled by their matching option flags. The
+///     <c>info</c> endpoint can hide machine, process, network, and runtime details when sensitive information should not
+///     be exposed.
+///
+///     Example:
+///     <code>
+///     services.AddEndpoints(new SystemEndpoints(new SystemEndpointsOptions
+///     {
+///         InfoEnabled = true,
+///         HideSensitiveInformation = true
+///     }));
+///     </code>
+/// </remarks>
 public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<SystemEndpoints> logger = null) : EndpointsBase
 {
     private readonly SystemEndpointsOptions options = options ?? new SystemEndpointsOptions();
     private readonly ILogger<SystemEndpoints> logger = logger;
     private readonly Stopwatch uptimeStopwatch = Stopwatch.StartNew();
 
-
-
-
-
-
-
-
-
-
+    /// <summary>
+    ///     Maps the enabled system routes into the supplied route builder.
+    /// </summary>
+    /// <param name="app">The route builder that receives the system endpoint mappings.</param>
+    /// <remarks>
+    ///     The method returns without mapping routes when <see cref="EndpointsOptionsBase.Enabled" /> is <c>false</c>. The
+    ///     root system route is always mapped when enabled; <c>echo</c>, <c>info</c>, and <c>modules</c> are mapped only when
+    ///     their corresponding option flags are enabled. Routes inherit the group configuration applied by
+    ///     <see cref="EndpointsBase.MapGroup" />.
+    /// </remarks>
     public override void Map(IEndpointRouteBuilder app)
     {
         if (!this.options.Enabled)
@@ -49,18 +58,17 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
             return;
         }
 
-        var group = this.MapGroup(app, this.options)
-            .WithTags("_bdk"); ;
+        var group = this.MapGroup(app, this.options);
 
         group.MapGet(string.Empty, this.GetSystem)
-            .WithName("_bdk.Get")
+            .WithName(this.options, "Get")
             .Produces<Dictionary<string, string>>()
             .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
 
         if (this.options.EchoEnabled)
         {
             group.MapGet("echo", this.GetEcho)
-                .WithName("_bdk.GetEcho")
+                .WithName(this.options, "GetEcho")
                 .Produces<string>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
@@ -68,7 +76,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
         if (this.options.InfoEnabled)
         {
             group.MapGet("info", this.GetInfo)
-                .WithName("_bdk.GetInfo")
+                .WithName(this.options, "GetInfo")
                 .Produces<SystemInfo>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
@@ -76,23 +84,21 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
         if (this.options.ModulesEnabled)
         {
             group.MapGet("modules", this.GetModules)
-                .WithName("_bdk.GetModules")
+                .WithName(this.options, "GetModules")
                 .Produces<IEnumerable<SystemModule>>()
                 .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError);
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
+    /// <summary>
+    ///     Returns links to the enabled system endpoint routes for the current request host.
+    /// </summary>
+    /// <param name="httpContext">The current HTTP context used to build absolute endpoint URLs.</param>
+    /// <returns>An HTTP 200 result containing a dictionary of enabled system route names and URLs.</returns>
+    /// <remarks>
+    ///     The response includes only links for routes enabled in the options. URLs are built from the request scheme,
+    ///     request host, and configured group path.
+    /// </remarks>
     public IResult GetSystem(HttpContext httpContext)
     {
         var result = new Dictionary<string, string>();
@@ -115,36 +121,36 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
         return Results.Ok(result);
     }
 
-
-
-
-
-
-
-
-
-
+    /// <summary>
+    ///     Handles the system echo route.
+    /// </summary>
+    /// <param name="httpContext">The current HTTP context.</param>
+    /// <returns>An HTTP 200 result with no response body.</returns>
+    /// <remarks>
+    ///     The current implementation does not inspect the request and is intended as a lightweight availability probe for
+    ///     the system endpoint group.
+    /// </remarks>
     public IResult GetEcho(HttpContext httpContext)
     {
         return Results.Ok();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /// <summary>
+    ///     Returns runtime, request, memory, configuration, custom metadata, and uptime information for the application.
+    /// </summary>
+    /// <param name="httpContext">The current HTTP context used to determine request-local information.</param>
+    /// <param name="cancellationToken">A cancellation token used while resolving host addresses.</param>
+    /// <returns>
+    ///     An HTTP 200 result containing <see cref="SystemInfo" /> on success; otherwise an HTTP 500 problem result when
+    ///     system information cannot be collected.
+    /// </returns>
+    /// <remarks>
+    ///     The method collects process, runtime, operating system, memory, configuration, and uptime values. When
+    ///     <see cref="SystemEndpointsOptions.HideSensitiveInformation" /> is enabled, machine, network, process, runtime,
+    ///     memory, and configuration details are returned as empty strings while custom metadata and uptime are still
+    ///     included. DNS lookup failures for host addresses are logged as warnings and represented as <c>N/A</c>. Unexpected
+    ///     collection failures are logged as errors and returned as problem details.
+    /// </remarks>
     public async Task<IResult> GetInfo(HttpContext httpContext, CancellationToken cancellationToken)
     {
         try
@@ -203,19 +209,18 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /// <summary>
+    ///     Returns the registered system modules with their public state.
+    /// </summary>
+    /// <param name="modules">The modules available from dependency injection.</param>
+    /// <returns>
+    ///     An HTTP 200 result containing module name, priority, enabled state, and registration state; otherwise an HTTP 500
+    ///     problem result when module projection fails.
+    /// </returns>
+    /// <remarks>
+    ///     The response projects each supplied module into a new <see cref="SystemModule" /> instance and does not expose
+    ///     additional module implementation details. Exceptions are logged and converted to problem details.
+    /// </remarks>
     public IResult GetModules(IEnumerable<SystemModule> modules)
     {
         try

@@ -6,6 +6,9 @@
 @{
     var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var dashboardTitle = string.IsNullOrWhiteSpace(Model.ProductName) ? dashboardOptions.Title : Model.ProductName;
+    var pageTitle = string.IsNullOrWhiteSpace(Model.Title) ? dashboardTitle : Model.Title;
+    var detachedView = string.Equals(this.HttpContext.Request.Query["dashboardView"].ToString(), "window", StringComparison.OrdinalIgnoreCase);
+    var hideSideBar = Model.HideSideBar || detachedView;
 }
 
 <!DOCTYPE html>
@@ -13,7 +16,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@dashboardTitle - @Model.Title</title>
+    <title>@dashboardTitle - @pageTitle</title>
     <base href="/" />
     <script>
         (function() { // prevents screen flashing on navigation
@@ -918,6 +921,29 @@
             margin-right: .45rem;
         }
 
+        .dashboard-navbar-title {
+            align-items: center;
+            color: var(--bs-body-color);
+            display: inline-flex;
+            font-size: .86rem;
+            font-weight: 700;
+            gap: .45rem;
+            min-width: 0;
+            max-width: min(32rem, 38vw);
+            overflow: hidden;
+            padding-left: .8rem;
+            padding-right: .8rem;
+            position: relative;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .dashboard-navbar-title::before {
+            color: var(--bs-secondary-color);
+            content: "/";
+            font-weight: 500;
+        }
+
         .dashboard-theme-picker {
             margin-right: .35rem;
             position: relative;
@@ -961,6 +987,27 @@
         .dashboard-texture-toggle:hover,
         .dashboard-texture-toggle:focus,
         .dashboard-texture-toggle[aria-pressed="true"] {
+            color: var(--dashboard-active-fg);
+            background: var(--dashboard-active-bg);
+            border-color: var(--dashboard-panel-border-hover);
+        }
+
+        .dashboard-window-toggle {
+            width: 2rem;
+            height: 1.6rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin-right: .35rem;
+            color: var(--bs-secondary-color);
+            background: transparent;
+            border: 1px solid var(--bs-border-color);
+            border-radius: .1rem;
+        }
+
+        .dashboard-window-toggle:hover,
+        .dashboard-window-toggle:focus {
             color: var(--dashboard-active-fg);
             background: var(--dashboard-active-bg);
             border-color: var(--dashboard-panel-border-hover);
@@ -1158,6 +1205,12 @@
                 padding-left: .65rem !important;
                 padding-right: .4rem !important;
                 font-size: .86rem;
+            }
+
+            .dashboard-navbar-title {
+                max-width: calc(100vw - 15rem);
+                padding-left: .35rem;
+                padding-right: .35rem;
             }
 
             .navbar .navbar-nav {
@@ -1655,15 +1708,22 @@
 <body>
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
         <a class="navbar-brand me-0 px-3" href="#" title="@dashboardTitle">@dashboardTitle</a>
-        <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <div class="dashboard-navbar-title" title="@pageTitle">@pageTitle</div>
+        @if (!hideSideBar)
+        {
+            <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        }
 
         <div class="navbar-nav">
             <div class="nav-item text-nowrap d-flex align-items-center">
                 <span id="dashboard-connection-indicator" class="badge rounded-pill text-bg-warning d-none me-2" title="Dashboard connection issue">
                     <i class="bi bi-wifi-off me-1"></i>Offline
                 </span>
+                <button class="btn dashboard-window-toggle" type="button" aria-label="Open current dashboard page in a new window" title="Open in new window">
+                    <i class="bi bi-box-arrow-up-right"></i>
+                </button>
                 <div class="dropdown dashboard-theme-picker">
                     <button class="btn theme-toggle d-inline-flex align-items-center gap-2" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Select dashboard theme">
                         <i class="bi bi-terminal"></i>
@@ -1692,7 +1752,7 @@
 
     <div class="container-fluid">
         <div class="row">
-            @if (!Model.HideSideBar)
+            @if (!hideSideBar)
             {
                 var pageSidebarItems = new List<DashboardSidebarItem>();
                 foreach (var page in this.HttpContext.GetDashboardPages().Where(page => page.ShowInSidebar))
@@ -1723,8 +1783,8 @@
                 </button>
             }
 
-            <main class="dashboard-main @(Model.HideSideBar ? "dashboard-main-full col-12" : "") px-md-4">
-                <div class="@(!Model.HideSideBar ? "container-fluid px-0" : "")">
+            <main class="dashboard-main @(hideSideBar ? "dashboard-main-full col-12" : "") px-md-4">
+                <div class="@(!hideSideBar ? "container-fluid px-0" : "")">
                     @await RenderBodyAsync()
                 </div>
             </main>
@@ -1969,6 +2029,24 @@
             });
         }
 
+        function setupDashboardWindowToggle() {
+            const toggle = document.querySelector('.dashboard-window-toggle');
+            if (!toggle) {
+                return;
+            }
+
+            toggle.addEventListener('click', () => {
+                const url = new URL(window.location.href);
+                url.searchParams.set('dashboardView', 'window');
+                const popup = window.open(
+                    url.toString(),
+                    '_blank',
+                    'popup=yes,width=1280,height=900,resizable=yes,scrollbars=yes,noopener'
+                );
+                popup?.focus();
+            });
+        }
+
         function syncSidebarTooltips() {
             const sidebar = document.querySelector('.sidebar');
             if (!sidebar) {
@@ -1994,6 +2072,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             themeManager.initialize();
             setupTextureToggle();
+            setupDashboardWindowToggle();
             setupSidebarToggle();
             setupSidebarGroups();
             setupTooltips();

@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
 
+using BridgingIT.DevKit.Application.DataPorter;
 using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Tasks;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
-using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure.OpenMeteo;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
@@ -80,6 +80,15 @@ public class CoreModule : WebModuleBase
                 //.PurgeOnStartup());
 
         services.AddActiveEntities();
+
+        services.AddDataPorter(configuration)
+            .WithCsv(c =>
+            {
+                c.Delimiter = ",";
+                c.IncludeHeader = true;
+                c.TrimFields = true;
+            })
+            .AddExportProfile<WeatherForecastExportProfile>();
 
         // Startup tasks
         services.AddStartupTasks(o => o

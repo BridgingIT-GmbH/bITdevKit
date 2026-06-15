@@ -4812,6 +4812,54 @@
         }
       }
     },
+    "/api/core/cities/{cityId}/weather/export": {
+      "get": {
+        "tags": [
+          "Core.Cities"
+        ],
+        "summary": "Core.Cities.WeatherExport",
+        "description": "Downloads WeatherForecast entities for the selected city as CSV.",
+        "operationId": "Core.Cities.WeatherExport",
+        "parameters": [
+          {
+            "name": "cityId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResultProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/core/cities/{cityId}/ingest": {
       "post": {
         "tags": [
@@ -5051,72 +5099,6 @@
         "summary": "Core.Weather.Export",
         "description": "Exports current weather for all subscribed cities as CSV.",
         "operationId": "Core.Weather.Export",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CityExportResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ResultProblemDetails"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "500": {
-            "description": "Internal Server Error",
-            "content": {
-              "application/problem+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ResultProblemDetails"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/core/cities/{cityId}/weather/export": {
-      "get": {
-        "tags": [
-          "Core.Weather"
-        ],
-        "summary": "Core.Weather.WeatherExport",
-        "description": "Exports forecast data for a specific subscribed city as CSV.",
-        "operationId": "Core.Weather.WeatherExport",
-        "parameters": [
-          {
-            "name": "cityId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "days",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "OK",

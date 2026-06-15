@@ -5,6 +5,12 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
 
+using System.Text;
+using BridgingIT.DevKit.Application.DataPorter;
+using BridgingIT.DevKit.Domain;
+using BridgingIT.DevKit.Domain.Repositories;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
+
 /// <summary>
 /// Endpoints for city management operations including subscriptions, weather, and ingestion.
 /// </summary>
@@ -127,6 +133,16 @@ public class CityEndpoints : EndpointsBase
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
+        // GET /api/core/cities/{cityId}/weather/export
+        group.MapGet("/{cityId}/weather/export", ExportWeatherForecastsAsync)
+            .AllowAnonymous() // TODO: remove later and require authorization
+            .WithName("Core.Cities.WeatherExport")
+            .WithDescription("Downloads WeatherForecast entities for the selected city as CSV.")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
+
         // POST /api/core/cities/{cityId}/ingest
         group.MapPost("/{cityId}/ingest",
             async ([FromServices] IRequester requester,
@@ -141,5 +157,95 @@ public class CityEndpoints : EndpointsBase
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
+    }
+
+    private static async Task<Microsoft.AspNetCore.Http.IResult> ExportWeatherForecastsAsync(
+        [FromServices] IDataExporter exporter,
+        [FromRoute] string cityId,
+        CancellationToken cancellationToken)
+    {
+        if (!Guid.TryParse(cityId, out var cityIdValue))
+        {
+            return Results.BadRequest("A valid cityId route value is required.");
+        }
+
+        var selectedCityId = CityId.Create(cityIdValue);
+        var cityResult = await City.FindOneAsync(
+            selectedCityId,
+            new FindOptions<City> { NoTracking = true },
+            cancellationToken);
+
+        if (cityResult.IsFailure)
+        {
+            return Results.Problem(
+                string.Join(Environment.NewLine, cityResult.Errors.Select(error => error.Message)),
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+
+        if (cityResult.Value is null)
+        {
+            return Results.NotFound();
+        }
+
+        var forecastsResult = await WeatherForecast.FindAllAsync(
+            new Specification<WeatherForecast>(forecast => forecast.CityId == selectedCityId),
+            new FindOptions<WeatherForecast> { NoTracking = true },
+            cancellationToken);
+
+        if (forecastsResult.IsFailure)
+        {
+            return Results.Problem(
+                string.Join(Environment.NewLine, forecastsResult.Errors.Select(error => error.Message)),
+                statusCode: StatusCodes.Status500InternalServerError);
+        }
+
+        var forecasts = forecastsResult.Value
+            .OrderBy(forecast => forecast.ForecastDate)
+            .ToList();
+
+        var exportResult = await exporter.ExportToFileContentAsync(
+            forecasts,
+            options => options
+                .AsCsv()
+                .WithFileName(CreateForecastExportFileName(cityResult.Value)),
+            cancellationToken);
+
+        return exportResult.MapHttpFile();
+    }
+
+    private static string CreateForecastExportFileName(City city)
+    {
+        return $"weather-forecasts-{CreateFileNameToken(city?.Name)}-{DateTime.UtcNow:yyyyMMdd}.csv";
+    }
+
+    private static string CreateFileNameToken(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            return "city";
+        }
+
+        var builder = new StringBuilder(value.Length);
+        var previousWasSeparator = false;
+
+        foreach (var character in value.Trim().ToLowerInvariant())
+        {
+            if (char.IsLetterOrDigit(character))
+            {
+                builder.Append(character);
+                previousWasSeparator = false;
+                continue;
+            }
+
+            if (!previousWasSeparator)
+            {
+                builder.Append('-');
+                previousWasSeparator = true;
+            }
+        }
+
+        return builder.ToString().Trim('-') is { Length: > 0 } token
+            ? token
+            : "city";
     }
 }

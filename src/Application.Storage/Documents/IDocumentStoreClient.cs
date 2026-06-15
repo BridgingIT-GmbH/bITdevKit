@@ -46,10 +46,7 @@ public interface IDocumentStoreClient<T>
     /// <param name="filter">The filter semantics to apply to the supplied key.</param>
     /// <param name="cancellationToken">A token to observe while waiting for the query to complete.</param>
     /// <returns>The matching documents.</returns>
-    Task<IEnumerable<T>> FindAsync(
-        DocumentKey documentKey,
-        DocumentKeyFilter filter,
-        CancellationToken cancellationToken = default);
+    Task<IEnumerable<T>> FindAsync(DocumentKey documentKey, DocumentKeyFilter filter, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Lists all document keys for documents of type <typeparamref name="T" />.

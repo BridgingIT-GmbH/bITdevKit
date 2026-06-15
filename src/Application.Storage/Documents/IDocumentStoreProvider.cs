@@ -41,10 +41,7 @@ public interface IDocumentStoreProvider
     /// <param name="filter">The filter semantics to apply to the supplied key.</param>
     /// <param name="cancellationToken">A token to observe while waiting for the query to complete.</param>
     /// <returns>The matching documents.</returns>
-    Task<IEnumerable<T>> FindAsync<T>(
-        DocumentKey documentKey,
-        DocumentKeyFilter filter,
-        CancellationToken cancellationToken = default)
+    Task<IEnumerable<T>> FindAsync<T>(DocumentKey documentKey, DocumentKeyFilter filter, CancellationToken cancellationToken = default)
         where T : class, new();
 
     /// <summary>

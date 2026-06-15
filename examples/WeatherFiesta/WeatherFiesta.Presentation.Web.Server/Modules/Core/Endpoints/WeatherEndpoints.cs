@@ -80,22 +80,6 @@ public class WeatherEndpoints : EndpointsBase
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
-        // GET /api/core/cities/{cityId}/weather/export
-        group.MapGet("/{cityId}/weather/export",
-            async ([FromServices] IRequester requester,
-                   [FromRoute] string cityId,
-                   [FromQuery] int? days,
-                   CancellationToken ct)
-                => (await requester
-                    .SendAsync(new CityWeatherExportQuery(cityId, days), cancellationToken: ct))
-                    .MapHttpOk())
-            .WithName("Core.Weather.WeatherExport")
-            .WithDescription("Exports forecast data for a specific subscribed city as CSV.")
-            .Produces<CityExportResponse>(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status401Unauthorized)
-            .ProducesResultProblem(StatusCodes.Status400BadRequest)
-            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
-
         // GET /api/core/cities/{cityId}/recommendations
         group.MapGet("/{cityId}/recommendations",
             async ([FromServices] IRequester requester,

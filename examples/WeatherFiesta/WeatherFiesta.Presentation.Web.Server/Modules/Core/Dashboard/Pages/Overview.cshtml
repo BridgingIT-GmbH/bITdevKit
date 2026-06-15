@@ -2,23 +2,19 @@
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Models
 @using BridgingIT.DevKit.Domain.Repositories
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure
-@using BridgingIT.DevKit.Presentation.Web.Dashboard
-@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using Microsoft.Extensions.DependencyInjection
-@using RazorSlices
-@inherits RazorSlice
-@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+@inherits DashboardPageSlice
 
 @{
     var cities = await GetCitiesAsync();
     var selectedCityId = GetSelectedCityId(cities);
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-    var contentPath = BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core.Dashboard.DashboardEndpoints.BuildCitiesContentPath(dashboardOptions);
+    var contentPath = this.Dashboard.Url("core-overview", "content");
 }
 
 <div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
     <div>
-        <h4 class="m-0">WeatherFiesta Cities</h4>
+        <h4 class="m-0">Overview</h4>
+        <div class="text-muted small">WeatherFiesta Core module</div>
     </div>
     <div class="d-flex align-items-center gap-2">
         @if (cities.Count > 0)
@@ -32,21 +28,21 @@
                 }
             </select>
         }
-        <span id="weatherfiesta-cities-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
-        <select id="weatherfiesta-cities-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="WeatherFiesta cities refresh interval">
+        <span id="weatherfiesta-overview-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <select id="weatherfiesta-overview-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="WeatherFiesta overview refresh interval">
             <option value="">Off</option>
             <option value="1000">1 sec</option>
             <option value="5000">5 sec</option>
             <option value="15000">15 sec</option>
             <option value="30000">30 sec</option>
         </select>
-        <button type="button" id="weatherfiesta-cities-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh cities">
+        <button type="button" id="weatherfiesta-overview-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh overview">
             <i class="bi bi-arrow-clockwise"></i>
         </button>
     </div>
 </div>
 
-<div id="weatherfiesta-cities-content">
+<div id="weatherfiesta-overview-content">
     <div class="text-muted small py-2">Loading city dashboard content...</div>
 </div>
 
@@ -74,13 +70,13 @@
             window.history.replaceState(null, '', url.toString());
         }
 
-        const refresher = window.bdkDashboard.createRefresher({
-            buildUrl: getContentUrl,
-            contentSelector: '#weatherfiesta-cities-content',
-            statusSelector: '#weatherfiesta-cities-refresh-status',
-            intervalSelector: '#weatherfiesta-cities-refresh-interval',
-            refreshButtonSelector: '#weatherfiesta-cities-refresh-now',
-            storageKey: 'bdk.dashboard.weatherfiesta.cities.refreshInterval'
+            const refresher = window.bdkDashboard.createRefresher({
+                buildUrl: getContentUrl,
+            contentSelector: '#weatherfiesta-overview-content',
+            statusSelector: '#weatherfiesta-overview-refresh-status',
+            intervalSelector: '#weatherfiesta-overview-refresh-interval',
+            refreshButtonSelector: '#weatherfiesta-overview-refresh-now',
+            storageKey: 'bdk.dashboard.weatherfiesta.overview.refreshInterval'
         });
 
         citySelectElement?.addEventListener('change', () => {
@@ -93,7 +89,7 @@
 </script>
 
 @functions {
-    public DashboardLayoutModel LayoutModel => new() { Title = "WeatherFiesta Cities" };
+    public override string PageTitle => "Overview";
 
     private async Task<List<AdminCityModel>> GetCitiesAsync()
     {

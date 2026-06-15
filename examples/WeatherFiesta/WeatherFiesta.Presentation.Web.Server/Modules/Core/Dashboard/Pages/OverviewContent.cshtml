@@ -5,9 +5,8 @@
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure
 @using Microsoft.Extensions.DependencyInjection
-@using RazorSlices
 @using System.Text.Json
-@inherits RazorSlice
+@inherits DashboardContentSlice
 
 @{
     var citiesModel = await CreateModelAsync();

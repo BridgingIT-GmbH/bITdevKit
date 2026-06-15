@@ -24,6 +24,7 @@ Dashboard pages are Minimal API endpoints that render [RazorSlices](https://gith
 - Endpoints: `IDashboardEndpoints` marks endpoint classes that map dashboard routes.
 - Pages: RazorSlice pages render dashboard content using normal Razor syntax and optional layout models.
 - Navigation and cards: `IDashboardPageProvider` contributes sidebar items and optional dashboard index cards.
+- Page sets: `DashboardPageSet` lets modules define multiple pages, content fragments, page-local actions, navigation, and cards from one builder.
 - Helpers: `MapDashboardPage(...)`, `DashboardPath.Combine(...)`, and `Results.Extensions.DashboardRazorSlice(...)` simplify plugin page mapping.
 
 ## Core Contracts
@@ -38,6 +39,9 @@ Dashboard pages are Minimal API endpoints that render [RazorSlices](https://gith
   - Extends the regular presentation `IEndpoints` contract.
 - `IDashboardPageProvider` ([src/Presentation.Web/Dashboard/IDashboardPageProvider.cs](src/Presentation.Web/Dashboard/IDashboardPageProvider.cs))
   - Provides `DashboardPage` descriptors for sidebar navigation and optional index cards.
+- `DashboardPageSet` ([src/Presentation.Web/Dashboard/DashboardPageSet.cs](src/Presentation.Web/Dashboard/DashboardPageSet.cs))
+  - Recommended base for module dashboards that own one or more pages.
+  - Implements endpoint mapping and page metadata from a single `DashboardPageSetBuilder` declaration.
 - `DashboardPage` ([src/Presentation.Web/Dashboard/DashboardPage.cs](src/Presentation.Web/Dashboard/DashboardPage.cs))
   - Defines title, icon, URL, group, ordering, sidebar visibility, optional badge, and optional card provider.
 - `DashboardPageCard` ([src/Presentation.Web/Dashboard/DashboardPage.cs](src/Presentation.Web/Dashboard/DashboardPage.cs))
@@ -220,15 +224,9 @@ If `AddHealthChecks()` is not registered, the page and card show an unavailable 
 
 The identity page displays current user information using the current user accessor and request principal. When the fake identity provider is registered, the page can show a client credentials login action. If the fake provider is not available, fake-provider-specific UI is hidden.
 
-## Adding a Project specific Dashboard Page
+## Adding Project-Specific Dashboard Pages
 
-A project dashboard page normally has three parts:
-
-1. A RazorSlice page under the project or module.
-2. An `IDashboardEndpoints` implementation that maps the route.
-3. An `IDashboardPageProvider` implementation that contributes sidebar/card metadata.
-
-The examples below are self-contained and use a fictitious catalog module.
+For new project or module pages, prefer `DashboardPageSet`. A page set lets one module declare all of its dashboard pages, content fragments, local action routes, sidebar metadata, and index cards in one class. The low-level `IDashboardEndpoints` and `IDashboardPageProvider` contracts remain available for advanced or unusual plugins.
 
 ### Folder Layout
 
@@ -238,37 +236,115 @@ The examples below are self-contained and use a fictitious catalog module.
 Modules/
   Catalog/
     Dashboard/
-      CatalogDashboardEndpoints.cs
-      CatalogDashboardPageProvider.cs
+      CatalogDashboard.cs
       Pages/
-        Index.cshtml
+        Overview.cshtml
+        OverviewContent.cshtml
+        ProductManagement.cshtml
+        ProductManagementContent.cshtml
         _ViewImports.cshtml
 ```
 
+### Project Package Reference
+
+The application or plugin assembly that owns the `.cshtml` files must reference `RazorSlices` directly so RazorSlice proxy types are generated for that assembly. With central package management, add the reference without a version:
+
+```xml
+<ItemGroup>
+  <PackageReference Include="RazorSlices" />
+</ItemGroup>
+```
+
+### Page Set
+
+Use one page set per module. Each page owns its display route, optional content fragments, optional dashboard index card, and optional local actions.
+
+```csharp
+namespace MyApp.Modules.Catalog.Dashboard;
+
+using BridgingIT.DevKit.Presentation.Web.Dashboard;
+
+public sealed class CatalogDashboard(DashboardEndpointsOptions options)
+    : DashboardPageSet(options)
+{
+    protected override void Configure(DashboardPageSetBuilder pages)
+    {
+        pages.WithTags("_bdk.Dashboard.Catalog");
+
+        pages.Group("Catalog", order: 100)
+            .Page("overview", "/catalog")
+                .Title("Overview")
+                .Icon("boxes")
+                .Order(0)
+                .Description("Catalog overview")
+                .Razor<Pages.Overview>()
+                .Content<Pages.OverviewContent>()
+                .Card(GetOverviewCardAsync)
+            .Page("product-management", "/catalog/products")
+                .Title("Product Management")
+                .Icon("box-seam")
+                .Order(10)
+                .Description("Manage catalog products")
+                .Razor<Pages.ProductManagement>()
+                .Content<Pages.ProductManagementContent>()
+                .HideFromIndex()
+                .Post("/create", CreateProductAsync)
+                    .Name("_bdk.Dashboard.Catalog.ProductCreate");
+    }
+
+    private static async ValueTask<DashboardPageCard> GetOverviewCardAsync(DashboardPageCardContext card)
+    {
+        var requester = card.HttpContext.RequestServices.GetService<IRequester>();
+        if (requester is null)
+        {
+            return card.Unavailable("Requester unavailable");
+        }
+
+        var result = await requester.SendAsync(new ProductSummaryQuery(), cancellationToken: card.HttpContext.RequestAborted);
+        return result.IsSuccess
+            ? card.Value(result.Value.ProductCount.ToString(CultureInfo.InvariantCulture), "products")
+            : card.Error(result.Errors.FirstOrDefault()?.Message ?? "Could not load products");
+    }
+}
+```
+
+The builder derives:
+
+- endpoint mappings for the page and content fragments
+- absolute dashboard URLs
+- sidebar items
+- default index card metadata
+- endpoint names, summaries, and descriptions
+- page-local action routes such as `/catalog/products/create`
+
+Use `.HideFromSidebar()` for utility pages and `.HideFromIndex()` for pages that should not appear as index cards.
+
 ### RazorSlice Imports
 
-For project-local dashboard pages, add a `_ViewImports.cshtml` beside the page.
+For project-local dashboard pages, add a `_ViewImports.cshtml` beside the pages.
 
 ```razor
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using Microsoft.Extensions.DependencyInjection
 @using RazorSlices
+
+@tagHelperPrefix __disable_tagHelpers__:
+@removeTagHelper *, Microsoft.AspNetCore.Mvc.Razor
 ```
+
+RazorSlices currently do not support Tag Helpers in this repo because warnings are treated as errors and RazorSlices marks Tag Helper APIs obsolete. Use RazorSlice base classes and normal Razor markup instead.
 
 ### RazorSlice Page
 
-Use normal Razor syntax and the dashboard layout. The page can resolve services directly because it is server-rendered.
+Use `DashboardPageSlice` for full dashboard pages and `DashboardContentSlice` for content fragments. The page can resolve services directly because it is server-rendered.
 
 ```razor
 @using MyApp.Modules.Catalog.Application
-@inherits RazorSlice
-@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+@inherits DashboardPageSlice
 
 @{
-    var requester = this.HttpContext.RequestServices.GetRequiredService<IRequester>();
-    var productsResult = await requester.SendAsync(new ProductSummaryQuery(), cancellationToken: this.HttpContext.RequestAborted);
-    var products = productsResult.IsSuccess ? productsResult.Value : new ProductSummaryModel();
+    var contentPath = this.Dashboard.Url("overview", "content");
 }
 
 <div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
@@ -279,223 +355,43 @@ Use normal Razor syntax and the dashboard layout. The page can resolve services 
     <span class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
 </div>
 
-@if (productsResult.IsFailure)
-{
-    <div class="alert alert-danger py-2">
-        @foreach (var error in productsResult.Errors)
-        {
-            <div>@error.Message</div>
-        }
-    </div>
-}
-
-<div class="row g-2 mb-2">
-    <div class="col-6 col-lg-3">
-        <div class="card h-100">
-            <div class="card-body p-3">
-                <div class="text-muted small">Products</div>
-                <div class="fs-4 fw-semibold">@products.ProductCount</div>
-            </div>
-        </div>
-    </div>
-    <div class="col-6 col-lg-3">
-        <div class="card h-100">
-            <div class="card-body p-3">
-                <div class="text-muted small">Out of stock</div>
-                <div class="fs-4 fw-semibold">@products.OutOfStockCount</div>
-            </div>
-        </div>
-    </div>
+<div id="catalog-overview-content">
+    <div class="text-muted small py-2">Loading catalog content...</div>
 </div>
 
+<script>
+    (() => {
+        window.bdkDashboard.createRefresher({
+            contentUrl: '@contentPath',
+            contentSelector: '#catalog-overview-content'
+        }).refresh(true);
+    })();
+</script>
+
 @functions {
-    public DashboardLayoutModel LayoutModel => new() { Title = "Catalog" };
-}
-```
-
-## Mapping Plugin Endpoints
-
-Use `IDashboardEndpoints` for dashboard routes. Dashboard plugin endpoints should map into the configured dashboard group so paths remain consistent when the host changes `GroupPath`.
-
-### Typed RazorSlice Mapping
-
-When the generated RazorSlice type is available to the endpoint class, use the typed helper.
-
-```csharp
-namespace MyApp.Modules.Catalog.Dashboard;
-
-using BridgingIT.DevKit.Presentation.Web.Dashboard;
-using Microsoft.AspNetCore.Routing;
-
-public sealed class CatalogDashboardEndpoints(DashboardEndpointsOptions options)
-    : EndpointsBase, IDashboardEndpoints
-{
-    public override void Map(IEndpointRouteBuilder app)
-    {
-        if (!options.Enabled)
-        {
-            return;
-        }
-
-        var group = this.MapGroup(app, options)
-            .WithTags("_bdk.Dashboard.Catalog");
-
-        group.MapDashboardPage<Pages.Index>(
-            "/catalog",
-            "_bdk.Dashboard.Catalog",
-            "Dashboard Catalog",
-            "Shows catalog dashboard information.");
-    }
-}
-```
-
-### Path-Based RazorSlice Mapping
-
-For project pages where the generated RazorSlice type is awkward to reference, use the path-based helper. The `razorIdentifier` is the compiled RazorSlice identifier, usually the project-relative path with a leading slash.
-
-```csharp
-namespace MyApp.Modules.Catalog.Dashboard;
-
-using BridgingIT.DevKit.Presentation.Web.Dashboard;
-using Microsoft.AspNetCore.Routing;
-
-public sealed class CatalogDashboardEndpoints(DashboardEndpointsOptions options)
-    : EndpointsBase, IDashboardEndpoints
-{
-    private const string CatalogPath = "/catalog";
-
-    public override void Map(IEndpointRouteBuilder app)
-    {
-        if (!options.Enabled)
-        {
-            return;
-        }
-
-        var group = this.MapGroup(app, options)
-            .WithTags("_bdk.Dashboard.Catalog");
-
-        group.MapDashboardPage(
-            CatalogPath,
-            "/Modules/Catalog/Dashboard/Pages/Index.cshtml",
-            typeof(CatalogDashboardEndpoints).Assembly,
-            "_bdk.Dashboard.Catalog",
-            "Dashboard Catalog",
-            "Shows catalog dashboard information.");
-    }
-
-    internal static string BuildCatalogPath(DashboardEndpointsOptions options)
-    {
-        return DashboardPath.Combine(options?.GroupPath, CatalogPath);
-    }
-}
-```
-
-## Adding Sidebar Navigation and Cards
-
-Implement `IDashboardPageProvider` to tell the dashboard shell about pages. A provider can return one or many pages.
-
-```csharp
-namespace MyApp.Modules.Catalog.Dashboard;
-
-using BridgingIT.DevKit.Presentation.Web.Dashboard;
-using Microsoft.AspNetCore.Http;
-
-public sealed class CatalogDashboardPageProvider(DashboardEndpointsOptions options)
-    : IDashboardPageProvider
-{
-    public IEnumerable<DashboardPage> GetPages(HttpContext httpContext)
-    {
-        yield return new DashboardPage(
-            "Catalog",
-            "boxes",
-            CatalogDashboardEndpoints.BuildCatalogPath(options))
-        {
-            Group = "Application",
-            GroupOrder = 100,
-            Order = 10,
-            Badge = GetBadgeAsync,
-            Card = GetCardAsync
-        };
-    }
-
-    private static async ValueTask<int?> GetBadgeAsync(HttpContext httpContext)
-    {
-        var requester = httpContext.RequestServices.GetService<IRequester>();
-        if (requester is null)
-        {
-            return null;
-        }
-
-        var result = await requester.SendAsync(
-            new ProductSummaryQuery(),
-            cancellationToken: httpContext.RequestAborted);
-
-        return result.IsSuccess ? result.Value.OutOfStockCount : null;
-    }
-
-    private async ValueTask<DashboardPageCard> GetCardAsync(HttpContext httpContext)
-    {
-        var requester = httpContext.RequestServices.GetService<IRequester>();
-        if (requester is null)
-        {
-            return new DashboardPageCard("Catalog", "Products", "Unavailable")
-            {
-                Detail = "Requester is not registered",
-                Icon = "boxes",
-                Url = CatalogDashboardEndpoints.BuildCatalogPath(options),
-                Group = "Application",
-                GroupOrder = 100,
-                Order = 10
-            };
-        }
-
-        var result = await requester.SendAsync(
-            new ProductSummaryQuery(),
-            cancellationToken: httpContext.RequestAborted);
-
-        if (result.IsFailure)
-        {
-            return new DashboardPageCard("Catalog", "Products", "Error")
-            {
-                Detail = result.Errors.FirstOrDefault()?.Message,
-                Icon = "boxes",
-                Url = CatalogDashboardEndpoints.BuildCatalogPath(options),
-                Group = "Application",
-                GroupOrder = 100,
-                Order = 10
-            };
-        }
-
-        return new DashboardPageCard(
-            "Catalog",
-            "Products",
-            result.Value.ProductCount.ToString(CultureInfo.InvariantCulture))
-        {
-            Detail = $"{result.Value.OutOfStockCount} out of stock",
-            Icon = "boxes",
-            Url = CatalogDashboardEndpoints.BuildCatalogPath(options),
-            Group = "Application",
-            GroupOrder = 100,
-            Order = 10
-        };
-    }
+    public override string PageTitle => "Catalog";
 }
 ```
 
 ### Page Descriptor Guidance
 
-- `Title`: Display name in sidebar and default card title.
-- `Icon`: Bootstrap icon name without the `bi-` prefix.
-- `Url`: Absolute dashboard URL. Use `DashboardPath.Combine(...)`.
-- `Group`: Sidebar/card group heading.
-- `GroupOrder`: Sort order for groups.
-- `Order`: Sort order inside the group.
-- `ShowInSidebar`: Set to `false` for utility or fragment pages.
-- `ShowOnIndex`: Set to `false` for pages that should not create dashboard cards.
-- `Badge`: Optional async count shown in the sidebar.
-- `Card`: Optional async card provider for the dashboard index.
+- `.Title(...)`: Display name in sidebar and default card title.
+- `.Icon(...)`: Bootstrap icon name without the `bi-` prefix.
+- `.Group(...)`: Sidebar/card group heading and group sort order.
+- `.Order(...)`: Sort order inside the group.
+- `.HideFromSidebar()`: Use for utility pages.
+- `.HideFromIndex()`: Use for pages that should not create dashboard cards.
+- `.Badge(...)`: Optional async count shown in the sidebar.
+- `.Card(...)`: Optional async card provider for the dashboard index.
+- `.Razor<TPage>()`: Main typed RazorSlice page.
+- `.Content<TPage>()`: Optional typed refreshable RazorSlice fragment below the page route.
+- `.Get(...)`, `.Post(...)`, `.Put(...)`, `.Delete(...)`: Optional page-local Minimal API action routes.
 
-Providers are called at render time. Keep badge and card work lightweight, use in-process services, and handle missing optional services gracefully.
+Page sets are called at render time to provide navigation and cards. Keep badge and card work lightweight, use in-process services, and handle missing optional services gracefully.
+
+### Advanced Manual Mapping
+
+For advanced cases, implement `IDashboardEndpoints` to map custom routes and `IDashboardPageProvider` to contribute sidebar/card metadata manually. Use `MapDashboardPage<TPage>(...)` for typed RazorSlices or `MapDashboardPage(..., razorIdentifier, assembly, ...)` when the generated RazorSlice type is awkward to reference.
 
 ## Dashboard Index Cards
 
@@ -544,16 +440,16 @@ Project-specific pages can use the same pattern when only part of a page should 
 
 Dashboard plugins can live in separate packages or application assemblies. A plugin assembly should provide:
 
-- One or more `IDashboardEndpoints` implementations.
-- Optional `IDashboardPageProvider` implementations.
-- RazorSlice pages compiled into the plugin assembly.
+- One or more `DashboardPageSet` implementations, or advanced manual `IDashboardEndpoints` implementations.
+- Optional manual `IDashboardPageProvider` implementations when not using `DashboardPageSet`.
+- RazorSlice pages compiled into the plugin assembly. Reference `RazorSlices` directly when using typed `.Razor<TPage>()` and `.Content<TPage>()` page declarations.
 
 Register the plugin assembly explicitly from the host:
 
 ```csharp
 builder.Services.AddDashboard(options =>
 {
-    options.WithPluginAssemblyContaining<MyPluginDashboardEndpoints>();
+    options.WithPluginAssemblyContaining<MyPluginDashboard>();
 });
 ```
 
@@ -565,64 +461,35 @@ The dashboard scans configured plugin assemblies for endpoint and page provider 
 - Plugin page route is missing: Ensure the plugin assembly is loaded and registered with `WithPluginAssemblyContaining<T>()`.
 - Sidebar item is missing: Ensure an `IDashboardPageProvider` implementation is concrete, public, and in a scanned assembly.
 - Card does not appear: Ensure `ShowOnIndex` is `true` and the page provider returns a page. Check logs for provider/card exceptions.
+- Typed RazorSlice type is missing: Verify the application or plugin assembly references `RazorSlices` directly, and prefer unique page-specific `.cshtml` filenames such as `Overview.cshtml` and `OverviewContent.cshtml`.
 - Path-based RazorSlice cannot render: Verify the RazorSlice identifier and assembly. The identifier is usually the project-relative `.cshtml` path with a leading slash.
 - Authorization behaves differently than expected: Dashboard routes are endpoint routes. Apply authorization through the inherited endpoint options and `MapGroup(...)` behavior, or require authorization on the mapped route group.
 - Refresh shows stale content: Confirm the fragment endpoint returns updated server-rendered HTML and that the browser interval is not set to `Off`.
 
 ## Appendix A — Minimal Plugin
 
-The following is the smallest useful dashboard plugin: one route, one page, one sidebar item, and one card.
+The following is the smallest useful dashboard plugin with the recommended page-set API: one route, one page, one sidebar item, and one card.
 
 ```csharp
-public sealed class HealthDashboardEndpoints(DashboardEndpointsOptions options)
-    : EndpointsBase, IDashboardEndpoints
+public sealed class HealthDashboard(DashboardEndpointsOptions options)
+    : DashboardPageSet(options)
 {
-    private const string Path = "/health";
-
-    public override void Map(IEndpointRouteBuilder app)
+    protected override void Configure(DashboardPageSetBuilder pages)
     {
-        var group = this.MapGroup(app, options)
-            .WithTags("_bdk.Dashboard.Health");
-
-        group.MapDashboardPage<Pages.Health>(
-            Path,
-            "_bdk.Dashboard.Health",
-            "Dashboard Health");
-    }
-
-    public static string BuildPath(DashboardEndpointsOptions options)
-    {
-        return DashboardPath.Combine(options?.GroupPath, Path);
-    }
-}
-
-public sealed class HealthDashboardPageProvider(DashboardEndpointsOptions options)
-    : IDashboardPageProvider
-{
-    public IEnumerable<DashboardPage> GetPages(HttpContext httpContext)
-    {
-        yield return new DashboardPage("Health", "activity", HealthDashboardEndpoints.BuildPath(options))
-        {
-            Group = "Application",
-            GroupOrder = 100,
-            Order = 0,
-            Card = _ => ValueTask.FromResult(new DashboardPageCard("Health", "System", "OK")
-            {
-                Detail = "Application is responding",
-                Icon = "activity",
-                Url = HealthDashboardEndpoints.BuildPath(options),
-                Group = "Application",
-                GroupOrder = 100,
-                Order = 0
-            })
-        };
+        pages.Group("Application", 100)
+            .Page("health", "/health")
+                .Title("Health")
+                .Icon("activity")
+                .Order(0)
+                .Razor<Pages.Health>()
+                .Card(card => ValueTask.FromResult(
+                    card.Value("OK", "Application is responding", "System")));
     }
 }
 ```
 
 ```razor
-@inherits RazorSlice
-@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+@inherits DashboardPageSlice
 
 <div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
     <h4 class="m-0">Health</h4>
@@ -637,15 +504,15 @@ public sealed class HealthDashboardPageProvider(DashboardEndpointsOptions option
 </div>
 
 @functions {
-    public DashboardLayoutModel LayoutModel => new() { Title = "Health" };
+    public override string PageTitle => "Health";
 }
 ```
 
-Register it:
+Register external plugin assemblies explicitly:
 
 ```csharp
 builder.Services.AddDashboard(options =>
 {
-    options.WithPluginAssemblyContaining<HealthDashboardEndpoints>();
+    options.WithPluginAssemblyContaining<HealthDashboard>();
 });
 ```

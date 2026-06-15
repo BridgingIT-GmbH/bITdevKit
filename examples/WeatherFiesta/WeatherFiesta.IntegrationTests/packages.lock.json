@@ -1473,6 +1473,7 @@
           "OpenTelemetry.Instrumentation.Runtime": "[1.15.1, )",
           "OpenTelemetry.Instrumentation.SqlClient": "[1.15.2, )",
           "Presentation.Web.Notifications": "[1.0.0, )",
+          "RazorSlices": "[0.11.1, )",
           "Scalar.AspNetCore": "[2.14.14, )",
           "Serilog.AspNetCore": "[10.0.0, )",
           "Serilog.Enrichers.Environment": "[3.0.1, )",

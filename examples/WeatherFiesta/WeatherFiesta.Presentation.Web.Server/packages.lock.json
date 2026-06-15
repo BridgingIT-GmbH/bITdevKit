@@ -142,6 +142,12 @@
           "OpenTelemetry.Api.ProviderBuilderExtensions": "[1.15.3, 2.0.0)"
         }
       },
+      "RazorSlices": {
+        "type": "Direct",
+        "requested": "[0.11.1, )",
+        "resolved": "0.11.1",
+        "contentHash": "46RqRPa194qUYP2aZnnHRGZM6PG8kTOXRCpj50a82I7ugKjnNfq5QasVD6un+xd1OCR8mNx8gCvC5zK7S1rCqA=="
+      },
       "Scalar.AspNetCore": {
         "type": "Direct",
         "requested": "[2.14.14, )",
@@ -1643,12 +1649,6 @@
         "dependencies": {
           "Quartz": "3.18.1"
         }
-      },
-      "RazorSlices": {
-        "type": "CentralTransitive",
-        "requested": "[0.11.1, )",
-        "resolved": "0.11.1",
-        "contentHash": "46RqRPa194qUYP2aZnnHRGZM6PG8kTOXRCpj50a82I7ugKjnNfq5QasVD6un+xd1OCR8mNx8gCvC5zK7S1rCqA=="
       },
       "Scrutor": {
         "type": "CentralTransitive",

@@ -10554,14 +10554,14 @@
         }
       }
     },
-    "/_bdk/dashboard/app/cities": {
+    "/_bdk/dashboard/app/core": {
       "get": {
         "tags": [
-          "_bdk.Dashboard.WeatherFiesta"
+          "_bdk.Dashboard.WeatherFiesta.Core"
         ],
-        "summary": "WeatherFiesta Dashboard Cities",
-        "description": "Shows WeatherFiesta city data inside the bITdevKit dashboard shell.",
-        "operationId": "_bdk.Dashboard.WeatherFiesta.Cities",
+        "summary": "Overview",
+        "description": "WeatherFiesta Core module overview",
+        "operationId": "_bdk.Dashboard.CoreDashboard.CoreOverview",
         "responses": {
           "200": {
             "description": "OK",
@@ -10576,14 +10576,127 @@
         }
       }
     },
-    "/_bdk/dashboard/app/cities/content": {
+    "/_bdk/dashboard/app/core/content": {
       "get": {
         "tags": [
-          "_bdk.Dashboard.WeatherFiesta"
+          "_bdk.Dashboard.WeatherFiesta.Core"
         ],
-        "summary": "WeatherFiesta Dashboard Cities Content",
-        "description": "Shows WeatherFiesta city dashboard content.",
-        "operationId": "_bdk.Dashboard.WeatherFiesta.CitiesContent",
+        "summary": "Overview Content",
+        "description": "Shows the refreshable Overview dashboard content.",
+        "operationId": "_bdk.Dashboard.CoreDashboard.CoreOverviewContent",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/app/core/cities": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard.WeatherFiesta.Core"
+        ],
+        "summary": "City Management",
+        "description": "Search, add, and review WeatherFiesta cities",
+        "operationId": "_bdk.Dashboard.CoreDashboard.CityManagement",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/app/core/cities/content": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard.WeatherFiesta.Core"
+        ],
+        "summary": "City Management Content",
+        "description": "Shows the refreshable City Management dashboard content.",
+        "operationId": "_bdk.Dashboard.CoreDashboard.CityManagementContent",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/app/core/cities/suggestions": {
+      "get": {
+        "tags": [
+          "_bdk.Dashboard.WeatherFiesta.Core"
+        ],
+        "summary": "City Management get",
+        "description": "Runs the get dashboard action for City Management.",
+        "operationId": "_bdk.Dashboard.WeatherFiesta.Core.CitySuggestions",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "countryCode",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/_bdk/dashboard/app/core/cities/add": {
+      "post": {
+        "tags": [
+          "_bdk.Dashboard.WeatherFiesta.Core"
+        ],
+        "summary": "City Management post",
+        "description": "Runs the post dashboard action for City Management.",
+        "operationId": "_bdk.Dashboard.WeatherFiesta.Core.CityAdd",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AdminCityCreateModel"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "OK",
@@ -15669,7 +15782,7 @@
       "name": "_bdk.Dashboard"
     },
     {
-      "name": "_bdk.Dashboard.WeatherFiesta"
+      "name": "_bdk.Dashboard.WeatherFiesta.Core"
     },
     {
       "name": "_bdk.Metrics"

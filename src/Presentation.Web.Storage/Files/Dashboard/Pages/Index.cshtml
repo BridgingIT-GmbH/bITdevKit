@@ -1,4 +1,4 @@
-@using StorageDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Storage.Files.DashboardEndpoints
+@using StorageDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Storage.Files.Dashboard.DashboardEndpoints
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
@@ -18,7 +18,7 @@
 </div>
 
 <div id="dashboard-storage-shell">
-    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Files.Pages.Content>())
+    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Files.Dashboard.Pages.Content>())
 </div>
 
 <div class="modal fade" id="storage-create-folder-modal" tabindex="-1" aria-hidden="true">

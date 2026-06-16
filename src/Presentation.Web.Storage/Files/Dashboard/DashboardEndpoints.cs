@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Presentation.Web.Storage.Files;
+namespace BridgingIT.DevKit.Presentation.Web.Storage.Files.Dashboard;
 
 using System.Net;
 using BridgingIT.DevKit.Application.Storage;

@@ -129,7 +129,7 @@ builder.Services.AddDashboard(o => o
     // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Messaging.Dashboard.DashboardEndpoints>()
     // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.DashboardEndpoints>()
     // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints>()
-    // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Storage.Files.DashboardEndpoints>());
+    // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Storage.Files.Dashboard.DashboardEndpoints>());
 
 // ===============================================================================================
 // Register log services and endpoints

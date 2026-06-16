@@ -3,6 +3,7 @@
 @using Microsoft.Extensions.Diagnostics.HealthChecks
 @using RazorSlices
 @using System.Globalization
+@using System.Text.Json
 @inherits RazorSlice
 
 @{
@@ -77,41 +78,44 @@
             @foreach (var entry in healthModel.Entries.OrderBy(entry => entry.Status).ThenBy(entry => entry.Name, StringComparer.OrdinalIgnoreCase))
             {
                 <article class="card dashboard-health-card dashboard-health-card-status @GetStatusCardClass(entry.Status)">
-                    <div class="card-body p-3 d-flex flex-column gap-2">
+                    <div class="card-body p-2 d-flex flex-column gap-2">
                         <div class="d-flex align-items-start justify-content-between gap-2">
                             <div class="min-w-0">
-                                <h6 class="dashboard-health-card-name fw-semibold mb-1">@entry.Name</h6>
-                                <div class="text-muted small">@DisplayValue(entry.Description)</div>
+                                <h6 class="dashboard-health-card-name fw-semibold mb-1 small">@entry.Name</h6>
+                                <div class="dashboard-health-description text-muted small">@DisplayValue(entry.Description)</div>
                             </div>
-                            <span class="badge @GetStatusBadgeClass(entry.Status) flex-shrink-0">@entry.Status</span>
+                            <div class="d-flex align-items-center gap-1 flex-shrink-0">
+                                @if (entry.Data.Count > 0)
+                                {
+                                    <button type="button"
+                                            class="btn btn-outline-secondary dashboard-health-data-button"
+                                            title="Show health check data"
+                                            data-health-entry-context="@SerializeEntryContext(entry)">
+                                        <i class="bi bi-database"></i>
+                                    </button>
+                                }
+                                <span class="badge @GetStatusBadgeClass(entry.Status)">@entry.Status</span>
+                            </div>
                         </div>
 
-                        <div class="d-flex align-items-center justify-content-between gap-2 small">
-                            <span class="text-muted">Duration</span>
-                            <span class="fw-semibold text-nowrap">@FormatDuration(entry.Duration)</span>
+                        <div class="dashboard-health-meta small">
+                            <div class="dashboard-health-meta-item">
+                                <div class="text-muted">Duration</div>
+                                <div class="fw-semibold text-nowrap">@FormatDuration(entry.Duration)</div>
+                            </div>
+                            <div class="dashboard-health-meta-item">
+                                <div class="text-muted">Tags</div>
+                                <div class="fw-semibold text-nowrap">@entry.Tags.Count</div>
+                            </div>
                         </div>
 
                         @if (entry.Tags.Count > 0)
                         {
                             <div>
-                                <div class="text-muted small mb-1">Tags</div>
                                 <div class="dashboard-health-tags">
                                     @foreach (var tag in entry.Tags.OrderBy(tag => tag, StringComparer.OrdinalIgnoreCase))
                                     {
                                         <span class="dashboard-health-tag">@tag</span>
-                                    }
-                                </div>
-                            </div>
-                        }
-
-                        @if (entry.Data.Count > 0)
-                        {
-                            <div>
-                                <div class="text-muted small mb-1">Data</div>
-                                <div class="dashboard-health-data">
-                                    @foreach (var item in entry.Data.OrderBy(item => item.Key, StringComparer.OrdinalIgnoreCase))
-                                    {
-                                        <span class="dashboard-health-data-item"><code>@item.Key</code>: @DisplayValue(item.Value)</span>
                                     }
                                 </div>
                             </div>
@@ -180,6 +184,21 @@
     private static string DisplayTags(IReadOnlyCollection<string> tags)
     {
         return tags is null || tags.Count == 0 ? "-" : string.Join(", ", tags);
+    }
+
+    private static string SerializeEntryContext(DashboardHealthEntryViewModel entry)
+    {
+        return JsonSerializer.Serialize(new
+        {
+            name = entry.Name,
+            status = entry.Status.ToString(),
+            description = DisplayValue(entry.Description),
+            duration = FormatDuration(entry.Duration),
+            tags = entry.Tags.OrderBy(tag => tag, StringComparer.OrdinalIgnoreCase).ToArray(),
+            data = entry.Data
+                .OrderBy(item => item.Key, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(item => item.Key, item => DisplayValue(item.Value))
+        });
     }
 
     private static string FormatDuration(TimeSpan duration)

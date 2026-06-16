@@ -17,12 +17,11 @@
 <style>
     .dashboard-health-checks {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-        gap: .75rem;
+        grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+        gap: .5rem;
     }
 
     .dashboard-health-card {
-        min-height: 12rem;
         overflow: hidden;
     }
 
@@ -46,36 +45,60 @@
         overflow-wrap: anywhere;
     }
 
+    .dashboard-health-description {
+        display: -webkit-box;
+        overflow: hidden;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    .dashboard-health-meta {
+        display: grid;
+        gap: .35rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-health-meta-item {
+        border: 1px solid var(--bs-border-color);
+        border-radius: .35rem;
+        padding: .35rem .45rem;
+    }
+
     .dashboard-health-tags,
     .dashboard-health-data {
         display: flex;
         flex-wrap: wrap;
-        gap: .35rem;
+        gap: .25rem;
     }
 
     .dashboard-health-tag {
         border: 1px solid var(--bs-border-color);
-        border-radius: 999px;
         color: var(--bs-secondary-color);
-        font-size: .75rem;
+        font-size: .7rem;
         line-height: 1;
-        padding: .25rem .45rem;
+        padding: .2rem .35rem;
     }
 
     .dashboard-health-data-item {
         border: 1px solid var(--bs-border-color);
-        border-radius: .35rem;
         color: var(--bs-secondary-color);
-        font-size: .78rem;
+        font-size: .72rem;
         line-height: 1.35;
         max-width: 100%;
         overflow-wrap: anywhere;
-        padding: .25rem .4rem;
+        padding: .2rem .35rem;
     }
 
     .dashboard-health-data-item code {
         color: var(--bs-pink);
         font-size: inherit;
+    }
+
+    .dashboard-health-data-button {
+        --bs-btn-padding-x: .35rem;
+        --bs-btn-padding-y: .1rem;
+        --bs-btn-font-size: .7rem;
+        line-height: 1;
     }
 
     @@media (max-width: 575.98px) {
@@ -105,15 +128,140 @@
     @(await RenderPartialAsync<Content>())
 </div>
 
+<div class="modal fade" id="health-entry-data-modal" tabindex="-1" aria-labelledby="health-entry-data-title" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title" id="health-entry-data-title">Health Check Data</h5>
+                    <div class="text-muted small" id="health-entry-data-subtitle">-</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-2 mb-3" id="health-entry-data-summary"></div>
+                <h6 class="mb-2">Data</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <tbody id="health-entry-data-table"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     (() => {
-        window.bdkDashboard.createRefresher({
+        const contentElement = document.getElementById('dashboard-health-content');
+        const dataModalElement = document.getElementById('health-entry-data-modal');
+        const dataModal = dataModalElement && window.bootstrap
+            ? window.bootstrap.Modal.getOrCreateInstance(dataModalElement)
+            : null;
+        let dataModalOpen = false;
+
+        const refresher = window.bdkDashboard.createRefresher({
             contentUrl: '@contentPath',
             contentSelector: '#dashboard-health-content',
             statusSelector: '#health-refresh-status',
             intervalSelector: '#health-refresh-interval',
             refreshButtonSelector: '#health-refresh-now',
-            storageKey: 'bdk.dashboard.health.refreshInterval'
+            storageKey: 'bdk.dashboard.health.refreshInterval',
+            shouldRefresh: () => !dataModalOpen
+        });
+
+        function text(value) {
+            return value === null || value === undefined || value === '' ? '-' : value.toString();
+        }
+
+        function setText(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = text(value);
+            }
+        }
+
+        function appendCell(container, label, value) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'col-6 col-lg-3';
+            const card = document.createElement('div');
+            card.className = 'border rounded p-2 h-100';
+            const labelElement = document.createElement('div');
+            labelElement.className = 'text-muted small';
+            labelElement.textContent = label;
+            const valueElement = document.createElement('div');
+            valueElement.className = 'fw-semibold text-break';
+            valueElement.textContent = text(value);
+            card.append(labelElement, valueElement);
+            wrapper.appendChild(card);
+            container.appendChild(wrapper);
+        }
+
+        function appendRow(container, label, value) {
+            const row = document.createElement('tr');
+            const labelCell = document.createElement('td');
+            labelCell.className = 'text-muted text-nowrap';
+            labelCell.textContent = label;
+            const valueCell = document.createElement('td');
+            valueCell.className = 'text-break';
+            valueCell.textContent = text(value);
+            row.append(labelCell, valueCell);
+            container.appendChild(row);
+        }
+
+        function showEntryData(payload) {
+            if (!payload || !dataModal) {
+                return;
+            }
+
+            setText('health-entry-data-title', payload.name);
+            setText('health-entry-data-subtitle', payload.description);
+
+            const summary = document.getElementById('health-entry-data-summary');
+            const table = document.getElementById('health-entry-data-table');
+            summary.replaceChildren();
+            table.replaceChildren();
+
+            appendCell(summary, 'Status', payload.status);
+            appendCell(summary, 'Duration', payload.duration);
+            appendCell(summary, 'Tags', Array.isArray(payload.tags) ? payload.tags.length : 0);
+            appendCell(summary, 'Data Items', Object.keys(payload.data || {}).length);
+
+            const entries = Object.entries(payload.data || {});
+            if (entries.length === 0) {
+                appendRow(table, 'Data', 'No data available.');
+            } else {
+                entries
+                    .sort(([left], [right]) => left.localeCompare(right))
+                    .forEach(([key, value]) => appendRow(table, key, value));
+            }
+
+            dataModalOpen = true;
+            dataModal.show();
+        }
+
+        if (dataModalElement) {
+            dataModalElement.addEventListener('shown.bs.modal', () => {
+                dataModalOpen = true;
+            });
+
+            dataModalElement.addEventListener('hidden.bs.modal', () => {
+                dataModalOpen = false;
+                refresher.schedule();
+            });
+        }
+
+        contentElement?.addEventListener('click', event => {
+            const button = event.target.closest('[data-health-entry-context]');
+            if (!button) {
+                return;
+            }
+
+            try {
+                showEntryData(JSON.parse(button.getAttribute('data-health-entry-context') || '{}'));
+            } catch {
+                // ignore invalid row payload
+            }
         });
     })();
 </script>

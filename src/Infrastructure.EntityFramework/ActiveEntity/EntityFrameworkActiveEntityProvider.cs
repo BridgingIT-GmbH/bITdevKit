@@ -1393,13 +1393,13 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Debug, "{LogKey} active entity: upsert - {EntityUpsertType} (context={DbContextType}/{DbContextId}, type={EntityType}, id={EntityId}, tracked={EntityTracked})")]
+        [LoggerMessage(0, LogLevel.Debug, "[{LogKey}] active entity: upsert - {EntityUpsertType} (context={DbContextType}/{DbContextId}, type={EntityType}, id={EntityId}, tracked={EntityTracked})")]
         public static partial void LogUpsert(ILogger logger, string logKey, string entityUpsertType, string dbContextType, string dbContextId, string entityType, object entityId, bool entityTracked);
 
-        [LoggerMessage(1, LogLevel.Debug, "{LogKey} active entity: delete (context={DbContextType}/{DbContextId}, type={EntityType}, id={EntityId})")]
+        [LoggerMessage(1, LogLevel.Debug, "[{LogKey}] active entity: delete (context={DbContextType}/{DbContextId}, type={EntityType}, id={EntityId})")]
         public static partial void LogDelete(ILogger logger, string logKey, string dbContextType, string dbContextId, string entityType, object entityId);
 
-        [LoggerMessage(2, LogLevel.Trace, "{LogKey} dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
+        [LoggerMessage(2, LogLevel.Trace, "[{LogKey}] dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
         public static partial void LogEntityState(ILogger logger, string logKey, string entityType, bool entityKeySet, EntityState entityEntryState);
     }
 }

@@ -56,7 +56,7 @@ public static partial class ApplicationBuilderExtensions
             ? corsConfig.DefaultPolicy
             : "endpoint-level";
 
-        logger?.LogInformation("{LogKey} CORS enabled (policy={Policy}, policies=#{PolicyCount})",
+        logger?.LogInformation("[{LogKey}] CORS enabled (policy={Policy}, policies=#{PolicyCount})",
             "REQ",
             defaultPolicy,
             corsConfig?.Policies?.Count ?? 0);

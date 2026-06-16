@@ -275,7 +275,7 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} repository register domain event (id={DomainEventId}, type={DomainEventType})")]
+        [LoggerMessage(0, LogLevel.Information, "[{LogKey}] repository register domain event (id={DomainEventId}, type={DomainEventType})")]
         public static partial void LogRegister(ILogger logger, string logKey, string domainEventId, string domainEventType);
     }
 }

@@ -61,7 +61,7 @@ public static partial class DbContextExtensions
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(2, LogLevel.Trace, "{LogKey} dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
+        [LoggerMessage(2, LogLevel.Trace, "[{LogKey}] dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
         public static partial void LogEntityState(ILogger logger, string logKey, string entityType, bool entityKeySet, EntityState entityEntryState);
     }
 }

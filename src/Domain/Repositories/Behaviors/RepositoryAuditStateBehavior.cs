@@ -318,7 +318,7 @@ public partial class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} repository: soft delete (type={EntityType}, id={EntityId})")]
+        [LoggerMessage(1, LogLevel.Information, "[{LogKey}] repository: soft delete (type={EntityType}, id={EntityId})")]
         public static partial void LogSoftDelete(ILogger logger, string logKey, string entityType, object entityId);
     }
 }

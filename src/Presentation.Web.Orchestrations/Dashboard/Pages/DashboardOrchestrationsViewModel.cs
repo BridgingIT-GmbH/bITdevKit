@@ -25,6 +25,26 @@ public sealed class DashboardOrchestrationsViewModel
 
     public IReadOnlyList<OrchestrationInstanceModel> Instances { get; set; } = [];
 
+    /// <summary>
+    /// Gets or sets the latest context snapshots keyed by orchestration instance id.
+    /// </summary>
+    public IReadOnlyDictionary<Guid, OrchestrationContextSnapshotModel> ContextsByInstanceId { get; set; } = new Dictionary<Guid, OrchestrationContextSnapshotModel>();
+
+    /// <summary>
+    /// Gets or sets the persisted history entries keyed by orchestration instance id.
+    /// </summary>
+    public IReadOnlyDictionary<Guid, IReadOnlyList<OrchestrationHistoryModel>> HistoryByInstanceId { get; set; } = new Dictionary<Guid, IReadOnlyList<OrchestrationHistoryModel>>();
+
+    /// <summary>
+    /// Gets or sets the persisted signal records keyed by orchestration instance id.
+    /// </summary>
+    public IReadOnlyDictionary<Guid, IReadOnlyList<OrchestrationSignalModel>> SignalsByInstanceId { get; set; } = new Dictionary<Guid, IReadOnlyList<OrchestrationSignalModel>>();
+
+    /// <summary>
+    /// Gets or sets the persisted timer records keyed by orchestration instance id.
+    /// </summary>
+    public IReadOnlyDictionary<Guid, IReadOnlyList<OrchestrationTimerModel>> TimersByInstanceId { get; set; } = new Dictionary<Guid, IReadOnlyList<OrchestrationTimerModel>>();
+
     public IReadOnlyDictionary<string, long> CountsByStatus { get; set; } = new Dictionary<string, long>(StringComparer.OrdinalIgnoreCase);
 
     public IReadOnlyList<OrchestrationDefinitionSummary> Definitions { get; set; } = [];

@@ -279,7 +279,7 @@ public sealed class RabbitMQTestMessageHandler(ILoggerFactory loggerFactory) : M
         }
 
         this.Logger.LogInformation(
-            "{LogKey} handled message (name={MessageName}, id={MessageId})",
+            "[{LogKey}] handled message (name={MessageName}, id={MessageId})",
             Application.Messaging.Constants.LogKey,
             message.GetType().PrettyName(),
             message.MessageId);
@@ -314,7 +314,7 @@ public sealed class RabbitMQOtherTestMessageHandler(ILoggerFactory loggerFactory
         }
 
         this.Logger.LogInformation(
-            "{LogKey} other handler handled message (name={MessageName}, id={MessageId})",
+            "[{LogKey}] other handler handled message (name={MessageName}, id={MessageId})",
             Application.Messaging.Constants.LogKey,
             message.GetType().PrettyName(),
             message.MessageId);

@@ -101,7 +101,7 @@ public static class HostBuilderExtensions
                 }
 
                 Log.Logger = logger;
-                Log.Logger.Information("{LogKey} logging configured using appsettings (MinimumLevel: {MinimumLevel}).", "LOG", levelSwitch.MinimumLevel);
+                Log.Logger.Information("[{LogKey}] logging configured using appsettings (MinimumLevel: {MinimumLevel}).", "LOG", levelSwitch.MinimumLevel);
             });
         }
 
@@ -165,7 +165,7 @@ public static class HostBuilderExtensions
                 }
 
                 Log.Logger = logger;
-                Log.Logger.Information("{LogKey} logging configured using custom action (MinimumLevel: {MinimumLevel}).", "LOG", levelSwitch.MinimumLevel);
+                Log.Logger.Information("[{LogKey}] logging configured using custom action (MinimumLevel: {MinimumLevel}).", "LOG", levelSwitch.MinimumLevel);
             });
         }
 

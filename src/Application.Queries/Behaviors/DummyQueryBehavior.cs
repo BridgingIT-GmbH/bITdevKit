@@ -19,7 +19,7 @@ public class DummyQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFactor
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        this.Logger.LogInformation("{LogKey} dummy query", Constants.LogKey);
+        this.Logger.LogInformation("[{LogKey}] dummy query", Constants.LogKey);
 
         return await next().AnyContext(); // continue pipeline
     }

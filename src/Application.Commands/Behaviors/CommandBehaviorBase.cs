@@ -34,18 +34,18 @@ public abstract class CommandBehaviorBase<TRequest, TResponse>
 
         //try
         //{
-        this.Logger.LogDebug("{LogKey} behavior processing (type={BehaviorType})", Constants.LogKey, this.GetType().Name);
+        this.Logger.LogDebug("[{LogKey}] behavior processing (type={BehaviorType})", Constants.LogKey, this.GetType().Name);
 
         var watch = ValueStopwatch.StartNew();
         var response = await this.Process(request, next, cancellationToken).AnyContext();
 
-        this.Logger.LogDebug("{LogKey} behavior processed (type={BehaviorType}) -> took {TimeElapsed:0.0000} ms", Constants.LogKey, this.GetType().Name, watch.GetElapsedMilliseconds());
+        this.Logger.LogDebug("[{LogKey}] behavior processed (type={BehaviorType}) -> took {TimeElapsed:0.0000} ms", Constants.LogKey, this.GetType().Name, watch.GetElapsedMilliseconds());
 
         return response;
         //}
         //catch (Exception ex)
         //{
-        //    this.Logger.LogError(ex, "{LogKey} behavior processing error (type={BehaviorType}): {ErrorMessage}", Constants.LogKey, this.GetType().Name, ex.Message);
+        //    this.Logger.LogError(ex, "[{LogKey}] behavior processing error (type={BehaviorType}): {ErrorMessage}", Constants.LogKey, this.GetType().Name, ex.Message);
         //    throw;
         //}
     }

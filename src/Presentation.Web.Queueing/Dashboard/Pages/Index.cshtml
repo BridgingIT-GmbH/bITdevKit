@@ -1,5 +1,6 @@
 @using QueueingDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.DashboardEndpoints
 @using BridgingIT.DevKit.Application.Queueing
+@using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
@@ -7,6 +8,7 @@
     var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = QueueingDashboardEndpoints.BuildQueueingContentPath(dashboardOptions);
     var actionBase = QueueingDashboardEndpoints.BuildQueueingActionBase(dashboardOptions);
+    var logEntriesPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesPath(dashboardOptions);
     var aliveEnabled = this.HttpContext.RequestServices.GetService<QueueingAliveOptions>()?.Enabled == true;
 }
 
@@ -85,10 +87,47 @@
     @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.Pages.Content>())
 </div>
 
+<div class="modal fade" id="queueing-message-context-modal" tabindex="-1" aria-labelledby="queueing-message-context-title" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title" id="queueing-message-context-title">Queue Message</h5>
+                    <div class="text-muted small" id="queueing-message-context-subtitle">-</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-2 mb-3" id="queueing-message-context-summary"></div>
+                <h6 class="mb-2">Details</h6>
+                <div class="table-responsive mb-3">
+                    <table class="table table-sm align-middle mb-0">
+                        <tbody id="queueing-message-context-details"></tbody>
+                    </table>
+                </div>
+                <h6 class="mb-2">Properties</h6>
+                <div class="table-responsive mb-3">
+                    <table class="table table-sm align-middle mb-0">
+                        <tbody id="queueing-message-context-properties"></tbody>
+                    </table>
+                </div>
+                <h6 class="mb-2">Payload</h6>
+                <pre class="small border rounded p-2 mb-0 text-break" id="queueing-message-context-payload">-</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     (() => {
         const shellElement = document.getElementById('dashboard-queueing-shell');
+        const logEntriesPath = '@logEntriesPath';
         const resetButton = document.getElementById('queueing-filter-reset');
+        const messageModalElement = document.getElementById('queueing-message-context-modal');
+        const messageModal = messageModalElement && window.bootstrap
+            ? window.bootstrap.Modal.getOrCreateInstance(messageModalElement)
+            : null;
+        let messageModalOpen = false;
 
         function buildContentUrl() {
             const url = new URL('@contentPath', window.location.origin);
@@ -113,7 +152,168 @@
             statusSelector: '#queueing-refresh-status',
             intervalSelector: '#queueing-refresh-interval',
             refreshButtonSelector: '#queueing-refresh-now',
-            storageKey: 'bdk.dashboard.queueing.refreshInterval'
+            storageKey: 'bdk.dashboard.queueing.refreshInterval',
+            shouldRefresh: () => !messageModalOpen
+        });
+
+        function text(value) {
+            return value === null || value === undefined || value === '' ? '-' : value.toString();
+        }
+
+        function formatDate(value) {
+            if (!value) {
+                return '-';
+            }
+
+            const date = new Date(value);
+            return Number.isNaN(date.getTime()) ? text(value) : date.toLocaleString();
+        }
+
+        function setText(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = text(value);
+            }
+        }
+
+        function appendCell(container, label, value) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'col-6 col-lg-3';
+            const card = document.createElement('div');
+            card.className = 'border rounded p-2 h-100';
+            const labelElement = document.createElement('div');
+            labelElement.className = 'text-muted small';
+            labelElement.textContent = label;
+            const valueElement = document.createElement('div');
+            valueElement.className = 'fw-semibold text-break';
+            valueElement.textContent = text(value);
+            card.append(labelElement, valueElement);
+            wrapper.appendChild(card);
+            container.appendChild(wrapper);
+        }
+
+        function appendRow(container, label, value) {
+            const row = document.createElement('tr');
+            const labelCell = document.createElement('td');
+            labelCell.className = 'text-muted text-nowrap';
+            labelCell.textContent = label;
+            const valueCell = document.createElement('td');
+            valueCell.className = 'text-break';
+            if (label.toLowerCase().includes('correlation')) {
+                appendCorrelationLink(valueCell, value);
+            } else {
+                valueCell.textContent = text(value);
+            }
+            row.append(labelCell, valueCell);
+            container.appendChild(row);
+        }
+
+        function appendCorrelationLink(container, value) {
+            if (!value) {
+                container.textContent = '-';
+                return;
+            }
+
+            const url = new URL(logEntriesPath, window.location.origin);
+            url.searchParams.set('level', 'All');
+            url.searchParams.set('pageSize', '100');
+            url.searchParams.set('from', new Date().toISOString().slice(0, 10));
+            url.searchParams.set('correlationId', value.toString());
+
+            const link = document.createElement('a');
+            link.className = 'text-decoration-none';
+            link.href = url.toString();
+            link.textContent = value.toString();
+            link.title = 'Open related logs';
+            container.appendChild(link);
+        }
+
+        function renderProperties(container, properties) {
+            const entries = Object.entries(properties || {});
+            if (entries.length === 0) {
+                appendRow(container, 'Properties', 'No properties available.');
+                return;
+            }
+
+            entries.forEach(([key, value]) => appendRow(container, key, value));
+        }
+
+        function formatPayload(value) {
+            if (!value) {
+                return '-';
+            }
+
+            try {
+                return JSON.stringify(JSON.parse(value), null, 2);
+            } catch {
+                return value.toString();
+            }
+        }
+
+        function showMessageContext(payload) {
+            if (!payload || !messageModal) {
+                return;
+            }
+
+            setText('queueing-message-context-title', payload.type);
+            setText('queueing-message-context-subtitle', payload.messageId);
+
+            const summary = document.getElementById('queueing-message-context-summary');
+            const details = document.getElementById('queueing-message-context-details');
+            const properties = document.getElementById('queueing-message-context-properties');
+            const content = document.getElementById('queueing-message-context-payload');
+            summary.replaceChildren();
+            details.replaceChildren();
+            properties.replaceChildren();
+
+            appendCell(summary, 'Status', payload.status);
+            appendCell(summary, 'Queue', payload.queueName);
+            appendCell(summary, 'Attempts', payload.attemptCount);
+            appendCell(summary, 'Archived', payload.isArchived ? 'Yes' : 'No');
+
+            appendRow(details, 'Internal ID', payload.id);
+            appendRow(details, 'Message ID', payload.messageId);
+            appendRow(details, 'Queue', payload.queueName);
+            appendRow(details, 'Type', payload.type);
+            appendRow(details, 'Handler', payload.registeredHandlerType);
+            appendRow(details, 'Created', formatDate(payload.createdDate));
+            appendRow(details, 'Expires', formatDate(payload.expiresOn));
+            appendRow(details, 'Locked By', payload.lockedBy);
+            appendRow(details, 'Locked Until', formatDate(payload.lockedUntil));
+            appendRow(details, 'Processing Started', formatDate(payload.processingStartedDate));
+            appendRow(details, 'Processed', formatDate(payload.processedDate));
+            appendRow(details, 'Archived', formatDate(payload.archivedDate));
+            appendRow(details, 'Content Hash', payload.contentHash);
+            appendRow(details, 'Last Error', payload.lastError);
+
+            renderProperties(properties, payload.properties);
+            content.textContent = formatPayload(payload.content);
+            messageModalOpen = true;
+            messageModal.show();
+        }
+
+        if (messageModalElement) {
+            messageModalElement.addEventListener('shown.bs.modal', () => {
+                messageModalOpen = true;
+            });
+
+            messageModalElement.addEventListener('hidden.bs.modal', () => {
+                messageModalOpen = false;
+                refresher.schedule();
+            });
+        }
+
+        shellElement?.addEventListener('click', event => {
+            const button = event.target.closest('[data-queueing-message-context]');
+            if (!button) {
+                return;
+            }
+
+            try {
+                showMessageContext(JSON.parse(button.getAttribute('data-queueing-message-context') || '{}'));
+            } catch {
+                // ignore invalid row payload
+            }
         });
 
         document.getElementById('queueing-filter-apply').addEventListener('click', () => refresher.refresh(true));
@@ -127,6 +327,10 @@
         });
 
         window.bdkQueueingAction = async function(url) {
+            if (messageModal) {
+                messageModal.hide();
+            }
+
             await window.bdkDashboard.postAction(url, {
                 refresh: refresher.refresh,
                 errorMessage: 'Queueing action failed:'

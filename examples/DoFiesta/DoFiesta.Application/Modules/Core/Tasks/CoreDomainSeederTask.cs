@@ -33,7 +33,7 @@ public class CoreDomainSeederTask(
     /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} seed core (task={StartupTaskType})", "IFR", this.GetType().PrettyName());
+        this.logger.LogInformation("[{LogKey}] seed core (task={StartupTaskType})", "IFR", this.GetType().PrettyName());
 
         await this.databaseReadyService.WaitForReadyAsync(cancellationToken: cancellationToken); // Ensure the database is ready (migrated) before seeding data
 
@@ -68,7 +68,7 @@ public class CoreDomainSeederTask(
     /// </summary>
     private async Task<TodoItem[]> SeedTodoItems(IGenericRepository<TodoItem> repository, CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} seed todoitems (task={StartupTaskType})", "IFR", this.GetType().PrettyName());
+        this.logger.LogInformation("[{LogKey}] seed todoitems (task={StartupTaskType})", "IFR", this.GetType().PrettyName());
 
         if (await repository.AnyAsync(cancellationToken))
         {
@@ -105,7 +105,7 @@ public class CoreDomainSeederTask(
     /// </summary>
     private async Task<Subscription[]> SeedSubscriptions(IGenericRepository<Subscription> repository, CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} seed subscriptions (task={StartupTaskType})", "IFR", this.GetType().PrettyName());
+        this.logger.LogInformation("[{LogKey}] seed subscriptions (task={StartupTaskType})", "IFR", this.GetType().PrettyName());
 
         if (await repository.AnyAsync(cancellationToken))
         {
@@ -135,11 +135,11 @@ public class CoreDomainSeederTask(
     private async Task LogPermissions(CancellationToken cancellationToken)
     {
         var permissions = await entityPermissionProvider.GetPermissionsAsync(typeof(TodoItem).FullName, null, cancellationToken);
-        this.logger.LogInformation("{LogKey} seeded permission overview (count=#{PermissionCount})", "IFR", permissions?.Count);
+        this.logger.LogInformation("[{LogKey}] seeded permission overview (count=#{PermissionCount})", "IFR", permissions?.Count);
 
         foreach (var permission in permissions.SafeNull())
         {
-            this.logger.LogDebug("{LogKey} seeded permission: {Permission}", "IFR", permission);
+            this.logger.LogDebug("[{LogKey}] seeded permission: {Permission}", "IFR", permission);
         }
     }
 }

@@ -105,7 +105,7 @@ public class JobSchedulingService : BackgroundService
         {
             if (this.options.StartupDelay.TotalMilliseconds > 0)
             {
-                this.logger.LogDebug("{LogKey} scheduling service startup delayed by {Delay}ms", Constants.LogKey, this.options.StartupDelay.TotalMilliseconds);
+                this.logger.LogDebug("[{LogKey}] scheduling service startup delayed by {Delay}ms", Constants.LogKey, this.options.StartupDelay.TotalMilliseconds);
                 await Task.Delay(this.options.StartupDelay, cancellationToken);
             }
 
@@ -117,7 +117,7 @@ public class JobSchedulingService : BackgroundService
 
                 try
                 {
-                    this.logger.LogInformation("{LogKey} scheduling service starting (attempt={Attempt}/{MaxRetries}, delay={Delay}ms)", Constants.LogKey, attempt, maxRetries, this.options.StartupDelay.TotalMilliseconds);
+                    this.logger.LogInformation("[{LogKey}] scheduling service starting (attempt={Attempt}/{MaxRetries}, delay={Delay}ms)", Constants.LogKey, attempt, maxRetries, this.options.StartupDelay.TotalMilliseconds);
 
                     this.Scheduler = await this.schedulerFactory.GetScheduler(cancellationToken).AnyContext() ?? throw new InvalidOperationException("SchedulerFactory.GetScheduler returned null.");
                     this.Scheduler.JobFactory = this.jobFactory;
@@ -138,7 +138,7 @@ public class JobSchedulingService : BackgroundService
 
                         if (string.IsNullOrEmpty(jobSchedule.CronExpression))
                         {
-                            this.logger.LogWarning("{LogKey} not scheduled, needs a cron expression (name={JobName}, type={JobType})", Constants.LogKey, jobSchedule.Name, jobSchedule.JobType.Name);
+                            this.logger.LogWarning("[{LogKey}] not scheduled, needs a cron expression (name={JobName}, type={JobType})", Constants.LogKey, jobSchedule.Name, jobSchedule.JobType.Name);
                             continue;
                         }
 
@@ -151,7 +151,7 @@ public class JobSchedulingService : BackgroundService
                         }
                         catch (FormatException)
                         {
-                            this.logger.LogWarning("{LogKey} not scheduled, needs a valid cron expression (name={JobName}, type={JobType})", Constants.LogKey, jobSchedule.Name, jobSchedule.JobType.Name);
+                            this.logger.LogWarning("[{LogKey}] not scheduled, needs a valid cron expression (name={JobName}, type={JobType})", Constants.LogKey, jobSchedule.Name, jobSchedule.JobType.Name);
                             continue;
                         }
 
@@ -162,33 +162,33 @@ public class JobSchedulingService : BackgroundService
                             if (existingTrigger.Description != trigger.Description)
                             {
                                 await this.Scheduler.RescheduleJob(trigger.Key, trigger, cancellationToken).AnyContext();
-                                this.logger.LogInformation("{LogKey} rescheduled (name={JobName}, cron={CronExpression}, type={JobType})", Constants.LogKey, jobSchedule.Name, trigger.Description, jobSchedule.JobType.Name);
+                                this.logger.LogInformation("[{LogKey}] rescheduled (name={JobName}, cron={CronExpression}, type={JobType})", Constants.LogKey, jobSchedule.Name, trigger.Description, jobSchedule.JobType.Name);
                             }
                         }
 
                         if (!await this.Scheduler.CheckExists(jobDetail.Key, cancellationToken).AnyContext())
                         {
-                            this.logger.LogInformation("{LogKey} scheduled (name={JobName}, cron={CronExpression}, type={JobType})", Constants.LogKey, jobSchedule.Name, trigger.Description, jobSchedule.JobType.Name);
-                            this.logger.LogDebug("{LogKey} scheduled data (name={JobName}): {@JobData}", Constants.LogKey, jobSchedule.Name, jobDetail.JobDataMap.ToDictionary());
+                            this.logger.LogInformation("[{LogKey}] scheduled (name={JobName}, cron={CronExpression}, type={JobType})", Constants.LogKey, jobSchedule.Name, trigger.Description, jobSchedule.JobType.Name);
+                            this.logger.LogDebug("[{LogKey}] scheduled data (name={JobName}): {@JobData}", Constants.LogKey, jobSchedule.Name, jobDetail.JobDataMap.ToDictionary());
                             await this.Scheduler.ScheduleJob(jobDetail, trigger, cancellationToken).AnyContext();
                         }
                         else
                         {
-                            this.logger.LogInformation("{LogKey} already scheduled (name={JobName}, cron={CronExpression}, type={JobType})", Constants.LogKey, jobSchedule.Name, trigger.Description, jobSchedule.JobType.Name);
+                            this.logger.LogInformation("[{LogKey}] already scheduled (name={JobName}, cron={CronExpression}, type={JobType})", Constants.LogKey, jobSchedule.Name, trigger.Description, jobSchedule.JobType.Name);
                         }
                     }
 
                     await this.Scheduler.Start(cancellationToken).AnyContext();
-                    this.logger.LogInformation("{LogKey} scheduling service started", Constants.LogKey);
+                    this.logger.LogInformation("[{LogKey}] scheduling service started", Constants.LogKey);
                     return;
                 }
                 catch (SchedulerException ex) when (ex.Message.Contains("kill state") || ex.Message.Contains("disconnected"))
                 {
-                    this.logger.LogWarning(ex, "{LogKey} scheduling service failed due to database issue (attempt {Attempt}/{MaxRetries}). Retrying...", Constants.LogKey, attempt, maxRetries);
+                    this.logger.LogWarning(ex, "[{LogKey}] scheduling service failed due to database issue (attempt {Attempt}/{MaxRetries}). Retrying...", Constants.LogKey, attempt, maxRetries);
 
                     if (attempt == maxRetries)
                     {
-                        this.logger.LogError(ex, "{LogKey} scheduling service failed after {MaxRetries} attempts", Constants.LogKey, maxRetries);
+                        this.logger.LogError(ex, "[{LogKey}] scheduling service failed after {MaxRetries} attempts", Constants.LogKey, maxRetries);
                         throw;
                     }
 
@@ -202,7 +202,7 @@ public class JobSchedulingService : BackgroundService
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} scheduling service failed unexpectedly: {ErrorMessage}", Constants.LogKey, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] scheduling service failed unexpectedly: {ErrorMessage}", Constants.LogKey, ex.Message);
             throw;
         }
     }
@@ -212,7 +212,7 @@ public class JobSchedulingService : BackgroundService
     /// </summary>
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} scheduling service stopping", Constants.LogKey);
+        this.logger.LogInformation("[{LogKey}] scheduling service stopping", Constants.LogKey);
 
         this.linkedCts?.Cancel();
 
@@ -231,7 +231,7 @@ public class JobSchedulingService : BackgroundService
         if (this.Scheduler?.IsShutdown == false)
         {
             await this.Scheduler.Shutdown(cancellationToken).AnyContext();
-            this.logger.LogInformation("{LogKey} scheduling service stopped", Constants.LogKey);
+            this.logger.LogInformation("[{LogKey}] scheduling service stopped", Constants.LogKey);
         }
 
         await base.StopAsync(cancellationToken);

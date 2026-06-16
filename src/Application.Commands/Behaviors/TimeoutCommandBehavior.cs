@@ -34,7 +34,7 @@ public class TimeoutCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFa
             async (context, timeout, task) =>
             {
                 await Task.Run(() => this.Logger.LogError(
-                    "{LogKey} command timeout behavior (timeout={Timeout}, type={BehaviorType})",
+                    "[{LogKey}] command timeout behavior (timeout={Timeout}, type={BehaviorType})",
                     Constants.LogKey,
                     timeout.Humanize(),
                     this.GetType().Name));

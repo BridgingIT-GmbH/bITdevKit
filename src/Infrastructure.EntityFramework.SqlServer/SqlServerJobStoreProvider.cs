@@ -76,7 +76,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         }
         catch (SqlException ex) when (ex.Number == 208 && ex.Message.Contains("Invalid object name"))
         {
-            this.logger.LogWarning("{LogKey} SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            this.logger.LogWarning("[{LogKey}] SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
             return runs; // empty list
         }
         return runs;
@@ -89,7 +89,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
     {
         var tableName = this.GetTableName("JOURNAL_TRIGGERS");
         var sql = $@"
-            SELECT 
+            SELECT
                 COUNT(*) as TotalRuns,
                 SUM(CASE WHEN STATUS = 'Success' THEN 1 ELSE 0 END) as SuccessCount,
                 SUM(CASE WHEN STATUS = 'Failed' THEN 1 ELSE 0 END) as FailureCount,
@@ -129,7 +129,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         }
         catch (SqlException ex) when (ex.Number == 208 && ex.Message.Contains("Invalid object name"))
         {
-            this.logger.LogWarning("{LogKey} SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            this.logger.LogWarning("[{LogKey}] SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
             return new JobRunStats();
         }
         return new JobRunStats();
@@ -140,7 +140,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         var tableName = this.GetTableName("JOURNAL_TRIGGERS");
         var sql = $@"
             IF EXISTS (SELECT 1 FROM {tableName} WHERE SCHED_NAME = @schedName AND ENTRY_ID = @entryId)
-                UPDATE {tableName} 
+                UPDATE {tableName}
                 SET TRIGGER_NAME = @triggerName,
                     TRIGGER_GROUP = @triggerGroup,
                     JOB_NAME = @jobName,
@@ -160,9 +160,9 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
                     CATEGORY = @category
                 WHERE SCHED_NAME = @schedName AND ENTRY_ID = @entryId
             ELSE
-                INSERT INTO {tableName} 
-                VALUES (@schedName, @entryId, @triggerName, @triggerGroup, @jobName, @jobGroup, @description, 
-                        @startTime, @endTime, @scheduledTime, @durationMs, @status, @errorMessage, @jobDataJson, 
+                INSERT INTO {tableName}
+                VALUES (@schedName, @entryId, @triggerName, @triggerGroup, @jobName, @jobGroup, @description,
+                        @startTime, @endTime, @scheduledTime, @durationMs, @status, @errorMessage, @jobDataJson,
                         @instanceName, @priority, @result, @retryCount, @category);";
 
         try
@@ -194,7 +194,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         }
         catch (SqlException ex) when (ex.Number == 208 && ex.Message.Contains("Invalid object name"))
         {
-            this.logger.LogWarning("{LogKey} SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            this.logger.LogWarning("[{LogKey}] SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
             return;
         }
         catch (Exception)
@@ -223,7 +223,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         }
         catch (SqlException ex) when (ex.Number == 208 && ex.Message.Contains("Invalid object name"))
         {
-            this.logger.LogWarning("{LogKey} SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            this.logger.LogWarning("[{LogKey}] SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
             return;
         }
     }

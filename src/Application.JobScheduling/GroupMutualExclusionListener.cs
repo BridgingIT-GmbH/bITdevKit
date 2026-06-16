@@ -113,19 +113,19 @@ public partial class ConcurrentGroupExecutionListener(
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Debug, "{LogKey} job not handled by group mutual exclusion (name={JobName}, group={JobGroup}, entryId={EntryId})")]
+        [LoggerMessage(0, LogLevel.Debug, "[{LogKey}] job not handled by group mutual exclusion (name={JobName}, group={JobGroup}, entryId={EntryId})")]
         public static partial void LogJobNotHandled(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} job waiting for exclusive group access (name={JobName}, group={JobGroup}, entryId={EntryId})")]
+        [LoggerMessage(1, LogLevel.Information, "[{LogKey}] job waiting for exclusive group access (name={JobName}, group={JobGroup}, entryId={EntryId})")]
         public static partial void LogJobWaitingForExclusiveAccess(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
 
-        [LoggerMessage(2, LogLevel.Information, "{LogKey} job acquired exclusive group access (name={JobName}, group={JobGroup}, entryId={EntryId})")]
+        [LoggerMessage(2, LogLevel.Information, "[{LogKey}] job acquired exclusive group access (name={JobName}, group={JobGroup}, entryId={EntryId})")]
         public static partial void LogJobAcquiredExclusiveAccess(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
 
-        [LoggerMessage(3, LogLevel.Information, "{LogKey} job execution vetoed, releasing exclusive group access (name={JobName}, group={JobGroup}, entryId={EntryId})")]
+        [LoggerMessage(3, LogLevel.Information, "[{LogKey}] job execution vetoed, releasing exclusive group access (name={JobName}, group={JobGroup}, entryId={EntryId})")]
         public static partial void LogJobExecutionVetoed(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
 
-        [LoggerMessage(4, LogLevel.Information, "{LogKey} job releasing exclusive group access (name={JobName}, group={JobGroup}, entryId={EntryId})")]
+        [LoggerMessage(4, LogLevel.Information, "[{LogKey}] job releasing exclusive group access (name={JobName}, group={JobGroup}, entryId={EntryId})")]
         public static partial void LogJobReleasingExclusiveAccess(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
     }
 }

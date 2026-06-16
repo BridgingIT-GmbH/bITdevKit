@@ -7,7 +7,9 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modul
 
 using BridgingIT.DevKit.Application.DataPorter;
 using BridgingIT.DevKit.Application.Jobs;
+using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Orchestrations;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Tasks;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
@@ -28,11 +30,11 @@ public class CoreModule : WebModuleBase
         var moduleConfiguration = this.Configure<CoreModuleConfiguration, CoreModuleConfiguration.Validator>(services, configuration);
 
         // Orchestrations
-        //services.AddOrchestrations()
-        //    .WithOrchestration<TodoItemLifecycleOrchestration>()
-        //    .WithBehavior<MetricsOrchestrationBehavior>()
-        //    .WithEntityFramework<CoreDbContext>()
-        //    .AddEndpoints();
+        services.AddOrchestrations()
+            .WithOrchestration<WeatherHelloWorldOrchestration>()
+            .WithBehavior<MetricsOrchestrationBehavior>()
+            .WithEntityFramework<CoreDbContext>()
+            .AddEndpoints();
 
         // Jobs
         services.AddJobScheduler(configuration)
@@ -55,6 +57,25 @@ public class CoreModule : WebModuleBase
                 .WithConcurrency(1)
                 .AddTrigger("cron", trigger => trigger
                     .Cron(moduleConfiguration.Jobs.CleanupCron)
+                    .WithMissedOccurrencePolicy(JobMissedOccurrencePolicy.RunOnce))
+                .AddTrigger("manual", trigger => trigger.Manual()))
+            .WithJob<WeatherErrorSimulationJob>("core_error_simulation", job => job
+                .Description("Generates synthetic WeatherFiesta errors for dashboard validation.")
+                .UseLifetime(ServiceLifetime.Scoped)
+                .WithConcurrency(1)
+                .AddTrigger("manual", trigger => trigger.Manual()))
+            .WithOrchestrationExecuteJob<Unit, WeatherHelloWorldOrchestration, WeatherHelloWorldOrchestrationData>("core_hello_world_orchestration", job => job
+                .WithDescription("Starts the WeatherFiesta hello-world orchestration.")
+                .WithConcurrency(1)
+                .WithInput(context => new WeatherHelloWorldOrchestrationData
+                {
+                    Greeting = "Hello WeatherFiesta",
+                    Source = context.JobName,
+                    RequestedUtc = DateTimeOffset.UtcNow,
+                })
+                .Dispatch()
+                .AddTrigger("cron", trigger => trigger
+                    .Cron(CronExpressions.Every5Minutes)
                     .WithMissedOccurrencePolicy(JobMissedOccurrencePolicy.RunOnce))
                 .AddTrigger("manual", trigger => trigger.Manual()))
             .WithEntityFramework<CoreDbContext>()

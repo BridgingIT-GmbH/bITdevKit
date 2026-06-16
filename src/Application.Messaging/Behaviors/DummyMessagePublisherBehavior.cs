@@ -14,7 +14,7 @@ public class DummyMessagePublisherBehavior(ILoggerFactory loggerFactory) : Messa
         CancellationToken cancellationToken,
         MessagePublisherDelegate next)
     {
-        this.Logger.LogDebug("{LogKey} >>>>> dummy message publish behavior - before (id={MessageId})",
+        this.Logger.LogDebug("[{LogKey}] >>>>> dummy message publish behavior - before (id={MessageId})",
             Constants.LogKey,
             message.MessageId);
 
@@ -25,7 +25,7 @@ public class DummyMessagePublisherBehavior(ILoggerFactory loggerFactory) : Messa
 
         await next().AnyContext(); // continue pipeline
 
-        this.Logger.LogDebug("{LogKey} <<<<< dummy message publish behavior - after (id={MessageId})",
+        this.Logger.LogDebug("[{LogKey}] <<<<< dummy message publish behavior - after (id={MessageId})",
             Constants.LogKey,
             message.MessageId);
     }

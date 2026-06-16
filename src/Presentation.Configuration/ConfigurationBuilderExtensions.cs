@@ -26,7 +26,7 @@ public static class ConfigurationBuilderExtensions
             if (file.EndsWith(".appsettings.json", StringComparison.OrdinalIgnoreCase)) // detect module config
             {
                 Log.Logger.Information(
-                    "{LogKey} settings (module={ModuleName}, file={ModuleSettingsFile}), env={HostingEnvironment})",
+                    "[{LogKey}] settings (module={ModuleName}, file={ModuleSettingsFile}), env={HostingEnvironment})",
                     ModuleConstants.LogKey,
                     file.SliceFromLast("\\").SliceTill(".").ToLowerInvariant(),
                     file.SliceFromLast("\\"),
@@ -34,7 +34,7 @@ public static class ConfigurationBuilderExtensions
             }
             else
             {
-                Log.Logger.Information("{LogKey} settings (file={SettingsFile}, env={HostingEnvironment})",
+                Log.Logger.Information("[{LogKey}] settings (file={SettingsFile}, env={HostingEnvironment})",
                     ModuleConstants.LogKey,
                     file.SliceFromLast("\\"),
                     environment);
@@ -51,7 +51,7 @@ public static class ConfigurationBuilderExtensions
                         StringComparison.OrdinalIgnoreCase)) // detect module config
                 {
                     Log.Logger.Information(
-                        "{LogKey} settings (module={ModuleName}, file={ModuleSettingsFile}), env={HostingEnvironment})",
+                        "[{LogKey}] settings (module={ModuleName}, file={ModuleSettingsFile}), env={HostingEnvironment})",
                         ModuleConstants.LogKey,
                         file.SliceFromLast("\\").SliceTill(".").ToLowerInvariant(),
                         file.SliceFromLast("\\"),
@@ -59,7 +59,7 @@ public static class ConfigurationBuilderExtensions
                 }
                 else
                 {
-                    Log.Logger.Information("{LogKey} settings (file={SettingsFile}, env={HostingEnvironment})",
+                    Log.Logger.Information("[{LogKey}] settings (file={SettingsFile}, env={HostingEnvironment})",
                         ModuleConstants.LogKey,
                         file.SliceFromLast("\\"),
                         environment);
@@ -87,7 +87,7 @@ public static class ConfigurationBuilderExtensions
 
         if (!string.IsNullOrEmpty(vaultName) && !tmpCfg["AzureKeyVault:Enabled"].SafeEquals("False"))
         {
-            Log.Logger.Information("{LogKey} settings (azureKeyVault={AzureKeyVaultName}, env={HostingEnvironment})",
+            Log.Logger.Information("[{LogKey}] settings (azureKeyVault={AzureKeyVaultName}, env={HostingEnvironment})",
                 ModuleConstants.LogKey,
                 vaultName,
                 environment);
@@ -122,7 +122,7 @@ public static class ConfigurationBuilderExtensions
         {
             // https://learn.microsoft.com/en-us/azure/azure-app-configuration/quickstart-aspnet-core-app?tabs=core6x
             Log.Logger.Information(
-                "{LogKey} settings (azureAppConfiguration={AzureAppConfigEnabled}, env={HostingEnvironment})",
+                "[{LogKey}] settings (azureAppConfiguration={AzureAppConfigEnabled}, env={HostingEnvironment})",
                 ModuleConstants.LogKey,
                 true,
                 environment);
@@ -134,7 +134,7 @@ public static class ConfigurationBuilderExtensions
             // https://learn.microsoft.com/en-us/azure/azure-app-configuration/howto-integrate-azure-managed-service-identity?tabs=core6x&pivots=framework-dotnet
             var managedIdentityClientId = tmpCfg["AzureAppConfig:ManagedIdentityClientId"];
 
-            Log.Logger.Information("{LogKey} settings (azureAppConfiguration={AzureAppConfigEnabled}, env={HostingEnvironment})", ModuleConstants.LogKey, true, environment);
+            Log.Logger.Information("[{LogKey}] settings (azureAppConfiguration={AzureAppConfigEnabled}, env={HostingEnvironment})", ModuleConstants.LogKey, true, environment);
 
             var identity = ManagedIdentityId.FromUserAssignedClientId(managedIdentityClientId);
 

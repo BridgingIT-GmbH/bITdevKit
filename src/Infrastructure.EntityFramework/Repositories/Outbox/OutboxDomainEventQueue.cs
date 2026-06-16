@@ -76,10 +76,10 @@ public partial class OutboxDomainEventQueue : IOutboxDomainEventQueue
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Debug, "{LogKey} outbox domain event queued (id={EventId})")]
+        [LoggerMessage(0, LogLevel.Debug, "[{LogKey}] outbox domain event queued (id={EventId})")]
         public static partial void LogQueue(ILogger logger, string logKey, string eventId);
 
-        [LoggerMessage(1, LogLevel.Debug, "{LogKey} outbox domain event dequeued (id={EventId})")]
+        [LoggerMessage(1, LogLevel.Debug, "[{LogKey}] outbox domain event dequeued (id={EventId})")]
         public static partial void LogDequeued(ILogger logger, string logKey, string eventId);
     }
 }

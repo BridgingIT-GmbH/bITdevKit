@@ -42,7 +42,7 @@ public class DatabaseMigratorService<TContext> : IHostedService
 
         if (!this.options.Enabled)
         {
-            this.logger.LogInformation("{LogKey} database migrator skipped, not enabled (context={DbContextType})", Constants.LogKey, contextName);
+            this.logger.LogInformation("[{LogKey}] database migrator skipped, not enabled (context={DbContextType})", Constants.LogKey, contextName);
 
             using var scope = this.serviceProvider.CreateScope();
             if (await this.CheckDatabaseAccessible(contextName, scope.ServiceProvider.GetRequiredService<TContext>(), cancellationToken).AnyContext())
@@ -59,7 +59,7 @@ public class DatabaseMigratorService<TContext> : IHostedService
             {
                 if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
-                    this.logger.LogInformation("{LogKey} database migrator startup delayed (context={DbContextType})", Constants.LogKey, contextName);
+                    this.logger.LogInformation("[{LogKey}] database migrator startup delayed (context={DbContextType})", Constants.LogKey, contextName);
                     if (!cancellationToken.IsCancellationRequested)
                     {
                         try
@@ -85,19 +85,19 @@ public class DatabaseMigratorService<TContext> : IHostedService
 
                     if (!this.IsInMemoryContext(context))
                     {
-                        this.logger.LogInformation("{LogKey} database migrator started (context={DbContextType}, provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, context.Database.ProviderName);
+                        this.logger.LogInformation("[{LogKey}] database migrator started (context={DbContextType}, provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, context.Database.ProviderName);
 
                         var exists = await context.Database.CanConnectAsync(cancellationToken);
                         if (exists && this.options.EnsureDeleted)
                         {
-                            this.logger.LogInformation("{LogKey} database migrator delete tables (context={DbContextType})", Constants.LogKey, contextName);
+                            this.logger.LogInformation("[{LogKey}] database migrator delete tables (context={DbContextType})", Constants.LogKey, contextName);
                             await context.Database.EnsureDeletedAsync(cancellationToken).AnyContext();
                             exists = false;
                         }
 
                         if (exists && this.options.EnsureTruncated)
                         {
-                            this.logger.LogInformation("{LogKey} database migrator truncate tables (context={DbContextType})", Constants.LogKey, contextName);
+                            this.logger.LogInformation("[{LogKey}] database migrator truncate tables (context={DbContextType})", Constants.LogKey, contextName);
                             if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.SqlServer")
                             {
                                 await context.Database
@@ -123,7 +123,7 @@ public class DatabaseMigratorService<TContext> : IHostedService
                             }
                         }
 
-                        this.logger.LogInformation("{LogKey} database migrator get pending migrations (context={DbContextType})", Constants.LogKey, contextName);
+                        this.logger.LogInformation("[{LogKey}] database migrator get pending migrations (context={DbContextType})", Constants.LogKey, contextName);
                         var migrations = await context.Database.GetPendingMigrationsAsync(cancellationToken);
                         if (!exists || migrations.SafeAny())
                         {
@@ -132,11 +132,11 @@ public class DatabaseMigratorService<TContext> : IHostedService
                             await context.Database.MigrateAsync(cancellationToken).AnyContext();
                             exists = true;
 
-                            this.logger.LogInformation("{LogKey} database migrator finished (context={DbContextType}, dbexists({DbExists}), provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, exists, context.Database.ProviderName);
+                            this.logger.LogInformation("[{LogKey}] database migrator finished (context={DbContextType}, dbexists({DbExists}), provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, exists, context.Database.ProviderName);
                         }
                         else
                         {
-                            this.logger.LogInformation("{LogKey} database migrator skipped, no pending migrations (context={DbContextType})", Constants.LogKey, contextName);
+                            this.logger.LogInformation("[{LogKey}] database migrator skipped, no pending migrations (context={DbContextType})", Constants.LogKey, contextName);
                         }
                     }
 
@@ -145,7 +145,7 @@ public class DatabaseMigratorService<TContext> : IHostedService
                 catch (Exception ex)
                 {
                     this.databaseReadyService?.SetFaulted(contextName, ex.Message);
-                    this.logger.LogError(ex, "{LogKey} database migrator failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, contextName);
+                    this.logger.LogError(ex, "[{LogKey}] database migrator failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, contextName);
 
                     if (this.options.HaltOnFailure)
                     {
@@ -183,11 +183,11 @@ public class DatabaseMigratorService<TContext> : IHostedService
                 exists = await context.Database.CanConnectAsync(ct);
                 if (!exists)
                 {
-                    this.logger.LogWarning("{LogKey} database check failed: database not accessible (context={DbContextType})", Constants.LogKey, contextName);
+                    this.logger.LogWarning("[{LogKey}] database check failed: database not accessible (context={DbContextType})", Constants.LogKey, contextName);
                     throw new Exception("Database not accessible.");
                 }
 
-                this.logger.LogInformation("{LogKey} database check succeeded: database accessible (context={DbContextType})", Constants.LogKey, contextName);
+                this.logger.LogInformation("[{LogKey}] database check succeeded: database accessible (context={DbContextType})", Constants.LogKey, contextName);
             }, cancellationToken);
         }
         catch (Exception) // All retries failed, exists remains false

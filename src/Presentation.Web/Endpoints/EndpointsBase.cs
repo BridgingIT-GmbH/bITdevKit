@@ -6,11 +6,14 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Presentation.Web.Dashboard;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 ///     Provides a base implementation for modular Minimal API endpoint sets.
@@ -98,7 +101,7 @@ public abstract class EndpointsBase : IEndpoints
 
         ConfigureOpenApi(group, options);
         ConfigureDescription(group, options);
-        ConfigureAuthorization(group, options);
+        ConfigureAuthorization(group, options, app.ServiceProvider);
         ConfigureCors(group, options);
         ConfigureRateLimiting(group, options);
         ConfigureRouteNamePrefix(group, options);
@@ -203,8 +206,10 @@ public abstract class EndpointsBase : IEndpoints
         }
     }
 
-    private static void ConfigureAuthorization(RouteGroupBuilder group, EndpointsOptionsBase options)
+    private static void ConfigureAuthorization(RouteGroupBuilder group, EndpointsOptionsBase options, IServiceProvider serviceProvider)
     {
+        ApplyDashboardAuthorizationMode(options, serviceProvider);
+
         if (options.AllowAnonymous)
         {
             group.AllowAnonymous();
@@ -254,6 +259,46 @@ public abstract class EndpointsBase : IEndpoints
         }
 
         group.RequireAuthorization();
+    }
+
+    private static void ApplyDashboardAuthorizationMode(EndpointsOptionsBase options, IServiceProvider serviceProvider)
+    {
+        if (options is not DashboardEndpointsOptions dashboardOptions)
+        {
+            return;
+        }
+
+        switch (dashboardOptions.AuthorizationMode)
+        {
+            case DashboardAuthorizationMode.Anonymous:
+                options.AllowAnonymous = true;
+                options.RequireAuthorization = false;
+                return;
+            case DashboardAuthorizationMode.RequireAuthenticated:
+                options.AllowAnonymous = false;
+                options.RequireAuthorization = true;
+                return;
+            case DashboardAuthorizationMode.Auto:
+                options.AllowAnonymous = false;
+                options.RequireAuthorization = HasAuthenticationSchemes(serviceProvider);
+                return;
+            default:
+                return;
+        }
+    }
+
+    private static bool HasAuthenticationSchemes(IServiceProvider serviceProvider)
+    {
+        var schemeProvider = serviceProvider.GetService<IAuthenticationSchemeProvider>();
+        if (schemeProvider is null)
+        {
+            return false;
+        }
+
+        return schemeProvider.GetAllSchemesAsync()
+            .GetAwaiter()
+            .GetResult()
+            .Any();
     }
 
     private static string[] GetRequiredRoles(EndpointsOptionsBase options)

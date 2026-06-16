@@ -126,19 +126,19 @@ public partial class FakeAuthenticationHandler(
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = "{LogKey} authentication - start fake authentication")]
+        [LoggerMessage(EventId = 1, Level = LogLevel.Debug, Message = "[{LogKey}] authentication - start fake authentication")]
         public static partial void LogStartingAuthentication(ILogger logger, string logKey);
 
-        [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "{LogKey} authentication - invalid authorization header format. Expected: 'FakeUser [email]'")]
+        [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "[{LogKey}] authentication - invalid authorization header format. Expected: 'FakeUser [email]'")]
         public static partial void LogInvalidAuthorizationHeader(ILogger logger, string logKey);
 
-        [LoggerMessage(EventId = 4, Level = LogLevel.Information, Message = "{LogKey} authentication - fake user authenticated: {Email}")]
+        [LoggerMessage(EventId = 4, Level = LogLevel.Information, Message = "[{LogKey}] authentication - fake user authenticated: {Email}")]
         public static partial void LogFakeUserAuthenticated(ILogger logger, string logKey, string Email);
 
-        [LoggerMessage(EventId = 5, Level = LogLevel.Warning, Message = "{LogKey} authentication - fake user not found: {Email}")]
+        [LoggerMessage(EventId = 5, Level = LogLevel.Warning, Message = "[{LogKey}] authentication - fake user not found: {Email}")]
         public static partial void LogFakeUserNotFound(ILogger logger, string logKey, string Email);
 
-        [LoggerMessage(EventId = 6, Level = LogLevel.Warning, Message = "{LogKey} authentication - fake user disabled: {Email}")]
+        [LoggerMessage(EventId = 6, Level = LogLevel.Warning, Message = "[{LogKey}] authentication - fake user disabled: {Email}")]
         public static partial void LogFakeUserDisabled(ILogger logger, string logKey, string Email);
     }
 }

@@ -337,7 +337,7 @@ void ConfigureMetrics(MeterProviderBuilder provider)
 
     //if (builder.Configuration["Metrics:Prometheus:Enabled"].To<bool>())
     //{
-    //    Log.Logger.Information("{LogKey} prometheus exporter enabled (endpoint={MetricsEndpoint})", "MET", "/metrics");
+    //    Log.Logger.Information("[{LogKey}] prometheus exporter enabled (endpoint={MetricsEndpoint})", "MET", "/metrics");
     //    provider.AddPrometheusExporter();
     //}
 }
@@ -393,7 +393,7 @@ void ConfigureTracing(TracerProviderBuilder provider)
 
     //if (builder.Configuration["Tracing:Jaeger:Enabled"].To<bool>())
     //{
-    //    Log.Logger.Information("{LogKey} jaeger exporter enabled (host={JaegerHost})",
+    //    Log.Logger.Information("[{LogKey}] jaeger exporter enabled (host={JaegerHost})",
     //        "TRC",
     //        builder.Configuration["Tracing:Jaeger:AgentHost"]);
     //    provider.AddJaegerExporter(opts =>
@@ -406,13 +406,13 @@ void ConfigureTracing(TracerProviderBuilder provider)
 
     if (builder.Configuration["Tracing:Console:Enabled"].To<bool>())
     {
-        Log.Logger.Information("{LogKey} console exporter enabled", "TRC");
+        Log.Logger.Information("[{LogKey}] console exporter enabled", "TRC");
         provider.AddConsoleExporter();
     }
 
     if (builder.Configuration["Tracing:AzureMonitor:Enabled"].To<bool>())
     {
-        Log.Logger.Information("{LogKey} azuremonitor exporter enabled", "TRC");
+        Log.Logger.Information("[{LogKey}] azuremonitor exporter enabled", "TRC");
         provider.AddAzureMonitorTraceExporter(o =>
         {
             o.ConnectionString = builder.Configuration["Tracing:AzureMonitor:ConnectionString"].EmptyToNull() ??

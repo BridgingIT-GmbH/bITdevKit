@@ -56,13 +56,13 @@ public partial class CacheQueryBehavior<TRequest, TResponse>(ILoggerFactory logg
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Debug, "{LogKey} query cache behavior hit (key={CacheKey}, type={BehaviorType})")]
+        [LoggerMessage(0, LogLevel.Debug, "[{LogKey}] query cache behavior hit (key={CacheKey}, type={BehaviorType})")]
         public static partial void LogCacheHit(ILogger logger, string logKey, string cacheKey, string behaviorType);
 
-        [LoggerMessage(1, LogLevel.Debug, "{LogKey} query cache behavior miss (key={CacheKey}, type={BehaviorType})")]
+        [LoggerMessage(1, LogLevel.Debug, "[{LogKey}] query cache behavior miss (key={CacheKey}, type={BehaviorType})")]
         public static partial void LogCacheMiss(ILogger logger, string logKey, string cacheKey, string behaviorType);
 
-        [LoggerMessage(2, LogLevel.Debug, "{LogKey} query cache behavior set (key={CacheKey}, type={BehaviorType})")]
+        [LoggerMessage(2, LogLevel.Debug, "[{LogKey}] query cache behavior set (key={CacheKey}, type={BehaviorType})")]
         public static partial void LogCacheAdd(ILogger logger, string logKey, string cacheKey, string behaviorType);
     }
 }

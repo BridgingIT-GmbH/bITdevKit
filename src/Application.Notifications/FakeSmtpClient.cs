@@ -66,7 +66,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
         get => this.localDomain;
         set
         {
-            this.logger.LogTrace("{LogKey} fakesmtpclient - Setting LocalDomain to: {LocalDomainValue}", Constants.LogKey, value);
+            this.logger.LogTrace("[{LogKey}] fakesmtpclient - Setting LocalDomain to: {LocalDomainValue}", Constants.LogKey, value);
             this.localDomain = value;
         }
     }
@@ -78,7 +78,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
         get => this.requireTls;
         set
         {
-            this.logger.LogTrace("{LogKey} fakesmtpclient - Setting RequireTLS to: {RequireTLSValue}", Constants.LogKey, value);
+            this.logger.LogTrace("[{LogKey}] fakesmtpclient - Setting RequireTLS to: {RequireTLSValue}", Constants.LogKey, value);
             this.requireTls = value;
         }
     }
@@ -88,7 +88,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
         get => this.deliveryStatusNotificationType;
         set
         {
-            this.logger.LogTrace("{LogKey} fakesmtpclient - Setting DeliveryStatusNotificationType to: {DeliveryStatusNotificationTypeValue}", Constants.LogKey, value);
+            this.logger.LogTrace("[{LogKey}] fakesmtpclient - Setting DeliveryStatusNotificationType to: {DeliveryStatusNotificationTypeValue}", Constants.LogKey, value);
             this.deliveryStatusNotificationType = value;
         }
     }
@@ -106,7 +106,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
         get => this.sslProtocols;
         set
         {
-            this.logger.LogTrace("{LogKey} fakesmtpclient - Setting SslProtocols to: {SslProtocolsValue}", Constants.LogKey, value);
+            this.logger.LogTrace("[{LogKey}] fakesmtpclient - Setting SslProtocols to: {SslProtocolsValue}", Constants.LogKey, value);
             this.sslProtocols = value;
         }
     }
@@ -120,7 +120,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
         get => this.timeout;
         set
         {
-            this.logger.LogTrace("{LogKey} fakesmtpclient - Setting Timeout to: {TimeoutValue}", Constants.LogKey, value);
+            this.logger.LogTrace("[{LogKey}] fakesmtpclient - Setting Timeout to: {TimeoutValue}", Constants.LogKey, value);
             this.timeout = value;
         }
     }
@@ -136,7 +136,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
         get => this.checkCertificateRevocation;
         set
         {
-            this.logger.LogTrace("{LogKey} fakesmtpclient - Setting CheckCertificateRevocation to: {CheckCertificateRevocationValue}", Constants.LogKey, value);
+            this.logger.LogTrace("[{LogKey}] fakesmtpclient - Setting CheckCertificateRevocation to: {CheckCertificateRevocationValue}", Constants.LogKey, value);
             this.checkCertificateRevocation = value;
         }
     }
@@ -146,7 +146,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
         get => this.localEndPoint;
         set
         {
-            this.logger.LogTrace("{LogKey} fakesmtpclient - Setting LocalEndPoint to: {LocalEndPointValue}", Constants.LogKey, value?.ToString() ?? "null");
+            this.logger.LogTrace("[{LogKey}] fakesmtpclient - Setting LocalEndPoint to: {LocalEndPointValue}", Constants.LogKey, value?.ToString() ?? "null");
             this.localEndPoint = value;
         }
     }
@@ -156,7 +156,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
         get => this.proxyClient;
         set
         {
-            this.logger.LogTrace("{LogKey} fakesmtpclient - Setting ProxyClient to: {ProxyClientType}", Constants.LogKey, value?.GetType().Name ?? "null");
+            this.logger.LogTrace("[{LogKey}] fakesmtpclient - Setting ProxyClient to: {ProxyClientType}", Constants.LogKey, value?.GetType().Name ?? "null");
             this.proxyClient = value;
         }
     }
@@ -166,7 +166,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
         get => this.sslCipherSuitesPolicy;
         set
         {
-            this.logger.LogTrace("{LogKey} fakesmtpclient - Setting SslCipherSuitesPolicy.", Constants.LogKey);
+            this.logger.LogTrace("[{LogKey}] fakesmtpclient - Setting SslCipherSuitesPolicy.", Constants.LogKey);
             this.sslCipherSuitesPolicy = value;
         }
     }
@@ -234,25 +234,25 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     // ISmtpClient specific methods
     public InternetAddressList Expand(string alias, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Expand called for alias: {Alias}", Constants.LogKey, alias);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Expand called for alias: {Alias}", Constants.LogKey, alias);
         return [];
     }
 
     public Task<InternetAddressList> ExpandAsync(string alias, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - ExpandAsync called for alias: {Alias}", Constants.LogKey, alias);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - ExpandAsync called for alias: {Alias}", Constants.LogKey, alias);
         return Task.FromResult(new InternetAddressList());
     }
 
     public MailboxAddress Verify(string address, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Verify called for address: {Address}", Constants.LogKey, address);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Verify called for address: {Address}", Constants.LogKey, address);
         return null;
     }
 
     public Task<MailboxAddress> VerifyAsync(string address, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - VerifyAsync called for address: {Address}", Constants.LogKey, address);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - VerifyAsync called for address: {Address}", Constants.LogKey, address);
         return Task.FromResult<MailboxAddress>(null);
     }
 
@@ -296,7 +296,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public void Connect(string host, int port = 0, SecureSocketOptions options = SecureSocketOptions.Auto, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Connecting to {Host}:{Port} with options {Options}.", Constants.LogKey, host, port, options);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Connecting to {Host}:{Port} with options {Options}.", Constants.LogKey, host, port, options);
         this.isConnected = true;
         this.SimulateConnectionSecurityDetails(options);
         this.Connected?.Invoke(this, new ConnectedEventArgs(host, port, options));
@@ -304,7 +304,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public Task ConnectAsync(string host, int port = 0, SecureSocketOptions options = SecureSocketOptions.Auto, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Connecting to {Host}:{Port} with options {Options}.", Constants.LogKey, host, port, options);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Connecting to {Host}:{Port} with options {Options}.", Constants.LogKey, host, port, options);
         this.isConnected = true;
         this.SimulateConnectionSecurityDetails(options);
         this.Connected?.Invoke(this, new ConnectedEventArgs(host, port, options));
@@ -315,7 +315,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     {
         var options = useSsl ? SecureSocketOptions.SslOnConnect : SecureSocketOptions.None;
         if (port == 0) port = useSsl ? 465 : 25;
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Connecting to {Host}:{Port} with useSsl: {UseSsl} (mapped to options: {Options}).", Constants.LogKey, host, port, useSsl, options);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Connecting to {Host}:{Port} with useSsl: {UseSsl} (mapped to options: {Options}).", Constants.LogKey, host, port, useSsl, options);
         this.Connect(host, port, options, cancellationToken);
     }
 
@@ -323,13 +323,13 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     {
         var options = useSsl ? SecureSocketOptions.SslOnConnect : SecureSocketOptions.None;
         if (port == 0) port = useSsl ? 465 : 25;
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Connecting to {Host}:{Port} with useSsl: {UseSsl} (mapped to options: {Options}).", Constants.LogKey, host, port, useSsl, options);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Connecting to {Host}:{Port} with useSsl: {UseSsl} (mapped to options: {Options}).", Constants.LogKey, host, port, useSsl, options);
         return this.ConnectAsync(host, port, options, cancellationToken);
     }
 
     public void Connect(Socket socket, string host, int port = 0, SecureSocketOptions options = SecureSocketOptions.Auto, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Connecting via socket to {Host}:{Port} with options {Options}. Socket connected: {IsSocketConnected}", Constants.LogKey, host, port, options, socket?.Connected);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Connecting via socket to {Host}:{Port} with options {Options}. Socket connected: {IsSocketConnected}", Constants.LogKey, host, port, options, socket?.Connected);
         this.isConnected = true;
         this.SimulateConnectionSecurityDetails(options);
         this.Connected?.Invoke(this, new ConnectedEventArgs(host, port, options));
@@ -337,7 +337,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public Task ConnectAsync(Socket socket, string host, int port = 0, SecureSocketOptions options = SecureSocketOptions.Auto, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Connecting via socket to {Host}:{Port} with options {Options}. Socket connected: {IsSocketConnected}", Constants.LogKey, host, port, options, socket?.Connected);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Connecting via socket to {Host}:{Port} with options {Options}. Socket connected: {IsSocketConnected}", Constants.LogKey, host, port, options, socket?.Connected);
         this.isConnected = true;
         this.SimulateConnectionSecurityDetails(options);
         this.Connected?.Invoke(this, new ConnectedEventArgs(host, port, options));
@@ -346,7 +346,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public void Connect(Stream stream, string host, int port = 0, SecureSocketOptions options = SecureSocketOptions.Auto, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Connecting via stream to {Host}:{Port} with options {Options}. Stream type: {StreamType}", Constants.LogKey, host, port, options, stream?.GetType().Name);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Connecting via stream to {Host}:{Port} with options {Options}. Stream type: {StreamType}", Constants.LogKey, host, port, options, stream?.GetType().Name);
         this.isConnected = true;
         this.SimulateConnectionSecurityDetails(options);
         this.Connected?.Invoke(this, new ConnectedEventArgs(host, port, options));
@@ -354,7 +354,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public Task ConnectAsync(Stream stream, string host, int port = 0, SecureSocketOptions options = SecureSocketOptions.Auto, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - ConnectAsync via stream to {Host}:{Port} with options {Options}. Stream type: {StreamType}", Constants.LogKey, host, port, options, stream?.GetType().Name);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - ConnectAsync via stream to {Host}:{Port} with options {Options}. Stream type: {StreamType}", Constants.LogKey, host, port, options, stream?.GetType().Name);
         this.isConnected = true;
         this.SimulateConnectionSecurityDetails(options);
         this.Connected?.Invoke(this, new ConnectedEventArgs(host, port, options));
@@ -363,14 +363,14 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public void Authenticate(Encoding encoding, string userName, string password, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Authenticating with credentials. Username: {Username}", Constants.LogKey, userName ?? "N/A");
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Authenticating with credentials. Username: {Username}", Constants.LogKey, userName ?? "N/A");
         this.isAuthenticated = true;
         this.Authenticated?.Invoke(this, new AuthenticatedEventArgs("LOGIN"));
     }
 
     public Task AuthenticateAsync(Encoding encoding, string userName, string password, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Authenticating with credentials. Username: {Username}", Constants.LogKey, userName ?? "N/A");
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Authenticating with credentials. Username: {Username}", Constants.LogKey, userName ?? "N/A");
         this.isAuthenticated = true;
         this.Authenticated?.Invoke(this, new AuthenticatedEventArgs("LOGIN"));
         return Task.CompletedTask;
@@ -378,14 +378,14 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public void Authenticate(string userName, string password, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Authenticating with credentials. Username: {Username}", Constants.LogKey, userName ?? "N/A");
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Authenticating with credentials. Username: {Username}", Constants.LogKey, userName ?? "N/A");
         this.isAuthenticated = true;
         this.Authenticated?.Invoke(this, new AuthenticatedEventArgs("LOGIN"));
     }
 
     public Task AuthenticateAsync(string userName, string password, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Authenticating with credentials. Username: {Username}", Constants.LogKey, userName ?? "N/A");
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Authenticating with credentials. Username: {Username}", Constants.LogKey, userName ?? "N/A");
         this.isAuthenticated = true;
         this.Authenticated?.Invoke(this, new AuthenticatedEventArgs("LOGIN"));
         return Task.CompletedTask;
@@ -393,13 +393,13 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public void Authenticate(ICredentials credentials, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Authenticating with credentials.", Constants.LogKey);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Authenticating with credentials.", Constants.LogKey);
         this.isAuthenticated = true;
         this.Authenticated?.Invoke(this, new AuthenticatedEventArgs("LOGIN"));
     }
     public Task AuthenticateAsync(ICredentials credentials, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Authenticating with credentials.", Constants.LogKey);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Authenticating with credentials.", Constants.LogKey);
         this.isAuthenticated = true;
         this.Authenticated?.Invoke(this, new AuthenticatedEventArgs("LOGIN"));
         return Task.CompletedTask;
@@ -407,14 +407,14 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public void Authenticate(Encoding encoding, ICredentials credentials, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Authenticating with credentials.", Constants.LogKey);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Authenticating with credentials.", Constants.LogKey);
         this.isAuthenticated = true;
         this.Authenticated?.Invoke(this, new AuthenticatedEventArgs("LOGIN"));
     }
 
     public Task AuthenticateAsync(Encoding encoding, ICredentials credentials, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Authenticating with credentials.", Constants.LogKey);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Authenticating with credentials.", Constants.LogKey);
         this.isAuthenticated = true;
         this.Authenticated?.Invoke(this, new AuthenticatedEventArgs("LOGIN"));
         return Task.CompletedTask;
@@ -422,14 +422,14 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public void Authenticate(SaslMechanism mechanism, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Authenticating with SASL mechanism: {MechanismName}", Constants.LogKey, mechanism?.MechanismName);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Authenticating with SASL mechanism: {MechanismName}", Constants.LogKey, mechanism?.MechanismName);
         this.isAuthenticated = true;
         this.Authenticated?.Invoke(this, new AuthenticatedEventArgs(mechanism?.MechanismName ?? "SASL_UNKNOWN"));
     }
 
     public Task AuthenticateAsync(SaslMechanism mechanism, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Authenticating with SASL mechanism: {MechanismName}", Constants.LogKey, mechanism?.MechanismName);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Authenticating with SASL mechanism: {MechanismName}", Constants.LogKey, mechanism?.MechanismName);
         this.isAuthenticated = true;
         this.Authenticated?.Invoke(this, new AuthenticatedEventArgs(mechanism?.MechanismName ?? "SASL_UNKNOWN"));
         return Task.CompletedTask;
@@ -437,7 +437,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public void Disconnect(bool quit, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Disconnecting (quit: {Quit}). WasConnected: {WasConnected}", Constants.LogKey, quit, this.isConnected);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Disconnecting (quit: {Quit}). WasConnected: {WasConnected}", Constants.LogKey, quit, this.isConnected);
         const string host = "mockhost";
         const int port = 25;
         const SecureSocketOptions options = SecureSocketOptions.None;
@@ -448,7 +448,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public Task DisconnectAsync(bool quit, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - Disconnecting (quit: {Quit}). WasConnected: {WasConnected}", Constants.LogKey, quit, this.isConnected);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Disconnecting (quit: {Quit}). WasConnected: {WasConnected}", Constants.LogKey, quit, this.isConnected);
         const string host = "mockhost";
         const int port = 25;
         const SecureSocketOptions options = SecureSocketOptions.None;
@@ -460,12 +460,12 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public void NoOp(CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - NoOp called.", Constants.LogKey);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - NoOp called.", Constants.LogKey);
     }
 
     public Task NoOpAsync(CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("{LogKey} fakesmtpclient - NoOpAsync called.", Constants.LogKey);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - NoOpAsync called.", Constants.LogKey);
         return Task.CompletedTask;
     }
 
@@ -509,9 +509,9 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public string Send(MimeMessage message, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("{LogKey} fakesmtpclient - Send mail message. Subject: {Subject}", Constants.LogKey, message.Subject);
-        if (!this.isConnected) this.logger.LogWarning("{LogKey} fakesmtpclient - Attempted to send email while not connected.", Constants.LogKey);
-        if (!this.isAuthenticated && this.AuthenticationMechanisms.Count != 0) this.logger.LogWarning("{LogKey} fakesmtpclient - Attempted to send email while not authenticated (and auth is available).", Constants.LogKey);
+        this.logger.LogInformation("[{LogKey}] fakesmtpclient - Send mail message. Subject: {Subject}", Constants.LogKey, message.Subject);
+        if (!this.isConnected) this.logger.LogWarning("[{LogKey}] fakesmtpclient - Attempted to send email while not connected.", Constants.LogKey);
+        if (!this.isAuthenticated && this.AuthenticationMechanisms.Count != 0) this.logger.LogWarning("[{LogKey}] fakesmtpclient - Attempted to send email while not authenticated (and auth is available).", Constants.LogKey);
 
         this.LogMessageDetails(message);
         this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (sync)"));
@@ -520,8 +520,8 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public Task<string> SendAsync(MimeMessage message, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("{LogKey} fakesmtpclient - SendAsync mail message. Subject: {Subject}", Constants.LogKey, message.Subject);
-        if (!this.isConnected) this.logger.LogWarning("{LogKey} fakesmtpclient - Attempted to send email while not connected.", Constants.LogKey);
+        this.logger.LogInformation("[{LogKey}] fakesmtpclient - SendAsync mail message. Subject: {Subject}", Constants.LogKey, message.Subject);
+        if (!this.isConnected) this.logger.LogWarning("[{LogKey}] fakesmtpclient - Attempted to send email while not connected.", Constants.LogKey);
 
         this.LogMessageDetails(message);
         this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (async)"));
@@ -530,7 +530,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public string Send(MimeMessage message, MailboxAddress sender, IEnumerable<MailboxAddress> recipients, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("{LogKey} fakesmtpclient - Send mail message. Sender: {Sender}, Recipients: {Recipients}. Subject: {Subject}", Constants.LogKey, sender, string.Join(";", recipients), message.Subject);
+        this.logger.LogInformation("[{LogKey}] fakesmtpclient - Send mail message. Sender: {Sender}, Recipients: {Recipients}. Subject: {Subject}", Constants.LogKey, sender, string.Join(";", recipients), message.Subject);
         this.LogMessageDetails(message, sender, recipients);
         this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (sync, with sender/recipients)"));
         return "250 2.0.0 OK: Logged (sync, with sender/recipients)";
@@ -538,7 +538,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public Task<string> SendAsync(MimeMessage message, MailboxAddress sender, IEnumerable<MailboxAddress> recipients, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("{LogKey} fakesmtpclient - SendAsync mail message. Sender: {Sender}, Recipients: {Recipients}. Subject: {Subject}", Constants.LogKey, sender, string.Join(";", recipients), message.Subject);
+        this.logger.LogInformation("[{LogKey}] fakesmtpclient - SendAsync mail message. Sender: {Sender}, Recipients: {Recipients}. Subject: {Subject}", Constants.LogKey, sender, string.Join(";", recipients), message.Subject);
         this.LogMessageDetails(message, sender, recipients);
         this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (async, with sender/recipients)"));
         return Task.FromResult("250 2.0.0 OK: Logged (async, with sender/recipients)");
@@ -546,7 +546,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public string Send(FormatOptions options, MimeMessage message, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("{LogKey} fakesmtpclient - Send mail message. Options International: {International}. Subject: {Subject}", Constants.LogKey, options.International, message.Subject);
+        this.logger.LogInformation("[{LogKey}] fakesmtpclient - Send mail message. Options International: {International}. Subject: {Subject}", Constants.LogKey, options.International, message.Subject);
         this.LogMessageDetails(message);
         this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (sync, with FormatOptions)"));
         return "250 2.0.0 OK: Logged (sync, with FormatOptions)";
@@ -554,7 +554,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public Task<string> SendAsync(FormatOptions options, MimeMessage message, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("{LogKey} fakesmtpclient - SendAsync mail message. Options International: {International}. Subject: {Subject}", Constants.LogKey, options.International, message.Subject);
+        this.logger.LogInformation("[{LogKey}] fakesmtpclient - SendAsync mail message. Options International: {International}. Subject: {Subject}", Constants.LogKey, options.International, message.Subject);
         this.LogMessageDetails(message);
         this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (async, with FormatOptions)"));
         return Task.FromResult("250 2.0.0 OK: Logged (async, with FormatOptions)");
@@ -562,7 +562,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public string Send(FormatOptions options, MimeMessage message, MailboxAddress sender, IEnumerable<MailboxAddress> recipients, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("{LogKey} fakesmtpclient - Send mail message. Options International: {International}. Sender: {Sender}, Recipients: {Recipients}. Subject: {Subject}", Constants.LogKey, options.International, sender, string.Join(";", recipients), message.Subject);
+        this.logger.LogInformation("[{LogKey}] fakesmtpclient - Send mail message. Options International: {International}. Sender: {Sender}, Recipients: {Recipients}. Subject: {Subject}", Constants.LogKey, options.International, sender, string.Join(";", recipients), message.Subject);
         this.LogMessageDetails(message, sender, recipients);
         this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (sync, with FormatOptions, sender/recipients)"));
         return "250 2.0.0 OK: Logged (sync, with FormatOptions, sender/recipients)";
@@ -570,7 +570,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
 
     public Task<string> SendAsync(FormatOptions options, MimeMessage message, MailboxAddress sender, IEnumerable<MailboxAddress> recipients, CancellationToken cancellationToken = default, ITransferProgress progress = null)
     {
-        this.logger.LogInformation("{LogKey} fakesmtpclient - SendAsync mail message. Options International: {International}. Sender: {Sender}, Recipients: {Recipients}. Subject: {Subject}", Constants.LogKey, options.International, sender, string.Join(";", recipients), message.Subject);
+        this.logger.LogInformation("[{LogKey}] fakesmtpclient - SendAsync mail message. Options International: {International}. Sender: {Sender}, Recipients: {Recipients}. Subject: {Subject}", Constants.LogKey, options.International, sender, string.Join(";", recipients), message.Subject);
         this.LogMessageDetails(message, sender, recipients);
         this.MessageSent?.Invoke(this, new MessageSentEventArgs(message, "250 2.0.0 OK: Logged (async, with FormatOptions, sender/recipients)"));
         return Task.FromResult("250 2.0.0 OK: Logged (async, with FormatOptions, sender/recipients)");

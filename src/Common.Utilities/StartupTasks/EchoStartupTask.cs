@@ -24,6 +24,6 @@ public class EchoStartupTask(ILoggerFactory loggerFactory) : IStartupTask, IChao
     {
         await Task.Delay(0, cancellationToken);
 
-        this.logger.LogInformation("{LogKey} echo from startup task", "TSK");
+        this.logger.LogInformation("[{LogKey}] echo from startup task", "TSK");
     }
 }

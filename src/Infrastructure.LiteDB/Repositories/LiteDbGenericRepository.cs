@@ -92,7 +92,7 @@ public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
 
         if (isNew)
         {
-            this.Logger.LogDebug("{LogKey} repository: upsert - insert (type={entityType}, id={entityId})",
+            this.Logger.LogDebug("[{LogKey}] repository: upsert - insert (type={entityType}, id={entityId})",
                 Constants.LogKey,
                 typeof(TEntity).Name,
                 entity.Id);
@@ -100,7 +100,7 @@ public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
         }
         else
         {
-            this.Logger.LogDebug("{LogKey} repository: upsert - update (type={entityType}, id={entityId})",
+            this.Logger.LogDebug("[{LogKey}] repository: upsert - update (type={entityType}, id={entityId})",
                 Constants.LogKey,
                 typeof(TEntity).Name,
                 entity.Id);

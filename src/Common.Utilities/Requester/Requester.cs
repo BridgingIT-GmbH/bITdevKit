@@ -626,7 +626,7 @@ public partial class Requester(
                 else
                 {
                     TypedLogger.LogFailed(this.logger, RequestLogKey, requestTypeName, requestIdString, Environment.TickCount64 - startTicks);
-                    this.logger.LogError("{LogKey} request failed with errors: {Errors}", RequestLogKey, string.Join("; ", handlerResult.Errors.Select(e => e.Message)));
+                    this.logger.LogError("[{LogKey}] request failed with errors: {Errors}", RequestLogKey, string.Join("; ", handlerResult.Errors.Select(e => e.Message)));
                 }
 
                 return (Result<TValue>)handlerResult;
@@ -786,16 +786,16 @@ public partial class Requester(
     /// </summary>
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} request processing (type={RequestType}, id={RequestId})")]
+        [LoggerMessage(0, LogLevel.Information, "[{LogKey}] request processing (type={RequestType}, id={RequestId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string requestType, string requestId);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} request success (type={RequestType}, id={RequestId}) -> took {TimeElapsed} ms")]
+        [LoggerMessage(1, LogLevel.Information, "[{LogKey}] request success (type={RequestType}, id={RequestId}) -> took {TimeElapsed} ms")]
         public static partial void LogSuccess(ILogger logger, string logKey, string requestType, string requestId, long timeElapsed);
 
-        [LoggerMessage(2, LogLevel.Error, "{LogKey} request failed (type={RequestType}, id={RequestId}) -> took {TimeElapsed} ms")]
+        [LoggerMessage(2, LogLevel.Error, "[{LogKey}] request failed (type={RequestType}, id={RequestId}) -> took {TimeElapsed} ms")]
         public static partial void LogFailed(ILogger logger, string logKey, string requestType, string requestId, long timeElapsed);
 
-        [LoggerMessage(3, LogLevel.Error, "{LogKey} request processing failed for {RequestType} ({RequestId})")]
+        [LoggerMessage(3, LogLevel.Error, "[{LogKey}] request processing failed for {RequestType} ({RequestId})")]
         public static partial void LogError(ILogger logger, string logKey, Exception ex, string requestType, string requestId);
     }
 }

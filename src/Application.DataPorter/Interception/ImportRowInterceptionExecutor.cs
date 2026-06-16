@@ -147,14 +147,14 @@ public sealed class ImportRowInterceptionExecutor<TTarget>(
 
             if (decision.Outcome == RowInterceptionOutcome.Skip)
             {
-                this.logger.LogWarning("{LogKey} row interceptor skipped (interceptor={InterceptorType}, rowNumber={RowNumber}, format={Format}, sheetName={SheetName}, reason={Reason})", Constants.LogKeyImport, interceptor.GetType().Name, rowNumber, format, sheetName, decision.Reason);
+                this.logger.LogWarning("[{LogKey}] row interceptor skipped (interceptor={InterceptorType}, rowNumber={RowNumber}, format={Format}, sheetName={SheetName}, reason={Reason})", Constants.LogKeyImport, interceptor.GetType().Name, rowNumber, format, sheetName, decision.Reason);
 
                 return ImportRowInterceptionState<TTarget>.Skip(context.Item, decision.Reason, context);
             }
 
             if (decision.Outcome == RowInterceptionOutcome.Abort)
             {
-                this.logger.LogWarning("{LogKey} row interceptor aborted (interceptor={InterceptorType}, rowNumber={RowNumber}, format={Format}, sheetName={SheetName}, reason={Reason})", Constants.LogKeyImport, interceptor.GetType().Name, rowNumber, format, sheetName, decision.Reason);
+                this.logger.LogWarning("[{LogKey}] row interceptor aborted (interceptor={InterceptorType}, rowNumber={RowNumber}, format={Format}, sheetName={SheetName}, reason={Reason})", Constants.LogKeyImport, interceptor.GetType().Name, rowNumber, format, sheetName, decision.Reason);
 
                 return ImportRowInterceptionState<TTarget>.Abort(context.Item, decision.Reason, context);
             }

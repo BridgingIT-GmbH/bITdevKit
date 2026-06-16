@@ -90,7 +90,7 @@ public class DatabaseReadyService : IDatabaseReadyService
             _ => new State(true, false, null),
             (_, _) => new State(true, false, null));
 
-        this.logger.LogDebug("{LogKey} database ready state set (name={DatabaseName})", Constants.LogKey, effectiveName);
+        this.logger.LogDebug("[{LogKey}] database ready state set (name={DatabaseName})", Constants.LogKey, effectiveName);
     }
 
     /// <inheritdoc />
@@ -102,7 +102,7 @@ public class DatabaseReadyService : IDatabaseReadyService
             _ => new State(false, true, message),
             (_, _) => new State(false, true, message));
 
-        this.logger.LogDebug("{LogKey} database faulted state set (name={DatabaseName}, message={FaultMessage})", Constants.LogKey, effectiveName, message ?? "none");
+        this.logger.LogDebug("[{LogKey}] database faulted state set (name={DatabaseName}, message={FaultMessage})", Constants.LogKey, effectiveName, message ?? "none");
     }
 
     /// <inheritdoc />
@@ -116,7 +116,7 @@ public class DatabaseReadyService : IDatabaseReadyService
         timeout ??= TimeSpan.FromSeconds(30);
 
         var effectiveName = name != null ? this.GetName(name) : "all";
-        this.logger.LogDebug("{LogKey} database ready wait started (name={DatabaseName}, pollInterval={PollInterval}ms, timeout={Timeout}s)", Constants.LogKey, effectiveName, pollInterval.Value.TotalMilliseconds, timeout.Value.TotalSeconds);
+        this.logger.LogDebug("[{LogKey}] database ready wait started (name={DatabaseName}, pollInterval={PollInterval}ms, timeout={Timeout}s)", Constants.LogKey, effectiveName, pollInterval.Value.TotalMilliseconds, timeout.Value.TotalSeconds);
 
         var start = DateTime.UtcNow;
         while (true)
@@ -129,23 +129,23 @@ public class DatabaseReadyService : IDatabaseReadyService
                     {
                         // Throw on the first faulted state
                         var faulted = this.states.First(x => x.Value.IsFaulted);
-                        this.logger.LogDebug("{LogKey} database ready wait detected faulted state (name={DatabaseName}, message={FaultMessage})", Constants.LogKey, faulted.Key, faulted.Value.FaultMessage ?? "Unknown error");
+                        this.logger.LogDebug("[{LogKey}] database ready wait detected faulted state (name={DatabaseName}, message={FaultMessage})", Constants.LogKey, faulted.Key, faulted.Value.FaultMessage ?? "Unknown error");
 
                         throw new InvalidOperationException($"Database '{faulted.Key}' is faulted: {faulted.Value.FaultMessage ?? "Unknown error"}");
                     }
                     if (this.states.All(x => x.Value.IsReady && !x.Value.IsFaulted))
                     {
                         var readyNames = string.Join(", ", this.states.Keys.OrderBy(k => k, StringComparer.Ordinal));
-                        this.logger.LogDebug("{LogKey} database ready wait completed, all databases ready (count={DatabaseCount}, names=[{DatabaseNames}], elapsed={ElapsedMs}ms)", Constants.LogKey, this.states.Count, readyNames, (DateTime.UtcNow - start).TotalMilliseconds);
+                        this.logger.LogDebug("[{LogKey}] database ready wait completed, all databases ready (count={DatabaseCount}, names=[{DatabaseNames}], elapsed={ElapsedMs}ms)", Constants.LogKey, this.states.Count, readyNames, (DateTime.UtcNow - start).TotalMilliseconds);
 
                         return; // All are ready!
                     }
 
-                    this.logger.LogDebug("{LogKey} database ready wait polling (ready={ReadyCount}/{TotalCount}, elapsed={ElapsedMs}ms)", Constants.LogKey, this.states.Count(x => x.Value.IsReady), this.states.Count, (DateTime.UtcNow - start).TotalMilliseconds);
+                    this.logger.LogDebug("[{LogKey}] database ready wait polling (ready={ReadyCount}/{TotalCount}, elapsed={ElapsedMs}ms)", Constants.LogKey, this.states.Count(x => x.Value.IsReady), this.states.Count, (DateTime.UtcNow - start).TotalMilliseconds);
                 }
                 else
                 {
-                    this.logger.LogDebug("{LogKey} database ready wait polling, no databases registered yet (elapsed={ElapsedMs}ms)", Constants.LogKey, (DateTime.UtcNow - start).TotalMilliseconds);
+                    this.logger.LogDebug("[{LogKey}] database ready wait polling, no databases registered yet (elapsed={ElapsedMs}ms)", Constants.LogKey, (DateTime.UtcNow - start).TotalMilliseconds);
                 }
             }
             else
@@ -155,29 +155,29 @@ public class DatabaseReadyService : IDatabaseReadyService
                 {
                     if (state.IsFaulted)
                     {
-                        this.logger.LogDebug("{LogKey} database ready wait detected faulted state (name={DatabaseName}, message={FaultMessage})", Constants.LogKey, stateName, state.FaultMessage ?? "Unknown error");
+                        this.logger.LogDebug("[{LogKey}] database ready wait detected faulted state (name={DatabaseName}, message={FaultMessage})", Constants.LogKey, stateName, state.FaultMessage ?? "Unknown error");
 
                         throw new InvalidOperationException($"Database '{stateName}' is faulted: {state.FaultMessage ?? "Unknown error"}");
                     }
 
                     if (state.IsReady)
                     {
-                        this.logger.LogDebug("{LogKey} database ready wait completed (name={DatabaseName}, elapsed={ElapsedMs}ms)", Constants.LogKey, stateName, (DateTime.UtcNow - start).TotalMilliseconds);
+                        this.logger.LogDebug("[{LogKey}] database ready wait completed (name={DatabaseName}, elapsed={ElapsedMs}ms)", Constants.LogKey, stateName, (DateTime.UtcNow - start).TotalMilliseconds);
 
                         return;
                     }
 
-                    this.logger.LogDebug("{LogKey} database ready wait polling, not ready yet (name={DatabaseName}, elapsed={ElapsedMs}ms)", Constants.LogKey, stateName, (DateTime.UtcNow - start).TotalMilliseconds);
+                    this.logger.LogDebug("[{LogKey}] database ready wait polling, not ready yet (name={DatabaseName}, elapsed={ElapsedMs}ms)", Constants.LogKey, stateName, (DateTime.UtcNow - start).TotalMilliseconds);
                 }
                 else
                 {
-                    this.logger.LogDebug("{LogKey} database ready wait polling, database not registered yet (name={DatabaseName}, elapsed={ElapsedMs}ms)", Constants.LogKey, stateName, (DateTime.UtcNow - start).TotalMilliseconds);
+                    this.logger.LogDebug("[{LogKey}] database ready wait polling, database not registered yet (name={DatabaseName}, elapsed={ElapsedMs}ms)", Constants.LogKey, stateName, (DateTime.UtcNow - start).TotalMilliseconds);
                 }
             }
 
             if (DateTime.UtcNow - start > timeout)
             {
-                this.logger.LogDebug("{LogKey} database ready wait timeout (name={DatabaseName}, timeout={Timeout}s)", Constants.LogKey, effectiveName, timeout.Value.TotalSeconds);
+                this.logger.LogDebug("[{LogKey}] database ready wait timeout (name={DatabaseName}, timeout={Timeout}s)", Constants.LogKey, effectiveName, timeout.Value.TotalSeconds);
                 throw new TimeoutException(
                     name == null
                         ? "Not all databases were ready within the timeout period."
@@ -203,7 +203,7 @@ public class DatabaseReadyService : IDatabaseReadyService
         pollInterval ??= TimeSpan.FromMilliseconds(200);
         timeout ??= TimeSpan.FromSeconds(30);
 
-        this.logger.LogDebug("{LogKey} database ready callback wait started (name={DatabaseName}, pollInterval={PollInterval}ms, timeout={Timeout}s)", Constants.LogKey, stateName, pollInterval.Value.TotalMilliseconds, timeout.Value.TotalSeconds);
+        this.logger.LogDebug("[{LogKey}] database ready callback wait started (name={DatabaseName}, pollInterval={PollInterval}ms, timeout={Timeout}s)", Constants.LogKey, stateName, pollInterval.Value.TotalMilliseconds, timeout.Value.TotalSeconds);
 
         var start = DateTime.UtcNow;
         while (true)
@@ -212,14 +212,14 @@ public class DatabaseReadyService : IDatabaseReadyService
             {
                 if (state.IsFaulted)
                 {
-                    this.logger.LogDebug("{LogKey} database ready callback executing faulted handler (name={DatabaseName}, message={FaultMessage})", Constants.LogKey, stateName, state.FaultMessage ?? "none");
+                    this.logger.LogDebug("[{LogKey}] database ready callback executing faulted handler (name={DatabaseName}, message={FaultMessage})", Constants.LogKey, stateName, state.FaultMessage ?? "none");
 
                     return onFaulted != null ? await onFaulted().ConfigureAwait(false) : default;
                 }
 
                 if (state.IsReady)
                 {
-                    this.logger.LogDebug("{LogKey} database ready callback executing ready handler (name={DatabaseName}, elapsed={ElapsedMs}ms)", Constants.LogKey, stateName, (DateTime.UtcNow - start).TotalMilliseconds);
+                    this.logger.LogDebug("[{LogKey}] database ready callback executing ready handler (name={DatabaseName}, elapsed={ElapsedMs}ms)", Constants.LogKey, stateName, (DateTime.UtcNow - start).TotalMilliseconds);
 
                     return await onReady().ConfigureAwait(false);
                 }
@@ -227,7 +227,7 @@ public class DatabaseReadyService : IDatabaseReadyService
 
             if (DateTime.UtcNow - start > timeout)
             {
-                this.logger.LogDebug("{LogKey} database ready callback timeout (name={DatabaseName}, timeout={Timeout}s)", Constants.LogKey, stateName, timeout.Value.TotalSeconds);
+                this.logger.LogDebug("[{LogKey}] database ready callback timeout (name={DatabaseName}, timeout={Timeout}s)", Constants.LogKey, stateName, timeout.Value.TotalSeconds);
 
                 throw new TimeoutException($"Database '{stateName}' was not ready or faulted within the timeout period.");
             }
@@ -251,7 +251,7 @@ public class DatabaseReadyService : IDatabaseReadyService
         pollInterval ??= TimeSpan.FromMilliseconds(200);
         timeout ??= TimeSpan.FromSeconds(30);
 
-        this.logger.LogDebug("{LogKey} database ready callback wait started (name={DatabaseName}, pollInterval={PollInterval}ms, timeout={Timeout}s)", Constants.LogKey, stateName, pollInterval.Value.TotalMilliseconds, timeout.Value.TotalSeconds);
+        this.logger.LogDebug("[{LogKey}] database ready callback wait started (name={DatabaseName}, pollInterval={PollInterval}ms, timeout={Timeout}s)", Constants.LogKey, stateName, pollInterval.Value.TotalMilliseconds, timeout.Value.TotalSeconds);
 
         var start = DateTime.UtcNow;
         while (true)
@@ -260,14 +260,14 @@ public class DatabaseReadyService : IDatabaseReadyService
             {
                 if (state.IsFaulted)
                 {
-                    this.logger.LogDebug("{LogKey} database ready callback executing faulted handler (name={DatabaseName}, message={FaultMessage})", Constants.LogKey, stateName, state.FaultMessage ?? "none");
+                    this.logger.LogDebug("[{LogKey}] database ready callback executing faulted handler (name={DatabaseName}, message={FaultMessage})", Constants.LogKey, stateName, state.FaultMessage ?? "none");
 
                     return onFaulted != null ? onFaulted() : default;
                 }
 
                 if (state.IsReady)
                 {
-                    this.logger.LogDebug("{LogKey} database ready callback executing ready handler (name={DatabaseName}, elapsed={ElapsedMs}ms)", Constants.LogKey, stateName, (DateTime.UtcNow - start).TotalMilliseconds);
+                    this.logger.LogDebug("[{LogKey}] database ready callback executing ready handler (name={DatabaseName}, elapsed={ElapsedMs}ms)", Constants.LogKey, stateName, (DateTime.UtcNow - start).TotalMilliseconds);
 
                     return onReady();
                 }
@@ -275,7 +275,7 @@ public class DatabaseReadyService : IDatabaseReadyService
 
             if (DateTime.UtcNow - start > timeout)
             {
-                this.logger.LogDebug("{LogKey} database ready callback timeout (name={DatabaseName}, timeout={Timeout}s)", Constants.LogKey, stateName, timeout.Value.TotalSeconds);
+                this.logger.LogDebug("[{LogKey}] database ready callback timeout (name={DatabaseName}, timeout={Timeout}s)", Constants.LogKey, stateName, timeout.Value.TotalSeconds);
 
                 throw new TimeoutException($"Database '{stateName}' was not ready or faulted within the timeout period.");
             }
@@ -299,7 +299,7 @@ public class DatabaseReadyService : IDatabaseReadyService
         pollInterval ??= TimeSpan.FromMilliseconds(200);
         timeout ??= TimeSpan.FromSeconds(30);
 
-        this.logger.LogDebug("{LogKey} database ready callback wait started (name={DatabaseName}, pollInterval={PollInterval}ms, timeout={Timeout}s)", Constants.LogKey, stateName, pollInterval.Value.TotalMilliseconds, timeout.Value.TotalSeconds);
+        this.logger.LogDebug("[{LogKey}] database ready callback wait started (name={DatabaseName}, pollInterval={PollInterval}ms, timeout={Timeout}s)", Constants.LogKey, stateName, pollInterval.Value.TotalMilliseconds, timeout.Value.TotalSeconds);
 
         var start = DateTime.UtcNow;
         while (true)
@@ -308,14 +308,14 @@ public class DatabaseReadyService : IDatabaseReadyService
             {
                 if (state.IsFaulted)
                 {
-                    this.logger.LogDebug("{LogKey} database ready callback executing faulted handler (name={DatabaseName}, message={FaultMessage})", Constants.LogKey, stateName, state.FaultMessage ?? "none");
+                    this.logger.LogDebug("[{LogKey}] database ready callback executing faulted handler (name={DatabaseName}, message={FaultMessage})", Constants.LogKey, stateName, state.FaultMessage ?? "none");
                     onFaulted?.Invoke();
 
                     return;
                 }
                 if (state.IsReady)
                 {
-                    this.logger.LogDebug("{LogKey} database ready callback executing ready handler (name={DatabaseName}, elapsed={ElapsedMs}ms)", Constants.LogKey, stateName, (DateTime.UtcNow - start).TotalMilliseconds);
+                    this.logger.LogDebug("[{LogKey}] database ready callback executing ready handler (name={DatabaseName}, elapsed={ElapsedMs}ms)", Constants.LogKey, stateName, (DateTime.UtcNow - start).TotalMilliseconds);
                     onReady();
 
                     return;
@@ -324,7 +324,7 @@ public class DatabaseReadyService : IDatabaseReadyService
 
             if (DateTime.UtcNow - start > timeout)
             {
-                this.logger.LogDebug("{LogKey} database ready callback timeout (name={DatabaseName}, timeout={Timeout}s)", Constants.LogKey, stateName, timeout.Value.TotalSeconds);
+                this.logger.LogDebug("[{LogKey}] database ready callback timeout (name={DatabaseName}, timeout={Timeout}s)", Constants.LogKey, stateName, timeout.Value.TotalSeconds);
 
                 throw new TimeoutException($"Database '{stateName}' was not ready or faulted within the timeout period.");
             }

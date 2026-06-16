@@ -16,7 +16,7 @@ public class LoggingBehavior(ILogger<LoggingBehavior> logger) : IMonitoringBehav
     public void OnScanStarted(FileScanContext context, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        this.logger.LogInformation("{LogKey} filemonitoring: scan started for location {LocationName} at {StartTime}",
+        this.logger.LogInformation("[{LogKey}] filemonitoring: scan started for location {LocationName} at {StartTime}",
             Constants.LogKey,
             context.LocationName,
             context.StartTime);
@@ -25,7 +25,7 @@ public class LoggingBehavior(ILogger<LoggingBehavior> logger) : IMonitoringBehav
     public void OnFileDetected(FileScanContext context, FileEvent fileEvent, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        this.logger.LogInformation("{LogKey} filemonitoring: file detected in location {LocationName} {FilePath} (EventType={EventType}, Size={FileSize}, Checksum={Checksum})",
+        this.logger.LogInformation("[{LogKey}] filemonitoring: file detected in location {LocationName} {FilePath} (EventType={EventType}, Size={FileSize}, Checksum={Checksum})",
             Constants.LogKey,
             context.LocationName,
             fileEvent.FilePath,
@@ -37,7 +37,7 @@ public class LoggingBehavior(ILogger<LoggingBehavior> logger) : IMonitoringBehav
     public void OnScanCompleted(FileScanContext context, TimeSpan duration, CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
-        this.logger.LogInformation("{LogKey} filemonitoring: scan completed for location {LocationName} (Changes=#{ChangeCount}) took -> {TimeElapsed:0.0000} ms",
+        this.logger.LogInformation("[{LogKey}] filemonitoring: scan completed for location {LocationName} (Changes=#{ChangeCount}) took -> {TimeElapsed:0.0000} ms",
             Constants.LogKey,
             context.LocationName,
             context.Events.Count,

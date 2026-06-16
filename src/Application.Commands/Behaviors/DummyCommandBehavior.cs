@@ -19,7 +19,7 @@ public class DummyCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFact
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        this.Logger.LogInformation("{LogKey} dummy command", Constants.LogKey);
+        this.Logger.LogInformation("[{LogKey}] dummy command", Constants.LogKey);
 
         return await next().AnyContext(); // continue pipeline
     }

@@ -87,7 +87,7 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
                 $"Cannot create RabbitMQ connection, {nameof(options.HostName)} or {nameof(options.ConnectionString)} option values must be supplied.");
         }
 
-        this.Logger.LogInformation("{LogKey} broker initialized (name={MessageBroker})",
+        this.Logger.LogInformation("[{LogKey}] broker initialized (name={MessageBroker})",
             Constants.LogKey,
             this.GetType().Name);
     }
@@ -145,7 +145,7 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
             this.options.Serializer.SerializeToBytes(message));
 
         this.Logger.LogDebug(
-            "{LogKey} rabbitmq message produced (name={MessageName}, id={MessageId}, exchange={MessageSubscriptionName}, queue={MessageTopicName})",
+            "[{LogKey}] rabbitmq message produced (name={MessageName}, id={MessageId}, exchange={MessageSubscriptionName}, queue={MessageTopicName})",
             Constants.LogKey,
             messageName,
             message.MessageId,
@@ -193,7 +193,7 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
         if (message is not null)
         {
             this.Logger.LogDebug(
-                "{LogKey} rabbitmq message consumed (name={MessageName}, id={MessageId}, rabbitMQMessageId={RabbitMQMessageId})",
+                "[{LogKey}] rabbitmq message consumed (name={MessageName}, id={MessageId}, rabbitMQMessageId={RabbitMQMessageId})",
                 Constants.LogKey,
                 messageName,
                 message.MessageId,
@@ -203,7 +203,7 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
         }
 
         this.Logger.LogDebug(
-            "{LogKey} rabbitmq consumer done (exchange={MessageSubscriptionName}, queue={MessageTopicName})",
+            "[{LogKey}] rabbitmq consumer done (exchange={MessageSubscriptionName}, queue={MessageTopicName})",
             Constants.LogKey,
             this.options.ExchangeName,
             this.QueueName);

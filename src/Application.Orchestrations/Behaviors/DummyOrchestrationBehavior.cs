@@ -19,7 +19,7 @@ public class DummyOrchestrationBehavior(ILoggerFactory loggerFactory = null) : O
         OrchestrationDelegate next)
     {
         this.Logger.LogDebug(
-            "{LogKey} >>>>> dummy orchestration behavior - before (orchestration={Orchestration}, instanceId={InstanceId}, state={State}, activity={Activity}, kind={Kind}, attempt={Attempt})",
+            "[{LogKey}] >>>>> dummy orchestration behavior - before (orchestration={Orchestration}, instanceId={InstanceId}, state={State}, activity={Activity}, kind={Kind}, attempt={Attempt})",
             Constants.LogKey,
             context.OrchestrationName,
             context.InstanceId,
@@ -31,7 +31,7 @@ public class DummyOrchestrationBehavior(ILoggerFactory loggerFactory = null) : O
         var outcome = await next().ConfigureAwait(false);
 
         this.Logger.LogDebug(
-            "{LogKey} <<<<< dummy orchestration behavior - after (orchestration={Orchestration}, instanceId={InstanceId}, state={State}, activity={Activity}, kind={Kind}, attempt={Attempt}, outcome={Outcome})",
+            "[{LogKey}] <<<<< dummy orchestration behavior - after (orchestration={Orchestration}, instanceId={InstanceId}, state={State}, activity={Activity}, kind={Kind}, attempt={Attempt}, outcome={Outcome})",
             Constants.LogKey,
             context.OrchestrationName,
             context.InstanceId,

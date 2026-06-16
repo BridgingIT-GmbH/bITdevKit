@@ -44,7 +44,7 @@ public class DatabaseCreatorService<TContext> : IHostedService
 
         if (!this.options.Enabled)
         {
-            this.logger.LogInformation("{LogKey} database creator skipped, not enabled (context={DbContextType})", Constants.LogKey, contextName);
+            this.logger.LogInformation("[{LogKey}] database creator skipped, not enabled (context={DbContextType})", Constants.LogKey, contextName);
 
             using var scope = this.serviceProvider.CreateScope();
             if (await this.CheckDatabaseAccessible(contextName, scope.ServiceProvider.GetRequiredService<TContext>(), cancellationToken).AnyContext())
@@ -61,7 +61,7 @@ public class DatabaseCreatorService<TContext> : IHostedService
             {
                 if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
-                    this.logger.LogInformation("{LogKey} database creator startup delayed (context={DbContextType})", Constants.LogKey, contextName);
+                    this.logger.LogInformation("[{LogKey}] database creator startup delayed (context={DbContextType})", Constants.LogKey, contextName);
                     if (!cancellationToken.IsCancellationRequested)
                     {
                         try
@@ -87,19 +87,19 @@ public class DatabaseCreatorService<TContext> : IHostedService
 
                     if (!this.IsInMemoryContext(context))
                     {
-                        this.logger.LogInformation("{LogKey} database creator started (context={DbContextType}, provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, context.Database.ProviderName);
+                        this.logger.LogInformation("[{LogKey}] database creator started (context={DbContextType}, provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, context.Database.ProviderName);
 
                         var exists = await context.Database.CanConnectAsync(cancellationToken);
                         if (exists && this.options.EnsureDeleted)
                         {
-                            this.logger.LogInformation("{LogKey} database creator delete tables (context={DbContextType})", Constants.LogKey, contextName);
+                            this.logger.LogInformation("[{LogKey}] database creator delete tables (context={DbContextType})", Constants.LogKey, contextName);
                             await context.Database.EnsureDeletedAsync(cancellationToken).AnyContext();
                             exists = false;
                         }
 
                         if (exists && this.options.EnsureTruncated)
                         {
-                            this.logger.LogInformation("{LogKey} database creator truncate tables (context={DbContextType})", Constants.LogKey, contextName);
+                            this.logger.LogInformation("[{LogKey}] database creator truncate tables (context={DbContextType})", Constants.LogKey, contextName);
                             if (context.Database.ProviderName == "Microsoft.EntityFrameworkCore.SqlServer")
                             {
                                 await context.Database
@@ -125,7 +125,7 @@ public class DatabaseCreatorService<TContext> : IHostedService
                             }
                         }
 
-                        this.logger.LogInformation("{LogKey} database creator create tables (context={DbContextType})", Constants.LogKey, contextName);
+                        this.logger.LogInformation("[{LogKey}] database creator create tables (context={DbContextType})", Constants.LogKey, contextName);
                         //await context.Database.EnsureCreatedAsync(cancellationToken).AnyContext();
 
                         // alternative way for EnsureCreatedAsync
@@ -133,7 +133,7 @@ public class DatabaseCreatorService<TContext> : IHostedService
                         var databaseCreator = context.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator;
                         if (!exists) // only create tabled if db does not exist
                         {
-                            this.logger.LogInformation("{LogKey} database creator create database (context={DbContextType})", Constants.LogKey, contextName);
+                            this.logger.LogInformation("[{LogKey}] database creator create database (context={DbContextType})", Constants.LogKey, contextName);
                             await databaseCreator?.CreateAsync(cancellationToken);
                             exists = true;
 
@@ -141,13 +141,13 @@ public class DatabaseCreatorService<TContext> : IHostedService
                         }
 
                         this.databaseReadyService?.SetReady(contextName); // assume database is ready if we reach this point
-                        this.logger.LogInformation("{LogKey} database creator finished (context={DbContextType}, dbexists({DbExists}), provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, exists, context.Database.ProviderName);
+                        this.logger.LogInformation("[{LogKey}] database creator finished (context={DbContextType}, dbexists({DbExists}), provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, exists, context.Database.ProviderName);
                     }
                 }
                 catch (Exception ex)
                 {
                     this.databaseReadyService?.SetFaulted(contextName, ex.Message);
-                    this.logger.LogError(ex, "{LogKey} database creator failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, contextName);
+                    this.logger.LogError(ex, "[{LogKey}] database creator failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, contextName);
 
                     if (this.options.HaltOnFailure)
                     {
@@ -187,11 +187,11 @@ public class DatabaseCreatorService<TContext> : IHostedService
                 exists = await context.Database.CanConnectAsync(ct);
                 if (!exists)
                 {
-                    this.logger.LogWarning("{LogKey} database check failed: database not accessible (context={DbContextType})", Constants.LogKey, contextName);
+                    this.logger.LogWarning("[{LogKey}] database check failed: database not accessible (context={DbContextType})", Constants.LogKey, contextName);
                     throw new Exception("Database not accessible.");
                 }
 
-                this.logger.LogInformation("{LogKey} database check succeeded: database accessible (context={DbContextType})", Constants.LogKey, contextName);
+                this.logger.LogInformation("[{LogKey}] database check succeeded: database accessible (context={DbContextType})", Constants.LogKey, contextName);
             }, cancellationToken);
         }
         catch (Exception) // All retries failed, exists remains false

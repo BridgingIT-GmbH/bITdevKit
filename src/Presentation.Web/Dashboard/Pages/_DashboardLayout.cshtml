@@ -9,6 +9,10 @@
     var pageTitle = string.IsNullOrWhiteSpace(Model.Title) ? dashboardTitle : Model.Title;
     var detachedView = string.Equals(this.HttpContext.Request.Query["dashboardView"].ToString(), "window", StringComparison.OrdinalIgnoreCase);
     var hideSideBar = Model.HideSideBar || detachedView;
+    var isAuthenticated = this.HttpContext.User?.Identity?.IsAuthenticated == true;
+    var signOutPath = DashboardPath.Combine(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.SignOut);
+    var dashboardHomePath = DashboardPath.Combine(this.HttpContext.Request.PathBase, dashboardOptions.GroupPath);
+    var currentDashboardUrl = $"{this.HttpContext.Request.PathBase}{this.HttpContext.Request.Path}{this.HttpContext.Request.QueryString}";
 }
 
 <!DOCTYPE html>
@@ -239,6 +243,14 @@
 
             async function refresh(scheduleAfter = true) {
                 clearScheduledRefresh();
+
+                if (typeof settings.shouldRefresh === 'function' && settings.shouldRefresh() === false) {
+                    if (scheduleAfter) {
+                        scheduleNextRefresh();
+                    }
+
+                    return;
+                }
 
                 const contentElement = getContentElement();
                 if (!contentElement) {
@@ -862,6 +874,8 @@
         }
 
         .navbar {
+            align-items: center;
+            display: flex;
             height: 3.15rem;
             box-shadow: none;
             background-color: var(--dashboard-navbar-bg) !important;
@@ -872,24 +886,33 @@
             box-shadow: none !important;
         }
 
+        .dashboard-navbar-heading {
+            align-items: center;
+            display: flex;
+            gap: .6rem;
+            min-width: 0;
+            padding-left: 1rem;
+        }
+
         .navbar-brand {
+            align-items: center;
+            display: inline-flex;
             padding-top: .35rem;
             padding-bottom: .35rem;
-            height: 3.15rem;
             font-size: 1rem;
             font-weight: 700;
             letter-spacing: .02em;
-            max-width: 440px; /* truncation width on small screens */
+            max-width: min(17rem, 44vw);
             overflow: hidden;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
-        @@media (min-width: 768px) { /* allow full name from md breakpoint upward */
+
+        @@media (min-width: 768px) {
             .navbar-brand {
-                max-width: none;
-                overflow: visible;
-                text-overflow: clip;
-                white-space: normal; /* allow wrapping if needed */
+                max-width: 24rem;
             }
         }
 
@@ -915,12 +938,6 @@
             min-height: 0;
         }
 
-        .navbar-brand::before {
-            color: var(--bs-secondary);
-            content: "$";
-            margin-right: .45rem;
-        }
-
         .dashboard-navbar-title {
             align-items: center;
             color: var(--bs-body-color);
@@ -929,11 +946,8 @@
             font-weight: 700;
             gap: .45rem;
             min-width: 0;
-            max-width: min(32rem, 38vw);
+            max-width: min(28rem, 34vw);
             overflow: hidden;
-            padding-left: .8rem;
-            padding-right: .8rem;
-            position: relative;
             text-overflow: ellipsis;
             white-space: nowrap;
         }
@@ -971,7 +985,8 @@
                 font-size: .85rem;
             }
 
-        .dashboard-texture-toggle {
+        .dashboard-texture-toggle,
+        .dashboard-signout-toggle {
             width: 2rem;
             height: 1.6rem;
             display: inline-flex;
@@ -986,7 +1001,9 @@
 
         .dashboard-texture-toggle:hover,
         .dashboard-texture-toggle:focus,
-        .dashboard-texture-toggle[aria-pressed="true"] {
+        .dashboard-texture-toggle[aria-pressed="true"],
+        .dashboard-signout-toggle:hover,
+        .dashboard-signout-toggle:focus {
             color: var(--dashboard-active-fg);
             background: var(--dashboard-active-bg);
             border-color: var(--dashboard-panel-border-hover);
@@ -1196,21 +1213,22 @@
             }
 
             .navbar {
-                align-items: stretch;
+                align-items: center;
                 min-height: 3.15rem;
             }
 
-            .navbar-brand {
+            .dashboard-navbar-heading {
                 max-width: calc(100vw - 12.5rem);
-                padding-left: .65rem !important;
-                padding-right: .4rem !important;
+                padding-left: .65rem;
+            }
+
+            .navbar-brand {
+                max-width: 50%;
                 font-size: .86rem;
             }
 
             .dashboard-navbar-title {
-                max-width: calc(100vw - 15rem);
-                padding-left: .35rem;
-                padding-right: .35rem;
+                max-width: 50%;
             }
 
             .navbar .navbar-nav {
@@ -1707,8 +1725,10 @@
 
 <body>
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand me-0 px-3" href="#" title="@dashboardTitle">@dashboardTitle</a>
-        <div class="dashboard-navbar-title" title="@pageTitle">@pageTitle</div>
+        <div class="dashboard-navbar-heading">
+            <a class="navbar-brand me-0 px-3" href="@dashboardHomePath" title="@dashboardTitle">@dashboardTitle</a>
+            <div class="dashboard-navbar-title" title="@pageTitle">@pageTitle</div>
+        </div>
         @if (!hideSideBar)
         {
             <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
@@ -1743,10 +1763,16 @@
                 <button class="btn dashboard-texture-toggle" type="button" aria-label="Toggle terminal texture" aria-pressed="false" title="Toggle terminal texture">
                     <i class="bi bi-grid-3x3-gap"></i>
                 </button>
+                @if (isAuthenticated)
+                {
+                    <form method="post" action="@signOutPath" class="m-0 ms-2">
+                        <input type="hidden" name="returnUrl" value="@currentDashboardUrl" />
+                        <button class="btn dashboard-signout-toggle" type="submit" aria-label="Sign out of dashboard" title="Sign out">
+                            <i class="bi bi-box-arrow-right"></i>
+                        </button>
+                    </form>
+                }
             </div>
-            @* <div class="nav-item text-nowrap">
-                <a class="nav-link px-3" href="#">Sign out</a>
-            </div> *@
         </div>
     </header>
 
@@ -2047,6 +2073,29 @@
             });
         }
 
+        function setupDashboardDatePickers() {
+            document.addEventListener('click', event => {
+                const button = event.target.closest('[data-dashboard-date-picker-button]');
+                if (!button) {
+                    return;
+                }
+
+                const targetId = button.getAttribute('data-dashboard-date-picker-button');
+                const input = (targetId ? document.getElementById(targetId) : null)
+                    || button.closest('.input-group')?.querySelector('input[type="date"]');
+                if (!input) {
+                    return;
+                }
+
+                if (typeof input.showPicker === 'function') {
+                    input.showPicker();
+                    return;
+                }
+
+                input.focus();
+            });
+        }
+
         function syncSidebarTooltips() {
             const sidebar = document.querySelector('.sidebar');
             if (!sidebar) {
@@ -2073,6 +2122,7 @@
             themeManager.initialize();
             setupTextureToggle();
             setupDashboardWindowToggle();
+            setupDashboardDatePickers();
             setupSidebarToggle();
             setupSidebarGroups();
             setupTooltips();

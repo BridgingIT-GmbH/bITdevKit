@@ -183,7 +183,7 @@ public partial class ActiveEntityDomainEventOutboxPublishingBehavior<TEntity, TI
 
     private async Task<Result> PublishEvents(TEntity entity, CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} storing domain events to outbox for entity {EntityType} ({EntityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
+        this.logger.LogInformation("[{LogKey}] storing domain events to outbox for entity {EntityType} ({EntityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
 
         var outboxPublisher = new OutboxDomainEventPublisher(this.logger, this.context, this.eventQueue, this.outboxOptions);
 
@@ -195,7 +195,7 @@ public partial class ActiveEntityDomainEventOutboxPublishingBehavior<TEntity, TI
 
         if (!result.IsSuccess)
         {
-            this.logger.LogError("{LogKey} failed to store domain events for entity {EntityType} ({EntityId}): {Errors}", Constants.LogKey, typeof(TEntity).Name, entity.Id, string.Join("; ", result.Errors.Select(e => e.Message)));
+            this.logger.LogError("[{LogKey}] failed to store domain events for entity {EntityType} ({EntityId}): {Errors}", Constants.LogKey, typeof(TEntity).Name, entity.Id, string.Join("; ", result.Errors.Select(e => e.Message)));
         }
 
         return result;

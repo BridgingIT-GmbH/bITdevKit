@@ -27,6 +27,16 @@ public sealed class DashboardQueueingViewModel
 
     public IReadOnlyList<QueueMessageInfo> Messages { get; set; } = [];
 
+    /// <summary>
+    /// Gets or sets the message content indexed by queue message primary key.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var content = model.MessageContentById[message.Id];
+    /// </code>
+    /// </example>
+    public IReadOnlyDictionary<Guid, QueueMessageContentInfo> MessageContentById { get; set; } = new Dictionary<Guid, QueueMessageContentInfo>();
+
     public IReadOnlyList<QueueSubscriptionInfo> Subscriptions { get; set; } = [];
 
     public IReadOnlyList<QueueMessageInfo> WaitingMessages { get; set; } = [];

@@ -157,7 +157,7 @@ public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : Db
     {
         [LoggerMessage(0,
             LogLevel.Debug,
-            "{LogKey} database command executing (id={DbCommandId}, context={DbContextName}) {DbCommandCommandText}")]
+            "[{LogKey}] database command executing (id={DbCommandId}, context={DbContextName}) {DbCommandCommandText}")]
         public static partial void LogCommandExecuting(
             ILogger logger,
             string logKey,
@@ -167,7 +167,7 @@ public partial class CommandLoggerInterceptor(ILoggerFactory loggerFactory) : Db
 
         [LoggerMessage(1,
             LogLevel.Debug,
-            "{LogKey} database command executed (id={DbCommandId}, context={DbContextName}) -> took {DbCommandTimeElapsed:0.0000} ms")]
+            "[{LogKey}] database command executed (id={DbCommandId}, context={DbContextName}) -> took {DbCommandTimeElapsed:0.0000} ms")]
         public static partial void LogCommandExecuted(
             ILogger logger,
             string logKey,

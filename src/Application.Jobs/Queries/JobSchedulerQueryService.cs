@@ -965,6 +965,7 @@ public class JobSchedulerQueryService(
             DataPreview = BuildDataPreview(occurrence.Data),
             PropertyKeys = GetPropertyKeys(occurrence.Properties),
             PropertyCount = occurrence.Properties?.Count ?? 0,
+            Properties = GetProperties(occurrence.Properties),
             AttemptCount = executions.Count,
             LatestExecutionStatus = lastExecution?.Status,
             LatestExecutionStartedUtc = lastExecution?.StartedUtc,
@@ -972,6 +973,14 @@ public class JobSchedulerQueryService(
             LatestExecutionDurationSeconds = lastExecution?.CompletedUtc.HasValue == true
                 ? (lastExecution.CompletedUtc.Value - lastExecution.StartedUtc).TotalSeconds
                 : null,
+            ExecutionMessages = executions
+                .OrderByDescending(x => x.AttemptNumber)
+                .ThenByDescending(x => x.CompletedUtc ?? x.StartedUtc)
+                .Select(x => x.Message)
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Distinct()
+                .Take(5)
+                .ToArray(),
             LeaseOwnerSchedulerInstanceId = lease?.SchedulerInstanceId,
             BatchInternalId = batch?.BatchId,
             ExternalBatchId = batch?.ExternalBatchId,
@@ -1785,6 +1794,13 @@ public class JobSchedulerQueryService(
             .OrderBy(x => x, StringComparer.OrdinalIgnoreCase)
             .Take(5)
             .ToArray() ?? [];
+
+    private static IReadOnlyDictionary<string, string> GetProperties(PropertyBag properties)
+        => properties?
+            .Where(x => !string.IsNullOrWhiteSpace(x.Key))
+            .OrderBy(x => x.Key, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(x => x.Key, x => x.Value?.ToString() ?? string.Empty, StringComparer.OrdinalIgnoreCase) ??
+            new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
     private static string BuildDataPreview(object value)
     {

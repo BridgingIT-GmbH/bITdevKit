@@ -179,7 +179,7 @@ public partial class LoggingDocumentStoreClientBehavior<T> : IDocumentStoreClien
         /// </summary>
         [LoggerMessage(0,
             LogLevel.Information,
-            "{LogKey} documentclient: delete (type={DocumentType}, partitionKey={PartitionKey}, rowKey={RowKey})")]
+            "[{LogKey}] documentclient: delete (type={DocumentType}, partitionKey={PartitionKey}, rowKey={RowKey})")]
         public static partial void LogDelete(
             ILogger logger,
             string logKey,
@@ -190,7 +190,7 @@ public partial class LoggingDocumentStoreClientBehavior<T> : IDocumentStoreClien
         /// <summary>
         /// Logs an unfiltered find operation.
         /// </summary>
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} documentclient: find (type={DocumentType})")]
+        [LoggerMessage(1, LogLevel.Information, "[{LogKey}] documentclient: find (type={DocumentType})")]
         public static partial void LogFind(ILogger logger, string logKey, string documentType);
 
         /// <summary>
@@ -198,7 +198,7 @@ public partial class LoggingDocumentStoreClientBehavior<T> : IDocumentStoreClien
         /// </summary>
         [LoggerMessage(2,
             LogLevel.Information,
-            "{LogKey} documentclient: find (type={DocumentType}, partitionKey={PartitionKey}, rowKey={RowKey})")]
+            "[{LogKey}] documentclient: find (type={DocumentType}, partitionKey={PartitionKey}, rowKey={RowKey})")]
         public static partial void LogFindKey(
             ILogger logger,
             string logKey,
@@ -211,7 +211,7 @@ public partial class LoggingDocumentStoreClientBehavior<T> : IDocumentStoreClien
         /// </summary>
         [LoggerMessage(3,
             LogLevel.Information,
-            "{LogKey} documentclient: find (type={DocumentType}, partitionKey={PartitionKey}, rowKey={RowKey}, filter={DocumentFilter})")]
+            "[{LogKey}] documentclient: find (type={DocumentType}, partitionKey={PartitionKey}, rowKey={RowKey}, filter={DocumentFilter})")]
         public static partial void LogFindKeyFilter(
             ILogger logger,
             string logKey,
@@ -223,7 +223,7 @@ public partial class LoggingDocumentStoreClientBehavior<T> : IDocumentStoreClien
         /// <summary>
         /// Logs an unfiltered list operation.
         /// </summary>
-        [LoggerMessage(4, LogLevel.Information, "{LogKey} documentclient: list (type={DocumentType})")]
+        [LoggerMessage(4, LogLevel.Information, "[{LogKey}] documentclient: list (type={DocumentType})")]
         public static partial void LogList(ILogger logger, string logKey, string documentType);
 
         /// <summary>
@@ -231,7 +231,7 @@ public partial class LoggingDocumentStoreClientBehavior<T> : IDocumentStoreClien
         /// </summary>
         [LoggerMessage(5,
             LogLevel.Information,
-            "{LogKey} documentclient: list (type={DocumentType}, partitionKey={PartitionKey}, rowKey={RowKey})")]
+            "[{LogKey}] documentclient: list (type={DocumentType}, partitionKey={PartitionKey}, rowKey={RowKey})")]
         public static partial void LogListKey(
             ILogger logger,
             string logKey,
@@ -244,7 +244,7 @@ public partial class LoggingDocumentStoreClientBehavior<T> : IDocumentStoreClien
         /// </summary>
         [LoggerMessage(6,
             LogLevel.Information,
-            "{LogKey} documentclient: list (type={DocumentType}, partitionKey={PartitionKey}, rowKey={RowKey}, filter={DocumentFilter})")]
+            "[{LogKey}] documentclient: list (type={DocumentType}, partitionKey={PartitionKey}, rowKey={RowKey}, filter={DocumentFilter})")]
         public static partial void LogListKeyFilter(
             ILogger logger,
             string logKey,
@@ -256,7 +256,7 @@ public partial class LoggingDocumentStoreClientBehavior<T> : IDocumentStoreClien
         /// <summary>
         /// Logs a count operation.
         /// </summary>
-        [LoggerMessage(7, LogLevel.Information, "{LogKey} documentclient: count (type={DocumentType})")]
+        [LoggerMessage(7, LogLevel.Information, "[{LogKey}] documentclient: count (type={DocumentType})")]
         public static partial void LogCount(ILogger logger, string logKey, string documentType);
 
         /// <summary>
@@ -264,7 +264,7 @@ public partial class LoggingDocumentStoreClientBehavior<T> : IDocumentStoreClien
         /// </summary>
         [LoggerMessage(8,
             LogLevel.Information,
-            "{LogKey} documentclient: exists (type={DocumentType}, partitionKey={PartitionKey}, rowKey={RowKey})")]
+            "[{LogKey}] documentclient: exists (type={DocumentType}, partitionKey={PartitionKey}, rowKey={RowKey})")]
         public static partial void LogExistsKey(
             ILogger logger,
             string logKey,
@@ -277,7 +277,7 @@ public partial class LoggingDocumentStoreClientBehavior<T> : IDocumentStoreClien
         /// </summary>
         [LoggerMessage(9,
             LogLevel.Information,
-            "{LogKey} documentclient: upsert (type={DocumentType}, partitionKey={PartitionKey}, rowKey={RowKey})")]
+            "[{LogKey}] documentclient: upsert (type={DocumentType}, partitionKey={PartitionKey}, rowKey={RowKey})")]
         public static partial void LogUpsert(
             ILogger logger,
             string logKey,

@@ -81,7 +81,7 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
 
         foreach (var specification in specifications.SafeNull())
         {
-            this.Logger.LogDebug("{LogKey} repository specification: {Specification}",
+            this.Logger.LogDebug("[{LogKey}] repository specification: {Specification}",
                 Constants.LogKey,
                 specification.GetType().PrettyName());
         }
@@ -113,7 +113,7 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
     {
         TypedLogger.LogFindAll(this.Logger, Constants.LogKey, this.type);
         this.LogOptions(options);
-        this.Logger.LogDebug("{LogKey} repository specification: {Specification}", Constants.LogKey, specification);
+        this.Logger.LogDebug("[{LogKey}] repository specification: {Specification}", Constants.LogKey, specification);
 
         return await this.Inner.FindAllAsync(specification, options, cancellationToken).AnyContext();
     }
@@ -128,7 +128,7 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
 
         foreach (var specification in specifications.SafeNull())
         {
-            this.Logger.LogDebug("{LogKey} repository specification: {Specification}", Constants.LogKey, specification);
+            this.Logger.LogDebug("[{LogKey}] repository specification: {Specification}", Constants.LogKey, specification);
         }
 
         return await this.Inner.FindAllAsync(specifications, options, cancellationToken).AnyContext();
@@ -144,7 +144,7 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
 
         if (projection is not null)
         {
-            this.Logger.LogDebug("{LogKey} repository: projection {Projection}", Constants.LogKey, projection);
+            this.Logger.LogDebug("[{LogKey}] repository: projection {Projection}", Constants.LogKey, projection);
         }
 
         return await this.Inner.ProjectAllAsync(projection, options, cancellationToken).AnyContext();
@@ -158,11 +158,11 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
     {
         TypedLogger.LogProjectAll(this.Logger, Constants.LogKey, this.type);
         this.LogOptions(options);
-        this.Logger.LogDebug("{LogKey} repository specification: {Specification}", Constants.LogKey, specification);
+        this.Logger.LogDebug("[{LogKey}] repository specification: {Specification}", Constants.LogKey, specification);
 
         if (projection is not null)
         {
-            this.Logger.LogDebug("{LogKey} repository: projection {Projection}", Constants.LogKey, projection);
+            this.Logger.LogDebug("[{LogKey}] repository: projection {Projection}", Constants.LogKey, projection);
         }
 
         return await this.Inner.ProjectAllAsync(specification, projection, options, cancellationToken).AnyContext();
@@ -179,7 +179,7 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
 
         if (projection is not null)
         {
-            this.Logger.LogDebug("{LogKey} repository: projection {projection}", Constants.LogKey, projection);
+            this.Logger.LogDebug("[{LogKey}] repository: projection {projection}", Constants.LogKey, projection);
         }
 
         return await this.Inner.ProjectAllAsync(specifications, projection, options, cancellationToken).AnyContext();
@@ -203,7 +203,7 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
     {
         TypedLogger.LogFindOne(this.Logger, Constants.LogKey, this.type);
         this.LogOptions(options);
-        this.Logger.LogDebug("{LogKey} repository specification: {Specification}", Constants.LogKey, specification);
+        this.Logger.LogDebug("[{LogKey}] repository specification: {Specification}", Constants.LogKey, specification);
 
         return await this.Inner.FindOneAsync(specification, options, cancellationToken).AnyContext();
     }
@@ -218,7 +218,7 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
 
         foreach (var specification in specifications.SafeNull())
         {
-            this.Logger.LogDebug("{LogKey} repository specification: {Specification}", Constants.LogKey, specification);
+            this.Logger.LogDebug("[{LogKey}] repository specification: {Specification}", Constants.LogKey, specification);
         }
 
         return await this.Inner.FindOneAsync(specifications, options, cancellationToken).AnyContext();
@@ -228,7 +228,7 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
     {
         if (options?.Distinct?.Expression is not null)
         {
-            this.Logger.LogDebug("{LogKey} repository: distinct {distinctExpression}",
+            this.Logger.LogDebug("[{LogKey}] repository: distinct {distinctExpression}",
                 Constants.LogKey,
                 options.Distinct.Expression);
         }
@@ -236,7 +236,7 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
         foreach (var order in
                  (options?.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order))
         {
-            this.Logger.LogDebug("{LogKey} repository: order {orderExpression}", Constants.LogKey, order.Expression);
+            this.Logger.LogDebug("[{LogKey}] repository: order {orderExpression}", Constants.LogKey, order.Expression);
         }
 
         foreach (var include in (options?.Includes.EmptyToNull() ?? new List<IncludeOption<TEntity>>()).Insert(
@@ -244,46 +244,46 @@ public partial class ReadOnlyRepositoryLoggingBehavior<TEntity> : IGenericReadOn
         {
             if (include.Expression is not null)
             {
-                this.Logger.LogDebug("{LogKey} repository: include {includeExpression}",
+                this.Logger.LogDebug("[{LogKey}] repository: include {includeExpression}",
                     Constants.LogKey,
                     include.Expression);
             }
 
             if (include.Path is not null)
             {
-                this.Logger.LogDebug("{LogKey} repository: include {includePath}", Constants.LogKey, include.Path);
+                this.Logger.LogDebug("[{LogKey}] repository: include {includePath}", Constants.LogKey, include.Path);
             }
         }
 
         if (options?.Skip.HasValue == true)
         {
-            this.Logger.LogDebug("{LogKey} repository: skip {skip}", Constants.LogKey, options.Skip.Value);
+            this.Logger.LogDebug("[{LogKey}] repository: skip {skip}", Constants.LogKey, options.Skip.Value);
         }
 
         if (options?.Take.HasValue == true)
         {
-            this.Logger.LogDebug("{LogKey} repository: take {take}", Constants.LogKey, options.Take.Value);
+            this.Logger.LogDebug("[{LogKey}] repository: take {take}", Constants.LogKey, options.Take.Value);
         }
     }
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} repository: count (type={EntityType})")]
+        [LoggerMessage(0, LogLevel.Information, "[{LogKey}] repository: count (type={EntityType})")]
         public static partial void LogCount(ILogger logger, string logKey, string entityType);
 
-        [LoggerMessage(2, LogLevel.Information, "{LogKey} repository: exists (type={EntityType}, id={EntityId})")]
+        [LoggerMessage(2, LogLevel.Information, "[{LogKey}] repository: exists (type={EntityType}, id={EntityId})")]
         public static partial void LogExists(ILogger logger, string logKey, string entityType, object entityId);
 
-        [LoggerMessage(3, LogLevel.Information, "{LogKey} repository: findall (type={EntityType})")]
+        [LoggerMessage(3, LogLevel.Information, "[{LogKey}] repository: findall (type={EntityType})")]
         public static partial void LogFindAll(ILogger logger, string logKey, string entityType);
 
-        [LoggerMessage(4, LogLevel.Information, "{LogKey} repository: projectall (type={EntityType})")]
+        [LoggerMessage(4, LogLevel.Information, "[{LogKey}] repository: projectall (type={EntityType})")]
         public static partial void LogProjectAll(ILogger logger, string logKey, string entityType);
 
-        [LoggerMessage(5, LogLevel.Information, "{LogKey} repository: findone (type={EntityType}, id={EntityId})")]
+        [LoggerMessage(5, LogLevel.Information, "[{LogKey}] repository: findone (type={EntityType}, id={EntityId})")]
         public static partial void LogFindOneId(ILogger logger, string logKey, string entityType, object entityId);
 
-        [LoggerMessage(6, LogLevel.Information, "{LogKey} repository: findone (type={EntityType})")]
+        [LoggerMessage(6, LogLevel.Information, "[{LogKey}] repository: findone (type={EntityType})")]
         public static partial void LogFindOne(ILogger logger, string logKey, string entityType);
     }
 }

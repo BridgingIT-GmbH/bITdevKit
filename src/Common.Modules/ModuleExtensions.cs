@@ -60,7 +60,7 @@ public static class ModuleExtensions
 
             if (module?.IsRegistered == false)
             {
-                Log.Logger.Information("{LogKey} register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
+                Log.Logger.Information("[{LogKey}] register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
                 services.AddSingleton(module);
                 services.AddSingleton(new ActivitySource(module.Name));
 
@@ -125,7 +125,7 @@ public static class ModuleExtensions
 
         if (module?.IsRegistered == false)
         {
-            Log.Logger.Information("{LogKey} register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
+            Log.Logger.Information("[{LogKey}] register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
             context.Services.AddSingleton(module);
             context.Services.AddSingleton(new ActivitySource(module.Name));
 
@@ -143,7 +143,7 @@ public static class ModuleExtensions
         var module = modules.SafeNull().FirstOrDefault(m => m.IsOfType(type));
         if (module?.IsRegistered == false)
         {
-            Log.Logger.Information("{LogKey} register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
+            Log.Logger.Information("[{LogKey}] register (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
             context.Services.AddSingleton(module);
             context.Services.AddSingleton(new ActivitySource(module.Name));
 
@@ -166,7 +166,7 @@ public static class ModuleExtensions
 
         foreach (var module in modules.SafeNull()) // TODO: only load enabled modules
         {
-            Log.Logger.Information("{LogKey} use (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
+            Log.Logger.Information("[{LogKey}] use (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ", ModuleConstants.LogKey, module.Name, module.Enabled, module.Priority);
             module.Use(app, configuration, environment);
         }
 
@@ -231,7 +231,7 @@ public static class ModuleExtensions
 
         if (modules is null)
         {
-            Log.Logger.Information("{LogKey} module discovery (type={ModuleType}) ", ModuleConstants.LogKey, typeof(IModule).Name);
+            Log.Logger.Information("[{LogKey}] module discovery (type={ModuleType}) ", ModuleConstants.LogKey, typeof(IModule).Name);
             logResult = true;
         }
 
@@ -251,7 +251,7 @@ public static class ModuleExtensions
         {
             foreach (var module in modules.SafeNull())
             {
-                Log.Logger.Debug("{LogKey} module discovered (name={ModuleName}) ", ModuleConstants.LogKey, module.Name);
+                Log.Logger.Debug("[{LogKey}] module discovered (name={ModuleName}) ", ModuleConstants.LogKey, module.Name);
             }
         }
 
@@ -282,7 +282,7 @@ public static class ModuleExtensions
                     return;
                 }
 
-                Log.Logger.Verbose("{LogKey} started activity: {ActivityOperationName} {ActivityDisplayName} (module={ModuleName}, status={ActivityStatus})", "TRC", a.OperationName, a.DisplayName, a.Source.Name, a.Status);
+                Log.Logger.Verbose("[{LogKey}] started activity: {ActivityOperationName} {ActivityDisplayName} (module={ModuleName}, status={ActivityStatus})", "TRC", a.OperationName, a.DisplayName, a.Source.Name, a.Status);
             },
             ActivityStopped = a =>
             {
@@ -291,7 +291,7 @@ public static class ModuleExtensions
                     return;
                 }
 
-                Log.Logger.Verbose("{LogKey} finished activity: {ActivityOperationName} {ActivityDisplayName} (module={ModuleName}, status={ActivityStatus}) -> took {TimeElapsed:0.0000} ms", "TRC", a.OperationName, a.DisplayName, a.Source.Name, a.Status, a.Duration.TotalMilliseconds);
+                Log.Logger.Verbose("[{LogKey}] finished activity: {ActivityOperationName} {ActivityDisplayName} (module={ModuleName}, status={ActivityStatus}) -> took {TimeElapsed:0.0000} ms", "TRC", a.OperationName, a.DisplayName, a.Source.Name, a.Status, a.Duration.TotalMilliseconds);
             },
             ShouldListenTo = s => true,
             Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData

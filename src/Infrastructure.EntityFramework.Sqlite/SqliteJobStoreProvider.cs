@@ -48,7 +48,7 @@ public class SqliteJobStoreProvider : IJobStoreProvider
     {
         var runs = new List<JobRun>();
         var sql = $@"
-            SELECT 
+            SELECT
                 ENTRY_ID, TRIGGER_NAME, TRIGGER_GROUP, JOB_NAME, JOB_GROUP, DESCRIPTION,
                 START_TIME, END_TIME, SCHEDULED_TIME, DURATION_MS, STATUS, ERROR_MESSAGE,
                 JOB_DATA_JSON, INSTANCE_NAME, PRIORITY, RESULT, RETRY_COUNT, CATEGORY
@@ -85,7 +85,7 @@ public class SqliteJobStoreProvider : IJobStoreProvider
         }
         catch (SQLiteException ex) when (ex.Message.Contains("no such table"))
         {
-            this.logger.LogWarning("{LogKey} SqliteJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            this.logger.LogWarning("[{LogKey}] SqliteJobStoreProvider - table does not exist: " + ex.Message, "JOB");
             return runs; // empty list
         }
         return runs;
@@ -106,7 +106,7 @@ public class SqliteJobStoreProvider : IJobStoreProvider
         CancellationToken cancellationToken)
     {
         var sql = $@"
-            SELECT 
+            SELECT
                 COUNT(*) as TotalRuns,
                 SUM(CASE WHEN STATUS = 'Success' THEN 1 ELSE 0 END) as SuccessCount,
                 SUM(CASE WHEN STATUS = 'Failed' THEN 1 ELSE 0 END) as FailureCount,
@@ -146,7 +146,7 @@ public class SqliteJobStoreProvider : IJobStoreProvider
         }
         catch (SQLiteException ex) when (ex.Message.Contains("no such table"))
         {
-            this.logger.LogWarning("{LogKey} SqliteJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            this.logger.LogWarning("[{LogKey}] SqliteJobStoreProvider - table does not exist: " + ex.Message, "JOB");
             return new JobRunStats();
         }
         return new JobRunStats();
@@ -178,7 +178,7 @@ public class SqliteJobStoreProvider : IJobStoreProvider
         }
         catch (SQLiteException ex) when (ex.Message.Contains("no such table"))
         {
-            this.logger.LogWarning("{LogKey} SqliteJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            this.logger.LogWarning("[{LogKey}] SqliteJobStoreProvider - table does not exist: " + ex.Message, "JOB");
             return;
         }
     }
@@ -230,7 +230,7 @@ public class SqliteJobStoreProvider : IJobStoreProvider
         }
         catch (SQLiteException ex) when (ex.Message.Contains("no such table"))
         {
-            this.logger.LogWarning("{LogKey} SqliteJobStoreProvider - table does not exist: " + ex.Message, "JOB");
+            this.logger.LogWarning("[{LogKey}] SqliteJobStoreProvider - table does not exist: " + ex.Message, "JOB");
             return;
         }
         catch (Exception)

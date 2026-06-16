@@ -34,11 +34,20 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Card = GetCardAsync
         };
 
-        yield return new DashboardPage("Logs Stream", "terminal", DashboardEndpoints.BuildLogEntriesStreamPath(options))
+        yield return new DashboardPage("Errors", "exclamation-octagon", DashboardEndpoints.BuildErrorsPath(options))
         {
             Group = "bdk",
             GroupOrder = 0,
             Order = 41,
+            Description = "Inspect error log entries",
+            Card = GetErrorsCardAsync
+        };
+
+        yield return new DashboardPage("Logs Stream", "terminal", DashboardEndpoints.BuildLogEntriesStreamPath(options))
+        {
+            Group = "bdk",
+            GroupOrder = 0,
+            Order = 42,
             Description = "Live log stream",
             Card = GetStreamCard
         };
@@ -54,8 +63,56 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
             Url = DashboardEndpoints.BuildLogEntriesStreamPath(context.RequestServices.GetRequiredService<DashboardEndpointsOptions>()),
             Group = "bdk",
             GroupOrder = 0,
-            Order = 41
+            Order = 42
         });
+    }
+
+    private static async ValueTask<DashboardPageCard> GetErrorsCardAsync(HttpContext context)
+    {
+        var logEntryService = context.RequestServices.GetService<ILogEntryService>();
+        if (logEntryService is null)
+        {
+            return new DashboardPageCard("Errors", "Stored error entries", "Unavailable")
+            {
+                Detail = "ILogEntryService is not registered",
+                Icon = "exclamation-octagon",
+                Url = DashboardEndpoints.BuildErrorsPath(context.RequestServices.GetRequiredService<DashboardEndpointsOptions>()),
+                Group = "bdk",
+                GroupOrder = 0,
+                Order = 41
+            };
+        }
+
+        try
+        {
+            var start = DateTimeOffset.Now.Date;
+            var stats = await logEntryService.GetStatisticsAsync(start, null, null, context.RequestAborted);
+            var errors = stats.LevelCounts
+                .Where(pair => pair.Key >= LogLevel.Error)
+                .Sum(pair => pair.Value);
+
+            return new DashboardPageCard("Errors", "Stored error entries", errors.ToString("N0", CultureInfo.InvariantCulture))
+            {
+                Detail = "Error and fatal entries today",
+                Icon = "exclamation-octagon",
+                Url = DashboardEndpoints.BuildErrorsPath(context.RequestServices.GetRequiredService<DashboardEndpointsOptions>()),
+                Group = "bdk",
+                GroupOrder = 0,
+                Order = 41
+            };
+        }
+        catch (Exception ex)
+        {
+            return new DashboardPageCard("Errors", "Stored error entries", "Error")
+            {
+                Detail = ex.Message,
+                Icon = "exclamation-octagon",
+                Url = DashboardEndpoints.BuildErrorsPath(context.RequestServices.GetRequiredService<DashboardEndpointsOptions>()),
+                Group = "bdk",
+                GroupOrder = 0,
+                Order = 41
+            };
+        }
     }
 
     private static async ValueTask<DashboardPageCard> GetCardAsync(HttpContext context)

@@ -3,7 +3,6 @@
 using System.Security.Claims;
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -101,7 +100,7 @@ public class FakeIdentityProvider(
             throw new OAuth2Exception("invalid_grant", "User is disabled");
         }
 
-        var tokenResponse = this.CreateTokenResponse(user, clientId, data.Scope);
+        var tokenResponse = this.CreateTokenResponse(user, clientId, data.Scope, data.Nonce);
 
         if (this.options.EnablePersistentRefreshTokens && httpContext != null)
         {
@@ -191,7 +190,7 @@ public class FakeIdentityProvider(
         return tokenResponse;
     }
 
-    private TokenResponse CreateTokenResponse(FakeUser user, string clientId, string scope)
+    private TokenResponse CreateTokenResponse(FakeUser user, string clientId, string scope, string nonce = null)
     {
         scope ??= "openid profile email offline_access";
         var isOidcRequest = scope?.Contains("openid", StringComparison.OrdinalIgnoreCase) == true;
@@ -208,7 +207,7 @@ public class FakeIdentityProvider(
 
         if (isOidcRequest)
         {
-            response.IdToken = this.tokenService.GenerateIdToken(user, clientId, null);
+            response.IdToken = this.tokenService.GenerateIdToken(user, clientId, nonce);
         }
 
         return response;
@@ -229,13 +228,13 @@ public class FakeIdentityProvider(
             claims.AddRange(user.Roles.Select(role => new Claim(ClaimTypes.Role, role)));
         }
 
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var identity = new ClaimsIdentity(claims, this.options.CookieAuthenticationScheme);
         var principal = new ClaimsPrincipal(identity);
 
         try
         {
             await httpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
+                this.options.CookieAuthenticationScheme,
                 principal,
                 new AuthenticationProperties
                 {

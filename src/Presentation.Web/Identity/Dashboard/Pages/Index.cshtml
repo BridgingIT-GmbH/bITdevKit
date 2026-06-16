@@ -3,21 +3,21 @@
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using BridgingIT.DevKit.Presentation.Web.Identity.Dashboard.Pages
 @using BridgingIT.DevKit.Common
-@using Microsoft.AspNetCore.Authentication.Cookies
 @using Microsoft.Extensions.DependencyInjection
 @using System.Security.Claims
+@using Microsoft.AspNetCore.Authentication
 @using RazorSlices
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
-    var identityModel = CreateModel();
+    var identityModel = await CreateModelAsync();
 }
 
 <div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
     <div class="d-flex align-items-center gap-2">
         <span class="text-muted small">Captured @identityModel.CapturedAtUtc.LocalDateTime.ToString("g", CultureInfo.InvariantCulture)</span>
-        @if (identityModel.CanLoginWithClientCredentials)
+        @* @if (identityModel.CanLoginWithClientCredentials)
         {
             <form method="post" action="@identityModel.ClientCredentialsLoginPath" class="m-0">
                 <input type="hidden" name="returnUrl" value="@identityModel.ClientCredentialsReturnUrl" />
@@ -25,7 +25,7 @@
                     <i class="bi bi-box-arrow-in-right me-1"></i>Client credentials
                 </button>
             </form>
-        }
+        } *@
     </div>
 </div>
 
@@ -91,12 +91,12 @@
         </div>
     </div>
 
-    @if (identityModel.CanLoginWithClientCredentials)
+    @* @if (identityModel.CanLoginWithClientCredentials)
     {
         <div class="col-12 col-lg-8">
             <div class="card h-100">
                 <div class="card-body p-3">
-                    <h6 class="card-title">Fake Identity Provider</h6>
+                    <h6 class="card-title">Identity Provider</h6>
                     <table class="table table-sm mb-0">
                         <tbody>
                         <tr><td>Client</td><td class="text-end text-break">@DisplayValue(identityModel.ClientCredentialsClientName)</td></tr>
@@ -108,9 +108,9 @@
                 </div>
             </div>
         </div>
-    }
+    } *@
 
-    <div class="col-12 @(identityModel.CanLoginWithClientCredentials ? "" : "col-lg-8")">
+    <div class="col-12 col-lg-8">
         <div class="card h-100">
             <div class="card-body p-3">
                 <h6 class="card-title">Roles</h6>
@@ -131,6 +131,60 @@
         </div>
     </div>
 </div>
+
+@if (identityModel.Tokens.Count > 0)
+{
+    <div class="card mb-2">
+        <div class="card-body p-3">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <h6 class="card-title mb-0">Tokens</h6>
+                <span class="badge">@identityModel.Tokens.Count</span>
+            </div>
+            <div class="d-flex flex-column gap-2">
+                @foreach (var token in identityModel.Tokens)
+                {
+                    var tokenId = $"identity-token-{SanitizeTokenId(token.Name)}";
+                    var jwtIoUrl = BuildJwtIoUrl(token.Value);
+                    <details class="border rounded-1 p-2">
+                        <summary class="d-flex align-items-center justify-content-between gap-2">
+                            <span>@token.DisplayName</span>
+                            <span class="text-muted small">@token.Value.Length.ToString(CultureInfo.InvariantCulture) chars</span>
+                        </summary>
+                        <div class="mt-2">
+                            <textarea id="@tokenId" class="form-control font-monospace small" rows="5" readonly>@token.Value</textarea>
+                            <div class="d-flex justify-content-end gap-2 mt-2">
+                                <a href="@jwtIoUrl" class="btn btn-outline-secondary btn-sm" target="_blank" rel="noopener noreferrer" title="Open token in jwt.io">
+                                    <i class="bi bi-box-arrow-up-right me-1"></i>jwt.io
+                                </a>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" data-copy-token="@tokenId" title="Copy token">
+                                    <i class="bi bi-copy me-1"></i>Copy
+                                </button>
+                            </div>
+                        </div>
+                    </details>
+                }
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (() => {
+            document.querySelectorAll('[data-copy-token]').forEach((button) => {
+                button.addEventListener('click', async () => {
+                    const target = document.getElementById(button.getAttribute('data-copy-token'));
+                    if (!target) {
+                        return;
+                    }
+
+                    await navigator.clipboard.writeText(target.value);
+                    const original = button.innerHTML;
+                    button.innerHTML = '<i class="bi bi-check2 me-1"></i>Copied';
+                    window.setTimeout(() => button.innerHTML = original, 1200);
+                });
+            });
+        })();
+    </script>
+}
 
 <div class="card">
     <div class="card-body p-3">
@@ -175,7 +229,7 @@
 @functions {
     public DashboardLayoutModel LayoutModel => new() { Title = "Identity" };
 
-    private DashboardIdentityViewModel CreateModel()
+    private async Task<DashboardIdentityViewModel> CreateModelAsync()
     {
         var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
         var fakeIdentityProviderOptions = this.HttpContext.RequestServices.GetService<FakeIdentityProviderEndpointsOptions>();
@@ -185,7 +239,7 @@
         var principal = currentUserAccessor?.IsAuthenticated == true
             ? currentUserAccessor.Principal
             : this.HttpContext.User ?? currentUserAccessor?.Principal;
-        var client = GetClientCredentialsClient(fakeIdentityProviderOptions);
+        // var client = GetClientCredentialsClient(fakeIdentityProviderOptions);
         var identityPath = DashboardPath.Combine(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.Identity);
 
         var result = new DashboardIdentityViewModel
@@ -204,12 +258,12 @@
             Email = currentUserAccessor?.IsAuthenticated == true
                 ? currentUserAccessor.Email
                 : principal?.FindFirstValue(ClaimTypes.Email),
-            CanLoginWithClientCredentials = fakeIdentityProviderOptions is not null && fakeIdentityProvider is not null && tokenService is not null && client is not null,
+            @* CanLoginWithClientCredentials = fakeIdentityProviderOptions is not null && fakeIdentityProvider is not null && tokenService is not null && client is not null, *@
             ClientCredentialsLoginPath = DashboardPath.Combine(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.IdentityClientCredentialsLogin),
             ClientCredentialsReturnUrl = BuildLocalReturnUrl(identityPath),
             ClientCredentialsTokenEndpoint = BuildFakeIdentityProviderTokenEndpoint(fakeIdentityProviderOptions),
-            ClientCredentialsClientName = client?.Name,
-            ClientCredentialsClientId = client?.ClientId,
+            @* ClientCredentialsClientName = client?.Name,
+            ClientCredentialsClientId = client?.ClientId, *@
             CapturedAtUtc = DateTimeOffset.UtcNow
         };
 
@@ -246,6 +300,10 @@
                 }));
         }
 
+        result.Tokens.AddRange((await GetSavedTokensAsync(dashboardOptions))
+            .OrderBy(token => GetTokenOrder(token.Name))
+            .ThenBy(token => token.DisplayName, StringComparer.OrdinalIgnoreCase));
+
         return result;
     }
 
@@ -254,11 +312,106 @@
         return string.IsNullOrWhiteSpace(value) ? "-" : value;
     }
 
-    private static FakeIdentityProviderClient GetClientCredentialsClient(FakeIdentityProviderEndpointsOptions options)
+    private static string GetTokenDisplayName(string name)
+    {
+        return name switch
+        {
+            "access_token" => "Access Token",
+            "id_token" => "ID Token",
+            "refresh_token" => "Refresh Token",
+            "token_type" => "Token Type",
+            "expires_at" => "Expires At",
+            _ => CultureInfo.InvariantCulture.TextInfo.ToTitleCase(name.Replace('_', ' '))
+        };
+    }
+
+    private static int GetTokenOrder(string name)
+    {
+        return name switch
+        {
+            "access_token" => 0,
+            "id_token" => 1,
+            "refresh_token" => 2,
+            "token_type" => 3,
+            "expires_at" => 4,
+            _ => 100
+        };
+    }
+
+    private static string SanitizeTokenId(string name)
+    {
+        return new string((name ?? string.Empty)
+            .Select(character => char.IsLetterOrDigit(character) ? character : '-')
+            .ToArray()).Trim('-');
+    }
+
+    private async Task<IEnumerable<DashboardIdentityTokenViewModel>> GetSavedTokensAsync(DashboardEndpointsOptions dashboardOptions)
+    {
+        var tokens = new List<DashboardIdentityTokenViewModel>();
+        foreach (var scheme in GetTokenAuthenticationSchemes(dashboardOptions))
+        {
+            var authenticateResult = string.IsNullOrWhiteSpace(scheme)
+                ? await this.HttpContext.AuthenticateAsync()
+                : await this.HttpContext.AuthenticateAsync(scheme);
+
+            if (!authenticateResult.Succeeded || authenticateResult.Properties is null)
+            {
+                continue;
+            }
+
+            foreach (var token in authenticateResult.Properties.GetTokens() ?? [])
+            {
+                if (string.IsNullOrWhiteSpace(token.Name) ||
+                    string.IsNullOrWhiteSpace(token.Value) ||
+                    !IsDisplayToken(token.Name) ||
+                    tokens.Any(existing => string.Equals(existing.Name, token.Name, StringComparison.OrdinalIgnoreCase)))
+                {
+                    continue;
+                }
+
+                tokens.Add(new DashboardIdentityTokenViewModel
+                {
+                    Name = token.Name,
+                    DisplayName = GetTokenDisplayName(token.Name),
+                    Value = token.Value
+                });
+            }
+        }
+
+        return tokens;
+    }
+
+    private static IEnumerable<string> GetTokenAuthenticationSchemes(DashboardEndpointsOptions dashboardOptions)
+    {
+        if (dashboardOptions?.Authentication?.Kind is DashboardAuthenticationRegistrationKind.OpenIdConnect)
+        {
+            yield return dashboardOptions.Authentication.CookieScheme;
+            yield return dashboardOptions.Authentication.Scheme;
+        }
+
+        foreach (var scheme in dashboardOptions?.RequireAuthenticationSchemes ?? [])
+        {
+            yield return scheme;
+        }
+
+        yield return null;
+    }
+
+    private static bool IsDisplayToken(string name)
+    {
+        return name is "access_token" or "id_token" or "refresh_token";
+    }
+
+    private static string BuildJwtIoUrl(string token)
+    {
+        return $"https://jwt.io/#debugger-io?token={Uri.EscapeDataString(token ?? string.Empty)}";
+    }
+
+    @* private static FakeIdentityProviderClient GetClientCredentialsClient(FakeIdentityProviderEndpointsOptions options)
     {
         return options?.Clients?.FirstOrDefault(client => client.IsConfidentialClient)
             ?? options?.Clients?.FirstOrDefault();
-    }
+    } *@
 
     private string BuildLocalReturnUrl(string path)
     {

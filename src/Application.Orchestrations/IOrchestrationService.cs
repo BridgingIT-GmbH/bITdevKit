@@ -17,10 +17,12 @@ public interface IOrchestrationService
     /// <typeparam name="TData">The orchestration data type.</typeparam>
     /// <param name="data">The orchestration input data.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
+    /// <param name="correlationId">The optional correlation identifier to apply to the orchestration instance.</param>
     /// <returns>The execution result.</returns>
     Task<Result<OrchestrationExecuteResult>> ExecuteAsync<TOrchestration, TData>(
         TData data,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        string correlationId = null)
         where TOrchestration : class, IOrchestration<TData>
         where TData : class, IOrchestrationData;
 
@@ -31,10 +33,12 @@ public interface IOrchestrationService
     /// <typeparam name="TData">The orchestration data type.</typeparam>
     /// <param name="data">The orchestration input data.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
+    /// <param name="correlationId">The optional correlation identifier to apply to the orchestration instance.</param>
     /// <returns>The dispatched orchestration instance identifier.</returns>
     Task<Result<Guid>> DispatchAsync<TOrchestration, TData>(
         TData data,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        string correlationId = null)
         where TOrchestration : class, IOrchestration<TData>
         where TData : class, IOrchestrationData;
 
@@ -47,12 +51,14 @@ public interface IOrchestrationService
     /// <param name="waitFor">The condition that determines when waiting should stop.</param>
     /// <param name="timeout">The optional wait timeout.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
+    /// <param name="correlationId">The optional correlation identifier to apply to the orchestration instance.</param>
     /// <returns>The wait result.</returns>
     Task<Result<OrchestrationWaitResult>> DispatchAndWaitAsync<TOrchestration, TData>(
         TData data,
         OrchestrationWaitFor waitFor = null,
         TimeSpan? timeout = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        string correlationId = null)
         where TOrchestration : class, IOrchestration<TData>
         where TData : class, IOrchestrationData;
 

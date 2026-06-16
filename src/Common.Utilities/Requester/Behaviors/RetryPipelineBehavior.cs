@@ -42,7 +42,7 @@ public class RetryPipelineBehavior<TRequest, TResponse>(
 
         if (!retryCount.HasValue || !delayMs.HasValue)
         {
-            this.Logger.LogError("{LogKey} retry behavior: count or delay not specified on attribute and no default configured via RetryOptions (handler={HandlerType})", LogKey, handlerType.FullName);
+            this.Logger.LogError("[{LogKey}] retry behavior: count or delay not specified on attribute and no default configured via RetryOptions (handler={HandlerType})", LogKey, handlerType.FullName);
             throw new InvalidOperationException("HandlerRetryAttribute.Count and Delay must be provided or default values must be configured via RetryOptions.");
         }
 
@@ -53,7 +53,7 @@ public class RetryPipelineBehavior<TRequest, TResponse>(
             .WaitAndRetryAsync(
                 retryCount.Value,
                 retryAttempt => delay,
-                (exception, timespan, retryAttempt, context) => this.Logger.LogWarning("{LogKey} retry behavior attempt {RetryAttempt} of {RetryCount} for {HandlerType} after {DelayMs} ms due to {ExceptionMessage}", LogKey, retryAttempt, retryCount, handlerType.Name, timespan.TotalMilliseconds, exception.Exception?.Message));
+                (exception, timespan, retryAttempt, context) => this.Logger.LogWarning("[{LogKey}] retry behavior attempt {RetryAttempt} of {RetryCount} for {HandlerType} after {DelayMs} ms due to {ExceptionMessage}", LogKey, retryAttempt, retryCount, handlerType.Name, timespan.TotalMilliseconds, exception.Exception?.Message));
 
         return await policy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken).AnyContext();
     }

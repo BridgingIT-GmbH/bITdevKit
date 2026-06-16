@@ -92,7 +92,7 @@ public class StartupTasksService : IHostedService
     /// <returns>A task that completes once startup task execution has finished or timed out.</returns>
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} startup tasks service stopping", Constants.LogKey);
+        this.logger.LogInformation("[{LogKey}] startup tasks service stopping", Constants.LogKey);
 
         this.linkedCts?.Cancel();
 
@@ -101,7 +101,7 @@ public class StartupTasksService : IHostedService
             try
             {
                 await Task.WhenAny(this.startupTask, Task.Delay(TimeSpan.FromSeconds(10), cancellationToken));
-                this.logger.LogInformation("{LogKey} startup tasks service stopped", Constants.LogKey);
+                this.logger.LogInformation("[{LogKey}] startup tasks service stopped", Constants.LogKey);
             }
             catch
             {
@@ -129,7 +129,7 @@ public class StartupTasksService : IHostedService
         {
             if (this.options.StartupDelay.TotalMilliseconds > 0)
             {
-                this.logger.LogDebug("{LogKey} startup tasks service delayed", Constants.LogKey);
+                this.logger.LogDebug("[{LogKey}] startup tasks service delayed", Constants.LogKey);
                 await Task.Delay(this.options.StartupDelay, cancellationToken);
             }
 
@@ -143,7 +143,7 @@ public class StartupTasksService : IHostedService
 
                         if (scope.ServiceProvider.GetService(definition.TaskType) is not IStartupTask task)
                         {
-                            this.logger.LogInformation("{LogKey} startup task not registered (task={StartupTaskType})", Constants.LogKey, definition.TaskType.Name);
+                            this.logger.LogInformation("[{LogKey}] startup task not registered (task={StartupTaskType})", Constants.LogKey, definition.TaskType.Name);
                             return;
                         }
 
@@ -157,7 +157,7 @@ public class StartupTasksService : IHostedService
                     }
                     catch (Exception ex)
                     {
-                        this.logger.LogError(ex, "{LogKey} startup task {StartupTaskType} failed: {ErrorMessage}", Constants.LogKey, definition.TaskType.Name, ex.Message);
+                        this.logger.LogError(ex, "[{LogKey}] startup task {StartupTaskType} failed: {ErrorMessage}", Constants.LogKey, definition.TaskType.Name, ex.Message);
 
                         if (this.options.HaltOnFailure || definition.Options.HaltOnFailure)
                         {
@@ -170,11 +170,11 @@ public class StartupTasksService : IHostedService
         }
         catch (OperationCanceledException)
         {
-            this.logger.LogDebug("{LogKey} startup tasks canceled", Constants.LogKey);
+            this.logger.LogDebug("[{LogKey}] startup tasks canceled", Constants.LogKey);
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} startup tasks failed: {ErrorMessage}", Constants.LogKey, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] startup tasks failed: {ErrorMessage}", Constants.LogKey, ex.Message);
 
             if (this.options.HaltOnFailure)
             {
@@ -199,16 +199,16 @@ public class StartupTasksService : IHostedService
     {
         if (definition.Options.StartupDelay.TotalMilliseconds > 0)
         {
-            this.logger.LogDebug("{LogKey} startup task delayed (task={StartupTaskType})", Constants.LogKey, task.GetType().PrettyName());
+            this.logger.LogDebug("[{LogKey}] startup task delayed (task={StartupTaskType})", Constants.LogKey, task.GetType().PrettyName());
             await Task.Delay(definition.Options.StartupDelay, cancellationToken);
         }
 
-        this.logger.LogInformation("{LogKey} startup task started (task={StartupTaskType})", Constants.LogKey, task.GetType().PrettyName());
+        this.logger.LogInformation("[{LogKey}] startup task started (task={StartupTaskType})", Constants.LogKey, task.GetType().PrettyName());
         var watch = ValueStopwatch.StartNew();
 
         await task.ExecuteAsync(cancellationToken);
 
-        this.logger.LogInformation("{LogKey} startup task finished (task={StartupTaskType}) -> took {TimeElapsed:0.0000} ms", Constants.LogKey, task.GetType().PrettyName(), watch.GetElapsedMilliseconds());
+        this.logger.LogInformation("[{LogKey}] startup task finished (task={StartupTaskType}) -> took {TimeElapsed:0.0000} ms", Constants.LogKey, task.GetType().PrettyName(), watch.GetElapsedMilliseconds());
     }
 
     private async Task ExecutePipelineAsync(
@@ -219,7 +219,7 @@ public class StartupTasksService : IHostedService
     {
         var startupTaskBehaviors = behaviors as IStartupTaskBehavior[] ?? behaviors.ToArray();
 
-        this.logger.LogDebug("{LogKey} startup task behaviors: {BehaviorPipeline}", Constants.LogKey, startupTaskBehaviors.Select(b => b.GetType().Name).ToString(" -> "));
+        this.logger.LogDebug("[{LogKey}] startup task behaviors: {BehaviorPipeline}", Constants.LogKey, startupTaskBehaviors.Select(b => b.GetType().Name).ToString(" -> "));
 
         await startupTaskBehaviors
             .Reverse()

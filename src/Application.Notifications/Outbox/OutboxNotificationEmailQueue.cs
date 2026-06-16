@@ -37,11 +37,11 @@ public class OutboxNotificationEmailQueue : IOutboxNotificationEmailQueue
     {
         if (string.IsNullOrEmpty(notificationId))
         {
-            this.logger.LogWarning("{LogKey} attempted to enqueue null or empty notification ID", Constants.LogKey);
+            this.logger.LogWarning("[{LogKey}] attempted to enqueue null or empty notification ID", Constants.LogKey);
             return;
         }
 
-        this.logger.LogDebug("{LogKey} notification email queued (id={NotificationId})", Constants.LogKey, notificationId);
+        this.logger.LogDebug("[{LogKey}] notification email queued (id={NotificationId})", Constants.LogKey, notificationId);
         this.notificationIds.Post(notificationId);
     }
 }

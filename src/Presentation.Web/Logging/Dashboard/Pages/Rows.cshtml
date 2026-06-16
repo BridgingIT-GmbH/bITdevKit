@@ -1,4 +1,5 @@
 @using BridgingIT.DevKit.Application.Utilities
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
 @using Microsoft.Extensions.DependencyInjection
 @using RazorSlices
@@ -25,16 +26,7 @@
             }
         </td>
         <td class="text-nowrap">
-            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" data-filter-name="traceId" data-filter-value="@entry.TraceId">@LogEntriesDashboard.ShortId(entry.TraceId)</button>
-        </td>
-        <td class="text-nowrap">
-            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" data-filter-name="spanId" data-filter-value="@entry.SpanId">@LogEntriesDashboard.ShortId(entry.SpanId)</button>
-        </td>
-        <td class="text-nowrap">
-            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" data-filter-name="correlationId" data-filter-value="@entry.CorrelationId">@LogEntriesDashboard.ShortId(entry.CorrelationId)</button>
-        </td>
-        <td class="text-nowrap">
-            <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" data-filter-name="logKey" data-filter-value="@entry.LogKey">@LogEntriesDashboard.DisplayValue(entry.LogKey)</button>
+            @RenderCorrelationLink(entry.CorrelationId)
         </td>
         <td class="text-nowrap">
             <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" data-filter-name="moduleName" data-filter-value="@entry.ModuleName">@LogEntriesDashboard.DisplayValue(entry.ModuleName)</button>
@@ -53,5 +45,17 @@
 
         var filter = LogEntriesDashboard.CreateFilter(this.HttpContext);
         return await service.QueryAsync(LogEntriesDashboard.CreateRequest(filter), this.HttpContext.RequestAborted);
+    }
+
+    private Microsoft.AspNetCore.Html.IHtmlContent RenderCorrelationLink(string correlationId)
+    {
+        if (string.IsNullOrWhiteSpace(correlationId))
+        {
+            return new Microsoft.AspNetCore.Html.HtmlString("-");
+        }
+
+        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var href = LogEntriesDashboard.BuildCorrelationHref(dashboardOptions, correlationId);
+        return new Microsoft.AspNetCore.Html.HtmlString($"<a class=\"btn btn-link btn-sm p-0 text-decoration-none\" href=\"{System.Net.WebUtility.HtmlEncode(href)}\" title=\"Open related logs\">{System.Net.WebUtility.HtmlEncode(LogEntriesDashboard.ShortId(correlationId))}</a>");
     }
 }

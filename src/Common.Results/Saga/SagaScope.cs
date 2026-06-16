@@ -119,7 +119,7 @@ public class SagaScope : IOperationScope
         this.logger = logger ?? NullLogger.Instance;
         this.Context = new SagaContext();
 
-        this.logger.LogDebug("{LogKey} new saga {SagaId} initialized", "SAG", this.Context.SagaId);
+        this.logger.LogDebug("[{LogKey}] new saga {SagaId} initialized", "SAG", this.Context.SagaId);
     }
 
     /// <summary>
@@ -293,7 +293,7 @@ public class SagaScope : IOperationScope
         this.maxCompensationCount = Math.Max(this.maxCompensationCount, this.compensations.Count);
 
         this.logger.LogDebug(
-            "{LogKey} saga {SagaId} - registered compensation '{StepName}' (Order: {Order}, Conditional: {HasCondition})", "SAG", this.Context.SagaId, stepName, descriptor.Order, condition is not null);
+            "[{LogKey}] saga {SagaId} - registered compensation '{StepName}' (Order: {Order}, Conditional: {HasCondition})", "SAG", this.Context.SagaId, stepName, descriptor.Order, condition is not null);
 
         // Raise event
         this.RaiseCompensationEvent(new SagaCompensationEvent
@@ -321,7 +321,7 @@ public class SagaScope : IOperationScope
         this.compensations.Clear();
 
         this.logger.LogInformation(
-            "{LogKey} saga {SagaId} - committed successfully with {CompensationCount} registered compensations", "SAG", this.Context.SagaId, this.maxCompensationCount);
+            "[{LogKey}] saga {SagaId} - committed successfully with {CompensationCount} registered compensations", "SAG", this.Context.SagaId, this.maxCompensationCount);
 
         return Task.CompletedTask;
     }
@@ -353,7 +353,7 @@ public class SagaScope : IOperationScope
         this.IsRolledBack = true;
 
         this.logger.LogWarning(
-            "{LogKey} saga {SagaId} - rolling back {CompensationCount} compensation(s)", "SAG", this.Context.SagaId, this.compensations.Count);
+            "[{LogKey}] saga {SagaId} - rolling back {CompensationCount} compensation(s)", "SAG", this.Context.SagaId, this.compensations.Count);
 
         // Execute compensations in reverse order (LIFO)
         for (var i = this.compensations.Count - 1; i >= 0; i--)
@@ -364,7 +364,7 @@ public class SagaScope : IOperationScope
         }
 
         this.logger.LogWarning(
-            "{LogKey} saga {SagaId} - rollback completed: {ExecutedCount} executed, {FailedCount} failed, {SkippedCount} skipped", "SAG", this.Context.SagaId, this.CompensationExecutedCount, this.compensationErrors.Count, this.compensations.Count(c => c.Status == SagaCompensationStatus.Skipped));
+            "[{LogKey}] saga {SagaId} - rollback completed: {ExecutedCount} executed, {FailedCount} failed, {SkippedCount} skipped", "SAG", this.Context.SagaId, this.CompensationExecutedCount, this.compensationErrors.Count, this.compensations.Count(c => c.Status == SagaCompensationStatus.Skipped));
     }
 
     /// <summary>
@@ -380,7 +380,7 @@ public class SagaScope : IOperationScope
             if (descriptor.Condition is not null)
             {
                 this.logger.LogDebug(
-                    "{LogKey} saga {SagaId} - Evaluating condition for '{StepName}'", "SAG", this.Context.SagaId, descriptor.StepName);
+                    "[{LogKey}] saga {SagaId} - Evaluating condition for '{StepName}'", "SAG", this.Context.SagaId, descriptor.StepName);
 
                 var shouldExecute = await descriptor.Condition(cancellationToken);
 
@@ -389,7 +389,7 @@ public class SagaScope : IOperationScope
                     descriptor.Status = SagaCompensationStatus.Skipped;
 
                     this.logger.LogDebug(
-                        "{LogKey} saga {SagaId}: Compensation '{StepName}' skipped (condition not met)", "SAG", this.Context.SagaId, descriptor.StepName);
+                        "[{LogKey}] saga {SagaId}: Compensation '{StepName}' skipped (condition not met)", "SAG", this.Context.SagaId, descriptor.StepName);
 
                     await this.RaiseCompensationEvent(new SagaCompensationEvent
                     {
@@ -407,7 +407,7 @@ public class SagaScope : IOperationScope
             descriptor.ExecutedAt = DateTime.UtcNow;
 
             this.logger.LogInformation(
-                "{LogKey} saga {SagaId} - Executing compensation '{StepName}'", "SAG", this.Context.SagaId, descriptor.StepName);
+                "[{LogKey}] saga {SagaId} - Executing compensation '{StepName}'", "SAG", this.Context.SagaId, descriptor.StepName);
 
             await this.RaiseCompensationEvent(new SagaCompensationEvent
             {
@@ -425,7 +425,7 @@ public class SagaScope : IOperationScope
             this.CompensationExecutedCount++;
 
             this.logger.LogInformation(
-                "{LogKey} saga {SagaId} - Compensation '{StepName}' succeeded ({Duration}ms)", "SAG", this.Context.SagaId, descriptor.StepName, descriptor.ExecutionDuration.Value.TotalMilliseconds);
+                "[{LogKey}] saga {SagaId} - Compensation '{StepName}' succeeded ({Duration}ms)", "SAG", this.Context.SagaId, descriptor.StepName, descriptor.ExecutionDuration.Value.TotalMilliseconds);
 
             await this.RaiseCompensationEvent(new SagaCompensationEvent
             {
@@ -446,7 +446,7 @@ public class SagaScope : IOperationScope
             this.CompensationExecutedCount++;
 
             this.logger.LogError(ex,
-                "{LogKey} saga {SagaId} - Compensation '{StepName}' failed ({Duration}ms)", "SAG", this.Context.SagaId, descriptor.StepName, descriptor.ExecutionDuration?.TotalMilliseconds ?? 0);
+                "[{LogKey}] saga {SagaId} - Compensation '{StepName}' failed ({Duration}ms)", "SAG", this.Context.SagaId, descriptor.StepName, descriptor.ExecutionDuration?.TotalMilliseconds ?? 0);
 
             await this.RaiseCompensationEvent(new SagaCompensationEvent
             {
@@ -473,7 +473,7 @@ public class SagaScope : IOperationScope
             catch (Exception ex)
             {
                 this.logger.LogError(ex,
-                    "{LogKey} saga {SagaId} - Error in compensation event handler for '{StepName}' ({EventType})", "SAG", this.Context.SagaId, evt.StepName, evt.EventType);
+                    "[{LogKey}] saga {SagaId} - Error in compensation event handler for '{StepName}' ({EventType})", "SAG", this.Context.SagaId, evt.StepName, evt.EventType);
             }
         }
     }

@@ -403,44 +403,44 @@ public abstract class LocationHandlerBase : ILocationHandler
     private class TypedLogger(ILogger logger)
     {
         public void LogInformationStartingHandler(string storageProviderLocationName, string storageProviderDescription) =>
-            logger.LogInformation("{LogKey} filemonitoring: starting location handler (locationName={StorageProviderLocationName}, description={StorageProviderDescription})", Constants.LogKey, storageProviderLocationName, storageProviderDescription);
+            logger.LogInformation("[{LogKey}] filemonitoring: starting location handler (locationName={StorageProviderLocationName}, description={StorageProviderDescription})", Constants.LogKey, storageProviderLocationName, storageProviderDescription);
 
         public void LogInformationRealTimeStarted(string storageProviderLocationName) =>
-            logger.LogInformation("{LogKey} filemonitoring: real-time watching started (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
+            logger.LogInformation("[{LogKey}] filemonitoring: real-time watching started (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
 
         public void LogInformationStoppingHandler(string storageProviderLocationName) =>
-            logger.LogInformation("{LogKey} filemonitoring: stopping location handler (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
+            logger.LogInformation("[{LogKey}] filemonitoring: stopping location handler (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
 
         public void LogInformationHandlerStopped(string storageProviderLocationName) =>
-            logger.LogInformation("{LogKey} filemonitoring: location handler stopped (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
+            logger.LogInformation("[{LogKey}] filemonitoring: location handler stopped (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
 
         public void LogInformationScanningLocation(string storageProviderLocationName) =>
-            logger.LogInformation("{LogKey} filemonitoring: scanning location (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
+            logger.LogInformation("[{LogKey}] filemonitoring: scanning location (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
 
         public void LogInformationScanCompleted(string storageProviderLocationName, int changeCount) =>
-            logger.LogInformation("{LogKey} filemonitoring: scan completed (locationName={StorageProviderLocationName}, Changes={ChangeCount})",
+            logger.LogInformation("[{LogKey}] filemonitoring: scan completed (locationName={StorageProviderLocationName}, Changes={ChangeCount})",
                 Constants.LogKey, storageProviderLocationName, changeCount);
 
         public void LogInformationPausingHandler(string storageProviderLocationName) =>
-            logger.LogInformation("{LogKey} filemonitoring: pausing handler (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
+            logger.LogInformation("[{LogKey}] filemonitoring: pausing handler (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
 
         public void LogInformationResumingHandler(string storageProviderLocationName) =>
-            logger.LogInformation("{LogKey} filemonitoring: resuming handler (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
+            logger.LogInformation("[{LogKey}] filemonitoring: resuming handler (locationName={StorageProviderLocationName})", Constants.LogKey, storageProviderLocationName);
 
         public void LogWarningProcessorNotFound(string storageProviderLocationName, string fileMonitoringProcessorName) =>
-            logger.LogWarning("{LogKey} filemonitoring: processor not found (locationName={StorageProviderLocationName}, processor={FileMonitoringProcessorName})",
+            logger.LogWarning("[{LogKey}] filemonitoring: processor not found (locationName={StorageProviderLocationName}, processor={FileMonitoringProcessorName})",
                 Constants.LogKey, storageProviderLocationName, fileMonitoringProcessorName);
 
         public void LogInformationProcessorEnabled(string storageProviderLocationName, string fileMonitoringProcessorName) =>
-            logger.LogInformation("{LogKey} filemonitoring: processor enabled (locationName={StorageProviderLocationName}, processor={FileMonitoringProcessorName})",
+            logger.LogInformation("[{LogKey}] filemonitoring: processor enabled (locationName={StorageProviderLocationName}, processor={FileMonitoringProcessorName})",
                 Constants.LogKey, storageProviderLocationName, fileMonitoringProcessorName);
 
         public void LogInformationProcessorDisabled(string storageProviderLocationName, string fileMonitoringProcessorName) =>
-            logger.LogInformation("{LogKey} filemonitoring: processor disabled (locationName={StorageProviderLocationName}, processor={FileMonitoringProcessorName})",
+            logger.LogInformation("[{LogKey}] filemonitoring: processor disabled (locationName={StorageProviderLocationName}, processor={FileMonitoringProcessorName})",
                 Constants.LogKey, storageProviderLocationName, fileMonitoringProcessorName);
 
         public void LogErrorProcessingFailed(string storageProviderLocationName, string fileMonitoringProcessorName, string errorMessage) =>
-            logger.LogError("{LogKey} filemonitoring: processing failed (locationName={StorageProviderLocationName}, processor={FileMonitoringProcessorName}, Error={ErrorMessage})",
+            logger.LogError("[{LogKey}] filemonitoring: processing failed (locationName={StorageProviderLocationName}, processor={FileMonitoringProcessorName}, Error={ErrorMessage})",
                 Constants.LogKey, storageProviderLocationName, fileMonitoringProcessorName, errorMessage);
     }
 }

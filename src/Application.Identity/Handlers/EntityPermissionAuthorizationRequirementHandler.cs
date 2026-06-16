@@ -59,13 +59,13 @@ public partial class EntityPermissionAuthorizationRequirementHandler<TEntity>(
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(EventId = 0, Level = LogLevel.Information, Message = "{LogKey} auth handler (type) - check permission requirement: permissions={Permissions}")]
+        [LoggerMessage(EventId = 0, Level = LogLevel.Information, Message = "[{LogKey}] auth handler (type) - check permission requirement: permissions={Permissions}")]
         public static partial void LogAuthHandler(ILogger logger, string logKey, string[] permissions);
 
-        [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "{LogKey} auth handler - no user identified for type permission check")]
+        [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "[{LogKey}] auth handler - no user identified for type permission check")]
         public static partial void LogNoUserIdentified(ILogger logger, string logKey);
 
-        [LoggerMessage(EventId = 2, Level = LogLevel.Warning, Message = "{LogKey} auth handler - no requirement specified for type permission check")]
+        [LoggerMessage(EventId = 2, Level = LogLevel.Warning, Message = "[{LogKey}] auth handler - no requirement specified for type permission check")]
         public static partial void LogNoRequirement(ILogger logger, string logKey);
     }
 }

@@ -848,7 +848,7 @@ public static class ResultTExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "{LogKey} Success - {ValueType} Messages={Messages} Errors={Errors} | " + messageTemplate,
+                        "[{LogKey}] Success - {ValueType} Messages={Messages} Errors={Errors} | " + messageTemplate,
                         "RES", valueType, messagesCount, errorsCount, args);
                 }
                 else
@@ -856,7 +856,7 @@ public static class ResultTExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "{LogKey} Success - {ValueType} Messages={Messages} Errors={Errors}",
+                        "[{LogKey}] Success - {ValueType} Messages={Messages} Errors={Errors}",
                         "RES", valueType, messagesCount, errorsCount);
                 }
             }
@@ -867,7 +867,7 @@ public static class ResultTExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "{LogKey} Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
+                        "[{LogKey}] Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
                         "RES", valueType, messagesCount, errorsCount, errorTypes, args);
                 }
                 else
@@ -875,7 +875,7 @@ public static class ResultTExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "{LogKey} Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
+                        "[{LogKey}] Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
                         "RES", valueType, messagesCount, errorsCount, errorTypes);
                 }
             }
@@ -989,7 +989,7 @@ public static class ResultTExtensions
             {
                 if (isSuccess)
                 {
-                    const string prefixTemplate = "{LogKey} Success - {ValueType} Messages={Messages} Errors={Errors} | ";
+                    const string prefixTemplate = "[{LogKey}] Success - {ValueType} Messages={Messages} Errors={Errors} | ";
                     var prefixArgs = new object[] { "RES", valueType, messagesCount, errorsCount };
                     var allArgs = prefixArgs.ConcatArgs(userArgs);
 
@@ -997,7 +997,7 @@ public static class ResultTExtensions
                 }
                 else
                 {
-                    const string prefixTemplate = "{LogKey} Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | ";
+                    const string prefixTemplate = "[{LogKey}] Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | ";
                     var prefixArgs = new object[] { "RES", valueType, messagesCount, errorsCount, errorTypes };
                     var allArgs = prefixArgs.ConcatArgs(userArgs);
 
@@ -1011,7 +1011,7 @@ public static class ResultTExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "{LogKey} Success - {ValueType} Messages={Messages} Errors={Errors}",
+                        "[{LogKey}] Success - {ValueType} Messages={Messages} Errors={Errors}",
                         "RES", valueType, messagesCount, errorsCount);
                 }
                 else
@@ -1019,7 +1019,7 @@ public static class ResultTExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "{LogKey} Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
+                        "[{LogKey}] Failure - {ValueType} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
                         "RES", valueType, messagesCount, errorsCount, errorTypes);
                 }
             }
@@ -2702,11 +2702,11 @@ public static class ResultTExtensions
     /// <example>
     /// <code>
     /// // Combine multiple validation results
-    /// var result = new[] 
-    /// { 
-    ///     ValidateName(user), 
-    ///     ValidateEmail(user), 
-    ///     ValidateAge(user) 
+    /// var result = new[]
+    /// {
+    ///     ValidateName(user),
+    ///     ValidateEmail(user),
+    ///     ValidateAge(user)
     /// }.Flatten();
     /// // Result is successful only if all validations pass
     /// </code>
@@ -2791,11 +2791,11 @@ public static class ResultTExtensions
     /// <example>
     /// <code>
     /// // Combine multiple async validation results
-    /// var result = await new[] 
-    /// { 
-    ///     ValidateNameAsync(user), 
-    ///     ValidateEmailAsync(user), 
-    ///     ValidateAgeAsync(user) 
+    /// var result = await new[]
+    /// {
+    ///     ValidateNameAsync(user),
+    ///     ValidateEmailAsync(user),
+    ///     ValidateAgeAsync(user)
     /// }.FlattenAsync(cancellationToken: cancellationToken);
     /// // Result is successful only if all validations pass
     /// </code>

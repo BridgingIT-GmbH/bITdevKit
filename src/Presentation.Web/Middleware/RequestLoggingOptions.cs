@@ -14,9 +14,9 @@ using Serilog.Events;
 /// </summary>
 public class RequestLoggingOptions
 {
-    private const string DefaultRequestStartedMessageTemplate = "{LogKey} starting HTTP {RequestMethod} {RequestPath}";
+    private const string DefaultRequestStartedMessageTemplate = "[{LogKey}] starting HTTP {RequestMethod} {RequestPath}";
 
-    private const string DefaultRequestFinishedMessageTemplate = "{LogKey} finished HTTP {RequestMethod} {RequestPath} [{StatusCode}] -> took {TimeElapsed:0.0000} ms";
+    private const string DefaultRequestFinishedMessageTemplate = "[{LogKey}] finished HTTP {RequestMethod} {RequestPath} [{StatusCode}] -> took {TimeElapsed:0.0000} ms";
 
     public RequestLoggingOptions()
     {

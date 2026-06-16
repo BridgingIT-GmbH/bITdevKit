@@ -143,7 +143,7 @@ public partial class OutboxMessagePublisherBehavior<TContext> : MessagePublisher
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} outbox message store (type={MessageType}, id={MessageId})")]
+        [LoggerMessage(0, LogLevel.Information, "[{LogKey}] outbox message store (type={MessageType}, id={MessageId})")]
         public static partial void LogPublish(ILogger logger, string logKey, string messageType, string messageId);
     }
 }

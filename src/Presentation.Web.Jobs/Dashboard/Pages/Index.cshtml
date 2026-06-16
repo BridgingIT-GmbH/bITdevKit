@@ -3,6 +3,7 @@
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages
+@using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
 @using BridgingIT.DevKit.Application.Jobs
 @using Microsoft.Extensions.DependencyInjection
 @using RazorSlices
@@ -11,60 +12,296 @@
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-    var contentPath = JobsDashboardEndpoints.BuildJobsDataContentPath(dashboardOptions);
-    var actionBase = JobsDashboardEndpoints.BuildJobsActionBase(dashboardOptions);
-    var aliveEnabled = this.HttpContext.RequestServices.GetService<JobAliveOptions>()?.Enabled == true;
+  var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new
+DashboardEndpointsOptions();
+  var contentPath = JobsDashboardEndpoints.BuildJobsDataContentPath(dashboardOptions);
+  var actionBase = JobsDashboardEndpoints.BuildJobsActionBase(dashboardOptions);
+  var logEntriesPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesPath(dashboardOptions);
+  var aliveEnabled = this.HttpContext.RequestServices.GetService<JobAliveOptions>()?.Enabled == true;
 }
 
 <div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
-    <div class="d-flex align-items-center gap-2">
-        @if (aliveEnabled)
-        {
-            <button type="button" class="btn btn-outline-primary btn-sm" title="Dispatch alive job" onclick="window.bdkJobsAction('@($"{actionBase}/alive")')">
-                <i class="bi bi-broadcast"></i>
-            </button>
-        }
-        <span id="jobs-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
-        <select id="jobs-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="Jobs refresh interval">
-            <option value="">Off</option>
-            <option value="1000">1 sec</option>
-            <option value="5000">5 sec</option>
-            <option value="15000">15 sec</option>
-            <option value="30000">30 sec</option>
-        </select>
-        <button type="button" id="jobs-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh jobs">
-            <i class="bi bi-arrow-clockwise"></i>
-        </button>
+  <div class="d-flex align-items-center gap-2">
+    @if (aliveEnabled)
+    {
+      <button type="button" class="btn btn-outline-primary btn-sm" title="Dispatch alive job"
+              onclick="window.bdkJobsAction('@($"{actionBase}/alive")')">
+        <i class="bi bi-broadcast"></i>
+      </button>
+    }
+    <span id="jobs-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T",
+                  CultureInfo.InvariantCulture)</span>
+      <select id="jobs-refresh-interval" class="form-select form-select-sm" style="width: 9rem"
+              aria-label="Jobs refresh interval">
+        <option value="">Off</option>
+        <option value="1000">1 sec</option>
+        <option value="5000">5 sec</option>
+        <option value="15000">15 sec</option>
+        <option value="30000">30 sec</option>
+      </select>
+      <button type="button" id="jobs-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh jobs">
+        <i class="bi bi-arrow-clockwise"></i>
+      </button>
     </div>
-</div>
+  </div>
 
-<div id="dashboard-jobs-shell">
+  <div id="dashboard-jobs-shell">
     @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages.Content>())
-</div>
+  </div>
 
-<script>
+  <div class="modal fade" id="jobs-occurrence-context-modal" tabindex="-1" aria-labelledby="jobs-occurrence-context-title"
+       aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <div>
+            <h5 class="modal-title" id="jobs-occurrence-context-title">Occurrence Context</h5>
+            <div class="text-muted small" id="jobs-occurrence-context-subtitle">-</div>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row g-2 mb-3" id="jobs-occurrence-context-summary"></div>
+
+          <h6 class="mb-2">Messages</h6>
+          <div id="jobs-occurrence-context-messages" class="d-flex flex-column gap-2"></div>
+          <hr/>
+
+          <h6 class="mb-2">Details</h6>
+          <div class="table-responsive mb-3">
+            <table class="table table-sm align-middle mb-0">
+              <tbody id="jobs-occurrence-context-details"></tbody>
+            </table>
+          </div>
+
+          <h6 class="mb-2">Properties</h6>
+          <div class="table-responsive mb-3">
+            <table class="table table-sm align-middle mb-0">
+              <tbody id="jobs-occurrence-context-properties"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
     (() => {
-        const shellElement = document.getElementById('dashboard-jobs-shell');
-        const refresher = window.bdkDashboard.createRefresher({
-            contentUrl: '@contentPath',
-            contentSelector: () => shellElement?.querySelector('#dashboard-jobs-content') ?? null,
-            statusSelector: '#jobs-refresh-status',
-            intervalSelector: '#jobs-refresh-interval',
-            refreshButtonSelector: '#jobs-refresh-now',
-            storageKey: 'bdk.dashboard.jobs.refreshInterval'
+      const shellElement = document.getElementById('dashboard-jobs-shell');
+      const logEntriesPath = '@logEntriesPath';
+      const occurrenceModalElement = document.getElementById('jobs-occurrence-context-modal');
+      const occurrenceModal = occurrenceModalElement && window.bootstrap
+        ? window.bootstrap.Modal.getOrCreateInstance(occurrenceModalElement)
+        : null;
+      let occurrenceModalOpen = false;
+
+      const refresher = window.bdkDashboard.createRefresher({
+        contentUrl: '@contentPath',
+        contentSelector: () => shellElement?.querySelector('#dashboard-jobs-content') ?? null,
+        statusSelector: '#jobs-refresh-status',
+        intervalSelector: '#jobs-refresh-interval',
+        refreshButtonSelector: '#jobs-refresh-now',
+        storageKey: 'bdk.dashboard.jobs.refreshInterval',
+        shouldRefresh: () => !occurrenceModalOpen
+      });
+
+      function text(value) {
+        if (value === null || value === undefined || value === '') {
+          return '-';
+        }
+
+        return value.toString();
+      }
+
+      function formatDate(value) {
+        if (!value) {
+          return '-';
+        }
+
+        const date = new Date(value);
+        return Number.isNaN(date.getTime()) ? text(value) : date.toLocaleString();
+      }
+
+      function setText(id, value) {
+        const element = document.getElementById(id);
+        if (element) {
+          element.textContent = text(value);
+        }
+      }
+
+      function appendCell(container, label, value, cssClass) {
+        const wrapper = document.createElement('div');
+        wrapper.className = cssClass || 'col-6 col-lg-3';
+
+        const card = document.createElement('div');
+        card.className = 'border rounded p-2 h-100';
+
+        const labelElement = document.createElement('div');
+        labelElement.className = 'text-muted small';
+        labelElement.textContent = label;
+
+        const valueElement = document.createElement('div');
+        valueElement.className = 'fw-semibold text-break';
+        valueElement.textContent = text(value);
+
+        card.append(labelElement, valueElement);
+        wrapper.appendChild(card);
+        container.appendChild(wrapper);
+      }
+
+      function appendRow(container, label, value) {
+        const row = document.createElement('tr');
+        const labelCell = document.createElement('td');
+        labelCell.className = 'text-muted text-nowrap';
+        labelCell.textContent = label;
+
+        const valueCell = document.createElement('td');
+        valueCell.className = 'text-break';
+        if (label.toLowerCase().includes('correlation')) {
+          appendCorrelationLink(valueCell, value);
+        } else {
+          valueCell.textContent = text(value);
+        }
+
+        row.append(labelCell, valueCell);
+        container.appendChild(row);
+      }
+
+      function appendCorrelationLink(container, value) {
+        if (!value) {
+          container.textContent = '-';
+          return;
+        }
+
+        const url = new URL(logEntriesPath, window.location.origin);
+        url.searchParams.set('level', 'All');
+        url.searchParams.set('pageSize', '100');
+        url.searchParams.set('from', new Date().toISOString().slice(0, 10));
+        url.searchParams.set('correlationId', value.toString());
+
+        const link = document.createElement('a');
+        link.className = 'text-decoration-none';
+        link.href = url.toString();
+        link.textContent = value.toString();
+        link.title = 'Open related logs';
+        container.appendChild(link);
+      }
+
+      function renderEmpty(container, message) {
+        const element = document.createElement('div');
+        element.className = 'text-muted small';
+        element.textContent = message;
+        container.appendChild(element);
+      }
+
+      function showOccurrenceContext(payload) {
+        if (!payload || !occurrenceModal) {
+          return;
+        }
+
+        setText('jobs-occurrence-context-title', `${text(payload.jobName)} / ${text(payload.triggerName)}`);
+        setText('jobs-occurrence-context-subtitle', payload.occurrenceId);
+
+        const summary = document.getElementById('jobs-occurrence-context-summary');
+        const details = document.getElementById('jobs-occurrence-context-details');
+        const properties = document.getElementById('jobs-occurrence-context-properties');
+        const messages = document.getElementById('jobs-occurrence-context-messages');
+        summary.replaceChildren();
+        details.replaceChildren();
+        properties.replaceChildren();
+        messages.replaceChildren();
+
+        appendCell(summary, 'Status', payload.status);
+        @* appendCell(summary, 'Correlation', payload.correlationId); *@
+          appendCell(summary, 'Attempts', payload.attemptCount);
+        appendCell(summary, 'Duration', payload.latestExecutionDurationSeconds ? `${Math.round(payload.latestExecutionDurationSeconds * 100) / 100}s` : '-');
+
+        appendRow(details, 'Correlation ID', payload.correlationId);
+        appendRow(details, 'Occurrence ID', payload.occurrenceId);
+        appendRow(details, 'Occurrence Key', payload.occurrenceKey);
+        appendRow(details, 'Trigger Type', payload.triggerType);
+        @* appendRow(details, 'Idempotency Key', payload.idempotencyKey); *@
+          appendRow(details, 'Scheduler', payload.leaseOwnerSchedulerInstanceId);
+        appendRow(details, 'Due', formatDate(payload.dueUtc));
+        appendRow(details, 'Scheduled', formatDate(payload.scheduledUtc));
+        appendRow(details, 'Created', formatDate(payload.createdDate));
+        appendRow(details, 'Updated', formatDate(payload.updatedDate));
+        appendRow(details, 'Latest Execution', payload.latestExecutionStatus);
+        appendRow(details, 'Started', formatDate(payload.latestExecutionStartedUtc));
+        appendRow(details, 'Completed', formatDate(payload.latestExecutionCompletedUtc));
+        appendRow(details, 'Data Type', payload.dataType);
+        appendRow(details, 'Data', payload.dataPreview);
+        appendRow(details, 'Dependencies', `${Number(payload.pendingDependencyCount || 0)} pending / ${Number(payload.failedDependencyCount || 0)} failed / ${Number(payload.dependencyCount || 0)} total`);
+        appendRow(details, 'Blocked Reason', payload.blockedReason);
+        appendRow(details, 'Batch', payload.externalBatchId || payload.batchInternalId);
+
+        const propertyEntries = Object.entries(payload.properties || {});
+        if (propertyEntries.length === 0) {
+          const row = document.createElement('tr');
+          const cell = document.createElement('td');
+          cell.className = 'text-muted small';
+          cell.colSpan = 2;
+          cell.textContent = 'No properties available.';
+          row.appendChild(cell);
+          properties.appendChild(row);
+        } else {
+          propertyEntries.forEach(([key, value]) => appendRow(properties, key, value));
+        }
+
+        const messageItems = Array.isArray(payload.messages) ? payload.messages : [];
+        if (messageItems.length === 0) {
+          renderEmpty(messages, 'No execution messages available.');
+        } else {
+          messageItems.forEach(message => {
+            const item = document.createElement('div');
+            item.className = 'border rounded p-2 text-break';
+            item.textContent = text(message);
+            messages.appendChild(item);
+          });
+        }
+
+        occurrenceModalOpen = true;
+        occurrenceModal.show();
+      }
+
+      if (occurrenceModalElement) {
+        occurrenceModalElement.addEventListener('shown.bs.modal', () => {
+          occurrenceModalOpen = true;
         });
 
-        // Global action helper — called from inline buttons in Content.cshtml
-        window.bdkJobsAction = async function(url) {
-            await window.bdkDashboard.postAction(url, {
-                refresh: refresher.refresh,
-                errorMessage: 'Job action failed:'
-            });
-        };
+        occurrenceModalElement.addEventListener('hidden.bs.modal', () => {
+          occurrenceModalOpen = false;
+          refresher.schedule();
+        });
+      }
+
+      shellElement?.addEventListener('click', event => {
+        const button = event.target.closest('[data-job-occurrence-context]');
+        if (!button) {
+          return;
+        }
+
+        try {
+          showOccurrenceContext(JSON.parse(button.getAttribute('data-job-occurrence-context') || '{}'));
+        } catch {
+          // ignore invalid row payload
+        }
+      });
+
+      // Global action helper — called from inline buttons in Content.cshtml
+      window.bdkJobsAction = async function (url) {
+        if (occurrenceModal) {
+          occurrenceModal.hide();
+        }
+
+        await window.bdkDashboard.postAction(url, {
+          refresh: refresher.refresh,
+          errorMessage: 'Job action failed:'
+        });
+      };
     })();
-</script>
+  </script>
 
 @functions {
-    public DashboardLayoutModel LayoutModel => new() { Title = "Jobs" };
+  public DashboardLayoutModel LayoutModel => new() { Title = "Jobs" };
 }

@@ -28,7 +28,7 @@ public class CoreSeederTask(
     /// <inheritdoc />
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} seed cities, weather, profiles, and subscriptions (task={StartupTaskType})", "IFR", this.GetType().PrettyName());
+        this.logger.LogInformation("[{LogKey}] seed cities, weather, profiles, and subscriptions (task={StartupTaskType})", "IFR", this.GetType().PrettyName());
 
         await this.databaseReadyService.WaitForReadyAsync(
             timeout: TimeSpan.FromMinutes(2),
@@ -86,14 +86,14 @@ public class CoreSeederTask(
 
             if (existingResult.IsFailure)
             {
-                this.logger.LogWarning("{LogKey} failed to check existing city {CityName}: {Errors}", "IFR", name, string.Join(", ", existingResult.Errors.Select(e => e.Message)));
+                this.logger.LogWarning("[{LogKey}] failed to check existing city {CityName}: {Errors}", "IFR", name, string.Join(", ", existingResult.Errors.Select(e => e.Message)));
                 continue;
             }
 
             if (existingResult.Value)
             {
                 // City already exists — look up its ID for downstream seeding
-                this.logger.LogInformation("{LogKey} city {CityName} already exists, skipping create", "IFR", name);
+                this.logger.LogInformation("[{LogKey}] city {CityName} already exists, skipping create", "IFR", name);
                 // We need the ID; query via ActiveEntity FindOne would be complex, so we still track by convention
                 // The downstream seeds will handle duplicates gracefully
                 continue;
@@ -102,7 +102,7 @@ public class CoreSeederTask(
             var locationResult = Location.Create(lat, lon);
             if (locationResult.IsFailure)
             {
-                this.logger.LogWarning("{LogKey} failed to seed city {CityName}: {Errors}", "IFR", name, string.Join(", ", locationResult.Errors.Select(e => e.Message)));
+                this.logger.LogWarning("[{LogKey}] failed to seed city {CityName}: {Errors}", "IFR", name, string.Join(", ", locationResult.Errors.Select(e => e.Message)));
                 continue;
             }
 
@@ -112,12 +112,12 @@ public class CoreSeederTask(
 
             if (insertResult.IsFailure)
             {
-                this.logger.LogWarning("{LogKey} failed to seed city {CityName}: {Errors}", "IFR", name, string.Join(", ", insertResult.Errors.Select(e => e.Message)));
+                this.logger.LogWarning("[{LogKey}] failed to seed city {CityName}: {Errors}", "IFR", name, string.Join(", ", insertResult.Errors.Select(e => e.Message)));
                 continue;
             }
 
             cityIds[name] = city.Id;
-            this.logger.LogInformation("{LogKey} seeded city {CityName} ({CountryCode}) lat={Lat}, lon={Lon}", "IFR", name, code, lat, lon);
+            this.logger.LogInformation("[{LogKey}] seeded city {CityName} ({CountryCode}) lat={Lat}, lon={Lon}", "IFR", name, code, lat, lon);
         }
 
         return cityIds;
@@ -141,7 +141,7 @@ public class CoreSeederTask(
         {
             if (!cityIds.TryGetValue(cityName, out var cityId))
             {
-                this.logger.LogWarning("{LogKey} city {CityName} not found in seeded cities, skipping user city for {UserId}", "IFR", cityName, user.Id);
+                this.logger.LogWarning("[{LogKey}] city {CityName} not found in seeded cities, skipping user city for {UserId}", "IFR", cityName, user.Id);
                 continue;
             }
 
@@ -150,7 +150,7 @@ public class CoreSeederTask(
 
             if (existingResult.IsFailure)
             {
-                this.logger.LogWarning("{LogKey} failed to check existing user city for {UserId} / {CityName}: {Errors}", "IFR", user.Id, cityName, string.Join(", ", existingResult.Errors.Select(e => e.Message)));
+                this.logger.LogWarning("[{LogKey}] failed to check existing user city for {UserId} / {CityName}: {Errors}", "IFR", user.Id, cityName, string.Join(", ", existingResult.Errors.Select(e => e.Message)));
                 continue;
             }
 
@@ -165,11 +165,11 @@ public class CoreSeederTask(
 
             if (insertResult.IsFailure)
             {
-                this.logger.LogWarning("{LogKey} failed to seed user city for {UserId} / {CityName}: {Errors}", "IFR", user.Id, cityName, string.Join(", ", insertResult.Errors.Select(e => e.Message)));
+                this.logger.LogWarning("[{LogKey}] failed to seed user city for {UserId} / {CityName}: {Errors}", "IFR", user.Id, cityName, string.Join(", ", insertResult.Errors.Select(e => e.Message)));
                 continue;
             }
 
-            this.logger.LogInformation("{LogKey} seeded user city for {UserId} ({UserName}): {CityName} (primary={IsPrimary}, order={DisplayOrder})", "IFR", user.Id, user.Name, cityName, isPrimary, displayOrder);
+            this.logger.LogInformation("[{LogKey}] seeded user city for {UserId} ({UserName}): {CityName} (primary={IsPrimary}, order={DisplayOrder})", "IFR", user.Id, user.Name, cityName, isPrimary, displayOrder);
         }
     }
 
@@ -180,7 +180,7 @@ public class CoreSeederTask(
 
         if (existingResult.IsFailure)
         {
-            this.logger.LogWarning("{LogKey} failed to check existing current weather for {CityName}: {Errors}", "IFR", cityName, string.Join(", ", existingResult.Errors.Select(e => e.Message)));
+            this.logger.LogWarning("[{LogKey}] failed to check existing current weather for {CityName}: {Errors}", "IFR", cityName, string.Join(", ", existingResult.Errors.Select(e => e.Message)));
             return;
         }
 
@@ -207,11 +207,11 @@ public class CoreSeederTask(
 
         if (insertResult.IsFailure)
         {
-            this.logger.LogWarning("{LogKey} failed to seed current weather for {CityName}: {Errors}", "IFR", cityName, string.Join(", ", insertResult.Errors.Select(e => e.Message)));
+            this.logger.LogWarning("[{LogKey}] failed to seed current weather for {CityName}: {Errors}", "IFR", cityName, string.Join(", ", insertResult.Errors.Select(e => e.Message)));
             return;
         }
 
-        this.logger.LogInformation("{LogKey} seeded current weather for {CityName}: {Temp}°C, feels {Feels}°C, code {Code}", "IFR", cityName, weather.Temperature, weather.ApparentTemperature, weather.WeatherCode);
+        this.logger.LogInformation("[{LogKey}] seeded current weather for {CityName}: {Temp}°C, feels {Feels}°C, code {Code}", "IFR", cityName, weather.Temperature, weather.ApparentTemperature, weather.WeatherCode);
     }
 
     private async Task SeedWeatherForecastsAsync(string cityName, CityId cityId, CancellationToken cancellationToken)
@@ -258,7 +258,7 @@ public class CoreSeederTask(
 
             if (existingResult.IsFailure)
             {
-                this.logger.LogWarning("{LogKey} failed to check existing forecast for {CityName} on {Date}: {Errors}", "IFR", cityName, forecastDate, string.Join(", ", existingResult.Errors.Select(e => e.Message)));
+                this.logger.LogWarning("[{LogKey}] failed to check existing forecast for {CityName} on {Date}: {Errors}", "IFR", cityName, forecastDate, string.Join(", ", existingResult.Errors.Select(e => e.Message)));
                 continue;
             }
 
@@ -293,11 +293,11 @@ public class CoreSeederTask(
 
             if (insertResult.IsFailure)
             {
-                this.logger.LogWarning("{LogKey} failed to seed forecast for {CityName} on {Date}: {Errors}", "IFR", cityName, forecastDate, string.Join(", ", insertResult.Errors.Select(e => e.Message)));
+                this.logger.LogWarning("[{LogKey}] failed to seed forecast for {CityName} on {Date}: {Errors}", "IFR", cityName, forecastDate, string.Join(", ", insertResult.Errors.Select(e => e.Message)));
                 continue;
             }
 
-            this.logger.LogInformation("{LogKey} seeded forecast for {CityName} on {Date}: {TempMin}–{TempMax}°C, code {Code}", "IFR", cityName, forecastDate, tempMin, tempMax, code);
+            this.logger.LogInformation("[{LogKey}] seeded forecast for {CityName} on {Date}: {TempMin}–{TempMax}°C, code {Code}", "IFR", cityName, forecastDate, tempMin, tempMax, code);
         }
     }
 
@@ -337,7 +337,7 @@ public class CoreSeederTask(
 
             if (existingResult.IsFailure && !existingResult.Errors.Any(e => e is NotFoundError))
             {
-                this.logger.LogWarning("{LogKey} failed to check existing weather report for {CityName} ({ReportType}): {Errors}", "IFR", cityName, reportType, string.Join(", ", existingResult.Errors.Select(e => e.Message)));
+                this.logger.LogWarning("[{LogKey}] failed to check existing weather report for {CityName} ({ReportType}): {Errors}", "IFR", cityName, reportType, string.Join(", ", existingResult.Errors.Select(e => e.Message)));
                 continue;
             }
 
@@ -353,11 +353,11 @@ public class CoreSeederTask(
             var insertResult = await report.InsertAsync(cancellationToken);
             if (insertResult.IsFailure)
             {
-                this.logger.LogWarning("{LogKey} failed to seed weather report for {CityName} ({ReportType}): {Errors}", "IFR", cityName, reportType, string.Join(", ", insertResult.Errors.Select(e => e.Message)));
+                this.logger.LogWarning("[{LogKey}] failed to seed weather report for {CityName} ({ReportType}): {Errors}", "IFR", cityName, reportType, string.Join(", ", insertResult.Errors.Select(e => e.Message)));
                 continue;
             }
 
-            this.logger.LogInformation("{LogKey} seeded weather report for {CityName} ({ReportType})", "IFR", cityName, reportType);
+            this.logger.LogInformation("[{LogKey}] seeded weather report for {CityName} ({ReportType})", "IFR", cityName, reportType);
         }
     }
 
@@ -368,7 +368,7 @@ public class CoreSeederTask(
 
         if (existingResult.IsFailure)
         {
-            this.logger.LogWarning("{LogKey} failed to check existing profile for user {UserId}: {Errors}", "IFR", user.Id, string.Join(", ", existingResult.Errors.Select(e => e.Message)));
+            this.logger.LogWarning("[{LogKey}] failed to check existing profile for user {UserId}: {Errors}", "IFR", user.Id, string.Join(", ", existingResult.Errors.Select(e => e.Message)));
             return;
         }
 
@@ -383,11 +383,11 @@ public class CoreSeederTask(
 
         if (insertResult.IsFailure)
         {
-            this.logger.LogWarning("{LogKey} failed to seed profile for user {UserId}: {Errors}", "IFR", user.Id, string.Join(", ", insertResult.Errors.Select(e => e.Message)));
+            this.logger.LogWarning("[{LogKey}] failed to seed profile for user {UserId}: {Errors}", "IFR", user.Id, string.Join(", ", insertResult.Errors.Select(e => e.Message)));
             return;
         }
 
-        this.logger.LogInformation("{LogKey} seeded profile for user {UserId} ({UserName})", "IFR", user.Id, user.Name);
+        this.logger.LogInformation("[{LogKey}] seeded profile for user {UserId} ({UserName})", "IFR", user.Id, user.Name);
     }
 
     private async Task SeedSubscriptionAsync(FakeUser user, SubscriptionPlan plan, CancellationToken cancellationToken)
@@ -397,7 +397,7 @@ public class CoreSeederTask(
 
         if (existingResult.IsFailure)
         {
-            this.logger.LogWarning("{LogKey} failed to check existing subscription for user {UserId}: {Errors}", "IFR", user.Id, string.Join(", ", existingResult.Errors.Select(e => e.Message)));
+            this.logger.LogWarning("[{LogKey}] failed to check existing subscription for user {UserId}: {Errors}", "IFR", user.Id, string.Join(", ", existingResult.Errors.Select(e => e.Message)));
             return;
         }
 
@@ -415,11 +415,11 @@ public class CoreSeederTask(
 
         if (insertResult.IsFailure)
         {
-            this.logger.LogWarning("{LogKey} failed to seed subscription for user {UserId}: {Errors}", "IFR", user.Id, string.Join(", ", insertResult.Errors.Select(e => e.Message)));
+            this.logger.LogWarning("[{LogKey}] failed to seed subscription for user {UserId}: {Errors}", "IFR", user.Id, string.Join(", ", insertResult.Errors.Select(e => e.Message)));
             return;
         }
 
-        this.logger.LogInformation("{LogKey} seeded subscription for user {UserId} ({UserName}) with plan {Plan}", "IFR", user.Id, user.Name, subscription.Plan.Value);
+        this.logger.LogInformation("[{LogKey}] seeded subscription for user {UserId} ({UserName}) with plan {Plan}", "IFR", user.Id, user.Name, subscription.Plan.Value);
     }
 
     private static CurrentWeather CreateCurrentWeather(

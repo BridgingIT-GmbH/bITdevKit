@@ -67,7 +67,7 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
                         if (response?.Cancelled == true || cancellationToken.IsCancellationRequested)
                         {
                             this.Logger.LogWarning(
-                                "{LogKey} processing cancelled (type={QueryType}, id={QueryRequestId}, handler={QueryHandler}, reason={QueryCancelledReason})",
+                                "[{LogKey}] processing cancelled (type={QueryType}, id={QueryRequestId}, handler={QueryHandler}, reason={QueryCancelledReason})",
                                 Constants.LogKey,
                                 requestType,
                                 query.RequestId.ToString("N"),
@@ -103,7 +103,7 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
             catch (Exception ex)
             {
                 this.Logger.LogError(ex,
-                    "{LogKey} processing error (type={QueryType}, id={QueryRequestId}): {ErrorMessage}",
+                    "[{LogKey}] processing error (type={QueryType}, id={QueryRequestId}): {ErrorMessage}",
                     Constants.LogKey,
                     requestType,
                     query.RequestId.ToString("N"),
@@ -119,7 +119,7 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
     private void ValidateRequest(TQuery request)
     {
         // TODO: use typed logger
-        this.Logger.LogDebug("{LogKey} validating (type={QueryType}, id={QueryRequestId}, handler={QueryHandler})",
+        this.Logger.LogDebug("[{LogKey}] validating (type={QueryType}, id={QueryRequestId}, handler={QueryHandler})",
             Constants.LogKey,
             request.GetType().Name,
             request.RequestId.ToString("N"),
@@ -134,12 +134,12 @@ public abstract partial class QueryHandlerBase<TQuery, TResult>
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} processing (type={QueryType}, id={QueryRequestId}, handler={QueryHandler}, module={ModuleName})")]
+        [LoggerMessage(0, LogLevel.Information, "[{LogKey}] processing (type={QueryType}, id={QueryRequestId}, handler={QueryHandler}, module={ModuleName})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string queryType, string queryRequestId, string queryHandler, string moduleName);
 
         [LoggerMessage(1,
             LogLevel.Information,
-            "{LogKey} processed (type={QueryType}, id={QueryRequestId}, module={ModuleName}) -> took {TimeElapsed:0.0000} ms")]
+            "[{LogKey}] processed (type={QueryType}, id={QueryRequestId}, module={ModuleName}) -> took {TimeElapsed:0.0000} ms")]
         public static partial void LogProcessed(ILogger logger, string logKey, string queryType, string queryRequestId, string moduleName, long timeElapsed);
     }
 }

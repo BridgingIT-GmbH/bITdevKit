@@ -105,7 +105,7 @@ public abstract class EntityUpdateCommandHandlerBase<TCommand, TEntity>
         this.rulesFuncs?.ForEach(s => rules.Add(s.Invoke(command)));
 
         this.Logger.LogInformation(
-            "{LogKey} entity rules check (type={CommandType}, id={CommandRequestId}, handler={CommandHandler})",
+            "[{LogKey}] entity rules check (type={CommandType}, id={CommandRequestId}, handler={CommandHandler})",
             Constants.LogKey,
             command.GetType().Name,
             command.RequestId,

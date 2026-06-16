@@ -39,7 +39,7 @@ public class CircuitBreakerStartupTaskBehavior(ILoggerFactory loggerFactory) : S
                         (ex, wait) =>
                         {
                             this.Logger.LogError(ex,
-                                "{LogKey} startup task circuitbreaker behavior (attempt=#{Attempts}, wait={Wait}, task={StartupTaskType}) {ErrorMessage}",
+                                "[{LogKey}] startup task circuitbreaker behavior (attempt=#{Attempts}, wait={Wait}, task={StartupTaskType}) {ErrorMessage}",
                                 "UTL",
                                 attempts,
                                 wait.Humanize(),
@@ -57,7 +57,7 @@ public class CircuitBreakerStartupTaskBehavior(ILoggerFactory loggerFactory) : S
                         (ex, wait) =>
                         {
                             this.Logger.LogError(ex,
-                                "{LogKey} startup task circuitbreaker behavior (attempt=#{Attempts}, wait={Wait}, task={StartupTaskType}) {ErrorMessage}",
+                                "[{LogKey}] startup task circuitbreaker behavior (attempt=#{Attempts}, wait={Wait}, task={StartupTaskType}) {ErrorMessage}",
                                 "UTL",
                                 attempts,
                                 wait.Humanize(),
@@ -73,18 +73,18 @@ public class CircuitBreakerStartupTaskBehavior(ILoggerFactory loggerFactory) : S
                     (ex, wait) =>
                     {
                         this.Logger.LogError(ex,
-                            "{LogKey} startup task circuitbreaker behavior (circuit=open, wait={Wait}, task={StartupTaskType}) {ErrorMessage}",
+                            "[{LogKey}] startup task circuitbreaker behavior (circuit=open, wait={Wait}, task={StartupTaskType}) {ErrorMessage}",
                             "UTL",
                             wait.Humanize(),
                             taskName,
                             ex.Message);
                     },
                     () => this.Logger.LogDebug(
-                        "{LogKey} startup task circuitbreaker behavior (circuit=closed, task={StartupTaskType})",
+                        "[{LogKey}] startup task circuitbreaker behavior (circuit=closed, task={StartupTaskType})",
                         "UTL",
                         taskName),
                     () => this.Logger.LogDebug(
-                        "{LogKey} startup task circuitbreaker behavior (circuit=halfopen, task={StartupTaskType})",
+                        "[{LogKey}] startup task circuitbreaker behavior (circuit=halfopen, task={StartupTaskType})",
                         "UTL",
                         taskName));
 

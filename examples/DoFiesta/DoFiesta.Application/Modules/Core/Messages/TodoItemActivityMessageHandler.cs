@@ -50,7 +50,7 @@ public class TodoItemActivityMessageHandler(ILoggerFactory loggerFactory, IMetri
             await Task.Delay(300, cancellationToken); // simulate some work
 
             this.Logger.LogInformation(
-                "{LogKey} processed todo activity message (messageId={MessageId}, todoItemId={TodoItemId}, activity={Activity}, status={Status}, title={Title}, handler={HandlerType})",
+                "[{LogKey}] processed todo activity message (messageId={MessageId}, todoItemId={TodoItemId}, activity={Activity}, status={Status}, title={Title}, handler={HandlerType})",
                 Constants.LogKey,
                 message.MessageId,
                 message.TodoItemId,

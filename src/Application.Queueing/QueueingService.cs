@@ -69,7 +69,7 @@ public class QueueingService : BackgroundService
     /// <inheritdoc />
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} queueing service stopping (broker={QueueBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
+        this.logger.LogInformation("[{LogKey}] queueing service stopping (broker={QueueBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
         this.linkedCts?.Cancel();
 
         if (this.startupTask is not null)
@@ -124,7 +124,7 @@ public class QueueingService : BackgroundService
             this.broker = this.scope.ServiceProvider.GetService<IQueueBrokerRuntime>();
             if (this.broker is null)
             {
-                this.logger.LogWarning("{LogKey} queueing service not started because no broker is registered", Constants.LogKey);
+                this.logger.LogWarning("[{LogKey}] queueing service not started because no broker is registered", Constants.LogKey);
                 return;
             }
 
@@ -135,7 +135,7 @@ public class QueueingService : BackgroundService
 
             this.backgroundProcessor = this.scope.ServiceProvider.GetService<IQueueBrokerBackgroundProcessor>();
 
-            this.logger.LogInformation("{LogKey} queueing service started (broker={QueueBroker}, subscriptions={SubscriptionCount})", Constants.LogKey, this.broker.GetType().Name, this.registrationStore.Subscriptions.Count);
+            this.logger.LogInformation("[{LogKey}] queueing service started (broker={QueueBroker}, subscriptions={SubscriptionCount})", Constants.LogKey, this.broker.GetType().Name, this.registrationStore.Subscriptions.Count);
 
             if (this.backgroundProcessor is not null)
             {
@@ -147,7 +147,7 @@ public class QueueingService : BackgroundService
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} queueing service failed unexpectedly: {ErrorMessage}", Constants.LogKey, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] queueing service failed unexpectedly: {ErrorMessage}", Constants.LogKey, ex.Message);
             throw;
         }
     }

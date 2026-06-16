@@ -74,7 +74,7 @@ public class ServiceBusQueueBroker : QueueBrokerBase, IDisposable, IAsyncDisposa
         }
 
         this.Logger.LogInformation(
-            "{LogKey} broker initialized (name={QueueBroker})",
+            "[{LogKey}] broker initialized (name={QueueBroker})",
             Application.Queueing.Constants.LogKey,
             this.GetType().Name);
     }
@@ -158,7 +158,7 @@ public class ServiceBusQueueBroker : QueueBrokerBase, IDisposable, IAsyncDisposa
         this.runtime.TrackEnqueued(message, queueName, messageTypeName);
 
         this.Logger.LogDebug(
-            "{LogKey} servicebus queue message produced (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
+            "[{LogKey}] servicebus queue message produced (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
             Application.Queueing.Constants.LogKey,
             messageTypeName,
             message.MessageId,
@@ -191,7 +191,7 @@ public class ServiceBusQueueBroker : QueueBrokerBase, IDisposable, IAsyncDisposa
         if (this.processors.ContainsKey(queueName))
         {
             this.Logger.LogWarning(
-                "{LogKey} servicebus processor already exists for queue (queue={QueueName})",
+                "[{LogKey}] servicebus processor already exists for queue (queue={QueueName})",
                 Application.Queueing.Constants.LogKey,
                 queueName);
             return;
@@ -217,7 +217,7 @@ public class ServiceBusQueueBroker : QueueBrokerBase, IDisposable, IAsyncDisposa
             {
                 this.Logger.LogError(
                     ex,
-                    "{LogKey} servicebus message processing failed (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
+                    "[{LogKey}] servicebus message processing failed (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
                     Application.Queueing.Constants.LogKey,
                     messageTypeName,
                     args.Message.MessageId,
@@ -231,7 +231,7 @@ public class ServiceBusQueueBroker : QueueBrokerBase, IDisposable, IAsyncDisposa
         {
             this.Logger.LogError(
                 args.Exception,
-                "{LogKey} servicebus processor error (queue={QueueName}) {ErrorMessage}",
+                "[{LogKey}] servicebus processor error (queue={QueueName}) {ErrorMessage}",
                 Application.Queueing.Constants.LogKey,
                 queueName,
                 args.Exception.Message);
@@ -243,7 +243,7 @@ public class ServiceBusQueueBroker : QueueBrokerBase, IDisposable, IAsyncDisposa
         await processor.StartProcessingAsync(cancellationToken: CancellationToken.None).AnyContext();
 
         this.Logger.LogInformation(
-            "{LogKey} servicebus processor started (queue={QueueName}, type={QueueMessageType})",
+            "[{LogKey}] servicebus processor started (queue={QueueName}, type={QueueMessageType})",
             Application.Queueing.Constants.LogKey,
             queueName,
             messageTypeName);
@@ -274,7 +274,7 @@ public class ServiceBusQueueBroker : QueueBrokerBase, IDisposable, IAsyncDisposa
         if (this.controlState.IsQueuePaused(queueName) || this.controlState.IsMessageTypePaused(messageTypeName))
         {
             this.Logger.LogDebug(
-                "{LogKey} servicebus message abandoned because queue/type is paused (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
+                "[{LogKey}] servicebus message abandoned because queue/type is paused (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
                 Application.Queueing.Constants.LogKey,
                 messageTypeName,
                 args.Message.MessageId,
@@ -288,7 +288,7 @@ public class ServiceBusQueueBroker : QueueBrokerBase, IDisposable, IAsyncDisposa
         if (message is null)
         {
             this.Logger.LogError(
-                "{LogKey} servicebus message could not be deserialized (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
+                "[{LogKey}] servicebus message could not be deserialized (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
                 Application.Queueing.Constants.LogKey,
                 messageTypeName,
                 args.Message.MessageId,
@@ -299,7 +299,7 @@ public class ServiceBusQueueBroker : QueueBrokerBase, IDisposable, IAsyncDisposa
         }
 
         this.Logger.LogDebug(
-            "{LogKey} servicebus queue message consumed (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
+            "[{LogKey}] servicebus queue message consumed (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
             Application.Queueing.Constants.LogKey,
             messageTypeName,
             message.MessageId,

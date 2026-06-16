@@ -24,13 +24,13 @@ public abstract class PipelineBehaviorBase<TRequest, TResponse>(ILoggerFactory l
     {
         if (!this.CanProcess(request, handlerType))
         {
-            this.Logger.LogDebug("{LogKey} behavior skipped (type={BehaviorType})", LogKey, this.GetType().Name);
+            this.Logger.LogDebug("[{LogKey}] behavior skipped (type={BehaviorType})", LogKey, this.GetType().Name);
             return await next();
         }
 
-        this.Logger.LogDebug("{LogKey} behavior started (type={BehaviorType})", LogKey, this.GetType().Name);
+        this.Logger.LogDebug("[{LogKey}] behavior started (type={BehaviorType})", LogKey, this.GetType().Name);
         var response = await this.Process(request, handlerType, next, cancellationToken);
-        this.Logger.LogDebug("{LogKey} behavior finished (type={BehaviorType})", LogKey, this.GetType().Name);
+        this.Logger.LogDebug("[{LogKey}] behavior finished (type={BehaviorType})", LogKey, this.GetType().Name);
         return response;
     }
 

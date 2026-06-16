@@ -78,7 +78,7 @@ public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandl
             catch (Exception ex)
             {
                 this.Logger.LogError(ex,
-                    "{LogKey} event processing error (eventId={DomainEventId}, eventType={DomainEventType}): {ErrorMessage}",
+                    "[{LogKey}] event processing error (eventId={DomainEventId}, eventType={DomainEventType}): {ErrorMessage}",
                     Constants.LogKey,
                     @event.EventId,
                     @event.GetType().Name.Split(',')[0],
@@ -106,10 +106,10 @@ public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandl
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} event processing (eventId={DomainEventId}, eventType={DomainEventType})")]
+        [LoggerMessage(0, LogLevel.Information, "[{LogKey}] event processing (eventId={DomainEventId}, eventType={DomainEventType})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string domainEventId, string domainEventType);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} event processed (eventId={DomainEventId}, eventType={DomainEventType}) -> took {TimeElapsed:0.0000} ms")]
+        [LoggerMessage(1, LogLevel.Information, "[{LogKey}] event processed (eventId={DomainEventId}, eventType={DomainEventType}) -> took {TimeElapsed:0.0000} ms")]
         public static partial void LogProcessed(ILogger logger, string logKey, string domainEventId, string domainEventType, long timeElapsed);
     }
 }

@@ -123,22 +123,22 @@ public partial class FileMonitoringLocationScanJob(
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} job: scan started (location={LocationName}) {@Options}")]
+        [LoggerMessage(0, LogLevel.Information, "[{LogKey}] job: scan started (location={LocationName}) {@Options}")]
         public static partial void LogStartScan(ILogger logger, string logKey, string locationName, FileScanOptions options);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} job: scan completed (location={LocationName}, eventCount={EventCount})")]
+        [LoggerMessage(1, LogLevel.Information, "[{LogKey}] job: scan completed (location={LocationName}, eventCount={EventCount})")]
         public static partial void LogScanCompleted(ILogger logger, string logKey, string locationName, int eventCount);
 
-        [LoggerMessage(2, LogLevel.Information, "{LogKey} job: no changes (location={LocationName})")]
+        [LoggerMessage(2, LogLevel.Information, "[{LogKey}] job: no changes (location={LocationName})")]
         public static partial void LogNoChanges(ILogger logger, string logKey, string locationName);
 
-        [LoggerMessage(3, LogLevel.Information, "{LogKey} job: event processed (location={LocationName}, eventType={EventType}, filePath={FilePath}, size={FileSize}, detected={DetectedDate})")]
+        [LoggerMessage(3, LogLevel.Information, "[{LogKey}] job: event processed (location={LocationName}, eventType={EventType}, filePath={FilePath}, size={FileSize}, detected={DetectedDate})")]
         public static partial void LogEventProcessed(ILogger logger, string logKey, string locationName, string eventType, string filePath, long? fileSize, DateTimeOffset detectedDate);
 
-        [LoggerMessage(4, LogLevel.Information, "{LogKey} job: progress (location={LocationName}, filesScanned={FilesScanned}, totalFiles={TotalFiles}, percentageComplete={PercentageComplete:F2}) -> took {TimeElapsed:0.0000} ms")]
+        [LoggerMessage(4, LogLevel.Information, "[{LogKey}] job: progress (location={LocationName}, filesScanned={FilesScanned}, totalFiles={TotalFiles}, percentageComplete={PercentageComplete:F2}) -> took {TimeElapsed:0.0000} ms")]
         public static partial void LogProgress(ILogger logger, string logKey, string locationName, long filesScanned, long totalFiles, double percentageComplete, double timeElapsed);
 
-        [LoggerMessage(5, LogLevel.Error, "{LogKey} job: missing location")]
+        [LoggerMessage(5, LogLevel.Error, "[{LogKey}] job: missing location")]
         public static partial void LogMissingLocation(ILogger logger, string logKey);
     }
 

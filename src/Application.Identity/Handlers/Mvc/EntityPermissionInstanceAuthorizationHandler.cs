@@ -73,16 +73,16 @@ public partial class EntityPermissionInstanceAuthorizationHandler<TEntity>( // T
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(EventId = 0, Level = LogLevel.Information, Message = "{LogKey} auth handler (instance) - check permission requirement: permissions={Permissions}")]
+        [LoggerMessage(EventId = 0, Level = LogLevel.Information, Message = "[{LogKey}] auth handler (instance) - check permission requirement: permissions={Permissions}")]
         public static partial void LogAuthHandler(ILogger logger, string logKey, string[] permissions);
 
-        [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "{LogKey} auth handler - no user identified for permission requirement check")]
+        [LoggerMessage(EventId = 1, Level = LogLevel.Warning, Message = "[{LogKey}] auth handler - no user identified for permission requirement check")]
         public static partial void LogNoUserIdentified(ILogger logger, string logKey);
 
-        [LoggerMessage(EventId = 2, Level = LogLevel.Warning, Message = "{LogKey} auth handler - no requirement specified for permission requirement check")]
+        [LoggerMessage(EventId = 2, Level = LogLevel.Warning, Message = "[{LogKey}] auth handler - no requirement specified for permission requirement check")]
         public static partial void LogNoRequirement(ILogger logger, string logKey);
 
-        [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "{LogKey} auth handler - no entity specified for permission requirement check")]
+        [LoggerMessage(EventId = 3, Level = LogLevel.Warning, Message = "[{LogKey}] auth handler - no entity specified for permission requirement check")]
         public static partial void LogNoEntity(ILogger logger, string logKey);
     }
 }

@@ -45,7 +45,7 @@ public class CircuitBreakerQueryBehavior<TRequest, TResponse>(ILoggerFactory log
                     (ex, wait) =>
                     {
                         this.Logger.LogError(ex,
-                            "{LogKey} query circuitbreaker behavior (attempt=#{Attempts}, wait={Wait}, type={BehaviorType}) {ErrorMessage}",
+                            "[{LogKey}] query circuitbreaker behavior (attempt=#{Attempts}, wait={Wait}, type={BehaviorType}) {ErrorMessage}",
                             Constants.LogKey,
                             attempts,
                             wait.Humanize(),
@@ -63,7 +63,7 @@ public class CircuitBreakerQueryBehavior<TRequest, TResponse>(ILoggerFactory log
                     (ex, wait) =>
                     {
                         this.Logger.LogError(ex,
-                            "{LogKey} query circuitbreaker behavior (attempt=#{Attempts}, wait={Wait}, type={BehaviorType}) {ErrorMessage}",
+                            "[{LogKey}] query circuitbreaker behavior (attempt=#{Attempts}, wait={Wait}, type={BehaviorType}) {ErrorMessage}",
                             Constants.LogKey,
                             attempts,
                             wait.Humanize(),
@@ -81,18 +81,18 @@ public class CircuitBreakerQueryBehavior<TRequest, TResponse>(ILoggerFactory log
                 (ex, wait) =>
                 {
                     this.Logger.LogError(ex,
-                        "{LogKey} query circuitbreaker behavior (circuit=open, wait={Wait}, type={BehaviorType}) {ErrorMessage}",
+                        "[{LogKey}] query circuitbreaker behavior (circuit=open, wait={Wait}, type={BehaviorType}) {ErrorMessage}",
                         Constants.LogKey,
                         wait.Humanize(),
                         this.GetType().Name,
                         ex.Message);
                 },
                 () => this.Logger.LogDebug(
-                    "{LogKey} query circuitbreaker behavior (circuit=closed, type={BehaviorType})",
+                    "[{LogKey}] query circuitbreaker behavior (circuit=closed, type={BehaviorType})",
                     Constants.LogKey,
                     this.GetType().Name),
                 () => this.Logger.LogDebug(
-                    "{LogKey} query circuitbreaker behavior (circuit=halfopen, type={BehaviorType})",
+                    "[{LogKey}] query circuitbreaker behavior (circuit=halfopen, type={BehaviorType})",
                     Constants.LogKey,
                     this.GetType().Name));
 

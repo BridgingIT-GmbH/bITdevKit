@@ -42,7 +42,7 @@ public class CacheInvalidatePipelineBehavior<TRequest, TResponse>(
 
         var result = await next(); // Continue pipeline
 
-        this.Logger.LogDebug("{LogKey} cache invalidate behavior (key={CacheKey}*, type={BehaviorType})", LogKey, key, this.GetType().Name);
+        this.Logger.LogDebug("[{LogKey}] cache invalidate behavior (key={CacheKey}*, type={BehaviorType})", LogKey, key, this.GetType().Name);
         await this.provider.RemoveStartsWithAsync(key, cancellationToken);
 
         return result;

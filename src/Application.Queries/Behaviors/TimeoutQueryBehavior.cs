@@ -34,7 +34,7 @@ public class TimeoutQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFact
             async (context, timeout, task) =>
             {
                 await Task.Run(() => this.Logger.LogError(
-                    "{LogKey} query timeout behavior (timeout={Timeout}, type={BehaviorType})",
+                    "[{LogKey}] query timeout behavior (timeout={Timeout}, type={BehaviorType})",
                     Constants.LogKey,
                     timeout.Humanize(),
                     this.GetType().Name));

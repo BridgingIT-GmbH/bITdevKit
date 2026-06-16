@@ -193,13 +193,15 @@ public class JobSchedulerOptionalIntegrationTests(ITestOutputHelper output) : Jo
             services => services.AddSingleton<IOrchestrationService>(service));
 
         var result = await harness.DispatchAndWaitAsync<OrchestrationExecuteJob<OptionalIntegrationData, OptionalOrchestration, OptionalOrchestrationData>>(
-            new OptionalIntegrationData { Payload = "orch-inline" });
+            new OptionalIntegrationData { Payload = "orch-inline" },
+            new JobDispatchOptions { CorrelationId = "corr-orch-inline" });
 
         result.IsSuccess.ShouldBeTrue();
         result.Value.Status.ShouldBe(JobExecutionStatus.Completed);
         service.ExecuteCalls.ShouldBe(1);
         service.DispatchCalls.ShouldBe(0);
         service.LastData.ShouldBeOfType<OptionalOrchestrationData>().Payload.ShouldBe("orch-inline");
+        service.LastCorrelationId.ShouldBe("corr-orch-inline");
     }
 
     [Fact]
@@ -216,13 +218,15 @@ public class JobSchedulerOptionalIntegrationTests(ITestOutputHelper output) : Jo
             services => services.AddSingleton<IOrchestrationService>(service));
 
         var result = await harness.DispatchAndWaitAsync<OrchestrationExecuteJob<OptionalIntegrationData, OptionalOrchestration, OptionalOrchestrationData>>(
-            new OptionalIntegrationData { Payload = "orch-dispatch" });
+            new OptionalIntegrationData { Payload = "orch-dispatch" },
+            new JobDispatchOptions { CorrelationId = "corr-orch-dispatch" });
 
         result.IsSuccess.ShouldBeTrue();
         result.Value.Status.ShouldBe(JobExecutionStatus.Completed);
         service.DispatchCalls.ShouldBe(1);
         service.ExecuteCalls.ShouldBe(0);
         service.LastData.ShouldBeOfType<OptionalOrchestrationData>().Payload.ShouldBe("orch-dispatch");
+        service.LastCorrelationId.ShouldBe("corr-orch-dispatch");
     }
 
     private sealed class OptionalIntegrationData
@@ -370,12 +374,18 @@ public class JobSchedulerOptionalIntegrationTests(ITestOutputHelper output) : Jo
 
         public object LastData { get; private set; }
 
-        public Task<Result<OrchestrationExecuteResult>> ExecuteAsync<TOrchestration, TData>(TData data, CancellationToken cancellationToken = default)
+        public string LastCorrelationId { get; private set; }
+
+        public Task<Result<OrchestrationExecuteResult>> ExecuteAsync<TOrchestration, TData>(
+            TData data,
+            CancellationToken cancellationToken = default,
+            string correlationId = null)
             where TOrchestration : class, IOrchestration<TData>
             where TData : class, IOrchestrationData
         {
             this.ExecuteCalls++;
             this.LastData = data;
+            this.LastCorrelationId = correlationId;
             return Task.FromResult(Result<OrchestrationExecuteResult>.Success(new OrchestrationExecuteResult
             {
                 InstanceId = Guid.NewGuid(),
@@ -385,16 +395,25 @@ public class JobSchedulerOptionalIntegrationTests(ITestOutputHelper output) : Jo
             }));
         }
 
-        public Task<Result<Guid>> DispatchAsync<TOrchestration, TData>(TData data, CancellationToken cancellationToken = default)
+        public Task<Result<Guid>> DispatchAsync<TOrchestration, TData>(
+            TData data,
+            CancellationToken cancellationToken = default,
+            string correlationId = null)
             where TOrchestration : class, IOrchestration<TData>
             where TData : class, IOrchestrationData
         {
             this.DispatchCalls++;
             this.LastData = data;
+            this.LastCorrelationId = correlationId;
             return Task.FromResult(Result<Guid>.Success(Guid.NewGuid()));
         }
 
-        public Task<Result<OrchestrationWaitResult>> DispatchAndWaitAsync<TOrchestration, TData>(TData data, OrchestrationWaitFor waitFor = null, TimeSpan? timeout = null, CancellationToken cancellationToken = default)
+        public Task<Result<OrchestrationWaitResult>> DispatchAndWaitAsync<TOrchestration, TData>(
+            TData data,
+            OrchestrationWaitFor waitFor = null,
+            TimeSpan? timeout = null,
+            CancellationToken cancellationToken = default,
+            string correlationId = null)
             where TOrchestration : class, IOrchestration<TData>
             where TData : class, IOrchestrationData
             => throw new NotSupportedException();

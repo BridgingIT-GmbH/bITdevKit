@@ -133,7 +133,16 @@ public abstract class DashboardPageSet(DashboardEndpointsOptions options)
             : DashboardPath.Combine((options ?? new DashboardEndpointsOptions()).GroupPath, fragment.Path);
     }
 
-    internal IReadOnlyList<DashboardPageDefinition> GetDefinitions()
+    /// <summary>
+    /// Gets the page definitions configured by this page set.
+    /// </summary>
+    /// <returns>The configured dashboard page definitions.</returns>
+    /// <example>
+    /// <code>
+    /// var definitions = dashboard.GetDefinitions();
+    /// </code>
+    /// </example>
+    public IReadOnlyList<DashboardPageDefinition> GetDefinitions()
     {
         if (this.definitions is not null)
         {

@@ -42,7 +42,7 @@ public class TimeoutPipelineBehavior<TRequest, TResponse>(
 
         if (!durationMs.HasValue)
         {
-            this.Logger.LogError("{LogKey} timeout behavior: duration not specified on attribute and no default configured via TimeoutOptions (handler={HandlerType})", LogKey, handlerType.FullName);
+            this.Logger.LogError("[{LogKey}] timeout behavior: duration not specified on attribute and no default configured via TimeoutOptions (handler={HandlerType})", LogKey, handlerType.FullName);
             throw new InvalidOperationException("HandlerTimeoutAttribute.Duration must be provided or a default value must be configured via TimeoutOptions.");
         }
 
@@ -52,7 +52,7 @@ public class TimeoutPipelineBehavior<TRequest, TResponse>(
             TimeoutStrategy.Pessimistic,
             (context, timespan, task, exception) =>
             {
-                this.Logger.LogWarning("{LogKey} timeout behavior triggered (timeout={TimeoutMs} ms, type={BehaviorType})", LogKey, timespan.TotalMilliseconds, this.GetType().Name);
+                this.Logger.LogWarning("[{LogKey}] timeout behavior triggered (timeout={TimeoutMs} ms, type={BehaviorType})", LogKey, timespan.TotalMilliseconds, this.GetType().Name);
                 return Task.CompletedTask;
             });
 

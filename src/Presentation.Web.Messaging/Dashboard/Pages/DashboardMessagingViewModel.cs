@@ -27,6 +27,26 @@ public sealed class DashboardMessagingViewModel
 
     public IReadOnlyList<BrokerMessageInfo> Messages { get; set; } = [];
 
+    /// <summary>
+    /// Gets or sets the message details indexed by broker message primary key.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var detail = model.MessageDetailsById[message.Id];
+    /// </code>
+    /// </example>
+    public IReadOnlyDictionary<Guid, BrokerMessageInfo> MessageDetailsById { get; set; } = new Dictionary<Guid, BrokerMessageInfo>();
+
+    /// <summary>
+    /// Gets or sets the message content indexed by broker message primary key.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var content = model.MessageContentById[message.Id];
+    /// </code>
+    /// </example>
+    public IReadOnlyDictionary<Guid, BrokerMessageContentInfo> MessageContentById { get; set; } = new Dictionary<Guid, BrokerMessageContentInfo>();
+
     public IReadOnlyList<BrokerMessageSubscriptionInfo> Subscriptions { get; set; } = [];
 
     public IReadOnlyList<BrokerMessageInfo> WaitingMessages { get; set; } = [];

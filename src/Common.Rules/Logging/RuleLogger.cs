@@ -34,7 +34,7 @@ public class RuleLogger(ILogger<RuleLogger> logger) : IRuleLogger
         context = context.IsNullOrEmpty() ? string.Empty : $"<{context}>";
 
         this.logger.Log(logLevel,
-            "{LogKey} rule {Rule} {RuleContent} -> {ResultSuccess} | {ResultMessages} <{RuleContext}>",
+            "[{LogKey}] rule {Rule} {RuleContent} -> {ResultSuccess} | {ResultMessages} <{RuleContext}>",
             "RES",
             rule.GetType().Name,
             content,
@@ -56,7 +56,7 @@ public class RuleLogger(ILogger<RuleLogger> logger) : IRuleLogger
         var errors = result.Errors.Select(e => $"[{e.GetType().Namespace}] {e.Message}");
 
         this.logger.Log(logLevel,
-            "{LogKey} rule {Rule} {RuleContent} -> {ResultSuccess} | {ResultMessages} <{RuleContext}>",
+            "[{LogKey}] rule {Rule} {RuleContent} -> {ResultSuccess} | {ResultMessages} <{RuleContext}>",
             "RES",
             rule.GetType().Name,
             content,

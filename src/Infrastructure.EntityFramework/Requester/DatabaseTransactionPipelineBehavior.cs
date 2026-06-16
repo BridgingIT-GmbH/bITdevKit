@@ -76,7 +76,7 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
 
             if (string.IsNullOrWhiteSpace(contextName))
             {
-                this.Logger.LogError("{LogKey} behavior: contextName missing on HandlerDatabaseTransactionAttribute and no default configured (handler={Handler})", LogKey, handlerType.FullName);
+                this.Logger.LogError("[{LogKey}] behavior: contextName missing on HandlerDatabaseTransactionAttribute and no default configured (handler={Handler})", LogKey, handlerType.FullName);
                 throw new InvalidOperationException("HandlerDatabaseTransactionAttribute.ContextName must be provided or a default context name must be configured via DatabaseTransactionOptions.DefaultContextName.");
             }
 
@@ -90,7 +90,7 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
             var dbContextType = typeAttr!.DbContextType;
             if (dbContextType is null || !typeof(DbContext).IsAssignableFrom(dbContextType))
             {
-                this.Logger.LogError("{LogKey} behavior: DbContextType invalid on HandlerDatabaseTransactionAttribute<T> (handler={Handler}, type={DbContextType})", LogKey, handlerType.FullName, dbContextType?.FullName ?? "<null>");
+                this.Logger.LogError("[{LogKey}] behavior: DbContextType invalid on HandlerDatabaseTransactionAttribute<T> (handler={Handler}, type={DbContextType})", LogKey, handlerType.FullName, dbContextType?.FullName ?? "<null>");
                 throw new InvalidOperationException("DbContextType must be a concrete DbContext.");
             }
 
@@ -108,7 +108,7 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
         // Execute the entire transactional unit within the strategy.
         return await strategy.ExecuteAsync(async () =>
         {
-            this.Logger.LogInformation("{LogKey} behavior: database transaction starting (context={DbContextType}/{DbContextId}, isolationLevel={IsolationLevel}, requestId={RequestId}, type={BehaviorType})", LogKey, dbContext.GetType().Name, dbContext.ContextId, isolationLevel, requestId, this.GetType().Name);
+            this.Logger.LogInformation("[{LogKey}] behavior: database transaction starting (context={DbContextType}/{DbContextId}, isolationLevel={IsolationLevel}, requestId={RequestId}, type={BehaviorType})", LogKey, dbContext.GetType().Name, dbContext.ContextId, isolationLevel, requestId, this.GetType().Name);
 
             // If a transaction already exists, avoid nesting
             if (dbContext.Database.CurrentTransaction is not null)
@@ -116,7 +116,7 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
                 var resultExisting = await next();
 
                 this.Logger.LogInformation(
-                    "{LogKey} behavior: database transaction reused existing (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId})",
+                    "[{LogKey}] behavior: database transaction reused existing (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId})",
                     LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, dbContext.Database.CurrentTransaction?.TransactionId);
 
                 return resultExisting;
@@ -132,7 +132,7 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
                 if (result.IsSuccess)
                 {
                     await transaction.CommitAsync(cancellationToken);
-                    this.Logger.LogInformation("{LogKey} behavior: database transaction commit completed (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId})", LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, trxId);
+                    this.Logger.LogInformation("[{LogKey}] behavior: database transaction commit completed (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId})", LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, trxId);
                 }
                 else
                 {
@@ -142,21 +142,21 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
                         {
                             await transaction.RollbackAsync(cancellationToken);
                             this.Logger.LogWarning(
-                                "{LogKey} behavior: database transaction rolled back due to failure (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId})",
+                                "[{LogKey}] behavior: database transaction rolled back due to failure (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId})",
                                 LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, trxId);
                         }
                         catch (Exception rbEx)
                         {
                             this.Logger.LogError(
                                 rbEx,
-                                "{LogKey} behavior: database transaction rollback failed (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId}) {ExceptionMessage}",
+                                "[{LogKey}] behavior: database transaction rollback failed (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId}) {ExceptionMessage}",
                                 LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, trxId, rbEx.Message);
                         }
                     }
                     else
                     {
                         this.Logger.LogWarning(
-                            "{LogKey} behavior: database transaction rollback not requested (RollbackOnFailure=false) despite exception (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId})",
+                            "[{LogKey}] behavior: database transaction rollback not requested (RollbackOnFailure=false) despite exception (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId})",
                             LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, trxId);
                     }
                 }
@@ -166,7 +166,7 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
             catch (Exception ex)
             {
                 this.Logger.LogWarning(
-                            "{LogKey} behavior: database transaction commit failure (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId}): {ExceptionMessage}",
+                            "[{LogKey}] behavior: database transaction commit failure (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId}): {ExceptionMessage}",
                             LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, trxId, ex.Message);
 
                 if (rollbackOnFailure)
@@ -175,21 +175,21 @@ public class DatabaseTransactionPipelineBehavior<TRequest, TResponse>(
                     {
                         await transaction.RollbackAsync(cancellationToken);
                         this.Logger.LogWarning(
-                            "{LogKey} behavior: database transaction rolled back due to failure (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId})",
+                            "[{LogKey}] behavior: database transaction rolled back due to failure (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId})",
                             LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, trxId);
                     }
                     catch (Exception rbEx)
                     {
                         this.Logger.LogError(
                             rbEx,
-                            "{LogKey} behavior: database transaction rollback failed (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId}) {ExceptionMessage}",
+                            "[{LogKey}] behavior: database transaction rollback failed (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId}) {ExceptionMessage}",
                             LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, trxId, rbEx.Message);
                     }
                 }
                 else
                 {
                     this.Logger.LogWarning(
-                        "{LogKey} behavior: database transaction rollback not requested (RollbackOnFailure=false) despite exception (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId})",
+                        "[{LogKey}] behavior: database transaction rollback not requested (RollbackOnFailure=false) despite exception (context={DbContextType}/{DbContextId}, requestId={RequestId}, type={BehaviorType}, trxId={TransactionId})",
                         LogKey, dbContext.GetType().Name, dbContext.ContextId, requestId, this.GetType().Name, trxId);
                 }
 

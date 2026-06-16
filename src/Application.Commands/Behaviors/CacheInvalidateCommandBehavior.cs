@@ -39,7 +39,7 @@ public class CacheInvalidateCommandBehavior<TRequest, TResponse>(ILoggerFactory 
             return result;
         }
 
-        this.Logger.LogDebug("{LogKey} command cache invalidate behavior (key={CacheKey}*, type={BehaviorType})",
+        this.Logger.LogDebug("[{LogKey}] command cache invalidate behavior (key={CacheKey}*, type={BehaviorType})",
             Constants.LogKey,
             instance.Options.Key,
             this.GetType().Name);

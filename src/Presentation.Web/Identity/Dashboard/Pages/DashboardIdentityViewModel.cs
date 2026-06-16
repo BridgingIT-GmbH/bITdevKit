@@ -35,10 +35,10 @@ public class DashboardIdentityViewModel
     /// </summary>
     public string AuthenticationType { get; set; }
 
-    /// <summary>
-    /// Gets or sets a value indicating whether the fake identity provider client-credentials login button can be shown.
-    /// </summary>
-    public bool CanLoginWithClientCredentials { get; set; }
+    // /// <summary>
+    // /// Gets or sets a value indicating whether the fake identity provider client-credentials login button can be shown.
+    // /// </summary>
+    // public bool CanLoginWithClientCredentials { get; set; }
 
     /// <summary>
     /// Gets or sets the dashboard-local action URL for the client-credentials login bridge.
@@ -91,6 +91,21 @@ public class DashboardIdentityViewModel
     public List<DashboardIdentityClaimViewModel> Claims { get; } = [];
 
     /// <summary>
+    /// Gets the authentication tokens saved in the current authentication ticket.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// model.Tokens.Add(new DashboardIdentityTokenViewModel
+    /// {
+    ///     Name = "access_token",
+    ///     DisplayName = "Access Token",
+    ///     Value = "ey..."
+    /// });
+    /// </code>
+    /// </example>
+    public List<DashboardIdentityTokenViewModel> Tokens { get; } = [];
+
+    /// <summary>
     /// Gets the informational messages shown on the identity dashboard.
     /// </summary>
     public List<string> Messages { get; } = [];
@@ -139,4 +154,50 @@ public class DashboardIdentityClaimViewModel
     /// Gets or sets the claim issuer.
     /// </summary>
     public string Issuer { get; set; }
+}
+
+/// <summary>
+/// Represents a saved authentication token shown on the dashboard identity page.
+/// </summary>
+/// <example>
+/// <code>
+/// var token = new DashboardIdentityTokenViewModel
+/// {
+///     Name = "id_token",
+///     DisplayName = "ID Token",
+///     Value = "ey..."
+/// };
+/// </code>
+/// </example>
+public class DashboardIdentityTokenViewModel
+{
+    /// <summary>
+    /// Gets or sets the token name stored in the authentication ticket.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// token.Name = "access_token";
+    /// </code>
+    /// </example>
+    public string Name { get; set; }
+
+    /// <summary>
+    /// Gets or sets the display name shown in the dashboard.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// token.DisplayName = "Access Token";
+    /// </code>
+    /// </example>
+    public string DisplayName { get; set; }
+
+    /// <summary>
+    /// Gets or sets the token value.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// token.Value = "ey...";
+    /// </code>
+    /// </example>
+    public string Value { get; set; }
 }

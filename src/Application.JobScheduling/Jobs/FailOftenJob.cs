@@ -29,7 +29,7 @@ public class FailOftenJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory)
 
         await Task.Delay(delay, cancellationToken);
 
-        this.Logger.LogInformation("{LogKey} {JobMessage} (jobKey={JobKey}, lastProcessed={LastProcessed})",
+        this.Logger.LogInformation("[{LogKey}] {JobMessage} (jobKey={JobKey}, lastProcessed={LastProcessed})",
             Constants.LogKey,
             message ?? "echo from failing job",
             context.JobDetail.Key,

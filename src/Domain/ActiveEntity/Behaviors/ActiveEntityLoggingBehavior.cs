@@ -81,7 +81,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
     public override Task<Result> BeforeFindOneAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindOne(this.logger, Constants.LogKey, this.type);
-        this.logger.LogDebug("{LogKey} active entity specification: {Specification}", Constants.LogKey, specification);
+        this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
         this.LogOptions(options);
 
         return Task.FromResult(Result.Success());
@@ -92,7 +92,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         TypedLogger.LogFindOne(this.logger, Constants.LogKey, this.type);
         foreach (var specification in specifications.SafeNull())
         {
-            this.logger.LogDebug("{LogKey} active entity specification: {Specification}", Constants.LogKey, specification);
+            this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
         }
         this.LogOptions(options);
 
@@ -118,7 +118,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
     public override Task<Result> BeforeFindAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindAll(this.logger, Constants.LogKey, this.type);
-        this.logger.LogDebug("{LogKey} active entity specification: {Specification}", Constants.LogKey, specification);
+        this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
         this.LogOptions(options);
 
         return Task.FromResult(Result.Success());
@@ -137,7 +137,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         TypedLogger.LogProjectAll(this.logger, Constants.LogKey, this.type);
         if (projection != null)
         {
-            this.logger.LogDebug("{LogKey} active entity: projection {Projection}", Constants.LogKey, projection);
+            this.logger.LogDebug("[{LogKey}] active entity: projection {Projection}", Constants.LogKey, projection);
         }
         this.LogOptions(options);
 
@@ -147,10 +147,10 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
     public override Task<Result> BeforeProjectAllAsync<TProjection>(ISpecification<TEntity> specification, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogProjectAll(this.logger, Constants.LogKey, this.type);
-        this.logger.LogDebug("{LogKey} active entity specification: {Specification}", Constants.LogKey, specification);
+        this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
         if (projection != null)
         {
-            this.logger.LogDebug("{LogKey} active entity: projection {Projection}", Constants.LogKey, projection);
+            this.logger.LogDebug("[{LogKey}] active entity: projection {Projection}", Constants.LogKey, projection);
         }
         this.LogOptions(options);
 
@@ -162,11 +162,11 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         TypedLogger.LogProjectAll(this.logger, Constants.LogKey, this.type);
         foreach (var specification in specifications.SafeNull())
         {
-            this.logger.LogDebug("{LogKey} active entity specification: {Specification}", Constants.LogKey, specification);
+            this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
         }
         if (projection != null)
         {
-            this.logger.LogDebug("{LogKey} active entity: projection {Projection}", Constants.LogKey, projection);
+            this.logger.LogDebug("[{LogKey}] active entity: projection {Projection}", Constants.LogKey, projection);
         }
         this.LogOptions(options);
 
@@ -178,7 +178,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         TypedLogger.LogProjectAllPaged(this.logger, Constants.LogKey, this.type);
         if (projection != null)
         {
-            this.logger.LogDebug("{LogKey} active entity: projection {Projection}", Constants.LogKey, projection);
+            this.logger.LogDebug("[{LogKey}] active entity: projection {Projection}", Constants.LogKey, projection);
         }
         this.LogOptions(options);
 
@@ -202,7 +202,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
     public override Task<Result> BeforeExistsAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogExists(this.logger, Constants.LogKey, this.type);
-        this.logger.LogDebug("{LogKey} active entity specification: {Specification}", Constants.LogKey, specification);
+        this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
 
         return Task.FromResult(Result.Success());
     }
@@ -212,7 +212,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         TypedLogger.LogExists(this.logger, Constants.LogKey, this.type);
         foreach (var specification in specifications.SafeNull())
         {
-            this.logger.LogDebug("{LogKey} active entity specification: {Specification}", Constants.LogKey, specification);
+            this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
         }
 
         return Task.FromResult(Result.Success());
@@ -235,7 +235,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
     public override Task<Result> BeforeCountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogCount(this.logger, Constants.LogKey, this.type);
-        this.logger.LogDebug("{LogKey} active entity specification: {Specification}", Constants.LogKey, specification);
+        this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
 
         return Task.FromResult(Result.Success());
     }
@@ -251,7 +251,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
     public override Task<Result> BeforeFindAllIdsAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindAllIds(this.logger, Constants.LogKey, this.type);
-        this.logger.LogDebug("{LogKey} active entity specification: {Specification}", Constants.LogKey, specification);
+        this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
         this.LogOptions(options);
 
         return Task.FromResult(Result.Success());
@@ -262,7 +262,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         TypedLogger.LogFindAllIds(this.logger, Constants.LogKey, this.type);
         foreach (var specification in specifications.SafeNull())
         {
-            this.logger.LogDebug("{LogKey} active entity specification: {Specification}", Constants.LogKey, specification);
+            this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
         }
         this.LogOptions(options);
 
@@ -288,7 +288,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
     public override Task<Result> BeforeFindAllIdsPagedAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogFindAllIdsPaged(this.logger, Constants.LogKey, this.type);
-        this.logger.LogDebug("{LogKey} active entity specification: {Specification}", Constants.LogKey, specification);
+        this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
         this.LogOptions(options);
 
         return Task.FromResult(Result.Success());
@@ -299,7 +299,7 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
         TypedLogger.LogFindAllIdsPaged(this.logger, Constants.LogKey, this.type);
         foreach (var specification in specifications.SafeNull())
         {
-            this.logger.LogDebug("{LogKey} active entity specification: {Specification}", Constants.LogKey, specification);
+            this.logger.LogDebug("[{LogKey}] active entity specification: {Specification}", Constants.LogKey, specification);
         }
         this.LogOptions(options);
 
@@ -325,86 +325,86 @@ public partial class ActiveEntityLoggingBehavior<TEntity>(ILoggerFactory loggerF
     {
         if (options?.Distinct?.Expression != null)
         {
-            this.logger.LogDebug("{LogKey} active entity: distinct {DistinctExpression}", Constants.LogKey, options.Distinct.Expression);
+            this.logger.LogDebug("[{LogKey}] active entity: distinct {DistinctExpression}", Constants.LogKey, options.Distinct.Expression);
         }
 
         foreach (var order in (options?.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order))
         {
-            this.logger.LogDebug("{LogKey} active entity: order {OrderExpression}", Constants.LogKey, order.Expression);
+            this.logger.LogDebug("[{LogKey}] active entity: order {OrderExpression}", Constants.LogKey, order.Expression);
         }
 
         foreach (var include in (options?.Includes.EmptyToNull() ?? new List<IncludeOption<TEntity>>()).Insert(options?.Include))
         {
             if (include.Expression != null)
             {
-                this.logger.LogDebug("{LogKey} active entity: include {IncludeExpression}", Constants.LogKey, include.Expression);
+                this.logger.LogDebug("[{LogKey}] active entity: include {IncludeExpression}", Constants.LogKey, include.Expression);
             }
 
             if (include.Path != null)
             {
-                this.logger.LogDebug("{LogKey} active entity: include {IncludePath}", Constants.LogKey, include.Path);
+                this.logger.LogDebug("[{LogKey}] active entity: include {IncludePath}", Constants.LogKey, include.Path);
             }
         }
 
         if (options?.Skip.HasValue == true)
         {
-            this.logger.LogDebug("{LogKey} active entity: skip {Skip}", Constants.LogKey, options.Skip.Value);
+            this.logger.LogDebug("[{LogKey}] active entity: skip {Skip}", Constants.LogKey, options.Skip.Value);
         }
 
         if (options?.Take.HasValue == true)
         {
-            this.logger.LogDebug("{LogKey} active entity: take {Take}", Constants.LogKey, options.Take.Value);
+            this.logger.LogDebug("[{LogKey}] active entity: take {Take}", Constants.LogKey, options.Take.Value);
         }
     }
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} active entity: count (type={EntityType})")]
+        [LoggerMessage(0, LogLevel.Information, "[{LogKey}] active entity: count (type={EntityType})")]
         public static partial void LogCount(ILogger logger, string logKey, string entityType);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} active entity: exists (type={EntityType})")]
+        [LoggerMessage(1, LogLevel.Information, "[{LogKey}] active entity: exists (type={EntityType})")]
         public static partial void LogExists(ILogger logger, string logKey, string entityType);
 
-        [LoggerMessage(2, LogLevel.Information, "{LogKey} active entity: exists (type={EntityType}, id={EntityId})")]
+        [LoggerMessage(2, LogLevel.Information, "[{LogKey}] active entity: exists (type={EntityType}, id={EntityId})")]
         public static partial void LogExistsId(ILogger logger, string logKey, string entityType, object entityId);
 
-        [LoggerMessage(3, LogLevel.Information, "{LogKey} active entity: findall (type={EntityType})")]
+        [LoggerMessage(3, LogLevel.Information, "[{LogKey}] active entity: findall (type={EntityType})")]
         public static partial void LogFindAll(ILogger logger, string logKey, string entityType);
 
-        [LoggerMessage(4, LogLevel.Information, "{LogKey} active entity: findall paged (type={EntityType})")]
+        [LoggerMessage(4, LogLevel.Information, "[{LogKey}] active entity: findall paged (type={EntityType})")]
         public static partial void LogFindAllPaged(ILogger logger, string logKey, string entityType);
 
-        [LoggerMessage(5, LogLevel.Information, "{LogKey} active entity: projectall (type={EntityType})")]
+        [LoggerMessage(5, LogLevel.Information, "[{LogKey}] active entity: projectall (type={EntityType})")]
         public static partial void LogProjectAll(ILogger logger, string logKey, string entityType);
 
-        [LoggerMessage(6, LogLevel.Information, "{LogKey} active entity: projectall paged (type={EntityType})")]
+        [LoggerMessage(6, LogLevel.Information, "[{LogKey}] active entity: projectall paged (type={EntityType})")]
         public static partial void LogProjectAllPaged(ILogger logger, string logKey, string entityType);
 
-        [LoggerMessage(7, LogLevel.Information, "{LogKey} active entity: findone (type={EntityType}, id={EntityId})")]
+        [LoggerMessage(7, LogLevel.Information, "[{LogKey}] active entity: findone (type={EntityType}, id={EntityId})")]
         public static partial void LogFindOneId(ILogger logger, string logKey, string entityType, object entityId);
 
-        [LoggerMessage(8, LogLevel.Information, "{LogKey} active entity: findone (type={EntityType})")]
+        [LoggerMessage(8, LogLevel.Information, "[{LogKey}] active entity: findone (type={EntityType})")]
         public static partial void LogFindOne(ILogger logger, string logKey, string entityType);
 
-        [LoggerMessage(9, LogLevel.Information, "{LogKey} active entity: insert (type={EntityType}, id={EntityId})")]
+        [LoggerMessage(9, LogLevel.Information, "[{LogKey}] active entity: insert (type={EntityType}, id={EntityId})")]
         public static partial void LogInsert(ILogger logger, string logKey, string entityType, object entityId);
 
-        [LoggerMessage(10, LogLevel.Information, "{LogKey} active entity: update (type={EntityType}, id={EntityId})")]
+        [LoggerMessage(10, LogLevel.Information, "[{LogKey}] active entity: update (type={EntityType}, id={EntityId})")]
         public static partial void LogUpdate(ILogger logger, string logKey, string entityType, object entityId);
 
-        [LoggerMessage(11, LogLevel.Information, "{LogKey} active entity: upsert (type={EntityType}, id={EntityId})")]
+        [LoggerMessage(11, LogLevel.Information, "[{LogKey}] active entity: upsert (type={EntityType}, id={EntityId})")]
         public static partial void LogUpsert(ILogger logger, string logKey, string entityType, object entityId);
 
-        [LoggerMessage(12, LogLevel.Information, "{LogKey} active entity: delete (type={EntityType}, id={EntityId})")]
+        [LoggerMessage(12, LogLevel.Information, "[{LogKey}] active entity: delete (type={EntityType}, id={EntityId})")]
         public static partial void LogDelete(ILogger logger, string logKey, string entityType, object entityId);
 
-        [LoggerMessage(13, LogLevel.Information, "{LogKey} active entity: findall ids (type={EntityType})")]
+        [LoggerMessage(13, LogLevel.Information, "[{LogKey}] active entity: findall ids (type={EntityType})")]
         public static partial void LogFindAllIds(ILogger logger, string logKey, string entityType);
 
-        [LoggerMessage(14, LogLevel.Information, "{LogKey} active entity: findall ids paged (type={EntityType})")]
+        [LoggerMessage(14, LogLevel.Information, "[{LogKey}] active entity: findall ids paged (type={EntityType})")]
         public static partial void LogFindAllIdsPaged(ILogger logger, string logKey, string entityType);
 
-        [LoggerMessage(15, LogLevel.Information, "{LogKey} active entity: transaction (type={EntityType})")]
+        [LoggerMessage(15, LogLevel.Information, "[{LogKey}] active entity: transaction (type={EntityType})")]
         public static partial void LogTransaction(ILogger logger, string logKey, string entityType);
     }
 }

@@ -177,13 +177,14 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
     /// <inheritdoc />
     public async Task<Result<OrchestrationExecuteResult>> ExecuteAsync<TOrchestration, TData>(
         TData data,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        string correlationId = null)
         where TOrchestration : class, IOrchestration<TData>
         where TData : class, IOrchestrationData
     {
         try
         {
-            var context = await this.ExecuteInlineContextAsync<TOrchestration, TData>(data, cancellationToken).ConfigureAwait(false);
+            var context = await this.ExecuteInlineContextAsync<TOrchestration, TData>(data, cancellationToken, correlationId).ConfigureAwait(false);
 
             if (context.Status is OrchestrationStatus.Waiting or OrchestrationStatus.Paused)
             {
@@ -209,7 +210,8 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
     /// <inheritdoc />
     public async Task<Result<Guid>> DispatchAsync<TOrchestration, TData>(
         TData data,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        string correlationId = null)
         where TOrchestration : class, IOrchestration<TData>
         where TData : class, IOrchestrationData
     {
@@ -217,7 +219,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
 
         try
         {
-            var instanceId = await this.CreateInstanceAsync<TOrchestration, TData>(data, cancellationToken).ConfigureAwait(false);
+            var instanceId = await this.CreateInstanceAsync<TOrchestration, TData>(data, cancellationToken, correlationId).ConfigureAwait(false);
             this.ScheduleBackgroundAdvance<TOrchestration, TData>(instanceId);
 
             return Result<Guid>.Success(instanceId);
@@ -237,13 +239,14 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         TData data,
         OrchestrationWaitFor waitFor = null,
         TimeSpan? timeout = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        string correlationId = null)
         where TOrchestration : class, IOrchestration<TData>
         where TData : class, IOrchestrationData
     {
         try
         {
-            var dispatch = await this.DispatchAsync<TOrchestration, TData>(data, cancellationToken).ConfigureAwait(false);
+            var dispatch = await this.DispatchAsync<TOrchestration, TData>(data, cancellationToken, correlationId).ConfigureAwait(false);
             if (dispatch.IsFailure)
             {
                 return Result<OrchestrationWaitResult>.Failure().WithErrors(dispatch.Errors).WithMessages(dispatch.Messages);
@@ -449,7 +452,8 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
 
     private async Task<OrchestrationContext<TData>> ExecuteInlineContextAsync<TOrchestration, TData>(
         TData data,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        string correlationId = null)
         where TOrchestration : class, IOrchestration<TData>
         where TData : class, IOrchestrationData
     {
@@ -469,11 +473,12 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             orchestration.Name,
             data,
             scope.ServiceProvider,
+            correlationId: NormalizeCorrelationId(correlationId),
             startedUtc: this.clock.UtcNow);
-        using var logScope = this.BeginOrchestrationScope(context.InstanceId, context.OrchestrationName, context.CurrentState);
+        using var logScope = this.BeginOrchestrationScope(context.InstanceId, context.OrchestrationName, context.CurrentState, context.CorrelationId);
 
         this.logger.LogDebug(
-            "{LogKey} executing orchestration inline (instanceId={InstanceId}, orchestration={Orchestration})",
+            "[{LogKey}] executing orchestration inline (instanceId={InstanceId}, orchestration={Orchestration})",
             Constants.LogKey,
             context.InstanceId,
             orchestration.Name);
@@ -495,7 +500,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         {
             this.logger.LogWarning(
                 exception,
-                "{LogKey} inline orchestration execution lost lease access (instanceId={InstanceId}, orchestration={Orchestration})",
+                "[{LogKey}] inline orchestration execution lost lease access (instanceId={InstanceId}, orchestration={Orchestration})",
                 Constants.LogKey,
                 context.InstanceId,
                 context.OrchestrationName);
@@ -508,7 +513,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         {
             this.logger.LogError(
                 exception,
-                "{LogKey} inline orchestration execution failed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity})",
+                "[{LogKey}] inline orchestration execution failed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity})",
                 Constants.LogKey,
                 context.InstanceId,
                 context.OrchestrationName,
@@ -532,7 +537,8 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
 
     private async Task<Guid> CreateInstanceAsync<TOrchestration, TData>(
         TData data,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,
+        string correlationId = null)
         where TOrchestration : class, IOrchestration<TData>
         where TData : class, IOrchestrationData
     {
@@ -553,11 +559,12 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             orchestration.Name,
             data,
             scope.ServiceProvider,
+            correlationId: NormalizeCorrelationId(correlationId),
             startedUtc: this.clock.UtcNow);
-        using var logScope = this.BeginOrchestrationScope(context.InstanceId, context.OrchestrationName, context.CurrentState);
+        using var logScope = this.BeginOrchestrationScope(context.InstanceId, context.OrchestrationName, context.CurrentState, context.CorrelationId);
 
-        this.logger.LogDebug(
-            "{LogKey} created orchestration instance (instanceId={InstanceId}, orchestration={Orchestration})",
+        this.logger.LogInformation(
+            "[{LogKey}] created orchestration instance (instanceId={InstanceId}, orchestration={Orchestration})",
             Constants.LogKey,
             context.InstanceId,
             orchestration.Name);
@@ -578,6 +585,9 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         return this.CreateInstanceAsync<TOrchestration, TData>(data, cancellationToken);
     }
 
+    private static string NormalizeCorrelationId(string correlationId) =>
+        string.IsNullOrWhiteSpace(correlationId) ? null : correlationId.Trim();
+
     private void ScheduleBackgroundAdvance<TOrchestration, TData>(Guid instanceId)
         where TOrchestration : class, IOrchestration<TData>
         where TData : class, IOrchestrationData
@@ -588,7 +598,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         }
 
         this.logger.LogDebug(
-            "{LogKey} scheduling background orchestration advance (instanceId={InstanceId}, orchestration={Orchestration})",
+            "[{LogKey}] scheduling background orchestration advance (instanceId={InstanceId}, orchestration={Orchestration})",
             Constants.LogKey,
             instanceId,
             typeof(TOrchestration).Name);
@@ -649,12 +659,12 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
 
         var definition = orchestrationDefinition.GetDefinition();
         var completed = false;
-        using var logScope = this.BeginOrchestrationScope(instanceId, orchestration.Name, snapshot.CurrentState);
+        using var logScope = this.BeginOrchestrationScope(instanceId, orchestration.Name, snapshot.CurrentState, snapshot.CorrelationId);
 
         try
         {
             this.logger.LogDebug(
-                "{LogKey} continuing orchestration instance (instanceId={InstanceId}, orchestration={Orchestration}, status={Status}, state={State})",
+                "[{LogKey}] continuing orchestration instance (instanceId={InstanceId}, orchestration={Orchestration}, status={Status}, state={State})",
                 Constants.LogKey,
                 instanceId,
                 orchestration.Name,
@@ -673,7 +683,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                         catch (OrchestrationLeaseLostException)
                         {
                             this.logger.LogDebug(
-                                "{LogKey} orchestration continuation stopped because the lease was lost (instanceId={InstanceId}, orchestration={Orchestration})",
+                                "[{LogKey}] orchestration continuation stopped because the lease was lost (instanceId={InstanceId}, orchestration={Orchestration})",
                                 Constants.LogKey,
                                 instanceId,
                                 orchestration.Name);
@@ -683,7 +693,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                         {
                             this.logger.LogError(
                                 exception,
-                                "{LogKey} orchestration continuation failed and will mark the instance as failed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity})",
+                                "[{LogKey}] orchestration continuation failed and will mark the instance as failed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity})",
                                 Constants.LogKey,
                                 instanceId,
                                 orchestration.Name,
@@ -700,7 +710,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         catch (OrchestrationLeaseConflictException)
         {
             this.logger.LogDebug(
-                "{LogKey} skipped orchestration continuation because another worker owns the lease (instanceId={InstanceId}, orchestration={Orchestration})",
+                "[{LogKey}] skipped orchestration continuation because another worker owns the lease (instanceId={InstanceId}, orchestration={Orchestration})",
                 Constants.LogKey,
                 instanceId,
                 orchestration.Name);
@@ -709,8 +719,8 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
 
         if (completed)
         {
-            this.logger.LogDebug(
-                "{LogKey} orchestration continuation completed (instanceId={InstanceId}, orchestration={Orchestration})",
+            this.logger.LogInformation(
+                "[{LogKey}] orchestration continuation completed (instanceId={InstanceId}, orchestration={Orchestration})",
                 Constants.LogKey,
                 instanceId,
                 orchestration.Name);
@@ -733,7 +743,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             return new RecoveryActionOutcome(RecoveryActionResult.None);
         }
 
-        using var logScope = this.BeginOrchestrationScope(instanceId, snapshot.OrchestrationName, snapshot.CurrentState);
+        using var logScope = this.BeginOrchestrationScope(instanceId, snapshot.OrchestrationName, snapshot.CurrentState, snapshot.CorrelationId);
 
         var waitPlan = this.TryGetWaitPlan(snapshot, out var plan) ? plan : null;
         if (waitPlan is null || waitPlan.ExpectedTimers.Count == 0)
@@ -770,7 +780,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                         if (repaired > 0)
                         {
                             this.logger.LogDebug(
-                                "{LogKey} repaired waiting orchestration boundary (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, repairedTimers={TimerCount})",
+                                "[{LogKey}] repaired waiting orchestration boundary (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, repairedTimers={TimerCount})",
                                 Constants.LogKey,
                                 instanceId,
                                 snapshot.OrchestrationName,
@@ -788,7 +798,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         catch (OrchestrationLeaseConflictException)
         {
             this.logger.LogDebug(
-                "{LogKey} skipped waiting-boundary repair because another worker owns the lease (instanceId={InstanceId}, orchestration={Orchestration})",
+                "[{LogKey}] skipped waiting-boundary repair because another worker owns the lease (instanceId={InstanceId}, orchestration={Orchestration})",
                 Constants.LogKey,
                 instanceId,
                 snapshot.OrchestrationName);
@@ -916,8 +926,8 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             var activityDefinition = state.Activities[activityIndex];
             context.CurrentActivity = activityDefinition.Name;
             var activityAttempt = this.GetActivityAttempt(context, state.Name, activityDefinition.Name);
-            this.logger.LogDebug(
-                "{LogKey} executing orchestration activity (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, index={ActivityIndex})",
+            this.logger.LogInformation(
+                "[{LogKey}] executing orchestration activity (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, index={ActivityIndex})",
                 Constants.LogKey,
                 context.InstanceId,
                 context.OrchestrationName,
@@ -969,7 +979,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                     if (resolution.Kind == ActivityExecutionResolutionKind.RetryImmediate)
                     {
                         this.logger.LogDebug(
-                            "{LogKey} retrying orchestration activity immediately (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, reason={Reason})",
+                            "[{LogKey}] retrying orchestration activity immediately (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, reason={Reason})",
                             Constants.LogKey,
                             context.InstanceId,
                             context.OrchestrationName,
@@ -993,7 +1003,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                     if (resolution.Kind == ActivityExecutionResolutionKind.Deferred)
                     {
                         this.logger.LogDebug(
-                            "{LogKey} scheduled orchestration activity retry (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, reason={Reason})",
+                            "[{LogKey}] scheduled orchestration activity retry (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, reason={Reason})",
                             Constants.LogKey,
                             context.InstanceId,
                             context.OrchestrationName,
@@ -1030,8 +1040,8 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                     activityIndex++;
                     this.SetActivityIndex(context, activityIndex);
                     context.CurrentActivity = null;
-                    this.logger.LogDebug(
-                        "{LogKey} completed orchestration activity (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, outcome={Outcome})",
+                    this.logger.LogInformation(
+                        "[{LogKey}] completed orchestration activity (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, outcome={Outcome})",
                         Constants.LogKey,
                         context.InstanceId,
                         context.OrchestrationName,
@@ -1053,7 +1063,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             {
                 this.logger.LogWarning(
                     exception,
-                    "{LogKey} orchestration activity failed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity})",
+                    "[{LogKey}] orchestration activity failed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity})",
                     Constants.LogKey,
                     context.InstanceId,
                     context.OrchestrationName,
@@ -1073,7 +1083,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                 if (resolution.Kind == ActivityExecutionResolutionKind.RetryImmediate)
                 {
                     this.logger.LogDebug(
-                        "{LogKey} retrying failed orchestration activity immediately (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, reason={Reason})",
+                        "[{LogKey}] retrying failed orchestration activity immediately (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, reason={Reason})",
                         Constants.LogKey,
                         context.InstanceId,
                         context.OrchestrationName,
@@ -1097,7 +1107,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                 if (resolution.Kind == ActivityExecutionResolutionKind.Deferred)
                 {
                     this.logger.LogDebug(
-                        "{LogKey} scheduled retry after orchestration activity failure (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, reason={Reason})",
+                        "[{LogKey}] scheduled retry after orchestration activity failure (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, reason={Reason})",
                         Constants.LogKey,
                         context.InstanceId,
                         context.OrchestrationName,
@@ -1154,7 +1164,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             {
                 await this.BeginMutatingActionAsync(lease, $"Process signal '{signal.SignalName}'", cancellationToken).ConfigureAwait(false);
                 this.logger.LogDebug(
-                    "{LogKey} processing orchestration signal (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, signal={SignalName})",
+                    "[{LogKey}] processing orchestration signal (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, signal={SignalName})",
                     Constants.LogKey,
                     context.InstanceId,
                     context.OrchestrationName,
@@ -1220,7 +1230,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             {
                 this.logger.LogError(
                     exception,
-                    "{LogKey} orchestration signal processing failed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, signal={SignalName})",
+                    "[{LogKey}] orchestration signal processing failed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, signal={SignalName})",
                     Constants.LogKey,
                     context.InstanceId,
                     context.OrchestrationName,
@@ -1262,7 +1272,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
 
             await this.BeginMutatingActionAsync(lease, $"Process timer '{timer.TimerId}'", cancellationToken).ConfigureAwait(false);
             this.logger.LogDebug(
-                "{LogKey} processing orchestration timer (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, timerId={TimerId}, trigger={TriggerKind}, targetState={TargetState})",
+                "[{LogKey}] processing orchestration timer (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, timerId={TimerId}, trigger={TriggerKind}, targetState={TargetState})",
                 Constants.LogKey,
                 context.InstanceId,
                 context.OrchestrationName,
@@ -1330,7 +1340,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         snapshot = await this.SaveSnapshotAsync(snapshot, context, lease, $"Persist waiting state '{state.Name}'", cancellationToken).ConfigureAwait(false);
         await this.AppendHistoryAsync(lease, context.InstanceId, "Waiting", context.CurrentState, null, waitPlan.Reason, cancellationToken).ConfigureAwait(false);
         this.logger.LogDebug(
-            "{LogKey} orchestration entered waiting state (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, waitKind={WaitKind}, signals={SignalCount}, timers={TimerCount}, reason={Reason})",
+            "[{LogKey}] orchestration entered waiting state (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, waitKind={WaitKind}, signals={SignalCount}, timers={TimerCount}, reason={Reason})",
             Constants.LogKey,
             context.InstanceId,
             context.OrchestrationName,
@@ -1359,7 +1369,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         {
             case OrchestrationOutcomeKind.Wait:
                 this.logger.LogDebug(
-                    "{LogKey} orchestration outcome requested wait (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, reason={Reason}, delay={Delay})",
+                    "[{LogKey}] orchestration outcome requested wait (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, reason={Reason}, delay={Delay})",
                     Constants.LogKey,
                     context.InstanceId,
                     context.OrchestrationName,
@@ -1373,7 +1383,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
 
             case OrchestrationOutcomeKind.Complete:
                 this.logger.LogInformation(
-                    "{LogKey} orchestration completed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, reason={Reason})",
+                    "[{LogKey}] orchestration completed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, reason={Reason})",
                     Constants.LogKey,
                     context.InstanceId,
                     context.OrchestrationName,
@@ -1391,7 +1401,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
 
             case OrchestrationOutcomeKind.Cancel:
                 this.logger.LogInformation(
-                    "{LogKey} orchestration cancellation requested (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, reason={Reason})",
+                    "[{LogKey}] orchestration cancellation requested (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, reason={Reason})",
                     Constants.LogKey,
                     context.InstanceId,
                     context.OrchestrationName,
@@ -1406,7 +1416,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                 if (cancelCompensationResult.Failed)
                 {
                     this.logger.LogError(
-                        "{LogKey} orchestration cancellation compensation failed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, reason={Reason})",
+                        "[{LogKey}] orchestration cancellation compensation failed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, reason={Reason})",
                         Constants.LogKey,
                         context.InstanceId,
                         context.OrchestrationName,
@@ -1429,7 +1439,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
 
             case OrchestrationOutcomeKind.Terminate:
                 this.logger.LogInformation(
-                    "{LogKey} orchestration termination requested (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, reason={Reason})",
+                    "[{LogKey}] orchestration termination requested (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, reason={Reason})",
                     Constants.LogKey,
                     context.InstanceId,
                     context.OrchestrationName,
@@ -1444,7 +1454,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                 if (terminationCompensationResult.Failed)
                 {
                     this.logger.LogError(
-                        "{LogKey} orchestration termination compensation failed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, reason={Reason})",
+                        "[{LogKey}] orchestration termination compensation failed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, reason={Reason})",
                         Constants.LogKey,
                         context.InstanceId,
                         context.OrchestrationName,
@@ -1487,8 +1497,8 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         var stateVisit = OrchestrationRuntimeMetadata.EnterStateVisit(context, stateName);
         OrchestrationRuntimeMetadata.CleanupStateScopedHelperKeys(context, stateName, stateVisit);
 
-        this.logger.LogDebug(
-            "{LogKey} orchestration entered state (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, visit={Visit})",
+        this.logger.LogInformation(
+            "[{LogKey}] orchestration entered state (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, visit={Visit})",
             Constants.LogKey,
             context.InstanceId,
             context.OrchestrationName,
@@ -1510,7 +1520,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         where TData : class, IOrchestrationData
     {
         this.logger.LogDebug(
-            "{LogKey} orchestration transitioned state (instanceId={InstanceId}, orchestration={Orchestration}, fromState={SourceState}, toState={TargetState})",
+            "[{LogKey}] orchestration transitioned state (instanceId={InstanceId}, orchestration={Orchestration}, fromState={SourceState}, toState={TargetState})",
             Constants.LogKey,
             context.InstanceId,
             context.OrchestrationName,
@@ -1612,7 +1622,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             if (pending is not null)
             {
                 this.logger.LogDebug(
-                    "{LogKey} reusing pending orchestration timer (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, trigger={TriggerKind}, continuation={Continuation}, timerId={TimerId})",
+                    "[{LogKey}] reusing pending orchestration timer (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, trigger={TriggerKind}, continuation={Continuation}, timerId={TimerId})",
                     Constants.LogKey,
                     instanceId,
                     orchestrationName,
@@ -1636,7 +1646,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
 
             await this.AppendHistoryAsync(lease, instanceId, "TimerScheduled", waitPlan.StateName, null, timer.TriggerKind, cancellationToken).ConfigureAwait(false);
             this.logger.LogDebug(
-                "{LogKey} scheduled orchestration timer (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, timerId={TimerId}, trigger={TriggerKind}, dueTimeUtc={DueTimeUtc}, continuation={Continuation}, targetState={TargetState})",
+                "[{LogKey}] scheduled orchestration timer (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, timerId={TimerId}, trigger={TriggerKind}, dueTimeUtc={DueTimeUtc}, continuation={Continuation}, targetState={TargetState})",
                 Constants.LogKey,
                 instanceId,
                 orchestrationName,
@@ -1666,7 +1676,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         }
 
         this.logger.LogDebug(
-            "{LogKey} scheduled orchestration timer watcher (instanceId={InstanceId}, timerId={TimerId}, trigger={TriggerKind}, dueTimeUtc={DueTimeUtc}, continuation={Continuation})",
+            "[{LogKey}] scheduled orchestration timer watcher (instanceId={InstanceId}, timerId={TimerId}, trigger={TriggerKind}, dueTimeUtc={DueTimeUtc}, continuation={Continuation})",
             Constants.LogKey,
             timer.InstanceId,
             timer.TimerId,
@@ -1688,7 +1698,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                 {
                     var dataType = this.registrations.GetDataType(orchestrationType);
                     this.logger.LogDebug(
-                        "{LogKey} timer watcher continuing orchestration instance (instanceId={InstanceId}, timerId={TimerId}, orchestration={Orchestration})",
+                        "[{LogKey}] timer watcher continuing orchestration instance (instanceId={InstanceId}, timerId={TimerId}, orchestration={Orchestration})",
                         Constants.LogKey,
                         timer.InstanceId,
                         timer.TimerId,
@@ -1700,7 +1710,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             {
                 this.logger.LogDebug(
                     exception,
-                    "{LogKey} orchestration timer watcher stopped unexpectedly (instanceId={InstanceId}, timerId={TimerId}, orchestration={Orchestration})",
+                    "[{LogKey}] orchestration timer watcher stopped unexpectedly (instanceId={InstanceId}, timerId={TimerId}, orchestration={Orchestration})",
                     Constants.LogKey,
                     timer.InstanceId,
                     timer.TimerId,
@@ -1763,7 +1773,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                 async lease =>
                 {
                     var context = await this.persistenceProvider.Queries.GetContextAsync<TData>(instanceId, scope.ServiceProvider, cancellationToken).ConfigureAwait(false);
-                    using var logScope = this.BeginOrchestrationScope(instanceId, orchestration.Name, context.CurrentState);
+                    using var logScope = this.BeginOrchestrationScope(instanceId, orchestration.Name, context.CurrentState, context.CorrelationId);
                     var definition = orchestrationDefinition.GetDefinition();
                     var stateName = string.IsNullOrWhiteSpace(context.CurrentState) ? definition.InitialState : context.CurrentState;
                     var state = definition.States[stateName];
@@ -1772,7 +1782,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
 
                     await this.BeginMutatingActionAsync(lease, $"accept signal '{signalName}'", cancellationToken).ConfigureAwait(false);
                     this.logger.LogDebug(
-                        "{LogKey} accepted orchestration signal (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, signal={SignalName}, idempotencyKey={IdempotencyKey})",
+                        "[{LogKey}] accepted orchestration signal (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, signal={SignalName}, idempotencyKey={IdempotencyKey})",
                         Constants.LogKey,
                         instanceId,
                         orchestration.Name,
@@ -1799,7 +1809,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                     if (!matchesSignal)
                     {
                         this.logger.LogWarning(
-                            "{LogKey} rejected orchestration signal because no handler matched the current state (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, signal={SignalName})",
+                            "[{LogKey}] rejected orchestration signal because no handler matched the current state (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, signal={SignalName})",
                             Constants.LogKey,
                             instanceId,
                             orchestration.Name,
@@ -2199,7 +2209,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         CancellationToken cancellationToken)
         where TData : class, IOrchestrationData
     {
-        using var logScope = this.BeginOrchestrationScope(context.InstanceId, context.OrchestrationName, context.CurrentState);
+        using var logScope = this.BeginOrchestrationScope(context.InstanceId, context.OrchestrationName, context.CurrentState, context.CorrelationId);
         var stack = this.GetCompensationStack(context);
         if (stack.Count == 0)
         {
@@ -2207,7 +2217,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         }
 
         this.logger.LogDebug(
-            "{LogKey} executing orchestration compensation stack (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, count={CompensationCount})",
+            "[{LogKey}] executing orchestration compensation stack (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, count={CompensationCount})",
             Constants.LogKey,
             context.InstanceId,
             context.OrchestrationName,
@@ -2235,7 +2245,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             try
             {
                 this.logger.LogDebug(
-                    "{LogKey} executing orchestration compensation activity (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, compensation={Compensation})",
+                    "[{LogKey}] executing orchestration compensation activity (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, compensation={Compensation})",
                     Constants.LogKey,
                     context.InstanceId,
                     context.OrchestrationName,
@@ -2271,7 +2281,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                 snapshot = await this.SaveSnapshotAsync(snapshot, context, lease, "persist compensation result", cancellationToken).ConfigureAwait(false);
                 await this.AppendHistoryAsync(lease, context.InstanceId, "CompensationCompleted", registration.StateName, compensation.Name, registration.ActivityName, cancellationToken).ConfigureAwait(false);
                 this.logger.LogDebug(
-                    "{LogKey} completed orchestration compensation activity (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, compensation={Compensation})",
+                    "[{LogKey}] completed orchestration compensation activity (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, compensation={Compensation})",
                     Constants.LogKey,
                     context.InstanceId,
                     context.OrchestrationName,
@@ -2284,7 +2294,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                 failed = true;
                 this.logger.LogError(
                     exception,
-                    "{LogKey} orchestration compensation activity failed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, compensation={Compensation})",
+                    "[{LogKey}] orchestration compensation activity failed (instanceId={InstanceId}, orchestration={Orchestration}, state={State}, activity={Activity}, compensation={Compensation})",
                     Constants.LogKey,
                     context.InstanceId,
                     context.OrchestrationName,
@@ -2433,7 +2443,11 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         return await task.ConfigureAwait(false);
     }
 
-    private IDisposable BeginOrchestrationScope(Guid instanceId, string orchestrationName = null, string stateName = null)
+    private IDisposable BeginOrchestrationScope(
+        Guid instanceId,
+        string orchestrationName = null,
+        string stateName = null,
+        string correlationId = null)
     {
         var state = new Dictionary<string, object>
         {
@@ -2448,6 +2462,11 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         if (!string.IsNullOrWhiteSpace(stateName))
         {
             state["OrchestrationState"] = stateName;
+        }
+
+        if (!string.IsNullOrWhiteSpace(correlationId))
+        {
+            state[Constants.CorrelationIdKey] = correlationId;
         }
 
         return this.logger.BeginScope(state);
@@ -2615,7 +2634,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
     private async Task<OrchestrationLease> AcquireLeaseAsync(Guid instanceId, string owner, CancellationToken cancellationToken)
     {
         this.logger.LogDebug(
-            "{LogKey} acquiring orchestration lease (instanceId={InstanceId}, owner={Owner})",
+            "[{LogKey}] acquiring orchestration lease (instanceId={InstanceId}, owner={Owner})",
             Constants.LogKey,
             instanceId,
             owner);
@@ -2623,7 +2642,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         {
             var lease = await this.persistenceProvider.Leases.AcquireAsync(instanceId, owner, LeaseDuration, cancellationToken).ConfigureAwait(false);
             this.logger.LogDebug(
-                "{LogKey} acquired orchestration lease (instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId})",
+                "[{LogKey}] acquired orchestration lease (instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId})",
                 Constants.LogKey,
                 instanceId,
                 owner,
@@ -2634,7 +2653,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         {
             this.logger.LogDebug(
                 exception,
-                "{LogKey} failed to acquire orchestration lease because another worker is active (instanceId={InstanceId}, owner={Owner})",
+                "[{LogKey}] failed to acquire orchestration lease because another worker is active (instanceId={InstanceId}, owner={Owner})",
                 Constants.LogKey,
                 instanceId,
                 owner);
@@ -2652,7 +2671,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                 .ReleaseAsync(instanceId, lease.Lease.LeaseId, owner, cancellationToken)
                 .ConfigureAwait(false);
             this.logger.LogDebug(
-                "{LogKey} released orchestration lease (instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId})",
+                "[{LogKey}] released orchestration lease (instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId})",
                 Constants.LogKey,
                 instanceId,
                 owner,
@@ -2662,7 +2681,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         {
             this.logger.LogDebug(
                 exception,
-                "{LogKey} failed to release orchestration lease cleanly (instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId})",
+                "[{LogKey}] failed to release orchestration lease cleanly (instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId})",
                 Constants.LogKey,
                 instanceId,
                 owner,

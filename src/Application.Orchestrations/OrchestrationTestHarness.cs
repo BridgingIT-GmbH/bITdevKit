@@ -49,14 +49,16 @@ public class OrchestrationTestHarness : IAsyncDisposable
     /// <typeparam name="TData">The orchestration data type.</typeparam>
     /// <param name="data">The orchestration data.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
+    /// <param name="correlationId">The optional correlation identifier to apply to the orchestration instance.</param>
     /// <returns>The execution result.</returns>
     public Task<Result<OrchestrationExecuteResult>> ExecuteAsync<TOrchestration, TData>(
         TData data,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        string correlationId = null)
         where TOrchestration : class, IOrchestration<TData>
         where TData : class, IOrchestrationData
     {
-        return this.runtime.ExecuteAsync<TOrchestration, TData>(data, cancellationToken);
+        return this.runtime.ExecuteAsync<TOrchestration, TData>(data, cancellationToken, correlationId);
     }
 
     /// <summary>

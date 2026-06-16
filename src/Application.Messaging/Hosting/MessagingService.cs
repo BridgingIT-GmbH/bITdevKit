@@ -74,7 +74,7 @@ public class MessagingService : BackgroundService
     /// <returns>A task that completes once shutdown coordination has finished.</returns>
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} broker message service stopping (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
+        this.logger.LogInformation("[{LogKey}] broker message service stopping (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
 
         this.linkedCts?.Cancel();
 
@@ -92,7 +92,7 @@ public class MessagingService : BackgroundService
 
         this.broker?.Unsubscribe();
 
-        this.logger.LogInformation("{LogKey} broker message service stopped (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
+        this.logger.LogInformation("[{LogKey}] broker message service stopped (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
 
         await base.StopAsync(cancellationToken);
     }
@@ -126,7 +126,7 @@ public class MessagingService : BackgroundService
         {
             if (this.options.StartupDelay.TotalMilliseconds > 0)
             {
-                this.logger.LogDebug("{LogKey} broker service startup delayed", Constants.LogKey);
+                this.logger.LogDebug("[{LogKey}] broker service startup delayed", Constants.LogKey);
                 await Task.Delay(this.options.StartupDelay, cancellationToken);
             }
 
@@ -135,21 +135,21 @@ public class MessagingService : BackgroundService
             try
             {
                 this.broker = this.scope.ServiceProvider.GetService<IMessageBrokerRuntime>();
-                this.logger.LogInformation("{LogKey} broker message service starting (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
+                this.logger.LogInformation("[{LogKey}] broker message service starting (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
             }
             catch (InvalidOperationException ex)
             {
-                this.logger.LogError(ex, "{LogKey} broker message service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
+                this.logger.LogError(ex, "[{LogKey}] broker message service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
                 return;
             }
 
             if (this.broker != null)
             {
-                this.logger.LogInformation("{LogKey} broker message service started (broker={MessageBroker})", Constants.LogKey, this.broker.GetType().Name);
+                this.logger.LogInformation("[{LogKey}] broker message service started (broker={MessageBroker})", Constants.LogKey, this.broker.GetType().Name);
             }
             else
             {
-                this.logger.LogWarning("{LogKey} broker message service not started (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
+                this.logger.LogWarning("[{LogKey}] broker message service not started (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
             }
         }
         catch (OperationCanceledException)
@@ -158,7 +158,7 @@ public class MessagingService : BackgroundService
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} broker message service failed unexpectedly: {ErrorMessage}", Constants.LogKey, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] broker message service failed unexpectedly: {ErrorMessage}", Constants.LogKey, ex.Message);
             throw;
         }
     }

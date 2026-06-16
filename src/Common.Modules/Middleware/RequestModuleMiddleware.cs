@@ -76,7 +76,7 @@ public class RequestModuleMiddleware
 
         if (module is not null)
         {
-            this.logger.LogInformation("{LogKey} request module: {ModuleName}", "REQ", moduleName);
+            this.logger.LogInformation("[{LogKey}] request module: {ModuleName}", "REQ", moduleName);
 
             // Enrich the request activity created by ASP.NET Core
             var activity = httpContext.Features.Get<IHttpActivityFeature>()?.Activity;
@@ -116,7 +116,7 @@ public class RequestModuleMiddleware
                 }
                 else
                 {
-                    this.logger.LogError("{LogKey} request cancelled, module not enabled (module={ModuleName})", "REQ", moduleName);
+                    this.logger.LogError("[{LogKey}] request cancelled, module not enabled (module={ModuleName})", "REQ", moduleName);
 
                     throw new ModuleNotEnabledException(moduleName);
                 }

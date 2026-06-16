@@ -45,6 +45,16 @@ public class FakeIdentityProviderEndpointsOptions : EndpointsOptionsBase
 
     public bool EnableCookieSingleSignOn { get; set; } = true;
 
+    /// <summary>
+    ///     Gets or sets the cookie authentication scheme used for fake identity provider single sign-on.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// options.CookieAuthenticationScheme = FakeIdentityProviderAuthenticationDefaults.CookieScheme;
+    /// </code>
+    /// </example>
+    public string CookieAuthenticationScheme { get; set; } = FakeIdentityProviderAuthenticationDefaults.CookieScheme;
+
     public TokenProvider TokenProvider { get; set; } = TokenProvider.Default;
 
     // Add provider-specific properties

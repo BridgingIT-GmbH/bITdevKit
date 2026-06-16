@@ -29,7 +29,7 @@ public class FileLoggerProcessor(ILogger<FileLoggerProcessor> logger) : IFileEve
         token.ThrowIfCancellationRequested();
 
         this.logger.LogInformation(
-            "{LogKey} filemonitoring: file event processed (Location={LocationName}, Path={FilePath}, Type={EventType}, Size={FileSize}, Checksum={Checksum})",
+            "[{LogKey}] filemonitoring: file event processed (Location={LocationName}, Path={FilePath}, Type={EventType}, Size={FileSize}, Checksum={Checksum})",
             Constants.LogKey,
             context.FileEvent.LocationName,
             context.FileEvent.FilePath,

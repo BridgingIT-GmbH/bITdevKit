@@ -84,7 +84,7 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
         }
         catch (SqlException ex)
         {
-            this.logger.LogError(ex, "{LogKey} outbox message purge error: {ErrorMessage}", Constants.LogKey, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] outbox message purge error: {ErrorMessage}", Constants.LogKey, ex.Message);
         }
     }
 
@@ -96,7 +96,7 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
         var attempts = (outboxMessage.Properties?.GetValue(OutboxMessagePropertyConstants.ProcessAttemptsKey)?.ToString().To<int>() ?? 0) + 1;
         if (attempts > this.options.RetryCount)
         {
-            this.logger.LogWarning("{LogKey} outbox message processing skipped: max attempts reached (messageId={MessageId}, messageType={MessageType}, attempts={MessageAttempts})", Constants.LogKey, outboxMessage.MessageId, outboxMessage.Type.Split(',')[0], attempts - 1);
+            this.logger.LogWarning("[{LogKey}] outbox message processing skipped: max attempts reached (messageId={MessageId}, messageType={MessageType}, attempts={MessageAttempts})", Constants.LogKey, outboxMessage.MessageId, outboxMessage.Type.Split(',')[0], attempts - 1);
 
             try
             {
@@ -110,7 +110,7 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "{LogKey} outbox message storage update failed: {ErrorMessage} (messageId={MessageId}, messageType={MessageType})", Constants.LogKey, ex.Message, outboxMessage.MessageId, outboxMessage.Type.Split(',')[0]);
+                this.logger.LogError(ex, "[{LogKey}] outbox message storage update failed: {ErrorMessage} (messageId={MessageId}, messageType={MessageType})", Constants.LogKey, ex.Message, outboxMessage.MessageId, outboxMessage.Type.Split(',')[0]);
             }
 
             return;
@@ -139,7 +139,7 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
                 }
                 catch (Exception ex)
                 {
-                    this.logger.LogError(ex, "{LogKey} outbox message storage update failed: {ErrorMessage} (eventId={MessageId}, eventType={MessageType})", Constants.LogKey, ex.Message, outboxMessage.MessageId, outboxMessage.Type.Split(',')[0]);
+                    this.logger.LogError(ex, "[{LogKey}] outbox message storage update failed: {ErrorMessage} (eventId={MessageId}, eventType={MessageType})", Constants.LogKey, ex.Message, outboxMessage.MessageId, outboxMessage.Type.Split(',')[0]);
                 }
 
                 return;
@@ -175,7 +175,7 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} outbox message processing failed: {ErrorMessage} (type={MessageType}, id={MessageId})", "MSG", ex.Message, outboxMessage.Type.Split(',')[0], outboxMessage.MessageId);
+            this.logger.LogError(ex, "[{LogKey}] outbox message processing failed: {ErrorMessage} (type={MessageType}, id={MessageId})", "MSG", ex.Message, outboxMessage.Type.Split(',')[0], outboxMessage.MessageId);
 
             try
             {
@@ -188,23 +188,23 @@ public partial class OutboxMessageWorker<TContext> : IOutboxMessageWorker
             }
             catch (Exception saveEx)
             {
-                this.logger.LogError(ex, "{LogKey} outbox message storage update failed: {ErrorMessage} (messageId={MessageId}, messageType={MessageType}) {ErrorMessage}", Constants.LogKey, ex.Message, outboxMessage.MessageId, outboxMessage.Type.Split(',')[0], saveEx.Message);
+                this.logger.LogError(ex, "[{LogKey}] outbox message storage update failed: {ErrorMessage} (messageId={MessageId}, messageType={MessageType}) {ErrorMessage}", Constants.LogKey, ex.Message, outboxMessage.MessageId, outboxMessage.Type.Split(',')[0], saveEx.Message);
             }
         }
     }
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Debug, "{LogKey} outbox messages processing (context={DbContextType}, messageId={MessageId})")]
+        [LoggerMessage(0, LogLevel.Debug, "[{LogKey}] outbox messages processing (context={DbContextType}, messageId={MessageId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string dbContextType, string messageId);
 
-        [LoggerMessage(1, LogLevel.Debug, "{LogKey} outbox messages processed (context={DbContextType}, count={OutboxMessageProcessedCount})")]
+        [LoggerMessage(1, LogLevel.Debug, "[{LogKey}] outbox messages processed (context={DbContextType}, count={OutboxMessageProcessedCount})")]
         public static partial void LogProcessed(ILogger logger, string logKey, string dbContextType, int outboxMessageProcessedCount);
 
-        [LoggerMessage(2, LogLevel.Information, "{LogKey} outbox messages purging (context={DbContextType})")]
+        [LoggerMessage(2, LogLevel.Information, "[{LogKey}] outbox messages purging (context={DbContextType})")]
         public static partial void LogPurging(ILogger logger, string logKey, string dbContextType);
 
-        [LoggerMessage(3, LogLevel.Error, "{LogKey} outbox message type could not be resolved (eventId={MessageId}, eventType={MessageType})")]
+        [LoggerMessage(3, LogLevel.Error, "[{LogKey}] outbox message type could not be resolved (eventId={MessageId}, eventType={MessageType})")]
         public static partial void LogMessageTypeNotResolved(ILogger logger, string logKey, string messageId, string messageType);
     }
 }

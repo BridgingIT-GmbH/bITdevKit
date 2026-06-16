@@ -34,7 +34,7 @@ public class NoOpNotifier(ILoggerFactory loggerFactory = null) : INotifier
     /// <returns>A completed task.</returns>
     Task<IResult> INotifier.PublishAsync<TNotification>(TNotification notification, PublishOptions options, CancellationToken cancellationToken)
     {
-        this.logger.LogWarning("{LogKey} no notifier available. Notification {NotificationType} not published (NotificationId={})", "NOT", notification.GetType().Name, notification.NotificationId);
+        this.logger.LogWarning("[{LogKey}] no notifier available. Notification {NotificationType} not published (NotificationId={})", "NOT", notification.GetType().Name, notification.NotificationId);
 
         return Task.FromResult<IResult>(Result.Success());
     }
@@ -47,7 +47,7 @@ public class NoOpNotifier(ILoggerFactory loggerFactory = null) : INotifier
     /// <returns>A completed task.</returns>
     public Task<IResult> PublishDynamicAsync(INotification notification, PublishOptions options = null, CancellationToken cancellationToken = default)
     {
-        this.logger.LogWarning("{LogKey} no notifier available. Notification {NotificationType} not published (NotificationId={})", "NOT", notification.GetType().Name, notification.NotificationId);
+        this.logger.LogWarning("[{LogKey}] no notifier available. Notification {NotificationType} not published (NotificationId={})", "NOT", notification.GetType().Name, notification.NotificationId);
 
         return Task.FromResult<IResult>(Result.Success());
     }

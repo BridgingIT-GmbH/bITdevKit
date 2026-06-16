@@ -133,16 +133,6 @@ public class CityEndpoints : EndpointsBase
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
 
-        // GET /api/core/cities/{cityId}/weather/export
-        group.MapGet("/{cityId}/weather/export", ExportWeatherForecastsAsync)
-            .AllowAnonymous() // TODO: remove later and require authorization
-            .WithName("Core.Cities.WeatherExport")
-            .WithDescription("Downloads WeatherForecast entities for the selected city as CSV.")
-            .Produces(StatusCodes.Status200OK)
-            .Produces(StatusCodes.Status404NotFound)
-            .ProducesResultProblem(StatusCodes.Status400BadRequest)
-            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
-
         // POST /api/core/cities/{cityId}/ingest
         group.MapPost("/{cityId}/ingest",
             async ([FromServices] IRequester requester,
@@ -155,6 +145,17 @@ public class CityEndpoints : EndpointsBase
             .WithDescription("Triggers weather data ingestion for a subscribed city.")
             .Produces(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)
+            .ProducesResultProblem(StatusCodes.Status400BadRequest)
+            .ProducesResultProblem(StatusCodes.Status500InternalServerError);
+
+        // GET /api/core/cities/{cityId}/weather/export
+        group.MapGet("/{cityId}/weather/export", ExportWeatherForecastsAsync)
+            .WithName("Core.Cities.WeatherExport")
+            .WithDescription("Downloads WeatherForecast entities for the selected city as CSV.")
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .Produces(StatusCodes.Status403Forbidden)
+            .Produces(StatusCodes.Status404NotFound)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
     }

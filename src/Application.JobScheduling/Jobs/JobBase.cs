@@ -61,7 +61,7 @@ public abstract partial class JobBase : IJob
 
         if (context.CancellationToken.IsCancellationRequested)
         {
-            this.Logger.LogWarning("{LogKey} processing cancelled (type={JobType}, id={JobId})", Constants.LogKey, jobTypeName, jobId);
+            this.Logger.LogWarning("[{LogKey}] processing cancelled (type={JobType}, id={JobId})", Constants.LogKey, jobTypeName, jobId);
             context.CancellationToken.ThrowIfCancellationRequested();
         }
         else
@@ -187,8 +187,8 @@ public abstract partial class JobBase : IJob
             context.JobDetail.JobDataMap.Put("Last" + nameof(this.ElapsedMilliseconds), this.ElapsedMilliseconds);
 #pragma warning restore CS0618 // Type or member is obsolete
 
-            //this.Logger.LogDebug("{LogKey} Stored Trigger.JobDataMap: {Keys}", Constants.LogKey, string.Join(", ", context.Trigger.JobDataMap.Keys));
-            //this.Logger.LogDebug("{LogKey} Stored JobDetail.JobDataMap: {Keys}", Constants.LogKey, string.Join(", ", context.JobDetail.JobDataMap.Keys));
+            //this.Logger.LogDebug("[{LogKey}] Stored Trigger.JobDataMap: {Keys}", Constants.LogKey, string.Join(", ", context.Trigger.JobDataMap.Keys));
+            //this.Logger.LogDebug("[{LogKey}] Stored JobDetail.JobDataMap: {Keys}", Constants.LogKey, string.Join(", ", context.JobDetail.JobDataMap.Keys));
         }
     }
 
@@ -196,13 +196,13 @@ public abstract partial class JobBase : IJob
 
     public static partial class BaseTypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} processing (type={JobType}, name={JobName}, id={JobId})")]
+        [LoggerMessage(0, LogLevel.Information, "[{LogKey}] processing (type={JobType}, name={JobName}, id={JobId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string jobType, string jobName, string jobId);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} processed (type={JobType}, name={JobName}, id={JobId}) -> took {TimeElapsed:0.0000} ms")]
+        [LoggerMessage(1, LogLevel.Information, "[{LogKey}] processed (type={JobType}, name={JobName}, id={JobId}) -> took {TimeElapsed:0.0000} ms")]
         public static partial void LogProcessed(ILogger logger, string logKey, string jobType, string jobName, string jobId, long timeElapsed);
 
-        [LoggerMessage(2, LogLevel.Warning, "{LogKey} interrupted (type={JobType}, name={JobName}, id={JobId})")]
+        [LoggerMessage(2, LogLevel.Warning, "[{LogKey}] interrupted (type={JobType}, name={JobName}, id={JobId})")]
         public static partial void LogInterrupted(ILogger logger, string logKey, string jobType, string jobName, string jobId);
     }
 }

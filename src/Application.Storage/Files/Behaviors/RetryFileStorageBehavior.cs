@@ -40,7 +40,7 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
                 {
                     if (del.Result.IsFailure)
                     {
-                        this.logger.LogError("{LogKey} file storage: retry {RetryCount}/{MaxRetries} for {Operation} on '{Path}' due to: {Error}", Constants.LogKey, retryCount, this.options.MaxRetries, operationName, path, del.Result.Errors.LastOrDefault()?.Message);
+                        this.logger.LogError("[{LogKey}] file storage: retry {RetryCount}/{MaxRetries} for {Operation} on '{Path}' due to: {Error}", Constants.LogKey, retryCount, this.options.MaxRetries, operationName, path, del.Result.Errors.LastOrDefault()?.Message);
                         context["LastError"] = del;
                     }
                 });
@@ -57,12 +57,12 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
                 return opResult.Value;
             });
 
-            this.logger.LogInformation("{LogKey} file storage: successfully completed {Operation} on '{Path}'", Constants.LogKey, operationName, path);
+            this.logger.LogInformation("[{LogKey}] file storage: successfully completed {Operation} on '{Path}'", Constants.LogKey, operationName, path);
             return result;
         }
         catch (InvalidOperationException ex)
         {
-            this.logger.LogError("{LogKey} file storage: failed {Operation} on '{Path}': {Error}", Constants.LogKey, operationName, path, ex.Message);
+            this.logger.LogError("[{LogKey}] file storage: failed {Operation} on '{Path}': {Error}", Constants.LogKey, operationName, path, ex.Message);
             throw;
         }
     }
@@ -77,7 +77,7 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
                 {
                     if (del.Result.IsFailure)
                     {
-                        this.logger.LogError("{LogKey} file storage: retry {RetryCount}/{MaxRetries} for {Operation} on '{Path}' due to: {Error}",
+                        this.logger.LogError("[{LogKey}] file storage: retry {RetryCount}/{MaxRetries} for {Operation} on '{Path}' due to: {Error}",
                             Constants.LogKey, retryCount, this.options.MaxRetries, operationName, path, del.Result.Errors.LastOrDefault()?.Message);
                         context["LastError"] = del;
                     }
@@ -95,12 +95,12 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
                 return opResult;
             });
 
-            this.logger.LogInformation("{LogKey} file storage: successfully completed {Operation} on '{Path}' after {Retries} retries", Constants.LogKey, operationName, path, 0/*retryPolicy.State.Value.RetryCount*/);
+            this.logger.LogInformation("[{LogKey}] file storage: successfully completed {Operation} on '{Path}' after {Retries} retries", Constants.LogKey, operationName, path, 0/*retryPolicy.State.Value.RetryCount*/);
             return result;
         }
         catch (InvalidOperationException ex)
         {
-            this.logger.LogError("{LogKey} file storage: failed {Operation} on '{Path}' after {Retries} retries: {Error}", Constants.LogKey, operationName, path, 0/*retryPolicy.State.Value.RetryCount*/, ex.Message);
+            this.logger.LogError("[{LogKey}] file storage: failed {Operation} on '{Path}' after {Retries} retries: {Error}", Constants.LogKey, operationName, path, 0/*retryPolicy.State.Value.RetryCount*/, ex.Message);
             throw;
         }
     }
@@ -426,16 +426,16 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} file storage: retry start (type={LocationName}, operation={Operation}, path={Path}, maxRetries={MaxRetries})")]
+        [LoggerMessage(0, LogLevel.Information, "[{LogKey}] file storage: retry start (type={LocationName}, operation={Operation}, path={Path}, maxRetries={MaxRetries})")]
         public static partial void LogRetryStart(ILogger logger, string logKey, string locationName, string operation, string path, int maxRetries);
 
-        [LoggerMessage(1, LogLevel.Warning, "{LogKey} file storage: retry {RetryCount}/{MaxRetries} for {Operation} on '{Path}' due to: {Errors} (type={LocationName})")]
+        [LoggerMessage(1, LogLevel.Warning, "[{LogKey}] file storage: retry {RetryCount}/{MaxRetries} for {Operation} on '{Path}' due to: {Errors} (type={LocationName})")]
         public static partial void LogRetryAttempt(ILogger logger, string logKey, string locationName, int retryCount, int maxRetries, string operation, string path, IEnumerable<IResultError> errors);
 
-        [LoggerMessage(2, LogLevel.Information, "{LogKey} file storage: successfully completed {Operation} on '{Path}' after {Retries} retries  (type={LocationName})")]
+        [LoggerMessage(2, LogLevel.Information, "[{LogKey}] file storage: successfully completed {Operation} on '{Path}' after {Retries} retries  (type={LocationName})")]
         public static partial void LogRetrySuccess(ILogger logger, string logKey, string locationName, string operation, string path, int retries);
 
-        [LoggerMessage(3, LogLevel.Error, "{LogKey} file storage: failed {Operation} on '{Path}' after {Retries} retries: {Error}  (type={LocationName})")]
+        [LoggerMessage(3, LogLevel.Error, "[{LogKey}] file storage: failed {Operation} on '{Path}' after {Retries} retries: {Error}  (type={LocationName})")]
         public static partial void LogRetryFailure(ILogger logger, string logKey, string locationName, string operation, string path, int retries, string error);
     }
 }

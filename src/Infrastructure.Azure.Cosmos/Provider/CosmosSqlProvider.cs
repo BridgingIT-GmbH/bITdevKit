@@ -89,7 +89,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
                             }
                         }
 
-                        this.logger.LogDebug("{LogKey} ReadItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+                        this.logger.LogDebug("[{LogKey}] ReadItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
 
                         return result;
                     }
@@ -110,7 +110,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
                     }
                 }
 
-                this.logger.LogDebug("{LogKey} ReadItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+                this.logger.LogDebug("[{LogKey}] ReadItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
 
                 return response.Resource;
             }
@@ -178,7 +178,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         }
 
         this.LogRequestCharge(requestCharge);
-        this.logger.LogDebug("{LogKey} ReadItemsAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+        this.logger.LogDebug("[{LogKey}] ReadItemsAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
 
         return result;
     }
@@ -226,7 +226,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             this.UpdateItemVersion(item, response);
 
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
-            this.logger.LogDebug("{LogKey} CreateItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+            this.logger.LogDebug("[{LogKey}] CreateItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
 
             return response.Resource;
         }
@@ -236,7 +236,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             this.UpdateItemVersion(item, response);
 
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
-            this.logger.LogDebug("{LogKey} CreateItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+            this.logger.LogDebug("[{LogKey}] CreateItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
 
             return response.Resource;
         }
@@ -277,7 +277,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             this.UpdateItemVersion(item, response);
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
 
-            this.logger.LogDebug("{LogKey} UpsertItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+            this.logger.LogDebug("[{LogKey}] UpsertItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
 
             return response.Resource;
         }
@@ -319,7 +319,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             var response = await this.container.DeleteItemAsync<TItem>(id, requestOptions.PartitionKey.Value, concurrencyOptions, cancellationToken).AnyContext();
 
             this.LogRequestCharge(response.RequestCharge, response.ActivityId);
-            this.logger.LogDebug("{LogKey} DeleteItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+            this.logger.LogDebug("[{LogKey}] DeleteItemAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
 
             return response.StatusCode == HttpStatusCode.NoContent;
         }
@@ -438,7 +438,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
             }
 
             await this.InitializeContainerAsync(options);
-            this.logger.LogDebug("{LogKey} InitializeAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
+            this.logger.LogDebug("[{LogKey}] InitializeAsync finished -> took {TimeElapsed:0.0000} ms", "IFR", watch.GetElapsedMilliseconds());
         }
     }
 
@@ -566,7 +566,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
 
     // private void LogVersionChange(string operation, object itemId, Guid? oldVersion, Guid newVersion)
     // {
-    //     this.logger.LogDebug("{LogKey} Version change in {Operation}: Item {ItemId} version changed from {OldVersion} to {NewVersion}",
+    //     this.logger.LogDebug("[{LogKey}] Version change in {Operation}: Item {ItemId} version changed from {OldVersion} to {NewVersion}",
     //         "IFR",
     //         operation,
     //         itemId,

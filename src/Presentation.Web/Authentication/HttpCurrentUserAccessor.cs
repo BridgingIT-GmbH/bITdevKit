@@ -39,7 +39,7 @@ public class HttpCurrentUserAccessor(IHttpContextAccessor httpContextAccessor) :
     ///     Gets the user name of the currently authenticated user.
     ///     The user name is determined from the authenticated user's claims.
     /// </summary>
-    public string UserName => httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Name);
+    public string UserName => httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Name) ?? httpContextAccessor.HttpContext?.User?.FindFirstValue("name");
 
     /// <summary>
     ///     Gets the email address of the currently authenticated user.

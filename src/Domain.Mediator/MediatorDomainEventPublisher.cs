@@ -59,7 +59,7 @@ public partial class MediatorDomainEventPublisher : IDomainEventPublisher
         /// <param name="domainEventType">The type of the domain event.</param>
         [LoggerMessage(0,
             LogLevel.Information,
-            "{LogKey} publish domain event (eventId={DomainEventId}, eventType={DomainEventType})")]
+            "[{LogKey}] publish domain event (eventId={DomainEventId}, eventType={DomainEventType})")]
         public static partial void LogSend(ILogger logger, string logKey, string domainEventId, string domainEventType);
     }
 }

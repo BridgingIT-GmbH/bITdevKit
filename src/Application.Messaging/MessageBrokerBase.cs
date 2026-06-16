@@ -110,7 +110,7 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         var messageType = message.GetType().PrettyName(false);
 
         TypedLogger.LogPublish(this.Logger, Constants.LogKey, messageType, message.MessageId);
-        this.Logger.LogDebug("{LogKey} publish validating (type={MessageType}, id={MessageId})", Constants.LogKey, messageType, message.MessageId);
+        this.Logger.LogDebug("[{LogKey}] publish validating (type={MessageType}, id={MessageId})", Constants.LogKey, messageType, message.MessageId);
         this.ValidatePublish(message); // TODO: message validation can also be done with a PublisherBehavior
 
         // create a behavior pipeline and run it (publisher > next)
@@ -156,7 +156,7 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
                 foreach (var subscription in this.Subscriptions.GetAll()
                              .Where(s => s.Key.Equals(messageType, StringComparison.OrdinalIgnoreCase)))
                 {
-                    this.Logger.LogDebug("{LogKey} subscription: {MessageType} -> {MessageHandlers} ", Constants.LogKey, subscription.Key, subscription.Value.Select(s => s.HandlerType.FullName).ToString(", "));
+                    this.Logger.LogDebug("[{LogKey}] subscription: {MessageType} -> {MessageHandlers} ", Constants.LogKey, subscription.Key, subscription.Value.Select(s => s.HandlerType.FullName).ToString(", "));
                 }
 
                 foreach (var subscription in this.Subscriptions.GetAll(messageType))
@@ -170,7 +170,7 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
             }
             else
             {
-                this.Logger.LogDebug("{LogKey} processing skipped, no registration (type={MessageType}, id={MessageId}, broker={MessageBroker})", Constants.LogKey, messageType, messageRequest.Message.MessageId, this.GetType().Name);
+                this.Logger.LogDebug("[{LogKey}] processing skipped, no registration (type={MessageType}, id={MessageId}, broker={MessageBroker})", Constants.LogKey, messageType, messageRequest.Message.MessageId, this.GetType().Name);
             }
 
             messageRequest.OnPublishComplete(result);
@@ -194,10 +194,18 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         EnsureArg.IsNotNull(subscription, nameof(subscription));
 
         messageType ??= messageRequest.Message.GetType().PrettyName(false);
+        var correlationId = messageRequest.Message?.Properties?.GetValue(Constants.CorrelationIdKey)?.ToString();
+        var flowId = messageRequest.Message?.Properties?.GetValue(Constants.FlowIdKey)?.ToString();
+
+        using var scope = this.Logger.BeginScope(new Dictionary<string, object>
+        {
+            [Constants.CorrelationIdKey] = correlationId,
+            [Constants.FlowIdKey] = flowId
+        });
 
         try
         {
-            this.Logger.LogDebug("{LogKey} handler: {MessageType} ", Constants.LogKey, subscription.HandlerType?.FullName);
+            this.Logger.LogDebug("[{LogKey}] handler: {MessageType} ", Constants.LogKey, subscription.HandlerType?.FullName);
 
             if (subscription.MessageType is null)
             {
@@ -206,7 +214,7 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
 
             if (messageRequest.CancellationToken.IsCancellationRequested)
             {
-                this.Logger.LogWarning("{LogKey} process cancelled (type={MessageType}, id={MessageId}, broker={MessageBroker})", Constants.LogKey, messageType, messageRequest.Message.MessageId, this.GetType().Name);
+                this.Logger.LogWarning("[{LogKey}] process cancelled (type={MessageType}, id={MessageId}, broker={MessageBroker})", Constants.LogKey, messageType, messageRequest.Message.MessageId, this.GetType().Name);
                 return false;
             }
 
@@ -221,7 +229,7 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
 
             if (handlerInstance is null || handlerMethod is null)
             {
-                this.Logger.LogError("{LogKey} processing error, message handler could not be created. is the handler registered? (type={MessageType}, handler={MessageHandler}, id={MessageId})", Constants.LogKey, messageType, subscription.HandlerType.Name, messageRequest.Message.MessageId);
+                this.Logger.LogError("[{LogKey}] processing error, message handler could not be created. is the handler registered? (type={MessageType}, handler={MessageHandler}, id={MessageId})", Constants.LogKey, messageType, subscription.HandlerType.Name, messageRequest.Message.MessageId);
                 return false;
             }
 
@@ -235,8 +243,13 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
 
                 if (handledMessage is null)
                 {
-                    this.Logger.LogError("{LogKey} processing error, message could not be deserialized for handler (type={MessageType}, handler={MessageHandler}, id={MessageId})", Constants.LogKey, messageType, subscription.HandlerType.Name, messageRequest.Message.MessageId);
+                    this.Logger.LogError("[{LogKey}] processing error, message could not be deserialized for handler (type={MessageType}, handler={MessageHandler}, id={MessageId})", Constants.LogKey, messageType, subscription.HandlerType.Name, messageRequest.Message.MessageId);
                     return false;
+                }
+
+                if (!ReferenceEquals(handledMessage, messageRequest.Message))
+                {
+                    handledMessage.Properties.AddOrUpdate(messageRequest.Message.Properties?.ToDictionary(pair => pair.Key, pair => pair.Value));
                 }
 
                 await this.ProcessSubscriptionHandler(messageRequest, subscription, handlerInstance, handlerMethod, handledMessage);
@@ -252,7 +265,7 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         }
         catch (Exception ex)
         {
-            this.Logger.LogError(ex, "{LogKey} processing error (type={MessageType}, handler={MessageHandler}, id={MessageId}): {ErrorMessage}", Constants.LogKey, messageType, subscription.HandlerType.FullName, messageRequest.Message.MessageId, ex.Message);
+            this.Logger.LogError(ex, "[{LogKey}] processing error (type={MessageType}, handler={MessageHandler}, id={MessageId}): {ErrorMessage}", Constants.LogKey, messageType, subscription.HandlerType.FullName, messageRequest.Message.MessageId, ex.Message);
             return false;
         }
     }
@@ -390,26 +403,26 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} subscribe (type={MessageType}, handler={MessageHandler})")]
+        [LoggerMessage(0, LogLevel.Information, "[{LogKey}] subscribe (type={MessageType}, handler={MessageHandler})")]
         public static partial void LogSubscribe(
             ILogger logger,
             string logKey,
             string messageType,
             string messageHandler);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} unsubscribe (type={MessageType}, handler={MessageHandler})")]
+        [LoggerMessage(1, LogLevel.Information, "[{LogKey}] unsubscribe (type={MessageType}, handler={MessageHandler})")]
         public static partial void LogUnsubscribe(
             ILogger logger,
             string logKey,
             string messageType,
             string messageHandler);
 
-        [LoggerMessage(2, LogLevel.Information, "{LogKey} publish (type={MessageType}, id={MessageId})")]
+        [LoggerMessage(2, LogLevel.Information, "[{LogKey}] publish (type={MessageType}, id={MessageId})")]
         public static partial void LogPublish(ILogger logger, string logKey, string messageType, string messageId);
 
         [LoggerMessage(3,
             LogLevel.Information,
-            "{LogKey} processing (type={MessageType}, handler={MessageHandler}, id={MessageId}, broker={MessageBroker})")]
+            "[{LogKey}] processing (type={MessageType}, handler={MessageHandler}, id={MessageId}, broker={MessageBroker})")]
         public static partial void LogProcessing(
             ILogger logger,
             string logKey,
@@ -420,7 +433,7 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
 
         [LoggerMessage(4,
             LogLevel.Information,
-            "{LogKey} processed (type={MessageType}, handler={MessageHandler}, id={MessageId}, broker={MessageBroker}) -> took {TimeElapsed:0.0000} ms")]
+            "[{LogKey}] processed (type={MessageType}, handler={MessageHandler}, id={MessageId}, broker={MessageBroker}) -> took {TimeElapsed:0.0000} ms")]
         public static partial void LogProcessed(
             ILogger logger,
             string logKey,

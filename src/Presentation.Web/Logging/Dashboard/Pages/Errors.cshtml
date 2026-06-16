@@ -1,0 +1,310 @@
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
+@using Microsoft.Extensions.DependencyInjection
+@using RazorSlices
+@using System.Globalization
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+@{
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var contentPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildErrorsContentPath(dashboardOptions);
+    var filter = LogEntriesDashboard.CreateFilter(this.HttpContext);
+}
+
+<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+    <div class="d-flex align-items-center gap-2">
+        <div class="form-check form-switch m-0">
+            <input id="dashboard-errors-tail" class="form-check-input" type="checkbox" role="switch">
+            <label class="form-check-label small" for="dashboard-errors-tail">Tail</label>
+        </div>
+        <span id="dashboard-errors-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <button type="button" id="dashboard-errors-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh errors">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+</div>
+
+<form id="dashboard-errors-filter-form" class="card mb-2" method="get">
+    <div class="card-body p-3">
+        <div class="row g-2">
+            <div class="col-12 col-lg-4">
+                <label class="form-label small" for="dashboard-errors-q">Search</label>
+                <input id="dashboard-errors-q" name="q" value="@filter.SearchText" class="form-control form-control-sm" placeholder="message, exception, trace, span, correlation, module">
+            </div>
+            <div class="col-6 col-lg-2">
+                <label class="form-label small" for="dashboard-errors-page-size">Rows</label>
+                <select id="dashboard-errors-page-size" name="pageSize" class="form-select form-select-sm">
+                    @foreach (var size in new[] { 25, 50, 100, 250, 500 })
+                    {
+                        if (filter.PageSize == size)
+                        {
+                            <option value="@size" selected>@size</option>
+                        }
+                        else
+                        {
+                            <option value="@size">@size</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-6 col-lg-2">
+                <label class="form-label small" for="dashboard-errors-from">From</label>
+                <div class="input-group input-group-sm">
+                    <input id="dashboard-errors-from" name="from" type="date" value="@LogEntriesDashboard.FormatDate(filter.StartTime)" class="form-control form-control-sm" data-dashboard-date-picker>
+                    <button type="button" class="btn btn-outline-secondary" data-dashboard-date-picker-button="dashboard-errors-from" aria-label="Open from date picker" title="Open date picker">
+                        <i class="bi bi-calendar3"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-6 col-lg-2">
+                <label class="form-label small" for="dashboard-errors-to">To</label>
+                <div class="input-group input-group-sm">
+                    <input id="dashboard-errors-to" name="to" type="date" value="@LogEntriesDashboard.FormatDate(filter.EndTime)" class="form-control form-control-sm" data-dashboard-date-picker>
+                    <button type="button" class="btn btn-outline-secondary" data-dashboard-date-picker-button="dashboard-errors-to" aria-label="Open to date picker" title="Open date picker">
+                        <i class="bi bi-calendar3"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-6 col-lg-2 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-primary btn-sm flex-fill">Apply</button>
+                <button type="button" id="dashboard-errors-reset" class="btn btn-outline-secondary btn-sm">Reset</button>
+            </div>
+        </div>
+        <div class="row g-2 mt-1">
+            <div class="col-6 col-lg-2"><input name="correlationId" value="@filter.CorrelationId" class="form-control form-control-sm" placeholder="CorrelationId"></div>
+            <div class="col-6 col-lg-2"><input name="traceId" value="@filter.TraceId" class="form-control form-control-sm" placeholder="TraceId"></div>
+            <div class="col-6 col-lg-2"><input name="spanId" value="@filter.SpanId" class="form-control form-control-sm" placeholder="SpanId"></div>
+            <div class="col-6 col-lg-2"><input name="logKey" value="@filter.LogKey" class="form-control form-control-sm" placeholder="LogKey"></div>
+            <div class="col-6 col-lg-2"><input name="moduleName" value="@filter.ModuleName" class="form-control form-control-sm" placeholder="ModuleName"></div>
+            <div class="col-6 col-lg-2"><input name="shortTypeName" value="@filter.ShortTypeName" class="form-control form-control-sm" placeholder="ShortTypeName"></div>
+        </div>
+    </div>
+</form>
+
+<div id="dashboard-errors-content">
+    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.Pages.ErrorsContent>())
+</div>
+
+<script>
+    (() => {
+        const contentUrl = '@contentPath';
+        const contentElement = document.getElementById('dashboard-errors-content');
+        const formElement = document.getElementById('dashboard-errors-filter-form');
+        const resetElement = document.getElementById('dashboard-errors-reset');
+        const statusElement = document.getElementById('dashboard-errors-refresh-status');
+        const refreshButton = document.getElementById('dashboard-errors-refresh-now');
+        const tailElement = document.getElementById('dashboard-errors-tail');
+
+        let tailTimeoutId = null;
+        let abortController = null;
+
+        function formQuery() {
+            const data = new FormData(formElement);
+            const query = new URLSearchParams();
+            for (const [key, value] of data.entries()) {
+                if (value !== null && value.toString().trim() !== '') {
+                    query.set(key, value.toString().trim());
+                }
+            }
+
+            return query;
+        }
+
+        function setStatus(text, isError) {
+            statusElement.textContent = text;
+            statusElement.classList.toggle('text-danger', isError === true);
+            statusElement.classList.toggle('text-muted', isError !== true);
+        }
+
+        function updatePageUrl(query) {
+            const url = new URL(window.location.href);
+            url.search = query.toString();
+            window.history.replaceState(null, '', url.toString());
+        }
+
+        function maxLogId() {
+            const ids = [...contentElement.querySelectorAll('[data-error-item][data-log-id]')]
+                .map(item => Number(item.getAttribute('data-log-id')))
+                .filter(value => Number.isFinite(value));
+
+            return ids.length === 0 ? null : Math.max(...ids);
+        }
+
+        function clearTail() {
+            if (tailTimeoutId !== null) {
+                window.clearTimeout(tailTimeoutId);
+                tailTimeoutId = null;
+            }
+        }
+
+        async function fetchHtml(url) {
+            if (abortController !== null) {
+                abortController.abort();
+            }
+
+            abortController = new AbortController();
+            const response = await fetch(url, {
+                headers: { 'X-Requested-With': 'fetch' },
+                signal: abortController.signal
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+
+            return await response.text();
+        }
+
+        async function refreshContent() {
+            clearTail();
+            const query = formQuery();
+            updatePageUrl(query);
+
+            try {
+                contentElement.innerHTML = await fetchHtml(`${contentUrl}?${query}`);
+                window.bdkDashboard.clearRefreshError(contentElement);
+                setStatus(`Updated ${new Date().toLocaleTimeString()}`, false);
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    window.bdkDashboard.showRefreshError(contentElement);
+                    setStatus('Refresh failed', true);
+                }
+            } finally {
+                abortController = null;
+                scheduleTail();
+            }
+        }
+
+        async function loadOlder(button) {
+            const continuationToken = button.getAttribute('data-continuation-token');
+            if (!continuationToken) {
+                return;
+            }
+
+            button.disabled = true;
+            const query = formQuery();
+            query.set('continuationToken', continuationToken);
+
+            try {
+                const html = await fetchHtml(`${contentUrl}?${query}`);
+                const template = document.createElement('template');
+                template.innerHTML = html.trim();
+                const items = [...template.content.querySelectorAll('[data-error-item]')];
+                const list = contentElement.querySelector('[data-error-list]');
+                items.forEach(item => list.appendChild(item));
+
+                const next = template.content.querySelector('[data-errors-load-more]')?.getAttribute('data-continuation-token');
+                if (next) {
+                    button.setAttribute('data-continuation-token', next);
+                    button.disabled = false;
+                } else {
+                    button.remove();
+                }
+
+                window.bdkDashboard.clearRefreshError(contentElement);
+                setStatus(`Loaded ${items.length} older errors`, false);
+            } catch (error) {
+                button.disabled = false;
+                if (error.name !== 'AbortError') {
+                    window.bdkDashboard.showRefreshError(contentElement);
+                    setStatus('Load failed', true);
+                }
+            } finally {
+                abortController = null;
+            }
+        }
+
+        async function loadNewer() {
+            if (!tailElement.checked || document.hidden) {
+                scheduleTail();
+                return;
+            }
+
+            const afterId = maxLogId();
+            if (afterId === null) {
+                await refreshContent();
+                return;
+            }
+
+            const query = formQuery();
+            query.set('afterId', afterId.toString());
+
+            try {
+                const html = await fetchHtml(`${contentUrl}?${query}`);
+                const template = document.createElement('template');
+                template.innerHTML = html.trim();
+                const items = [...template.content.querySelectorAll('[data-error-item]')];
+                const list = contentElement.querySelector('[data-error-list]');
+                items.reverse().forEach(item => list.prepend(item));
+
+                window.bdkDashboard.clearRefreshError(contentElement);
+                if (items.length > 0) {
+                    setStatus(`Added ${items.length} new errors`, false);
+                }
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    window.bdkDashboard.showRefreshError(contentElement);
+                    setStatus('Tail failed', true);
+                }
+            } finally {
+                abortController = null;
+                scheduleTail();
+            }
+        }
+
+        function scheduleTail() {
+            clearTail();
+            if (!tailElement.checked || document.hidden) {
+                return;
+            }
+
+            tailTimeoutId = window.setTimeout(loadNewer, 2000);
+        }
+
+        formElement.addEventListener('submit', event => {
+            event.preventDefault();
+            refreshContent();
+        });
+
+        resetElement.addEventListener('click', () => {
+            formElement.reset();
+            refreshContent();
+        });
+
+        refreshButton.addEventListener('click', refreshContent);
+
+        tailElement.addEventListener('change', scheduleTail);
+
+        contentElement.addEventListener('click', event => {
+            const loadMoreButton = event.target.closest('[data-errors-load-more]');
+            if (loadMoreButton) {
+                loadOlder(loadMoreButton);
+                return;
+            }
+
+            const filterButton = event.target.closest('[data-filter-name]');
+            if (filterButton) {
+                const input = formElement.elements.namedItem(filterButton.getAttribute('data-filter-name'));
+                if (input) {
+                    input.value = filterButton.getAttribute('data-filter-value') ?? '';
+                    refreshContent();
+                }
+            }
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                clearTail();
+                return;
+            }
+
+            scheduleTail();
+        });
+    })();
+</script>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "Errors" };
+}

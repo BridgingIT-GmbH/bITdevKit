@@ -6,6 +6,7 @@
 @using Microsoft.Extensions.DependencyInjection
 @using Microsoft.Extensions.Logging
 @using RazorSlices
+@using System.Text.Json
 @using JobsDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.DashboardEndpoints
 @inherits RazorSlice
 
@@ -122,9 +123,10 @@ else
                             var disableUrl = $"{actionBase}/disable/{Uri.EscapeDataString(job.JobName)}";
                             var nextExecutionUtc = vm.NextExecutionByJobName.TryGetValue(job.JobName, out var nextDueUtc) ? nextDueUtc : null;
                             var triggerDetails = vm.TriggerDetailsByJobName.TryGetValue(job.JobName, out var details) ? details : "No trigger details available.";
+                            var jobDescription = DisplayValue(job.Description);
                             <tr>
                                 <td>
-                                    <div class="fw-medium">@job.JobName</div>
+                                    <div class="fw-medium" title="@jobDescription">@job.JobName</div>
                                     @if (!string.IsNullOrWhiteSpace(job.DisplayName) && job.DisplayName != job.JobName)
                                     {
                                         <div class="text-muted small">@job.DisplayName</div>
@@ -222,9 +224,15 @@ else
                                 <td class="text-muted small">@FormatRelative(occ.CreatedDate)</td>
                                 <td class="text-muted small">@FormatDurationSeconds(occ.LatestExecutionDurationSeconds)</td>
                                 <td class="text-end text-nowrap">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-secondary"
+                                            title="Show occurrence context"
+                                            data-job-occurrence-context="@CreateOccurrenceContext(occ)">
+                                        <i class="bi bi-info-circle"></i>
+                                    </button>
                                     @if (isRunning)
                                     {
-                                        <button class="btn btn-sm btn-outline-warning" title="Interrupt"
+                                        <button class="btn btn-sm btn-outline-warning ms-1" title="Interrupt"
                                                 onclick="window.bdkJobsAction('@interruptUrl')">
                                             <i class="bi bi-stop-circle"></i>
                                         </button>
@@ -450,6 +458,45 @@ else
         }
 
         return $"{Math.Max(1, (int)value.TotalSeconds)}s";
+    }
+
+    private static string CreateOccurrenceContext(JobSchedulerOccurrenceModel occurrence)
+    {
+        var payload = new
+        {
+            occurrenceId = occurrence.OccurrenceId,
+            occurrenceKey = occurrence.OccurrenceKey,
+            jobName = occurrence.JobName,
+            triggerName = occurrence.TriggerName,
+            triggerType = occurrence.TriggerType.ToString(),
+            status = occurrence.Status.ToString(),
+            correlationId = occurrence.CorrelationId,
+            causationId = occurrence.CausationId,
+            idempotencyKey = occurrence.IdempotencyKey,
+            leaseOwnerSchedulerInstanceId = occurrence.LeaseOwnerSchedulerInstanceId,
+            dueUtc = occurrence.DueUtc,
+            scheduledUtc = occurrence.ScheduledUtc,
+            createdDate = occurrence.CreatedDate,
+            updatedDate = occurrence.UpdatedDate,
+            resumeStatus = occurrence.ResumeStatus?.ToString(),
+            blockedReason = occurrence.BlockedReason,
+            dependencyCount = occurrence.DependencyCount,
+            pendingDependencyCount = occurrence.PendingDependencyCount,
+            failedDependencyCount = occurrence.FailedDependencyCount,
+            attemptCount = occurrence.AttemptCount,
+            latestExecutionStatus = occurrence.LatestExecutionStatus?.ToString(),
+            latestExecutionStartedUtc = occurrence.LatestExecutionStartedUtc,
+            latestExecutionCompletedUtc = occurrence.LatestExecutionCompletedUtc,
+            latestExecutionDurationSeconds = occurrence.LatestExecutionDurationSeconds,
+            dataType = occurrence.DataType,
+            dataPreview = occurrence.DataPreview,
+            batchInternalId = occurrence.BatchInternalId,
+            externalBatchId = occurrence.ExternalBatchId,
+            properties = occurrence.Properties ?? new Dictionary<string, string>(),
+            messages = occurrence.ExecutionMessages ?? []
+        };
+
+        return JsonSerializer.Serialize(payload);
     }
 
     private static Microsoft.AspNetCore.Html.IHtmlContent RenderJobStateBadge(JobSchedulerJobModel job)

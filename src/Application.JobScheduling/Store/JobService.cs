@@ -83,7 +83,7 @@ public partial class JobService(
         var detail = await scheduler.GetJobDetail(jobKey, cancellationToken);
         if (detail == null)
         {
-            this.logger.LogDebug("{LogKey} jobservice: job not found (name={JobName}, group={JobGroup})", Constants.LogKey, jobName, jobGroup);
+            this.logger.LogDebug("[{LogKey}] jobservice: job not found (name={JobName}, group={JobGroup})", Constants.LogKey, jobName, jobGroup);
             return null;
         }
 
@@ -270,7 +270,7 @@ public partial class JobService(
             [Constants.CorrelationIdKey] = correlationId,
         }))
         {
-            this.logger.LogDebug("{LogKey} jobservice: trigger jobs (count={JobCount}, group={JobGroup})", Constants.LogKey, jobNames.Count(), jobGroup);
+            this.logger.LogDebug("[{LogKey}] jobservice: trigger jobs (count={JobCount}, group={JobGroup})", Constants.LogKey, jobNames.Count(), jobGroup);
 
             var triggerTasks = new List<Task>();
             foreach (var jobName in jobNames)
@@ -317,7 +317,7 @@ public partial class JobService(
         jobGroup ??= "DEFAULT";
         timeout ??= TimeSpan.FromMinutes(10); // Default timeout of 10 minutes
 
-        this.logger.LogDebug("{LogKey} jobservice: trigger job and wait (name={JobName}, group={JobGroup}, checkInterval={CheckInterval}ms, timeout={Timeout})",
+        this.logger.LogDebug("[{LogKey}] jobservice: trigger job and wait (name={JobName}, group={JobGroup}, checkInterval={CheckInterval}ms, timeout={Timeout})",
             Constants.LogKey, jobName, jobGroup, checkInterval, timeout);
 
         // First trigger the job
@@ -390,7 +390,7 @@ public partial class JobService(
             [Constants.CorrelationIdKey] = correlationId,
         }))
         {
-            this.logger.LogDebug("{LogKey} jobservice: trigger jobs and wait (count={JobCount}, group={JobGroup}, sequential={Sequential}, haltOnError={HaltOnError}, checkInterval={CheckInterval}ms, timeout={Timeout})", Constants.LogKey, jobNames.Count(), jobGroup, sequentially, continueOnFailed, checkInterval, timeout);
+            this.logger.LogDebug("[{LogKey}] jobservice: trigger jobs and wait (count={JobCount}, group={JobGroup}, sequential={Sequential}, haltOnError={HaltOnError}, checkInterval={CheckInterval}ms, timeout={Timeout})", Constants.LogKey, jobNames.Count(), jobGroup, sequentially, continueOnFailed, checkInterval, timeout);
 
             var results = new Dictionary<string, JobInfo>();
 
@@ -411,7 +411,7 @@ public partial class JobService(
 
                     jobData.AddOrUpdate(Constants.CorrelationIdKey, correlationId);
 
-                    //this.logger.LogDebug("{LogKey} jobservice: trigger sequential job {JobName} in group {JobGroup}",
+                    //this.logger.LogDebug("[{LogKey}] jobservice: trigger sequential job {JobName} in group {JobGroup}",
                     //    Constants.LogKey, jobName, jobGroup);
 
                     results[jobName] = await this.TriggerJobAndWaitAsync(jobName, jobGroup, jobData, checkInterval, timeout, cancellationToken);
@@ -440,7 +440,7 @@ public partial class JobService(
 
                     jobData.AddOrUpdate(Constants.CorrelationIdKey, correlationId);
 
-                    //this.logger.LogDebug("{LogKey} jobservice: trigger concurrent job {JobName} in group {JobGroup}",
+                    //this.logger.LogDebug("[{LogKey}] jobservice: trigger concurrent job {JobName} in group {JobGroup}",
                     //    Constants.LogKey, jobName, jobGroup);
 
                     triggerTasks.Add(this.TriggerJobAsync(jobName, jobGroup, jobData, cancellationToken));
@@ -480,7 +480,7 @@ public partial class JobService(
                         if (jobInfo.LastRun?.Status != "Started") // If job is no longer "Started", remove from running list
                         {
                             runningJobs.Remove(jobName);
-                            this.logger.LogDebug("{LogKey} jobservice: job completion detected (name={JobName}, group={JobGroup}, status={Status})",
+                            this.logger.LogDebug("[{LogKey}] jobservice: job completion detected (name={JobName}, group={JobGroup}, status={Status})",
                                 Constants.LogKey, jobName, jobGroup, jobInfo.LastRun?.Status);
                         }
                         else if (!continueOnFailed && jobInfo.LastRun?.Status != "Failed")
@@ -494,7 +494,7 @@ public partial class JobService(
             }
 
             var totalDuration = (DateTimeOffset.UtcNow - (results.Values.FirstOrDefault()?.LastRun?.StartTime ?? DateTimeOffset.UtcNow)).TotalMilliseconds;
-            this.logger.LogDebug("{LogKey} jobservice: all jobs completed (count={JobCount}, group={JobGroup}, mode={Mode}, totalDuration={TotalDurationMs}ms)", Constants.LogKey, jobNames.Count(), jobGroup, sequentially ? "Sequential" : "Concurrent", (long)totalDuration);
+            this.logger.LogDebug("[{LogKey}] jobservice: all jobs completed (count={JobCount}, group={JobGroup}, mode={Mode}, totalDuration={TotalDurationMs}ms)", Constants.LogKey, jobNames.Count(), jobGroup, sequentially ? "Sequential" : "Concurrent", (long)totalDuration);
 
             return results;
         }
@@ -590,27 +590,27 @@ public partial class JobService(
 
         if (!string.IsNullOrEmpty(status))
         {
-            this.logger.LogDebug("{LogKey} jobservice: filter status={Status}", Constants.LogKey, status);
+            this.logger.LogDebug("[{LogKey}] jobservice: filter status={Status}", Constants.LogKey, status);
         }
 
         if (priority.HasValue)
         {
-            this.logger.LogDebug("{LogKey} jobservice: filter priority={Priority}", Constants.LogKey, priority.Value);
+            this.logger.LogDebug("[{LogKey}] jobservice: filter priority={Priority}", Constants.LogKey, priority.Value);
         }
 
         if (!string.IsNullOrEmpty(instanceName))
         {
-            this.logger.LogDebug("{LogKey} jobservice: filter instanceName={InstanceName}", Constants.LogKey, instanceName);
+            this.logger.LogDebug("[{LogKey}] jobservice: filter instanceName={InstanceName}", Constants.LogKey, instanceName);
         }
 
         if (!string.IsNullOrEmpty(resultContains))
         {
-            this.logger.LogDebug("{LogKey} jobservice: filter resultContains={ResultContains}", Constants.LogKey, resultContains);
+            this.logger.LogDebug("[{LogKey}] jobservice: filter resultContains={ResultContains}", Constants.LogKey, resultContains);
         }
 
         if (take.HasValue)
         {
-            this.logger.LogDebug("{LogKey} jobservice: take={Take}", Constants.LogKey, take.Value);
+            this.logger.LogDebug("[{LogKey}] jobservice: take={Take}", Constants.LogKey, take.Value);
         }
     }
 
@@ -618,48 +618,48 @@ public partial class JobService(
     {
         if (startDate.HasValue && endDate.HasValue)
         {
-            this.logger.LogDebug("{LogKey} jobservice: date range start={StartDate}, end={EndDate}", Constants.LogKey, startDate.Value, endDate.Value);
+            this.logger.LogDebug("[{LogKey}] jobservice: date range start={StartDate}, end={EndDate}", Constants.LogKey, startDate.Value, endDate.Value);
         }
         else if (startDate.HasValue)
         {
-            this.logger.LogDebug("{LogKey} jobservice: date range start={StartDate}", Constants.LogKey, startDate.Value);
+            this.logger.LogDebug("[{LogKey}] jobservice: date range start={StartDate}", Constants.LogKey, startDate.Value);
         }
         else if (endDate.HasValue)
         {
-            this.logger.LogDebug("{LogKey} jobservice: date range end={EndDate}", Constants.LogKey, endDate.Value);
+            this.logger.LogDebug("[{LogKey}] jobservice: date range end={EndDate}", Constants.LogKey, endDate.Value);
         }
     }
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Debug, "{LogKey} jobservice: get jobs")]
+        [LoggerMessage(0, LogLevel.Debug, "[{LogKey}] jobservice: get jobs")]
         public static partial void LogGetJobs(ILogger logger, string logKey);
 
-        [LoggerMessage(1, LogLevel.Debug, "{LogKey} jobservice: get job (name={JobName}, group={JobGroup})")]
+        [LoggerMessage(1, LogLevel.Debug, "[{LogKey}] jobservice: get job (name={JobName}, group={JobGroup})")]
         public static partial void LogGetJob(ILogger logger, string logKey, string jobName, string jobGroup);
 
-        [LoggerMessage(2, LogLevel.Debug, "{LogKey} jobservice: get job runs (name={JobName}, group={JobGroup})")]
+        [LoggerMessage(2, LogLevel.Debug, "[{LogKey}] jobservice: get job runs (name={JobName}, group={JobGroup})")]
         public static partial void LogGetJobRuns(ILogger logger, string logKey, string jobName, string jobGroup);
 
-        [LoggerMessage(3, LogLevel.Debug, "{LogKey} jobservice: get job run stats (name={JobName}, group={JobGroup})")]
+        [LoggerMessage(3, LogLevel.Debug, "[{LogKey}] jobservice: get job run stats (name={JobName}, group={JobGroup})")]
         public static partial void LogGetJobRunStats(ILogger logger, string logKey, string jobName, string jobGroup);
 
-        [LoggerMessage(4, LogLevel.Debug, "{LogKey} jobservice: get triggers (name={JobName}, group={JobGroup})")]
+        [LoggerMessage(4, LogLevel.Debug, "[{LogKey}] jobservice: get triggers (name={JobName}, group={JobGroup})")]
         public static partial void LogGetTriggers(ILogger logger, string logKey, string jobName, string jobGroup);
 
-        [LoggerMessage(5, LogLevel.Debug, "{LogKey} jobservice: save job run (name={JobName}, group={JobGroup}, id={EntryId})")]
+        [LoggerMessage(5, LogLevel.Debug, "[{LogKey}] jobservice: save job run (name={JobName}, group={JobGroup}, id={EntryId})")]
         public static partial void LogSaveJobRun(ILogger logger, string logKey, string jobName, string jobGroup, string entryId);
 
-        [LoggerMessage(6, LogLevel.Debug, "{LogKey} jobservice: trigger job (name={JobName}, group={JobGroup})")]
+        [LoggerMessage(6, LogLevel.Debug, "[{LogKey}] jobservice: trigger job (name={JobName}, group={JobGroup})")]
         public static partial void LogTriggerJob(ILogger logger, string logKey, string jobName, string jobGroup);
 
-        [LoggerMessage(7, LogLevel.Debug, "{LogKey} jobservice: pause job (name={JobName}, group={JobGroup})")]
+        [LoggerMessage(7, LogLevel.Debug, "[{LogKey}] jobservice: pause job (name={JobName}, group={JobGroup})")]
         public static partial void LogPauseJob(ILogger logger, string logKey, string jobName, string jobGroup);
 
-        [LoggerMessage(8, LogLevel.Debug, "{LogKey} jobservice: resume job (name={JobName}, group={JobGroup})")]
+        [LoggerMessage(8, LogLevel.Debug, "[{LogKey}] jobservice: resume job (name={JobName}, group={JobGroup})")]
         public static partial void LogResumeJob(ILogger logger, string logKey, string jobName, string jobGroup);
 
-        [LoggerMessage(9, LogLevel.Debug, "{LogKey} jobservice: purge job runs (name={JobName}, group={JobGroup}, olderThan={OlderThan})")]
+        [LoggerMessage(9, LogLevel.Debug, "[{LogKey}] jobservice: purge job runs (name={JobName}, group={JobGroup}, olderThan={OlderThan})")]
         public static partial void LogPurgeJobRuns(ILogger logger, string logKey, string jobName, string jobGroup, DateTimeOffset olderThan);
     }
 }

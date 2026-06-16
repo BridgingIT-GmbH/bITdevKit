@@ -613,6 +613,11 @@ public class JobSchedulerOccurrenceModel
 
     public int PropertyCount { get; init; }
 
+    /// <summary>
+    /// Gets the occurrence properties as display-ready key/value pairs.
+    /// </summary>
+    public IReadOnlyDictionary<string, string> Properties { get; init; } = new Dictionary<string, string>();
+
     public int AttemptCount { get; init; }
 
     public JobExecutionStatus? LatestExecutionStatus { get; init; }
@@ -622,6 +627,11 @@ public class JobSchedulerOccurrenceModel
     public DateTimeOffset? LatestExecutionCompletedUtc { get; init; }
 
     public double? LatestExecutionDurationSeconds { get; init; }
+
+    /// <summary>
+    /// Gets the persisted execution messages for the occurrence, newest attempt first.
+    /// </summary>
+    public IReadOnlyList<string> ExecutionMessages { get; init; } = [];
 
     public string LeaseOwnerSchedulerInstanceId { get; init; }
 

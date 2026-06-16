@@ -36,7 +36,7 @@ public class NoOpRequester(ILoggerFactory loggerFactory = null) : IRequester
         CancellationToken cancellationToken = default)
         where TRequest : class, IRequest<TValue>
     {
-        this.logger.LogWarning("{LogKey} no requester available. Request {RequestType} not processed (RequestId={RequestId})", "REQ", request.GetType().Name, request.RequestId);
+        this.logger.LogWarning("[{LogKey}] no requester available. Request {RequestType} not processed (RequestId={RequestId})", "REQ", request.GetType().Name, request.RequestId);
 
         return Task.FromResult(Result<TValue>.Success(default));
     }
@@ -54,7 +54,7 @@ public class NoOpRequester(ILoggerFactory loggerFactory = null) : IRequester
         SendOptions options = null,
         CancellationToken cancellationToken = default)
     {
-        this.logger.LogWarning("{LogKey} no requester available. Request {RequestType} not processed (RequestId={RequestId})", "REQ", request.GetType().Name, request.RequestId);
+        this.logger.LogWarning("[{LogKey}] no requester available. Request {RequestType} not processed (RequestId={RequestId})", "REQ", request.GetType().Name, request.RequestId);
 
         return Task.FromResult(Result<TValue>.Success(default));
     }
@@ -86,7 +86,7 @@ public class NoOpRequester(ILoggerFactory loggerFactory = null) : IRequester
     /// <returns>A task representing the result of the request, returning a <see cref="Result{TValue}"/>.</returns>
     public Task<Result<TValue>> SendDynamicAsync<TValue>(IRequest<TValue> request, SendOptions options = null, CancellationToken cancellationToken = default)
     {
-        this.logger.LogWarning("{LogKey} no requester available. Request {RequestType} not processed (RequestId={RequestId})", "REQ", request.GetType().Name, request.RequestId);
+        this.logger.LogWarning("[{LogKey}] no requester available. Request {RequestType} not processed (RequestId={RequestId})", "REQ", request.GetType().Name, request.RequestId);
 
         return Task.FromResult(Result<TValue>.Success(default));
     }
@@ -100,7 +100,7 @@ public class NoOpRequester(ILoggerFactory loggerFactory = null) : IRequester
     /// <returns>A task representing the result of the request, returning a <see cref="Result{TValue}"/>.</returns>
     public Task<Result> SendDynamicAsync(IRequest request, SendOptions options = null, CancellationToken cancellationToken = default)
     {
-        this.logger.LogWarning("{LogKey} no requester available. Request {RequestType} not processed (RequestId={RequestId})", "REQ", request.GetType().Name, request.RequestId);
+        this.logger.LogWarning("[{LogKey}] no requester available. Request {RequestType} not processed (RequestId={RequestId})", "REQ", request.GetType().Name, request.RequestId);
 
         return Task.FromResult(Result.Success());
     }

@@ -56,10 +56,10 @@ public partial class OutboxMessageQueue : IOutboxMessageQueue
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Debug, "{LogKey} outbox message queued (id={MessageId})")]
+        [LoggerMessage(0, LogLevel.Debug, "[{LogKey}] outbox message queued (id={MessageId})")]
         public static partial void LogQueue(ILogger logger, string logKey, string messageId);
 
-        [LoggerMessage(1, LogLevel.Debug, "{LogKey} outbox message dequeued (id={MessageId})")]
+        [LoggerMessage(1, LogLevel.Debug, "[{LogKey}] outbox message dequeued (id={MessageId})")]
         public static partial void LogDequeued(ILogger logger, string logKey, string messageId);
     }
 }

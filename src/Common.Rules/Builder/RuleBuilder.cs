@@ -242,12 +242,12 @@ public class RuleBuilder
             var result = Rule.Check(rule, false);
             if (!result.IsFailure)
             {
-                //logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+                //logger.LogDebug("[{LogKey}] rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
                 continue;
             }
 
-            //logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+            //logger.LogWarning("[{LogKey}] rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
             hasFailures = true;
             messages.AddRange(result.Messages);
@@ -284,7 +284,7 @@ public class RuleBuilder
     {
         if (this.rules.Count == 0)
         {
-            // logger.LogDebug("{LogKey} rules - no rules defined", Constants.LogKey);
+            // logger.LogDebug("[{LogKey}] rules - no rules defined", Constants.LogKey);
 
             return Result.Success();
         }
@@ -298,12 +298,12 @@ public class RuleBuilder
                 var result = await Rule.CheckAsync(rule, this.throwOnFailure, this.throwOnException, cancellationToken).AnyContext();
                 if (result.IsFailure)
                 {
-                    // logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+                    // logger.LogWarning("[{LogKey}] rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
                     return result;
                 }
 
-                // logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+                // logger.LogDebug("[{LogKey}] rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
             }
 
             return Result.Success();
@@ -319,12 +319,12 @@ public class RuleBuilder
             var result = await Rule.CheckAsync(rule, this.throwOnFailure, this.throwOnException, cancellationToken).AnyContext();
             if (!result.IsFailure)
             {
-                // logger.LogDebug("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+                // logger.LogDebug("[{LogKey}] rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
 
                 continue;
             }
 
-            // logger.LogWarning("{LogKey} rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
+            // logger.LogWarning("[{LogKey}] rules - {Rule} result: {RuleResult}", Constants.LogKey, rule.GetType().Name, result.ToString());
             hasFailures = true;
             errors.AddRange(result.Errors);
         }

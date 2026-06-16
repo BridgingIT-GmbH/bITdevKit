@@ -52,15 +52,17 @@ builder.Services.AddMessaging(builder.Configuration, o => o
     .WithBehavior<MetricsMessageHandlerBehavior>()
     .WithBehavior<RetryMessageHandlerBehavior>()
     .WithBehavior<TimeoutMessageHandlerBehavior>()
+    .WithSubscription<WeatherHelloWorldMessage, WeatherHelloWorldMessageHandler>()
     .WithEntityFrameworkBroker<CoreDbContext>()
     .AddEndpoints();
 
 builder.Services.AddQueueing(builder.Configuration, o => o
         .StartupDelay("00:00:30"))
-    // .WithBehavior<ModuleScopeQueueEnquerBehavior>()
-    // .WithBehavior<ModuleScopeQueueHAndlerBehavior>()
+    .WithBehavior<ModuleScopeQueueEnqueuerBehavior>()
+    .WithBehavior<ModuleScopeQueueHandlerBehavior>()
     .WithBehavior<MetricsQueueEnqueuerBehavior>()
     .WithBehavior<MetricsQueueHandlerBehavior>()
+    .WithSubscription<WeatherHelloWorldQueueMessage, WeatherHelloWorldQueueMessageHandler>()
     .WithSubscription<WeatherReportGenerationMessage, WeatherReportGenerationHandler>()
     .WithEntityFrameworkBroker<CoreDbContext>()
     .AddEndpoints();
@@ -98,8 +100,7 @@ builder.Services.AddMapping().WithMapster();
 // Configure Authentication
 builder.Services.AddScoped<ICurrentUserAccessor, HttpCurrentUserAccessor>();
 builder.Services
-    .AddJwtBearerAuthentication(builder.Configuration)
-    .AddCookieAuthentication();
+    .AddJwtBearerAuthentication(builder.Configuration);
 
 // Identity Provider ==============================================================================
 builder.Services.AddFakeIdentityProvider(o => o
@@ -112,10 +113,18 @@ builder.Services.AddFakeIdentityProvider(o => o
         "https://localhost:5001/authentication/login-callback",
         "https://localhost:5001/authentication/logout-callback",
         "https://localhost:5001/openapi/oauth2-redirect.html")
+    .WithClient(
+        "bdk dashboard",
+        "dashboard",
+        $"{builder.Configuration["Authentication:Authority"]}/_bdk/dashboard/signin-oidc")
     .WithClient("Scalar", "scalar", $"{builder.Configuration["Authentication:Authority"]}/scalar/"));
 
 builder.Services.AddEndpoints<SystemEndpoints>();
-builder.Services.AddDashboard(o => o.Enabled(true));
+builder.Services.AddDashboard(o => o
+    .Enabled(true)
+    .Authorize(o => o
+        .UseOpenIdConnect(builder.Configuration["Authentication:Authority"])
+        .RequireRole(Role.Administrators)));
     // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.DashboardEndpoints>()
     // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Messaging.Dashboard.DashboardEndpoints>()
     // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.DashboardEndpoints>()

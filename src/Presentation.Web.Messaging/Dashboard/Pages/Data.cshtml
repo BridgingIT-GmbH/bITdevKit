@@ -1,6 +1,7 @@
 @using BridgingIT.DevKit.Application.Messaging
 @using Microsoft.Extensions.Logging
 @using MessagingDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Messaging.Dashboard.DashboardEndpoints
+@using System.Text.Json
 @inherits RazorSlice
 
 @{
@@ -65,6 +66,8 @@ else
                         <tbody>
                         @foreach (var message in vm.Messages)
                         {
+                            vm.MessageDetailsById.TryGetValue(message.Id, out var detail);
+                            vm.MessageContentById.TryGetValue(message.Id, out var content);
                             var retryUrl = $"{actionBase}/messages/{message.Id}/retry";
                             var archiveUrl = $"{actionBase}/messages/{message.Id}/archive";
                             <tr>
@@ -91,9 +94,15 @@ else
                                     }
                                 </td>
                                 <td class="text-end text-nowrap">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-secondary"
+                                            title="Show message details"
+                                            data-messaging-message-context="@CreateMessageContext(message, detail, content)">
+                                        <i class="bi bi-info-circle"></i>
+                                    </button>
                                     @if (CanRetryMessage(message))
                                     {
-                                        <button class="btn btn-sm btn-outline-warning" title="Retry message" onclick="window.bdkMessagingAction('@retryUrl')">
+                                        <button class="btn btn-sm btn-outline-warning ms-1" title="Retry message" onclick="window.bdkMessagingAction('@retryUrl')">
                                             <i class="bi bi-arrow-repeat"></i>
                                         </button>
                                     }
@@ -231,6 +240,8 @@ else
                 take: take,
                 cancellationToken: cancellationToken);
             model.Messages = messages.OrderByDescending(message => message.CreatedDate).ToList();
+            model.MessageDetailsById = await GetMessageDetailsAsync(service, model.Messages, cancellationToken);
+            model.MessageContentById = await GetMessageContentsAsync(service, model.Messages, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -258,6 +269,42 @@ else
         }
 
         return model;
+    }
+
+    private static async Task<IReadOnlyDictionary<Guid, BrokerMessageInfo>> GetMessageDetailsAsync(
+        IMessageBrokerService service,
+        IReadOnlyList<BrokerMessageInfo> messages,
+        CancellationToken cancellationToken)
+    {
+        var result = new Dictionary<Guid, BrokerMessageInfo>();
+        foreach (var message in messages)
+        {
+            var detail = await service.GetMessageAsync(message.Id, includeHandlers: true, cancellationToken);
+            if (detail is not null)
+            {
+                result[message.Id] = detail;
+            }
+        }
+
+        return result;
+    }
+
+    private static async Task<IReadOnlyDictionary<Guid, BrokerMessageContentInfo>> GetMessageContentsAsync(
+        IMessageBrokerService service,
+        IReadOnlyList<BrokerMessageInfo> messages,
+        CancellationToken cancellationToken)
+    {
+        var result = new Dictionary<Guid, BrokerMessageContentInfo>();
+        foreach (var message in messages)
+        {
+            var content = await service.GetMessageContentAsync(message.Id, cancellationToken);
+            if (content is not null)
+            {
+                result[message.Id] = content;
+            }
+        }
+
+        return result;
     }
 
     private string GetQuery(string key) =>
@@ -353,5 +400,40 @@ else
         }
 
         return value.Length <= maxLength ? value : $"...{value[^maxLength..]}";
+    }
+
+    private static string CreateMessageContext(BrokerMessageInfo message, BrokerMessageInfo detail, BrokerMessageContentInfo content)
+    {
+        var source = detail ?? message;
+        var payload = new
+        {
+            id = source.Id,
+            messageId = source.MessageId,
+            type = source.Type,
+            status = source.Status.ToString(),
+            isArchived = source.IsArchived,
+            archivedDate = source.ArchivedDate,
+            createdDate = source.CreatedDate,
+            expiresOn = source.ExpiresOn,
+            lockedBy = source.LockedBy,
+            lockedUntil = source.LockedUntil,
+            processedDate = source.ProcessedDate,
+            attemptCount = source.AttemptCountSummary,
+            lastError = source.LastError,
+            contentHash = content?.ContentHash,
+            content = content?.Content,
+            properties = source.Properties?.ToDictionary(pair => pair.Key, pair => pair.Value?.ToString() ?? string.Empty) ?? new Dictionary<string, string>(),
+            handlers = (source.Handlers ?? []).Select(handler => new
+            {
+                handler.SubscriptionKey,
+                handler.HandlerType,
+                status = handler.Status.ToString(),
+                handler.AttemptCount,
+                handler.ProcessedDate,
+                handler.LastError
+            }).ToArray()
+        };
+
+        return JsonSerializer.Serialize(payload);
     }
 }

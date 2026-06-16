@@ -22,7 +22,7 @@ public class TimeoutJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSch
                 async (context, timeout, task) =>
                 {
                     await Task.Run(() =>
-                        this.Logger.LogError("{LogKey} job timeout behavior (timeout={Timeout}, type={JobType})",
+                        this.Logger.LogError("[{LogKey}] job timeout behavior (timeout={Timeout}, type={JobType})",
                             Constants.LogKey,
                             timeout.Humanize(),
                             jobTypeName));

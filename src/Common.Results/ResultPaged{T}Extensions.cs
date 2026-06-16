@@ -779,7 +779,7 @@ public static class ResultPagedExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "{LogKey} Success - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} | " + messageTemplate,
+                        "[{LogKey}] Success - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} | " + messageTemplate,
                         "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, args);
                 }
                 else
@@ -787,7 +787,7 @@ public static class ResultPagedExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "{LogKey} Success - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors}",
+                        "[{LogKey}] Success - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors}",
                         "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount);
                 }
             }
@@ -798,7 +798,7 @@ public static class ResultPagedExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "{LogKey} Failure - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
+                        "[{LogKey}] Failure - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | " + messageTemplate,
                         "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, errorTypes, args);
                 }
                 else
@@ -806,7 +806,7 @@ public static class ResultPagedExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "{LogKey} Failure - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
+                        "[{LogKey}] Failure - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
                         "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, errorTypes);
                 }
             }
@@ -891,7 +891,7 @@ public static class ResultPagedExtensions
             {
                 if (isSuccess)
                 {
-                    const string prefixTemplate = "{LogKey} Success - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} | ";
+                    const string prefixTemplate = "[{LogKey}] Success - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} | ";
                     var prefixArgs = new object[] { "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount };
                     var allArgs = prefixArgs.ConcatArgs(userArgs);
 
@@ -899,7 +899,7 @@ public static class ResultPagedExtensions
                 }
                 else
                 {
-                    const string prefixTemplate = "{LogKey} Failure - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | ";
+                    const string prefixTemplate = "[{LogKey}] Failure - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes} | ";
                     var prefixArgs = new object[] { "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, errorTypes };
                     var allArgs = prefixArgs.ConcatArgs(userArgs);
 
@@ -913,7 +913,7 @@ public static class ResultPagedExtensions
                     logger.Log(
                         successLevel,
                         ResultLogEvent,
-                        "{LogKey} Success - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors}",
+                        "[{LogKey}] Success - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors}",
                         "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount);
                 }
                 else
@@ -921,7 +921,7 @@ public static class ResultPagedExtensions
                     logger.Log(
                         failureLevel,
                         ResultLogEvent,
-                        "{LogKey} Failure - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
+                        "[{LogKey}] Failure - Page={Page} Size={Size} Total={Total} TotalPages={TotalPages} HasNext={HasNext} HasPrev={HasPrev} Messages={Messages} Errors={Errors} ErrorTypes={ErrorTypes}",
                         "RES", page, pageSize, total, totalPages, hasNext, hasPrev, messagesCount, errorsCount, errorTypes);
                 }
             }

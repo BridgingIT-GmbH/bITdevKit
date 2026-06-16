@@ -1,5 +1,6 @@
 @using OrchestrationsDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints
 @using BridgingIT.DevKit.Application.Orchestrations
+@using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
@@ -7,6 +8,7 @@
     var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = OrchestrationsDashboardEndpoints.BuildOrchestrationsContentPath(dashboardOptions);
     var actionBase = OrchestrationsDashboardEndpoints.BuildOrchestrationsActionBase(dashboardOptions);
+    var logEntriesPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesPath(dashboardOptions);
     var aliveEnabled = this.HttpContext.RequestServices.GetService<OrchestrationAliveOptions>()?.Enabled == true;
 }
 
@@ -82,10 +84,66 @@
     @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.Content>())
 </div>
 
+<div class="modal fade" id="orchestration-instance-context-modal" tabindex="-1" aria-labelledby="orchestration-instance-context-title" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title" id="orchestration-instance-context-title">Orchestration Instance</h5>
+                    <div class="text-muted small" id="orchestration-instance-context-subtitle">-</div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-2 mb-3" id="orchestration-instance-context-summary"></div>
+                <h6 class="mb-2">Details</h6>
+                <div class="table-responsive mb-3">
+                    <table class="table table-sm align-middle mb-0">
+                        <tbody id="orchestration-instance-context-details"></tbody>
+                    </table>
+                </div>
+                <h6 class="mb-2">Context</h6>
+                <pre class="small border rounded p-2 mb-3 text-break" id="orchestration-instance-context-json">-</pre>
+                <h6 class="mb-2">History</h6>
+                <div id="orchestration-instance-context-history" class="d-flex flex-column gap-2 mb-3"></div>
+                <h6 class="mb-2">Signals</h6>
+                <div id="orchestration-instance-context-signals" class="d-flex flex-column gap-2 mb-3"></div>
+                <h6 class="mb-2">Timers</h6>
+                <div id="orchestration-instance-context-timers" class="d-flex flex-column gap-2"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     (() => {
         const shellElement = document.getElementById('dashboard-orchestrations-shell');
+        const logEntriesPath = '@logEntriesPath';
         const resetButton = document.getElementById('orchestrations-filter-reset');
+        const instanceModalElement = document.getElementById('orchestration-instance-context-modal');
+        const instanceModal = instanceModalElement && window.bootstrap
+            ? window.bootstrap.Modal.getOrCreateInstance(instanceModalElement)
+            : null;
+        let instanceModalOpen = false;
+
+        function applyQueryFilters() {
+            const parameters = new URLSearchParams(window.location.search);
+            const mappings = [
+                ['status', 'orchestrations-status-filter'],
+                ['take', 'orchestrations-take-filter'],
+                ['name', 'orchestrations-name-filter'],
+                ['state', 'orchestrations-state-filter'],
+                ['correlationId', 'orchestrations-correlation-filter'],
+            ];
+
+            mappings.forEach(([key, id]) => {
+                const element = document.getElementById(id);
+                const value = parameters.get(key);
+                if (element && value !== null) {
+                    element.value = value;
+                }
+            });
+        }
 
         function buildContentUrl() {
             const url = new URL('@contentPath', window.location.origin);
@@ -104,13 +162,244 @@
             return url;
         }
 
+        applyQueryFilters();
+
         const refresher = window.bdkDashboard.createRefresher({
             buildUrl: buildContentUrl,
             contentSelector: () => shellElement?.querySelector('#dashboard-orchestrations-content') ?? null,
             statusSelector: '#orchestrations-refresh-status',
             intervalSelector: '#orchestrations-refresh-interval',
             refreshButtonSelector: '#orchestrations-refresh-now',
-            storageKey: 'bdk.dashboard.orchestrations.refreshInterval'
+            storageKey: 'bdk.dashboard.orchestrations.refreshInterval',
+            shouldRefresh: () => !instanceModalOpen
+        });
+
+        if (window.location.search) {
+            refresher.refresh(true);
+        }
+
+        function text(value) {
+            return value === null || value === undefined || value === '' ? '-' : value.toString();
+        }
+
+        function formatDate(value) {
+            if (!value) {
+                return '-';
+            }
+
+            const date = new Date(value);
+            return Number.isNaN(date.getTime()) ? text(value) : date.toLocaleString();
+        }
+
+        function setText(id, value) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = text(value);
+            }
+        }
+
+        function appendCell(container, label, value) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'col-6 col-lg-3';
+            const card = document.createElement('div');
+            card.className = 'border rounded p-2 h-100';
+            const labelElement = document.createElement('div');
+            labelElement.className = 'text-muted small';
+            labelElement.textContent = label;
+            const valueElement = document.createElement('div');
+            valueElement.className = 'fw-semibold text-break';
+            valueElement.textContent = text(value);
+            card.append(labelElement, valueElement);
+            wrapper.appendChild(card);
+            container.appendChild(wrapper);
+        }
+
+        function appendRow(container, label, value) {
+            const row = document.createElement('tr');
+            const labelCell = document.createElement('td');
+            labelCell.className = 'text-muted text-nowrap';
+            labelCell.textContent = label;
+            const valueCell = document.createElement('td');
+            valueCell.className = 'text-break';
+            if (label.toLowerCase().includes('correlation')) {
+                appendCorrelationLink(valueCell, value);
+            } else {
+                valueCell.textContent = text(value);
+            }
+            row.append(labelCell, valueCell);
+            container.appendChild(row);
+        }
+
+        function appendCorrelationLink(container, value) {
+            if (!value) {
+                container.textContent = '-';
+                return;
+            }
+
+            const url = new URL(logEntriesPath, window.location.origin);
+            url.searchParams.set('level', 'All');
+            url.searchParams.set('pageSize', '100');
+            url.searchParams.set('from', new Date().toISOString().slice(0, 10));
+            url.searchParams.set('correlationId', value.toString());
+
+            const link = document.createElement('a');
+            link.className = 'text-decoration-none';
+            link.href = url.toString();
+            link.textContent = value.toString();
+            link.title = 'Open related logs';
+            container.appendChild(link);
+        }
+
+        function formatJson(value) {
+            if (!value) {
+                return '-';
+            }
+
+            try {
+                return JSON.stringify(JSON.parse(value), null, 2);
+            } catch {
+                return value.toString();
+            }
+        }
+
+        function renderCollection(container, items, renderer, emptyText) {
+            container.replaceChildren();
+            if (!Array.isArray(items) || items.length === 0) {
+                const empty = document.createElement('div');
+                empty.className = 'text-muted small';
+                empty.textContent = emptyText;
+                container.appendChild(empty);
+                return;
+            }
+
+            items.forEach(item => container.appendChild(renderer(item)));
+        }
+
+        function createHistoryItem(item) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'border rounded p-2';
+            const title = document.createElement('div');
+            title.className = 'fw-semibold text-break';
+            title.textContent = `${text(item.eventType)} | ${text(item.state)} | ${text(item.activity)}`;
+            const meta = document.createElement('div');
+            meta.className = 'text-muted small';
+            meta.textContent = formatDate(item.timestampUtc);
+            wrapper.append(title, meta);
+            if (item.message) {
+                const message = document.createElement('div');
+                message.className = 'small text-break mt-1';
+                message.textContent = item.message;
+                wrapper.appendChild(message);
+            }
+            if (item.dataJson) {
+                const data = document.createElement('pre');
+                data.className = 'small border rounded p-2 mt-2 mb-0 text-break';
+                data.textContent = formatJson(item.dataJson);
+                wrapper.appendChild(data);
+            }
+            return wrapper;
+        }
+
+        function createSignalItem(item) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'border rounded p-2';
+            const title = document.createElement('div');
+            title.className = 'fw-semibold text-break';
+            title.textContent = `${text(item.signalName)} | ${text(item.processingStatus)}`;
+            const meta = document.createElement('div');
+            meta.className = 'text-muted small text-break';
+            meta.textContent = `received: ${formatDate(item.receivedUtc)} | processed: ${formatDate(item.processedUtc)} | idempotency: ${text(item.idempotencyKey)}`;
+            const payload = document.createElement('pre');
+            payload.className = 'small border rounded p-2 mt-2 mb-0 text-break';
+            payload.textContent = formatJson(item.payloadJson);
+            wrapper.append(title, meta, payload);
+            return wrapper;
+        }
+
+        function createTimerItem(item) {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'border rounded p-2';
+            const title = document.createElement('div');
+            title.className = 'fw-semibold text-break';
+            title.textContent = `${text(item.timerKind)} | ${text(item.processingStatus)}`;
+            const meta = document.createElement('div');
+            meta.className = 'text-muted small';
+            meta.textContent = `due: ${formatDate(item.dueUtc)} | processed: ${formatDate(item.processedUtc)}`;
+            wrapper.append(title, meta);
+            if (item.metadataJson) {
+                const metadata = document.createElement('pre');
+                metadata.className = 'small border rounded p-2 mt-2 mb-0 text-break';
+                metadata.textContent = formatJson(item.metadataJson);
+                wrapper.appendChild(metadata);
+            }
+            return wrapper;
+        }
+
+        function showInstanceContext(payload) {
+            if (!payload || !instanceModal) {
+                return;
+            }
+
+            setText('orchestration-instance-context-title', payload.orchestrationName);
+            setText('orchestration-instance-context-subtitle', payload.instanceId);
+
+            const summary = document.getElementById('orchestration-instance-context-summary');
+            const details = document.getElementById('orchestration-instance-context-details');
+            const contextJson = document.getElementById('orchestration-instance-context-json');
+            const history = document.getElementById('orchestration-instance-context-history');
+            const signals = document.getElementById('orchestration-instance-context-signals');
+            const timers = document.getElementById('orchestration-instance-context-timers');
+            summary.replaceChildren();
+            details.replaceChildren();
+
+            appendCell(summary, 'Status', payload.status);
+            appendCell(summary, 'State', payload.currentState);
+            appendCell(summary, 'History', Array.isArray(payload.history) ? payload.history.length : 0);
+            appendCell(summary, 'Signals', Array.isArray(payload.signals) ? payload.signals.length : 0);
+
+            appendRow(details, 'Instance ID', payload.instanceId);
+            appendRow(details, 'Orchestration', payload.orchestrationName);
+            appendRow(details, 'Activity', payload.currentActivity);
+            appendRow(details, 'Correlation', payload.correlationId);
+            appendRow(details, 'Concurrency', payload.concurrencyKey);
+            appendRow(details, 'Started', formatDate(payload.startedUtc));
+            appendRow(details, 'Completed', formatDate(payload.completedUtc));
+            appendRow(details, 'Last Updated', formatDate(payload.lastUpdatedUtc));
+            appendRow(details, 'Context Type', payload.contextType);
+            appendRow(details, 'Context Snapshot', formatDate(payload.contextSnapshotUtc));
+            appendRow(details, 'Created By', payload.createdBy);
+            appendRow(details, 'Updated By', payload.updatedBy);
+
+            contextJson.textContent = formatJson(payload.contextJson);
+            renderCollection(history, payload.history, createHistoryItem, 'No history entries available.');
+            renderCollection(signals, payload.signals, createSignalItem, 'No signals available.');
+            renderCollection(timers, payload.timers, createTimerItem, 'No timers available.');
+            instanceModalOpen = true;
+            instanceModal.show();
+        }
+
+        if (instanceModalElement) {
+            instanceModalElement.addEventListener('shown.bs.modal', () => {
+                instanceModalOpen = true;
+            });
+
+            instanceModalElement.addEventListener('hidden.bs.modal', () => {
+                instanceModalOpen = false;
+                refresher.schedule();
+            });
+        }
+
+        shellElement?.addEventListener('click', event => {
+            const button = event.target.closest('[data-orchestration-instance-context]');
+            if (!button) {
+                return;
+            }
+
+            try {
+                showInstanceContext(JSON.parse(button.getAttribute('data-orchestration-instance-context') || '{}'));
+            } catch {
+                // ignore invalid row payload
+            }
         });
 
         document.getElementById('orchestrations-filter-apply').addEventListener('click', () => refresher.refresh(true));
@@ -124,6 +413,10 @@
         });
 
         window.bdkOrchestrationAction = async function(url) {
+            if (instanceModal) {
+                instanceModal.hide();
+            }
+
             await window.bdkDashboard.postAction(url, {
                 refresh: refresher.refresh,
                 errorMessage: 'Orchestration action failed:'

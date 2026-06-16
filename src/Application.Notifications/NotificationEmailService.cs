@@ -88,7 +88,7 @@ public class NotificationEmailService(
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} failed to process message with ID {MessageId}", Constants.LogKey, message.Id);
+            this.logger.LogError(ex, "[{LogKey}] failed to process message with ID {MessageId}", Constants.LogKey, message.Id);
             return await Task.FromResult(Result.Failure()
                 .WithError(new Error($"Failed to process message: {ex.Message}")));
         }
@@ -111,7 +111,7 @@ public class NotificationEmailService(
 
             if (!this.options.IsOutboxConfigured)
             {
-                this.logger.LogWarning("{LogKey} outbox not configured, queuing message with ID {MessageId} ignored", Constants.LogKey, message.Id);
+                this.logger.LogWarning("[{LogKey}] outbox not configured, queuing message with ID {MessageId} ignored", Constants.LogKey, message.Id);
 
                 return await Task.FromResult(Result.Success());
             }
@@ -132,7 +132,7 @@ public class NotificationEmailService(
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} failed to queue message with ID {MessageId}", Constants.LogKey, message.Id);
+            this.logger.LogError(ex, "[{LogKey}] failed to queue message with ID {MessageId}", Constants.LogKey, message.Id);
             return await Task.FromResult(Result.Failure()
                 .WithError(new Error($"Failed to queue message: {ex.Message}")));
         }
@@ -152,7 +152,7 @@ public class NotificationEmailService(
                 async ct => await timeoutHandler.ExecuteAsync(
                     async ct =>
                     {
-                        this.logger.LogInformation("{LogKey} mailservice - sending email (id={MessageId})", Constants.LogKey, message.Id);
+                        this.logger.LogInformation("[{LogKey}] mailservice - sending email (id={MessageId})", Constants.LogKey, message.Id);
 
                         if (this.options.SmtpSettings.SkipServerCertificateValidation)
                         {
@@ -174,12 +174,12 @@ public class NotificationEmailService(
                     cancellationToken),
                 cancellationToken);
 
-            this.logger.LogInformation("{LogKey} mailservice - successfully sent email (id={MessageId})", Constants.LogKey, message.Id);
+            this.logger.LogInformation("[{LogKey}] mailservice - successfully sent email (id={MessageId})", Constants.LogKey, message.Id);
             return await Task.FromResult(Result.Success());
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} mailservice - failed to send email (id={MessageId})", Constants.LogKey, message.Id);
+            this.logger.LogError(ex, "[{LogKey}] mailservice - failed to send email (id={MessageId})", Constants.LogKey, message.Id);
             return await Task.FromResult(Result.Failure()
                 .WithError(new Error($"Failed to send email: {ex.Message}")));
         }

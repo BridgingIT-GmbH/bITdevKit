@@ -33,7 +33,7 @@ public class ResultLogger(ILogger<ResultLogger> logger) : IResultLogger
 
         result.Log(this.logger, context, logLevel);
         //this.logger.Log(logLevel,
-        //    "{LogKey} result: {ResultSuccess} | {ResultMessages} | {ResultContent} <{ResultContext}>",
+        //    "[{LogKey}] result: {ResultSuccess} | {ResultMessages} | {ResultContent} <{ResultContext}>",
         //    "RES",
         //    result.IsSuccess ? "Success" : "Failure",
         //    $"{result.Messages.Concat(errors).ToString(", ")}",
@@ -56,7 +56,7 @@ public class ResultLogger(ILogger<ResultLogger> logger) : IResultLogger
         //result.Log(this.logger, $"<{typeof(TContext).Name}> {content}".Trim());
 
         //this.logger.Log(logLevel,
-        //    "{LogKey} result: {ResultSuccess} | {ResultMessages} | {ResultContent} <{ResultContext}>",
+        //    "[{LogKey}] result: {ResultSuccess} | {ResultMessages} | {ResultContent} <{ResultContext}>",
         //    "RES",
         //    result.IsSuccess ? "Success" : "Failure",
         //    $"{result.Messages.Concat(errors).ToString(", ")}",

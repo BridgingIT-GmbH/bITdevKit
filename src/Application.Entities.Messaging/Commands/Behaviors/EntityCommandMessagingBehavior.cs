@@ -58,7 +58,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
 
         if (this.messageBroker is null)
         {
-            this.Logger.LogWarning("{LogKey} cannot send entity message, no messagebroker specified", Constants.LogKey);
+            this.Logger.LogWarning("[{LogKey}] cannot send entity message, no messagebroker specified", Constants.LogKey);
 
             return result;
         }
@@ -93,7 +93,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
             if (message != null)
             {
                 await Task.Delay(this.options.PublishDelay, cancellationToken);
-                this.Logger.LogInformation("{LogKey} send entity created message (type={EntityType})",
+                this.Logger.LogInformation("[{LogKey}] send entity created message (type={EntityType})",
                     Constants.LogKey,
                     instance.Entity.GetType().PrettyName());
                 await this.messageBroker?.Publish(message, cancellationToken);
@@ -115,7 +115,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
             if (message != null)
             {
                 await Task.Delay(this.options.PublishDelay, cancellationToken);
-                this.Logger.LogInformation("{LogKey} send entity updated message (type={EntityType})",
+                this.Logger.LogInformation("[{LogKey}] send entity updated message (type={EntityType})",
                     Constants.LogKey,
                     instance?.Entity.GetType().PrettyName());
                 await this.messageBroker?.Publish(message, cancellationToken);
@@ -137,7 +137,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
             if (message != null)
             {
                 await Task.Delay(this.options.PublishDelay, cancellationToken);
-                this.Logger.LogInformation("{LogKey} send entity deleted message (type={EntityType})",
+                this.Logger.LogInformation("[{LogKey}] send entity deleted message (type={EntityType})",
                     Constants.LogKey,
                     instance.Entity.GetType().PrettyName());
                 await this.messageBroker?.Publish(message, cancellationToken);

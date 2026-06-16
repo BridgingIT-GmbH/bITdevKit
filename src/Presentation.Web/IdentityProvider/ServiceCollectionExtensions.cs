@@ -6,6 +6,8 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Presentation.Web;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 public static partial class ServiceCollectionExtensions
 {
@@ -30,6 +32,16 @@ public static partial class ServiceCollectionExtensions
 
         // Register services for the identity provider endpoints
         services.AddSingleton(options);
+        services.AddAuthentication()
+            .AddCookie(options.CookieAuthenticationScheme, cookieOptions =>
+            {
+                cookieOptions.Cookie.Name = ".Bdk.FakeIdentityProvider";
+                cookieOptions.Cookie.HttpOnly = true;
+                cookieOptions.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                cookieOptions.Cookie.SameSite = SameSiteMode.Lax;
+                cookieOptions.ExpireTimeSpan = options.RefreshTokenLifetime;
+                cookieOptions.SlidingExpiration = true;
+            });
 
         // Register the appropriate token service based on the provider
         services.AddSingleton<ITokenService>(sp =>

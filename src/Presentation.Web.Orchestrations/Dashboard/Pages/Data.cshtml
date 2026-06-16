@@ -1,11 +1,14 @@
 @using BridgingIT.DevKit.Application.Orchestrations
+@using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
 @using Microsoft.Extensions.Logging
 @using OrchestrationsDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints
+@using System.Text.Json
 @inherits RazorSlice
 
 @{
     var vm = await CreateModelAsync();
     var actionBase = vm.ActionBase;
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
 }
 
 @if (!vm.IsAvailable)
@@ -60,7 +63,7 @@ else
                                 <th>Orchestration</th>
                                 <th>State</th>
                                 <th>Activity</th>
-                                <th>Correlation</th>
+                                <th>Instance Id</th>
                                 <th class="text-end">Duration</th>
                                 <th></th>
                             </tr>
@@ -68,6 +71,10 @@ else
                         <tbody>
                         @foreach (var instance in vm.Instances)
                         {
+                            vm.ContextsByInstanceId.TryGetValue(instance.InstanceId, out var context);
+                            vm.HistoryByInstanceId.TryGetValue(instance.InstanceId, out var history);
+                            vm.SignalsByInstanceId.TryGetValue(instance.InstanceId, out var signals);
+                            vm.TimersByInstanceId.TryGetValue(instance.InstanceId, out var timers);
                             var pauseUrl = $"{actionBase}/{instance.InstanceId}/pause";
                             var resumeUrl = $"{actionBase}/{instance.InstanceId}/resume";
                             var cancelUrl = $"{actionBase}/{instance.InstanceId}/cancel";
@@ -84,18 +91,24 @@ else
                                 </td>
                                 <td>@DisplayValue(instance.CurrentState)</td>
                                 <td title="@DisplayValue(instance.CurrentActivity)">@TrimValue(instance.CurrentActivity, 32)</td>
-                                <td class="text-muted small" title="@DisplayValue(instance.CorrelationId)">@TrimFromStart(instance.CorrelationId, 22)</td>
+                                <td class="text-muted small" title="@instance.InstanceId">@TrimFromStart(instance.InstanceId.ToString(), 22)</td>
                                 <td class="text-end text-muted small">@FormatDuration(instance)</td>
                                 <td class="text-end text-nowrap">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-secondary"
+                                            title="Show instance details"
+                                            data-orchestration-instance-context="@CreateInstanceContext(instance, context, history, signals, timers)">
+                                        <i class="bi bi-info-circle"></i>
+                                    </button>
                                     @if (CanResume(instance))
                                     {
-                                        <button class="btn btn-sm btn-outline-success" title="Resume" onclick="window.bdkOrchestrationAction('@resumeUrl')">
+                                        <button class="btn btn-sm btn-outline-success ms-1" title="Resume" onclick="window.bdkOrchestrationAction('@resumeUrl')">
                                             <i class="bi bi-play-circle"></i>
                                         </button>
                                     }
                                     else if (CanPause(instance))
                                     {
-                                        <button class="btn btn-sm btn-outline-warning" title="Pause" onclick="window.bdkOrchestrationAction('@pauseUrl')">
+                                        <button class="btn btn-sm btn-outline-warning ms-1" title="Pause" onclick="window.bdkOrchestrationAction('@pauseUrl')">
                                             <i class="bi bi-pause-circle"></i>
                                         </button>
                                     }
@@ -272,6 +285,10 @@ else
             if (result.IsSuccess)
             {
                 model.Instances = result.Value.ToList();
+                model.ContextsByInstanceId = await GetContextsAsync(query, model.Instances, cancellationToken);
+                model.HistoryByInstanceId = await GetHistoryAsync(query, model.Instances, cancellationToken);
+                model.SignalsByInstanceId = await GetSignalsAsync(query, model.Instances, cancellationToken);
+                model.TimersByInstanceId = await GetTimersAsync(query, model.Instances, cancellationToken);
             }
             else
             {
@@ -285,6 +302,78 @@ else
         }
 
         return model;
+    }
+
+    private static async Task<IReadOnlyDictionary<Guid, OrchestrationContextSnapshotModel>> GetContextsAsync(
+        IOrchestrationQueryService query,
+        IReadOnlyList<OrchestrationInstanceModel> instances,
+        CancellationToken cancellationToken)
+    {
+        var result = new Dictionary<Guid, OrchestrationContextSnapshotModel>();
+        foreach (var instance in instances)
+        {
+            var context = await query.GetContextAsync(instance.InstanceId, cancellationToken);
+            if (context.IsSuccess && context.Value is not null)
+            {
+                result[instance.InstanceId] = context.Value;
+            }
+        }
+
+        return result;
+    }
+
+    private static async Task<IReadOnlyDictionary<Guid, IReadOnlyList<OrchestrationHistoryModel>>> GetHistoryAsync(
+        IOrchestrationQueryService query,
+        IReadOnlyList<OrchestrationInstanceModel> instances,
+        CancellationToken cancellationToken)
+    {
+        var result = new Dictionary<Guid, IReadOnlyList<OrchestrationHistoryModel>>();
+        foreach (var instance in instances)
+        {
+            var history = await query.GetHistoryAsync(instance.InstanceId, cancellationToken);
+            if (history.IsSuccess && history.Value is not null)
+            {
+                result[instance.InstanceId] = history.Value;
+            }
+        }
+
+        return result;
+    }
+
+    private static async Task<IReadOnlyDictionary<Guid, IReadOnlyList<OrchestrationSignalModel>>> GetSignalsAsync(
+        IOrchestrationQueryService query,
+        IReadOnlyList<OrchestrationInstanceModel> instances,
+        CancellationToken cancellationToken)
+    {
+        var result = new Dictionary<Guid, IReadOnlyList<OrchestrationSignalModel>>();
+        foreach (var instance in instances)
+        {
+            var signals = await query.GetSignalsAsync(instance.InstanceId, cancellationToken);
+            if (signals.IsSuccess && signals.Value is not null)
+            {
+                result[instance.InstanceId] = signals.Value;
+            }
+        }
+
+        return result;
+    }
+
+    private static async Task<IReadOnlyDictionary<Guid, IReadOnlyList<OrchestrationTimerModel>>> GetTimersAsync(
+        IOrchestrationQueryService query,
+        IReadOnlyList<OrchestrationInstanceModel> instances,
+        CancellationToken cancellationToken)
+    {
+        var result = new Dictionary<Guid, IReadOnlyList<OrchestrationTimerModel>>();
+        foreach (var instance in instances)
+        {
+            var timers = await query.GetTimersAsync(instance.InstanceId, cancellationToken);
+            if (timers.IsSuccess && timers.Value is not null)
+            {
+                result[instance.InstanceId] = timers.Value;
+            }
+        }
+
+        return result;
     }
 
     private OrchestrationQueryRequest CreateQueryRequest()
@@ -429,4 +518,66 @@ else
 
         return value.Length <= maxLength ? value : $"...{value[^maxLength..]}";
     }
+
+    private static string CreateInstanceContext(
+        OrchestrationInstanceModel instance,
+        OrchestrationContextSnapshotModel context,
+        IReadOnlyList<OrchestrationHistoryModel> history,
+        IReadOnlyList<OrchestrationSignalModel> signals,
+        IReadOnlyList<OrchestrationTimerModel> timers)
+    {
+        var payload = new
+        {
+            instanceId = instance.InstanceId,
+            orchestrationName = instance.OrchestrationName,
+            status = instance.Status,
+            currentState = instance.CurrentState,
+            currentActivity = instance.CurrentActivity,
+            correlationId = instance.CorrelationId,
+            concurrencyKey = instance.ConcurrencyKey,
+            startedUtc = instance.StartedUtc,
+            completedUtc = instance.CompletedUtc,
+            lastUpdatedUtc = instance.LastUpdatedUtc,
+            createdDate = instance.CreatedDate,
+            createdBy = instance.CreatedBy,
+            updatedDate = instance.UpdatedDate,
+            updatedBy = instance.UpdatedBy,
+            contextType = context?.ContextType,
+            contextJson = context?.ContextJson,
+            contextSnapshotUtc = context?.SnapshotUtc,
+            history = (history ?? []).Select(item => new
+            {
+                id = item.Id,
+                eventType = item.EventType,
+                state = item.State,
+                activity = item.Activity,
+                message = item.Message,
+                dataJson = item.DataJson,
+                timestampUtc = item.TimestampUtc,
+                createdBy = item.CreatedBy
+            }).ToArray(),
+            signals = (signals ?? []).Select(item => new
+            {
+                id = item.Id,
+                signalName = item.SignalName,
+                processingStatus = item.ProcessingStatus,
+                idempotencyKey = item.IdempotencyKey,
+                receivedUtc = item.ReceivedUtc,
+                processedUtc = item.ProcessedUtc,
+                payloadJson = item.PayloadJson
+            }).ToArray(),
+            timers = (timers ?? []).Select(item => new
+            {
+                id = item.Id,
+                timerKind = item.TimerKind,
+                processingStatus = item.ProcessingStatus,
+                dueUtc = item.DueUtc,
+                processedUtc = item.ProcessedUtc,
+                metadataJson = item.MetadataJson
+            }).ToArray()
+        };
+
+        return JsonSerializer.Serialize(payload);
+    }
+
 }

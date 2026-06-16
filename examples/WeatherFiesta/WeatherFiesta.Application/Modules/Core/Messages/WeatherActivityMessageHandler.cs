@@ -45,7 +45,7 @@ public class WeatherActivityMessageHandler(ILoggerFactory loggerFactory) : Messa
             await Task.Delay(300, cancellationToken); // simulate some work
 
             this.Logger.LogInformation(
-                "{LogKey} processed weather activity message (messageId={MessageId}, cityId={CityId}, activityType={ActivityType}, details={Details}, handler={HandlerType})",
+                "[{LogKey}] processed weather activity message (messageId={MessageId}, cityId={CityId}, activityType={ActivityType}, details={Details}, handler={HandlerType})",
                 Constants.LogKey,
                 message.MessageId,
                 message.CityId,

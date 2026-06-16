@@ -136,7 +136,8 @@ public class OpenIdConfiguration
         "given_name", // First name
         "preferred_username", // Nickname
         "email", // Email
-        "email_verified" // Email verified
+        "email_verified", // Email verified
+        "nonce" // Authorization request nonce
     ];
 
     [JsonPropertyName("token_endpoint_auth_methods_supported")]
@@ -158,6 +159,8 @@ public class AuthorizationCodeModel
 
     public string Scope { get; init; }
 
+    public string Nonce { get; init; }
+
     public DateTime ExpiresAt { get; init; }
 }
 
@@ -177,6 +180,9 @@ public class AuthorizeRequest
 
     [FromQuery(Name = "state")]
     public string State { get; init; }
+
+    [FromQuery(Name = "nonce")]
+    public string Nonce { get; init; }
 }
 
 public class TokenRequest

@@ -137,7 +137,7 @@ public class EntityFrameworkQueueBrokerWorker<TContext>
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            this.logger.LogError(ex, "{LogKey} queue message processing crashed after lease acquisition (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
+            this.logger.LogError(ex, "[{LogKey}] queue message processing crashed after lease acquisition (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
             this.MarkMessageFailed(claimedMessage, ex.Message);
         }
         finally
@@ -148,7 +148,7 @@ public class EntityFrameworkQueueBrokerWorker<TContext>
         var leaseMaintained = await renewalTask.AnyContext();
         if (!leaseMaintained)
         {
-            this.logger.LogWarning("{LogKey} queue message lease was lost while processing, final state will not be persisted (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
+            this.logger.LogWarning("[{LogKey}] queue message lease was lost while processing, final state will not be persisted (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
             return;
         }
 
@@ -185,7 +185,7 @@ public class EntityFrameworkQueueBrokerWorker<TContext>
 
             if (claimed == 0)
             {
-                this.logger.LogDebug("{LogKey} queue message lease claim skipped because another worker already acquired or changed the row (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
+                this.logger.LogDebug("[{LogKey}] queue message lease claim skipped because another worker already acquired or changed the row (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
                 return null;
             }
 
@@ -201,7 +201,7 @@ public class EntityFrameworkQueueBrokerWorker<TContext>
 
         if (!this.CanClaimMessage(message, now))
         {
-            this.logger.LogDebug("{LogKey} queue message lease claim skipped because another worker already acquired or changed the row (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
+            this.logger.LogDebug("[{LogKey}] queue message lease claim skipped because another worker already acquired or changed the row (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
             return null;
         }
 
@@ -218,7 +218,7 @@ public class EntityFrameworkQueueBrokerWorker<TContext>
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            this.logger.LogDebug(ex, "{LogKey} queue message lease claim lost due to optimistic concurrency (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
+            this.logger.LogDebug(ex, "[{LogKey}] queue message lease claim lost due to optimistic concurrency (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
             return null;
         }
     }
@@ -288,7 +288,7 @@ public class EntityFrameworkQueueBrokerWorker<TContext>
 
             if (renewed == 0)
             {
-                this.logger.LogWarning("{LogKey} queue message lease renewal skipped because ownership was lost (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
+                this.logger.LogWarning("[{LogKey}] queue message lease renewal skipped because ownership was lost (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
                 return false;
             }
 
@@ -298,7 +298,7 @@ public class EntityFrameworkQueueBrokerWorker<TContext>
         var message = await context.QueueMessages.FirstOrDefaultAsync(item => item.Id == messageId, cancellationToken).AnyContext();
         if (message is null || !string.Equals(message.LockedBy, this.instanceName, StringComparison.Ordinal))
         {
-            this.logger.LogWarning("{LogKey} queue message lease renewal skipped because ownership was lost (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
+            this.logger.LogWarning("[{LogKey}] queue message lease renewal skipped because ownership was lost (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
             return false;
         }
 
@@ -312,7 +312,7 @@ public class EntityFrameworkQueueBrokerWorker<TContext>
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            this.logger.LogWarning(ex, "{LogKey} queue message lease renewal lost due to optimistic concurrency (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
+            this.logger.LogWarning(ex, "[{LogKey}] queue message lease renewal lost due to optimistic concurrency (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, messageId, this.instanceName);
             return false;
         }
     }
@@ -328,7 +328,7 @@ public class EntityFrameworkQueueBrokerWorker<TContext>
 
         if (!string.Equals(storedMessage.LockedBy, this.instanceName, StringComparison.Ordinal))
         {
-            this.logger.LogWarning("{LogKey} queue message lease ownership changed before finalize (queueMessageId={QueueMessageId}, lockedBy={LockedBy}, currentLockedBy={CurrentLockedBy})", Application.Queueing.Constants.LogKey, message.Id, this.instanceName, storedMessage.LockedBy);
+            this.logger.LogWarning("[{LogKey}] queue message lease ownership changed before finalize (queueMessageId={QueueMessageId}, lockedBy={LockedBy}, currentLockedBy={CurrentLockedBy})", Application.Queueing.Constants.LogKey, message.Id, this.instanceName, storedMessage.LockedBy);
             return;
         }
 
@@ -355,7 +355,7 @@ public class EntityFrameworkQueueBrokerWorker<TContext>
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            this.logger.LogWarning(ex, "{LogKey} queue message finalize lost due to optimistic concurrency (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, message.Id, this.instanceName);
+            this.logger.LogWarning(ex, "[{LogKey}] queue message finalize lost due to optimistic concurrency (queueMessageId={QueueMessageId}, lockedBy={LockedBy})", Application.Queueing.Constants.LogKey, message.Id, this.instanceName);
         }
     }
 

@@ -148,7 +148,7 @@ public class
 
         async Task<(TEntity entity, RepositoryActionResult action)> HandleInsert(TEntity entity, CancellationToken cancellationToken)
         {
-            this.Logger.LogDebug("{LogKey} repository: upsert - insert (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
+            this.Logger.LogDebug("[{LogKey}] repository: upsert - insert (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
 
             if (entity is IConcurrency concurrencyEntity)
             {
@@ -169,7 +169,7 @@ public class
 
         async Task<(TEntity entity, RepositoryActionResult action)> HandleUpdate(TEntity entity, TDatabaseEntity existingEntity, CancellationToken cancellationToken)
         {
-            this.Logger.LogDebug("{LogKey} repository: upsert - update (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
+            this.Logger.LogDebug("[{LogKey}] repository: upsert - update (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
 
             if (entity is IConcurrency concurrencyEntity && existingEntity is IConcurrency existingConcurrencyEntity && this.Options.EnableOptimisticConcurrency)
             {
@@ -188,7 +188,7 @@ public class
             {
                 foreach (var entry in this.Options.DbContext.ChangeTracker.Entries())
                 {
-                    this.Logger.LogTrace("{LogKey} dbcontext entity state: {entityType} (keySet={entityKeySet}) -> {entryState}", Constants.LogKey, entry.Entity.GetType().Name, entry.IsKeySet, entry.State);
+                    this.Logger.LogTrace("[{LogKey}] dbcontext entity state: {entityType} (keySet={entityKeySet}) -> {entryState}", Constants.LogKey, entry.Entity.GetType().Name, entry.IsKeySet, entry.State);
                 }
 
                 await this.Options.DbContext.SaveChangesAsync(cancellationToken).AnyContext();

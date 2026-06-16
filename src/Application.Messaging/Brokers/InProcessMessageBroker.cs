@@ -47,7 +47,7 @@ public class InProcessMessageBroker : MessageBrokerBase
                 EnsureOrdered = true
             });
 
-        this.Logger.LogInformation("{LogKey} broker initialized (name={MessageBroker})", Constants.LogKey, this.GetType().Name);
+        this.Logger.LogInformation("[{LogKey}] broker initialized (name={MessageBroker})", Constants.LogKey, this.GetType().Name);
     }
 
     public InProcessMessageBroker(

@@ -23,19 +23,19 @@ public class LongRunningJob(ILoggerFactory loggerFactory) : JobBase(loggerFactor
             // Check if cancellation is requested
             //if (context.CancellationToken.IsCancellationRequested)
             //{
-            //    this.Logger.LogWarning("{LogKey} interrupted, stopping (jobKey={JobKey})", Constants.LogKey, context.JobDetail.Key);
+            //    this.Logger.LogWarning("[{LogKey}] interrupted, stopping (jobKey={JobKey})", Constants.LogKey, context.JobDetail.Key);
 
             //    return;
             //}
             context.CancellationToken.ThrowIfCancellationRequested();
 
-            this.Logger.LogInformation("{LogKey} processing step {Step} (jobKey={JobKey})", Constants.LogKey, i, context.JobDetail.Key);
+            this.Logger.LogInformation("[{LogKey}] processing step {Step} (jobKey={JobKey})", Constants.LogKey, i, context.JobDetail.Key);
             await Task.Delay(5000, context.CancellationToken); // Pass the token to async operations
         }
         //}
         //catch (TaskCanceledException)
         //{
-        //    this.Logger.LogWarning("{LogKey} cancelled (jobKey={JobKey})", Constants.LogKey, context.JobDetail.Key);
+        //    this.Logger.LogWarning("[{LogKey}] cancelled (jobKey={JobKey})", Constants.LogKey, context.JobDetail.Key);
         //}
     }
 }

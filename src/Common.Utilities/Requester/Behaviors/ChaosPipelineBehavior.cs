@@ -43,17 +43,17 @@ public class ChaosPipelineBehavior<TRequest, TResponse>(
 
         if (!injectionRate.HasValue || !enabled.HasValue)
         {
-            this.Logger.LogError("{LogKey} chaos behavior: injectionRate or enabled not specified on attribute and no default configured via ChaosOptions (handler={HandlerType})", LogKey, handlerType.FullName);
+            this.Logger.LogError("[{LogKey}] chaos behavior: injectionRate or enabled not specified on attribute and no default configured via ChaosOptions (handler={HandlerType})", LogKey, handlerType.FullName);
             throw new InvalidOperationException("HandlerChaosAttribute.InjectionRate and Enabled must be provided or default values must be configured via ChaosOptions.");
         }
 
         if (injectionRate.Value <= 0)
         {
-            this.Logger.LogDebug("{LogKey} chaos behavior skipped due to injection rate <= 0 (type={BehaviorType})", LogKey, this.GetType().Name);
+            this.Logger.LogDebug("[{LogKey}] chaos behavior skipped due to injection rate <= 0 (type={BehaviorType})", LogKey, this.GetType().Name);
             return await next();
         }
 
-        this.Logger.LogDebug("{LogKey} applying chaos behavior with injection rate {InjectionRate} (type={BehaviorType})", LogKey, injectionRate.Value, this.GetType().Name);
+        this.Logger.LogDebug("[{LogKey}] applying chaos behavior with injection rate {InjectionRate} (type={BehaviorType})", LogKey, injectionRate.Value, this.GetType().Name);
 
         var policy = MonkeyPolicy.InjectException(with =>
             with.Fault(new ChaosException("Chaos injection triggered"))

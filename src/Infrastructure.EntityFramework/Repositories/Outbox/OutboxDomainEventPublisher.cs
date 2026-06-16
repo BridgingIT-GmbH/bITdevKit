@@ -43,7 +43,7 @@ public partial class ActiveEntityDomainEventOutboxPublishingBehavior<TEntity, TI
             var outboxOptions = options ?? new OutboxDomainEventOptions();
             outboxOptions.Serializer ??= new SystemTextJsonSerializer();
 
-            logger.LogInformation("{LogKey} store domain event to outbox: {EventType} ({EventId})", Constants.LogKey, @event.GetType().Name, @event.EventId);
+            logger.LogInformation("[{LogKey}] store domain event to outbox: {EventType} ({EventId})", Constants.LogKey, @event.GetType().Name, @event.EventId);
 
             var outboxEvent = new OutboxDomainEvent
             {

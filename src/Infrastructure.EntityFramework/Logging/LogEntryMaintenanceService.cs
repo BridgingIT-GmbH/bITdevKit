@@ -76,11 +76,11 @@ public class LogEntryMaintenanceService<TContext>(
         {
             if (this.options.StartupDelay > TimeSpan.Zero)
             {
-                this.logger.LogDebug("{LogKey} maintenance service startup delayed", "LOG");
+                this.logger.LogDebug("[{LogKey}] maintenance service startup delayed", "LOG");
                 await Task.Delay(this.options.StartupDelay, cancellationToken);
             }
 
-            this.logger.LogInformation("{LogKey} maintenance service started", "LOG");
+            this.logger.LogInformation("[{LogKey}] maintenance service started", "LOG");
 
             while (!cancellationToken.IsCancellationRequested)
             {
@@ -123,7 +123,7 @@ public class LogEntryMaintenanceService<TContext>(
         }
         catch (OperationCanceledException)
         {
-            this.logger.LogDebug("{LogKey} log maintenance service stopped", "LOG");
+            this.logger.LogDebug("[{LogKey}] log maintenance service stopped", "LOG");
         }
     }
 
@@ -152,7 +152,7 @@ public class LogEntryMaintenanceService<TContext>(
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} log maintenance service stopping", "LOG");
+        this.logger.LogInformation("[{LogKey}] log maintenance service stopping", "LOG");
 
         this.linkedCts?.Cancel();
 
@@ -164,7 +164,7 @@ public class LogEntryMaintenanceService<TContext>(
 
         this.timer?.Dispose();
 
-        this.logger.LogInformation("{LogKey} log maintenance service stopped", "LOG");
+        this.logger.LogInformation("[{LogKey}] log maintenance service stopped", "LOG");
 
         await base.StopAsync(cancellationToken);
     }

@@ -11,6 +11,7 @@
     var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesContentPath(dashboardOptions);
     var rowsPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesRowsPath(dashboardOptions);
+    var exportPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesExportPath(dashboardOptions);
     var filter = LogEntriesDashboard.CreateFilter(this.HttpContext);
 }
 
@@ -21,6 +22,9 @@
             <label class="form-check-label small" for="logentries-tail">Tail</label>
         </div>
         <span id="logentries-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <a id="logentries-export" class="btn btn-outline-secondary btn-sm" href="@(exportPath + LogEntriesDashboard.BuildQuery(filter))" title="Export filtered log entries">
+            <i class="bi bi-download"></i>
+        </a>
         <button type="button" id="logentries-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh log entries">
             <i class="bi bi-arrow-clockwise"></i>
         </button>
@@ -76,11 +80,21 @@
             </div>
             <div class="col-6 col-lg-2">
                 <label class="form-label small" for="logentries-from">From</label>
-                <input id="logentries-from" name="from" type="date" value="@LogEntriesDashboard.FormatDate(filter.StartTime)" class="form-control form-control-sm">
+                <div class="input-group input-group-sm">
+                    <input id="logentries-from" name="from" type="date" value="@LogEntriesDashboard.FormatDate(filter.StartTime)" class="form-control form-control-sm" data-dashboard-date-picker>
+                    <button type="button" class="btn btn-outline-secondary" data-dashboard-date-picker-button="logentries-from" aria-label="Open from date picker" title="Open date picker">
+                        <i class="bi bi-calendar3"></i>
+                    </button>
+                </div>
             </div>
             <div class="col-6 col-lg-2">
                 <label class="form-label small" for="logentries-to">To</label>
-                <input id="logentries-to" name="to" type="date" value="@LogEntriesDashboard.FormatDate(filter.EndTime)" class="form-control form-control-sm">
+                <div class="input-group input-group-sm">
+                    <input id="logentries-to" name="to" type="date" value="@LogEntriesDashboard.FormatDate(filter.EndTime)" class="form-control form-control-sm" data-dashboard-date-picker>
+                    <button type="button" class="btn btn-outline-secondary" data-dashboard-date-picker-button="logentries-to" aria-label="Open to date picker" title="Open date picker">
+                        <i class="bi bi-calendar3"></i>
+                    </button>
+                </div>
             </div>
             <div class="col-12 col-lg-2 d-flex align-items-end gap-2">
                 <button type="submit" class="btn btn-primary btn-sm flex-fill">Apply</button>
@@ -106,12 +120,14 @@
     (() => {
         const contentUrl = '@contentPath';
         const rowsUrl = '@rowsPath';
+        const exportUrl = '@exportPath';
         const contentElement = document.getElementById('dashboard-logentries-content');
         const formElement = document.getElementById('logentries-filter-form');
         const resetElement = document.getElementById('logentries-reset');
         const statusElement = document.getElementById('logentries-refresh-status');
         const refreshButton = document.getElementById('logentries-refresh-now');
         const tailElement = document.getElementById('logentries-tail');
+        const exportElement = document.getElementById('logentries-export');
 
         let tailTimeoutId = null;
         let abortController = null;
@@ -138,6 +154,10 @@
             const url = new URL(window.location.href);
             url.search = query.toString();
             window.history.replaceState(null, '', url.toString());
+        }
+
+        function updateExportUrl(query) {
+            exportElement.href = query.toString() ? `${exportUrl}?${query}` : exportUrl;
         }
 
         function maxLogId() {
@@ -177,6 +197,7 @@
             clearTail();
             const query = formQuery();
             updatePageUrl(query);
+            updateExportUrl(query);
 
             try {
                 contentElement.innerHTML = await fetchHtml(`${contentUrl}?${query}`);
@@ -294,6 +315,9 @@
 
         tailElement.addEventListener('change', scheduleTail);
 
+        formElement.addEventListener('input', () => updateExportUrl(formQuery()));
+        formElement.addEventListener('change', () => updateExportUrl(formQuery()));
+
         contentElement.addEventListener('click', event => {
             const loadMoreButton = event.target.closest('[data-logentries-load-more]');
             if (loadMoreButton) {
@@ -306,6 +330,7 @@
                 const input = formElement.elements.namedItem(filterButton.getAttribute('data-filter-name'));
                 if (input) {
                     input.value = filterButton.getAttribute('data-filter-value') ?? '';
+                    updateExportUrl(formQuery());
                     refreshContent();
                 }
             }

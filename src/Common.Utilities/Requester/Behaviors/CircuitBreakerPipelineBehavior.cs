@@ -46,7 +46,7 @@ public class CircuitBreakerPipelineBehavior<TRequest, TResponse>(
 
         if (!attempts.HasValue || !breakDurationSeconds.HasValue || !backoffMilliseconds.HasValue || !backoffExponential.HasValue)
         {
-            this.Logger.LogError("{LogKey} circuit breaker behavior: required parameters not specified on attribute and no defaults configured via CircuitBreakerOptions (handler={HandlerType})", LogKey, handlerType.FullName);
+            this.Logger.LogError("[{LogKey}] circuit breaker behavior: required parameters not specified on attribute and no defaults configured via CircuitBreakerOptions (handler={HandlerType})", LogKey, handlerType.FullName);
             throw new InvalidOperationException("HandlerCircuitBreakerAttribute parameters (Attempts, BreakDurationSeconds, BackoffMilliseconds, BackoffExponential) must be provided or default values must be configured via CircuitBreakerOptions.");
         }
 
@@ -60,7 +60,7 @@ public class CircuitBreakerPipelineBehavior<TRequest, TResponse>(
                     attempt => TimeSpan.FromMilliseconds(backoff.Milliseconds * Math.Pow(2, attempt)),
                     (ex, wait) =>
                     {
-                        this.Logger.LogError(ex, "{LogKey} circuit breaker behavior (attempt=#{Attempts}, wait={WaitMs} ms, type={BehaviorType}) {ErrorMessage}", LogKey, attemptCounter, wait.TotalMilliseconds, this.GetType().Name, ex.Message);
+                        this.Logger.LogError(ex, "[{LogKey}] circuit breaker behavior (attempt=#{Attempts}, wait={WaitMs} ms, type={BehaviorType}) {ErrorMessage}", LogKey, attemptCounter, wait.TotalMilliseconds, this.GetType().Name, ex.Message);
                         attemptCounter++;
                     })
             : Policy.Handle<Exception>()
@@ -68,7 +68,7 @@ public class CircuitBreakerPipelineBehavior<TRequest, TResponse>(
                     attempt => backoff,
                     (ex, wait) =>
                     {
-                        this.Logger.LogError(ex, "{LogKey} circuit breaker behavior (attempt=#{Attempts}, wait={WaitMs} ms, type={BehaviorType}) {ErrorMessage}", LogKey, attemptCounter, wait.TotalMilliseconds, this.GetType().Name, ex.Message);
+                        this.Logger.LogError(ex, "[{LogKey}] circuit breaker behavior (attempt=#{Attempts}, wait={WaitMs} ms, type={BehaviorType}) {ErrorMessage}", LogKey, attemptCounter, wait.TotalMilliseconds, this.GetType().Name, ex.Message);
                         attemptCounter++;
                     });
 
@@ -77,9 +77,9 @@ public class CircuitBreakerPipelineBehavior<TRequest, TResponse>(
             .CircuitBreakerAsync(
                 attempts.Value,
                 breakDuration,
-                (ex, wait) => this.Logger.LogError(ex, "{LogKey} circuit breaker behavior (circuit=open, wait={WaitMs} ms, type={BehaviorType}) {ErrorMessage}", LogKey, wait.TotalMilliseconds, this.GetType().Name, ex.Message),
-                () => this.Logger.LogDebug("{LogKey} circuit breaker behavior (circuit=closed, type={BehaviorType})", LogKey, this.GetType().Name),
-                () => this.Logger.LogDebug("{LogKey} circuit breaker behavior (circuit=halfopen, type={BehaviorType})", LogKey, this.GetType().Name));
+                (ex, wait) => this.Logger.LogError(ex, "[{LogKey}] circuit breaker behavior (circuit=open, wait={WaitMs} ms, type={BehaviorType}) {ErrorMessage}", LogKey, wait.TotalMilliseconds, this.GetType().Name, ex.Message),
+                () => this.Logger.LogDebug("[{LogKey}] circuit breaker behavior (circuit=closed, type={BehaviorType})", LogKey, this.GetType().Name),
+                () => this.Logger.LogDebug("[{LogKey}] circuit breaker behavior (circuit=halfopen, type={BehaviorType})", LogKey, this.GetType().Name));
 
         var policy = Policy.WrapAsync(retryPolicy, circuitBreakerPolicy);
 

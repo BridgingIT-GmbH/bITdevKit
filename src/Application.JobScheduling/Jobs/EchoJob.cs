@@ -17,7 +17,7 @@ public class EchoJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory), IRe
         var dataMap = context.JobDetail.JobDataMap;
         dataMap.TryGetString("message", out var message);
 
-        this.Logger.LogInformation("{LogKey} {JobMessage} (jobKey={JobKey}, lastRun={LastRun})",
+        this.Logger.LogInformation("[{LogKey}] {JobMessage} (jobKey={JobKey}, lastRun={LastRun})",
             Constants.LogKey,
             message ?? "echo",
             context.JobDetail.Key,

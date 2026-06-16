@@ -43,7 +43,7 @@ public class ModuleControllerFeatureProvider(IEnumerable<IModuleContextAccessor>
             return false;
         }
 
-        Log.Logger.Debug("{LogKey} controller provider CHECK (controller={ControllerType})",
+        Log.Logger.Debug("[{LogKey}] controller provider CHECK (controller={ControllerType})",
             ModuleConstants.LogKey,
             typeInfo.Name);
         Console.WriteLine($"{ModuleConstants.LogKey} controller provider CHECK (controller={typeInfo.Name})");
@@ -56,7 +56,7 @@ public class ModuleControllerFeatureProvider(IEnumerable<IModuleContextAccessor>
         }
 #pragma warning restore RCS1146 // Use conditional access.
 
-        Log.Logger.Debug("{LogKey} controller provider ADDED (controller={ControllerType}), module={ModuleName})",
+        Log.Logger.Debug("[{LogKey}] controller provider ADDED (controller={ControllerType}), module={ModuleName})",
             ModuleConstants.LogKey,
             typeInfo.Name,
             module?.Name);

@@ -82,7 +82,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
     /// <example>
     /// Usage within a repository method:
     /// <code>
-    /// this.Logger.LogDebug("{LogKey} repository: upsert - insert (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
+    /// this.Logger.LogDebug("[{LogKey}] repository: upsert - insert (type={entityType}, id={entityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
     /// </code>
     /// </example>
     protected ILogger<IGenericRepository<TEntity>> Logger { get; }

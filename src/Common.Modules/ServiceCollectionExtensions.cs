@@ -107,7 +107,7 @@ public static class ServiceCollectionExtensions
         // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-8.0#use-di-services-to-configure-options
         if (configuration is not null)
         {
-            Log.Logger.Information("{LogKey} validate (module={ModuleName}, type={ConfigurationType}, method=Annotations) ", ModuleConstants.LogKey, module.Name, typeof(TOptions).Name);
+            Log.Logger.Information("[{LogKey}] validate (module={ModuleName}, type={ConfigurationType}, method=Annotations) ", ModuleConstants.LogKey, module.Name, typeof(TOptions).Name);
 
             var builder = services.AddOptions<TOptions>()
                 .Bind(configuration.GetModuleSection(module))
@@ -146,7 +146,7 @@ public static class ServiceCollectionExtensions
         // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-8.0#use-di-services-to-configure-options
         if (configuration is not null)
         {
-            Log.Logger.Information("{LogKey} validate (module={ModuleName}, type={ConfigurationType}, method=Inline) ",
+            Log.Logger.Information("[{LogKey}] validate (module={ModuleName}, type={ConfigurationType}, method=Inline) ",
                 ModuleConstants.LogKey,
                 module.Name,
                 typeof(TOptions).Name);
@@ -191,7 +191,7 @@ public static class ServiceCollectionExtensions
                 .Validate<IServiceProvider>(
                     (validationOptions, serviceProvider) => // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-6.0#options-validation
                     {
-                        Log.Logger.Information("{LogKey} validate (module={ModuleName}, type={ConfigurationType}, method=Validator) ", ModuleConstants.LogKey, module.Name, typeof(TOptions).Name);
+                        Log.Logger.Information("[{LogKey}] validate (module={ModuleName}, type={ConfigurationType}, method=Validator) ", ModuleConstants.LogKey, module.Name, typeof(TOptions).Name);
                         return Factory<TValidator>.Create(serviceProvider)
                             .Validate(validationOptions, strategy => strategy.ThrowOnFailures()).IsValid;
                     });

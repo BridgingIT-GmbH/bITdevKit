@@ -124,7 +124,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         this.logger.LogDebug(
-            "{LogKey} orchestration instance persisted (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, orchestration={Orchestration}, status={Status}, version={Version})",
+            "[{LogKey}] orchestration instance persisted (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, orchestration={Orchestration}, status={Status}, version={Version})",
             Constants.LogKey,
             typeof(TContext).Name,
             row.InstanceId,
@@ -201,7 +201,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         {
             this.logger.LogWarning(
                 exception,
-                "{LogKey} orchestration snapshot persistence hit a concurrency conflict (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, expectedVersion={ExpectedVersion}, currentVersion={CurrentVersion})",
+                "[{LogKey}] orchestration snapshot persistence hit a concurrency conflict (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, expectedVersion={ExpectedVersion}, currentVersion={CurrentVersion})",
                 Constants.LogKey,
                 typeof(TContext).Name,
                 snapshot.InstanceId,
@@ -213,7 +213,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         }
 
         this.logger.LogDebug(
-            "{LogKey} orchestration snapshot persisted (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, status={Status}, state={State}, activity={Activity}, version={Version})",
+            "[{LogKey}] orchestration snapshot persisted (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, status={Status}, state={State}, activity={Activity}, version={Version})",
             Constants.LogKey,
             typeof(TContext).Name,
             row.InstanceId,
@@ -270,7 +270,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         {
             this.logger.LogDebug(
                 exception,
-                "{LogKey} orchestration lease acquisition lost due to concurrency (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, owner={Owner})",
+                "[{LogKey}] orchestration lease acquisition lost due to concurrency (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, owner={Owner})",
                 Constants.LogKey,
                 typeof(TContext).Name,
                 instanceId,
@@ -279,7 +279,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         }
 
         this.logger.LogDebug(
-            "{LogKey} orchestration lease acquired (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId}, expiresUtc={ExpiresUtc})",
+            "[{LogKey}] orchestration lease acquired (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId}, expiresUtc={ExpiresUtc})",
             Constants.LogKey,
             typeof(TContext).Name,
             row.InstanceId,
@@ -341,7 +341,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         {
             this.logger.LogWarning(
                 exception,
-                "{LogKey} orchestration lease renewal lost due to concurrency (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId})",
+                "[{LogKey}] orchestration lease renewal lost due to concurrency (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId})",
                 Constants.LogKey,
                 typeof(TContext).Name,
                 instanceId,
@@ -351,7 +351,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         }
 
         this.logger.LogDebug(
-            "{LogKey} orchestration lease renewed (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId}, expiresUtc={ExpiresUtc})",
+            "[{LogKey}] orchestration lease renewed (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId}, expiresUtc={ExpiresUtc})",
             Constants.LogKey,
             typeof(TContext).Name,
             row.InstanceId,
@@ -406,7 +406,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         {
             this.logger.LogWarning(
                 exception,
-                "{LogKey} orchestration lease release lost due to concurrency (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId})",
+                "[{LogKey}] orchestration lease release lost due to concurrency (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId})",
                 Constants.LogKey,
                 typeof(TContext).Name,
                 instanceId,
@@ -416,7 +416,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         }
 
         this.logger.LogDebug(
-            "{LogKey} orchestration lease released (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId})",
+            "[{LogKey}] orchestration lease released (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, owner={Owner}, leaseId={LeaseId})",
             Constants.LogKey,
             typeof(TContext).Name,
             instanceId,
@@ -467,7 +467,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         {
             recordedAt = latestRecordedAt.Value.AddTicks(HistoryTimestampIncrementTicks);
             this.logger.LogDebug(
-                "{LogKey} adjusted orchestration history timestamp to preserve ordering (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, eventType={EventType}, adjustedRecordedAt={RecordedAt})",
+                "[{LogKey}] adjusted orchestration history timestamp to preserve ordering (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, eventType={EventType}, adjustedRecordedAt={RecordedAt})",
                 Constants.LogKey,
                 typeof(TContext).Name,
                 entry.InstanceId,
@@ -491,7 +491,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         this.logger.LogDebug(
-            "{LogKey} orchestration history appended (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, entryId={EntryId}, eventType={EventType}, state={State}, activity={Activity})",
+            "[{LogKey}] orchestration history appended (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, entryId={EntryId}, eventType={EventType}, state={State}, activity={Activity})",
             Constants.LogKey,
             typeof(TContext).Name,
             row.InstanceId,
@@ -556,7 +556,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
             if (duplicate is not null)
             {
                 this.logger.LogDebug(
-                    "{LogKey} orchestration signal deduplicated (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, signal={SignalName}, signalId={SignalId}, idempotencyKey={IdempotencyKey})",
+                    "[{LogKey}] orchestration signal deduplicated (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, signal={SignalName}, signalId={SignalId}, idempotencyKey={IdempotencyKey})",
                     Constants.LogKey,
                     typeof(TContext).Name,
                     instanceId,
@@ -590,7 +590,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         this.logger.LogDebug(
-            "{LogKey} orchestration signal persisted (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, signalId={SignalId}, signal={SignalName}, state={State}, status={Status})",
+            "[{LogKey}] orchestration signal persisted (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, signalId={SignalId}, signal={SignalName}, state={State}, status={Status})",
             Constants.LogKey,
             typeof(TContext).Name,
             row.InstanceId,
@@ -699,7 +699,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         {
             this.logger.LogWarning(
                 exception,
-                "{LogKey} orchestration signal status update lost due to concurrency (provider=EntityFramework, context={DbContextType}, signalId={SignalId}, status={Status})",
+                "[{LogKey}] orchestration signal status update lost due to concurrency (provider=EntityFramework, context={DbContextType}, signalId={SignalId}, status={Status})",
                 Constants.LogKey,
                 typeof(TContext).Name,
                 signalId,
@@ -708,7 +708,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         }
 
         this.logger.LogDebug(
-            "{LogKey} orchestration signal status updated (provider=EntityFramework, context={DbContextType}, signalId={SignalId}, instanceId={InstanceId}, signal={SignalName}, status={Status}, reason={Reason})",
+            "[{LogKey}] orchestration signal status updated (provider=EntityFramework, context={DbContextType}, signalId={SignalId}, instanceId={InstanceId}, signal={SignalName}, status={Status}, reason={Reason})",
             Constants.LogKey,
             typeof(TContext).Name,
             row.SignalId,
@@ -756,7 +756,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         this.logger.LogDebug(
-            "{LogKey} orchestration timer persisted (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, timerId={TimerId}, trigger={TriggerKind}, dueTimeUtc={DueTimeUtc}, continuation={Continuation}, targetState={TargetState})",
+            "[{LogKey}] orchestration timer persisted (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, timerId={TimerId}, trigger={TriggerKind}, dueTimeUtc={DueTimeUtc}, continuation={Continuation}, targetState={TargetState})",
             Constants.LogKey,
             typeof(TContext).Name,
             row.InstanceId,
@@ -868,7 +868,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         {
             this.logger.LogWarning(
                 exception,
-                "{LogKey} orchestration timer status update lost due to concurrency (provider=EntityFramework, context={DbContextType}, timerId={TimerId}, status={Status})",
+                "[{LogKey}] orchestration timer status update lost due to concurrency (provider=EntityFramework, context={DbContextType}, timerId={TimerId}, status={Status})",
                 Constants.LogKey,
                 typeof(TContext).Name,
                 timerId,
@@ -877,7 +877,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         }
 
         this.logger.LogDebug(
-            "{LogKey} orchestration timer status updated (provider=EntityFramework, context={DbContextType}, timerId={TimerId}, instanceId={InstanceId}, trigger={TriggerKind}, status={Status}, reason={Reason})",
+            "[{LogKey}] orchestration timer status updated (provider=EntityFramework, context={DbContextType}, timerId={TimerId}, instanceId={InstanceId}, trigger={TriggerKind}, status={Status}, reason={Reason})",
             Constants.LogKey,
             typeof(TContext).Name,
             row.TimerId,
@@ -991,7 +991,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
             };
 
             // this.logger.LogDebug(
-            //     "{LogKey} orchestration instances queried (provider=EntityFramework, context={DbContextType}, total={TotalCount}, returned={ReturnedCount}, orchestration={Orchestration}, skip={Skip}, take={Take})",
+            //     "[{LogKey}] orchestration instances queried (provider=EntityFramework, context={DbContextType}, total={TotalCount}, returned={ReturnedCount}, orchestration={Orchestration}, skip={Skip}, take={Take})",
             //     Constants.LogKey,
             //     typeof(TContext).Name,
             //     result.TotalCount,
@@ -1068,7 +1068,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         };
 
         // this.logger.LogDebug(
-        //     "{LogKey} orchestration instances queried (provider=EntityFramework, context={DbContextType}, total={TotalCount}, returned={ReturnedCount}, orchestration={Orchestration}, skip={Skip}, take={Take})",
+        //     "[{LogKey}] orchestration instances queried (provider=EntityFramework, context={DbContextType}, total={TotalCount}, returned={ReturnedCount}, orchestration={Orchestration}, skip={Skip}, take={Take})",
         //     Constants.LogKey,
         //     typeof(TContext).Name,
         //     queried.TotalCount,
@@ -1136,7 +1136,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
             };
 
             // this.logger.LogDebug(
-            //     "{LogKey} orchestration metrics queried (provider=EntityFramework, context={DbContextType}, totalInstances={TotalInstances}, waitingInstances={WaitingInstances}, timerCount={TimerCount})",
+            //     "[{LogKey}] orchestration metrics queried (provider=EntityFramework, context={DbContextType}, totalInstances={TotalInstances}, waitingInstances={WaitingInstances}, timerCount={TimerCount})",
             //     Constants.LogKey,
             //     typeof(TContext).Name,
             //     metrics.TotalInstances,
@@ -1177,7 +1177,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         };
 
         // this.logger.LogDebug(
-        //     "{LogKey} orchestration metrics queried (provider=EntityFramework, context={DbContextType}, totalInstances={TotalInstances}, waitingInstances={WaitingInstances}, timerCount={TimerCount})",
+        //     "[{LogKey}] orchestration metrics queried (provider=EntityFramework, context={DbContextType}, totalInstances={TotalInstances}, waitingInstances={WaitingInstances}, timerCount={TimerCount})",
         //     Constants.LogKey,
         //     typeof(TContext).Name,
         //     snapshot.TotalInstances,
@@ -1227,7 +1227,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         this.logger.LogInformation(
-            "{LogKey} orchestration instance archived (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, status={Status}, archivedUtc={ArchivedUtc})",
+            "[{LogKey}] orchestration instance archived (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, status={Status}, archivedUtc={ArchivedUtc})",
             Constants.LogKey,
             typeof(TContext).Name,
             row.InstanceId,
@@ -1276,7 +1276,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         this.logger.LogInformation(
-            "{LogKey} orchestration data purged (provider=EntityFramework, context={DbContextType}, instances={InstanceCount}, history={HistoryCount}, signals={SignalCount}, timers={TimerCount})",
+            "[{LogKey}] orchestration data purged (provider=EntityFramework, context={DbContextType}, instances={InstanceCount}, history={HistoryCount}, signals={SignalCount}, timers={TimerCount})",
             Constants.LogKey,
             typeof(TContext).Name,
             candidateIds.Length,
@@ -1330,7 +1330,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         this.logger.LogInformation(
-            "{LogKey} orchestration lease released administratively (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId})",
+            "[{LogKey}] orchestration lease released administratively (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId})",
             Constants.LogKey,
             typeof(TContext).Name,
             instanceId);
@@ -1391,7 +1391,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
         await dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         this.logger.LogInformation(
-            "{LogKey} orchestration timers requeued administratively (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, timerCount={TimerCount})",
+            "[{LogKey}] orchestration timers requeued administratively (provider=EntityFramework, context={DbContextType}, instanceId={InstanceId}, timerCount={TimerCount})",
             Constants.LogKey,
             typeof(TContext).Name,
             instanceId,

@@ -10,7 +10,6 @@ using System.Security.Claims;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.IdentityProvider.Pages;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -113,13 +112,15 @@ public class FakeIdentityProviderEndpoints(
         [FromQuery] string client_id,
         [FromQuery] string redirect_uri,
         [FromQuery] string scope,
-        [FromQuery] string state)
+        [FromQuery] string state,
+        [FromQuery] string nonce)
     {
         response_type = response_type?.Trim();
         client_id = client_id?.Trim();
         redirect_uri = redirect_uri?.Trim();
         scope = scope.Distinct();
         state = state?.Trim();
+        nonce = nonce?.Trim();
 
         // Validate response_type before any redirect (including SSO)
         if (response_type != "code")
@@ -157,7 +158,7 @@ public class FakeIdentityProviderEndpoints(
         // Cookie Single Sign-On: if user already has a valid auth cookie, bypass the login page
         if (options.EnableCookieSingleSignOn)
         {
-            var authResult = await httpContext.AuthenticateAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            var authResult = await httpContext.AuthenticateAsync(options.CookieAuthenticationScheme);
             if (authResult.Succeeded && authResult.Principal?.Identity?.IsAuthenticated == true)
             {
                 var userId = authResult.Principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -170,7 +171,8 @@ public class FakeIdentityProviderEndpoints(
                         ClientId = client_id,
                         RedirectUri = redirect_uri,
                         Scope = scope,
-                        State = state
+                        State = state,
+                        Nonce = nonce
                     };
 
                     var code = identityProvider.GenerateAuthorizationCode(user, ssoRequest);
@@ -186,7 +188,8 @@ public class FakeIdentityProviderEndpoints(
             ClientId = client_id,
             RedirectUri = redirect_uri,
             Scope = scope,
-            State = state
+            State = state,
+            Nonce = nonce
         };
 
         return Results.RazorSlice<Signin, SigninViewModel>(new SigninViewModel { Request = request, Options = options });
@@ -199,7 +202,8 @@ public class FakeIdentityProviderEndpoints(
         [FromQuery] string client_id,
         [FromQuery] string redirect_uri,
         [FromQuery] string scope,
-        [FromQuery] string state)
+        [FromQuery] string state,
+        [FromQuery] string nonce)
     {
         try
         {
@@ -210,6 +214,7 @@ public class FakeIdentityProviderEndpoints(
             redirect_uri = redirect_uri?.Trim();
             scope = scope.Distinct();
             state = state?.Trim();
+            nonce = nonce?.Trim();
 
             if (options.Clients.SafeAny())
             {
@@ -239,7 +244,8 @@ public class FakeIdentityProviderEndpoints(
                 ClientId = client_id,
                 RedirectUri = redirect_uri,
                 Scope = scope,
-                State = state
+                State = state,
+                Nonce = nonce
             };
 
             var code = identityProvider.GenerateAuthorizationCode(email, password, request);
@@ -351,7 +357,7 @@ public class FakeIdentityProviderEndpoints(
         {
             try
             {
-                await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+                await httpContext.SignOutAsync(options.CookieAuthenticationScheme);
             }
             catch (InvalidOperationException ex)
             {

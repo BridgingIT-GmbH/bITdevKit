@@ -178,7 +178,7 @@ public class LongRunningJob(ILoggerFactory loggerFactory) : JobBase(loggerFactor
         {
             context.CancellationToken.ThrowIfCancellationRequested(); // causes job interruption
 
-            this.Logger.LogInformation("{LogKey} processing step {Step} (jobKey={JobKey})", Constants.LogKey, i, context.JobDetail.Key);
+            this.Logger.LogInformation("[{LogKey}] processing step {Step} (jobKey={JobKey})", Constants.LogKey, i, context.JobDetail.Key);
             await Task.Delay(5000, context.CancellationToken);
         }
     }

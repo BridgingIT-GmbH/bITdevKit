@@ -192,7 +192,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
                 concurrencyEntity.ConcurrencyVersion = this.Options.VersionGenerator();
                 // TODO: what about child IConcurrency entities in the graph? do they need to be handled too?
 
-                this.Logger.LogDebug("{LogKey} update entity with optimistic concurrency (type={EntityType}, id={EntityId}, tracked={EntityTracked}, originalVersion={OriginalVersion}, newVersion={NewVersion})", Constants.LogKey, typeof(TEntity).Name, entity.Id, isTracked, originalVersion, concurrencyEntity.ConcurrencyVersion);
+                this.Logger.LogDebug("[{LogKey}] update entity with optimistic concurrency (type={EntityType}, id={EntityId}, tracked={EntityTracked}, originalVersion={OriginalVersion}, newVersion={NewVersion})", Constants.LogKey, typeof(TEntity).Name, entity.Id, isTracked, originalVersion, concurrencyEntity.ConcurrencyVersion);
 
                 if (isTracked)
                 {
@@ -390,13 +390,13 @@ public partial class EntityFrameworkGenericRepository<TEntity>
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Debug, "{LogKey} repository: upsert - {EntityUpsertType} (context={DbContextType}/{DbContextId}, type={EntityType}, id={EntityId}, tracked={EntityTracked}, trxId={TransactionId})")]
+        [LoggerMessage(0, LogLevel.Debug, "[{LogKey}] repository: upsert - {EntityUpsertType} (context={DbContextType}/{DbContextId}, type={EntityType}, id={EntityId}, tracked={EntityTracked}, trxId={TransactionId})")]
         public static partial void LogUpsert(ILogger logger, string logKey, string entityUpsertType, string dbContextType, string dbContextId, string entityType, object entityId, bool entityTracked, Guid? transactionId);
 
-        [LoggerMessage(1, LogLevel.Debug, "{LogKey} repository: delete (context={DbContextType}/{DbContextId}, type={EntityType}, id={EntityId}, trxId={TransactionId})")]
+        [LoggerMessage(1, LogLevel.Debug, "[{LogKey}] repository: delete (context={DbContextType}/{DbContextId}, type={EntityType}, id={EntityId}, trxId={TransactionId})")]
         public static partial void LogDelete(ILogger logger, string logKey, string dbContextType, string dbContextId, string entityType, object entityId, Guid? transactionId);
 
-        [LoggerMessage(2, LogLevel.Trace, "{LogKey} dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
+        [LoggerMessage(2, LogLevel.Trace, "[{LogKey}] dbcontext entity state: {EntityType} (keySet={EntityKeySet}) -> {EntityEntryState}")]
         public static partial void LogEntityState(ILogger logger, string logKey, string entityType, bool entityKeySet, EntityState entityEntryState);
     }
 }

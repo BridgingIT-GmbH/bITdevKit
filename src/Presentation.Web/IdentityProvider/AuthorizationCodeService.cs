@@ -31,6 +31,7 @@ public class AuthorizationCodeService : IAuthorizationCodeService
             ClientId = request.ClientId,
             RedirectUri = request.RedirectUri,
             Scope = request.Scope,
+            Nonce = request.Nonce,
             ExpiresAt = DateTime.UtcNow.AddMinutes(5)
         };
 

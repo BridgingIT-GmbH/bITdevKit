@@ -270,25 +270,25 @@ public abstract partial class SequenceNumberGeneratorBase<TContext> : ISequenceN
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Debug, "{LogKey} sequence number generate: start (sequence={SequenceName}, schema={Schema}, context={DbContextType})")]
+        [LoggerMessage(0, LogLevel.Debug, "[{LogKey}] sequence number generate: start (sequence={SequenceName}, schema={Schema}, context={DbContextType})")]
         public static partial void LogSequenceGeneration(ILogger logger, string logKey, string sequenceName, string schema, string dbContextType);
 
-        [LoggerMessage(1, LogLevel.Debug, "{LogKey} sequence number generate: generated value {Value} from {SequenceName} (schema={Schema}, context={DbContextType}/{DbContextId})")]
+        [LoggerMessage(1, LogLevel.Debug, "[{LogKey}] sequence number generate: generated value {Value} from {SequenceName} (schema={Schema}, context={DbContextType}/{DbContextId})")]
         public static partial void LogSequenceGenerated(ILogger logger, string logKey, long value, string sequenceName, string schema, string dbContextType, string dbContextId);
 
-        [LoggerMessage(2, LogLevel.Error, "{LogKey} sequence number generate: failed (sequence={SequenceName}, schema={Schema}, context={DbContextType}/{DbContextId}) {Message}")]
+        [LoggerMessage(2, LogLevel.Error, "[{LogKey}] sequence number generate: failed (sequence={SequenceName}, schema={Schema}, context={DbContextType}/{DbContextId}) {Message}")]
         public static partial void LogSequenceGenerationFailed(ILogger logger, string logKey, string sequenceName, string schema, string dbContextType, string dbContextId, string message);
 
-        [LoggerMessage(3, LogLevel.Warning, "{LogKey} sequence number generate: failed to acquire lock for sequence {SequenceName} within {Timeout} seconds")]
+        [LoggerMessage(3, LogLevel.Warning, "[{LogKey}] sequence number generate: failed to acquire lock for sequence {SequenceName} within {Timeout} seconds")]
         public static partial void LogSequenceLockTimeout(ILogger logger, string logKey, string sequenceName, double timeout);
 
-        [LoggerMessage(4, LogLevel.Debug, "{LogKey} sequence number generate: start multiple (count={Count}, schema={Schema}, context={DbContextType})")]
+        [LoggerMessage(4, LogLevel.Debug, "[{LogKey}] sequence number generate: start multiple (count={Count}, schema={Schema}, context={DbContextType})")]
         public static partial void LogMultipleSequenceGeneration(ILogger logger, string logKey, int count, string schema, string dbContextType);
 
-        [LoggerMessage(6, LogLevel.Debug, "{LogKey} sequence number generate: start for entity (entity={EntityName}, sequence={SequenceName})")]
+        [LoggerMessage(6, LogLevel.Debug, "[{LogKey}] sequence number generate: start for entity (entity={EntityName}, sequence={SequenceName})")]
         public static partial void LogEntitySequenceGeneration(ILogger logger, string logKey, string entityName, string sequenceName);
 
-        [LoggerMessage(7, LogLevel.Information, "{LogKey} sequence number generate: reset (sequence={SequenceName}, startValue={StartValue}, context={DbContextType})")]
+        [LoggerMessage(7, LogLevel.Information, "[{LogKey}] sequence number generate: reset (sequence={SequenceName}, startValue={StartValue}, context={DbContextType})")]
         public static partial void LogSequenceReset(ILogger logger, string logKey, string sequenceName, long startValue, string dbContextType);
     }
 }

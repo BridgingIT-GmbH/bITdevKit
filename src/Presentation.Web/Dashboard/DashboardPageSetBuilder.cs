@@ -63,12 +63,34 @@ public sealed class DashboardPageSetBuilder(Func<DashboardPageDefinition, string
         return this.Group("bdk").Page(key, path);
     }
 
-    internal IReadOnlyList<DashboardPageDefinition> Build()
+    /// <summary>
+    /// Builds the configured dashboard page definitions.
+    /// </summary>
+    /// <returns>The configured dashboard page definitions.</returns>
+    /// <example>
+    /// <code>
+    /// var definitions = pages.Build();
+    /// </code>
+    /// </example>
+    public IReadOnlyList<DashboardPageDefinition> Build()
     {
         return this.pages.ToArray();
     }
 
-    internal DashboardPageBuilder AddPage(string group, int groupOrder, string key, string path)
+    /// <summary>
+    /// Adds a dashboard page definition.
+    /// </summary>
+    /// <param name="group">The sidebar and card group name.</param>
+    /// <param name="groupOrder">The group order.</param>
+    /// <param name="key">The stable page key.</param>
+    /// <param name="path">The route path below the dashboard group path.</param>
+    /// <returns>A page builder.</returns>
+    /// <example>
+    /// <code>
+    /// var page = pages.AddPage("Core", 100, "overview", "/app/core");
+    /// </code>
+    /// </example>
+    public DashboardPageBuilder AddPage(string group, int groupOrder, string key, string path)
     {
         var page = new DashboardPageDefinition(key, path)
         {
@@ -373,7 +395,17 @@ public sealed class DashboardPageActionBuilder
     private readonly DashboardPageBuilder page;
     private readonly DashboardPageActionDefinition action;
 
-    internal DashboardPageActionBuilder(
+    /// <summary>
+    /// Initializes a new instance of the <see cref="DashboardPageActionBuilder" /> class.
+    /// </summary>
+    /// <param name="page">The owning page builder.</param>
+    /// <param name="action">The action definition.</param>
+    /// <example>
+    /// <code>
+    /// var action = new DashboardPageActionBuilder(page, actionDefinition);
+    /// </code>
+    /// </example>
+    public DashboardPageActionBuilder(
         DashboardPageBuilder page,
         DashboardPageActionDefinition action)
     {

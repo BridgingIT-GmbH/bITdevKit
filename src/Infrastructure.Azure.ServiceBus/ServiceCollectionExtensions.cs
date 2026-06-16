@@ -45,11 +45,11 @@ public static partial class ServiceCollectionExtensions
 
             //foreach (var sub in broker.Subscriptions.GetAll())
             //{
-            //    logger.LogInformation("{LogKey} ----- subscription: {MessageName}", Constants.LogKey, sub.Key);
+            //    logger.LogInformation("[{LogKey}] ----- subscription: {MessageName}", Constants.LogKey, sub.Key);
 
             //    foreach (var subdetails in sub.Value.SafeNull())
             //    {
-            //        logger.LogInformation("{LogKey} ----- subscription: {MessageName} -> {MessageHandler} ", Constants.LogKey, sub.Key, subdetails.HandlerType.Name);
+            //        logger.LogInformation("[{LogKey}] ----- subscription: {MessageName} -> {MessageHandler} ", Constants.LogKey, sub.Key, subdetails.HandlerType.Name);
             //    }
             //}
 

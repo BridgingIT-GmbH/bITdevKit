@@ -62,7 +62,7 @@ public sealed class AliveJob(ILogger<AliveJob> logger) : JobBase<AliveJobData>
         context.Messages.Add($"Alive job completed from '{source}' with correlation '{correlationId}'.");
 
         logger.LogInformation(
-            "{LogKey} job alive probe handled (job={JobName}, correlationId={CorrelationId}, source={Source})",
+            "[{LogKey}] job alive probe handled (job={JobName}, correlationId={CorrelationId}, source={Source})",
             Constants.LogKey,
             context.JobName,
             correlationId,

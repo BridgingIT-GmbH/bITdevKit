@@ -27,7 +27,7 @@ public class NoOpDomainEventPublisher(ILoggerFactory loggerFactory = null) : IDo
     /// <returns>A completed task.</returns>
     public Task<IResult> Send(IDomainEvent @event, CancellationToken cancellationToken = default)
     {
-        this.logger.LogWarning("{LogKey} no domain events publisher available. Domain event {EventType} not published (EventId={})", Constants.LogKey, @event.GetType().Name, @event.EventId);
+        this.logger.LogWarning("[{LogKey}] no domain events publisher available. Domain event {EventType} not published (EventId={})", Constants.LogKey, @event.GetType().Name, @event.EventId);
         return Task.FromResult<IResult>(Result.Success());
     }
 }

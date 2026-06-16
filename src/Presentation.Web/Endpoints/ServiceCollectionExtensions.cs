@@ -118,7 +118,7 @@ public static partial class ServiceCollectionExtensions
 
                 foreach (var serviceDescriptor in serviceDescriptors)
                 {
-                    Log.Logger.Information("{LogKey} api endpoints added (type={ApiEndpointsType})", LogKey, serviceDescriptor.ImplementationInstance.GetType().Name);
+                    Log.Logger.Information("[{LogKey}] api endpoints added (type={ApiEndpointsType})", LogKey, serviceDescriptor.ImplementationInstance.GetType().Name);
                 }
             }
         }
@@ -157,7 +157,7 @@ public static partial class ServiceCollectionExtensions
 
                 foreach (var serviceDescriptor in serviceDescriptors)
                 {
-                    Log.Logger.Information("{LogKey} api endpoints added (type={ApiEndpointsType})",
+                    Log.Logger.Information("[{LogKey}] api endpoints added (type={ApiEndpointsType})",
                         LogKey,
                         serviceDescriptor.ImplementationType.Name);
                 }
@@ -225,7 +225,7 @@ public static partial class ServiceCollectionExtensions
 
                 foreach (var serviceDescriptor in serviceDescriptors)
                 {
-                    Log.Logger.Information("{LogKey} endpoints added (type={EndpointsType})",
+                    Log.Logger.Information("[{LogKey}] endpoints added (type={EndpointsType})",
                         LogKey,
                         serviceDescriptor.ImplementationType.Name);
                 }

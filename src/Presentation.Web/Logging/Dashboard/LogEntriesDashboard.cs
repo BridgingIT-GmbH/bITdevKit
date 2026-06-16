@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Presentation.Web.Logging.Dashboard;
 
 using System.Globalization;
 using BridgingIT.DevKit.Application.Utilities;
+using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
@@ -89,6 +90,35 @@ public static class LogEntriesDashboard
         return QueryHelpers.AddQueryString(string.Empty, values
             .Where(pair => !string.IsNullOrWhiteSpace(pair.Value))
             .ToDictionary(pair => pair.Key, pair => pair.Value));
+    }
+
+    /// <summary>
+    /// Builds a dashboard log entries link filtered to a correlation identifier.
+    /// </summary>
+    /// <param name="options">The dashboard endpoint options.</param>
+    /// <param name="correlationId">The correlation identifier.</param>
+    /// <returns>The filtered log entries URL, or <c>null</c> when no correlation identifier is supplied.</returns>
+    /// <example>
+    /// <code>
+    /// var href = LogEntriesDashboard.BuildCorrelationHref(options, "correlation-1");
+    /// </code>
+    /// </example>
+    public static string BuildCorrelationHref(DashboardEndpointsOptions options, string correlationId)
+    {
+        if (string.IsNullOrWhiteSpace(correlationId))
+        {
+            return null;
+        }
+
+        var filter = new LogEntriesDashboardFilter
+        {
+            Level = null,
+            PageSize = DefaultPageSize,
+            StartTime = DateTimeOffset.Now.Date,
+            CorrelationId = correlationId.Trim()
+        };
+
+        return $"{DashboardEndpoints.BuildLogEntriesPath(options)}{BuildQuery(filter)}";
     }
 
     public static string FormatDate(DateTimeOffset? value)

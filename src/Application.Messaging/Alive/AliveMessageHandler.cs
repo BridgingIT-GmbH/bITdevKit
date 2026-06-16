@@ -21,7 +21,7 @@ public sealed class AliveMessageHandler(ILogger<AliveMessageHandler> logger) : I
         await Task.Delay(600, cancellationToken); // Simulate some work
 
         logger.LogInformation(
-            "{LogKey} messaging alive probe handled (id={MessageId}, correlationId={CorrelationId}, source={Source})",
+            "[{LogKey}] messaging alive probe handled (id={MessageId}, correlationId={CorrelationId}, source={Source})",
             Constants.LogKey,
             message.MessageId,
             message.CorrelationId,

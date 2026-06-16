@@ -350,7 +350,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} repository outbox domain event (eventId={DomainEventId}, eventType={DomainEventType})")]
+        [LoggerMessage(0, LogLevel.Information, "[{LogKey}] repository outbox domain event (eventId={DomainEventId}, eventType={DomainEventType})")]
         public static partial void LogDomainEvent(ILogger logger, string logKey, Guid domainEventId, string domainEventType);
     }
 }

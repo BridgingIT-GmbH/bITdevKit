@@ -91,7 +91,7 @@ public class OrchestrationRecoveryService : BackgroundService
     /// <returns>A task that completes once shutdown coordination has finished.</returns>
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} orchestration recovery service stopping", Constants.LogKey);
+        this.logger.LogInformation("[{LogKey}] orchestration recovery service stopping", Constants.LogKey);
 
         this.linkedCts?.Cancel();
 
@@ -107,7 +107,7 @@ public class OrchestrationRecoveryService : BackgroundService
             }
         }
 
-        this.logger.LogInformation("{LogKey} orchestration recovery service stopped", Constants.LogKey);
+        this.logger.LogInformation("[{LogKey}] orchestration recovery service stopped", Constants.LogKey);
 
         await base.StopAsync(cancellationToken).ConfigureAwait(false);
     }
@@ -141,12 +141,12 @@ public class OrchestrationRecoveryService : BackgroundService
         {
             if (this.settings.StartupDelay > TimeSpan.Zero)
             {
-                this.logger.LogDebug("{LogKey} orchestration recovery service startup delayed by {Delay}ms", Constants.LogKey, this.settings.StartupDelay.TotalMilliseconds);
+                this.logger.LogDebug("[{LogKey}] orchestration recovery service startup delayed by {Delay}ms", Constants.LogKey, this.settings.StartupDelay.TotalMilliseconds);
                 await this.clock.DelayAsync(this.settings.StartupDelay, cancellationToken).ConfigureAwait(false);
             }
 
             this.logger.LogInformation(
-                "{LogKey} orchestration recovery service starting (sweepInterval={SweepInterval}ms, batchSize={BatchSize})",
+                "[{LogKey}] orchestration recovery service starting (sweepInterval={SweepInterval}ms, batchSize={BatchSize})",
                 Constants.LogKey,
                 this.settings.BackgroundSweepInterval.TotalMilliseconds,
                 this.settings.BackgroundSweepBatchSize);
@@ -165,7 +165,7 @@ public class OrchestrationRecoveryService : BackgroundService
         }
         catch (Exception exception)
         {
-            this.logger.LogError(exception, "{LogKey} orchestration recovery service failed unexpectedly: {ErrorMessage}", Constants.LogKey, exception.Message);
+            this.logger.LogError(exception, "[{LogKey}] orchestration recovery service failed unexpectedly: {ErrorMessage}", Constants.LogKey, exception.Message);
             throw;
         }
     }
@@ -182,7 +182,7 @@ public class OrchestrationRecoveryService : BackgroundService
         }
         catch (Exception exception)
         {
-            this.logger.LogWarning(exception, "{LogKey} orchestration recovery sweep failed; the service will retry on the next interval: {ErrorMessage}", Constants.LogKey, exception.Message);
+            this.logger.LogWarning(exception, "[{LogKey}] orchestration recovery sweep failed; the service will retry on the next interval: {ErrorMessage}", Constants.LogKey, exception.Message);
         }
     }
 
@@ -213,16 +213,16 @@ public class OrchestrationRecoveryService : BackgroundService
                     var result = await this.executor.RepairWaitingInstanceAsync(snapshot.InstanceId, cancellationToken).ConfigureAwait(false);
                     if (result.Result == InMemoryOrchestrationExecutor.RecoveryActionResult.Repaired)
                     {
-                        this.logger.LogInformation("{LogKey} recovered missing orchestration timer(s) (instanceId={InstanceId}, count={Count})", Constants.LogKey, snapshot.InstanceId, result.AffectedTimerCount);
+                        this.logger.LogInformation("[{LogKey}] recovered missing orchestration timer(s) (instanceId={InstanceId}, count={Count})", Constants.LogKey, snapshot.InstanceId, result.AffectedTimerCount);
                     }
                     else if (result.Result == InMemoryOrchestrationExecutor.RecoveryActionResult.SkippedLeaseConflict)
                     {
-                        this.logger.LogDebug("{LogKey} skipped waiting-boundary repair because another worker owns the lease (instanceId={InstanceId})", Constants.LogKey, snapshot.InstanceId);
+                        this.logger.LogDebug("[{LogKey}] skipped waiting-boundary repair because another worker owns the lease (instanceId={InstanceId})", Constants.LogKey, snapshot.InstanceId);
                     }
                 }
                 catch (Exception exception) when (exception is not OperationCanceledException)
                 {
-                    this.logger.LogError(exception, "{LogKey} orchestration waiting-boundary recovery failed (instanceId={InstanceId})", Constants.LogKey, snapshot.InstanceId);
+                    this.logger.LogError(exception, "[{LogKey}] orchestration waiting-boundary recovery failed (instanceId={InstanceId})", Constants.LogKey, snapshot.InstanceId);
                 }
             }
 
@@ -260,16 +260,16 @@ public class OrchestrationRecoveryService : BackgroundService
                     var result = await this.executor.ContinueInstanceForRecoveryAsync(instanceId, cancellationToken).ConfigureAwait(false);
                     if (result.Result == InMemoryOrchestrationExecutor.RecoveryActionResult.Continued)
                     {
-                        this.logger.LogInformation("{LogKey} continued orchestration instance for due timer recovery (instanceId={InstanceId})", Constants.LogKey, instanceId);
+                        this.logger.LogInformation("[{LogKey}] continued orchestration instance for due timer recovery (instanceId={InstanceId})", Constants.LogKey, instanceId);
                     }
                     else if (result.Result == InMemoryOrchestrationExecutor.RecoveryActionResult.SkippedLeaseConflict)
                     {
-                        this.logger.LogDebug("{LogKey} skipped due-timer continuation because another worker owns the lease (instanceId={InstanceId})", Constants.LogKey, instanceId);
+                        this.logger.LogDebug("[{LogKey}] skipped due-timer continuation because another worker owns the lease (instanceId={InstanceId})", Constants.LogKey, instanceId);
                     }
                 }
                 catch (Exception exception) when (exception is not OperationCanceledException)
                 {
-                    this.logger.LogError(exception, "{LogKey} orchestration due-timer continuation failed (instanceId={InstanceId})", Constants.LogKey, instanceId);
+                    this.logger.LogError(exception, "[{LogKey}] orchestration due-timer continuation failed (instanceId={InstanceId})", Constants.LogKey, instanceId);
                 }
             }
 

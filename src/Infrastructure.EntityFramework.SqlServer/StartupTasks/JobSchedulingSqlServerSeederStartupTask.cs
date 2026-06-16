@@ -58,7 +58,7 @@ public class JobSchedulingSqlServerSeederStartupTask
             var connectionStringBuilder = new SqlConnectionStringBuilder(this.connectionString);
             var database = connectionStringBuilder.InitialCatalog;
             var sql = SqlStatements.QuartzTables(database, this.tablePrefix);
-            this.logger.LogInformation("{LogKey} quartz sqlserver seeding started (database={Database})", LogKey, database);
+            this.logger.LogInformation("[{LogKey}] quartz sqlserver seeding started (database={Database})", LogKey, database);
 
             await using var connection = new SqlConnection(connectionStringBuilder.ConnectionString);
             await using var command = new SqlCommand(sql, connection);
@@ -67,7 +67,7 @@ public class JobSchedulingSqlServerSeederStartupTask
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} quartz sqlserver seeding failed", LogKey);
+            this.logger.LogError(ex, "[{LogKey}] quartz sqlserver seeding failed", LogKey);
         }
     }
 }

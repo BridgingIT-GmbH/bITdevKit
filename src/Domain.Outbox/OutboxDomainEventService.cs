@@ -89,7 +89,7 @@ public class OutboxDomainEventService : BackgroundService
     /// </returns>
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} outbox domain event service stopping", Constants.LogKey);
+        this.logger.LogInformation("[{LogKey}] outbox domain event service stopping", Constants.LogKey);
 
         this.linkedCts?.Cancel();
 
@@ -138,7 +138,7 @@ public class OutboxDomainEventService : BackgroundService
         {
             if (this.options.StartupDelay.TotalMilliseconds > 0)
             {
-                this.logger.LogDebug("{LogKey} outbox domain event service startup delayed", Constants.LogKey);
+                this.logger.LogDebug("[{LogKey}] outbox domain event service startup delayed", Constants.LogKey);
                 await Task.Delay(this.options.StartupDelay, cancellationToken);
             }
 
@@ -159,7 +159,7 @@ public class OutboxDomainEventService : BackgroundService
             this.semaphore = new SemaphoreSlim(1);
             this.processTimer = new PeriodicTimer(this.options.ProcessingInterval);
 
-            this.logger.LogInformation("{LogKey} outbox domain event service started", Constants.LogKey);
+            this.logger.LogInformation("[{LogKey}] outbox domain event service started", Constants.LogKey);
 
             while (await this.processTimer.WaitForNextTickAsync(cancellationToken))
             {
@@ -168,7 +168,7 @@ public class OutboxDomainEventService : BackgroundService
 
                 if (processingDelay > TimeSpan.Zero)
                 {
-                    this.logger.LogDebug("{LogKey} outbox domain event delay processing by {ProcessingDelay}ms", Constants.LogKey, processingDelay.TotalMilliseconds);
+                    this.logger.LogDebug("[{LogKey}] outbox domain event delay processing by {ProcessingDelay}ms", Constants.LogKey, processingDelay.TotalMilliseconds);
                     await Task.Delay(processingDelay, cancellationToken);
                 }
 
@@ -177,11 +177,11 @@ public class OutboxDomainEventService : BackgroundService
         }
         catch (OperationCanceledException)
         {
-            this.logger.LogInformation("{LogKey} outbox domain event service stopped", Constants.LogKey);
+            this.logger.LogInformation("[{LogKey}] outbox domain event service stopped", Constants.LogKey);
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} outbox domain event service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] outbox domain event service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
             throw;
         }
     }
@@ -192,7 +192,7 @@ public class OutboxDomainEventService : BackgroundService
         {
             if (!await this.semaphore.WaitAsync(TimeSpan.FromSeconds(30), cancellationToken))
             {
-                this.logger.LogWarning("{LogKey} outbox domain event service timed out waiting for semaphore", Constants.LogKey);
+                this.logger.LogWarning("[{LogKey}] outbox domain event service timed out waiting for semaphore", Constants.LogKey);
                 return;
             }
 
@@ -209,7 +209,7 @@ public class OutboxDomainEventService : BackgroundService
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} outbox domain event service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] outbox domain event service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
         }
         finally
         {

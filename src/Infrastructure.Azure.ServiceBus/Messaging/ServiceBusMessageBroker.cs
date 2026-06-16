@@ -56,7 +56,7 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
                 $"Cannot create ServiceBus connection, {nameof(options.ConnectionString)} option value must be supplied.");
         }
 
-        this.Logger.LogInformation("{LogKey} broker initialized (name={MessageBroker})",
+        this.Logger.LogInformation("[{LogKey}] broker initialized (name={MessageBroker})",
             Constants.LogKey,
             this.GetType().Name);
     }
@@ -112,7 +112,7 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
         }
 
         this.Logger.LogDebug(
-            "{LogKey} servicebus message produced (name={MessageName}, id={MessageId}, topic={MessageTopicName})",
+            "[{LogKey}] servicebus message produced (name={MessageName}, id={MessageId}, topic={MessageTopicName})",
             Constants.LogKey,
             messageName,
             message.MessageId,
@@ -152,7 +152,7 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
                 catch (Exception)
                 {
                     this.Logger.LogError(
-                        "{LogKey} servicebus message consume failed (name={MessageName}, id={MessageId}, path={ServiceBusEntityPath})",
+                        "[{LogKey}] servicebus message consume failed (name={MessageName}, id={MessageId}, path={ServiceBusEntityPath})",
                         Constants.LogKey,
                         a.Message.Subject,
                         a.Message.MessageId,
@@ -165,7 +165,7 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
             processor.ProcessErrorAsync += a =>
             {
                 this.Logger.LogError(a.Exception,
-                    "{LogKey} servicebus failed (path={ServiceBusEntityPath}) {ErrorMessage}",
+                    "[{LogKey}] servicebus failed (path={ServiceBusEntityPath}) {ErrorMessage}",
                     Constants.LogKey,
                     a.EntityPath,
                     a.Exception.Message);
@@ -188,7 +188,7 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
         if (message is not null)
         {
             this.Logger.LogDebug(
-                "{LogKey} servicebus message consumed (name={MessageName}, id={MessageId}, path={ServiceBusEntityPath})",
+                "[{LogKey}] servicebus message consumed (name={MessageName}, id={MessageId}, path={ServiceBusEntityPath})",
                 Constants.LogKey,
                 messageName,
                 message.MessageId,
@@ -197,7 +197,7 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
             await this.Process(new MessageRequest(message, CancellationToken.None));
         }
 
-        this.Logger.LogDebug("{LogKey} servicebus consumer done (topic={MessageTopicName})",
+        this.Logger.LogDebug("[{LogKey}] servicebus consumer done (topic={MessageTopicName})",
             Constants.LogKey,
             messageName);
     }

@@ -46,7 +46,7 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
                 var context = scope.ServiceProvider.GetRequiredService<TContext>();
 
                 var entity = this.MapToEntity(emailMessage);
-                this.logger.LogDebug("{LogKey} storage - save email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
+                this.logger.LogDebug("[{LogKey}] storage - save email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
                 context.NotificationsEmails.Add(entity);
 
                 await context.SaveChangesAsync(cancellationToken);
@@ -55,7 +55,7 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
             }
             catch (DbUpdateException ex)
             {
-                this.logger.LogError(ex, "{LogKey} storage - failed to save message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
+                this.logger.LogError(ex, "[{LogKey}] storage - failed to save message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
                 return await Task.FromResult(Result.Failure()
                     .WithError(new Error($"Failed to save message: {ex.Message}")));
             }
@@ -99,7 +99,7 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
                             : $"EmailMessage with ID {emailMessage.Id} is not currently leased by this worker")));
                 }
 
-                this.logger.LogDebug("{LogKey} storage - update email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
+                this.logger.LogDebug("[{LogKey}] storage - update email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
                 this.MapToEntity(emailMessage, entity);
                 entity.LockedBy = null;
                 entity.LockedUntil = null;
@@ -111,13 +111,13 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
             }
             catch (DbUpdateConcurrencyException ex)
             {
-                this.logger.LogWarning(ex, "{LogKey} storage - concurrency conflict updating message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
+                this.logger.LogWarning(ex, "[{LogKey}] storage - concurrency conflict updating message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
                 return await Task.FromResult(Result.Failure()
                     .WithError(new Error($"Concurrency conflict: {ex.Message}")));
             }
             catch (DbUpdateException ex)
             {
-                this.logger.LogError(ex, "{LogKey} storage - failed to update message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
+                this.logger.LogError(ex, "[{LogKey}] storage - failed to update message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
                 return await Task.FromResult(Result.Failure()
                     .WithError(new Error($"Failed to update message: {ex.Message}")));
             }
@@ -159,7 +159,7 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
                         : $"EmailMessage with ID {emailMessage.Id} is not currently leased by this worker")));
                 }
 
-                this.logger.LogDebug("{LogKey} storage - archive email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
+                this.logger.LogDebug("[{LogKey}] storage - archive email message (id={MessageId})", Application.Notifications.Constants.LogKey, entity.Id);
                 entity.IsArchived = true;
                 entity.ArchivedDate ??= DateTimeOffset.UtcNow;
                 entity.LockedBy = null;
@@ -172,7 +172,7 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
             }
             catch (DbUpdateException ex)
             {
-                this.logger.LogError(ex, "{LogKey} storage - failed to delete message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
+                this.logger.LogError(ex, "[{LogKey}] storage - failed to delete message with ID {MessageId}", Application.Notifications.Constants.LogKey, message.Id);
                 return await Task.FromResult(Result.Failure()
                     .WithError(new Error($"Failed to delete message: {ex.Message}")));
             }
@@ -201,7 +201,7 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
                     return await Task.FromResult(Result<IEnumerable<TMessage>>.Success([]));
                 }
 
-                this.logger.LogDebug("{LogKey} storage - retrieve up to {BatchSize} pending email messages", Application.Notifications.Constants.LogKey, batchSize);
+                this.logger.LogDebug("[{LogKey}] storage - retrieve up to {BatchSize} pending email messages", Application.Notifications.Constants.LogKey, batchSize);
                 var entities = await context.NotificationsEmails.AsNoTracking()
                     .Where(m => !m.IsArchived && claimedIds.Contains(m.Id))
                     .Include(m => m.Attachments)
@@ -213,7 +213,7 @@ public class EntityFrameworkNotificationEmailStorageProvider<TContext>(
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "{LogKey} storage - failed to retrieve pending messages for type {MessageType}", Application.Notifications.Constants.LogKey, typeof(TMessage).Name);
+                this.logger.LogError(ex, "[{LogKey}] storage - failed to retrieve pending messages for type {MessageType}", Application.Notifications.Constants.LogKey, typeof(TMessage).Name);
                 return await Task.FromResult(Result<IEnumerable<TMessage>>.Failure()
                     .WithError(new Error($"Failed to retrieve pending messages: {ex.Message}")));
             }

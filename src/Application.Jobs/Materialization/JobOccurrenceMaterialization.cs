@@ -20,6 +20,7 @@ using BridgingIT.DevKit.Common;
 /// <param name="DataType">The occurrence payload type.</param>
 /// <param name="Properties">The occurrence properties.</param>
 /// <param name="IdempotencyKey">The idempotency key derived from the trigger input.</param>
+/// <param name="CorrelationId">The optional correlation identifier to use for tracing.</param>
 public sealed record JobOccurrenceMaterialization(
     string OccurrenceKey,
     string JobName,
@@ -30,4 +31,5 @@ public sealed record JobOccurrenceMaterialization(
     object Data,
     Type DataType,
     PropertyBag Properties,
-    string IdempotencyKey);
+    string IdempotencyKey,
+    string CorrelationId = null);

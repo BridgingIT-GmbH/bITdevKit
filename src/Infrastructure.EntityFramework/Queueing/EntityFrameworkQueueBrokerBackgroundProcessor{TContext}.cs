@@ -55,7 +55,7 @@ internal sealed class EntityFrameworkQueueBrokerBackgroundProcessor<TContext> : 
 
         this.semaphore = new SemaphoreSlim(1, 1);
         this.processTimer = new PeriodicTimer(this.options.ProcessingInterval);
-        this.logger.LogInformation("{LogKey} entity framework queue broker background processor started", Application.Queueing.Constants.LogKey);
+        this.logger.LogInformation("[{LogKey}] entity framework queue broker background processor started", Application.Queueing.Constants.LogKey);
 
         try
         {
@@ -71,7 +71,7 @@ internal sealed class EntityFrameworkQueueBrokerBackgroundProcessor<TContext> : 
         }
         catch (OperationCanceledException)
         {
-            this.logger.LogInformation("{LogKey} entity framework queue broker background processor stopped", Application.Queueing.Constants.LogKey);
+            this.logger.LogInformation("[{LogKey}] entity framework queue broker background processor stopped", Application.Queueing.Constants.LogKey);
         }
     }
 
@@ -81,7 +81,7 @@ internal sealed class EntityFrameworkQueueBrokerBackgroundProcessor<TContext> : 
         {
             if (!await this.semaphore.WaitAsync(TimeSpan.FromSeconds(30), cancellationToken))
             {
-                this.logger.LogWarning("{LogKey} entity framework queue broker background processor timed out waiting for semaphore", Application.Queueing.Constants.LogKey);
+                this.logger.LogWarning("[{LogKey}] entity framework queue broker background processor timed out waiting for semaphore", Application.Queueing.Constants.LogKey);
                 return;
             }
 
@@ -89,7 +89,7 @@ internal sealed class EntityFrameworkQueueBrokerBackgroundProcessor<TContext> : 
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} entity framework queue broker background processor failed: {ErrorMessage}", Application.Queueing.Constants.LogKey, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] entity framework queue broker background processor failed: {ErrorMessage}", Application.Queueing.Constants.LogKey, ex.Message);
         }
         finally
         {

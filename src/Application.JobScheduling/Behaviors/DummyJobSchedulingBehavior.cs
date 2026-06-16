@@ -14,12 +14,12 @@ public class DummyJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSched
         var jobId = context.JobDetail.JobDataMap?.GetString(JobIdKey) ?? context.FireInstanceId;
         var jobTypeName = context.JobDetail.JobType.FullName;
 
-        this.Logger.LogDebug("{LogKey} >>>>> dummy job scheduling behavior - before (type={JobType}, id={JobId})",
+        this.Logger.LogDebug("[{LogKey}] >>>>> dummy job scheduling behavior - before (type={JobType}, id={JobId})",
             Constants.LogKey,
             jobTypeName,
             jobId);
         await next().AnyContext(); // continue pipeline
-        this.Logger.LogDebug("{LogKey} <<<<< dummy job scheduling behavior - after (type={JobType}, id={JobId})",
+        this.Logger.LogDebug("[{LogKey}] <<<<< dummy job scheduling behavior - after (type={JobType}, id={JobId})",
             Constants.LogKey,
             jobTypeName,
             jobId);

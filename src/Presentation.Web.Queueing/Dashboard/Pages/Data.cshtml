@@ -1,6 +1,7 @@
 @using BridgingIT.DevKit.Application.Queueing
 @using Microsoft.Extensions.Logging
 @using QueueingDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.DashboardEndpoints
+@using System.Text.Json
 @inherits RazorSlice
 
 @{
@@ -65,6 +66,7 @@ else
                         <tbody>
                         @foreach (var message in vm.Messages)
                         {
+                            vm.MessageContentById.TryGetValue(message.Id, out var content);
                             var retryUrl = $"{actionBase}/messages/{message.Id}/retry";
                             var archiveUrl = $"{actionBase}/messages/{message.Id}/archive";
                             <tr>
@@ -91,9 +93,15 @@ else
                                     }
                                 </td>
                                 <td class="text-end text-nowrap">
+                                    <button type="button"
+                                            class="btn btn-sm btn-outline-secondary"
+                                            title="Show message details"
+                                            data-queueing-message-context="@CreateMessageContext(message, content)">
+                                        <i class="bi bi-info-circle"></i>
+                                    </button>
                                     @if (CanRetryMessage(message))
                                     {
-                                        <button class="btn btn-sm btn-outline-warning" title="Retry message" onclick="window.bdkQueueingAction('@retryUrl')">
+                                        <button class="btn btn-sm btn-outline-warning ms-1" title="Retry message" onclick="window.bdkQueueingAction('@retryUrl')">
                                             <i class="bi bi-arrow-repeat"></i>
                                         </button>
                                     }
@@ -247,6 +255,7 @@ else
                 take: take,
                 cancellationToken: cancellationToken);
             model.Messages = messages.OrderByDescending(message => message.CreatedDate).ToList();
+            model.MessageContentById = await GetMessageContentsAsync(service, model.Messages, cancellationToken);
         }
         catch (Exception ex)
         {
@@ -274,6 +283,24 @@ else
         }
 
         return model;
+    }
+
+    private static async Task<IReadOnlyDictionary<Guid, QueueMessageContentInfo>> GetMessageContentsAsync(
+        IQueueBrokerService service,
+        IReadOnlyList<QueueMessageInfo> messages,
+        CancellationToken cancellationToken)
+    {
+        var result = new Dictionary<Guid, QueueMessageContentInfo>();
+        foreach (var message in messages)
+        {
+            var content = await service.GetMessageContentAsync(message.Id, cancellationToken);
+            if (content is not null)
+            {
+                result[message.Id] = content;
+            }
+        }
+
+        return result;
     }
 
     private string GetQuery(string key) =>
@@ -370,5 +397,33 @@ else
         }
 
         return value.Length <= maxLength ? value : $"...{value[^maxLength..]}";
+    }
+
+    private static string CreateMessageContext(QueueMessageInfo message, QueueMessageContentInfo content)
+    {
+        var payload = new
+        {
+            id = message.Id,
+            messageId = message.MessageId,
+            queueName = message.QueueName,
+            type = message.Type,
+            status = message.Status.ToString(),
+            isArchived = message.IsArchived,
+            archivedDate = message.ArchivedDate,
+            createdDate = message.CreatedDate,
+            expiresOn = message.ExpiresOn,
+            lockedBy = message.LockedBy,
+            lockedUntil = message.LockedUntil,
+            processingStartedDate = message.ProcessingStartedDate,
+            processedDate = message.ProcessedDate,
+            attemptCount = message.AttemptCount,
+            registeredHandlerType = message.RegisteredHandlerType,
+            lastError = message.LastError,
+            contentHash = content?.ContentHash,
+            content = content?.Content,
+            properties = message.Properties?.ToDictionary(pair => pair.Key, pair => pair.Value?.ToString() ?? string.Empty) ?? new Dictionary<string, string>()
+        };
+
+        return JsonSerializer.Serialize(payload);
     }
 }

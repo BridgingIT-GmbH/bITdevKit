@@ -31,13 +31,13 @@ public class InMemoryNotificationStorageProvider(
         {
             try
             {
-                this.logger.LogDebug("{LogKey} storage - save email message (id={MessageId})", Constants.LogKey, emailMessage.Id);
+                this.logger.LogDebug("[{LogKey}] storage - save email message (id={MessageId})", Constants.LogKey, emailMessage.Id);
                 this.messages[emailMessage.Id] = emailMessage;
                 return await Task.FromResult(Result.Success());
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "{LogKey} storage - failed to save message (id={MessageId})", Constants.LogKey, message.Id);
+                this.logger.LogError(ex, "[{LogKey}] storage - failed to save message (id={MessageId})", Constants.LogKey, message.Id);
                 return await Task.FromResult(Result.Failure().WithError(new Error($"Failed to save message: {ex.Message}")));
             }
         }
@@ -58,13 +58,13 @@ public class InMemoryNotificationStorageProvider(
                         .WithError(new Error($"EmailNotificationMessage with ID {emailMessage.Id} not found")));
                 }
 
-                this.logger.LogDebug("{LogKey} storage - update email message (id={MessageId})", Constants.LogKey, emailMessage.Id);
+                this.logger.LogDebug("[{LogKey}] storage - update email message (id={MessageId})", Constants.LogKey, emailMessage.Id);
                 this.messages[emailMessage.Id] = emailMessage;
                 return await Task.FromResult(Result.Success());
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "{LogKey} storage - failed to update message (id={MessageId})", Constants.LogKey, message.Id);
+                this.logger.LogError(ex, "[{LogKey}] storage - failed to update message (id={MessageId})", Constants.LogKey, message.Id);
                 return await Task.FromResult(Result.Failure()
                     .WithError(new Error($"Failed to update message: {ex.Message}")));
             }
@@ -85,12 +85,12 @@ public class InMemoryNotificationStorageProvider(
                         .WithError(new Error($"EmailNotificationMessage with ID {emailMessage.Id} not found")));
                 }
 
-                this.logger.LogDebug("{LogKey} storage - delete email message (id={MessageId})", Constants.LogKey, emailMessage.Id);
+                this.logger.LogDebug("[{LogKey}] storage - delete email message (id={MessageId})", Constants.LogKey, emailMessage.Id);
                 return await Task.FromResult(Result.Success());
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "{LogKey} storage - failed to delete message (id={MessageId})", Constants.LogKey, message.Id);
+                this.logger.LogError(ex, "[{LogKey}] storage - failed to delete message (id={MessageId})", Constants.LogKey, message.Id);
                 return await Task.FromResult(Result.Failure().WithError(new Error($"Failed to delete message: {ex.Message}")));
             }
         }
@@ -108,7 +108,7 @@ public class InMemoryNotificationStorageProvider(
         {
             try
             {
-                this.logger.LogDebug("{LogKey} storage - retrieve up to {BatchSize} pending email messages", Constants.LogKey, batchSize);
+                this.logger.LogDebug("[{LogKey}] storage - retrieve up to {BatchSize} pending email messages", Constants.LogKey, batchSize);
                 var pendingMessages = this.messages.Values
                     .Where(m => m.Status == EmailMessageStatus.Pending /*&& m.RetryCount < maxRetries*/)
                     .OrderBy(m => m.CreatedAt)
@@ -117,7 +117,7 @@ public class InMemoryNotificationStorageProvider(
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "{LogKey} storage - failed to retrieve pending messages for type {MessageType}", Constants.LogKey, typeof(TMessage).Name);
+                this.logger.LogError(ex, "[{LogKey}] storage - failed to retrieve pending messages for type {MessageType}", Constants.LogKey, typeof(TMessage).Name);
                 return await Task.FromResult(Result<IEnumerable<TMessage>>.Failure()
                     .WithError(new Error($"Failed to retrieve pending messages: {ex.Message}")));
             }

@@ -61,7 +61,7 @@ public partial class NotifierDomainEventPublisher : IDomainEventPublisher
         /// <param name="logKey">A key that indicates the logging domain.</param>
         /// <param name="domainEventId">The unique identifier of the domain event.</param>
         /// <param name="domainEventType">The type of the domain event.</param>
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} publish domain event (eventId={DomainEventId}, eventType={DomainEventType})")]
+        [LoggerMessage(0, LogLevel.Information, "[{LogKey}] publish domain event (eventId={DomainEventId}, eventType={DomainEventType})")]
         public static partial void LogSend(ILogger logger, string logKey, string domainEventId, string domainEventType);
     }
 }

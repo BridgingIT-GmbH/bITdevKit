@@ -61,7 +61,7 @@ public static class WebModuleExtensions
             }
 
             Log.Logger.Information(
-                "{LogKey} map (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ",
+                "[{LogKey}] map (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ",
                 ModuleConstants.LogKey,
                 module.Name,
                 module.Enabled,
@@ -119,7 +119,7 @@ public static class WebModuleExtensions
                 // only add the controllers from enabled modules
                 foreach (var module in modules.Where(m => m.Enabled))
                 {
-                    Log.Logger.Information("{LogKey} module assemblypart added (module={ModuleName})",
+                    Log.Logger.Information("[{LogKey}] module assemblypart added (module={ModuleName})",
                         ModuleConstants.LogKey,
                         module.Name);
 
@@ -176,7 +176,7 @@ public static class WebModuleExtensions
 
         if (modules is null)
         {
-            Log.Logger.Information("{LogKey} module discovery (module={ModuleName}) ",
+            Log.Logger.Information("[{LogKey}] module discovery (module={ModuleName}) ",
                 ModuleConstants.LogKey,
                 typeof(IWebModule).Name);
             logResult = true;
@@ -195,7 +195,7 @@ public static class WebModuleExtensions
         {
             foreach (var module in modules.SafeNull())
             {
-                Log.Logger.Debug("{LogKey} module discovered (name={ModuleName}) ",
+                Log.Logger.Debug("[{LogKey}] module discovered (name={ModuleName}) ",
                     ModuleConstants.LogKey,
                     module.Name);
             }

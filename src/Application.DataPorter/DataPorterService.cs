@@ -67,8 +67,8 @@ public sealed class DataPorterService(
             this.rowInterceptorsProvider.GetExportInterceptors<TSource>(),
             this.loggerFactory?.CreateLogger(typeof(ExportRowInterceptionExecutor<TSource>).FullName ?? typeof(ExportRowInterceptionExecutor<TSource>).Name));
         var provider = providerResult.Value;
-        this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, configuration.Compression, configuration);
-        this.logger.LogDebug("{LogKey} provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, provider.GetType().Name, "sync");
+        this.logger.LogDebug("[{LogKey}] configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, configuration.Compression, configuration);
+        this.logger.LogDebug("[{LogKey}] provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, provider.GetType().Name, "sync");
         this.LogSyncExportStart(data, options.Format, typeof(TSource));
         configuration.ProgressTracker?.ReportStart();
 
@@ -98,26 +98,26 @@ public sealed class DataPorterService(
             stopwatch.Stop();
             result = result with { BytesWritten = artifactStream.BytesWritten };
 
-            this.logger.LogInformation("{LogKey} export finished (type={Type}, format={Format}, provider={Provider}, rowCount={RowCount}, skippedRows={SkippedRows}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, typeof(TSource).Name, options.Format, provider.GetType().Name, result.TotalRows, result.SkippedRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);
+            this.logger.LogInformation("[{LogKey}] export finished (type={Type}, format={Format}, provider={Provider}, rowCount={RowCount}, skippedRows={SkippedRows}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, typeof(TSource).Name, options.Format, provider.GetType().Name, result.TotalRows, result.SkippedRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);
             configuration.ProgressTracker?.ReportCompleted(result with { Duration = stopwatch.Elapsed });
 
             return Result<ExportResult>.Success(result with { Duration = stopwatch.Elapsed });
         }
         catch (OperationCanceledException)
         {
-            this.logger.LogWarning("{LogKey} export canceled (type={Type}, format={Format})", Constants.LogKeyExport, typeof(TSource).Name, options.Format);
+            this.logger.LogWarning("[{LogKey}] export canceled (type={Type}, format={Format})", Constants.LogKeyExport, typeof(TSource).Name, options.Format);
             return Result<ExportResult>.Failure()
                 .WithError(new DataPorterError("Export operation was cancelled."));
         }
         catch (ExportInterceptionAbortedException ex)
         {
-            this.logger.LogWarning(ex, "{LogKey} export aborted by row interceptor (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyExport, typeof(TSource).Name, options.Format, ex.Message);
+            this.logger.LogWarning(ex, "[{LogKey}] export aborted by row interceptor (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyExport, typeof(TSource).Name, options.Format, ex.Message);
             return Result<ExportResult>.Failure()
                 .WithError(new ExportInterceptionAbortedError(ex.Message));
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} export failed (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyExport, typeof(TSource).Name, options.Format, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] export failed (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyExport, typeof(TSource).Name, options.Format, ex.Message);
             return Result<ExportResult>.Failure()
                 .WithError(new ExportError($"Export failed: {ex.Message}", ex));
         }
@@ -169,10 +169,10 @@ public sealed class DataPorterService(
             this.rowInterceptorsProvider.GetExportInterceptors<TSource>(),
             this.loggerFactory?.CreateLogger(typeof(ExportRowInterceptionExecutor<TSource>).FullName ?? typeof(ExportRowInterceptionExecutor<TSource>).Name));
         var provider = providerResult.Value;
-        this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, configuration.Compression, configuration);
-        this.logger.LogDebug("{LogKey} provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, provider.GetType().Name, "async");
+        this.logger.LogDebug("[{LogKey}] configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, configuration.Compression, configuration);
+        this.logger.LogDebug("[{LogKey}] provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, provider.GetType().Name, "async");
 
-        this.logger.LogDebug("{LogKey} export started (type={Type}, format={Format}, mode={Mode})", Constants.LogKeyExport, typeof(TSource).Name, options.Format, "async");
+        this.logger.LogDebug("[{LogKey}] export started (type={Type}, format={Format}, mode={Mode})", Constants.LogKeyExport, typeof(TSource).Name, options.Format, "async");
         configuration.ProgressTracker?.ReportStart();
 
         var stopwatch = Stopwatch.StartNew();
@@ -201,26 +201,26 @@ public sealed class DataPorterService(
             stopwatch.Stop();
             result = result with { BytesWritten = artifactStream.BytesWritten };
 
-            this.logger.LogInformation("{LogKey} export finished (type={Type}, format={Format}, provider={Provider}, rowCount={RowCount}, skippedRows={SkippedRows}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, typeof(TSource).Name, options.Format, provider.GetType().Name, result.TotalRows, result.SkippedRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);
+            this.logger.LogInformation("[{LogKey}] export finished (type={Type}, format={Format}, provider={Provider}, rowCount={RowCount}, skippedRows={SkippedRows}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, typeof(TSource).Name, options.Format, provider.GetType().Name, result.TotalRows, result.SkippedRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);
             configuration.ProgressTracker?.ReportCompleted(result with { Duration = stopwatch.Elapsed });
 
             return Result<ExportResult>.Success(result with { Duration = stopwatch.Elapsed });
         }
         catch (OperationCanceledException)
         {
-            this.logger.LogWarning("{LogKey} export canceled (type={Type}, format={Format})", Constants.LogKeyExport, typeof(TSource).Name, options.Format);
+            this.logger.LogWarning("[{LogKey}] export canceled (type={Type}, format={Format})", Constants.LogKeyExport, typeof(TSource).Name, options.Format);
             return Result<ExportResult>.Failure()
                 .WithError(new DataPorterError("Export operation was cancelled."));
         }
         catch (ExportInterceptionAbortedException ex)
         {
-            this.logger.LogWarning(ex, "{LogKey} export aborted by row interceptor (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyExport, typeof(TSource).Name, options.Format, ex.Message);
+            this.logger.LogWarning(ex, "[{LogKey}] export aborted by row interceptor (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyExport, typeof(TSource).Name, options.Format, ex.Message);
             return Result<ExportResult>.Failure()
                 .WithError(new ExportInterceptionAbortedError(ex.Message));
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} export failed (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyExport, typeof(TSource).Name, options.Format, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] export failed (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyExport, typeof(TSource).Name, options.Format, ex.Message);
             return Result<ExportResult>.Failure()
                 .WithError(new ExportError($"Export failed: {ex.Message}", ex));
         }
@@ -433,7 +433,7 @@ public sealed class DataPorterService(
                 config.SheetName = ds.SheetName;
                 config.ProgressTracker = progressTracker;
                 config.RowInterceptionExecutor = this.CreateExportRowInterceptionExecutor(ds.ItemType);
-                this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, sheetName={SheetName}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "multi dataset export", ds.ItemType.Name, options.Format, config.SheetName, config.Compression, config);
+                this.logger.LogDebug("[{LogKey}] configuration merged (operation={Operation}, type={Type}, format={Format}, sheetName={SheetName}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "multi dataset export", ds.ItemType.Name, options.Format, config.SheetName, config.Compression, config);
                 return (ds.Data, config);
             }).ToList();
 
@@ -443,8 +443,8 @@ public sealed class DataPorterService(
                     .WithError(new DataPorterError("Data sets cannot be null or empty."));
             }
 
-            this.logger.LogDebug("{LogKey} provider resolved (operation={Operation}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyExport, "multi dataset export", options.Format, provider.GetType().Name, "sync");
-            this.logger.LogDebug("{LogKey} multi dataset export started (format={Format}, provider={Provider}, dataSetCount={DataSetCount}, mode={Mode})", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations.Count, "sync");
+            this.logger.LogDebug("[{LogKey}] provider resolved (operation={Operation}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyExport, "multi dataset export", options.Format, provider.GetType().Name, "sync");
+            this.logger.LogDebug("[{LogKey}] multi dataset export started (format={Format}, provider={Provider}, dataSetCount={DataSetCount}, mode={Mode})", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations.Count, "sync");
             progressTracker?.ReportStart();
 
             ExportResult result;
@@ -458,14 +458,14 @@ public sealed class DataPorterService(
 
             stopwatch.Stop();
             result = result with { BytesWritten = artifactStream.BytesWritten };
-            this.logger.LogInformation("{LogKey} multi dataset export finished (format={Format}, provider={Provider}, dataSetCount={DataSetCount}, rowCount={RowCount}, skippedRows={SkippedRows}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations.Count, result.TotalRows, result.SkippedRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);
+            this.logger.LogInformation("[{LogKey}] multi dataset export finished (format={Format}, provider={Provider}, dataSetCount={DataSetCount}, rowCount={RowCount}, skippedRows={SkippedRows}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations.Count, result.TotalRows, result.SkippedRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);
             progressTracker?.ReportCompleted(result with { Duration = stopwatch.Elapsed });
 
             return Result<ExportResult>.Success(result with { Duration = stopwatch.Elapsed });
         }
         catch (OperationCanceledException)
         {
-            this.logger.LogWarning("{LogKey} multi dataset export canceled (format={Format}, provider={Provider}, dataSetCount={DataSetCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations?.Count ?? 0, stopwatch.Elapsed.TotalMilliseconds);
+            this.logger.LogWarning("[{LogKey}] multi dataset export canceled (format={Format}, provider={Provider}, dataSetCount={DataSetCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations?.Count ?? 0, stopwatch.Elapsed.TotalMilliseconds);
             return Result<ExportResult>.Failure()
                 .WithError(new DataPorterError("Export operation was cancelled."));
         }
@@ -473,12 +473,12 @@ public sealed class DataPorterService(
         {
             if (ex is ExportInterceptionAbortedException abortedException)
             {
-                this.logger.LogWarning(abortedException, "{LogKey} multi dataset export aborted by row interceptor (format={Format}, reason={Reason})", Constants.LogKeyExport, options.Format, abortedException.Message);
+                this.logger.LogWarning(abortedException, "[{LogKey}] multi dataset export aborted by row interceptor (format={Format}, reason={Reason})", Constants.LogKeyExport, options.Format, abortedException.Message);
                 return Result<ExportResult>.Failure()
                     .WithError(new ExportInterceptionAbortedError(abortedException.Message));
             }
 
-            this.logger.LogError(ex, "{LogKey} multi dataset export failed (format={Format}, reason={Reason})", Constants.LogKeyExport, options.Format, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] multi dataset export failed (format={Format}, reason={Reason})", Constants.LogKeyExport, options.Format, ex.Message);
             return Result<ExportResult>.Failure()
                 .WithError(new ExportError($"Export failed: {ex.Message}", ex));
         }
@@ -538,7 +538,7 @@ public sealed class DataPorterService(
                 config.SheetName = ds.SheetName;
                 config.ProgressTracker = progressTracker;
                 config.RowInterceptionExecutor = this.CreateExportRowInterceptionExecutor(ds.ItemType);
-                this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, sheetName={SheetName}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "multi dataset export", ds.ItemType.Name, options.Format, config.SheetName, config.Compression, config);
+                this.logger.LogDebug("[{LogKey}] configuration merged (operation={Operation}, type={Type}, format={Format}, sheetName={SheetName}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "multi dataset export", ds.ItemType.Name, options.Format, config.SheetName, config.Compression, config);
                 return (ds.Data, config);
             }).ToList();
 
@@ -548,8 +548,8 @@ public sealed class DataPorterService(
                     .WithError(new DataPorterError("Data sets cannot be null or empty."));
             }
 
-            this.logger.LogDebug("{LogKey} provider resolved (operation={Operation}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyExport, "multi dataset export", options.Format, provider.GetType().Name, "async");
-            this.logger.LogDebug("{LogKey} multi dataset export started (format={Format}, provider={Provider}, dataSetCount={DataSetCount}, mode={Mode})", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations.Count, "async");
+            this.logger.LogDebug("[{LogKey}] provider resolved (operation={Operation}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyExport, "multi dataset export", options.Format, provider.GetType().Name, "async");
+            this.logger.LogDebug("[{LogKey}] multi dataset export started (format={Format}, provider={Provider}, dataSetCount={DataSetCount}, mode={Mode})", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations.Count, "async");
             progressTracker?.ReportStart();
 
             ExportResult result;
@@ -563,14 +563,14 @@ public sealed class DataPorterService(
 
             stopwatch.Stop();
             result = result with { BytesWritten = artifactStream.BytesWritten };
-            this.logger.LogInformation("{LogKey} multi dataset export finished (format={Format}, provider={Provider}, dataSetCount={DataSetCount}, rowCount={RowCount}, skippedRows={SkippedRows}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations.Count, result.TotalRows, result.SkippedRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);
+            this.logger.LogInformation("[{LogKey}] multi dataset export finished (format={Format}, provider={Provider}, dataSetCount={DataSetCount}, rowCount={RowCount}, skippedRows={SkippedRows}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations.Count, result.TotalRows, result.SkippedRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);
             progressTracker?.ReportCompleted(result with { Duration = stopwatch.Elapsed });
 
             return Result<ExportResult>.Success(result with { Duration = stopwatch.Elapsed });
         }
         catch (OperationCanceledException)
         {
-            this.logger.LogWarning("{LogKey} multi dataset export canceled (format={Format}, provider={Provider}, dataSetCount={DataSetCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations?.Count ?? 0, stopwatch.Elapsed.TotalMilliseconds);
+            this.logger.LogWarning("[{LogKey}] multi dataset export canceled (format={Format}, provider={Provider}, dataSetCount={DataSetCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, options.Format, provider.GetType().Name, configurations?.Count ?? 0, stopwatch.Elapsed.TotalMilliseconds);
             return Result<ExportResult>.Failure()
                 .WithError(new DataPorterError("Export operation was cancelled."));
         }
@@ -578,12 +578,12 @@ public sealed class DataPorterService(
         {
             if (ex is ExportInterceptionAbortedException abortedException)
             {
-                this.logger.LogWarning(abortedException, "{LogKey} async multi dataset export aborted by row interceptor (format={Format}, reason={Reason})", Constants.LogKeyExport, options.Format, abortedException.Message);
+                this.logger.LogWarning(abortedException, "[{LogKey}] async multi dataset export aborted by row interceptor (format={Format}, reason={Reason})", Constants.LogKeyExport, options.Format, abortedException.Message);
                 return Result<ExportResult>.Failure()
                     .WithError(new ExportInterceptionAbortedError(abortedException.Message));
             }
 
-            this.logger.LogError(ex, "{LogKey} async multi dataset export failed (format={Format}, reason={Reason})", Constants.LogKeyExport, options.Format, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] async multi dataset export failed (format={Format}, reason={Reason})", Constants.LogKeyExport, options.Format, ex.Message);
             return Result<ExportResult>.Failure()
                 .WithError(new ExportError($"Export failed: {ex.Message}", ex));
         }
@@ -634,9 +634,9 @@ public sealed class DataPorterService(
         }
 
         var configuration = configurationMerger.BuildTemplateConfiguration<TTarget>(options);
-        this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "template generation", typeof(TTarget).Name, options.Format, configuration.Compression, configuration);
-        this.logger.LogDebug("{LogKey} provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyExport, "template generation", typeof(TTarget).Name, options.Format, provider.GetType().Name, "sync");
-        this.logger.LogDebug("{LogKey} template generation started (type={Type}, format={Format}, provider={Provider}, annotationStyle={AnnotationStyle}, includeHints={IncludeHints}, sampleItemCount={SampleItemCount})", Constants.LogKeyExport, typeof(TTarget).Name, options.Format, provider.GetType().Name, configuration.AnnotationStyle, configuration.IncludeHints, configuration.SampleItemCount);
+        this.logger.LogDebug("[{LogKey}] configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "template generation", typeof(TTarget).Name, options.Format, configuration.Compression, configuration);
+        this.logger.LogDebug("[{LogKey}] provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyExport, "template generation", typeof(TTarget).Name, options.Format, provider.GetType().Name, "sync");
+        this.logger.LogDebug("[{LogKey}] template generation started (type={Type}, format={Format}, provider={Provider}, annotationStyle={AnnotationStyle}, includeHints={IncludeHints}, sampleItemCount={SampleItemCount})", Constants.LogKeyExport, typeof(TTarget).Name, options.Format, provider.GetType().Name, configuration.AnnotationStyle, configuration.IncludeHints, configuration.SampleItemCount);
 
         var stopwatch = Stopwatch.StartNew();
         var artifactStream = new WriteStreamWrapper(outputStream);
@@ -662,18 +662,18 @@ public sealed class DataPorterService(
                 Properties = properties
             };
 
-            this.logger.LogInformation("{LogKey} template generation finished (type={Type}, format={Format}, provider={Provider}, rowCount={RowCount}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, typeof(TTarget).Name, options.Format, provider.GetType().Name, result.TotalRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);
+            this.logger.LogInformation("[{LogKey}] template generation finished (type={Type}, format={Format}, provider={Provider}, rowCount={RowCount}, bytesWritten={BytesWritten}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyExport, typeof(TTarget).Name, options.Format, provider.GetType().Name, result.TotalRows, result.BytesWritten, stopwatch.Elapsed.TotalMilliseconds);
             return Result<ExportResult>.Success(result);
         }
         catch (OperationCanceledException)
         {
-            this.logger.LogWarning("{LogKey} template generation canceled (type={Type}, format={Format})", Constants.LogKeyExport, typeof(TTarget).Name, options.Format);
+            this.logger.LogWarning("[{LogKey}] template generation canceled (type={Type}, format={Format})", Constants.LogKeyExport, typeof(TTarget).Name, options.Format);
             return Result<ExportResult>.Failure()
                 .WithError(new DataPorterError("Template generation operation was cancelled."));
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} template generation failed (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyExport, typeof(TTarget).Name, options.Format, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] template generation failed (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyExport, typeof(TTarget).Name, options.Format, ex.Message);
             return Result<ExportResult>.Failure()
                 .WithError(new ExportError($"Template generation failed: {ex.Message}", ex));
         }
@@ -745,10 +745,10 @@ public sealed class DataPorterService(
             this.rowInterceptorsProvider.GetImportInterceptors<TTarget>(),
             this.loggerFactory?.CreateLogger(typeof(ImportRowInterceptionExecutor<TTarget>).FullName ?? typeof(ImportRowInterceptionExecutor<TTarget>).Name));
         var provider = providerResult.Value;
-        this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, configuration.Compression, configuration);
-        this.logger.LogDebug("{LogKey} provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, provider.GetType().Name, "aggregate");
+        this.logger.LogDebug("[{LogKey}] configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, configuration.Compression, configuration);
+        this.logger.LogDebug("[{LogKey}] provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, provider.GetType().Name, "aggregate");
 
-        this.logger.LogDebug("{LogKey} import started (type={Type}, format={Format})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format);
+        this.logger.LogDebug("[{LogKey}] import started (type={Type}, format={Format})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format);
         configuration.ProgressTracker?.ReportStart();
         var stopwatch = Stopwatch.StartNew();
 
@@ -770,26 +770,26 @@ public sealed class DataPorterService(
 
             stopwatch.Stop();
 
-            this.logger.LogInformation("{LogKey} import finished (type={Type}, format={Format}, provider={Provider}, rowCount={RowCount}, successfulRows={SuccessfulRows}, failedRows={FailedRows}, skippedRows={SkippedRows}, errorCount={ErrorCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name, result.TotalRows, result.SuccessfulRows, result.FailedRows, result.SkippedRows, result.Errors.Count, stopwatch.Elapsed.TotalMilliseconds);
+            this.logger.LogInformation("[{LogKey}] import finished (type={Type}, format={Format}, provider={Provider}, rowCount={RowCount}, successfulRows={SuccessfulRows}, failedRows={FailedRows}, skippedRows={SkippedRows}, errorCount={ErrorCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name, result.TotalRows, result.SuccessfulRows, result.FailedRows, result.SkippedRows, result.Errors.Count, stopwatch.Elapsed.TotalMilliseconds);
             configuration.ProgressTracker?.ReportCompleted(result with { Duration = stopwatch.Elapsed });
 
             return Result<ImportResult<TTarget>>.Success(result with { Duration = stopwatch.Elapsed });
         }
         catch (OperationCanceledException)
         {
-            this.logger.LogWarning("{LogKey} import canceled (type={Type}, format={Format})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format);
+            this.logger.LogWarning("[{LogKey}] import canceled (type={Type}, format={Format})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format);
             return Result<ImportResult<TTarget>>.Failure()
                 .WithError(new DataPorterError("Import operation was cancelled."));
         }
         catch (ImportInterceptionAbortedException ex)
         {
-            this.logger.LogWarning(ex, "{LogKey} import aborted by row interceptor (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, ex.Message);
+            this.logger.LogWarning(ex, "[{LogKey}] import aborted by row interceptor (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, ex.Message);
             return Result<ImportResult<TTarget>>.Failure()
                 .WithError(new ImportInterceptionAbortedError(ex.Message));
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} import failed (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] import failed (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, ex.Message);
             return Result<ImportResult<TTarget>>.Failure()
                 .WithError(new ImportError($"Import failed: {ex.Message}", ex));
         }
@@ -876,9 +876,9 @@ public sealed class DataPorterService(
             yield break;
         }
 
-        this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, configuration.Compression, configuration);
-        this.logger.LogDebug("{LogKey} provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, provider.GetType().Name, "streaming");
-        this.logger.LogDebug("{LogKey} streaming import started (type={Type}, format={Format}, provider={Provider})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name);
+        this.logger.LogDebug("[{LogKey}] configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, configuration.Compression, configuration);
+        this.logger.LogDebug("[{LogKey}] provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, provider.GetType().Name, "streaming");
+        this.logger.LogDebug("[{LogKey}] streaming import started (type={Type}, format={Format}, provider={Provider})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name);
         configuration.ProgressTracker?.ReportStart();
         await using var decompressedInputStream = this.OpenCompressionReadStream(inputStream, configuration.Compression, options.Format);
         await using var enumerator = importProvider.ImportStreamAsync<TTarget>(decompressedInputStream ?? inputStream, configuration, cancellationToken).GetAsyncEnumerator(cancellationToken);
@@ -897,12 +897,12 @@ public sealed class DataPorterService(
             }
             catch (OperationCanceledException)
             {
-                this.logger.LogWarning("{LogKey} streaming import canceled (type={Type}, format={Format}, provider={Provider}, resultCount={ResultCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name, resultCount, stopwatch.Elapsed.TotalMilliseconds);
+                this.logger.LogWarning("[{LogKey}] streaming import canceled (type={Type}, format={Format}, provider={Provider}, resultCount={ResultCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name, resultCount, stopwatch.Elapsed.TotalMilliseconds);
                 throw;
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, "{LogKey} streaming import failed (type={Type}, format={Format}, provider={Provider}, resultCount={ResultCount}, reason={Reason}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name, resultCount, ex.Message, stopwatch.Elapsed.TotalMilliseconds);
+                this.logger.LogError(ex, "[{LogKey}] streaming import failed (type={Type}, format={Format}, provider={Provider}, resultCount={ResultCount}, reason={Reason}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name, resultCount, ex.Message, stopwatch.Elapsed.TotalMilliseconds);
                 throw;
             }
 
@@ -920,7 +920,7 @@ public sealed class DataPorterService(
         }
 
         stopwatch.Stop();
-        this.logger.LogInformation("{LogKey} streaming import finished (type={Type}, format={Format}, provider={Provider}, resultCount={ResultCount}, successfulRows={SuccessfulRows}, failedRows={FailedRows}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name, resultCount, successfulRows, failedRows, stopwatch.Elapsed.TotalMilliseconds);
+        this.logger.LogInformation("[{LogKey}] streaming import finished (type={Type}, format={Format}, provider={Provider}, resultCount={ResultCount}, successfulRows={SuccessfulRows}, failedRows={FailedRows}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name, resultCount, successfulRows, failedRows, stopwatch.Elapsed.TotalMilliseconds);
         configuration.ProgressTracker?.ReportCompleted();
     }
 
@@ -970,22 +970,22 @@ public sealed class DataPorterService(
                         this.providers.Where(p => p.SupportsImport).Select(p => p.Format.ToString())));
             }
 
-            this.logger.LogDebug("{LogKey} configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyImport, "validation", typeof(TTarget).Name, options.Format, configuration.Compression, configuration);
-            this.logger.LogDebug("{LogKey} provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyImport, "validation", typeof(TTarget).Name, options.Format, provider.GetType().Name, "aggregate");
-            this.logger.LogDebug("{LogKey} validation started (type={Type}, format={Format}, provider={Provider})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name);
+            this.logger.LogDebug("[{LogKey}] configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyImport, "validation", typeof(TTarget).Name, options.Format, configuration.Compression, configuration);
+            this.logger.LogDebug("[{LogKey}] provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyImport, "validation", typeof(TTarget).Name, options.Format, provider.GetType().Name, "aggregate");
+            this.logger.LogDebug("[{LogKey}] validation started (type={Type}, format={Format}, provider={Provider})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name);
             ValidationResult result;
             await using (var decompressedInputStream = this.OpenCompressionReadStream(inputStream, configuration.Compression, options.Format))
             {
                 result = await importProvider.ValidateAsync<TTarget>(decompressedInputStream ?? inputStream, configuration, cancellationToken);
             }
             stopwatch.Stop();
-            this.logger.LogInformation("{LogKey} validation finished (type={Type}, format={Format}, provider={Provider}, isValid={IsValid}, rowCount={RowCount}, validRows={ValidRows}, invalidRows={InvalidRows}, errorCount={ErrorCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name, result.IsValid, result.TotalRows, result.ValidRows, result.InvalidRows, result.Errors.Count, stopwatch.Elapsed.TotalMilliseconds);
+            this.logger.LogInformation("[{LogKey}] validation finished (type={Type}, format={Format}, provider={Provider}, isValid={IsValid}, rowCount={RowCount}, validRows={ValidRows}, invalidRows={InvalidRows}, errorCount={ErrorCount}) -> took {TimeElapsed:0.0000} ms", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, provider.GetType().Name, result.IsValid, result.TotalRows, result.ValidRows, result.InvalidRows, result.Errors.Count, stopwatch.Elapsed.TotalMilliseconds);
 
             return Result<ValidationResult>.Success(result);
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} validation failed (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] validation failed (type={Type}, format={Format}, reason={Reason})", Constants.LogKeyImport, typeof(TTarget).Name, options.Format, ex.Message);
             return Result<ValidationResult>.Failure()
                 .WithError(new ImportValidationError($"Validation failed: {ex.Message}"));
         }
@@ -1039,11 +1039,11 @@ public sealed class DataPorterService(
     {
         if (this.TryGetCount(data, out var count))
         {
-            this.logger.LogDebug("{LogKey} export started (type={Type}, format={Format}, rowCount={RowCount}, mode={Mode})", Constants.LogKeyExport, sourceType.Name, format, count, "sync");
+            this.logger.LogDebug("[{LogKey}] export started (type={Type}, format={Format}, rowCount={RowCount}, mode={Mode})", Constants.LogKeyExport, sourceType.Name, format, count, "sync");
             return;
         }
 
-        this.logger.LogDebug("{LogKey} export started (type={Type}, format={Format}, mode={Mode})", Constants.LogKeyExport, sourceType.Name, format, "sync");
+        this.logger.LogDebug("[{LogKey}] export started (type={Type}, format={Format}, mode={Mode})", Constants.LogKeyExport, sourceType.Name, format, "sync");
     }
 
     private bool TryGetCount<TSource>(IEnumerable<TSource> data, out int count)
@@ -1095,12 +1095,12 @@ public sealed class DataPorterService(
 
         if (compression.Kind == PayloadCompressionKind.GZip)
         {
-            this.logger.LogDebug("{LogKey} payload compression selected (operation={Operation}, compression={Compression}, compressionLevel={CompressionLevel})", Constants.LogKeyExport, "export", compression.Kind, compressionLevel);
+            this.logger.LogDebug("[{LogKey}] payload compression selected (operation={Operation}, compression={Compression}, compressionLevel={CompressionLevel})", Constants.LogKeyExport, "export", compression.Kind, compressionLevel);
             return CompressionHelper.CreateGZipCompressionStream(outputStream, compressionLevel, leaveOpen: true);
         }
 
         var entryName = string.IsNullOrWhiteSpace(compression.ZipEntryName) ? GetDefaultZipEntryName(provider) : compression.ZipEntryName;
-        this.logger.LogDebug("{LogKey} payload compression selected (operation={Operation}, compression={Compression}, compressionLevel={CompressionLevel}, zipEntryName={ZipEntryName})", Constants.LogKeyExport, "export", compression.Kind, compressionLevel, entryName);
+        this.logger.LogDebug("[{LogKey}] payload compression selected (operation={Operation}, compression={Compression}, compressionLevel={CompressionLevel}, zipEntryName={ZipEntryName})", Constants.LogKeyExport, "export", compression.Kind, compressionLevel, entryName);
         return CompressionHelper.CreateZipEntryWriteStream(outputStream, entryName, compressionLevel, leaveOpen: true);
     }
 
@@ -1115,12 +1115,12 @@ public sealed class DataPorterService(
 
         if (compression.Kind == PayloadCompressionKind.GZip)
         {
-            this.logger.LogDebug("{LogKey} payload compression selected (operation={Operation}, compression={Compression})", Constants.LogKeyImport, "import", compression.Kind);
+            this.logger.LogDebug("[{LogKey}] payload compression selected (operation={Operation}, compression={Compression})", Constants.LogKeyImport, "import", compression.Kind);
             return CompressionHelper.CreateGZipDecompressionStream(inputStream, leaveOpen: true);
         }
 
         var entryName = string.IsNullOrWhiteSpace(compression.ZipEntryName) ? "<single-entry>" : compression.ZipEntryName;
-        this.logger.LogDebug("{LogKey} payload compression selected (operation={Operation}, compression={Compression}, zipEntryName={ZipEntryName}, format={Format})", Constants.LogKeyImport, "import", compression.Kind, entryName, format);
+        this.logger.LogDebug("[{LogKey}] payload compression selected (operation={Operation}, compression={Compression}, zipEntryName={ZipEntryName}, format={Format})", Constants.LogKeyImport, "import", compression.Kind, entryName, format);
         return CompressionHelper.OpenZipEntryReadStream(inputStream, compression.ZipEntryName, leaveOpen: true);
     }
 

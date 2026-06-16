@@ -10,11 +10,13 @@ using System.Diagnostics;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 /// <summary>
 /// Provides the in-memory inline job runtime implementation.
 /// </summary>
-public class JobSchedulerService(
+public partial class JobSchedulerService(
     TimeProvider timeProvider,
     IServiceScopeFactory scopeFactory,
     JobRegistrationStore registrations,
@@ -24,13 +26,15 @@ public class JobSchedulerService(
     JobEventSourceRegistry eventSources,
     JobSchedulerHostedOptions options = null,
     IEnumerable<IJobSchedulerExceptionHandler> exceptionHandlers = null,
-    IHostEnvironment hostEnvironment = null) : IJobSchedulerService
+    IHostEnvironment hostEnvironment = null,
+    ILoggerFactory loggerFactory = null) : IJobSchedulerService
 {
     private readonly string schedulerInstanceId = (options ?? new JobSchedulerHostedOptions()).ResolveSchedulerInstanceId(hostEnvironment);
     private readonly ConcurrentDictionary<Guid, ActiveExecutionState> activeExecutions = [];
     private readonly SemaphoreSlim jobConcurrencyGate = new(1, 1);
     private readonly IJobSchedulerExceptionHandler[] exceptionHandlers = exceptionHandlers?.ToArray() ?? [];
     private readonly JobSchedulerHostedOptions options = options ?? new JobSchedulerHostedOptions();
+    private readonly ILogger<JobSchedulerService> logger = (loggerFactory ?? NullLoggerFactory.Instance).CreateLogger<JobSchedulerService>();
 
     internal string SchedulerInstanceId => this.schedulerInstanceId;
 
@@ -58,6 +62,7 @@ public class JobSchedulerService(
                 continue;
             }
 
+            using var recoveryLogScope = this.BeginOccurrenceLogScope(occurrence, null);
             var recoveredStatus = GetRecoveredOccurrenceStatus(occurrence, nowUtc);
             var updated = occurrence with
             {
@@ -68,6 +73,14 @@ public class JobSchedulerService(
             await this.UpdateOccurrenceAsync(updated, cancellationToken).ConfigureAwait(false);
             await this.AppendHistoryAsync(updated, null, "LeaseExpired", updated.Status, null, lease.SchedulerInstanceId, cancellationToken).ConfigureAwait(false);
             await this.AppendHistoryAsync(updated, null, "OccurrenceRecovered", updated.Status, null, null, cancellationToken).ConfigureAwait(false);
+            TypedLogger.LogOccurrenceRecoveredAfterExpiredLease(
+                this.logger,
+                Constants.LogKey,
+                updated.JobName,
+                updated.TriggerName,
+                updated.OccurrenceId,
+                updated.Status,
+                lease.SchedulerInstanceId);
             recoveredCount++;
         }
 
@@ -1114,6 +1127,16 @@ public class JobSchedulerService(
                 }
 
                 JobSchedulerInstrumentation.RecordMaterializedOccurrences(this.schedulerInstanceId, definition.JobName, trigger.TriggerName, trigger.TriggerType, evaluation.Value.Occurrences.Count);
+                if (evaluation.Value.Occurrences.Count > 0)
+                {
+                    TypedLogger.LogMaterializedScheduledOccurrences(
+                        this.logger,
+                        Constants.LogKey,
+                        definition.JobName,
+                        trigger.TriggerName,
+                        trigger.TriggerType,
+                        evaluation.Value.Occurrences.Count);
+                }
             }
         }
 
@@ -1162,6 +1185,14 @@ public class JobSchedulerService(
                 {
                     continue;
                 }
+
+                TypedLogger.LogMaterializingAcceptedEventOccurrences(
+                    this.logger,
+                    Constants.LogKey,
+                    definition.JobName,
+                    trigger.TriggerName,
+                    trigger.EventSource,
+                    acceptedEvents.Count);
 
                 foreach (var acceptedEvent in acceptedEvents)
                 {
@@ -1228,6 +1259,7 @@ public class JobSchedulerService(
         }
 
         occurrence = await this.ReconcileDependentOccurrenceAsync(occurrence, cancellationToken).ConfigureAwait(false);
+        using var occurrenceLogScope = this.BeginOccurrenceLogScope(occurrence, null);
 
         if (this.activeExecutions.ContainsKey(occurrenceId) || occurrence.Status == JobOccurrenceStatus.Running)
         {
@@ -1279,10 +1311,24 @@ public class JobSchedulerService(
         var lease = await this.AcquireLeaseAsync(occurrenceId, cancellationToken).ConfigureAwait(false);
         if (lease is null)
         {
+            TypedLogger.LogOccurrenceLeaseUnavailable(
+                this.logger,
+                Constants.LogKey,
+                occurrence.JobName,
+                occurrence.TriggerName,
+                occurrenceId,
+                this.schedulerInstanceId);
             return Result<JobExecutionResult>.Failure().WithError(new ValidationError($"The occurrence '{occurrenceId}' is already leased by another scheduler instance."));
         }
 
         await this.AppendHistoryAsync(occurrence, null, "LeaseAcquired", occurrence.Status, null, lease.SchedulerInstanceId, cancellationToken).ConfigureAwait(false);
+        TypedLogger.LogOccurrenceLeaseAcquired(
+            this.logger,
+            Constants.LogKey,
+            occurrence.JobName,
+            occurrence.TriggerName,
+            occurrenceId,
+            this.schedulerInstanceId);
 
         var ready = occurrence with
         {
@@ -1356,6 +1402,18 @@ public class JobSchedulerService(
             CorrelationId = evaluated.Value.CorrelationId,
             AcceptedUtc = evaluated.Value.CreatedDate,
         };
+
+        using (this.BeginOccurrenceLogScope(evaluated.Value, null))
+        {
+            TypedLogger.LogJobDispatched(
+                this.logger,
+                Constants.LogKey,
+                evaluated.Value.JobName,
+                evaluated.Value.TriggerName,
+                evaluated.Value.OccurrenceId,
+                evaluated.Value.CorrelationId,
+                waitForCompletion);
+        }
 
         if (!waitForCompletion)
         {
@@ -1497,6 +1555,7 @@ public class JobSchedulerService(
 
         await storeProvider.TriggerRuntimeStates.UpsertAsync(definition.JobName, trigger.TriggerName, prepared.Value.RuntimeState, cancellationToken).ConfigureAwait(false);
         var occurrence = prepared.Value.Occurrence;
+        using var occurrenceLogScope = this.BeginOccurrenceLogScope(occurrence, null);
 
         var created = await storeProvider.Occurrences.TryCreateAsync(occurrence, cancellationToken).ConfigureAwait(false);
         var persisted = created
@@ -1507,6 +1566,24 @@ public class JobSchedulerService(
         if (created)
         {
             await this.CreateChainedOccurrencesAsync(persisted, cancellationToken).ConfigureAwait(false);
+            TypedLogger.LogManualOccurrenceCreated(
+                this.logger,
+                Constants.LogKey,
+                persisted.JobName,
+                persisted.TriggerName,
+                persisted.OccurrenceId,
+                persisted.Status,
+                persisted.DueUtc);
+        }
+        else if (persisted is not null)
+        {
+            TypedLogger.LogManualOccurrenceAlreadyExists(
+                this.logger,
+                Constants.LogKey,
+                persisted.JobName,
+                persisted.TriggerName,
+                persisted.OccurrenceId,
+                persisted.OccurrenceKey);
         }
 
         return Result<JobOccurrence>.Success(persisted);
@@ -1515,6 +1592,7 @@ public class JobSchedulerService(
     private async Task<JobOccurrence> PersistOccurrenceAsync(JobOccurrenceMaterialization materialized, CancellationToken cancellationToken)
     {
         var nowUtc = timeProvider.GetUtcNow();
+        var correlationId = NormalizeCorrelationId(materialized.CorrelationId);
         var initialStatus = materialized.DueUtc <= nowUtc
             ? JobOccurrenceStatus.Due
             : JobOccurrenceStatus.Scheduled;
@@ -1532,12 +1610,13 @@ public class JobSchedulerService(
             Data = materialized.Data,
             DataType = materialized.DataType,
             Properties = materialized.Properties,
-            CorrelationId = materialized.IdempotencyKey,
-            CausationId = materialized.IdempotencyKey,
+            CorrelationId = correlationId,
+            CausationId = correlationId,
             IdempotencyKey = materialized.IdempotencyKey,
             CreatedDate = nowUtc,
             UpdatedDate = nowUtc,
         };
+        using var occurrenceLogScope = this.BeginOccurrenceLogScope(occurrence, null);
 
         var created = await storeProvider.Occurrences.TryCreateAsync(occurrence, cancellationToken).ConfigureAwait(false);
         var persisted = created
@@ -1548,6 +1627,26 @@ public class JobSchedulerService(
         {
             await this.AppendHistoryAsync(persisted, null, "OccurrenceCreated", persisted.Status, null, null, cancellationToken).ConfigureAwait(false);
             await this.CreateChainedOccurrencesAsync(persisted, cancellationToken).ConfigureAwait(false);
+            TypedLogger.LogOccurrencePersisted(
+                this.logger,
+                Constants.LogKey,
+                persisted.JobName,
+                persisted.TriggerName,
+                persisted.TriggerType,
+                persisted.OccurrenceId,
+                persisted.Status,
+                persisted.DueUtc);
+        }
+        else if (persisted is not null)
+        {
+            TypedLogger.LogOccurrencePersistenceSkipped(
+                this.logger,
+                Constants.LogKey,
+                persisted.JobName,
+                persisted.TriggerName,
+                persisted.TriggerType,
+                persisted.OccurrenceId,
+                persisted.OccurrenceKey);
         }
 
         return created ? persisted : null;
@@ -1590,7 +1689,8 @@ public class JobSchedulerService(
             acceptedEvent.Data,
             acceptedEvent.DataType,
             properties,
-            acceptedEvent.IdempotencyKey);
+            acceptedEvent.IdempotencyKey,
+            acceptedEvent.CorrelationId);
     }
 
     private async Task<Result<JobExecutionResult>> ExecuteOccurrenceAsync(
@@ -1611,11 +1711,19 @@ public class JobSchedulerService(
 
         cancellationToken.ThrowIfCancellationRequested();
         var executionId = Guid.NewGuid();
+        using var executionLogScope = this.BeginOccurrenceLogScope(occurrenceState, executionId);
         var reserved = await this.TryReserveConcurrencySlotAsync(definition, trigger, occurrenceState.OccurrenceId, executionId, lease, cancellationToken).ConfigureAwait(false);
         if (reserved.IsFailure)
         {
             await storeProvider.Leases.ReleaseAsync(occurrenceState.OccurrenceId, lease.SchedulerInstanceId, lease.OwnershipToken, CancellationToken.None).ConfigureAwait(false);
             await this.AppendHistoryAsync(occurrenceState, null, "OccurrenceConcurrencyDeferred", occurrenceState.Status, null, BuildMessage(reserved.Errors, reserved.Messages), CancellationToken.None).ConfigureAwait(false);
+            TypedLogger.LogJobExecutionDeferredByConcurrencyLimit(
+                this.logger,
+                Constants.LogKey,
+                occurrenceState.JobName,
+                occurrenceState.TriggerName,
+                occurrenceState.OccurrenceId,
+                BuildMessage(reserved.Errors, reserved.Messages));
 
             return Result<JobExecutionResult>.Failure().WithErrors(reserved.Errors).WithMessages(reserved.Messages);
         }
@@ -1644,6 +1752,15 @@ public class JobSchedulerService(
 
         await storeProvider.Executions.CreateAsync(execution, cancellationToken).ConfigureAwait(false);
         await this.AppendHistoryAsync(occurrenceState, executionId, "ExecutionStarted", JobOccurrenceStatus.Running, JobExecutionStatus.Started, null, cancellationToken).ConfigureAwait(false);
+        TypedLogger.LogJobExecutionStarted(
+            this.logger,
+            Constants.LogKey,
+            occurrenceState.JobName,
+            occurrenceState.TriggerName,
+            occurrenceState.OccurrenceId,
+            executionId,
+            attemptNumber,
+            this.schedulerInstanceId);
 
         using var timeoutCts = effectiveTimeout.HasValue ? new CancellationTokenSource(effectiveTimeout.Value) : null;
         using var linkedCts = timeoutCts is null
@@ -1683,7 +1800,6 @@ public class JobSchedulerService(
             this.schedulerInstanceId,
             this.activeExecutions.Count,
             this.options.MaxConcurrency);
-
         try
         {
             return await this.ExecuteBehaviorPipelineAsync(
@@ -1718,6 +1834,15 @@ public class JobSchedulerService(
                         await this.ReleaseLeaseAsync(active, occurrenceState.OccurrenceId, CancellationToken.None).ConfigureAwait(false);
                         this.CompleteActiveExecution(occurrenceState.OccurrenceId, active);
                         await renewalTask.ConfigureAwait(false);
+                        TypedLogger.LogJobExecutionCompleted(
+                            this.logger,
+                            Constants.LogKey,
+                            occurrenceState.JobName,
+                            occurrenceState.TriggerName,
+                            occurrenceState.OccurrenceId,
+                            executionId,
+                            attemptNumber,
+                            (completedUtc - execution.StartedUtc).TotalMilliseconds);
                         return Result<JobExecutionResult>.Success(new JobExecutionResult
                         {
                             JobName = occurrenceState.JobName,
@@ -2107,6 +2232,15 @@ public class JobSchedulerService(
         await this.AppendHistoryAsync(updatedOccurrence, execution.ExecutionId, GetFailureOccurrenceEventName(status), JobOccurrenceStatus.Failed, null, message, cancellationToken).ConfigureAwait(false);
         await this.ReconcileDependentsForPrerequisiteAsync(updatedOccurrence, cancellationToken).ConfigureAwait(false);
         await this.ReleaseLeaseAsync(active, occurrence.OccurrenceId, cancellationToken).ConfigureAwait(false);
+        TypedLogger.LogJobExecutionFailed(
+            this.logger,
+            Constants.LogKey,
+            occurrence.JobName,
+            occurrence.TriggerName,
+            occurrence.OccurrenceId,
+            execution.ExecutionId,
+            status,
+            message);
         return true;
     }
 
@@ -2160,6 +2294,16 @@ public class JobSchedulerService(
             retryActivity?.SetTag("jobs.retry.next_due_utc", nextRetryDueUtc.ToString("O"));
             this.CompleteActiveExecution(retryOccurrence.OccurrenceId, active);
             await renewalTask.ConfigureAwait(false);
+            TypedLogger.LogJobExecutionScheduledForRetry(
+                this.logger,
+                Constants.LogKey,
+                retryOccurrence.JobName,
+                retryOccurrence.TriggerName,
+                retryOccurrence.OccurrenceId,
+                execution.ExecutionId,
+                attemptNumber,
+                nextRetryDueUtc,
+                message);
 
             return Result<JobExecutionResult>.Success(new JobExecutionResult
             {
@@ -2230,6 +2374,15 @@ public class JobSchedulerService(
         await this.AppendHistoryAsync(updatedOccurrence, execution.ExecutionId, GetCancellationOccurrenceEventName(status), JobOccurrenceStatus.Cancelled, null, message, cancellationToken).ConfigureAwait(false);
         await this.ReconcileDependentsForPrerequisiteAsync(updatedOccurrence, cancellationToken).ConfigureAwait(false);
         await this.ReleaseLeaseAsync(active, occurrence.OccurrenceId, cancellationToken).ConfigureAwait(false);
+        TypedLogger.LogJobExecutionCancelled(
+            this.logger,
+            Constants.LogKey,
+            occurrence.JobName,
+            occurrence.TriggerName,
+            occurrence.OccurrenceId,
+            execution.ExecutionId,
+            status,
+            message);
         return true;
     }
 
@@ -2642,6 +2795,19 @@ public class JobSchedulerService(
                 await this.RefreshBatchAsync(batch, cancellationToken).ConfigureAwait(false);
             }
         }
+    }
+
+    private IDisposable BeginOccurrenceLogScope(JobOccurrence occurrence, Guid? executionId)
+    {
+        return this.logger.BeginScope(new Dictionary<string, object>
+        {
+            [Constants.CorrelationIdKey] = occurrence?.CorrelationId,
+            [Constants.FlowIdKey] = occurrence?.CausationId,
+            ["JobName"] = occurrence?.JobName,
+            ["TriggerName"] = occurrence?.TriggerName,
+            ["OccurrenceId"] = occurrence?.OccurrenceId,
+            ["ExecutionId"] = executionId
+        });
     }
 
     private async Task UpdateOccurrenceAsync(JobOccurrence occurrence, CancellationToken cancellationToken)
@@ -3326,6 +3492,57 @@ public class JobSchedulerService(
     private static string GetCancellationOccurrenceEventName(JobExecutionStatus status)
     {
         return status == JobExecutionStatus.Interrupted ? "OccurrenceInterrupted" : "OccurrenceCancelled";
+    }
+
+    private static partial class TypedLogger
+    {
+        [LoggerMessage(0, LogLevel.Debug, "[{LogKey}] occurrence recovered after expired lease (job={JobName}, trigger={TriggerName}, occurrenceId={OccurrenceId}, status={Status}, previousScheduler={PreviousSchedulerInstanceId})")]
+        public static partial void LogOccurrenceRecoveredAfterExpiredLease(ILogger logger, string logKey, string jobName, string triggerName, Guid occurrenceId, JobOccurrenceStatus status, string previousSchedulerInstanceId);
+
+        [LoggerMessage(1, LogLevel.Debug, "[{LogKey}] materialized scheduled occurrence(s) (job={JobName}, trigger={TriggerName}, triggerType={TriggerType}, count={Count})")]
+        public static partial void LogMaterializedScheduledOccurrences(ILogger logger, string logKey, string jobName, string triggerName, JobTriggerType triggerType, int count);
+
+        [LoggerMessage(2, LogLevel.Debug, "[{LogKey}] materializing accepted event occurrence(s) (job={JobName}, trigger={TriggerName}, eventSource={EventSource}, count={Count})")]
+        public static partial void LogMaterializingAcceptedEventOccurrences(ILogger logger, string logKey, string jobName, string triggerName, string eventSource, int count);
+
+        [LoggerMessage(3, LogLevel.Debug, "[{LogKey}] occurrence lease unavailable (job={JobName}, trigger={TriggerName}, occurrenceId={OccurrenceId}, schedulerInstanceId={SchedulerInstanceId})")]
+        public static partial void LogOccurrenceLeaseUnavailable(ILogger logger, string logKey, string jobName, string triggerName, Guid occurrenceId, string schedulerInstanceId);
+
+        [LoggerMessage(4, LogLevel.Debug, "[{LogKey}] occurrence lease acquired (job={JobName}, trigger={TriggerName}, occurrenceId={OccurrenceId}, schedulerInstanceId={SchedulerInstanceId})")]
+        public static partial void LogOccurrenceLeaseAcquired(ILogger logger, string logKey, string jobName, string triggerName, Guid occurrenceId, string schedulerInstanceId);
+
+        [LoggerMessage(5, LogLevel.Debug, "[{LogKey}] job dispatched (job={JobName}, trigger={TriggerName}, occurrenceId={OccurrenceId}, correlationId={CorrelationId}, waitForCompletion={WaitForCompletion})")]
+        public static partial void LogJobDispatched(ILogger logger, string logKey, string jobName, string triggerName, Guid occurrenceId, string correlationId, bool waitForCompletion);
+
+        [LoggerMessage(6, LogLevel.Debug, "[{LogKey}] manual occurrence created (job={JobName}, trigger={TriggerName}, occurrenceId={OccurrenceId}, status={Status}, dueUtc={DueUtc:O})")]
+        public static partial void LogManualOccurrenceCreated(ILogger logger, string logKey, string jobName, string triggerName, Guid occurrenceId, JobOccurrenceStatus status, DateTimeOffset dueUtc);
+
+        [LoggerMessage(7, LogLevel.Debug, "[{LogKey}] manual occurrence already exists (job={JobName}, trigger={TriggerName}, occurrenceId={OccurrenceId}, occurrenceKey={OccurrenceKey})")]
+        public static partial void LogManualOccurrenceAlreadyExists(ILogger logger, string logKey, string jobName, string triggerName, Guid occurrenceId, string occurrenceKey);
+
+        [LoggerMessage(8, LogLevel.Debug, "[{LogKey}] occurrence persisted (job={JobName}, trigger={TriggerName}, triggerType={TriggerType}, occurrenceId={OccurrenceId}, status={Status}, dueUtc={DueUtc:O})")]
+        public static partial void LogOccurrencePersisted(ILogger logger, string logKey, string jobName, string triggerName, JobTriggerType triggerType, Guid occurrenceId, JobOccurrenceStatus status, DateTimeOffset dueUtc);
+
+        [LoggerMessage(9, LogLevel.Debug, "[{LogKey}] occurrence persistence skipped, occurrence already exists (job={JobName}, trigger={TriggerName}, triggerType={TriggerType}, occurrenceId={OccurrenceId}, occurrenceKey={OccurrenceKey})")]
+        public static partial void LogOccurrencePersistenceSkipped(ILogger logger, string logKey, string jobName, string triggerName, JobTriggerType triggerType, Guid occurrenceId, string occurrenceKey);
+
+        [LoggerMessage(10, LogLevel.Debug, "[{LogKey}] job execution deferred by concurrency limit (job={JobName}, trigger={TriggerName}, occurrenceId={OccurrenceId}, message={Message})")]
+        public static partial void LogJobExecutionDeferredByConcurrencyLimit(ILogger logger, string logKey, string jobName, string triggerName, Guid occurrenceId, string message);
+
+        [LoggerMessage(11, LogLevel.Information, "[{LogKey}] job execution started (job={JobName}, trigger={TriggerName}, occurrenceId={OccurrenceId}, executionId={ExecutionId}, attempt={AttemptNumber}, schedulerInstanceId={SchedulerInstanceId})")]
+        public static partial void LogJobExecutionStarted(ILogger logger, string logKey, string jobName, string triggerName, Guid occurrenceId, Guid executionId, int attemptNumber, string schedulerInstanceId);
+
+        [LoggerMessage(12, LogLevel.Information, "[{LogKey}] job execution completed (job={JobName}, trigger={TriggerName}, occurrenceId={OccurrenceId}, executionId={ExecutionId}, attempt={AttemptNumber}, durationMs={DurationMs:0.0000})")]
+        public static partial void LogJobExecutionCompleted(ILogger logger, string logKey, string jobName, string triggerName, Guid occurrenceId, Guid executionId, int attemptNumber, double durationMs);
+
+        [LoggerMessage(13, LogLevel.Warning, "[{LogKey}] job execution failed (job={JobName}, trigger={TriggerName}, occurrenceId={OccurrenceId}, executionId={ExecutionId}, status={Status}, message={Message})")]
+        public static partial void LogJobExecutionFailed(ILogger logger, string logKey, string jobName, string triggerName, Guid occurrenceId, Guid executionId, JobExecutionStatus status, string message);
+
+        [LoggerMessage(14, LogLevel.Warning, "[{LogKey}] job execution scheduled for retry (job={JobName}, trigger={TriggerName}, occurrenceId={OccurrenceId}, executionId={ExecutionId}, attempt={AttemptNumber}, nextDueUtc={NextDueUtc:O}, message={Message})")]
+        public static partial void LogJobExecutionScheduledForRetry(ILogger logger, string logKey, string jobName, string triggerName, Guid occurrenceId, Guid executionId, int attemptNumber, DateTimeOffset nextDueUtc, string message);
+
+        [LoggerMessage(15, LogLevel.Warning, "[{LogKey}] job execution cancelled (job={JobName}, trigger={TriggerName}, occurrenceId={OccurrenceId}, executionId={ExecutionId}, status={Status}, message={Message})")]
+        public static partial void LogJobExecutionCancelled(ILogger logger, string logKey, string jobName, string triggerName, Guid occurrenceId, Guid executionId, JobExecutionStatus status, string message);
     }
 
     private sealed record PreparedDispatch(JobDispatchResult DispatchResult, JobExecutionResult ExecutionResult, Exception ExecutionFailure);

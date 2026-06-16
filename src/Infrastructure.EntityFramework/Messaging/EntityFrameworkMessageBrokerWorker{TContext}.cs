@@ -190,7 +190,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
         }
         catch (Exception ex) when (!ex.IsTransientException())
         {
-            this.logger.LogError(ex, "{LogKey} broker message processing crashed after lease acquisition (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
+            this.logger.LogError(ex, "[{LogKey}] broker message processing crashed after lease acquisition (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
             this.MarkMessageFailed(claimedMessage, ex.Message);
         }
         finally
@@ -201,7 +201,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
         var leaseMaintained = await renewalTask.AnyContext();
         if (!leaseMaintained)
         {
-            this.logger.LogWarning("{LogKey} broker message lease was lost while processing, final state will not be persisted (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
+            this.logger.LogWarning("[{LogKey}] broker message lease was lost while processing, final state will not be persisted (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
             return;
         }
 
@@ -237,7 +237,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
 
             if (claimed == 0)
             {
-                this.logger.LogDebug("{LogKey} broker message lease claim skipped because another worker already acquired or changed the row (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
+                this.logger.LogDebug("[{LogKey}] broker message lease claim skipped because another worker already acquired or changed the row (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
                 return null;
             }
 
@@ -255,7 +255,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
                (brokerMessage.Status == BrokerMessageStatus.Processing && brokerMessage.LockedUntil < now)) &&
               (brokerMessage.LockedUntil == null || brokerMessage.LockedUntil < now)))
         {
-            this.logger.LogDebug("{LogKey} broker message lease claim skipped because another worker already acquired or changed the row (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
+            this.logger.LogDebug("[{LogKey}] broker message lease claim skipped because another worker already acquired or changed the row (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
             return null;
         }
 
@@ -272,7 +272,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            this.logger.LogDebug(ex, "{LogKey} broker message lease claim lost due to optimistic concurrency (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
+            this.logger.LogDebug(ex, "[{LogKey}] broker message lease claim lost due to optimistic concurrency (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
             return null;
         }
     }
@@ -342,7 +342,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
 
             if (renewed == 0)
             {
-                this.logger.LogWarning("{LogKey} broker message lease renewal skipped because ownership was lost (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
+                this.logger.LogWarning("[{LogKey}] broker message lease renewal skipped because ownership was lost (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
                 return false;
             }
 
@@ -352,7 +352,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
         var brokerMessage = await context.BrokerMessages.FirstOrDefaultAsync(message => message.Id == brokerMessageId, cancellationToken).AnyContext();
         if (brokerMessage is null || !string.Equals(brokerMessage.LockedBy, this.instanceName, StringComparison.Ordinal))
         {
-            this.logger.LogWarning("{LogKey} broker message lease renewal skipped because ownership was lost (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
+            this.logger.LogWarning("[{LogKey}] broker message lease renewal skipped because ownership was lost (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
             return false;
         }
 
@@ -366,7 +366,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            this.logger.LogWarning(ex, "{LogKey} broker message lease renewal lost due to optimistic concurrency (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
+            this.logger.LogWarning(ex, "[{LogKey}] broker message lease renewal lost due to optimistic concurrency (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessageId, this.instanceName);
             return false;
         }
     }
@@ -382,7 +382,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
 
         if (!string.Equals(storedMessage.LockedBy, this.instanceName, StringComparison.Ordinal))
         {
-            this.logger.LogWarning("{LogKey} broker message lease ownership changed before finalize (messageId={BrokerMessageId}, lockedBy={LockedBy}, currentLockedBy={CurrentLockedBy})", Constants.LogKey, brokerMessage.Id, this.instanceName, storedMessage.LockedBy);
+            this.logger.LogWarning("[{LogKey}] broker message lease ownership changed before finalize (messageId={BrokerMessageId}, lockedBy={LockedBy}, currentLockedBy={CurrentLockedBy})", Constants.LogKey, brokerMessage.Id, this.instanceName, storedMessage.LockedBy);
             return;
         }
 
@@ -409,7 +409,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            this.logger.LogWarning(ex, "{LogKey} broker message finalize lost due to optimistic concurrency (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessage.Id, this.instanceName);
+            this.logger.LogWarning(ex, "[{LogKey}] broker message finalize lost due to optimistic concurrency (messageId={BrokerMessageId}, lockedBy={LockedBy})", Constants.LogKey, brokerMessage.Id, this.instanceName);
         }
     }
 

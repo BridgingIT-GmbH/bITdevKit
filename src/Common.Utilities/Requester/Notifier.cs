@@ -552,7 +552,7 @@ public partial class Notifier(
 
             if (!handlers.SafeAny())
             {
-                this.logger.LogWarning("{LogKey} no handlers found for notification type {NotificationType} (notificationId={NotificationId})", RequestLogKey, notificationTypeName, notificationIdString);
+                this.logger.LogWarning("[{LogKey}] no handlers found for notification type {NotificationType} (notificationId={NotificationId})", RequestLogKey, notificationTypeName, notificationIdString);
                 return Result.Success(); // no handlers found
             }
 
@@ -652,7 +652,7 @@ public partial class Notifier(
                         if (handlerResult.IsFailure)
                         {
                             TypedLogger.LogFailed(this.logger, RequestLogKey, notificationTypeName, notificationIdString, Environment.TickCount64 - startTicks);
-                            this.logger.LogError("{LogKey} notification failed with errors: {Errors}", RequestLogKey, string.Join("; ", handlerResult.Errors.Select(e => e.Message)));
+                            this.logger.LogError("[{LogKey}] notification failed with errors: {Errors}", RequestLogKey, string.Join("; ", handlerResult.Errors.Select(e => e.Message)));
 
                             break;
                         }
@@ -674,7 +674,7 @@ public partial class Notifier(
                 TypedLogger.LogFailed(this.logger, RequestLogKey, notificationTypeName, notificationIdString, Environment.TickCount64 - startTicks);
                 foreach(var handlerResult in handlerResults)
                 {
-                    this.logger.LogError("{LogKey} notification failed with errors: {Errors}", RequestLogKey, string.Join("; ", handlerResult.Errors.Select(e => e.Message)));
+                    this.logger.LogError("[{LogKey}] notification failed with errors: {Errors}", RequestLogKey, string.Join("; ", handlerResult.Errors.Select(e => e.Message)));
                 }
 
                 return Result.Failure(messages, errors);
@@ -774,16 +774,16 @@ public partial class Notifier(
     /// </summary>
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} notification processing (type={NotificationType}, id={NotificationId})")]
+        [LoggerMessage(0, LogLevel.Information, "[{LogKey}] notification processing (type={NotificationType}, id={NotificationId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string notificationType, string notificationId);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} notification success (type={NotificationType}, id={NotificationId}) -> took {TimeElapsed} ms")]
+        [LoggerMessage(1, LogLevel.Information, "[{LogKey}] notification success (type={NotificationType}, id={NotificationId}) -> took {TimeElapsed} ms")]
         public static partial void LogSuccess(ILogger logger, string logKey, string notificationType, string notificationId, long timeElapsed);
 
-        [LoggerMessage(1, LogLevel.Error, "{LogKey} notification failed (type={NotificationType}, id={NotificationId}) -> took {TimeElapsed} ms")]
+        [LoggerMessage(1, LogLevel.Error, "[{LogKey}] notification failed (type={NotificationType}, id={NotificationId}) -> took {TimeElapsed} ms")]
         public static partial void LogFailed(ILogger logger, string logKey, string notificationType, string notificationId, long timeElapsed);
 
-        [LoggerMessage(3, LogLevel.Error, "{LogKey} notification processing failed for {NotificationType} ({NotificationId})")]
+        [LoggerMessage(3, LogLevel.Error, "[{LogKey}] notification processing failed for {NotificationType} ({NotificationId})")]
         public static partial void LogError(ILogger logger, string logKey, Exception ex, string notificationType, string notificationId);
     }
 }

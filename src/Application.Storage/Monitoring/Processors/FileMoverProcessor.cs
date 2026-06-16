@@ -57,7 +57,7 @@ public class FileMoverProcessor(ILogger<FileMoverProcessor> logger) : IFileEvent
             if (moveResult.IsSuccess)
             {
                 this.logger.LogInformation(
-                    "{LogKey} filemonitoring: file moved successfully {SourcePath} to {DestinationPath}",
+                    "[{LogKey}] filemonitoring: file moved successfully {SourcePath} to {DestinationPath}",
                     Constants.LogKey,
                     fileEvent.FilePath,
                     destinationPath);
@@ -71,7 +71,7 @@ public class FileMoverProcessor(ILogger<FileMoverProcessor> logger) : IFileEvent
         {
             this.logger.LogError(
                 ex,
-                "{LogKey} filemonitoring: failed to move file {SourcePath} to {DestinationPath}",
+                "[{LogKey}] filemonitoring: failed to move file {SourcePath} to {DestinationPath}",
                 Constants.LogKey,
                 fileEvent.FilePath,
                 destinationPath);

@@ -58,7 +58,7 @@ public class DatabaseCheckerService<TContext> : IHostedService
 
         if (!this.options.Enabled)
         {
-            this.logger.LogInformation("{LogKey} database checker skipped, not enabled (context={DbContextType})", Constants.LogKey, contextName);
+            this.logger.LogInformation("[{LogKey}] database checker skipped, not enabled (context={DbContextType})", Constants.LogKey, contextName);
             this.databaseReadyService?.SetReady(contextName);
 
             return Task.CompletedTask;
@@ -70,7 +70,7 @@ public class DatabaseCheckerService<TContext> : IHostedService
             {
                 if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
-                    this.logger.LogInformation("{LogKey} database checker startup delayed (context={DbContextType})", Constants.LogKey, contextName);
+                    this.logger.LogInformation("[{LogKey}] database checker startup delayed (context={DbContextType})", Constants.LogKey, contextName);
                     if (!cancellationToken.IsCancellationRequested)
                     {
                         try
@@ -89,17 +89,17 @@ public class DatabaseCheckerService<TContext> : IHostedService
                     using var scope = this.serviceProvider.CreateScope();
                     var context = scope.ServiceProvider.GetRequiredService<TContext>();
 
-                    this.logger.LogInformation("{LogKey} database checker started (context={DbContextType}, provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, context.Database.ProviderName);
+                    this.logger.LogInformation("[{LogKey}] database checker started (context={DbContextType}, provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, context.Database.ProviderName);
                     var exists = await this.CheckDatabaseAccessible(contextName, context, cancellationToken);
                     if (exists)
                     {
-                        this.logger.LogInformation("{LogKey} database checker succeeded (context={DbContextType}, provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, context.Database.ProviderName);
+                        this.logger.LogInformation("[{LogKey}] database checker succeeded (context={DbContextType}, provider={EntityFrameworkCoreProvider})", Constants.LogKey, contextName, context.Database.ProviderName);
                         this.databaseReadyService?.SetReady(contextName);
                     }
                 }
                 catch (Exception ex)
                 {
-                    this.logger.LogError(ex, "{LogKey} database checker failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, contextName);
+                    this.logger.LogError(ex, "[{LogKey}] database checker failed: {ErrorMessage} (context={DbContextType})", Constants.LogKey, ex.Message, contextName);
 
                     this.databaseReadyService?.SetFaulted(contextName, ex.Message);
 
@@ -133,7 +133,7 @@ public class DatabaseCheckerService<TContext> : IHostedService
                 exists = await context.Database.CanConnectAsync(ct);
                 if (!exists)
                 {
-                    this.logger.LogWarning("{LogKey} database checker failed: database not accessible (context={DbContextType})", Constants.LogKey, contextName);
+                    this.logger.LogWarning("[{LogKey}] database checker failed: database not accessible (context={DbContextType})", Constants.LogKey, contextName);
                     throw new Exception("Database not accessible.");
                 }
             }, cancellationToken);

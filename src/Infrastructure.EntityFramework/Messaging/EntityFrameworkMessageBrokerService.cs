@@ -45,7 +45,7 @@ public class EntityFrameworkMessageBrokerService : BackgroundService
     /// <inheritdoc />
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} entity framework message broker service stopped", Constants.LogKey);
+        this.logger.LogInformation("[{LogKey}] entity framework message broker service stopped", Constants.LogKey);
         if (this.processingTask is not null)
         {
             await Task.WhenAny(this.processingTask, Task.Delay(TimeSpan.FromSeconds(10), cancellationToken));
@@ -89,7 +89,7 @@ public class EntityFrameworkMessageBrokerService : BackgroundService
 
                 this.semaphore = new SemaphoreSlim(1, 1);
                 this.processTimer = new PeriodicTimer(this.options.ProcessingInterval);
-                this.logger.LogInformation("{LogKey} entity framework message broker service started", Constants.LogKey);
+                this.logger.LogInformation("[{LogKey}] entity framework message broker service started", Constants.LogKey);
 
                 try
                 {
@@ -105,7 +105,7 @@ public class EntityFrameworkMessageBrokerService : BackgroundService
                 }
                 catch (OperationCanceledException)
                 {
-                    this.logger.LogInformation("{LogKey} entity framework message broker service stopped", Constants.LogKey);
+                    this.logger.LogInformation("[{LogKey}] entity framework message broker service stopped", Constants.LogKey);
                 }
             }, cancellationToken);
         });
@@ -119,7 +119,7 @@ public class EntityFrameworkMessageBrokerService : BackgroundService
         {
             if (!await this.semaphore.WaitAsync(TimeSpan.FromSeconds(30), cancellationToken))
             {
-                this.logger.LogWarning("{LogKey} entity framework message broker service timed out waiting for semaphore", Constants.LogKey);
+                this.logger.LogWarning("[{LogKey}] entity framework message broker service timed out waiting for semaphore", Constants.LogKey);
                 return;
             }
 
@@ -127,7 +127,7 @@ public class EntityFrameworkMessageBrokerService : BackgroundService
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} entity framework message broker service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] entity framework message broker service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
         }
         finally
         {

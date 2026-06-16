@@ -35,7 +35,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
 
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} outbox message service stopped", Constants.LogKey);
+        this.logger.LogInformation("[{LogKey}] outbox message service stopped", Constants.LogKey);
         if (this.processingTask is not null)
         {
             await Task.WhenAny(this.processingTask, Task.Delay(TimeSpan.FromSeconds(10), cancellationToken));
@@ -65,7 +65,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
             {
                 if (this.options.StartupDelay.TotalMilliseconds > 0)
                 {
-                    this.logger.LogDebug("{LogKey} outbox message service startup delayed", Constants.LogKey);
+                    this.logger.LogDebug("[{LogKey}] outbox message service startup delayed", Constants.LogKey);
                     if (!cancellationToken.IsCancellationRequested)
                     {
                         try
@@ -89,7 +89,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
                 }
 
                 this.semaphore = new SemaphoreSlim(1);
-                this.logger.LogInformation("{LogKey} outbox message service started", Constants.LogKey);
+                this.logger.LogInformation("[{LogKey}] outbox message service started", Constants.LogKey);
 
                 this.processTimer = new PeriodicTimer(this.options.ProcessingInterval);
 
@@ -103,7 +103,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
                         var processingDelay = this.options.ProcessingDelay + jitter;
                         if (processingDelay > TimeSpan.Zero) // Apply processing delay with jitter before processing
                         {
-                            this.logger.LogDebug("{LogKey} outbox message delay processing by {ProcessingDelay}ms", Constants.LogKey, processingDelay.TotalMilliseconds);
+                            this.logger.LogDebug("[{LogKey}] outbox message delay processing by {ProcessingDelay}ms", Constants.LogKey, processingDelay.TotalMilliseconds);
                             await Task.Delay(processingDelay, cancellationToken);
                         }
 
@@ -112,7 +112,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
                 }
                 catch (OperationCanceledException)
                 {
-                    this.logger.LogInformation("{LogKey} outbox message service stopped", Constants.LogKey);
+                    this.logger.LogInformation("[{LogKey}] outbox message service stopped", Constants.LogKey);
                 }
             }, cancellationToken);
         });
@@ -126,7 +126,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
         {
             if (!await this.semaphore.WaitAsync(TimeSpan.FromSeconds(30), cancellationToken))
             {
-                this.logger.LogWarning("{LogKey} outbox message service timed out waiting for semaphore", Constants.LogKey);
+                this.logger.LogWarning("[{LogKey}] outbox message service timed out waiting for semaphore", Constants.LogKey);
                 return;
             }
 
@@ -134,7 +134,7 @@ public class OutboxMessageService : BackgroundService // OutboxMessageHostedServ
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} outbox message service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] outbox message service failed: {ErrorMessage}", Constants.LogKey, ex.Message);
         }
         finally
         {

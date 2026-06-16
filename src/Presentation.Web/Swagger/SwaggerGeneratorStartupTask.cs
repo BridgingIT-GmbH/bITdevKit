@@ -109,16 +109,16 @@ public class SwaggerGeneratorStartupTask(
                 await File.WriteAllTextAsync(tempFilePath, json, cancellationToken);
                 File.Move(tempFilePath, filePath, true);
 
-                logger.LogInformation("{LogKey} swagger generation finished (file={FilePath})", LogKey, filePath);
+                logger.LogInformation("[{LogKey}] swagger generation finished (file={FilePath})", LogKey, filePath);
             }
             else
             {
-                logger.LogDebug("{LogKey} swagger generation skipped, no changes (file={FilePath})", LogKey, filePath);
+                logger.LogDebug("[{LogKey}] swagger generation skipped, no changes (file={FilePath})", LogKey, filePath);
             }
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "{LogKey} swagger generation failed", LogKey);
+            logger.LogError(ex, "[{LogKey}] swagger generation failed", LogKey);
         }
     }
 

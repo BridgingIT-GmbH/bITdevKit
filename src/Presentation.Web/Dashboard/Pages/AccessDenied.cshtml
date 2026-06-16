@@ -1,0 +1,91 @@
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using Microsoft.Extensions.DependencyInjection
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+
+@{
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var signOutPath = DashboardPath.Combine(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.SignOut);
+    var dashboardBasePath = DashboardPath.Combine(this.HttpContext.Request.PathBase, dashboardOptions.GroupPath);
+    var requestedReturnUrl = this.HttpContext.Request.Query["ReturnUrl"].ToString();
+    var retryReturnUrl = !string.IsNullOrWhiteSpace(requestedReturnUrl) &&
+        requestedReturnUrl.StartsWith(dashboardBasePath, StringComparison.OrdinalIgnoreCase)
+            ? requestedReturnUrl
+            : dashboardBasePath;
+}
+
+<style>
+    .dashboard-access-denied {
+        align-items: center;
+        display: grid;
+        min-height: min(32rem, calc(100vh - 12rem));
+    }
+
+    .dashboard-access-denied-panel {
+        border: 1px solid var(--dashboard-panel-border);
+        border-radius: .45rem;
+        display: grid;
+        gap: 1rem;
+        max-width: 42rem;
+        padding: 1.25rem;
+    }
+
+    .dashboard-access-denied-icon {
+        align-items: center;
+        border: 1px solid var(--dashboard-panel-border);
+        border-radius: .45rem;
+        color: var(--dashboard-active-bg);
+        display: inline-flex;
+        font-size: 1.4rem;
+        height: 2.75rem;
+        justify-content: center;
+        width: 2.75rem;
+    }
+
+    .dashboard-access-denied-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        line-height: 1.15;
+        margin: 0;
+    }
+
+    .dashboard-access-denied-copy {
+        color: var(--dashboard-muted);
+        margin: 0;
+        max-width: 36rem;
+    }
+
+    .dashboard-access-denied-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: .6rem;
+    }
+</style>
+
+<section class="dashboard-access-denied">
+    <div class="dashboard-access-denied-panel">
+        <div class="dashboard-access-denied-icon" aria-hidden="true">
+            <i class="bi bi-shield-lock"></i>
+        </div>
+        <div>
+            <h1 class="dashboard-access-denied-title">Access denied</h1>
+            <p class="dashboard-access-denied-copy">
+                The signed-in account does not have permission to use this dashboard.
+            </p>
+        </div>
+        <div class="dashboard-access-denied-actions">
+            <form method="post" action="@signOutPath" class="m-0">
+                <input type="hidden" name="returnUrl" value="@retryReturnUrl" />
+                <button class="btn btn-primary" type="submit">
+                    <i class="bi bi-box-arrow-right me-1"></i>
+                    Sign out and retry
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+@functions {
+    public DashboardLayoutModel LayoutModel => new() { Title = "Access denied", HideSideBar = true };
+}

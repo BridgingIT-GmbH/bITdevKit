@@ -158,7 +158,7 @@ public class ActiveEntityDomainEventPublishingBehavior<TEntity, TId>(
 
     private async Task<Result> PublishEvents(TEntity entity, CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("{LogKey} publish domain events for entity {EntityType} (EntityId={EntityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
+        this.logger.LogInformation("[{LogKey}] publish domain events for entity {EntityType} (EntityId={EntityId})", Constants.LogKey, typeof(TEntity).Name, entity.Id);
 
         var result = await this.collector.PublishAllAsync(
             entity,
@@ -168,7 +168,7 @@ public class ActiveEntityDomainEventPublishingBehavior<TEntity, TId>(
 
         if (!result.IsSuccess)
         {
-            this.logger.LogError("{LogKey} failed to publish domain events for entity {EntityType} ({EntityId}): {Errors}", Constants.LogKey, typeof(TEntity).Name, entity.Id, string.Join("; ", result.Errors.Select(e => e.Message)));
+            this.logger.LogError("[{LogKey}] failed to publish domain events for entity {EntityType} ({EntityId}): {Errors}", Constants.LogKey, typeof(TEntity).Name, entity.Id, string.Join("; ", result.Errors.Select(e => e.Message)));
         }
 
         return result;

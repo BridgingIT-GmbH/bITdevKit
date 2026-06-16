@@ -125,7 +125,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
         }
         catch (SqlException ex)
         {
-            this.logger.LogError(ex, "{LogKey} outbox domain event purge error: {ErrorMessage}", Constants.LogKey, ex.Message);
+            this.logger.LogError(ex, "[{LogKey}] outbox domain event purge error: {ErrorMessage}", Constants.LogKey, ex.Message);
         }
     }
 
@@ -217,7 +217,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "{LogKey} outbox domain event processing crashed after lease acquisition (eventId={DomainEventId}, lockedBy={LockedBy})", Constants.LogKey, claimedEvent.EventId, this.instanceName);
+            this.logger.LogError(ex, "[{LogKey}] outbox domain event processing crashed after lease acquisition (eventId={DomainEventId}, lockedBy={LockedBy})", Constants.LogKey, claimedEvent.EventId, this.instanceName);
             this.MarkProcessingFailure(claimedEvent, ex, this.GetAttempts(claimedEvent) + 1);
         }
         finally
@@ -228,7 +228,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
         var leaseMaintained = await renewalTask.AnyContext();
         if (!leaseMaintained)
         {
-            this.logger.LogWarning("{LogKey} outbox domain event lease was lost while processing, final state will not be persisted (eventId={DomainEventId}, lockedBy={LockedBy})", Constants.LogKey, claimedEvent.EventId, this.instanceName);
+            this.logger.LogWarning("[{LogKey}] outbox domain event lease was lost while processing, final state will not be persisted (eventId={DomainEventId}, lockedBy={LockedBy})", Constants.LogKey, claimedEvent.EventId, this.instanceName);
             return false;
         }
 
@@ -263,7 +263,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
 
             if (claimed == 0)
             {
-                this.logger.LogDebug("{LogKey} outbox domain event lease claim skipped because another worker already acquired or changed the row (outboxEventId={OutboxEventId}, lockedBy={LockedBy})", Constants.LogKey, outboxEventId, this.instanceName);
+                this.logger.LogDebug("[{LogKey}] outbox domain event lease claim skipped because another worker already acquired or changed the row (outboxEventId={OutboxEventId}, lockedBy={LockedBy})", Constants.LogKey, outboxEventId, this.instanceName);
                 return null;
             }
 
@@ -279,7 +279,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
 
         if (!this.CanClaimEvent(outboxEvent, now))
         {
-            this.logger.LogDebug("{LogKey} outbox domain event lease claim skipped because another worker already acquired or changed the row (outboxEventId={OutboxEventId}, lockedBy={LockedBy})", Constants.LogKey, outboxEventId, this.instanceName);
+            this.logger.LogDebug("[{LogKey}] outbox domain event lease claim skipped because another worker already acquired or changed the row (outboxEventId={OutboxEventId}, lockedBy={LockedBy})", Constants.LogKey, outboxEventId, this.instanceName);
             return null;
         }
 
@@ -295,7 +295,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            this.logger.LogDebug(ex, "{LogKey} outbox domain event lease claim lost due to optimistic concurrency (outboxEventId={OutboxEventId}, lockedBy={LockedBy})", Constants.LogKey, outboxEventId, this.instanceName);
+            this.logger.LogDebug(ex, "[{LogKey}] outbox domain event lease claim lost due to optimistic concurrency (outboxEventId={OutboxEventId}, lockedBy={LockedBy})", Constants.LogKey, outboxEventId, this.instanceName);
             return null;
         }
     }
@@ -366,7 +366,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
 
             if (renewed == 0)
             {
-                this.logger.LogWarning("{LogKey} outbox domain event lease renewal skipped because ownership was lost (outboxEventId={OutboxEventId}, lockedBy={LockedBy})", Constants.LogKey, outboxEventId, this.instanceName);
+                this.logger.LogWarning("[{LogKey}] outbox domain event lease renewal skipped because ownership was lost (outboxEventId={OutboxEventId}, lockedBy={LockedBy})", Constants.LogKey, outboxEventId, this.instanceName);
                 return false;
             }
 
@@ -379,7 +379,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
 
         if (outboxEvent is null || !string.Equals(outboxEvent.LockedBy, this.instanceName, StringComparison.Ordinal))
         {
-            this.logger.LogWarning("{LogKey} outbox domain event lease renewal skipped because ownership was lost (outboxEventId={OutboxEventId}, lockedBy={LockedBy})", Constants.LogKey, outboxEventId, this.instanceName);
+            this.logger.LogWarning("[{LogKey}] outbox domain event lease renewal skipped because ownership was lost (outboxEventId={OutboxEventId}, lockedBy={LockedBy})", Constants.LogKey, outboxEventId, this.instanceName);
             return false;
         }
 
@@ -393,7 +393,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            this.logger.LogWarning(ex, "{LogKey} outbox domain event lease renewal lost due to optimistic concurrency (outboxEventId={OutboxEventId}, lockedBy={LockedBy})", Constants.LogKey, outboxEventId, this.instanceName);
+            this.logger.LogWarning(ex, "[{LogKey}] outbox domain event lease renewal lost due to optimistic concurrency (outboxEventId={OutboxEventId}, lockedBy={LockedBy})", Constants.LogKey, outboxEventId, this.instanceName);
             return false;
         }
     }
@@ -488,7 +488,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
 
         if (!string.Equals(storedEvent.LockedBy, this.instanceName, StringComparison.Ordinal))
         {
-            this.logger.LogWarning("{LogKey} outbox domain event lease ownership changed before finalize (eventId={DomainEventId}, lockedBy={LockedBy}, currentLockedBy={CurrentLockedBy})", Constants.LogKey, outboxEvent.EventId, this.instanceName, storedEvent.LockedBy);
+            this.logger.LogWarning("[{LogKey}] outbox domain event lease ownership changed before finalize (eventId={DomainEventId}, lockedBy={LockedBy}, currentLockedBy={CurrentLockedBy})", Constants.LogKey, outboxEvent.EventId, this.instanceName, storedEvent.LockedBy);
             return;
         }
 
@@ -509,7 +509,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
         }
         catch (DbUpdateConcurrencyException ex)
         {
-            this.logger.LogWarning(ex, "{LogKey} outbox domain event finalize lost due to optimistic concurrency (eventId={DomainEventId}, lockedBy={LockedBy})", Constants.LogKey, outboxEvent.EventId, this.instanceName);
+            this.logger.LogWarning(ex, "[{LogKey}] outbox domain event finalize lost due to optimistic concurrency (eventId={DomainEventId}, lockedBy={LockedBy})", Constants.LogKey, outboxEvent.EventId, this.instanceName);
         }
     }
 
@@ -525,7 +525,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
 
     private void MarkMaxAttemptsReached(OutboxDomainEvent outboxEvent, int attempts)
     {
-        this.logger.LogWarning("{LogKey} outbox domain event processing skipped: max attempts reached (eventId={DomainEventId}, eventType={DomainEventType}, attempts={DomainEventAttempts})", Constants.LogKey, outboxEvent.EventId, outboxEvent.Type?.Split(',')[0], attempts - 1);
+        this.logger.LogWarning("[{LogKey}] outbox domain event processing skipped: max attempts reached (eventId={DomainEventId}, eventType={DomainEventType}, attempts={DomainEventAttempts})", Constants.LogKey, outboxEvent.EventId, outboxEvent.Type?.Split(',')[0], attempts - 1);
 
         var existingMessage = outboxEvent.Properties?.GetValue(OutboxDomainEventPropertyConstants.ProcessMessageKey)?.ToString();
         outboxEvent.ProcessedDate ??= DateTimeOffset.UtcNow;
@@ -555,7 +555,7 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
 
     private void MarkProcessingFailure(OutboxDomainEvent outboxEvent, Exception exception, int attempts)
     {
-        this.logger.LogError(exception, "{LogKey} outbox domain event processing failed: {ErrorMessage} (eventId={DomainEventId}, eventType={DomainEventType}, attempts={DomainEventAttempts})", Constants.LogKey, exception.Message, outboxEvent.EventId, outboxEvent.Type?.Split(',')[0], attempts);
+        this.logger.LogError(exception, "[{LogKey}] outbox domain event processing failed: {ErrorMessage} (eventId={DomainEventId}, eventType={DomainEventType}, attempts={DomainEventAttempts})", Constants.LogKey, exception.Message, outboxEvent.EventId, outboxEvent.Type?.Split(',')[0], attempts);
 
         outboxEvent.LastError = this.TruncateError($"[{exception.GetType().Name}] {exception.Message}");
         outboxEvent.Properties.AddOrUpdate(OutboxDomainEventPropertyConstants.ProcessStatusKey, "Failure");
@@ -664,16 +664,16 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
 
     public static partial class TypedLogger
     {
-        [LoggerMessage(0, LogLevel.Information, "{LogKey} outbox domain events processing (context={DbContextType}, eventId={DomainEventId})")]
+        [LoggerMessage(0, LogLevel.Information, "[{LogKey}] outbox domain events processing (context={DbContextType}, eventId={DomainEventId})")]
         public static partial void LogProcessing(ILogger logger, string logKey, string dbContextType, string domainEventId);
 
-        [LoggerMessage(1, LogLevel.Information, "{LogKey} outbox domain events processed (context={DbContextType}, count={outboxDomainEventProcessedCount})")]
+        [LoggerMessage(1, LogLevel.Information, "[{LogKey}] outbox domain events processed (context={DbContextType}, count={outboxDomainEventProcessedCount})")]
         public static partial void LogProcessed(ILogger logger, string logKey, string dbContextType, int outboxDomainEventProcessedCount);
 
-        [LoggerMessage(2, LogLevel.Information, "{LogKey} outbox domain events purging (context={DbContextType})")]
+        [LoggerMessage(2, LogLevel.Information, "[{LogKey}] outbox domain events purging (context={DbContextType})")]
         public static partial void LogPurging(ILogger logger, string logKey, string dbContextType);
 
-        [LoggerMessage(3, LogLevel.Error, "{LogKey} outbox domain event type could not be resolved (eventId={DomainEventId}, eventType={DomainEventType})")]
+        [LoggerMessage(3, LogLevel.Error, "[{LogKey}] outbox domain event type could not be resolved (eventId={DomainEventId}, eventType={DomainEventType})")]
         public static partial void LogEventTypeNotResolved(ILogger logger, string logKey, string domainEventId, string domainEventType);
     }
 }

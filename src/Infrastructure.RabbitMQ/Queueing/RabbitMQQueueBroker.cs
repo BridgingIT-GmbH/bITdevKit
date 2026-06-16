@@ -84,7 +84,7 @@ public class RabbitMQQueueBroker : QueueBrokerBase, IDisposable
         }
 
         this.Logger.LogInformation(
-            "{LogKey} broker initialized (name={QueueBroker})",
+            "[{LogKey}] broker initialized (name={QueueBroker})",
             Constants.LogKey,
             this.GetType().Name);
     }
@@ -185,7 +185,7 @@ public class RabbitMQQueueBroker : QueueBrokerBase, IDisposable
             if (this.consumerTags.ContainsKey(queueName))
             {
                 this.Logger.LogWarning(
-                    "{LogKey} rabbitmq queue consumer already active (queue={QueueName}, type={QueueMessageType})",
+                    "[{LogKey}] rabbitmq queue consumer already active (queue={QueueName}, type={QueueMessageType})",
                     Constants.LogKey,
                     queueName,
                     messageTypeName);
@@ -204,7 +204,7 @@ public class RabbitMQQueueBroker : QueueBrokerBase, IDisposable
             this.subscriberChannel.BasicQos(0, (ushort)this.options.PrefetchCount, false);
 
             this.Logger.LogInformation(
-                "{LogKey} rabbitmq queue consumer started (queue={QueueName}, type={QueueMessageType}, consumerTag={ConsumerTag})",
+                "[{LogKey}] rabbitmq queue consumer started (queue={QueueName}, type={QueueMessageType}, consumerTag={ConsumerTag})",
                 Constants.LogKey,
                 queueName,
                 messageTypeName,
@@ -251,7 +251,7 @@ public class RabbitMQQueueBroker : QueueBrokerBase, IDisposable
                 this.consumerTags.Remove(queueName);
 
                 this.Logger.LogInformation(
-                    "{LogKey} rabbitmq queue consumer stopped (queue={QueueName}, consumerTag={ConsumerTag})",
+                    "[{LogKey}] rabbitmq queue consumer stopped (queue={QueueName}, consumerTag={ConsumerTag})",
                     Constants.LogKey,
                     queueName,
                     consumerTag);
@@ -311,7 +311,7 @@ public class RabbitMQQueueBroker : QueueBrokerBase, IDisposable
         this.brokerService.TrackEnqueued(message, queueName, messageTypeName);
 
         this.Logger.LogDebug(
-            "{LogKey} rabbitmq queue message produced (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
+            "[{LogKey}] rabbitmq queue message produced (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
             Constants.LogKey,
             messageTypeName,
             message.MessageId,
@@ -333,7 +333,7 @@ public class RabbitMQQueueBroker : QueueBrokerBase, IDisposable
             if (message is null)
             {
                 this.Logger.LogError(
-                    "{LogKey} rabbitmq queue message could not be deserialized (queue={QueueName}, type={QueueMessageType})",
+                    "[{LogKey}] rabbitmq queue message could not be deserialized (queue={QueueName}, type={QueueMessageType})",
                     Constants.LogKey,
                     queueName,
                     messageTypeName);
@@ -346,7 +346,7 @@ public class RabbitMQQueueBroker : QueueBrokerBase, IDisposable
             if (this.IsMessageExpired(message))
             {
                 this.Logger.LogWarning(
-                    "{LogKey} rabbitmq queue message expired (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
+                    "[{LogKey}] rabbitmq queue message expired (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
                     Constants.LogKey,
                     messageTypeName,
                     message.MessageId,
@@ -361,7 +361,7 @@ public class RabbitMQQueueBroker : QueueBrokerBase, IDisposable
             if (this.brokerService.ControlState.IsQueuePaused(queueName) || this.brokerService.ControlState.IsMessageTypePaused(messageTypeName))
             {
                 this.Logger.LogDebug(
-                    "{LogKey} rabbitmq queue message paused, requeueing (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
+                    "[{LogKey}] rabbitmq queue message paused, requeueing (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
                     Constants.LogKey,
                     messageTypeName,
                     message.MessageId,
@@ -372,7 +372,7 @@ public class RabbitMQQueueBroker : QueueBrokerBase, IDisposable
             }
 
             this.Logger.LogDebug(
-                "{LogKey} rabbitmq queue message consumed (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
+                "[{LogKey}] rabbitmq queue message consumed (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
                 Constants.LogKey,
                 messageTypeName,
                 message.MessageId,
@@ -404,7 +404,7 @@ public class RabbitMQQueueBroker : QueueBrokerBase, IDisposable
         {
             this.Logger.LogError(
                 ex,
-                "{LogKey} rabbitmq queue message processing error (queue={QueueName}, type={QueueMessageType}): {ErrorMessage}",
+                "[{LogKey}] rabbitmq queue message processing error (queue={QueueName}, type={QueueMessageType}): {ErrorMessage}",
                 Constants.LogKey,
                 queueName,
                 messageTypeName,
@@ -431,7 +431,7 @@ public class RabbitMQQueueBroker : QueueBrokerBase, IDisposable
         if (attemptCount < this.options.MaxDeliveryAttempts)
         {
             this.Logger.LogWarning(
-                "{LogKey} rabbitmq queue message failed, retrying (name={QueueMessageType}, id={MessageId}, queue={QueueName}, attempt={AttemptCount})",
+                "[{LogKey}] rabbitmq queue message failed, retrying (name={QueueMessageType}, id={MessageId}, queue={QueueName}, attempt={AttemptCount})",
                 Constants.LogKey,
                 messageTypeName,
                 message.MessageId,
@@ -478,7 +478,7 @@ public class RabbitMQQueueBroker : QueueBrokerBase, IDisposable
             {
                 this.Logger.LogError(
                     ex,
-                    "{LogKey} rabbitmq queue message retry republish failed (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
+                    "[{LogKey}] rabbitmq queue message retry republish failed (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
                     Constants.LogKey,
                     messageTypeName,
                     message.MessageId,
@@ -491,7 +491,7 @@ public class RabbitMQQueueBroker : QueueBrokerBase, IDisposable
         else
         {
             this.Logger.LogError(
-                "{LogKey} rabbitmq queue message dead-lettered after max attempts (name={QueueMessageType}, id={MessageId}, queue={QueueName}, attempts={AttemptCount})",
+                "[{LogKey}] rabbitmq queue message dead-lettered after max attempts (name={QueueMessageType}, id={MessageId}, queue={QueueName}, attempts={AttemptCount})",
                 Constants.LogKey,
                 messageTypeName,
                 message.MessageId,

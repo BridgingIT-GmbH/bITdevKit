@@ -33,7 +33,23 @@ Dashboard pages are Minimal API endpoints that render [RazorSlices](https://gith
   - `Enabled`: Enables or disables the dashboard.
   - `GroupPath`: Base dashboard path. Defaults to `/_bdk/dashboard`.
   - `GroupTag`: Endpoint group tag.
+  - `AuthorizationMode`: Controls dashboard authorization behavior. Defaults to `Auto`.
+  - `RequireRoles`, `RequirePolicy`, `RequireAuthenticationSchemes`: Inherited endpoint authorization requirements that can be configured through `Authorize(...)`.
+  - `SignOutAuthenticationSchemes`: Authentication schemes used by the dashboard sign-out route. If empty, sign-out uses the dashboard authentication schemes.
   - `PluginAssemblies`: Additional assemblies to scan for dashboard plugins.
+- `DashboardAuthorizationOptionsBuilder` ([src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs](src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs))
+  - `UseCookie(...)`: Reuses an existing host cookie scheme for dashboard access.
+  - `UseExistingScheme(...)`: Reuses another host-owned authentication scheme.
+  - `UseOpenIdConnect(authority, ...)`: Registers dashboard-owned cookie and OIDC schemes with dashboard conventions.
+  - `UseOpenIdConnect(Action<OpenIdConnectOptions>, ...)`: Registers dashboard-owned cookie and OIDC schemes with raw ASP.NET Core handler configuration.
+- `DashboardOpenIdConnectOptionsBuilder` ([src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs](src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs))
+  - `WithClientId(...)`: Overrides the default dashboard client id.
+  - `WithMetadataAddress(...)`: Overrides the default discovery document address.
+  - `RequireHttpsMetadata(...)`: Controls whether OIDC metadata must be loaded over HTTPS.
+  - `RequireSignedTokens()`: Enables signed-token and issuer-signing-key validation.
+  - `Configure(...)`: Applies low-level `OpenIdConnectOptions` customization after dashboard conventions.
+- `DashboardAuthenticationDefaults` ([src/Presentation.Web/Dashboard/DashboardAuthenticationDefaults.cs](src/Presentation.Web/Dashboard/DashboardAuthenticationDefaults.cs))
+  - Provides the dashboard-owned authentication scheme names and the default OIDC client id `dashboard`.
 - `IDashboardEndpoints` ([src/Presentation.Web/Dashboard/IDashboardEndpoints.cs](src/Presentation.Web/Dashboard/IDashboardEndpoints.cs))
   - Marker contract for dashboard-specific endpoint sets.
   - Extends the regular presentation `IEndpoints` contract.
@@ -146,6 +162,134 @@ app.MapEndpoints();
 
 The dashboard uses the existing endpoint registration pipeline. `AddDashboard(...)` registers dashboard endpoint classes with `AddEndpoints(...)`; `app.MapEndpoints()` maps them.
 
+### Authentication And Authorization
+
+Dashboard routes use the same endpoint authorization pipeline as other bITdevKit endpoints. By default, the dashboard runs in `Auto` authorization mode:
+
+- if the application has no authentication schemes registered, the dashboard remains anonymous
+- if the application has authentication schemes registered, dashboard routes require authorization
+
+Use `Authorize(...)` to require a dashboard role, policy, or authentication mode. This keeps the dashboard generic: a host application can reuse an existing cookie login, let the dashboard register its own OIDC flow, or explicitly reference another ASP.NET Core authentication scheme.
+
+```csharp
+builder.Services.AddDashboard(options => options
+    .Enabled(true)
+    .Authorize(authorization => authorization
+        .Auto()
+        .RequireRole(Role.Administrators)));
+```
+
+Use `RequireAuthenticated()` when the dashboard must always require authentication after registration, even if the application has not configured authentication yet.
+
+```csharp
+builder.Services.AddDashboard(options => options
+    .Authorize(authorization => authorization.RequireAuthenticated()));
+```
+
+Use `AllowAnonymous()` only for hosts that intentionally expose the dashboard without authentication.
+
+```csharp
+builder.Services.AddDashboard(options => options.AllowAnonymous());
+```
+
+If the host application already has an interactive cookie login, reuse that cookie scheme. This is common when the Web API is hosted together with a Blazor, Angular, or other SPA shell.
+
+```csharp
+builder.Services.AddDashboard(options => options
+    .Authorize(authorization => authorization
+        .UseCookie("ApplicationCookie", signOut: true) // use an existing cookie scheme by name
+        // .UseCookie(CookieAuthenticationDefaults.AuthenticationScheme, signOut: true) // use default asp.net cookie scheme
+        //.UseCookie(signOut: true) // use default asp.net cookie scheme
+        .RequireRole(Role.Administrators)));
+```
+
+When a reused cookie principal is authenticated but misses the required dashboard role or policy, the dashboard handles the forbid result for dashboard paths and redirects to the built-in dashboard access-denied page. Other application routes continue to use the host application's normal authorization behavior.
+
+For server-rendered dashboards that should trigger an interactive login but the host API only has JWT bearer authentication, let the dashboard register its own cookie, OIDC, and policy schemes. The dashboard does not perform client-credentials login for page access; browser access uses an interactive authorization-code flow. The default dashboard client id is `dashboard`.
+
+```csharp
+builder.Services.AddDashboard(options => options
+    .Authorize(authorization => authorization
+        .UseOpenIdConnect("https://idp.example")
+        .RequireRole(Role.Administrators)));
+```
+
+The fluent OIDC overload sets these values by convention:
+
+- metadata address: `{authority}/.well-known/openid-configuration`
+- client id: `dashboard`
+- response type: authorization code
+- callback path: `/_bdk/dashboard/signin-oidc`
+- sign-out callback path: `/_bdk/dashboard/signout-callback-oidc`
+- scopes: `openid`, `profile`, `email`, `roles`
+- issuer validation, audience validation, lifetime validation, and dashboard role claim mapping
+
+Token signature checks are relaxed by default so development and lightweight identity providers can be used without extra setup. Use `RequireSignedTokens()` when the dashboard should require signed tokens and issuer signing key validation.
+
+Register the dashboard as an OIDC client at the identity provider. With the default dashboard path and client id, the redirect URI is:
+
+```text
+https://localhost:5001/_bdk/dashboard/signin-oidc
+```
+
+Use `WithClientId(...)` when the identity provider uses a client id other than `dashboard`.
+
+```csharp
+builder.Services.AddDashboard(options => options
+    .Authorize(authorization => authorization
+        .UseOpenIdConnect(
+            "https://idp.example",
+            oidc => oidc.WithClientId("operations-dashboard"))
+        .RequireRole(Role.Administrators)));
+```
+
+For providers where the dashboard should require signed tokens and issuer signing key validation, opt in explicitly.
+
+```csharp
+builder.Services.AddDashboard(options => options
+    .Authorize(authorization => authorization
+        .UseOpenIdConnect(
+            "https://idp.example",
+            oidc => oidc.RequireSignedTokens())
+        .RequireRole(Role.Administrators)));
+```
+
+For HTTP-only local identity providers, disable the metadata HTTPS requirement.
+
+```csharp
+builder.Services.AddDashboard(options => options
+    .Authorize(authorization => authorization
+        .UseOpenIdConnect(
+            "http://localhost:8080",
+            oidc => oidc.RequireHttpsMetadata(false))
+        .RequireRole(Role.Administrators)));
+```
+
+Use the raw `OpenIdConnectOptions` overload when a provider needs handler-specific settings that are not covered by the dashboard fluent builder.
+
+```csharp
+builder.Services.AddDashboard(options => options
+    .Authorize(authorization => authorization
+        .UseOpenIdConnect(oidc =>
+        {
+            oidc.Authority = "https://idp.example";
+            oidc.ClientId = "dashboard";
+            oidc.ResponseMode = "form_post";
+        })
+        .RequireRole(Role.Administrators)));
+```
+
+Use `UseExistingScheme(...)` for advanced host-owned schemes that are not cookies.
+
+```csharp
+builder.Services.AddDashboard(options => options
+    .Authorize(authorization => authorization
+        .UseExistingScheme("MyScheme", signOut: false)
+        .RequirePolicy("DashboardAccess")));
+```
+
+When the dashboard registers its own OIDC flow, it automatically uses the built-in access-denied page and sign-out route. When the current dashboard principal is authenticated, the dashboard shell shows a sign-out action in the header. The action posts to the built-in dashboard sign-out route and redirects back to the current dashboard URL, which triggers the configured authentication challenge again. Configure `.SignOutAuthenticationScheme(...)` manually only when using a custom scheme that needs separate sign-out behavior.
+
 ### Include Plugin Assemblies
 
 The dashboard scans the core dashboard assembly, explicitly configured plugin assemblies, and currently loaded assemblies containing dashboard contracts. For application plugins, prefer explicit registration so discovery does not depend on load order.
@@ -176,6 +320,8 @@ The dashboard shell uses fixed built-in routes below the configured `GroupPath`.
 | --- | --- |
 | Dashboard index | `/_bdk/dashboard` |
 | Dashboard index content fragment | `/_bdk/dashboard/content` |
+| Dashboard access denied | `/_bdk/dashboard/access-denied` |
+| Dashboard sign-out | `POST /_bdk/dashboard/signout` |
 | Health page | `/_bdk/dashboard/health` |
 | Health content fragment | `/_bdk/dashboard/health/content` |
 | Metrics page | `/_bdk/dashboard/metrics` |
@@ -464,6 +610,7 @@ The dashboard scans configured plugin assemblies for endpoint and page provider 
 - Typed RazorSlice type is missing: Verify the application or plugin assembly references `RazorSlices` directly, and prefer unique page-specific `.cshtml` filenames such as `Overview.cshtml` and `OverviewContent.cshtml`.
 - Path-based RazorSlice cannot render: Verify the RazorSlice identifier and assembly. The identifier is usually the project-relative `.cshtml` path with a leading slash.
 - Authorization behaves differently than expected: Dashboard routes are endpoint routes. Apply authorization through the inherited endpoint options and `MapGroup(...)` behavior, or require authorization on the mapped route group.
+- OIDC login does not start: Ensure the dashboard is configured with an authentication scheme whose challenge forwards to the OIDC handler, and that the identity provider client includes the dashboard callback URI.
 - Refresh shows stale content: Confirm the fragment endpoint returns updated server-rendered HTML and that the browser interval is not set to `Off`.
 
 ## Appendix A — Minimal Plugin

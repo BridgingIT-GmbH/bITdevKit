@@ -10,6 +10,7 @@
 @{
     var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildErrorsContentPath(dashboardOptions);
+    var purgePath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesPurgePath(dashboardOptions);
     var filter = LogEntriesDashboard.CreateFilter(this.HttpContext);
 }
 
@@ -20,6 +21,9 @@
             <label class="form-check-label small" for="dashboard-errors-tail">Tail</label>
         </div>
         <span id="dashboard-errors-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <button type="button" id="dashboard-errors-purge" class="btn btn-outline-danger btn-sm" title="Purge log entries">
+            <i class="bi bi-trash3"></i>
+        </button>
         <button type="button" id="dashboard-errors-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh errors">
             <i class="bi bi-arrow-clockwise"></i>
         </button>
@@ -95,6 +99,7 @@
         const resetElement = document.getElementById('dashboard-errors-reset');
         const statusElement = document.getElementById('dashboard-errors-refresh-status');
         const refreshButton = document.getElementById('dashboard-errors-refresh-now');
+        const purgeButton = document.getElementById('dashboard-errors-purge');
         const tailElement = document.getElementById('dashboard-errors-tail');
 
         let tailTimeoutId = null;
@@ -122,6 +127,27 @@
             const url = new URL(window.location.href);
             url.search = query.toString();
             window.history.replaceState(null, '', url.toString());
+        }
+
+        function localDateInputValue(date) {
+            const offsetDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
+            return offsetDate.toISOString().slice(0, 10);
+        }
+
+        function resetFilters() {
+            formElement.querySelectorAll('input').forEach(input => {
+                input.value = '';
+            });
+
+            const pageSize = formElement.elements.namedItem('pageSize');
+            if (pageSize) {
+                pageSize.value = '50';
+            }
+
+            const from = formElement.elements.namedItem('from');
+            if (from) {
+                from.value = localDateInputValue(new Date());
+            }
         }
 
         function maxLogId() {
@@ -269,11 +295,22 @@
         });
 
         resetElement.addEventListener('click', () => {
-            formElement.reset();
+            resetFilters();
             refreshContent();
         });
 
         refreshButton.addEventListener('click', refreshContent);
+
+        purgeButton.addEventListener('click', async () => {
+            if (!window.confirm('Purge retained log entries? This cannot be undone.')) {
+                return;
+            }
+
+            await window.bdkDashboard.postAction('@purgePath', {
+                refresh: refreshContent,
+                errorMessage: 'Log purge failed:'
+            });
+        });
 
         tailElement.addEventListener('change', scheduleTail);
 

@@ -30,6 +30,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
     private const string LogEntriesContentPath = "/logentries/content";
     private const string LogEntriesRowsPath = "/logentries/rows";
     private const string LogEntriesExportPath = "/logentries/export";
+    private const string LogEntriesPurgePath = "/logentries/purge";
     private const string ErrorsPath = "/errors";
     private const string ErrorsContentPath = "/errors/content";
     private const string LogEntriesStreamPath = "/logentries/stream";
@@ -72,6 +73,14 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             .WithName("_bdk.Dashboard.LogEntries.Export")
             .WithSummary("Export dashboard log entries")
             .WithDescription("Exports dashboard log entries as a text file using the current log entries filters.");
+
+        group.MapPost(LogEntriesPurgePath, (Delegate)(async (HttpContext httpContext) =>
+            await PurgeLogEntries(httpContext)))
+            .Produces((int)HttpStatusCode.Accepted)
+            .Produces<ProblemDetails>((int)HttpStatusCode.InternalServerError)
+            .WithName("_bdk.Dashboard.LogEntries.Purge")
+            .WithSummary("Purge dashboard log entries")
+            .WithDescription("Queues cleanup for retained log entries.");
 
         group.MapDashboardPage<Pages.Errors>(
             ErrorsPath,
@@ -154,6 +163,21 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
     public static string BuildLogEntriesExportPath(DashboardEndpointsOptions options)
     {
         return DashboardPath.Combine(options?.GroupPath, LogEntriesExportPath);
+    }
+
+    /// <summary>
+    /// Builds the dashboard log entries purge action path.
+    /// </summary>
+    /// <param name="options">The dashboard endpoint options.</param>
+    /// <returns>The absolute dashboard path for the log entries purge action.</returns>
+    /// <example>
+    /// <code>
+    /// var path = DashboardEndpoints.BuildLogEntriesPurgePath(options);
+    /// </code>
+    /// </example>
+    public static string BuildLogEntriesPurgePath(DashboardEndpointsOptions options)
+    {
+        return DashboardPath.Combine(options?.GroupPath, LogEntriesPurgePath);
     }
 
     /// <summary>
@@ -257,6 +281,26 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
         var fileName = $"logs-{DateTimeOffset.Now:yyyyMMdd-HHmmss}.txt";
         return Results.File(stream, "text/plain; charset=utf-8", fileName);
+    }
+
+    private static async Task<IResult> PurgeLogEntries(HttpContext httpContext)
+    {
+        var service = httpContext.RequestServices.GetService<ILogEntryService>();
+        if (service is null)
+        {
+            return Results.Problem(new ProblemDetails
+            {
+                Status = (int)HttpStatusCode.InternalServerError,
+                Title = "Purge Failed",
+                Detail = "ILogEntryService is not registered."
+            });
+        }
+
+        var olderThan = DateTimeOffset.UtcNow.AddDays(1);
+        await service.CleanupAsync(olderThan, archive: true, batchSize: 10000, delayInterval: TimeSpan.Zero, cancellationToken: httpContext.RequestAborted);
+        await service.CleanupAsync(olderThan, archive: false, batchSize: 10000, delayInterval: TimeSpan.Zero, cancellationToken: httpContext.RequestAborted);
+
+        return Results.Accepted();
     }
 
     private static string FormatLogEntry(LogEntryModel entry)

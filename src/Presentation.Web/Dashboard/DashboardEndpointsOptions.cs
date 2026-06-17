@@ -32,6 +32,7 @@ public class DashboardEndpointsOptions : EndpointsOptionsBase
         this.Enabled = true;
         this.GroupPath = "/_bdk/dashboard";
         this.GroupTag = "_bdk.Dashboard";
+        this.ExcludeFromDescription = true;
         this.Title = "BDK Dashboard";
         this.EndpointPaths = new DashboardEndpointPaths(); // Default endpoint paths
     }

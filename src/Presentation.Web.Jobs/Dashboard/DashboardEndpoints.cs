@@ -260,6 +260,20 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             var result = await svc.RetryOccurrenceAsync(occurrenceId, cancellationToken: ct);
             return result.IsSuccess ? Results.Ok() : Results.Problem(result.Errors.FirstOrDefault()?.Message);
         }).WithName("_bdk.Dashboard.Jobs.RetryOccurrence").WithSummary("Retry occurrence").ExcludeFromDescription();
+
+        group.MapPost("/jobs/purge", async (HttpContext ctx, CancellationToken ct) =>
+        {
+            var svc = ctx.RequestServices.GetService<IJobSchedulerMaintenanceService>();
+            if (svc is null) return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+
+            var report = await svc.PurgeOccurrencesAsync(new JobPurgeOccurrencesRequest
+            {
+                OlderThan = DateTimeOffset.UtcNow.AddDays(1),
+                BatchSize = int.MaxValue,
+            }, ct);
+
+            return Results.Ok(report);
+        }).WithName("_bdk.Dashboard.Jobs.Purge").WithSummary("Purge job occurrences").ExcludeFromDescription();
     }
 
     internal static string BuildJobsPath(DashboardEndpointsOptions opts) =>

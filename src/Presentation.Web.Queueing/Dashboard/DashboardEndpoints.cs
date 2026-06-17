@@ -185,6 +185,18 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             await service.ResetMessageTypeCircuitAsync(type, cancellationToken);
             return Results.Ok();
         }).WithName("_bdk.Dashboard.Queueing.ResetTypeCircuit").WithSummary("Reset queue message type circuit").ExcludeFromDescription();
+
+        group.MapPost("/queueing/purge", async (HttpContext context, CancellationToken cancellationToken) =>
+        {
+            var service = context.RequestServices.GetService<IQueueBrokerService>();
+            if (service is null)
+            {
+                return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+            }
+
+            await service.PurgeMessagesAsync(DateTimeOffset.UtcNow.AddDays(1), isArchived: null, cancellationToken: cancellationToken);
+            return Results.Ok();
+        }).WithName("_bdk.Dashboard.Queueing.Purge").WithSummary("Purge queue messages").ExcludeFromDescription();
     }
 
     internal static string BuildQueueingPath(DashboardEndpointsOptions opts) =>

@@ -221,6 +221,19 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             var result = await service.RequeueTimersAsync(instanceId, cancellationToken);
             return result.IsSuccess ? Results.Ok() : Results.Problem(result.Errors.FirstOrDefault()?.Message);
         }).WithName("_bdk.Dashboard.Orchestrations.RequeueTimers").WithSummary("Requeue orchestration timers").ExcludeFromDescription();
+
+        group.MapPost("/orchestrations/purge", async (HttpContext context, CancellationToken cancellationToken) =>
+        {
+            var service = context.RequestServices.GetService<IOrchestrationAdministrationService>();
+            if (service is null) return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+
+            var result = await service.PurgeAsync(new OrchestrationPurgeRequest
+            {
+                OlderThan = DateTimeOffset.UtcNow.AddDays(1),
+            }, cancellationToken);
+
+            return result.IsSuccess ? Results.Ok(result.Value) : Results.Problem(result.Errors.FirstOrDefault()?.Message);
+        }).WithName("_bdk.Dashboard.Orchestrations.Purge").WithSummary("Purge orchestration data").ExcludeFromDescription();
     }
 
     internal static string BuildOrchestrationsPath(DashboardEndpointsOptions opts) =>

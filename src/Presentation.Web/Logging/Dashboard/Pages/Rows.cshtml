@@ -3,6 +3,8 @@
 @using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
 @using Microsoft.Extensions.DependencyInjection
 @using RazorSlices
+@using System.Globalization
+@using System.Text.Json
 @inherits RazorSlice
 
 @{
@@ -12,24 +14,72 @@
 <template data-next-continuation-token="@response.ContinuationToken"></template>
 @foreach (var entry in response.Items)
 {
-    <tr class="@LogEntriesDashboard.GetRowClass(entry.Level)" data-log-id="@entry.Id">
+    var detailsId = $"logentry-details-{entry.Id}";
+    <tr class="@LogEntriesDashboard.GetRowClass(entry.Level)" data-log-id="@entry.Id" data-logentry-row>
+        <td class="dashboard-logentries-toggle-cell">
+            <button type="button"
+                    class="btn btn-link btn-sm p-0 text-decoration-none dashboard-logentries-toggle"
+                    data-logentry-toggle="@detailsId"
+                    aria-controls="@detailsId"
+                    aria-expanded="false"
+                    title="Show log entry details">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </td>
         <td class="text-nowrap" title="@LogEntriesDashboard.FormatTimestamp(entry.TimeStamp)">@LogEntriesDashboard.FormatShortTimestamp(entry.TimeStamp)</td>
         <td><span class="badge @LogEntriesDashboard.GetLevelBadgeClass(entry.Level)">@LogEntriesDashboard.DisplayLevel(entry.Level)</span></td>
         <td class="text-break">
             <div>@LogEntriesDashboard.DisplayValue(entry.Message)</div>
-            @if (!string.IsNullOrWhiteSpace(entry.Exception))
-            {
-                <details class="small text-danger">
-                    <summary>Exception</summary>
-                    <pre class="mb-0">@entry.Exception</pre>
-                </details>
-            }
         </td>
         <td class="text-nowrap">
             @RenderCorrelationLink(entry.CorrelationId)
         </td>
         <td class="text-nowrap">
             <button type="button" class="btn btn-link btn-sm p-0 text-decoration-none" data-filter-name="moduleName" data-filter-value="@entry.ModuleName">@LogEntriesDashboard.DisplayValue(entry.ModuleName)</button>
+        </td>
+    </tr>
+    <tr id="@detailsId" class="dashboard-logentry-details-row d-none" data-logentry-details>
+        <td colspan="6" class="dashboard-logentry-details-cell">
+            <div class="dashboard-logentry-details">
+                <div>
+                    <div class="dashboard-logentry-details-title">Details</div>
+                    <dl class="dashboard-logentry-details-list">
+                        @RenderDetail("Id", entry.Id.ToString(CultureInfo.InvariantCulture))
+                        @RenderDetail("Timestamp", LogEntriesDashboard.FormatTimestamp(entry.TimeStamp))
+                        @RenderDetail("Level", LogEntriesDashboard.DisplayLevel(entry.Level))
+                        @RenderDetail("Log Key", entry.LogKey)
+                        @RenderDetail("Module", entry.ModuleName)
+                        @RenderDetail("Type", entry.ShortTypeName)
+                        @RenderDetail("Thread", entry.ThreadId)
+                        @RenderCorrelationDetail(entry.CorrelationId)
+                        @RenderDetail("Trace", entry.TraceId)
+                        @RenderDetail("Span", entry.SpanId)
+                    </dl>
+                </div>
+
+                <div>
+                    <div class="dashboard-logentry-details-title">Properties</div>
+                    @{
+                        var propertiesJson = FormatStructuredPropertiesJson(entry.LogEvents);
+                    }
+                    @if (!string.IsNullOrWhiteSpace(propertiesJson))
+                    {
+                        <pre class="dashboard-logentry-pre dashboard-logentry-properties">@propertiesJson</pre>
+                    }
+                    else
+                    {
+                        <div class="text-muted small">No structured properties captured.</div>
+                    }
+                </div>
+
+                @if (!string.IsNullOrWhiteSpace(entry.Exception))
+                {
+                    <div class="dashboard-logentry-detail-block">
+                        <div class="dashboard-logentry-details-title text-danger">Exception</div>
+                        <pre class="dashboard-logentry-pre text-danger">@entry.Exception</pre>
+                    </div>
+                }
+            </div>
         </td>
     </tr>
 }
@@ -57,5 +107,90 @@
         var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
         var href = LogEntriesDashboard.BuildCorrelationHref(dashboardOptions, correlationId);
         return new Microsoft.AspNetCore.Html.HtmlString($"<a class=\"btn btn-link btn-sm p-0 text-decoration-none\" href=\"{System.Net.WebUtility.HtmlEncode(href)}\" title=\"Open related logs\">{System.Net.WebUtility.HtmlEncode(LogEntriesDashboard.ShortId(correlationId))}</a>");
+    }
+
+    private static Microsoft.AspNetCore.Html.IHtmlContent RenderDetail(string label, string value)
+    {
+        return new Microsoft.AspNetCore.Html.HtmlString(
+            $"<dt>{System.Net.WebUtility.HtmlEncode(label)}</dt><dd>{System.Net.WebUtility.HtmlEncode(LogEntriesDashboard.DisplayValue(value))}</dd>");
+    }
+
+    private Microsoft.AspNetCore.Html.IHtmlContent RenderCorrelationDetail(string correlationId)
+    {
+        if (string.IsNullOrWhiteSpace(correlationId))
+        {
+            return RenderDetail("Correlation", correlationId);
+        }
+
+        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var href = LogEntriesDashboard.BuildCorrelationHref(dashboardOptions, correlationId);
+        return new Microsoft.AspNetCore.Html.HtmlString(
+            $"<dt>{System.Net.WebUtility.HtmlEncode("Correlation")}</dt><dd><a class=\"btn btn-link btn-sm p-0 text-decoration-none\" href=\"{System.Net.WebUtility.HtmlEncode(href)}\" title=\"Open related logs\">{System.Net.WebUtility.HtmlEncode(correlationId)}</a></dd>");
+    }
+
+    private static string FormatStructuredValue(object value)
+    {
+        if (value is null)
+        {
+            return null;
+        }
+
+        return value switch
+        {
+            DateTime valueAsDateTime => valueAsDateTime.ToString("O", CultureInfo.InvariantCulture),
+            DateTimeOffset valueAsDateTimeOffset => valueAsDateTimeOffset.ToString("O", CultureInfo.InvariantCulture),
+            IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
+            _ => value.ToString()
+        };
+    }
+
+    private static string FormatStructuredPropertiesJson(IDictionary<string, object> logEvents)
+    {
+        if (logEvents is null || logEvents.Count == 0)
+        {
+            return null;
+        }
+
+        var jsonOptions = new JsonSerializerOptions
+        {
+            WriteIndented = true
+        };
+
+        var properties = logEvents
+            .FirstOrDefault(pair => string.Equals(pair.Key, "Properties", StringComparison.OrdinalIgnoreCase));
+        if (properties.Value is not null)
+        {
+            var rawProperties = properties.Value.ToString();
+            if (!string.IsNullOrWhiteSpace(rawProperties))
+            {
+                try
+                {
+                    using var document = JsonDocument.Parse(rawProperties);
+                    return JsonSerializer.Serialize(document.RootElement, jsonOptions);
+                }
+                catch (JsonException)
+                {
+                    return rawProperties;
+                }
+            }
+        }
+
+        var filtered = logEvents
+            .Where(pair => !IsStructuredEnvelopeField(pair.Key))
+            .OrderBy(pair => pair.Key, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(pair => pair.Key, pair => FormatStructuredValue(pair.Value), StringComparer.OrdinalIgnoreCase);
+
+        return filtered.Count == 0 ? null : JsonSerializer.Serialize(filtered, jsonOptions);
+    }
+
+    private static bool IsStructuredEnvelopeField(string key)
+    {
+        return string.Equals(key, "Level", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(key, "Message", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(key, "MessageTemplate", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(key, "Properties", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(key, "Renderings", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(key, "Timestamp", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(key, "TimeStamp", StringComparison.OrdinalIgnoreCase);
     }
 }

@@ -147,6 +147,18 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             await service.ResumeMessageTypeAsync(type, cancellationToken);
             return Results.Ok();
         }).WithName("_bdk.Dashboard.Messaging.ResumeType").WithSummary("Resume message type").ExcludeFromDescription();
+
+        group.MapPost("/messaging/purge", async (HttpContext context, CancellationToken cancellationToken) =>
+        {
+            var service = context.RequestServices.GetService<IMessageBrokerService>();
+            if (service is null)
+            {
+                return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
+            }
+
+            await service.PurgeMessagesAsync(DateTimeOffset.UtcNow.AddDays(1), isArchived: null, cancellationToken: cancellationToken);
+            return Results.Ok();
+        }).WithName("_bdk.Dashboard.Messaging.Purge").WithSummary("Purge broker messages").ExcludeFromDescription();
     }
 
     internal static string BuildMessagingPath(DashboardEndpointsOptions opts) =>

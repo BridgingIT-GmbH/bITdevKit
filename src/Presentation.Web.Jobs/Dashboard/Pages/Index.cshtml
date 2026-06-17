@@ -16,6 +16,7 @@
 DashboardEndpointsOptions();
   var contentPath = JobsDashboardEndpoints.BuildJobsDataContentPath(dashboardOptions);
   var actionBase = JobsDashboardEndpoints.BuildJobsActionBase(dashboardOptions);
+  var purgePath = $"{actionBase}/purge";
   var logEntriesPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesPath(dashboardOptions);
   var aliveEnabled = this.HttpContext.RequestServices.GetService<JobAliveOptions>()?.Enabled == true;
 }
@@ -29,6 +30,10 @@ DashboardEndpointsOptions();
         <i class="bi bi-broadcast"></i>
       </button>
     }
+    <button type="button" class="btn btn-outline-danger btn-sm" title="Purge retained job occurrences"
+            onclick="window.bdkJobsPurge('@purgePath')">
+      <i class="bi bi-trash3"></i>
+    </button>
     <span id="jobs-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T",
                   CultureInfo.InvariantCulture)</span>
       <select id="jobs-refresh-interval" class="form-select form-select-sm" style="width: 9rem"
@@ -298,6 +303,14 @@ DashboardEndpointsOptions();
           refresh: refresher.refresh,
           errorMessage: 'Job action failed:'
         });
+      };
+
+      window.bdkJobsPurge = async function(url) {
+        if (!window.confirm('Purge retained terminal job occurrences? This cannot be undone.')) {
+          return;
+        }
+
+        await window.bdkJobsAction(url);
       };
     })();
   </script>

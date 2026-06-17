@@ -183,14 +183,11 @@ public class LogEntryMaintenanceService<TContext>(
         TimeSpan delayInterval,
         CancellationToken cancellationToken)
     {
-        var skip = 0;
-
         while (true)
         {
             var updatedCount = await context.LogEntries
                 .Where(e => e.TimeStamp <= olderThan && (e.IsArchived == null || e.IsArchived == false))
                 .OrderBy(e => e.Id)
-                .Skip(skip)
                 .Take(batchSize)
                 .ExecuteUpdateAsync(s => s.SetProperty(e => e.IsArchived, true), cancellationToken);
 
@@ -198,8 +195,6 @@ public class LogEntryMaintenanceService<TContext>(
             {
                 break;
             }
-
-            skip += batchSize;
 
             if (delayInterval > TimeSpan.Zero)
             {
@@ -215,14 +210,11 @@ public class LogEntryMaintenanceService<TContext>(
         TimeSpan delayInterval,
         CancellationToken cancellationToken)
     {
-        var skip = 0;
-
         while (true)
         {
             var deletedCount = await context.LogEntries
                 .Where(e => e.TimeStamp <= olderThan && e.IsArchived == true)
                 .OrderBy(e => e.Id)
-                .Skip(skip)
                 .Take(batchSize)
                 .ExecuteDeleteAsync(cancellationToken);
 
@@ -230,8 +222,6 @@ public class LogEntryMaintenanceService<TContext>(
             {
                 break;
             }
-
-            skip += batchSize;
 
             if (delayInterval > TimeSpan.Zero)
             {

@@ -2,247 +2,398 @@
 status: draft
 ---
 
-# Design Specification: DevKit STDIO MCP Diagnostics
+# Design Specification: DevKit STDIO MCP
 
-> This design document specifies a STDIO-based Model Context Protocol diagnostics adapter for DevKit-based applications. The feature allows IDE agents and coding agents to inspect one or more running DevKit hosts through their authenticated `/_bdk/api/*` operational HTTP endpoints.
+> This design document specifies a local-development Model Context Protocol (MCP) surface for DevKit-based applications. The feature uses a STDIO MCP server hosted by the DevKit CLI and connects to running local DevKit application processes through a local IPC channel. The application process serves MCP operations through feature-owned `IMcpHandler` implementations backed by normal application services.
 
 [TOC]
 
 ## Introduction
 
-DevKit applications expose operational and diagnostic information through feature-specific HTTP endpoints. These endpoints make runtime data available for diagnostics, support, and local development workflows.
+DevKit applications already contain rich operational information: logs, errors, health checks, jobs, messaging, queueing, orchestrations, metrics, and retained runtime state. The dashboard makes that information usable for humans. MCP makes it usable for coding agents.
 
-This feature adds a local STDIO MCP adapter that allows IDE agents and coding agents to inspect running DevKit applications in a structured way.
+This feature provides a local STDIO MCP server started by the agent:
 
-The MCP server is not hosted inside the ASP.NET Core application. Instead, the DevKit CLI runs the MCP server as a local STDIO process. The MCP process discovers running DevKit hosts through runtime descriptor files, authenticates to the selected host, calls its `/_bdk/api/*` endpoints, and translates responses into MCP tool results.
-
-```text id="f3iq90"
-VS Code / coding agent
-  -> MCP over STDIO
-  -> dotnet tool run bdk mcp
-  -> runtime descriptor discovery
-  -> selected running DevKit host
-  -> authenticated /_bdk/api/* endpoints
-  -> existing feature services and persistence
+```text
+dotnet tool run bdk mcp
 ```
 
-The running application remains the source of truth for diagnostics. The MCP process is a local adapter.
+The MCP server is not hosted by the ASP.NET Core application. Instead, the CLI exposes a stable MCP tool catalog to the agent, discovers running local DevKit hosts through runtime descriptors, connects to the selected process over local IPC, and forwards MCP operations to handlers inside that process.
+
+```text
+IDE / coding agent
+  -> MCP over STDIO
+  -> bdk mcp
+  -> runtime descriptor discovery
+  -> selected local DevKit process
+  -> local IPC
+  -> IMcpHandler implementations
+  -> feature services and persistence
+```
+
+The running application remains the source of truth. The CLI is an MCP adapter. The app-side IPC server is a local development bridge into the application process.
 
 ## Positioning
 
-This feature is an agent-readable diagnostics surface for DevKit applications.
+This feature is:
 
-It is not:
+* a local-development MCP surface for coding agents
+* a stable STDIO MCP server hosted by the DevKit CLI
+* a local IPC bridge into running DevKit application processes
+* a feature-owned MCP operation model through `IMcpHandler`
+* a way to inspect and operate local DevKit features through normal feature services
 
-* an application host
-* a service discovery system
-* a distributed application runtime
+This feature is not:
+
+* an application-hosted MCP server
+* a web endpoint surface
 * a dashboard replacement
-* a deployment orchestrator
-* a cross-service topology model
+* an OpenAPI surface
 * a database reader
-* an authorization bypass
-* a general production operations plane
+* a production operations plane
+* a Docker or distributed runtime discovery system
+* an authorization bypass for remote systems
 
 The core boundary is:
 
-```text id="swq7yn"
-Running DevKit host owns diagnostics.
-DevKit operational endpoints expose diagnostics.
-bdk mcp adapts those endpoints to MCP.
+```text
+The CLI owns MCP.
+The running app owns feature state.
+IPC connects the two locally.
+Feature handlers execute operations through normal services.
 ```
 
 ## Goals
 
-## Make DevKit hosts agent-readable
+## Stable MCP tool catalog
 
-The feature shall allow IDE agents and coding agents to inspect a running DevKit host without requiring the developer to manually copy logs, metrics, messages, endpoint output, or database rows.
+The MCP server shall expose a stable tool catalog when the agent starts `bdk mcp`.
 
-## Use STDIO as the MCP transport
+Tool availability must not depend on whether a specific application host is already selected or whether a specific feature is registered in the selected host. If a tool cannot run because no runtime is selected or the selected runtime lacks the required feature, the tool returns a structured unavailable result.
 
-The primary MCP transport shall be STDIO.
+## Local IPC into the running process
 
-The MCP server shall be started by the agent as a local process:
+The MCP server shall connect to the selected running application process over local IPC.
 
-```text id="weln99"
-dotnet tool run bdk mcp
+Supported transports:
+
+* Windows: named pipes
+* Linux/macOS: Unix domain sockets
+
+The transport difference must be hidden behind shared IPC server and client abstractions.
+
+## Feature-owned MCP handlers
+
+DevKit features shall contribute MCP handlers close to the feature implementation.
+
+Examples:
+
+```text
+Application.Utilities/Logging/Mcp/LogMcpHandler
+Application.Jobs/Mcp/JobMcpHandler
+Application.Orchestrations/Mcp/OrchestrationMcpHandler
+Application.Messaging/Mcp/MessagingMcpHandler
+Application.Queueing/Mcp/QueueingMcpHandler
 ```
 
-STDIO keeps the IDE integration local, predictable, and independent from application-hosted MCP endpoints.
+Handlers call the same feature services used by the application. They must not depend on the MCP SDK.
 
-## Distribute the CLI as a local .NET tool
+## Project-owned MCP handlers
 
-The DevKit CLI shall be distributed as a .NET tool.
+The MCP feature shall be an extensible platform for applications that use DevKit.
 
-The recommended installation mode is a repository-local tool manifest so each solution can pin the CLI version that matches its DevKit package version.
+Projects shall be able to add their own `IMcpHandler` implementations so coding agents can inspect, validate, explain, investigate, seed, reset, or run project-specific local development workflows through the same MCP infrastructure used by DevKit features.
 
-Global tool installation may be supported as a convenience, but the documented team setup shall prefer a local tool.
+Project-owned MCP handlers run inside the application process and may use project services through dependency injection.
 
-## Support multiple running DevKit hosts
+Project handlers must follow the same local-development-only registration, toolset, bounded response, and safety rules as built-in DevKit handlers.
 
-A workspace may contain a modular monolith or multiple microservice hosts.
+## Frictionless local development
 
-Each running DevKit host owns its own:
+An application should only need to enable local MCP once.
 
-* process
-* runtime descriptor
-* `/_bdk/api/*` operational endpoint surface
-* authentication configuration
-* database
-* persisted logs
-* metrics
-* messages
-* queueing state
-* jobs
-* orchestrations
-* notifications
+Feature registration should contribute its MCP handlers automatically when MCP is enabled in a local development environment.
 
-The MCP server shall discover all running hosts in the workspace and allow one runtime to be selected for diagnostic calls.
+Example:
 
-## Reuse operational endpoints
+```csharp
+builder.Services.AddJobScheduler();
+builder.Services.AddOrchestrations();
+builder.Services.AddMessaging();
+builder.Services.AddQueueing();
 
-The MCP process shall call DevKit operational HTTP endpoints.
-
-The MCP process shall not call dashboard pages, Razor components, JavaScript, or internal application DI services.
-
-If a feature lacks the required operational endpoint, the feature endpoint surface should be extended. The MCP process must not add feature-specific persistence access.
-
-## Preserve application authorization
-
-The MCP process shall authenticate like any other HTTP client.
-
-The MCP process shall not bypass `RequireAuthorization`, role requirements, policies, or endpoint-specific authorization rules.
-
-The MCP process shall obtain a JWT access token and send it as a bearer token when calling protected `/_bdk/api/*` endpoints.
-
-## Keep diagnostics bounded
-
-MCP tools shall return bounded, structured responses by default.
-
-Tools must avoid unbounded logs, metrics, message lists, orchestration histories, or large raw payloads unless explicit limits are supplied and accepted by the server.
-
-## Non-goals
-
-## No application-hosted MCP endpoint
-
-The ASP.NET Core application shall not host an MCP server.
-
-The following are not part of this feature:
-
-```text id="k6gyuu"
-/_bdk/mcp
-app.MapDevKitMcp(...)
-AddDiagnosticsMcp(...)
-application-hosted Streamable HTTP MCP
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddMcp();
+}
 ```
 
-## No direct database access from MCP
+The feature must never prevent the application from starting. If the IPC server cannot bind, the app starts without MCP and logs the reason.
 
-The MCP process shall not:
+## Local development only
+
+MCP handlers, IPC hosting, runtime descriptors, and CLI-discoverable metadata shall be registered only for local development.
+
+The feature is not intended for staging, production, or publicly exposed environments.
+
+## Operational actions are in scope
+
+The MCP feature shall include operational and administrative tools for features that support them.
+
+Examples:
+
+* purge retained logs, messages, queue messages, job occurrences, or orchestration data
+* trigger or dispatch jobs
+* retry, archive, pause, resume, or release retained messages and queue messages
+* signal, pause, resume, cancel, terminate, or repair orchestrations
+
+Operational and administrative tools must be enabled through explicit MCP toolsets and handled through the selected process.
+
+## Bounded results
+
+MCP operations shall return bounded, structured results by default.
+
+Handlers must enforce limits for logs, message payloads, orchestration history, job occurrences, and other potentially large result sets.
+
+## Agent-oriented responses
+
+MCP tools shall return results shaped for coding-agent investigation, not dashboard rendering.
+
+Responses should include:
+
+* compact structured data
+* a short human-readable summary
+* unavailable or failure reason codes
+* truncation indicators
+* continuation hints where applicable
+* suggested next tool calls when useful
+
+Handlers must not return HTML, CSS classes, Razor models, or dashboard-specific view state.
+
+## Guided investigation workflows
+
+The MCP feature shall provide higher-level investigation tools that aggregate feature data for common local debugging workflows.
+
+Examples:
+
+* inspect recent errors
+* inspect a correlation id
+* inspect a job run
+* inspect an orchestration instance
+* inspect the current MCP/runtime setup
+
+These tools should reduce the number of manual tool calls an agent needs to understand a local failure.
+
+## Online DevKit documentation access
+
+The MCP feature shall provide a documentation lookup tool for DevKit documentation hosted online, for example on GitHub.
+
+The tool should help agents answer DevKit usage questions and explain feature behavior while working in a local application.
+
+The documentation tool is distinct from runtime tools:
+
+* it does not require a selected runtime
+* it does not connect to the app process
+* it should prefer official DevKit documentation sources
+* it should return source links and concise excerpts or summaries
+* it must avoid returning large unbounded documents by default
+
+## Non-Goals
+
+## No application-hosted MCP transport
+
+The ASP.NET Core application shall not expose an MCP transport endpoint such as `/_bdk/mcp`.
+
+The only MCP protocol server is the CLI process started by the agent over STDIO.
+
+## No HTTP endpoint dependency
+
+The MCP process shall not depend on DevKit HTTP operational endpoints for its normal operation.
+
+Application HTTP endpoints may still exist for dashboards or custom application UIs, but the MCP feature uses local IPC and app-side `IMcpHandler` implementations.
+
+## No direct database access from the CLI
+
+The CLI shall not:
 
 * load application configuration
-* rebuild the application DI container
+* rebuild the application dependency injection container
 * resolve application DbContexts
 * query application databases directly
-* read EF Core provider-specific tables directly
-* read log databases directly
 * inspect feature persistence schemas directly
 
-All diagnostic data must come through the running host’s HTTP endpoints.
+All feature data is retrieved through `IMcpHandler` implementations inside the running process.
 
-## No inter-service discovery
+## No shadow application API
 
-Multiple runtimes may be discovered, listed, and selected.
+Project-owned MCP tools shall not mimic the normal application API.
 
-The feature shall not infer relationships between microservices. It shall not build a topology model, resolve dependencies between hosts, or aggregate diagnostics across services by default.
+The MCP feature must not become a parallel CRUD API for creating, reading, updating, and deleting application resources.
 
-## No anonymous operational access by default
+Application APIs remain responsible for normal application use cases. MCP project tools are intended for local development assistance, inspection, validation, explanation, investigation, seeding, resetting, and controlled workflow execution.
 
-DevKit operational endpoints under `/_bdk/api/*` are not assumed to be anonymous.
+## No Docker support
 
-The MCP process must authenticate when the selected runtime requires authentication.
+Docker and devcontainer scenarios are outside this specification.
 
-## No production exposure by default
+The supported scenario is a local machine with a local running application process and a local CLI process. The CLI and app process must be able to access the same runtime descriptor location and local IPC transport.
 
-The feature is primarily for local development and controlled Docker development scenarios.
+## No registration outside local development
 
-Non-development usage must be explicitly enabled and secured by the application.
+MCP handlers and IPC services must not be registered outside local development.
+
+Configuration alone must not enable MCP on non-development servers.
 
 ## Terminology
 
-| Term                  | Meaning                                                                                                             |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------- |
-| DevKit host           | A running ASP.NET Core application using DevKit features.                                                           |
-| Runtime               | One discovered running DevKit host instance.                                                                        |
-| Runtime descriptor    | A local JSON file written by a running host so tooling can discover it.                                             |
-| Operational endpoint  | A DevKit HTTP endpoint under `/_bdk/api/*` that exposes diagnostics or operational state.                           |
-| Capabilities endpoint | The endpoint under `/_bdk/api/capabilities` that reports available operational features and endpoints for one host. |
-| MCP process           | The `bdk mcp` process running as a local STDIO MCP server.                                                          |
-| Selected runtime      | The runtime currently used for diagnostic MCP tool calls.                                                           |
-| Local tool            | A .NET tool installed through a repository-local `.config/dotnet-tools.json` manifest.                              |
+| Term | Meaning |
+| ---- | ------- |
+| MCP server | The STDIO MCP server hosted by `bdk mcp`. |
+| MCP tool | An agent-facing tool exposed by the CLI MCP server. |
+| MCP operation | An internal operation name sent over IPC, such as `logs.query` or `jobs.trigger`. |
+| MCP handler | An app-side `IMcpHandler` implementation that handles one or more MCP operations. |
+| MCP IPC server | The local IPC server hosted inside the running application process. |
+| MCP IPC client | The CLI-side local IPC client. |
+| Runtime | One discovered running local DevKit host process. |
+| Runtime descriptor | A local JSON file written by a running host so `bdk mcp` can discover and connect to it. |
+| Selected runtime | The runtime used for normal MCP tool calls. |
+| Toolset | A named group of tools, such as `diagnostics`, `operations`, or `admin`. |
 
 ## High-Level Architecture
 
-```text id="b2lg1s"
-Developer workspace
-  .config/dotnet-tools.json
-  .bdk/runtimes/*.json
-  .bdk/runtime-selection.json
+```mermaid
+flowchart LR
+    Agent["IDE / coding agent"]
+    Stdio["MCP over STDIO"]
+    Cli["DevKit CLI<br/>bdk mcp"]
+    Tools["Stable MCP tools<br/>runtimes, diagnostics, operations, admin"]
+    Registry["OS-local registry<br/>bdk/mcp/runtimes<br/>bdk/mcp/selections"]
+    IpcClient["MCP IPC client"]
+    Docs["Online DevKit docs<br/>GitHub / official docs"]
 
-Running host A
-  https://localhost:5001/_bdk/api/capabilities
-  https://localhost:5001/_bdk/api/logentries
-  https://localhost:5001/_bdk/api/metrics
-  https://localhost:5001/_bdk/api/queueing
+    subgraph App["Running local DevKit process"]
+        DescriptorWriter["McpRuntimeDescriptorWriter"]
+        IpcServer["McpIpcServer"]
+        Dispatcher["McpDispatcher"]
+        RegistryHandlers["Registered IMcpHandler instances"]
+        FeatureServices["Feature services<br/>logs, jobs, orchestrations, messaging"]
+        Persistence["Configured persistence"]
+    end
 
-Running host B
-  https://localhost:5101/_bdk/api/capabilities
-  https://localhost:5101/_bdk/api/messaging
-  https://localhost:5101/_bdk/api/orchestrations
-
-bdk mcp
-  discovers descriptors
-  authenticates to selected runtime
-  calls selected runtime /_bdk/api/*
-  exposes MCP tools over STDIO
+    Agent --> Stdio --> Cli --> Tools
+    Tools --> Registry
+    Registry --> Tools
+    Tools --> Docs
+    Tools --> IpcClient
+    IpcClient <--> IpcServer
+    IpcServer --> Dispatcher --> RegistryHandlers --> FeatureServices --> Persistence
+    DescriptorWriter --> Registry
 ```
 
-The DevKit CLI and the running applications are separate processes.
+```text
+Developer workspace
+  .config/dotnet-tools.json
 
-The CLI owns:
+Running local host
+  writes runtime descriptor
+  starts MCP IPC server
+  registers feature MCP handlers
 
-* STDIO MCP transport
-* MCP tool definitions
-* runtime descriptor discovery
-* selected runtime state
-* token acquisition
-* HTTP calls to operational endpoints
-* mapping HTTP responses to MCP results
-
-Each running application owns:
-
-* feature registration
-* endpoint registration
-* authorization rules
-* feature service implementations
-* persistence and provider details
-* capabilities metadata
-* runtime descriptor writing
+bdk mcp
+  exposes stable MCP tools over STDIO
+  discovers descriptors
+  connects to selected runtime over IPC
+  maps MCP tool calls to MCP operations
+```
 
 ## Package and Project Placement
 
-## DevKit CLI package
+## Common MCP abstractions
 
-A CLI package should be introduced:
+Shared protocol-neutral abstractions should live in a common package.
 
-```text id="wwgozy"
+Suggested placement:
+
+```text
+src/Common.Abstractions/Mcp
+```
+
+Core abstractions:
+
+```text
+IMcpHandler
+McpRequest
+McpResponse
+McpResult
+McpOperation
+McpCapability
+McpToolset
+McpErrorCode
+```
+
+These types are DevKit abstractions and must not depend on the official MCP SDK.
+
+## Feature handlers
+
+Feature packages own their app-side handlers.
+
+Suggested placement:
+
+```text
+src/Application.Utilities/Logging/Mcp
+src/Application.Jobs/Mcp
+src/Application.Orchestrations/Mcp
+src/Application.Messaging/Mcp
+src/Application.Queueing/Mcp
+src/Application.Utilities/Health/Mcp
+```
+
+Feature handlers call feature services and return compact MCP DTOs.
+
+Project-specific handlers should live near the project module or application feature that owns the domain knowledge.
+
+Example:
+
+```text
+examples/WeatherFiesta/WeatherFiesta.Application/Modules/Core/Mcp
+src/Modules/Billing/Application/Mcp
+src/Modules/Inventory/Application/Mcp
+```
+
+## Presentation.Web hosting
+
+`Presentation.Web` owns app-side local hosting:
+
+```text
+src/Presentation.Web/Mcp
+  McpIpcServer
+  McpDispatcher
+  McpRuntimeDescriptorWriter
+  McpOptions
+  McpBuilder
+```
+
+This package integrates with the ASP.NET Core host lifecycle, writes runtime descriptors, starts the local IPC server, and dispatches incoming IPC requests to registered `IMcpHandler` services.
+
+## CLI package
+
+The DevKit CLI hosts the STDIO MCP server.
+
+Suggested package:
+
+```text
 src/Tooling.Cli
   BridgingIT.DevKit.Cli
+  McpIpcClient
+  RuntimeMcpTools
+  InvestigationMcpTools
+  DocumentationMcpTools
+  McpDocumentationClient
 ```
 
 The package is distributed as a .NET tool:
 
-```xml id="c87ymj"
+```xml
 <PropertyGroup>
   <PackAsTool>true</PackAsTool>
   <ToolCommandName>bdk</ToolCommandName>
@@ -250,9 +401,9 @@ The package is distributed as a .NET tool:
 </PropertyGroup>
 ```
 
-Initial commands:
+Initial command surface:
 
-```text id="z2sodd"
+```text
 bdk mcp
 bdk runtimes list
 bdk runtimes current
@@ -261,75 +412,71 @@ bdk runtimes clean
 bdk version
 ```
 
-## Presentation.Web additions
+## Naming Rules
 
-`Presentation.Web` should provide:
+Do not prefix core class names with `DevKit`.
 
-```text id="iumqmc"
-runtime descriptor writer
-runtime descriptor options
-capabilities endpoint
-capability provider abstractions
-endpoint capability registration helpers
-optional local development auth helpers
+Use:
+
+```text
+IMcpHandler
+McpDispatcher
+McpIpcServer
+McpIpcClient
+McpRuntimeDescriptor
+McpRuntimeDescriptorWriter
 ```
 
-Feature-specific presentation packages should contribute capabilities when their operational endpoints are registered.
+Avoid:
 
-Examples:
+```text
+IDevKitMcpHandler
+DevKitMcpDispatcher
+DevKitMcpRuntimeDescriptor
+```
 
-```text id="zfkrpm"
-Presentation.Web.Logging
-Presentation.Web.Metrics
-Presentation.Web.Messaging
-Presentation.Web.Queueing
-Presentation.Web.Jobs
-Presentation.Web.Orchestrations
-Presentation.Web.Notifications
+Ownership is expressed by namespace and package:
+
+```csharp
+namespace BridgingIT.DevKit.Common.Abstractions.Mcp;
+namespace BridgingIT.DevKit.Presentation.Web.Mcp;
+namespace BridgingIT.DevKit.Application.Jobs.Mcp;
 ```
 
 ## Local Tool Installation
 
-The preferred setup is a local .NET tool manifest.
+The preferred setup is a repository-local .NET tool manifest.
 
 In the solution root:
 
-```bash id="o3kqnd"
+```bash
 dotnet new tool-manifest
 dotnet tool install BridgingIT.DevKit.Cli
 ```
 
 The generated file is committed:
 
-```text id="zrxlnb"
+```text
 .config/dotnet-tools.json
 ```
 
 Every developer restores tools with:
 
-```bash id="m4nfnb"
+```bash
 dotnet tool restore
 ```
 
-The MCP server is started with:
+The MCP server is started by an MCP client using:
 
-```bash id="mip19w"
+```bash
 dotnet tool run bdk mcp
 ```
 
-or:
+## MCP Client Configuration
 
-```bash id="vb8518"
-dotnet bdk mcp
-```
+Example VS Code MCP configuration:
 
-depending on .NET tool invocation support and command aliasing.
-
-## VS Code MCP Configuration
-
-The default VS Code MCP configuration should use the local tool:
-
-```json id="rpa798"
+```json
 {
   "servers": {
     "bdk": {
@@ -342,937 +489,815 @@ The default VS Code MCP configuration should use the local tool:
 }
 ```
 
-Global tool installation may be documented as a convenience:
+The application process must be running separately. The MCP server does not start the application.
 
-```bash id="kkkvdz"
-dotnet tool install --global BridgingIT.DevKit.Cli
+## Example Agent Prompts
+
+These examples show how a developer should be able to ask a coding agent to use the BDK MCP during regular local development.
+
+The prompts are intentionally written as natural requests. The agent decides which stable MCP tools to call, checks runtime availability first where needed, and reports unavailable features explicitly.
+
+### Runtime and setup checks
+
+```text
+Use the bdk MCP and check whether the local WeatherFiesta runtime is available. If more than one runtime is running, show me the options and select WeatherFiesta.
 ```
 
-A global tool can be configured as:
+Expected tool usage:
 
-```json id="smc7vl"
-{
-  "servers": {
-    "bdk": {
-      "type": "stdio",
-      "command": "bdk",
-      "args": ["mcp"],
-      "cwd": "${workspaceFolder}"
-    }
-  }
-}
+```text
+bdk.mcp.status
+bdk.runtimes.list
+bdk.runtimes.select
+bdk.capabilities.get
 ```
 
-The local tool remains the recommended setup because it pins the CLI version to the repository.
+```text
+Use the bdk MCP self-test and tell me whether the app process, IPC connection, protocol version, and enabled toolsets are all healthy.
+```
+
+Expected tool usage:
+
+```text
+bdk.mcp.selfTest
+bdk.capabilities.get
+```
+
+### Logs, errors, and correlation ids
+
+```text
+Use the bdk MCP to inspect the latest errors in the selected runtime. For the newest error, follow its correlation id and summarize the complete flow.
+```
+
+Expected tool usage:
+
+```text
+bdk.investigate.recentErrors
+bdk.investigate.correlation
+bdk.logs.query
+bdk.errors.details
+```
+
+```text
+Use the bdk MCP to find logs from the last hour that mention weather ingestion or Open-Meteo. If any log has a correlation id, make it the focus of the investigation.
+```
+
+Expected tool usage:
+
+```text
+bdk.logs.query
+bdk.investigate.correlation
+```
+
+```text
+Use the bdk MCP to tail the local logs while I trigger the workflow manually. Stop once you see the job, orchestration, message, and queue message for the same correlation id.
+```
+
+Expected tool usage:
+
+```text
+bdk.logs.tail
+bdk.investigate.correlation
+```
+
+### Health and runtime state
+
+```text
+Use the bdk MCP to check the current health snapshot. Summarize unhealthy checks first and include any data that explains why they are unhealthy.
+```
+
+Expected tool usage:
+
+```text
+bdk.health.snapshot
+```
+
+```text
+Before changing the code, use the bdk MCP to check whether jobs, queueing, messaging, logs, and orchestrations are available in this runtime.
+```
+
+Expected tool usage:
+
+```text
+bdk.capabilities.get
+bdk.mcp.status
+```
+
+### Jobs and orchestrations
+
+```text
+Use the bdk MCP to inspect recent runs of the weather ingestion job. If a run failed, show its messages, logs, and correlation context.
+```
+
+Expected tool usage:
+
+```text
+bdk.jobs.list
+bdk.jobs.runs
+bdk.investigate.jobRun
+bdk.investigate.correlation
+```
+
+```text
+Use the bdk MCP to trigger the WeatherFiesta hello-world orchestration job and then follow the created orchestration, message, queue message, and logs by correlation id.
+```
+
+Expected tool usage:
+
+```text
+bdk.jobs.trigger
+bdk.jobs.runs
+bdk.orchestrations.instances
+bdk.investigate.correlation
+```
+
+This prompt requires the `operations` toolset because it triggers a job.
+
+```text
+Use the bdk MCP to inspect the latest orchestration instance. Explain its status, history, related logs, and whether it published or queued any messages.
+```
+
+Expected tool usage:
+
+```text
+bdk.orchestrations.instances
+bdk.orchestrations.instanceDetails
+bdk.orchestrations.history
+bdk.investigate.orchestrationInstance
+```
+
+### Messaging and queueing
+
+```text
+Use the bdk MCP to check whether any WeatherFiesta messages or queue messages are waiting, leased, failed, or archived. For failures, include payload details and correlation context.
+```
+
+Expected tool usage:
+
+```text
+bdk.messages.summary
+bdk.messages.waiting
+bdk.messages.details
+bdk.messages.content
+bdk.queueing.summary
+bdk.queueing.waiting
+bdk.queueing.messageDetails
+bdk.investigate.correlation
+```
+
+```text
+Use the bdk MCP to retry the failed hello-world queue message and then follow the logs for the resulting correlation id.
+```
+
+Expected tool usage:
+
+```text
+bdk.queueing.messageDetails
+bdk.queueing.retry
+bdk.investigate.correlation
+```
+
+This prompt requires the `operations` toolset because it retries retained queue state.
+
+### Local cleanup for testing
+
+```text
+Use the bdk MCP to purge retained logs, messages, queue messages, job runs, and orchestration data so I can rerun the scenario from a clean local state. Preview what will be affected first.
+```
+
+Expected tool usage:
+
+```text
+bdk.logs.purge
+bdk.messages.purge
+bdk.queueing.purge
+bdk.jobs.purgeRuns
+bdk.orchestrations.purge
+```
+
+This prompt requires the `admin` toolset and explicit confirmation arguments for destructive operations.
+
+### Project-specific WeatherFiesta tools
+
+```text
+Use the bdk MCP project tools to inspect Berlin in WeatherFiesta. Tell me whether the city exists, whether current weather and forecasts are available, whether the data is stale, and which correlation ids are relevant.
+```
+
+Expected tool usage:
+
+```text
+bdk.project.operations
+bdk.project.call weather.inspect.city
+bdk.investigate.correlation
+```
+
+```text
+Use the bdk MCP project tools to validate why Berlin does not show fresh weather. Check city setup, geocoding data, current weather, forecast coverage, ingestion job registration, and recent ingestion errors.
+```
+
+Expected tool usage:
+
+```text
+bdk.project.operations
+bdk.project.call weather.validate.cityForecastSetup
+bdk.logs.query
+bdk.investigate.correlation
+```
+
+### DevKit documentation lookup
+
+```text
+Use the bdk MCP docs tools to find the DevKit documentation for queueing retries and summarize the relevant guidance for the code I am looking at.
+```
+
+Expected tool usage:
+
+```text
+bdk.docs.search
+bdk.docs.get
+```
+
+```text
+Use the bdk MCP docs tools to explain how job scheduling and orchestration execution jobs are supposed to be wired in DevKit, then compare that with this project.
+```
+
+Expected tool usage:
+
+```text
+bdk.docs.search
+bdk.docs.get
+bdk.jobs.list
+bdk.capabilities.get
+```
 
 ## Runtime Descriptor Registry
 
 ## Descriptor directory
 
-Each running host writes its own descriptor file.
+Each running local host writes one descriptor file.
 
-The descriptor registry lives under:
+The descriptor registry lives in an OS user-local runtime location, not in the workspace.
 
-```text id="nj8e5m"
-.bdk/runtimes/
+Default locations:
+
+```text
+Windows:     %LOCALAPPDATA%\bdk\mcp\runtimes
+Linux/macOS: $XDG_RUNTIME_DIR/bdk/mcp/runtimes
+Fallback:    $TMPDIR/bdk/mcp/runtimes
 ```
 
 Examples:
 
-```text id="iowxrq"
-.bdk/runtimes/weatherfiesta-api.5001.json
-.bdk/runtimes/billing-api.5101.json
-.bdk/runtimes/inventory-api.5201.json
-.bdk/runtimes/worker-host.5301.json
+```text
+%LOCALAPPDATA%\bdk\mcp\runtimes\weatherfiesta.5001.json
+$XDG_RUNTIME_DIR/bdk/mcp/runtimes/dofiesta.5001.json
 ```
 
-A single `current.json` is not the primary model because workspaces may run several hosts at the same time.
+The selected runtime should be stored in the same OS user-local registry, scoped by workspace hash:
+
+```text
+%LOCALAPPDATA%\bdk\mcp\selections\<workspace-hash>.json
+$XDG_RUNTIME_DIR/bdk/mcp/selections/<workspace-hash>.json
+```
+
+Descriptors include `workspacePath`, `contentRootPath`, and process metadata so the CLI can filter runtimes for the current workspace without writing runtime files into the repository.
 
 ## Descriptor ownership
 
-Each host writes and owns only its own descriptor.
+Each host owns only its own descriptor.
 
-The descriptor file name should be deterministic enough to avoid collisions and readable enough for support:
+The descriptor should be written on startup and removed on graceful shutdown where possible.
 
-```text id="axurhl"
-{normalized-application-name}.{port-or-processId}.json
-```
-
-The descriptor should be written on host startup and refreshed when important runtime metadata changes.
-
-The descriptor should be removed on graceful shutdown where possible. Stale descriptors must still be handled because processes may crash.
+Stale descriptors are expected and must be handled by the CLI.
 
 ## Descriptor schema
 
-Example descriptor:
+Example:
 
-```json id="w1okx5"
+```json
 {
   "schemaVersion": 1,
-  "runtimeId": "billing-api-5101",
-  "applicationName": "Billing.Api",
+  "runtimeId": "weatherfiesta-5001",
+  "applicationName": "WeatherFiesta",
   "environmentName": "Development",
-  "workspacePath": "D:/src/my-solution",
-  "contentRootPath": "D:/src/my-solution/src/Billing.Api",
-  "projectPath": "D:/src/my-solution/src/Billing.Api/Billing.Api.csproj",
+  "workspacePath": "F:/projects/bit/bITdevKit",
+  "contentRootPath": "F:/projects/bit/bITdevKit/examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server",
+  "projectPath": "F:/projects/bit/bITdevKit/examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/WeatherFiesta.Presentation.Web.Server.csproj",
   "processId": 23844,
-  "startedAt": "2026-06-18T14:20:00Z",
-  "urls": {
-    "hostBaseUrl": "https://localhost:5101",
-    "containerBaseUrl": "http://billing-api:8080"
-  },
-  "preferredUrl": "hostBaseUrl",
-  "operationalBasePath": "/_bdk/api",
-  "capabilitiesPath": "/_bdk/api/capabilities",
-  "auth": {
-    "type": "jwt-password",
-    "scheme": "Bearer",
-    "authority": "https://localhost:5101",
-    "tokenEndpoint": "https://localhost:5101/_bdk/api/identity/connect/token",
-    "clientId": "bdk-mcp",
-    "clientSecret": "local-dev-secret",
-    "username": "admin@local",
-    "password": "admin",
-    "scope": "openid profile email roles",
-    "audience": "api"
+  "startedAt": "2026-06-19T14:20:00Z",
+  "mcp": {
+    "protocolVersion": 1,
+    "transport": "named-pipe",
+    "endpoint": "bdk-weatherfiesta-5001",
+    "nonce": "local-random-token"
+  }
+}
+```
+
+Linux/macOS example:
+
+```json
+{
+  "mcp": {
+    "protocolVersion": 1,
+    "transport": "unix-socket",
+    "endpoint": "$XDG_RUNTIME_DIR/bdk/mcp/ipc/weatherfiesta-5001.sock",
+    "nonce": "local-random-token"
   }
 }
 ```
 
 ## Required descriptor fields
 
-| Field                 | Required | Description                                                          |
-| --------------------- | -------: | -------------------------------------------------------------------- |
-| `schemaVersion`       |      yes | Runtime descriptor schema version.                                   |
-| `runtimeId`           |      yes | Stable id for the current host instance.                             |
-| `applicationName`     |      yes | Display name of the running application.                             |
-| `environmentName`     |      yes | ASP.NET Core environment name.                                       |
-| `workspacePath`       |      yes | Solution or workspace root used for discovery.                       |
-| `contentRootPath`     |      yes | Application content root.                                            |
-| `processId`           |      yes | Local process id when known.                                         |
-| `startedAt`           |      yes | UTC start timestamp.                                                 |
-| `urls`                |      yes | Reachable base URLs for host and container scenarios.                |
-| `operationalBasePath` |      yes | Base path for DevKit operational endpoints. Defaults to `/_bdk/api`. |
-| `capabilitiesPath`    |      yes | Capabilities endpoint path. Defaults to `/_bdk/api/capabilities`.    |
-| `auth`                |       no | Authentication metadata used by the MCP process.                     |
+| Field | Required | Description |
+| ----- | -------: | ----------- |
+| `schemaVersion` | yes | Runtime descriptor schema version. |
+| `runtimeId` | yes | Stable id for the current host instance. |
+| `applicationName` | yes | Display name of the running application. |
+| `environmentName` | yes | ASP.NET Core environment name. |
+| `workspacePath` | yes | Solution or workspace root. |
+| `contentRootPath` | yes | Application content root. |
+| `processId` | yes | Local process id. |
+| `startedAt` | yes | UTC start timestamp. |
+| `mcp.protocolVersion` | yes | MCP IPC protocol version. |
+| `mcp.transport` | yes | `named-pipe` or `unix-socket`. |
+| `mcp.endpoint` | yes | Pipe name or socket path. |
+| `mcp.nonce` | yes | Random handshake token generated for each app startup or IPC rebind. |
 
-## URL model
-
-The default local host URL is:
-
-```text id="mbsmu5"
-https://localhost:5001
-```
-
-The default operational base path is:
-
-```text id="dsu4wp"
-/_bdk/api
-```
-
-The default capabilities URL is:
-
-```text id="a1lcg8"
-https://localhost:5001/_bdk/api/capabilities
-```
-
-The descriptor may contain multiple URLs to support host and Docker scenarios:
-
-```json id="rirr7w"
-{
-  "urls": {
-    "hostBaseUrl": "https://localhost:5001",
-    "containerBaseUrl": "http://weatherfiesta-api:8080"
-  },
-  "preferredUrl": "hostBaseUrl"
-}
-```
-
-The MCP process chooses the best URL based on:
-
-```text id="q99rb2"
-explicit command-line override
-descriptor preferredUrl
-host/devcontainer detection
-connectivity check
-```
+The nonce is stable for the lifetime of a running IPC endpoint. Descriptor heartbeat or refresh writes must not rotate the nonce because that would invalidate active CLI sessions without changing the trust boundary.
 
 ## Runtime Discovery
 
 `bdk mcp` and `bdk runtimes list` discover runtimes in this order:
 
-```text id="l3mo5h"
-1. Explicit --runtime-url
-2. Explicit --runtime-id
-3. BDK_RUNTIME_URL environment variable
-4. Workspace .bdk/runtimes/*.json
-5. Parent-folder .bdk/runtimes/*.json
-6. Optional user-level runtime registry
-7. No runtime found
+```text
+1. Explicit --runtime-id
+2. OS user-local bdk/mcp/runtimes descriptors matching the current workspace
+3. OS user-local bdk/mcp/runtimes descriptors when --all is supplied
+4. No runtime found
 ```
 
-A user-level registry may be added later for cross-workspace tooling, but the workspace registry is the primary model.
+Runtime validation:
 
-## Descriptor validation
-
-Before a descriptor is treated as usable, the CLI validates it:
-
-```text id="wulffq"
-1. Parse JSON.
+```text
+1. Parse descriptor JSON.
 2. Check schemaVersion.
-3. Check process id if the process is local.
-4. Build capabilities URL from selected base URL and capabilitiesPath.
-5. Acquire a token if auth is configured.
-6. Call capabilities endpoint.
-7. Mark runtime as Ready, Unauthorized, Forbidden, Stale, Unreachable, or Invalid.
+3. Check process id when possible.
+4. Check MCP protocol version compatibility.
+5. Try local IPC connection.
+6. Send nonce handshake.
+7. Call capabilities operation.
+8. Mark runtime as Ready, Stale, Unreachable, Invalid, or VersionMismatch.
 ```
 
 ## Runtime statuses
 
-| Status         | Meaning                                                           |
-| -------------- | ----------------------------------------------------------------- |
-| `Ready`        | Descriptor is valid, host is reachable, capabilities can be read. |
-| `Unauthorized` | Token is missing, invalid, or expired.                            |
-| `Forbidden`    | Token is valid but lacks required role or policy.                 |
-| `Unreachable`  | Base URL or capabilities endpoint cannot be reached.              |
-| `Stale`        | Process is gone or descriptor no longer matches a live host.      |
-| `Invalid`      | Descriptor cannot be parsed or required fields are missing.       |
-| `Unknown`      | Runtime has not been validated yet.                               |
+| Status | Meaning |
+| ------ | ------- |
+| `Ready` | Descriptor is valid and the IPC server is reachable. |
+| `Unreachable` | The IPC endpoint cannot be reached. |
+| `Stale` | The process is gone or descriptor no longer matches a live host. |
+| `Invalid` | Descriptor cannot be parsed or required fields are missing. |
+| `VersionMismatch` | CLI and app-side MCP protocol versions are incompatible. |
+| `Unknown` | Runtime has not been validated yet. |
 
 ## Runtime Selection
 
-The MCP server supports one selected runtime for normal diagnostic tool calls.
+The MCP server supports one selected runtime for normal tool calls.
 
 Selection tools:
 
-```text id="w7dkdn"
+```text
 bdk.runtimes.list
 bdk.runtimes.select
 bdk.runtimes.current
 bdk.runtimes.refresh
 ```
 
-CLI commands:
-
-```bash id="eoq4t7"
-dotnet tool run bdk runtimes list
-dotnet tool run bdk runtimes current
-dotnet tool run bdk runtimes select billing-api-5101
-dotnet tool run bdk runtimes clean
-```
-
-## Selection behavior
-
-When a diagnostic MCP tool is called:
+Selection behavior:
 
 * if exactly one runtime is ready, the MCP server may auto-select it
-* if multiple runtimes are ready and no runtime is selected, the tool returns `runtime_selection_required`
-* if the selected runtime is no longer valid, the tool returns `selected_runtime_unavailable`
+* if multiple runtimes are ready and no runtime is selected, diagnostic and operational tools return `runtime_selection_required`
+* if the selected runtime is no longer valid, tools return `selected_runtime_unavailable`
 * the MCP server never aggregates across runtimes by default
 
-Example response:
+## IPC Transport
 
-```json id="znyofh"
+## Transport abstraction
+
+The transport implementation must be abstracted.
+
+Suggested app-side abstractions:
+
+```text
+IMcpIpcServer
+IMcpIpcServerTransport
+NamedPipeMcpIpcServerTransport
+UnixSocketMcpIpcServerTransport
+```
+
+Suggested CLI-side abstractions:
+
+```text
+IMcpIpcClient
+IMcpIpcClientTransport
+NamedPipeMcpIpcClientTransport
+UnixSocketMcpIpcClientTransport
+```
+
+The protocol payload above the transport is identical across operating systems.
+
+## Windows named pipes
+
+Windows uses named pipes.
+
+Example endpoint:
+
+```text
+bdk-weatherfiesta-5001
+```
+
+The implementation uses:
+
+```text
+NamedPipeServerStream
+NamedPipeClientStream
+```
+
+The pipe disappears when the process exits.
+
+## Linux/macOS Unix domain sockets
+
+Linux and macOS use Unix domain sockets.
+
+Example endpoint:
+
+```text
+$XDG_RUNTIME_DIR/bdk/mcp/ipc/weatherfiesta-5001.sock
+```
+
+The implementation uses `AddressFamily.Unix` sockets.
+
+Unix socket files can remain after crashes. The server must handle stale socket files before binding.
+
+## IPC bind failure behavior
+
+MCP must never prevent the application from starting.
+
+If the IPC server cannot bind:
+
+* log a warning with the reason
+* do not start the IPC server
+* do not write a ready runtime descriptor, or mark the descriptor unavailable
+* keep the application running normally
+
+Examples of bind failures:
+
+* pipe name collision
+* stale socket file cannot be removed
+* socket path too long
+* insufficient local file permissions
+* transport API unavailable on the current platform
+
+The developer should see the failure in logs, but the app must continue without MCP.
+
+## IPC Protocol
+
+The IPC protocol is internal to DevKit and independent from the public MCP SDK.
+
+Request envelope:
+
+```json
 {
+  "id": "01J...",
+  "protocolVersion": 1,
+  "nonce": "local-random-token",
+  "operation": "logs.query",
+  "toolset": "diagnostics",
+  "arguments": {
+    "rows": 100,
+    "correlationId": "abc"
+  }
+}
+```
+
+Response envelope:
+
+```json
+{
+  "id": "01J...",
+  "available": true,
+  "operation": "logs.query",
+  "data": {}
+}
+```
+
+Unavailable response:
+
+```json
+{
+  "id": "01J...",
   "available": false,
-  "reason": "Multiple DevKit runtimes are available. Select one runtime first.",
-  "code": "runtime_selection_required",
-  "runtimes": [
+  "operation": "jobs.runs",
+  "code": "feature_unavailable",
+  "reason": "Job services are not registered in the selected runtime."
+}
+```
+
+Error response:
+
+```json
+{
+  "id": "01J...",
+  "available": false,
+  "operation": "logs.query",
+  "code": "operation_failed",
+  "reason": "The operation failed. See application logs for details."
+}
+```
+
+## Common error codes
+
+| Code | Meaning |
+| ---- | ------- |
+| `runtime_selection_required` | Multiple runtimes exist and none is selected. |
+| `selected_runtime_unavailable` | Selected runtime is stale or unreachable. |
+| `feature_unavailable` | The selected app does not have the feature registered. |
+| `operation_unavailable` | No handler supports the requested operation. |
+| `unauthorized_toolset` | The requested operation requires a disabled toolset. |
+| `confirmation_required` | A destructive admin operation is missing the required explicit confirmation argument. |
+| `invalid_arguments` | Arguments failed validation. |
+| `version_mismatch` | CLI and app-side protocol versions are incompatible. |
+| `timeout` | The operation exceeded its timeout. |
+| `operation_failed` | The app-side operation failed. |
+
+## App-Side MCP Handlers
+
+## Handler contract
+
+Suggested contract:
+
+```csharp
+public interface IMcpHandler
+{
+    IReadOnlyCollection<McpOperation> Operations { get; }
+
+    Task<McpResult> HandleAsync(
+        McpRequest request,
+        CancellationToken cancellationToken);
+}
+```
+
+Handlers may support one or more operations.
+
+## Handler registration
+
+Feature packages contribute MCP handler candidates when the feature is registered.
+
+`AddMcp()` activates those candidates as `IMcpHandler` services only in a local development environment. This avoids ordering requirements between normal feature registration and MCP registration while still keeping MCP handlers out of non-development servers.
+
+MCP registration should be frictionless:
+
+```csharp
+builder.Services.AddJobScheduler();   // contributes JobMcpHandler when MCP is enabled
+builder.Services.AddOrchestrations(); // contributes OrchestrationMcpHandler when MCP is enabled
+builder.Services.AddMessaging();      // contributes MessagingMcpHandler when MCP is enabled
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddMcp();
+}
+```
+
+Handler activation must no-op outside local development.
+
+Calling `AddMcp()` outside Development must not throw. It must register no handlers, start no IPC server, and write no runtime descriptor. This keeps shared startup code safe while still failing closed.
+
+## Missing features
+
+The IPC server and MCP dispatcher must be safe when features are missing.
+
+Rules:
+
+* no registered handler means the operation is unavailable
+* a handler with missing dependencies returns `feature_unavailable`
+* a handler exception returns sanitized `operation_failed`
+* capability reporting only lists registered and available operations
+* one missing feature must not affect other features
+
+## Handler scope
+
+The dispatcher should create a DI scope per request.
+
+Handlers should be stateless or scoped.
+
+Cancellation tokens and request timeouts must be propagated to feature services.
+
+## Capabilities
+
+The app-side MCP server exposes a capabilities operation.
+
+Operation:
+
+```text
+mcp.capabilities
+```
+
+Example result:
+
+```json
+{
+  "protocolVersion": 1,
+  "applicationName": "WeatherFiesta",
+  "environmentName": "Development",
+  "devKitVersion": "1.0.0",
+  "enabledToolsets": ["diagnostics"],
+  "limits": {
+    "defaultRows": 100,
+    "maximumRows": 1000
+  },
+  "features": {
+    "logs": true,
+    "errors": true,
+    "health": true,
+    "jobs": true,
+    "orchestrations": false,
+    "messaging": true,
+    "queueing": true
+  },
+  "unavailable": {
+    "orchestrations": "Orchestration services are not registered."
+  },
+  "operations": [
     {
-      "runtimeId": "billing-api-5101",
-      "applicationName": "Billing.Api",
-      "baseUrl": "https://localhost:5101",
-      "status": "Ready"
+      "name": "logs.query",
+      "toolset": "diagnostics",
+      "feature": "logs",
+      "category": "query",
+      "description": "Queries retained log entries.",
+      "arguments": {
+        "from": "optional UTC timestamp",
+        "to": "optional UTC timestamp",
+        "search": "optional search text",
+        "correlationId": "optional correlation id",
+        "rows": "optional row limit"
+      },
+      "limits": {
+        "defaultRows": 100,
+        "maximumRows": 1000
+      },
+      "destructive": false
     },
     {
-      "runtimeId": "inventory-api-5201",
-      "applicationName": "Inventory.Api",
-      "baseUrl": "https://localhost:5201",
-      "status": "Ready"
+      "name": "logs.purge",
+      "toolset": "admin",
+      "feature": "logs",
+      "category": "purge",
+      "description": "Purges retained log entries.",
+      "destructive": true,
+      "confirmationRequired": true
+    },
+    {
+      "name": "jobs.trigger",
+      "toolset": "operations",
+      "feature": "jobs",
+      "category": "run",
+      "description": "Triggers a registered job.",
+      "destructive": false
+    },
+    {
+      "name": "weather.inspect.city",
+      "toolset": "diagnostics",
+      "feature": "project",
+      "owner": "WeatherFiesta.Core",
+      "category": "inspect",
+      "description": "Inspects a WeatherFiesta city and its weather state.",
+      "destructive": false
     }
   ]
 }
 ```
 
-## Persisted selection
+The CLI uses capabilities to improve responses and runtime summaries. The MCP tool catalog remains stable even when capabilities differ between runtimes.
 
-The selected runtime may be stored in:
+Capabilities should include enough metadata for agents to explain what can be inspected or operated in the selected runtime without trial-and-error calls.
 
-```text id="zhwgo3"
-.bdk/runtime-selection.json
+Operation metadata should include:
+
+* operation name
+* owner or feature
+* category
+* toolset
+* short description
+* argument schema or argument summary
+* required arguments
+* limits
+* destructive flag
+* confirmation requirement
+* concise result-shape summary where useful
+
+Capabilities should not expose full dashboard view models, large nested DTO schemas, or implementation-specific service names.
+
+Capabilities include built-in DevKit operations and project-owned operations.
+
+## Toolsets
+
+The MCP server supports separate toolsets.
+
+| Toolset | Purpose | Enabled by default |
+| ------- | ------- | -----------------: |
+| `diagnostics` | Read-only inspection tools. | yes |
+| `operations` | Trigger, retry, pause, resume, cancel, signal, release lease. | no |
+| `admin` | Purge, destructive cleanup, broad maintenance. | no |
+
+CLI option:
+
+```bash
+dotnet tool run bdk mcp --toolset diagnostics
+dotnet tool run bdk mcp --toolset diagnostics,operations
+dotnet tool run bdk mcp --toolset diagnostics,operations,admin
 ```
 
-Example:
+App-side handlers must enforce the requested toolset. The CLI should also avoid invoking operations outside enabled toolsets.
 
-```json id="rmcfz0"
+## Operation safety
+
+Operational tools should be usable without unnecessary friction, but destructive tools must be deliberate.
+
+Rules:
+
+* `operations` toolset actions may execute directly when the toolset is enabled and arguments are valid.
+* `admin` toolset actions that purge or destructively clean retained data must require an explicit confirmation argument in the operation payload.
+* destructive operations must not require a second confirmation message over IPC.
+* destructive tools should support dry-run or preview behavior when practical.
+* destructive results must return a summary of what was affected.
+
+Example destructive call shape:
+
+```json
 {
-  "selectedRuntimeId": "billing-api-5101",
-  "selectedAt": "2026-06-18T14:30:00Z"
+  "olderThan": "2026-06-19T00:00:00Z",
+  "confirm": true,
+  "confirmation": "purge logs"
 }
 ```
 
-The persisted selection is a convenience only. The CLI must still validate that the runtime exists and is reachable.
-
-## Capabilities Endpoint
-
-## Purpose
-
-The MCP process must not guess which features are configured.
-
-A running host exposes an authenticated capabilities endpoint:
-
-```text id="bkunsk"
-/_bdk/api/capabilities
-```
-
-The runtime descriptor points to this endpoint.
-
-The capabilities endpoint returns the features and operations that are available through the selected host’s operational HTTP endpoints.
-
-The descriptor answers:
-
-```text id="cyonyl"
-Where is this host?
-How can the MCP authenticate?
-Where can capabilities be read?
-```
-
-The capabilities endpoint answers:
-
-```text id="zo37ux"
-Which features are exposed?
-Which endpoints are mapped?
-Which operations are available?
-Which operations are read-only?
-Which operations require authentication, roles, or policies?
-```
-
-## Feature availability rule
-
-A feature is MCP-available only when:
-
-```text id="g2euz8"
-the feature is configured
-AND its operational HTTP endpoints are registered
-AND the MCP token can access them
-```
-
-Internal service registration alone is not enough.
-
-A feature may be configured internally but unavailable to MCP if its `/_bdk/api/*` endpoint surface is not registered.
-
-## Capabilities response
-
-Example response:
-
-```json id="dcgrh6"
-{
-  "schemaVersion": 1,
-  "runtimeId": "billing-api-5101",
-  "applicationName": "Billing.Api",
-  "environmentName": "Development",
-  "generatedAt": "2026-06-18T14:33:00Z",
-  "operationalBasePath": "/_bdk/api",
-  "features": {
-    "logs": {
-      "available": true,
-      "configured": true,
-      "endpointsRegistered": true,
-      "basePath": "/_bdk/api/logentries",
-      "authorization": {
-        "requiresAuthentication": true,
-        "roles": ["Administrator"],
-        "policy": null
-      },
-      "operations": {
-        "query": {
-          "method": "GET",
-          "path": "/_bdk/api/logentries",
-          "readOnly": true,
-          "description": "Query persisted log entries."
-        },
-        "stream": {
-          "method": "GET",
-          "path": "/_bdk/api/logentries/stream",
-          "readOnly": true,
-          "description": "Stream recent persisted log entries."
-        }
-      }
-    },
-    "metrics": {
-      "available": true,
-      "configured": true,
-      "endpointsRegistered": true,
-      "basePath": "/_bdk/api/metrics",
-      "authorization": {
-        "requiresAuthentication": true,
-        "roles": ["Administrator"],
-        "policy": null
-      },
-      "operations": {
-        "snapshot": {
-          "method": "GET",
-          "path": "/_bdk/api/metrics/snapshot",
-          "readOnly": true,
-          "description": "Return the current metric snapshot."
-        },
-        "query": {
-          "method": "POST",
-          "path": "/_bdk/api/metrics/query",
-          "readOnly": true,
-          "description": "Query persisted or aggregated metrics."
-        }
-      }
-    },
-    "queueing": {
-      "available": true,
-      "configured": true,
-      "endpointsRegistered": true,
-      "basePath": "/_bdk/api/queueing",
-      "authorization": {
-        "requiresAuthentication": true,
-        "roles": ["Administrator"],
-        "policy": null
-      },
-      "operations": {
-        "summary": {
-          "method": "GET",
-          "path": "/_bdk/api/queueing/stats",
-          "readOnly": true
-        },
-        "messages": {
-          "method": "GET",
-          "path": "/_bdk/api/queueing/messages",
-          "readOnly": true
-        },
-        "retryMessage": {
-          "method": "POST",
-          "path": "/_bdk/api/queueing/messages/{id}/retry",
-          "readOnly": false
-        }
-      }
-    },
-    "orchestrations": {
-      "available": false,
-      "configured": false,
-      "endpointsRegistered": false,
-      "reason": "Orchestration endpoints are not registered."
-    }
-  }
-}
-```
-
-## Capability provider model
-
-Feature endpoint packages contribute capability metadata when their operational endpoints are registered.
-
-Conceptual contract:
-
-```csharp id="fu7xsh"
-public interface IDevKitOperationalCapabilityProvider
-{
-    DevKitOperationalCapability GetCapability();
-}
-```
-
-Feature endpoint registration should register a provider:
-
-```csharp id="ehukn4"
-services.AddDevKitOperationalCapability("queueing", options.GroupPath, operations =>
-{
-    operations.Get("summary", "stats", readOnly: true);
-    operations.Get("messages", "messages", readOnly: true);
-    operations.Post("retryMessage", "messages/{id}/retry", readOnly: false);
-});
-```
-
-The capabilities endpoint aggregates all registered providers.
-
-## Do not infer from DI alone
-
-The capabilities endpoint may include `configured` and `endpointsRegistered`, but MCP availability is based on endpoint availability.
-
-The following is not enough:
-
-```text id="ymyxtf"
-ILogEntryService is registered
-IMetricsService is registered
-IQueueBrokerService is registered
-IMessageBrokerService is registered
-```
-
-The endpoint surface must also be mapped and accessible.
-
-## Do not probe known routes
-
-The MCP process should not discover features by probing route guesses such as:
-
-```text id="ow7j88"
-GET /_bdk/api/logentries
-GET /_bdk/api/metrics/snapshot
-GET /_bdk/api/queueing/stats
-GET /_bdk/api/orchestrations
-```
-
-Route probing is ambiguous because:
-
-* `404` may mean disabled or custom path
-* `401` may mean registered but unauthenticated
-* `403` may mean registered but forbidden
-* routes can be customized
-* probing creates noisy logs
-
-The capabilities endpoint is the authoritative contract.
-
-## Authentication and Authorization
-
-## Principle
-
-The MCP process authenticates to the selected running DevKit application through normal JWT bearer authentication.
-
-It does not bypass ASP.NET Core authentication or authorization.
-
-All DevKit operational endpoints under `/_bdk/api/*` may require:
-
-* authenticated user
-* specific roles
-* specific policies
-
-The token used by the MCP process must satisfy those requirements.
-
-The feature does not introduce separate diagnostic roles. Applications decide which roles or policies are required for their DevKit endpoints. In development this will often be an existing role such as `Administrator`, or only an authenticated user.
-
-## Supported authentication types
-
-The runtime descriptor supports:
-
-```text id="rqej9i"
-jwt-password
-jwt-client-credentials
-none
-```
-
-`jwt-password` uses OAuth2 password grant. This is intended for local development with a local identity provider and a configured development user.
-
-`jwt-client-credentials` uses OAuth2 client credentials. This is intended for tool/client identities where the identity provider can issue the required claims.
-
-`none` is only valid when the selected host intentionally exposes the relevant operational endpoints without authentication. This should not be the default.
-
-## Password grant
-
-Password grant allows the MCP process to authenticate as a configured local development user.
-
-This is useful when `/_bdk/api/*` endpoints require a normal user role such as `Administrator`.
-
-Descriptor example:
-
-```json id="ds1agi"
-{
-  "auth": {
-    "type": "jwt-password",
-    "scheme": "Bearer",
-    "authority": "https://localhost:5001",
-    "tokenEndpoint": "https://localhost:5001/_bdk/api/identity/connect/token",
-    "clientId": "bdk-mcp",
-    "clientSecret": "local-dev-secret",
-    "username": "admin@local",
-    "password": "admin",
-    "scope": "openid profile email roles",
-    "audience": "api"
-  }
-}
-```
-
-Token request:
-
-```http id="ckgrtr"
-POST https://localhost:5001/_bdk/api/identity/connect/token
-Content-Type: application/x-www-form-urlencoded
-
-grant_type=password
-&client_id=bdk-mcp
-&client_secret=local-dev-secret
-&username=admin%40local
-&password=admin
-&scope=openid profile email roles
-```
-
-## Client credentials grant
-
-Client credentials allows the MCP process to authenticate as a tool/client identity.
-
-Descriptor example:
-
-```json id="a9t66b"
-{
-  "auth": {
-    "type": "jwt-client-credentials",
-    "scheme": "Bearer",
-    "authority": "https://localhost:5001",
-    "tokenEndpoint": "https://localhost:5001/_bdk/api/identity/connect/token",
-    "clientId": "bdk-mcp",
-    "clientSecret": "local-dev-secret",
-    "scope": "openid profile email roles",
-    "audience": "api"
-  }
-}
-```
-
-Token request:
-
-```http id="ydxuud"
-POST https://localhost:5001/_bdk/api/identity/connect/token
-Content-Type: application/x-www-form-urlencoded
-
-grant_type=client_credentials
-&client_id=bdk-mcp
-&client_secret=local-dev-secret
-&scope=openid profile email roles
-```
-
-## Inline secrets and secret files
-
-For frictionless local development, the runtime descriptor may contain inline secrets.
-
-Supported fields:
-
-```text id="u49jea"
-clientSecret
-clientSecretFile
-password
-passwordFile
-```
-
-If both inline and file-based values are supplied, the file-based value takes precedence.
-
-Recommended precedence:
-
-```text id="sa23gr"
-clientSecretFile > clientSecret
-passwordFile > password
-```
-
-Example using files:
-
-```json id="e0jtld"
-{
-  "auth": {
-    "type": "jwt-password",
-    "tokenEndpoint": "https://localhost:5001/_bdk/api/identity/connect/token",
-    "clientId": "bdk-mcp",
-    "clientSecretFile": ".bdk/runtime/bdk-mcp.secret",
-    "username": "admin@local",
-    "passwordFile": ".bdk/runtime/bdk-mcp.password",
-    "scope": "openid profile email roles"
-  }
-}
-```
-
-Inline secrets are acceptable for local development and local identity providers when teams intentionally choose friction over stronger local secret handling.
-
-Secret files are preferred when the host generates temporary secrets or when descriptors are shared more broadly.
-
-## Token use
-
-After token acquisition, the MCP process sends:
-
-```http id="vfy4uk"
-Authorization: Bearer <access-token>
-```
-
-to all protected `/_bdk/api/*` calls.
-
-The capabilities endpoint may also require authentication. Therefore the token must be acquired before reading capabilities when `auth.type` is not `none`.
-
-## Token caching
-
-The MCP process may cache tokens in memory.
-
-Recommended behavior:
-
-```text id="bwiwxk"
-cache access token in memory only
-refresh shortly before expiry
-never log access tokens
-never log passwords
-never log client secrets
-on 401, clear token cache and retry once
-on 403, report missing role or policy
-```
-
-## Endpoint authorization
-
-Endpoint authorization remains application-owned.
-
-Authenticated-only endpoint:
-
-```csharp id="e70dd9"
-builder.Services.AddEndpoints<LogEntryEndpoints>(options => options
-    .GroupPath("/_bdk/api/logentries")
-    .RequireAuthorization());
-```
-
-Role-protected endpoint:
-
-```csharp id="p5ehen"
-builder.Services.AddEndpoints<LogEntryEndpoints>(options => options
-    .GroupPath("/_bdk/api/logentries")
-    .RequireAuthorization()
-    .RequireRoles("Administrator"));
-```
-
-Policy-protected endpoint:
-
-```csharp id="h0x5ew"
-builder.Services.AddEndpoints<QueueingEndpoints>(options => options
-    .GroupPath("/_bdk/api/queueing")
-    .RequireAuthorization()
-    .RequirePolicy("OperationsAccess"));
-```
-
-The MCP process does not need to know the role model ahead of time. It obtains the configured token and lets the host enforce authorization.
-
-## Authorization failures
-
-A `401 Unauthorized` response means:
-
-```text id="ii1jtx"
-no token
-expired token
-invalid token
-invalid issuer
-invalid audience
-invalid signature
-```
-
-A `403 Forbidden` response means:
-
-```text id="wdrb5s"
-token is valid
-but endpoint role or policy requirements are not satisfied
-```
-
-MCP tools should return structured auth failures instead of raw exception output.
-
-Example:
-
-```json id="dh5axs"
-{
-  "available": false,
-  "code": "forbidden",
-  "statusCode": 403,
-  "runtimeId": "billing-api-5101",
-  "feature": "logs",
-  "message": "The token is valid, but it does not satisfy the endpoint authorization requirements."
-}
-```
-
-## Localhost and Docker Scope
-
-This feature is intended for local development and controlled Docker development.
-
-Supported scenarios:
-
-```text id="h8bfkd"
-bdk mcp on host -> app on https://localhost:5001
-bdk mcp on host -> app in Docker through published localhost port
-bdk mcp in devcontainer -> app in sibling Docker container over configured Docker network
-```
-
-A valid JWT is still required. Localhost or Docker network access does not bypass authentication.
-
-Applications may choose to restrict `/_bdk/api/*` endpoints to local development or local network ranges, but that is an application-side security decision.
-
-## Operational Endpoint Base
-
-All DevKit operational endpoints used by this feature are under:
-
-```text id="eagddk"
-/_bdk/api
-```
-
-Examples:
-
-```text id="ux0qvv"
-/_bdk/api/capabilities
-/_bdk/api/logentries
-/_bdk/api/metrics
-/_bdk/api/messaging
-/_bdk/api/queueing
-/_bdk/api/jobs
-/_bdk/api/orchestrations
-/_bdk/api/health
-/_bdk/api/notifications
-```
-
-## Existing Feature Endpoint Mapping
-
-The MCP process maps tools to feature endpoint operations reported by capabilities.
-
-Expected endpoint areas:
-
-| Feature        | Default base path          | Purpose                                                                               |
-| -------------- | -------------------------- | ------------------------------------------------------------------------------------- |
-| capabilities   | `/_bdk/api/capabilities`   | Runtime feature and operation metadata.                                               |
-| logs           | `/_bdk/api/logentries`     | Persisted log query, stream, export, statistics.                                      |
-| metrics        | `/_bdk/api/metrics`        | Runtime and persisted metric snapshots, counters, gauges, timers, and metric queries. |
-| health         | `/_bdk/api/health`         | Health snapshot and readiness information.                                            |
-| messaging      | `/_bdk/api/messaging`      | Broker messages, subscriptions, handler states, stats.                                |
-| queueing       | `/_bdk/api/queueing`       | Queue messages, waiting items, queue state, stats.                                    |
-| jobs           | `/_bdk/api/jobs`           | Job definitions, runs, stats, trigger/control operations.                             |
-| orchestrations | `/_bdk/api/orchestrations` | Orchestration instances, state, history, signals, timers.                             |
-| notifications  | `/_bdk/api/notifications`  | Notification outbox and delivery state where exposed.                                 |
-
-The capabilities endpoint must be used to determine the actual path and available operations.
+If the confirmation argument is missing or invalid, the handler must return `confirmation_required`.
 
 ## MCP Tool Catalog
 
+The CLI exposes stable MCP tools.
+
 ## Runtime tools
 
-These tools do not require a selected runtime unless explicitly stated.
-
-```text id="ds97bq"
+```text
+bdk.mcp.status
+bdk.mcp.selfTest
+bdk.mcp.explainSetup
 bdk.runtimes.list
-bdk.runtimes.select
 bdk.runtimes.current
+bdk.runtimes.select
 bdk.runtimes.refresh
+bdk.capabilities.get
 ```
 
-## Capabilities tools
+## Investigation tools
 
-```text id="ow44gl"
-bdk.diagnostics.capabilities
+```text
+bdk.investigate.recentErrors
+bdk.investigate.correlation
+bdk.investigate.jobRun
+bdk.investigate.orchestrationInstance
 ```
-
-Returns capabilities for the selected runtime.
-
-If no runtime is selected and exactly one ready runtime exists, the MCP server may auto-select that runtime.
 
 ## Logs and errors
 
-```text id="ovvx57"
+```text
 bdk.logs.query
 bdk.logs.tail
+bdk.logs.purge
 bdk.errors.recent
 bdk.errors.details
-```
-
-`bdk.logs.query` supports filters such as:
-
-```text id="h34gam"
-from
-to
-age
-level
-traceId
-spanId
-correlationId
-logKey
-moduleName
-shortTypeName
-searchText
-limit
-continuationToken
-```
-
-`bdk.logs.tail` returns the newest matching entries. It must be bounded.
-
-`bdk.errors.recent` is a convenience wrapper around log query filters for error and fatal levels.
-
-`bdk.errors.details` returns one error and related logs when correlation, trace, or span metadata is available.
-
-## Metrics
-
-```text id="wudzui"
-bdk.metrics.snapshot
-bdk.metrics.query
-bdk.metrics.series
-bdk.metrics.summary
-```
-
-`bdk.metrics.snapshot` returns the current metric values available from the selected runtime.
-
-`bdk.metrics.query` queries persisted or aggregated metrics when the selected runtime exposes that operation.
-
-`bdk.metrics.series` returns time-based metric values where supported.
-
-`bdk.metrics.summary` returns grouped metric statistics such as count, min, max, average, percentiles, or feature-specific aggregates where supported.
-
-Possible filters:
-
-```text id="c57i82"
-from
-to
-metricName
-category
-moduleName
-tags
-aggregation
-interval
-limit
-```
-
-Metrics tools must be bounded and should avoid returning high-cardinality raw measurements unless explicitly requested and accepted by the endpoint.
-
-## Correlation inspection
-
-```text id="uv5yr8"
 bdk.correlation.inspect
 ```
 
-Inputs:
+## Health and metrics
 
-```text id="eq3i8i"
-correlationId
-traceId
-spanId
-from
-to
-limit
-```
-
-Returns:
-
-```text id="zt9vuo"
-matching logs
-matching errors
-related metrics where discoverable
-related messages where discoverable
-related queue messages where discoverable
-related job runs where discoverable
-related orchestration instances where discoverable
-summary counts
-time range
-```
-
-This tool is expected to become one of the highest-value diagnostic workflows.
-
-## Health
-
-```text id="w0dqu5"
+```text
 bdk.health.snapshot
+bdk.metrics.snapshot
+bdk.metrics.query
 ```
-
-Returns a health snapshot for the selected runtime.
-
-The exact data depends on the selected host’s health endpoint and registered health checks.
 
 ## Messaging
 
-```text id="m99a2b"
+```text
 bdk.messages.summary
 bdk.messages.subscriptions
 bdk.messages.waiting
 bdk.messages.list
 bdk.messages.details
 bdk.messages.content
-```
-
-Read-only by default.
-
-Future operations may include:
-
-```text id="sydz91"
 bdk.messages.retry
 bdk.messages.releaseLease
 bdk.messages.archive
@@ -1281,23 +1306,14 @@ bdk.messages.resumeType
 bdk.messages.purge
 ```
 
-These must require explicit operation mode and normal endpoint authorization.
-
 ## Queueing
 
-```text id="s9xgqb"
+```text
 bdk.queueing.summary
 bdk.queueing.subscriptions
 bdk.queueing.waiting
 bdk.queueing.messages
 bdk.queueing.messageDetails
-```
-
-Read-only by default.
-
-Future operations may include:
-
-```text id="nu4dk8"
 bdk.queueing.retry
 bdk.queueing.releaseLease
 bdk.queueing.archive
@@ -1310,18 +1326,11 @@ bdk.queueing.purge
 
 ## Jobs
 
-```text id="fj6zn4"
+```text
 bdk.jobs.list
 bdk.jobs.details
 bdk.jobs.runs
 bdk.jobs.runStats
-```
-
-Read-only by default.
-
-Future operations may include:
-
-```text id="ffs3u2"
 bdk.jobs.trigger
 bdk.jobs.pause
 bdk.jobs.resume
@@ -1331,272 +1340,557 @@ bdk.jobs.purgeRuns
 
 ## Orchestrations
 
-```text id="t4t96r"
+```text
 bdk.orchestrations.list
 bdk.orchestrations.instances
 bdk.orchestrations.instanceDetails
 bdk.orchestrations.history
 bdk.orchestrations.signals
 bdk.orchestrations.timers
-```
-
-Read-only by default.
-
-Future operations may include:
-
-```text id="pb3nmd"
 bdk.orchestrations.signal
 bdk.orchestrations.pause
 bdk.orchestrations.resume
 bdk.orchestrations.cancel
 bdk.orchestrations.terminate
 bdk.orchestrations.repair
+bdk.orchestrations.purge
 ```
 
-## Tool behavior for unavailable features
+## Documentation
 
-Tools should return structured unavailable results when a feature is not available.
+```text
+bdk.docs.search
+bdk.docs.get
+```
 
-Example:
+Documentation tools use online DevKit documentation sources and do not require a selected runtime.
 
-```json id="s0rzpd"
+## Project operations
+
+```text
+bdk.project.operations
+bdk.project.call
+```
+
+`bdk.project.operations` lists project-owned operations exposed by the selected runtime.
+
+`bdk.project.call` invokes a selected project-owned operation by name.
+
+Project-owned operations remain discoverable through capabilities. The stable `bdk.project.call` tool avoids requiring MCP clients to support dynamically changing tool catalogs.
+
+Project-owned operations must not be exposed as dynamic MCP tools by default. Agents discover them through `bdk.project.operations` and invoke them through `bdk.project.call`. This keeps the MCP tool catalog stable when runtimes start later or when different applications expose different project operations.
+
+## Investigation tool behavior
+
+Investigation tools aggregate multiple MCP operations into one agent-oriented result.
+
+`bdk.investigate.correlation` should include, where available:
+
+* matching logs
+* matching errors
+* related job runs
+* related orchestration instances
+* related messages and queue messages
+* a compact timeline
+* summary counts
+* suggested next tool calls
+
+`bdk.investigate.recentErrors` should include the latest errors, their correlation ids, exception summaries, and suggested correlation-inspection calls.
+
+`bdk.investigate.jobRun` and `bdk.investigate.orchestrationInstance` should include related logs and correlation context when available.
+
+Investigation tools must be bounded and may omit unavailable feature sections with explicit unavailable reasons.
+
+Correlation investigation targets the selected runtime. Cross-runtime correlation inspection is not part of the default tool catalog. Agents can switch runtimes explicitly with `bdk.runtimes.select` and call `bdk.investigate.correlation` again when needed.
+
+## Documentation tool behavior
+
+Documentation tools query official DevKit documentation sources.
+
+Expected behavior:
+
+* `bdk.docs.search` searches documentation by query text and returns bounded ranked results.
+* `bdk.docs.get` retrieves a specific documentation page or section by source identifier or URL.
+* results include source title, URL, and concise content.
+* responses indicate when online documentation is unreachable.
+* documentation tools do not require a runtime selection or IPC connection.
+
+## Project-Specific MCP Tools
+
+Project-specific MCP tools are first-class extension points for applications that use DevKit.
+
+They should help coding agents understand and manipulate local development state in ways that are difficult to infer from source code alone.
+
+## Recommended project tool categories
+
+Project tools should use these categories:
+
+| Category | Purpose | Example |
+| -------- | ------- | ------- |
+| `inspect` | Inspect an aggregate, entity, flow, or local runtime state with related signals. | `weather.inspect.city` |
+| `validate` | Check local data or configuration consistency. | `weather.validate.citySetup` |
+| `explain` | Explain why a domain object or workflow is in its current state. | `weather.explain.forecastState` |
+| `investigate` | Aggregate logs, jobs, messages, orchestrations, and domain state for one business concept. | `orders.investigate.order` |
+| `seed` | Create local development or test data. | `weather.seed.demoCity` |
+| `reset` | Reset local development data or scenarios. | `billing.reset.localInvoiceScenario` |
+| `run` | Execute a local workflow or simulation useful for development. | `weather.run.forecastRefresh` |
+
+## Project tool anti-patterns
+
+Project tools should not be generic CRUD wrappers.
+
+Avoid tools like:
+
+```text
+customer.create
+customer.update
+order.submit
+order.cancel
+city.add
+city.delete
+```
+
+Prefer tools that are explicitly local-development and agent-assistance oriented:
+
+```text
+orders.inspect.order
+orders.validate.projectionConsistency
+orders.explain.status
+orders.investigate.order
+orders.seed.failedPaymentScenario
+orders.reset.localScenario
+orders.run.paymentSimulation
+```
+
+## Project tool naming
+
+`bdk.*` is reserved for built-in DevKit tools.
+
+Project tools should use a project, module, or bounded-context prefix:
+
+```text
+weather.inspect.city
+billing.investigate.invoice
+inventory.validate.stockItem
+orders.run.paymentSimulation
+```
+
+Project tools should use stable names and should include metadata that helps agents use them correctly:
+
+* description
+* toolset
+* argument schema
+* result shape
+* limits
+* destructive-action confirmation requirements where applicable
+
+## WeatherFiesta Core example tools
+
+The WeatherFiesta example application can use project-specific MCP tools in its Core module to show how application-owned tools should feel.
+
+These tools are not replacements for the WeatherFiesta HTTP API. They are local development tools that help an agent inspect, validate, and explain the state behind the running application.
+
+### `weather.inspect.city`
+
+Category: `inspect`
+
+Toolset: `diagnostics`
+
+Purpose:
+
+Inspect one WeatherFiesta city as a local development concept, not as a CRUD resource.
+
+The tool should answer questions such as:
+
+* Is this city known locally?
+* Which Open-Meteo external id, country code, coordinates, time zone, and elevation are stored?
+* Is current weather available?
+* How many forecast days and hourly forecast rows are stored?
+* When was weather data last retrieved?
+* Does the city look stale according to the Core module ingestion threshold?
+* Are there recent logs or errors that mention this city or the weather ingestion flow?
+
+Example operation metadata:
+
+```json
 {
-  "available": false,
-  "code": "feature_unavailable",
-  "runtimeId": "billing-api-5101",
-  "feature": "orchestrations",
-  "reason": "Orchestration endpoints are not registered in the selected runtime."
+  "name": "weather.inspect.city",
+  "category": "inspect",
+  "toolset": "diagnostics",
+  "owner": "WeatherFiesta.Core",
+  "description": "Inspects a WeatherFiesta city, its weather state, forecast freshness, and related local diagnostic signals."
 }
 ```
 
-The MCP server should not crash because one feature is missing.
+Arguments:
 
-## Read-Only and Operations Toolsets
-
-The first version exposes read-only tools by default.
-
-Read-only tools may still expose sensitive information and must still honor authentication and authorization.
-
-Mutating tools are not part of the first implementation unless explicitly enabled by a future operations toolset.
-
-Potential future CLI option:
-
-```bash id="g2zqm9"
-dotnet tool run bdk mcp --toolset diagnostics
-dotnet tool run bdk mcp --toolset diagnostics,operations
+```json
+{
+  "cityId": "optional city id",
+  "name": "optional city name",
+  "countryCode": "optional ISO country code",
+  "includeForecasts": false,
+  "maxForecastDays": 7,
+  "includeRelatedLogs": true
+}
 ```
 
-Potential toolsets:
+At least one of `cityId` or `name` should be supplied. If `name` is supplied and multiple cities match, the response should return candidates and ask the agent to call again with `cityId`.
 
-| Toolset       | Purpose                                                |
-| ------------- | ------------------------------------------------------ |
-| `diagnostics` | Read-only inspection tools. Default.                   |
-| `operations`  | Retry, pause, resume, trigger, release lease. Future.  |
-| `admin`       | Purge, destructive cleanup, broad maintenance. Future. |
+Example result:
 
-Even when a toolset is enabled, the selected host’s authorization remains the final authority.
-
-## MCP Response Model
-
-MCP tools should return compact structured DTOs.
-
-Common envelope shape:
-
-```json id="utvjpb"
+```json
 {
   "available": true,
-  "runtimeId": "billing-api-5101",
-  "feature": "logs",
-  "data": {}
+  "summary": "Berlin is known, has current weather, 7 forecast days, and was refreshed 12 minutes ago.",
+  "data": {
+    "city": {
+      "id": "9dbb6f70-9fd7-4d97-8d8d-f8587e47823c",
+      "name": "Berlin",
+      "countryCode": "DE",
+      "externalId": 2950159,
+      "timeZone": "Europe/Berlin",
+      "latitude": 52.52,
+      "longitude": 13.405
+    },
+    "weather": {
+      "currentWeatherAvailable": true,
+      "retrievedAt": "2026-06-19T09:42:11Z",
+      "stale": false,
+      "forecastDays": 7,
+      "hourlyForecasts": 168
+    },
+    "relatedSignals": {
+      "recentErrorCount": 0,
+      "recentIngestionJobOccurrences": 1,
+      "correlationIds": [
+        "b8bdce13dfab480b98ce42a79612bb09"
+      ]
+    }
+  },
+  "truncated": false,
+  "next": [
+    {
+      "tool": "bdk.investigate.correlation",
+      "arguments": {
+        "correlationId": "b8bdce13dfab480b98ce42a79612bb09"
+      }
+    }
+  ]
 }
 ```
 
-Unavailable shape:
+Implementation notes:
 
-```json id="lh3ow1"
+* the handler can live in `WeatherFiesta.Application/Modules/Core/Mcp`
+* the handler may use Core module query/application services and domain specifications
+* related log, job, and correlation data should be gathered through MCP feature services or shared diagnostics services, not through dashboard HTML models
+* forecast details must be bounded by `maxForecastDays`
+* city lookup should be read-only
+
+### `weather.validate.cityForecastSetup`
+
+Category: `validate`
+
+Toolset: `diagnostics`
+
+Purpose:
+
+Validate whether a selected city is ready for local weather display and ingestion debugging.
+
+The tool should answer questions such as:
+
+* Does the city exist?
+* Does it have complete geocoding data?
+* Does current weather exist?
+* Are forecast rows present for the expected date range?
+* Is the data stale?
+* Is the weather ingestion job registered in the selected runtime?
+* Are recent ingestion errors visible for this city or the Core module?
+
+Arguments:
+
+```json
 {
-  "available": false,
-  "runtimeId": "billing-api-5101",
-  "feature": "logs",
-  "code": "feature_unavailable",
-  "reason": "Log entry endpoints are not registered."
+  "cityId": "optional city id",
+  "name": "optional city name",
+  "countryCode": "optional ISO country code",
+  "maxWeatherAgeMinutes": 60,
+  "expectedForecastDays": 7,
+  "includeExternalProbe": false
 }
 ```
 
-Error shape:
+`includeExternalProbe` should default to `false`. When enabled, the handler may run a bounded Open-Meteo suggestion or reachability check through the existing weather client. The default path should validate local application state without making outbound network calls.
 
-```json id="d5ejby"
+Example result:
+
+```json
 {
-  "available": false,
-  "runtimeId": "billing-api-5101",
-  "feature": "logs",
-  "code": "http_error",
-  "statusCode": 500,
-  "reason": "The selected runtime returned an error while querying logs."
+  "available": true,
+  "summary": "Berlin is display-ready. Forecast data is fresh and no recent ingestion errors were found.",
+  "data": {
+    "status": "passed",
+    "checks": [
+      {
+        "name": "city.exists",
+        "status": "passed",
+        "message": "City Berlin (DE) exists."
+      },
+      {
+        "name": "city.geocodingComplete",
+        "status": "passed",
+        "message": "External id, coordinates, time zone, and elevation are present."
+      },
+      {
+        "name": "weather.currentAvailable",
+        "status": "passed",
+        "message": "Current weather is available."
+      },
+      {
+        "name": "weather.forecastCoverage",
+        "status": "passed",
+        "message": "7 forecast days are stored."
+      },
+      {
+        "name": "jobs.weatherIngestionRegistered",
+        "status": "passed",
+        "message": "Weather ingestion job is registered in this runtime."
+      }
+    ]
+  },
+  "truncated": false,
+  "next": [
+    {
+      "tool": "weather.inspect.city",
+      "arguments": {
+        "cityId": "9dbb6f70-9fd7-4d97-8d8d-f8587e47823c",
+        "includeForecasts": true
+      }
+    }
+  ]
 }
 ```
 
-Authorization failure shape:
+Implementation notes:
 
-```json id="gj5k2j"
+* failed checks should include next suggested calls, for example `bdk.logs.query`, `bdk.investigate.correlation`, or `weather.inspect.city`
+* the result should be a checklist, not an exception dump
+* checks must tolerate missing optional features; for example, if jobs are not registered, return a warning or unavailable check instead of failing the entire operation
+* this tool must not create, update, subscribe, delete, or ingest cities
+
+These two WeatherFiesta tools are useful because they combine domain state with DevKit runtime signals. A coding agent investigating "why does Berlin not show fresh weather?" can get a compact answer without manually joining city data, forecasts, ingestion jobs, logs, and correlation ids.
+
+## Project tool registration
+
+Projects may register MCP handlers explicitly:
+
+```csharp
+if (builder.Environment.IsDevelopment())
 {
-  "available": false,
-  "runtimeId": "billing-api-5101",
-  "feature": "logs",
-  "code": "forbidden",
-  "statusCode": 403,
-  "reason": "The token is valid but does not satisfy the endpoint authorization requirements."
+    builder.Services.AddMcp()
+        .AddHandler<WeatherCityMcpHandler>();
 }
 ```
+
+Projects may also register handlers by assembly if supported:
+
+```csharp
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddMcp()
+        .AddHandlersFromAssemblyContaining<WeatherCityMcpHandler>();
+}
+```
+
+Project handlers must not be registered outside local development.
 
 ## Limits and Defaults
 
+## Response shape
+
+MCP tool responses should use a common agent-oriented envelope.
+
+Successful response:
+
+```json
+{
+  "available": true,
+  "summary": "Found 3 recent errors in WeatherFiesta. The latest error belongs to WeatherCleanupJob.",
+  "data": {},
+  "truncated": false,
+  "next": [
+    {
+      "tool": "bdk.investigate.correlation",
+      "arguments": {
+        "correlationId": "abc"
+      }
+    }
+  ]
+}
+```
+
+Unavailable response:
+
+```json
+{
+  "available": false,
+  "code": "feature_unavailable",
+  "summary": "Jobs are not available in the selected runtime.",
+  "reason": "Job services are not registered.",
+  "next": [
+    {
+      "tool": "bdk.capabilities.get",
+      "arguments": {}
+    }
+  ]
+}
+```
+
+Suggested next calls are advisory. The agent may ignore them, but they should make common diagnostics flows easier.
+
 Default limits:
 
-| Tool                        |       Default limit |
-| --------------------------- | ------------------: |
-| log query                   |            100 rows |
-| log tail                    |            100 rows |
-| recent errors               |             50 rows |
-| metric query                | 100 rows or buckets |
-| metric series               |         100 buckets |
-| correlation inspection logs |            200 rows |
-| message list                |            100 rows |
-| queue message list          |            100 rows |
-| job runs                    |            100 rows |
-| orchestration instances     |            100 rows |
-| orchestration history       |            200 rows |
+| Operation | Default limit |
+| --------- | ------------: |
+| log query | 100 rows |
+| log tail | 100 rows |
+| recent errors | 50 rows |
+| correlation inspection logs | 200 rows |
+| message list | 100 rows |
+| queue message list | 100 rows |
+| job runs | 100 rows |
+| orchestration instances | 100 rows |
+| orchestration history | 200 rows |
 
-The MCP process should pass explicit limits to HTTP endpoints when supported.
-
-The server remains responsible for enforcing maximum limits.
+Maximum limits should be enforced app-side.
 
 Recommended maximums:
 
-| Tool                        |        Maximum limit |
-| --------------------------- | -------------------: |
-| log query                   |            1000 rows |
-| metric query                | 1000 rows or buckets |
-| metric series               |         1000 buckets |
-| correlation inspection logs |            2000 rows |
-| message list                |            1000 rows |
-| queue message list          |            1000 rows |
-| job runs                    |            1000 rows |
-| orchestration history       |            2000 rows |
+| Operation | Maximum limit |
+| --------- | ------------: |
+| log query | 1000 rows |
+| correlation inspection logs | 2000 rows |
+| message list | 1000 rows |
+| queue message list | 1000 rows |
+| job runs | 1000 rows |
+| orchestration history | 2000 rows |
 
 ## Time Defaults
 
 When no date range is supplied:
 
-* logs default to recent entries or current day, depending on endpoint support
-* metrics default to recent entries, current process snapshot, or current day depending on endpoint support
+* logs default to recent entries or current day depending on handler support
 * errors default to recent entries or current day
-* correlation inspection may search recent/current day first
+* correlation inspection searches recent/current day first
 * jobs default to recent runs
 * messages default to active/recent retained messages
 * queueing defaults to active/recent retained messages
 * orchestrations default to active/recent instances
 
-All timestamps exchanged by MCP tools and operational endpoints should be UTC.
+All timestamps exchanged by MCP operations should be UTC.
 
-## Dashboard Relationship
+## Safety and Security
 
-The dashboard and MCP are sibling presentation surfaces.
+## Development-only registration
 
-Allowed:
+MCP handlers, IPC server, runtime descriptors, and runtime metadata are registered only in local development.
 
-```text id="yxqceu"
-Dashboard page -> internal DI service -> feature service
-MCP tool -> HTTP endpoint -> feature service
+Rules:
+
+* `AddMcp()` must no-op outside Development
+* feature MCP handlers must not be registered outside Development
+* the IPC server must not start outside Development
+* runtime descriptors must not be written outside Development
+* config alone must not enable MCP on non-development servers
+
+## Local IPC trust model
+
+The feature assumes a local development machine.
+
+The IPC channel is not a network security boundary. It should still use reasonable local safeguards:
+
+* no network listener
+* random runtime nonce in descriptor and request handshake
+* OS defaults for local IPC permissions
+* no secrets in logs
+* bounded responses
+* explicit toolsets for operational and admin actions
+
+## Secrets
+
+The runtime descriptor may contain a nonce, but it must not contain application secrets.
+
+Runtime descriptors, runtime selections, and IPC metadata are written to OS user-local `bdk/mcp` locations, so no repository `.gitignore` entries are required for normal MCP runtime state.
+
+## Auditing
+
+Operational and admin handlers should log meaningful activity where existing feature logging supports it.
+
+Useful audit properties:
+
+```text
+operation
+toolset
+runtime id
+correlation id
+target id
+result
 ```
-
-Not allowed:
-
-```text id="cwfit2"
-MCP tool -> dashboard page
-MCP tool -> Razor page
-MCP tool -> dashboard JavaScript
-Dashboard page -> MCP tool
-MCP process -> application DbContext
-```
-
-Dashboard pages may continue to use internal DI services.
-
-The MCP process runs outside the application and therefore uses the operational HTTP endpoint contract.
-
-## OpenAPI Relationship
-
-The MCP server itself is a STDIO process and does not expose OpenAPI endpoints.
-
-Existing `/_bdk/api/*` endpoints may be included or excluded from OpenAPI based on endpoint options.
-
-The runtime descriptor writer and capabilities endpoint should follow the DevKit operational endpoint conventions.
-
-Applications may choose to hide `/_bdk/api/*` endpoints from public OpenAPI output when those endpoints are intended for operational tooling only.
-
-## Local and Docker Scenarios
-
-## Host process on developer machine
-
-```text id="ompwph"
-bdk mcp runs on host
-application runs on host
-base URL: https://localhost:5001
-descriptor path: .bdk/runtimes/*.json
-```
-
-## App in Docker, MCP on host
-
-```text id="hxp9ag"
-bdk mcp runs on host
-application runs in Docker
-application exposes published port 5001
-descriptor is written into mounted workspace volume
-hostBaseUrl: https://localhost:5001
-```
-
-## MCP in devcontainer, app in sibling container
-
-```text id="b8agsd"
-bdk mcp runs inside devcontainer
-application runs in sibling container
-descriptor is available through mounted workspace volume
-containerBaseUrl: http://billing-api:8080
-```
-
-The MCP process chooses the reachable URL based on descriptor metadata and connectivity.
 
 ## Failure Handling
 
 The MCP server should start even when:
 
-```text id="orgoyb"
+```text
 no runtime is running
 multiple runtimes are running
 selected runtime is stale
 selected runtime is unreachable
-auth metadata is missing
-token acquisition fails
-capabilities endpoint is unavailable
-a feature endpoint is not registered
-a feature endpoint returns 401 or 403
+runtime descriptor is invalid
+IPC bind failed in the app
+capabilities operation is unavailable
+a feature handler is not registered
+a handler returns feature_unavailable
+online documentation is unreachable
 ```
 
-The MCP process should return structured results that help the agent or developer recover.
+Common failures:
 
-## Common failures
+| Failure | Tool behavior |
+| ------- | ------------- |
+| No runtimes found | Return `no_runtime_found` with hints. |
+| Multiple runtimes found | Return `runtime_selection_required`. |
+| Descriptor stale | Mark runtime `Stale`; suggest runtime cleanup or app restart. |
+| IPC unreachable | Return `selected_runtime_unavailable`. |
+| Version mismatch | Return `version_mismatch`. |
+| Feature unavailable | Return `feature_unavailable`. |
+| Unauthorized toolset | Return `unauthorized_toolset`. |
+| Timeout | Return `timeout`. |
+| Handler exception | Return sanitized `operation_failed`. |
+| Documentation unavailable | Return `documentation_unavailable` with source and retry hints. |
 
-| Failure                   | Tool behavior                                                 |
-| ------------------------- | ------------------------------------------------------------- |
-| No runtimes found         | Return `no_runtime_found` with hints.                         |
-| Multiple runtimes found   | Return `runtime_selection_required`.                          |
-| Descriptor stale          | Mark runtime `Stale`; suggest runtime cleanup or app restart. |
-| Token request failed      | Return `auth_token_request_failed`.                           |
-| Capabilities unauthorized | Return `unauthorized`.                                        |
-| Capabilities forbidden    | Return `forbidden`.                                           |
-| Feature unavailable       | Return `feature_unavailable`.                                 |
-| Endpoint 500              | Return `http_error` with status and sanitized message.        |
-| Timeout                   | Return `runtime_timeout`.                                     |
+## Self-diagnostics
+
+The CLI should expose self-diagnostics through `bdk.mcp.status` and `bdk.mcp.selfTest`.
+
+The status and self-test tools should report:
+
+```text
+CLI version
+workspace path
+descriptor directory
+selected runtime
+discovered runtimes
+IPC connectivity
+protocol version compatibility
+enabled toolsets
+available capabilities
+last runtime validation error
+documentation source reachability
+```
+
+These tools should work even when no application runtime is running.
 
 ## CLI Command Details
 
@@ -1606,9 +1900,8 @@ Starts the STDIO MCP server.
 
 Options:
 
-```text id="ieqgd0"
+```text
 --runtime-id <id>
---runtime-url <url>
 --workspace <path>
 --toolset <toolsets>
 --verbose
@@ -1616,7 +1909,7 @@ Options:
 
 Default:
 
-```bash id="omhrbu"
+```bash
 dotnet tool run bdk mcp
 ```
 
@@ -1626,11 +1919,11 @@ Lists discovered runtimes.
 
 Example output:
 
-```text id="qr5qno"
-Runtime ID          App             URL                       Status
-billing-api-5101    Billing.Api     https://localhost:5101     Ready
-inventory-api-5201  Inventory.Api   https://localhost:5201     Forbidden
-worker-5301         Worker.Host     https://localhost:5301     Stale
+```text
+Runtime ID          App             Transport       Status
+weatherfiesta-5001  WeatherFiesta   named-pipe      Ready
+dofiesta-5001       DoFiesta        named-pipe      Stale
+worker-5301         Worker.Host     unix-socket     Unreachable
 ```
 
 ## bdk runtimes current
@@ -1641,224 +1934,76 @@ Shows the selected runtime.
 
 Selects a runtime.
 
-```bash id="huxfzy"
-dotnet tool run bdk runtimes select billing-api-5101
+```bash
+dotnet tool run bdk runtimes select weatherfiesta-5001
 ```
 
-Writes:
+Writes the selected runtime to the OS user-local selection registry scoped by workspace hash:
 
-```text id="sjw574"
-.bdk/runtime-selection.json
+```text
+%LOCALAPPDATA%\bdk\mcp\selections\<workspace-hash>.json
+$XDG_RUNTIME_DIR/bdk/mcp/selections/<workspace-hash>.json
 ```
 
 ## bdk runtimes clean
 
-Removes stale runtime descriptors.
-
-A descriptor is stale when:
-
-```text id="ygwrrh"
-process id no longer exists
-capabilities endpoint is unreachable
-startedAt is too old and liveness cannot be confirmed
-descriptor is invalid
-```
+Removes stale runtime descriptors and stale IPC metadata where safe.
 
 The command should ask for confirmation unless `--yes` is supplied.
 
 ## bdk version
 
-Shows CLI version and optionally detected DevKit runtime versions.
+Shows CLI version and, where a runtime is selected, the app-side MCP protocol version.
 
 ## Web Host Registration
 
-## Runtime descriptor registration
-
 Target API:
 
-```csharp id="wh538j"
-builder.Services.AddDevKitRuntimeDescriptors(options =>
+```csharp
+if (builder.Environment.IsDevelopment())
 {
-    options.Enabled = builder.Environment.IsDevelopment();
-    options.WorkspacePath = builder.Environment.ContentRootPath;
-    options.OperationalBasePath = "/_bdk/api";
-    options.CapabilitiesPath = "/_bdk/api/capabilities";
-});
-```
-
-At application startup, the descriptor writer should write the runtime descriptor.
-
-At graceful shutdown, it should delete or mark the descriptor stale where possible.
-
-## Capabilities endpoint registration
-
-Target API:
-
-```csharp id="k9pu95"
-builder.Services.AddDevKitOperationalCapabilities();
-
-builder.Services.AddEndpoints<DevKitCapabilitiesEndpoints>(options => options
-    .GroupPath("/_bdk/api")
-    .RequireAuthorization());
-```
-
-or:
-
-```csharp id="zdyjcz"
-builder.Services.AddDevKitOperationalEndpoints(options => options
-    .GroupPath("/_bdk/api")
-    .RequireAuthorization());
-```
-
-The exact API shape can evolve, but the concepts must remain:
-
-```text id="glb3ck"
-capabilities are exposed under /_bdk/api/capabilities
-capabilities are protected like other BDK endpoints
-feature endpoint registrations contribute capability metadata
-```
-
-## Feature endpoint registration examples
-
-Logs:
-
-```csharp id="rm58lg"
-builder.Services.AddEndpoints<LogEntryEndpoints>(options => options
-    .GroupPath("/_bdk/api/logentries")
-    .RequireAuthorization()
-    .RequireRoles("Administrator"));
-```
-
-Metrics:
-
-```csharp id="fctyzg"
-builder.Services.AddEndpoints<MetricsEndpoints>(options => options
-    .GroupPath("/_bdk/api/metrics")
-    .RequireAuthorization()
-    .RequireRoles("Administrator"));
-```
-
-Queueing:
-
-```csharp id="lvjnnf"
-builder.Services.AddQueueing(builder.Configuration)
-    .WithEntityFrameworkBroker<AppDbContext>()
-    .AddEndpoints(options => options
-        .GroupPath("/_bdk/api/queueing")
-        .RequireAuthorization()
-        .RequireRoles("Administrator"));
-```
-
-Messaging:
-
-```csharp id="jr0dsj"
-builder.Services.AddMessaging(builder.Configuration)
-    .WithEntityFrameworkBroker<AppDbContext>()
-    .AddEndpoints(options => options
-        .GroupPath("/_bdk/api/messaging")
-        .RequireAuthorization()
-        .RequireRoles("Administrator"));
-```
-
-Orchestrations:
-
-```csharp id="a8ob71"
-builder.Services.AddOrchestrations()
-    .WithEntityFramework<AppDbContext>()
-    .AddEndpoints(options => options
-        .GroupPath("/_bdk/api/orchestrations")
-        .RequireAuthorization()
-        .RequireRoles("Administrator"));
-```
-
-## Local Identity Provider Setup
-
-For local development, hosts can use a local identity provider.
-
-Recommended local password grant setup:
-
-```json id="x2g921"
-{
-  "auth": {
-    "type": "jwt-password",
-    "tokenEndpoint": "https://localhost:5001/_bdk/api/identity/connect/token",
-    "clientId": "bdk-mcp",
-    "clientSecret": "local-dev-secret",
-    "username": "admin@local",
-    "password": "admin",
-    "scope": "openid profile email roles",
-    "audience": "api"
-  }
+    builder.Services.AddMcp(options =>
+    {
+        options.Enabled = true;
+        options.WorkspacePath = builder.Environment.ContentRootPath;
+    });
 }
 ```
 
-The local identity provider must issue a token with whatever role or policy the `/_bdk/api/*` endpoints require.
+The exact API can evolve, but the behavior must remain:
 
-If endpoints require `Administrator`, then the local user or local client must receive `Administrator`.
-
-No special DevKit-only diagnostic role is required.
-
-## Security Considerations
-
-## Secrets
-
-Inline secrets are supported for frictionless local development.
-
-Secret files are supported when stronger local handling is desired.
-
-Rules:
-
-```text id="wpyozd"
-never log client secrets
-never log passwords
-never log access tokens
-exclude .bdk/runtime/*.secret and .bdk/runtime/*.password from source control
-prefer generated temporary secrets when practical
+```text
+Development only
+runtime descriptor writer enabled
+IPC server enabled
+feature handlers registered only when MCP is enabled
+bind failure logs warning and app continues
 ```
 
-## Source control
+## Feature Registration
 
-Recommended `.gitignore` additions:
+Feature packages contribute handlers automatically when MCP is enabled.
 
-```gitignore id="eeos9j"
-.bdk/runtimes/
-.bdk/runtime-selection.json
-.bdk/runtime/*.secret
-.bdk/runtime/*.password
+Examples:
+
+```csharp
+builder.Services.AddJobScheduler();   // JobMcpHandler
+builder.Services.AddOrchestrations(); // OrchestrationMcpHandler
+builder.Services.AddMessaging();      // MessagingMcpHandler
+builder.Services.AddQueueing();       // QueueingMcpHandler
 ```
 
-If teams want to commit sample descriptors, they should use:
+Feature-level opt-out may be supported:
 
-```text id="rqtcdu"
-.bdk/runtimes/*.sample.json
+```csharp
+builder.Services.AddJobScheduler(options => options.DisableMcp());
 ```
 
-without real secrets.
+Host-level filtering may also be supported:
 
-## Network exposure
-
-The feature is intended for local and Docker development.
-
-Applications should avoid exposing `/_bdk/api/*` publicly unless intentionally secured.
-
-## Least privilege
-
-For development, many teams may use `Administrator`.
-
-For production-like environments, prefer a narrower role or policy, but the DevKit MCP feature does not mandate a separate role model.
-
-## Auditing
-
-Operational endpoints should log normal authenticated access where existing endpoint logging supports it.
-
-Future mutating MCP tools should include clear audit metadata such as:
-
-```text id="hmaine"
-tool name
-runtime id
-caller identity
-correlation id
-operation id
+```csharp
+builder.Services.AddMcp(options => options
+    .DisableFeature("jobs"));
 ```
 
 ## Testing Strategy
@@ -1867,249 +2012,127 @@ operation id
 
 Cover:
 
-```text id="b02fxe"
+```text
 runtime descriptor serialization
 runtime descriptor validation
 runtime discovery
-selection behavior
+runtime selection behavior
 stale descriptor cleanup
-auth descriptor parsing
-clientSecretFile/clientSecret precedence
-passwordFile/password precedence
-token acquisition request construction
-capabilities response parsing
+MCP protocol version compatibility
+nonce handshake validation
+IPC request/response serialization
 tool-to-operation mapping
+toolset enforcement
 structured unavailable results
+handler argument validation
 ```
 
-## Integration tests
+## Transport tests
 
 Cover:
 
-```text id="dlvypn"
-bdk mcp starts over STDIO
-runtime tools work without a running host
-multiple descriptors require runtime selection
-single runtime auto-selection
-capabilities endpoint call with password grant
-capabilities endpoint call with client credentials
-401 retry behavior
-403 reporting behavior
-log query tool calls /_bdk/api/logentries
-metrics snapshot tool calls /_bdk/api/metrics
-queueing summary tool calls /_bdk/api/queueing
-messaging summary tool calls /_bdk/api/messaging
-orchestration list tool calls /_bdk/api/orchestrations
+```text
+named pipe server/client connection on Windows
+Unix domain socket server/client connection on Linux/macOS
+bind failure does not fail application startup
+stale Unix socket file handling
+IPC request timeout
+multiple concurrent requests
 ```
 
 ## Web host tests
 
 Cover:
 
-```text id="udwmb9"
+```text
+MCP services register in Development
+MCP services do not register outside Development
 descriptor written on startup
-descriptor contains correct paths
-descriptor contains expected auth metadata
-capabilities endpoint aggregates registered providers
+descriptor removed or marked stale on shutdown
+IPC server starts when bind succeeds
+IPC bind failure logs warning and app continues
+capabilities include registered feature handlers
 unregistered feature appears unavailable
-endpoint authorization is respected
-capabilities endpoint can be protected
-metrics capabilities appear when metrics endpoints are registered
+```
+
+## CLI/MCP tests
+
+Cover:
+
+```text
+bdk mcp starts over STDIO
+runtime discovery tools return no_runtime_found when no host is running
+diagnostic tools require a selected reachable running host
+multiple descriptors require runtime selection
+single ready runtime auto-selection
+logs query maps to logs.query IPC operation
+jobs trigger requires operations toolset
+purge operations require admin toolset
+missing feature returns feature_unavailable
+bdk.mcp.status works without a running host
+bdk.mcp.selfTest reports descriptor and IPC status
+bdk.investigate.correlation aggregates related feature data
+bdk.docs.search returns bounded official documentation results
+bdk.docs.get returns bounded documentation content with source link
+project operations are listed through bdk.project.operations
+project operations are invoked through bdk.project.call
+project CRUD-style operations are not included in examples or templates
 ```
 
 ## Example app verification
 
 Example applications should demonstrate:
 
-```text id="daoq8p"
+```text
 local tool manifest
 VS Code MCP config
-one-host monolith scenario
-multi-host microservice scenario
-jwt-password auth with local IDP
-client credentials auth where useful
+WeatherFiesta local runtime descriptor
+DoFiesta local runtime descriptor
 logs query
-metrics snapshot
 recent errors
-queueing summary
-messaging summary
-orchestration list where registered
+correlation inspection
+investigation tools
+health snapshot
+MCP status and self-test
+DevKit documentation lookup
+project-specific inspect/validate/investigate tool
+job runs and trigger
+orchestration list and details
+purge retained data with admin toolset
 runtime selection
 ```
 
-## Implementation Phases
+## Finalized Decisions
 
-## Phase 1: CLI skeleton and local tool
-
-Create `BridgingIT.DevKit.Cli`.
-
-Implement:
-
-```text id="ejbhdk"
-bdk version
-bdk runtimes list
-bdk runtimes current
-bdk runtimes select
-bdk runtimes clean
-```
-
-Package as a .NET tool.
-
-Document local tool manifest setup.
-
-## Phase 2: Runtime descriptors
-
-Add runtime descriptor writing to `Presentation.Web`.
-
-Support:
-
-```text id="q7f7ey"
-.bdk/runtimes/*.json
-schemaVersion 1
-runtime id
-application metadata
-URLs
-/_bdk/api paths
-auth metadata
-descriptor cleanup on shutdown
-```
-
-## Phase 3: Capabilities endpoint
-
-Add:
-
-```text id="inecok"
-/_bdk/api/capabilities
-IDevKitOperationalCapabilityProvider
-feature capability registration helpers
-authorization metadata where known
-```
-
-Update feature endpoint packages to contribute capabilities when endpoints are registered.
-
-## Phase 4: Authentication
-
-Implement MCP-side token acquisition for:
-
-```text id="k1af71"
-jwt-password
-jwt-client-credentials
-none
-```
-
-Support:
-
-```text id="f49ic5"
-clientSecret
-clientSecretFile
-password
-passwordFile
-in-memory token cache
-401 refresh retry
-403 structured failure
-```
-
-## Phase 5: STDIO MCP server
-
-Implement:
-
-```text id="hcv9c8"
-bdk mcp
-runtime MCP tools
-capabilities MCP tool
-runtime selection behavior
-structured error handling
-```
-
-## Phase 6: Read-only diagnostics tools
-
-Implement read-only wrappers for:
-
-```text id="y3v7tt"
-logs
-errors
-metrics
-health
-messaging
-queueing
-jobs
-orchestrations
-```
-
-Tool implementation depends on capabilities metadata and selected runtime.
-
-## Phase 7: Examples and docs
-
-Add documentation for:
-
-```text id="mnp36j"
-local tool install
-VS Code config
-runtime descriptors
-multi-host selection
-local IDP password grant
-client credentials grant
-capabilities endpoint
-feature endpoint registration
-metrics endpoint usage
-```
-
-Update example apps.
-
-## Phase 8: Future operations toolset
-
-Add mutating tools only after the read-only diagnostics flow is stable.
-
-Candidate future operations:
-
-```text id="pza9qi"
-retry message
-release lease
-archive terminal message
-pause queue
-resume queue
-trigger job
-pause job
-resume job
-send orchestration signal
-cancel orchestration
-terminate orchestration
-```
-
-All mutating tools must be explicitly enabled and authorized by the selected host.
-
-## Open Questions
-
-* Should the CLI generate `.vscode/mcp.json` automatically?
-* Should the selected runtime be persisted per workspace, per user, or both?
-* Should capabilities include exact authorization metadata, or only report it where endpoint options expose it reliably?
-* Should the descriptor writer support custom descriptor directories?
-* Should Docker URL selection be automatic or explicitly configured?
-* Should token secrets be generated by the host, configured by the user, or both?
-* Should operation tools be a separate CLI option, separate MCP server name, or separate capability namespace?
-* Should cross-runtime correlation inspection be added later as an explicit multi-runtime tool?
-* Which metrics operations are part of the MVP: snapshot only, query only, series, or all three?
+* `AddMcp()` no-ops outside Development.
+* runtime descriptors and runtime selections use OS user-local `bdk/mcp` locations, not workspace files.
+* descriptor metadata includes workspace paths so the CLI can filter runtimes for the current workspace.
+* the runtime nonce is generated on app startup or IPC rebind and remains stable during descriptor heartbeat refreshes.
+* destructive admin operations require an explicit confirmation argument in the operation payload.
+* destructive admin operations do not require a second IPC confirmation exchange.
+* correlation investigation is scoped to the selected runtime.
+* capabilities expose operation metadata sufficient for agent use, but not full dashboard view models or large result schemas.
+* project-owned operations are discovered through `bdk.project.operations` and invoked through `bdk.project.call`.
+* project-owned operations are not exposed as dynamic MCP tools by default.
 
 ## Summary
 
-The DevKit STDIO MCP Diagnostics feature provides a local agent adapter for running DevKit applications.
+The DevKit STDIO MCP feature provides a local coding-agent surface for running DevKit applications.
 
 The important boundaries are:
 
-```text id="bnkow6"
+```text
 MCP is STDIO-only.
 The CLI hosts MCP.
 The app does not host MCP.
-The app exposes /_bdk/api/* operational endpoints.
-Each running host writes a descriptor.
-Multiple hosts are supported.
-One runtime is selected for normal diagnostic tools.
-Capabilities are discovered from the selected host.
-Auth uses normal JWT bearer tokens.
-Password grant and client credentials are supported.
-No direct database access happens from the MCP process.
-No inter-service discovery is included.
-Metrics are a first-class diagnostics feature.
+The CLI connects to the running app through local IPC.
+The app invokes feature-owned IMcpHandler implementations.
+Handlers use normal feature services.
+No direct database access happens from the CLI.
+No HTTP endpoint dependency exists for MCP operations.
+No Docker support is included.
+MCP is local development only.
+MCP registration must never prevent app startup.
 ```
 
-This keeps the feature useful for local coding agents while preserving DevKit architecture, endpoint security, and feature ownership.
+This keeps the feature useful for local coding agents while preserving feature ownership, keeping setup friction low, and avoiding HTTP authentication complexity.

@@ -4,21 +4,21 @@ on:
   push:
     branches:
       - main
-    # paths:
-    #   - 'mkdocs.yml'
-    #   - 'global.json'
-    #   - 'Directory.Build.props'
-    #   - 'Directory.Packages.props'
-    #   - '.config/dotnet-tools.json'
-    #   - 'docs/site/**'
-    #   - 'docs/api/**'
-    #   - 'docs/INDEX.md'
-    #   - 'docs/introduction-ddd-guide.md'
-    #   - 'docs/common-*.md'
-    #   - 'docs/features-*.md'
-    #   - 'docs/testing-*.md'
-    #   - 'src/**'
-    #   - '.github/workflows/pages.yml'
+    paths:
+      - 'mkdocs.yml'
+      - 'global.json'
+      - 'Directory.Build.props'
+      - 'Directory.Packages.props'
+      - '.config/dotnet-tools.json'
+      - 'docs/site/**'
+      - 'docs/api/**'
+      - 'docs/INDEX.md'
+      - 'docs/introduction-ddd-guide.md'
+      - 'docs/common-*.md'
+      - 'docs/features-*.md'
+      - 'docs/testing-*.md'
+      - 'src/**'
+      - '.github/workflows/pages.yml'
   workflow_dispatch:
 
 permissions:

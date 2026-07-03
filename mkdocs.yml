@@ -18,6 +18,7 @@ nav:
   - Why bITdevKit: why.md
   - Architecture: architecture.md
   - Packages: packages.md
+  - API Reference: api/index.md
   - Examples: examples.md
   # - Decisions:
   #     - Overview: decisions.md

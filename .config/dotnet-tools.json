@@ -50,6 +50,13 @@
         "dotnet-outdated"
       ],
       "rollForward": false
+    },
+    "docfx": {
+      "version": "2.78.5",
+      "commands": [
+        "docfx"
+      ],
+      "rollForward": false
     }
   }
 }

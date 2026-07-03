@@ -6,6 +6,8 @@ This changelog includes unreleased changes on `main` and the full tagged release
 
 ## [10.0.108] - 2026-07-03
 
+- Generate API Reference documentation for the devkit assembly set.
+- Add API Reference documentation for the devkit assembly set to the public website.
 - Added the new `Application.Orchestrations` feature for code-first, durable workflows with activities, state transitions, timers, signals, behaviors, in-memory execution, recovery services, administration APIs, query services, diagrams, and test harness support.
 - Added Entity Framework orchestration persistence and orchestration operational endpoints for definitions, instances, history, context, signals, timers, metrics, diagrams, SVG rendering, pause/resume, cancel/terminate, repair, lease release, purge, and timer requeue operations.
 - Added metrics infrastructure across utilities, requester/notifier behaviors, repositories, job scheduling, messaging, queueing, and ASP.NET Core presentation, including request metrics middleware and platform/bITdevKit metrics endpoints.

@@ -1,0 +1,42 @@
+{
+  "metadata": [
+    {
+      "src": [
+        {
+          "src": "../..",
+          "files": [
+            "docs/api/obj/assemblies/*.dll"
+          ]
+        }
+      ],
+      "dest": "obj/api",
+      "filter": "filterConfig.yml"
+    }
+  ],
+  "build": {
+    "content": [
+      {
+        "files": [
+          "index.md",
+          "toc.yml"
+        ]
+      },
+      {
+        "files": [
+          "obj/api/**/*.yml"
+        ]
+      }
+    ],
+    "dest": "../../.github/pages/api",
+    "template": [
+      "default",
+      "modern"
+    ],
+    "globalMetadata": {
+      "_appName": "bITdevKit API Reference",
+      "_appTitle": "bITdevKit API Reference",
+      "_disableContribution": true,
+      "_disableBreadcrumb": false
+    }
+  }
+}

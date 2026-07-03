@@ -160,7 +160,7 @@ The MCP dashboard page can also show whether MCP is enabled and whether a `bdk m
 
 ### 4. Configure the MCP client
 
-For VS Code, add a repo-local `.vscode/mcp.json` entry:
+For VS Code, add a repo-local `.vscode/mcp.json` entry that starts the `bdk mcp` server from the local .NET tool:
 
 ```json
 {
@@ -168,15 +168,7 @@ For VS Code, add a repo-local `.vscode/mcp.json` entry:
     "bdk": {
       "type": "stdio",
       "command": "dotnet",
-      "args": [
-        "run",
-        "--project",
-        "src/Presentation.Cli/Presentation.Cli.csproj",
-        "--",
-        "mcp",
-        "--toolset",
-        "diagnostics,operations,admin"
-      ]
+      "args": ["tool", "run", "bdk", "mcp"]
     }
   }
 }

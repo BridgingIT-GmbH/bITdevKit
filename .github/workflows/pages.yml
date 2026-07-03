@@ -6,12 +6,18 @@ on:
       - main
     paths:
       - 'mkdocs.yml'
+      - 'global.json'
+      - 'Directory.Build.props'
+      - 'Directory.Packages.props'
+      - '.config/dotnet-tools.json'
       - 'docs/site/**'
+      - 'docs/api/**'
       - 'docs/INDEX.md'
       - 'docs/introduction-ddd-guide.md'
       - 'docs/common-*.md'
       - 'docs/features-*.md'
       - 'docs/testing-*.md'
+      - 'src/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
@@ -33,6 +39,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v5.3.0
+        with:
+          global-json-file: global.json
+
+      - name: Cache nuget packages
+        uses: actions/cache@v5.0.5
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
       - name: Build site
         shell: pwsh
         run: |
@@ -41,6 +60,7 @@ jobs:
       - name: Verify static output
         run: |
           test -f .github/pages/index.html
+          test -f .github/pages/api/index.html
 
       - name: Publish to gh-pages
         env:

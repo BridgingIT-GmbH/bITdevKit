@@ -1,0 +1,26 @@
+<Project>
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)' == ''">Release</Configuration>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <WarningsAsErrors></WarningsAsErrors>
+    <NoWarn>$(NoWarn);0419;1570;1572;1573;1574;1584;1587;1591;1658;NU1902;NU1903</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ApiReferenceProject Include="../../src/**/*.csproj"
+                         Exclude="../../src/Common.Utilities.CodeGen/Common.Utilities.CodeGen.csproj;../../src/Domain.CodeGen/Domain.CodeGen.csproj" />
+  </ItemGroup>
+
+  <Target Name="Restore">
+    <MSBuild Projects="@(ApiReferenceProject)"
+             Targets="Restore"
+             Properties="Configuration=$(Configuration);GenerateDocumentationFile=$(GenerateDocumentationFile);TreatWarningsAsErrors=$(TreatWarningsAsErrors);WarningsAsErrors=$(WarningsAsErrors);NoWarn=$(NoWarn)" />
+  </Target>
+
+  <Target Name="Build">
+    <MSBuild Projects="@(ApiReferenceProject)"
+             Targets="Build"
+             Properties="Configuration=$(Configuration);GenerateDocumentationFile=$(GenerateDocumentationFile);TreatWarningsAsErrors=$(TreatWarningsAsErrors);WarningsAsErrors=$(WarningsAsErrors);NoWarn=$(NoWarn)" />
+  </Target>
+</Project>

@@ -4,6 +4,8 @@ This changelog includes unreleased changes on `main` and the full tagged release
 
 ## [Unreleased]
 
+## [10.0.108] - 2026-07-03
+
 - Added the new `Application.Orchestrations` feature for code-first, durable workflows with activities, state transitions, timers, signals, behaviors, in-memory execution, recovery services, administration APIs, query services, diagrams, and test harness support.
 - Added Entity Framework orchestration persistence and orchestration operational endpoints for definitions, instances, history, context, signals, timers, metrics, diagrams, SVG rendering, pause/resume, cancel/terminate, repair, lease release, purge, and timer requeue operations.
 - Added metrics infrastructure across utilities, requester/notifier behaviors, repositories, job scheduling, messaging, queueing, and ASP.NET Core presentation, including request metrics middleware and platform/bITdevKit metrics endpoints.
@@ -15,7 +17,11 @@ This changelog includes unreleased changes on `main` and the full tagged release
 - Added `Common.Utilities` composition helpers and diagram builders/renderers for Mermaid and SVG output.
 - Added DataPorter file-content export support.
 - Improved fake identity provider support with cookie-based single sign-on and configurable endpoint options.
-- Expanded the DoFiesta example with todo attachments, lifecycle orchestration, richer operations dashboards, metrics, file operations, log entries, messaging, notifications, and queueing views.
+- Added new `bdk` CLI and MCP agent tooling for command-line workflows and local agent development.
+- Added dashboard pages and operational endpoints for file storage, queueing, metrics, identity, log entries, system performance, and health checks.
+- Added CSV export for weather forecasts, weather ingestion pipeline reporting, and support for wind gusts plus additional forecast parameters.
+- Added Jobs dashboard pages, updated job occurrence lifecycle handling, and fixed background scheduling sweep startup behavior.
+- Expanded the DoFiesta and WeatherFiesta samples with richer dashboards, weather operations, log entry filtering, messaging, notifications, and file operations.
 - Updated package baselines including MailKit, MimeKit, OpenTelemetry, SharpCompress, Azure SDK packages, ASP.NET Core/EF Core packages, Kiota, MudBlazor, NSwag, Serilog, and test tooling.
 
 ## [10.0.107] - 2026-04-16

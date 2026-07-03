@@ -15,7 +15,15 @@ $apiMetadataRoot = Join-Path $docfxObjRoot 'api'
 
 & (Join-Path $PSScriptRoot 'sync-docs.ps1')
 
+$dockerUserArgs = @()
+if ($IsLinux -or $IsMacOS) {
+    $userId = (id -u).Trim()
+    $groupId = (id -g).Trim()
+    $dockerUserArgs = @('--user', "${userId}:${groupId}")
+}
+
 docker run --rm `
+    @dockerUserArgs `
     -v "${repoRoot}:/docs" `
     squidfunk/mkdocs-material:9 `
     build --clean

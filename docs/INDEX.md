@@ -11,6 +11,7 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 - [Common Mapping](./common-mapping.md): Keep boundary mapping explicit and testable through a small mapper abstraction with Mapster integration.
 - [Common Caching](./common-caching.md): Provide a small, shared in-process caching abstraction with a default memory-cache implementation.
 - [Common Observability Tracing](./common-observability-tracing.md): Add lightweight `Activity`-based tracing around services without pulling in a full observability framework.
+- [Utilities](./features-utilities.md): Group shared application-layer utility services for startup tasks, log-entry contracts and time-provider registration.
 
 ## Core Domain and Application
 
@@ -46,7 +47,12 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 
 ## Presentation and Host
 
+- [Presentation Host](./features-presentation.md): Configure ASP.NET Core applications through the DevKit web application builder and package-owned starter extensions.
 - [Presentation Endpoints](./features-presentation-endpoints.md): Define minimal API endpoints as modular classes with automatic discovery and mapping.
+- [DevKit CLI](./features-cli.md): Use the `bdk` command-line tool for host discovery, workspace-scoped host selection and host Console Command forwarding.
+- [DevKit MCP](./features-cli-mcp.md): Use `bdk mcp` from local coding agents to inspect and operate running DevKit applications.
+- [MCP Client Configuration](./features-cli-mcp-clients.md): Configure common MCP clients to start the `bdk mcp` STDIO server.
+- [Presentation Dashboard](./features-presentation-dashboard.md): Host modular developer dashboard pages with RazorSlice content, grouped navigation and live cards.
 - [Console Commands](./features-presentation-console-commands.md): Expose operational and administrative actions through discoverable console commands and an interactive shell.
 - [CORS Configuration](./features-presentation-cors.md): Configure browser cross-origin access through fluent, settings-driven CORS policies.
 - [Exception Handling](./features-presentation-exception-handling.md): Convert exceptions into consistent Problem Details responses with configurable handlers and mappings.

@@ -34,6 +34,9 @@ public class UserCityModel
     /// <summary>Gets or sets a value indicating whether the weather data may be stale.</summary>
     public bool StaleDataWarning { get; set; }
 
+    /// <summary>Gets or sets human-readable text describing when the weather data was retrieved.</summary>
+    public string LastUpdatedText { get; set; }
+
     /// <summary>Gets or sets the stale data warning message.</summary>
     public string StaleDataWarningMessage { get; set; }
 

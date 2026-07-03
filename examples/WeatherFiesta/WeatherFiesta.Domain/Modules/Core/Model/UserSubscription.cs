@@ -30,9 +30,12 @@ public class UserSubscription : ActiveEntity<UserSubscription, UserSubscriptionI
     /// <summary>Gets or sets the optional subscription end date.</summary>
     public DateTime? EndDate { get; private set; }
 
+    /// <summary>Gets the active subscription period.</summary>
+    public DateTimeRange ActivePeriod => new(this.StartDate, this.EndDate);
+
     /// <summary>Gets a value indicating whether the subscription is currently active.</summary>
     public bool IsActive => this.Status == SubscriptionStatus.Active &&
-                           (this.EndDate == null || this.EndDate > DateTime.UtcNow);
+                           this.ActivePeriod.Contains(DateTime.UtcNow);
 
     /// <summary>Gets or sets the audit state tracking creation, updates, and soft deletes.</summary>
     public AuditState AuditState { get; set; } = new();

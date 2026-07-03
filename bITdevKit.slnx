@@ -62,6 +62,7 @@
     <File Path="docs/features-orchestrations.md" />
     <File Path="docs/features-pipelines.md" />
     <File Path="docs/features-presentation-appstate.md" />
+    <File Path="docs/features-cli.md" />
     <File Path="docs/features-presentation-console-commands.md" />
     <File Path="docs/features-presentation-cors.md" />
     <File Path="docs/features-presentation-endpoints.md" />
@@ -234,6 +235,7 @@
     <Project Path="src/Presentation.Web.Storage/Presentation.Web.Storage.csproj" />
     <Project Path="src/Presentation.Web/Presentation.Web.csproj" />
     <Project Path="src/Presentation/Presentation.csproj" />
+    <Project Path="src/Presentation.Cli/Presentation.Cli.csproj" />
   </Folder>
   <Folder Name="/tests/" />
   <Folder Name="/tests/0. Common/">

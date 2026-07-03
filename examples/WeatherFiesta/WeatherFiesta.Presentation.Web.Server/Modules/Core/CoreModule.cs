@@ -102,6 +102,13 @@ public class CoreModule : WebModuleBase
 
         services.AddActiveEntities();
 
+        services.AddBusinessCalendars(calendars => calendars
+            .SetDefault(CreateBusinessCalendar())
+            .RegisterCountry("NL", CreateBusinessCalendar())
+            .RegisterCountry("DE", CreateBusinessCalendar())
+            .RegisterCountry("FR", CreateBusinessCalendar())
+            .RegisterCountry("GB", CreateBusinessCalendar()));
+
         services.AddDataPorter(configuration)
             .WithCsv(c =>
             {
@@ -117,7 +124,7 @@ public class CoreModule : WebModuleBase
                 .HaltOnFailure())
             .WithTask<CoreSeederTask>(o => o.HaltOnFailure());
 
-       // Open-Meteo client
+        // Open-Meteo client
         services.AddOpenMeteo(moduleConfiguration);
 
         // Weather report text generation
@@ -160,5 +167,18 @@ public class CoreModule : WebModuleBase
         IWebHostEnvironment environment = null)
     {
         return app;
+    }
+
+    private static IBusinessCalendar CreateBusinessCalendar()
+    {
+        return new DynamicBusinessCalendar(
+            new CalculatedHolidayProvider([
+                new CalculatedHoliday("New Year's Day", year => new DateOnly(year, 1, 1)),
+                new CalculatedHoliday("Good Friday", year => HolidayCalculations.GregorianEasterSunday(year).AddDays(-2)),
+                new CalculatedHoliday("Easter Monday", year => HolidayCalculations.GregorianEasterSunday(year).AddDays(1)),
+                new CalculatedHoliday("Labour Day", year => new DateOnly(year, 5, 1)),
+                new CalculatedHoliday("Christmas Day", year => new DateOnly(year, 12, 25)),
+                new CalculatedHoliday("Boxing Day", year => new DateOnly(year, 12, 26))
+            ]));
     }
 }

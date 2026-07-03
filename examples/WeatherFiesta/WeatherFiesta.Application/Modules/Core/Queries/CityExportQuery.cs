@@ -47,7 +47,7 @@ public partial class CityExportQuery
         var csv = new StringBuilder();
         // UTF-8 BOM
         csv.Append('\uFEFF');
-        csv.AppendLine("City,Country,Temperature(°C),ApparentTemperature(°C),Humidity(%),WeatherCode,WindSpeed(km/h),WindDirection(°),WindGusts(km/h),Precipitation(mm),CloudCover(%),Pressure(hPa),RetrievedAt,StaleDataWarning");
+        csv.AppendLine("City,Country,Temperature(°C),ApparentTemperature(°C),Humidity(%),WeatherCode,WindSpeed(km/h),WindDirection(°),WindGusts(km/h),Precipitation(mm),CloudCover(%),Pressure(hPa),RetrievedAt,LastUpdated,StaleDataWarning");
 
         foreach (var uc in userCities.OrderBy(uc => uc.DisplayOrder))
         {
@@ -73,7 +73,12 @@ public partial class CityExportQuery
 
             var weather = weatherResult.Value.FirstOrDefault();
             var isStale = weather?.IsStale(staleThreshold) ?? true;
-            csv.AppendLine($"\"{city.Name}\",\"{city.Country}\",{weather?.Temperature ?? 0},{weather?.ApparentTemperature ?? 0},{weather?.Humidity ?? 0},{weather?.WeatherCode ?? 0},{weather?.WindSpeed ?? 0},{weather?.WindDirection ?? 0},{weather?.WindGusts ?? 0},{weather?.Precipitation ?? 0},{weather?.CloudCover ?? 0},{weather?.Pressure ?? 0},{weather?.RetrievedAt.ToString("o") ?? ""},{isStale}");
+            var lastUpdated = weather is not null
+                ? weather.RetrievedAt.ToRelativeTimeText(
+                    DateTime.UtcNow,
+                    new RelativeTimeFormatOptions { MinimumUnit = RelativeTimeUnit.Minute })
+                : "";
+            csv.AppendLine($"\"{city.Name}\",\"{city.Country}\",{weather?.Temperature ?? 0},{weather?.ApparentTemperature ?? 0},{weather?.Humidity ?? 0},{weather?.WeatherCode ?? 0},{weather?.WindSpeed ?? 0},{weather?.WindDirection ?? 0},{weather?.WindGusts ?? 0},{weather?.Precipitation ?? 0},{weather?.CloudCover ?? 0},{weather?.Pressure ?? 0},{weather?.RetrievedAt.ToString("o") ?? ""},\"{lastUpdated}\",{isStale}");
         }
 
         return Result<CityExportResponse>.Success(new CityExportResponse

@@ -128,4 +128,20 @@ public class SubscriptionRulesTests
         result.IsFailure.ShouldBeTrue();
         result.Errors.ShouldContain(e => e.Message.Contains("does not allow data export"));
     }
+
+    [Fact]
+    public void UserSubscription_ActivePeriod_UsesStartAndOpenEnd()
+    {
+        // Arrange
+        var subscription = UserSubscription.CreateFree("user1");
+
+        // Act
+        var period = subscription.ActivePeriod;
+
+        // Assert
+        period.StartInclusive.ShouldBe(subscription.StartDate);
+        period.EndExclusive.ShouldBeNull();
+        period.Contains(DateTime.UtcNow).ShouldBeTrue();
+        period.ToIsoRangeString().ShouldNotBeNullOrWhiteSpace();
+    }
 }

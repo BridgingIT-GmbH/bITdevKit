@@ -143,11 +143,36 @@ public static class DateOnlyExtensions
     public static bool IsInRelativeRange(this DateOnly source, DateUnit unit, int amount, DateTimeDirection direction, bool inclusive = true)
     {
         var today = DateOnly.FromDateTime(DateTime.Now);
-        var referenceDate = direction == DateTimeDirection.Past ? today.Add(unit, -amount) : today.Add(unit, amount);
+        return source.IsInRelativeRange(today, unit, amount, direction, inclusive);
+    }
+
+    /// <summary>
+    /// Determines whether a date is inside a relative range around an explicit reference date.
+    /// </summary>
+    /// <param name="source">The date to evaluate.</param>
+    /// <param name="reference">The reference date.</param>
+    /// <param name="unit">The relative unit.</param>
+    /// <param name="amount">The amount of units.</param>
+    /// <param name="direction">The direction from the reference date.</param>
+    /// <param name="inclusive">Whether the boundaries are included.</param>
+    /// <returns><c>true</c> when the date is inside the range; otherwise <c>false</c>.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var due = today.AddDays(3).IsInRelativeRange(today, DateUnit.Day, 5, DateTimeDirection.Future);
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static bool IsInRelativeRange(this DateOnly source, DateOnly reference, DateUnit unit, int amount, DateTimeDirection direction, bool inclusive = true)
+    {
+        var referenceDate = direction == DateTimeDirection.Past
+            ? reference.Add(unit, -amount)
+            : reference.Add(unit, amount);
 
         return direction == DateTimeDirection.Past
-            ? (inclusive ? source <= today && source >= referenceDate : source < today && source > referenceDate)
-            : (inclusive ? source >= today && source <= referenceDate : source > today && source < referenceDate);
+            ? (inclusive ? source <= reference && source >= referenceDate : source < reference && source > referenceDate)
+            : (inclusive ? source >= reference && source <= referenceDate : source > reference && source < referenceDate);
     }
 
     [DebuggerStepThrough]
@@ -169,19 +194,96 @@ public static class DateOnlyExtensions
     [DebuggerStepThrough]
     public static int DaysUntil(this DateOnly date)
     {
-        return (date.ToDateTime(TimeOnly.MinValue) - DateTime.Now).Days;
+        return date.DaysUntil(DateOnly.FromDateTime(DateTime.Now));
+    }
+
+    /// <summary>
+    /// Calculates whole days from an explicit reference date to a target date.
+    /// </summary>
+    /// <param name="date">The target date.</param>
+    /// <param name="reference">The reference date.</param>
+    /// <returns>The day difference.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var days = dueDate.DaysUntil(today);
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static int DaysUntil(this DateOnly date, DateOnly reference)
+    {
+        return date.DayNumber - reference.DayNumber;
     }
 
     [DebuggerStepThrough]
     public static long ToUnixTimeSeconds(this DateOnly source)
     {
-        return new DateTimeOffset(source.ToDateTime(TimeOnly.MinValue)).ToUnixTimeSeconds();
+        return source.AtStartOfDay().ToUnixTimeSeconds();
+    }
+
+    /// <summary>
+    /// Converts a date at midnight UTC to Unix epoch milliseconds.
+    /// </summary>
+    /// <param name="source">The date to convert.</param>
+    /// <returns>The number of milliseconds since 1970-01-01T00:00:00Z.</returns>
+    /// <remarks>
+    /// <para>The date is interpreted as the start of day at offset +00:00 by default.</para>
+    /// <example>
+    /// <code>
+    /// var timestamp = new DateOnly(2026, 1, 1).ToUnixTimeMilliseconds();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static long ToUnixTimeMilliseconds(this DateOnly source)
+    {
+        return source.AtStartOfDay().ToUnixTimeMilliseconds();
     }
 
     [DebuggerStepThrough]
     public static DateTimeOffset ToDateTimeOffset(this DateOnly source, TimeSpan? offset = null)
     {
-        return new DateTimeOffset(source.ToDateTime(TimeOnly.MinValue), offset ?? TimeSpan.Zero);
+        return source.AtStartOfDay(offset);
+    }
+
+    /// <summary>
+    /// Combines a date with midnight using an explicit offset.
+    /// </summary>
+    /// <param name="source">The date to combine.</param>
+    /// <param name="offset">The offset to apply, or +00:00 when omitted.</param>
+    /// <returns>A <see cref="DateTimeOffset"/> at the start of the date.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var instant = date.AtStartOfDay(TimeSpan.FromHours(2));
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static DateTimeOffset AtStartOfDay(this DateOnly source, TimeSpan? offset = null)
+    {
+        return source.AtTime(TimeOnly.MinValue, offset);
+    }
+
+    /// <summary>
+    /// Combines a date with a time using an explicit offset.
+    /// </summary>
+    /// <param name="source">The date to combine.</param>
+    /// <param name="time">The time to combine.</param>
+    /// <param name="offset">The offset to apply, or +00:00 when omitted.</param>
+    /// <returns>A <see cref="DateTimeOffset"/> for the combined wall-clock value.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var instant = date.AtTime(new TimeOnly(13, 45), TimeSpan.FromHours(1));
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static DateTimeOffset AtTime(this DateOnly source, TimeOnly time, TimeSpan? offset = null)
+    {
+        return new DateTimeOffset(source.ToDateTime(time), offset ?? TimeSpan.Zero);
     }
 
     [DebuggerStepThrough]
@@ -191,7 +293,7 @@ public static class DateOnlyExtensions
     }
 
     [DebuggerStepThrough]
-    public static DateOnly RoundToNearest(this DateOnly source, DateUnit dateUnit)
+    public static DateOnly FloorTo(this DateOnly source, DateUnit dateUnit)
     {
         switch (dateUnit)
         {
@@ -206,5 +308,48 @@ public static class DateOnlyExtensions
             default:
                 throw new ArgumentException("Unsupported DateUnit.", nameof(dateUnit));
         }
+    }
+
+    [DebuggerStepThrough]
+    public static DateOnly CeilingTo(this DateOnly source, DateUnit dateUnit)
+    {
+        var floor = source.FloorTo(dateUnit);
+        if (floor == source)
+        {
+            return source;
+        }
+
+        return dateUnit switch
+        {
+            DateUnit.Day => floor.AddDays(1),
+            DateUnit.Week => floor.AddDays(7),
+            DateUnit.Month => floor.AddMonths(1),
+            DateUnit.Year => floor.AddYears(1),
+            _ => throw new ArgumentException("Unsupported DateUnit.", nameof(dateUnit))
+        };
+    }
+
+    [DebuggerStepThrough]
+    public static DateOnly RoundToNearest(this DateOnly source, DateUnit dateUnit)
+    {
+        return source.FloorTo(dateUnit);
+    }
+
+    /// <summary>
+    /// Formats a date using ISO yyyy-MM-dd format.
+    /// </summary>
+    /// <param name="source">The date to format.</param>
+    /// <returns>The invariant ISO date string.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var text = new DateOnly(2026, 6, 29).ToIsoDateString();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static string ToIsoDateString(this DateOnly source)
+    {
+        return source.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
     }
 }

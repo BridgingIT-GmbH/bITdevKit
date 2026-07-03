@@ -5948,7 +5948,7 @@
           "Core.Cities"
         ],
         "summary": "Core.Cities.Weather",
-        "description": "Gets current weather and forecasts for a subscribed city.",
+        "description": "Gets current weather and forecasts for a subscribed city, optionally filtered by an ISO date range.",
         "operationId": "Core.Cities.Weather",
         "parameters": [
           {
@@ -5960,11 +5960,10 @@
             }
           },
           {
-            "name": "forecastDays",
+            "name": "range",
             "in": "query",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             }
           }
         ],
@@ -6173,7 +6172,7 @@
           "Core.Weather"
         ],
         "summary": "Core.Weather.Sun",
-        "description": "Gets sunrise/sunset data for a subscribed city.",
+        "description": "Gets sunrise/sunset data for a subscribed city, optionally filtered by an ISO date range.",
         "operationId": "Core.Weather.Sun",
         "parameters": [
           {
@@ -6185,11 +6184,10 @@
             }
           },
           {
-            "name": "days",
+            "name": "range",
             "in": "query",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             }
           }
         ],
@@ -11319,6 +11317,12 @@
               "$ref": "#/components/schemas/WeatherAlertModel"
             }
           },
+          "lastUpdatedText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "staleDataWarning": {
             "type": "boolean"
           },
@@ -11361,6 +11365,12 @@
           },
           "currentWeather": {
             "$ref": "#/components/schemas/CurrentWeatherModel"
+          },
+          "lastUpdatedText": {
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "staleDataWarning": {
             "type": "boolean"
@@ -11521,6 +11531,12 @@
               "$ref": "#/components/schemas/WeatherRecommendationModel"
             }
           },
+          "lastUpdatedText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "staleDataWarning": {
             "type": "boolean"
           },
@@ -11595,6 +11611,12 @@
       "CitySunResponse": {
         "type": "object",
         "properties": {
+          "period": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "sunData": {
             "type": [
               "null",
@@ -11611,6 +11633,12 @@
         "properties": {
           "currentWeather": {
             "$ref": "#/components/schemas/CurrentWeatherModel"
+          },
+          "forecastPeriod": {
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "forecasts": {
             "type": [
@@ -11706,6 +11734,12 @@
             "type": "string",
             "format": "date-time"
           },
+          "lastUpdatedText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "staleDataWarning": {
             "type": "boolean"
           },
@@ -11770,8 +11804,46 @@
               "$ref": "#/components/schemas/WeatherRecommendationModel"
             }
           },
+          "nextBusinessDayReport": {
+            "$ref": "#/components/schemas/DashboardWeatherReportModel"
+          },
           "unitPreferences": {
             "$ref": "#/components/schemas/UnitPreferencesModel"
+          }
+        }
+      },
+      "DashboardWeatherReportModel": {
+        "type": "object",
+        "properties": {
+          "reportType": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "period": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "forecastDateStart": {
+            "type": "string",
+            "format": "date"
+          },
+          "forecastDateEndExclusive": {
+            "type": "string",
+            "format": "date"
+          },
+          "summary": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "generatedAt": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -14473,9 +14545,21 @@
             "type": "string",
             "format": "date-time"
           },
+          "daylightPeriod": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "daylightDurationSeconds": {
             "type": "integer",
             "format": "int32"
+          },
+          "daylightDurationText": {
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "isDay": {
             "type": "boolean"
@@ -14621,6 +14705,12 @@
           },
           "staleDataWarning": {
             "type": "boolean"
+          },
+          "lastUpdatedText": {
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "staleDataWarningMessage": {
             "type": [
@@ -14785,6 +14875,12 @@
             ],
             "format": "date-time"
           },
+          "activePeriod": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "isActive": {
             "type": "boolean"
           },
@@ -14931,6 +15027,18 @@
             "type": "string",
             "format": "date-time"
           },
+          "daylightPeriod": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
+          "daylightDurationText": {
+            "type": [
+              "null",
+              "string"
+            ]
+          },
           "hourlyForecasts": {
             "type": [
               "null",
@@ -14943,6 +15051,12 @@
           "retrievedAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "lastUpdatedText": {
+            "type": [
+              "null",
+              "string"
+            ]
           },
           "staleDataWarning": {
             "type": "boolean"

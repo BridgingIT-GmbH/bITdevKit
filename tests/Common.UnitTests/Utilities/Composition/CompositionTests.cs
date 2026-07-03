@@ -5,7 +5,6 @@
 
 
 using System.Collections.Concurrent;
-using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Common.Utilities.Composition;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;

@@ -20,5 +20,8 @@ public enum WeatherReportType
     Tomorrow = 2,
 
     /// <summary>Seven-day outlook based on the available city-local forecast days.</summary>
-    Week = 3
+    Week = 3,
+
+    /// <summary>Forecast report for the next city-local business day.</summary>
+    NextBusinessDay = 4
 }

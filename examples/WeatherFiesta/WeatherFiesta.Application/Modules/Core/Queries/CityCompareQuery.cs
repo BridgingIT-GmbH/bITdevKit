@@ -75,16 +75,28 @@ public partial class CityCompareQuery
             }
 
             var weather = weatherResult.Value.FirstOrDefault();
+            var isStale = weather is not null && weather.IsStale(staleThreshold);
+            var lastUpdatedText = weather?.RetrievedAt.ToRelativeTimeText(
+                DateTime.UtcNow,
+                new RelativeTimeFormatOptions { MinimumUnit = RelativeTimeUnit.Minute });
+            var staleDataWarningMessage = isStale
+                ? $"Data may be outdated - last updated {lastUpdatedText}"
+                : null;
 
             var cityComparison = new CityComparisonModel
             {
                 CityId = cityIdStr,
                 CurrentWeather = weather is not null ? mapper.Map<CurrentWeather, CurrentWeatherModel>(weather) : null,
-                StaleDataWarning = weather is not null && weather.IsStale(staleThreshold),
-                StaleDataWarningMessage = weather is not null && weather.IsStale(staleThreshold)
-                    ? $"Data may be outdated — last updated {(int)(DateTime.UtcNow - weather.RetrievedAt).TotalMinutes} minutes ago"
-                    : null
+                LastUpdatedText = lastUpdatedText,
+                StaleDataWarning = isStale,
+                StaleDataWarningMessage = staleDataWarningMessage
             };
+
+            if (cityComparison.CurrentWeather is not null && cityComparison.StaleDataWarning)
+            {
+                cityComparison.CurrentWeather.StaleDataWarning = true;
+                cityComparison.CurrentWeather.StaleDataWarningMessage = cityComparison.StaleDataWarningMessage;
+            }
 
             result.Cities.Add(cityComparison);
         }
@@ -211,6 +223,9 @@ public class CityComparisonModel
 
     /// <summary>Gets or sets the current weather.</summary>
     public CurrentWeatherModel CurrentWeather { get; set; }
+
+    /// <summary>Gets or sets human-readable text describing when the weather data was retrieved.</summary>
+    public string LastUpdatedText { get; set; }
 
     /// <summary>Gets or sets a value indicating whether the data may be stale.</summary>
     public bool StaleDataWarning { get; set; }

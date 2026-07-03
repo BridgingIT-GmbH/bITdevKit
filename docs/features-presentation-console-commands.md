@@ -39,11 +39,12 @@ The feature addresses these challenges by supplying:
 ### Use Cases
 
 | Scenario | Description | Example |
-|----------|-------------|---------|
+| ---------- | ------------- | --------- |
 | Local runtime diagnostics | Inspect memory, GC, thread pool, performance and environment info while developing | `diag perf` `gc --no-collect` `threads` |
 | Operational introspection | Quick status snapshot / health indicator without external tools | `status` `metrics` |
 | Automated task invocation | Trigger maintenance, job scheduling or batch operations via CLI | `jobs trigger --name=reindex` |
 | Environment launch helpers | Open bound Kestrel addresses with optional filtering | `browse open --all` |
+| Documentation lookup | Open the official bITdevKit documentation from any Console Commands host | `docs` `docs --url` |
 | GC experimentation | Force collections in development to validate memory patterns | `diag gc --force` |
 | Extension via custom commands | Project-specific automation (seed data, cache warmup, export) | `seed data --count=50` |
 
@@ -68,7 +69,7 @@ flowchart LR
 ### Core Components
 
 | Component | Responsibility |
-|-----------|----------------|
+| ----------- | ---------------- |
 | `ConsoleCommandBase` | Base class offering name, alias, description and execution contract. |
 | `IConsoleCommand` | Marker + contract for binding and execution. |
 | `IGroupedConsoleCommand` | Adds `GroupName` + `GroupAliases` to nest subcommands. |
@@ -85,17 +86,40 @@ flowchart LR
 Use when you need single-run invocation (e.g. hosted service executing a command supplied via args).
 
 ```csharp
-var builder = Host.CreateApplicationBuilder(args);
-
-builder.Services.AddConsoleCommands(cfg =>
-{
-    cfg.AddCommand<SampleConsoleCommand>(); // register commands
-});
+var builder = DevKitApplication.CreateBuilder(args, builder => builder
+    .AddConsoleCommands(cfg =>
+    {
+        cfg.WithCommand<SampleConsoleCommand>(); // register commands
+    }));
 
 using var host = builder.Build();
 
 return await ConsoleCommands.RunAsync(host.Services, args);
 ```
+
+`DevKitApplication` keeps local CLI host advertisement disabled by default, so single-shot console command applications do not need to opt out of descriptor writing.
+
+The raw generic host remains supported for applications that do not need the DevKit fluent builder:
+
+```csharp
+var builder = Host.CreateApplicationBuilder(args);
+
+builder.Services.AddConsoleCommands(cfg =>
+{
+    cfg.WithCommand<SampleConsoleCommand>();
+});
+```
+
+The shared docs command can be registered the same way when an application host, worker or custom tool should expose the official documentation shortcut:
+
+```csharp
+builder.Services.AddConsoleCommands(cfg =>
+{
+    cfg.WithCommand<DocsConsoleCommand>();
+});
+```
+
+Use `docs` to open the official documentation in the default browser, or `docs --url` to write the URL without opening a browser. The packaged `bdk docs` command uses this same shared command with CLI-specific JSON and CI behavior layered around it.
 
 ### Register Interactive Commands (Kestrel)
 
@@ -104,7 +128,7 @@ Enable the interactive loop for local development.
 ```csharp
 builder.Services.AddConsoleCommandsInteractive(cfg =>
 {
-    cfg.AddCommand<SeedDataConsoleCommand>();
+    cfg.WithCommand<SeedDataConsoleCommand>();
 });
 
 var app = builder.Build();
@@ -189,7 +213,7 @@ When registered and running locally, a banner appears and the loop waits for use
 ### History Management
 
 | Command | Purpose |
-|---------|---------|
+| --------- | --------- |
 | `history list --max=50` | Show recent entries. |
 | `history search cache` | Find entries containing a substring. |
 | `history clear --keep-last=10` | Trim or fully clear persisted history file. |
@@ -203,7 +227,7 @@ When registered and running locally, a banner appears and the loop waits for use
 The `diag` group centralizes point-in-time runtime introspection.
 
 | Subcommand | Description | Key Metrics |
-|------------|-------------|-------------|
+| ------------ | ------------- | ------------- |
 | `diag gc [--force]` | GC memory & collections; optional full collection. | Heap size, fragmented bytes, gen counts. |
 | `diag threads` | Thread pool configuration & usage. | Min/max/available/used, pending work items. |
 | `diag mem` | Detailed process & managed memory summary. | Working set, private bytes, heap, fragment. |
@@ -236,7 +260,7 @@ This approach enables automation (CI tasks, maintenance jobs) while reusing the 
 
 1. Create a class deriving `ConsoleCommandBase` (or implementing `IGroupedConsoleCommand` for groups).
 2. Decorate properties with option / argument attributes.
-3. Register via builder (`cfg.AddCommand<YourCommand>()`).
+3. Register via builder (`cfg.WithCommand<YourCommand>()`).
 4. Implement `ExecuteAsync` producing Spectre.Console output (tables, markup, panels).
 
 ### Introduce New Groups
@@ -250,7 +274,7 @@ Refactor repeated metrics/data gathering into internal static helper classes (si
 ## Best Practices
 
 | Practice | Recommendation |
-|----------|---------------|
+| ---------- | --------------- |
 | Keep commands atomic | One responsibility per command/subcommand; compose externally rather than adding mode flags that diverge logic. |
 | Validate early | Use `OnAfterBind` for inter-property checks and normalization. |
 | Prefer descriptive names | Short primary name, optional aliases for ergonomics (e.g. `memory` + alias `mem`). |
@@ -265,7 +289,7 @@ Refactor repeated metrics/data gathering into internal static helper classes (si
 ## Troubleshooting
 
 | Issue | Cause | Resolution |
-|-------|-------|-----------|
+| ------- | ------- | ----------- |
 | "Unknown command" | Typo or not registered | Run `help` to verify registration; ensure command added via builder. |
 | No interactive loop | Environment not local/development | Check `IsDevelopment()`, ensure Kestrel addresses feature available. |
 | `--force` ignored | Non-development environment | Run in Development or remove sensitive flag. |
@@ -325,7 +349,7 @@ end
 ## Appendix B: Key Interfaces & Base Class
 
 | Type | Summary |
-|------|---------|
+| ------ | --------- |
 | `IConsoleCommand` | Name, aliases, description, matching, lifecycle hook, async execution. |
 | `IGroupedConsoleCommand` | Extends command with group identity & aliases for hierarchical invocation. |
 | `ConsoleCommandBase` | Implements common plumbing; derived classes only override `ExecuteAsync`. |

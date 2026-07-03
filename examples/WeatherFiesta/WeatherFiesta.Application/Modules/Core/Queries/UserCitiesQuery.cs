@@ -51,11 +51,13 @@ public partial class UserCitiesQuery
             if (weather is not null)
             {
                 model.CurrentWeather = mapper.Map<CurrentWeather, CurrentWeatherModel>(weather);
+                model.LastUpdatedText = model.CurrentWeather.LastUpdatedText;
                 model.StaleDataWarning = weather.IsStale(staleThreshold);
                 if (model.StaleDataWarning)
                 {
-                    var minutesSinceUpdate = (int)(DateTime.UtcNow - weather.RetrievedAt).TotalMinutes;
-                    model.StaleDataWarningMessage = $"Data may be outdated — last updated {minutesSinceUpdate} minutes ago";
+                    model.StaleDataWarningMessage = $"Data may be outdated - last updated {model.LastUpdatedText}";
+                    model.CurrentWeather.StaleDataWarning = true;
+                    model.CurrentWeather.StaleDataWarningMessage = model.StaleDataWarningMessage;
                 }
             }
 

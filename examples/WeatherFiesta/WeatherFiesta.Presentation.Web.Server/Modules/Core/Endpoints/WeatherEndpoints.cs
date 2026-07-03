@@ -39,13 +39,13 @@ public class WeatherEndpoints : EndpointsBase
         group.MapGet("/{cityId}/sun",
             async ([FromServices] IRequester requester,
                    [FromRoute] string cityId,
-                   [FromQuery] int? days,
+                   [FromQuery] string range,
                    CancellationToken ct)
                 => (await requester
-                    .SendAsync(new CitySunQuery(cityId, days), cancellationToken: ct))
+                    .SendAsync(new CitySunQuery(cityId, range), cancellationToken: ct))
                     .MapHttpOk())
             .WithName("Core.Weather.Sun")
-            .WithDescription("Gets sunrise/sunset data for a subscribed city.")
+            .WithDescription("Gets sunrise/sunset data for a subscribed city, optionally filtered by an ISO date range.")
             .Produces<CitySunResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)

@@ -13,6 +13,9 @@ This includes:
 - resiliency and concurrency helpers such as `Retryer`, `Debouncer`, `Throttler`, `CircuitBreaker`, `RateLimiter`, `Bulkhead`, and `TimeoutHandler`
 - lightweight background and in-process messaging helpers such as `BackgroundWorker`, `SimpleNotifier`, and `SimpleRequester`
 - reusable diagram builders and Mermaid renderers for state, flow, activity, sequence, class, and component diagrams
+- business calendars with culture-based registration and dynamic calculated holidays
+- date/time range utilities with half-open range algebra
+- human-readable duration and relative-time text formatting
 - dynamic predicate and reflection helpers
 - content-type, compression, hashing, and cloning utilities
 - id and key generation helpers
@@ -21,6 +24,436 @@ This includes:
 - validation helpers for FluentValidation
 
 Some of those areas also have higher-level feature docs elsewhere in `docs/`. This page focuses on the shared utilities available across the devkit and gives a short usage example for each main utility family.
+
+## Business Calendars
+
+Business calendars provide culture-aware working-day calculations for due dates, planning windows, and date ranges.
+
+Use them when an application needs weekends, holidays, regional calendars, or tenant-specific working-day rules to influence date calculations.
+
+### Registration
+
+Register calendars once in `Program.cs`. Calendar-aware convenience methods then resolve the matching calendar from the supplied culture at runtime.
+
+```csharp
+builder.Services.AddBusinessCalendars(calendars => calendars
+    .SetDefault(new BusinessCalendar())
+    .RegisterCountry("NL", new BusinessCalendar(
+        holidays: [
+            new DateOnly(2026, 1, 1),
+            new DateOnly(2026, 12, 25)
+        ]))
+    .Register(
+        CultureInfo.GetCultureInfo("de-DE"),
+        new DynamicBusinessCalendar(
+            new CalculatedHolidayProvider([
+                new CalculatedHoliday("Good Friday", year =>
+                    HolidayCalculations.GregorianEasterSunday(year).AddDays(-2)),
+                new CalculatedHoliday("Easter Monday", year =>
+                    HolidayCalculations.GregorianEasterSunday(year).AddDays(1))
+            ]),
+            nonWorkingDays: [DayOfWeek.Saturday, DayOfWeek.Sunday])));
+```
+
+Use the registered calendar through the date helpers when calculating due dates, reminders, or SLA deadlines:
+
+```csharp
+var culture = CultureInfo.GetCultureInfo("nl-NL");
+
+var isOpen = date.IsBusinessDay(culture);
+var dueDate = date.AddBusinessDays(3, culture);
+var dueAt = createdAt.AddBusinessDays(2, culture);
+```
+
+For code that already has a calendar instance, call the calendar directly:
+
+```csharp
+var calendar = new BusinessCalendar(
+    nonWorkingDays: [DayOfWeek.Friday, DayOfWeek.Saturday],
+    holidays: [new DateOnly(2026, 1, 1)],
+    rules: [
+        new FixedHolidayRule([new FixedHoliday(12, 25, "Christmas Day")]),
+        new ObservedHolidayRule([new FixedHoliday(1, 1, "New Year")])
+    ]);
+
+var nextWorkday = calendar.NextBusinessDay(date, includeCurrent: true);
+var previousWorkday = calendar.PreviousBusinessDay(date);
+var workingDaysInWindow = calendar.CountBusinessDays(start, end);
+var info = calendar.GetBusinessDayInfo(date);
+```
+
+For libraries, console tools, and tests that do not use dependency injection, register calendars globally:
+
+```csharp
+BusinessCalendars.SetDefault(new BusinessCalendar());
+BusinessCalendars.RegisterCountry("NL", dutchCalendar);
+
+var dueDate = invoiceDate.AddBusinessDays(10, CultureInfo.GetCultureInfo("nl-NL"));
+```
+
+Resolution order is:
+
+- exact culture, such as `nl-NL`
+- country code, such as `NL`
+- neutral language code, such as `nl`
+- default calendar
+
+### DI-Aware Calendars
+
+Calendars that need services can be registered with factories or implementation types. This is useful for calendars that need configuration, tenants, repositories, or other scoped services.
+
+```csharp
+builder.Services.AddScoped<TenantHolidayRepository>();
+
+builder.Services.AddBusinessCalendars(calendars => calendars
+    .Register(
+        CultureInfo.GetCultureInfo("nl-NL"),
+        serviceProvider => new TenantBusinessCalendar(
+            serviceProvider.GetRequiredService<TenantHolidayRepository>())));
+```
+
+For service-backed registrations, inject `IBusinessCalendarResolver` where the calendar is needed:
+
+```csharp
+public sealed class DueDateService(IBusinessCalendarResolver calendars)
+{
+    public DateOnly Calculate(DateOnly start, CultureInfo culture)
+    {
+        var calendar = calendars.Resolve(culture);
+        return calendar.AddBusinessDays(start, 5);
+    }
+}
+```
+
+For database-backed holidays, create an application-specific `IBusinessCalendar` or `IHolidayProvider` that uses the project's repository or `DbContext`, then register it with `AddBusinessCalendars`.
+
+Use `GetBusinessDayInfo` when the UI or audit log needs the reason a date is blocked:
+
+```csharp
+var info = calendar.GetBusinessDayInfo(date);
+
+if (!info.IsBusinessDay)
+{
+    logger.LogInformation("Date is unavailable: {Reason}", info.Reason);
+}
+```
+
+### Dynamic Holidays
+
+Use `DynamicBusinessCalendar` when holidays are calculated by year instead of stored as a fixed list. The built-in `CalculatedHolidayProvider` supports simple year-based rules, and projects can implement `IHolidayProvider` for richer logic.
+
+```csharp
+var calendar = new DynamicBusinessCalendar(
+    new CalculatedHolidayProvider([
+        new CalculatedHoliday("Good Friday", year =>
+            HolidayCalculations.GregorianEasterSunday(year).AddDays(-2)),
+        new CalculatedHoliday("Easter Sunday", HolidayCalculations.GregorianEasterSunday)
+    ]));
+```
+
+Dynamic calendars can also combine calculated holidays with business-day rules:
+
+```csharp
+var calendar = new DynamicBusinessCalendar(
+    new CalculatedHolidayProvider([
+        new CalculatedHoliday("Easter Monday", year =>
+            HolidayCalculations.GregorianEasterSunday(year).AddDays(1))
+    ]),
+    rules: [
+        new CustomBusinessDayRule(date =>
+            date.Month == 12 && date.Day == 24
+                ? new BusinessDayRuleResult(BusinessDayRuleResultKind.NonWorkingDay, "Company closure")
+                : BusinessDayRuleResult.NoMatch)
+    ]);
+```
+
+## Human-Readable Duration Text
+
+Human-readable duration and relative-time text formats durations and relative values using the language registered for the current or supplied culture. Use it for activity feeds, notification text, dashboard ages, and compact duration labels.
+
+Built-in languages are available for English, German, French, Dutch, Spanish, and Italian.
+
+```csharp
+var culture = CultureInfo.GetCultureInfo("nl-NL");
+
+var text = TimeSpan.FromMinutes(3).ToDurationText(
+    new RelativeTimeFormatOptions { Culture = culture });
+```
+
+The formatting methods resolve exact culture first, then neutral language, then the configured fallback language.
+
+Format elapsed durations without relative suffixes:
+
+```csharp
+var duration = TimeSpan.FromMilliseconds(250);
+
+var longText = duration.ToDurationText(); // 250 milliseconds
+var shortText = duration.ToDurationText(new RelativeTimeFormatOptions
+{
+    UseShortUnits = true
+}); // 250ms
+```
+
+Format dates and times relative to a reference value:
+
+```csharp
+var reference = new DateTime(2026, 6, 29, 12, 0, 0, DateTimeKind.Utc);
+
+var past = reference.AddMinutes(-5).ToRelativeTimeText(reference); // 5 minutes ago
+var future = reference.AddHours(2).ToRelativeTimeText(reference); // in 2 hours
+```
+
+Use the same API for date-only labels, time-only labels, and offset-aware instants:
+
+```csharp
+var dateLabel = DateOnly.FromDateTime(DateTime.Today)
+    .AddDays(-1)
+    .ToRelativeTimeText(DateOnly.FromDateTime(DateTime.Today)); // 1 day ago
+
+var timeLabel = new TimeOnly(14, 30)
+    .ToRelativeTimeText(new TimeOnly(14, 0)); // in 30 minutes
+
+var instantLabel = eventTime.ToRelativeTimeText(DateTimeOffset.UtcNow);
+```
+
+Use options when UI text needs predictable rounding, compact units, or a different "just now" threshold:
+
+```csharp
+var timestamp = DateTimeOffset.UtcNow.AddMinutes(-90);
+
+var text = timestamp.ToRelativeTimeText(DateTimeOffset.UtcNow, new RelativeTimeFormatOptions
+{
+    Culture = CultureInfo.GetCultureInfo("de-DE"),
+    UseShortUnits = true,
+    RoundingMode = RelativeTimeRoundingMode.Round,
+    MinimumUnit = RelativeTimeUnit.Second,
+    NowThreshold = TimeSpan.FromSeconds(10)
+});
+```
+
+Add more application languages by implementing `IRelativeTimeLanguage` and registering them during startup:
+
+```csharp
+public sealed class PolishRelativeTimeLanguage : IRelativeTimeLanguage
+{
+    public string LanguageCode => "pl";
+
+    public string Now(bool shortText) => "teraz";
+
+    public string FormatUnit(RelativeTimeUnit unit, long value, bool shortText) => unit switch
+    {
+        RelativeTimeUnit.Millisecond => $"{value}ms",
+        RelativeTimeUnit.Second => shortText ? $"{value}s" : $"{value} sekund",
+        RelativeTimeUnit.Minute => shortText ? $"{value} min." : $"{value} minut",
+        RelativeTimeUnit.Hour => shortText ? $"{value} godz." : $"{value} godzin",
+        RelativeTimeUnit.Day => shortText ? $"{value} d" : $"{value} dni",
+        _ => $"{value}"
+    };
+
+    public string FormatPast(string durationText, bool shortText) => $"{durationText} temu";
+
+    public string FormatFuture(string durationText, bool shortText) => $"za {durationText}";
+}
+
+RelativeTimeLanguages.Register(new PolishRelativeTimeLanguage());
+```
+
+Set a fallback language when the application prefers a built-in language other than English for unsupported cultures:
+
+```csharp
+RelativeTimeLanguages.SetFallback("de");
+
+var text = TimeSpan.FromMinutes(3).ToDurationText(
+    new RelativeTimeFormatOptions { Culture = CultureInfo.GetCultureInfo("sv-SE") });
+```
+
+## Date And Time Ranges
+
+The range types use half-open `[start, end)` semantics and support one open boundary:
+
+- `DateTimeRange`
+- `DateTimeOffsetRange`
+- `DateOnlyRange`
+- `TimeOnlyRange`
+
+They are sortable and comparable, and include overlap, containment, intersection, union, gap, normalization, splitting, and ISO interval parsing/formatting helpers.
+
+Sorting places open starts first and open ends last, which is useful before normalization or conflict checks:
+
+```csharp
+var sorted = ranges.OrderBy(range => range).ToArray();
+```
+
+Use finite ranges for bookings, report windows, retention periods, and availability checks:
+
+```csharp
+var range = new DateOnlyRange(
+    new DateOnly(2026, 1, 1),
+    new DateOnly(2026, 2, 1));
+
+var contains = range.Contains(new DateOnly(2026, 1, 15));
+var businessDays = range.BusinessDays(CultureInfo.GetCultureInfo("nl-NL")).ToArray();
+var count = range.BusinessDayCount(CultureInfo.GetCultureInfo("nl-NL"));
+```
+
+Use open-ended ranges for states that start or end at a boundary, such as "valid from" or "valid until":
+
+```csharp
+var validFrom = new DateTimeOffsetRange(
+    startInclusive: DateTimeOffset.UtcNow,
+    endExclusive: null);
+
+var validUntil = new DateOnlyRange(
+    startInclusive: null,
+    endExclusive: new DateOnly(2026, 12, 31));
+```
+
+Find conflicts, merge adjacent ranges, or calculate gaps:
+
+```csharp
+var requested = new TimeOnlyRange(new TimeOnly(9, 0), new TimeOnly(11, 0));
+var existing = new TimeOnlyRange(new TimeOnly(10, 30), new TimeOnly(12, 0));
+
+if (requested.TryIntersection(existing, out var conflict))
+{
+    // conflict is 10:30:00/11:00:00
+}
+
+var gap = requested.Gap(new TimeOnlyRange(new TimeOnly(13, 0), new TimeOnly(14, 0)));
+```
+
+Merge overlapping or adjacent ranges when building availability windows:
+
+```csharp
+if (requested.TryMerge(existing, out var merged))
+{
+    availability = merged;
+}
+
+var union = requested.Union(existing);
+```
+
+Normalize unsorted or touching ranges before storing or comparing them:
+
+```csharp
+var normalized = new[]
+{
+    new DateTimeRange(new DateTime(2026, 1, 5), new DateTime(2026, 1, 10)),
+    new DateTimeRange(new DateTime(2026, 1, 1), new DateTime(2026, 1, 5))
+}.Normalize();
+```
+
+Split finite ranges for grouping and reporting:
+
+```csharp
+var invoicePeriod = new DateOnlyRange(
+    new DateOnly(2026, 1, 15),
+    new DateOnly(2026, 4, 1));
+
+var months = invoicePeriod.SplitByMonth().ToArray();
+```
+
+Use ISO interval text at API boundaries, query strings, and persisted filters:
+
+```csharp
+var text = range.ToIsoRangeString(); // 2026-01-01/2026-02-01
+
+if ("2026-01-01/2026-02-01".TryParseDateOnlyRange(out var parsed))
+{
+    var days = parsed.Days;
+}
+```
+
+Convert date-only ranges to instants when scheduling across offsets or time zones:
+
+```csharp
+var localPeriod = new DateOnlyRange(
+    new DateOnly(2026, 6, 1),
+    new DateOnly(2026, 6, 8));
+
+var offsetRange = localPeriod.AtStartAndEndOfDay(TimeSpan.FromHours(2));
+```
+
+Convert offset ranges to a target time zone when displaying schedules:
+
+```csharp
+var displayRange = offsetRange.ToTimeZone(userTimeZone);
+```
+
+### Entity Framework Core
+
+Store ranges as two boundary columns when an entity needs to persist them. This keeps filters, indexes, and overlap queries database-friendly while the entity can still expose a range value.
+
+```csharp
+public sealed class Contract
+{
+    private DateOnly? validityStart;
+    private DateOnly? validityEnd;
+
+    public Guid Id { get; private set; }
+
+    public DateOnlyRange Validity => new(this.validityStart, this.validityEnd);
+
+    public void ChangeValidity(DateOnlyRange validity)
+    {
+        this.validityStart = validity.StartInclusive;
+        this.validityEnd = validity.EndExclusive;
+    }
+}
+```
+
+Configure the boundary fields as columns and ignore the computed range property:
+
+```csharp
+public sealed class ContractConfiguration : IEntityTypeConfiguration<Contract>
+{
+    public void Configure(EntityTypeBuilder<Contract> builder)
+    {
+        builder.HasKey(contract => contract.Id);
+
+        builder.Ignore(contract => contract.Validity);
+
+        builder.Property<DateOnly?>("validityStart")
+            .HasColumnName("ValidityStart");
+
+        builder.Property<DateOnly?>("validityEnd")
+            .HasColumnName("ValidityEnd");
+
+        builder.HasIndex("validityStart", "validityEnd");
+    }
+}
+```
+
+Use the same pattern for instant ranges:
+
+```csharp
+private DateTimeOffset? activeFrom;
+private DateTimeOffset? activeUntil;
+
+public DateTimeOffsetRange ActivePeriod => new(this.activeFrom, this.activeUntil);
+```
+
+When querying, compare the stored boundary columns so EF Core can translate the expression to SQL:
+
+```csharp
+var queryRange = new DateOnlyRange(
+    new DateOnly(2026, 1, 1),
+    new DateOnly(2026, 2, 1));
+var queryStart = queryRange.StartInclusive;
+var queryEnd = queryRange.EndExclusive;
+
+var contracts = await db.Contracts
+    .Where(contract =>
+        (!queryStart.HasValue ||
+            EF.Property<DateOnly?>(contract, "validityEnd") == null ||
+            queryStart.Value < EF.Property<DateOnly?>(contract, "validityEnd").Value) &&
+        (!queryEnd.HasValue ||
+            EF.Property<DateOnly?>(contract, "validityStart") == null ||
+            EF.Property<DateOnly?>(contract, "validityStart").Value < queryEnd.Value))
+    .ToListAsync();
+```
+
+Use ISO interval strings for API filters, query strings, exports, or logs. For normal relational persistence, separate boundary columns are easier to query and index.
 
 ## Composition
 

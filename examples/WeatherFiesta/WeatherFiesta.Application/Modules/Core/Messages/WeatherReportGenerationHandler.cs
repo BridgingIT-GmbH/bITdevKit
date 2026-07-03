@@ -108,7 +108,7 @@ public sealed class WeatherReportGenerationHandler(
             throw new InvalidOperationException($"Week weather report requires 7 forecast days but found {forecasts.Count}.");
         }
 
-        if (message.ReportType is WeatherReportType.Today or WeatherReportType.Tomorrow && forecasts.Count < expectedDays)
+        if (message.ReportType is WeatherReportType.Today or WeatherReportType.Tomorrow or WeatherReportType.NextBusinessDay && forecasts.Count < expectedDays)
         {
             throw new InvalidOperationException($"{message.ReportType} weather report requires {expectedDays} forecast day(s) but found {forecasts.Count}.");
         }
@@ -128,7 +128,7 @@ public sealed class WeatherReportGenerationHandler(
             message.ForecastDateStart,
             message.ForecastDateEndExclusive,
             forecasts.Select(f => CreateDayInput(f, message.ReportType)).ToList(),
-            message.ReportType == WeatherReportType.Tomorrow ? null : CreateCurrentWeatherInput(currentWeather));
+            message.ReportType is WeatherReportType.Tomorrow or WeatherReportType.NextBusinessDay ? null : CreateCurrentWeatherInput(currentWeather));
     }
 
     private static CurrentWeatherInput CreateCurrentWeatherInput(CurrentWeather weather)

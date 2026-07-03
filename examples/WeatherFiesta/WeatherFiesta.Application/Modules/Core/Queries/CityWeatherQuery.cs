@@ -23,6 +23,12 @@ public partial class CityWeatherQuery
         this.ForecastDays = forecastDays;
     }
 
+    public CityWeatherQuery(string cityId, string forecastRange)
+    {
+        this.CityId = cityId;
+        this.ForecastRange = forecastRange;
+    }
+
     /// <summary>Gets the city identifier to retrieve weather for.</summary>
     [ValidateNotEmpty("City ID is required.")]
     [ValidateValidGuid("Invalid city ID format.")]
@@ -30,6 +36,9 @@ public partial class CityWeatherQuery
 
     /// <summary>Gets the optional number of forecast days to include.</summary>
     public int? ForecastDays { get; private set; }
+
+    /// <summary>Gets the optional ISO forecast date range.</summary>
+    public string ForecastRange { get; private set; }
 
     [Handle]
     private async Task<Result<CityWeatherResponse>> HandleAsync(
@@ -65,7 +74,13 @@ public partial class CityWeatherQuery
 
         var requestedDays = this.ForecastDays ?? moduleConfiguration.Value.ForecastDays;
         var maxForecastDays = subscriptionResult.Value.Plan.Details.MaxForecastDays;
-        var forecastDays = maxForecastDays > 0 ? Math.Min(requestedDays, maxForecastDays) : requestedDays;
+        var forecastPeriodResult = ForecastPeriod.Resolve(this.ForecastRange, requestedDays);
+        if (forecastPeriodResult.IsFailure)
+        {
+            return forecastPeriodResult.Wrap<CityWeatherResponse>();
+        }
+
+        var forecastPeriod = ForecastPeriod.Limit(forecastPeriodResult.Value, maxForecastDays);
 
         // Load current weather
         var weatherSpec = new Specification<CurrentWeather>(cw => cw.CityId == cityId);
@@ -85,7 +100,10 @@ public partial class CityWeatherQuery
             return forecastsResult.Wrap<CityWeatherResponse>();
         }
 
-        var forecasts = forecastsResult.Value;
+        var forecasts = forecastsResult.Value
+            .Where(forecast => forecastPeriod.Contains(forecast.ForecastDate))
+            .OrderBy(forecast => forecast.ForecastDate)
+            .ToList();
 
         // Load unit preferences
         var userProfileSpec = new UserProfileByUserSpecification(userId);
@@ -97,10 +115,14 @@ public partial class CityWeatherQuery
 
         var userProfile = userProfileResult.Value.FirstOrDefault();
 
+        var currentWeatherModel = currentWeather is not null
+            ? mapper.Map<CurrentWeather, CurrentWeatherModel>(currentWeather)
+            : null;
         var response = new CityWeatherResponse
         {
-            CurrentWeather = currentWeather is not null ? mapper.Map<CurrentWeather, CurrentWeatherModel>(currentWeather) : null,
-            Forecasts = forecasts.OrderBy(f => f.ForecastDate).Take(forecastDays).Select(mapper.Map<WeatherForecast, WeatherForecastModel>).ToList(),
+            CurrentWeather = currentWeatherModel,
+            ForecastPeriod = forecastPeriod.ToIsoRangeString(),
+            Forecasts = forecasts.Select(mapper.Map<WeatherForecast, WeatherForecastModel>).ToList(),
             UnitPreferences = userProfile is not null
                 ? new UnitPreferencesModel
                 {
@@ -115,9 +137,10 @@ public partial class CityWeatherQuery
         // Staleness
         if (currentWeather is not null && currentWeather.IsStale(staleThreshold))
         {
-            var minutes = (int)(DateTime.UtcNow - currentWeather.RetrievedAt).TotalMinutes;
             response.StaleDataWarning = true;
-            response.StaleDataWarningMessage = $"Data may be outdated — last updated {minutes} minutes ago";
+            response.StaleDataWarningMessage = $"Data may be outdated - last updated {currentWeatherModel.LastUpdatedText}";
+            currentWeatherModel.StaleDataWarning = true;
+            currentWeatherModel.StaleDataWarningMessage = response.StaleDataWarningMessage;
         }
 
         return Result<CityWeatherResponse>.Success(response);
@@ -172,6 +195,9 @@ public class CityWeatherResponse
 {
     /// <summary>Gets or sets the current weather conditions.</summary>
     public CurrentWeatherModel CurrentWeather { get; set; }
+
+    /// <summary>Gets or sets the ISO interval used to select daily forecasts.</summary>
+    public string ForecastPeriod { get; set; }
 
     /// <summary>Gets or sets the daily forecasts.</summary>
     public List<WeatherForecastModel> Forecasts { get; set; } = [];

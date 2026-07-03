@@ -39,6 +39,7 @@
     <ProjectReference Include="..\WeatherFiesta.Application\WeatherFiesta.Application.csproj" />
     <ProjectReference Include="..\WeatherFiesta.Domain\WeatherFiesta.Domain.csproj" />
     <ProjectReference Include="..\WeatherFiesta.Infrastructure\WeatherFiesta.Infrastructure.csproj" />
+    <ProjectReference Include="..\WeatherFiesta.Presentation.Web.Server\WeatherFiesta.Presentation.Web.Server.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />

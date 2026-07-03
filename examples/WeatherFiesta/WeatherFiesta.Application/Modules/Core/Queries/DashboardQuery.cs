@@ -104,6 +104,21 @@ public partial class DashboardQuery
             });
         }
 
+        var nextBusinessDayReportResult = await WeatherReport.FindAllAsync(
+            new Specification<WeatherReport>(r =>
+                r.CityId == primary.CityId &&
+                r.ReportType == WeatherReportType.NextBusinessDay),
+            null,
+            cancellationToken);
+        if (nextBusinessDayReportResult.IsFailure)
+        {
+            return nextBusinessDayReportResult.Wrap<DashboardModel>();
+        }
+
+        var nextBusinessDayReport = nextBusinessDayReportResult.Value
+            .OrderByDescending(r => r.PeriodStartUtc)
+            .FirstOrDefault();
+
         // Compute highlights
         DashboardHighlightsModel highlights = null;
         if (cityWeathers.Count >= 2)
@@ -126,11 +141,13 @@ public partial class DashboardQuery
             }
 
             model.CurrentWeather = mapper.Map<CurrentWeather, CurrentWeatherModel>(weather);
+            model.LastUpdatedText = model.CurrentWeather.LastUpdatedText;
             model.StaleDataWarning = weather.IsStale(staleThreshold);
             if (model.StaleDataWarning)
             {
-                var minutesSinceUpdate = (int)(DateTime.UtcNow - weather.RetrievedAt).TotalMinutes;
-                model.StaleDataWarningMessage = $"Data may be outdated — last updated {minutesSinceUpdate} minutes ago";
+                model.StaleDataWarningMessage = $"Data may be outdated - last updated {model.LastUpdatedText}";
+                model.CurrentWeather.StaleDataWarning = true;
+                model.CurrentWeather.StaleDataWarningMessage = model.StaleDataWarningMessage;
             }
 
             return model;
@@ -143,6 +160,7 @@ public partial class DashboardQuery
             Highlights = highlights,
             Alerts = allAlerts,
             Recommendations = recommendations,
+            NextBusinessDayReport = MapWeatherReport(nextBusinessDayReport),
             UnitPreferences = unitPrefs
         });
     }
@@ -162,6 +180,24 @@ public partial class DashboardQuery
             CityId = selected.Key,
             Value = selector(selected.Value),
             Unit = unit
+        };
+    }
+
+    private static DashboardWeatherReportModel MapWeatherReport(WeatherReport report)
+    {
+        if (report is null)
+        {
+            return null;
+        }
+
+        return new DashboardWeatherReportModel
+        {
+            ReportType = report.ReportType.ToString(),
+            Period = new DateTimeRange(report.PeriodStartUtc, report.PeriodEndUtc).ToIsoRangeString(),
+            ForecastDateStart = report.ForecastDateStart,
+            ForecastDateEndExclusive = report.ForecastDateEndExclusive,
+            Summary = report.Summary,
+            GeneratedAt = report.GeneratedAt
         };
     }
 }

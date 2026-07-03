@@ -55,6 +55,9 @@ public class CurrentWeatherModel
     /// <summary>Gets or sets when the weather data was retrieved.</summary>
     public DateTime RetrievedAt { get; set; }
 
+    /// <summary>Gets or sets human-readable text describing when the weather data was retrieved.</summary>
+    public string LastUpdatedText { get; set; }
+
     /// <summary>Gets or sets a value indicating whether the data may be stale.</summary>
     public bool StaleDataWarning { get; set; }
 

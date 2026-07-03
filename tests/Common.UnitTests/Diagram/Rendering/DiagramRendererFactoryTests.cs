@@ -1,5 +1,3 @@
-
-using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities.Diagrams;

@@ -13,6 +13,8 @@ nav:
       - Overview: getting-started.md
       - DDD Introduction: reference/introduction-ddd-guide.md
       - Templates: templates.md
+  - AI Agent Support: agent-support.md
+  - Developer Dashboards: developer-dashboards.md
   - Why bITdevKit: why.md
   - Architecture: architecture.md
   - Packages: packages.md
@@ -31,6 +33,7 @@ nav:
           - Common Mapping: reference/common-mapping.md
           - Common Caching: reference/common-caching.md
           - Common Observability Tracing: reference/common-observability-tracing.md
+          - Utilities: reference/features-utilities.md
       - Core Domain and Application:
           - Domain: reference/features-domain.md
           - Domain Events: reference/features-domain-events.md
@@ -57,8 +60,13 @@ nav:
       - Security and Access:
           - Entity Permissions: reference/features-entitypermissions.md
           - Fake Identity Provider: reference/features-identityprovider.md
-      - Presentation and Host:
-          - Presentation Endpoints: reference/features-presentation-endpoints.md
+      - Presentation and Hosts:
+          - Host: reference/features-presentation.md
+          - Endpoints: reference/features-presentation-endpoints.md
+          - CLI: reference/features-cli.md
+          - MCP: reference/features-cli-mcp.md
+          - MCP Client Configuration: reference/features-cli-mcp-clients.md
+          - Dashboard: reference/features-presentation-dashboard.md
           - Console Commands: reference/features-presentation-console-commands.md
           - CORS Configuration: reference/features-presentation-cors.md
           - Exception Handling: reference/features-presentation-exception-handling.md

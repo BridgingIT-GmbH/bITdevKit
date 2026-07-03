@@ -1,6 +1,3 @@
-
-using BridgingIT.DevKit.Common;
-
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities.Diagrams;
 public class MermaidActivityDiagramRendererTests
 {

@@ -46,14 +46,18 @@ public class CoreModuleMapperRegister : IRegister
             .Map(dest => dest.Id, src => src.Id.Value.ToString())
             .Map(dest => dest.CityId, src => src.CityId.Value.ToString())
             .Map(dest => dest.WeatherDescription, src => GetWeatherDescription(src.WeatherCode))
-            .Map(dest => dest.WeatherIcon, src => GetWeatherIcon(src.WeatherCode));
+            .Map(dest => dest.WeatherIcon, src => GetWeatherIcon(src.WeatherCode))
+            .Map(dest => dest.LastUpdatedText, src => src.RetrievedAt.ToRelativeTimeText(DateTime.UtcNow, new RelativeTimeFormatOptions { MinimumUnit = RelativeTimeUnit.Minute }));
 
         // WeatherForecast → WeatherForecastModel
         config.ForType<WeatherForecast, WeatherForecastModel>()
             .Map(dest => dest.Id, src => src.Id.Value.ToString())
             .Map(dest => dest.CityId, src => src.CityId.Value.ToString())
             .Map(dest => dest.DayWeatherDescription, src => GetWeatherDescription(src.DayWeatherCode))
-            .Map(dest => dest.DayWeatherIcon, src => GetWeatherIcon(src.DayWeatherCode));
+            .Map(dest => dest.DayWeatherIcon, src => GetWeatherIcon(src.DayWeatherCode))
+            .Map(dest => dest.DaylightPeriod, src => src.DaylightPeriod.ToIsoRangeString())
+            .Map(dest => dest.DaylightDurationText, src => src.DaylightPeriod.Duration.ToDurationText(new RelativeTimeFormatOptions { MinimumUnit = RelativeTimeUnit.Minute }))
+            .Map(dest => dest.LastUpdatedText, src => src.RetrievedAt.ToRelativeTimeText(DateTime.UtcNow, new RelativeTimeFormatOptions { MinimumUnit = RelativeTimeUnit.Minute }));
 
         // HourlyForecast → HourlyForecastModel
         config.ForType<HourlyForecast, HourlyForecastModel>()
@@ -89,6 +93,7 @@ public class CoreModuleMapperRegister : IRegister
             .Map(dest => dest.AllowsExport, src => src.Plan.Details.AllowsExport)
             .Map(dest => dest.Status, src => src.Status.Value)
             .Map(dest => dest.BillingCycle, src => src.BillingCycle.Value)
+            .Map(dest => dest.ActivePeriod, src => src.ActivePeriod.ToIsoRangeString())
             .Map(dest => dest.IsActive, src => src.IsActive)
             .Map(dest => dest.ConcurrencyVersion, src => src.ConcurrencyVersion.ToString());
 

@@ -6,10 +6,6 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Abstractions.Extensions;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 [UnitTest("Common")]
 public class ConcatArgsTests

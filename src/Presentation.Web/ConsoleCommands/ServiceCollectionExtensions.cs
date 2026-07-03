@@ -31,6 +31,7 @@ public static partial class ServiceCollectionExtensions
         services.AddSignalR();
 
         // built-in commands
+        services.AddTransient<IConsoleCommand, DocsConsoleCommand>();
         services.AddTransient<IConsoleCommand, StatusConsoleCommand>();
         services.AddTransient<IConsoleCommand, MemoryConsoleCommand>();
         services.AddTransient<IConsoleCommand, EnvConsoleCommand>();

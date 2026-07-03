@@ -117,6 +117,18 @@ public static class TestData
         londonForecast.RetrievedAt = DateTime.UtcNow;
         dbContext.WeatherForecasts.Add(londonForecast);
 
+        var nextBusinessDay = new BusinessCalendar().NextBusinessDay(DateOnly.FromDateTime(DateTime.UtcNow));
+        var nextBusinessDayReportPeriod = CreateReportPeriod(nextBusinessDay, nextBusinessDay.AddDays(1), london.TimeZone);
+        var nextBusinessDayReport = WeatherReport.Create(
+            london.Id,
+            WeatherReportType.NextBusinessDay,
+            nextBusinessDayReportPeriod.PeriodStartUtc,
+            nextBusinessDayReportPeriod.PeriodEndUtc,
+            nextBusinessDayReportPeriod.ForecastDateStart,
+            nextBusinessDayReportPeriod.ForecastDateEndExclusive);
+        nextBusinessDayReport.SetContent("Next business day in London is expected to be cool with a chance of rain.");
+        dbContext.WeatherReports.Add(nextBusinessDayReport);
+
         // User profile
         var profile = UserProfile.Create(TestUserId, "test@example.com", "Test User");
         dbContext.UserProfiles.Add(profile);
@@ -126,5 +138,19 @@ public static class TestData
         dbContext.UserSubscriptions.Add(subscription);
 
         await dbContext.SaveChangesAsync();
+    }
+
+    private static WeatherReportPeriod CreateReportPeriod(DateOnly localStart, DateOnly localEndExclusive, string timeZoneId)
+    {
+        var timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+        var localStartDateTime = localStart.ToDateTime(TimeOnly.MinValue, DateTimeKind.Unspecified);
+        var localEndDateTime = localEndExclusive.ToDateTime(TimeOnly.MinValue, DateTimeKind.Unspecified);
+
+        return new WeatherReportPeriod(
+            TimeZoneInfo.ConvertTimeToUtc(localStartDateTime, timeZone),
+            TimeZoneInfo.ConvertTimeToUtc(localEndDateTime, timeZone),
+            localStart,
+            localEndExclusive,
+            timeZoneId);
     }
 }

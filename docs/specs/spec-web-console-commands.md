@@ -1,5 +1,5 @@
 ---
-status: draft
+status: implemented
 ---
 
 
@@ -346,8 +346,8 @@ Example:
 builder.Services
     .AddConsoleCommandsInteractive(cfg =>
     {
-        cfg.AddCommand<SeedDataConsoleCommand>();
-        cfg.AddCommand<StatusConsoleCommand>();
+        cfg.WithCommand<SeedDataConsoleCommand>();
+        cfg.WithCommand<StatusConsoleCommand>();
     })
     .AddWebConsole(options =>
     {

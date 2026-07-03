@@ -81,6 +81,8 @@ public class WeatherForecastEntityTypeConfiguration : IEntityTypeConfiguration<W
         builder.Property(x => x.Sunset)
             .IsRequired();
 
+        builder.Ignore(x => x.DaylightPeriod);
+
         builder.Property(x => x.RetrievedAt)
             .IsRequired();
 

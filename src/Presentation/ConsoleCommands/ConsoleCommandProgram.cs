@@ -18,7 +18,7 @@
 
 // builder.Services.AddConsoleCommands(cfg =>
 // {
-//     cfg.AddCommand<EchoConsoleCommand>(); // register commands
+//     cfg.WithCommand<EchoConsoleCommand>(); // register commands
 // });
 
 // using var host = builder.Build();

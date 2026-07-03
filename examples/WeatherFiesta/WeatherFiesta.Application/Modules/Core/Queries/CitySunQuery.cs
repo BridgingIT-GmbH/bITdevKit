@@ -23,6 +23,12 @@ public partial class CitySunQuery
         this.Days = days;
     }
 
+    public CitySunQuery(string cityId, string range)
+    {
+        this.CityId = cityId;
+        this.Range = range;
+    }
+
     /// <summary>Gets the city identifier to retrieve sun data for.</summary>
     [ValidateNotEmpty("City ID is required.")]
     [ValidateValidGuid("Invalid city ID format.")]
@@ -31,6 +37,9 @@ public partial class CitySunQuery
     /// <summary>Gets the optional number of days to include.</summary>
     public int? Days { get; private set; }
 
+    /// <summary>Gets the optional ISO date range to include.</summary>
+    public string Range { get; private set; }
+
     [Handle]
     private async Task<Result<CitySunResponse>> HandleAsync(
         ICurrentUserAccessor currentUserAccessor,
@@ -38,7 +47,13 @@ public partial class CitySunQuery
     {
         var userId = currentUserAccessor.UserId;
         var cityId = Domain.Modules.Core.Model.CityId.Create(this.CityId);
-        var days = this.Days ?? 1;
+        var periodResult = ForecastPeriod.Resolve(this.Range, this.Days ?? 1);
+        if (periodResult.IsFailure)
+        {
+            return periodResult.Wrap<CitySunResponse>();
+        }
+
+        var period = periodResult.Value;
 
         // Verify subscription
         var subSpec = new UserCityByUserAndCitySpecification(userId, cityId);
@@ -63,18 +78,28 @@ public partial class CitySunQuery
 
         var forecasts = forecastsResult.Value;
         var sunData = forecasts
-            .OrderBy(f => f.ForecastDate)
-            .Take(days)
-            .Select(f => new SunDataModel
+            .Where(forecast => period.Contains(forecast.ForecastDate))
+            .OrderBy(forecast => forecast.ForecastDate)
+            .Select(forecast =>
             {
-                Date = f.ForecastDate,
-                Sunrise = f.Sunrise,
-                Sunset = f.Sunset,
-                DaylightDurationSeconds = f.DaylightDurationSeconds,
-                IsDay = DateTime.UtcNow >= f.Sunrise && DateTime.UtcNow <= f.Sunset
+                var daylight = forecast.DaylightPeriod;
+                return new SunDataModel
+                {
+                    Date = forecast.ForecastDate,
+                    Sunrise = forecast.Sunrise,
+                    Sunset = forecast.Sunset,
+                    DaylightPeriod = daylight.ToIsoRangeString(),
+                    DaylightDurationSeconds = forecast.DaylightDurationSeconds,
+                    DaylightDurationText = daylight.Duration.ToDurationText(new RelativeTimeFormatOptions { MinimumUnit = RelativeTimeUnit.Minute }),
+                    IsDay = daylight.Contains(DateTime.UtcNow)
+                };
             }).ToList();
 
-        return Result<CitySunResponse>.Success(new CitySunResponse { SunData = sunData });
+        return Result<CitySunResponse>.Success(new CitySunResponse
+        {
+            Period = period.ToIsoRangeString(),
+            SunData = sunData
+        });
     }
 }
 
@@ -83,6 +108,9 @@ public partial class CitySunQuery
 /// </summary>
 public class CitySunResponse
 {
+    /// <summary>Gets or sets the ISO interval used to select sun data.</summary>
+    public string Period { get; set; }
+
     /// <summary>Gets or sets the sun data for each forecast day.</summary>
     public List<SunDataModel> SunData { get; set; } = [];
 }
@@ -101,8 +129,14 @@ public class SunDataModel
     /// <summary>Gets or sets the sunset time.</summary>
     public DateTime Sunset { get; set; }
 
+    /// <summary>Gets or sets the ISO interval for the daylight period.</summary>
+    public string DaylightPeriod { get; set; }
+
     /// <summary>Gets or sets the daylight duration in seconds.</summary>
     public int DaylightDurationSeconds { get; set; }
+
+    /// <summary>Gets or sets human-readable daylight duration text.</summary>
+    public string DaylightDurationText { get; set; }
 
     /// <summary>Gets or sets a value indicating whether it is currently daytime.</summary>
     public bool IsDay { get; set; }

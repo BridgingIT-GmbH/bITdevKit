@@ -43,7 +43,7 @@ public class DateTimeOffsetExtensionsTests
         var result = date.EndOfDay();
 
         // Assert
-        result.ShouldBe(new DateTimeOffset(dateTime.Year, dateTime.Month, dateTime.Day, 23, 59, 59, offset));
+        result.ShouldBe(new DateTimeOffset(dateTime.Year, dateTime.Month, dateTime.Day, 23, 59, 59, 999, offset).AddTicks(9999));
         result.Offset.ShouldBe(offset);
     }
 
@@ -74,9 +74,9 @@ public class DateTimeOffsetExtensionsTests
     }
 
     [Theory]
-    [InlineData(2, "2024-03-15 14:30:45", "2024-03-17 23:59:59")]   // UTC+2
-    [InlineData(-5, "2024-03-15 14:30:45", "2024-03-17 23:59:59")]  // UTC-5
-    [InlineData(0, "2024-03-15 14:30:45", "2024-03-17 23:59:59")]   // UTC
+    [InlineData(2, "2024-03-15 14:30:45", "2024-03-17 23:59:59.9999999")]   // UTC+2
+    [InlineData(-5, "2024-03-15 14:30:45", "2024-03-17 23:59:59.9999999")]  // UTC-5
+    [InlineData(0, "2024-03-15 14:30:45", "2024-03-17 23:59:59.9999999")]   // UTC
     public void EndOfWeek_GivenDateTimeOffset_ReturnsEndOfWeek(int offsetHours, string dateTimeString, string expectedDateString)
     {
         // Arrange
@@ -133,7 +133,7 @@ public class DateTimeOffsetExtensionsTests
         var result = date.EndOfMonth();
 
         // Assert
-        result.ShouldBe(new DateTimeOffset(year, month, expectedLastDay, 23, 59, 59, offset));
+        result.ShouldBe(new DateTimeOffset(year, month, expectedLastDay, 23, 59, 59, 999, offset).AddTicks(9999));
         result.Offset.ShouldBe(offset);
     }
 
@@ -171,7 +171,7 @@ public class DateTimeOffsetExtensionsTests
         var result = date.EndOfYear();
 
         // Assert
-        result.ShouldBe(new DateTimeOffset(dateTime.Year, 12, 31, 23, 59, 59, offset));
+        result.ShouldBe(new DateTimeOffset(dateTime.Year, 12, 31, 23, 59, 59, 999, offset).AddTicks(9999));
         result.Offset.ShouldBe(offset);
     }
 
@@ -210,6 +210,57 @@ public class DateTimeOffsetExtensionsTests
         startOfDay.Offset.ShouldBe(offset);
         endOfDay.Offset.ShouldBe(offset);
         startOfDay.DateTime.TimeOfDay.ShouldBe(TimeSpan.Zero);
-        endOfDay.DateTime.TimeOfDay.ShouldBe(new TimeSpan(23, 59, 59));
+        endOfDay.DateTime.TimeOfDay.ShouldBe(new TimeSpan(0, 23, 59, 59, 999).Add(TimeSpan.FromTicks(9999)));
     }
+
+    [Fact]
+    public void ToOffsetDateOnly_UsesOffsetClockDate()
+    {
+        var source = new DateTimeOffset(2026, 1, 1, 0, 30, 0, TimeSpan.FromHours(2));
+
+        source.ToOffsetDateOnly().ShouldBe(new DateOnly(2026, 1, 1));
+        source.ToUtcDateOnly().ShouldBe(new DateOnly(2025, 12, 31));
+    }
+
+    [Fact]
+    public void ToDateOnly_UsesOffsetClockDateWithoutMachineLocalConversion()
+    {
+        var source = new DateTimeOffset(2026, 1, 1, 0, 30, 0, TimeSpan.FromHours(2));
+
+        source.ToDateOnly().ShouldBe(new DateOnly(2026, 1, 1));
+    }
+
+    [Fact]
+    public void ToOffsetTimeOnly_UsesOffsetClockTime()
+    {
+        var source = new DateTimeOffset(2026, 1, 1, 0, 30, 0, TimeSpan.FromHours(2));
+
+        source.ToOffsetTimeOnly().ShouldBe(new TimeOnly(0, 30));
+        source.ToUtcTimeOnly().ShouldBe(new TimeOnly(22, 30));
+    }
+
+    [Fact]
+    public void ToTimeOnly_UsesOffsetClockTimeWithoutMachineLocalConversion()
+    {
+        var source = new DateTimeOffset(2026, 1, 1, 0, 30, 0, TimeSpan.FromHours(2));
+
+        source.ToTimeOnly().ShouldBe(new TimeOnly(0, 30));
+    }
+
+    [Fact]
+    public void ToIsoOffsetString_ReturnsOffsetTimestamp()
+    {
+        var source = new DateTimeOffset(2026, 6, 29, 13, 45, 30, TimeSpan.FromHours(2));
+
+        source.ToIsoOffsetString().ShouldBe("2026-06-29T13:45:30.0000000+02:00");
+    }
+
+    [Fact]
+    public void ToFileSafeTimestamp_UsesUtcInstant()
+    {
+        var source = new DateTimeOffset(2026, 6, 29, 13, 45, 30, TimeSpan.FromHours(2));
+
+        source.ToFileSafeTimestamp().ShouldBe("20260629T114530Z");
+    }
+
 }

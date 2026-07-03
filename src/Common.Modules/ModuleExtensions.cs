@@ -102,17 +102,23 @@ public static class ModuleExtensions
     /// Adds a module of the specified type to the current module builder context.
     /// </summary>
     /// <remarks>This method is a generic convenience overload for adding a module by type. It is equivalent
-    /// to calling <c>WithModule(context, typeof(T))</c>.</remarks>
+    /// to calling <c>AddModule(context, typeof(T))</c>.</remarks>
     /// <typeparam name="T">The type of the module to add. Must implement <see cref="IModule"/> and be a reference type.</typeparam>
     /// <param name="context">The module builder context to which the module will be added. Cannot be null.</param>
     /// <returns>A new <see cref="ModuleBuilderContext"/> instance that includes the specified module type.</returns>
-    public static ModuleBuilderContext WithModule<T>(this ModuleBuilderContext context)
+    public static ModuleBuilderContext AddModule<T>(this ModuleBuilderContext context)
         where T : class, IModule
     {
-        return WithModule(context, typeof(T));
+        return AddModule(context, typeof(T));
     }
 
-    public static ModuleBuilderContext WithModule(this ModuleBuilderContext context, IModule module)
+    /// <summary>
+    /// Adds a module instance to the current module builder context.
+    /// </summary>
+    /// <param name="context">The module builder context to which the module will be added. Cannot be null.</param>
+    /// <param name="module">The module instance to add. Cannot be null.</param>
+    /// <returns>The same <see cref="ModuleBuilderContext"/> instance for fluent chaining.</returns>
+    public static ModuleBuilderContext AddModule(this ModuleBuilderContext context, IModule module)
     {
         EnsureArg.IsNotNull(module, nameof(module));
 
@@ -136,7 +142,13 @@ public static class ModuleExtensions
         return context;
     }
 
-    public static ModuleBuilderContext WithModule(this ModuleBuilderContext context, Type type)
+    /// <summary>
+    /// Adds a module of the specified type to the current module builder context.
+    /// </summary>
+    /// <param name="context">The module builder context to which the module will be added. Cannot be null.</param>
+    /// <param name="type">The module type to add. Cannot be null.</param>
+    /// <returns>The same <see cref="ModuleBuilderContext"/> instance for fluent chaining.</returns>
+    public static ModuleBuilderContext AddModule(this ModuleBuilderContext context, Type type)
     {
         EnsureArg.IsNotNull(type, nameof(type));
 
@@ -152,6 +164,22 @@ public static class ModuleExtensions
         }
 
         return context;
+    }
+
+    public static ModuleBuilderContext WithModule<T>(this ModuleBuilderContext context)
+        where T : class, IModule
+    {
+        return AddModule<T>(context);
+    }
+
+    public static ModuleBuilderContext WithModule(this ModuleBuilderContext context, IModule module)
+    {
+        return AddModule(context, module);
+    }
+
+    public static ModuleBuilderContext WithModule(this ModuleBuilderContext context, Type type)
+    {
+        return AddModule(context, type);
     }
 
     public static IApplicationBuilder UseModules(

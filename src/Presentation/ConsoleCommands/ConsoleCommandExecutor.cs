@@ -25,7 +25,7 @@ public sealed class ConsoleCommandExecutor
     /// <summary>
     /// Executes a command line against registered <see cref="IConsoleCommand" /> instances.
     /// </summary>
-    public async Task ExecuteAsync(
+    public async Task<ConsoleCommandExecutionResult> ExecuteAsync(
         string commandLine,
         IAnsiConsole console,
         IServiceProvider services,
@@ -36,14 +36,33 @@ public sealed class ConsoleCommandExecutor
 
         if (string.IsNullOrWhiteSpace(commandLine))
         {
-            return;
+            return ConsoleCommandExecutionResult.Success();
         }
 
         ConsoleCommandHistory.Append(commandLine);
         var tokens = SplitArgs(commandLine);
+        return await this.ExecuteAsync(tokens, console, services, source, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Executes pre-tokenized command arguments against registered <see cref="IConsoleCommand" /> instances.
+    /// </summary>
+    /// <param name="tokens">The command tokens to execute.</param>
+    /// <param name="console">The console used for command output.</param>
+    /// <param name="services">The service provider that contains registered commands.</param>
+    /// <param name="source">The command execution source.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns>The command execution result.</returns>
+    public async Task<ConsoleCommandExecutionResult> ExecuteAsync(
+        string[] tokens,
+        IAnsiConsole console,
+        IServiceProvider services,
+        ConsoleCommandExecutionSource source,
+        CancellationToken cancellationToken = default)
+    {
         if (tokens.Length == 0)
         {
-            return;
+            return ConsoleCommandExecutionResult.Success();
         }
 
         var primary = tokens[0];
@@ -69,7 +88,7 @@ public sealed class ConsoleCommandExecutor
                 }
 
                 console.Write(table);
-                return;
+                return ConsoleCommandExecutionResult.Success();
             }
 
             var sub = tokens[1];
@@ -77,8 +96,9 @@ public sealed class ConsoleCommandExecutor
             cmd = groupedCandidates.FirstOrDefault(c => c.Matches(sub));
             if (cmd is null)
             {
-                console.MarkupLine($"[yellow]Unknown subcommand '{sub}' for group '{primary}'.[/]");
-                return;
+                var error = $"Unknown subcommand '{sub}' for group '{primary}'.";
+                console.MarkupLine($"[yellow]{Markup.Escape(error)}[/]");
+                return ConsoleCommandExecutionResult.Failure(error);
             }
         }
         else
@@ -88,14 +108,16 @@ public sealed class ConsoleCommandExecutor
 
         if (cmd is null)
         {
+            const string error = "Unknown command. Type help for list.";
             console.MarkupLine("[yellow]Unknown command[/]. Type [bold]help[/] for list.");
-            return;
+            return ConsoleCommandExecutionResult.Failure(error);
         }
 
         if (source == ConsoleCommandExecutionSource.Web && !cmd.IsWebConsoleEnabled)
         {
+            const string error = "Command is not available in the web console.";
             console.MarkupLine("[yellow]Command is not available in the web console.[/]");
-            return;
+            return ConsoleCommandExecutionResult.Failure(error);
         }
 
         console.MarkupLine("[cyan]=== " + (cmd is IGroupedConsoleCommand gc ? gc.GroupName + " " + cmd.Name : cmd.Name) + " ===[/][grey] " + cmd.Description + "[/]");
@@ -110,7 +132,7 @@ public sealed class ConsoleCommandExecutor
             }
 
             ConsoleCommandBinder.WriteHelp(console, cmd, detailed: true);
-            return;
+            return ConsoleCommandExecutionResult.Failure(errors.FirstOrDefault() ?? "Command arguments are invalid.");
         }
 
         try
@@ -120,20 +142,23 @@ public sealed class ConsoleCommandExecutor
         catch (Exception ex)
         {
             console.MarkupLine("[red]Post-bind validation failed:[/] " + ex.Message);
-            return;
+            return ConsoleCommandExecutionResult.Failure("Post-bind validation failed: " + ex.Message);
         }
 
         try
         {
             await cmd.ExecuteAsync(console, scope.ServiceProvider, cancellationToken);
+            return ConsoleCommandExecutionResult.Success();
         }
         catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
         {
             console.MarkupLine("[yellow]Command cancelled.[/]");
+            return ConsoleCommandExecutionResult.Failure("Command cancelled.");
         }
         catch (Exception ex)
         {
             console.MarkupLine("[red]Command failed:[/] " + ex.Message);
+            return ConsoleCommandExecutionResult.Failure("Command failed: " + ex.Message);
         }
     }
 
@@ -173,4 +198,27 @@ public sealed class ConsoleCommandExecutor
 
         return list.ToArray();
     }
+}
+
+/// <summary>
+/// Represents the result of executing a console command.
+/// </summary>
+/// <param name="Succeeded">A value indicating whether execution completed successfully.</param>
+/// <param name="Error">The error message when execution failed.</param>
+public sealed record ConsoleCommandExecutionResult(bool Succeeded, string Error)
+{
+    /// <summary>
+    /// Creates a successful execution result.
+    /// </summary>
+    /// <returns>The successful execution result.</returns>
+    public static ConsoleCommandExecutionResult Success()
+        => new(true, null);
+
+    /// <summary>
+    /// Creates a failed execution result.
+    /// </summary>
+    /// <param name="error">The error message.</param>
+    /// <returns>The failed execution result.</returns>
+    public static ConsoleCommandExecutionResult Failure(string error)
+        => new(false, error);
 }

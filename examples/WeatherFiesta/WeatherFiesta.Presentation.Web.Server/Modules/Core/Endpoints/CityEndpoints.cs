@@ -121,13 +121,13 @@ public class CityEndpoints : EndpointsBase
         group.MapGet("/{cityId}/weather",
             async ([FromServices] IRequester requester,
                    [FromRoute] string cityId,
-                   [FromQuery] int? forecastDays,
+                   [FromQuery] string range,
                    CancellationToken ct)
                 => (await requester
-                    .SendAsync(new CityWeatherQuery(cityId, forecastDays), cancellationToken: ct))
+                    .SendAsync(new CityWeatherQuery(cityId, range), cancellationToken: ct))
                     .MapHttpOk())
             .WithName("Core.Cities.Weather")
-            .WithDescription("Gets current weather and forecasts for a subscribed city.")
+            .WithDescription("Gets current weather and forecasts for a subscribed city, optionally filtered by an ISO date range.")
             .Produces<CityWeatherResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)

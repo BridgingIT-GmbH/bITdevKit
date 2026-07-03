@@ -39,6 +39,7 @@ public class SubscriptionEndpointsTests
         content.Plan.ShouldBe("Free");
         content.Status.ShouldBe("Active");
         content.UserId.ShouldBe(TestData.TestUserId);
+        content.ActivePeriod.ShouldNotBeNullOrWhiteSpace();
     }
 
     [Fact]
@@ -71,6 +72,7 @@ public class SubscriptionEndpointsTests
         subscription.ShouldNotBeNull();
         subscription.UserId.ShouldBe(userId);
         subscription.Plan.ShouldBe("Free");
+        subscription.ActivePeriod.ShouldNotBeNullOrWhiteSpace();
     }
 
     [Fact]

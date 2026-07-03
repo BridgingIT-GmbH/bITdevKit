@@ -20,10 +20,12 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// </summary>
 public class CoreSeederTask(
     ILoggerFactory loggerFactory,
-    IDatabaseReadyService databaseReadyService) : IStartupTask
+    IDatabaseReadyService databaseReadyService,
+    IBusinessCalendarResolver businessCalendarResolver = null) : IStartupTask
 {
     private readonly ILogger<CoreSeederTask> logger = loggerFactory?.CreateLogger<CoreSeederTask>() ?? NullLoggerFactory.Instance.CreateLogger<CoreSeederTask>();
     private readonly IDatabaseReadyService databaseReadyService = databaseReadyService;
+    private readonly IBusinessCalendarResolver businessCalendarResolver = businessCalendarResolver;
 
     /// <inheritdoc />
     public async Task ExecuteAsync(CancellationToken cancellationToken)
@@ -311,12 +313,16 @@ public class CoreSeederTask(
 
         var utcNow = DateTime.UtcNow;
         var localToday = GetLocalDate(utcNow, timeZoneId);
+        var countryCode = GetCityCountryCode(cityName);
+        var calendar = this.businessCalendarResolver?.Resolve(countryCode) ?? BusinessCalendars.Resolve(countryCode);
+        var nextBusinessDay = calendar.NextBusinessDay(localToday);
         var reports = new[]
         {
             (WeatherReportType.Current, CreateReportPeriod(localToday, localToday.AddDays(1), timeZoneId)),
             (WeatherReportType.Today, CreateReportPeriod(localToday, localToday.AddDays(1), timeZoneId)),
             (WeatherReportType.Tomorrow, CreateReportPeriod(localToday.AddDays(1), localToday.AddDays(2), timeZoneId)),
-            (WeatherReportType.Week, CreateReportPeriod(localToday, localToday.AddDays(7), timeZoneId))
+            (WeatherReportType.Week, CreateReportPeriod(localToday, localToday.AddDays(7), timeZoneId)),
+            (WeatherReportType.NextBusinessDay, CreateReportPeriod(nextBusinessDay, nextBusinessDay.AddDays(1), timeZoneId))
         };
 
         foreach (var (reportType, period) in reports)
@@ -516,6 +522,18 @@ public class CoreSeederTask(
             "Berlin" => "Europe/Berlin",
             "Paris" => "Europe/Paris",
             "London" => "Europe/London",
+            _ => null
+        };
+    }
+
+    private static string GetCityCountryCode(string cityName)
+    {
+        return cityName switch
+        {
+            "Amsterdam" => "NL",
+            "Berlin" => "DE",
+            "Paris" => "FR",
+            "London" => "GB",
             _ => null
         };
     }

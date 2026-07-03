@@ -143,6 +143,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
         this.factory = new FakeIdentityProviderApplication();
         this.client = this.factory.CreateClient(new WebApplicationFactoryClientOptions
         {
+            BaseAddress = new Uri("https://localhost"),
             AllowAutoRedirect = false
         });
 
@@ -478,6 +479,7 @@ public class FakeIdentityProviderTests : IAsyncDisposable
         await using var ssoDisabledFactory = new FakeIdentityProviderSsoDisabledApplication();
         var ssoDisabledClient = ssoDisabledFactory.CreateClient(new WebApplicationFactoryClientOptions
         {
+            BaseAddress = new Uri("https://localhost"),
             AllowAutoRedirect = false
         });
         var ssoDisabledConfig = ssoDisabledFactory.Services.GetRequiredService<TestConfiguration>();

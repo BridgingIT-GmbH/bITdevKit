@@ -221,18 +221,20 @@ Disabled modules throw a `ModuleNotEnabledException` when accessed.
 
 ## Appendix A: Comparison with Microservices
 
-### Overview
+### Summary
 
 Modules in a monolith contrast with microservices, which are independently deployable services. Both aim to separate concerns, but they differ in deployment and complexity.
 
 ### Characteristics
 
 #### Modular Monolith
+
 - **Approach**: Single deployment with logically separated modules, sharing a runtime and repository.
 - **Strengths**: Simplifies deployment, reduces distributed system complexity, supports parallel development.
 - **Considerations**: Shared resources may cause contention, requires careful boundary design.
 
 #### Microservices
+
 - **Approach**: Independent services with separate deployments and databases.
 - **Strengths**: Scales independently, isolates failures, allows polyglot persistence.
 - **Considerations**: Increases operational complexity due to a network involved, requires distributed system expertise.

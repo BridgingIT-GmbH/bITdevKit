@@ -45,6 +45,8 @@ public class UserSubscriptionEntityTypeConfiguration : IEntityTypeConfiguration<
 
         builder.Property(x => x.EndDate);
 
+        builder.Ignore(x => x.ActivePeriod);
+
         // One subscription per user
         builder.HasIndex(x => x.UserId)
             .IsUnique();

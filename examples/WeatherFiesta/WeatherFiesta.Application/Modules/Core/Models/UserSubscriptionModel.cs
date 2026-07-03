@@ -46,6 +46,9 @@ public class UserSubscriptionModel
     /// <summary>Gets or sets the subscription end date.</summary>
     public DateTime? EndDate { get; set; }
 
+    /// <summary>Gets or sets the ISO interval for the subscription active period.</summary>
+    public string ActivePeriod { get; set; }
+
     /// <summary>Gets or sets a value indicating whether the subscription is currently active.</summary>
     public bool IsActive { get; set; }
 

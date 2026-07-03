@@ -11,18 +11,17 @@ using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
 using System.Text.Json;
 
 // ===============================================================================================
-// Create the webhost
-var builder = WebApplication.CreateBuilder(args);
-builder.Host.ConfigureAppConfiguration();
-builder.Host.ConfigureLogging(builder.Configuration);
+// Create the app host
+var builder = DevKitWebApplication.CreateBuilder(args)
+    .AddConfiguration()
+    .AddLogging()
+    .AddModules(c => c
+        .WithModule<CoreModule>())
+    .AddMcp(c => c
+        .WithHandler<CoreModuleMcpHandler>());
 
 // ===============================================================================================
-// Configure the modules
-builder.Services.AddModules(builder.Configuration, builder.Environment)
-    .WithModule<CoreModule>();
-
-// ===============================================================================================
-// Configure the services
+// Configure the app services
 builder.Services.AddRequester()
     .AddHandlers()
     .WithBehavior(typeof(MetricsRequestBehavior<,>))
@@ -157,6 +156,7 @@ builder.Services.AddConsoleCommandsInteractive();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()));
 builder.Services.AddControllers(); // needed for openapi gen, even with no controllers
+
 #pragma warning disable CS0618
 builder.Services.AddProblemDetails(o => Configure.ProblemDetails(o, true));
 #pragma warning restore CS0618

@@ -39,6 +39,13 @@ We use the **MADR (Markdown Architectural Decision Records)** format for consist
 | [ADR-0017](0017-integration-testing-strategy.md) | Integration Testing Strategy | Accepted |
 | [ADR-0018](0018-dependency-injection-service-lifetimes.md) | Dependency Injection & Service Lifetime Management | Accepted |
 | [ADR-0019](0019-specification-pattern-repository-queries.md) | Specification Pattern for Repository Queries | Accepted |
+| [ADR-0020](0020-active-entity-pattern-for-application-persistence.md) | Active Entity Pattern for Application Persistence | Accepted |
+| [ADR-0021](0021-bdk-cli-local-development-tooling.md) | BDK CLI for Local Development Tooling | Accepted |
+| [ADR-0022](0022-host-runtime-descriptor-discovery.md) | Host Runtime Descriptor Discovery | Accepted |
+| [ADR-0023](0023-stdio-mcp-server-with-sdk-free-app-handlers.md) | STDIO MCP Server with SDK-Free App Handlers | Accepted |
+| [ADR-0024](0024-local-ipc-runtime-bridge.md) | Local IPC Runtime Bridge | Accepted |
+| [ADR-0025](0025-official-remote-devkit-docs-for-mcp.md) | Official Remote DevKit Documentation for MCP | Accepted |
+| [ADR-0026](0026-source-controlled-mcp-client-configuration.md) | Source-Controlled MCP Client Configuration | Accepted |
 
 ## When to Write an ADR
 

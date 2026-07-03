@@ -1,0 +1,17 @@
+{
+  "servers": {
+    "bdk": {
+      "type": "stdio",
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "src/Presentation.Cli/Presentation.Cli.csproj",
+        "--",
+        "mcp",
+        "--toolset",
+        "diagnostics,operations,admin"
+      ]
+    }
+  }
+}

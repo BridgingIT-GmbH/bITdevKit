@@ -1,0 +1,576 @@
+@using System.Diagnostics
+@using System.Globalization
+@using System.Text.Json
+@using BridgingIT.DevKit.Common
+@using BridgingIT.DevKit.Presentation.Web
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using Microsoft.AspNetCore.Hosting
+@using Microsoft.Extensions.DependencyInjection
+@using RazorSlices
+@inherits RazorSlice
+
+@{
+    var viewModel = CreateModel();
+}
+
+<style>
+    .dashboard-mcp-grid {
+        display: grid;
+        grid-template-columns: repeat(12, minmax(0, 1fr));
+        gap: .625rem;
+    }
+
+    .dashboard-mcp-span-2 { grid-column: span 2; }
+    .dashboard-mcp-span-3 { grid-column: span 3; }
+    .dashboard-mcp-span-4 { grid-column: span 4; }
+    .dashboard-mcp-span-6 { grid-column: span 6; }
+    .dashboard-mcp-span-8 { grid-column: span 8; }
+    .dashboard-mcp-span-12 { grid-column: span 12; }
+
+    .dashboard-mcp-label {
+        font-size: .7rem;
+        text-transform: uppercase;
+        color: var(--bs-secondary-color);
+    }
+
+    .dashboard-mcp-value {
+        font-size: 1.2rem;
+        font-weight: 600;
+        line-height: 1.2;
+    }
+
+    .dashboard-mcp-subvalue {
+        color: var(--bs-secondary-color);
+        font-size: .78rem;
+    }
+
+    .dashboard-mcp-code {
+        max-width: 26rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .dashboard-mcp-table {
+        font-size: .8125rem;
+    }
+
+    .dashboard-mcp-table > :not(caption) > * > * {
+        padding: .35rem .5rem;
+    }
+
+    .dashboard-mcp-description {
+        max-width: 32rem;
+        color: var(--bs-secondary-color);
+        font-size: .76rem;
+        line-height: 1.25;
+    }
+
+    .dashboard-mcp-chip-list {
+        display: grid;
+        gap: .35rem;
+    }
+
+    .dashboard-mcp-chip-row {
+        display: flex;
+        justify-content: space-between;
+        gap: .75rem;
+        font-size: .8125rem;
+    }
+
+    .dashboard-mcp-schema-pre {
+        max-height: 65vh;
+        overflow: auto;
+        font-size: .8125rem;
+    }
+
+    @@media (max-width: 991.98px) {
+        .dashboard-mcp-span-2,
+        .dashboard-mcp-span-3,
+        .dashboard-mcp-span-4,
+        .dashboard-mcp-span-8,
+        .dashboard-mcp-span-6 {
+            grid-column: span 12;
+        }
+    }
+</style>
+
+@if (viewModel.HandlerCount == 0)
+{
+    <div class="alert alert-warning py-2">
+        MCP is not enabled for this host.
+    </div>
+}
+else
+{
+    <div class="dashboard-mcp-grid">
+        <section class="card dashboard-mcp-span-3">
+            <div class="card-body p-2">
+                <div class="dashboard-mcp-label">Handlers</div>
+                <div class="dashboard-mcp-value">@viewModel.HandlerCount.ToString("N0", CultureInfo.InvariantCulture)</div>
+                <div class="dashboard-mcp-subvalue">registered types</div>
+            </div>
+        </section>
+
+        <section class="card dashboard-mcp-span-3">
+            <div class="card-body p-2">
+                <div class="dashboard-mcp-label">Operations</div>
+                <div class="dashboard-mcp-value">@viewModel.OperationCount.ToString("N0", CultureInfo.InvariantCulture)</div>
+                <div class="dashboard-mcp-subvalue">@viewModel.ProjectOperationCount.ToString("N0", CultureInfo.InvariantCulture) project, @viewModel.Toolsets.Length.ToString("N0", CultureInfo.InvariantCulture) toolsets</div>
+            </div>
+        </section>
+
+        <section class="card dashboard-mcp-span-3">
+            <div class="card-body p-2">
+                <div class="dashboard-mcp-label">MCP Server</div>
+                <div class="dashboard-mcp-value @GetMcpServerStatusClass(viewModel.McpServerStatus)">@FormatStatus(viewModel.McpServerStatus)</div>
+                <div class="dashboard-mcp-subvalue">@viewModel.ActiveMcpServerSessionCount.ToString("N0", CultureInfo.InvariantCulture) active, @viewModel.TargetedMcpServerSessionCount.ToString("N0", CultureInfo.InvariantCulture) connected</div>
+            </div>
+        </section>
+
+        <section class="card dashboard-mcp-span-3">
+            <div class="card-body p-2">
+                <div class="dashboard-mcp-label">Target</div>
+                <div class="dashboard-mcp-value text-truncate">@viewModel.McpServerTarget</div>
+                <div class="dashboard-mcp-subvalue">@viewModel.McpServerSelectionSource</div>
+            </div>
+        </section>
+
+        <section class="card dashboard-mcp-span-12">
+            <div class="card-body p-3">
+                <h6 class="card-title mb-2">Host Bridge</h6>
+                <table class="table table-sm dashboard-mcp-table align-middle mb-0">
+                    <tbody>
+                    <tr><td>Application</td><td class="text-end text-break">@viewModel.ApplicationName</td></tr>
+                    <tr><td>Runtime ID</td><td class="text-end text-break">@viewModel.RuntimeId</td></tr>
+                    <tr><td>Environment / process</td><td class="text-end">@viewModel.EnvironmentName, pid @viewModel.ProcessId</td></tr>
+                    <tr><td>Started</td><td class="text-end">@FormatTimestamp(viewModel.StartedAt)</td></tr>
+                    <tr><td>Transport</td><td class="text-end">@viewModel.Transport, protocol v@viewModel.ProtocolVersion</td></tr>
+                    <tr><td>Endpoint</td><td class="text-end"><code class="dashboard-mcp-code d-inline-block">@viewModel.Endpoint</code></td></tr>
+                    <tr><td>Nonce</td><td class="text-end">@(viewModel.NonceConfigured ? "configured" : "missing")</td></tr>
+                    <tr><td>Workspace</td><td class="text-end text-break">@viewModel.WorkspacePath</td></tr>
+                    <tr><td>Project</td><td class="text-end text-break">@viewModel.ProjectPath</td></tr>
+                    <tr><td>MCP session directory</td><td class="text-end text-break"><code>@viewModel.McpSessionDirectory</code></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card dashboard-mcp-span-12">
+            <div class="card-body p-3">
+                <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+                    <h6 class="card-title mb-0">MCP Server Sessions</h6>
+                    <span class="badge @GetMcpServerBadgeClass(viewModel.McpServerStatus)">@FormatStatus(viewModel.McpServerStatus)</span>
+                </div>
+                @if (viewModel.McpServerSessions.Length == 0)
+                {
+                    <div class="text-muted small">No active <code>bdk mcp</code> server session is publishing a heartbeat for this workspace.</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm dashboard-mcp-table align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>PID</th>
+                                <th>Selected runtime</th>
+                                <th>Source</th>
+                                <th>Toolsets</th>
+                                <th class="text-end">Last seen</th>
+                                <th class="text-end">Started</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var session in viewModel.McpServerSessions)
+                            {
+                                <tr>
+                                    <td><span class="badge @(session.TargetsCurrentRuntime ? "text-bg-success" : "text-bg-secondary")">@(session.TargetsCurrentRuntime ? "connected" : "running")</span></td>
+                                    <td>@session.ProcessId.ToString(CultureInfo.InvariantCulture)</td>
+                                    <td class="text-break">@session.SelectedRuntimeId</td>
+                                    <td>@session.SelectionSource</td>
+                                    <td class="text-break">@session.Toolsets</td>
+                                    <td class="text-end text-nowrap">@FormatAge(session.LastSeenAt)</td>
+                                    <td class="text-end text-nowrap">@FormatTimestamp(session.StartedAt)</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        </section>
+
+        <section class="card dashboard-mcp-span-12">
+            <div class="card-body p-3">
+                <h6 class="card-title mb-2">Handlers</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm dashboard-mcp-table align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th>Handler</th>
+                            <th class="text-end">Operations</th>
+                            <th>Features</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var handler in viewModel.Handlers)
+                        {
+                            <tr>
+                                <td>
+                                    <div>@handler.Name</div>
+                                    <div class="dashboard-mcp-description text-break">@handler.Namespace</div>
+                                </td>
+                                <td class="text-end">@handler.Capabilities.Count.ToString("N0", CultureInfo.InvariantCulture)</td>
+                                <td>
+                                    @foreach (var feature in handler.Features)
+                                    {
+                                        <span class="badge text-bg-light border me-1">@feature</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <section class="card dashboard-mcp-span-12">
+            <div class="card-body p-3">
+                <h6 class="card-title mb-2">Operations</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm dashboard-mcp-table align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th>Operation</th>
+                            <th>Toolset</th>
+                            <th>Feature</th>
+                            <th>Owner</th>
+                            <th>Category</th>
+                            <th>Handler</th>
+                            <th>Description</th>
+                            <th class="text-end">Schema</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var operation in viewModel.Operations)
+                        {
+                            <tr>
+                                <td><code>@operation.Name</code></td>
+                                <td><span class="badge text-bg-secondary">@operation.Toolset</span></td>
+                                <td>@operation.Feature</td>
+                                <td>@operation.Owner</td>
+                                <td>@operation.Category</td>
+                                <td>@operation.Handler</td>
+                                <td class="text-break"><div class="dashboard-mcp-description">@operation.Description</div></td>
+                                <td class="text-end">
+                                    <button type="button"
+                                            class="btn btn-outline-secondary btn-sm dashboard-mcp-schema-button"
+                                            title="Show argument schema"
+                                            data-operation="@operation.Name"
+                                            data-schema="@operation.ArgumentSchemaJson"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#dashboard-mcp-schema-modal">
+                                        <i class="bi bi-braces"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+}
+
+@functions {
+    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        WriteIndented = true
+    };
+
+    private McpDashboardViewModel CreateModel()
+    {
+        var services = this.HttpContext.RequestServices;
+        var endpoint = services.GetService<LocalIpcEndpointState>()?.GetOrCreate("mcp");
+        var options = services.GetService<HostDescriptorOptions>();
+        var environment = services.GetService<IWebHostEnvironment>();
+        var sessionSnapshot = services.GetService<McpServerSessionReader>()?.GetSnapshot();
+        var handlers = services.GetServices<IMcpHandler>()
+            .Select(handler => new McpDashboardHandlerViewModel
+            {
+                Name = handler.GetType().Name,
+                Namespace = handler.GetType().Namespace ?? string.Empty,
+                Capabilities = (handler.Capabilities ?? [])
+                    .OrderBy(capability => capability.Name, StringComparer.OrdinalIgnoreCase)
+                    .ToArray()
+            })
+            .OrderBy(handler => handler.Name, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+        var operations = handlers
+            .SelectMany(handler => handler.Capabilities.Select(capability => CreateOperation(handler.Name, capability)))
+            .OrderBy(operation => operation.Name, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        foreach (var handler in handlers)
+        {
+            handler.Features = handler.Capabilities
+                .Select(capability => capability.Feature)
+                .Where(value => !string.IsNullOrWhiteSpace(value))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(value => value, StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+        }
+
+        return new McpDashboardViewModel
+        {
+            ApplicationName = environment?.ApplicationName ?? "unknown",
+            EnvironmentName = environment?.EnvironmentName ?? "unknown",
+            Endpoint = endpoint?.Endpoint ?? "unavailable",
+            HandlerCount = handlers.Length,
+            Handlers = handlers,
+            NonceConfigured = !string.IsNullOrWhiteSpace(endpoint?.Nonce),
+            OperationCount = operations.Length,
+            Operations = operations,
+            ProcessId = Environment.ProcessId,
+            ProjectOperationCount = operations.Count(operation => string.Equals(operation.Feature, "project", StringComparison.OrdinalIgnoreCase)),
+            ProjectPath = options?.ProjectPath ?? string.Empty,
+            ProtocolVersion = endpoint?.ProtocolVersion ?? 0,
+            RuntimeId = options?.RuntimeId ?? "unknown",
+            StartedAt = options?.StartedAt ?? Process.GetCurrentProcess().StartTime.ToUniversalTime(),
+            Toolsets = operations
+                .Select(operation => operation.Toolset)
+                .Where(value => !string.IsNullOrWhiteSpace(value))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .OrderBy(value => value, StringComparer.OrdinalIgnoreCase)
+                .ToArray(),
+            Transport = endpoint?.Transport ?? "unavailable",
+            WorkspacePath = options?.WorkspacePath ?? string.Empty,
+            FeatureCounts = CountBy(operations.Select(operation => operation.Feature)),
+            ActiveMcpServerSessionCount = sessionSnapshot?.ActiveSessions?.Length ?? 0,
+            McpServerSelectionSource = GetMcpServerSelectionSource(sessionSnapshot),
+            McpServerSessions = CreateSessionModels(sessionSnapshot, options?.RuntimeId),
+            McpServerStatus = sessionSnapshot?.Status ?? "offline",
+            McpServerTarget = GetMcpServerTarget(sessionSnapshot),
+            McpSessionDirectory = sessionSnapshot?.SessionDirectory ?? string.Empty,
+            OwnerCounts = CountBy(operations.Select(operation => operation.Owner)),
+            TargetedMcpServerSessionCount = sessionSnapshot?.TargetedSessions?.Length ?? 0,
+            ToolsetCounts = CountBy(operations.Select(operation => operation.Toolset))
+        };
+    }
+
+    private static McpDashboardOperationViewModel CreateOperation(string handlerName, McpCapability capability)
+    {
+        return new McpDashboardOperationViewModel
+        {
+            Name = capability.Name,
+            Toolset = capability.Toolset,
+            Feature = capability.Feature,
+            Description = capability.Description,
+            Category = capability.Category,
+            Owner = capability.Owner,
+            Handler = handlerName,
+            ArgumentSchemaJson = SerializeSchema(capability.ArgumentSchema)
+        };
+    }
+
+    private static McpDashboardCountViewModel[] CountBy(IEnumerable<string> values)
+    {
+        return values
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .GroupBy(value => value, StringComparer.OrdinalIgnoreCase)
+            .Select(group => new McpDashboardCountViewModel { Name = group.Key, Count = group.Count() })
+            .OrderBy(item => item.Name, StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+    }
+
+    private static string SerializeSchema(object schema)
+    {
+        try
+        {
+            return JsonSerializer.Serialize(schema ?? new { }, JsonOptions);
+        }
+        catch
+        {
+            return "{}";
+        }
+    }
+
+    private static string FormatTimestamp(DateTimeOffset value)
+        => value.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss zzz", CultureInfo.InvariantCulture);
+
+    private static string FormatAge(DateTimeOffset value)
+    {
+        var age = DateTimeOffset.UtcNow - value;
+        if (age.TotalSeconds < 1)
+        {
+            return "now";
+        }
+
+        if (age.TotalMinutes < 1)
+        {
+            return $"{Math.Floor(age.TotalSeconds).ToString("N0", CultureInfo.InvariantCulture)}s ago";
+        }
+
+        return $"{Math.Floor(age.TotalMinutes).ToString("N0", CultureInfo.InvariantCulture)}m ago";
+    }
+
+    private static string FormatStatus(string status)
+        => string.IsNullOrWhiteSpace(status)
+            ? "Offline"
+            : CultureInfo.InvariantCulture.TextInfo.ToTitleCase(status.Replace('-', ' '));
+
+    private static string GetMcpServerStatusClass(string status)
+        => string.Equals(status, "connected", StringComparison.OrdinalIgnoreCase)
+            ? "text-success"
+            : string.Equals(status, "running", StringComparison.OrdinalIgnoreCase)
+                ? "text-warning"
+                : "text-secondary";
+
+    private static string GetMcpServerBadgeClass(string status)
+        => string.Equals(status, "connected", StringComparison.OrdinalIgnoreCase)
+            ? "text-bg-success"
+            : string.Equals(status, "running", StringComparison.OrdinalIgnoreCase)
+                ? "text-bg-warning"
+                : "text-bg-secondary";
+
+    private static string GetMcpServerTarget(McpServerSessionSnapshot snapshot)
+    {
+        var session = snapshot?.TargetedSessions?.FirstOrDefault() ?? snapshot?.ActiveSessions?.FirstOrDefault();
+        return string.IsNullOrWhiteSpace(session?.SelectedRuntimeId) ? "none" : session.SelectedRuntimeId;
+    }
+
+    private static string GetMcpServerSelectionSource(McpServerSessionSnapshot snapshot)
+    {
+        var session = snapshot?.TargetedSessions?.FirstOrDefault() ?? snapshot?.ActiveSessions?.FirstOrDefault();
+        return string.IsNullOrWhiteSpace(session?.SelectionSource) ? "no active bdk mcp session" : session.SelectionSource;
+    }
+
+    private static McpDashboardSessionViewModel[] CreateSessionModels(McpServerSessionSnapshot snapshot, string runtimeId)
+        => (snapshot?.ActiveSessions ?? [])
+            .Select(session => new McpDashboardSessionViewModel
+            {
+                LastSeenAt = session.LastSeenAt,
+                ProcessId = session.ProcessId,
+                SelectionSource = session.SelectionSource,
+                SelectedRuntimeId = string.IsNullOrWhiteSpace(session.SelectedRuntimeId) ? "none" : session.SelectedRuntimeId,
+                StartedAt = session.StartedAt,
+                TargetsCurrentRuntime = string.Equals(session.SelectedRuntimeId, runtimeId, StringComparison.OrdinalIgnoreCase),
+                Toolsets = string.Join(", ", session.Toolsets ?? [])
+            })
+            .ToArray();
+
+    private sealed class McpDashboardViewModel
+    {
+        public string ApplicationName { get; init; }
+
+        public string Endpoint { get; init; }
+
+        public string EnvironmentName { get; init; }
+
+        public McpDashboardCountViewModel[] FeatureCounts { get; init; } = [];
+
+        public int ActiveMcpServerSessionCount { get; init; }
+
+        public int HandlerCount { get; init; }
+
+        public McpDashboardHandlerViewModel[] Handlers { get; init; } = [];
+
+        public string McpServerSelectionSource { get; init; }
+
+        public McpDashboardSessionViewModel[] McpServerSessions { get; init; } = [];
+
+        public string McpServerStatus { get; init; }
+
+        public string McpServerTarget { get; init; }
+
+        public string McpSessionDirectory { get; init; }
+
+        public bool NonceConfigured { get; init; }
+
+        public int OperationCount { get; init; }
+
+        public McpDashboardOperationViewModel[] Operations { get; init; } = [];
+
+        public McpDashboardCountViewModel[] OwnerCounts { get; init; } = [];
+
+        public int ProcessId { get; init; }
+
+        public string ProjectPath { get; init; }
+
+        public int ProjectOperationCount { get; init; }
+
+        public int ProtocolVersion { get; init; }
+
+        public string RuntimeId { get; init; }
+
+        public DateTimeOffset StartedAt { get; init; }
+
+        public int TargetedMcpServerSessionCount { get; init; }
+
+        public string[] Toolsets { get; init; } = [];
+
+        public McpDashboardCountViewModel[] ToolsetCounts { get; init; } = [];
+
+        public string Transport { get; init; }
+
+        public string WorkspacePath { get; init; }
+    }
+
+    private sealed class McpDashboardHandlerViewModel
+    {
+        public string Name { get; init; }
+
+        public string Namespace { get; init; }
+
+        public IReadOnlyCollection<McpCapability> Capabilities { get; init; } = [];
+
+        public string[] Features { get; set; } = [];
+    }
+
+    private sealed class McpDashboardOperationViewModel
+    {
+        public string ArgumentSchemaJson { get; init; }
+
+        public string Category { get; init; }
+
+        public string Description { get; init; }
+
+        public string Feature { get; init; }
+
+        public string Handler { get; init; }
+
+        public string Name { get; init; }
+
+        public string Owner { get; init; }
+
+        public string Toolset { get; init; }
+    }
+
+    private sealed class McpDashboardSessionViewModel
+    {
+        public DateTimeOffset LastSeenAt { get; init; }
+
+        public int ProcessId { get; init; }
+
+        public string SelectionSource { get; init; }
+
+        public string SelectedRuntimeId { get; init; }
+
+        public DateTimeOffset StartedAt { get; init; }
+
+        public bool TargetsCurrentRuntime { get; init; }
+
+        public string Toolsets { get; init; }
+    }
+
+    private sealed class McpDashboardCountViewModel
+    {
+        public int Count { get; init; }
+
+        public string Name { get; init; }
+    }
+}

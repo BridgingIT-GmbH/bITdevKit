@@ -36,6 +36,8 @@ public static class ServiceCollectionExtensions
 
         if (enabled)
         {
+            context.AddMcpHandlers(enabled);
+
             if (options is not null)
             {
                 context.Services.AddSingleton(options);
@@ -56,6 +58,7 @@ public static class ServiceCollectionExtensions
 
         if (enabled)
         {
+            context.AddMcpHandlers(enabled);
             context.Services.AddEndpoints<OrchestrationEndpoints>(enabled);
         }
 
@@ -71,6 +74,7 @@ public static class ServiceCollectionExtensions
 
         if (enabled)
         {
+            context.AddMcpHandlers(enabled);
             context.Services.AddTransient<IConsoleCommand, OrchestrationDefinitionsConsoleCommand>();
             context.Services.AddTransient<IConsoleCommand, OrchestrationListConsoleCommand>();
             context.Services.AddTransient<IConsoleCommand, OrchestrationHistoryConsoleCommand>();
@@ -114,6 +118,8 @@ public static class ServiceCollectionExtensions
 
         if (enabled)
         {
+            services.AddOrchestrationMcpHandlers(enabled);
+
             if (options is not null)
             {
                 services.AddSingleton(options);
@@ -134,7 +140,34 @@ public static class ServiceCollectionExtensions
 
         if (enabled)
         {
+            services.AddOrchestrationMcpHandlers(enabled);
             services.AddEndpoints<OrchestrationEndpoints>(enabled);
+        }
+
+        return services;
+    }
+
+    public static OrchestrationBuilderContext AddMcpHandlers(
+        this OrchestrationBuilderContext context,
+        bool enabled = true)
+    {
+        EnsureArg.IsNotNull(context, nameof(context));
+
+        if (enabled)
+        {
+            context.Services.AddMcpHandler<OrchestrationMcpHandler>();
+        }
+
+        return context;
+    }
+
+    public static IServiceCollection AddOrchestrationMcpHandlers(this IServiceCollection services, bool enabled = true)
+    {
+        EnsureArg.IsNotNull(services, nameof(services));
+
+        if (enabled)
+        {
+            services.AddMcpHandler<OrchestrationMcpHandler>();
         }
 
         return services;

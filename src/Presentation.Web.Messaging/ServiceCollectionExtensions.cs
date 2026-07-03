@@ -49,6 +49,8 @@ public static class ServiceCollectionExtensions
 
         if (enabled)
         {
+            context.AddMcpHandlers(enabled);
+
             if (options is not null)
             {
                 context.Services.AddSingleton(options);
@@ -72,6 +74,7 @@ public static class ServiceCollectionExtensions
 
         if (enabled)
         {
+            context.AddMcpHandlers(enabled);
             context.Services.AddEndpoints<MessagingEndpoints>(enabled);
         }
 
@@ -128,6 +131,8 @@ public static class ServiceCollectionExtensions
 
         if (enabled)
         {
+            services.AddMessagingMcpHandlers(enabled);
+
             if (options is not null)
             {
                 services.AddSingleton(options);
@@ -151,7 +156,34 @@ public static class ServiceCollectionExtensions
 
         if (enabled)
         {
+            services.AddMessagingMcpHandlers(enabled);
             services.AddEndpoints<MessagingEndpoints>(enabled);
+        }
+
+        return services;
+    }
+
+    public static MessagingBuilderContext AddMcpHandlers(
+        this MessagingBuilderContext context,
+        bool enabled = true)
+    {
+        EnsureArg.IsNotNull(context, nameof(context));
+
+        if (enabled)
+        {
+            context.Services.AddMcpHandler<MessagingMcpHandler>();
+        }
+
+        return context;
+    }
+
+    public static IServiceCollection AddMessagingMcpHandlers(this IServiceCollection services, bool enabled = true)
+    {
+        EnsureArg.IsNotNull(services, nameof(services));
+
+        if (enabled)
+        {
+            services.AddMcpHandler<MessagingMcpHandler>();
         }
 
         return services;

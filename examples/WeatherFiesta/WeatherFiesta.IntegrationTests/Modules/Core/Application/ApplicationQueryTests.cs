@@ -57,6 +57,7 @@ public class ApplicationQueryTests : IAsyncLifetime
         result.Value.ShouldNotBeNull();
         result.Value.ShouldNotBeEmpty();
         result.Value.ShouldContain(c => c.CityId == TestData.LondonCityGuid.ToString());
+        result.Value.Single(c => c.CityId == TestData.LondonCityGuid.ToString()).LastUpdatedText.ShouldNotBeNullOrWhiteSpace();
     }
 
     [Fact]
@@ -92,6 +93,11 @@ public class ApplicationQueryTests : IAsyncLifetime
         // Assert
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldNotBeNull();
+        result.Value.ForecastPeriod.ShouldNotBeNullOrWhiteSpace();
+        result.Value.CurrentWeather.LastUpdatedText.ShouldNotBeNullOrWhiteSpace();
+        result.Value.Forecasts.ShouldNotBeEmpty();
+        result.Value.Forecasts[0].DaylightPeriod.ShouldNotBeNullOrWhiteSpace();
+        result.Value.Forecasts[0].DaylightDurationText.ShouldNotBeNullOrWhiteSpace();
     }
 
     [Fact]
@@ -124,6 +130,9 @@ public class ApplicationQueryTests : IAsyncLifetime
         result.Value.ShouldNotBeNull();
         result.Value.Cities.ShouldNotBeEmpty();
         result.Value.PrimaryCity.ShouldNotBeNull();
+        result.Value.PrimaryCity.LastUpdatedText.ShouldNotBeNullOrWhiteSpace();
+        result.Value.NextBusinessDayReport.ShouldNotBeNull();
+        result.Value.NextBusinessDayReport.ReportType.ShouldBe(WeatherReportType.NextBusinessDay.ToString());
     }
 
     [Fact]
@@ -485,6 +494,26 @@ public class ApplicationQueryTests : IAsyncLifetime
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldNotBeNull();
         result.Value.Forecasts.Count.ShouldBeLessThanOrEqualTo(7);
+    }
+
+    [Fact]
+    public async Task CityWeatherQuery_WhenRangeIsProvided_FiltersForecastsByPeriod()
+    {
+        // Arrange
+        await this.testHost.ResetDatabaseAsync();
+        await SeedLondonForecastsAsync(5);
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var period = new DateOnlyRange(today.AddDays(1), today.AddDays(3));
+
+        // Act
+        var result = await this.requester.SendAsync(
+            new CityWeatherQuery(TestData.LondonCityGuid.ToString(), period.ToIsoRangeString()));
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.ForecastPeriod.ShouldBe(period.ToIsoRangeString());
+        result.Value.Forecasts.Count.ShouldBe(2);
+        result.Value.Forecasts.All(forecast => period.Contains(forecast.ForecastDate)).ShouldBeTrue();
     }
 
     // ──────────────────────────────────────────────────────────────────────────────

@@ -63,6 +63,9 @@ public class WeatherForecast : ActiveEntity<WeatherForecast, WeatherForecastId>
     /// <summary>Gets or sets the sunset time.</summary>
     public DateTime Sunset { get; set; }
 
+    /// <summary>Gets the daylight period for the forecast date.</summary>
+    public DateTimeRange DaylightPeriod => new(this.Sunrise, this.Sunset);
+
     /// <summary>Gets or sets the hourly forecast breakdown for this day.</summary>
     public ICollection<HourlyForecast> HourlyForecasts { get; set; } = [];
 

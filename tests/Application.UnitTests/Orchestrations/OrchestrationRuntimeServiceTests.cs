@@ -607,7 +607,7 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
             ?? throw new InvalidOperationException("CreateInstanceAsync could not be resolved.");
 
         var task = (Task<Guid>)method.MakeGenericMethod(typeof(TOrchestration), typeof(TData))
-            .Invoke(executor, [data, CancellationToken.None])!;
+            .Invoke(executor, [data, CancellationToken.None, null])!;
 
         return await task;
     }

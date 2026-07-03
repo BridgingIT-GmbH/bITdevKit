@@ -39,6 +39,11 @@ public class DashboardEndpointsTests
         content.Cities.ShouldNotBeEmpty();
         content.PrimaryCity.ShouldNotBeNull();
         content.PrimaryCity.CityId.ShouldBe(TestData.LondonCityGuid.ToString());
+        content.PrimaryCity.LastUpdatedText.ShouldNotBeNullOrWhiteSpace();
+        content.PrimaryCity.CurrentWeather.LastUpdatedText.ShouldNotBeNullOrWhiteSpace();
+        content.NextBusinessDayReport.ShouldNotBeNull();
+        content.NextBusinessDayReport.ReportType.ShouldBe(WeatherReportType.NextBusinessDay.ToString());
+        content.NextBusinessDayReport.Summary.ShouldNotBeNullOrWhiteSpace();
     }
 
     [Fact]
@@ -58,5 +63,6 @@ public class DashboardEndpointsTests
         var content = await response.Content.ReadFromJsonAsync<DashboardModel>();
         content.ShouldNotBeNull();
         content.Cities.ShouldBeEmpty();
+        content.NextBusinessDayReport.ShouldBeNull();
     }
 }

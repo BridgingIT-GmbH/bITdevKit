@@ -455,4 +455,5 @@ public class TimeSpanExtensionsTests
         success.ShouldBeFalse();
         result.ShouldBe(TimeSpan.Zero);
     }
+
 }

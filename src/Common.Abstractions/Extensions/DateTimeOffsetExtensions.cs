@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Common;
 
 using System;
 using System.Diagnostics;
+using System.Globalization;
 
 public static class DateTimeOffsetExtensions
 {
@@ -29,7 +30,7 @@ public static class DateTimeOffsetExtensions
     [DebuggerStepThrough]
     public static DateTimeOffset EndOfDay(this DateTimeOffset source)
     {
-        return source.StartOfDay().AddDays(1).AddSeconds(-1);
+        return source.StartOfDay().AddDays(1).AddTicks(-1);
     }
 
     /// <summary>
@@ -58,7 +59,7 @@ public static class DateTimeOffsetExtensions
     [DebuggerStepThrough]
     public static DateTimeOffset EndOfWeek(this DateTimeOffset source)
     {
-        return source.StartOfWeek().AddDays(7).AddSeconds(-1);
+        return source.StartOfWeek().AddDays(7).AddTicks(-1);
     }
 
     /// <summary>
@@ -80,7 +81,7 @@ public static class DateTimeOffsetExtensions
     [DebuggerStepThrough]
     public static DateTimeOffset EndOfMonth(this DateTimeOffset source)
     {
-        return source.StartOfMonth().AddMonths(1).AddSeconds(-1);
+        return source.StartOfMonth().AddMonths(1).AddTicks(-1);
     }
 
     /// <summary>
@@ -102,7 +103,7 @@ public static class DateTimeOffsetExtensions
     [DebuggerStepThrough]
     public static DateTimeOffset EndOfYear(this DateTimeOffset source)
     {
-        return source.StartOfYear().AddYears(1).AddSeconds(-1);
+        return source.StartOfYear().AddYears(1).AddTicks(-1);
     }
 
     /// <summary>
@@ -113,7 +114,7 @@ public static class DateTimeOffsetExtensions
     [DebuggerStepThrough]
     public static DateOnly ToDateOnly(this DateTimeOffset source)
     {
-        return DateOnly.FromDateTime(source.LocalDateTime);
+        return source.ToOffsetDateOnly();
     }
 
     /// <summary>
@@ -124,6 +125,114 @@ public static class DateTimeOffsetExtensions
     [DebuggerStepThrough]
     public static TimeOnly ToTimeOnly(this DateTimeOffset source)
     {
-        return TimeOnly.FromDateTime(source.LocalDateTime);
+        return source.ToOffsetTimeOnly();
+    }
+
+    /// <summary>
+    /// Extracts the date in the value's own offset-clock time.
+    /// </summary>
+    /// <param name="source">The source value.</param>
+    /// <returns>The offset-clock date.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var date = instant.ToOffsetDateOnly();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static DateOnly ToOffsetDateOnly(this DateTimeOffset source)
+    {
+        return DateOnly.FromDateTime(source.DateTime);
+    }
+
+    /// <summary>
+    /// Extracts the time in the value's own offset-clock time.
+    /// </summary>
+    /// <param name="source">The source value.</param>
+    /// <returns>The offset-clock time.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var time = instant.ToOffsetTimeOnly();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static TimeOnly ToOffsetTimeOnly(this DateTimeOffset source)
+    {
+        return TimeOnly.FromDateTime(source.DateTime);
+    }
+
+    /// <summary>
+    /// Extracts the date after converting the instant to UTC.
+    /// </summary>
+    /// <param name="source">The source value.</param>
+    /// <returns>The UTC date.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var utcDate = instant.ToUtcDateOnly();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static DateOnly ToUtcDateOnly(this DateTimeOffset source)
+    {
+        return DateOnly.FromDateTime(source.UtcDateTime);
+    }
+
+    /// <summary>
+    /// Extracts the time after converting the instant to UTC.
+    /// </summary>
+    /// <param name="source">The source value.</param>
+    /// <returns>The UTC time.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var utcTime = instant.ToUtcTimeOnly();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static TimeOnly ToUtcTimeOnly(this DateTimeOffset source)
+    {
+        return TimeOnly.FromDateTime(source.UtcDateTime);
+    }
+
+    /// <summary>
+    /// Formats a <see cref="DateTimeOffset"/> as an ISO string with its offset.
+    /// </summary>
+    /// <param name="source">The source value.</param>
+    /// <returns>An invariant ISO offset timestamp.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var text = instant.ToIsoOffsetString();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static string ToIsoOffsetString(this DateTimeOffset source)
+    {
+        return source.ToString("yyyy-MM-dd'T'HH:mm:ss.fffffffzzz", CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Formats a <see cref="DateTimeOffset"/> as a file-safe UTC timestamp.
+    /// </summary>
+    /// <param name="source">The source value.</param>
+    /// <returns>An invariant timestamp such as 20260629T134530Z.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var stamp = instant.ToFileSafeTimestamp();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static string ToFileSafeTimestamp(this DateTimeOffset source)
+    {
+        return source.UtcDateTime.ToString("yyyyMMdd'T'HHmmss'Z'", CultureInfo.InvariantCulture);
     }
 }

@@ -103,7 +103,10 @@ The best entry point into the current documentation set is the
 
 ### Presentation and Host
 
+- [Presentation Host](./docs/features-presentation.md)
 - [Presentation Endpoints](./docs/features-presentation-endpoints.md)
+- [DevKit CLI](./docs/features-cli.md)
+- [DevKit MCP](./docs/features-cli-mcp.md)
 - [Console Commands](./docs/features-presentation-console-commands.md)
 - [CORS Configuration](./docs/features-presentation-cors.md)
 - [Exception Handling](./docs/features-presentation-exception-handling.md)
@@ -219,13 +222,16 @@ For a new Markdown page from `./docs` to appear in GitHub Pages:
 
 ### Local preview and build
 
-Preview the full site locally with Docker:
+MkDocs is run through Docker. You do not need a local Python or MkDocs installation; you only need Docker Desktop or another Docker engine.
+
+Preview the full site locally:
 
 ```powershell
 pwsh -File ./docs/site/scripts/serve-pages.ps1
 ```
 
-or use the VS Code Tasks for the same command.
+The preview script synchronizes the public docs into `docs/site/reference/`, then starts the `squidfunk/mkdocs-material:9` container and serves the site at [http://localhost:8000](http://localhost:8000).
+
 Build the full static site locally:
 
 ```powershell
@@ -235,8 +241,17 @@ pwsh -File ./docs/site/scripts/build-pages.ps1
 That build command performs these steps:
 
 1. Synchronize the selected public docs from `./docs` into `docs/site/reference/`
-2. Build the MkDocs site in Docker
+2. Build the MkDocs site in Docker with `squidfunk/mkdocs-material:9`
 3. Write the generated static site to `./.github/pages/`
+
+For troubleshooting, the build script is equivalent to:
+
+```powershell
+pwsh -File ./docs/site/scripts/sync-docs.ps1
+docker run --rm -v "${PWD}:/docs" squidfunk/mkdocs-material:9 build --clean
+```
+
+Successful output should include `Documentation built` and generate `./.github/pages/index.html`. Docker may print informational warnings from Material for MkDocs; link warnings should be treated as documentation issues and fixed before publishing.
 
 ### Publishing through GitHub Actions
 

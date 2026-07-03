@@ -1478,7 +1478,7 @@ DELETE /_bdk/api/jobs/occurrences?olderThan=2026-04-01T00:00:00Z&statuses=Archiv
 ## See Also
 
 - [Application Commands and Queries](./features-application-commands-queries.md)
-- [Entity Framework](./features-entityframework.md)
+- [Entity Framework packages](https://github.com/bridgingIT/bITdevKit/tree/main/src/Infrastructure.EntityFramework)
 - [Requester and Notifier](./features-requester-notifier.md)
 - [Orchestrations](./features-orchestrations.md)
 - [Messaging](./features-messaging.md)

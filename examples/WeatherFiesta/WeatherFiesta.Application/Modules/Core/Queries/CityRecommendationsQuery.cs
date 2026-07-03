@@ -93,6 +93,10 @@ public partial class CityRecommendationsQuery
         }
 
         var userProfile = userProfileResult.Value.FirstOrDefault();
+        var lastUpdatedText = weather.RetrievedAt.ToRelativeTimeText(
+            DateTime.UtcNow,
+            new RelativeTimeFormatOptions { MinimumUnit = RelativeTimeUnit.Minute });
+        var isStale = weather.IsStale(staleThreshold);
 
         return Result<CityRecommendationsResponse>.Success(new CityRecommendationsResponse
         {
@@ -104,9 +108,10 @@ public partial class CityRecommendationsQuery
                 Title = r.Title,
                 Message = r.Message
             }),
-            StaleDataWarning = weather.IsStale(staleThreshold),
-            StaleDataWarningMessage = weather.IsStale(staleThreshold)
-                ? $"Data may be outdated — last updated {(int)(DateTime.UtcNow - weather.RetrievedAt).TotalMinutes} minutes ago"
+            LastUpdatedText = lastUpdatedText,
+            StaleDataWarning = isStale,
+            StaleDataWarningMessage = isStale
+                ? $"Data may be outdated - last updated {lastUpdatedText}"
                 : null,
             UnitPreferences = userProfile is not null
                 ? new UnitPreferencesModel
@@ -131,6 +136,9 @@ public class CityRecommendationsResponse
 
     /// <summary>Gets or sets the weather recommendations.</summary>
     public List<WeatherRecommendationModel> Recommendations { get; set; } = [];
+
+    /// <summary>Gets or sets human-readable text describing when the weather data was retrieved.</summary>
+    public string LastUpdatedText { get; set; }
 
     /// <summary>Gets or sets a value indicating whether the data may be stale.</summary>
     public bool StaleDataWarning { get; set; }

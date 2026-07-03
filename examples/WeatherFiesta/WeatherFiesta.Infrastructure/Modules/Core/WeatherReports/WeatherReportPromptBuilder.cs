@@ -53,6 +53,8 @@ public static class WeatherReportPromptBuilder
                 "Write a concise forecast for tomorrow in 1-2 sentences. Mention expected temperature range, rain risk, and wind only when supported by the supplied data.  Warm means temperatures from 20°C and above, cool means temperatures from 10°C to 19°C, cold means temperatures below 10°C.",
             WeatherReportType.Week =>
                 "Write a concise 7-day outlook in 2-3 sentences. Summarize the overall trend, warmest/coolest days, rain risk, and wind only when supported by the supplied data.  Warm means temperatures from 20°C and above, cool means temperatures from 10°C to 19°C, cold means temperatures below 10°C.",
+            WeatherReportType.NextBusinessDay =>
+                "Write a concise forecast for the next business day in 1-2 sentences. Mention expected temperature range, rain risk, and wind only when supported by the supplied data. Warm means temperatures from 20°C and above, cool means temperatures from 10°C to 19°C, cold means temperatures below 10°C.",
             WeatherReportType.Current =>
                 "Write one short current weather summary sentence. Warm means temperatures from 20°C and above, cool means temperatures from 10°C to 19°C, cold means temperatures below 10°C.",
             _ => "Write one short factual weather summary."

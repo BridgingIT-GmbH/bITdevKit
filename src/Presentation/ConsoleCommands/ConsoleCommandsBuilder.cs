@@ -27,4 +27,14 @@ public class ConsoleCommandsBuilder(IServiceCollection services)
 
         return this;
     }
+
+    /// <summary>
+    /// Adds a transient console command implementation.
+    /// </summary>
+    /// <typeparam name="TCommand">The command type implementing <see cref="IConsoleCommand"/>.</typeparam>
+    /// <returns>The builder for chaining.</returns>
+    public ConsoleCommandsBuilder WithCommand<TCommand>() where TCommand : class, IConsoleCommand
+    {
+        return this.AddCommand<TCommand>();
+    }
 }

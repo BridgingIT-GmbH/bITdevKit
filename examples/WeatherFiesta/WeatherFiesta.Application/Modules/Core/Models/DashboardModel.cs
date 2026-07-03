@@ -25,8 +25,35 @@ public class DashboardModel
     /// <summary>Gets or sets weather-based recommendations.</summary>
     public List<WeatherRecommendationModel> Recommendations { get; set; } = [];
 
+    /// <summary>Gets or sets the generated report for the primary city's next business day.</summary>
+    public DashboardWeatherReportModel NextBusinessDayReport { get; set; }
+
     /// <summary>Gets or sets the user's unit preferences.</summary>
     public UnitPreferencesModel UnitPreferences { get; set; }
+}
+
+/// <summary>
+/// DTO representing a generated dashboard weather report.
+/// </summary>
+public class DashboardWeatherReportModel
+{
+    /// <summary>Gets or sets the report type.</summary>
+    public string ReportType { get; set; }
+
+    /// <summary>Gets or sets the UTC report period as an ISO interval.</summary>
+    public string Period { get; set; }
+
+    /// <summary>Gets or sets the first forecast date included in the report.</summary>
+    public DateOnly ForecastDateStart { get; set; }
+
+    /// <summary>Gets or sets the exclusive forecast date boundary.</summary>
+    public DateOnly ForecastDateEndExclusive { get; set; }
+
+    /// <summary>Gets or sets the generated report summary.</summary>
+    public string Summary { get; set; }
+
+    /// <summary>Gets or sets the UTC timestamp when the report was generated.</summary>
+    public DateTime GeneratedAt { get; set; }
 }
 
 /// <summary>

@@ -24,6 +24,81 @@ using Serilog.Events;
 public static class HostBuilderExtensions
 {
     /// <summary>
+    /// Configures Serilog logging directly on a logging builder and registers runtime log level console commands.
+    /// </summary>
+    /// <param name="builder">The logging builder to configure.</param>
+    /// <param name="services">The service collection used to register optional log commands.</param>
+    /// <param name="configuration">The application configuration.</param>
+    /// <param name="exclusionPatterns">Optional collection of Serilog expression filters to exclude log events.</param>
+    /// <param name="selfLogEnabled">If <c>true</c>, enables Serilog self-log output to <see cref="Console.Error"/> for diagnostics.</param>
+    /// <param name="registerLogCommands">If <c>true</c>, registers console commands for listing, getting and setting the active log level at runtime.</param>
+    /// <returns>The same <see cref="ILoggingBuilder"/> instance for chaining.</returns>
+    public static ILoggingBuilder ConfigureLogging(
+        this ILoggingBuilder builder,
+        IServiceCollection services,
+        IConfiguration configuration,
+        string[] exclusionPatterns = null,
+        bool selfLogEnabled = false,
+        bool registerLogCommands = true)
+    {
+        EnsureArg.IsNotNull(builder, nameof(builder));
+        EnsureArg.IsNotNull(services, nameof(services));
+        EnsureArg.IsNotNull(configuration, nameof(configuration));
+
+        if (selfLogEnabled)
+        {
+            SelfLog.Enable(Console.Error);
+        }
+
+        if (Log.Logger.GetType().Name == "SilentLogger" && !EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
+        {
+            var loggerConfiguration = new LoggerConfiguration();
+            loggerConfiguration.Filter.ByExcluding("RequestPath like '/health%'");
+            loggerConfiguration.Filter.ByExcluding("RequestPath like '/api/events/raw'");
+            loggerConfiguration.Filter.ByExcluding("StartsWith(@Message, 'Execution attempt. Source')");
+
+            if (exclusionPatterns != null)
+            {
+                foreach (var exclusionPattern in exclusionPatterns)
+                {
+                    loggerConfiguration.Filter.ByExcluding(exclusionPattern);
+                }
+            }
+
+            WriteToOpenTelemetry(loggerConfiguration, configuration);
+
+            var levelSwitch = new LoggingLevelSwitch(LogEventLevel.Debug);
+            var levelConfig = configuration.GetSection("Serilog:MinimumLevel:Default");
+            if (Enum.TryParse<LogEventLevel>(levelConfig.Value, out var level))
+            {
+                levelSwitch.MinimumLevel = level;
+            }
+
+            LogLevelSwitchProvider.SetControlSwitch(levelSwitch);
+
+            var logger = loggerConfiguration
+                .ReadFrom.Configuration(configuration)
+                .MinimumLevel.ControlledBy(levelSwitch)
+                .CreateLogger();
+
+            builder.ClearProviders();
+            builder.AddSerilog(logger);
+
+            if (registerLogCommands)
+            {
+                services.AddTransient<IConsoleCommand, LogLevelListConsoleCommand>();
+                services.AddTransient<IConsoleCommand, LogLevelGetConsoleCommand>();
+                services.AddTransient<IConsoleCommand, LogLevelSetConsoleCommand>();
+            }
+
+            Log.Logger = logger;
+            Log.Logger.Information("[{LogKey}] logging configured using appsettings (MinimumLevel: {MinimumLevel}).", "LOG", levelSwitch.MinimumLevel);
+        }
+
+        return builder;
+    }
+
+    /// <summary>
     /// Configures Serilog logging from application configuration (appsettings) and registers runtime log level console commands.
     /// </summary>
     /// <param name="builder">The host builder to configure.</param>

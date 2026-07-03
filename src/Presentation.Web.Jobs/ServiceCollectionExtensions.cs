@@ -38,6 +38,8 @@ public static class ServiceCollectionExtensions
     {
         if (enabled)
         {
+            context.AddMcpHandlers(enabled);
+
             if (options is not null)
             {
                 context.Services.AddSingleton(options);
@@ -58,6 +60,7 @@ public static class ServiceCollectionExtensions
     {
         if (enabled)
         {
+            context.AddMcpHandlers(enabled);
             context.Services.AddEndpoints<JobSchedulerEndpoints>(enabled);
         }
 
@@ -73,6 +76,7 @@ public static class ServiceCollectionExtensions
     {
         if (enabled)
         {
+            context.AddMcpHandlers(enabled);
             context.Services.AddTransient<IConsoleCommand, JobSchedulerListConsoleCommand>();
             context.Services.AddTransient<IConsoleCommand, JobSchedulerTriggersConsoleCommand>();
             context.Services.AddTransient<IConsoleCommand, JobSchedulerOccurrencesConsoleCommand>();
@@ -88,6 +92,21 @@ public static class ServiceCollectionExtensions
             context.Services.AddTransient<IConsoleCommand, JobSchedulerRetryConsoleCommand>();
             context.Services.AddTransient<IConsoleCommand, JobSchedulerArchiveConsoleCommand>();
             context.Services.AddTransient<IConsoleCommand, JobSchedulerReleaseLeaseConsoleCommand>();
+        }
+
+        return context;
+    }
+
+    /// <summary>
+    /// Adds jobs MCP handlers to the service collection.
+    /// </summary>
+    public static JobBuilderContext AddMcpHandlers(
+        this JobBuilderContext context,
+        bool enabled = true)
+    {
+        if (enabled)
+        {
+            context.Services.AddMcpHandler<JobSchedulerMcpHandler>();
         }
 
         return context;

@@ -5,6 +5,11 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Abstractions.Extensions;
 
+using System.Globalization;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
 public class DateOnlyExtensionsTests
 {
     private readonly Faker faker = new();
@@ -309,5 +314,262 @@ public class DateOnlyExtensionsTests
         // Act & Assert
         Should.Throw<ArgumentException>(() => date.RoundToNearest((DateUnit)invalidUnit))
             .Message.ShouldContain("Unsupported DateUnit");
+    }
+
+    [Fact]
+    public void ToUnixTimeSeconds_UsesStartOfDayAtZeroOffset()
+    {
+        var source = new DateOnly(2026, 1, 1);
+
+        source.ToUnixTimeSeconds().ShouldBe(1767225600L);
+    }
+
+    [Fact]
+    public void ToUnixTimeMilliseconds_UsesStartOfDayAtZeroOffset()
+    {
+        var source = new DateOnly(2026, 1, 1);
+
+        source.ToUnixTimeMilliseconds().ShouldBe(1767225600000L);
+    }
+
+    [Fact]
+    public void AtTime_UsesProvidedTimeAndOffset()
+    {
+        var source = new DateOnly(2026, 1, 1);
+
+        var result = source.AtTime(new TimeOnly(13, 45, 30), TimeSpan.FromHours(2));
+
+        result.DateTime.ShouldBe(new DateTime(2026, 1, 1, 13, 45, 30));
+        result.Offset.ShouldBe(TimeSpan.FromHours(2));
+    }
+
+    [Fact]
+    public void ToIsoDateString_ReturnsDeterministicString()
+    {
+        new DateOnly(2026, 6, 29).ToIsoDateString().ShouldBe("2026-06-29");
+    }
+
+    [Fact]
+    public void BusinessCalendar_DefaultCalendar_TreatsWeekendAsNonWorking()
+    {
+        var calendar = new BusinessCalendar();
+
+        calendar.IsBusinessDay(new DateOnly(2026, 6, 27)).ShouldBeFalse();
+        calendar.IsBusinessDay(new DateOnly(2026, 6, 29)).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void BusinessCalendar_CustomRules_CanOverrideWeekend()
+    {
+        var saturday = new DateOnly(2026, 6, 27);
+        var calendar = new BusinessCalendar(
+            rules:
+            [
+                new CustomBusinessDayRule(date => date == saturday
+                    ? new BusinessDayRuleResult(BusinessDayRuleResultKind.WorkingDay, "Override")
+                    : BusinessDayRuleResult.NoMatch)
+            ]);
+
+        calendar.IsBusinessDay(saturday).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void BusinessCalendar_HolidaysAndRanges_WorkAsHalfOpenCalendar()
+    {
+        var calendar = new BusinessCalendar(
+            holidays: [new DateOnly(2026, 1, 1)],
+            rules: [new FixedHolidayRule([new FixedHoliday(12, 25, "Christmas")])]);
+
+        calendar.IsBusinessDay(new DateOnly(2026, 1, 1)).ShouldBeFalse();
+        calendar.IsBusinessDay(new DateOnly(2026, 12, 25)).ShouldBeFalse();
+        calendar.AddBusinessDays(new DateOnly(2025, 12, 31), 1).ShouldBe(new DateOnly(2026, 1, 2));
+        calendar.CountBusinessDays(new DateOnly(2025, 12, 31), new DateOnly(2026, 1, 3)).ShouldBe(2);
+    }
+
+    [Fact]
+    public void BusinessCalendar_ObservedHolidayRule_HonorsObservedHoliday()
+    {
+        var calendar = new BusinessCalendar(
+            rules: [new ObservedHolidayRule([new FixedHoliday(7, 4, "Independence Day")])]);
+
+        calendar.IsBusinessDay(new DateOnly(2026, 7, 3)).ShouldBeFalse();
+        calendar.GetBusinessDayInfo(new DateOnly(2026, 7, 3)).Reason.ShouldBe("Observed holiday: Independence Day");
+    }
+
+    [Fact]
+    public void BusinessCalendar_AddBusinessDays_BackwardSkipsWeekendAndHoliday()
+    {
+        var calendar = new BusinessCalendar(holidays: [new DateOnly(2026, 1, 1)]);
+
+        calendar.AddBusinessDays(new DateOnly(2026, 1, 5), -2).ShouldBe(new DateOnly(2025, 12, 31));
+    }
+
+    [Fact]
+    public void BusinessCalendar_NextAndPreviousBusinessDay_HonorIncludeCurrent()
+    {
+        var calendar = new BusinessCalendar();
+        var friday = new DateOnly(2026, 6, 26);
+        var saturday = new DateOnly(2026, 6, 27);
+
+        calendar.NextBusinessDay(friday, includeCurrent: true).ShouldBe(friday);
+        calendar.NextBusinessDay(saturday, includeCurrent: true).ShouldBe(new DateOnly(2026, 6, 29));
+        calendar.PreviousBusinessDay(friday, includeCurrent: true).ShouldBe(friday);
+        calendar.PreviousBusinessDay(saturday, includeCurrent: true).ShouldBe(friday);
+    }
+
+    [Fact]
+    public void IsBusinessDay_GlobalCalendarRegistration_ResolvesByCultureCountry()
+    {
+        var culture = CultureInfo.GetCultureInfo("nl-NL");
+        var calendar = new BusinessCalendar(nonWorkingDays: [DayOfWeek.Monday]);
+        BusinessCalendars.RegisterCountry("NL", calendar);
+
+        new DateOnly(2026, 6, 29).IsBusinessDay(culture).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void AddBusinessDays_GlobalCalendarRegistration_ResolvesByCulture()
+    {
+        var culture = CultureInfo.GetCultureInfo("is-IS");
+        var calendar = new BusinessCalendar(nonWorkingDays: [DayOfWeek.Tuesday]);
+        BusinessCalendars.Register(culture, calendar);
+
+        new DateOnly(2026, 6, 29).AddBusinessDays(1, culture).ShouldBe(new DateOnly(2026, 7, 1));
+    }
+
+    [Fact]
+    public void DynamicBusinessCalendar_CalculatedHolidayProvider_CalculatesHolidaysForMultipleYears()
+    {
+        var calendar = new DynamicBusinessCalendar(
+            new CalculatedHolidayProvider([
+                new CalculatedHoliday("Good Friday", year => HolidayCalculations.GregorianEasterSunday(year).AddDays(-2))
+            ]));
+
+        calendar.GetBusinessDayInfo(new DateOnly(2026, 4, 3)).ShouldSatisfyAllConditions(
+            info => info.IsBusinessDay.ShouldBeFalse(),
+            info => info.Reason.ShouldBe("Holiday: Good Friday"));
+        calendar.GetBusinessDayInfo(new DateOnly(2027, 3, 26)).ShouldSatisfyAllConditions(
+            info => info.IsBusinessDay.ShouldBeFalse(),
+            info => info.Reason.ShouldBe("Holiday: Good Friday"));
+    }
+
+    [Fact]
+    public void AddBusinessCalendars_ServiceRegistration_RegistersStaticAndResolverCalendars()
+    {
+        BusinessCalendars.ResetDefaults();
+        var services = new ServiceCollection();
+        services.AddBusinessCalendars(calendars => calendars
+            .RegisterCountry("NL", new BusinessCalendar(nonWorkingDays: [DayOfWeek.Monday]))
+            .Register(CultureInfo.GetCultureInfo("fr-BE"), new BusinessCalendar(nonWorkingDays: [DayOfWeek.Tuesday])));
+
+        services.Count(descriptor => descriptor.ServiceType == typeof(IHostedService) &&
+            descriptor.ImplementationType == typeof(BusinessCalendarStartupDiagnosticsService)).ShouldBe(1);
+
+        using var provider = services.BuildServiceProvider();
+        var resolver = provider.GetRequiredService<IBusinessCalendarResolver>();
+
+        new DateOnly(2026, 6, 29).IsBusinessDay(CultureInfo.GetCultureInfo("nl-NL")).ShouldBeFalse();
+        resolver.Resolve(CultureInfo.GetCultureInfo("fr-BE")).IsBusinessDay(new DateOnly(2026, 6, 30)).ShouldBeFalse();
+        resolver.Resolve("NL").IsBusinessDay(new DateOnly(2026, 6, 29)).ShouldBeFalse();
+        BusinessCalendars.Resolve("NL").IsBusinessDay(new DateOnly(2026, 6, 29)).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void AddBusinessCalendars_ServiceBackedRegistration_ResolvesCalendarWithScopedDependencies()
+    {
+        var services = new ServiceCollection();
+        services.AddScoped(_ => new TestCalendarDependency(DayOfWeek.Wednesday));
+        services.AddBusinessCalendars(calendars => calendars.Register(
+            CultureInfo.GetCultureInfo("es-ES"),
+            serviceProvider => new BusinessCalendar(nonWorkingDays: [serviceProvider.GetRequiredService<TestCalendarDependency>().NonWorkingDay])));
+
+        using var provider = services.BuildServiceProvider();
+        using var scope = provider.CreateScope();
+
+        var calendar = scope.ServiceProvider
+            .GetRequiredService<IBusinessCalendarResolver>()
+            .Resolve(CultureInfo.GetCultureInfo("es-ES"));
+
+        calendar.IsBusinessDay(new DateOnly(2026, 7, 1)).ShouldBeFalse();
+    }
+
+    [Fact]
+    public async Task BusinessCalendarStartupDiagnosticsService_WhenStarted_LogsRegistrationsUnderBdkCategoryAtDebug()
+    {
+        var services = new ServiceCollection();
+        services.AddBusinessCalendars(calendars => calendars
+            .SetDefault(new BusinessCalendar())
+            .RegisterCountry("NL", new BusinessCalendar(nonWorkingDays: [DayOfWeek.Monday]))
+            .Register(CultureInfo.GetCultureInfo("fr-BE"), new BusinessCalendar(nonWorkingDays: [DayOfWeek.Tuesday])));
+        using var provider = services.BuildServiceProvider();
+        var loggerFactory = new RecordingLoggerFactory();
+        var sut = new BusinessCalendarStartupDiagnosticsService(provider.GetServices<BusinessCalendarOptions>(), loggerFactory);
+
+        await sut.StartAsync(CancellationToken.None);
+
+        var entry = loggerFactory.Entries.ShouldHaveSingleItem();
+        entry.Category.ShouldBe("BDK");
+        entry.Level.ShouldBe(LogLevel.Debug);
+        entry.Message.ShouldContain("business calendars registered");
+        entry.Message.ShouldContain("NL=");
+        entry.Message.ShouldContain("fr-BE|BE|fr=");
+        entry.Message.ShouldContain(typeof(BusinessCalendar).FullName);
+    }
+
+    [Fact]
+    public void BusinessCalendar_CountBusinessDays_EndBeforeStart_ThrowsArgumentException()
+    {
+        var calendar = new BusinessCalendar();
+
+        Should.Throw<ArgumentException>(() => calendar.CountBusinessDays(new DateOnly(2026, 1, 2), new DateOnly(2026, 1, 1)));
+    }
+
+    private sealed record TestCalendarDependency(DayOfWeek NonWorkingDay);
+
+    private sealed class RecordingLoggerFactory : ILoggerFactory
+    {
+        public List<LogEntry> Entries { get; } = [];
+
+        public void AddProvider(ILoggerProvider provider)
+        {
+        }
+
+        public ILogger CreateLogger(string categoryName)
+            => new RecordingLogger(categoryName, this.Entries);
+
+        public void Dispose()
+        {
+        }
+    }
+
+    private sealed class RecordingLogger(string category, List<LogEntry> entries) : ILogger
+    {
+        public IDisposable BeginScope<TState>(TState state)
+            where TState : notnull
+            => NullScope.Instance;
+
+        public bool IsEnabled(LogLevel logLevel)
+            => true;
+
+        public void Log<TState>(
+            LogLevel logLevel,
+            EventId eventId,
+            TState state,
+            Exception exception,
+            Func<TState, Exception, string> formatter)
+        {
+            entries.Add(new LogEntry(category, logLevel, formatter(state, exception)));
+        }
+    }
+
+    private sealed record LogEntry(string Category, LogLevel Level, string Message);
+
+    private sealed class NullScope : IDisposable
+    {
+        public static readonly NullScope Instance = new();
+
+        public void Dispose()
+        {
+        }
     }
 }

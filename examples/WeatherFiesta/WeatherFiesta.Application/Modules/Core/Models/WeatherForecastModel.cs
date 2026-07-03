@@ -70,11 +70,20 @@ public class WeatherForecastModel
     /// <summary>Gets or sets the sunset time.</summary>
     public DateTime Sunset { get; set; }
 
+    /// <summary>Gets or sets the ISO interval for the daylight period.</summary>
+    public string DaylightPeriod { get; set; }
+
+    /// <summary>Gets or sets human-readable daylight duration text.</summary>
+    public string DaylightDurationText { get; set; }
+
     /// <summary>Gets or sets the hourly forecast breakdown.</summary>
     public List<HourlyForecastModel> HourlyForecasts { get; set; } = [];
 
     /// <summary>Gets or sets when the forecast data was retrieved.</summary>
     public DateTime RetrievedAt { get; set; }
+
+    /// <summary>Gets or sets human-readable text describing when the forecast data was retrieved.</summary>
+    public string LastUpdatedText { get; set; }
 
     /// <summary>Gets or sets a value indicating whether the data may be stale.</summary>
     public bool StaleDataWarning { get; set; }

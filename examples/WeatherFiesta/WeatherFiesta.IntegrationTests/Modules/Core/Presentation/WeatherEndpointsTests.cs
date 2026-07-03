@@ -42,15 +42,21 @@ public class WeatherEndpointsTests
     public async Task GetSunData_ReturnsOk()
     {
         // Arrange — seeded user has London subscription
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var range = new DateOnlyRange(today, today.AddDays(1)).ToIsoRangeString();
 
         // Act
         var response = await this.client.GetAsync(
-            $"/api/core/cities/{TestData.LondonCityGuid}/sun?days=1");
+            $"/api/core/cities/{TestData.LondonCityGuid}/sun?range={range}");
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var sunData = await response.Content.ReadFromJsonAsync<CitySunResponse>();
         sunData.ShouldNotBeNull();
+        sunData.Period.ShouldBe(range);
+        sunData.SunData.ShouldNotBeEmpty();
+        sunData.SunData[0].DaylightPeriod.ShouldNotBeNullOrWhiteSpace();
+        sunData.SunData[0].DaylightDurationText.ShouldNotBeNullOrWhiteSpace();
     }
 
     [Fact]
@@ -97,14 +103,17 @@ public class WeatherEndpointsTests
     }
 
     [Fact]
-    public async Task ExportWeatherForecast_WhenFreePlan_ReturnsBadRequest()
+    public async Task ExportWeatherForecast_WhenFreePlan_ReturnsOk()
     {
         // Act
         var response = await this.client.GetAsync(
             $"/api/core/cities/{TestData.LondonCityGuid}/weather/export?days=3");
 
         // Assert
-        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var csv = await response.Content.ReadAsStringAsync();
+        csv.ShouldNotBeNullOrWhiteSpace();
+        csv.ShouldContain("ForecastDate");
     }
 
     [Fact]
@@ -119,9 +128,9 @@ public class WeatherEndpointsTests
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
-        var export = await response.Content.ReadFromJsonAsync<CityExportResponse>();
-        export.ShouldNotBeNull();
-        export.CsvContent.ShouldNotBeNullOrEmpty();
+        var csv = await response.Content.ReadAsStringAsync();
+        csv.ShouldNotBeNullOrWhiteSpace();
+        csv.ShouldContain("ForecastDate");
     }
 
     [Fact]
@@ -138,6 +147,7 @@ public class WeatherEndpointsTests
         var result = await response.Content.ReadFromJsonAsync<CityRecommendationsResponse>();
         result.ShouldNotBeNull();
         result.CityId.ShouldBe(TestData.LondonCityGuid.ToString());
+        result.LastUpdatedText.ShouldNotBeNullOrWhiteSpace();
     }
 
     [Fact]

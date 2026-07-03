@@ -138,6 +138,7 @@ public class CityEndpointsTests
         cities.ShouldNotBeNull();
         cities.ShouldNotBeEmpty();
         cities.ShouldContain(c => c.CityId == TestData.LondonCityGuid.ToString());
+        cities.Single(c => c.CityId == TestData.LondonCityGuid.ToString()).LastUpdatedText.ShouldNotBeNullOrWhiteSpace();
     }
 
     [Fact]
@@ -193,15 +194,23 @@ public class CityEndpointsTests
     public async Task GetCityWeather_ReturnsOk()
     {
         // Arrange — seeded user has London subscription
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var range = new DateOnlyRange(today, today.AddDays(1)).ToIsoRangeString();
 
         // Act
         var response = await this.client.GetAsync(
-            $"/api/core/cities/{TestData.LondonCityGuid}/weather");
+            $"/api/core/cities/{TestData.LondonCityGuid}/weather?range={range}");
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         var weather = await response.Content.ReadFromJsonAsync<CityWeatherResponse>();
         weather.ShouldNotBeNull();
+        weather.ForecastPeriod.ShouldBe(range);
+        weather.CurrentWeather.ShouldNotBeNull();
+        weather.CurrentWeather.LastUpdatedText.ShouldNotBeNullOrWhiteSpace();
+        weather.Forecasts.ShouldNotBeEmpty();
+        weather.Forecasts[0].DaylightPeriod.ShouldNotBeNullOrWhiteSpace();
+        weather.Forecasts[0].DaylightDurationText.ShouldNotBeNullOrWhiteSpace();
     }
 
     [Fact]

@@ -1,0 +1,90 @@
+@using System.Globalization
+@using BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard.Pages
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using Microsoft.Extensions.DependencyInjection
+@using RazorSlices
+@inherits DashboardPageSlice
+
+@{
+    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var contentPath = McpDashboardEndpoints.BuildMcpContentPath(dashboardOptions);
+}
+
+<div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
+    <div class="d-flex align-items-center gap-2">
+        <span id="mcp-refresh-status" class="text-muted small">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <select id="mcp-refresh-interval" class="form-select form-select-sm" style="width: 9rem" aria-label="MCP refresh interval">
+            <option value="">Off</option>
+            <option value="1000">1 sec</option>
+            <option value="5000">5 sec</option>
+            <option value="15000">15 sec</option>
+            <option value="30000">30 sec</option>
+        </select>
+        <button type="button" id="mcp-refresh-now" class="btn btn-outline-secondary btn-sm" title="Refresh MCP diagnostics">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+</div>
+
+<div id="dashboard-mcp-content">
+    @(await RenderPartialAsync<McpContent>())
+</div>
+
+<div class="modal fade" id="dashboard-mcp-schema-modal" tabindex="-1" aria-labelledby="dashboard-mcp-schema-title" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div>
+                    <h5 class="modal-title" id="dashboard-mcp-schema-title">Argument schema</h5>
+                    <div id="dashboard-mcp-schema-operation" class="dashboard-mcp-description"></div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <pre id="dashboard-mcp-schema-content" class="dashboard-mcp-schema-pre bg-body-tertiary border rounded p-3 mb-0"></pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (() => {
+        const modal = document.getElementById('dashboard-mcp-schema-modal');
+        const operationElement = document.getElementById('dashboard-mcp-schema-operation');
+        const schemaElement = document.getElementById('dashboard-mcp-schema-content');
+        let schemaModalOpen = false;
+
+        const refresher = window.bdkDashboard.createRefresher({
+            contentUrl: '@contentPath',
+            contentSelector: '#dashboard-mcp-content',
+            statusSelector: '#mcp-refresh-status',
+            intervalSelector: '#mcp-refresh-interval',
+            refreshButtonSelector: '#mcp-refresh-now',
+            storageKey: 'bdk.dashboard.mcp.refreshInterval',
+            shouldRefresh: () => !schemaModalOpen
+        });
+
+        if (!modal || !operationElement || !schemaElement) {
+            return;
+        }
+
+        modal.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            schemaModalOpen = true;
+            operationElement.textContent = button?.dataset?.operation || '';
+            schemaElement.textContent = button?.dataset?.schema || '{}';
+        });
+
+        modal.addEventListener('hidden.bs.modal', () => {
+            schemaModalOpen = false;
+            refresher.schedule();
+        });
+    })();
+</script>
+
+@functions {
+    public override string PageTitle => "MCP";
+
+}

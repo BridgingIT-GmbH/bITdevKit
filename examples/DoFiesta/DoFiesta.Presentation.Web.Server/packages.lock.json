@@ -1279,6 +1279,7 @@
         "dependencies": {
           "Azure.Extensions.AspNetCore.Configuration.Secrets": "[1.5.1, )",
           "Azure.Identity": "[1.21.0, )",
+          "BridgingIT.DevKit.Common.Abstractions": "[1.0.0, )",
           "BridgingIT.DevKit.Common.Modules": "[1.0.0, )",
           "Ensure.That": "[10.1.0, )",
           "Microsoft.Azure.AppConfiguration.AspNetCore": "[8.5.0, )"

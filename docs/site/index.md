@@ -22,6 +22,7 @@ hide:
 
 <div class="hero-actions">
   <a class="cta-button cta-primary" href="getting-started/">Get Started</a>
+  <a class="cta-button cta-secondary" href="agent-support/">Use AI Agents</a>
   <a class="cta-button cta-secondary" href="templates/">Use Templates</a>
   <a class="cta-button cta-secondary" href="reference/">Explore Docs</a>
   <a class="cta-button cta-ghost" href="https://github.com/bridgingIT/bITdevKit">View Source</a>
@@ -47,6 +48,14 @@ hide:
   <a class="gateway-card" href="templates/">
     <h3>Scaffold a solution</h3>
     <p>Install the templates and create a new solution or module that already follows the expected structure.</p>
+  </a>
+  <a class="gateway-card" href="agent-support/">
+    <h3>Work with AI agents</h3>
+    <p>Use the `bdk mcp` server to give coding agents official DevKit docs plus live runtime diagnostics while they implement features.</p>
+  </a>
+  <a class="gateway-card" href="developer-dashboards/">
+    <h3>Inspect running hosts</h3>
+    <p>Open the built-in developer dashboard for health, metrics, logs, jobs, queueing, identity, console commands and MCP visibility.</p>
   </a>
   <a class="gateway-card" href="examples/">
     <h3>Explore examples</h3>
@@ -124,7 +133,15 @@ hide:
   </a>
   <a class="capability-card" href="reference/features-presentation-endpoints/">
     <h3>Presentation</h3>
-    <p>Minimal API endpoints, console commands, CORS, exception handling and Blazor application state support.</p>
+    <p>Minimal API endpoints, console commands, dashboards, CORS, exception handling and Blazor application state support.</p>
+  </a>
+  <a class="capability-card" href="developer-dashboards/">
+    <h3>Dashboards</h3>
+    <p>Live local pages for runtime health, metrics, retained logs, jobs, queueing and MCP handler/session insight.</p>
+  </a>
+  <a class="capability-card" href="agent-support/">
+    <h3>AI &amp; Agents</h3>
+    <p>Local MCP support for coding agents that can read official DevKit docs, follow patterns and inspect the running app while coding.</p>
   </a>
 </div>
 

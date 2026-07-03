@@ -53,13 +53,19 @@ public partial class CityAlertsQuery
 
             if (alerts.Any())
             {
+                var lastUpdatedText = weather.RetrievedAt.ToRelativeTimeText(
+                    DateTime.UtcNow,
+                    new RelativeTimeFormatOptions { MinimumUnit = RelativeTimeUnit.Minute });
+                var isStale = weather.IsStale(staleThreshold);
+
                 result.Add(new CityAlertsModel
                 {
                     CityId = uc.CityId.Value.ToString(),
                     Alerts = mapper.Map<List<WeatherAlert>, List<WeatherAlertModel>>(alerts),
-                    StaleDataWarning = weather.IsStale(staleThreshold),
-                    StaleDataWarningMessage = weather.IsStale(staleThreshold)
-                        ? $"Data may be outdated — last updated {(int)(DateTime.UtcNow - weather.RetrievedAt).TotalMinutes} minutes ago"
+                    LastUpdatedText = lastUpdatedText,
+                    StaleDataWarning = isStale,
+                    StaleDataWarningMessage = isStale
+                        ? $"Data may be outdated - last updated {lastUpdatedText}"
                         : null
                 });
             }
@@ -79,6 +85,9 @@ public class CityAlertsModel
 
     /// <summary>Gets or sets the active weather alerts.</summary>
     public List<WeatherAlertModel> Alerts { get; set; } = [];
+
+    /// <summary>Gets or sets human-readable text describing when the weather data was retrieved.</summary>
+    public string LastUpdatedText { get; set; }
 
     /// <summary>Gets or sets a value indicating whether the data may be stale.</summary>
     public bool StaleDataWarning { get; set; }

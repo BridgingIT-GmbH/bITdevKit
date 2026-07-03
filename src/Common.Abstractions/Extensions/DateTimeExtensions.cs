@@ -29,7 +29,7 @@ public static class DateTimeExtensions
     [DebuggerStepThrough]
     public static DateTime EndOfDay(this DateTime source)
     {
-        return source.StartOfDay().AddDays(1).AddSeconds(-1);
+        return source.StartOfDay().AddDays(1).AddTicks(-1);
     }
 
     /// <summary>
@@ -58,7 +58,7 @@ public static class DateTimeExtensions
     [DebuggerStepThrough]
     public static DateTime EndOfWeek(this DateTime source)
     {
-        return source.StartOfWeek().AddDays(7).AddSeconds(-1);
+        return source.StartOfWeek().AddDays(7).AddTicks(-1);
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ public static class DateTimeExtensions
     [DebuggerStepThrough]
     public static DateTime EndOfMonth(this DateTime source)
     {
-        return source.StartOfMonth().AddMonths(1).AddSeconds(-1);
+        return source.StartOfMonth().AddMonths(1).AddTicks(-1);
     }
 
     /// <summary>
@@ -102,94 +102,254 @@ public static class DateTimeExtensions
     [DebuggerStepThrough]
     public static DateTime EndOfYear(this DateTime source)
     {
-        return source.StartOfYear().AddYears(1).AddSeconds(-1);
+        return source.StartOfYear().AddYears(1).AddTicks(-1);
+    }
+
+    /// <summary>
+    /// Returns a UTC <see cref="DateTime"/> for values that are already UTC or have no kind.
+    /// </summary>
+    /// <param name="source">The source value to treat as UTC.</param>
+    /// <returns>A UTC <see cref="DateTime"/> with the same clock value.</returns>
+    /// <remarks>
+    /// <para>Local values are rejected to avoid hiding a machine-local conversion.</para>
+    /// <example>
+    /// <code>
+    /// var stored = new DateTime(2026, 1, 1);
+    /// var utc = stored.AssumeUtc();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="source"/> is local.</exception>
+    [DebuggerStepThrough]
+    public static DateTime AssumeUtc(this DateTime source)
+    {
+        return source.Kind switch
+        {
+            DateTimeKind.Utc => source,
+            DateTimeKind.Unspecified => DateTime.SpecifyKind(source, DateTimeKind.Utc),
+            DateTimeKind.Local => throw new ArgumentException("Local DateTime cannot be assumed to be UTC.", nameof(source)),
+            _ => source
+        };
+    }
+
+    /// <summary>
+    /// Ensures a <see cref="DateTime"/> is usable as UTC.
+    /// </summary>
+    /// <param name="source">The source value to validate.</param>
+    /// <returns>A UTC <see cref="DateTime"/> with the same clock value.</returns>
+    /// <remarks>
+    /// <para>Unspecified values are interpreted as UTC. Local values are rejected.</para>
+    /// <example>
+    /// <code>
+    /// var utc = value.EnsureUtc();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    /// <exception cref="ArgumentException">Thrown when <paramref name="source"/> is local.</exception>
+    [DebuggerStepThrough]
+    public static DateTime EnsureUtc(this DateTime source)
+    {
+        return source.Kind switch
+        {
+            DateTimeKind.Utc => source,
+            DateTimeKind.Unspecified => DateTime.SpecifyKind(source, DateTimeKind.Utc),
+            DateTimeKind.Local => throw new ArgumentException("DateTime must be UTC or unspecified UTC.", nameof(source)),
+            _ => source
+        };
+    }
+
+    /// <summary>
+    /// Determines whether a value has <see cref="DateTimeKind.Utc"/>.
+    /// </summary>
+    /// <param name="source">The source value.</param>
+    /// <returns><c>true</c> when the value is UTC; otherwise <c>false</c>.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// if (createdAt.IsUtc()) { }
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static bool IsUtc(this DateTime source)
+    {
+        return source.Kind == DateTimeKind.Utc;
+    }
+
+    /// <summary>
+    /// Determines whether a value has <see cref="DateTimeKind.Unspecified"/>.
+    /// </summary>
+    /// <param name="source">The source value.</param>
+    /// <returns><c>true</c> when the value has no kind; otherwise <c>false</c>.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// if (storedAt.IsUnspecified()) { }
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static bool IsUnspecified(this DateTime source)
+    {
+        return source.Kind == DateTimeKind.Unspecified;
     }
 
     [DebuggerStepThrough]
     public static DateTime? ParseDateOrEpoch(this string source)
     {
-        if (string.IsNullOrEmpty(source))
-        {
-            return null;
-        }
+        return source.TryParseDateOrEpoch(out var result) ? result : null;
+    }
 
-        // Try parsing as epoch (Unix timestamp)
-        if (long.TryParse(source, out var epoch) && epoch is > 99999999 or < 0) // don't clash with compact format
-        {
-            return DateTimeOffset.FromUnixTimeSeconds(epoch).UtcDateTime;
-        }
+    /// <summary>
+    /// Parses a date string or Unix epoch value into a UTC <see cref="DateTime"/>.
+    /// </summary>
+    /// <param name="source">The source text.</param>
+    /// <param name="ambiguousDatePolicy">The policy used for ambiguous slash dates.</param>
+    /// <returns>A UTC <see cref="DateTime"/> when parsing succeeds; otherwise <c>null</c>.</returns>
+    /// <remarks>
+    /// <para>Epoch seconds and milliseconds return UTC. Date strings without offsets are interpreted as UTC.</para>
+    /// <example>
+    /// <code>
+    /// var parsed = "1735689600000".ParseDateOrEpoch();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static DateTime? ParseDateOrEpoch(this string source, AmbiguousDatePolicy ambiguousDatePolicy)
+    {
+        return source.TryParseDateOrEpoch(out var result, ambiguousDatePolicy) ? result : null;
+    }
 
-        var formats = new[]
-        {
-            "yyyy-MM-dd", // ISO 8601 (e.g., "2024-03-14")
-            "yyyy-MM-ddTHH:mm:ss", // ISO 8601 with time (e.g., "2024-03-14T13:45:30")
-            "yyyy-MM-ddTHH:mm:ssZ", // ISO 8601 with UTC (e.g., "2024-03-14T13:45:30Z")
-            "yyyy-MM-ddTHH:mm:ss.fffffff", // ISO 8601 with milliseconds (e.g., "2024-03-14T13:45:30.1234567")
-            "dd/MM/yyyy", // UK format (e.g., "14/03/2024")
-            "MM/dd/yyyy", // US format (e.g., "03/14/2024")
-            "dd-MM-yyyy", // Alternative format (e.g., "14-03-2024")
-            "dd.MM.yyyy", // European format (e.g., "14.03.2024")
-            "yyyyMMdd", // Compact format (e.g., "20240314")
-            "dd MMM yyyy", // Month name format (e.g., "14 Mar 2024")
-            "d MMMM yyyy" // Full month name format (e.g., "14 March 2024")
-        };
+    /// <summary>
+    /// Parses a date string or Unix epoch value into a UTC <see cref="DateTime"/> or throws.
+    /// </summary>
+    /// <param name="source">The source text.</param>
+    /// <returns>The parsed UTC value.</returns>
+    /// <remarks>
+    /// <para>Ambiguous slash dates are rejected by default.</para>
+    /// <example>
+    /// <code>
+    /// var parsed = "2026-01-01".ParseDateOrEpochOrThrow();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    /// <exception cref="ArgumentException">Thrown when the source cannot be parsed.</exception>
+    [DebuggerStepThrough]
+    public static DateTime ParseDateOrEpochOrThrow(this string source)
+    {
+        return source.ParseDateOrEpochOrThrow(AmbiguousDatePolicy.Reject);
+    }
 
-        // Try parsing as ISO 8601 date string
-        if (DateTime.TryParseExact(
-                source,
-                formats,
-                CultureInfo.InvariantCulture,
-                DateTimeStyles.None,
-                out var date))
-        {
-            return date;
-        }
-
-        throw new ArgumentException($"Invalid date format: {source}. Useany format or Unix epoch.");
+    /// <summary>
+    /// Parses a date string or Unix epoch value into a UTC <see cref="DateTime"/> or throws.
+    /// </summary>
+    /// <param name="source">The source text.</param>
+    /// <param name="ambiguousDatePolicy">The policy used for ambiguous slash dates.</param>
+    /// <returns>The parsed UTC value.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var parsed = "03/04/2026".ParseDateOrEpochOrThrow(AmbiguousDatePolicy.PreferDayMonthYear);
+    /// </code>
+    /// </example>
+    /// </remarks>
+    /// <exception cref="ArgumentException">Thrown when the source cannot be parsed.</exception>
+    [DebuggerStepThrough]
+    public static DateTime ParseDateOrEpochOrThrow(this string source, AmbiguousDatePolicy ambiguousDatePolicy)
+    {
+        return source.TryParseDateOrEpoch(out var result, ambiguousDatePolicy)
+            ? result
+            : throw new ArgumentException($"Invalid date format: {source}. Use a supported date format or Unix epoch.", nameof(source));
     }
 
     [DebuggerStepThrough]
     public static bool TryParseDateOrEpoch(this string source, out DateTime result)
     {
-        result = DateTime.MinValue;
+        return source.TryParseDateOrEpoch(out result, AmbiguousDatePolicy.Reject);
+    }
+
+    /// <summary>
+    /// Attempts to parse a date string or Unix epoch value into a UTC <see cref="DateTime"/>.
+    /// </summary>
+    /// <param name="source">The source text.</param>
+    /// <param name="result">The parsed UTC value when parsing succeeds.</param>
+    /// <param name="ambiguousDatePolicy">The policy used for ambiguous slash dates.</param>
+    /// <returns><c>true</c> when parsing succeeds; otherwise <c>false</c>.</returns>
+    /// <remarks>
+    /// <para>Epoch milliseconds are detected by 13 or more digits. Slash dates such as 03/04/2026 are rejected unless a policy is provided.</para>
+    /// <example>
+    /// <code>
+    /// if ("1735689600".TryParseDateOrEpoch(out var parsed)) { }
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static bool TryParseDateOrEpoch(this string source, out DateTime result, AmbiguousDatePolicy ambiguousDatePolicy)
+    {
+        result = default;
 
         if (string.IsNullOrWhiteSpace(source))
         {
             return false;
         }
 
-        // Try parsing as epoch (Unix timestamp)
-        if (long.TryParse(source, out var epoch) && epoch is > 99999999 or < 0) // don't clash with compact format
+        source = source.Trim();
+
+        // Try parsing as Unix epoch seconds or milliseconds. The threshold avoids clashing with yyyyMMdd.
+        if (long.TryParse(source, NumberStyles.Integer, CultureInfo.InvariantCulture, out var epoch) &&
+            epoch is > 99999999 or < 0)
         {
             try
             {
-                result = DateTimeOffset.FromUnixTimeSeconds(epoch).UtcDateTime;
+                var digitCount = source.TrimStart('-').Length;
+                result = digitCount >= 13
+                    ? DateTimeOffset.FromUnixTimeMilliseconds(epoch).UtcDateTime
+                    : DateTimeOffset.FromUnixTimeSeconds(epoch).UtcDateTime;
 
                 return true;
             }
-            catch
+            catch (ArgumentOutOfRangeException)
             {
                 return false;
             }
         }
 
-        // Define accepted formats
+        if (IsAmbiguousSlashDate(source))
+        {
+            if (ambiguousDatePolicy == AmbiguousDatePolicy.Reject)
+            {
+                return false;
+            }
+
+            var preferredFormat = ambiguousDatePolicy == AmbiguousDatePolicy.PreferDayMonthYear ? "dd/MM/yyyy" : "MM/dd/yyyy";
+            if (DateTime.TryParseExact(
+                    source,
+                    preferredFormat,
+                    CultureInfo.InvariantCulture,
+                    DateTimeStyles.None,
+                    out var preferredDate))
+            {
+                result = DateTime.SpecifyKind(preferredDate, DateTimeKind.Utc);
+                return true;
+            }
+        }
+
         var formats = new[]
         {
-            "yyyy-MM-dd", // ISO 8601 (e.g., "2024-03-14")
-            "yyyy-MM-ddTHH:mm:ss", // ISO 8601 with time (e.g., "2024-03-14T13:45:30")
-            "yyyy-MM-ddTHH:mm:ssZ", // ISO 8601 with UTC (e.g., "2024-03-14T13:45:30Z")
-            "yyyy-MM-ddTHH:mm:ss.fffffff", // ISO 8601 with milliseconds (e.g., "2024-03-14T13:45:30.1234567")
-            "dd/MM/yyyy", // UK format (e.g., "14/03/2024")
-            "MM/dd/yyyy", // US format (e.g., "03/14/2024")
-            "dd-MM-yyyy", // Alternative format (e.g., "14-03-2024")
-            "dd.MM.yyyy", // European format (e.g., "14.03.2024")
-            "yyyyMMdd", // Compact format (e.g., "20240314")
-            "dd MMM yyyy", // Month name format (e.g., "14 Mar 2024")
-            "d MMMM yyyy" // Full month name format (e.g., "14 March 2024")
+            "yyyy-MM-dd",
+            "yyyy-MM-ddTHH:mm:ss",
+            "yyyy-MM-ddTHH:mm:ss.fffffff",
+            "yyyy-MM-ddTHH:mm:ss.FFFFFFF",
+            "dd/MM/yyyy",
+            "MM/dd/yyyy",
+            "dd-MM-yyyy",
+            "dd.MM.yyyy",
+            "yyyyMMdd",
+            "dd MMM yyyy",
+            "d MMMM yyyy"
         };
 
-        // Try parsing with exact formats first
+        // Exact known formats: Values without an explicit offset are interpreted as UTC by convention.
         if (DateTime.TryParseExact(
                 source,
                 formats,
@@ -197,17 +357,39 @@ public static class DateTimeExtensions
                 DateTimeStyles.None,
                 out var exactDate))
         {
-            result = exactDate;
+            result = exactDate.Kind switch
+            {
+                DateTimeKind.Utc => exactDate,
+                DateTimeKind.Local => exactDate.ToUniversalTime(),
+                DateTimeKind.Unspecified => DateTime.SpecifyKind(exactDate, DateTimeKind.Utc),
+                _ => DateTime.SpecifyKind(exactDate, DateTimeKind.Utc)
+            };
 
             return true;
         }
 
-        // Try general parsing as fallback
-        return DateTime.TryParse(
-            source,
-            CultureInfo.InvariantCulture,
-            DateTimeStyles.None,
-            out result);
+        // Fallback: Use DateTimeOffset so strings with offsets are adjusted to UTC deterministically.
+        if (DateTimeOffset.TryParse(
+                source,
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal,
+                out var parsedOffset))
+        {
+            result = parsedOffset.UtcDateTime;
+            return true;
+        }
+
+        return false;
+    }
+
+    private static bool IsAmbiguousSlashDate(string source)
+    {
+        var parts = source.Split('/');
+        return parts.Length == 3 &&
+            int.TryParse(parts[0], NumberStyles.None, CultureInfo.InvariantCulture, out var first) &&
+            int.TryParse(parts[1], NumberStyles.None, CultureInfo.InvariantCulture, out var second) &&
+            first is >= 1 and <= 12 &&
+            second is >= 1 and <= 12;
     }
 
     [DebuggerStepThrough]
@@ -220,6 +402,28 @@ public static class DateTimeExtensions
             DateUnit.Month => AddMonths(date, amount),
             DateUnit.Year => AddMonths(date, amount * 12),
             _ => throw new ArgumentException("Unsupported DateUnit.", nameof(unit))
+        };
+    }
+
+    /// <summary>
+    /// Adds a time-unit amount to a <see cref="DateTime"/>.
+    /// </summary>
+    /// <param name="date">The source value.</param>
+    /// <param name="unit">The unit to add.</param>
+    /// <param name="amount">The amount to add.</param>
+    /// <returns>The adjusted value.</returns>
+    /// <remarks><example><code>var later = now.Add(TimeUnit.Second, 30);</code></example></remarks>
+    [DebuggerStepThrough]
+    public static DateTime Add(this DateTime date, TimeUnit unit, int amount)
+    {
+        return unit switch
+        {
+            TimeUnit.Millisecond => date.AddMilliseconds(amount),
+            TimeUnit.Second => date.AddSeconds(amount),
+            TimeUnit.Minute => date.AddMinutes(amount),
+            TimeUnit.Hour => date.AddHours(amount),
+            TimeUnit.Day => date.AddDays(amount),
+            _ => throw new ArgumentException("Unsupported TimeUnit.", nameof(unit))
         };
     }
 
@@ -256,12 +460,61 @@ public static class DateTimeExtensions
     [DebuggerStepThrough]
     public static bool IsInRelativeRange(this DateTime date, DateUnit unit, int amount, DateTimeDirection direction, bool inclusive = true)
     {
-        var now = DateTime.Now;
-        var referenceDate = direction == DateTimeDirection.Past ? now.Add(unit, -amount) : now.Add(unit, amount);
+        var now = GetNowForKind(date.Kind);
+        return date.IsInRelativeRange(now, unit, amount, direction, inclusive);
+    }
+
+    /// <summary>
+    /// Determines whether a date is inside a relative range around an explicit reference value.
+    /// </summary>
+    /// <param name="date">The date to evaluate.</param>
+    /// <param name="reference">The reference point.</param>
+    /// <param name="unit">The relative unit.</param>
+    /// <param name="amount">The amount of units.</param>
+    /// <param name="direction">The direction from the reference point.</param>
+    /// <param name="inclusive">Whether the boundaries are included.</param>
+    /// <returns><c>true</c> when the date is inside the range; otherwise <c>false</c>.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var reference = new DateTime(2026, 1, 10, 0, 0, 0, DateTimeKind.Utc);
+    /// var isSoon = reference.AddDays(3).IsInRelativeRange(reference, DateUnit.Day, 5, DateTimeDirection.Future);
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static bool IsInRelativeRange(this DateTime date, DateTime reference, DateUnit unit, int amount, DateTimeDirection direction, bool inclusive = true)
+    {
+        var referenceDate = direction == DateTimeDirection.Past ? reference.Add(unit, -amount) : reference.Add(unit, amount);
 
         return direction == DateTimeDirection.Past
-            ? (inclusive ? date <= now && date >= referenceDate : date < now && date > referenceDate)
-            : (inclusive ? date >= now && date <= referenceDate : date > now && date < referenceDate);
+            ? (inclusive ? date <= reference && date >= referenceDate : date < reference && date > referenceDate)
+            : (inclusive ? date >= reference && date <= referenceDate : date > reference && date < referenceDate);
+    }
+
+    /// <summary>
+    /// Determines whether a date is inside a relative range around a <see cref="TimeProvider"/> reference value.
+    /// </summary>
+    /// <param name="date">The date to evaluate.</param>
+    /// <param name="timeProvider">The provider used to obtain the reference time.</param>
+    /// <param name="unit">The relative unit.</param>
+    /// <param name="amount">The amount of units.</param>
+    /// <param name="direction">The direction from the reference point.</param>
+    /// <param name="inclusive">Whether the boundaries are included.</param>
+    /// <returns><c>true</c> when the date is inside the range; otherwise <c>false</c>.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var isRecent = value.IsInRelativeRange(TimeProvider.System, DateUnit.Day, 7, DateTimeDirection.Past);
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static bool IsInRelativeRange(this DateTime date, TimeProvider timeProvider, DateUnit unit, int amount, DateTimeDirection direction, bool inclusive = true)
+    {
+        ArgumentNullException.ThrowIfNull(timeProvider);
+
+        return date.IsInRelativeRange(GetNowForKind(date.Kind, timeProvider), unit, amount, direction, inclusive);
     }
 
     [DebuggerStepThrough]
@@ -282,19 +535,145 @@ public static class DateTimeExtensions
     [DebuggerStepThrough]
     public static int DaysUntil(this DateTime date)
     {
-        return (date - DateTime.Now).Days;
+        var now = GetNowForKind(date.Kind);
+        return date.DaysUntil(now);
+    }
+
+    /// <summary>
+    /// Calculates whole days from an explicit reference value to a target value.
+    /// </summary>
+    /// <param name="date">The target date.</param>
+    /// <param name="reference">The reference date.</param>
+    /// <returns>The whole day difference.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var days = dueDate.DaysUntil(reference);
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static int DaysUntil(this DateTime date, DateTime reference)
+    {
+        return (date - reference).Days;
+    }
+
+    /// <summary>
+    /// Calculates whole days from a <see cref="TimeProvider"/> reference value to a target value.
+    /// </summary>
+    /// <param name="date">The target date.</param>
+    /// <param name="timeProvider">The provider used to obtain the reference time.</param>
+    /// <returns>The whole day difference.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var days = dueDate.DaysUntil(TimeProvider.System);
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static int DaysUntil(this DateTime date, TimeProvider timeProvider)
+    {
+        ArgumentNullException.ThrowIfNull(timeProvider);
+
+        return date.DaysUntil(GetNowForKind(date.Kind, timeProvider));
     }
 
     [DebuggerStepThrough]
     public static long ToUnixTimeSeconds(this DateTime date)
     {
-        return new DateTimeOffset(date).ToUnixTimeSeconds();
+        return date.ToDateTimeOffset().ToUnixTimeSeconds();
+    }
+
+    [DebuggerStepThrough]
+    public static long ToUnixTimeMilliseconds(this DateTime date)
+    {
+        return date.ToDateTimeOffset().ToUnixTimeMilliseconds();
+    }
+
+    /// <summary>
+    /// Converts Unix epoch seconds to a UTC <see cref="DateTime"/>.
+    /// </summary>
+    /// <param name="source">The number of seconds since 1970-01-01T00:00:00Z.</param>
+    /// <returns>A UTC <see cref="DateTime"/>.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var utc = 1735689600L.FromUnixTimeSecondsToUtcDateTime();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static DateTime FromUnixTimeSecondsToUtcDateTime(this long source)
+    {
+        return DateTimeOffset.FromUnixTimeSeconds(source).UtcDateTime;
+    }
+
+    /// <summary>
+    /// Converts Unix epoch milliseconds to a UTC <see cref="DateTime"/>.
+    /// </summary>
+    /// <param name="source">The number of milliseconds since 1970-01-01T00:00:00Z.</param>
+    /// <returns>A UTC <see cref="DateTime"/>.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var utc = 1735689600000L.FromUnixTimeMillisecondsToUtcDateTime();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static DateTime FromUnixTimeMillisecondsToUtcDateTime(this long source)
+    {
+        return DateTimeOffset.FromUnixTimeMilliseconds(source).UtcDateTime;
+    }
+
+    /// <summary>
+    /// Converts Unix epoch seconds to a <see cref="DateTimeOffset"/>.
+    /// </summary>
+    /// <param name="source">The number of seconds since 1970-01-01T00:00:00Z.</param>
+    /// <returns>A UTC <see cref="DateTimeOffset"/>.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var instant = 1735689600L.FromUnixTimeSecondsToDateTimeOffset();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static DateTimeOffset FromUnixTimeSecondsToDateTimeOffset(this long source)
+    {
+        return DateTimeOffset.FromUnixTimeSeconds(source);
+    }
+
+    /// <summary>
+    /// Converts Unix epoch milliseconds to a <see cref="DateTimeOffset"/>.
+    /// </summary>
+    /// <param name="source">The number of milliseconds since 1970-01-01T00:00:00Z.</param>
+    /// <returns>A UTC <see cref="DateTimeOffset"/>.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var instant = 1735689600000L.FromUnixTimeMillisecondsToDateTimeOffset();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static DateTimeOffset FromUnixTimeMillisecondsToDateTimeOffset(this long source)
+    {
+        return DateTimeOffset.FromUnixTimeMilliseconds(source);
     }
 
     [DebuggerStepThrough]
     public static DateTimeOffset ToDateTimeOffset(this DateTime date, TimeSpan? offset = null)
     {
-        return new DateTimeOffset(date, offset ?? TimeSpan.Zero);
+        return date.Kind switch
+        {
+            DateTimeKind.Utc => offset is null ? new DateTimeOffset(date, TimeSpan.Zero) : new DateTimeOffset(date, TimeSpan.Zero).ToOffset(offset.Value),
+            DateTimeKind.Local when offset is null => new DateTimeOffset(date),
+            DateTimeKind.Local => new DateTimeOffset(date.ToUniversalTime(), TimeSpan.Zero).ToOffset(offset.Value),
+            DateTimeKind.Unspecified => new DateTimeOffset(date, offset ?? TimeSpan.Zero),
+            _ => new DateTimeOffset(date, offset ?? TimeSpan.Zero)
+        };
     }
 
     [DebuggerStepThrough]
@@ -326,7 +705,7 @@ public static class DateTimeExtensions
     }
 
     [DebuggerStepThrough]
-    public static DateTime RoundToNearest(this DateTime dateTime, DateUnit dateUnit)
+    public static DateTime FloorTo(this DateTime dateTime, DateUnit dateUnit)
     {
         switch (dateUnit)
         {
@@ -344,60 +723,317 @@ public static class DateTimeExtensions
     }
 
     [DebuggerStepThrough]
-    public static DateTime RoundToNearest(this DateTime dateTime, TimeUnit timeUnit)
+    public static DateTime FloorTo(this DateTime dateTime, TimeUnit timeUnit)
     {
         switch (timeUnit)
         {
+            case TimeUnit.Millisecond:
+                return new DateTime(dateTime.Ticks - (dateTime.Ticks % TimeSpan.TicksPerMillisecond), dateTime.Kind);
+            case TimeUnit.Second:
+                return new DateTime(dateTime.Ticks - (dateTime.Ticks % TimeSpan.TicksPerSecond), dateTime.Kind);
             case TimeUnit.Minute:
-                return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, dateTime.Hour, (dateTime.Minute / 1) * 1, 0, dateTime.Kind);
+                return new DateTime(dateTime.Ticks - (dateTime.Ticks % TimeSpan.TicksPerMinute), dateTime.Kind);
             case TimeUnit.Hour:
-                return new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, (dateTime.Hour / 1) * 1, 0, 0, dateTime.Kind);
+                return new DateTime(dateTime.Ticks - (dateTime.Ticks % TimeSpan.TicksPerHour), dateTime.Kind);
+            case TimeUnit.Day:
+                return dateTime.StartOfDay();
             default:
                 throw new ArgumentException("Unsupported TimeUnit.", nameof(timeUnit));
         }
     }
 
+    /// <summary>
+    /// Floors a <see cref="DateTime"/> to an arbitrary positive interval.
+    /// </summary>
+    /// <param name="dateTime">The source value.</param>
+    /// <param name="interval">The positive interval.</param>
+    /// <returns>The floored value.</returns>
+    /// <remarks><example><code>var value = timestamp.FloorTo(TimeSpan.FromMinutes(15));</code></example></remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="interval"/> is zero or negative.</exception>
+    [DebuggerStepThrough]
+    public static DateTime FloorTo(this DateTime dateTime, TimeSpan interval)
+    {
+        EnsurePositiveInterval(interval);
+
+        return new DateTime(dateTime.Ticks - (dateTime.Ticks % interval.Ticks), dateTime.Kind);
+    }
+
+    [DebuggerStepThrough]
+    public static DateTime CeilingTo(this DateTime dateTime, DateUnit dateUnit)
+    {
+        var floor = dateTime.FloorTo(dateUnit);
+        if (floor == dateTime)
+        {
+            return dateTime;
+        }
+
+        return dateUnit switch
+        {
+            DateUnit.Day => floor.AddDays(1),
+            DateUnit.Week => floor.AddDays(7),
+            DateUnit.Month => floor.AddMonths(1),
+            DateUnit.Year => floor.AddYears(1),
+            _ => throw new ArgumentException("Unsupported DateUnit.", nameof(dateUnit))
+        };
+    }
+
+    [DebuggerStepThrough]
+    public static DateTime CeilingTo(this DateTime dateTime, TimeUnit timeUnit)
+    {
+        var floor = dateTime.FloorTo(timeUnit);
+        if (floor == dateTime)
+        {
+            return dateTime;
+        }
+
+        return timeUnit switch
+        {
+            TimeUnit.Millisecond => floor.AddMilliseconds(1),
+            TimeUnit.Second => floor.AddSeconds(1),
+            TimeUnit.Minute => floor.AddMinutes(1),
+            TimeUnit.Hour => floor.AddHours(1),
+            TimeUnit.Day => floor.AddDays(1),
+            _ => throw new ArgumentException("Unsupported TimeUnit.", nameof(timeUnit))
+        };
+    }
+
+    /// <summary>
+    /// Ceilings a <see cref="DateTime"/> to an arbitrary positive interval.
+    /// </summary>
+    /// <param name="dateTime">The source value.</param>
+    /// <param name="interval">The positive interval.</param>
+    /// <returns>The ceiling value.</returns>
+    /// <remarks><example><code>var value = timestamp.CeilingTo(TimeSpan.FromMinutes(15));</code></example></remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="interval"/> is zero or negative.</exception>
+    [DebuggerStepThrough]
+    public static DateTime CeilingTo(this DateTime dateTime, TimeSpan interval)
+    {
+        EnsurePositiveInterval(interval);
+
+        var floor = dateTime.FloorTo(interval);
+        return floor == dateTime ? dateTime : floor.AddTicks(interval.Ticks);
+    }
+
+    [DebuggerStepThrough]
+    public static DateTime RoundToNearest(this DateTime dateTime, DateUnit dateUnit)
+    {
+        return dateTime.FloorTo(dateUnit);
+    }
+
+    [DebuggerStepThrough]
+    public static DateTime RoundToNearest(this DateTime dateTime, TimeUnit timeUnit)
+    {
+        var ticks = timeUnit switch
+        {
+            TimeUnit.Millisecond => TimeSpan.TicksPerMillisecond,
+            TimeUnit.Second => TimeSpan.TicksPerSecond,
+            TimeUnit.Minute => TimeSpan.TicksPerMinute,
+            TimeUnit.Hour => TimeSpan.TicksPerHour,
+            TimeUnit.Day => TimeSpan.TicksPerDay,
+            _ => throw new ArgumentException("Unsupported TimeUnit.", nameof(timeUnit))
+        };
+
+        var roundedTicks = ((dateTime.Ticks + (ticks / 2)) / ticks) * ticks;
+        return new DateTime(roundedTicks, dateTime.Kind);
+    }
+
+    /// <summary>
+    /// Rounds a <see cref="DateTime"/> to the nearest arbitrary positive interval.
+    /// </summary>
+    /// <param name="dateTime">The source value.</param>
+    /// <param name="interval">The positive interval.</param>
+    /// <returns>The rounded value.</returns>
+    /// <remarks><example><code>var value = timestamp.RoundToNearest(TimeSpan.FromMinutes(15));</code></example></remarks>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown when <paramref name="interval"/> is zero or negative.</exception>
+    [DebuggerStepThrough]
+    public static DateTime RoundToNearest(this DateTime dateTime, TimeSpan interval)
+    {
+        EnsurePositiveInterval(interval);
+
+        var roundedTicks = ((dateTime.Ticks + (interval.Ticks / 2)) / interval.Ticks) * interval.Ticks;
+        return new DateTime(roundedTicks, dateTime.Kind);
+    }
+
     [DebuggerStepThrough]
     public static DateTime AddBusinessDays(this DateTime dateTime, int days, DateTime[] holidays, params DayOfWeek[] nonWorkingDays)
     {
+        var configuredNonWorkingDays = nonWorkingDays is { Length: > 0 } ? nonWorkingDays : [DayOfWeek.Saturday, DayOfWeek.Sunday];
+        var nonWorkingDaySet = configuredNonWorkingDays.ToHashSet();
+        var holidaySet = (holidays ?? []).Select(holiday => holiday.Date).ToHashSet();
+
         if (days == 0)
         {
             return dateTime;
         }
 
-        // Use default non-working days if none specified
-        if (nonWorkingDays == null || nonWorkingDays.Length == 0)
-        {
-            nonWorkingDays = [DayOfWeek.Saturday, DayOfWeek.Sunday];
-        }
-
         var result = dateTime;
         var step = days > 0 ? 1 : -1;
-        var absDays = Math.Abs(days);
-        var addedDays = 0;
-
-        while (addedDays < absDays)
+        var remaining = Math.Abs(days);
+        while (remaining > 0)
         {
             result = result.AddDays(step);
-            if (IsBusinessDay(result, holidays, nonWorkingDays))
+            if (!nonWorkingDaySet.Contains(result.DayOfWeek) && !holidaySet.Contains(result.Date))
             {
-                addedDays++;
+                remaining--;
             }
         }
 
         return result;
     }
 
-    private static bool IsBusinessDay(DateTime dateTime, DateTime[] holidays, DayOfWeek[] nonWorkingDays)
+    /// <summary>
+    /// Converts a local wall-clock value in a time zone to a <see cref="DateTimeOffset"/>.
+    /// </summary>
+    /// <param name="localDateTime">The local wall-clock value.</param>
+    /// <param name="timeZone">The time zone whose rules are used.</param>
+    /// <param name="invalidTimePolicy">The policy for invalid DST values.</param>
+    /// <param name="ambiguousTimePolicy">The policy for ambiguous DST values.</param>
+    /// <returns>A <see cref="DateTimeOffset"/> with the selected time-zone offset.</returns>
+    /// <remarks>
+    /// <para>The <see cref="DateTime.Kind"/> is ignored; the value is treated as a wall-clock time in <paramref name="timeZone"/>.</para>
+    /// <example>
+    /// <code>
+    /// var instant = local.ToDateTimeOffset(timeZone, InvalidTimePolicy.MoveForward);
+    /// </code>
+    /// </example>
+    /// </remarks>
+    /// <exception cref="ArgumentException">Thrown for invalid or ambiguous times when the corresponding policy is Throw.</exception>
+    [DebuggerStepThrough]
+    public static DateTimeOffset ToDateTimeOffset(
+        this DateTime localDateTime,
+        TimeZoneInfo timeZone,
+        InvalidTimePolicy invalidTimePolicy = InvalidTimePolicy.Throw,
+        AmbiguousTimePolicy ambiguousTimePolicy = AmbiguousTimePolicy.Throw)
     {
-        // Check if the date is a non-working day
-        if (Array.Exists(nonWorkingDays, day => day == dateTime.DayOfWeek))
+        ArgumentNullException.ThrowIfNull(timeZone);
+
+        var wallClock = DateTime.SpecifyKind(localDateTime, DateTimeKind.Unspecified);
+        wallClock = ResolveInvalidTime(wallClock, timeZone, invalidTimePolicy);
+
+        var offset = timeZone.IsAmbiguousTime(wallClock)
+            ? ResolveAmbiguousOffset(wallClock, timeZone, ambiguousTimePolicy)
+            : timeZone.GetUtcOffset(wallClock);
+
+        return new DateTimeOffset(wallClock, offset);
+    }
+
+    /// <summary>
+    /// Converts a local wall-clock value in a time zone to a UTC <see cref="DateTime"/>.
+    /// </summary>
+    /// <param name="localDateTime">The local wall-clock value.</param>
+    /// <param name="timeZone">The time zone whose rules are used.</param>
+    /// <param name="invalidTimePolicy">The policy for invalid DST values.</param>
+    /// <param name="ambiguousTimePolicy">The policy for ambiguous DST values.</param>
+    /// <returns>A UTC <see cref="DateTime"/>.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var utc = local.ToUtcDateTime(timeZone);
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static DateTime ToUtcDateTime(
+        this DateTime localDateTime,
+        TimeZoneInfo timeZone,
+        InvalidTimePolicy invalidTimePolicy = InvalidTimePolicy.Throw,
+        AmbiguousTimePolicy ambiguousTimePolicy = AmbiguousTimePolicy.Throw)
+    {
+        return localDateTime.ToDateTimeOffset(timeZone, invalidTimePolicy, ambiguousTimePolicy).UtcDateTime;
+    }
+
+    /// <summary>
+    /// Formats a <see cref="DateTime"/> as a round-trip UTC ISO string.
+    /// </summary>
+    /// <param name="source">The source value.</param>
+    /// <returns>An invariant UTC ISO timestamp.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var text = utc.ToIsoUtcString();
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static string ToIsoUtcString(this DateTime source)
+    {
+        return source.ToDateTimeOffset().UtcDateTime.ToString("yyyy-MM-dd'T'HH:mm:ss.fffffff'Z'", CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Formats a <see cref="DateTime"/> as a file-safe UTC timestamp.
+    /// </summary>
+    /// <param name="source">The source value.</param>
+    /// <returns>An invariant timestamp such as 20260629T134530Z.</returns>
+    /// <remarks>
+    /// <example>
+    /// <code>
+    /// var fileName = $"backup-{clock.ToFileSafeTimestamp()}.zip";
+    /// </code>
+    /// </example>
+    /// </remarks>
+    [DebuggerStepThrough]
+    public static string ToFileSafeTimestamp(this DateTime source)
+    {
+        return source.ToDateTimeOffset().UtcDateTime.ToString("yyyyMMdd'T'HHmmss'Z'", CultureInfo.InvariantCulture);
+    }
+
+    private static DateTime ResolveInvalidTime(DateTime wallClock, TimeZoneInfo timeZone, InvalidTimePolicy policy)
+    {
+        if (!timeZone.IsInvalidTime(wallClock))
         {
-            return false;
+            return wallClock;
         }
 
-        // Check if the date is in the list of holidays
-        return holidays == null || !holidays.Any(holiday => holiday.Date == dateTime.Date);
+        if (policy == InvalidTimePolicy.Throw)
+        {
+            throw new ArgumentException($"The local time {wallClock:O} is invalid in time zone {timeZone.Id}.", nameof(wallClock));
+        }
+
+        var step = policy == InvalidTimePolicy.MoveForward ? TimeSpan.FromMinutes(1) : TimeSpan.FromMinutes(-1);
+        var result = wallClock;
+        do
+        {
+            result = result.Add(step);
+        }
+        while (timeZone.IsInvalidTime(result));
+
+        return result;
+    }
+
+    private static TimeSpan ResolveAmbiguousOffset(DateTime wallClock, TimeZoneInfo timeZone, AmbiguousTimePolicy policy)
+    {
+        if (policy == AmbiguousTimePolicy.Throw)
+        {
+            throw new ArgumentException($"The local time {wallClock:O} is ambiguous in time zone {timeZone.Id}.", nameof(wallClock));
+        }
+
+        var offsets = timeZone.GetAmbiguousTimeOffsets(wallClock).OrderBy(offset => offset).ToArray();
+        return policy == AmbiguousTimePolicy.EarlierOffset ? offsets[0] : offsets[^1];
+    }
+
+    private static DateTime GetNowForKind(DateTimeKind kind)
+    {
+        return GetNowForKind(kind, TimeProvider.System);
+    }
+
+    private static DateTime GetNowForKind(DateTimeKind kind, TimeProvider timeProvider)
+    {
+        return kind switch
+        {
+            DateTimeKind.Utc => timeProvider.GetUtcNow().UtcDateTime,
+            DateTimeKind.Local => timeProvider.GetLocalNow().DateTime,
+            DateTimeKind.Unspecified => DateTime.SpecifyKind(timeProvider.GetUtcNow().UtcDateTime, DateTimeKind.Unspecified),
+            _ => timeProvider.GetLocalNow().DateTime
+        };
+    }
+
+    private static void EnsurePositiveInterval(TimeSpan interval)
+    {
+        if (interval <= TimeSpan.Zero)
+        {
+            throw new ArgumentOutOfRangeException(nameof(interval), "Interval must be greater than zero.");
+        }
     }
 }
 
@@ -433,6 +1069,16 @@ public enum DateUnit
 public enum TimeUnit
 {
     /// <summary>
+    /// Represents a millisecond unit for relative time calculations.
+    /// </summary>
+    Millisecond,
+
+    /// <summary>
+    /// Represents a second unit for relative time calculations.
+    /// </summary>
+    Second,
+
+    /// <summary>
     /// Represents a minute unit for relative time calculations.
     /// </summary>
     Minute,
@@ -440,7 +1086,12 @@ public enum TimeUnit
     /// <summary>
     /// Represents an hour unit for relative time calculations.
     /// </summary>
-    Hour
+    Hour,
+
+    /// <summary>
+    /// Represents a day unit for relative time calculations.
+    /// </summary>
+    Day
 }
 
 /// <summary>
@@ -457,4 +1108,67 @@ public enum DateTimeDirection
     /// Indicates that the calculation should look forward in time from the reference point.
     /// </summary>
     Future
+}
+
+/// <summary>
+/// Specifies how ambiguous slash dates such as 03/04/2026 are parsed.
+/// </summary>
+public enum AmbiguousDatePolicy
+{
+    /// <summary>
+    /// Reject ambiguous slash dates.
+    /// </summary>
+    Reject,
+
+    /// <summary>
+    /// Interpret ambiguous slash dates as day/month/year.
+    /// </summary>
+    PreferDayMonthYear,
+
+    /// <summary>
+    /// Interpret ambiguous slash dates as month/day/year.
+    /// </summary>
+    PreferMonthDayYear
+}
+
+/// <summary>
+/// Specifies how invalid local times during daylight-saving transitions are handled.
+/// </summary>
+public enum InvalidTimePolicy
+{
+    /// <summary>
+    /// Throw when the local time is invalid.
+    /// </summary>
+    Throw,
+
+    /// <summary>
+    /// Move forward to the first valid local time.
+    /// </summary>
+    MoveForward,
+
+    /// <summary>
+    /// Move backward to the previous valid local time.
+    /// </summary>
+    MoveBackward
+}
+
+/// <summary>
+/// Specifies how ambiguous local times during daylight-saving transitions are handled.
+/// </summary>
+public enum AmbiguousTimePolicy
+{
+    /// <summary>
+    /// Throw when the local time is ambiguous.
+    /// </summary>
+    Throw,
+
+    /// <summary>
+    /// Choose the earlier offset value returned by the time-zone rule.
+    /// </summary>
+    EarlierOffset,
+
+    /// <summary>
+    /// Choose the later offset value returned by the time-zone rule.
+    /// </summary>
+    LaterOffset
 }
